@@ -1,6 +1,4 @@
 const fs = require('fs');
-//const process = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-const process = JSON.parse(fs.readFileSync('config-test.json', 'utf8'));
 
 const Discord = require('discord.js');
 var request = require('request');
