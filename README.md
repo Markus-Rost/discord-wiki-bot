@@ -1,5 +1,7 @@
 # Wiki-Bot
-**Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link into the [Minecraft Wiki](https://minecraft.gamepedia.com/Minecraft_Wiki).
+**Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link to [Gamepedia wikis](https://gamepedia.com/).
+
+**Wiki-Bot is not affiliated with Curse/Gamepedia and is an unofficial tool!**
 
 ## Commands
 For a full list with all commands use `!wiki help`
@@ -11,6 +13,7 @@ For a full list with all commands use `!wiki help`
 | `!wiki search <search term>` | **Wiki-Bot** will answer with a link to the search page for the article in the Minecraft Wiki. |
 | `!wiki User:<username>` | **Wiki-Bot** will show some information about the user. |
 | `!wiki diff <diff> [<oldid>]` | **Wiki-Bot** will answer with a link to the diff in the Minecraft Wiki. |
+| `!wiki info` | **Wiki-Bot** will introduce himself. |
 | `!wiki help` | **Wiki-Bot** will list all the commands that he understands. |
 | `!wiki !<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/` |
 | `!wiki test` | If **Wiki-Bot** is active, he will answer! Otherwise not. |
