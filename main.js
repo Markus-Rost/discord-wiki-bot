@@ -165,6 +165,9 @@ function edit_settings(lang, msg, key, value) {
 								var temp_settings = settings;
 								if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = defaultSettings['default'];
 								temp_settings[msg.guild.id][key] = value;
+								Object.keys(temp_settings).forEach( function(guild) {
+									if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
+								} );
 								request.post( {
 									uri: url,
 									form: {
@@ -216,9 +219,8 @@ function cmd_help(lang, msg, args, line) {
 		if ( args[0].toLowerCase() == 'admin' && ( msg.channel.type != 'text' || admin(msg) ) ) {
 			if ( args[1] && args[1].toLowerCase() == 'emoji' ) {
 				var cmdlist = lang.help.emoji + '\n';
-				var emojis = client.emojis;
 				var i = 0;
-				emojis.forEach( function(emoji) {
+				client.emojis.forEach( function(emoji) {
 					var br = '\t\t';
 					if ( i % 3 == 2 ) br = '\n';
 					cmdlist += emoji.toString() + '`' + emoji.toString().replace(emoji.name + ':', '') + '`' + br;
