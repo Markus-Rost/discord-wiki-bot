@@ -8,6 +8,7 @@
 			"purge": "delete"
 		},
 		"missingperm": "I'm missing some permissions for this command.",
+		"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. *MarkusRost* wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**\n\nFor questions and problems please contact MarkusRost via Discord or in the wiki:",
 		"settings": {
 			"save_failed": "sadly the settings couldn't be saved, please try again later.",
 			"current": "this are the current settings for this server:",
@@ -98,6 +99,7 @@
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "I will answer with a link to the diff in the Minecraft Wiki." },
 				{ "cmd": "diff <page name>", "desc": "I will answer with a link to the last diff on the article in the Minecraft Wiki.", "hide": true },
 				{ "cmd": "diff <page name> <diff> [<oldid>]", "desc": "I will answer with a link to the diff on the article in the Minecraft Wiki.", "hide": true },
+				{ "cmd": "info", "desc": "I will introduce myself." },
 				{ "cmd": "help", "desc": "I will list all the commands that I understand." },
 				{ "cmd": "help <bot command>", "desc": "Wonder how a command works? Let me explain it to you!" },
 				{ "cmd": "help admin", "desc": "I will list all administrator commands.", "admin": true },
@@ -124,12 +126,13 @@
 			"umfrage": "poll"
 		},
 		"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl.",
+		"disclaimer": "'Ich bin ein kleiner Bot mit der Aufage auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von *MarkusRost* in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot**\n\nBei Fragen oder Problemen kontaktiere bitte MarkusRost per Discord oder im Wiki:",
 		"settings": {
 			"save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
 			"current": "dies sind die aktuellen Einstellungen für diesen Server:",
 			"missing": "für diesen Server wurden noch keine Einstellungen vorgenommen. Nutze %1$s und %2$s um die Einstellungen vorzunehmen.",
 			"langs": "Bisher mögliche Sprachen sind:",
-			"wikis": "Link zum Wiki:",
+			"wikis": "Link zum Wiki: `https://<Wiki>.gamepedia.com/`",
 			"nolangs": "die angegebende Sprache wird nicht unterstützt!",
 			"wiki": "das Standard-Wiki für diesen Server ist:",
 			"lang": "die Sprache für diesen Server ist:",
@@ -212,6 +215,7 @@
 				{ "cmd": "page <Seitenname>", "desc": "Ich antworte mit einem Link zu der angegebenen Seite im Minecraft Wiki.", "hide": true },
 				{ "cmd": "suche <Suchbegriff>", "desc": "Ich antworte mit einem Link auf die Suchseite zu diesem Begriff im Minecraft Wiki." },
 				{ "cmd": "search <Suchbegriff>", "desc": "Ich antworte mit einem Link auf die Suchseite zu diesem Begriff im Minecraft Wiki.", "hide": true },
+				{ "cmd": "info", "desc": "Ich erzähle etwas über mich." },
 				{ "cmd": "hilfe", "desc": "Ich liste alle Befehle auf." },
 				{ "cmd": "hilfe <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert." },
 				{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "admin": true },
@@ -251,6 +255,7 @@
 			"aide": "help"
 		},
 		"missingperm": "Il me manque certaines permissions pour cette commande.",
+		"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. *MarkusRost* m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**\n\nPour les questions et problèmes, merci de contacter MarkusRost via Discord ou sur le wiki :",
 		"settings": {
             "save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, merci de réessayer plus tard.",
             "current": "voici les paramètres actuels pour ce serveur :",
@@ -343,6 +348,7 @@
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Je vais répondre avec un lien vers la diff sur Minecraft Wiki." },
 				{ "cmd": "diff <nom de la page>", "desc": "Je vais répondre avec un lien vers la dernière diff de l'article sur Minecraft Wiki.", "hide": true },
 				{ "cmd": "diff <nom de la page> <diff> [<oldid>]", "desc": "Je vais répondre avec un lien vers la diff de l'article sur Minecraft Wiki.", "hide": true },
+				{ "cmd": "info", "desc": "Je vais me présenter." },
 				{ "cmd": "aide", "desc": "Je vais lister toutes les commandes que je comprends." },
 				{ "cmd": "aide <commande de robot>", "desc": "Tu te demandes comment une commande fonctionne ? Laisse-moi te l'expliquer !" },
 				{ "cmd": "aide admin", "desc": "Je vais lister toutes les commandes d'administrateur.", "admin": true },
@@ -376,6 +382,7 @@
 			"usuń": "delete"
 		},
 		"missingperm": "Brakuje mi upawnień!",
+		"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. *MarkusRost* wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**\n\nFor questions and problems please contact MarkusRost via Discord or in the wiki:",
 		"settings": {
 			"save_failed": "sadly the settings couldn't be saved, please try again later.",
 			"current": "this are the current settings for this server:",
@@ -473,6 +480,7 @@
 				{ "cmd": "pomoc <komenda bota>", "desc": "Wyłumaczę działanie komendy!" },
 				{ "cmd": "pomoc admin", "desc": "Wylistuję wszystkie komendy administracyjne.", "admin": true },
 				{ "cmd": "pomoc admin emoji", "desc": "Wylistuję wszystkie serwerowe emotki, które mogę użyć.", "admin": true },
+				{ "cmd": "info", "desc": "I will introduce myself." },
 				{ "cmd": "help", "desc": "Wylistuję wszystkie komendy, które rozumiem.", "hide": true },
 				{ "cmd": "help <komenda bota>", "desc": "Wyłumaczę działanie komendy!", "hide": true },
 				{ "cmd": "help admin", "desc": "Wylistuję wszystkie komendy administracyjne.", "hide": true, "admin": true },
