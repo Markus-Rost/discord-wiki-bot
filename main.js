@@ -59,7 +59,8 @@ var cmdmap = {
 	poll: cmd_multiline,
 	message: cmd_multiline,
 	voice: cmd_voice,
-	settings: cmd_settings
+	settings: cmd_settings,
+	info: cmd_info
 }
 
 var multilinecmdmap = {
@@ -201,6 +202,11 @@ function edit_settings(lang, msg, key, value) {
 			if ( hourglass != undefined ) hourglass.remove();
 		} );
 	} );
+}
+
+function cmd_info(lang, msg, args, line) {
+	if ( args.length ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+	else msg.channel.send( lang.disclaimer + '\n<@' + process.env.owner + '> <https://help.gamepedia.com/User_talk:MarkusRost?action=edit&preloadtitle=Wiki-Bot&section=new>' );
 }
 
 function cmd_help(lang, msg, args, line) {
