@@ -42,7 +42,7 @@ function setStatus() {
 client.on('ready', () => {
 	getSettings(setStatus);
 	console.log( 'Erfolgreich als ' + client.user.username + ' angemeldet!' );
-	client.user.setActivity(process.env.prefix);
+	client.user.setActivity( process.env.prefix + 'help' );
 } );
 
 
