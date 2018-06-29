@@ -90,6 +90,7 @@ function cmd_settings(lang, msg, args, line) {
 			var langs = '\n' + lang.settings.langs + ' `' + Object.keys(i18n) + '`';
 			var wikis = '\n' + lang.settings.wikis;
 			var nolangs = lang.settings.nolangs + langs;
+			var regex = /^(?:(?:https?:)?\/\/)?([^\.]+)/
 			if ( msg.guild.id in settings ) {
 				if ( args[0] == 'lang' ) {
 					if ( args[1] ) {
@@ -97,8 +98,10 @@ function cmd_settings(lang, msg, args, line) {
 						else msg.reply( nolangs );
 					} else msg.reply( lang.settings.lang + ' `' + settings[msg.guild.id].lang + '`' + langs );
 				} else if ( args[0] == 'wiki' ) {
-					if ( args[1] ) edit_settings(lang, msg, 'wiki', args[1]);
-					else msg.reply( lang.settings.wiki + '\nhttps://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
+					if ( args[1] ) {
+						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
+						else cmd_settings(lang, msg, ['wiki'], line);
+					} else msg.reply( lang.settings.wiki + '\nhttps://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
 				} else msg.reply( text );
 			} else {
 				if ( args[0] == 'lang' ) {
@@ -107,8 +110,10 @@ function cmd_settings(lang, msg, args, line) {
 						else msg.reply( nolangs );
 					} else msg.reply( lang.settings.nolang + langs );
 				} else if ( args[0] == 'wiki' ) {
-					if ( args[1] ) edit_settings(lang, msg, 'wiki', args[1]);
-					else msg.reply( lang.settings.nowiki + wikis );
+					if ( args[1] ) {
+						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
+						else cmd_settings(lang, msg, ['wiki'], line);
+					} else msg.reply( lang.settings.nowiki + wikis );
 				} else msg.reply( text );
 			}
 		} else msg.reply( text );
