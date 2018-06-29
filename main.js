@@ -372,8 +372,8 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=interwikimap&redirects=true&titles=' + title,
 				json: true
 			}, function( error, response, body ) {
-				if ( error || !response || !body || body.error ) {
-					console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ': ' + body.error.info : '.' ) ) );
+				if ( error || !response || !body || !body.query ) {
+					console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 					msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ) ).then( message => message.react('440871715938238494') );
 				}
 				else {
