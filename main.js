@@ -161,6 +161,10 @@ function edit_settings(lang, msg, key, value) {
 								console.log( 'Fehler beim Erhalten des Bearbeitungstoken' + ( perror ? ': ' + perror.message : ( pbody ? ': ' + pbody.error.info : '.' ) ) );
 								msg.reply( lang.settings.save_failed );
 							}
+							else if ( settings == defaultSettings ) {
+								console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
+								msg.reply( lang.settings.save_failed );
+							}
 							else {
 								var temp_settings = settings;
 								if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = defaultSettings['default'];
@@ -186,14 +190,10 @@ function edit_settings(lang, msg, key, value) {
 										msg.reply( lang.settings.save_failed );
 									}
 									else {
-										if ( settings == defaultSettings ) {
-											msg.reply( lang.settings.save_failed );
-										} else {
-											settings = temp_settings;
-											if ( key == 'lang' ) lang = i18n[value];
-											cmd_settings(lang, msg, [key], '')
-											console.log( 'Einstellungen erfolgreich aktualisiert.' );
-										}
+										settings = temp_settings;
+										if ( key == 'lang' ) lang = i18n[value];
+										cmd_settings(lang, msg, [key], '')
+										console.log( 'Einstellungen erfolgreich aktualisiert.' );
 									}
 								} );
 							}
