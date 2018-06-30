@@ -672,8 +672,8 @@ client.on('message', msg => {
 	var cont = msg.content;
 	var author = msg.author;
 	var channel = msg.channel;
-	if ( settings == defaultSettings ) getSettings(setStatus);
 	if ( !msg.webhookID && author.id != client.user.id && ( msg.channel.type != 'text' || channel.permissionsFor(client.user).has('SEND_MESSAGES') ) ) {
+		if ( settings == defaultSettings ) getSettings(setStatus);
 		var setting = settings['default'];
 		if ( msg.channel.type == 'text' && msg.guild.id in settings ) setting = settings[msg.guild.id];
 		var lang = i18n[setting.lang];
