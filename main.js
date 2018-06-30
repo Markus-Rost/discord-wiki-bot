@@ -90,7 +90,7 @@ function cmd_settings(lang, msg, args, line) {
 			var langs = '\n' + lang.settings.langs + ' `' + Object.keys(i18n) + '`';
 			var wikis = '\n' + lang.settings.wikis;
 			var nolangs = lang.settings.nolangs + langs;
-			var regex = /^(?:(?:https?:)?\/\/)?([^\.]+)/
+			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,25})/
 			if ( msg.guild.id in settings ) {
 				if ( args[0] == 'lang' ) {
 					if ( args[1] ) {
@@ -214,7 +214,10 @@ function edit_settings(lang, msg, key, value) {
 
 function cmd_info(lang, msg, args, line) {
 	if ( args.length ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
-	else msg.channel.send( lang.disclaimer + '\n<@' + process.env.owner + '> <https://help.gamepedia.com/User_talk:MarkusRost?action=edit&preloadtitle=Wiki-Bot&section=new>' );
+	else {
+		msg.channel.send( lang.disclaimer + '\n<@' + process.env.owner + '> <https://help.gamepedia.com/User_talk:MarkusRost?action=edit&preloadtitle=Wiki-Bot&section=new>' );
+		cmd_invite(lang, msg, ['<@' + client.user.id + '>'], line);
+	}
 }
 
 function cmd_help(lang, msg, args, line) {
@@ -302,15 +305,15 @@ function cmd_test(lang, msg, args, line) {
 }
 
 function cmd_invite(lang, msg, args, line) {
-	if ( args.length && args[0].toLowerCase() == '<@' + client.user.id + '>' ) {
-		client.generateInvite(268954689).then( invite => msg.reply( lang.invite.bot + '\n<' + invite + '>' ) );
+	if ( args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
+		client.generateInvite(268954689).then( invite => msg.channel.send( lang.invite.bot + '\n<' + invite + '>' ) );
 	} else {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
 	}
 }
 
 function cmd_stop(lang, msg, args, line) {
-	if ( msg.author.id == process.env.owner && args[0] == '<@' + client.user.id + '>' ) {
+	if ( msg.author.id == process.env.owner && args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
 		msg.reply( 'ich schalte mich nun aus!' );
 		console.log( 'Ich schalte mich nun aus!' );
 		client.destroy();
@@ -320,7 +323,7 @@ function cmd_stop(lang, msg, args, line) {
 }
 
 function cmd_pause(lang, msg, args, line) {
-	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && args[0] == '<@' + client.user.id + '>' ) {
+	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
 		if ( pause[msg.guild.id] ) {
 			msg.reply( 'ich bin wieder wach!' );
 			console.log( 'Ich bin wieder wach!' );
@@ -623,7 +626,7 @@ function cmd_multiline(lang, msg, args, line) {
 }
 
 function cmd_message(lang, msg, args, line) {
-	if ( msg.author.id == process.env.owner && args[1] && args[0] == '<@' + client.user.id + '>' ) {
+	if ( msg.author.id == process.env.owner && args.length && args[1] && args[0] == '<@' + client.user.id + '>' ) {
 		client.guilds.forEach( function(guild) {
 			guild.owner.send( guild.toString() + ':\n' + args.slice(1).join(' ') + '\n~<@' + process.env.owner + '>' );
 		} );
