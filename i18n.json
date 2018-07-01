@@ -377,18 +377,18 @@
 			"usuń": "delete"
 		},
 		"missingperm": "Brakuje mi upawnień!",
-		"disclaimer": "Jestem malym botem, kt󲥧o zadaniem jest linkowanie do r󺮹ch wiki Gamepedii. Zostalem napisany w JavaScript przez *MarkusRost*.\n\n**Nie jestem oficjalny i nie mam zadnego wsparcia lub powiazania z Curse/Gamepedia!**\n\nW przypadku pytan badz problem󷬠skontaktuj sie z MarkusRost przez Discord lub na wiki:",
+		"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki Gamepedii. Zostałem napisany w JavaScript przez *MarkusRost*.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Curse/Gamepedią!**\n\nW przypadku pytań bądź problemów, skontaktuj się z MarkusRost przez Discord lub na wiki:",
 		"settings": {
-			"save_failed": "niestety, ustawienia nie mogly zostac zapisane, spr󢵪 ponownie p󺮩ej.",
+			"save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
 			"current": "aktualne ustawienia dla tego serwera:",
-			"missing": "ten serwer nie zostal jeszcze skonfigurowany. Uzyj %1$s oraz %2$s aby zmienic ustawienia.",
-			"langs": "Aktualnie wspieranymi jezykami sa:",
+			"missing": "ten serwer nie został jeszcze skonfigurowany. Użyj %1$s oraz %2$s aby zmienić ustawienia.",
+			"langs": "Aktualnie wspieranymi językami są:",
 			"wikis": "Link do wiki: `https://<wiki>.gamepedia.com/`",
-			"nolangs": "podany jezyk nie jest wspierany!",
-			"wiki": "domyslna wiki dla tego serwera jest:",
-			"lang": "jezykiem tego serwera jest:",
-			"nowiki": "zadna wiki nie zostala przypisana do tego serwera.",
-			"nolang": "zaden jezyk nie zostal ustawiony dla tego serwera."
+			"nolangs": "podany język nie jest wspierany!",
+			"wiki": "domyślną wiki dla tego serwera jest:",
+			"lang": "językiem tego serwera jest:",
+			"nowiki": "żadna wiki nie została przypisana do tego serwera",
+			"nolang": "żaden język nie został ustawiony dla tego serwera."
 		},
 		"voice": {
 			"text": "nadaję każdemu w kanale głosowym określoną rolę:",
