@@ -24,7 +24,6 @@ For a full list with all administrator commands use `!wiki help admin`
 | Command | Description |
 | --- | --- |
 | `!wiki help admin` | **Wiki-Bot** will list all administrator commands. |
-| `!wiki help admin emoji` | **Wiki-Bot** will list all server emoji that he can use. |
 | `!wiki settings` | **Wiki-Bot** will change the settings for the server. |
 | `!wiki poll <question as free text>` | **Wiki-Bot** will create a poll and react with `:support:` and `:oppose:`. |
 | `!wiki poll <emoji> [<emoji> ...] <question as free text>` | **Wiki-Bot** will create a poll and react with the possible answers. |
