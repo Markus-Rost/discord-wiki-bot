@@ -325,7 +325,7 @@ function cmd_eval(lang, msg, args, line) {
 				text = error.name + ': ' + error.message;
 			}
 		}
-		console.log( text );
+		console.log( text, {split:{maxLength:2000,prepend:'```js\n',append:'```'}} );
 		msg.channel.send( '```js\n' + text + '```' );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
