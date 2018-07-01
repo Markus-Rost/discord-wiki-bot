@@ -318,7 +318,7 @@ function cmd_invite(lang, msg, args, line) {
 function cmd_eval(lang, msg, args, line) {
 	if ( msg.author.id == process.env.owner && args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
 		var text = 'Bitte gebe einen Befehl an!';
-		if ( args[1] ) {
+		if ( args[1] != undefined ) {
 			try {
 				text = eval( args.slice(1).join(' ') );
 			} catch ( error ) {
