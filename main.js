@@ -27,7 +27,7 @@ function getSettings(callback) {
 			console.log( 'Fehler beim Erhalten der Einstellungen' + ( error ? ': ' + error.message : '.' ) );
 		}
 		else {
-			console.log( 'Einstellungen erfolgreich ausgelesen' );
+			console.log( 'Einstellungen erfolgreich ausgelesen.' );
 			settings = body;
 		}
 		callback();
@@ -60,14 +60,16 @@ var cmdmap = {
 	message: cmd_multiline,
 	voice: cmd_voice,
 	settings: cmd_settings,
-	info: cmd_info
+	info: cmd_info,
+	eval: cmd_multiline
 }
 
 var multilinecmdmap = {
 	say: cmd_say,
 	delete: cmd_delete,
 	poll: cmd_umfrage,
-	message: cmd_message
+	message: cmd_message,
+	eval: cmd_eval
 }
 
 var pausecmdmap = {
@@ -77,7 +79,8 @@ var pausecmdmap = {
 	server: cmd_serverlist,
 	say: cmd_multiline,
 	delete: cmd_multiline,
-	message: cmd_multiline
+	message: cmd_multiline,
+	eval: cmd_multiline
 }
 
 function cmd_settings(lang, msg, args, line) {
@@ -308,6 +311,23 @@ function cmd_invite(lang, msg, args, line) {
 	if ( args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
 		client.generateInvite(268954689).then( invite => msg.channel.send( lang.invite.bot + '\n<' + invite + '>' ) );
 	} else {
+		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+	}
+}
+
+function cmd_eval(lang, msg, args, line) {
+	if ( msg.author.id == process.env.owner && args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
+		var text = 'Bitte gebe einen Befehl an!';
+		if ( args[1] ) {
+			try {
+				text = eval( args.slice(1).join(' ') );
+			} catch ( error ) {
+				text = error.name + ': ' + error.message;
+			}
+		}
+		console.log( text );
+		msg.channel.send( '```js\n' + text + '```' );
+	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
 	}
 }
