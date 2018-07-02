@@ -93,7 +93,7 @@ function cmd_settings(lang, msg, args, line) {
 			var langs = '\n' + lang.settings.langs + ' `' + Object.keys(i18n) + '`';
 			var wikis = '\n' + lang.settings.wikis;
 			var nolangs = lang.settings.nolangs + langs;
-			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,25})/
+			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})/
 			if ( msg.guild.id in settings ) {
 				if ( args[0] == 'lang' ) {
 					if ( args[1] ) {
@@ -134,8 +134,8 @@ function edit_settings(lang, msg, key, value) {
 			uri: url + '?action=query&format=json&meta=tokens&type=login',
 			json: true
 		}, function( error, response, body ) {
-			if ( error || !response || !body || body.error ) {
-				console.log( 'Fehler beim Erhalten des Anmeldetoken' + ( error ? ': ' + error.message : ( body ? ': ' + body.error.info : '.' ) ) );
+			if ( error || !response || !body || body.error || !body.query ) {
+				console.log( 'Fehler beim Erhalten des Anmeldetoken' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 				msg.reply( lang.settings.save_failed );
 			}
 			else {
@@ -150,8 +150,8 @@ function edit_settings(lang, msg, key, value) {
 					},
 					json: true
 				}, function( lerror, lresponse, lbody ) {
-					if ( lerror || !lresponse || !lbody || lbody.error ) {
-						console.log( 'Fehler beim Anmelden' + ( lerror ? ': ' + lerror.message : ( lbody ? ': ' + lbody.error.info : '.' ) ) );
+					if ( lerror || !lresponse || !lbody || lbody.error || !body.query ) {
+						console.log( 'Fehler beim Anmelden' + ( lerror ? ': ' + lerror.message : ( lbody ? ( lbody.error ? ': ' + lbody.error.info : '.' ) : '.' ) ) );
 						msg.reply( lang.settings.save_failed );
 					}
 					else {
@@ -165,8 +165,8 @@ function edit_settings(lang, msg, key, value) {
 							},
 							json: true
 						}, function( perror, presponse, pbody ) {
-							if ( perror || !presponse || !pbody || pbody.error ) {
-								console.log( 'Fehler beim Erhalten des Bearbeitungstoken' + ( perror ? ': ' + perror.message : ( pbody ? ': ' + pbody.error.info : '.' ) ) );
+							if ( perror || !presponse || !pbody || pbody.error || !body.query ) {
+								console.log( 'Fehler beim Erhalten des Bearbeitungstoken' + ( perror ? ': ' + perror.message : ( pbody ? ( pbody.error ? ': ' + pbody.error.info : '.' ) : '.' ) ) );
 								msg.reply( lang.settings.save_failed );
 							}
 							else if ( settings == defaultSettings ) {
@@ -193,8 +193,8 @@ function edit_settings(lang, msg, key, value) {
 									},
 									json: true
 								}, function( eerror, eresponse, ebody ) {
-									if ( eerror || !eresponse || !ebody || ebody.error ) {
-										console.log( 'Fehler beim Bearbeiten' + ( eerror ? ': ' + eerror.message : ( ebody ? ': ' + ebody.error.info : '.' ) ) );
+									if ( eerror || !eresponse || !ebody || ebody.error || !body.query ) {
+										console.log( 'Fehler beim Bearbeiten' + ( eerror ? ': ' + eerror.message : ( ebody ? ( ebody.error ? ': ' + ebody.error.info : '.' ) : '.' ) ) );
 										msg.reply( lang.settings.save_failed );
 									}
 									else {
