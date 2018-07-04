@@ -1,5 +1,5 @@
 # Wiki-Bot
-**Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link to [Gamepedia wikis](https://gamepedia.com/).<br>**Wiki-Bot** can resolve redirects and follow interwiki links.
+**Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link to [Gamepedia wikis](https://gamepedia.com/).<br>He can resolve redirects and follow interwiki links.
 
 **Wiki-Bot is not affiliated with Curse/Gamepedia and is an unofficial tool!**
 
