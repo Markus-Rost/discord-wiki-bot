@@ -365,9 +365,10 @@ function cmd_delete(lang, msg, args, line) {
 				msg.reply( lang.delete.big.replace( '%s', '`99`' ) );
 			}
 			else {
-				msg.channel.bulkDelete(parseInt(args[0], 10) + 1, true);
-				msg.reply( lang.delete.success.replace( '%s', args[0] ) ).then( antwort => antwort.delete(3000) );
-				console.log( 'Die letzten ' + args[0] + ' Nachrichten in #' + msg.channel.name + ' wurden gelöscht!' );
+				msg.channel.bulkDelete(parseInt(args[0], 10) + 1, true).then( messages => {
+					msg.reply( lang.delete.success.replace( '%s', messages.size - 1 ) ).then( antwort => antwort.delete(3000) );
+					console.log( 'Die letzten ' + ( messages.size - 1 ) + ' Nachrichten in #' + msg.channel.name + ' wurden gelöscht!' );
+				} );
 			}
 		}
 		else {
