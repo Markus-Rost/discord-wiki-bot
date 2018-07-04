@@ -218,7 +218,7 @@ function edit_settings(lang, msg, key, value) {
 function cmd_info(lang, msg, args, line) {
 	if ( args.length ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
 	else {
-		msg.channel.send( lang.disclaimer + '\n<@' + process.env.owner + '> <https://help.gamepedia.com/User_talk:MarkusRost?action=edit&preloadtitle=Wiki-Bot&section=new>' );
+		msg.channel.send( lang.disclaimer + '\nhttps://discord.gg/v77RTk5' );
 		cmd_invite(lang, msg, ['<@' + client.user.id + '>'], line);
 	}
 }
