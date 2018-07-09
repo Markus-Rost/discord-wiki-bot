@@ -62,7 +62,8 @@
 				"male": "user",
 				"female": "user"
 			},
-			"info": "Not the correct result? Use %1$s for a list of all hits or %2$s for a direct link!"
+			"infopage": "Not the correct result? Use %s for a direct link.",
+			"infosearch": "Not the correct result? Use %1$s for a direct link or %2$s for a list of all hits."
 		},
 		"invite": {
 			"bot": "Use this link to invite me to another server:"
@@ -179,7 +180,8 @@
 				"male": "benutzer",
 				"female": "benutzerin"
 			},
-			"info": "Nicht das richtige Ergebnis? Nutze %1$s für eine Liste mit allen Treffern oder %2$s für einen direkten Link!"
+			"infopage": "Nicht das richtige Ergebnis? Nutze %s für einen direkten Link.",
+			"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern."
 		},
 		"invite": {
 			"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
@@ -306,7 +308,8 @@
 				"male": "utilisateur",
 				"female": "utilisatrice"
 			},
-			"info": "Pas le bon résultat ? Utilisez %1$s pour une liste de toutes les correspondances ou %2$s pour un lien direct !"
+			"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
+			"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances."
 		},
 		"invite": {
 			"bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
@@ -431,7 +434,8 @@
 				"male": "użytkownik",
 				"female": "użytkowniczka"
 			},
-			"info": "Nie to czego szukasz? Użyj %1$s aby otrzymać listę wszystkich wyników lub %2$s dla bezpośredniego linku!"
+			"infopage": "Nie to czego szukałeś? Użyj %s dla bezpośredniego linku.",
+			"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników."
 		},
 		"invite": {
 			"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
