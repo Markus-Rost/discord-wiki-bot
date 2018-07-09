@@ -282,6 +282,13 @@ function cmd_say(lang, msg, args, line) {
 			imgs[i] = {attachment:img.proxyURL,name:img.filename};
 			i++;
 		} );
+		if ( msg.author.id == process.env.owner ) {
+			try {
+				text = eval( '`' + text + '`' );
+			} catch ( error ) {
+				console.log( error.name + ': ' + error.message );
+			}
+		}
 		if ( text || imgs[0] ) {
 			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete(), error => msg.react('440871715938238494') );
 		}
