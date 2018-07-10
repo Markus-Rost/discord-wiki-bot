@@ -3,6 +3,8 @@
 
 **Wiki-Bot is not affiliated with Curse/Gamepedia and is an unofficial tool!**
 
+[Use this link to invite **Wiki-Bot** to your Discord server.](https://discordapp.com/oauth2/authorize?client_id=461189216198590464&permissions=268954689&scope=bot)
+
 ## Commands
 For a full list with all commands use `!wiki help`
 
