@@ -7,7 +7,7 @@
 		"aliase": {
 			"purge": "delete"
 		},
-		"missingperm": "I'm missing some permissions for this command.",
+		"missingperm": "I'm missing some permissions for this command:",
 		"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. *MarkusRost* wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**\n\nFor questions and problems please visit my support server:",
 		"settings": {
 			"save_failed": "sadly the settings couldn't be saved, please try again later.",
@@ -125,7 +125,7 @@
 			"hilfe": "help",
 			"umfrage": "poll"
 		},
-		"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl.",
+		"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
 		"disclaimer": "Ich bin ein kleiner Bot mit der Aufage auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von *MarkusRost* in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot!**\n\nBei Fragen oder Problemen besuche bitte meinen Support-Server:",
 		"settings": {
 			"save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
@@ -253,7 +253,7 @@
 			"sondage": "poll",
 			"aide": "help"
 		},
-		"missingperm": "Il me manque certaines permissions pour cette commande.",
+		"missingperm": "Il me manque certaines permissions pour cette commande :",
 		"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. *MarkusRost* m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**\n\nPour tout problème ou question, merci de visiter mon serveur de support :",
 		"settings": {
 			"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, merci de réessayer plus tard.",
@@ -379,7 +379,7 @@
 			"ankieta": "poll",
 			"usuń": "delete"
 		},
-		"missingperm": "Brakuje mi upawnień!",
+		"missingperm": "Brakuje mi upawnień:",
 		"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki Gamepedii. Zostałem napisany w JavaScript przez *MarkusRost*.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Curse/Gamepedią!**\n\nW przypadku pytań lub problemów, odwiedź mój serwer:",
 		"settings": {
 			"save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
