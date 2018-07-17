@@ -16,7 +16,7 @@ var defaultSettings = {
 		"wiki": "help"
 	}
 }
-var settings = defaultSettings;
+var settings = Object.assign({}, defaultSettings);
 
 function getSettings(callback) {
 	request( {
@@ -28,7 +28,7 @@ function getSettings(callback) {
 		}
 		else {
 			console.log( 'Einstellungen erfolgreich ausgelesen.' );
-			settings = body;
+			settings = Object.assign(settings, body);
 		}
 		callback();
 	} );
@@ -171,8 +171,8 @@ function edit_settings(lang, msg, key, value) {
 								msg.reply( lang.settings.save_failed );
 							}
 							else {
-								var temp_settings = settings;
-								if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = defaultSettings['default'];
+								var temp_settings = Object.assign({}, settings);
+								if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
 								temp_settings[msg.guild.id][key] = value;
 								Object.keys(temp_settings).forEach( function(guild) {
 									if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
@@ -195,9 +195,9 @@ function edit_settings(lang, msg, key, value) {
 										msg.reply( lang.settings.save_failed );
 									}
 									else {
-										settings = temp_settings;
+										settings = Object.assign(settings, temp_settings);
 										if ( key == 'lang' ) lang = i18n[value];
-										cmd_settings(lang, msg, [key], '')
+										cmd_settings(lang, msg, [key], '');
 										console.log( 'Einstellungen erfolgreich aktualisiert.' );
 									}
 								} );
@@ -687,8 +687,8 @@ client.on('message', msg => {
 	var channel = msg.channel;
 	if ( cont.toLowerCase().indexOf( process.env.prefix ) != -1 && !msg.webhookID && author.id != client.user.id && ( channel.type != 'text' || channel.permissionsFor(client.user).has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) ) {
 		if ( settings == defaultSettings ) getSettings(setStatus);
-		var setting = settings['default'];
-		if ( channel.type == 'text' && msg.guild.id in settings ) setting = settings[msg.guild.id];
+		var setting = Object.assign({}, settings['default']);
+		if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign(setting, settings[msg.guild.id]);
 		var lang = i18n[setting.lang];
 		lang.link = setting.wiki;
 		var invoke = cont.split(' ')[1].toLowerCase();
@@ -725,8 +725,8 @@ client.on('message', msg => {
 client.on('voiceStateUpdate', (oldm, newm) => {
 	if ( settings == defaultSettings ) getSettings(setStatus);
 	if ( oldm.guild.me.permissions.has('MANAGE_ROLES') && oldm.voiceChannelID != newm.voiceChannelID ) {
-		var setting = settings['default'];
-		if ( oldm.guild.id in settings ) setting = settings[oldm.guild.id];
+		var setting = Object.assign({}, settings['default']);
+		if ( oldm.guild.id in settings ) setting = Object.assign(setting, settings[oldm.guild.id]);
 		var lang = i18n[setting.lang];
 		lang.link = setting.wiki;
 		if ( oldm.voiceChannel ) {
