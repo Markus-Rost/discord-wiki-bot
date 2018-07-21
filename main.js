@@ -312,10 +312,10 @@ function cmd_test(lang, msg, args, line) {
 }
 
 function cmd_invite(lang, msg, args, line) {
-	if ( args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
-		client.generateInvite(268954689).then( invite => msg.channel.send( lang.invite.bot + '\n<' + invite + '>' ) );
-	} else {
+	if ( args.length ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+	} else {
+		client.generateInvite(268954689).then( invite => msg.channel.send( lang.invite.bot + '\n<' + invite + '>' ) );
 	}
 }
 
