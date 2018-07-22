@@ -216,7 +216,7 @@ function cmd_info(lang, msg, args, line) {
 	if ( args.length ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
 	else {
 		msg.channel.send( lang.disclaimer + '\nhttps://discord.gg/v77RTk5' );
-		cmd_invite(lang, msg, ['<@' + client.user.id + '>'], line);
+		cmd_invite(lang, msg, args, line);
 	}
 }
 
