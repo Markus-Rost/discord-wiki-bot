@@ -606,17 +606,20 @@ function cmd_user(lang, msg, username, wiki, title) {
 								break;
 							}
 						}
-						var blockid = body.query.users[0].blockid;
+						var isBlocked = false;
 						var blockedtimestamp = (new Date(body.query.users[0].blockedtimestamp)).toLocaleString(lang.user.dateformat, options);
 						var blockexpiry = body.query.users[0].blockexpiry;
 						if ( blockexpiry == 'infinity' ) {
 							blockexpiry = lang.user.until_infinity;
+							isBlocked = true;
 						} else if ( blockexpiry ) {
-							blockexpiry = (new Date(blockexpiry.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z'))).toLocaleString(lang.user.dateformat, options);
+							var blockexpirydate = blockexpiry.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z');
+							blockexpiry = (new Date(blockexpirydate)).toLocaleString(lang.user.dateformat, options);
+							if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 						}
 						var blockedby = body.query.users[0].blockedby;
 						var blockreason = body.query.users[0].blockreason;
-						msg.channel.send( '<https://' + wiki + '.gamepedia.com/UserProfile:' + username + '>\n\n' + lang.user.info.replace( '%1$s', gender ).replace( '%2$s', registration ).replace( '%3$s', editcount ).replace( '%4$s', group ) + ( blockid ? '\n\n' + lang.user.blocked.replace( '%1$s', blockedtimestamp ).replace( '%2$s', blockexpiry ).replace( '%3$s', blockedby ).replace( '%4$s', blockreason ) : '' ) );
+						msg.channel.send( '<https://' + wiki + '.gamepedia.com/UserProfile:' + username + '>\n\n' + lang.user.info.replace( '%1$s', gender ).replace( '%2$s', registration ).replace( '%3$s', editcount ).replace( '%4$s', group ) + ( isBlocked ? '\n\n' + lang.user.blocked.replace( '%1$s', blockedtimestamp ).replace( '%2$s', blockexpiry ).replace( '%3$s', blockedby ).replace( '%4$s', blockreason ) : '' ) );
 					}
 				}
 				
