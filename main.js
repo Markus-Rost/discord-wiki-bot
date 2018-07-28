@@ -16,7 +16,7 @@ var defaultSettings = {
 		"wiki": "help"
 	}
 }
-var settings = Object.assign({}, defaultSettings);
+var settings = defaultSettings;
 
 function getSettings(callback) {
 	request( {
@@ -660,7 +660,7 @@ function cmd_voice(lang, msg, args, line) {
 }
 
 function admin(msg) {
-	if ( msg.channel.type == 'text' && ( msg.member.permissions.has('MANAGE_GUILD') || msg.author.id == process.env.owner ) ) return true;
+	if ( msg.channel.type == 'text' && ( ( msg.member && msg.member.permissions.has('MANAGE_GUILD') ) || msg.author.id == process.env.owner ) ) return true;
 	else return false;
 }
 
