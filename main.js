@@ -423,16 +423,16 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 										msg.react('🤷');
 									}
 									else if ( srbody.query.searchinfo.totalhits == 1 ) {
-										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + encodeURI( srbody.query.search[0].title.replace( / /g, '_' ) ) + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ) );
+										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.replace( / /g, '_' ) + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ) );
 									}
 									else {
-										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + encodeURI( srbody.query.search[0].title.replace( / /g, '_' ) ) + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + '`' ) );
+										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.replace( / /g, '_' ) + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + '`' ) );
 									}
 								}
 							} );
 						}
 						else {
-							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + encodeURI( ( Object.values(body.query.pages)[0].title + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment : '' ) ).replace( / /g, '_' ) ) );
+							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + ( Object.values(body.query.pages)[0].title + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + encodeURI( body.query.redirects[0].tofragment ) : '' ) ).replace( / /g, '_' ) );
 						}
 					}
 					else if ( body.query.interwiki ) {
@@ -447,7 +447,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 									var link = regex.exec(entry[i].url)[1];
 									cmd_link(lang, msg, iwtitle, link, '!' + link + ' ');
 								}
-								else msg.channel.send( entry[i].url.replace( '$1', encodeURI( intertitle.replace( / /g, '_' ) ) ) );
+								else msg.channel.send( entry[i].url.replace( '$1', intertitle.replace( / /g, '_' ) ) );
 								break;
 							}
 						}
