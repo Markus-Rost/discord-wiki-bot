@@ -216,7 +216,7 @@ function cmd_info(lang, msg, args, line) {
 	if ( args.length ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
 	else {
 		var owner = '*MarkusRost*';
-		if ( msg.channel.type == 'text' && msg.guild.members.has(process.env.owner) ) owner = '<@' + msg.guild.members.has(process.env.owner) + '>';
+		if ( msg.channel.type == 'text' && msg.guild.members.has(process.env.owner) ) owner = '<@' + process.env.owner + '>';
 		msg.channel.send( lang.disclaimer.replace( '%s', owner ) + '\nhttps://discord.gg/v77RTk5' );
 		cmd_invite(lang, msg, args, line);
 	}
