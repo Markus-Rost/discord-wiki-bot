@@ -8,7 +8,7 @@
 			"purge": "delete"
 		},
 		"missingperm": "I'm missing some permissions for this command:",
-		"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. *MarkusRost* wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**\n\nFor questions and problems please visit my support server:",
+		"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. %s wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**\n\nFor questions and problems please visit my support server:",
 		"settings": {
 			"save_failed": "sadly the settings couldn't be saved, please try again later.",
 			"current": "this are the current settings for this server:",
@@ -54,6 +54,13 @@
 			"info": "Gender: %1$s\nRegistration date: %2$s\nEdit count: %3$s\nGroup: %4$s",
 			"blocked": "**This user is currently blocked!**\nBlocked on %1$s until %2$s by %3$s with reason \"%4$s\".",
 			"until_infinity": "the end of all days"
+		},
+		"diff": {
+			"badrev": "at least one revision doesn't exist!",
+			"nocomment": "*No description provided*",
+			"notags": "*none*",
+			"hidden": "*hidden*",
+			"info": "Editor: %1$s\nEdit date: %2$s\nDifference: %3$s Bytes\nComment: %4$s\nTags: %5$s"
 		},
 		"search": {
 			"page": "page",
@@ -101,7 +108,6 @@
 				{ "cmd": "search <search term>", "desc": "I will answer with a link to the search page for the article in the Wiki." },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "I will answer with a link to the diff in the Wiki." },
 				{ "cmd": "diff <page name>", "desc": "I will answer with a link to the last diff on the article in the Wiki.", "hide": true },
-				{ "cmd": "diff <page name> <diff> [<oldid>]", "desc": "I will answer with a link to the diff on the article in the Wiki.", "hide": true },
 				{ "cmd": "info", "desc": "I will introduce myself." },
 				{ "cmd": "help", "desc": "I will list all the commands that I understand." },
 				{ "cmd": "help <bot command>", "desc": "Wonder how a command works? Let me explain it to you!" },
@@ -127,7 +133,7 @@
 			"umfrage": "poll"
 		},
 		"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
-		"disclaimer": "Ich bin ein kleiner Bot mit der Aufage auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von *MarkusRost* in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot!**\n\nBei Fragen oder Problemen besuche bitte meinen Support-Server:",
+		"disclaimer": "Ich bin ein kleiner Bot mit der Aufage auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von %s in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot!**\n\nBei Fragen oder Problemen besuche bitte meinen Support-Server:",
 		"settings": {
 			"save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
 			"current": "dies sind die aktuellen Einstellungen für diesen Server:",
@@ -173,6 +179,13 @@
 			"info": "Geschlecht: %1$s\nRegistiert: %2$s\nBearbeitungen: %3$s\nGruppe: %4$s",
 			"blocked": "**Dieser Benutzer ist derzeit gesperrt!**\nGesperrt am %1$s bis zum %2$s von %3$s mit der Begründung \"%4$s\".",
 			"until_infinity": "Ende aller Tage"
+		},
+		"diff": {
+			"badrev": "mindestens eine Version existiert nicht!",
+			"nocomment": "*Keine Zusammenfassung angegeben*",
+			"notags": "*keine*",
+			"hidden": "*versteckt*",
+			"info": "Autor: %1$s\nZeitpunkt: %2$s\nUnterschied: %3$s Bytes\nZusammenfassung: %4$s\nMarkierungen: %5$s"
 		},
 		"search": {
 			"page": "seite",
@@ -225,7 +238,6 @@
 				{ "cmd": "search <Suchbegriff>", "desc": "Ich antworte mit einem Link auf die Suchseite zu diesem Begriff im Wiki.", "hide": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Ich verlinke auf die Änderung im Wiki." },
 				{ "cmd": "diff <Seitenname>", "desc": "Ich verlinke auf die letzte Änderung an der Seite im Wiki.", "hide": true },
-				{ "cmd": "diff <Seitenname> <diff> [<oldid>]", "desc": "Ich verlinke auf die Änderung an der Seite im Wiki.", "hide": true },
 				{ "cmd": "info", "desc": "Ich erzähle etwas über mich." },
 				{ "cmd": "hilfe", "desc": "Ich liste alle Befehle auf." },
 				{ "cmd": "hilfe <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert." },
@@ -256,7 +268,7 @@
 			"aide": "help"
 		},
 		"missingperm": "Il me manque certaines permissions pour cette commande :",
-		"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. *MarkusRost* m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**\n\nPour tout problème ou question, merci de visiter mon serveur de support :",
+		"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. %s m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**\n\nPour tout problème ou question, merci de visiter mon serveur de support :",
 		"settings": {
 			"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, merci de réessayer plus tard.",
 			"current": "voici les paramètres actuels pour ce serveur :",
@@ -302,6 +314,13 @@
 			"info": "Genre : %1$s\nDate d'inscription : %2$s\nNombre d'éditions : %3$s\nGroupe : %4$s",
 			"blocked": "**Cet utilisateur est actuellement bloqué !**\nBloqué le %1$s jusqu'au %2$s par %3$s avec la raison \"%4$s\".",
 			"until_infinity": "moment de la fin des jours"
+		},
+		"diff": {
+			"badrev": "au moins une des révisions n'existe pas !",
+			"nocomment": "*Aucune description*",
+			"notags": "*aucun*",
+			"hidden": "*masqué*",
+			"info": "Éditeur : %1$s\nDate : %2$s\nDifférence : %3$s octets\nCommentaire : %4$s\nBalises :  %5$s"
 		},
 		"search": {
 			"page": "page",
@@ -351,7 +370,6 @@
 				{ "cmd": "search <terme de recherche>", "desc": "Je vais répondre avec un lien vers la page de recherche de l'article sur Wiki.", "hide": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Je vais répondre avec un lien vers la diff sur Wiki." },
 				{ "cmd": "diff <nom de la page>", "desc": "Je vais répondre avec un lien vers la dernière diff de l'article sur Wiki.", "hide": true },
-				{ "cmd": "diff <nom de la page> <diff> [<oldid>]", "desc": "Je vais répondre avec un lien vers la diff de l'article sur Wiki.", "hide": true },
 				{ "cmd": "info", "desc": "Je vais me présenter." },
 				{ "cmd": "aide", "desc": "Je vais lister toutes les commandes que je comprends." },
 				{ "cmd": "aide <commande de robot>", "desc": "Tu te demandes comment une commande fonctionne ? Laisse-moi te l'expliquer !" },
@@ -383,7 +401,7 @@
 			"usuń": "delete"
 		},
 		"missingperm": "Brakuje mi upawnień:",
-		"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki Gamepedii. Zostałem napisany w JavaScript przez *MarkusRost*.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Curse/Gamepedią!**\n\nW przypadku pytań lub problemów, odwiedź mój serwer:",
+		"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki Gamepedii. Zostałem napisany w JavaScript przez %s.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Curse/Gamepedią!**\n\nW przypadku pytań lub problemów, odwiedź mój serwer:",
 		"settings": {
 			"save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
 			"current": "aktualne ustawienia dla tego serwera:",
@@ -429,6 +447,13 @@
 			"info": "Płeć: %1$s\nData rejestracji: %2$s\nIlość edycji: %3$s\nGrupa: %4$s",
 			"blocked": "**Ten użytkownik jest obecnie zablokowany!**\nZablokowany %1$s do %2$s przez %3$s z powodu \"%4$s\".",
 			"until_infinity": "do końca wszechświata"
+		},
+		"diff": {
+			"badrev": "przynajmniej jedna zmiana nie istnieje!",
+			"nocomment": "*Nie podano opisu zmiany*",
+			"notags": "*brak*",
+			"hidden": "*ukryte*",
+			"info": "Autor: %1$s\nData edycji: %2$s\nWielkość zmiany: %3$s bajtów\nKomentarz: %4$s\nTagi: %5$s"
 		},
 		"search": {
 			"page": "strona",
