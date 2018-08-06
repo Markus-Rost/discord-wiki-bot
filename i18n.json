@@ -318,7 +318,7 @@
 		"diff": {
 			"badrev": "au moins une des révisions n'existe pas !",
 			"nocomment": "*Aucune description*",
-			"notags": "*aucun*",
+			"notags": "*aucune*",
 			"hidden": "*masqué*",
 			"info": "Éditeur : %1$s\nDate : %2$s\nDifférence : %3$s octets\nCommentaire : %4$s\nBalises :  %5$s"
 		},
