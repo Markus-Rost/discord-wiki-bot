@@ -217,16 +217,22 @@ function cmd_info(lang, msg, args, line) {
 	else {
 		var owner = '*MarkusRost*';
 		if ( msg.channel.type == 'text' && msg.guild.members.has(process.env.owner) ) owner = '<@' + process.env.owner + '>';
-		msg.channel.send( lang.disclaimer.replace( '%s', owner ) + '\nhttps://discord.gg/v77RTk5' );
+		msg.channel.send( lang.disclaimer.replace( '%s', owner ) );
+		cmd_helpserver(lang, msg);
 		cmd_invite(lang, msg, args, line);
 	}
+}
+
+function cmd_helpserver(lang, msg) {
+	msg.channel.send( lang.helpserver + '\nhttps://discord.gg/v77RTk5' );
 }
 
 function cmd_help(lang, msg, args, line) {
 	if ( admin(msg) && !( msg.guild.id in settings ) ) cmd_settings(lang, msg, [], line);
 	var cmds = lang.help.list;
 	if ( args.length ) {
-		if ( args[0].toLowerCase() == 'admin' && ( msg.channel.type != 'text' || admin(msg) ) ) {
+		if ( mention(args[0]) ) cmd_helpserver(lang, msg);
+		else if ( args[0].toLowerCase() == 'admin' && ( msg.channel.type != 'text' || admin(msg) ) ) {
 			if ( args[1] && args[1].toLowerCase() == 'emoji' ) {
 				var cmdlist = lang.help.emoji + '\n';
 				var i = 0;
@@ -336,7 +342,7 @@ function cmd_eval(lang, msg, args, line) {
 }
 
 function cmd_stop(lang, msg, args, line) {
-	if ( msg.author.id == process.env.owner && args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
+	if ( msg.author.id == process.env.owner && args.length && mention(args[0]) ) {
 		msg.reply( 'ich schalte mich nun aus!' );
 		console.log( 'Ich schalte mich nun aus!' );
 		client.destroy();
@@ -346,7 +352,7 @@ function cmd_stop(lang, msg, args, line) {
 }
 
 function cmd_pause(lang, msg, args, line) {
-	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && args.length && args[0].replace( '!', '' ) == '<@' + client.user.id + '>' ) {
+	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && args.length && mention(args[0]) ) {
 		if ( pause[msg.guild.id] ) {
 			msg.reply( 'ich bin wieder wach!' );
 			console.log( 'Ich bin wieder wach!' );
@@ -773,6 +779,11 @@ function cmd_voice(lang, msg, args, line) {
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
 	}
+}
+
+function mention(arg) {
+	if ( arg == '<@' + client.user.id + '>' || arg == '<@!' + client.user.id + '>' ) return true;
+	else return false;
 }
 
 function admin(msg) {
