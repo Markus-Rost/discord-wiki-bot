@@ -20,11 +20,11 @@ var settings = defaultSettings;
 
 function getSettings(callback) {
 	request( {
-		uri: process.env.site + process.env.page + '?action=raw&ctype=javascript',
+		uri: process.env.read + process.env.file + process.env.access,
 		json: true
 	}, function( error, response, body ) {
-		if ( error || !response || !body ) {
-			console.log( 'Fehler beim Erhalten der Einstellungen' + ( error ? ': ' + error.message : '.' ) );
+		if ( error || !response || !body || body.error ) {
+			console.log( 'Fehler beim Erhalten der Einstellungen' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error : '.' ) : '.' ) ) );
 		}
 		else {
 			console.log( 'Einstellungen erfolgreich ausgelesen.' );
@@ -42,7 +42,7 @@ function setStatus() {
 client.on('ready', () => {
 	getSettings(setStatus);
 	console.log( 'Erfolgreich als ' + client.user.username + ' angemeldet!' );
-	client.user.setActivity( process.env.prefix + 'help' );
+	client.user.setActivity( process.env.prefix + ' help' );
 } );
 
 
@@ -82,8 +82,8 @@ var pausecmdmap = {
 
 function cmd_settings(lang, msg, args, line) {
 	if ( admin(msg) ) {
-		if ( msg.guild.id in settings ) var text = lang.settings.current + '\n`' + process.env.prefix + 'settings lang` – ' + settings[msg.guild.id].lang + '\n`' + process.env.prefix + 'settings wiki` – ' + settings[msg.guild.id].wiki;
-		else var text = lang.settings.missing.replace( '%1$s', '`' + process.env.prefix + 'settings lang`' ).replace( '%2$s', '`' + process.env.prefix + 'settings wiki`' );
+		if ( msg.guild.id in settings ) var text = lang.settings.current + '\n`' + process.env.prefix + ' settings lang` – ' + settings[msg.guild.id].lang + '\n`' + process.env.prefix + ' settings wiki` – ' + settings[msg.guild.id].wiki;
+		else var text = lang.settings.missing.replace( '%1$s', '`' + process.env.prefix + ' settings lang`' ).replace( '%2$s', '`' + process.env.prefix + ' settings wiki`' );
 		if ( args.length ) {
 			if ( args[0] ) args[0] = args[0].toLowerCase();
 			if ( args[1] ) args[1] = args[1].toLowerCase();
@@ -126,94 +126,52 @@ function edit_settings(lang, msg, key, value) {
 	var hourglass;
 	msg.react('⏳').then( function( reaction ) {
 		hourglass = reaction;
-		var url = process.env.site + 'api.php';
-		request.get( {
-			uri: url + '?action=query&format=json&meta=tokens&type=login',
-			json: true
-		}, function( error, response, body ) {
-			if ( error || !response || !body || body.error || !body.query ) {
-				console.log( 'Fehler beim Erhalten des Anmeldetoken' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-				msg.reply( lang.settings.save_failed );
-			}
-			else {
-				request.post( {
-					uri: url,
-					form: {
-						action: 'login',
-						format: 'json',
-						lgname: process.env.username,
-						lgpassword: process.env.password,
-						lgtoken: body.query.tokens.logintoken
-					},
-					json: true
-				}, function( lerror, lresponse, lbody ) {
-					if ( lerror || !lresponse || !lbody || lbody.error || !body.query ) {
-						console.log( 'Fehler beim Anmelden' + ( lerror ? ': ' + lerror.message : ( lbody ? ( lbody.error ? ': ' + lbody.error.info : '.' ) : '.' ) ) );
-						msg.reply( lang.settings.save_failed );
-					}
-					else {
-						request.post( {
-							uri: url,
-							form: {
-								action: 'query',
-								format: 'json',
-								meta: 'tokens',
-								type: 'csrf'
-							},
-							json: true
-						}, function( perror, presponse, pbody ) {
-							if ( perror || !presponse || !pbody || pbody.error || !body.query ) {
-								console.log( 'Fehler beim Erhalten des Bearbeitungstoken' + ( perror ? ': ' + perror.message : ( pbody ? ( pbody.error ? ': ' + pbody.error.info : '.' ) : '.' ) ) );
-								msg.reply( lang.settings.save_failed );
-							}
-							else if ( settings == defaultSettings ) {
-								console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
-								msg.reply( lang.settings.save_failed );
-							}
-							else {
-								var temp_settings = Object.assign({}, settings);
-								if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
-								temp_settings[msg.guild.id][key] = value;
-								Object.keys(temp_settings).forEach( function(guild) {
-									if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
-								} );
-								request.post( {
-									uri: url,
-									form: {
-										action: 'edit',
-										format: 'json',
-										title: process.env.page,
-										text: JSON.stringify( temp_settings, null, '\t' ),
-										summary: 'Einstellungen aktualisiert.',
-										bot: true,
-										token: pbody.query.tokens.csrftoken
-									},
-									json: true
-								}, function( eerror, eresponse, ebody ) {
-									if ( eerror || !eresponse || !ebody || ebody.error || !body.query ) {
-										console.log( 'Fehler beim Bearbeiten' + ( eerror ? ': ' + eerror.message : ( ebody ? ( ebody.error ? ': ' + ebody.error.info : '.' ) : '.' ) ) );
-										msg.reply( lang.settings.save_failed );
-									}
-									else {
-										settings = Object.assign({}, temp_settings);
-										if ( key == 'lang' ) lang = i18n[value];
-										cmd_settings(lang, msg, [key], '');
-										console.log( 'Einstellungen erfolgreich aktualisiert.' );
-									}
-								} );
-							}
-						} );
-					}
-				} );
-			}
-			
+		if ( settings == defaultSettings ) {
+			console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
+			msg.reply( lang.settings.save_failed );
 			if ( hourglass != undefined ) hourglass.remove();
-		} );
+		}
+		else {
+			var temp_settings = Object.assign({}, settings);
+			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
+			temp_settings[msg.guild.id][key] = value;
+			Object.keys(temp_settings).forEach( function(guild) {
+				if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
+			} );
+			request.post( {
+				uri: process.env.save + process.env.access,
+				body: {
+					branch: 'master',
+					commit_message: 'Einstellungen aktualisiert.',
+					actions: [
+						{
+							action: 'update',
+							file_path: process.env.file,
+							content: JSON.stringify( temp_settings, null, '\t' )
+						}
+					]
+				},
+				json: true
+			}, function( error, response, body ) {
+				if ( error || !response || response.statusCode != 201 || !body || body.error ) {
+					console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+					msg.reply( lang.settings.save_failed );
+				}
+				else {
+					settings = Object.assign({}, temp_settings);
+					if ( key == 'lang' ) lang = i18n[value];
+					cmd_settings(lang, msg, [key], '');
+					console.log( 'Einstellungen erfolgreich aktualisiert.' );
+				}
+				
+				if ( hourglass != undefined ) hourglass.remove();
+			} );
+		}
 	} );
 }
 
 function cmd_info(lang, msg, args, line) {
-	if ( args.length ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+	if ( args.length ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	else {
 		var owner = '*MarkusRost*';
 		if ( msg.channel.type == 'text' && msg.guild.members.has(process.env.owner) ) owner = '<@' + process.env.owner + '>';
@@ -248,7 +206,7 @@ function cmd_help(lang, msg, args, line) {
 				var cmdlist = lang.help.admin + '\n';
 				for ( var i = 0; i < cmds.length; i++ ) {
 					if ( cmds[i].admin && !cmds[i].hide ) {
-						cmdlist += '🔹 `' + process.env.prefix + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
+						cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
 					}
 				}
 				
@@ -259,7 +217,7 @@ function cmd_help(lang, msg, args, line) {
 			var cmdlist = ''
 			for ( var i = 0; i < cmds.length; i++ ) {
 				if ( cmds[i].cmd.split(' ')[0] === args[0].toLowerCase() && !cmds[i].unsearchable && ( msg.channel.type != 'text' || !cmds[i].admin || admin(msg) ) ) {
-					cmdlist += '🔹 `' + process.env.prefix + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
+					cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
 				}
 			}
 			
@@ -271,7 +229,7 @@ function cmd_help(lang, msg, args, line) {
 		var cmdlist = lang.help.all + '\n';
 		for ( var i = 0; i < cmds.length; i++ ) {
 			if ( !cmds[i].hide && !cmds[i].admin ) {
-				cmdlist += '🔹 `' + process.env.prefix + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
+				cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
 			}
 		}
 		
@@ -321,7 +279,7 @@ function cmd_test(lang, msg, args, line) {
 
 function cmd_invite(lang, msg, args, line) {
 	if ( args.length ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	} else {
 		client.generateInvite(268954689).then( invite => msg.channel.send( lang.invite.bot + '\n<' + invite + '>' ) );
 	}
@@ -347,7 +305,7 @@ function cmd_stop(lang, msg, args, line) {
 		console.log( 'Ich schalte mich nun aus!' );
 		client.destroy();
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	}
 }
 
@@ -363,7 +321,7 @@ function cmd_pause(lang, msg, args, line) {
 			pause[msg.guild.id] = true;
 		}
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	}
 }
 
@@ -396,7 +354,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 	if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_') );
 	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_') );
 	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
-	else if ( title == '' || title.indexOf( '#' ) != -1 || title.indexOf( '?' ) != -1 ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ) );
+	else if ( title.indexOf( '#' ) != -1 || title.indexOf( '?' ) != -1 ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ) );
 	else if ( invoke == 'user' || invoke == lang.search.user.unknown || invoke == lang.search.user.male || invoke == lang.search.user.female ) cmd_user(lang, msg, args.join('_'), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('user:') ) cmd_user(lang, msg, title.substr(5), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('userprofile:') ) cmd_user(lang, msg, title.substr(12), wiki, title.replace( / /g, '_' ));
@@ -408,7 +366,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 		msg.react('⏳').then( function( reaction ) {
 			hourglass = reaction;
 			request( {
-				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=interwikimap&redirects=true&titles=' + encodeURI( title ),
+				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general|interwikimap&redirects=true&titles=' + encodeURI( title ),
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || !body || !body.query ) {
@@ -454,7 +412,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 								if ( regex.test(entry[i].url) ) {
 									var iwtitle = entry[i].url.replace( '$1', intertitle ).replace( regex.exec(entry[i].url)[0], '' );
 									var link = regex.exec(entry[i].url)[1];
-									cmd_link(lang, msg, iwtitle, link, '!' + link + ' ');
+									cmd_link(lang, msg, iwtitle, link, ' !' + link + ' ');
 								}
 								else msg.channel.send( entry[i].url.replace( '$1', intertitle.replace( / /g, '_' ) ) );
 								break;
@@ -462,7 +420,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 						}
 					}
 					else {
-						msg.react('🤷');
+						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.replace( / /g, '_' ) );
 					}
 				}
 				
@@ -509,7 +467,7 @@ function cmd_serverlist(lang, msg, args, line) {
 		} );
 		msg.author.send( serverlist, {split:{char:'\n\n'}} );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	}
 }
 
@@ -777,7 +735,7 @@ function cmd_voice(lang, msg, args, line) {
 	if ( admin(msg) ) {
 		msg.reply( lang.voice.text + '\n`' + lang.voice.channel + ' – <' + lang.voice.name + '>`' );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	}
 }
 
@@ -821,7 +779,7 @@ client.on('message', msg => {
 		if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
 		var lang = i18n[setting.lang];
 		lang.link = setting.wiki;
-		var invoke = cont.split(' ')[1].toLowerCase();
+		var invoke = cont.split(' ')[1] ? cont.split(' ')[1].toLowerCase() : '';
 		var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
 		if ( cont.toLowerCase().startsWith(process.env.prefix) && aliasInvoke in multilinecmdmap ) {
 			if ( channel.type != 'text' || channel.permissionsFor(client.user).has('MANAGE_MESSAGES') ) {
@@ -834,14 +792,14 @@ client.on('message', msg => {
 		} else {
 			cont.split('\n').forEach( function(line) {
 				if ( line.toLowerCase().startsWith(process.env.prefix) ) {
-					invoke = line.split(' ')[1].toLowerCase();
+					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
 					var args = line.split(' ').slice(2);
 					aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
 					console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + invoke + ' - ' + args);
 					if ( channel.type != 'text' || !pause[msg.guild.id] ) {
 						if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
-						else if ( invoke.startsWith('!') ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), invoke + ' ');
-						else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, '');
+						else if ( invoke.startsWith('!') ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
+						else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 					} else if ( channel.type == 'text' && pause[msg.guild.id] && author.id == process.env.owner && aliasInvoke in pausecmdmap ) {
 						pausecmdmap[aliasInvoke](lang, msg, args, line);
 					}
@@ -886,79 +844,38 @@ client.on('guildDelete', guild => {
 	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde von einem Server entfernt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find('type', 'text').toString() + ' (' + guild.id + ')' ) );
 	console.log( 'Ich wurde von einem Server entfernt.' );
 	
-	var url = process.env.site + 'api.php';
-	request.get( {
-		uri: url + '?action=query&format=json&meta=tokens&type=login',
-		json: true
-	}, function( error, response, body ) {
-		if ( error || !response || !body || body.error || !body.query ) {
-			console.log( 'Fehler beim Erhalten des Anmeldetoken' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-		}
-		else {
-			request.post( {
-				uri: url,
-				form: {
-					action: 'login',
-					format: 'json',
-					lgname: process.env.username,
-					lgpassword: process.env.password,
-					lgtoken: body.query.tokens.logintoken
-				},
-				json: true
-			}, function( lerror, lresponse, lbody ) {
-				if ( lerror || !lresponse || !lbody || lbody.error || !body.query ) {
-					console.log( 'Fehler beim Anmelden' + ( lerror ? ': ' + lerror.message : ( lbody ? ( lbody.error ? ': ' + lbody.error.info : '.' ) : '.' ) ) );
-				}
-				else {
-					request.post( {
-						uri: url,
-						form: {
-							action: 'query',
-							format: 'json',
-							meta: 'tokens',
-							type: 'csrf'
-						},
-						json: true
-					}, function( perror, presponse, pbody ) {
-						if ( perror || !presponse || !pbody || pbody.error || !body.query ) {
-							console.log( 'Fehler beim Erhalten des Bearbeitungstoken' + ( perror ? ': ' + perror.message : ( pbody ? ( pbody.error ? ': ' + pbody.error.info : '.' ) : '.' ) ) );
-						}
-						else if ( settings == defaultSettings ) {
-							console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
-						}
-						else {
-							var temp_settings = Object.assign({}, settings);
-							Object.keys(temp_settings).forEach( function(guild) {
-								if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
-							} );
-							request.post( {
-								uri: url,
-								form: {
-									action: 'edit',
-									format: 'json',
-									title: process.env.page,
-									text: JSON.stringify( temp_settings, null, '\t' ),
-									summary: 'Einstellungen aktualisiert.',
-									bot: true,
-									token: pbody.query.tokens.csrftoken
-								},
-								json: true
-							}, function( eerror, eresponse, ebody ) {
-								if ( eerror || !eresponse || !ebody || ebody.error || !body.query ) {
-									console.log( 'Fehler beim Bearbeiten' + ( eerror ? ': ' + eerror.message : ( ebody ? ( ebody.error ? ': ' + ebody.error.info : '.' ) : '.' ) ) );
-									msg.reply( lang.settings.save_failed );
-								}
-								else {
-									settings = Object.assign({}, temp_settings);
-									console.log( 'Einstellungen erfolgreich aktualisiert.' );
-								}
-							} );
-						}
-					} );
-				}
-			} );
-		}
-	} );
+	if ( settings == defaultSettings ) {
+		console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
+	}
+	else {
+		var temp_settings = Object.assign({}, settings);
+		Object.keys(temp_settings).forEach( function(guild) {
+			if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
+		} );
+		request.post( {
+			uri: process.env.save + process.env.access,
+			body: {
+				branch: 'master',
+				commit_message: 'Einstellungen aktualisiert.',
+				actions: [
+					{
+						action: 'update',
+						file_path: process.env.file,
+						content: JSON.stringify( temp_settings, null, '\t' )
+					}
+				]
+			},
+			json: true
+		}, function( error, response, body ) {
+			if ( error || !response || response.statusCode != 201 || !body || body.error ) {
+				console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+			}
+			else {
+				settings = Object.assign({}, temp_settings);
+				console.log( 'Einstellungen erfolgreich aktualisiert.' );
+			}
+		} );
+	}
 });
 
 
