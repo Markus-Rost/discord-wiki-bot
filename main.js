@@ -2,7 +2,6 @@ const fs = require('fs');
 
 const Discord = require('discord.js');
 var request = require('request');
-request = request.defaults({jar: true});
 
 var client = new Discord.Client( {disableEveryone:true} );
 
@@ -435,7 +434,7 @@ function cmd_serverlist(lang, msg, args, line) {
 		var guilds = client.guilds;
 		var serverlist = 'Ich befinde mich aktuell auf ' + guilds.size + ' Servern:\n\n';
 		guilds.forEach( function(guild) {
-			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find('type', 'text').toString() + ' (' + guild.id + ')\n\n';
+			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')\n\n';
 		} );
 		msg.author.send( serverlist, {split:{char:'\n\n'}} );
 	} else if ( msg.author.id == process.env.owner && args.join(' ') == 'list all <@' + client.user.id + '> permissions' ) {
@@ -448,7 +447,7 @@ function cmd_serverlist(lang, msg, args, line) {
 				if ( perm[1] ) perms += perm[0] + ', ';
 			} );
 			perms = perms.substr(0, perms.length -2);
-			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find('type', 'text').toString() + perms + '\n\n';
+			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + perms + '\n\n';
 		} );
 		msg.author.send( serverlist, {split:{char:'\n\n'}} );
 	} else if ( msg.author.id == process.env.owner && args.join(' ') == 'list all <@' + client.user.id + '> members' ) {
@@ -463,7 +462,7 @@ function cmd_serverlist(lang, msg, args, line) {
 				} );
 			}
 			members = members.substr(0, members.length -2);
-			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find('type', 'text').toString() + members + '\n\n';
+			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + members + '\n\n';
 		} );
 		msg.author.send( serverlist, {split:{char:'\n\n'}} );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
@@ -546,7 +545,7 @@ function cmd_user(lang, msg, username, wiki, title) {
 					}
 					else {
 						username = body.query.users[0].name.replace( / /g, '_' );
-						var options = {
+						var timeoptions = {
 							year: "numeric",
 							month: "short",
 							day: "numeric",
@@ -564,7 +563,7 @@ function cmd_user(lang, msg, username, wiki, title) {
 							default: 
 								gender = lang.user.gender.unknown;
 						}
-						var registration = (new Date(body.query.users[0].registration)).toLocaleString(lang.user.dateformat, options);
+						var registration = (new Date(body.query.users[0].registration)).toLocaleString(lang.user.dateformat, timeoptions);
 						var editcount = body.query.users[0].editcount;
 						var groups = body.query.users[0].groups;
 						var group = '';
@@ -575,14 +574,14 @@ function cmd_user(lang, msg, username, wiki, title) {
 							}
 						}
 						var isBlocked = false;
-						var blockedtimestamp = (new Date(body.query.users[0].blockedtimestamp)).toLocaleString(lang.user.dateformat, options);
+						var blockedtimestamp = (new Date(body.query.users[0].blockedtimestamp)).toLocaleString(lang.user.dateformat, timeoptions);
 						var blockexpiry = body.query.users[0].blockexpiry;
 						if ( blockexpiry == 'infinity' ) {
 							blockexpiry = lang.user.until_infinity;
 							isBlocked = true;
 						} else if ( blockexpiry ) {
 							var blockexpirydate = blockexpiry.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z');
-							blockexpiry = (new Date(blockexpirydate)).toLocaleString(lang.user.dateformat, options);
+							blockexpiry = (new Date(blockexpirydate)).toLocaleString(lang.user.dateformat, timeoptions);
 							if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 						}
 						var blockedby = body.query.users[0].blockedby;
@@ -696,14 +695,14 @@ function cmd_diffsend(lang, msg, args, wiki) {
 					var diff = revisions[0].revid;
 					var oldid = ( revisions[1] ? revisions[1].revid : 0 );
 					var editor = ( revisions[0].userhidden != undefined ? lang.diff.hidden : revisions[0].user );
-					var options = {
+					var timeoptions = {
 						year: "numeric",
 						month: "short",
 						day: "numeric",
 						hour: "2-digit",
 						minute: "2-digit"
 					}
-					var timestamp = (new Date(revisions[0].timestamp)).toLocaleString(lang.user.dateformat, options);
+					var timestamp = (new Date(revisions[0].timestamp)).toLocaleString(lang.user.dateformat, timeoptions);
 					var size = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
 					var comment = ( revisions[0].commenthidden != undefined ? lang.diff.hidden : revisions[0].comment );
 					if ( !comment ) comment = lang.diff.nocomment;
@@ -818,14 +817,14 @@ client.on('voiceStateUpdate', (oldm, newm) => {
 		var lang = i18n[setting.lang];
 		lang.link = setting.wiki;
 		if ( oldm.voiceChannel ) {
-			var oldrole = oldm.guild.roles.find('name', lang.voice.channel + ' – ' + oldm.voiceChannel.name);
+			var oldrole = oldm.guild.roles.find( role => role.name == lang.voice.channel + ' – ' + oldm.voiceChannel.name );
 			if ( oldrole && oldrole.comparePositionTo(oldm.guild.me.highestRole) < 0 ) {
 				oldm.removeRole( oldrole, lang.voice.left.replace( '%1$s', oldm.displayName ).replace( '%2$s', oldm.voiceChannel.name ) );
 				console.log( oldm.guild.name + ': ' + oldm.displayName + ' hat den Sprachkanal "' + oldm.voiceChannel.name + '" verlassen.' );
 			}
 		}
 		if ( newm.voiceChannel ) {
-			var newrole = newm.guild.roles.find('name', lang.voice.channel + ' – ' + newm.voiceChannel.name);
+			var newrole = newm.guild.roles.find( role => role.name == lang.voice.channel + ' – ' + newm.voiceChannel.name );
 			if ( newrole && newrole.comparePositionTo(newm.guild.me.highestRole) < 0 ) {
 				newm.addRole( newrole, lang.voice.join.replace( '%1$s', newm.displayName ).replace( '%2$s', newm.voiceChannel.name ) );
 				console.log( newm.guild.name + ': ' + newm.displayName + ' hat den Sprachkanal "' + newm.voiceChannel.name + '" betreten.' );
@@ -836,12 +835,12 @@ client.on('voiceStateUpdate', (oldm, newm) => {
 
 
 client.on('guildCreate', guild => {
-	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde zu einem Server hinzugefügt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find('type', 'text').toString() + ' (' + guild.id + ')' ) );
+	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde zu einem Server hinzugefügt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')' ) );
 	console.log( 'Ich wurde zu einem Server hinzugefügt.' );
 });
 
 client.on('guildDelete', guild => {
-	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde von einem Server entfernt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find('type', 'text').toString() + ' (' + guild.id + ')' ) );
+	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde von einem Server entfernt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')' ) );
 	console.log( 'Ich wurde von einem Server entfernt.' );
 	
 	if ( settings == defaultSettings ) {
