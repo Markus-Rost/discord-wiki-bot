@@ -134,37 +134,42 @@ function edit_settings(lang, msg, key, value) {
 			var temp_settings = Object.assign({}, settings);
 			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
 			temp_settings[msg.guild.id][key] = value;
-			Object.keys(temp_settings).forEach( function(guild) {
-				if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
-			} );
-			request.post( {
-				uri: process.env.save + process.env.access,
-				body: {
-					branch: 'master',
-					commit_message: 'Einstellungen aktualisiert.',
-					actions: [
-						{
-							action: 'update',
-							file_path: process.env.file,
-							content: JSON.stringify( temp_settings, null, '\t' )
-						}
-					]
-				},
-				json: true
-			}, function( error, response, body ) {
-				if ( error || !response || response.statusCode != 201 || !body || body.error ) {
-					console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
-					msg.reply( lang.settings.save_failed );
-				}
-				else {
-					settings = Object.assign({}, temp_settings);
-					if ( key == 'lang' ) lang = i18n[value];
-					cmd_settings(lang, msg, [key], '');
-					console.log( 'Einstellungen erfolgreich aktualisiert.' );
-				}
-				
-				if ( hourglass != undefined ) hourglass.remove();
-			} );
+			if ( JSON.stringify( temp_settings ) == JSON.stringify( settings ) ) {
+				Object.keys(temp_settings).forEach( function(guild) {
+					if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
+				} );
+				request.post( {
+					uri: process.env.save + process.env.access,
+					body: {
+						branch: 'master',
+						commit_message: 'Wiki-Bot: Einstellungen aktualisiert.',
+						actions: [
+							{
+								action: 'update',
+								file_path: process.env.file,
+								content: JSON.stringify( temp_settings, null, '\t' )
+							}
+						]
+					},
+					json: true
+				}, function( error, response, body ) {
+					if ( error || !response || response.statusCode != 201 || !body || body.error ) {
+						console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+						msg.reply( lang.settings.save_failed );
+					}
+					else {
+						settings = Object.assign({}, temp_settings);
+						if ( key == 'lang' ) lang = i18n[value];
+						cmd_settings(lang, msg, [key], '');
+						console.log( 'Einstellungen erfolgreich aktualisiert.' );
+					}
+					
+					if ( hourglass != undefined ) hourglass.remove();
+				} );
+			}
+			else {
+				cmd_settings(lang, msg, [key], '');
+			}
 		}
 	} );
 }
@@ -851,29 +856,31 @@ client.on('guildDelete', guild => {
 		Object.keys(temp_settings).forEach( function(guild) {
 			if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
 		} );
-		request.post( {
-			uri: process.env.save + process.env.access,
-			body: {
-				branch: 'master',
-				commit_message: 'Einstellungen aktualisiert.',
-				actions: [
-					{
-						action: 'update',
-						file_path: process.env.file,
-						content: JSON.stringify( temp_settings, null, '\t' )
-					}
-				]
-			},
-			json: true
-		}, function( error, response, body ) {
-			if ( error || !response || response.statusCode != 201 || !body || body.error ) {
-				console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
-			}
-			else {
-				settings = Object.assign({}, temp_settings);
-				console.log( 'Einstellungen erfolgreich aktualisiert.' );
-			}
-		} );
+		if ( JSON.stringify( temp_settings ) == JSON.stringify( settings ) ) {
+			request.post( {
+				uri: process.env.save + process.env.access,
+				body: {
+					branch: 'master',
+					commit_message: 'Wiki-Bot: Einstellungen entfernt.',
+					actions: [
+						{
+							action: 'update',
+							file_path: process.env.file,
+							content: JSON.stringify( temp_settings, null, '\t' )
+						}
+					]
+				},
+				json: true
+			}, function( error, response, body ) {
+				if ( error || !response || response.statusCode != 201 || !body || body.error ) {
+					console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+				}
+				else {
+					settings = Object.assign({}, temp_settings);
+					console.log( 'Einstellungen erfolgreich aktualisiert.' );
+				}
+			} );
+		}
 	}
 });
 
