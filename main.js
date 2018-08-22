@@ -134,7 +134,7 @@ function edit_settings(lang, msg, key, value) {
 			var temp_settings = Object.assign({}, settings);
 			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
 			temp_settings[msg.guild.id][key] = value;
-			if ( JSON.stringify( temp_settings ) == JSON.stringify( settings ) ) {
+			if ( JSON.stringify( temp_settings ) != JSON.stringify( settings ) ) {
 				Object.keys(temp_settings).forEach( function(guild) {
 					if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
 				} );
@@ -856,7 +856,7 @@ client.on('guildDelete', guild => {
 		Object.keys(temp_settings).forEach( function(guild) {
 			if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
 		} );
-		if ( JSON.stringify( temp_settings ) == JSON.stringify( settings ) ) {
+		if ( JSON.stringify( temp_settings ) != JSON.stringify( settings ) ) {
 			request.post( {
 				uri: process.env.save + process.env.access,
 				body: {
