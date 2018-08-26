@@ -255,7 +255,7 @@ function cmd_say(lang, msg, args, line) {
 			}
 		}
 		if ( text || imgs[0] ) {
-			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete(), error => msg.react('440871715938238494') );
+			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete().catch( error => console.log( error.name + ': ' + error.message ) ), error => msg.react('440871715938238494') );
 		}
 	} else {
 		msg.react('❌');
@@ -511,7 +511,7 @@ function cmd_umfrage(lang, msg, args, line) {
 
 function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
 	msg.channel.send( lang.poll.title + args.slice(i).join(' '), {disableEveryone:false,files:imgs} ).then( poll => {
-		msg.delete();
+		msg.delete().catch( error => console.log( error.name + ': ' + error.message ) );
 		if ( reactions.length ) {
 			reactions.forEach( function(entry) {
 				poll.react(entry).catch( error => poll.react('440871715938238494') );
