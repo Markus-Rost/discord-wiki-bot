@@ -353,7 +353,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 	if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_') );
 	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_') );
 	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
-	else if ( title.indexOf( '#' ) != -1 || title.indexOf( '?' ) != -1 ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ) );
+	else if ( title.includes( '#' ) || title.includes( '?' ) ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ) );
 	else if ( invoke == 'user' || invoke == lang.search.user.unknown || invoke == lang.search.user.male || invoke == lang.search.user.female ) cmd_user(lang, msg, args.join('_'), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('user:') ) cmd_user(lang, msg, title.substr(5), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('userprofile:') ) cmd_user(lang, msg, title.substr(12), wiki, title.replace( / /g, '_' ));
@@ -524,7 +524,7 @@ function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
 }
 
 function cmd_user(lang, msg, username, wiki, title) {
-	if ( !username || username.indexOf( '/' ) != -1 || username.toLowerCase().startsWith('talk:') || username.toLowerCase().startsWith(lang.user.talk) ) {
+	if ( !username || username.includes( '/' ) || username.toLowerCase().startsWith('talk:') || username.toLowerCase().startsWith(lang.user.talk) ) {
 		msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title );
 	} else {
 		var hourglass;
@@ -768,11 +768,16 @@ function emoji(args) {
 }
 
 
+function prefix(text) {
+	if ( text.toLowerCase().startsWith( process.env.prefix + ' ' ) || text.toLowerCase() == process.env.prefix ) return true;
+	else return false;
+}
+
 client.on('message', msg => {
 	var cont = msg.content;
 	var author = msg.author;
 	var channel = msg.channel;
-	if ( cont.toLowerCase().indexOf( process.env.prefix ) != -1 && !msg.webhookID && author.id != client.user.id && ( channel.type != 'text' || channel.permissionsFor(client.user).has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) ) {
+	if ( cont.toLowerCase().includes( process.env.prefix ) && !msg.webhookID && author.id != client.user.id && ( channel.type != 'text' || channel.permissionsFor(client.user).has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) ) {
 		if ( settings == defaultSettings ) getSettings(setStatus);
 		var setting = Object.assign({}, settings['default']);
 		if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
@@ -780,7 +785,7 @@ client.on('message', msg => {
 		lang.link = setting.wiki;
 		var invoke = cont.split(' ')[1] ? cont.split(' ')[1].toLowerCase() : '';
 		var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-		if ( cont.toLowerCase().startsWith(process.env.prefix) && aliasInvoke in multilinecmdmap ) {
+		if ( prefix( cont ) && aliasInvoke in multilinecmdmap ) {
 			if ( channel.type != 'text' || channel.permissionsFor(client.user).has('MANAGE_MESSAGES') ) {
 				var args = cont.split(' ').slice(2);
 				console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + invoke + ' - ' + args);
@@ -790,7 +795,7 @@ client.on('message', msg => {
 			}
 		} else {
 			cont.split('\n').forEach( function(line) {
-				if ( line.toLowerCase().startsWith(process.env.prefix) ) {
+				if ( prefix( line ) ) {
 					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
 					var args = line.split(' ').slice(2);
 					aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
