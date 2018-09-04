@@ -346,7 +346,7 @@ function cmd_delete(lang, msg, args, line) {
 }
 
 function cmd_link(lang, msg, title, wiki, cmd) {
-	if ( cmd == '' && admin(msg) && !( msg.guild.id in settings ) ) cmd_settings(lang, msg, [], '');
+	if ( cmd == ' ' && admin(msg) && !( msg.guild.id in settings ) ) cmd_settings(lang, msg, [], '');
 	var invoke = title.split(' ')[0].toLowerCase();
 	var args = title.split(' ').slice(1);
 	
@@ -680,7 +680,7 @@ function cmd_diffsend(lang, msg, args, wiki) {
 		if ( error || !response || !body || !body.query ) {
 			console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 			if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) msg.react('440871715938238494');
-		else msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' ).then( message => message.react('440871715938238494') );
+			else msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' ).then( message => message.react('440871715938238494') );
 		}
 		else {
 			if ( body.query.badrevids ) msg.reply( lang.diff.badrev );
