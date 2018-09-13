@@ -369,15 +369,20 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || !body || !body.query ) {
-					console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) msg.react('440871715938238494');
-					else msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ) ).then( message => message.react('440871715938238494') );
+					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
+						console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+						msg.react('440871715938238494');
+					}
+					else {
+						console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ) ).then( message => message.react('440871715938238494') );
+					}
 				}
 				else {
 					if ( body.query.pages ) {
 						if ( body.query.pages['-1'] && body.query.pages['-1'].missing != undefined ) {
 							request( {
-								uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=search&srnamespace=0|4|10|12|14|10000|10002|10004|10006|10008|10010&srsearch=' + encodeURI( title ) + '&srlimit=1',
+								uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=search&srnamespace=0|4|12|14|10000|10002|10004|10006|10008|10010&srsearch=' + encodeURI( title ) + '&srlimit=1',
 								json: true
 							}, function( srerror, srresponse, srbody ) {
 								if ( srerror || !srresponse || !srbody || !srbody.query || ( !srbody.query.search[0] && srbody.query.searchinfo.totalhits != 0 ) ) {
@@ -535,9 +540,14 @@ function cmd_user(lang, msg, username, wiki, title) {
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || !body || !body.query || !body.query.users[0] ) {
-					console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) msg.react('440871715938238494');
-					else msg.channel.send( '<https://' + wiki + '.gamepedia.com/User:' + username + '>' ).then( message => message.react('440871715938238494') );
+					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
+						console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+						msg.react('440871715938238494');
+					}
+					else {
+						console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						msg.channel.send( '<https://' + wiki + '.gamepedia.com/User:' + username + '>' ).then( message => message.react('440871715938238494') );
+					}
 				}
 				else {
 					if ( body.query.users[0].missing == "" || body.query.users[0].invalid == "" ) {
@@ -643,9 +653,14 @@ function cmd_diff(lang, msg, args, wiki) {
 					json: true
 				}, function( error, response, body ) {
 					if ( error || !response || !body || !body.query ) {
-						console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-						if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) msg.react('440871715938238494');
-						else msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + title + '?diff=' + diff + ( title ? '' : '&oldid=' + revision ) + '>' ).then( message => message.react('440871715938238494') );
+						if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
+							console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+							msg.react('440871715938238494');
+						}
+						else {
+							console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+							msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + title + '?diff=' + diff + ( title ? '' : '&oldid=' + revision ) + '>' ).then( message => message.react('440871715938238494') );
+						}
 					}
 					else {
 						if ( body.query.badrevids ) msg.reply( lang.diff.badrev );
@@ -678,9 +693,14 @@ function cmd_diffsend(lang, msg, args, wiki) {
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || !body || !body.query ) {
-			console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-			if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) msg.react('440871715938238494');
-			else msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' ).then( message => message.react('440871715938238494') );
+			if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
+				console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+				msg.react('440871715938238494');
+			}
+			else {
+				console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+				msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' ).then( message => message.react('440871715938238494') );
+			}
 		}
 		else {
 			if ( body.query.badrevids ) msg.reply( lang.diff.badrev );
