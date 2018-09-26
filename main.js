@@ -403,7 +403,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 							} );
 						}
 						else {
-							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + ( Object.values(body.query.pages)[0].title + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + encodeURI( body.query.redirects[0].tofragment ) : '' ) ).replace( / /g, '_' ) );
+							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + Object.values(body.query.pages)[0].title.replace( / /g, '_' ) + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + encodeURI( body.query.redirects[0].tofragment.replace( / /g, '_' ) ) : '' ) );
 						}
 					}
 					else if ( body.query.interwiki ) {
