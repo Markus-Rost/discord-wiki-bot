@@ -153,7 +153,7 @@ function edit_settings(lang, msg, key, value) {
 						Object.keys(channels).forEach( function(channel) {
 							if ( channels[channel] == temp_settings[guild].wiki || !client.guilds.get(guild).channels.has(channel) ) delete channels[channel];
 						} );
-						if ( !Object.keys(channels).length ) delete channels;
+						if ( !Object.keys(channels).length ) delete temp_settings[guild].channels;
 					}
 				}
 			} );
