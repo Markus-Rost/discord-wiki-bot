@@ -140,8 +140,10 @@ function edit_settings(lang, msg, key, value) {
 		else {
 			var temp_settings = Object.assign({}, settings);
 			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
-			if ( key == 'channel' ) temp_settings[msg.guild.id].channels[msg.channel.id] = value;
-			else temp_settings[msg.guild.id][key] = value;
+			if ( key == 'channel' ) {
+				if ( !temp_settings[msg.guild.id].channels ) temp_settings[msg.guild.id].channels = {};
+				temp_settings[msg.guild.id].channels[msg.channel.id] = value;
+			} else temp_settings[msg.guild.id][key] = value;
 			Object.keys(temp_settings).forEach( function(guild) {
 				if ( !client.guilds.has(guild) && guild != 'default' ) {
 					delete temp_settings[guild];
