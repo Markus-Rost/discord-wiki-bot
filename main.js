@@ -872,7 +872,10 @@ client.on('guildDelete', guild => {
 	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde von einem Server entfernt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')' ) );
 	console.log( 'Ich wurde von einem Server entfernt.' );
 	
-	if ( settings == defaultSettings ) {
+	if ( !guild.available ) {
+		console.log( 'Dieser Server ist nicht erreichbar.' );
+	}
+	else if ( settings == defaultSettings ) {
 		console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
 	}
 	else {
