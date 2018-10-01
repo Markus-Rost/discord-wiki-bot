@@ -86,7 +86,7 @@ function cmd_settings(lang, msg, args, line) {
 		if ( args.length ) {
 			if ( args[0] ) args[0] = args[0].toLowerCase();
 			if ( args[1] ) args[1] = args[1].toLowerCase();
-			var langs = '\n' + lang.settings.langs + ' `' + Object.keys(i18n) + '`';
+			var langs = '\n' + lang.settings.langs + ' `' + Object.keys(i18n).join(', ') + '`';
 			var wikis = '\n' + lang.settings.wikis;
 			var nolangs = lang.settings.nolangs + langs;
 			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})/
@@ -101,6 +101,13 @@ function cmd_settings(lang, msg, args, line) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
 						else cmd_settings(lang, msg, ['wiki'], line);
 					} else msg.reply( lang.settings.wiki + '\nhttps://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
+				} else if ( args[0] == 'channel' ) {
+					if ( args[1] ) {
+						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'channel', regex.exec(args[1])[1]);
+						else cmd_settings(lang, msg, ['channel'], line);
+					} else if ( settings[msg.guild.id].channels && msg.channel.id in settings[msg.guild.id].channels ) {
+						msg.reply( lang.settings.channel + '\nhttps://' + settings[msg.guild.id].channels[msg.channel.id] + '.gamepedia.com/' + wikis );
+					} else msg.reply( lang.settings.channel + '\nhttps://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
 				} else msg.reply( text );
 			} else {
 				if ( args[0] == 'lang' ) {
@@ -133,9 +140,20 @@ function edit_settings(lang, msg, key, value) {
 		else {
 			var temp_settings = Object.assign({}, settings);
 			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
-			temp_settings[msg.guild.id][key] = value;
+			if ( key == 'channel' ) temp_settings[msg.guild.id].channels[msg.channel.id] = value;
+			else temp_settings[msg.guild.id][key] = value;
 			Object.keys(temp_settings).forEach( function(guild) {
-				if ( !client.guilds.has(guild) && guild != 'default' ) delete temp_settings[guild];
+				if ( !client.guilds.has(guild) && guild != 'default' ) {
+					delete temp_settings[guild];
+				} else {
+					var channels = temp_settings[guild].channels;
+					if ( channels ) {
+						Object.keys(channels).forEach( function(channel) {
+							if ( channels[channel] == temp_settings[guild].wiki || !client.guilds.get(guild).channels.has(channel) ) delete channels[channel];
+						} );
+						if ( !Object.keys(channels).length ) delete channels;
+					}
+				}
 			} );
 			request.post( {
 				uri: process.env.save + process.env.access,
@@ -807,6 +825,7 @@ client.on('message', msg => {
 		if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
 		var lang = i18n[setting.lang];
 		lang.link = setting.wiki;
+		if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
 		var invoke = cont.split(' ')[1] ? cont.split(' ')[1].toLowerCase() : '';
 		var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
 		if ( prefix( cont ) && aliasInvoke in multilinecmdmap ) {
@@ -844,7 +863,6 @@ client.on('voiceStateUpdate', (oldm, newm) => {
 		var setting = Object.assign({}, settings['default']);
 		if ( oldm.guild.id in settings ) setting = Object.assign({}, settings[oldm.guild.id]);
 		var lang = i18n[setting.lang];
-		lang.link = setting.wiki;
 		if ( oldm.voiceChannel ) {
 			var oldrole = oldm.guild.roles.find( role => role.name == lang.voice.channel + ' – ' + oldm.voiceChannel.name );
 			if ( oldrole && oldrole.comparePositionTo(oldm.guild.me.highestRole) < 0 ) {
