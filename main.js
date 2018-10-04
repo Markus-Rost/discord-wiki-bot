@@ -114,7 +114,7 @@ function cmd_settings(lang, msg, args, line) {
 					if ( args[1] ) {
 						if ( args[1] in i18n ) edit_settings(lang, msg, 'lang', args[1]);
 						else msg.reply( nolangs );
-					} else msg.reply( lang.settings.nolang + langs );
+					} else msg.reply( lang.settings.lang + ' `' + settings['default'].lang + '`' + langs );
 				} else if ( args[0] == 'wiki' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
@@ -209,27 +209,32 @@ function cmd_help(lang, msg, args, line) {
 	var cmds = lang.help.list;
 	if ( args.length ) {
 		if ( mention(args[0]) ) cmd_helpserver(lang, msg);
-		else if ( args[0].toLowerCase() == 'admin' && ( msg.channel.type != 'text' || admin(msg) ) ) {
-			if ( args[1] && args[1].toLowerCase() == 'emoji' ) {
-				var cmdlist = lang.help.emoji + '\n';
-				var i = 0;
-				client.emojis.forEach( function(emoji) {
-					var br = '\t\t';
-					if ( i % 3 == 2 ) br = '\n';
-					cmdlist += emoji.toString() + '`' + emoji.toString().replace(emoji.name + ':', '') + '`' + br;
-					i++;
-				} );
-				msg.channel.send( cmdlist, {split:true} );
+		else if ( args[0].toLowerCase() == 'admin' ) {
+			if ( msg.channel.type != 'text' || admin(msg) ) {
+				if ( args[1] && args[1].toLowerCase() == 'emoji' ) {
+					var cmdlist = lang.help.emoji + '\n';
+					var i = 0;
+					client.emojis.forEach( function(emoji) {
+						var br = '\t\t';
+						if ( i % 3 == 2 ) br = '\n';
+						cmdlist += emoji.toString() + '`' + emoji.toString().replace(emoji.name + ':', '') + '`' + br;
+						i++;
+					} );
+					msg.channel.send( cmdlist, {split:true} );
+				}
+				else {
+					var cmdlist = lang.help.admin + '\n';
+					for ( var i = 0; i < cmds.length; i++ ) {
+						if ( cmds[i].admin && !cmds[i].hide ) {
+							cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
+						}
+					}
+					
+					msg.channel.send( cmdlist );
+				}
 			}
 			else {
-				var cmdlist = lang.help.admin + '\n';
-				for ( var i = 0; i < cmds.length; i++ ) {
-					if ( cmds[i].admin && !cmds[i].hide ) {
-						cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
-					}
-				}
-				
-				msg.channel.send( cmdlist );
+				msg.reply( lang.help.noadmin );
 			}
 		}
 		else {
