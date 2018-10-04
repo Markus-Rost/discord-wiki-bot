@@ -374,7 +374,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 	else if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_') );
 	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').replace( /\?/g, '%3F' ) );
 	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
-	else if ( title.includes( '#' ) ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) );
+	else if ( title.includes( '#' ) ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() );
 	else if ( invoke == 'user' || invoke == lang.search.user.unknown || invoke == lang.search.user.male || invoke == lang.search.user.female ) cmd_user(lang, msg, args.join('_'), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('user:') ) cmd_user(lang, msg, title.substr(5), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('userprofile:') ) cmd_user(lang, msg, title.substr(12), wiki, title.replace( / /g, '_' ));
@@ -396,7 +396,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 					}
 					else {
 						console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) ).then( message => message.react('440871715938238494') );
+						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() ).then( message => message.react('440871715938238494') );
 					}
 				}
 				else {
@@ -408,23 +408,23 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 							}, function( srerror, srresponse, srbody ) {
 								if ( srerror || !srresponse || !srbody || !srbody.query || ( !srbody.query.search[0] && srbody.query.searchinfo.totalhits != 0 ) ) {
 									console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror.message : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
-									msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) ).then( message => message.react('440871715938238494') );
+									msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() ).then( message => message.react('440871715938238494') );
 								}
 								else {
 									if ( srbody.query.searchinfo.totalhits == 0 ) {
 										msg.react('🤷');
 									}
 									else if ( srbody.query.searchinfo.totalhits == 1 ) {
-										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ) );
+										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.toTitle() + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ) );
 									}
 									else {
-										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + '`' ) );
+										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.toTitle() + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + '`' ) );
 									}
 								}
 							} );
 						}
 						else {
-							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + Object.values(body.query.pages)[0].title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + encodeURIComponent( body.query.redirects[0].tofragment.replace( / /g, '_' ) ).replace( /\%/g, '.' ) : '' ) );
+							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + Object.values(body.query.pages)[0].title.toTitle() + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + encodeURIComponent( body.query.redirects[0].tofragment.replace( / /g, '_' ) ).replace( /\%/g, '.' ) : '' ) );
 						}
 					}
 					else if ( body.query.interwiki ) {
@@ -437,7 +437,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 						} else msg.channel.send( inter.url );
 					}
 					else {
-						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.replace( / /g, '_' ).replace( /\?/g, '%3F' ) );
+						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.toTitle() );
 					}
 				}
 				
@@ -721,7 +721,7 @@ function cmd_diffsend(lang, msg, args, wiki) {
 				var pages = Object.values(body.query.pages);
 				if ( pages.length != 1 ) msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' );
 				else {
-					var title = pages[0].title.replace( / /g, '_' ).replace( /\?/g, '%3F' );
+					var title = pages[0].title.toTitle();
 					var revisions = [];
 					if ( pages[0].revisions[1] ) revisions = [pages[0].revisions[1], pages[0].revisions[0]];
 					else revisions = [pages[0].revisions[0]];
@@ -778,7 +778,7 @@ function cmd_random(lang, msg, wiki) {
 				}
 			}
 			else {
-				msg.channel.send( '🎲 https://' + wiki + '.gamepedia.com/' + body.query.random[0].title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) );
+				msg.channel.send( '🎲 https://' + wiki + '.gamepedia.com/' + body.query.random[0].title.toTitle() );
 			}
 			
 			if ( hourglass != undefined ) hourglass.remove();
@@ -826,6 +826,10 @@ function emoji(args) {
 	}
 	return args;
 }
+
+String.prototype.toTitle = function() {
+	return this.replace( / /g, '_' ).replace( /\%/g, '%25' ).replace( /\?/g, '%3F' );
+};
 
 String.prototype.wikicode = function() {
 	return this.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' );
