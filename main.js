@@ -778,7 +778,7 @@ function cmd_random(lang, msg, wiki) {
 				}
 			}
 			else {
-				msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + body.query.random[0].title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) );
+				msg.channel.send( '🎲 https://' + wiki + '.gamepedia.com/' + body.query.random[0].title.replace( / /g, '_' ).replace( /\?/g, '%3F' ) );
 			}
 			
 			if ( hourglass != undefined ) hourglass.remove();
