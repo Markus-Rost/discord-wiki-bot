@@ -10,14 +10,14 @@ For a full list with all commands use `!wiki help`
 
 | Command | Description |
 | --- | --- |
-| `!wiki <search term>` | **Wiki-Bot** will answer with a link to a matching article in the Wiki. |
+| `!wiki <search term>` | **Wiki-Bot** will answer with a link to a matching article in the wiki. |
 | `!wiki !<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/` |
 | `!wiki User:<username>` | **Wiki-Bot** will show some information about the user. |
-| `!wiki diff <diff> [<oldid>]` | **Wiki-Bot** will answer with a link to the diff in the Wiki. |
+| `!wiki diff <diff> [<oldid>]` | **Wiki-Bot** will answer with a link to the diff in the wiki. |
 | `!wiki diff <page name>` | **Wiki-Bot** will answer with a link to the last diff on the article in the wiki. |
 | `!wiki random` | **Wiki-Bot** will answer with a link to a random page in the wiki. |
-| `!wiki page <page name>` | **Wiki-Bot** will answer with a link to the article in the Wiki. |
-| `!wiki search <search term>` | **Wiki-Bot** will answer with a link to the search page for the article in the Wiki. |
+| `!wiki page <page name>` | **Wiki-Bot** will answer with a link to the article in the wiki. |
+| `!wiki search <search term>` | **Wiki-Bot** will answer with a link to the search page for the article in the wiki. |
 | `!wiki info` | **Wiki-Bot** will introduce himself. |
 | `!wiki help` | **Wiki-Bot** will list all the commands that he understands. |
 | `!wiki help <bot command>` | **Wiki-Bot** will explain the command. |
