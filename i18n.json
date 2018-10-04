@@ -254,7 +254,7 @@
 				{ "cmd": "hilfe", "desc": "Ich liste alle Befehle auf." },
 				{ "cmd": "hilfe <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert." },
 				{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf." },
-				{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "unsearchable": true "admin": true },
+				{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "unsearchable": true, "admin": true },
 				{ "cmd": "help", "desc": "Ich liste alle Befehle auf.", "hide": true },
 				{ "cmd": "help <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert.", "hide": true },
 				{ "cmd": "help admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "hide": true },
