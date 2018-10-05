@@ -375,7 +375,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 	var invoke = title.split(' ')[0].toLowerCase();
 	var args = title.split(' ').slice(1);
 	
-	if ( title.toLowerCase() == 'random' || title == '🎲' ) cmd_random(lang, msg, wiki);
+	if ( ( invoke == 'random' || invoke == '🎲' ) && !args.join('') ) cmd_random(lang, msg, wiki);
 	else if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_') );
 	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').replace( /\?/g, '%3F' ) );
 	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
