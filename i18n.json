@@ -4,6 +4,7 @@
 			"MarkusRost",
 			"violine1101"
 		],
+		"lang": "en",
 		"aliase": {
 			"purge": "delete"
 		},
@@ -110,6 +111,10 @@
 				{ "cmd": "diff <page name>", "desc": "I will answer with a link to the last diff on the article in the wiki." },
 				{ "cmd": "random", "desc": "I will answer with a link to a random page in the wiki." },
 				{ "cmd": "🎲", "desc": "I will answer with a link to a random page in the wiki.", "hide": true },
+				{ "cmd": "/<Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+				{ "cmd": "command <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "cmd <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "bug <Minecraft bug>", "desc": "I will answer with a link to the bug in the Minecraft bug tracker.", "minecraft": true },
 				{ "cmd": "page <page name>", "desc": "I will answer with a direct link to the article in the wiki." },
 				{ "cmd": "search <search term>", "desc": "I will answer with a direct link to the search page for the article in the wiki." },
 				{ "cmd": "info", "desc": "I will introduce myself." },
@@ -135,6 +140,7 @@
 		"__translator": [
 			"MarkusRost"
 		],
+		"lang": "de",
 		"aliase": {
 			"purge": "delete",
 			"hilfe": "help",
@@ -246,6 +252,12 @@
 				{ "cmd": "diff <Seitenname>", "desc": "Ich verlinke auf die letzte Änderung an der Seite im Wiki." },
 				{ "cmd": "random", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki." },
 				{ "cmd": "🎲", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki.", "hide": true },
+				{ "cmd": "/<Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+				{ "cmd": "befehl <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "command <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "cmd <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "fehler <Minecraft-Fehler>", "desc": "Ich verlinke auf den Fehler im Minecraft-Bugtracker.", "minecraft": true },
+				{ "cmd": "bug <Minecraft-Fehler>", "desc": "Ich verlinke auf den Fehler im Minecraft-Bugtracker.", "hide": true, "minecraft": true },
 				{ "cmd": "seite <Seitenname>", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki." },
 				{ "cmd": "page <Seitenname>", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki.", "hide": true },
 				{ "cmd": "suche <Suchbegriff>", "desc": "Ich antworte mit einem direkten Link auf die Suchseite zu diesem Begriff im Wiki." },
@@ -276,8 +288,10 @@
 	},
 	"fr": {
 		"__translator": [
-			"Yanis48"
+			"Yanis48",
+			"JSBM"
 		],
+		"lang": "fr",
 		"aliase": {
 			"purge": "delete",
 			"sondage": "poll",
@@ -387,6 +401,11 @@
 				{ "cmd": "diff <nom de la page>", "desc": "Je vais répondre avec un lien vers la dernière diff de l'article sur Wiki." },
 				{ "cmd": "random", "desc": "Je vais répondre avec un lien vers une page du Wiki au hasard." },
 				{ "cmd": "🎲", "desc": "Je vais répondre avec un lien vers une page du Wiki au hasard.", "hide": true },
+				{ "cmd": "/<commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+				{ "cmd": "commande <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "command <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "cmd <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "bug <Minecraft bug>", "desc": "Je vais répondre avec le lien du bug sur le bug tracker Minecraft.", "minecraft": true },
 				{ "cmd": "page <nom de la page>", "desc": "Je vais répondre avec un lien vers l'article sur Wiki." },
 				{ "cmd": "chercher <terme de recherche>", "desc": "Je vais répondre avec un lien vers la page de recherche de l'article sur Wiki." },
 				{ "cmd": "search <terme de recherche>", "desc": "Je vais répondre avec un lien vers la page de recherche de l'article sur Wiki.", "hide": true },
@@ -418,6 +437,7 @@
 		"__translator": [
 			"Frisk"
 		],
+		"lang": "pl",
 		"aliase": {
 			"purge": "delete",
 			"pomoc": "help",
@@ -529,6 +549,11 @@
 				{ "cmd": "diff <nazwa strony>", "desc": "Odpowiem linkiem do ostatniej zmiany w podanym artykule na Wiki." },
 				{ "cmd": "random", "desc": "Odpowiem linkiem do losowej strony na wiki." },
 				{ "cmd": "🎲", "desc": "Odpowiem linkiem do losowej strony na wiki.", "hide": true },
+				{ "cmd": "/<komenda>", "desc": "Odpowiem z formatem komendy Minecraftowej oraz linkiem do artykułu o podanej komendzie na Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+				{ "cmd": "komenda <komenda>", "desc": "Odpowiem z formatem komendy Minecraftowej oraz linkiem do artykułu o podanej komendzie na Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "command <komenda>", "desc": "Odpowiem z formatem komendy Minecraftowej oraz linkiem do artykułu o podanej komendzie na Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "cmd <komenda>", "desc": "Odpowiem z formatem komendy Minecraftowej oraz linkiem do artykułu o podanej komendzie na Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "bug <Minecraft bug>", "desc": "Odpowiem z linkiem do błędu na bug trackerze Mojangu.", "minecraft": true  },
 				{ "cmd": "strona <nazwa strony>", "desc": "Odpowiem linkiem do podanego artykułu na Wiki." },
 				{ "cmd": "page <nazwa strony>", "desc": "Odpowiem linkiem do podanego artykułu na Wiki.", "hide": true },
 				{ "cmd": "szukaj <wyszukiwana fraza>", "desc": "Odpowiem linkiem do strony wyszukiwania z podaną frazą na Wiki." },
