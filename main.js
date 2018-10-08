@@ -6,6 +6,7 @@ var request = require('request');
 var client = new Discord.Client( {disableEveryone:true} );
 
 var i18n = JSON.parse(fs.readFileSync('i18n.json', 'utf8'));
+var minecraft = JSON.parse(fs.readFileSync('minecraft.json', 'utf8'));
 
 var pause = {};
 
@@ -54,7 +55,6 @@ var cmdmap = {
 	server: cmd_serverlist,
 	say: cmd_multiline,
 	delete: cmd_multiline,
-	purge: cmd_multiline,
 	poll: cmd_multiline,
 	voice: cmd_voice,
 	settings: cmd_settings,
@@ -77,6 +77,11 @@ var pausecmdmap = {
 	say: cmd_multiline,
 	delete: cmd_multiline,
 	eval: cmd_multiline
+}
+
+var minecraftcmdmap = {
+	command: cmd_befehl2,
+	bug: cmd_bug
 }
 
 function cmd_settings(lang, msg, args, line) {
@@ -207,11 +212,12 @@ function cmd_helpserver(lang, msg) {
 function cmd_help(lang, msg, args, line) {
 	if ( admin(msg) && !( msg.guild.id in settings ) ) cmd_settings(lang, msg, [], line);
 	var cmds = lang.help.list;
+	var isMinecraft = ( lang.link == minecraft[lang.lang].link );
 	if ( args.length ) {
 		if ( mention(args[0]) ) cmd_helpserver(lang, msg);
 		else if ( args[0].toLowerCase() == 'admin' ) {
 			if ( msg.channel.type != 'text' || admin(msg) ) {
-				if ( args[1] && args[1].toLowerCase() == 'emoji' ) {
+				if ( args[1] && args[1].toLowerCase() == 'emoji' && msg.author.id == process.env.owner ) {
 					var cmdlist = lang.help.emoji + '\n';
 					var i = 0;
 					client.emojis.forEach( function(emoji) {
@@ -230,7 +236,7 @@ function cmd_help(lang, msg, args, line) {
 						}
 					}
 					
-					msg.channel.send( cmdlist );
+					msg.channel.send( cmdlist, {split:true} );
 				}
 			}
 			else {
@@ -240,24 +246,24 @@ function cmd_help(lang, msg, args, line) {
 		else {
 			var cmdlist = ''
 			for ( var i = 0; i < cmds.length; i++ ) {
-				if ( cmds[i].cmd.split(' ')[0] === args[0].toLowerCase() && !cmds[i].unsearchable && ( msg.channel.type != 'text' || !cmds[i].admin || admin(msg) ) ) {
+				if ( cmds[i].cmd.split(' ')[0] === args[0].toLowerCase() && !cmds[i].unsearchable && ( msg.channel.type != 'text' || !cmds[i].admin || admin(msg) ) && ( !cmds[i].minecraft || isMinecraft ) ) {
 					cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
 				}
 			}
 			
 			if ( cmdlist == '' ) msg.react('❓');
-			else msg.channel.send( cmdlist );
+			else msg.channel.send( cmdlist, {split:true} );
 		}
 	}
 	else {
 		var cmdlist = lang.help.all + '\n';
 		for ( var i = 0; i < cmds.length; i++ ) {
-			if ( !cmds[i].hide && !cmds[i].admin ) {
+			if ( !cmds[i].hide && !cmds[i].admin && ( !cmds[i].minecraft || isMinecraft ) ) {
 				cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
 			}
 		}
 		
-		msg.channel.send( cmdlist );
+		msg.channel.send( cmdlist, {split:true} );
 	}
 }
 
@@ -375,7 +381,13 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 	var invoke = title.split(' ')[0].toLowerCase();
 	var args = title.split(' ').slice(1);
 	
-	if ( ( invoke == 'random' || invoke == '🎲' ) && !args.join('') ) cmd_random(lang, msg, wiki);
+	var mclang = minecraft[lang.lang];
+	var aliasInvoke = ( invoke in mclang.aliase ) ? mclang.aliase[invoke] : invoke;
+	if ( !msg.notminecraft && wiki == mclang.link && ( aliasInvoke in minecraftcmdmap || invoke.startsWith('/') ) ) {
+		if ( aliasInvoke in minecraftcmdmap ) minecraftcmdmap[aliasInvoke](lang, mclang, msg, args, title, cmd);
+		else cmd_befehl(lang, mclang, msg, invoke.substr(1), args, title, cmd);
+	}
+	else if ( ( invoke == 'random' || invoke == '🎲' ) && !args.join('') ) cmd_random(lang, msg, wiki);
 	else if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_') );
 	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').replace( /\?/g, '%3F' ) );
 	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
@@ -789,6 +801,71 @@ function cmd_random(lang, msg, wiki) {
 			if ( hourglass != undefined ) hourglass.remove();
 		} );
 	} );
+}
+
+function cmd_bug(lang, mclang, msg, args, title, cmd) {
+	if ( args.length && /\d+$/.test(args[0]) && !args[1] ) {
+		var hourglass;
+		msg.react('⏳').then( function( reaction ) {
+			hourglass = reaction;
+			var project = '';
+			if ( /^\d+$/.test(args[0]) ) project = 'MC-';
+			request( {
+				uri: 'https://bugs.mojang.com/rest/api/2/issue/' + project + args[0] + '?fields=summary',
+				json: true
+			}, function( error, response, body ) {
+				if ( error || !response || !body ) {
+					console.log( 'Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error.message : '.' ) );
+					msg.channel.send( 'https://bugs.mojang.com/browse/' + project + args[0] ).then( message => message.react('440871715938238494') );
+				}
+				else {
+					if ( body.errorMessages || body.errors ) {
+						if ( body.errorMessages && body.errorMessages[0] == 'Issue Does Not Exist' ) {
+							msg.react('❓');
+						}
+						else {
+							msg.channel.send( mclang.bug.private + '\nhttps://bugs.mojang.com/browse/' + project + args[0] );
+						}
+					}
+					else {
+						msg.channel.send( body.fields.summary + '\nhttps://bugs.mojang.com/browse/' + body.key );
+					}
+				}
+				
+				if ( hourglass != undefined ) hourglass.remove();
+			} );
+		} );
+	}
+	else {
+		msg.notminecraft = true;
+		cmd_link(lang, msg, title, lang.link, cmd);
+	}
+}
+
+function cmd_befehl(lang, mclang, msg, befehl, args, title, cmd) {
+	var aliasCmd = ( ( befehl in mclang.cmd.aliase ) ? mclang.cmd.aliase[befehl] : befehl ).toLowerCase();
+	
+	if ( aliasCmd in mclang.cmd.list ) {
+		var regex = new RegExp('/' + aliasCmd, 'g');
+		var cmdSyntax = mclang.cmd.list[aliasCmd].join( '\n' ).replace( regex, '/' + befehl );
+		msg.channel.send( '```md\n' + cmdSyntax + '```<https://' + mclang.link + '.gamepedia.com/' + mclang.cmd.page + aliasCmd + '>', {split:{maxLength:2000,prepend:'```md\n',append:'```'}} );
+	}
+	else {
+		msg.react('❓');
+		msg.notminecraft = true;
+		cmd_link(lang, msg, title, lang.link, cmd);
+	}
+}
+
+function cmd_befehl2(lang, mclang, msg, args, title, cmd) {
+	if ( args.length ) {
+		if ( args[0].startsWith('/') ) cmd_befehl(lang, mclang, msg, args[0].substr(1), args.slice(1), title, cmd);
+		else cmd_befehl(lang, mclang, msg, args[0], args.slice(1), title, cmd);
+	}
+	else {
+		msg.notminecraft = true;
+		cmd_link(lang, msg, title, lang.link, cmd);
+	}
 }
 
 function cmd_multiline(lang, msg, args, line) {
