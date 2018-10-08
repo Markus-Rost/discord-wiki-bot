@@ -838,7 +838,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 	}
 	else {
 		msg.notminecraft = true;
-		cmd_link(lang, msg, title, lang.link, cmd);
+		cmd_link(lang, msg, title, mclang.link, cmd);
 	}
 }
 
@@ -853,7 +853,7 @@ function cmd_befehl(lang, mclang, msg, befehl, args, title, cmd) {
 	else {
 		msg.react('❓');
 		msg.notminecraft = true;
-		cmd_link(lang, msg, title, lang.link, cmd);
+		cmd_link(lang, msg, title, mclang.link, cmd);
 	}
 }
 
@@ -864,7 +864,7 @@ function cmd_befehl2(lang, mclang, msg, args, title, cmd) {
 	}
 	else {
 		msg.notminecraft = true;
-		cmd_link(lang, msg, title, lang.link, cmd);
+		cmd_link(lang, msg, title, mclang.link, cmd);
 	}
 }
 
