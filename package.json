@@ -1,7 +1,7 @@
 {
-  "name": "wiki-bot",
+  "name": "Wiki-Bot",
   "version": "1.0.0",
-  "description": "Discord-Bot zum Verlinken auf Gamepedia-Wikis",
+  "description": "Wiki-Bot is a bot for Discord with the purpose to easily link to Gamepedia wikis. He can resolve redirects and follow interwiki links.",
   "main": "main.js",
   "scripts": {
     "test": "node --icu-data-dir=node_modules/full-icu main.js debug",
@@ -10,6 +10,7 @@
   "author": "MarkusRost",
   "license": "ISC",
   "dependencies": {
+    "dblapi.js": "^2.2.0",
     "discord.js": "^11.3.2",
     "full-icu": "^1.2.1",
     "npm": "^5.10.0",
