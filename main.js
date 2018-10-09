@@ -5,7 +5,7 @@ const DBL = require("dblapi.js");
 var request = require('request');
 
 var client = new Discord.Client( {disableEveryone:true} );
-const dbl = new DBL(process.env.dbltoken, client);
+const dbl = new DBL(process.env.dbltoken, {statsInterval:10800000}, client);
 
 var i18n = JSON.parse(fs.readFileSync('i18n.json', 'utf8'));
 var minecraft = JSON.parse(fs.readFileSync('minecraft.json', 'utf8'));
