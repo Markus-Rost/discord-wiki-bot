@@ -1,9 +1,11 @@
 const fs = require('fs');
 
 const Discord = require('discord.js');
+const DBL = require("dblapi.js");
 var request = require('request');
 
 var client = new Discord.Client( {disableEveryone:true} );
+const dbl = new DBL(process.env.dbltoken, client);
 
 var i18n = JSON.parse(fs.readFileSync('i18n.json', 'utf8'));
 var minecraft = JSON.parse(fs.readFileSync('minecraft.json', 'utf8'));
@@ -43,6 +45,21 @@ client.on('ready', () => {
 	getSettings(setStatus);
 	console.log( 'Erfolgreich als ' + client.user.username + ' angemeldet!' );
 	client.user.setActivity( process.env.prefix + ' help' );
+} );
+
+dbl.on('posted', () => {
+	request.post( {
+		uri: 'https://bots.discord.pw/api/bots/' + client.user.id + '/stats',
+		headers: {
+			authorization: process.env.dbpwtoken
+		},
+		body: {
+			server_count: client.guilds.size
+		},
+		json: true
+	}, function( error, response, body ) {
+		console.log('Anzahl der Server: ' + client.guilds.size);
+	} );
 } );
 
 
@@ -939,7 +956,7 @@ client.on('message', msg => {
 		if ( prefix( cont ) && aliasInvoke in multilinecmdmap ) {
 			if ( channel.type != 'text' || channel.permissionsFor(client.user).has('MANAGE_MESSAGES') ) {
 				var args = cont.split(' ').slice(2);
-				console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + invoke + ' - ' + args);
+				console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + cont);
 				if ( channel.type != 'text' || !pause[msg.guild.id] || ( author.id == process.env.owner && aliasInvoke in pausecmdmap ) ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
 			} else {
 				msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
@@ -950,7 +967,7 @@ client.on('message', msg => {
 					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
 					var args = line.split(' ').slice(2);
 					aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-					console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + invoke + ' - ' + args);
+					console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + line);
 					if ( channel.type != 'text' || !pause[msg.guild.id] ) {
 						if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
 						else if ( invoke.startsWith('!') ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
