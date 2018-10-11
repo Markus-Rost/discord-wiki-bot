@@ -603,11 +603,13 @@ function cmd_user(lang, msg, username, wiki, title) {
 					else {
 						username = body.query.users[0].name.replace( / /g, '_' );
 						var timeoptions = {
-							year: "numeric",
-							month: "short",
-							day: "numeric",
-							hour: "2-digit",
-							minute: "2-digit"
+							year: 'numeric',
+							month: 'short',
+							day: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+							timeZone: 'UTC',
+							timeZoneName: 'short'
 						}
 						var gender = body.query.users[0].gender;
 						switch (gender) {
@@ -763,11 +765,13 @@ function cmd_diffsend(lang, msg, args, wiki) {
 					var oldid = ( revisions[1] ? revisions[1].revid : 0 );
 					var editor = ( revisions[0].userhidden != undefined ? lang.diff.hidden : revisions[0].user );
 					var timeoptions = {
-						year: "numeric",
-						month: "short",
-						day: "numeric",
-						hour: "2-digit",
-						minute: "2-digit"
+						year: 'numeric',
+						month: 'short',
+						day: 'numeric',
+						hour: '2-digit',
+						minute: '2-digit',
+						timeZone: 'UTC',
+						timeZoneName: 'short'
 					}
 					var timestamp = (new Date(revisions[0].timestamp)).toLocaleString(lang.user.dateformat, timeoptions);
 					var size = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
