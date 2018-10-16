@@ -26,10 +26,10 @@ function getSettings(callback) {
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || !body || body.error ) {
-			console.log( 'Fehler beim Erhalten der Einstellungen' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error : '.' ) : '.' ) ) );
+			console.log( '- Fehler beim Erhalten der Einstellungen' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error : '.' ) : '.' ) ) );
 		}
 		else {
-			console.log( 'Einstellungen erfolgreich ausgelesen.' );
+			console.log( '- Einstellungen erfolgreich ausgelesen.' );
 			settings = Object.assign({}, body);
 		}
 		callback();
@@ -43,7 +43,7 @@ function setStatus() {
 
 client.on('ready', () => {
 	getSettings(setStatus);
-	console.log( 'Erfolgreich als ' + client.user.username + ' angemeldet!' );
+	console.log( '- Erfolgreich als ' + client.user.username + ' angemeldet!' );
 	client.user.setActivity( process.env.prefix + ' help' );
 } );
 
@@ -58,7 +58,7 @@ dbl.on('posted', () => {
 		},
 		json: true
 	}, function( error, response, body ) {
-		console.log('Anzahl der Server: ' + client.guilds.size);
+		console.log( '- Anzahl der Server: ' + client.guilds.size );
 	} );
 } );
 
@@ -155,7 +155,7 @@ function edit_settings(lang, msg, key, value) {
 	msg.react('⏳').then( function( reaction ) {
 		hourglass = reaction;
 		if ( settings == defaultSettings ) {
-			console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
+			console.log( '- Fehler beim Erhalten bestehender Einstellungen.' );
 			msg.reply( lang.settings.save_failed );
 			if ( hourglass != undefined ) hourglass.remove();
 		}
@@ -195,14 +195,14 @@ function edit_settings(lang, msg, key, value) {
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || response.statusCode != 201 || !body || body.error ) {
-					console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+					console.log( '- Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
 					msg.reply( lang.settings.save_failed );
 				}
 				else {
 					settings = Object.assign({}, temp_settings);
 					if ( key == 'lang' ) lang = i18n[value];
 					cmd_settings(lang, msg, [key], '');
-					console.log( 'Einstellungen erfolgreich aktualisiert.' );
+					console.log( '- Einstellungen erfolgreich aktualisiert.' );
 				}
 				
 				if ( hourglass != undefined ) hourglass.remove();
@@ -299,11 +299,11 @@ function cmd_say(lang, msg, args, line) {
 			try {
 				text = eval( '`' + text + '`' );
 			} catch ( error ) {
-				console.log( error.name + ': ' + error.message );
+				console.log( '- ' + error.name + ': ' + error.message );
 			}
 		}
 		if ( text || imgs[0] ) {
-			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete().catch( error => console.log( error.name + ': ' + error.message ) ), error => msg.react('440871715938238494') );
+			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) ), error => msg.react('440871715938238494') );
 		}
 	} else {
 		msg.react('❌');
@@ -317,10 +317,10 @@ function cmd_test(lang, msg, args, line) {
 		if ( x < lang.test.text.length ) text = lang.test.text[x];
 		else text = lang.test.default;
 		msg.reply( text );
-		console.log( 'Dies ist ein Test: Voll funktionsfähig!' );
+		console.log( '- Dies ist ein Test: Voll funktionsfähig!' );
 	} else {
 		msg.reply( lang.test.pause );
-		console.log( 'Dies ist ein Test: Pausiert!' );
+		console.log( '- Dies ist ein Test: Pausiert!' );
 	}
 }
 
@@ -349,7 +349,7 @@ function cmd_eval(lang, msg, args, line) {
 function cmd_stop(lang, msg, args, line) {
 	if ( msg.author.id == process.env.owner && args.length && mention(args[0]) ) {
 		msg.reply( 'ich schalte mich nun aus!' );
-		console.log( 'Ich schalte mich nun aus!' );
+		console.log( '- Ich schalte mich nun aus!' );
 		client.destroy();
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
@@ -360,11 +360,11 @@ function cmd_pause(lang, msg, args, line) {
 	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && args.length && mention(args[0]) ) {
 		if ( pause[msg.guild.id] ) {
 			msg.reply( 'ich bin wieder wach!' );
-			console.log( 'Ich bin wieder wach!' );
+			console.log( '- Ich bin wieder wach!' );
 			pause[msg.guild.id] = false;
 		} else {
 			msg.reply( 'ich lege mich nun schlafen!' );
-			console.log( 'Ich lege mich nun schlafen!' );
+			console.log( '- Ich lege mich nun schlafen!' );
 			pause[msg.guild.id] = true;
 		}
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
@@ -381,7 +381,7 @@ function cmd_delete(lang, msg, args, line) {
 			else {
 				msg.channel.bulkDelete(parseInt(args[0], 10) + 1, true).then( messages => {
 					msg.reply( lang.delete.success.replace( '%s', messages.size - 1 ) ).then( antwort => antwort.delete(3000) );
-					console.log( 'Die letzten ' + ( messages.size - 1 ) + ' Nachrichten in #' + msg.channel.name + ' wurden gelöscht!' );
+					console.log( '- Die letzten ' + ( messages.size - 1 ) + ' Nachrichten in #' + msg.channel.name + ' wurden gelöscht!' );
 				} );
 			}
 		}
@@ -425,11 +425,11 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 			}, function( error, response, body ) {
 				if ( error || !response || !body || !body.query ) {
 					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
-						console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
 						msg.react('440871715938238494');
 					}
 					else {
-						console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() ).then( message => message.react('440871715938238494') );
 					}
 				}
@@ -441,7 +441,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 								json: true
 							}, function( srerror, srresponse, srbody ) {
 								if ( srerror || !srresponse || !srbody || !srbody.query || ( !srbody.query.search[0] && srbody.query.searchinfo.totalhits != 0 ) ) {
-									console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror.message : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
+									console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror.message : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
 									msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() ).then( message => message.react('440871715938238494') );
 								}
 								else {
@@ -563,7 +563,7 @@ function cmd_umfrage(lang, msg, args, line) {
 
 function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
 	msg.channel.send( lang.poll.title + args.slice(i).join(' '), {disableEveryone:false,files:imgs} ).then( poll => {
-		msg.delete().catch( error => console.log( error.name + ': ' + error.message ) );
+		msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) );
 		if ( reactions.length ) {
 			reactions.forEach( function(entry) {
 				poll.react(entry).catch( error => poll.react('440871715938238494') );
@@ -588,11 +588,11 @@ function cmd_user(lang, msg, username, wiki, title) {
 			}, function( error, response, body ) {
 				if ( error || !response || !body || !body.query || !body.query.users[0] ) {
 					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
-						console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
 						msg.react('440871715938238494');
 					}
 					else {
-						console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 						msg.channel.send( '<https://' + wiki + '.gamepedia.com/User:' + username + '>' ).then( message => message.react('440871715938238494') );
 					}
 				}
@@ -703,11 +703,11 @@ function cmd_diff(lang, msg, args, wiki) {
 				}, function( error, response, body ) {
 					if ( error || !response || !body || !body.query ) {
 						if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
-							console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+							console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
 							msg.react('440871715938238494');
 						}
 						else {
-							console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+							console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 							msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + title + '?diff=' + diff + ( title ? '' : '&oldid=' + revision ) + '>' ).then( message => message.react('440871715938238494') );
 						}
 					}
@@ -743,11 +743,11 @@ function cmd_diffsend(lang, msg, args, wiki) {
 	}, function( error, response, body ) {
 		if ( error || !response || !body || !body.query ) {
 			if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
-				console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+				console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
 				msg.react('440871715938238494');
 			}
 			else {
-				console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+				console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 				msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' ).then( message => message.react('440871715938238494') );
 			}
 		}
@@ -807,11 +807,11 @@ function cmd_random(lang, msg, wiki) {
 		}, function( error, response, body ) {
 			if ( error || !response || !body || !body.query || !body.query.random[0] ) {
 				if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
-					console.log( 'Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
 					msg.react('440871715938238494');
 				}
 				else {
-					console.log( 'Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+					console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 					msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Random' ).then( message => message.react('440871715938238494') );
 				}
 			}
@@ -836,7 +836,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || !body ) {
-					console.log( 'Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error.message : '.' ) );
+					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error.message : '.' ) );
 					msg.channel.send( 'https://bugs.mojang.com/browse/' + project + args[0] ).then( message => message.react('440871715938238494') );
 				}
 				else {
@@ -960,7 +960,7 @@ client.on('message', msg => {
 		if ( prefix( cont ) && aliasInvoke in multilinecmdmap ) {
 			if ( channel.type != 'text' || channel.permissionsFor(client.user).has('MANAGE_MESSAGES') ) {
 				var args = cont.split(' ').slice(2);
-				console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + cont);
+				console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont );
 				if ( channel.type != 'text' || !pause[msg.guild.id] || ( author.id == process.env.owner && aliasInvoke in pausecmdmap ) ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
 			} else {
 				msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
@@ -971,7 +971,7 @@ client.on('message', msg => {
 					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
 					var args = line.split(' ').slice(2);
 					aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-					console.log((msg.guild ? msg.guild.name : '@' + author.username) + ': ' + line);
+					console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + line );
 					if ( channel.type != 'text' || !pause[msg.guild.id] ) {
 						if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
 						else if ( invoke.startsWith('!') ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
@@ -1012,18 +1012,18 @@ client.on('voiceStateUpdate', (oldm, newm) => {
 
 client.on('guildCreate', guild => {
 	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde zu einem Server hinzugefügt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')' ) );
-	console.log( 'Ich wurde zu einem Server hinzugefügt.' );
+	console.log( '- Ich wurde zu einem Server hinzugefügt.' );
 });
 
 client.on('guildDelete', guild => {
 	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde von einem Server entfernt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')' ) );
-	console.log( 'Ich wurde von einem Server entfernt.' );
+	console.log( '- Ich wurde von einem Server entfernt.' );
 	
 	if ( !guild.available ) {
-		console.log( 'Dieser Server ist nicht erreichbar.' );
+		console.log( '- Dieser Server ist nicht erreichbar.' );
 	}
 	else if ( settings == defaultSettings ) {
-		console.log( 'Fehler beim Erhalten bestehender Einstellungen.' );
+		console.log( '- Fehler beim Erhalten bestehender Einstellungen.' );
 	}
 	else {
 		var temp_settings = Object.assign({}, settings);
@@ -1046,11 +1046,11 @@ client.on('guildDelete', guild => {
 			json: true
 		}, function( error, response, body ) {
 			if ( error || !response || response.statusCode != 201 || !body || body.error ) {
-				console.log( 'Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+				console.log( '- Fehler beim Bearbeiten' + ( error ? ': ' + error.message : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
 			}
 			else {
 				settings = Object.assign({}, temp_settings);
-				console.log( 'Einstellungen erfolgreich aktualisiert.' );
+				console.log( '- Einstellungen erfolgreich aktualisiert.' );
 			}
 		} );
 	}
