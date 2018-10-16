@@ -408,7 +408,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 	else if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_') );
 	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').replace( /\?/g, '%3F' ) );
 	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
-	else if ( title.includes( '#' ) ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() );
+	else if ( title.includes( '#' ) ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.split('#')[0].toTitle() + '#' + title.split('#').slice(1).join('#').toSection() );
 	else if ( invoke == 'user' || invoke == lang.search.user.unknown || invoke == lang.search.user.male || invoke == lang.search.user.female ) cmd_user(lang, msg, args.join('_'), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('user:') ) cmd_user(lang, msg, title.substr(5), wiki, title.replace( / /g, '_' ));
 	else if ( invoke.startsWith('userprofile:') ) cmd_user(lang, msg, title.substr(12), wiki, title.replace( / /g, '_' ));
@@ -458,7 +458,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 							} );
 						}
 						else {
-							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + Object.values(body.query.pages)[0].title.toTitle() + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + encodeURIComponent( body.query.redirects[0].tofragment.replace( / /g, '_' ) ).replace( /\%/g, '.' ) : '' ) );
+							msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + Object.values(body.query.pages)[0].title.toTitle() + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : '' ) );
 						}
 					}
 					else if ( body.query.interwiki ) {
@@ -931,7 +931,11 @@ function emoji(args) {
 }
 
 String.prototype.toTitle = function() {
-	return this.replace( / /g, '_' ).replace( /\%/g, '%25' ).replace( /\?/g, '%3F' );
+	return this.replace( / /g, '_' ).replace( /\'/g, '%27' ).replace( /\%/g, '%25' ).replace( /\?/g, '%3F' );
+};
+
+String.prototype.toSection = function() {
+	return encodeURIComponent( this.replace( / /g, '_' ) ).replace( /\'/g, '%27' ).replace( /\%/g, '.' );
 };
 
 String.prototype.wikicode = function() {
