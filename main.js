@@ -405,16 +405,16 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 		else cmd_befehl(lang, mclang, msg, invoke.substr(1), args, title, cmd);
 	}
 	else if ( ( invoke == 'random' || invoke == '🎲' ) && !args.join('') ) cmd_random(lang, msg, wiki);
-	else if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_') );
-	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').replace( /\?/g, '%3F' ) );
+	else if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + args.join('_').toTitle() );
+	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').toTitle() );
 	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
 	else if ( title.includes( '#' ) ) msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.split('#')[0].toTitle() + '#' + title.split('#').slice(1).join('#').toSection() );
-	else if ( invoke == 'user' || invoke == lang.search.user.unknown || invoke == lang.search.user.male || invoke == lang.search.user.female ) cmd_user(lang, msg, args.join('_'), wiki, title.replace( / /g, '_' ));
-	else if ( invoke.startsWith('user:') ) cmd_user(lang, msg, title.substr(5), wiki, title.replace( / /g, '_' ));
-	else if ( invoke.startsWith('userprofile:') ) cmd_user(lang, msg, title.substr(12), wiki, title.replace( / /g, '_' ));
-	else if ( invoke.startsWith(lang.search.user.unknown + ':') ) cmd_user(lang, msg, title.substr(lang.search.user.unknown.length + 1), wiki, title.replace( / /g, '_' ));
-	else if ( invoke.startsWith(lang.search.user.male + ':') ) cmd_user(lang, msg, title.substr(lang.search.user.male.length + 1), wiki, title.replace( / /g, '_' ));
-	else if ( invoke.startsWith(lang.search.user.female + ':') ) cmd_user(lang, msg, title.substr(lang.search.user.female.length + 1), wiki, title.replace( / /g, '_' ));
+	else if ( invoke == 'user' || invoke == lang.search.user.unknown || invoke == lang.search.user.male || invoke == lang.search.user.female ) cmd_user(lang, msg, args.join('_').toTitle(), wiki, title.toTitle());
+	else if ( invoke.startsWith('user:') ) cmd_user(lang, msg, title.substr(5).toTitle(), wiki, title.toTitle());
+	else if ( invoke.startsWith('userprofile:') ) cmd_user(lang, msg, title.substr(12).toTitle(), wiki, title.toTitle());
+	else if ( invoke.startsWith(lang.search.user.unknown + ':') ) cmd_user(lang, msg, title.substr(lang.search.user.unknown.length + 1).toTitle(), wiki, title.toTitle());
+	else if ( invoke.startsWith(lang.search.user.male + ':') ) cmd_user(lang, msg, title.substr(lang.search.user.male.length + 1).toTitle(), wiki, title.toTitle());
+	else if ( invoke.startsWith(lang.search.user.female + ':') ) cmd_user(lang, msg, title.substr(lang.search.user.female.length + 1).toTitle(), wiki, title.toTitle());
 	else {
 		var hourglass;
 		msg.react('⏳').then( function( reaction ) {
@@ -430,7 +430,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 					}
 					else {
 						console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() ).then( message => message.react('440871715938238494') );
+						msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() ).then( message => message.react('440871715938238494') );
 					}
 				}
 				else {
@@ -442,7 +442,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 							}, function( srerror, srresponse, srbody ) {
 								if ( srerror || !srresponse || !srbody || !srbody.query || ( !srbody.query.search[0] && srbody.query.searchinfo.totalhits != 0 ) ) {
 									console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror.message : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
-									msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title.toTitle() ).then( message => message.react('440871715938238494') );
+									msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() ).then( message => message.react('440871715938238494') );
 								}
 								else {
 									if ( srbody.query.searchinfo.totalhits == 0 ) {
