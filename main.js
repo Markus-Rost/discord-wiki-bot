@@ -935,7 +935,7 @@ String.prototype.toTitle = function() {
 };
 
 String.prototype.toSection = function() {
-	return encodeURIComponent( this.replace( / /g, '_' ) ).replace( /\'/g, '%27' ).replace( /\%/g, '.' );
+	return encodeURIComponent( this.replace( / /g, '_' ) ).replace( /\'/g, '%27' ).replace( /\(/g, '%28' ).replace( /\)/g, '%29' ).replace( /\%/g, '.' );
 };
 
 String.prototype.wikicode = function() {
