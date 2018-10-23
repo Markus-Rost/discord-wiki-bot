@@ -76,7 +76,7 @@ var cmdmap = {
 	voice: cmd_voice,
 	settings: cmd_settings,
 	info: cmd_info,
-	eval: cmd_multiline
+	eval: cmd_eval
 }
 
 var multilinecmdmap = {
@@ -93,7 +93,7 @@ var pausecmdmap = {
 	server: cmd_serverlist,
 	say: cmd_multiline,
 	delete: cmd_multiline,
-	eval: cmd_multiline
+	eval: cmd_eval
 }
 
 var minecraftcmdmap = {
@@ -231,7 +231,7 @@ function cmd_help(lang, msg, args, line) {
 	var cmds = lang.help.list;
 	var isMinecraft = ( lang.link == minecraft[lang.lang].link );
 	if ( args.length ) {
-		if ( mention(args[0]) ) cmd_helpserver(lang, msg);
+		if ( mention(msg, args.join(' ')) ) cmd_helpserver(lang, msg);
 		else if ( args[0].toLowerCase() == 'admin' ) {
 			if ( msg.channel.type != 'text' || admin(msg) ) {
 				if ( args[1] && args[1].toLowerCase() == 'emoji' && msg.author.id == process.env.owner ) {
@@ -347,7 +347,7 @@ function cmd_eval(lang, msg, args, line) {
 }
 
 function cmd_stop(lang, msg, args, line) {
-	if ( msg.author.id == process.env.owner && args.length && mention(args[0]) ) {
+	if ( msg.author.id == process.env.owner && mention(msg, args.join(' ')) ) {
 		msg.reply( 'ich schalte mich nun aus!' );
 		console.log( '- Ich schalte mich nun aus!' );
 		client.destroy();
@@ -357,7 +357,7 @@ function cmd_stop(lang, msg, args, line) {
 }
 
 function cmd_pause(lang, msg, args, line) {
-	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && args.length && mention(args[0]) ) {
+	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && mention(msg, args.join(' ')) ) {
 		if ( pause[msg.guild.id] ) {
 			msg.reply( 'ich bin wieder wach!' );
 			console.log( '- Ich bin wieder wach!' );
@@ -901,8 +901,8 @@ function cmd_voice(lang, msg, args, line) {
 	}
 }
 
-function mention(arg) {
-	if ( arg == '<@' + client.user.id + '>' || arg == '<@!' + client.user.id + '>' ) return true;
+function mention(msg, arg) {
+	if ( arg == '@' + client.user.username || ( msg.channel.type == 'text' && arg == '@' + msg.guild.me.displayName ) ) return true;
 	else return false;
 }
 
@@ -970,7 +970,7 @@ client.on('message', msg => {
 				msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
 			}
 		} else {
-			cont.split('\n').forEach( function(line) {
+			msg.cleanContent.split('\n').forEach( function(line) {
 				if ( prefix( line ) ) {
 					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
 					var args = line.split(' ').slice(2);
