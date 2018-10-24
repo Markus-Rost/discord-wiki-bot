@@ -927,7 +927,7 @@ client.on('message', msg => {
 				msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
 			}
 		} else {
-			msg.cleanContent.split('\n').forEach( function(line) {
+			msg.cleanContent.replace(/@\u200b(everyone|here)/g, '@$1').split('\n').forEach( function(line) {
 				if ( prefix( line ) ) {
 					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
 					var args = line.split(' ').slice(2);
