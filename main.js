@@ -69,7 +69,6 @@ var cmdmap = {
 	invite: cmd_invite,
 	stop: cmd_stop,
 	pause: cmd_pause,
-	server: cmd_serverlist,
 	say: cmd_multiline,
 	delete: cmd_multiline,
 	poll: cmd_multiline,
@@ -90,7 +89,6 @@ var pausecmdmap = {
 	test: cmd_test,
 	stop: cmd_stop,
 	pause: cmd_pause,
-	server: cmd_serverlist,
 	say: cmd_multiline,
 	delete: cmd_multiline,
 	eval: cmd_eval
@@ -478,47 +476,6 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 				if ( hourglass != undefined ) hourglass.remove();
 			} );
 		} );
-	}
-}
-
-function cmd_serverlist(lang, msg, args, line) {
-	if ( msg.author.id == process.env.owner && args.join(' ') == 'list all <@' + client.user.id + '>' ) {
-		var guilds = client.guilds;
-		var serverlist = 'Ich befinde mich aktuell auf ' + guilds.size + ' Servern:\n\n';
-		guilds.forEach( function(guild) {
-			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')\n\n';
-		} );
-		msg.author.send( serverlist, {split:{char:'\n\n'}} );
-	} else if ( msg.author.id == process.env.owner && args.join(' ') == 'list all <@' + client.user.id + '> permissions' ) {
-		var guilds = client.guilds;
-		var serverlist = 'Ich befinde mich aktuell auf ' + guilds.size + ' Servern:\n\n';
-		guilds.forEach( function(guild) {
-			var perms = '  ';
-			var allperms = Object.entries(guild.me.permissions.serialize());
-			allperms.forEach( function(perm) {
-				if ( perm[1] ) perms += perm[0] + ', ';
-			} );
-			perms = perms.substr(0, perms.length -2);
-			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + perms + '\n\n';
-		} );
-		msg.author.send( serverlist, {split:{char:'\n\n'}} );
-	} else if ( msg.author.id == process.env.owner && args.join(' ') == 'list all <@' + client.user.id + '> members' ) {
-		var guilds = client.guilds;
-		var serverlist = 'Ich befinde mich aktuell auf ' + guilds.size + ' Servern:\n\n';
-		guilds.forEach( function(guild) {
-			var members = '  ';
-			var allmembers = guild.members;
-			if ( !allmembers.has(process.env.owner) && guild.memberCount < 50 ) {
-				allmembers.forEach( function(member) {
-					members += member.toString() + ', ';
-				} );
-			}
-			members = members.substr(0, members.length -2);
-			serverlist += '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + members + '\n\n';
-		} );
-		msg.author.send( serverlist, {split:{char:'\n\n'}} );
-	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	}
 }
 
