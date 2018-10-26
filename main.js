@@ -232,27 +232,14 @@ function cmd_help(lang, msg, args, line) {
 		if ( mention(msg, args.join(' ')) ) cmd_helpserver(lang, msg);
 		else if ( args[0].toLowerCase() == 'admin' ) {
 			if ( msg.channel.type != 'text' || admin(msg) ) {
-				if ( args[1] && args[1].toLowerCase() == 'emoji' && msg.author.id == process.env.owner ) {
-					var cmdlist = lang.help.emoji + '\n';
-					var i = 0;
-					client.emojis.forEach( function(emoji) {
-						var br = '\t\t';
-						if ( i % 3 == 2 ) br = '\n';
-						cmdlist += emoji.toString() + '`' + emoji.toString().replace(emoji.name + ':', '') + '`' + br;
-						i++;
-					} );
-					msg.channel.send( cmdlist, {split:true} );
-				}
-				else {
-					var cmdlist = lang.help.admin + '\n';
-					for ( var i = 0; i < cmds.length; i++ ) {
-						if ( cmds[i].admin && !cmds[i].hide ) {
-							cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
-						}
+				var cmdlist = lang.help.admin + '\n';
+				for ( var i = 0; i < cmds.length; i++ ) {
+					if ( cmds[i].admin && !cmds[i].hide ) {
+						cmdlist += '🔹 `' + process.env.prefix + ' ' + cmds[i].cmd + '`\n\t' + cmds[i].desc + '\n';
 					}
-					
-					msg.channel.send( cmdlist, {split:true} );
 				}
+				
+				msg.channel.send( cmdlist, {split:true} );
 			}
 			else {
 				msg.reply( lang.help.noadmin );
