@@ -779,9 +779,10 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 				uri: 'https://bugs.mojang.com/rest/api/2/issue/' + project + args[0] + '?fields=summary',
 				json: true
 			}, function( error, response, body ) {
-				if ( error || !response || !body ) {
-					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error.message : '.' ) );
-					msg.channel.send( 'https://bugs.mojang.com/browse/' + project + args[0] ).then( message => message.react('440871715938238494') );
+				if ( error || !response || !body || body['status-code'] == 404 ) {
+					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error.message : ( body ? ': ' + body.message : '.' ) ) );
+					if ( body && body['status-code'] == 404 ) msg.react('440871715938238494')
+					else msg.channel.send( 'https://bugs.mojang.com/browse/' + project + args[0] ).then( message => message.react('440871715938238494') );
 				}
 				else {
 					if ( body.errorMessages || body.errors ) {
@@ -941,7 +942,7 @@ client.on('voiceStateUpdate', (oldm, newm) => {
 		if ( oldm.guild.id in settings ) setting = Object.assign({}, settings[oldm.guild.id]);
 		var lang = i18n[setting.lang];
 		if ( oldm.voiceChannel ) {
-			var oldrole = oldm.guild.roles.find( role => role.name == lang.voice.channel + ' – ' + oldm.voiceChannel.name );
+			var oldrole = oldm.roles.find( role => role.name == lang.voice.channel + ' – ' + oldm.voiceChannel.name );
 			if ( oldrole && oldrole.comparePositionTo(oldm.guild.me.highestRole) < 0 ) {
 				oldm.removeRole( oldrole, lang.voice.left.replace( '%1$s', oldm.displayName ).replace( '%2$s', oldm.voiceChannel.name ) );
 				console.log( oldm.guild.name + ': ' + oldm.displayName + ' hat den Sprachkanal "' + oldm.voiceChannel.name + '" verlassen.' );
