@@ -781,7 +781,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 			}, function( error, response, body ) {
 				if ( error || !response || !body || body['status-code'] == 404 ) {
 					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error.message : ( body ? ': ' + body.message : '.' ) ) );
-					if ( body && body['status-code'] == 404 ) msg.react('440871715938238494')
+					if ( body && body['status-code'] == 404 ) msg.react('440871715938238494');
 					else msg.channel.send( 'https://bugs.mojang.com/browse/' + project + args[0] ).then( message => message.react('440871715938238494') );
 				}
 				else {
@@ -792,6 +792,9 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 						else {
 							msg.channel.send( mclang.bug.private + '\nhttps://bugs.mojang.com/browse/' + project + args[0] );
 						}
+					}
+					else if ( !body.fields ) {
+						msg.react('440871715938238494');
 					}
 					else {
 						msg.channel.send( body.fields.summary + '\nhttps://bugs.mojang.com/browse/' + body.key );
