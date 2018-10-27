@@ -288,7 +288,7 @@ function cmd_say(lang, msg, args, line) {
 			}
 		}
 		if ( text || imgs[0] ) {
-			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) ), error => msg.react('440871715938238494') );
+			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) ), error => msg.reactEmoji('error') );
 		}
 	} else {
 		msg.react('❌');
@@ -411,11 +411,11 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 				if ( error || !response || !body || !body.query ) {
 					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-						msg.react('440871715938238494');
+						msg.reactEmoji('nowiki');
 					}
 					else {
 						console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-						msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() ).then( message => message.react('440871715938238494') );
+						msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() ).then( message => message.reactEmoji('error') );
 					}
 				}
 				else {
@@ -427,7 +427,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 							}, function( srerror, srresponse, srbody ) {
 								if ( srerror || !srresponse || !srbody || !srbody.query || ( !srbody.query.search[0] && srbody.query.searchinfo.totalhits != 0 ) ) {
 									console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror.message : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
-									msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() ).then( message => message.react('440871715938238494') );
+									msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() ).then( message => message.reactEmoji('error') );
 								}
 								else {
 									if ( srbody.query.searchinfo.totalhits == 0 ) {
@@ -510,13 +510,13 @@ function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
 		msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) );
 		if ( reactions.length ) {
 			reactions.forEach( function(entry) {
-				poll.react(entry).catch( error => poll.react('440871715938238494') );
+				poll.react(entry).catch( error => poll.reactEmoji('error') );
 			} );
 		} else {
-			poll.react('448222377009086465');
-			poll.react('448222455425794059');
+			poll.reactEmoji('support');
+			poll.reactEmoji('oppose');
 		}
-	}, error => msg.react('440871715938238494') );
+	}, error => msg.reactEmoji('error') );
 }
 
 function cmd_user(lang, msg, username, wiki, title) {
@@ -533,11 +533,11 @@ function cmd_user(lang, msg, username, wiki, title) {
 				if ( error || !response || !body || !body.query || !body.query.users[0] ) {
 					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-						msg.react('440871715938238494');
+						msg.reactEmoji('nowiki');
 					}
 					else {
 						console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-						msg.channel.send( '<https://' + wiki + '.gamepedia.com/User:' + username + '>' ).then( message => message.react('440871715938238494') );
+						msg.channel.send( '<https://' + wiki + '.gamepedia.com/User:' + username + '>' ).then( message => message.reactEmoji('error') );
 					}
 				}
 				else {
@@ -629,7 +629,7 @@ function cmd_diff(lang, msg, args, wiki) {
 		}
 		else title = args.join('_').replace( /\?/g, '%3F' );
 		
-		if ( error ) msg.react('440871715938238494');
+		if ( error ) msg.reactEmoji('error');
 		else if ( /^\d+$/.test(diff) ) {
 			var argids = [];
 			if ( parseInt(revision, 10) > parseInt(diff, 10) ) argids = [revision, diff];
@@ -648,16 +648,16 @@ function cmd_diff(lang, msg, args, wiki) {
 					if ( error || !response || !body || !body.query ) {
 						if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 							console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-							msg.react('440871715938238494');
+							msg.reactEmoji('nowiki');
 						}
 						else {
 							console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-							msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + title + '?diff=' + diff + ( title ? '' : '&oldid=' + revision ) + '>' ).then( message => message.react('440871715938238494') );
+							msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + title + '?diff=' + diff + ( title ? '' : '&oldid=' + revision ) + '>' ).then( message => message.reactEmoji('error') );
 						}
 					}
 					else {
 						if ( body.query.badrevids ) msg.reply( lang.diff.badrev );
-						else if ( body.query.pages && body.query.pages[-1] ) msg.react('440871715938238494');
+						else if ( body.query.pages && body.query.pages[-1] ) msg.reactEmoji('error');
 						else if ( body.query.pages ) {
 							var argids = [];
 							var ids = Object.values(body.query.pages)[0].revisions[0].diff;
@@ -669,7 +669,7 @@ function cmd_diff(lang, msg, args, wiki) {
 							else argids = [ids.to];
 							cmd_diffsend(lang, msg, argids, wiki);
 						}
-						else msg.react('440871715938238494');
+						else msg.reactEmoji('error');
 					}
 					
 					if ( hourglass != undefined ) hourglass.remove();
@@ -677,7 +677,7 @@ function cmd_diff(lang, msg, args, wiki) {
 			} );
 		}
 	}
-	else msg.react('440871715938238494');
+	else msg.reactEmoji('error');
 }
 
 function cmd_diffsend(lang, msg, args, wiki) {
@@ -688,11 +688,11 @@ function cmd_diffsend(lang, msg, args, wiki) {
 		if ( error || !response || !body || !body.query ) {
 			if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 				console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-				msg.react('440871715938238494');
+				msg.reactEmoji('nowiki');
 			}
 			else {
 				console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-				msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' ).then( message => message.react('440871715938238494') );
+				msg.channel.send( '<https://' + wiki + '.gamepedia.com/?diff=' + args[0] + ( args[1] ? '&oldid=' + args[1] : '' ) + '>' ).then( message => message.reactEmoji('error') );
 			}
 		}
 		else {
@@ -735,7 +735,7 @@ function cmd_diffsend(lang, msg, args, wiki) {
 					msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + title + '?diff=' + diff + '&oldid=' + oldid + '>\n\n' + lang.diff.info.replace( '%1$s', editor ).replace( '%2$s', timestamp ).replace( '%3$s', size ).replace( '%4$s', comment.wikicode() ).replace( '%5$s', tags.join(', ').replace( /<[^>]+>(.+)<\/[^>]+>/g, '$1' ) ) );
 				}
 			}
-			else msg.react('440871715938238494');
+			else msg.reactEmoji('error');
 		}
 		
 	} );
@@ -752,11 +752,11 @@ function cmd_random(lang, msg, wiki) {
 			if ( error || !response || !body || !body.query || !body.query.random[0] ) {
 				if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-					msg.react('440871715938238494');
+					msg.reactEmoji('nowiki');
 				}
 				else {
 					console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error.message : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Random' ).then( message => message.react('440871715938238494') );
+					msg.channel.send( 'https://' + wiki + '.gamepedia.com/Special:Random' ).then( message => message.reactEmoji('error') );
 				}
 			}
 			else {
@@ -781,8 +781,8 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 			}, function( error, response, body ) {
 				if ( error || !response || !body || body['status-code'] == 404 ) {
 					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error.message : ( body ? ': ' + body.message : '.' ) ) );
-					if ( body && body['status-code'] == 404 ) msg.react('440871715938238494');
-					else msg.channel.send( 'https://bugs.mojang.com/browse/' + project + args[0] ).then( message => message.react('440871715938238494') );
+					if ( body && body['status-code'] == 404 ) msg.reactEmoji('error');
+					else msg.channel.send( 'https://bugs.mojang.com/browse/' + project + args[0] ).then( message => message.reactEmoji('error') );
 				}
 				else {
 					if ( body.errorMessages || body.errors ) {
@@ -794,7 +794,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 						}
 					}
 					else if ( !body.fields ) {
-						msg.react('440871715938238494');
+						msg.reactEmoji('error');
 					}
 					else {
 						msg.channel.send( body.fields.summary + '\nhttps://bugs.mojang.com/browse/' + body.key );
@@ -838,7 +838,7 @@ function cmd_befehl2(lang, mclang, msg, args, title, cmd) {
 }
 
 function cmd_multiline(lang, msg, args, line) {
-	msg.react('440871715938238494');
+	msg.reactEmoji('error');
 }
 
 function cmd_voice(lang, msg, args, line) {
@@ -888,6 +888,27 @@ String.prototype.toSection = function() {
 
 String.prototype.wikicode = function() {
 	return this.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' );
+};
+
+Object.prototype.reactEmoji = function(name) {
+	var emoji = '440871715938238494';
+	switch ( name ) {
+		case 'nowiki':
+			emoji = '505884572001763348';
+			break;
+		case 'error':
+			emoji = '440871715938238494';
+			break;
+		case 'support':
+			emoji = '448222377009086465';
+			break;
+		case 'oppose':
+			emoji = '448222455425794059';
+			break;
+		default:
+			emoji = '440871715938238494';
+	}
+	return this.react(emoji);
 };
 
 
