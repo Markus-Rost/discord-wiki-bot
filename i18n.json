@@ -1,4 +1,25 @@
 {
+	"allLangs": [
+		{
+			"en": "en",
+			"english": "en",
+			"de": "de",
+			"german": "de",
+			"deutsch": "de",
+			"fr": "fr",
+			"french": "fr",
+			"français": "fr",
+			"pl": "pl",
+			"polish": "pl",
+			"polski": "pl"
+		},
+		[
+			"English",
+			"German",
+			"French",
+			"Polish"
+		]
+	],
 	"en": {
 		"__translator": [
 			"MarkusRost",
