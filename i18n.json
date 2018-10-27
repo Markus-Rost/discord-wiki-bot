@@ -40,7 +40,7 @@
 			"wikis": "Link to the wiki: `https://<wiki>.gamepedia.com/`",
 			"nolangs": "the specified language is not supported!",
 			"wiki": "the default wiki for this server is:",
-			"lang": "the language for this server is:",
+			"lang": "the language for this server is: `English`",
 			"nowiki": "no wiki is set for this server yet.",
 			"channel": "the default wiki for this channel is:"
 		},
@@ -178,7 +178,7 @@
 			"wikis": "Link zum Wiki: `https://<Wiki>.gamepedia.com/`",
 			"nolangs": "die angegebende Sprache wird nicht unterstützt!",
 			"wiki": "das Standard-Wiki für diesen Server ist:",
-			"lang": "die Sprache für diesen Server ist:",
+			"lang": "die Sprache für diesen Server ist: `Deutsch`",
 			"nowiki": "für diesen Server wurde noch kein Wiki festgelegt.",
 			"channel": "das Standard-Wiki für diesen Kanal ist:"
 		},
@@ -329,7 +329,7 @@
 			"wikis": "Lien vers le wiki: `https://<wiki>.gamepedia.com/`",
 			"nolangs": "la langue spécifiée n'est pas supportée !",
 			"wiki": "le wiki associé à ce serveur est :",
-			"lang": "la langue pour ce serveur est :",
+			"lang": "la langue pour ce serveur est : `Français`",
 			"nowiki": "aucun wiki n'est encore défini pour ce serveur.",
 			"channel": "le wiki associé à ce salon est :"
 		},
@@ -476,7 +476,7 @@
 			"wikis": "Link do wiki: `https://<wiki>.gamepedia.com/`",
 			"nolangs": "podany język nie jest wspierany!",
 			"wiki": "domyślną wiki dla tego serwera jest:",
-			"lang": "językiem tego serwera jest:",
+			"lang": "językiem tego serwera jest: `Polski`",
 			"nowiki": "żadna wiki nie została przypisana do tego serwera",
 			"channel": "domyślną wiki dla tego kanału jest:"
 		},
