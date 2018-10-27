@@ -106,14 +106,14 @@ function cmd_settings(lang, msg, args, line) {
 		if ( args.length ) {
 			if ( args[0] ) args[0] = args[0].toLowerCase();
 			if ( args[1] ) args[1] = args[1].toLowerCase();
-			var langs = '\n' + lang.settings.langs + ' `' + Object.keys(i18n).join(', ') + '`';
+			var langs = '\n' + lang.settings.langs + ' `' + i18n.allLangs[1].join(', ') + '`';
 			var wikis = '\n' + lang.settings.wikis;
 			var nolangs = lang.settings.nolangs + langs;
 			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})/
 			if ( msg.guild.id in settings ) {
 				if ( args[0] == 'lang' ) {
 					if ( args[1] ) {
-						if ( args[1] in i18n ) edit_settings(lang, msg, 'lang', args[1]);
+						if ( args[1] in i18n.allLangs[0] ) edit_settings(lang, msg, 'lang', i18n.allLangs[0][args[1]]);
 						else msg.reply( nolangs );
 					} else msg.reply( lang.settings.lang + ' `' + settings[msg.guild.id].lang + '`' + langs );
 				} else if ( args[0] == 'wiki' ) {
@@ -132,7 +132,7 @@ function cmd_settings(lang, msg, args, line) {
 			} else {
 				if ( args[0] == 'lang' ) {
 					if ( args[1] ) {
-						if ( args[1] in i18n ) edit_settings(lang, msg, 'lang', args[1]);
+						if ( args[1] in i18n.allLangs[0] ) edit_settings(lang, msg, 'lang', i18n.allLangs[0][args[1]]);
 						else msg.reply( nolangs );
 					} else msg.reply( lang.settings.lang + ' `' + settings['default'].lang + '`' + langs );
 				} else if ( args[0] == 'wiki' ) {
