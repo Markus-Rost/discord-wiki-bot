@@ -115,7 +115,7 @@ function cmd_settings(lang, msg, args, line) {
 					if ( args[1] ) {
 						if ( args[1] in i18n.allLangs[0] ) edit_settings(lang, msg, 'lang', i18n.allLangs[0][args[1]]);
 						else msg.reply( nolangs );
-					} else msg.reply( lang.settings.lang + ' `' + settings[msg.guild.id].lang + '`' + langs );
+					} else msg.reply( lang.settings.lang + langs );
 				} else if ( args[0] == 'wiki' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
@@ -134,7 +134,7 @@ function cmd_settings(lang, msg, args, line) {
 					if ( args[1] ) {
 						if ( args[1] in i18n.allLangs[0] ) edit_settings(lang, msg, 'lang', i18n.allLangs[0][args[1]]);
 						else msg.reply( nolangs );
-					} else msg.reply( lang.settings.lang + ' `' + settings['default'].lang + '`' + langs );
+					} else msg.reply( lang.settings.lang + langs );
 				} else if ( args[0] == 'wiki' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
