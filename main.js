@@ -325,7 +325,8 @@ function cmd_eval(lang, msg, args, line) {
 			var text = error.name + ': ' + error.message;
 		}
 		console.log( text );
-		msg.channel.send( '```js\n' + text + '```', {split:{prepend:'```js\n',append:'```'}} ).catch( err => msg.channel.send( '```js\n' + err.name + ': ' + err.message + '```', {split:{prepend:'```js\n',append:'```'}} ) );
+		if ( text == '[object Promise]' ) msg.react('✅');
+		else msg.channel.send( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}} ).catch( err => msg.channel.send( '```js\n' + err.name + ': ' + err.message + '\n```', {split:{prepend:'```js\n',append:'\n```'}} ) );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
 		msg.react('❌');
 	}
