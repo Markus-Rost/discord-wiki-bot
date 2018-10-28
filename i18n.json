@@ -168,7 +168,7 @@
 			"umfrage": "poll"
 		},
 		"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
-		"disclaimer": "Ich bin ein kleiner Bot mit der Aufage auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von %s in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot!**",
+		"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von %s in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot!**",
 		"helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
 		"settings": {
 			"save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
