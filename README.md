@@ -31,7 +31,7 @@ For a full list with all administrator commands use `!wiki help admin`
 | --- | --- |
 | `!wiki help admin` | **Wiki-Bot** will list all administrator commands. |
 | `!wiki settings` | **Wiki-Bot** will change the settings for the server. |
-| `!wiki settings lang <lang>` | **Wiki-Bot** will change the language for the server. |
+| `!wiki settings lang <language>` | **Wiki-Bot** will change the language for the server. |
 | `!wiki settings wiki <wiki>` | **Wiki-Bot** will change the default wiki for the server. |
 | `!wiki settings channel <wiki>` | **Wiki-Bot** will change the default wiki for the current channel. |
 | `!wiki poll <question as free text>` | **Wiki-Bot** will create a poll and react with `:support:` and `:oppose:`. |
