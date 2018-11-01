@@ -1032,3 +1032,8 @@ client.on('guildDelete', guild => {
 
 
 client.login(process.env.token);
+
+
+client.on('error', error => {
+	console.log( '- ' + error.name + ': ' + error.message );
+});
