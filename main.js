@@ -101,33 +101,38 @@ var minecraftcmdmap = {
 
 function cmd_settings(lang, msg, args, line) {
 	if ( admin(msg) ) {
-		if ( msg.guild.id in settings ) var text = lang.settings.current + '\n`' + process.env.prefix + ' settings lang` – ' + settings[msg.guild.id].lang + '\n`' + process.env.prefix + ' settings wiki` – ' + settings[msg.guild.id].wiki;
-		else var text = lang.settings.missing.replace( '%1$s', '`' + process.env.prefix + ' settings lang`' ).replace( '%2$s', '`' + process.env.prefix + ' settings wiki`' );
+		if ( msg.guild.id in settings ) {
+			var text = lang.settings.current.replace( '%s', '- `' + process.env.prefix + ' settings lang`' ) + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/ - `' + process.env.prefix + ' settings wiki`' + ( settings[msg.guild.id].channels && msg.channel.id in settings[msg.guild.id].channels ? lang.settings.currentchannel + ' https://' + settings[msg.guild.id].channels[msg.channel.id] + '.gamepedia.com/ - `' + process.env.prefix + ' settings channel`' : '' );
+		} else {
+			var text = lang.settings.missing.replace( '%1$s', '`' + process.env.prefix + ' settings lang`' ).replace( '%2$s', '`' + process.env.prefix + ' settings wiki`' );
+		}
 		if ( args.length ) {
 			if ( args[0] ) args[0] = args[0].toLowerCase();
 			if ( args[1] ) args[1] = args[1].toLowerCase();
-			var langs = '\n' + lang.settings.langs + ' `' + i18n.allLangs[1].join(', ') + '`';
-			var wikis = '\n' + lang.settings.wikis;
-			var nolangs = lang.settings.nolangs + langs;
+			var langs = '\n' + lang.settings.langhelp.replace( '%s', process.env.prefix + ' settings lang' ) + ' `' + i18n.allLangs[1].join(', ') + '`';
+			var wikis = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings wiki' );
+			var channels = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings channel' );
+			var nolangs = lang.settings.langinvalid + langs;
 			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})/
 			if ( msg.guild.id in settings ) {
+				var current	= args[0] + ( line == 'changed' ? line : '' );
 				if ( args[0] == 'lang' ) {
 					if ( args[1] ) {
 						if ( args[1] in i18n.allLangs[0] ) edit_settings(lang, msg, 'lang', i18n.allLangs[0][args[1]]);
 						else msg.reply( nolangs );
-					} else msg.reply( lang.settings.lang + langs );
+					} else msg.reply( lang.settings[current] + langs );
 				} else if ( args[0] == 'wiki' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
 						else cmd_settings(lang, msg, ['wiki'], line);
-					} else msg.reply( lang.settings.wiki + '\nhttps://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
+					} else msg.reply( lang.settings[current] + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
 				} else if ( args[0] == 'channel' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'channel', regex.exec(args[1])[1]);
 						else cmd_settings(lang, msg, ['channel'], line);
 					} else if ( settings[msg.guild.id].channels && msg.channel.id in settings[msg.guild.id].channels ) {
-						msg.reply( lang.settings.channel + '\nhttps://' + settings[msg.guild.id].channels[msg.channel.id] + '.gamepedia.com/' + wikis );
-					} else msg.reply( lang.settings.channel + '\nhttps://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
+						msg.reply( lang.settings[current] + ' https://' + settings[msg.guild.id].channels[msg.channel.id] + '.gamepedia.com/' + channels );
+					} else msg.reply( lang.settings[current] + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + channels );
 				} else msg.reply( text );
 			} else {
 				if ( args[0] == 'lang' ) {
@@ -139,7 +144,7 @@ function cmd_settings(lang, msg, args, line) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
 						else cmd_settings(lang, msg, ['wiki'], line);
-					} else msg.reply( lang.settings.nowiki + wikis );
+					} else msg.reply( lang.settings.wikimissing + wikis );
 				} else msg.reply( text );
 			}
 		} else msg.reply( text );
@@ -199,7 +204,7 @@ function edit_settings(lang, msg, key, value) {
 				else {
 					settings = Object.assign({}, temp_settings);
 					if ( key == 'lang' ) lang = i18n[value];
-					cmd_settings(lang, msg, [key], '');
+					cmd_settings(lang, msg, [key], 'changed');
 					console.log( '- Einstellungen erfolgreich aktualisiert.' );
 				}
 				
@@ -297,10 +302,9 @@ function cmd_say(lang, msg, args, line) {
 
 function cmd_test(lang, msg, args, line) {
 	if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		var text = '';
+		var text = lang.test.default;
 		var x = Math.floor(Math.random() * lang.test.random);
 		if ( x < lang.test.text.length ) text = lang.test.text[x];
-		else text = lang.test.default;
 		msg.reply( text );
 		console.log( '- Dies ist ein Test: Voll funktionsfähig!' );
 	} else {
@@ -347,7 +351,7 @@ function cmd_pause(lang, msg, args, line) {
 		if ( pause[msg.guild.id] ) {
 			msg.reply( 'ich bin wieder wach!' );
 			console.log( '- Ich bin wieder wach!' );
-			pause[msg.guild.id] = false;
+			delete pause[msg.guild.id];
 		} else {
 			msg.reply( 'ich lege mich nun schlafen!' );
 			console.log( '- Ich lege mich nun schlafen!' );
@@ -843,11 +847,8 @@ function cmd_multiline(lang, msg, args, line) {
 }
 
 function cmd_voice(lang, msg, args, line) {
-	if ( admin(msg) ) {
-		msg.reply( lang.voice.text + '\n`' + lang.voice.channel + ' – <' + lang.voice.name + '>`' );
-	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
-	}
+	if ( admin(msg) && !args.length ) msg.reply( lang.voice.text + '\n`' + lang.voice.channel + ' – <' + lang.voice.name + '>`' );
+	else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 }
 
 function mention(msg, arg) {
@@ -985,12 +986,12 @@ client.on('voiceStateUpdate', (oldm, newm) => {
 
 
 client.on('guildCreate', guild => {
-	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde zu einem Server hinzugefügt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')' ) );
+	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde zu einem Server hinzugefügt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern.\n(' + guild.id + ')' ) );
 	console.log( '- Ich wurde zu einem Server hinzugefügt.' );
 });
 
 client.on('guildDelete', guild => {
-	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde von einem Server entfernt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern\n' + guild.channels.find( channel => channel.type == 'text' ).toString() + ' (' + guild.id + ')' ) );
+	client.fetchUser(process.env.owner).then( owner => owner.send( 'Ich wurde von einem Server entfernt:\n\n' + '"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern.\n(' + guild.id + ')' ) );
 	console.log( '- Ich wurde von einem Server entfernt.' );
 	
 	if ( !guild.available ) {
