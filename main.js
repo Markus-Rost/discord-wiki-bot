@@ -149,13 +149,13 @@ function cmd_settings(lang, msg, args, line) {
 			}
 		} else msg.reply( text );
 	} else {
-		msg.react('❌');
+		msg.reactEmoji('❌');
 	}
 }
 
 function edit_settings(lang, msg, key, value) {
 	var hourglass;
-	msg.react('⏳').then( function( reaction ) {
+	msg.reactEmoji('⏳').then( function( reaction ) {
 		hourglass = reaction;
 		if ( settings == defaultSettings ) {
 			console.log( '- Fehler beim Erhalten bestehender Einstellungen.' );
@@ -258,7 +258,7 @@ function cmd_help(lang, msg, args, line) {
 				}
 			}
 			
-			if ( cmdlist == '' ) msg.react('❓');
+			if ( cmdlist == '' ) msg.reactEmoji('❓');
 			else msg.channel.send( cmdlist, {split:true} );
 		}
 	}
@@ -296,7 +296,7 @@ function cmd_say(lang, msg, args, line) {
 			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) ), error => msg.reactEmoji('error') );
 		}
 	} else {
-		msg.react('❌');
+		msg.reactEmoji('❌');
 	}
 }
 
@@ -329,10 +329,10 @@ function cmd_eval(lang, msg, args, line) {
 			var text = error.name + ': ' + error.message;
 		}
 		console.log( text );
-		if ( text == '[object Promise]' ) msg.react('✅');
+		if ( text == '[object Promise]' ) msg.reactEmoji('✅');
 		else msg.channel.send( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}} ).catch( err => msg.channel.send( '```js\n' + err.name + ': ' + err.message + '\n```', {split:{prepend:'```js\n',append:'\n```'}} ) );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
-		msg.react('❌');
+		msg.reactEmoji('❌');
 	}
 }
 
@@ -379,7 +379,7 @@ function cmd_delete(lang, msg, args, line) {
 			msg.reply( lang.delete.invalid );
 		}
 	} else {
-		msg.react('❌');
+		msg.reactEmoji('❌');
 	}
 }
 
@@ -407,7 +407,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 	else if ( invoke.startsWith(lang.search.user.female + ':') ) cmd_user(lang, msg, title.substr(lang.search.user.female.length + 1).toTitle(), wiki, title.toTitle());
 	else {
 		var hourglass;
-		msg.react('⏳').then( function( reaction ) {
+		msg.reactEmoji('⏳').then( function( reaction ) {
 			hourglass = reaction;
 			request( {
 				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&iwurl=true&redirects=true&titles=' + encodeURI( title ),
@@ -436,7 +436,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 								}
 								else {
 									if ( srbody.query.searchinfo.totalhits == 0 ) {
-										msg.react('🤷');
+										msg.reactEmoji('🤷');
 									}
 									else if ( srbody.query.searchinfo.totalhits == 1 ) {
 										msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.toTitle() + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ) );
@@ -506,7 +506,7 @@ function cmd_umfrage(lang, msg, args, line) {
 			cmd_help(lang, msg, args, line);
 		}
 	} else {
-		msg.react('❌');
+		msg.reactEmoji('❌');
 	}
 }
 
@@ -529,7 +529,7 @@ function cmd_user(lang, msg, username, wiki, title) {
 		msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + title );
 	} else {
 		var hourglass;
-		msg.react('⏳').then( function( reaction ) {
+		msg.reactEmoji('⏳').then( function( reaction ) {
 			hourglass = reaction;
 			request( {
 				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURI( username ),
@@ -547,7 +547,7 @@ function cmd_user(lang, msg, username, wiki, title) {
 				}
 				else {
 					if ( body.query.users[0].missing == "" || body.query.users[0].invalid == "" ) {
-						msg.react('🤷');
+						msg.reactEmoji('🤷');
 					}
 					else {
 						username = body.query.users[0].name.replace( / /g, '_' );
@@ -644,7 +644,7 @@ function cmd_diff(lang, msg, args, wiki) {
 		}
 		else {
 			var hourglass;
-			msg.react('⏳').then( function( reaction ) {
+			msg.reactEmoji('⏳').then( function( reaction ) {
 				hourglass = reaction;
 				request( {
 					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&prop=revisions&rvprop=' + ( title ? '&titles=' + title : '&revids=' + revision ) + '&rvdiffto=' + diff,
@@ -748,7 +748,7 @@ function cmd_diffsend(lang, msg, args, wiki) {
 
 function cmd_random(lang, msg, wiki) {
 	var hourglass;
-	msg.react('⏳').then( function( reaction ) {
+	msg.reactEmoji('⏳').then( function( reaction ) {
 		hourglass = reaction;
 		request( {
 			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=random&rnnamespace=0',
@@ -776,7 +776,7 @@ function cmd_random(lang, msg, wiki) {
 function cmd_bug(lang, mclang, msg, args, title, cmd) {
 	if ( args.length && /\d+$/.test(args[0]) && !args[1] ) {
 		var hourglass;
-		msg.react('⏳').then( function( reaction ) {
+		msg.reactEmoji('⏳').then( function( reaction ) {
 			hourglass = reaction;
 			var project = '';
 			if ( /^\d+$/.test(args[0]) ) project = 'MC-';
@@ -792,7 +792,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd) {
 				else {
 					if ( body.errorMessages || body.errors ) {
 						if ( body.errorMessages && body.errorMessages[0] == 'Issue Does Not Exist' ) {
-							msg.react('❓');
+							msg.reactEmoji('❓');
 						}
 						else {
 							msg.channel.send( mclang.bug.private + '\nhttps://bugs.mojang.com/browse/' + project + args[0] );
@@ -825,7 +825,7 @@ function cmd_befehl(lang, mclang, msg, befehl, args, title, cmd) {
 		msg.channel.send( '```md\n' + cmdSyntax + '```<https://' + mclang.link + '.gamepedia.com/' + mclang.cmd.page + aliasCmd + '>', {split:{maxLength:2000,prepend:'```md\n',append:'```'}} );
 	}
 	else {
-		msg.react('❓');
+		msg.reactEmoji('❓');
 		msg.notminecraft = true;
 		cmd_link(lang, msg, title, mclang.link, cmd);
 	}
@@ -908,9 +908,9 @@ Object.prototype.reactEmoji = function(name) {
 			emoji = '448222455425794059';
 			break;
 		default:
-			emoji = '440871715938238494';
+			emoji = name;
 	}
-	return this.react(emoji);
+	return this.react(emoji).catch( error => console.log( '- ' + error.name + ': ' + error.message ) );
 };
 
 
@@ -1036,5 +1036,5 @@ client.login(process.env.token);
 
 
 client.on('error', error => {
-	console.log( '- ' + error.name + ': ' + error.message );
+	console.log( '--- ERROR: ' + new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' }) + ' ---\n- ' + error.name + ': ' + error.message );
 });
