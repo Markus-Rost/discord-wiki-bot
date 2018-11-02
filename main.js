@@ -113,7 +113,9 @@ function cmd_settings(lang, msg, args, line) {
 			var wikis = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings wiki' );
 			var channels = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings channel' );
 			var nolangs = lang.settings.langinvalid + langs;
-			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})/
+			var nowikis = lang.settings.wikiinvalid + wikis;
+			var nochannels = lang.settings.wikiinvalid + channels;
+			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})(?:\.gamepedia\.com|$)/
 			if ( msg.guild.id in settings ) {
 				var current	= args[0] + ( line == 'changed' ? line : '' );
 				if ( args[0] == 'lang' ) {
@@ -124,12 +126,12 @@ function cmd_settings(lang, msg, args, line) {
 				} else if ( args[0] == 'wiki' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
-						else cmd_settings(lang, msg, ['wiki'], line);
+						else msg.reply( nowikis );
 					} else msg.reply( lang.settings[current] + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
 				} else if ( args[0] == 'channel' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'channel', regex.exec(args[1])[1]);
-						else cmd_settings(lang, msg, ['channel'], line);
+						else msg.reply( nochannels );
 					} else if ( settings[msg.guild.id].channels && msg.channel.id in settings[msg.guild.id].channels ) {
 						msg.reply( lang.settings[current] + ' https://' + settings[msg.guild.id].channels[msg.channel.id] + '.gamepedia.com/' + channels );
 					} else msg.reply( lang.settings[current] + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + channels );
@@ -143,7 +145,7 @@ function cmd_settings(lang, msg, args, line) {
 				} else if ( args[0] == 'wiki' ) {
 					if ( args[1] ) {
 						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
-						else cmd_settings(lang, msg, ['wiki'], line);
+						else msg.reply( nowikis );
 					} else msg.reply( lang.settings.wikimissing + wikis );
 				} else msg.reply( text );
 			}
