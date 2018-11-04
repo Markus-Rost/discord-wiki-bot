@@ -12,13 +12,16 @@
 			"français": "fr",
 			"pl": "pl",
 			"polish": "pl",
-			"polski": "pl"
+			"polski": "pl",
+			"brazilian portuguese": "pt-br",
+			"português brasileiro": "pt-br"
 		},
 		[
 			"English",
 			"German",
 			"French",
-			"Polish"
+			"Polish",
+			"Brazilian Portuguese"
 		]
 	],
 	"en": {
@@ -624,5 +627,176 @@
 				{ "cmd": "purge <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "hide": true, "admin": true }
 			]
 		}
+	},
+	"pt-br": {
+		"__translator": [
+			"Eduaddad",
+			"Jhonabf"
+		],
+		"lang": "pt-br",
+		"aliase": {
+			"usuário": "user",
+			"Usuário:": "User:",
+			"aleatório": "random",
+			"comando": "command",
+			"erro": "bug",
+			"página": "page",
+			"ajuda": "help",
+			"ajuda administrador": "help admin",
+			"configurar": "settings",
+			"configurar idioma": "settings lang",
+			"configurar wiki": "settings wiki",
+			"configurar canal": "settings channel",
+			"enquete": "poll",
+			"teste": "test",
+			"dizer": "say",
+			"dizer alarme": "say alarm",
+			"excluir": "delete",
+			"purgue": "delete",
+			"purgar": "delete",
+			"limpar": "delete",
+		},
+		"missingperm": "Eu estou perdendo algumas permissões para este comando:",
+		"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia. %s me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Curse/Gamepedia e sou uma ferramenta não oficial!**",
+		"helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
+		"settings": {
+			"save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
+			"missing": "este servidor ainda não está configurado. Use %1$s e %2$s para alterar as configurações.",
+			"current": "Esta é a configuração atual para este servidor::\nIdioma: `Português Brasileiro` %s\nWiki padrão:",
+			"currentchannel": "\nWiki do canal:",
+			"lang": "o iddioma para este servidor é: `Português Brasileiro`",
+			"langinvalid": "o idioma especificado não é suportado!",
+			"langchanged": "você mudou o idioma deste servidor para: `Português Brasileiro`",
+			"langhelp": "Use `%s <language>` para mudar o idioma.\nIdiomas atualmente suportados são:",
+			"wikimissing": "nenhuma wiki padrão está configurado para este servidor ainda!",
+			"wiki": "a wiki padrão para este servidor é:",
+			"wikiinvalid": "por favor, forneça um link válido para uma wiki da Gamepedia!",
+			"wikichanged": "você mudou a wiki padrão para este servidor para:",
+			"wikihelp": "Use `%s <wiki>` para alterar a wiki padrão.\nLink para a wiki: `https://<wiki>.gamepedia.com/`",
+			"channel": "a wiki padrão para este canal é:",
+			"channelchanged": "você mudou a wiki padrão para este canal para:"
+		},
+		"voice": {
+			"text": "Eu tento dar a todos em um canal de voz um papel específico:",
+			"name": "nome do canal de voz",
+			"channel": "Canal de voz",
+			"join": "%1$s juntou-se ao canal de voz \"%2$s\".",
+			"left": "%1$s deixou o canal de voz \"%2$s\"."
+		},
+		"user": {
+			"talk": "discussão:",
+			"gender": {
+				"unknown": "Desconhecido",
+				"male": "Masculino",
+				"female": "Feminino"
+			},
+			"dateformat": "pt-BR",
+			"group": [
+				["global_bot", "Robô da gamepedia"],
+				["hydra_staff", "Equipe da Gamepedia"],
+				["bot", "Robô"],
+				["bureaucrat", "Burocrata"],
+				["wiki_guardian", "Guardião da Wiki"],
+				["sysop", "Administrador"],
+				["grasp", "GRASP"],
+				["directors", "Diretor"],
+				["editor", "Editor"],
+				["patrollers", "Patrulheiro"],
+				["autoreview", "revisão automática"],
+				["autopatrol", "autopatrulha"],
+				["user", "Usuário"]
+			],
+			"info": "Gênero: %1$s\nData de registro: %2$s\nContagem de edição: %3$s\nGrupo: %4$s",
+			"blocked": "**Este usuário está bloqueado no momento!**\nBloqueado em %1$s até %2$s pela %3$s razão \"%4$s\".",
+			"until_infinity": "o fim de todos os dias"
+		},
+		"diff": {
+			"badrev": "pelo menos uma revisão não existe!",
+			"nocomment": "*Nenhuma descrição fornecida*",
+			"notags": "*nenhum*",
+			"hidden": "*oculto*",
+			"info": "Editor: %1$s\nEditar data: %2$s\nDiferença: %3$s Bytes\nComment: %4$s\nTags: %5$s"
+		},
+		"search": {
+			"page": "página",
+			"search": "pesquisar",
+			"user": {
+				"unknown": "usuário",
+				"male": "usuário",
+				"female": "usuária"
+			},
+			"infopage": "Não é o resultado correto? Use %s para um link direto.",
+			"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos."
+		},
+		"invite": {
+			"bot": "Use este link para me convidar para outro servidor:"
+		},
+		"poll": {
+			"title": "**Votação:**\n"
+		},
+		"delete": {
+			"invalid": "o número especificado não é válido.",
+			"success": "as mensagens %s mais recentes neste canal foram deleted.",
+			"big": "o número especificado é muito grande. O máximo é %s!"
+		},
+		"test": {
+			"random": 10,
+			"pause": "Estou atualmente inativo.",
+			"text": [
+				"Eu ainda estou vivo!",
+				"e acredite em mim, eu ainda estou vivo.",
+				"Eu estou fazendo ciência e ainda estou vivo.",
+				"Eu me sinto fantástica e ainda estou viva."
+			],
+			"default": "Eu estou totalmente funcional!"
+		},
+		"help": {
+			"all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os comandos que eu entendo:",
+			"admin": "Esses comandos só podem ser executados por administradores:",
+			"noadmin": "você precisa da permissão de `Gerenciar servidor` para esses comandos!",
+			"emoji": "Estes são todos os emojis do servidor que eu posso usar:",
+			"list": [
+				{ "cmd": "<termo de pesquisa>", "desc": "Eu vou responder com um link para um artigo correspondente no wiki.", "unsearchable": true },
+				{ "cmd": "!<wiki> <termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente na wiki da Gamepedia: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+				{ "cmd": "Usuário:<username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "unsearchable": true },
+				{ "cmd": "usuário <username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "hide": true },
+				{ "cmd": "diff <diff> [<oldid>]", "desc": "Vou responder com um link para o diff na wiki." },
+				{ "cmd": "diff <page name>", "desc": "Vou responder com um link para o último diff no artigo na wiki." },
+				{ "cmd": "random", "desc": "Vou responder com um link para uma página aleatória na wiki." },
+				{ "cmd": "aleatório", "desc": "Vou responder com um link para uma página aleatória na wiki." },
+				{ "cmd": "🎲", "desc": "Vou responder com um link para uma página aleatória na wiki.", "hide": true },
+				{ "cmd": "/<comando do Minecraft>", "desc": "Vou responder com a sintaxe do comando do Minecraft e um link para o artigo do comando na Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+				{ "cmd": "comando <comando do Minecraft>", "desc": Vou responder com a sintaxe do comando do Minecraft e um link para o artigo do comando na Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "cmd <comando do Minecraft>", "desc": "Vou responder com a sintaxe do comando do Minecraft e um link para o artigo do comando na Minecraft Wiki.", "hide": true, "minecraft": true },
+				{ "cmd": "bug <bug do Minecraft>", "desc": "Vou responder com um link para o erro no rastreador de erros do Minecraft.", "minecraft": true },
+				{ "cmd": "erro <erro do Minecraft>", "desc": "Vou responder com um link para o erro no rastreador de erros do Minecraft.", "minecraft": true },
+				{ "cmd": "página <nome da página>", "desc": "Vou responder com um link direto para o artigo na wiki.", "hide": true },
+				{ "cmd": "pesquisar <termo de pesquisa>", "desc": "Vou responder com um link direto para a página de busca de artigo na wiki.", "hide": true },
+				{ "cmd": "info", "desc": "Irei me apresentar." },
+				{ "cmd": "help", "desc": "Vou listar todos os comandos que entendo." },
+				{ "cmd": "ajuda", "desc": "Vou listar todos os comandos que entendo." },
+				{ "cmd": "ajuda <comando do robô>", "desc": "Quer saber como funciona um comando? Deixe-me explicar isso para você!" },
+				{ "cmd": "help <comando do bot>", "desc": "Quer saber como funciona um comando? Deixe-me explicar isso para você!” },
+				{ "cmd": "help admin", "desc": "I will list all administrator commands." },
+				{ "cmd": "ajuda administrador", "desc": "Vou listar todos os comandos do administrador." },
+				{ "cmd": "help admin", "desc": "Vou listar todos os comandos do administrador.", "unsearchable": true, "admin": true },
+				{ "cmd": "ajuda administrador", "desc": "Vou listar todos os comandos do administrador.", "unsearchable": true, "admin": true },
+				{ "cmd": "configurar", "desc": "Vou mudar as configurações deste servidor.", "admin": true },
+				{ "cmd": "configurar idioma <idioma>", "desc": "Vou mudar o idioma deste servidor.", "hide": true, "admin": true },
+				{ "cmd": "configurar wiki <wiki>", "desc": "Vou mudar a wiki padrão para esse servidor.", "hide": true, "admin": true },
+				{ "cmd": "configurar canal <wiki>", "desc": "Vou mudar a wiki padrão para o canal atual.", "hide": true, "admin": true },
+				{ "cmd": "enquete <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com <:support:448222377009086465> e <:oppose:448222455425794059>.", "admin": true },
+				{ "cmd": "enquete <emoji> [<emoji> ...] <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com as respostas possíveis.", "admin": true },
+				{ "cmd": "teste", "desc": "Se estou ativo, respondo! Caso contrário, não." },
+				{ "cmd": "dizer <mensagem>", "desc": "Vou escrever a mensagem dada.", "admin": true },
+				{ "cmd": "dizer alarme <mensagem>", "desc": "Vou escrever a mensagem já pré-formatada: 🚨 **<mensagem>** 🚨", "admin": true },
+				{ "cmd": "delete <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "admin": true },
+				{ "cmd": "excluir <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "admin": true },
+				{ "cmd": "purge <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
+				{ "cmd": "purgar <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
+				{ "cmd": "limpar <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true }
+			]
+		}
 	}
 }
+
