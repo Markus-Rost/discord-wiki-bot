@@ -1853,7 +1853,7 @@
 		"aliase": {
 			"cmd": "command",
 			"comando": "command",
-			"erro": "bug",
+			"erro": "bug"
 		},
 		"bug": {
 			"private": "**Private Issue**"
