@@ -925,7 +925,8 @@ client.on('message', msg => {
 	var cont = msg.content;
 	var author = msg.author;
 	var channel = msg.channel;
-	var permissions = channel.permissionsFor(client.user);
+	if ( channel.type == 'text' ) var permissions = channel.permissionsFor(client.user);
+	else var permissions = new Discord.Permissions(0);
 	if ( cont.toLowerCase().includes( process.env.prefix ) && !msg.webhookID && author.id != client.user.id ) {
 		if ( settings == defaultSettings ) getSettings(setStatus);
 		var setting = Object.assign({}, settings['default']);
