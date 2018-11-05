@@ -319,7 +319,7 @@ function cmd_invite(lang, msg, args, line) {
 	if ( args.length ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 	} else {
-		client.generateInvite(268954689).then( invite => msg.channel.send( lang.invite.bot + '\n<' + invite + '>' ) );
+		client.generateInvite(268954688).then( invite => msg.channel.send( lang.invite.bot + '\n<' + invite + '>' ) );
 	}
 }
 
@@ -925,39 +925,46 @@ client.on('message', msg => {
 	var cont = msg.content;
 	var author = msg.author;
 	var channel = msg.channel;
-	if ( cont.toLowerCase().includes( process.env.prefix ) && !msg.webhookID && author.id != client.user.id && ( channel.type != 'text' || channel.permissionsFor(client.user).has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) ) {
-		if ( settings == defaultSettings ) getSettings(setStatus);
-		var setting = Object.assign({}, settings['default']);
-		if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
-		var lang = i18n[setting.lang];
-		lang.link = setting.wiki;
-		if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
-		var invoke = cont.split(' ')[1] ? cont.split(' ')[1].toLowerCase() : '';
-		var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-		if ( prefix( cont ) && aliasInvoke in multilinecmdmap ) {
-			if ( channel.type != 'text' || channel.permissionsFor(client.user).has('MANAGE_MESSAGES') ) {
-				var args = cont.split(' ').slice(2);
-				console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont );
-				if ( channel.type != 'text' || !pause[msg.guild.id] || ( author.id == process.env.owner && aliasInvoke in pausecmdmap ) ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
+	var permissions = channel.permissionsFor(client.user);
+	if ( cont.toLowerCase().includes( process.env.prefix ) && !msg.webhookID && author.id != client.user.id ) {
+		if ( ( channel.type != 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) ) {
+			if ( settings == defaultSettings ) getSettings(setStatus);
+			var setting = Object.assign({}, settings['default']);
+			if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
+			var lang = i18n[setting.lang];
+			lang.link = setting.wiki;
+			if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
+			var invoke = cont.split(' ')[1] ? cont.split(' ')[1].toLowerCase() : '';
+			var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
+			if ( prefix( cont ) && aliasInvoke in multilinecmdmap ) {
+				if ( channel.type != 'text' || permissions.has('MANAGE_MESSAGES') ) {
+					var args = cont.split(' ').slice(2);
+					console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont );
+					if ( channel.type != 'text' || !pause[msg.guild.id] || ( author.id == process.env.owner && aliasInvoke in pausecmdmap ) ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
+				} else {
+					console.log( msg.guild.name + ': Fehlende Berechtigungen - MANAGE_MESSAGES' );
+					msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
+				}
 			} else {
-				msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
+				msg.cleanContent.replace(/\u200b/g, '').split('\n').forEach( function(line) {
+					if ( prefix( line ) ) {
+						invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
+						var args = line.split(' ').slice(2);
+						aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
+						console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + line );
+						if ( channel.type != 'text' || !pause[msg.guild.id] ) {
+							if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
+							else if ( invoke.startsWith('!') ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
+							else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
+						} else if ( channel.type == 'text' && pause[msg.guild.id] && author.id == process.env.owner && aliasInvoke in pausecmdmap ) {
+							pausecmdmap[aliasInvoke](lang, msg, args, line);
+						}
+					}
+				} );
 			}
 		} else {
-			msg.cleanContent.replace(/\u200b/g, '').split('\n').forEach( function(line) {
-				if ( prefix( line ) ) {
-					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
-					var args = line.split(' ').slice(2);
-					aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-					console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + line );
-					if ( channel.type != 'text' || !pause[msg.guild.id] ) {
-						if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
-						else if ( invoke.startsWith('!') ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
-						else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
-					} else if ( channel.type == 'text' && pause[msg.guild.id] && author.id == process.env.owner && aliasInvoke in pausecmdmap ) {
-						pausecmdmap[aliasInvoke](lang, msg, args, line);
-					}
-				}
-			} );
+			console.log( msg.guild.name + ': Fehlende Berechtigungen - ' + permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) );
+			if ( permissions.has(['SEND_MESSAGES']) ) msg.reply( lang.missingperm + ' `' + permissions.missing(['ADD_REACTIONS','USE_EXTERNAL_EMOJIS']).join('`, `') + '`' );
 		}
 	}
 });
