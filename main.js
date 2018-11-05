@@ -947,8 +947,10 @@ client.on('message', msg => {
 					msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
 				}
 			} else {
+				var count = 0;
 				msg.cleanContent.replace(/\u200b/g, '').split('\n').forEach( function(line) {
-					if ( prefix( line ) ) {
+					if ( prefix( line ) && count < 10 ) {
+						count++;
 						invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
 						var args = line.split(' ').slice(2);
 						aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
