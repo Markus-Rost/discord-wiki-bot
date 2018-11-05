@@ -927,13 +927,13 @@ client.on('message', msg => {
 	var channel = msg.channel;
 	var permissions = channel.permissionsFor(client.user);
 	if ( cont.toLowerCase().includes( process.env.prefix ) && !msg.webhookID && author.id != client.user.id ) {
+		if ( settings == defaultSettings ) getSettings(setStatus);
+		var setting = Object.assign({}, settings['default']);
+		if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
+		var lang = i18n[setting.lang];
+		lang.link = setting.wiki;
+		if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
 		if ( ( channel.type != 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) ) {
-			if ( settings == defaultSettings ) getSettings(setStatus);
-			var setting = Object.assign({}, settings['default']);
-			if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
-			var lang = i18n[setting.lang];
-			lang.link = setting.wiki;
-			if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
 			var invoke = cont.split(' ')[1] ? cont.split(' ')[1].toLowerCase() : '';
 			var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
 			if ( prefix( cont ) && aliasInvoke in multilinecmdmap ) {
