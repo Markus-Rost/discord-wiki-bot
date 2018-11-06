@@ -35,6 +35,7 @@
 			"purge": "delete"
 		},
 		"missingperm": "I'm missing some permissions for this command:",
+		"limit": "🚨 **Stop, you hit a limit!** 🚨\n\n%s, your message contained too many commands!",
 		"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. %s wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**",
 		"helpserver": "For questions and problems please visit my support server:",
 		"settings": {
@@ -177,6 +178,7 @@
 			"umfrage": "poll"
 		},
 		"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
+		"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n%s, deine Nachricht enthält zu viele Befehle!",
 		"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von %s in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot!**",
 		"helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
 		"settings": {
@@ -332,6 +334,7 @@
 			"aide": "help"
 		},
 		"missingperm": "Il me manque certaines permissions pour cette commande :",
+		"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n%s, votre message contient beaucoup trop de commandes !",
 		"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. %s m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**",
 		"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
 		"settings": {
@@ -483,6 +486,7 @@
 			"usuń": "delete"
 		},
 		"missingperm": "Brakuje mi upawnień:",
+		"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n%s, Twoja wiadomość zawiera zbyt wiele komend!",
 		"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki Gamepedii. Zostałem napisany w JavaScript przez %s.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Curse/Gamepedią!**",
 		"helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
 		"settings": {
@@ -643,6 +647,7 @@
 			"limpar": "delete"
 		},
 		"missingperm": "eu estou perdendo algumas permissões para este comando:",
+		"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n%s, sua mensagem continha muitos comandos!",
 		"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia. %s me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Curse/Gamepedia e sou uma ferramenta não oficial!**",
 		"helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
 		"settings": {
