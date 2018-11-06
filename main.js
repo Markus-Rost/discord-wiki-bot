@@ -962,6 +962,11 @@ client.on('message', msg => {
 						} else if ( channel.type == 'text' && pause[msg.guild.id] && author.id == process.env.owner && aliasInvoke in pausecmdmap ) {
 							pausecmdmap[aliasInvoke](lang, msg, args, line);
 						}
+					} else if ( prefix( line ) && count == 10 ) {
+						count++;
+						console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': Nachricht enthält zu viele Befehle!' );
+						msg.reactEmoji('⚠');
+						channel.send( lang.limit.replace( '%s', author.toString() ) ).then( message => message.reactEmoji('⚠') );
 					}
 				} );
 			}
