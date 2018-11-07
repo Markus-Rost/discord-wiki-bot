@@ -75,14 +75,16 @@ var cmdmap = {
 	voice: cmd_voice,
 	settings: cmd_settings,
 	info: cmd_info,
-	eval: cmd_eval
+	eval: cmd_eval,
+	get: cmd_get
 }
 
 var multilinecmdmap = {
 	say: cmd_say,
 	delete: cmd_delete,
 	poll: cmd_umfrage,
-	eval: cmd_eval
+	eval: cmd_eval,
+	get: cmd_get
 }
 
 var pausecmdmap = {
@@ -91,7 +93,8 @@ var pausecmdmap = {
 	pause: cmd_pause,
 	say: cmd_multiline,
 	delete: cmd_multiline,
-	eval: cmd_eval
+	eval: cmd_eval,
+	get: cmd_get
 }
 
 var minecraftcmdmap = {
@@ -102,7 +105,13 @@ var minecraftcmdmap = {
 function cmd_settings(lang, msg, args, line) {
 	if ( admin(msg) ) {
 		if ( msg.guild.id in settings ) {
-			var text = lang.settings.current.replace( '%s', '- `' + process.env.prefix + ' settings lang`' ) + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/ - `' + process.env.prefix + ' settings wiki`' + ( settings[msg.guild.id].channels && msg.channel.id in settings[msg.guild.id].channels ? lang.settings.currentchannel + ' https://' + settings[msg.guild.id].channels[msg.channel.id] + '.gamepedia.com/ - `' + process.env.prefix + ' settings channel`' : '' );
+			var text = lang.settings.current.replace( '%s', '- `' + process.env.prefix + ' settings lang`' ) + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/ - `' + process.env.prefix + ' settings wiki`';
+			if ( settings[msg.guild.id].channels ) {
+				text += '\n' + lang.settings.currentchannel + ' - `' + process.env.prefix + ' settings channel`';
+				Object.keys(settings[msg.guild.id].channels).forEach( function(channel) {
+					text += '\n<#' + channel + '>: https://' + settings[msg.guild.id].channels[channel] + '.gamepedia.com/';
+				} );
+			}
 		} else {
 			var text = lang.settings.missing.replace( '%1$s', '`' + process.env.prefix + ' settings lang`' ).replace( '%2$s', '`' + process.env.prefix + ' settings wiki`' );
 		}
@@ -427,7 +436,7 @@ function cmd_link(lang, msg, title, wiki, cmd) {
 				}
 				else {
 					if ( body.query.pages ) {
-						if ( body.query.pages['-1'] && body.query.pages['-1'].missing != undefined ) {
+						if ( body.query.pages['-1'] && ( ( body.query.pages['-1'].missing != undefined && body.query.pages['-1'].known == undefined ) || body.query.pages['-1'].invalid != undefined ) ) {
 							request( {
 								uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=search&srnamespace=0|4|12|14|10000|10002|10004|10006|10008|10010&srsearch=' + encodeURI( title ) + '&srlimit=1',
 								json: true
@@ -853,6 +862,37 @@ function cmd_voice(lang, msg, args, line) {
 	else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 }
 
+function cmd_get(lang, msg, args, line) {
+	var id = args.join()..replace( /^\\?<(?:!?@|#)(\d+)>$/, '$1' );
+	if ( msg.author.id == process.env.owner && /^\d+$/.test(id) ) {
+		if ( client.guilds.has(id) ) {
+			var guild = client.guilds.get(id);
+			var owner = guild.owner.user.tag;
+			if ( msg.channel.type == 'text' && msg.guild.members.has(guild.ownerID) ) owner = msg.guild.members.get(guild.ownerID).toString();
+			var permissions = ( guild.me.permissions.has(268954688) ? '*none*' : '`' + guild.me.permissions.missing(new Discord.Permissions(268954688).toArray()).join('`, `') + '`' );
+			var guildsettings = ( guild.id in settings ? '```json\n' + JSON.stringify( settings[guild.id], null, '\t' ) + '\n```' : '*default*' );
+			msg.channel.send( 'Guild: ' + guild.name + ' `' + guild.id + '`\nOwner: ' + owner + ' `' + guild.ownerID + '`\nMissing permissions: ' + permissions + '\nSettings: ' + guildsettings, {split:true} );
+		} else if ( client.guilds.some( guild => guild.members.has(id) ) ) {
+			var text = '';
+			client.guilds.filter( guild => guild.members.has(id) ).forEach( function(guild) {
+				var member = guild.members.get(id);
+				if ( !text ) {
+					var user = member.user.tag;
+					if ( msg.channel.type == 'text' && msg.guild.members.has(member.id) ) user = msg.guild.members.get(member.id).toString();
+					text = 'User: ' + user + ' `' + member.id + '`\nGuilds:';
+				}
+				text += '\n' + guild.name + ' `' + guild.id + '`' + ( member.permissions.has('MANAGE_GUILD') ? '\*' : '' );
+			} );
+			msg.channel.send( text, {split:true} );
+		} else if ( client.guilds.some( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ) ) {
+			var channel = client.guilds.find( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ).channels.get(id);
+			var permissions = ( channel.memberPermissions(channel.guild.me).has(268954688) ? '*none*' : '`' + channel.memberPermissions(channel.guild.me).missing(new Discord.Permissions(268954688).toArray()).join('`, `') + '`' );
+			var wiki = ( channel.guild.id in settings ? ( channel.id in settings[channel.guild.id] ? settings[channel.guild.id].channels[channel.id] : settings[channel.guild.id].wiki ) : settings['default'].wiki );
+			msg.channel.send( 'Guild: ' + channel.guild.name + ' `' + channel.guild.id + '`\nChannel: #' + channel.name + ' `' + channel.id + '` ' + channel.toString() + '\nMissing permissions: ' + permissions + '\nDefault Wiki: `' + wiki + '`', {split:true} );
+		} else msg.reply( 'I couldn\'t find a result for `' + id + '`' );
+	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
+}
+
 function mention(msg, arg) {
 	if ( arg == '@' + client.user.username || ( msg.channel.type == 'text' && arg == '@' + msg.guild.me.displayName ) ) return true;
 	else return false;
@@ -964,7 +1004,7 @@ client.on('message', msg => {
 						}
 					} else if ( prefix( line ) && count == 10 ) {
 						count++;
-						console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': Nachricht enthält zu viele Befehle!' );
+						console.log( '- Nachricht enthält zu viele Befehle!' );
 						msg.reactEmoji('⚠');
 						channel.send( lang.limit.replace( '%s', author.toString() ) ).then( message => message.reactEmoji('⚠') );
 					}
