@@ -10,10 +10,10 @@
   "author": "MarkusRost",
   "license": "ISC",
   "dependencies": {
-    "dblapi.js": "^2.2.0",
-    "discord.js": "^11.3.2",
+    "dblapi.js": "^2.3.0",
+    "discord.js": "^11.4.2",
     "full-icu": "^1.2.1",
     "npm": "^5.10.0",
-    "request": "^2.85.0"
+    "request": "^2.88.0"
   }
 }
