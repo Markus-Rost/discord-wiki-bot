@@ -7,8 +7,8 @@ var request = require('request');
 var client = new Discord.Client( {disableEveryone:true} );
 const dbl = new DBL(process.env.dbltoken, {statsInterval:10800000}, client);
 
-var i18n = JSON.parse(fs.readFileSync('i18n.json', 'utf8'));
-var minecraft = JSON.parse(fs.readFileSync('minecraft.json', 'utf8'));
+var i18n = JSON.parse(fs.readFileSync('i18n.json', 'utf8').trim());
+var minecraft = JSON.parse(fs.readFileSync('minecraft.json', 'utf8').trim());
 
 var pause = {};
 
@@ -109,7 +109,7 @@ function cmd_settings(lang, msg, args, line) {
 			if ( settings[msg.guild.id].channels ) {
 				text += '\n' + lang.settings.currentchannel + ' - `' + process.env.prefix + ' settings channel`';
 				Object.keys(settings[msg.guild.id].channels).forEach( function(channel) {
-					text += '\n<#' + channel + '>: https://' + settings[msg.guild.id].channels[channel] + '.gamepedia.com/';
+					text += '\n<#' + channel + '>: <https://' + settings[msg.guild.id].channels[channel] + '.gamepedia.com/>';
 				} );
 			}
 		} else {
