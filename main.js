@@ -863,7 +863,7 @@ function cmd_voice(lang, msg, args, line) {
 }
 
 function cmd_get(lang, msg, args, line) {
-	var id = args.join()..replace( /^\\?<(?:!?@|#)(\d+)>$/, '$1' );
+	var id = args.join().replace( /^\\?<(?:!?@|#)(\d+)>$/, '$1' );
 	if ( msg.author.id == process.env.owner && /^\d+$/.test(id) ) {
 		if ( client.guilds.has(id) ) {
 			var guild = client.guilds.get(id);
