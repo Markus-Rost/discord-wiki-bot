@@ -62,6 +62,10 @@ dbl.on('posted', () => {
 	} );
 } );
 
+dbl.on('error', error => {
+	console.log( '--- DBL-ERROR: ' + new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' }) + ' ---\n- ' + error.name + ': ' + error.message );
+} );
+
 
 var cmdmap = {
 	help: cmd_help,
@@ -197,7 +201,7 @@ function edit_settings(lang, msg, key, value) {
 				uri: process.env.save + process.env.access,
 				body: {
 					branch: 'master',
-					commit_message: 'Wiki-Bot: Einstellungen aktualisiert.',
+					commit_message: client.user.username + ': Einstellungen aktualisiert.',
 					actions: [
 						{
 							action: 'update',
@@ -887,7 +891,7 @@ function cmd_get(lang, msg, args, line) {
 		} else if ( client.guilds.some( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ) ) {
 			var channel = client.guilds.find( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ).channels.get(id);
 			var permissions = ( channel.memberPermissions(channel.guild.me).has(268954688) ? '*none*' : '`' + channel.memberPermissions(channel.guild.me).missing(new Discord.Permissions(268954688).toArray()).join('`, `') + '`' );
-			var wiki = ( channel.guild.id in settings ? ( channel.id in settings[channel.guild.id] ? settings[channel.guild.id].channels[channel.id] : settings[channel.guild.id].wiki ) : settings['default'].wiki );
+			var wiki = ( channel.guild.id in settings ? ( settings[channel.guild.id].channels && channel.id in settings[channel.guild.id].channels ? settings[channel.guild.id].channels[channel.id] : settings[channel.guild.id].wiki ) : settings['default'].wiki );
 			msg.channel.send( 'Guild: ' + channel.guild.name + ' `' + channel.guild.id + '`\nChannel: #' + channel.name + ' `' + channel.id + '` ' + channel.toString() + '\nMissing permissions: ' + permissions + '\nDefault Wiki: `' + wiki + '`', {split:true} );
 		} else msg.reply( 'I couldn\'t find a result for `' + id + '`' );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
