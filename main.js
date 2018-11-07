@@ -353,7 +353,7 @@ function cmd_eval(lang, msg, args, line) {
 
 function cmd_stop(lang, msg, args, line) {
 	if ( msg.author.id == process.env.owner && mention(msg, args.join(' ')) ) {
-		msg.reply( 'ich schalte mich nun aus!' );
+		msg.reply( 'I\'ll turn me off now!' );
 		console.log( '- Ich schalte mich nun aus!' );
 		client.destroy();
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
@@ -364,11 +364,11 @@ function cmd_stop(lang, msg, args, line) {
 function cmd_pause(lang, msg, args, line) {
 	if ( msg.channel.type == 'text' && msg.author.id == process.env.owner && mention(msg, args.join(' ')) ) {
 		if ( pause[msg.guild.id] ) {
-			msg.reply( 'ich bin wieder wach!' );
+			msg.reply( 'I\'m up again!' );
 			console.log( '- Ich bin wieder wach!' );
 			delete pause[msg.guild.id];
 		} else {
-			msg.reply( 'ich lege mich nun schlafen!' );
+			msg.reply( 'I\'m going to sleep now!' );
 			console.log( '- Ich lege mich nun schlafen!' );
 			pause[msg.guild.id] = true;
 		}
@@ -867,24 +867,18 @@ function cmd_voice(lang, msg, args, line) {
 }
 
 function cmd_get(lang, msg, args, line) {
-	var id = args.join().replace( /^\\?<(?:!?@|#)(\d+)>$/, '$1' );
+	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
 	if ( msg.author.id == process.env.owner && /^\d+$/.test(id) ) {
 		if ( client.guilds.has(id) ) {
 			var guild = client.guilds.get(id);
-			var owner = guild.owner.user.tag;
-			if ( msg.channel.type == 'text' && msg.guild.members.has(guild.ownerID) ) owner = msg.guild.members.get(guild.ownerID).toString();
 			var permissions = ( guild.me.permissions.has(268954688) ? '*none*' : '`' + guild.me.permissions.missing(new Discord.Permissions(268954688).toArray()).join('`, `') + '`' );
 			var guildsettings = ( guild.id in settings ? '```json\n' + JSON.stringify( settings[guild.id], null, '\t' ) + '\n```' : '*default*' );
-			msg.channel.send( 'Guild: ' + guild.name + ' `' + guild.id + '`\nOwner: ' + owner + ' `' + guild.ownerID + '`\nMissing permissions: ' + permissions + '\nSettings: ' + guildsettings, {split:true} );
+			msg.channel.send( 'Guild: ' + guild.name + ' `' + guild.id + '`\nOwner: ' + guild.owner.user.tag + ' `' + guild.ownerID + '` ' + guild.owner.toString() + '\nMissing permissions: ' + permissions + '\nSettings: ' + guildsettings, {split:true} );
 		} else if ( client.guilds.some( guild => guild.members.has(id) ) ) {
 			var text = '';
 			client.guilds.filter( guild => guild.members.has(id) ).forEach( function(guild) {
 				var member = guild.members.get(id);
-				if ( !text ) {
-					var user = member.user.tag;
-					if ( msg.channel.type == 'text' && msg.guild.members.has(member.id) ) user = msg.guild.members.get(member.id).toString();
-					text = 'User: ' + user + ' `' + member.id + '`\nGuilds:';
-				}
+				if ( !text ) text = 'User: ' + member.user.tag + ' `' + member.id + '` ' + member.toString() + '\nGuilds:';
 				text += '\n' + guild.name + ' `' + guild.id + '`' + ( member.permissions.has('MANAGE_GUILD') ? '\*' : '' );
 			} );
 			msg.channel.send( text, {split:true} );
