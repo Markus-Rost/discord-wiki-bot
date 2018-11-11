@@ -308,7 +308,7 @@ function cmd_say(lang, msg, args, line) {
 			}
 		}
 		if ( text || imgs[0] ) {
-			msg.channel.send( text, {disableEveryone:false,files:imgs} ).then( message => msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) ), error => msg.reactEmoji('error') );
+			msg.channel.send( text, {disableEveryone:!msg.member.hasPermission(['MENTION_EVERYONE']),files:imgs} ).then( message => msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) ), error => msg.reactEmoji('error') );
 		}
 	} else {
 		msg.reactEmoji('❌');
@@ -526,7 +526,7 @@ function cmd_umfrage(lang, msg, args, line) {
 }
 
 function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
-	msg.channel.send( lang.poll.title + args.slice(i).join(' '), {disableEveryone:false,files:imgs} ).then( poll => {
+	msg.channel.send( lang.poll.title + args.slice(i).join(' '), {disableEveryone:!msg.member.hasPermission(['MENTION_EVERYONE']),files:imgs} ).then( poll => {
 		msg.delete().catch( error => console.log( '- ' + error.name + ': ' + error.message ) );
 		if ( reactions.length ) {
 			reactions.forEach( function(entry) {
@@ -980,7 +980,7 @@ client.on('message', msg => {
 					var args = cont.split(' ').slice(2);
 					console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont );
 					if ( channel.type != 'text' || !pause[msg.guild.id] || ( author.id == process.env.owner && aliasInvoke in pausecmdmap ) ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
-				} else {
+				} else if ( admin(msg) ) {
 					console.log( msg.guild.name + ': Fehlende Berechtigungen - MANAGE_MESSAGES' );
 					msg.reply( lang.missingperm + ' `MANAGE_MESSAGES`' );
 				}
@@ -1008,7 +1008,7 @@ client.on('message', msg => {
 					}
 				} );
 			}
-		} else {
+		} else if ( admin(msg) ) {
 			console.log( msg.guild.name + ': Fehlende Berechtigungen - ' + permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) );
 			if ( permissions.has(['SEND_MESSAGES']) ) msg.reply( lang.missingperm + ' `' + permissions.missing(['ADD_REACTIONS','USE_EXTERNAL_EMOJIS']).join('`, `') + '`' );
 		}
