@@ -41,8 +41,9 @@
 		"settings": {
 			"save_failed": "sadly the settings couldn't be saved, please try again later.",
 			"missing": "this server isn't set up yet. Use %1$s and %2$s to change the settings.",
-			"current": "this are the current settings for this server:\nLanguage: `English` %s\nDefault wiki:",
-			"currentchannel": "Channel wikis",
+			"foundwikis": "Do you mean any of these wikis?",
+			"current": "this are the current settings for this server:\nLanguage: `English` %1$s\nDefault wiki: %2$s\nChannel wikis",
+			"nochannels": "*No channel wikis yet*",
 			"lang": "the language for this server is: `English`",
 			"langinvalid": "the specified language is not supported!",
 			"langchanged": "you changed the language for this server to: `English`",
@@ -85,6 +86,7 @@
 				["autopatrol", "autopatrol"],
 				["user", "User"]
 			],
+			"manager": "Wiki manager",
 			"info": "Gender: %1$s\nRegistration date: %2$s\nEdit count: %3$s\nGroup: %4$s",
 			"blocked": "**This user is currently blocked!**\nBlocked on %1$s until %2$s by %3$s with reason \"%4$s\".",
 			"until_infinity": "the end of all days"
@@ -184,8 +186,9 @@
 		"settings": {
 			"save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
 			"missing": "für diesen Server wurden noch keine Einstellungen vorgenommen. Nutze %1$s und %2$s um die Einstellungen vorzunehmen.",
-			"current": "dies sind die aktuellen Einstellungen für diesen Server:\nSprache: `Deutsch` %s\nStandard-Wiki:",
-			"currentchannel": "Kanal-Wikis",
+			"foundwikis": "Meinst du eines dieser Wikis?",
+			"current": "dies sind die aktuellen Einstellungen für diesen Server:\nSprache: `Deutsch` %1$s\nStandard-Wiki: %2$s\nKanal-Wikis",
+			"nochannels": "*Noch keine Kanal-Wikis*",
 			"lang": "die Sprache für diesen Server ist: `Deutsch`",
 			"langinvalid": "die angegebende Sprache wird nicht unterstützt!",
 			"langchanged": "du hast die Sprache für diesen Server geändert zu: `Deutsch`",
@@ -228,6 +231,7 @@
 				["autopatrol", "autopatrol"],
 				["user", "Benutzer"]
 			],
+			"manager": "Wiki-Manager",
 			"info": "Geschlecht: %1$s\nRegistriert: %2$s\nBearbeitungen: %3$s\nGruppe: %4$s",
 			"blocked": "**Dieser Benutzer ist derzeit gesperrt!**\nGesperrt am %1$s bis zum %2$s von %3$s mit der Begründung \"%4$s\".",
 			"until_infinity": "Ende aller Tage"
@@ -340,8 +344,9 @@
 		"settings": {
 			"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",
 			"missing": "ce serveur n'est pas encore configuré. Utilisez %1$s et %2$s pour modifier les paramètres.",
-			"current": "voici les paramètres actuels pour ce serveur :\n Langue : `Français` %s\nWiki par défaut :",
-			"currentchannel": "Wikis associés aux salons",
+			"foundwikis": "Cherchiez-vous un de ces wikis ?",
+			"current": "voici les paramètres actuels pour ce serveur :\n Langue : `Français` %1$s\nWiki par défaut : %2$s\nWikis associés aux salons",
+			"nochannels": "*Aucun salon n'est associé à un wiki spécifique pour l'instant*",
 			"lang": "la langue pour ce serveur est: `Français`",
 			"langinvalid": "la langue spécifiée n'est pas disponible !",
 			"langchanged": "la langue pour ce serveur a été changé pour : `Français`",
@@ -384,6 +389,7 @@
 				["autopatrol", "autopatrol"],
 				["user", "Utilisateur"]
 			],
+			"manager": "Gestionnaire du wiki",
 			"info": "Genre : %1$s\nDate d'inscription : %2$s\nNombre d'éditions : %3$s\nGroupe : %4$s",
 			"blocked": "**Cet utilisateur est actuellement bloqué !**\nBloqué le %1$s jusqu'au %2$s par %3$s avec la raison \"%4$s\".",
 			"until_infinity": "moment de la fin des jours"
@@ -492,8 +498,9 @@
 		"settings": {
 			"save_failed": "niestety, ustawnienia nie mogły zostać zapisane, spróbuj ponownie później.",
 			"missing": "ten serwer nie został jeszcze skonfigurowany. Użyj %1$s oraz %2$s aby zmienić ustawienia.",
-			"current": "aktualne ustawienia tego serwera:\nJęzyk: `Polski` %s\nDomyślna wiki:",
-			"currentchannel": "Wiki przypisane do kanałów",
+			"foundwikis": "Czy chodziło CI o jedną z tych wiki?",
+			"current": "aktualne ustawienia tego serwera:\nJęzyk: `Polski` %1$s\nDomyślna wiki: %2$s\nWiki przypisane do kanałów",
+			"nochannels": "*Żadna wiki nie jest powiązania z tym kanałem*",
 			"lang": "język ustawiony dla tego serwera: `Polski`",
 			"langinvalid": "podany język nie jest wspierany!",
 			"langchanged": "język tego serwera został zmieniony na: `Polski`",
@@ -536,6 +543,7 @@
 				["autopatrol", "autopatrol"],
 				["user", "Użytkownik"]
 			],
+			"manager": "Menedżer wiki",
 			"info": "Płeć: %1$s\nData rejestracji: %2$s\nIlość edycji: %3$s\nGrupa: %4$s",
 			"blocked": "**Ten użytkownik jest obecnie zablokowany!**\nZablokowany %1$s do %2$s przez %3$s z powodu \"%4$s\".",
 			"until_infinity": "do końca wszechświata"
@@ -653,8 +661,9 @@
 		"settings": {
 			"save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
 			"missing": "este servidor ainda não está configurado. Use %1$s e %2$s para alterar as configurações.",
-			"current": "Esta é a configuração atual para este servidor:\nIdioma: `Português Brasileiro` %s\nWiki padrão:",
-			"currentchannel": "Wiki atribuída aos canais",
+			"foundwikis": "Do you mean any of these wikis?",
+			"current": "Esta é a configuração atual para este servidor:\nIdioma: `Português Brasileiro` %1$s\nWiki padrão: $2%s\nWiki atribuída aos canais",
+			"nochannels": "*No channel wikis yet*",
 			"lang": "o iddioma para este servidor é: `Português Brasileiro`",
 			"langinvalid": "o idioma especificado não é suportado!",
 			"langchanged": "você mudou o idioma deste servidor para: `Português Brasileiro`",
@@ -697,6 +706,7 @@
 				["autopatrol", "autopatrulha"],
 				["user", "Usuário"]
 			],
+			"manager": "Wiki manager",
 			"info": "Gênero: %1$s\nData de registro: %2$s\nContagem de edição: %3$s\nGrupo: %4$s",
 			"blocked": "**Este usuário está bloqueado no momento!**\nBloqueado em %1$s até %2$s pela %3$s razão \"%4$s\".",
 			"until_infinity": "o fim de todos os dias"
