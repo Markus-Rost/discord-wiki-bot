@@ -661,9 +661,9 @@
 		"settings": {
 			"save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
 			"missing": "este servidor ainda não está configurado. Use %1$s e %2$s para alterar as configurações.",
-			"foundwikis": "Do you mean any of these wikis?",
+			"foundwikis": "Você quer dizer algum dessas wikis?",
 			"current": "Esta é a configuração atual para este servidor:\nIdioma: `Português Brasileiro` %1$s\nWiki padrão: $2%s\nWiki atribuída aos canais",
-			"nochannels": "*No channel wikis yet*",
+			"nochannels": "*Nenhuma canal é associado a wiki  específica ainda*",
 			"lang": "o iddioma para este servidor é: `Português Brasileiro`",
 			"langinvalid": "o idioma especificado não é suportado!",
 			"langchanged": "você mudou o idioma deste servidor para: `Português Brasileiro`",
@@ -706,7 +706,7 @@
 				["autopatrol", "autopatrulha"],
 				["user", "Usuário"]
 			],
-			"manager": "Wiki manager",
+			"manager": "Gerente de wiki",
 			"info": "Gênero: %1$s\nData de registro: %2$s\nContagem de edição: %3$s\nGrupo: %4$s",
 			"blocked": "**Este usuário está bloqueado no momento!**\nBloqueado em %1$s até %2$s pela %3$s razão \"%4$s\".",
 			"until_infinity": "o fim de todos os dias"
