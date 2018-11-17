@@ -1,4 +1,6 @@
 const fs = require('fs');
+const util = require('util');
+util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
 const Discord = require('discord.js');
 const DBL = require("dblapi.js");
@@ -58,7 +60,7 @@ function getAllSites() {
 		}
 		else {
 			console.log( '- Wikis erfolgreich ausgelesen.' );
-			allSites = Object.assign([], body.data.wikis.filter( site => /^[a-z\d-]+\.gamepedia\.com$/.test(site.wiki_domain) ));
+			allSites = Object.assign([], body.data.wikis.filter( site => /^[a-z\d-]{1,30}\.gamepedia\.com$/.test(site.wiki_domain) ));
 		}
 	} );
 }
@@ -375,14 +377,14 @@ function cmd_invite(lang, msg, args, line) {
 }
 
 function cmd_eval(lang, msg, args, line) {
-	if ( msg.author.id == process.env.owner && args.length ) {
+	if ( msg.author.id == process.env.owner ) {
 		try {
-			var text = eval( args.join(' ') );
+			var text = util.inspect( eval( args.join(' ') ) );
 		} catch ( error ) {
 			var text = error.toString();
 		}
-		console.log( text );
-		if ( text == '[object Promise]' ) msg.reactEmoji('✅');
+		console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
+		if ( text == 'Promise { <pending> }' ) msg.reactEmoji('✅');
 		else msg.channel.send( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}} ).catch( err => console.log( '- ' + err ) );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
 		msg.reactEmoji('❌');
@@ -1039,7 +1041,7 @@ client.on('message', msg => {
 						console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + line );
 						if ( channel.type != 'text' || !pause[msg.guild.id] ) {
 							if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
-							else if ( invoke.startsWith('!') ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
+							else if ( /^![a-z\d-]{1,30}$/.test(invoke) ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
 							else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), lang.link, ' ');
 						} else if ( channel.type == 'text' && pause[msg.guild.id] && author.id == process.env.owner && aliasInvoke in pausecmdmap ) {
 							pausecmdmap[aliasInvoke](lang, msg, args, line);
