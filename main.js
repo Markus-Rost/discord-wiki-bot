@@ -384,7 +384,7 @@ function cmd_eval(lang, msg, args, line) {
 			var text = error.toString();
 		}
 		console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
-		if ( text == 'Promise { <pending> }' ) msg.reactEmoji('✅');
+		if ( text == 'Promise {\n  <pending>\n}' ) msg.reactEmoji('✅');
 		else msg.channel.send( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}} ).catch( err => console.log( '- ' + err ) );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
 		msg.reactEmoji('❌');
