@@ -383,7 +383,7 @@ function cmd_eval(lang, msg, args, line) {
 		} catch ( error ) {
 			var text = error.toString();
 		}
-		console.log( '--- EVAL START ---\n- ' + text.replace( /\n/g, '\n- ' ) + '\n--- EVAL END ---' );
+		console.log( '--- EVAL START ---\n| ' + text.replace( /\n/g, '\n| ' ) + '\n--- EVAL END ---' );
 		if ( text == 'Promise {\n  <pending>\n}' ) msg.reactEmoji('✅');
 		else msg.channel.send( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}} ).catch( err => console.log( '- ' + err ) );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) {
@@ -712,7 +712,23 @@ function cmd_diff(lang, msg, args, wiki) {
 					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&format=json&prop=ids' + ( title ? '&fromtitle=' + title : '&fromrev=' + revision ) + '&torelative=' + relative,
 					json: true
 				}, function( error, response, body ) {
-					if ( error || !response || !body || ( !body.compare && body.error.code != 'nosuchrevid' ) ) {
+					var noerror = false;
+					if ( body && body.error ) {
+						switch ( body.error.code ) {
+							case 'nosuchrevid':
+								noerror = true;
+								break;
+							case 'missingtitle':
+								noerror = true;
+								break;
+							case 'invalidtitle':
+								noerror = true;
+								break;
+							default:
+								noerror = false;
+						}
+					}
+					if ( error || !response || !body || ( !body.compare && !noerror ) ) {
 						if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 							console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
 							msg.reactEmoji('nowiki');
@@ -723,7 +739,7 @@ function cmd_diff(lang, msg, args, wiki) {
 						}
 					}
 					else {
-						if ( body.error && body.error.code == 'nosuchrevid' ) msg.reply( lang.diff.badrev );
+						if ( noerror ) msg.reply( lang.diff.badrev );
 						else if ( body.compare.fromarchive != undefined || body.compare.toarchive != undefined ) msg.reactEmoji('error');
 						else {
 							var argids = [];
