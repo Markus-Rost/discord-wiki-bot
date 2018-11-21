@@ -15,6 +15,11 @@ var minecraft = JSON.parse(fs.readFileSync('minecraft.json', 'utf8').trim());
 var pause = {};
 var defaultPermissions = new Discord.Permissions(268954688).toArray();
 
+var ready = {
+	settings: true,
+	allSites: true
+}
+
 var defaultSettings = {
 	"default": {
 		"lang": "en",
@@ -24,12 +29,14 @@ var defaultSettings = {
 var settings = defaultSettings;
 
 function getSettings(callback) {
+	ready.settings = true;
 	request( {
 		uri: process.env.read + process.env.file + process.env.access,
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || !body || body.error ) {
 			console.log( '- Fehler beim Erhalten der Einstellungen' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error : '.' ) : '.' ) ) );
+			ready.settings = false;
 		}
 		else {
 			console.log( '- Einstellungen erfolgreich ausgelesen.' );
@@ -51,12 +58,14 @@ var defaultSites = [];
 var allSites = defaultSites;
 
 function getAllSites() {
+	ready.allSites = true;
 	request( {
 		uri: 'https://help.gamepedia.com/api.php?action=allsites&format=json&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,official_wiki,wiki_managers',
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || !body || body.status != 'okay' || !body.data || !body.data.wikis ) {
 			console.log( '- Fehler beim Erhalten der Wikis' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+			ready.allSites = false;
 		}
 		else {
 			console.log( '- Wikis erfolgreich ausgelesen.' );
@@ -210,7 +219,7 @@ function edit_settings(lang, msg, key, value) {
 		if ( settings == defaultSettings ) {
 			console.log( '- Fehler beim Erhalten bestehender Einstellungen.' );
 			msg.reply( lang.settings.save_failed );
-			reaction.removeEmoji();
+			if ( reaction ) reaction.removeEmoji();
 		}
 		else {
 			var temp_settings = Object.assign({}, settings);
@@ -258,7 +267,7 @@ function edit_settings(lang, msg, key, value) {
 					console.log( '- Einstellungen erfolgreich aktualisiert.' );
 				}
 				
-				reaction.removeEmoji();
+				if ( reaction ) reaction.removeEmoji();
 			} );
 		}
 	} );
@@ -509,7 +518,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 									}
 									else {
 										var pagelink = 'https://' + wiki + '.gamepedia.com/' + srbody.query.search[0].title.toTitle() + linksuffix;
-										if ( title.toTitle().toLowerCase() == srbody.query.search[0].title.toTitle().toLowerCase() ) {
+										if ( title.replace( /\-/g, ' ' ).toTitle().toLowerCase() == srbody.query.search[0].title.replace( /\-/g, ' ' ).toTitle().toLowerCase() ) {
 											msg.channel.send( pagelink );
 										}
 										else if ( srbody.query.searchinfo.totalhits == 1 ) {
@@ -540,7 +549,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 					}
 				}
 				
-				reaction.removeEmoji();
+				if ( reaction ) reaction.removeEmoji();
 			} );
 		} );
 	}
@@ -674,7 +683,7 @@ function cmd_user(lang, msg, username, wiki, title, cmd, querystring, fragment) 
 					}
 				}
 				
-				reaction.removeEmoji();
+				if ( reaction ) reaction.removeEmoji();
 			} );
 		} );
 	}
@@ -766,7 +775,7 @@ function cmd_diff(lang, msg, args, wiki) {
 						}
 					}
 					
-					reaction.removeEmoji();
+					if ( reaction ) reaction.removeEmoji();
 				} );
 			} );
 		}
@@ -855,7 +864,7 @@ function cmd_random(lang, msg, wiki) {
 				msg.channel.send( '🎲 https://' + wiki + '.gamepedia.com/' + body.query.random[0].title.toTitle() );
 			}
 			
-			reaction.removeEmoji();
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	} );
 }
@@ -891,7 +900,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment) {
 					}
 				}
 				
-				reaction.removeEmoji();
+				if ( reaction ) reaction.removeEmoji();
 			} );
 		} );
 	}
@@ -1040,8 +1049,8 @@ client.on('message', msg => {
 	if ( channel.type == 'text' ) var permissions = channel.permissionsFor(client.user);
 	
 	if ( cont.toLowerCase().includes( process.env.prefix ) && !msg.webhookID && author.id != client.user.id ) {
-		if ( settings == defaultSettings ) getSettings(setStatus);
-		if ( allSites == defaultSites ) getAllSites();
+		if ( !ready.settings && settings == defaultSettings ) getSettings(setStatus);
+		if ( !ready.allSites && allSites == defaultSites ) getAllSites();
 		var setting = Object.assign({}, settings['default']);
 		if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
 		var lang = i18n[setting.lang];
@@ -1092,8 +1101,8 @@ client.on('message', msg => {
 
 
 client.on('voiceStateUpdate', (oldm, newm) => {
-	if ( settings == defaultSettings ) getSettings(setStatus);
-	if ( allSites == defaultSites ) getAllSites();
+	if ( !ready.settings && settings == defaultSettings ) getSettings(setStatus);
+	if ( !ready.allSites && allSites == defaultSites ) getAllSites();
 	if ( oldm.guild.me.permissions.has('MANAGE_ROLES') && oldm.voiceChannelID != newm.voiceChannelID ) {
 		var setting = Object.assign({}, settings['default']);
 		if ( oldm.guild.id in settings ) setting = Object.assign({}, settings[oldm.guild.id]);
