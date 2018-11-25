@@ -1,0 +1,6 @@
+
+.env
+config*
+node_modules*
+*.bat
+package-lock.json

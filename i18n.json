@@ -64,7 +64,6 @@
 			"left": "%1$s left the voice channel \"%2$s\"."
 		},
 		"user": {
-			"talk": "talk:",
 			"gender": {
 				"unknown": "Unknown",
 				"male": "Male",
@@ -104,11 +103,6 @@
 		"search": {
 			"page": "page",
 			"search": "search",
-			"user": {
-				"unknown": "user",
-				"male": "user",
-				"female": "user"
-			},
 			"infopage": "Not the correct result? Use %s for a direct link.",
 			"infosearch": "Not the correct result? Use %1$s for a direct link or %2$s for a list of all hits."
 		},
@@ -142,7 +136,6 @@
 				{ "cmd": "<search term>", "desc": "I will answer with a link to a matching article in the wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <search term>", "desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 				{ "cmd": "User:<username>", "desc": "I will show some information about the user.", "unsearchable": true },
-				{ "cmd": "user <username>", "desc": "I will show some information about the user.", "hide": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "I will answer with a link to the diff in the wiki." },
 				{ "cmd": "diff <page name>", "desc": "I will answer with a link to the last diff on the article in the wiki." },
 				{ "cmd": "random", "desc": "I will answer with a link to a random page in the wiki." },
@@ -212,7 +205,6 @@
 			"left": "%1$s hat den Sprachkanal \"%2$s\" verlassen."
 		},
 		"user": {
-			"talk": "diskussion:",
 			"gender": {
 				"unknown": "Unbekannt",
 				"male": "Männlich",
@@ -252,11 +244,6 @@
 		"search": {
 			"page": "seite",
 			"search": "suche",
-			"user": {
-				"unknown": "benutzer",
-				"male": "benutzer",
-				"female": "benutzerin"
-			},
 			"infopage": "Nicht das richtige Ergebnis? Nutze %s für einen direkten Link.",
 			"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern."
 		},
@@ -291,9 +278,6 @@
 				{ "cmd": "<Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki.", "unsearchable": true },
 				{ "cmd": "!<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`", "unsearchable": true },
 				{ "cmd": "Benutzer:<Benutzername>", "desc": "Ich liste ein paar Informationen über den Benutzer auf.", "unsearchable": true },
-				{ "cmd": "benutzer <Benutzername>", "desc": "Ich liste ein paar Informationen über den Benutzer auf.", "hide": true },
-				{ "cmd": "benutzerin <Benutzername>", "desc": "Ich liste ein paar Informationen über den Benutzer auf.", "hide": true },
-				{ "cmd": "user <Benutzername>", "desc": "Ich liste ein paar Informationen über den Benutzer auf.", "hide": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Ich verlinke auf die Änderung im Wiki." },
 				{ "cmd": "diff <Seitenname>", "desc": "Ich verlinke auf die letzte Änderung an der Seite im Wiki." },
 				{ "cmd": "random", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki." },
@@ -373,7 +357,6 @@
 			"left": "%1$s a quitté le salon vocal \"%2$s\"."
 		},
 		"user": {
-			"talk": "discussion:",
 			"gender": {
 				"unknown": "Inconnu",
 				"male": "Homme",
@@ -413,11 +396,6 @@
 		"search": {
 			"page": "page",
 			"search": "chercher",
-			"user": {
-				"unknown": "utilisateur",
-				"male": "utilisateur",
-				"female": "utilisatrice"
-			},
 			"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
 			"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances."
 		},
@@ -451,8 +429,6 @@
 				{ "cmd": "<terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur Wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Gamepedia nommé : `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 				{ "cmd": "Utilisateur:<nom d'utilisateur>", "desc": "Je vais montrer quelques informations sur l'utilisateur.", "unsearchable": true },
-				{ "cmd": "utilisateur <nom d'utilisateur>", "desc": "Je vais montrer quelques informations sur l'utilisateur.", "hide": true },
-				{ "cmd": "user <nom d'utilisateur>", "desc": "Je vais montrer quelques informations sur l'utilisateur.", "hide": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Je vais répondre avec un lien vers la diff sur Wiki." },
 				{ "cmd": "diff <nom de la page>", "desc": "Je vais répondre avec un lien vers la dernière diff de l'article sur Wiki." },
 				{ "cmd": "random", "desc": "Je vais répondre avec un lien vers une page du Wiki au hasard." },
@@ -530,7 +506,6 @@
 			"left": "%1$s wyszedł z \"%2$s\"."
 		},
 		"user": {
-			"talk": "dyskusja:",
 			"gender": {
 				"unknown": "Nieznane",
 				"male": "Mężczyzna",
@@ -570,11 +545,6 @@
 		"search": {
 			"page": "strona",
 			"search": "szukaj",
-			"user": {
-				"unknown": "użytkownik",
-				"male": "użytkownik",
-				"female": "użytkowniczka"
-			},
 			"infopage": "Nie to czego szukałeś? Użyj %s dla bezpośredniego linku.",
 			"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników."
 		},
@@ -608,9 +578,6 @@
 				{ "cmd": "<wyszukiwana fraza>", "desc": "Odpowiem linkiem do pasujacego artykułu na Wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <wyszukiwana fraza>", "desc": "Odpowiem z pasującym linkiem do podanej wiki na Gamepedii: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 				{ "cmd": "Użytkownik:<nazwa użytkownika>", "desc": "Pokażę informacje na temat użytkownika.", "unsearchable": true },
-				{ "cmd": "użytkownik <nazwa użytkownika>", "desc": "Pokażę informacje na temat użytkownika.", "hide": true },
-				{ "cmd": "użytkowniczka <nazwa użytkownika>", "desc": "Pokażę informacje na temat użytkownika.", "hide": true },
-				{ "cmd": "user <nazwa użytkownika>", "desc": "Pokażę informacje na temat użytkownika.", "hide": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Odpowiem linkiem do podanej zmiany na Wiki." },
 				{ "cmd": "diff <nazwa strony>", "desc": "Odpowiem linkiem do ostatniej zmiany w podanym artykule na Wiki." },
 				{ "cmd": "random", "desc": "Odpowiem linkiem do losowej strony na wiki." },
@@ -696,7 +663,6 @@
 			"left": "%1$s deixou o canal de voz \"%2$s\"."
 		},
 		"user": {
-			"talk": "discussão:",
 			"gender": {
 				"unknown": "Desconhecido",
 				"male": "Masculino",
@@ -736,11 +702,6 @@
 		"search": {
 			"page": "página",
 			"search": "pesquisar",
-			"user": {
-				"unknown": "usuário",
-				"male": "usuário",
-				"female": "usuária"
-			},
 			"infopage": "Não é o resultado correto? Use %s para um link direto.",
 			"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos."
 		},
@@ -774,9 +735,6 @@
 				{ "cmd": "<termo de pesquisa>", "desc": "Eu vou responder com um link para um artigo correspondente no wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente na wiki da Gamepedia: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 				{ "cmd": "Usuário:<username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "unsearchable": true },
-				{ "cmd": "usuário <username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "hide": true },
-				{ "cmd": "usuária <username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "hide": true },
-				{ "cmd": "user <username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "hide": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Vou responder com um link para o diff na wiki." },
 				{ "cmd": "diff <page name>", "desc": "Vou responder com um link para o último diff no artigo na wiki." },
 				{ "cmd": "random", "desc": "Vou responder com um link para uma página aleatória na wiki." },
