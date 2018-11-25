@@ -857,10 +857,10 @@ function cmd_diffsend(lang, msg, args, wiki) {
 function cmd_random(lang, msg, wiki) {
 	msg.reactEmoji('⏳').then( function( reaction ) {
 		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=random&rnnamespace=0',
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&prop=pageimages|extracts&exintro=true&explaintext=true&generator=random&grnnamespace=0',
 			json: true
 		}, function( error, response, body ) {
-			if ( error || !response || !body || body.batchcomplete == undefined || !body.query || !body.query.random[0] ) {
+			if ( error || !response || !body || body.batchcomplete == undefined || !body.query || !body.query.pages ) {
 				if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
 					msg.reactEmoji('nowiki');
@@ -871,7 +871,16 @@ function cmd_random(lang, msg, wiki) {
 				}
 			}
 			else {
-				msg.channel.send( '🎲 https://' + wiki + '.gamepedia.com/' + body.query.random[0].title.toTitle() );
+				querypage = Object.values(body.query.pages)[0];
+				var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle();
+				var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title ).setURL( pagelink );
+				if ( querypage.extract ) embed.setDescription( querypage.extract );
+				if ( querypage.pageimage ) {
+					var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+					if ( querypage.ns == 6 ) embed.setImage( pageimage );
+					else embed.setThumbnail( pageimage );
+				} else embed.setThumbnail( body.query.general.logo );
+				msg.channel.send( '🎲 ' + pagelink, embed );
 			}
 			
 			if ( reaction ) reaction.removeEmoji();
