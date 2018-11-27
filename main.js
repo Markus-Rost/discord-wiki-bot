@@ -672,7 +672,7 @@ function cmd_user(lang, msg, namespace, username, wiki) {
 					for ( var i = 0; i < lang.user.group.length; i++ ) {
 						if ( groups.includes( lang.user.group[i][0] ) ) {
 							var thisSite = allSites.find( site => site.wiki_domain == wiki + '.gamepedia.com' );
-							if ( lang.user.group[i][0] == 'hydra_staff' && thisSite && thisSite.wiki_managers.toTitle().includes( username ) ) group = lang.user.manager;
+							if ( lang.user.group[i][0] == 'hydra_staff' && thisSite && thisSite.wiki_managers[0].toTitle().includes( username ) ) group = lang.user.manager;
 							else group = lang.user.group[i][1];
 							break;
 						}
