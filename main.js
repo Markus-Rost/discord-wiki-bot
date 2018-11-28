@@ -32,7 +32,10 @@ var settings = defaultSettings;
 function getSettings(callback) {
 	ready.settings = true;
 	request( {
-		uri: process.env.read + process.env.file + process.env.access,
+		uri: process.env.read + process.env.file + process.env.raw,
+		headers: {
+			'PRIVATE-TOKEN': process.env.access
+		},
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || !body || body.error ) {
@@ -243,7 +246,10 @@ function edit_settings(lang, msg, key, value) {
 				}
 			} );
 			request.post( {
-				uri: process.env.save + process.env.access,
+				uri: process.env.save,
+				headers: {
+					'PRIVATE-TOKEN': process.env.access
+				},
 				body: {
 					branch: 'master',
 					commit_message: client.user.username + ': Einstellungen aktualisiert.',
