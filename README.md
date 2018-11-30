@@ -1,12 +1,14 @@
 # Wiki-Bot
 <a href="https://discordbots.org/bot/461189216198590464"><img align="right" src="https://discordbots.org/api/widget/461189216198590464.svg" alt="Wiki-Bot"></a>
-**Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link to [Gamepedia wikis](https://gamepedia.com/).
+**Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link to [Gamepedia wikis](https://www.gamepedia.com/).
 <br>He resolves redirects and follows interwiki links.
 <br>**Wiki-Bot** has translations for English, German, French, Polish and Brazilian Portuguese.
 
 **Wiki-Bot is not affiliated with Curse/Gamepedia and is an unofficial tool!**
 
 [Use this link to invite **Wiki-Bot** to your Discord server.](https://discordapp.com/oauth2/authorize?client_id=461189216198590464&permissions=268954689&scope=bot)
+
+Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
 
 ## Commands
 For a full list with all commands use `!wiki help`

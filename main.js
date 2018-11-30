@@ -342,11 +342,8 @@ function cmd_say(lang, msg, args, line) {
 	args = args.toEmojis();
 	var text = args.join(' ');
 	if ( args[0] == 'alarm' ) text = '🚨 **' + args.slice(1).join(' ') + '** 🚨';
-	var imgs = [];
-	var i = 0;
-	msg.attachments.forEach( function(img) {
-		imgs[i] = {attachment:img.proxyURL,name:img.filename};
-		i++;
+	var imgs = msg.attachments.map( function(img) {
+		return {attachment:img.url,name:img.filename};
 	} );
 	if ( msg.isOwner() ) {
 		try {
@@ -355,7 +352,7 @@ function cmd_say(lang, msg, args, line) {
 			console.log( '- ' + error );
 		}
 	}
-	if ( text || imgs[0] ) {
+	if ( text || imgs.length ) {
 		msg.channel.send( text, {disableEveryone:!msg.member.hasPermission(['MENTION_EVERYONE']),files:imgs} ).then( message => msg.delete().catch( error => console.log( '- ' + error ) ), error => msg.reactEmoji('error') );
 	} else {
 		args[0] = line.split(' ')[1];
@@ -491,8 +488,8 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 					if ( body.query.pages ) {
 						var querypage = Object.values(body.query.pages)[0];
 						if ( ( querypage.ns == 2 || querypage.ns == 202 ) && !querypage.title.includes( '/' ) ) {
-							var userparts = querypage.title.toTitle().split(':');
-							cmd_user(lang, msg, userparts[0] + ':', userparts.slice(1).join(':'), wiki);
+							var userparts = querypage.title.split(':');
+							cmd_user(lang, msg, userparts[0].toTitle() + ':', userparts.slice(1).join(':'), wiki, linksuffix);
 						}
 						else if ( body.query.pages['-1'] && ( ( body.query.pages['-1'].missing != undefined && body.query.pages['-1'].known == undefined ) || body.query.pages['-1'].invalid != undefined ) ) {
 							request( {
@@ -560,7 +557,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 						} else msg.channel.send( inter.url + linksuffix );
 					}
 					else {
-						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.toTitle() );
+						msg.channel.send( 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.toTitle() + linksuffix );
 					}
 				}
 				
@@ -571,16 +568,13 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 }
 
 function cmd_umfrage(lang, msg, args, line) {
-	var imgs = [];
-	var a = 0;
-	msg.attachments.forEach( function(img) {
-		imgs[a] = {attachment:img.proxyURL,name:img.filename};
-		a++;
+	var imgs = msg.attachments.map( function(img) {
+		return {attachment:img.url,name:img.filename};
 	} );
-	if ( args.length || imgs[0] ) {
+	if ( args.length || imgs.length ) {
 		var reactions = [];
 		args = args.toEmojis();
-		for ( var i = 0; ( i < args.length || imgs[0] ); i++ ) {
+		for ( var i = 0; ( i < args.length || imgs.length ); i++ ) {
 			var reaction = args[i];
 			var custom = /^<a?:/;
 			var pattern = /^[\w\säÄöÖüÜßẞ!"#$%&'()*+,./:;<=>?@^`{|}~–[\]\-\\]{2,}/;
@@ -619,7 +613,7 @@ function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
 	}, error => msg.reactEmoji('error') );
 }
 
-function cmd_user(lang, msg, namespace, username, wiki) {
+function cmd_user(lang, msg, namespace, username, wiki, linksuffix) {
 	msg.reactEmoji('⏳').then( function( reaction ) {
 		request( {
 			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ),
@@ -632,7 +626,7 @@ function cmd_user(lang, msg, namespace, username, wiki) {
 				}
 				else {
 					console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + namespace + username + '>' ).then( message => message.reactEmoji('error') );
+					msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + namespace + username.toTitle() + linksuffix + '>' ).then( message => message.reactEmoji('error') );
 				}
 			}
 			else {
@@ -640,7 +634,7 @@ function cmd_user(lang, msg, namespace, username, wiki) {
 					msg.reactEmoji('🤷');
 				}
 				else {
-					username = body.query.users[0].name.toTitle();
+					username = body.query.users[0].name;
 					var timeoptions = {
 						year: 'numeric',
 						month: 'short',
@@ -668,7 +662,7 @@ function cmd_user(lang, msg, namespace, username, wiki) {
 					for ( var i = 0; i < lang.user.group.length; i++ ) {
 						if ( groups.includes( lang.user.group[i][0] ) ) {
 							var thisSite = allSites.find( site => site.wiki_domain == wiki + '.gamepedia.com' );
-							if ( lang.user.group[i][0] == 'hydra_staff' && thisSite && thisSite.wiki_managers[0].toTitle().includes( username ) ) group = lang.user.manager;
+							if ( lang.user.group[i][0] == 'hydra_staff' && thisSite && thisSite.wiki_managers.includes( username ) ) group = lang.user.manager;
 							else group = lang.user.group[i][1];
 							break;
 						}
@@ -686,7 +680,7 @@ function cmd_user(lang, msg, namespace, username, wiki) {
 					}
 					var blockedby = body.query.users[0].blockedby;
 					var blockreason = body.query.users[0].blockreason;
-					msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + namespace + username + '>\n\n' + lang.user.info.replace( '%1$s', gender ).replace( '%2$s', registration ).replace( '%3$s', editcount ).replace( '%4$s', group ) + ( isBlocked ? '\n\n' + lang.user.blocked.replace( '%1$s', blockedtimestamp ).replace( '%2$s', blockexpiry ).replace( '%3$s', blockedby ).replace( '%4$s', blockreason.noWikicode() ) : '' ) );
+					msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + namespace + username.toTitle() + linksuffix + '>\n\n' + lang.user.info.replace( '%1$s', gender ).replace( '%2$s', registration ).replace( '%3$s', editcount ).replace( '%4$s', group ) + ( isBlocked ? '\n\n' + lang.user.blocked.replace( '%1$s', blockedtimestamp ).replace( '%2$s', blockexpiry ).replace( '%3$s', blockedby ).replace( '%4$s', blockreason.noWikicode() ) : '' ) );
 				}
 			}
 			
