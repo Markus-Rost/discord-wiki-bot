@@ -471,7 +471,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 	else {
 		msg.reactEmoji('⏳').then( function( reaction ) {
 			request( {
-				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&iwurl=true&redirects=true&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ),
+				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&iwurl=true' + ( /(?:^|&)redirect=no(?:&|$)/.test( querystring ) ? '' : '&redirects=true' ) + '&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ),
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || !body || body.batchcomplete == undefined || !body.query ) {
