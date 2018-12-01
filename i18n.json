@@ -70,7 +70,7 @@
 				"female": "Female"
 			},
 			"dateformat": "en-US",
-			"group": [
+			"groups": [
 				["global_bot", "Gamepedia bot"],
 				["hydra_staff", "Gamepedia staff"],
 				["bot", "Bot"],
@@ -89,7 +89,12 @@
 				["user", "User"]
 			],
 			"manager": "Wiki manager",
-			"info": "Gender: %1$s\nRegistration date: %2$s\nEdit count: %3$s\nGroup: %4$s",
+			"info": {
+				"gender": "Gender:",
+				"registration": "Registration date:",
+				"editcount": "Edit count:",
+				"group": "Group:"
+			},
 			"blocked": "**This user is currently blocked!**\nBlocked on %1$s until %2$s by %3$s with reason \"%4$s\".",
 			"until_infinity": "the end of all days"
 		},
@@ -98,7 +103,13 @@
 			"nocomment": "*No description provided*",
 			"notags": "*none*",
 			"hidden": "*hidden*",
-			"info": "Editor: %1$s\nEdit date: %2$s\nDifference: %3$s Bytes\nComment: %4$s\nTags: %5$s"
+			"info": {
+				"editor": "Editor:",
+				"timestamp": "Edit date:",
+				"size": "Difference: %s Bytes",
+				"comment": "Comment:",
+				"tags": "Tags:"
+			}
 		},
 		"search": {
 			"page": "page",
@@ -211,7 +222,7 @@
 				"female": "Weiblich"
 			},
 			"dateformat": "de-DE",
-			"group": [
+			"groups": [
 				["global_bot", "Gamepedia-Bot"],
 				["hydra_staff", "Gamepedia-Mitarbeiter"],
 				["bot", "Bot"],
@@ -230,7 +241,12 @@
 				["user", "Benutzer"]
 			],
 			"manager": "Wiki-Manager",
-			"info": "Geschlecht: %1$s\nRegistriert: %2$s\nBearbeitungen: %3$s\nGruppe: %4$s",
+			"info": {
+				"gender": "Geschlecht:",
+				"registration": "Registriert:",
+				"editcount": "Bearbeitungen:",
+				"group": "Gruppe:"
+			},
 			"blocked": "**Dieser Benutzer ist derzeit gesperrt!**\nGesperrt am %1$s bis zum %2$s von %3$s mit der Begründung \"%4$s\".",
 			"until_infinity": "Ende aller Tage"
 		},
@@ -239,7 +255,13 @@
 			"nocomment": "*Keine Zusammenfassung angegeben*",
 			"notags": "*keine*",
 			"hidden": "*versteckt*",
-			"info": "Autor: %1$s\nZeitpunkt: %2$s\nUnterschied: %3$s Bytes\nZusammenfassung: %4$s\nMarkierungen: %5$s"
+			"info": {
+				"editor": "Autor:",
+				"timestamp": "Zeitpunkt:",
+				"size": "Unterschied: %s Bytes",
+				"comment": "Zusammenfassung:",
+				"tags": "Markierungen:"
+			}
 		},
 		"search": {
 			"page": "seite",
@@ -363,7 +385,7 @@
 				"female": "Femme"
 			},
 			"dateformat": "fr-FR",
-			"group": [
+			"groups": [
 				["global_bot", "Robot Gamepedia"],
 				["hydra_staff", "Staff Gamepedia"],
 				["bot", "Robot"],
@@ -382,7 +404,12 @@
 				["user", "Utilisateur"]
 			],
 			"manager": "Gestionnaire du wiki",
-			"info": "Genre : %1$s\nDate d'inscription : %2$s\nNombre d'éditions : %3$s\nGroupe : %4$s",
+			"info": {
+				"gender": "Genre :",
+				"registration": "Date d'inscription :",
+				"editcount": "Nombre d'éditions :",
+				"group": "Groupe :"
+			},
 			"blocked": "**Cet utilisateur est actuellement bloqué !**\nBloqué le %1$s jusqu'au %2$s par %3$s avec la raison \"%4$s\".",
 			"until_infinity": "moment de la fin des jours"
 		},
@@ -391,7 +418,13 @@
 			"nocomment": "*aucune description*",
 			"notags": "*aucune*",
 			"hidden": "*masqué*",
-			"info": "Éditeur : %1$s\nDate : %2$s\nDifférence : %3$s octets\nCommentaire : %4$s\nBalises :  %5$s"
+			"info": {
+				"editor": "Éditeur :",
+				"timestamp": "Date :",
+				"size": "Différence : %s octets",
+				"comment": "Commentaire :",
+				"tags": "Balises :"
+			}
 		},
 		"search": {
 			"page": "page",
@@ -512,7 +545,7 @@
 				"female": "Kobieta"
 			},
 			"dateformat": "pl-PL",
-			"group": [
+			"groups": [
 				["global_bot", "bot Gamepedii"],
 				["hydra_staff", "personel Gamepedii"],
 				["bot", "Bot"],
@@ -531,7 +564,12 @@
 				["user", "Użytkownik"]
 			],
 			"manager": "Menedżer wiki",
-			"info": "Płeć: %1$s\nData rejestracji: %2$s\nIlość edycji: %3$s\nGrupa: %4$s",
+			"info": {
+				"gender": "Płeć:",
+				"registration": "Data rejestracji:",
+				"editcount": "Ilość edycji:",
+				"group": "Grupa:"
+			},
 			"blocked": "**Ten użytkownik jest obecnie zablokowany!**\nZablokowany %1$s do %2$s przez %3$s z powodu \"%4$s\".",
 			"until_infinity": "do końca wszechświata"
 		},
@@ -540,7 +578,13 @@
 			"nocomment": "*Nie podano opisu zmiany*",
 			"notags": "*brak*",
 			"hidden": "*ukryte*",
-			"info": "Autor: %1$s\nData edycji: %2$s\nWielkość zmiany: %3$s bajtów\nKomentarz: %4$s\nTagi: %5$s"
+			"info": {
+				"editor": "Autor:",
+				"timestamp": "Data edycji:",
+				"size": "Wielkość zmiany: %s bajtów",
+				"comment": "Komentarz:",
+				"tags": "Tagi:"
+			}
 		},
 		"search": {
 			"page": "strona",
@@ -669,7 +713,7 @@
 				"female": "Feminino"
 			},
 			"dateformat": "pt-BR",
-			"group": [
+			"groups": [
 				["global_bot", "Robô da gamepedia"],
 				["hydra_staff", "Equipe da Gamepedia"],
 				["bot", "Robô"],
@@ -688,7 +732,12 @@
 				["user", "Usuário"]
 			],
 			"manager": "Gerente de wiki",
-			"info": "Gênero: %1$s\nData de registro: %2$s\nContagem de edição: %3$s\nGrupo: %4$s",
+			"info": {
+				"gender": "Gênero:",
+				"registration": "Data de registro:",
+				"editcount": "Contagem de edição:",
+				"group": "Grupo:"
+			},
 			"blocked": "**Este usuário está bloqueado no momento!**\nBloqueado em %1$s até %2$s pela %3$s razão \"%4$s\".",
 			"until_infinity": "o fim de todos os dias"
 		},
@@ -697,7 +746,13 @@
 			"nocomment": "*Nenhuma descrição fornecida*",
 			"notags": "*nenhum*",
 			"hidden": "*oculto*",
-			"info": "Editor: %1$s\nEditar data: %2$s\nDiferença: %3$s Bytes\nComment: %4$s\nTags: %5$s"
+			"info": {
+				"editor": "Editor:",
+				"timestamp": "Editar data:",
+				"size": "Diferença: %s Bytes",
+				"comment": "Comment:",
+				"tags": "Tags:"
+			}
 		},
 		"search": {
 			"page": "página",
