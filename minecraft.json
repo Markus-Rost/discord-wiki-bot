@@ -5,7 +5,8 @@
 			"cmd": "command"
 		},
 		"bug": {
-			"private": "**Private Issue**"
+			"private": "**Private Issue**",
+			"fixed": "Fixed Version:"
 		},
 		"cmd": {
 			"page": "Commands/",
@@ -471,7 +472,8 @@
 			"fehler": "bug"
 		},
 		"bug": {
-			"private": "**Privater Fehler**"
+			"private": "**Privater Fehler**",
+			"fixed": "Lösungsversion:"
 		},
 		"cmd": {
 			"page": "Befehl/",
@@ -925,7 +927,8 @@
 			"commande": "command"
 		},
 		"bug": {
-			"private": "**Problème privé**"
+			"private": "**Problème privé**",
+			"fixed": "Corrigé lors de la version"
 		},
 		"cmd": {
 			"page": "Commandes#",
@@ -1390,7 +1393,8 @@
 			"komenda": "command"
 		},
 		"bug": {
-			"private": "**Private Issue**"
+			"private": "**Private Issue**",
+			"fixed": "Naprawione w wersji:"
 		},
 		"cmd": {
 			"page": "Komendy#",
@@ -1856,7 +1860,8 @@
 			"erro": "bug"
 		},
 		"bug": {
-			"private": "**Private Issue**"
+			"private": "**Private Issue**",
+			"fixed": "Fixed Version:"
 		},
 		"cmd": {
 			"page": "en:Commands/",
