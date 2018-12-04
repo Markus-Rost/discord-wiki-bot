@@ -252,7 +252,7 @@
 			},
 			"block": {
 				"header": "%s ist derzeit gesperrt!",
-				"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung \"%4$s\".",
+				"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung „%4$s”.",
 				"until_infinity": "Ende aller Tage"
 			}
 		},
@@ -751,8 +751,8 @@
 				"group": "Grupo:"
 			},
 			"block": {
-				"header": "%s está bloqueado no momento!",
-				"text": "Bloqueado em %1$s até %2$s pela %3$s razão \"%4$s\".",
+				"header": "%s está atualmente bloqueado!",
+				"text": "Bloqueado no %1$s até %2$s por %3$s pela razão \"%4$s\".",
 				"until_infinity": "o fim de todos os dias"
 			}
 		},

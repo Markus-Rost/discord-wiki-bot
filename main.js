@@ -478,7 +478,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 	else if ( ( invoke == 'random' || invoke == '🎲' ) && !args.join('') && !linksuffix ) cmd_random(lang, msg, wiki);
 	else if ( invoke == 'page' || invoke == lang.search.page ) msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + args.join('_').toTitle() + linksuffix + '>' );
 	else if ( invoke == 'search' || invoke == lang.search.search ) msg.channel.send( '<https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').toTitle() + linksuffix + '>' );
-	else if ( invoke == 'diff' ) cmd_diff(lang, msg, args, wiki);
+	else if ( invoke == 'diff' && args.length ) cmd_diff(lang, msg, args, wiki);
 	else {
 		msg.reactEmoji('⏳').then( function( reaction ) {
 			request( {

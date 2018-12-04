@@ -1861,7 +1861,7 @@
 		},
 		"bug": {
 			"private": "**Private Issue**",
-			"fixed": "Fixed Version:"
+			"fixed": "Versão corrigida:"
 		},
 		"cmd": {
 			"page": "en:Commands/",
