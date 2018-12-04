@@ -101,12 +101,12 @@
 		"diff": {
 			"badrev": "at least one revision doesn't exist!",
 			"nocomment": "*No description provided*",
-			"notags": "*none*",
 			"hidden": "*hidden*",
 			"info": {
 				"editor": "Editor:",
 				"timestamp": "Edit date:",
-				"size": "Difference: %s Bytes",
+				"size": "Difference:",
+				"bytes": "%s Bytes",
 				"comment": "Comment:",
 				"tags": "Tags:"
 			}
@@ -253,12 +253,12 @@
 		"diff": {
 			"badrev": "mindestens eine Version existiert nicht!",
 			"nocomment": "*Keine Zusammenfassung angegeben*",
-			"notags": "*keine*",
 			"hidden": "*versteckt*",
 			"info": {
 				"editor": "Autor:",
 				"timestamp": "Zeitpunkt:",
-				"size": "Unterschied: %s Bytes",
+				"size": "Unterschied:",
+				"bytes": "%s Bytes",
 				"comment": "Zusammenfassung:",
 				"tags": "Markierungen:"
 			}
@@ -416,12 +416,12 @@
 		"diff": {
 			"badrev": "au moins une des révisions n'existe pas !",
 			"nocomment": "*aucune description*",
-			"notags": "*aucune*",
 			"hidden": "*masqué*",
 			"info": {
 				"editor": "Éditeur :",
 				"timestamp": "Date :",
-				"size": "Différence : %s octets",
+				"size": "Différence :",
+				"bytes": "%s octets",
 				"comment": "Commentaire :",
 				"tags": "Balises :"
 			}
@@ -576,12 +576,12 @@
 		"diff": {
 			"badrev": "przynajmniej jedna zmiana nie istnieje!",
 			"nocomment": "*Nie podano opisu zmiany*",
-			"notags": "*brak*",
 			"hidden": "*ukryte*",
 			"info": {
 				"editor": "Autor:",
 				"timestamp": "Data edycji:",
-				"size": "Wielkość zmiany: %s bajtów",
+				"size": "Wielkość zmiany:",
+				"bytes": "%s bajtów",
 				"comment": "Komentarz:",
 				"tags": "Tagi:"
 			}
@@ -744,12 +744,12 @@
 		"diff": {
 			"badrev": "pelo menos uma revisão não existe!",
 			"nocomment": "*Nenhuma descrição fornecida*",
-			"notags": "*nenhum*",
 			"hidden": "*oculto*",
 			"info": {
 				"editor": "Editor:",
 				"timestamp": "Editar data:",
-				"size": "Diferença: %s Bytes",
+				"size": "Diferença:",
+				"bytes": "%s Bytes",
 				"comment": "Comment:",
 				"tags": "Tags:"
 			}
