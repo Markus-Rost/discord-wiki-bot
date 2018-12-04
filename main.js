@@ -753,9 +753,11 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 						blockexpiry = (new Date(blockexpirydate)).toLocaleString(lang.user.dateformat, timeoptions);
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
-					var blockedby = body.query.users[0].blockedby;
-					var blockreason = body.query.users[0].blockreason;
-					var blocktext = '\n' + lang.user.blocked.replace( '%1$s', username ).replace( '%2$s', blockedtimestamp ).replace( '%3$s', blockexpiry ).replace( '%4$s', blockedby ).replace( '%5$s', blockreason.noWikicode() );
+					if ( isBlocked ) {
+						var blockedby = body.query.users[0].blockedby;
+						var blockreason = body.query.users[0].blockreason;
+						var blocktext = '\n' + lang.user.blocked.replace( '%1$s', username ).replace( '%2$s', blockedtimestamp ).replace( '%3$s', blockexpiry ).replace( '%4$s', blockedby ).replace( '%5$s', blockreason.noWikicode() );
+					}
 					msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + namespace + username.toTitle() + linksuffix + '>\n' + gender + registration + editcount + group + ( isBlocked ? '\n' + blocktext : '' ) );
 				}
 			}
