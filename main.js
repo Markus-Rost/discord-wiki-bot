@@ -637,7 +637,7 @@ function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
 function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 	if ( /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:\/\d\d)?$/.test(username) ) {
 		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ),
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ),
 			json: true
 		}, function( error, response, body ) {
 			if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined || !body.query || !body.query.blocks ) {
@@ -661,15 +661,14 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 					var blockedtimestamp = (new Date(block.timestamp)).toLocaleString(lang.user.dateformat, timeoptions);
 					var blockexpiry = block.expiry;
 					if ( blockexpiry == 'infinity' ) {
-						blockexpiry = lang.user.until_infinity;
+						blockexpiry = lang.user.block.until_infinity;
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
 						blockexpiry = (new Date(blockexpiry)).toLocaleString(lang.user.dateformat, timeoptions);
 					}
-					if ( isBlocked ) return '\n\n' + lang.user.blocked.replace( '%1$s', block.user ).replace( '%2$s', blockedtimestamp ).replace( '%3$s', blockexpiry ).replace( '%4$s', block.by ).replace( '%5$s', block.reason.toPlaintext() );
-					else return '';
-				} ).join('');
+					if ( isBlocked ) return [lang.user.block.header.replace( '%s', block.user ), lang.user.block.text.replace( '%1$s', blockedtimestamp ).replace( '%2$s', blockexpiry ).replace( '%3$s', '[[User:' + block.by + '|' + block.by + ']]' ).replace( '%4$s', block.reason )];
+				} ).filter( block => block != undefined );
 				if ( username.includes( '/' ) ) {
 					var rangeprefix = username;
 					var range = parseInt(username.substr(-2, 2), 10);
@@ -691,8 +690,21 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 						}
 					}
 					else {
-						var editcount = '\n' + lang.user.info.editcount + ' ' + ( username.includes( '/' ) && range != 24 && range != 16 ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' );
-						msg.channel.send( '<https://' + wiki + '.gamepedia.com/Special:Contributions/' + username.toTitle() + '>\n' + editcount + blocks );
+						var editcount = [lang.user.info.editcount, ( username.includes( '/' ) && range != 24 && range != 16 ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
+						
+						var pagelink = 'https://' + wiki + '.gamepedia.com/Special:Contributions/' + username.toTitle();
+						if ( msg.showEmbed() ) {
+							var text = '<' + pagelink + '>';
+							var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], editcount[1] );
+							if ( blocks.length ) blocks.forEach( block => embed.addField( block[0], block[1].toMarkdown(wiki) ) );
+						}
+						else {
+							var embed = {};
+							var text = '<' + pagelink + '>\n\n' + editcount.join(' ');
+							if ( blocks.length ) blocks.forEach( block => text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext() );
+						}
+						
+						msg.channel.send( text, embed );
 					}
 					
 					if ( reaction ) reaction.removeEmoji();
@@ -701,7 +713,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 		} );
 	} else {
 		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ),
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ),
 			json: true
 		}, function( error, response, body ) {
 			if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined || !body.query || !body.query.users[0] ) {
@@ -720,26 +732,26 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 				}
 				else {
 					username = body.query.users[0].name;
-					var gender = '\n' + lang.user.info.gender + ' ';
+					var gender = [lang.user.info.gender];
 					switch (body.query.users[0].gender) {
 						case 'male':
-							gender += lang.user.gender.male;
+							gender.push(lang.user.gender.male);
 							break;
 						case 'female':
-							gender += lang.user.gender.female;
+							gender.push(lang.user.gender.female);
 							break;
 						default: 
-							gender += lang.user.gender.unknown;
+							gender.push(lang.user.gender.unknown);
 					}
-					var registration = '\n' + lang.user.info.registration + ' ' + (new Date(body.query.users[0].registration)).toLocaleString(lang.user.dateformat, timeoptions);
-					var editcount = '\n' + lang.user.info.editcount + ' ' + body.query.users[0].editcount;
+					var registration = [lang.user.info.registration, (new Date(body.query.users[0].registration)).toLocaleString(lang.user.dateformat, timeoptions)];
+					var editcount = [lang.user.info.editcount, body.query.users[0].editcount];
 					var groups = body.query.users[0].groups;
-					var group = '\n' + lang.user.info.group + ' ';
+					var group = [lang.user.info.group];
 					for ( var i = 0; i < lang.user.groups.length; i++ ) {
 						if ( groups.includes( lang.user.groups[i][0] ) ) {
 							var thisSite = allSites.find( site => site.wiki_domain == wiki + '.gamepedia.com' );
-							if ( lang.user.groups[i][0] == 'hydra_staff' && thisSite && thisSite.wiki_managers.includes( username ) ) group += lang.user.manager;
-							else group += lang.user.groups[i][1];
+							if ( lang.user.groups[i][0] == 'hydra_staff' && thisSite && thisSite.wiki_managers.includes( username ) ) group.push(lang.user.manager);
+							else group.push(lang.user.groups[i][1]);
 							break;
 						}
 					}
@@ -747,17 +759,30 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 					var blockedtimestamp = (new Date(body.query.users[0].blockedtimestamp)).toLocaleString(lang.user.dateformat, timeoptions);
 					var blockexpiry = body.query.users[0].blockexpiry;
 					if ( blockexpiry == 'infinity' ) {
-						blockexpiry = lang.user.until_infinity;
+						blockexpiry = lang.user.block.until_infinity;
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						var blockexpirydate = blockexpiry.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z');
 						blockexpiry = (new Date(blockexpirydate)).toLocaleString(lang.user.dateformat, timeoptions);
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
-					var blockedby = body.query.users[0].blockedby;
+					var blockedby = '[[User:' + body.query.users[0].blockedby + '|' + body.query.users[0].blockedby + ']]';
 					var blockreason = body.query.users[0].blockreason;
-					var blocktext = ( isBlocked ? '\n\n' + lang.user.blocked.replace( '%1$s', username ).replace( '%2$s', blockedtimestamp ).replace( '%3$s', blockexpiry ).replace( '%4$s', blockedby ).replace( '%5$s', blockreason.toPlaintext() ) : '' );
-					msg.channel.send( '<https://' + wiki + '.gamepedia.com/' + namespace + username.toTitle() + linksuffix + '>\n' + gender + registration + editcount + group + blocktext );
+					var block = [lang.user.block.header.replace( '%s', username ), lang.user.block.text.replace( '%1$s', blockedtimestamp ).replace( '%2$s', blockexpiry ).replace( '%3$s', blockedby ).replace( '%4$s', blockreason )];
+					
+					var pagelink = 'https://' + wiki + '.gamepedia.com/' + namespace + username.toTitle() + linksuffix;
+					if ( msg.showEmbed() ) {
+						var text = '<' + pagelink + '>';
+						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], editcount[1], true ).addField( group[0], group[1], true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
+						if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki) );
+					}
+					else {
+						var embed = {};
+						var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group.join(' ');
+						if ( isBlocked ) text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
+					}
+					
+					msg.channel.send( text, embed );
 				}
 			}
 			
@@ -1126,7 +1151,7 @@ Array.prototype.toEmojis = function() {
 
 String.prototype.toTitle = function(isMarkdown = false) {
 	var title = this.replace( / /g, '_' ).replace( /\%/g, '%25' ).replace( /\?/g, '%3F' );
-	if ( isMarkdown ) title = title.replace( /\(/g, '%28' ).replace( /\)/g, '%29' );
+	if ( isMarkdown ) title = title.replace( /(\(|\))/g, '\\$1' );
 	return title;
 };
 
@@ -1134,26 +1159,26 @@ String.prototype.toSection = function() {
 	return encodeURIComponent( this.replace( / /g, '_' ) ).replace( /\'/g, '%27' ).replace( /\(/g, '%28' ).replace( /\)/g, '%29' ).replace( /\%/g, '.' );
 };
 
-String.prototype.toMarkdown = function(wiki, title) {
+String.prototype.toMarkdown = function(wiki, title = '') {
 	var text = this;
 	while ( ( link = /\[\[(?:([^\|\]]+)\|)?([^\]]+)\]\]/g.exec(text) ) !== null ) {
 		if ( link[1] ) {
-			var page = ( /^(#|\/)/.test(link[1]) ? ( /^#/.test(link[1]) ? title.toTitle(true) + '#' + link[1].substr(1).toSection() : ( title + link[1] ).toTitle(true) ) : link[1].toTitle(true) );
+			var page = ( /^(#|\/)/.test(link[1]) ? title.toTitle(true) + ( /^#/.test(link[1]) ? '#' + link[1].substr(1).toSection() : link[1].toTitle(true) ) : link[1].toTitle(true) );
 			text = text.replace( link[0], '[' + link[2] + '](https://' + wiki + '.gamepedia.com/' + page + ')');
 		} else {
-			var page = ( /^(#|\/)/.test(link[2]) ? ( /^#/.test(link[2]) ? title.toTitle(true) + '#' + link[2].substr(1).toSection() : ( title + link[2] ).toTitle(true) ) : link[2].toTitle(true) );
+			var page = ( /^(#|\/)/.test(link[2]) ? title.toTitle(true) + ( /^#/.test(link[2]) ? '#' + link[2].substr(1).toSection() : link[2].toTitle(true) ) : link[2].toTitle(true) );
 			text = text.replace( link[0], '[' + link[2] + '](https://' + wiki + '.gamepedia.com/' + page + ')');
 		}
 	}
-	while ( ( link = /\/\*\s*([^\*]+?)\s*\*\//g.exec(text) ) !== null ) {
+	while ( title != '' && ( link = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g.exec(text) ) !== null ) {
 		var page = title.toTitle(true) + '#' + link[1].toSection();
-		text = text.replace( link[0], '[→](https://' + wiki + '.gamepedia.com/' + page + ')' + link[1] + ( link[0] == text ? '' : ':' ) );
+		text = text.replace( link[0], '[→](https://' + wiki + '.gamepedia.com/' + page + ')' + link[1] + ( link[2] ? ': ' + link[2] : '' ) );
 	}
-	return text.replace( /(`|_|\*|~)/g, '\\$1' );
+	return text.replace( /(`|_|\*|~|<|>)/g, '\\$1' );
 };
 
 String.prototype.toPlaintext = function() {
-	return this.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' ).replace( /(`|_|\*|~)/g, '\\$1' );
+	return this.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' ).replace( /(`|_|\*|~|<|>)/g, '\\$1' );
 };
 
 Discord.Message.prototype.reactEmoji = function(name) {

@@ -95,8 +95,11 @@
 				"editcount": "Edit count:",
 				"group": "Group:"
 			},
-			"blocked": "**%1$s is currently blocked!**\nBlocked on %2$s until %3$s by %4$s with reason \"%5$s\".",
-			"until_infinity": "the end of all days"
+			"block": {
+				"header": "%s is currently blocked!",
+				"text": "Blocked on %1$s until %2$s by %3$s with reason \"%4$s\".",
+				"until_infinity": "the end of all days"
+			}
 		},
 		"diff": {
 			"badrev": "at least one revision doesn't exist!",
@@ -247,8 +250,11 @@
 				"editcount": "Bearbeitungen:",
 				"group": "Gruppe:"
 			},
-			"blocked": "**%1$s ist derzeit gesperrt!**\nGesperrt am %2$s bis zum %3$s von %4$s mit der Begründung \"%5$s\".",
-			"until_infinity": "Ende aller Tage"
+			"block": {
+				"header": "%s ist derzeit gesperrt!",
+				"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung \"%4$s\".",
+				"until_infinity": "Ende aller Tage"
+			}
 		},
 		"diff": {
 			"badrev": "mindestens eine Version existiert nicht!",
@@ -410,8 +416,11 @@
 				"editcount": "Nombre d'éditions :",
 				"group": "Groupe :"
 			},
-			"blocked": "**%1$s est actuellement bloqué !**\nBloqué le %2$s jusqu'au %3$s par %4$s avec la raison \"%5$s\".",
-			"until_infinity": "moment de la fin des jours"
+			"block": {
+				"header": "%s est actuellement bloqué !",
+				"text": "Bloqué le %1$s jusqu'au %2$s par %3$s avec la raison \"%4$s\".",
+				"until_infinity": "moment de la fin des jours"
+			}
 		},
 		"diff": {
 			"badrev": "au moins une des révisions n'existe pas !",
@@ -570,8 +579,11 @@
 				"editcount": "Ilość edycji:",
 				"group": "Grupa:"
 			},
-			"blocked": "**%1$s jest obecnie zablokowany!**\nZablokowany %2$s do %3$s przez %4$s z powodu \"%5$s\".",
-			"until_infinity": "do końca wszechświata"
+			"block": {
+				"header": "%s jest obecnie zablokowany!",
+				"text": "Zablokowany %1$s do %2$s przez %3$s z powodu \"%4$s\".",
+				"until_infinity": "do końca wszechświata"
+			}
 		},
 		"diff": {
 			"badrev": "przynajmniej jedna zmiana nie istnieje!",
@@ -738,8 +750,11 @@
 				"editcount": "Contagem de edição:",
 				"group": "Grupo:"
 			},
-			"blocked": "**%1$s está bloqueado no momento!**\nBloqueado em %2$s até %3$s pela %4$s razão \"%5$s\".",
-			"until_infinity": "o fim de todos os dias"
+			"block": {
+				"header": "%s está bloqueado no momento!",
+				"text": "Bloqueado em %1$s até %2$s pela %3$s razão \"%4$s\".",
+				"until_infinity": "o fim de todos os dias"
+			}
 		},
 		"diff": {
 			"badrev": "pelo menos uma revisão não existe!",
