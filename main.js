@@ -1089,22 +1089,54 @@ function cmd_get(lang, msg, args, line) {
 	if ( /^\d+$/.test(id) ) {
 		if ( client.guilds.has(id) ) {
 			var guild = client.guilds.get(id);
-			var permissions = ( guild.me.permissions.has(defaultPermissions) ? '*none*' : '`' + guild.me.permissions.missing(defaultPermissions).join('`, `') + '`' );
-			var guildsettings = ( guild.id in settings ? '```json\n' + JSON.stringify( settings[guild.id], null, '\t' ) + '\n```' : '*default*' );
-			msg.channel.send( 'Guild: ' + guild.name + ' `' + guild.id + '`\nOwner: ' + guild.owner.user.tag + ' `' + guild.ownerID + '` ' + guild.owner.toString() + '\nMissing permissions: ' + permissions + '\nSettings: ' + guildsettings, {split:true} );
+			var guildname = ['Guild:', guild.name + ' `' + guild.id + '`'];
+			var guildowner = ['Owner:', guild.owner.user.tag + ' `' + guild.ownerID + '` ' + guild.owner.toString()];
+			var guildpermissions = ['Missing permissions:', ( guild.me.permissions.has(defaultPermissions) ? '*none*' : '`' + guild.me.permissions.missing(defaultPermissions).join('`, `') + '`' )];
+			var guildsettings = ['Settings:', ( guild.id in settings ? '```json\n' + JSON.stringify( settings[guild.id], null, '\t' ) + '\n```' : '*default*' )];
+			if ( msg.showEmbed() ) {
+				var text = '';
+				var embed = new Discord.RichEmbed().addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildpermissions[0], guildpermissions[1] ).addField( guildsettings[0], guildsettings[1] );
+			}
+			else {
+				var embed = {};
+				var text = guildname.join(' ') + '\n' + guildowner.join(' ') + '\n' + guildpermissions.join(' ') + '\n' + guildsettings.join(' ');
+			}
+			msg.channel.send( text, embed );
 		} else if ( client.guilds.some( guild => guild.members.has(id) ) ) {
-			var text = '';
-			client.guilds.filter( guild => guild.members.has(id) ).forEach( function(guild) {
+			var username = [];
+			var guildlist = ['Guilds:'];
+			var guilds = client.guilds.filter( guild => guild.members.has(id) )
+			guildlist.push('\n' + guilds.map( function(guild) {
 				var member = guild.members.get(id);
-				if ( !text ) text = 'User: ' + member.user.tag + ' `' + member.id + '` ' + member.toString() + '\nGuilds:';
-				text += '\n' + guild.name + ' `' + guild.id + '`' + ( member.permissions.has('MANAGE_GUILD') ? '\*' : '' );
-			} );
-			msg.channel.send( text, {split:true} );
+				if ( !username.length ) username.push('User:', member.user.tag + ' `' + member.id + '` ' + member.toString());
+				return guild.name + ' `' + guild.id + '`' + ( member.permissions.has('MANAGE_GUILD') ? '\\*' : '' );
+			} ).join('\n'));
+			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.size;
+			if ( msg.showEmbed() ) {
+				var text = '';
+				var embed = new Discord.RichEmbed().addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
+			}
+			else {
+				var embed = {};
+				var text = username.join(' ') + '\n' + guildlist.join(' ');
+			}
+			msg.channel.send( text, embed );
 		} else if ( client.guilds.some( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ) ) {
 			var channel = client.guilds.find( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ).channels.get(id);
-			var permissions = ( channel.memberPermissions(channel.guild.me).has(defaultPermissions) ? '*none*' : '`' + channel.memberPermissions(channel.guild.me).missing(defaultPermissions).join('`, `') + '`' );
-			var wiki = ( channel.guild.id in settings ? ( settings[channel.guild.id].channels && channel.id in settings[channel.guild.id].channels ? settings[channel.guild.id].channels[channel.id] : settings[channel.guild.id].wiki ) : settings['default'].wiki );
-			msg.channel.send( 'Guild: ' + channel.guild.name + ' `' + channel.guild.id + '`\nChannel: #' + channel.name + ' `' + channel.id + '` ' + channel.toString() + '\nMissing permissions: ' + permissions + '\nDefault Wiki: `' + wiki + '`', {split:true} );
+			var wiki = '<https://' +  + '.gamepedia.com/>';
+			var channelguild = ['Guild:', channel.guild.name + ' `' + channel.guild.id + '`'];
+			var channelname = ['Channel:', '#' + channel.name + ' `' + channel.id + '` ' + channel.toString()];
+			var channelpermissions = ['Missing permissions:', ( channel.memberPermissions(channel.guild.me).has(defaultPermissions) ? '*none*' : '`' + channel.memberPermissions(channel.guild.me).missing(defaultPermissions).join('`, `') + '`' )];
+			var channelwiki = ['Default Wiki:', 'https://' + ( channel.guild.id in settings ? ( settings[channel.guild.id].channels && channel.id in settings[channel.guild.id].channels ? settings[channel.guild.id].channels[channel.id] : settings[channel.guild.id].wiki ) : settings['default'].wiki ) + '.gamepedia.com/'];
+			if ( msg.showEmbed() ) {
+				var text = '';
+				var embed = new Discord.RichEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channelwiki[0], channelwiki[1] );
+			}
+			else {
+				var embed = {};
+				var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>';
+			}
+			msg.channel.send( text, embed );
 		} else msg.reply( 'I couldn\'t find a result for `' + id + '`' );
 	} else if ( msg.channel.type != 'text' || !pause[msg.guild.id] ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
 }
