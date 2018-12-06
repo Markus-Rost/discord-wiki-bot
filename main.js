@@ -1044,7 +1044,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment) {
 					}
 					else {
 						var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
-						var fixed = ( body.fields.fixVersions.length ? mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ') : '' );
+						var fixed = ( body.fields.resolution && body.fields.fixVersions.length ? mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ') : '' );
 						msg.channel.sendMsg( status + body.fields.summary + '\n<https://bugs.mojang.com/browse/' + body.key + '>\n' + fixed );
 					}
 				}
