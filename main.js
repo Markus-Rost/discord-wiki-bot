@@ -392,15 +392,15 @@ function cmd_invite(lang, msg, args, line) {
 	}
 }
 
-function cmd_eval(lang, msg, args, line) {
+async function cmd_eval(lang, msg, args, line) {
 	try {
-		var text = util.inspect( eval( args.join(' ') ) );
+		var text = util.inspect( await eval( args.join(' ') ) );
 	} catch ( error ) {
 		var text = error.name + ': ' + error.message;
 	}
-	console.log( '--- EVAL START ---\n\u200b' + text.replace( /\n/g, '\n\u200b' ) + '\n--- EVAL END ---' );
-	if ( text == 'Promise {\n  <pending>\n}' ) msg.reactEmoji('✅');
+	if ( text.length > 2000 ) msg.reactEmoji('✅');
 	else msg.channel.sendMsg( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}} );
+	if ( isDebug ) console.log( '--- EVAL START ---\n\u200b' + text.replace( /\n/g, '\n\u200b' ) + '\n--- EVAL END ---' );
 }
 
 async function cmd_stop(lang, msg, args, line) {
@@ -533,6 +533,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 											if ( querypage.ns == 6 ) embed.setImage( pageimage );
 											else embed.setThumbnail( pageimage );
 										} else embed.setThumbnail( body.query.general.logo );
+										
 										if ( title.replace( /\-/g, ' ' ).toTitle().toLowerCase() == querypage.title.replace( /\-/g, ' ' ).toTitle().toLowerCase() ) {
 											msg.channel.sendMsg( pagelink, embed );
 										}
@@ -561,6 +562,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 								if ( querypage.ns == 6 ) embed.setImage( pageimage );
 								else embed.setThumbnail( pageimage );
 							} else embed.setThumbnail( body.query.general.logo );
+							
 							msg.channel.sendMsg( pagelink, embed );
 							
 							if ( reaction ) reaction.removeEmoji();
@@ -996,6 +998,7 @@ function cmd_random(lang, msg, wiki) {
 					if ( querypage.ns == 6 ) embed.setImage( pageimage );
 					else embed.setThumbnail( pageimage );
 				} else embed.setThumbnail( body.query.general.logo );
+				
 				msg.channel.sendMsg( '🎲 ' + pagelink, embed );
 			}
 			
@@ -1440,7 +1443,7 @@ async function graceful(code = 1) {
 		console.log( '- SIGTERM: Client wird zerstört...' );
 		await client.destroy();
 		setTimeout( async () => {
-			console.log( '- SIGTERM: Ich brauche zu lange zum Beenden, terminieren!' );
+			console.log( '- SIGTERM: Beenden dauert zu lange, terminieren!' );
 			process.exit(code);
 		}, 1000 ).unref();
 	}, 10000 ).unref();
