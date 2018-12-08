@@ -85,13 +85,13 @@ client.on('ready', () => {
 	getSettings(setStatus);
 	getAllSites();
 	
-	client.setInterval( () => {
+	if ( !isDebug ) client.setInterval( () => {
 		console.log( '- Anzahl der Server: ' + client.guilds.size );
 		dbl.postStats(client.guilds.size).catch( () => {} );
 		request.post( {
-			uri: 'https://bots.discord.pw/api/bots/' + client.user.id + '/stats',
-			headers: {authorization: process.env.dbpwtoken},
-			body: {server_count: client.guilds.size},
+			uri: 'https://discord.bots.gg/api/v1/bots/' + client.user.id + '/stats',
+			headers: {Authorization: process.env.dbggtoken},
+			body: {guildCount: client.guilds.size},
 			json: true
 		} );
 	}, 10800000);
