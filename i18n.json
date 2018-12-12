@@ -140,7 +140,8 @@
 				"I'm doing science and I'm still alive.",
 				"I feel fantastic and I'm still alive."
 			],
-			"default": "I'm fully functional!"
+			"default": "I'm fully functional!",
+			"time": "Response time"
 		},
 		"help": {
 			"all": "So, you want to know what things I can do? Here is a list of all commands that I understand:",
@@ -296,7 +297,8 @@
 				"hast du **Kekse** gesagt?",
 				"hast du **Kekse** gesagt?"
 			],
-			"default": "ich bin voll funktionsfähig!"
+			"default": "ich bin voll funktionsfähig!",
+			"time": "Ping"
 		},
 		"help": {
 			"all": "Du willst also wissen, was ich so drauf habe? Hier ist eine Liste aller Befehle, die ich verstehe:",
@@ -461,7 +463,8 @@
 				"Je fais de la science et je suis toujours en vie.",
 				"Je me sens fantastique et je suis toujours en vie."
 			],
-			"default": "Je suis entièrement fonctionnel !"
+			"default": "Je suis entièrement fonctionnel !",
+			"time": "Temps de latence"
 		},
 		"help": {
 			"all": "Donc, vous voulez savoir ce que je peux faire ? Voici une liste de toutes les commandes que je comprends :",
@@ -624,7 +627,8 @@
 				"Myślę, więc jestem.",
 				"Czuję się fantastycznie."
 			],
-			"default": "Jestem w pełni funkcjonalny!"
+			"default": "Jestem w pełni funkcjonalny!",
+			"time": "Czas odpowiedzi"
 		},
 		"help": {
 			"all": "A więc chcesz wiedzieć co potrafię? Tutaj jest lista komend, które rozumiem:",
@@ -795,7 +799,8 @@
 				"eu estou fazendo ciência e ainda estou vivo.",
 				"eu me sinto fantástica e ainda estou viva."
 			],
-			"default": "eu estou totalmente funcional!"
+			"default": "eu estou totalmente funcional!",
+			"time": "Ping"
 		},
 		"help": {
 			"all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os comandos que eu entendo:",

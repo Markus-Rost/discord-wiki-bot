@@ -12,8 +12,8 @@ const isDebug = ( process.argv[2] == 'debug' ? true : false );
 var client = new Discord.Client( {disableEveryone:true} );
 const dbl = new DBL(process.env.dbltoken);
 
-var i18n = JSON.parse(fs.readFileSync('i18n.json', 'utf8').trim());
-var minecraft = JSON.parse(fs.readFileSync('minecraft.json', 'utf8').trim());
+var i18n = require('./i18n.json');
+var minecraft = require('./minecraft.json');
 
 var pause = {};
 var stop = false;
@@ -80,7 +80,7 @@ function getAllSites() {
 	} );
 }
 
-client.on('ready', () => {
+client.on( 'ready', () => {
 	console.log( '- Erfolgreich als ' + client.user.username + ' angemeldet!' );
 	getSettings(setStatus);
 	getAllSites();
@@ -208,7 +208,7 @@ function cmd_settings(lang, msg, args, line) {
 }
 
 function find_wikis(lang, msg, key, value, text) {
-	if ( allSites.find( site => site.wiki_domain == value.join('') + '.gamepedia.com' ) ) edit_settings(lang, msg, key, value.join(''));
+	if ( allSites.some( site => site.wiki_domain == value.join('') + '.gamepedia.com' ) ) edit_settings(lang, msg, key, value.join(''));
 	else {
 		var sites = allSites.filter( site => site.wiki_display_name.toLowerCase().includes( value.join(' ') ) );
 		if ( 0 < sites.length && sites.length < 21 ) {
@@ -377,7 +377,31 @@ function cmd_test(lang, msg, args, line) {
 		var x = Math.floor(Math.random() * lang.test.random);
 		if ( x < lang.test.text.length ) text = lang.test.text[x];
 		console.log( '- Dies ist ein Test: Voll funktionsfähig!' );
-		msg.replyMsg( text );
+		var now = Date.now();
+		msg.replyMsg( text ).then( edit => {
+			var then = Date.now();
+			var embed = new Discord.RichEmbed().setTitle( lang.test.time ).addField( 'Discord', ( then - now ) + 'ms' );
+			now = Date.now();
+			request( {
+				uri: 'https://' + lang.link + '.gamepedia.com/api.php?action=query&format=json',
+				json: true
+			}, function( error, response, body ) {
+				then = Date.now();
+				var ping = ( then - now ) + 'ms';
+				if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined ) {
+					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
+						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+						ping += ' <:unknown_wiki:505887262077353984>';
+					}
+					else {
+						console.log( '- Fehler beim Erreichen des Wikis' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						ping += ' <:error:505887261200613376>';
+					}
+				}
+				embed.addField( lang.link + '.gamepedia.com', ping );
+				edit.edit( edit.content, embed );
+			} );
+		} );
 	} else {
 		console.log( '- Dies ist ein Test: Pausiert!' );
 		msg.replyMsg( lang.test.pause );
@@ -1206,13 +1230,13 @@ String.prototype.toSection = function() {
 
 String.prototype.toMarkdown = function(wiki, title = '') {
 	var text = this;
-	while ( ( link = /\[\[(?:([^\|\]]+)\|)?([^\]]+)\]\]/g.exec(text) ) !== null ) {
+	while ( ( link = /\[\[(?:([^\|\]]+)\|)?([^\]]+)\]\]([a-z]*)/g.exec(text) ) !== null ) {
 		if ( link[1] ) {
 			var page = ( /^(#|\/)/.test(link[1]) ? title.toTitle(true) + ( /^#/.test(link[1]) ? '#' + link[1].substr(1).toSection() : link[1].toTitle(true) ) : link[1].toTitle(true) );
-			text = text.replace( link[0], '[' + link[2] + '](https://' + wiki + '.gamepedia.com/' + page + ')');
+			text = text.replace( link[0], '[' + link[2] + link[3] + '](https://' + wiki + '.gamepedia.com/' + page + ')' );
 		} else {
 			var page = ( /^(#|\/)/.test(link[2]) ? title.toTitle(true) + ( /^#/.test(link[2]) ? '#' + link[2].substr(1).toSection() : link[2].toTitle(true) ) : link[2].toTitle(true) );
-			text = text.replace( link[0], '[' + link[2] + '](https://' + wiki + '.gamepedia.com/' + page + ')');
+			text = text.replace( link[0], '[' + link[2] + link[3] + '](https://' + wiki + '.gamepedia.com/' + page + ')' );
 		}
 	}
 	while ( title != '' && ( link = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g.exec(text) ) !== null ) {
@@ -1276,7 +1300,7 @@ String.prototype.hasPrefix = function(flags = '') {
 	else return false;
 }
 
-client.on('message', msg => {
+client.on( 'message', msg => {
 	if ( stop ) return;
 	
 	var cont = msg.content;
@@ -1291,7 +1315,7 @@ client.on('message', msg => {
 		if ( settings == defaultSettings ) {
 			msg.channel.sendMsg( '⚠ **Limited Functionality** ⚠\nNo settings found, please contact the bot owner!\n' + process.env.invite );
 		} else if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
-		var lang = i18n[setting.lang];
+		var lang = Object.assign({}, i18n[setting.lang]);
 		lang.link = setting.wiki;
 		if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
 		if ( channel.type != 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) {
@@ -1340,10 +1364,10 @@ client.on('message', msg => {
 			if ( permissions.has(['SEND_MESSAGES']) ) msg.replyMsg( lang.missingperm + ' `' + permissions.missing(['ADD_REACTIONS','USE_EXTERNAL_EMOJIS']).join('`, `') + '`' );
 		}
 	}
-});
+} );
 
 
-client.on('voiceStateUpdate', (oldm, newm) => {
+client.on( 'voiceStateUpdate', (oldm, newm) => {
 	if ( stop ) return;
 	
 	if ( !ready.settings && settings == defaultSettings ) getSettings(setStatus);
@@ -1367,15 +1391,15 @@ client.on('voiceStateUpdate', (oldm, newm) => {
 			}
 		}
 	}
-});
+} );
 
 
-client.on('guildCreate', guild => {
+client.on( 'guildCreate', guild => {
 	console.log( '- Ich wurde zu einem Server hinzugefügt.' );
 	client.fetchUser(process.env.owner).then( owner => owner.sendMsg( 'Ich wurde zu einem Server hinzugefügt:\n"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern.\n(' + guild.id + ')' ), log_error );
-});
+} );
 
-client.on('guildDelete', guild => {
+client.on( 'guildDelete', guild => {
 	console.log( '- Ich wurde von einem Server entfernt.' );
 	client.fetchUser(process.env.owner).then( owner => owner.sendMsg( 'Ich wurde von einem Server entfernt:\n"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern.\n(' + guild.id + ')' ), log_error );
 	
@@ -1415,13 +1439,14 @@ client.on('guildDelete', guild => {
 			}
 		} );
 	}
-});
+} );
 
 
 client.login(process.env.token).catch( error => log_error(error, true, 'LOGIN-') );
 
 
-client.on('error', error => error => log_error(error, true));
+client.on( 'error', error => log_error(error, true) );
+client.on( 'warn', console.warn );
 
 
 async function log_error(error, isBig = false, type = '') {
@@ -1449,5 +1474,5 @@ async function graceful(code = 1) {
 	}, 10000 ).unref();
 }
 
-process.once('SIGINT', graceful);
-process.once('SIGTERM', graceful);
+process.once( 'SIGINT', graceful );
+process.once( 'SIGTERM', graceful );
