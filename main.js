@@ -608,9 +608,22 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 						}
 					}
 					else {
-						msg.channel.sendMsg( 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.toTitle() + linksuffix );
+						var pagelink = 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.toTitle() + linksuffix;
+						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage ).setURL( pagelink ).setThumbnail( body.query.general.logo );
+						request( {
+							uri: body.query.general.base
+						}, function( mperror, mpresponse, mpbody ) {
+							if ( mperror || !mpresponse || mpresponse.statusCode != 200 || !mpbody ) {
+								console.log( '- Fehler beim Erhalten der Metadaten' + ( mperror ? ': ' + mperror : ( mpbody ? ( mpbody.error ? ': ' + mpbody.error.info : '.' ) : '.' ) ) );
+							} else {
+								var match = mpbody.match(/<meta name="description" content="(.*)"\/>/);
+								if ( match != null ) embed.setDescription( match[1].substr(0, 2000) );
+							}
+							
+							msg.channel.sendMsg( pagelink, embed );
 						
-						if ( reaction ) reaction.removeEmoji();
+							if ( reaction ) reaction.removeEmoji();
+						} );
 					}
 				}
 			} );
