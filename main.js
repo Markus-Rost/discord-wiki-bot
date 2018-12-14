@@ -167,7 +167,7 @@ function cmd_settings(lang, msg, args, line) {
 			var nolangs = lang.settings.langinvalid + langs;
 			var nowikis = lang.settings.wikiinvalid + wikis;
 			var nochannels = lang.settings.wikiinvalid + channels;
-			var regex = /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})\.gamepedia\.com/
+			var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})\.gamepedia\.com/ );
 			if ( msg.guild.id in settings ) {
 				var current	= args[0] + ( line == 'changed' ? line : '' );
 				if ( args[0] == 'lang' ) {
@@ -177,12 +177,12 @@ function cmd_settings(lang, msg, args, line) {
 					} else msg.replyMsg( lang.settings[current] + langs );
 				} else if ( args[0] == 'wiki' ) {
 					if ( args[1] ) {
-						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
+						if ( regex !== null ) edit_settings(lang, msg, 'wiki', regex[1]);
 						else find_wikis(lang, msg, 'wiki', args[1].split(' '), nowikis);
 					} else msg.replyMsg( lang.settings[current] + ' https://' + settings[msg.guild.id].wiki + '.gamepedia.com/' + wikis );
 				} else if ( args[0] == 'channel' ) {
 					if ( args[1] ) {
-						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'channel', regex.exec(args[1])[1]);
+						if ( regex !== null ) edit_settings(lang, msg, 'channel', regex[1]);
 						else find_wikis(lang, msg, 'channel', args[1].split(' '), nochannels);
 					} else if ( settings[msg.guild.id].channels && msg.channel.id in settings[msg.guild.id].channels ) {
 						msg.replyMsg( lang.settings[current] + ' https://' + settings[msg.guild.id].channels[msg.channel.id] + '.gamepedia.com/' + channels );
@@ -196,7 +196,7 @@ function cmd_settings(lang, msg, args, line) {
 					} else msg.replyMsg( lang.settings.lang + langs );
 				} else if ( args[0] == 'wiki' || args[0] == 'channel' ) {
 					if ( args[1] ) {
-						if ( regex.test(args[1]) ) edit_settings(lang, msg, 'wiki', regex.exec(args[1])[1]);
+						if ( regex !== null ) edit_settings(lang, msg, 'wiki', regex[1]);
 						else find_wikis(lang, msg, 'wiki', args[1].split(' '), nowikis);
 					} else msg.replyMsg( lang.settings.wikimissing + wikis );
 				} else msg.replyMsg( text );
@@ -595,8 +595,8 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 					else if ( body.query.interwiki ) {
 						var inter = body.query.interwiki[0];
 						var intertitle = inter.title.substr(inter.iw.length + 1);
-						var regex = /^(?:https?:)?\/\/(.*)\.gamepedia\.com\//.exec(inter.url);
-						if ( regex != null && selfcall < 3 ) {
+						var regex = inter.url.match( /^(?:https?:)?\/\/(.*)\.gamepedia\.com\// );
+						if ( regex !== null && selfcall < 3 ) {
 							var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replace( intertitle.replace( /\_/g, ' ' ), intertitle );
 							selfcall++;
 							cmd_link(lang, msg, iwtitle, regex[1], ' !' + regex[1] + ' ', querystring, fragment, selfcall);
@@ -616,8 +616,8 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 							if ( mperror || !mpresponse || mpresponse.statusCode != 200 || !mpbody ) {
 								console.log( '- Fehler beim Erhalten der Metadaten' + ( mperror ? ': ' + mperror : ( mpbody ? ( mpbody.error ? ': ' + mpbody.error.info : '.' ) : '.' ) ) );
 							} else {
-								var match = mpbody.match(/<meta name="description" content="(.*)"\/>/);
-								if ( match != null ) embed.setDescription( match[1].substr(0, 2000) );
+								var match = mpbody.match( /<meta name="description" content="(.*)"\/>/ );
+								if ( match !== null ) embed.setDescription( match[1].substr(0, 2000) );
 							}
 							
 							msg.channel.sendMsg( pagelink, embed );
@@ -972,7 +972,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction) {
 					var timestamp = [lang.diff.info.timestamp, (new Date(revisions[0].timestamp)).toLocaleString(lang.user.dateformat, timeoptions)];
 					var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
 					var size = [lang.diff.info.size, lang.diff.info.bytes.replace( '%s', ( difference > 0 ? '+' : '' ) + difference )];
-					var comment = [lang.diff.info.comment, ( revisions[0].commenthidden != undefined ? lang.diff.hidden : ( revisions[0].comment ? revisions[0].comment : lang.diff.nocomment ) )];
+					var comment = [lang.diff.info.comment, ( revisions[0].commenthidden != undefined ? lang.diff.hidden : ( revisions[0].comment ? revisions[0].comment.toFormating(msg.showEmbed(), wiki, title) : lang.diff.nocomment ) )];
 					if ( revisions[0].tags.length ) {
 						var tags = [lang.diff.info.tags, body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
 						var tagregex = /<a [^>]*title="([^"]+)"[^>]*>(.+)<\/a>/g;
@@ -983,7 +983,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction) {
 						var text = '<' + pagelink + '>';
 						var editorlink = '[' + editor[1] + '](https://' + wiki + '.gamepedia.com/User:' + editor[1].toTitle() + ')';
 						if ( /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(editor[1]) ) editorlink = '[' + editor[1] + '](https://' + wiki + '.gamepedia.com/Special:Contributions/' + editor[1].toTitle(true) + ')';
-						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( title + '?diff=' + diff + '&oldid=' + oldid ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], ( comment[1] == lang.diff.nocomment ? comment[1] : comment[1].toMarkdown(wiki, title) ) ).setFooter( timestamp[1] );
+						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( title + '?diff=' + diff + '&oldid=' + oldid ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
 						if ( tags ) {
 							var tagtitle = tags[1].replace( tagregex, '$1' ).toTitle(true);
 							embed.addField( tags[0], tags[1].replace( tagregex, '[$2](https://' + wiki + '.gamepedia.com/' + tagtitle + ')' ) );
@@ -991,7 +991,6 @@ function cmd_diffsend(lang, msg, args, wiki, reaction) {
 					}
 					else {
 						var embed = {};
-						comment[1] = comment[1].toPlaintext();
 						var text = '<' + pagelink + '>\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ') + ( tags ? '\n' + tags.join(' ').replace( tagregex, '$2' ) : '' );
 					}
 					
@@ -1173,7 +1172,6 @@ function cmd_get(lang, msg, args, line) {
 			msg.channel.sendMsg( text, embed );
 		} else if ( client.guilds.some( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ) ) {
 			var channel = client.guilds.find( guild => guild.channels.filter( chat => chat.type == 'text' ).has(id) ).channels.get(id);
-			var wiki = '<https://' +  + '.gamepedia.com/>';
 			var channelguild = ['Guild:', channel.guild.name + ' `' + channel.guild.id + '`'];
 			var channelname = ['Channel:', '#' + channel.name + ' `' + channel.id + '` ' + channel.toString()];
 			var channelpermissions = ['Missing permissions:', ( channel.memberPermissions(channel.guild.me).has(defaultPermissions) ? '*none*' : '`' + channel.memberPermissions(channel.guild.me).missing(defaultPermissions).join('`, `') + '`' )];
@@ -1239,6 +1237,11 @@ String.prototype.toTitle = function(isMarkdown = false) {
 
 String.prototype.toSection = function() {
 	return encodeURIComponent( this.replace( / /g, '_' ) ).replace( /\'/g, '%27' ).replace( /\(/g, '%28' ).replace( /\)/g, '%29' ).replace( /\%/g, '.' );
+};
+
+String.prototype.toFormating = function(showEmbed = false, ...args) {
+	if ( showEmbed ) return this.toMarkdown(...args);
+	else return this.toPlaintext();
 };
 
 String.prototype.toMarkdown = function(wiki, title = '') {

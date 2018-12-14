@@ -730,7 +730,7 @@
 			},
 			"dateformat": "pt-BR",
 			"groups": [
-				["global_bot", "Robô da gamepedia"],
+				["global_bot", "Robô da Gamepedia"],
 				["hydra_staff", "Equipe da Gamepedia"],
 				["bot", "Robô"],
 				["bureaucrat", "Burocrata"],
