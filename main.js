@@ -1334,7 +1334,7 @@ client.on( 'message', msg => {
 		var lang = Object.assign({}, i18n[setting.lang]);
 		lang.link = setting.wiki;
 		if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
-		if ( channel.type != 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) ) {
+		if ( channel.type != 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']) ) {
 			var invoke = cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '';
 			var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
 			var ownercmd = msg.isOwner() && aliasInvoke in ownercmdmap;
@@ -1376,8 +1376,8 @@ client.on( 'message', msg => {
 				} );
 			}
 		} else if ( msg.isAdmin() ) {
-			console.log( msg.guild.name + ': Fehlende Berechtigungen - ' + permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS']) );
-			if ( permissions.has(['SEND_MESSAGES']) ) msg.replyMsg( lang.missingperm + ' `' + permissions.missing(['ADD_REACTIONS','USE_EXTERNAL_EMOJIS']).join('`, `') + '`' );
+			console.log( msg.guild.name + ': Fehlende Berechtigungen - ' + permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']) );
+			if ( permissions.has(['SEND_MESSAGES']) ) msg.replyMsg( lang.missingperm + ' `' + permissions.missing(['ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']).join('`, `') + '`' );
 		}
 	}
 } );
