@@ -160,14 +160,17 @@ function cmd_settings(lang, msg, args, line) {
 		}
 		if ( args.length ) {
 			if ( args[0] ) args[0] = args[0].toLowerCase();
-			if ( args[1] ) args[1] = args.slice(1).join(' ').toLowerCase();
+			var regex = null;
+			if ( args[1] ) {
+				args[1] = args.slice(1).join(' ').toLowerCase();
+				regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d\.]{1,30})(?:\.wikia\.com|$)/ );
+			}
 			var langs = '\n' + lang.settings.langhelp.replace( '%s', process.env.prefix + ' settings lang' ) + ' `' + i18n.allLangs[1].join(', ') + '`';
 			var wikis = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings wiki' );
 			var channels = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings channel' );
 			var nolangs = lang.settings.langinvalid + langs;
 			var nowikis = lang.settings.wikiinvalid + wikis;
 			var nochannels = lang.settings.wikiinvalid + channels;
-			var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})\.gamepedia\.com/ );
 			if ( msg.guild.id in settings ) {
 				var current	= args[0] + ( line == 'changed' ? line : '' );
 				if ( args[0] == 'lang' ) {
