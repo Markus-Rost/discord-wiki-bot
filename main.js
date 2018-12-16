@@ -462,19 +462,24 @@ function cmd_pause(lang, msg, args, line) {
 }
 
 function cmd_delete(lang, msg, args, line) {
-	if ( /^\d+$/.test(args[0]) && parseInt(args[0], 10) + 1 > 0 ) {
-		if ( parseInt(args[0], 10) > 99 ) {
-			msg.replyMsg( lang.delete.big.replace( '%s', '`99`' ) );
+	if ( msg.channel.memberPermissions(msg.member).has('MANAGE_MESSAGES') ) {
+		if ( /^\d+$/.test(args[0]) && parseInt(args[0], 10) + 1 > 0 ) {
+			if ( parseInt(args[0], 10) > 99 ) {
+				msg.replyMsg( lang.delete.big.replace( '%s', '`99`' ) );
+			}
+			else {
+				msg.channel.bulkDelete(parseInt(args[0], 10) + 1, true).then( messages => {
+					msg.reply( lang.delete.success.replace( '%s', messages.size - 1 ) ).then( antwort => antwort.deleteMsg(3000), log_error );
+					console.log( '- Die letzten ' + ( messages.size - 1 ) + ' Nachrichten in #' + msg.channel.name + ' wurden von @' + msg.member.displayName + ' gelöscht!' );
+				}, log_error );
+			}
 		}
 		else {
-			msg.channel.bulkDelete(parseInt(args[0], 10) + 1, true).then( messages => {
-				msg.reply( lang.delete.success.replace( '%s', messages.size - 1 ) ).then( antwort => antwort.deleteMsg(3000), log_error );
-				console.log( '- Die letzten ' + ( messages.size - 1 ) + ' Nachrichten in #' + msg.channel.name + ' wurden von @' + msg.member.displayName + ' gelöscht!' );
-			}, log_error );
+			msg.replyMsg( lang.delete.invalid );
 		}
 	}
 	else {
-		msg.replyMsg( lang.delete.invalid );
+		msg.reactEmoji('❌');
 	}
 }
 
