@@ -390,6 +390,7 @@ function cmd_test(lang, msg, args, line) {
 				json: true
 			}, function( error, response, body ) {
 				then = Date.now();
+				if ( body && body.warnings ) log_warn(body.warnings);
 				var ping = ( then - now ) + 'ms';
 				if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined ) {
 					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
@@ -514,6 +515,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( /(?:^|&)redirect=no(?:&|$)/.test( querystring ) ? '' : '&redirects=true' ) + '&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ),
 				json: true
 			}, function( error, response, body ) {
+				if ( body && body.warnings ) log_warn(body.warnings);
 				if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined || !body.query ) {
 					if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
@@ -545,6 +547,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 								uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content != undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ),
 								json: true
 							}, function( srerror, srresponse, srbody ) {
+								if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
 								if ( srerror || !srresponse || srresponse.statusCode != 200 || !srbody || srbody.batchcomplete == undefined ) {
 									console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
 									msg.channel.sendErrorMsg( '<https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() + '>' );
@@ -699,6 +702,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ),
 			json: true
 		}, function( error, response, body ) {
+			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined || !body.query || !body.query.blocks ) {
 				if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
@@ -739,6 +743,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=usercontribs&ucprop=' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ),
 					json: true
 				}, function( ucerror, ucresponse, ucbody ) {
+					if ( ucbody && ucbody.warnings ) log_warn(ucbody.warnings);
 					if ( ucerror || !ucresponse || ucresponse.statusCode != 200 || !ucbody || ucbody.batchcomplete == undefined || !ucbody.query || !ucbody.query.usercontribs ) {
 						if ( ucbody && ucbody.error && ucbody.error.code == 'baduser_ucuser' ) {
 							msg.reactEmoji('error');
@@ -775,6 +780,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ),
 			json: true
 		}, function( error, response, body ) {
+			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined || !body.query || !body.query.users[0] ) {
 				if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
@@ -897,6 +903,7 @@ function cmd_diff(lang, msg, args, wiki) {
 					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&format=json&prop=ids' + ( title ? '&fromtitle=' + title : '&fromrev=' + revision ) + '&torelative=' + relative,
 					json: true
 				}, function( error, response, body ) {
+					if ( body && body.warnings ) log_warn(body.warnings);
 					if ( error || !response || response.statusCode != 200 || !body || !body.compare ) {
 						var noerror = false;
 						if ( body && body.error ) {
@@ -956,6 +963,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction) {
 		uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags&revids=' + args.join('|'),
 		json: true
 	}, function( error, response, body ) {
+		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined || !body.query ) {
 			if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 				console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
@@ -1020,6 +1028,7 @@ function cmd_random(lang, msg, wiki) {
 			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0',
 			json: true
 		}, function( error, response, body ) {
+			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( error || !response || response.statusCode != 200 || !body || body.batchcomplete == undefined || !body.query || !body.query.pages ) {
 				if ( response && response.request && response.request.uri && response.request.uri.href == 'https://www.gamepedia.com/' ) {
 					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
@@ -1472,18 +1481,25 @@ client.login(process.env.token).catch( error => log_error(error, true, 'LOGIN-')
 
 
 client.on( 'error', error => log_error(error, true) );
-client.on( 'warn', console.warn );
+client.on( 'warn', log_warn );
 
 
-async function log_error(error, isBig = false, type = '') {
+function log_error(error, isBig = false, type = '') {
 	var time = new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' });
 	if ( isDebug ) {
-		console.log( '--- ' + type + 'ERROR START ' + time + ' ---' );
-		console.error(error);
-		console.log( '--- ' + type + 'ERROR END ' + time + ' ---' );
+		console.error( '--- ' + type + 'ERROR START ' + time + ' ---\n\u200b' + util.inspect( error ).replace( /\n/g, '\n\u200b' ) + '\n--- ' + type + 'ERROR END ' + time + ' ---' );
 	} else {
-		if ( isBig ) console.log( '--- ' + type + 'ERROR: ' + time + ' ---' );
-		console.log( '- ' + error.name + ': ' + error.message );
+		if ( isBig ) console.log( '--- ' + type + 'ERROR: ' + time + ' ---\n- ' + error.name + ': ' + error.message );
+		else console.log( '- ' + error.name + ': ' + error.message );
+	}
+}
+
+function log_warn(warning) {
+	warning = util.inspect( warning ).replace( /\n/g, '\n\u200b' );
+	if ( isDebug ) {
+		console.warn( '--- Warning start ---\n\u200b' + warning + '\n--- Warning end ---' );
+	} else {
+		console.warn( '--- Warning ---\n\u200b' + warning );
 	}
 }
 
