@@ -613,7 +613,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 					else if ( body.query.interwiki ) {
 						var inter = body.query.interwiki[0];
 						var intertitle = inter.title.substr(inter.iw.length + 1);
-						var regex = inter.url.match( /^(?:https?:)?\/\/(.*)\.gamepedia\.com\// );
+						var regex = inter.url.match( /^(?:https?:)?\/\/([a-z\d-]{1,30})\.gamepedia\.com\// );
 						if ( regex !== null && selfcall < 3 ) {
 							var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replace( intertitle.replace( /\_/g, ' ' ), intertitle );
 							selfcall++;
@@ -1217,22 +1217,22 @@ String.prototype.isMention = function(guild) {
 	var text = this.trim();
 	if ( text == '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) == client.user.id || ( guild && text == '@' + guild.me.displayName ) ) return true;
 	else return false;
-}
+};
 
 Discord.Message.prototype.isAdmin = function() {
 	if ( this.channel.type == 'text' && this.member && this.member.permissions.has('MANAGE_GUILD') ) return true;
 	else return false;
-}
+};
 
 Discord.Message.prototype.isOwner = function() {
 	if ( this.author.id == process.env.owner ) return true;
 	else return false;
-}
+};
 
 Discord.Message.prototype.showEmbed = function() {
 	if ( this.channel.type != 'text' || this.channel.permissionsFor(client.user).has('EMBED_LINKS') ) return true;
 	else return false;
-}
+};
 
 Array.prototype.toEmojis = function() {
 	var text = this.join(' ');
@@ -1251,7 +1251,7 @@ Array.prototype.toEmojis = function() {
 		return text.split(' ');
 	}
 	else return this;
-}
+};
 
 String.prototype.toTitle = function(isMarkdown = false) {
 	var title = this.replace( / /g, '_' ).replace( /\%/g, '%25' ).replace( /\?/g, '%3F' );
@@ -1338,7 +1338,7 @@ Discord.Message.prototype.deleteMsg = function(timeout = 0) {
 String.prototype.hasPrefix = function(flags = '') {
 	if ( RegExp( '^' + process.env.prefix + '(?: |$)', flags ).test(this.toLowerCase()) ) return true;
 	else return false;
-}
+};
 
 client.on( 'message', msg => {
 	if ( stop ) return;
@@ -1367,7 +1367,7 @@ client.on( 'message', msg => {
 					var args = cont.split(' ').slice(2);
 					if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
 					if ( !( ownercmd || aliasInvoke in pausecmdmap ) && pause[msg.guild.id] ) console.log( msg.guild.name + ': Pausiert' );
-					else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont );
+					else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont.replace( /\n/g, '\n\u200b' ) );
 					if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, cont);
 					else if ( !pause[msg.guild.id] || aliasInvoke in pausecmdmap ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
 				} else {
