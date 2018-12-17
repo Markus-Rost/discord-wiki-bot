@@ -163,7 +163,7 @@ function cmd_settings(lang, msg, args, line) {
 			var regex = null;
 			if ( args[1] ) {
 				args[1] = args.slice(1).join(' ').toLowerCase();
-				regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})(?:\.gamepedia\.com|$)/ );
+				regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})\.gamepedia\.com/ );
 			}
 			var langs = '\n' + lang.settings.langhelp.replace( '%s', process.env.prefix + ' settings lang' ) + ' `' + i18n.allLangs[1].join(', ') + '`';
 			var wikis = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings wiki' );
