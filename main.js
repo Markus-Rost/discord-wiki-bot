@@ -66,7 +66,7 @@ var allSites = defaultSites;
 function getAllSites() {
 	ready.allSites = true;
 	request( {
-		uri: 'https://help.gamepedia.com/api.php?action=allsites&format=json&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,official_wiki,wiki_managers',
+		uri: 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,official_wiki,wiki_managers&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || response.statusCode != 200 || !body || body.status != 'okay' || !body.data || !body.data.wikis ) {
@@ -402,7 +402,7 @@ function cmd_test(lang, msg, args, line) {
 						ping += ' <:error:505887261200613376>';
 					}
 				}
-				embed.addField( lang.link + '.gamepedia.com', ping );
+				embed.addField( 'https://' + lang.link + '.gamepedia.com/', ping );
 				edit.edit( edit.content, embed );
 			} );
 		} );
@@ -469,7 +469,7 @@ function cmd_delete(lang, msg, args, line) {
 			}
 			else {
 				msg.channel.bulkDelete(parseInt(args[0], 10) + 1, true).then( messages => {
-					msg.reply( lang.delete.success.replace( '%s', messages.size - 1 ) ).then( antwort => antwort.deleteMsg(3000), log_error );
+					msg.reply( lang.delete.success.replace( '%s', messages.size - 1 ) ).then( antwort => antwort.deleteMsg(5000), log_error );
 					console.log( '- Die letzten ' + ( messages.size - 1 ) + ' Nachrichten in #' + msg.channel.name + ' wurden von @' + msg.member.displayName + ' gelöscht!' );
 				}, log_error );
 			}
@@ -517,7 +517,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 	else {
 		msg.reactEmoji('⏳').then( function( reaction ) {
 			request( {
-				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( /(?:^|&)redirect=no(?:&|$)/.test( querystring ) ? '' : '&redirects=true' ) + '&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ),
+				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( /(?:^|&)redirect=no(?:&|$)/.test( querystring ) ? '' : '&redirects=true' ) + '&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
 				json: true
 			}, function( error, response, body ) {
 				if ( body && body.warnings ) log_warn(body.warnings);
@@ -549,7 +549,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 						}
 						else if ( ( querypage.missing != undefined && querypage.known == undefined ) || querypage.invalid != undefined ) {
 							request( {
-								uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content != undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ),
+								uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content != undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
 								json: true
 							}, function( srerror, srresponse, srbody ) {
 								if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
@@ -704,7 +704,7 @@ function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
 function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 	if ( /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:\/\d\d)?$/.test(username) ) {
 		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ),
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json',
 			json: true
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -745,7 +745,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 					else if ( range >= 16 ) rangeprefix = username.replace( /^(\d{1,3}\.\d{1,3}\.).+$/, '$1' );
 				}
 				request( {
-					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&list=usercontribs&ucprop=' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ),
+					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&list=usercontribs&ucprop=' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ) + '&format=json',
 					json: true
 				}, function( ucerror, ucresponse, ucbody ) {
 					if ( ucbody && ucbody.warnings ) log_warn(ucbody.warnings);
@@ -782,7 +782,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 		} );
 	} else {
 		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ),
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json',
 			json: true
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -905,7 +905,7 @@ function cmd_diff(lang, msg, args, wiki) {
 		else {
 			msg.reactEmoji('⏳').then( function( reaction ) {
 				request( {
-					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&format=json&prop=ids' + ( title ? '&fromtitle=' + title : '&fromrev=' + revision ) + '&torelative=' + relative,
+					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&prop=ids' + ( title ? '&fromtitle=' + title : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
 					json: true
 				}, function( error, response, body ) {
 					if ( body && body.warnings ) log_warn(body.warnings);
@@ -965,7 +965,7 @@ function cmd_diff(lang, msg, args, wiki) {
 
 function cmd_diffsend(lang, msg, args, wiki, reaction) {
 	request( {
-		uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags&revids=' + args.join('|'),
+		uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags&revids=' + args.join('|') + '&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -1030,7 +1030,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction) {
 function cmd_random(lang, msg, wiki) {
 	msg.reactEmoji('⏳').then( function( reaction ) {
 		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&format=json&meta=siteinfo&siprop=general&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0',
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
 			json: true
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -1283,11 +1283,11 @@ String.prototype.toMarkdown = function(wiki, title = '') {
 		var page = title.toTitle(true) + '#' + link[1].toSection();
 		text = text.replace( link[0], '[→](https://' + wiki + '.gamepedia.com/' + page + ')' + link[1] + ( link[2] ? ': ' + link[2] : '' ) );
 	}
-	return text.replace( /(`|_|\*|~|<|>)/g, '\\$1' );
+	return text.replace( /(`|_|\*|~|<|>|{|})/g, '\\$1' );
 };
 
 String.prototype.toPlaintext = function() {
-	return this.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' ).replace( /(`|_|\*|~|<|>)/g, '\\$1' );
+	return this.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' ).replace( /(`|_|\*|~|<|>|{|})/g, '\\$1' );
 };
 
 Discord.Message.prototype.reactEmoji = function(name) {
@@ -1341,68 +1341,67 @@ String.prototype.hasPrefix = function(flags = '') {
 };
 
 client.on( 'message', msg => {
-	if ( stop ) return;
+	if ( stop || !msg.content.hasPrefix('m') || msg.webhookID || msg.author.id == client.user.id ) return;
 	
 	var cont = msg.content;
 	var author = msg.author;
 	var channel = msg.channel;
 	if ( channel.type == 'text' ) var permissions = channel.permissionsFor(client.user);
 	
-	if ( cont.hasPrefix('m') && !msg.webhookID && author.id != client.user.id ) {
-		if ( !ready.settings && settings == defaultSettings ) getSettings(setStatus);
-		if ( !ready.allSites && allSites == defaultSites ) getAllSites();
-		var setting = Object.assign({}, settings['default']);
-		if ( settings == defaultSettings ) {
-			msg.channel.sendMsg( '⚠ **Limited Functionality** ⚠\nNo settings found, please contact the bot owner!\n' + process.env.invite );
-		} else if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
-		var lang = Object.assign({}, i18n[setting.lang]);
-		lang.link = setting.wiki;
-		if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
-		if ( channel.type != 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']) ) {
-			var invoke = cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '';
-			var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-			var ownercmd = msg.isOwner() && aliasInvoke in ownercmdmap;
-			if ( cont.hasPrefix() && ( ( msg.isAdmin() && aliasInvoke in multilinecmdmap ) || ownercmd ) ) {
-				if ( ownercmd || permissions.has('MANAGE_MESSAGES') ) {
-					var args = cont.split(' ').slice(2);
-					if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
-					if ( !( ownercmd || aliasInvoke in pausecmdmap ) && pause[msg.guild.id] ) console.log( msg.guild.name + ': Pausiert' );
-					else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont.replace( /\n/g, '\n\u200b' ) );
-					if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, cont);
-					else if ( !pause[msg.guild.id] || aliasInvoke in pausecmdmap ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
-				} else {
-					console.log( msg.guild.name + ': Fehlende Berechtigungen - MANAGE_MESSAGES' );
-					msg.replyMsg( lang.missingperm + ' `MANAGE_MESSAGES`' );
-				}
+	if ( !ready.settings && settings == defaultSettings ) getSettings(setStatus);
+	if ( !ready.allSites && allSites == defaultSites ) getAllSites();
+	var setting = Object.assign({}, settings['default']);
+	if ( settings == defaultSettings ) {
+		msg.channel.sendMsg( '⚠ **Limited Functionality** ⚠\nNo settings found, please contact the bot owner!\n' + process.env.invite );
+	} else if ( channel.type == 'text' && msg.guild.id in settings ) setting = Object.assign({}, settings[msg.guild.id]);
+	var lang = Object.assign({}, i18n[setting.lang]);
+	lang.link = setting.wiki;
+	if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
+	
+	if ( channel.type != 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']) ) {
+		var invoke = cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '';
+		var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
+		var ownercmd = msg.isOwner() && aliasInvoke in ownercmdmap;
+		if ( cont.hasPrefix() && ( ( msg.isAdmin() && aliasInvoke in multilinecmdmap ) || ownercmd ) ) {
+			if ( ownercmd || permissions.has('MANAGE_MESSAGES') ) {
+				var args = cont.split(' ').slice(2);
+				if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
+				if ( !( ownercmd || aliasInvoke in pausecmdmap ) && pause[msg.guild.id] ) console.log( msg.guild.name + ': Pausiert' );
+				else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont.replace( /\n/g, '\n\u200b' ) );
+				if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, cont);
+				else if ( !pause[msg.guild.id] || aliasInvoke in pausecmdmap ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
 			} else {
-				var count = 0;
-				msg.cleanContent.replace(/\u200b/g, '').split('\n').forEach( function(line) {
-					if ( line.hasPrefix() && count < 10 ) {
-						count++;
-						invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
-						var args = line.split(' ').slice(2);
-						aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-						ownercmd = msg.isOwner() && aliasInvoke in ownercmdmap;
-						if ( channel.type == 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.name + ': Pausiert' );
-						else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + line );
-						if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line);
-						else if ( channel.type != 'text' || !pause[msg.guild.id] || ( msg.isAdmin() && aliasInvoke in pausecmdmap ) ) {
-							if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
-							else if ( /^![a-z\d-]{1,30}$/.test(invoke) ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
-							else cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
-						}
-					} else if ( line.hasPrefix() && count == 10 ) {
-						count++;
-						console.log( '- Nachricht enthält zu viele Befehle!' );
-						msg.reactEmoji('⚠');
-						channel.sendErrorMsg( lang.limit.replace( '%s', author.toString() ), {} );
-					}
-				} );
+				console.log( msg.guild.name + ': Fehlende Berechtigungen - MANAGE_MESSAGES' );
+				msg.replyMsg( lang.missingperm + ' `MANAGE_MESSAGES`' );
 			}
-		} else if ( msg.isAdmin() ) {
-			console.log( msg.guild.name + ': Fehlende Berechtigungen - ' + permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']) );
-			if ( permissions.has(['SEND_MESSAGES']) ) msg.replyMsg( lang.missingperm + ' `' + permissions.missing(['ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']).join('`, `') + '`' );
+		} else {
+			var count = 0;
+			msg.cleanContent.replace(/\u200b/g, '').split('\n').forEach( function(line) {
+				if ( line.hasPrefix() && count < 10 ) {
+					count++;
+					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
+					var args = line.split(' ').slice(2);
+					aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
+					ownercmd = msg.isOwner() && aliasInvoke in ownercmdmap;
+					if ( channel.type == 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.name + ': Pausiert' );
+					else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + line );
+					if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line);
+					else if ( channel.type != 'text' || !pause[msg.guild.id] || ( msg.isAdmin() && aliasInvoke in pausecmdmap ) ) {
+						if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
+						else if ( /^![a-z\d-]{1,30}$/.test(invoke) ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
+						else cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
+					}
+				} else if ( line.hasPrefix() && count == 10 ) {
+					count++;
+					console.log( '- Nachricht enthält zu viele Befehle!' );
+					msg.reactEmoji('⚠');
+					channel.sendErrorMsg( lang.limit.replace( '%s', author.toString() ), {} );
+				}
+			} );
 		}
+	} else if ( msg.isAdmin() || msg.isOwner() ) {
+		console.log( msg.guild.name + ': Fehlende Berechtigungen - ' + permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']) );
+		if ( permissions.has(['SEND_MESSAGES']) ) msg.replyMsg( lang.missingperm + ' `' + permissions.missing(['ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']).join('`, `') + '`' );
 	}
 } );
 
@@ -1486,7 +1485,7 @@ client.login(process.env.token).catch( error => log_error(error, true, 'LOGIN-')
 
 
 client.on( 'error', error => log_error(error, true) );
-client.on( 'warn', log_warn );
+client.on( 'warn', warning => log_warn(warning, false) );
 
 
 function log_error(error, isBig = false, type = '') {
@@ -1499,12 +1498,12 @@ function log_error(error, isBig = false, type = '') {
 	}
 }
 
-function log_warn(warning) {
-	warning = util.inspect( warning ).replace( /\n/g, '\n\u200b' );
+function log_warn(warning, api = true) {
 	if ( isDebug ) {
-		console.warn( '--- Warning start ---\n\u200b' + warning + '\n--- Warning end ---' );
+		console.warn( '--- Warning start ---\n\u200b' + util.inspect( warning ).replace( /\n/g, '\n\u200b' ) + '\n--- Warning end ---' );
 	} else {
-		console.warn( '--- Warning ---\n\u200b' + warning );
+		if ( api ) console.warn( '- Warning: ' + Object.keys(warning).join(', ') );
+		else console.warn( '--- Warning ---\n\u200b' + util.inspect( warning ).replace( /\n/g, '\n\u200b' ) );
 	}
 }
 
