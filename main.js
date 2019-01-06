@@ -160,10 +160,9 @@ function cmd_settings(lang, msg, args, line) {
 		}
 		if ( args.length ) {
 			if ( args[0] ) args[0] = args[0].toLowerCase();
-			var regex = null;
-			if ( args[1] ) {
-				args[1] = args.slice(1).join(' ').toLowerCase();
-				regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})\.gamepedia\.com/ );
+			args[1] = args.slice(1).join(' ').toLowerCase().replace( /^<(.*)>$/, '$1' );
+			if ( args[1] && ( args[0] == 'wiki' || args[0] == 'channel' ) ) {
+				var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})\.gamepedia\.com/ );
 			}
 			var langs = '\n' + lang.settings.langhelp.replace( '%s', process.env.prefix + ' settings lang' ) + ' `' + i18n.allLangs[1].join(', ') + '`';
 			var wikis = '\n' + lang.settings.wikihelp.replace( '%s', process.env.prefix + ' settings wiki' );
@@ -1436,17 +1435,16 @@ client.on( 'voiceStateUpdate', (oldm, newm) => {
 
 client.on( 'guildCreate', guild => {
 	console.log( '- Ich wurde zu einem Server hinzugefügt.' );
-	client.fetchUser(process.env.owner).then( owner => owner.sendMsg( 'Ich wurde zu einem Server hinzugefügt:\n"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern.\n(' + guild.id + ')' ), log_error );
 } );
 
 client.on( 'guildDelete', guild => {
 	console.log( '- Ich wurde von einem Server entfernt.' );
-	client.fetchUser(process.env.owner).then( owner => owner.sendMsg( 'Ich wurde von einem Server entfernt:\n"' + guild.toString() + '" von ' + guild.owner.toString() + ' mit ' + guild.memberCount + ' Mitgliedern.\n(' + guild.id + ')' ), log_error );
-	
 	if ( !guild.available ) {
 		console.log( '- Dieser Server ist nicht erreichbar.' );
+		return;
 	}
-	else if ( settings == defaultSettings ) {
+	
+	if ( settings == defaultSettings ) {
 		console.log( '- Fehler beim Erhalten bestehender Einstellungen.' );
 	}
 	else {
@@ -1475,7 +1473,7 @@ client.on( 'guildDelete', guild => {
 			}
 			else {
 				settings = Object.assign({}, temp_settings);
-				console.log( '- Einstellungen erfolgreich aktualisiert.' );
+				console.log( '- Einstellungen erfolgreich entfernt.' );
 			}
 		} );
 	}
