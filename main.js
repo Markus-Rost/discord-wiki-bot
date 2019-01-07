@@ -889,7 +889,7 @@ function cmd_diff(lang, msg, args, wiki) {
 			}
 			else error = true;
 		}
-		else title = args.join('_').replace( /\?/g, '%3F' );
+		else title = args.join(' ');
 		
 		if ( error ) msg.reactEmoji('error');
 		else if ( diff ) {
@@ -904,7 +904,7 @@ function cmd_diff(lang, msg, args, wiki) {
 		else {
 			msg.reactEmoji('⏳').then( function( reaction ) {
 				request( {
-					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&prop=ids' + ( title ? '&fromtitle=' + title : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
+					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&prop=ids' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
 					json: true
 				}, function( error, response, body ) {
 					if ( body && body.warnings ) log_warn(body.warnings);
@@ -934,7 +934,7 @@ function cmd_diff(lang, msg, args, wiki) {
 						}
 						else {
 							console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-							msg.channel.sendErrorMsg( '<https://' + wiki + '.gamepedia.com/' + title + '?diff=' + relative + ( title ? '' : '&oldid=' + revision ) + '>' );
+							msg.channel.sendErrorMsg( '<https://' + wiki + '.gamepedia.com/' + title.toTitle() + '?diff=' + relative + ( title ? '' : '&oldid=' + revision ) + '>' );
 						}
 						
 						if ( reaction ) reaction.removeEmoji();
