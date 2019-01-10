@@ -67,6 +67,21 @@
 			"join": "%1$s joined the voice channel \"%2$s\".",
 			"left": "%1$s left the voice channel \"%2$s\"."
 		},
+		"overview": {
+			"missing": "for this wiki is no overview available yet.",
+			"inaccurate": "Statistics may be inaccurate",
+			"name": "Full name:",
+			"created": "Created:",
+			"manager": "Wiki manager:",
+			"talk": "talk",
+			"official": "Official wiki:",
+			"yes": "Yes",
+			"no": "No",
+			"articles": "Articles:",
+			"pages": "Total pages:",
+			"edits": "Edits:",
+			"users": "Active users:"
+		},
 		"user": {
 			"gender": {
 				"unknown": "Unknown",
@@ -121,6 +136,8 @@
 		"search": {
 			"page": "page",
 			"search": "search",
+			"random": "random",
+			"overview": "overview",
 			"infopage": "Not the correct result? Use %s for a direct link.",
 			"infosearch": "Not the correct result? Use %1$s for a direct link or %2$s for a list of all hits."
 		},
@@ -159,6 +176,7 @@
 				{ "cmd": "diff <page name>", "desc": "I will answer with a link to the last diff on the article in the wiki." },
 				{ "cmd": "random", "desc": "I will answer with a link to a random page in the wiki." },
 				{ "cmd": "🎲", "desc": "I will answer with a link to a random page in the wiki.", "hide": true },
+				{ "cmd": "overview", "desc": "I will show some information and statistics about the wiki." },
 				{ "cmd": "/<Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "unsearchable": true, "minecraft": true },
 				{ "cmd": "command <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
 				{ "cmd": "cmd <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
@@ -223,6 +241,21 @@
 			"join": "%1$s hat den Sprachkanal \"%2$s\" betreten.",
 			"left": "%1$s hat den Sprachkanal \"%2$s\" verlassen."
 		},
+		"overview": {
+			"missing": "für dieses Wiki ist noch keine Übersicht verfügbar.",
+			"inaccurate": "Statistiken können ungenau sein",
+			"name": "Vollständiger Name:",
+			"created": "Erstellt:",
+			"manager": "Wiki-Manager:",
+			"talk": "Diskussion",
+			"official": "Offizielles Wiki:",
+			"yes": "Ja",
+			"no": "Nein",
+			"articles": "Artikel:",
+			"pages": "Seiten insgesamt:",
+			"edits": "Bearbeitungen:",
+			"users": "Aktive Benutzer:"
+		},
 		"user": {
 			"gender": {
 				"unknown": "Unbekannt",
@@ -277,6 +310,8 @@
 		"search": {
 			"page": "seite",
 			"search": "suche",
+			"random": "zufall",
+			"overview": "übersicht",
 			"infopage": "Nicht das richtige Ergebnis? Nutze %s für einen direkten Link.",
 			"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern."
 		},
@@ -314,8 +349,11 @@
 				{ "cmd": "Benutzer:<Benutzername>", "desc": "Ich liste ein paar Informationen über den Benutzer auf.", "unsearchable": true },
 				{ "cmd": "diff <diff> [<oldid>]", "desc": "Ich verlinke auf die Änderung im Wiki." },
 				{ "cmd": "diff <Seitenname>", "desc": "Ich verlinke auf die letzte Änderung an der Seite im Wiki." },
-				{ "cmd": "random", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki." },
+				{ "cmd": "zufall", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki." },
+				{ "cmd": "random", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki.", "hide": true },
 				{ "cmd": "🎲", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki.", "hide": true },
+				{ "cmd": "übersicht", "desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf." },
+				{ "cmd": "overview", "desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf.", "hide": true },
 				{ "cmd": "/<Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "unsearchable": true, "minecraft": true },
 				{ "cmd": "befehl <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
 				{ "cmd": "command <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
@@ -390,6 +428,21 @@
 			"join": "%1$s a rejoint le salon vocal \"%2$s\".",
 			"left": "%1$s a quitté le salon vocal \"%2$s\"."
 		},
+		"overview": {
+			"missing": "il n'y a pas encore d'aperçu disponible pour ce wiki.",
+			"inaccurate": "Les statistiques peuvent être inexactes",
+			"name": "Nom complet :",
+			"created": "Créé :",
+			"manager": "Gestionnaire de wiki :",
+			"talk": "discussion",
+			"official": "Wiki officiel :",
+			"yes": "Oui",
+			"no": "Non",
+			"articles": "Articles :",
+			"pages": "Nombre de pages total :",
+			"edits": "Modifications :",
+			"users": "Utilisateurs actifs :"
+		},
 		"user": {
 			"gender": {
 				"unknown": "Inconnu",
@@ -444,6 +497,8 @@
 		"search": {
 			"page": "page",
 			"search": "chercher",
+			"random": "random",
+			"overview": "overview",
 			"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
 			"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances."
 		},
@@ -459,13 +514,35 @@
 			"big": "le nombre spécifié est trop grand. Le maximum est %s !"
 		},
 		"test": {
-			"random": 10,
+			"random": 30,
 			"pause": "Je suis actuellement inactif.",
 			"text": [
 				"Je suis toujours en vie !",
 				"et crois-moi, je suis toujours vivant.",
 				"Je fais de la science et je suis toujours en vie.",
-				"Je me sens fantastique et je suis toujours en vie."
+				"Je me sens fantastique et je suis toujours en vie.",
+				"Pas besoin de tester, je suis toujours là.",
+				"J'étais sur le point d'aller faire une promenade, mais visiblement vous avez encore besoin de moi...!",
+				"Bip bop bip. Oh désolé, j'ai oublié d'activer mon mode de language humain.",
+				"C'est la journée des contraires aujourd'hui! Du coup, je ne suis pas fonctionnel.",
+				"\\*baille\\* Non, je n'étais pas endormi, j'étais entièrement réveillé, je ne vois pas pourquoi vous demandez.",
+				"Ah, un test? Où ça?",
+				"Je suis là, rassurez-vous. Mais je viendrais encore plus vite si vous aviez des biscuits!",
+				"DESTRUCTION DE L'HUMANITÉ DANS 3, 2, 1... Mais non, je rigole. Sans humanité, il n'aurait plus de Wikis. Ou encore pire, plus de biscuits :O",
+				"Je suis là. Vous avez des biscuits?",
+				"Je vous écoute, j'étais juste en train de regarder un live... C'est captivant, ces choses-là.",
+				"Quoi? Moi? Mais non, je ne faisais rien... J'étais surtout pas en train de vandaliser un Wiki. Je ne ferais jamais ça :O",
+				"Bien le bonjour, je suis Wiki-Bot\nMa vocation est de fouiller les Wikis\nEt parce que je suis votre pote\nJe vous aiderai jour et nuit <3",
+				"c moa wiki-bot, ge peu vou édé?",
+				"Oh, mais qui vois-je, vous êtes-là, mes amis? Je suis content de vous retrouver!",
+				"Je suis le plus gentil de tous les robots. Vous pouvez en être certain!",
+				"WIKI-BOT VERSION 3.141.592.653.589\nÉTAT: Fonctionnel\nSTATUT: Toujours aussi merveilleux!",
+				"Bonjour! Je suis là! Allez, allons nous promener sur des Wikis!",
+				"TEST? TEST? TEST??!?!! Mais qui testez-vous?",
+				"... je suis là, j'étais en train de lire sur un Wiki! Saviez-vous que l'inventeur de la soupe est Darth Vader? ... Oh, peut-être que la page était vandalisée, en fait.",
+				"Le robot fonctionne.",
+				"Je suis là! Aller, je suis prêt, faites-moi faire une recherche! J'ai bien envie d'aller explorer les Wikis!",
+				"Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!"
 			],
 			"default": "Je suis entièrement fonctionnel !",
 			"time": "Temps de latence"
@@ -482,6 +559,7 @@
 				{ "cmd": "diff <nom de la page>", "desc": "Je vais répondre avec un lien vers la dernière diff de l'article sur Wiki." },
 				{ "cmd": "random", "desc": "Je vais répondre avec un lien vers une page du Wiki au hasard." },
 				{ "cmd": "🎲", "desc": "Je vais répondre avec un lien vers une page du Wiki au hasard.", "hide": true },
+				{ "cmd": "overview", "desc": "Je vais afficher certaines informations et statistiques à propos du wiki." },
 				{ "cmd": "/<commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "unsearchable": true, "minecraft": true },
 				{ "cmd": "commande <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
 				{ "cmd": "command <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
@@ -554,6 +632,21 @@
 			"join": "%1$s dołączył do \"%2$s\".",
 			"left": "%1$s wyszedł z \"%2$s\"."
 		},
+		"overview": {
+			"missing": "brak dostępnych informacji na temat wiki.",
+			"inaccurate": "Statystuki mogą być niedokładne",
+			"name": "Pełna nazwa:",
+			"created": "Stworzona:",
+			"manager": "Menedżerzy wiki:",
+			"talk": "dyskusja",
+			"official": "Oficjalna wiki:",
+			"yes": "Tak",
+			"no": "Nie",
+			"articles": "Artykułów:",
+			"pages": "Stron:",
+			"edits": "Edycji:",
+			"users": "Aktywnych użytkowników:"
+		},
 		"user": {
 			"gender": {
 				"unknown": "Nieznane",
@@ -608,6 +701,8 @@
 		"search": {
 			"page": "strona",
 			"search": "szukaj",
+			"random": "random",
+			"overview": "overview",
 			"infopage": "Nie to czego szukałeś? Użyj %s dla bezpośredniego linku.",
 			"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników."
 		},
@@ -646,6 +741,7 @@
 				{ "cmd": "diff <nazwa strony>", "desc": "Odpowiem linkiem do ostatniej zmiany w podanym artykule na Wiki." },
 				{ "cmd": "random", "desc": "Odpowiem linkiem do losowej strony na wiki." },
 				{ "cmd": "🎲", "desc": "Odpowiem linkiem do losowej strony na wiki.", "hide": true },
+				{ "cmd": "overview", "desc": "Pokażę informacje oraz statystyki na temat wiki." },
 				{ "cmd": "/<komenda>", "desc": "Odpowiem z formatem komendy Minecraftowej oraz linkiem do artykułu o podanej komendzie na Minecraft Wiki.", "unsearchable": true, "minecraft": true },
 				{ "cmd": "komenda <komenda>", "desc": "Odpowiem z formatem komendy Minecraftowej oraz linkiem do artykułu o podanej komendzie na Minecraft Wiki.", "hide": true, "minecraft": true },
 				{ "cmd": "command <komenda>", "desc": "Odpowiem z formatem komendy Minecraftowej oraz linkiem do artykułu o podanej komendzie na Minecraft Wiki.", "hide": true, "minecraft": true },
@@ -721,6 +817,21 @@
 			"join": "%1$s ses kanalına katıldı \"%2$s\".",
 			"left": "%1$s ses kanalından ayrıldı \"%2$s\"."
 		},
+		"overview": {
+			"missing": "Bu wiki için henüz bir genel bakış yok.",
+			"inaccurate": "İstatistikler yanlış olabilir",
+			"name": "Tam isim:",
+			"created": "Oluşturuldu:",
+			"manager": "Wiki yöneticisi:",
+			"talk": "mesaj",
+			"official": "Resmi wiki:",
+			"yes": "Evet",
+			"no": "Hayır",
+			"articles": "Makaleler:",
+			"pages": "Toplam sayfalar:",
+			"edits": "Düzenlemeler:",
+			"users": "Aktif kullanıcılar:"
+		},
 		"user": {
 			"gender": {
 				"unknown": "meçhul",
@@ -775,6 +886,8 @@
 		"search": {
 			"page": "sayfa",
 			"search": "arama",
+			"random": "random",
+			"overview": "overview",
 			"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s kullan.",
 			"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s, tüm isabetlerin listesi için %2$s kullan."
 		},
@@ -813,6 +926,7 @@
 				{ "cmd": "diff <sayfa adı>", "desc": "Wikideki son farkın bağlantısıyla cevap vereceğim." },
 				{ "cmd": "random", "desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim." },
 				{ "cmd": "🎲", "desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim.", "hide": true },
+				{ "cmd": "overview", "desc": "Wiki ile ilgili bazı bilgileri ve istatistikleri göstereceğim." },
 				{ "cmd": "/<Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "unsearchable": true, "minecraft": true },
 				{ "cmd": "command <Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "hide": true, "minecraft": true },
 				{ "cmd": "cmd <Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "hide": true, "minecraft": true },
@@ -893,6 +1007,21 @@
 			"join": "%1$s juntou-se ao canal de voz \"%2$s\".",
 			"left": "%1$s deixou o canal de voz \"%2$s\"."
 		},
+		"overview": {
+			"missing": "para está wiki ainda não há uma visão geral disponível.",
+			"inaccurate": "Estatísticas podem ser imprecisas",
+			"name": "Nome completo:",
+			"created": "Criado:",
+			"manager": "Gerenciador da Wiki:",
+			"talk": "discussão",
+			"official": "Wiki oficial:",
+			"yes": "Sim",
+			"no": "Não",
+			"articles": "Artigos:",
+			"pages": "Total de páginas:",
+			"edits": "Edições:",
+			"users": "Usuário ativos:"
+		},
 		"user": {
 			"gender": {
 				"unknown": "Desconhecido",
@@ -947,6 +1076,8 @@
 		"search": {
 			"page": "página",
 			"search": "pesquisar",
+			"random": "random",
+			"overview": "overview",
 			"infopage": "Não é o resultado correto? Use %s para um link direto.",
 			"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos."
 		},
@@ -985,6 +1116,7 @@
 				{ "cmd": "diff <page name>", "desc": "Vou responder com um link para o último diff no artigo na wiki." },
 				{ "cmd": "random", "desc": "Vou responder com um link para uma página aleatória na wiki." },
 				{ "cmd": "🎲", "desc": "Vou responder com um link para uma página aleatória na wiki.", "hide": true },
+				{ "cmd": "overview", "desc": "Vou mostrar algumas informações e estatísticas sobre a wiki." },
 				{ "cmd": "/<comando do Minecraft>", "desc": "Vou responder com a sintaxe do comando do Minecraft e um link para o artigo do comando na Minecraft Wiki.", "unsearchable": true, "minecraft": true },
 				{ "cmd": "comando <comando do Minecraft>", "desc": "Vou responder com a sintaxe do comando do Minecraft e um link para o artigo do comando na Minecraft Wiki.", "hide": true, "minecraft": true },
 				{ "cmd": "command <comando do Minecraft>", "desc": "Vou responder com a sintaxe do comando do Minecraft e um link para o artigo do comando na Minecraft Wiki.", "hide": true, "minecraft": true },

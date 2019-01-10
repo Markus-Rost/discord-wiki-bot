@@ -2,7 +2,7 @@
 <a href="https://discordbots.org/bot/461189216198590464"><img align="right" src="https://discordbots.org/api/widget/461189216198590464.svg" alt="Wiki-Bot"></a>
 **Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link to [Gamepedia wikis](https://www.gamepedia.com/).
 <br>He resolves redirects and follows interwiki links.
-<br>**Wiki-Bot** has translations for English, German, French, Polish, Turkish and Brazilian Portuguese.
+<br>**Wiki-Bot** has translations for English, German, French, Polish, Turkish and Portuguese.
 
 **Wiki-Bot is not affiliated with Curse/Gamepedia and is an unofficial tool!**
 
@@ -21,6 +21,7 @@ For a full list with all commands use `!wiki help`
 | `!wiki diff <diff> [<oldid>]` | **Wiki-Bot** will answer with a link to the diff in the wiki. |
 | `!wiki diff <page name>` | **Wiki-Bot** will answer with a link to the last diff on the article in the wiki. |
 | `!wiki random` | **Wiki-Bot** will answer with a link to a random page in the wiki. |
+| `!wiki overview` | **Wiki-Bot** will show some information and statistics about the wiki. |
 | `!wiki page <page name>` | **Wiki-Bot** will answer with a link to the article in the wiki. |
 | `!wiki search <search term>` | **Wiki-Bot** will answer with a link to the search page for the article in the wiki. |
 | `!wiki info` | **Wiki-Bot** will introduce himself. |
