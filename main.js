@@ -655,14 +655,17 @@ function cmd_umfrage(lang, msg, args, line) {
 		return {attachment:img.url,name:img.filename};
 	} );
 	if ( args.length || imgs.length ) {
+		var text = args.join(' ').split('\n');
+		args = text.shift().split(' ');
+		if ( text.length ) args.push('\n' + text.join('\n'));
 		var reactions = [];
 		args = args.toEmojis();
 		for ( var i = 0; ( i < args.length || imgs.length ); i++ ) {
 			var reaction = args[i];
 			var custom = /^<a?:/;
-			var pattern = /^[\w\säÄöÖüÜßẞ!"#$%&'()*+,./:;<=>?@^`{|}~–[\]\-\\]{2,}/;
-			if ( !custom.test(reaction) && pattern.test(reaction) ) {
-				cmd_sendumfrage(lang, msg, args, reactions, imgs, i);
+			var pattern = /^[\u0000-\u1FFF]{1,2}$/;
+			if ( !custom.test(reaction) && ( reaction.length > 2 || pattern.test(reaction) ) ) {
+				cmd_sendumfrage(lang, msg, args.slice(i).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
 				break;
 			} else if ( reaction === '' ) {
 			} else {
@@ -671,7 +674,7 @@ function cmd_umfrage(lang, msg, args, line) {
 				}
 				reactions[i] = reaction;
 				if ( i === args.length - 1 ) {
-					cmd_sendumfrage(lang, msg, args, reactions, imgs, i + 1);
+					cmd_sendumfrage(lang, msg, args.slice(i + 1).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
 					break;
 				}
 			}
@@ -682,8 +685,8 @@ function cmd_umfrage(lang, msg, args, line) {
 	}
 }
 
-function cmd_sendumfrage(lang, msg, args, reactions, imgs, i) {
-	msg.channel.send( lang.poll.title + args.slice(i).join(' '), {disableEveryone:!msg.member.hasPermission(['MENTION_EVERYONE']),files:imgs} ).then( poll => {
+function cmd_sendumfrage(lang, msg, text, reactions, imgs) {
+	msg.channel.send( lang.poll.title + text, {disableEveryone:!msg.member.hasPermission(['MENTION_EVERYONE']),files:imgs} ).then( poll => {
 		msg.deleteMsg();
 		if ( reactions.length ) {
 			reactions.forEach( function(entry) {
