@@ -60,6 +60,10 @@
 			"channel": "the default wiki for this channel is:",
 			"channelchanged": "you changed the default wiki for this channel to:"
 		},
+		"pause": {
+			"on": "I'm now paused on this server and will ignore most commands!",
+			"off": "I'm no longer paused on this server and will respond to all commands again!"
+		},
 		"voice": {
 			"text": "I try to give everyone in a voice channel a specific role:",
 			"name": "voice channel name",
@@ -154,7 +158,7 @@
 		},
 		"test": {
 			"random": 10,
-			"pause": "I'm currently inactive.",
+			"pause": "I'm currently paused on this server.",
 			"text": [
 				"I'm still alive!",
 				"and believe me, I am still alive.",
@@ -168,6 +172,7 @@
 			"all": "So, you want to know what things I can do? Here is a list of all commands that I understand:",
 			"admin": "These commands can only be performed by administrators:",
 			"noadmin": "you need the `Manage Server` permission for these commands!",
+			"pause": "**I'm currently paused on this server!**\nOnly these commands can be performed:",
 			"list": [
 				{ "cmd": "<search term>", "desc": "I will answer with a link to a matching article in the wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <search term>", "desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
@@ -188,16 +193,18 @@
 				{ "cmd": "help <bot command>", "desc": "Wonder how a command works? Let me explain it to you!" },
 				{ "cmd": "help admin", "desc": "I will list all administrator commands." },
 				{ "cmd": "help admin", "desc": "I will list all administrator commands.", "unsearchable": true, "admin": true },
-				{ "cmd": "settings", "desc": "I will change the settings for this server.", "admin": true },
+				{ "cmd": "settings", "desc": "I will change the settings for this server.", "admin": true, "pause": true },
 				{ "cmd": "settings lang <language>", "desc": "I will change the language for this server.", "hide": true, "admin": true },
 				{ "cmd": "settings wiki <wiki>", "desc": "I will change the default wiki for this server.", "hide": true, "admin": true },
 				{ "cmd": "settings channel <wiki>", "desc": "I will change the default wiki for the current channel.", "hide": true, "admin": true },
+				{ "cmd": "pause @mention", "desc": "I will ignore all commands on this server, except a few admin commands.", "admin": true },
+				{ "cmd": "pause @mention", "desc": "I will respond to all commands on this server again.", "unsearchable": true, "hide": true, "pause": true },
 				{ "cmd": "poll <question as free text>", "desc": "I will create a poll and react with <:support:448222377009086465> and <:oppose:448222455425794059>.", "admin": true },
 				{ "cmd": "poll <emoji> [<emoji> ...] <question as free text>", "desc": "I will create a poll and react with the possible answers.", "admin": true },
-				{ "cmd": "test", "desc": "If I'm active, I'll answer! Otherwise not." },
-				{ "cmd": "say <message>", "desc": "I will write the given message.", "admin": true },
-				{ "cmd": "say alarm <message>", "desc": "I will write the given message already preformatted: 🚨 **<message>** 🚨", "admin": true },
-				{ "cmd": "delete <count>", "desc": "I will delete the recent messages in the channel, as long as they aren't older than 14 days.", "admin": true },
+				{ "cmd": "test", "desc": "If I'm active, I'll answer! Otherwise not.", "pause": true },
+				{ "cmd": "say <message>", "desc": "I will write the given message.", "admin": true, "pause": true },
+				{ "cmd": "say alarm <message>", "desc": "I will write the given message already preformatted: 🚨 **<message>** 🚨", "admin": true, "pause": true },
+				{ "cmd": "delete <count>", "desc": "I will delete the recent messages in the channel, as long as they aren't older than 14 days.", "admin": true, "pause": true },
 				{ "cmd": "purge <count>", "desc": "I will delete the recent messages in the channel, as long as they aren't older than 14 days.", "hide": true, "admin": true }
 			]
 		}
@@ -233,6 +240,10 @@
 			"wikihelp": "Nutze `%s <Wiki>` um das Standard-Wiki zu ändern.\nLink zum Wiki: `https://<Wiki>.gamepedia.com/`",
 			"channel": "das Standard-Wiki für diesen Kanal ist:",
 			"channelchanged": "du hast das Standard-Wiki für diesen Kanal geändert zu:"
+		},
+		"pause": {
+			"on": "ich bin auf diesem Server nun pausiert und werde die meisten Befehle ignorieren!",
+			"off": "ich bin auf diesem Server nicht länger pausiert und werde wieder auf alle Befehle reagieren!"
 		},
 		"voice": {
 			"text": "ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:",
@@ -328,7 +339,7 @@
 		},
 		"test": {
 			"random": 10,
-			"pause": "ich mache gerade eine Pause.",
+			"pause": "ich bin auf diesem Server derzeit pausiert.",
 			"text": [
 				"ich bin ja schon wach!",
 				"du hast mich gerufen?",
@@ -343,6 +354,7 @@
 			"all": "Du willst also wissen, was ich so drauf habe? Hier ist eine Liste aller Befehle, die ich verstehe:",
 			"admin": "Diese Befehle können nur Administratoren ausführen:",
 			"noadmin": "du benötigst die `Server verwalten`-Berechtigung für diese Befehle!",
+			"pause": "**Ich bin auf diesem Server derzeit pausiert!**\nNur diese Befehle können ausgeführt werden:",
 			"list": [
 				{ "cmd": "<Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki.", "unsearchable": true },
 				{ "cmd": "!<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`", "unsearchable": true },
@@ -372,18 +384,20 @@
 				{ "cmd": "help", "desc": "Ich liste alle Befehle auf.", "hide": true },
 				{ "cmd": "help <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert.", "hide": true },
 				{ "cmd": "help admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "hide": true },
-				{ "cmd": "settings", "desc": "Ich ändere die Einstellungen für diesen Server.", "admin": true },
+				{ "cmd": "settings", "desc": "Ich ändere die Einstellungen für diesen Server.", "admin": true, "pause": true },
 				{ "cmd": "settings lang <Sprache>", "desc": "Ich ändere die Sprache für diesen Server.", "hide": true, "admin": true },
 				{ "cmd": "settings wiki <Wiki>", "desc": "Ich ändere das Standard-Wiki für diesen Server.", "hide": true, "admin": true },
 				{ "cmd": "settings channel <Wiki>", "desc": "Ich ändere das Standard-Wiki für den aktuellen Kanal.", "hide": true, "admin": true },
+				{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server alle Befehle ignorieren, abgesehen von ein paar Befehlen für Administratoren.", "admin": true },
+				{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server wieder auf alle Befehle reagieren.", "unsearchable": true, "hide": true, "pause": true },
 				{ "cmd": "umfrage <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit <:support:448222377009086465> und <:oppose:448222455425794059>.", "admin": true },
 				{ "cmd": "umfrage <Emoji> [<Emoji> ...] <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit den angegebenen Antworten.", "admin": true },
 				{ "cmd": "poll <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit <:support:448222377009086465> und <:oppose:448222455425794059>.", "hide": true, "admin": true },
 				{ "cmd": "poll <Emoji> [<Emoji> ...] <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit den angegebenen Antworten.", "hide": true, "admin": true },
-				{ "cmd": "test", "desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht." },
-				{ "cmd": "say <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht.", "admin": true },
-				{ "cmd": "say alarm <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht bereits vorformatiert: 🚨 **<Nachricht>** 🚨", "admin": true },
-				{ "cmd": "delete <Anzahl>", "desc": "Ich lösche die letzten Nachrichten in dem Kanal, solange sie nicht älter als 14 Tage sind.", "admin": true },
+				{ "cmd": "test", "desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht.", "pause": true },
+				{ "cmd": "say <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht.", "admin": true, "pause": true },
+				{ "cmd": "say alarm <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht bereits vorformatiert: 🚨 **<Nachricht>** 🚨", "admin": true, "pause": true },
+				{ "cmd": "delete <Anzahl>", "desc": "Ich lösche die letzten Nachrichten in dem Kanal, solange sie nicht älter als 14 Tage sind.", "admin": true, "pause": true },
 				{ "cmd": "purge <Anzahl>", "desc": "Ich lösche die letzten Nachrichten in dem Kanal, solange sie nicht älter als 14 Tage sind.", "hide": true, "admin": true }
 			]
 		}
@@ -420,6 +434,10 @@
 			"wikihelp": "Utilisez `%s <wiki>` pour changer le wiki par défaut.\nLien du wiki : `https://<wiki>.gamepedia.com/`",
 			"channel": "le wiki défini pour ce salon est :",
 			"channelchanged": "le wiki défini pour ce salon sera désormais :"
+		},
+		"pause": {
+			"on": "je sais maintenant en pause sur ce serveur et je ne répondrai pas à la majorité des commandes !",
+			"off": "je ne suis plus en pause, je peux à nouveau repondre à vos commandes !"
 		},
 		"voice": {
 			"text": "j'essaye de donner un rôle spécifique à tout le monde dans un salon vocal :",
@@ -515,7 +533,7 @@
 		},
 		"test": {
 			"random": 30,
-			"pause": "Je suis actuellement inactif.",
+			"pause": "je suis présentement en pause sur ce serveur.",
 			"text": [
 				"Je suis toujours en vie !",
 				"et crois-moi, je suis toujours vivant.",
@@ -551,6 +569,7 @@
 			"all": "Donc, vous voulez savoir ce que je peux faire ? Voici une liste de toutes les commandes que je comprends :",
 			"admin": "Ces commandes ne peuvent être effectuées que par des administrateurs :",
 			"noadmin": "vous devez avoir la permission `Gérer le serveur` pour utiliser ces commandes !",
+			"pause": "**Je suis présentement en pause sur ce serveur!**\n Seuls ces commandes sont disponibles :",
 			"list": [
 				{ "cmd": "<terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur Wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Gamepedia nommé : `https://<wiki>.gamepedia.com/`", "unsearchable": true },
@@ -576,18 +595,20 @@
 				{ "cmd": "help", "desc": "Je vais lister toutes les commandes que je comprends.", "hide": true },
 				{ "cmd": "help <commande de robot>", "desc": "Tu te demandes comment une commande fonctionne ? Laisse-moi te l'expliquer !", "hide": true },
 				{ "cmd": "help admin", "desc": "Je vais lister toutes les commandes d'administrateur.", "hide": true },
-				{ "cmd": "settings", "desc": "Je vais modifier les paramètres de ce serveur.", "admin": true },
+				{ "cmd": "settings", "desc": "Je vais modifier les paramètres de ce serveur.", "admin": true, "pause": true },
 				{ "cmd": "settings lang <langue>", "desc": "Je vais modifier la langue de ce serveur.", "hide": true, "admin": true },
 				{ "cmd": "settings wiki <wiki>", "desc": "Je vais modifier le Wiki par défaut de ce serveur.", "hide": true, "admin": true },
 				{ "cmd": "settings channel <wiki>", "desc": "Je vais modifier le Wiki par défaut pour ce salon.", "hide": true, "admin": true },
+				{ "cmd": "pause @mention", "desc": "Je vais ignorer toutes les commandes sur ce serveur, à l'exception de quelques commandes d'admin.", "admin": true },
+				{ "cmd": "pause @mention", "desc": "Je vais répondre à nouveau à tous les commandes sur ce serveur.", "unsearchable": true, "hide": true, "pause": true },
 				{ "cmd": "sondage <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec <:support:448222377009086465> et <:oppose:448222455425794059>.", "admin": true },
 				{ "cmd": "sondage <emoji> [<emoji> ...] <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec les réponses possibles.", "admin": true },
 				{ "cmd": "poll <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec <:support:448222377009086465> et <:oppose:448222455425794059>.", "hide": true, "admin": true },
 				{ "cmd": "poll <emoji> [<emoji> ...] <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec les réponses possibles.", "hide": true, "admin": true },
-				{ "cmd": "test", "desc": "Si je suis actif, je répondrai ! Autrement non." },
-				{ "cmd": "say <message>", "desc": "Je vais écrire le message donné.", "admin": true },
-				{ "cmd": "say alarm <message>", "desc": "Je vais écrire le message donné déjà préformaté : 🚨 **<message>** 🚨", "admin": true },
-				{ "cmd": "delete <quantité>", "desc": "Je vais supprimer les messages récents dans le salon, tant qu'ils ne datent pas de plus de 14 jours.", "admin": true },
+				{ "cmd": "test", "desc": "Si je suis actif, je répondrai ! Autrement non.", "pause": true },
+				{ "cmd": "say <message>", "desc": "Je vais écrire le message donné.", "admin": true, "pause": true },
+				{ "cmd": "say alarm <message>", "desc": "Je vais écrire le message donné déjà préformaté : 🚨 **<message>** 🚨", "admin": true, "pause": true },
+				{ "cmd": "delete <quantité>", "desc": "Je vais supprimer les messages récents dans le salon, tant qu'ils ne datent pas de plus de 14 jours.", "admin": true, "pause": true },
 				{ "cmd": "purge <quantité>", "desc": "Je vais supprimer les messages récents dans le salon, tant qu'ils ne datent pas de plus de 14 jours.", "hide": true, "admin": true }
 			]
 		}
@@ -624,6 +645,10 @@
 			"wikihelp": "Użyj `%s <wiki>` aby zmienić domyślną wiki.\nLink do wiki: `https://<wiki>.gamepedia.com/`",
 			"channel": "domyślną wiki tego kanału jest:",
 			"channelchanged": "zmieniono domyślną wiki dla tego kanału na:"
+		},
+		"pause": {
+			"on": "Moje działanie jest obecnie wstrzymane na tym serwerze i będę ignorował większość komend!",
+			"off": "Ponawiam swoją pracę na tym serwerze, będę ponownie odpowiadał na wszystkie komendy!"
 		},
 		"voice": {
 			"text": "nadaję każdemu w kanale głosowym określoną rolę:",
@@ -719,7 +744,7 @@
 		},
 		"test": {
 			"random": 10,
-			"pause": "W tej chwili nie jestem aktywny.",
+			"pause": "Moje działanie jest obecnie wstrzymane na tym serwerze.",
 			"text": [
 				"Wciąż tu jestem!",
 				"Wierz mi, nadal żyję.",
@@ -733,6 +758,7 @@
 			"all": "A więc chcesz wiedzieć co potrafię? Tutaj jest lista komend, które rozumiem:",
 			"admin": "Te komendy mogą być wykonane jedynie przez administrację:",
 			"noadmin": "potrzebujesz uprawnienia `Zarządzanie serwerem` aby używać tych komend!",
+			"pause": "**Moja praca na tym serwerze została wstrzymana!**\nTylko następujące komendy mogą być używane:",
 			"list": [
 				{ "cmd": "<wyszukiwana fraza>", "desc": "Odpowiem linkiem do pasujacego artykułu na Wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <wyszukiwana fraza>", "desc": "Odpowiem z pasującym linkiem do podanej wiki na Gamepedii: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
@@ -759,18 +785,20 @@
 				{ "cmd": "help", "desc": "Wylistuję wszystkie komendy, które rozumiem.", "hide": true },
 				{ "cmd": "help <komenda bota>", "desc": "Wyłumaczę działanie komendy!", "hide": true },
 				{ "cmd": "help admin", "desc": "Wylistuję wszystkie komendy administracyjne.", "hide": true },
-				{ "cmd": "settings", "desc": "Zmienię ustawienia dla tego serwera.", "admin": true },
+				{ "cmd": "settings", "desc": "Zmienię ustawienia dla tego serwera.", "admin": true, "pause": true },
 				{ "cmd": "settings lang <język>", "desc": "Zmienię język tego serwera.", "hide": true, "admin": true },
 				{ "cmd": "settings wiki <wiki>", "desc": "Zmienię domyślną wiki tego serwera.", "hide": true, "admin": true },
 				{ "cmd": "settings channel <wiki>", "desc": "Zmienię domyślną wiki dla tego obecnego kanału.", "hide": true, "admin": true },
+				{ "cmd": "pause @mention", "desc": "Od teraz będę ignorował większość komend na tym serwerze z wyjątkiem paru, administracyjnych komend.", "admin": true },
+				{ "cmd": "pause @mention", "desc": "Ponownie będę odpowiadał na wszystkie komendy na tym serwerze.", "unsearchable": true, "hide": true, "pause": true },
 				{ "cmd": "ankieta <pytanie>", "desc": "Utworzę ankietę i dodam do niej domyślne reakcje (<:support:448222377009086465> oraz <:oppose:448222455425794059>)", "admin": true },
 				{ "cmd": "ankieta <emotka> [<emotka> ...] <pytanie>", "desc": "Utworzę ankietę i dodam do niej podane reakcje..", "admin": true },
 				{ "cmd": "poll <pytanie>", "desc": "Utworzę ankietę i dodam do niej domyślne reakcje (<:support:448222377009086465> oraz <:oppose:448222455425794059>)", "hide": true, "admin": true },
 				{ "cmd": "poll <emotka> [<emotka> ...] <pytanie>", "desc": "Utworzę ankietę i dodam do niej podane reakcje..", "hide": true, "admin": true },
-				{ "cmd": "test", "desc": "Gdy jestem aktywny - odpowiem." },
-				{ "cmd": "say <wiadomość>", "desc": "Napiszę podaną wiadomość", "admin": true },
-				{ "cmd": "say alarm <wiadomość>", "desc": "Napiszę specjalnie sformatowaną wiadomość: 🚨 **<wiadomość>** 🚨", "admin": true },
-				{ "cmd": "usuń <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "admin": true },
+				{ "cmd": "test", "desc": "Gdy jestem aktywny - odpowiem.", "pause": true },
+				{ "cmd": "say <wiadomość>", "desc": "Napiszę podaną wiadomość", "admin": true, "pause": true },
+				{ "cmd": "say alarm <wiadomość>", "desc": "Napiszę specjalnie sformatowaną wiadomość: 🚨 **<wiadomość>** 🚨", "admin": true, "pause": true },
+				{ "cmd": "usuń <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "admin": true, "pause": true },
 				{ "cmd": "delete <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "hide": true, "admin": true },
 				{ "cmd": "purge <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "hide": true, "admin": true }
 			]
@@ -809,6 +837,10 @@
 			"wikihelp": "`%s <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/`",
 			"channel": "bu kanalın varsayılan wikisi:",
 			"channelchanged": "bu kanalın varsayılan wikisini şuna değiştirdiniz:"
+		},
+		"pause": {
+			"on": "Şimdi bu sunucuda duraklatıldım ve çoğu komutu görmezden geleceğim!",
+			"off": "Artık bu sunucuda duraklatılmış durumda değilim ve tüm komutlara tekrar cevap vereceğim!"
 		},
 		"voice": {
 			"text": "Ses kanalındaki herkese belirli bir rol vermeye çalışıyorum:",
@@ -904,7 +936,7 @@
 		},
 		"test": {
 			"random": 10,
-			"pause": "Şu anda etkin değilim.",
+			"pause": "Şu anda bu sunucuda duraklatılmış durumdayım.",
 			"text": [
 				"Hala hayattayım!",
 				"ve inan bana, ben hala hayattayım.",
@@ -918,6 +950,7 @@
 			"all": "Yapabileceklerimi öğrenmek mi istiyorsun? İşte anladığım tüm komutların bir listesi:",
 			"admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
 			"noadmin": "Bu komutlar için `Sunucuyu Yönetme` iznine ihtiyacınız var!",
+			"pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:",
 			"list": [
 				{ "cmd": "<arama terimi>", "desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim.", "unsearchable": true },
 				{ "cmd": "!<wiki> <arama terimi>", "desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
@@ -944,18 +977,20 @@
 				{ "cmd": "help", "desc": "Anladığım tüm komutları listeleyeceğim.", "hide": true },
 				{ "cmd": "help <bot komutu>", "desc": "Bir komut nasıl çalışıyor biliyor musun? Sana açıklayayım!", "hide": true },
 				{ "cmd": "help admin", "desc": "Tüm yönetici komutlarını listeleyeceğim.", "hide": true },
-				{ "cmd": "settings", "desc": "Bu sunucunun ayarlarını değiştireceğim.", "admin": true },
+				{ "cmd": "settings", "desc": "Bu sunucunun ayarlarını değiştireceğim.", "admin": true, "pause": true },
 				{ "cmd": "settings lang <dil>", "desc": "Bu sunucunun dilini değiştireceğim.", "hide": true, "admin": true },
 				{ "cmd": "settings wiki <wiki>", "desc": "Bu sunucunun varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
 				{ "cmd": "settings channel <wiki>", "desc": "Geçerli kanalın varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
+				{ "cmd": "pause @mention", "desc": "Birkaç admin komutu haricinde, bu sunucudaki bütün komutları yok sayacağım.", "admin": true },
+				{ "cmd": "pause @mention", "desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim.", "unsearchable": true, "hide": true, "pause": true },
 				{ "cmd": "anket <serbest metin olarak soru>", "desc": "Anket yaratacağım ve şu tepkileri vereceğim: <:support:448222377009086465> ve <:oppose:448222455425794059>.", "admin": true },
 				{ "cmd": "anket <emoji> [<emoji> ...] <question as free text>", "desc": "Bir anket yaratacağım ve olası cevaplarla tepki ekleyeceğim.", "admin": true },
 				{ "cmd": "poll <serbest metin olarak soru>", "desc": "Anket yaratacağım ve şu tepkileri vereceğim: <:support:448222377009086465> ve <:oppose:448222455425794059>.", "hide": true, "admin": true },
 				{ "cmd": "poll <emoji> [<emoji> ...] <question as free text>", "desc": "Bir anket yaratacağım ve olası cevaplarla tepki ekleyeceğim.", "hide": true, "admin": true },
-				{ "cmd": "test", "desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem." },
-				{ "cmd": "say <mesaj>", "desc": "Verilen mesajı yazacağım.", "admin": true },
-				{ "cmd": "say alarm <mesaj>", "desc": "Verilen mesajı biçimlendirilmiş olarak bu şekilde yazacağım: 🚨 **<mesaj>** 🚨", "admin": true },
-				{ "cmd": "temizleme <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "admin": true },
+				{ "cmd": "test", "desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem.", "pause": true },
+				{ "cmd": "say <mesaj>", "desc": "Verilen mesajı yazacağım.", "admin": true, "pause": true },
+				{ "cmd": "say alarm <mesaj>", "desc": "Verilen mesajı biçimlendirilmiş olarak bu şekilde yazacağım: 🚨 **<mesaj>** 🚨", "admin": true, "pause": true },
+				{ "cmd": "temizleme <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "admin": true, "pause": true },
 				{ "cmd": "delete <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "hide": true, "admin": true },
 				{ "cmd": "purge <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "hide": true, "admin": true }
 			]
@@ -999,6 +1034,10 @@
 			"wikihelp": "Use `%s <wiki>` para alterar a wiki padrão.\nLink para a wiki: `https://<wiki>.gamepedia.com/`",
 			"channel": "a wiki padrão para este canal é:",
 			"channelchanged": "você mudou a wiki padrão para este canal para:"
+		},
+		"pause": {
+			"on": "Agora estou pausado neste servidor e ignorarei a maioria dos comandos!",
+			"off": "Não estou mais pausado neste servidor e responderei a todos os comandos novamente!"
 		},
 		"voice": {
 			"text": "Eu tento dar a todos em um canal de voz um papel específico:",
@@ -1094,7 +1133,7 @@
 		},
 		"test": {
 			"random": 10,
-			"pause": "estou atualmente inativo.",
+			"pause": "eu estou atualmente em pausa neste servidor.",
 			"text": [
 				"eu ainda estou vivo!",
 				"e acredite em mim, eu ainda estou vivo.",
@@ -1108,6 +1147,7 @@
 			"all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os comandos que eu entendo:",
 			"admin": "Esses comandos só podem ser executados por administradores:",
 			"noadmin": "você precisa da permissão de `Gerenciar servidor` para esses comandos!",
+			"pause": "**Estou atualmente em pausa neste servidor!**\nSom estes comandos podem ser executados:",
 			"list": [
 				{ "cmd": "<termo de pesquisa>", "desc": "Eu vou responder com um link para um artigo correspondente no wiki.", "unsearchable": true },
 				{ "cmd": "!<wiki> <termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente na wiki da Gamepedia: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
@@ -1135,21 +1175,23 @@
 				{ "cmd": "help", "desc": "Vou listar todos os comandos que entendo.", "hide": true },
 				{ "cmd": "help <comando do robô>", "desc": "Quer saber como funciona um comando? Deixe-me explicar isso para você!", "hide": true },
 				{ "cmd": "help admin", "desc": "Vou listar todos os comandos do administrador.", "hide": true },
-				{ "cmd": "settings", "desc": "Vou mudar as configurações deste servidor.", "admin": true },
+				{ "cmd": "settings", "desc": "Vou mudar as configurações deste servidor.", "admin": true, "pause": true },
 				{ "cmd": "settings lang <idioma>", "desc": "Vou mudar o idioma deste servidor.", "hide": true, "admin": true },
 				{ "cmd": "settings wiki <wiki>", "desc": "Vou mudar a wiki padrão para esse servidor.", "hide": true, "admin": true },
 				{ "cmd": "settings channel <wiki>", "desc": "Vou mudar a wiki padrão para o canal atual.", "hide": true, "admin": true },
+				{ "cmd": "pause @mention", "desc": "Eu vou ignorar todos os comandos neste servidor, exceto alguns comandos de administração.", "admin": true },
+				{ "cmd": "pause @mention", "desc": "Eu responderei a todos os comandos neste servidor novamente.", "unsearchable": true, "hide": true, "pause": true },
 				{ "cmd": "enquete <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com <:support:448222377009086465> e <:oppose:448222455425794059>.", "admin": true },
 				{ "cmd": "enquete <emoji> [<emoji> ...] <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com as respostas possíveis.", "admin": true },
 				{ "cmd": "poll <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com <:support:448222377009086465> e <:oppose:448222455425794059>.", "hide": true, "admin": true },
 				{ "cmd": "poll <emoji> [<emoji> ...] <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com as respostas possíveis.", "hide": true, "admin": true },
-				{ "cmd": "teste", "desc": "Se estou ativo, respondo! Caso contrário, não." },
+				{ "cmd": "teste", "desc": "Se estou ativo, respondo! Caso contrário, não.", "pause": true },
 				{ "cmd": "test", "desc": "Se estou ativo, respondo! Caso contrário, não.", "hide": true },
-				{ "cmd": "dizer <mensagem>", "desc": "Vou escrever a mensagem dada.", "admin": true },
-				{ "cmd": "dizer alarm <mensagem>", "desc": "Vou escrever a mensagem já pré-formatada: 🚨 **<mensagem>** 🚨", "admin": true },
+				{ "cmd": "dizer <mensagem>", "desc": "Vou escrever a mensagem dada.", "admin": true, "pause": true },
+				{ "cmd": "dizer alarm <mensagem>", "desc": "Vou escrever a mensagem já pré-formatada: 🚨 **<mensagem>** 🚨", "admin": true, "pause": true },
 				{ "cmd": "say <mensagem>", "desc": "Vou escrever a mensagem dada.", "hide": true, "admin": true },
 				{ "cmd": "say alarm <mensagem>", "desc": "Vou escrever a mensagem já pré-formatada: 🚨 **<mensagem>** 🚨", "hide": true, "admin": true },
-				{ "cmd": "excluir <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "admin": true },
+				{ "cmd": "excluir <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "admin": true, "pause": true },
 				{ "cmd": "purgue <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
 				{ "cmd": "purgar <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
 				{ "cmd": "limpar <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
