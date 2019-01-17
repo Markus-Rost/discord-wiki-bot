@@ -1386,18 +1386,17 @@
 			}
 		}
 	},
-	"pl": {
-		"link": "minecraft-pl",
+	"nl": {
+		"link": "minecraft-nl",
 		"aliase": {
-			"cmd": "command",
-			"komenda": "command"
+			"cmd": "command"
 		},
 		"bug": {
-			"private": "**Private Issue**",
-			"fixed": "Naprawione w wersji:"
+			"private": "**Privé issue**",
+			"fixed": "Fixed versie:"
 		},
 		"cmd": {
-			"page": "Komendy#",
+			"page": "Opdrachten#",
 			"aliase": {
 				"connect": "wsserver",
 				"tell": "msg",
@@ -1852,17 +1851,18 @@
 			}
 		}
 	},
-	"tr": {
-		"link": "minecraft-tr",
+	"pl": {
+		"link": "minecraft-pl",
 		"aliase": {
-			"cmd": "command"
+			"cmd": "command",
+			"komenda": "command"
 		},
 		"bug": {
 			"private": "**Private Issue**",
-			"fixed": "Fixed Version:"
+			"fixed": "Naprawione w wersji:"
 		},
 		"cmd": {
-			"page": "en:Commands/",
+			"page": "Komendy#",
 			"aliase": {
 				"connect": "wsserver",
 				"tell": "msg",
@@ -2784,17 +2784,17 @@
 			}
 		}
 	},
-	"nl": {
-		"link": "minecraft-nl",
+	"tr": {
+		"link": "minecraft-tr",
 		"aliase": {
 			"cmd": "command"
 		},
 		"bug": {
-			"private": "**Privé issue**",
-			"fixed": "Fixed versie:"
+			"private": "**Private Issue**",
+			"fixed": "Fixed Version:"
 		},
 		"cmd": {
-			"page": "Opdrachten#",
+			"page": "en:Commands/",
 			"aliase": {
 				"connect": "wsserver",
 				"tell": "msg",
