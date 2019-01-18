@@ -1177,11 +1177,11 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment) {
 }
 
 function cmd_befehl(lang, mclang, msg, befehl, args, title, cmd, querystring, fragment) {
-	var aliasCmd = ( ( befehl in mclang.cmd.aliase ) ? mclang.cmd.aliase[befehl] : befehl ).toLowerCase();
+	var aliasCmd = ( ( befehl in minecraft.cmd.aliase ) ? minecraft.cmd.aliase[befehl] : befehl ).toLowerCase();
 	
-	if ( aliasCmd in mclang.cmd.list ) {
+	if ( aliasCmd in minecraft.cmd.list ) {
 		var regex = new RegExp('/' + aliasCmd, 'g');
-		var cmdSyntax = mclang.cmd.list[aliasCmd].join( '\n' ).replace( regex, '/' + befehl );
+		var cmdSyntax = minecraft.cmd.list[aliasCmd].join( '\n' ).replace( regex, '/' + befehl );
 		msg.sendChannel( '```md\n' + cmdSyntax + '```<https://' + mclang.link + '.gamepedia.com/' + mclang.cmd.page + aliasCmd + '>', {split:{maxLength:2000,prepend:'```md\n',append:'```'}} );
 	}
 	else {
