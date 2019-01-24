@@ -585,10 +585,10 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, querystring = '', fra
 										msg.sendChannel( pagelink, embed );
 									}
 									else if ( !srbody.continue ) {
-										msg.sendChannel( pagelink + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ), embed );
+										msg.sendChannel( pagelink + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' ), embed );
 									}
 									else {
-										msg.sendChannel( pagelink + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + '`' ), embed );
+										msg.sendChannel( pagelink + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + linksuffix + '`' ), embed );
 									}
 								}
 							}
