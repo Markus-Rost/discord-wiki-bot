@@ -491,7 +491,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ') {
 		var querystring = title.substr(querystart + 1);
 		title = title.substr(0, querystart);
 	}
-	msg.reactEmoji('⏳').then( reaction => check_wiki(lang, msg, title, wiki = lang.link, cmd, reaction, querystring, fragment) );
+	msg.reactEmoji('⏳').then( reaction => check_wiki(lang, msg, title, wiki, cmd, reaction, querystring, fragment) );
 }
 
 function check_wiki(lang, msg, title, wiki, cmd, reaction, querystring = '', fragment = '', selfcall = 0) {
