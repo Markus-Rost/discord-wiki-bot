@@ -478,19 +478,23 @@ function cmd_delete(lang, msg, args, line) {
 	}
 }
 
-function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '', fragment = '', selfcall = 0) {
+function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ') {
 	if ( cmd === ' ' && msg.isAdmin() && !( msg.guild.id in settings ) && settings !== defaultSettings ) {
 		cmd_settings(lang, msg, [], '');
 	}
 	if ( title.includes( '#' ) ) {
-		fragment = title.split('#').slice(1).join('#');
+		var fragment = title.split('#').slice(1).join('#');
 		title = title.split('#')[0];
 	}
 	if ( /\?[a-z]+=/.test(title) ) {
 		var querystart = title.search(/\?\w+=/);
-		querystring = title.substr(querystart + 1);
+		var querystring = title.substr(querystart + 1);
 		title = title.substr(0, querystart);
 	}
+	msg.reactEmoji('⏳').then( reaction => check_wiki(lang, msg, title, wiki = lang.link, cmd, reaction, querystring, fragment) );
+}
+
+function check_wiki(lang, msg, title, wiki, cmd, reaction, querystring = '', fragment = '', selfcall = 0) {
 	var linksuffix = ( querystring ? '?' + querystring.toTitle() : '' ) + ( fragment ? '#' + fragment.toSection() : '' );
 	if ( title.length > 300 ) {
 		title = title.substr(0, 300);
@@ -502,150 +506,154 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ', querystring = '
 	var mclang = minecraft[lang.lang];
 	var aliasInvoke = ( invoke in mclang.aliase ) ? mclang.aliase[invoke] : invoke;
 	if ( !msg.notminecraft && wiki === mclang.link && ( aliasInvoke in minecraftcmdmap || invoke.startsWith('/') ) ) {
-		if ( aliasInvoke in minecraftcmdmap ) minecraftcmdmap[aliasInvoke](lang, mclang, msg, args, title, cmd, querystring, fragment);
-		else cmd_befehl(lang, mclang, msg, invoke.substr(1), args, title, cmd, querystring, fragment);
+		if ( aliasInvoke in minecraftcmdmap ) minecraftcmdmap[aliasInvoke](lang, mclang, msg, args, title, cmd, querystring, fragment, reaction);
+		else cmd_befehl(lang, mclang, msg, invoke.substr(1), args, title, cmd, querystring, fragment, reaction);
 	}
-	else if ( ( invoke === 'random' || invoke === '🎲' || invoke === lang.search.random ) && !args.join('') && !linksuffix ) cmd_random(lang, msg, wiki);
-	else if ( ( invoke === 'overview' || invoke === lang.search.overview ) && !args.join('') && !linksuffix ) cmd_overview(lang, msg, wiki);
-	else if ( invoke === 'page' || invoke === lang.search.page ) msg.sendChannel( '<https://' + wiki + '.gamepedia.com/' + args.join('_').toTitle() + linksuffix + '>' );
-	else if ( invoke === 'search' || invoke === lang.search.search ) msg.sendChannel( '<https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').toTitle() + linksuffix + '>' );
-	else if ( invoke === 'diff' && args.join('') ) cmd_diff(lang, msg, args, wiki);
+	else if ( ( invoke === 'random' || invoke === '🎲' || invoke === lang.search.random ) && !args.join('') && !linksuffix ) cmd_random(lang, msg, wiki, reaction);
+	else if ( ( invoke === 'overview' || invoke === lang.search.overview ) && !args.join('') && !linksuffix ) cmd_overview(lang, msg, wiki, reaction);
+	else if ( invoke === 'page' || invoke === lang.search.page ) {
+		msg.sendChannel( '<https://' + wiki + '.gamepedia.com/' + args.join('_').toTitle() + linksuffix + '>' );
+		if ( reaction ) reaction.removeEmoji();
+	}
+	else if ( invoke === 'search' || invoke === lang.search.search ) {
+		msg.sendChannel( '<https://' + wiki + '.gamepedia.com/Special:Search/' + args.join('_').toTitle() + linksuffix + '>' );
+		if ( reaction ) reaction.removeEmoji();
+	}
+	else if ( invoke === 'diff' && args.join('') ) cmd_diff(lang, msg, args, wiki, reaction);
 	else {
-		msg.reactEmoji('⏳').then( function( reaction ) {
-			request( {
-				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( /(?:^|&)redirect=no(?:&|$)/.test( querystring ) ? '' : '&redirects=true' ) + '&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
-				json: true
-			}, function( error, response, body ) {
-				if ( body && body.warnings ) log_warn(body.warnings);
-				if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
-					if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
-						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-						msg.reactEmoji('nowiki');
-					}
-					else {
-						console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-						msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/' + ( linksuffix ? title.toTitle() + linksuffix : 'Special:Search/' + title.toTitle() ) + '>' );
-					}
-					
-					if ( reaction ) reaction.removeEmoji();
+		request( {
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( /(?:^|&)redirect=no(?:&|$)/.test( querystring ) ? '' : '&redirects=true' ) + '&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
+			json: true
+		}, function( error, response, body ) {
+			if ( body && body.warnings ) log_warn(body.warnings);
+			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
+				if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
+					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+					msg.reactEmoji('nowiki');
 				}
 				else {
-					if ( body.query.pages ) {
-						var querypage = Object.values(body.query.pages)[0];
-						if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ) ) {
-							querypage.title = body.query.redirects[0].from;
-							delete body.query.redirects[0].tofragment;
-							delete querypage.missing;
-							querypage.ns = -1;
-						}
-						
-						if ( ( querypage.ns === 2 || querypage.ns === 202 ) && ( !querypage.title.includes( '/' ) || /^[^:]+:[\d\.]+\/\d\d$/.test(querypage.title) ) ) {
-							var userparts = querypage.title.split(':');
-							cmd_user(lang, msg, userparts[0].toTitle() + ':', userparts.slice(1).join(':'), wiki, linksuffix, reaction);
-						}
-						else if ( ( querypage.missing !== undefined && querypage.known === undefined ) || querypage.invalid !== undefined ) {
-							request( {
-								uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
-								json: true
-							}, function( srerror, srresponse, srbody ) {
-								if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
-								if ( srerror || !srresponse || srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
-									console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
-									msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() + '>' );
+					console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+					msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/' + ( linksuffix ? title.toTitle() + linksuffix : 'Special:Search/' + title.toTitle() ) + '>' );
+				}
+				
+				if ( reaction ) reaction.removeEmoji();
+			}
+			else {
+				if ( body.query.pages ) {
+					var querypage = Object.values(body.query.pages)[0];
+					if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ) ) {
+						querypage.title = body.query.redirects[0].from;
+						delete body.query.redirects[0].tofragment;
+						delete querypage.missing;
+						querypage.ns = -1;
+					}
+					
+					if ( ( querypage.ns === 2 || querypage.ns === 202 ) && ( !querypage.title.includes( '/' ) || /^[^:]+:[\d\.]+\/\d\d$/.test(querypage.title) ) ) {
+						var userparts = querypage.title.split(':');
+						cmd_user(lang, msg, userparts[0].toTitle() + ':', userparts.slice(1).join(':'), wiki, linksuffix, reaction);
+					}
+					else if ( ( querypage.missing !== undefined && querypage.known === undefined ) || querypage.invalid !== undefined ) {
+						request( {
+							uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
+							json: true
+						}, function( srerror, srresponse, srbody ) {
+							if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
+							if ( srerror || !srresponse || srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
+								console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( srerror ? ': ' + srerror : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
+								msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/Special:Search/' + title.toTitle() + '>' );
+							}
+							else {
+								if ( !srbody.query ) {
+									msg.reactEmoji('🤷');
 								}
 								else {
-									if ( !srbody.query ) {
-										msg.reactEmoji('🤷');
+									querypage = Object.values(srbody.query.pages)[0];
+									var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle() + linksuffix;
+									var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+									if ( querypage.extract ) {
+										var extract = querypage.extract.escapeFormatting();
+										if ( extract.length > 2000 ) extract = extract.substr(0, 2000) + '\u2026';
+										embed.setDescription( extract );
+									}
+									if ( querypage.pageimage ) {
+										var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+										if ( querypage.ns === 6 ) embed.setImage( pageimage );
+										else embed.setThumbnail( pageimage );
+									} else embed.setThumbnail( body.query.general.logo );
+									
+									if ( title.replace( /\-/g, ' ' ).toTitle().toLowerCase() === querypage.title.replace( /\-/g, ' ' ).toTitle().toLowerCase() ) {
+										msg.sendChannel( pagelink, embed );
+									}
+									else if ( !srbody.continue ) {
+										msg.sendChannel( pagelink + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ), embed );
 									}
 									else {
-										querypage = Object.values(srbody.query.pages)[0];
-										var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle() + linksuffix;
-										var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-										if ( querypage.extract ) {
-											var extract = querypage.extract.escapeFormatting();
-											if ( extract.length > 2000 ) extract = extract.substr(0, 2000) + '\u2026';
-											embed.setDescription( extract );
-										}
-										if ( querypage.pageimage ) {
-											var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
-											if ( querypage.ns === 6 ) embed.setImage( pageimage );
-											else embed.setThumbnail( pageimage );
-										} else embed.setThumbnail( body.query.general.logo );
-										
-										if ( title.replace( /\-/g, ' ' ).toTitle().toLowerCase() === querypage.title.replace( /\-/g, ' ' ).toTitle().toLowerCase() ) {
-											msg.sendChannel( pagelink, embed );
-										}
-										else if ( !srbody.continue ) {
-											msg.sendChannel( pagelink + '\n' + lang.search.infopage.replace( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ), embed );
-										}
-										else {
-											msg.sendChannel( pagelink + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + '`' ), embed );
-										}
+										msg.sendChannel( pagelink + '\n' + lang.search.infosearch.replace( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + '`' ).replace( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + '`' ), embed );
 									}
 								}
-								
-								if ( reaction ) reaction.removeEmoji();
-							} );
-						}
-						else {
-							var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle() + ( querystring ? '?' + querystring.toTitle() : '' ) + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : ( fragment ? '#' + fragment.toSection() : '' ) );
-							var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-							if ( querypage.extract ) {
-								var extract = querypage.extract.escapeFormatting();
-								if ( extract.length > 2000 ) extract = extract.substr(0, 2000) + '\u2026';
-								embed.setDescription( extract );
-							}
-							if ( querypage.pageimage ) {
-								var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
-								if ( querypage.ns === 6 ) embed.setImage( pageimage );
-								else embed.setThumbnail( pageimage );
-							} else embed.setThumbnail( body.query.general.logo );
-							
-							msg.sendChannel( pagelink, embed );
-							
-							if ( reaction ) reaction.removeEmoji();
-						}
-					}
-					else if ( body.query.interwiki ) {
-						var inter = body.query.interwiki[0];
-						var intertitle = inter.title.substr(inter.iw.length + 1);
-						var regex = inter.url.match( /^(?:https?:)?\/\/([a-z\d-]{1,30})\.gamepedia\.com\// );
-						if ( regex !== null && selfcall < 3 ) {
-							if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
-								var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replace( intertitle.replace( /\_/g, ' ' ), intertitle );
-								selfcall++;
-								cmd_link(lang, msg, iwtitle, regex[1], ' !' + regex[1] + ' ', querystring, fragment, selfcall);
-							} else {
-								if ( reaction ) reaction.removeEmoji();
-								console.log( '- Abgebrochen, pausiert.' );
-							}
-						} else {
-							msg.sendChannel( inter.url.replace( /@(here|everyone)/g, '%40$1' ) + linksuffix ).then( message => {
-								if ( message && selfcall === 3 ) message.reactEmoji('⚠');
-							} );
-							if ( reaction ) reaction.removeEmoji();
-						}
-					}
-					else {
-						var pagelink = 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.toTitle() + linksuffix;
-						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( body.query.general.logo );
-						request( {
-							uri: body.query.general.base
-						}, function( mperror, mpresponse, mpbody ) {
-							if ( mperror || !mpresponse || mpresponse.statusCode !== 200 || !mpbody ) {
-								console.log( '- Fehler beim Erhalten der Metadaten' + ( mperror ? ': ' + mperror : ( mpbody ? ( mpbody.error ? ': ' + mpbody.error.info : '.' ) : '.' ) ) );
-							} else {
-								var match = mpbody.match( /<meta name="description" content="(.*)"\/>/ );
-								if ( match !== null ) embed.setDescription( match[1].escapeFormatting().substr(0, 2000) );
 							}
 							
-							msg.sendChannel( pagelink, embed );
-						
 							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
+					else {
+						var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle() + ( querystring ? '?' + querystring.toTitle() : '' ) + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : ( fragment ? '#' + fragment.toSection() : '' ) );
+						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+						if ( querypage.extract ) {
+							var extract = querypage.extract.escapeFormatting();
+							if ( extract.length > 2000 ) extract = extract.substr(0, 2000) + '\u2026';
+							embed.setDescription( extract );
+						}
+						if ( querypage.pageimage ) {
+							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+							if ( querypage.ns === 6 ) embed.setImage( pageimage );
+							else embed.setThumbnail( pageimage );
+						} else embed.setThumbnail( body.query.general.logo );
+						
+						msg.sendChannel( pagelink, embed );
+						
+						if ( reaction ) reaction.removeEmoji();
+					}
 				}
-			} );
+				else if ( body.query.interwiki ) {
+					var inter = body.query.interwiki[0];
+					var intertitle = inter.title.substr(inter.iw.length + 1);
+					var regex = inter.url.match( /^(?:https?:)?\/\/([a-z\d-]{1,30})\.gamepedia\.com\// );
+					if ( regex !== null && selfcall < 3 ) {
+						if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
+							var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replace( intertitle.replace( /\_/g, ' ' ), intertitle );
+							selfcall++;
+							check_wiki(lang, msg, iwtitle, regex[1], ' !' + regex[1] + ' ', reaction, querystring, fragment, selfcall);
+						} else {
+							if ( reaction ) reaction.removeEmoji();
+							console.log( '- Abgebrochen, pausiert.' );
+						}
+					} else {
+						msg.sendChannel( inter.url.replace( /@(here|everyone)/g, '%40$1' ) + linksuffix ).then( message => {
+							if ( message && selfcall === 3 ) message.reactEmoji('⚠');
+						} );
+						if ( reaction ) reaction.removeEmoji();
+					}
+				}
+				else {
+					var pagelink = 'https://' + wiki + '.gamepedia.com/' + body.query.general.mainpage.toTitle() + linksuffix;
+					var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( body.query.general.logo );
+					request( {
+						uri: body.query.general.base
+					}, function( mperror, mpresponse, mpbody ) {
+						if ( mperror || !mpresponse || mpresponse.statusCode !== 200 || !mpbody ) {
+							console.log( '- Fehler beim Erhalten der Metadaten' + ( mperror ? ': ' + mperror : ( mpbody ? ( mpbody.error ? ': ' + mpbody.error.info : '.' ) : '.' ) ) );
+						} else {
+							var match = mpbody.match( /<meta name="description" content="(.*)"\/>/ );
+							if ( match !== null ) embed.setDescription( match[1].escapeFormatting().substr(0, 2000) );
+						}
+						
+						msg.sendChannel( pagelink, embed );
+						
+						if ( reaction ) reaction.removeEmoji();
+					} );
+				}
+			}
 		} );
 	}
 }
@@ -865,7 +873,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, reaction) {
 	}
 }
 
-function cmd_diff(lang, msg, args, wiki) {
+function cmd_diff(lang, msg, args, wiki, reaction) {
 	if ( args[0] ) {
 		var error = false;
 		var title = '';
@@ -902,69 +910,68 @@ function cmd_diff(lang, msg, args, wiki) {
 			if ( revision > diff ) argids = [revision, diff];
 			else if ( revision === diff ) argids = [revision];
 			else argids = [diff, revision];
-			msg.reactEmoji('⏳').then( function( reaction ) {
-				cmd_diffsend(lang, msg, argids, wiki, reaction);
-			} );
+			cmd_diffsend(lang, msg, argids, wiki, reaction);
 		}
 		else {
-			msg.reactEmoji('⏳').then( function( reaction ) {
-				request( {
-					uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&prop=ids' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
-					json: true
-				}, function( error, response, body ) {
-					if ( body && body.warnings ) log_warn(body.warnings);
-					if ( error || !response || response.statusCode !== 200 || !body || !body.compare ) {
-						var noerror = false;
-						if ( body && body.error ) {
-							switch ( body.error.code ) {
-								case 'nosuchrevid':
-									noerror = true;
-									break;
-								case 'missingtitle':
-									noerror = true;
-									break;
-								case 'invalidtitle':
-									noerror = true;
-									break;
-								default:
-									noerror = false;
-							}
+			request( {
+				uri: 'https://' + wiki + '.gamepedia.com/api.php?action=compare&prop=ids' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
+				json: true
+			}, function( error, response, body ) {
+				if ( body && body.warnings ) log_warn(body.warnings);
+				if ( error || !response || response.statusCode !== 200 || !body || !body.compare ) {
+					var noerror = false;
+					if ( body && body.error ) {
+						switch ( body.error.code ) {
+							case 'nosuchrevid':
+								noerror = true;
+								break;
+							case 'missingtitle':
+								noerror = true;
+								break;
+							case 'invalidtitle':
+								noerror = true;
+								break;
+							default:
+								noerror = false;
 						}
-						if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
-							console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-							msg.reactEmoji('nowiki');
-						}
-						else if ( noerror ) {
-							msg.replyMsg( lang.diff.badrev );
-						}
-						else {
-							console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-							msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/' + title.toTitle() + '?diff=' + relative + ( title ? '' : '&oldid=' + revision ) + '>' );
-						}
-						
-						if ( reaction ) reaction.removeEmoji();
+					}
+					if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
+						console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+						msg.reactEmoji('nowiki');
+					}
+					else if ( noerror ) {
+						msg.replyMsg( lang.diff.badrev );
 					}
 					else {
-						if ( body.compare.fromarchive !== undefined || body.compare.toarchive !== undefined ) {
-							msg.reactEmoji('error');
-							
-							if ( reaction ) reaction.removeEmoji();
-						} else {
-							var argids = [];
-							var ids = body.compare;
-							if ( ids.fromrevid && !ids.torevid ) argids = [ids.fromrevid];
-							else if ( !ids.fromrevid && ids.torevid ) argids = [ids.torevid];
-							else if ( ids.fromrevid > ids.torevid ) argids = [ids.fromrevid, ids.torevid];
-							else if ( ids.fromrevid === ids.torevid ) argids = [ids.fromrevid];
-							else argids = [ids.torevid, ids.fromrevid];
-							cmd_diffsend(lang, msg, argids, wiki, reaction);
-						}
+						console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/' + title.toTitle() + '?diff=' + relative + ( title ? '' : '&oldid=' + revision ) + '>' );
 					}
-				} );
+					
+					if ( reaction ) reaction.removeEmoji();
+				}
+				else {
+					if ( body.compare.fromarchive !== undefined || body.compare.toarchive !== undefined ) {
+						msg.reactEmoji('error');
+						
+						if ( reaction ) reaction.removeEmoji();
+					} else {
+						var argids = [];
+						var ids = body.compare;
+						if ( ids.fromrevid && !ids.torevid ) argids = [ids.fromrevid];
+						else if ( !ids.fromrevid && ids.torevid ) argids = [ids.torevid];
+						else if ( ids.fromrevid > ids.torevid ) argids = [ids.fromrevid, ids.torevid];
+						else if ( ids.fromrevid === ids.torevid ) argids = [ids.fromrevid];
+						else argids = [ids.torevid, ids.fromrevid];
+						cmd_diffsend(lang, msg, argids, wiki, reaction);
+					}
+				}
 			} );
 		}
 	}
-	else msg.reactEmoji('error');
+	else {
+		msg.reactEmoji('error');
+		if ( reaction ) reaction.removeEmoji();
+	}
 }
 
 function cmd_diffsend(lang, msg, args, wiki, reaction) {
@@ -1031,174 +1038,169 @@ function cmd_diffsend(lang, msg, args, wiki, reaction) {
 	} );
 }
 
-function cmd_random(lang, msg, wiki) {
-	msg.reactEmoji('⏳').then( function( reaction ) {
-		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
-			json: true
-		}, function( error, response, body ) {
-			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
-				if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
-					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-					msg.reactEmoji('nowiki');
-				}
-				else {
-					console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/Special:Random>' );
-				}
+function cmd_random(lang, msg, wiki, reaction) {
+	request( {
+		uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
+		json: true
+	}, function( error, response, body ) {
+		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
+			if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
+				console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+				msg.reactEmoji('nowiki');
 			}
 			else {
-				querypage = Object.values(body.query.pages)[0];
-				var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle();
-				var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-				if ( querypage.extract ) {
-					var extract = querypage.extract.escapeFormatting();
-					if ( extract.length > 2000 ) extract = extract.substr(0, 2000) + '\u2026';
-					embed.setDescription( extract );
-				}
-				if ( querypage.pageimage ) {
-					var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
-					if ( querypage.ns === 6 ) embed.setImage( pageimage );
-					else embed.setThumbnail( pageimage );
-				} else embed.setThumbnail( body.query.general.logo );
-				
-				msg.sendChannel( '🎲 ' + pagelink, embed );
+				console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+				msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/Special:Random>' );
 			}
+		}
+		else {
+			querypage = Object.values(body.query.pages)[0];
+			var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle();
+			var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+			if ( querypage.extract ) {
+				var extract = querypage.extract.escapeFormatting();
+				if ( extract.length > 2000 ) extract = extract.substr(0, 2000) + '\u2026';
+				embed.setDescription( extract );
+			}
+			if ( querypage.pageimage ) {
+				var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+				if ( querypage.ns === 6 ) embed.setImage( pageimage );
+				else embed.setThumbnail( pageimage );
+			} else embed.setThumbnail( body.query.general.logo );
 			
-			if ( reaction ) reaction.removeEmoji();
-		} );
+			msg.sendChannel( '🎲 ' + pagelink, embed );
+		}
+		
+		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
-function cmd_overview(lang, msg, wiki) {
-	msg.reactEmoji('⏳').then( function( reaction ) {
-		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&titles=Special:Statistics&format=json',
-			json: true
-		}, function( error, response, body ) {
-			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
-				if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
-					console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
-					msg.reactEmoji('nowiki');
-				}
-				else {
-					console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/Special:Statistics>' );
-				}
-			}
-			else if ( allSites.some( site => site.wiki_domain === body.query.general.servername ) ) {
-				var site = allSites.find( site => site.wiki_domain === body.query.general.servername );
-				
-				var name = [lang.overview.name, site.wiki_display_name];
-				var created = [lang.overview.created, (new Date(parseInt(site.created + '000', 10))).toLocaleString(lang.user.dateformat, timeoptions)];
-				var manager = [lang.overview.manager, site.wiki_managers];
-				var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
-				var articles = [lang.overview.articles, site.ss_good_articles];
-				var pages = [lang.overview.pages, site.ss_total_pages];
-				var edits = [lang.overview.edits, site.ss_total_edits];
-				var users = [lang.overview.users, site.ss_active_users];
-				
-				var title = body.query.pages['-1'].title;
-				var pagelink = 'https://' + wiki + '.gamepedia.com/' + title.toTitle();
-				if ( msg.showEmbed() ) {
-					var text = '<' + pagelink + '>';
-					var managerlist = manager[1].map( manager => '[' + manager + '](https://' + wiki + '.gamepedia.com/User:' + manager.toTitle(true) + ') ([' + lang.overview.talk + '](https://' + wiki + '.gamepedia.com/User_talk:' + manager.toTitle(true) + '))' ).join('\n');
-					var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( body.query.general.logo ).addField( name[0], name[1], true ).addField( created[0], created[1], true ).addField( manager[0], managerlist, true ).addField( official[0], official[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
-				}
-				else {
-					var embed = {};
-					var text = '<' + pagelink + '>\n\n' + name.join(' ') + '\n' + created.join(' ') + '\n' + manager[0] + ' ' + manager[1].join(', ') + '\n' + official.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.overview.inaccurate + '*';
-				}
-				
-				msg.sendChannel( text, embed );
+function cmd_overview(lang, msg, wiki, reaction) {
+	request( {
+		uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general&titles=Special:Statistics&format=json',
+		json: true
+	}, function( error, response, body ) {
+		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
+			if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' ) {
+				console.log( '- Dieses Wiki existiert nicht! ' + ( error ? error.message : ( body ? ( body.error ? body.error.info : '' ) : '' ) ) );
+				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- Dieses Wiki ist nicht gelistet: ' + wiki + '.gamepedia.com' )
-				msg.replyMsg( lang.overview.missing );
+				console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+				msg.sendChannelError( '<https://' + wiki + '.gamepedia.com/Special:Statistics>' );
+			}
+		}
+		else if ( allSites.some( site => site.wiki_domain === body.query.general.servername ) ) {
+			var site = allSites.find( site => site.wiki_domain === body.query.general.servername );
+			
+			var name = [lang.overview.name, site.wiki_display_name];
+			var created = [lang.overview.created, (new Date(parseInt(site.created + '000', 10))).toLocaleString(lang.user.dateformat, timeoptions)];
+			var manager = [lang.overview.manager, site.wiki_managers];
+			var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
+			var articles = [lang.overview.articles, site.ss_good_articles];
+			var pages = [lang.overview.pages, site.ss_total_pages];
+			var edits = [lang.overview.edits, site.ss_total_edits];
+			var users = [lang.overview.users, site.ss_active_users];
+			
+			var title = body.query.pages['-1'].title;
+			var pagelink = 'https://' + wiki + '.gamepedia.com/' + title.toTitle();
+			if ( msg.showEmbed() ) {
+				var text = '<' + pagelink + '>';
+				var managerlist = manager[1].map( manager => '[' + manager + '](https://' + wiki + '.gamepedia.com/User:' + manager.toTitle(true) + ') ([' + lang.overview.talk + '](https://' + wiki + '.gamepedia.com/User_talk:' + manager.toTitle(true) + '))' ).join('\n');
+				var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( body.query.general.logo ).addField( name[0], name[1], true ).addField( created[0], created[1], true ).addField( manager[0], managerlist, true ).addField( official[0], official[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
+			}
+			else {
+				var embed = {};
+				var text = '<' + pagelink + '>\n\n' + name.join(' ') + '\n' + created.join(' ') + '\n' + manager[0] + ' ' + manager[1].join(', ') + '\n' + official.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.overview.inaccurate + '*';
 			}
 			
-			if ( reaction ) reaction.removeEmoji();
-		} );
+			msg.sendChannel( text, embed );
+		}
+		else {
+			console.log( '- Dieses Wiki ist nicht gelistet: ' + wiki + '.gamepedia.com' )
+			msg.replyMsg( lang.overview.missing );
+		}
+		
+		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
-function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment) {
+function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, reaction) {
 	if ( args.length && /\d+$/.test(args[0]) && !args[1] ) {
-		msg.reactEmoji('⏳').then( function( reaction ) {
-			var project = '';
-			if ( /^\d+$/.test(args[0]) ) project = 'MC-';
-			request( {
-				uri: 'https://bugs.mojang.com/rest/api/2/issue/' + project + args[0] + '?fields=summary,fixVersions,resolution,status',
-				json: true
-			}, function( error, response, body ) {
-				if ( error || !response || response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
-					if ( body.errorMessages || body.errors ) {
-						if ( body.errorMessages ) {
-							if ( body.errorMessages.includes( 'Issue Does Not Exist' ) ) {
-								msg.reactEmoji('🤷');
-							}
-							else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-								msg.sendChannel( mclang.bug.private + '\nhttps://bugs.mojang.com/browse/' + project + args[0] );
-							}
-							else {
-								console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ( body.errorMessages ? ': ' + body.errorMessages.join(' - ') : '.' ) : '.' ) ) );
-								msg.reactEmoji('error');
-							}
+		var project = '';
+		if ( /^\d+$/.test(args[0]) ) project = 'MC-';
+		request( {
+			uri: 'https://bugs.mojang.com/rest/api/2/issue/' + project + args[0] + '?fields=summary,fixVersions,resolution,status',
+			json: true
+		}, function( error, response, body ) {
+			if ( error || !response || response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
+				if ( body.errorMessages || body.errors ) {
+					if ( body.errorMessages ) {
+						if ( body.errorMessages.includes( 'Issue Does Not Exist' ) ) {
+							msg.reactEmoji('🤷');
 						}
-						else msg.reactEmoji('error');
+						else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
+							msg.sendChannel( mclang.bug.private + '\nhttps://bugs.mojang.com/browse/' + project + args[0] );
+						}
+						else {
+							console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ( body.errorMessages ? ': ' + body.errorMessages.join(' - ') : '.' ) : '.' ) ) );
+							msg.reactEmoji('error');
+						}
 					}
-					else {
-						console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
-						if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-						else msg.sendChannelError( 'https://bugs.mojang.com/browse/' + project + args[0] );
-					}
+					else msg.reactEmoji('error');
 				}
 				else {
-					if ( !body.fields ) {
-						msg.reactEmoji('error');
-					}
-					else {
-						var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
-						var fixed = ( body.fields.resolution && body.fields.fixVersions.length ? mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ') : '' );
-						msg.sendChannel( status + body.fields.summary.replace( /@(here|everyone)/g, '%40$1' ) + '\n<https://bugs.mojang.com/browse/' + body.key + '>\n' + fixed );
-					}
+					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
+					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
+					else msg.sendChannelError( 'https://bugs.mojang.com/browse/' + project + args[0] );
 				}
-				
-				if ( reaction ) reaction.removeEmoji();
-			} );
+			}
+			else {
+				if ( !body.fields ) {
+					msg.reactEmoji('error');
+				}
+				else {
+					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
+					var fixed = ( body.fields.resolution && body.fields.fixVersions.length ? mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ') : '' );
+					msg.sendChannel( status + body.fields.summary.replace( /@(here|everyone)/g, '%40$1' ) + '\n<https://bugs.mojang.com/browse/' + body.key + '>\n' + fixed );
+				}
+			}
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 	else {
 		msg.notminecraft = true;
-		cmd_link(lang, msg, title, mclang.link, cmd, querystring, fragment);
+		check_wiki(lang, msg, title, mclang.link, cmd, reaction, querystring, fragment);
 	}
 }
 
-function cmd_befehl(lang, mclang, msg, befehl, args, title, cmd, querystring, fragment) {
+function cmd_befehl(lang, mclang, msg, befehl, args, title, cmd, querystring, fragment, reaction) {
 	var aliasCmd = ( ( befehl in minecraft.cmd.aliase ) ? minecraft.cmd.aliase[befehl] : befehl ).toLowerCase();
 	
 	if ( aliasCmd in minecraft.cmd.list ) {
 		var regex = new RegExp('/' + aliasCmd, 'g');
 		var cmdSyntax = minecraft.cmd.list[aliasCmd].join( '\n' ).replace( regex, '/' + befehl );
 		msg.sendChannel( '```md\n' + cmdSyntax + '```<https://' + mclang.link + '.gamepedia.com/' + mclang.cmd.page + aliasCmd + '>', {split:{maxLength:2000,prepend:'```md\n',append:'```'}} );
+		if ( reaction ) reaction.removeEmoji();
 	}
 	else {
 		msg.reactEmoji('❓');
 		msg.notminecraft = true;
-		cmd_link(lang, msg, title, mclang.link, cmd, querystring, fragment);
+		check_wiki(lang, msg, title, mclang.link, cmd, reaction, querystring, fragment);
 	}
 }
 
-function cmd_befehl2(lang, mclang, msg, args, title, cmd, querystring, fragment) {
+function cmd_befehl2(lang, mclang, msg, args, title, cmd, querystring, fragment, reaction) {
 	if ( args.join('') ) {
-		if ( args[0].startsWith('/') ) cmd_befehl(lang, mclang, msg, args[0].substr(1), args.slice(1), title, cmd);
-		else cmd_befehl(lang, mclang, msg, args[0], args.slice(1), title, cmd);
+		if ( args[0].startsWith('/') ) cmd_befehl(lang, mclang, msg, args[0].substr(1), args.slice(1), title, cmd, querystring, fragment, reaction);
+		else cmd_befehl(lang, mclang, msg, args[0], args.slice(1), title, cmd, querystring, fragment, reaction);
 	}
 	else {
 		msg.notminecraft = true;
-		cmd_link(lang, msg, title, mclang.link, cmd, querystring, fragment);
+		check_wiki(lang, msg, title, mclang.link, cmd, reaction, querystring, fragment);
 	}
 }
 
