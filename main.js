@@ -1561,6 +1561,8 @@ client.login(process.env.token).catch( error => log_error(error, true, 'LOGIN-')
 client.on( 'error', error => log_error(error, true) );
 client.on( 'warn', warning => log_warn(warning, false) );
 
+if ( isDebug ) client.on( 'debug', debug => console.log( '- Debug: ' + debug ) );
+
 
 function log_error(error, isBig = false, type = '') {
 	var time = new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' });
