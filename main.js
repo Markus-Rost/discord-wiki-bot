@@ -1132,9 +1132,10 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 		var project = '';
 		if ( /^\d+$/.test(args[0]) ) project = 'MC-';
 		request( {
-			uri: 'https://bugs.mojang.com/rest/api/2/issue/' + project + args[0] + '?fields=summary,fixVersions,resolution,status',
+			uri: 'https://bugs.mojang.com/rest/api/2/issue/' + project + args[0] + '?fields=summary,issuelinks,fixVersions,resolution,status',
 			json: true
 		}, function( error, response, body ) {
+			var link = 'https://bugs.mojang.com/browse/';
 			if ( error || !response || response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body.errorMessages || body.errors ) {
 					if ( body.errorMessages ) {
@@ -1142,7 +1143,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 							msg.reactEmoji('🤷');
 						}
 						else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-							msg.sendChannel( mclang.bug.private + '\nhttps://bugs.mojang.com/browse/' + project + args[0] );
+							msg.sendChannel( mclang.bug.private + '\n' + link + project + args[0] );
 						}
 						else {
 							console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ( body.errorMessages ? ': ' + body.errorMessages.join(' - ') : '.' ) : '.' ) ) );
@@ -1154,7 +1155,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 				else {
 					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-					else msg.sendChannelError( 'https://bugs.mojang.com/browse/' + project + args[0] );
+					else msg.sendChannelError( link + project + args[0] );
 				}
 			}
 			else {
@@ -1162,9 +1163,18 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 					msg.reactEmoji('error');
 				}
 				else {
+					var bugs = body.fields.issuelinks.filter( bug => bug.outwardIssue || ( bug.inwardIssue && bug.type.name != 'Duplicate' ) );
+					if ( bugs.length ) {
+						var embed = new Discord.RichEmbed();
+						bugs.forEach( bug => {
+							var ward = ( bug.outwardIssue ? 'outward' : 'inward' );
+							var issue = bug[ward + 'Issue'];
+							embed.addField( bug.type[ward] + ' ' + issue.key, issue.fields.status.name + ': [' + issue.fields.summary.escapeFormatting() + '](' + link + issue.key + ')' )
+						} );
+					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
-					var fixed = ( body.fields.resolution && body.fields.fixVersions.length ? mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ') : '' );
-					msg.sendChannel( status + body.fields.summary.replace( /@(here|everyone)/g, '%40$1' ) + '\n<https://bugs.mojang.com/browse/' + body.key + '>\n' + fixed );
+					var fixed = ( body.fields.resolution && body.fields.fixVersions.length ? '\n' + mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ') : '' );
+					msg.sendChannel( status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed, embed );
 				}
 			}
 			
