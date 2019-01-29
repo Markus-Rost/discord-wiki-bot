@@ -1395,7 +1395,11 @@ Discord.MessageReaction.prototype.removeEmoji = function() {
 
 Discord.Message.prototype.sendChannel = function(content, options, ignorePause = false) {
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		return this.channel.send(content, options).catch(log_error);
+		return this.channel.send(content, options).then(msg => {
+			if ( !( msg instanceof Discord.Message ) ) {
+				log_error({name:'Message is not a message',message:'\n\u200b' + util.inspect( msg ).replace( /\n/g, '\n\u200b' )}, true, 'Sending');
+			} else return msg;
+		}, log_error);
 	} else {
 		console.log( '- Abgebrochen, pausiert.' );
 		return Promise.resolve();
@@ -1408,7 +1412,11 @@ Discord.Message.prototype.sendChannelError = function(content, options) {
 
 Discord.Message.prototype.replyMsg = function(content, options, ignorePause = false) {
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		return this.reply(content, options).catch(log_error);
+		return this.reply(content, options).then(msg => {
+			if ( !( msg instanceof Discord.Message ) ) {
+				log_error({name:'Message is not a message',message:'\n\u200b' + util.inspect( msg ).replace( /\n/g, '\n\u200b' )}, true, 'Sending');
+			} else return msg;
+		}, log_error);;
 	} else {
 		console.log( '- Abgebrochen, pausiert.' );
 		return Promise.resolve();
