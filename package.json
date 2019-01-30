@@ -14,7 +14,7 @@
     "discord.js": "^11.4.2",
     "dotenv": "^6.2.0",
     "full-icu": "^1.2.1",
-    "npm": "^6.5.0",
+    "npm": "^6.7.0",
     "request": "^2.88.0"
   },
   "repository": {
