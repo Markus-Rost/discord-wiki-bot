@@ -582,8 +582,10 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 									}
 									if ( querypage.pageimage ) {
 										var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
-										if ( querypage.ns === 6 ) embed.setImage( pageimage );
-										else embed.setThumbnail( pageimage );
+										if ( querypage.ns === 6 ) {
+											if ( /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
+											else embed.attachFiles( [{attachment:pageimage,name:querypage.pageimage}] );
+										} else embed.setThumbnail( pageimage );
 									} else embed.setThumbnail( body.query.general.logo );
 									
 									if ( title.replace( /\-/g, ' ' ).toTitle().toLowerCase() === querypage.title.replace( /\-/g, ' ' ).toTitle().toLowerCase() ) {
@@ -611,8 +613,10 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 						}
 						if ( querypage.pageimage ) {
 							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
-							if ( querypage.ns === 6 ) embed.setImage( pageimage );
-							else embed.setThumbnail( pageimage );
+							if ( querypage.ns === 6 ) {
+								if ( /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
+								else embed.attachFiles( [{attachment:pageimage,name:querypage.pageimage}] );
+							} else embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( body.query.general.logo );
 						
 						msg.sendChannel( spoiler + pagelink + spoiler, embed );
@@ -1074,11 +1078,8 @@ function cmd_random(lang, msg, wiki, reaction, spoiler) {
 				if ( extract.length > 2000 ) extract = extract.substr(0, 2000) + '\u2026';
 				embed.setDescription( extract );
 			}
-			if ( querypage.pageimage ) {
-				var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
-				if ( querypage.ns === 6 ) embed.setImage( pageimage );
-				else embed.setThumbnail( pageimage );
-			} else embed.setThumbnail( body.query.general.logo );
+			if ( querypage.pageimage ) embed.setThumbnail( 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage );
+			else embed.setThumbnail( body.query.general.logo );
 			
 			msg.sendChannel( spoiler + '🎲 ' + pagelink + spoiler, embed );
 		}
