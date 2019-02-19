@@ -147,7 +147,23 @@
 			"random": "random",
 			"overview": "overview",
 			"infopage": "Not the correct result? Use %s for a direct link.",
-			"infosearch": "Not the correct result? Use %1$s for a direct link or %2$s for a list of all hits."
+			"infosearch": "Not the correct result? Use %1$s for a direct link or %2$s for a list of all hits.",
+			"category": {
+				"content": "Content of this category:",
+				"empty": "*This category is empty*",
+				"pages": {
+					"default": "%s pages",
+					"1": "%s page"
+				},
+				"files": {
+					"default": "%s files",
+					"1": "%s file"
+				},
+				"subcats": {
+					"default": "%s categories",
+					"1": "%s category"
+				}
+			}
 		},
 		"invite": {
 			"bot": "Use this link to invite me to another server:"
@@ -328,7 +344,23 @@
 			"random": "zufall",
 			"overview": "übersicht",
 			"infopage": "Nicht das richtige Ergebnis? Nutze %s für einen direkten Link.",
-			"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern."
+			"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern.",
+			"category": {
+				"content": "Inhalt der Kategorie:",
+				"empty": "*Diese Kategorie ist leer*",
+				"pages": {
+					"default": "%s Seiten",
+					"1": "Eine Seite"
+				},
+				"files": {
+					"default": "%s Dateien",
+					"1": "Eine Datei"
+				},
+				"subcats": {
+					"default": "%s Kategorien",
+					"1": "Eine Kategorie"
+				}
+			}
 		},
 		"invite": {
 			"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
@@ -522,7 +554,23 @@
 			"random": "random",
 			"overview": "overview",
 			"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
-			"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances."
+			"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances.",
+			"category": {
+				"content": "Contenu de cette catégorie :",
+				"empty": "*Cette catégorie est vide*",
+				"pages": {
+					"default": "%s pages",
+					"1": "%s page"
+				},
+				"files": {
+					"default": "%s fichiers",
+					"1": "%s fichier"
+				},
+				"subcats": {
+					"default": "%s catégories",
+					"1": "%s catégorie"
+				}
+			}
 		},
 		"invite": {
 			"bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
@@ -730,7 +778,23 @@
 			"random": "willekeurig",
 			"overview": "overzicht",
 			"infopage": "Niet het gewenste resultaat? Gebruik %s voor een rechtstreekse link.",
-			"infosearch": "Niet het gewenste resultaat? Gebruik %1$s voor een rechtstreekse link of %2$s voor een lijst van alle overeenkomsten."
+			"infosearch": "Niet het gewenste resultaat? Gebruik %1$s voor een rechtstreekse link of %2$s voor een lijst van alle overeenkomsten.",
+			"category": {
+				"content": "Inhoud van deze categorie:",
+				"empty": "*Deze categorie is leeg*",
+				"pages": {
+					"default": "%s pagina's",
+					"1": "%s pagina"
+				},
+				"files": {
+					"default": "%s bestanden",
+					"1": "%s bestand"
+				},
+				"subcats": {
+					"default": "%s categorieën",
+					"1": "%s categorie"
+				}
+			}
 		},
 		"invite": {
 			"bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
@@ -917,7 +981,23 @@
 			"random": "random",
 			"overview": "overview",
 			"infopage": "Nie to czego szukałeś? Użyj %s dla bezpośredniego linku.",
-			"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników."
+			"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników.",
+			"category": {
+				"content": "Zawartość tej kategorii:",
+				"empty": "*Ta kategoria jest pusta*",
+				"pages": {
+					"default": "%s stron",
+					"1": "%s strona"
+				},
+				"files": {
+					"default": "%s plików",
+					"1": "%s plik"
+				},
+				"subcats": {
+					"default": "%s kategorii",
+					"1": "%s kategoria"
+				}
+			}
 		},
 		"invite": {
 			"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
@@ -1114,7 +1194,23 @@
 			"random": "random",
 			"overview": "overview",
 			"infopage": "Não é o resultado correto? Use %s para um link direto.",
-			"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos."
+			"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos.",
+			"category": {
+				"content": "Conteúdo  nessa categoria:",
+				"empty": "*Esta categoria está vazia*",
+				"pages": {
+					"default": "%s páginas",
+					"1": "%s página"
+				},
+				"files": {
+					"default": "%s arquivos",
+					"1": "%s arquivo"
+				},
+				"subcats": {
+					"default": "%s categorias",
+					"1": "%s categoria"
+				}
+			}
 		},
 		"invite": {
 			"bot": "Use este link para me convidar para outro servidor:"
@@ -1313,7 +1409,21 @@
 			"random": "random",
 			"overview": "overview",
 			"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s kullan.",
-			"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s, tüm isabetlerin listesi için %2$s kullan."
+			"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s, tüm isabetlerin listesi için %2$s kullan.",
+			"category": {
+				"content": "Bu kategorinin içeriği:",
+				"empty": "*Bu kategori boş*",
+				"pages": {
+					"default": "%s sayfa"
+				},
+				"files": {
+					"default": "%s dosya"
+				},
+				"subcats": {
+					"default": "%s kategoriler",
+					"1": "%s kategori"
+				}
+			}
 		},
 		"invite": {
 			"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"

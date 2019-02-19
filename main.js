@@ -525,9 +525,9 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 	}
 	else if ( invoke === 'diff' && args.join('') ) cmd_diff(lang, msg, args, wiki, reaction, spoiler);
 	else {
-		var noRedirect = /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring)
+		var noRedirect = ( /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring) );
 		request( {
-			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
+			uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|extracts&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
 			json: true
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -557,9 +557,9 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 						var userparts = querypage.title.split(':');
 						cmd_user(lang, msg, userparts[0].toTitle() + ':', userparts.slice(1).join(':'), wiki, linksuffix, reaction, spoiler);
 					}
-					else if ( ( querypage.missing !== undefined && querypage.known === undefined ) || querypage.invalid !== undefined ) {
+					else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
 						request( {
-							uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&prop=pageimages|extracts&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
+							uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&prop=pageimages|categoryinfo|extracts&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
 							json: true
 						}, function( srerror, srresponse, srbody ) {
 							if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
@@ -574,6 +574,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 								else {
 									querypage = Object.values(srbody.query.pages)[0];
 									var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle() + linksuffix;
+									var text = '';
 									var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 									if ( querypage.extract ) {
 										var extract = querypage.extract.escapeFormatting();
@@ -583,20 +584,42 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 									if ( querypage.pageimage ) {
 										var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
 										if ( querypage.ns === 6 ) {
-											if ( /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
-											else embed.attachFiles( [{attachment:pageimage,name:querypage.pageimage}] );
+											if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
+											else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
 										} else embed.setThumbnail( pageimage );
 									} else embed.setThumbnail( body.query.general.logo );
 									
 									if ( title.replace( /\-/g, ' ' ).toTitle().toLowerCase() === querypage.title.replace( /\-/g, ' ' ).toTitle().toLowerCase() ) {
-										msg.sendChannel( spoiler + pagelink + spoiler, embed );
+										text = '';
 									}
 									else if ( !srbody.continue ) {
-										msg.sendChannel( spoiler + pagelink + '\n' + lang.search.infopage.replaceSave( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' ) + spoiler, embed );
+										text = '\n' + lang.search.infopage.replaceSave( '%s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' );
 									}
 									else {
-										msg.sendChannel( spoiler + pagelink + '\n' + lang.search.infosearch.replaceSave( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' ).replaceSave( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + linksuffix + '`' ) + spoiler, embed );
+										text = '\n' + lang.search.infosearch.replaceSave( '%1$s', '`' + process.env.prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' ).replaceSave( '%2$s', '`' + process.env.prefix + cmd + lang.search.search + ' ' + title + linksuffix + '`' );
 									}
+									
+									if ( querypage.categoryinfo ) {
+										var langCat = lang.search.category;
+										var category = [langCat.content];
+										if ( querypage.categoryinfo.size === 0 ) category.push(langCat.empty);
+										if ( querypage.categoryinfo.pages > 0 ) {
+											var pages = querypage.categoryinfo.pages;
+											category.push(langCat.pages[( pages in langCat.pages ? pages : 'default' )].replaceSave( '%s', pages ));
+										}
+										if ( querypage.categoryinfo.files > 0 ) {
+											var files = querypage.categoryinfo.files;
+											category.push(langCat.files[( files in langCat.files ? files : 'default' )].replaceSave( '%s', files ));
+										}
+										if ( querypage.categoryinfo.subcats > 0 ) {
+											var subcats = querypage.categoryinfo.subcats;
+											category.push(langCat.subcats[( subcats in langCat.subcats ? subcats : 'default' )].replaceSave( '%s', subcats ));
+										}
+										if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
+										else text += '\n\n' + category.join('\n');
+									}
+						
+									msg.sendChannel( spoiler + pagelink + text + spoiler, embed );
 								}
 							}
 							
@@ -605,6 +628,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					}
 					else {
 						var pagelink = 'https://' + wiki + '.gamepedia.com/' + querypage.title.toTitle() + ( querystring ? '?' + querystring.toTitle() : '' ) + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : ( fragment ? '#' + fragment.toSection() : '' ) );
+						var text = '';
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 						if ( querypage.extract ) {
 							var extract = querypage.extract.escapeFormatting();
@@ -614,12 +638,31 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 						if ( querypage.pageimage ) {
 							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
 							if ( querypage.ns === 6 ) {
-								if ( /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
-								else embed.attachFiles( [{attachment:pageimage,name:querypage.pageimage}] );
+								if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
+								else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
 							} else embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( body.query.general.logo );
+						if ( querypage.categoryinfo ) {
+							var langCat = lang.search.category;
+							var category = [langCat.content];
+							if ( querypage.categoryinfo.size === 0 ) category.push(langCat.empty);
+							if ( querypage.categoryinfo.pages > 0 ) {
+								var pages = querypage.categoryinfo.pages;
+								category.push(langCat.pages[( pages in langCat.pages ? pages : 'default' )].replaceSave( '%s', pages ));
+							}
+							if ( querypage.categoryinfo.files > 0 ) {
+								var files = querypage.categoryinfo.files;
+								category.push(langCat.files[( files in langCat.files ? files : 'default' )].replaceSave( '%s', files ));
+							}
+							if ( querypage.categoryinfo.subcats > 0 ) {
+								var subcats = querypage.categoryinfo.subcats;
+								category.push(langCat.subcats[( subcats in langCat.subcats ? subcats : 'default' )].replaceSave( '%s', subcats ));
+							}
+							if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
+							else text += '\n\n' + category.join('\n');
+						}
 						
-						msg.sendChannel( spoiler + pagelink + spoiler, embed );
+						msg.sendChannel( spoiler + pagelink + text + spoiler, embed );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -1312,6 +1355,11 @@ Discord.Message.prototype.isOwner = function() {
 
 Discord.Message.prototype.showEmbed = function() {
 	if ( this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('EMBED_LINKS') ) return true;
+	else return false;
+};
+
+Discord.Message.prototype.uploadFiles = function() {
+	if ( this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES') ) return true;
 	else return false;
 };
 
