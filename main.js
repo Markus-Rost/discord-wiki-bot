@@ -7,7 +7,7 @@ const Discord = require('discord.js');
 const DBL = require("dblapi.js");
 var request = require('request');
 
-const isDebug = ( process.argv[2] === 'debug' ? true : false );
+var isDebug = ( process.argv[2] === 'debug' ? true : false );
 var multiManager = require('./wiki_manager.json');
 
 var client = new Discord.Client( {disableEveryone:true} );
@@ -18,7 +18,7 @@ var minecraft = require('./minecraft.json');
 
 var pause = {};
 var stop = false;
-var access = {'PRIVATE-TOKEN': process.env.access};
+const access = {'PRIVATE-TOKEN': process.env.access};
 var defaultPermissions = new Discord.Permissions(268954688).toArray();
 
 var ready = {
@@ -26,7 +26,7 @@ var ready = {
 	allSites: true
 }
 
-var defaultSettings = {
+const defaultSettings = {
 	"default": {
 		"lang": "en",
 		"wiki": "help"
@@ -346,7 +346,8 @@ function cmd_say(lang, msg, args, line) {
 	args = args.toEmojis();
 	var text = args.join(' ');
 	if ( args[0] === 'alarm' ) text = '🚨 **' + args.slice(1).join(' ') + '** 🚨';
-	var imgs = msg.attachments.map( function(img) {
+	var imgs = [];
+	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
 		return {attachment:img.url,name:img.filename};
 	} );
 	if ( msg.isOwner() ) {
@@ -717,7 +718,8 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 }
 
 function cmd_umfrage(lang, msg, args, line) {
-	var imgs = msg.attachments.map( function(img) {
+	var imgs = [];
+	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
 		return {attachment:img.url,name:img.filename};
 	} );
 	if ( args.length || imgs.length ) {
