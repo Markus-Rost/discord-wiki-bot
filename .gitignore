@@ -1,5 +1,4 @@
-
-*.env
-node_modules*
-*.bat
+node_modules/
 package-lock.json
+*.env
+*.bat

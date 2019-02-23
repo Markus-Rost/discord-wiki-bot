@@ -1,5 +1,4 @@
 require('dotenv').config();
-const fs = require('fs');
 const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
@@ -7,19 +6,28 @@ const Discord = require('discord.js');
 const DBL = require("dblapi.js");
 var request = require('request');
 
-var isDebug = ( process.argv[2] === 'debug' ? true : false );
-var multiManager = require('./wiki_manager.json');
-
 var client = new Discord.Client( {disableEveryone:true} );
 const dbl = new DBL(process.env.dbltoken);
 
 var i18n = require('./i18n.json');
 var minecraft = require('./minecraft.json');
+var multiManager = require('./wiki_manager.json');
 
 var pause = {};
 var stop = false;
+var isDebug = ( process.argv[2] === 'debug' ? true : false );
 const access = {'PRIVATE-TOKEN': process.env.access};
-var defaultPermissions = new Discord.Permissions(268954688).toArray();
+const defaultPermissions = new Discord.Permissions(268954688).toArray();
+const timeoptions = {
+	year: 'numeric',
+	month: 'short',
+	day: 'numeric',
+	hour: '2-digit',
+	minute: '2-digit',
+	timeZone: 'UTC',
+	timeZoneName: 'short'
+}
+
 
 var ready = {
 	settings: true,
@@ -61,8 +69,7 @@ function setStatus() {
 	}
 }
 
-var defaultSites = [];
-var allSites = defaultSites;
+var allSites = [];
 
 function getAllSites() {
 	ready.allSites = true;
@@ -100,17 +107,6 @@ client.on( 'ready', () => {
 		} );
 	}, 10800000);
 } );
-
-
-var timeoptions = {
-	year: 'numeric',
-	month: 'short',
-	day: 'numeric',
-	hour: '2-digit',
-	minute: '2-digit',
-	timeZone: 'UTC',
-	timeZoneName: 'short'
-}
 	
 	
 var cmdmap = {
@@ -539,7 +535,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 				}
 				else {
 					console.log( '- Fehler beim Erhalten der Suchergebnisse' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					msg.sendChannelError( spoiler + '<https://' + wiki + '.gamepedia.com/' + ( linksuffix ? title.toTitle() + linksuffix : 'Special:Search/' + title.toTitle() ) + '>' + spoiler );
+					msg.sendChannelError( spoiler + '<https://' + wiki + '.gamepedia.com/' + ( linksuffix || !title ? title.toTitle() + linksuffix : 'Special:Search/' + title.toTitle() ) + '>' + spoiler );
 				}
 				
 				if ( reaction ) reaction.removeEmoji();
@@ -1507,7 +1503,7 @@ client.on( 'message', msg => {
 	if ( channel.type === 'text' ) var permissions = channel.permissionsFor(client.user);
 	
 	if ( !ready.settings && settings === defaultSettings ) getSettings(setStatus);
-	if ( !ready.allSites && allSites === defaultSites ) getAllSites();
+	if ( !ready.allSites && !allSites.length ) getAllSites();
 	var setting = Object.assign({}, settings['default']);
 	if ( settings === defaultSettings ) {
 		msg.sendChannel( '⚠ **Limited Functionality** ⚠\nNo settings found, please contact the bot owner!\n' + process.env.invite, {}, true );
@@ -1569,7 +1565,7 @@ client.on( 'voiceStateUpdate', (oldm, newm) => {
 	if ( stop ) return;
 	
 	if ( !ready.settings && settings === defaultSettings ) getSettings(setStatus);
-	if ( !ready.allSites && allSites === defaultSites ) getAllSites();
+	if ( !ready.allSites && !allSites.length ) getAllSites();
 	if ( oldm.guild.me.permissions.has('MANAGE_ROLES') && oldm.voiceChannelID !== newm.voiceChannelID ) {
 		var setting = Object.assign({}, settings['default']);
 		if ( oldm.guild.id in settings ) setting = Object.assign({}, settings[oldm.guild.id]);

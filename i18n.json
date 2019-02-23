@@ -50,7 +50,7 @@
 			"save_failed": "sadly the settings couldn't be saved, please try again later.",
 			"missing": "this server isn't set up yet. Use %1$s and %2$s to change the settings.",
 			"foundwikis": "Do you mean any of these wikis?",
-			"current": "this are the current settings for this server:\nLanguage: `English` %1$s\nDefault wiki: %2$s\nChannel wikis",
+			"current": "these are the current settings for this server:\nLanguage: `English` %1$s\nDefault wiki: %2$s\nChannel wikis",
 			"nochannels": "*No channel wikis yet*",
 			"lang": "the language for this server is: `English`",
 			"langinvalid": "the specified language is not supported!",
@@ -76,7 +76,7 @@
 			"left": "%1$s left the voice channel \"%2$s\"."
 		},
 		"overview": {
-			"missing": "for this wiki is no overview available yet.",
+			"missing": "there is no overview available for this wiki yet.",
 			"inaccurate": "Statistics may be inaccurate",
 			"name": "Full name:",
 			"created": "Created:",
