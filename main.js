@@ -87,6 +87,7 @@ function getAllSites() {
 			allSites.filter( site => site.wiki_domain in multiManager ).forEach( function(site) {
 				site.wiki_managers = multiManager[site.wiki_domain].concat(site.wiki_managers).filter( (value, index, self) => self.indexOf(value) === index );
 			} );
+			allSites.filter( site => site.wiki_managers.length === 0 ).forEach( site => site.wiki_managers.push('MediaWiki default') );
 		}
 	} );
 }
