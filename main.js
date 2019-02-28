@@ -42,7 +42,7 @@ const defaultSettings = {
 }
 var settings = defaultSettings;
 
-function getSettings(callback) {
+function getSettings() {
 	ready.settings = true;
 	request( {
 		uri: process.env.read + process.env.file + process.env.raw,
@@ -57,7 +57,7 @@ function getSettings(callback) {
 			console.log( '- Einstellungen erfolgreich ausgelesen.' );
 			settings = Object.assign({}, body);
 		}
-		callback();
+		setStatus();
 	} );
 }
 
@@ -94,7 +94,7 @@ function getAllSites() {
 
 client.on( 'ready', () => {
 	console.log( '- Erfolgreich als ' + client.user.username + ' angemeldet!' );
-	getSettings(setStatus);
+	getSettings();
 	getAllSites();
 	
 	if ( !isDebug ) client.setInterval( () => {
@@ -1614,7 +1614,7 @@ client.on( 'message', msg => {
 	var channel = msg.channel;
 	if ( channel.type === 'text' ) var permissions = channel.permissionsFor(client.user);
 	
-	if ( !ready.settings && settings === defaultSettings ) getSettings(setStatus);
+	if ( !ready.settings && settings === defaultSettings ) getSettings();
 	if ( !ready.allSites && !allSites.length ) getAllSites();
 	var setting = Object.assign({}, settings['default']);
 	if ( settings === defaultSettings ) {
@@ -1676,7 +1676,7 @@ client.on( 'message', msg => {
 client.on( 'voiceStateUpdate', (oldm, newm) => {
 	if ( stop ) return;
 	
-	if ( !ready.settings && settings === defaultSettings ) getSettings(setStatus);
+	if ( !ready.settings && settings === defaultSettings ) getSettings();
 	if ( !ready.allSites && !allSites.length ) getAllSites();
 	if ( oldm.guild.me.permissions.has('MANAGE_ROLES') && oldm.voiceChannelID !== newm.voiceChannelID ) {
 		var setting = Object.assign({}, settings['default']);
