@@ -83,7 +83,7 @@ function getAllSites() {
 		}
 		else {
 			console.log( '- Wikis erfolgreich ausgelesen.' );
-			allSites = Object.assign([], body.data.wikis.filter( site => /^[a-z\d-]{1,30}\.gamepedia\.com$/.test(site.wiki_domain) ));
+			allSites = Object.assign([], body.data.wikis.filter( site => /^[a-z\d-]{1,50}\.gamepedia\.com$/.test(site.wiki_domain) ));
 			allSites.filter( site => site.wiki_domain in multiManager ).forEach( function(site) {
 				site.wiki_managers = multiManager[site.wiki_domain].concat(site.wiki_managers).filter( (value, index, self) => self.indexOf(value) === index );
 			} );
@@ -166,7 +166,7 @@ function cmd_settings(lang, msg, args, line) {
 			if ( args[0] ) args[0] = args[0].toLowerCase();
 			args[1] = args.slice(1).join(' ').toLowerCase().replace( /^<(.*)>$/, '$1' );
 			if ( args[1] && ( args[0] === 'wiki' || args[0] === 'channel' ) ) {
-				var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,30})\.gamepedia\.com(?:\/|$)/ );
+				var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,50})\.gamepedia\.com(?:\/|$)/ );
 			}
 			var langs = '\n' + lang.settings.langhelp.replaceSave( '%s', process.env.prefix + ' settings lang' ) + ' `' + i18n.allLangs[1].join(', ') + '`';
 			var wikis = '\n' + lang.settings.wikihelp.replaceSave( '%s', process.env.prefix + ' settings wiki' );
@@ -712,7 +712,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 				else if ( body.query.interwiki ) {
 					var inter = body.query.interwiki[0];
 					var intertitle = inter.title.substr(inter.iw.length + 1);
-					var regex = inter.url.match( /^(?:https?:)?\/\/([a-z\d-]{1,30})\.gamepedia\.com(?:\/|$)/ );
+					var regex = inter.url.match( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.gamepedia\.com(?:\/|$)/ );
 					if ( regex !== null && selfcall < 3 ) {
 						if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 							var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replaceSave( intertitle.replace( /\_/g, ' ' ), intertitle );
@@ -988,7 +988,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					var group = [lang.user.info.group];
 					for ( var i = 0; i < lang.user.groups.length; i++ ) {
 						if ( groups.includes( lang.user.groups[i][0] ) ) {
-							var thisSite = allSites.find( site => site.wiki_domain === wiki + '.gamepedia.com' );
+							var thisSite = allSites.find( site => site.wiki_domain === body.query.general.servername );
 							if ( lang.user.groups[i][0] === 'hydra_staff' && thisSite && thisSite.wiki_managers.includes( username ) ) group.push(lang.user.manager);
 							else group.push(lang.user.groups[i][1]);
 							break;
@@ -1289,34 +1289,33 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 }
 
 function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
-	if ( args.length && /\d+$/.test(args[0]) && !args[1] ) {
+	var invoke = args[0];
+	args = args.slice(1);
+	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
 		var project = '';
-		if ( /^\d+$/.test(args[0]) ) project = 'MC-';
+		if ( /^\d+$/.test(invoke) ) project = 'MC-';
 		request( {
-			uri: 'https://bugs.mojang.com/rest/api/2/issue/' + project + args[0] + '?fields=summary,issuelinks,fixVersions,resolution,status',
+			uri: 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( project + invoke ) + '?fields=summary,issuelinks,fixVersions,resolution,status',
 			json: true
 		}, function( error, response, body ) {
 			var link = 'https://bugs.mojang.com/browse/';
 			if ( error || !response || response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
-				if ( body.errorMessages || body.errors ) {
-					if ( body.errorMessages ) {
-						if ( body.errorMessages.includes( 'Issue Does Not Exist' ) ) {
-							msg.reactEmoji('🤷');
-						}
-						else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-							msg.sendChannel( spoiler + mclang.bug.private + '\n' + link + project + args[0] + spoiler );
-						}
-						else {
-							console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ( body.errorMessages ? ': ' + body.errorMessages.join(' - ') : '.' ) : '.' ) ) );
-							msg.reactEmoji('error');
-						}
+				if ( body && body.errorMessages ) {
+					if ( body.errorMessages.includes( 'Issue Does Not Exist' ) ) {
+						msg.reactEmoji('🤷');
 					}
-					else msg.reactEmoji('error');
+					else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
+						msg.sendChannel( spoiler + mclang.bug.private + '\n' + link + project + invoke + spoiler );
+					}
+					else {
+						console.log( '- Fehler beim Erhalten des Fehlers: ' + body.errorMessages.join(' - ') );
+						msg.reactEmoji('error');
+					}
 				}
 				else {
-					console.log( '- Fehler beim Erhalten der Zusammenfassung' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
+					console.log( '- Fehler beim Erhalten der Fehlers' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-					else msg.sendChannelError( spoiler + link + project + args[0] + spoiler );
+					else msg.sendChannelError( spoiler + link + project + invoke + spoiler );
 				}
 			}
 			else {
@@ -1336,11 +1335,59 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
 							else extrabugs.push({name,value,inline:false});
 						} );
-						if ( extrabugs.length ) embed.setFooter( 'And ' + extrabugs.length + '  more links.' );
+						if ( extrabugs.length ) embed.setFooter( mclang.bug.more.replaceSave( '%s', extrabugs.length ) );
 					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
-					var fixed = ( body.fields.resolution && body.fields.fixVersions.length ? '\n' + mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ') : '' );
+					var fixed = '';
+					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
+						fixed = '\n' + mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
+					}
 					msg.sendChannel( spoiler + status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed + spoiler, embed );
+				}
+			}
+			
+			if ( reaction ) reaction.removeEmoji();
+		} );
+	}
+	else if ( invoke && invoke.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
+		var jql = encodeURIComponent( 'fixVersion="' + args.join(' ') + '"' );
+		request( {
+			uri: 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25',
+			json: true
+		}, function( error, response, body ) {
+			var link = 'https://bugs.mojang.com/issues/?jql=' + jql;
+			if ( error || !response || response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
+				if ( body && body.errorMessages ) {
+					if ( body.errorMessages.includes( 'The value \'' + args.join(' ') + '\' does not exist for the field \'fixVersion\'.' ) ) {
+						msg.reactEmoji('🤷');
+					}
+					else {
+						console.log( '- Fehler beim Erhalten des Fehlers: ' + body.errorMessages.join(' - ') );
+						msg.reactEmoji('error');
+					}
+				}
+				else {
+					console.log( '- Fehler beim Erhalten der Fehlers' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
+					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
+					else msg.sendChannelError( spoiler + link + spoiler );
+				}
+			}
+			else {
+				if ( !body.issues ) {
+					msg.reactEmoji('error');
+				}
+				else {
+					if ( body.total > 0 ) {
+						var embed = new Discord.RichEmbed();
+						body.issues.forEach( bug => {
+							var status = ( bug.fields.resolution ? bug.fields.resolution.name : bug.fields.status.name );
+							var value = status + ': [' + bug.fields.summary.escapeFormatting() + '](https://bugs.mojang.com/browse/' + bug.key + ')';
+							embed.addField( bug.key, value );
+						} );
+						if ( body.total > 25 ) embed.setFooter( mclang.bug.more.replaceSave( '%s', body.total - 25 ) );
+					}
+					var total = '**' + args.join(' ') + ':** ' + mclang.bug.total.replaceSave( '%s', body.total );
+					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, embed );
 				}
 			}
 			
@@ -1399,15 +1446,16 @@ function cmd_get(lang, msg, args, line) {
 			var guild = client.guilds.get(id);
 			var guildname = ['Guild:', guild.name.escapeFormatting() + ' `' + guild.id + '`' + ( pause[guild.id] ? '\\*' : '' )];
 			var guildowner = ['Owner:', guild.owner.user.tag.escapeFormatting() + ' `' + guild.ownerID + '` ' + guild.owner.toString()];
+			var guildsize = ['Size:', guild.memberCount + ' members (' + guild.members.filter( member => member.user.bot ).size + ' bots)'];
 			var guildpermissions = ['Missing permissions:', ( guild.me.permissions.has(defaultPermissions) ? '*none*' : '`' + guild.me.permissions.missing(defaultPermissions).join('`, `') + '`' )];
 			var guildsettings = ['Settings:', ( guild.id in settings ? '```json\n' + JSON.stringify( settings[guild.id], null, '\t' ) + '\n```' : '*default*' )];
 			if ( msg.showEmbed() ) {
 				var text = '';
-				var embed = new Discord.RichEmbed().addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildpermissions[0], guildpermissions[1] ).addField( guildsettings[0], guildsettings[1] );
+				var embed = new Discord.RichEmbed().addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildsize[0], guildsize[1] ).addField( guildpermissions[0], guildpermissions[1] ).addField( guildsettings[0], guildsettings[1] );
 			}
 			else {
 				var embed = {};
-				var text = guildname.join(' ') + '\n' + guildowner.join(' ') + '\n' + guildpermissions.join(' ') + '\n' + guildsettings.join(' ');
+				var text = guildname.join(' ') + '\n' + guildowner.join(' ') + '\n' + guildsize.join(' ') + '\n' + guildpermissions.join(' ') + '\n' + guildsettings.join(' ');
 			}
 			msg.sendChannel( text, embed, true );
 		} else if ( client.guilds.some( guild => guild.members.has(id) ) ) {
@@ -1654,7 +1702,7 @@ client.on( 'message', msg => {
 					if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line);
 					else if ( channel.type !== 'text' || !pause[msg.guild.id] || ( msg.isAdmin() && aliasInvoke in pausecmdmap ) ) {
 						if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line);
-						else if ( /^![a-z\d-]{1,30}$/.test(invoke) ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
+						else if ( /^![a-z\d-]{1,50}$/.test(invoke) ) cmd_link(lang, msg, args.join(' '), invoke.substr(1), ' ' + invoke + ' ');
 						else cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
 					}
 				} else if ( line.hasPrefix() && count === 10 ) {

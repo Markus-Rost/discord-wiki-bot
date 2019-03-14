@@ -6,7 +6,9 @@
 		},
 		"bug": {
 			"private": "**Private Issue**",
-			"fixed": "Fixed Version:"
+			"fixed": "Fixed Version:",
+			"more": "And %s more.",
+			"total": "%s issues fixed"
 		},
 		"cmd": {
 			"page": "Commands/"
@@ -21,7 +23,9 @@
 		},
 		"bug": {
 			"private": "**Privater Fehler**",
-			"fixed": "Lösungsversion:"
+			"fixed": "Lösungsversion:",
+			"more": "Und %s mehr.",
+			"total": "%s Fehler korrigiert"
 		},
 		"cmd": {
 			"page": "Befehl/"
@@ -35,7 +39,9 @@
 		},
 		"bug": {
 			"private": "**Problème privé**",
-			"fixed": "Corrigé lors de la version"
+			"fixed": "Corrigé lors de la version",
+			"more": "Et %s autres.",
+			"total": "%s bugs corrigés"
 		},
 		"cmd": {
 			"page": "Commandes#"
@@ -48,7 +54,9 @@
 		},
 		"bug": {
 			"private": "**Privé issue**",
-			"fixed": "Fixed versie:"
+			"fixed": "Fixed versie:",
+			"more": "En %s meer.",
+			"total": "%s bugs opgelost"
 		},
 		"cmd": {
 			"page": "Opdrachten#"
@@ -62,7 +70,9 @@
 		},
 		"bug": {
 			"private": "**Private Issue**",
-			"fixed": "Naprawione w wersji:"
+			"fixed": "Naprawione w wersji:",
+			"more": "Oraz %s innych.",
+			"total": "naprawiono %s błędów"
 		},
 		"cmd": {
 			"page": "Komendy#"
@@ -77,7 +87,9 @@
 		},
 		"bug": {
 			"private": "**Private Issue**",
-			"fixed": "Versão corrigida:"
+			"fixed": "Versão corrigida:",
+			"more": "E %s mais.",
+			"total": "%s problemas corrigidos"
 		},
 		"cmd": {
 			"page": "en:Commands/"
@@ -90,7 +102,9 @@
 		},
 		"bug": {
 			"private": "**Private Issue**",
-			"fixed": "Fixed Version:"
+			"fixed": "Fixed Version:",
+			"more": "Ve %s tane daha.",
+			"total": "%s hata düzeltildi"
 		},
 		"cmd": {
 			"page": "en:Commands/"

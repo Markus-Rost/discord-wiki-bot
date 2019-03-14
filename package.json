@@ -1,6 +1,6 @@
 {
   "name": "discord-wiki-bot",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Wiki-Bot is a bot for Discord with the purpose to easily link to Gamepedia wikis. He resolves redirects and follows interwiki links.",
   "main": "main.js",
   "scripts": {
