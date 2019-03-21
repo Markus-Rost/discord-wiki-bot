@@ -564,7 +564,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							uri: 'https://' + wiki + '.gamepedia.com/api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json',
 							json: true
 						}, function( uerror, uresponse, ubody ) {
-							if ( uerror || !uresponse || uresponse.statusCode !== 200 || !ubody || ubody.batchcomplete === undefined ) {
+							if ( uerror || !uresponse || uresponse.statusCode !== 200 || !ubody || ubody.batchcomplete === undefined || !ubody.query ) {
 								console.log( '- Fehler beim Erhalten der Benutzer' + ( uerror ? ': ' + uerror : ( ubody ? ( ubody.error ? ': ' + ubody.error.info : '.' ) : '.' ) ) );
 								msg.sendChannelError( spoiler + '<https://' + wiki + '.gamepedia.com/' + ( contribs + username ).toTitle() + linksuffix + '>' + spoiler );
 								
