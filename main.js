@@ -619,7 +619,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 										embed.setDescription( extract );
 									}
 									if ( querypage.pageimage && querypage.title !== body.query.general.mainpage ) {
-										var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+										var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
 										if ( querypage.ns === 6 ) {
 											if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
 											else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
@@ -678,7 +678,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							embed.setDescription( extract );
 						}
 						if ( querypage.pageimage && querypage.title !== body.query.general.mainpage ) {
-							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
 							if ( querypage.ns === 6 ) {
 								if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
 								else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
@@ -848,7 +848,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							embed.setDescription( extract );
 						}
 						if ( querypage.pageimage ) {
-							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
 							embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( body.query.general.logo );
 						
@@ -962,7 +962,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							embed.setDescription( extract );
 						}
 						if ( querypage.pageimage ) {
-							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage;
+							var pageimage = 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
 							embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( body.query.general.logo );
 						
@@ -1226,7 +1226,7 @@ function cmd_random(lang, msg, wiki, reaction, spoiler) {
 				embed.setDescription( extract );
 			}
 			if ( querypage.pageimage && querypage.title !== body.query.general.mainpage ) {
-				embed.setThumbnail( 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage );
+				embed.setThumbnail( 'https://' + wiki + '.gamepedia.com/Special:FilePath/' + querypage.pageimage + '?v=' + Date.now() );
 			}
 			else embed.setThumbnail( body.query.general.logo );
 			
