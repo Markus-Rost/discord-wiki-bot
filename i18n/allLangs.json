@@ -1,0 +1,36 @@
+{
+	"allLangs": [
+		{
+			"en": "en",
+			"eng": "en",
+			"english": "en",
+			"de": "de",
+			"german": "de",
+			"deutsch": "de",
+			"fr": "fr",
+			"french": "fr",
+			"français": "fr",
+			"nl": "nl",
+			"dutch": "nl",
+			"nederlands": "nl",
+			"pl": "pl",
+			"polish": "pl",
+			"polski": "pl",
+			"pt": "pt",
+			"portuguese": "pt",
+			"português": "pt",
+			"tr": "tr",
+			"turkish": "tr",
+			"turkçe": "tr"
+		},
+		{
+			"en": "English",
+			"de": "German",
+			"fr": "French",
+			"nl": "Dutch",
+			"pl": "Polish",
+			"pt": "Portuguese",
+			"tr": "Turkish"
+		}
+	]
+}

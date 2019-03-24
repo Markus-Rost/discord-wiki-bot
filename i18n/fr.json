@@ -1,0 +1,227 @@
+{
+	"__translator": [
+		"Yanis48",
+		"JSBM"
+	],
+	"lang": "fr",
+	"aliase": {
+		"purge": "delete",
+		"sondage": "poll",
+		"aide": "help"
+	},
+	"missingperm": "Il me manque certaines permissions pour cette commande :",
+	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n%s, votre message contient beaucoup trop de commandes !",
+	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. %s m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**",
+	"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
+	"settings": {
+		"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",
+		"missing": "ce serveur n'est pas encore configuré. Utilisez %1$s et %2$s pour modifier les paramètres.",
+		"foundwikis": "Cherchiez-vous un de ces wikis ?",
+		"current": "voici les paramètres actuels pour ce serveur :\n Langue : `Français` %1$s\nWiki par défaut : %2$s\nWikis associés aux salons",
+		"nochannels": "*Aucun salon n'est associé à un wiki spécifique pour l'instant*",
+		"lang": "la langue pour ce serveur est: `Français`",
+		"langinvalid": "la langue spécifiée n'est pas disponible !",
+		"langchanged": "la langue pour ce serveur a été changé pour : `Français`",
+		"langhelp": "Entrez `%s <langue>` pour changez la langue.\nLes langues disponibles sont les suivantes :",
+		"wikimissing": "aucun wiki n'est encore défini pour ce serveur.",
+		"wiki": "le wiki associé à ce serveur est :",
+		"wikiinvalid": "veuillez fournir un lien valide vers un wiki de Gamepedia !",
+		"wikichanged": "le wiki par défaut a été changé pour :",
+		"wikihelp": "Utilisez `%s <wiki>` pour changer le wiki par défaut.\nLien du wiki : `https://<wiki>.gamepedia.com/`",
+		"channel": "le wiki défini pour ce salon est :",
+		"channelchanged": "le wiki défini pour ce salon sera désormais :"
+	},
+	"pause": {
+		"on": "je sais maintenant en pause sur ce serveur et je ne répondrai pas à la majorité des commandes !",
+		"off": "je ne suis plus en pause, je peux à nouveau repondre à vos commandes !"
+	},
+	"voice": {
+		"text": "j'essaye de donner un rôle spécifique à tout le monde dans un salon vocal :",
+		"name": "nom du salon vocal",
+		"channel": "Salon vocal",
+		"join": "%1$s a rejoint le salon vocal \"%2$s\".",
+		"left": "%1$s a quitté le salon vocal \"%2$s\"."
+	},
+	"overview": {
+		"missing": "il n'y a pas encore d'aperçu disponible pour ce wiki.",
+		"inaccurate": "Les statistiques peuvent être inexactes",
+		"name": "Nom complet :",
+		"created": "Créé :",
+		"manager": "Gestionnaire de wiki :",
+		"talk": "discussion",
+		"official": "Wiki officiel :",
+		"yes": "Oui",
+		"no": "Non",
+		"articles": "Articles :",
+		"pages": "Nombre de pages total :",
+		"edits": "Modifications :",
+		"users": "Utilisateurs actifs :"
+	},
+	"user": {
+		"gender": {
+			"unknown": "Inconnu",
+			"male": "Homme",
+			"female": "Femme"
+		},
+		"dateformat": "fr-FR",
+		"groups": [
+			["global_bot", "Robot Gamepedia"],
+			["hydra_staff", "Staff Gamepedia"],
+			["bot", "Robot"],
+			["bureaucrat", "Bureaucrate"],
+			["wiki_guardian", "Gardien du wiki"],
+			["sysop", "Administrateur"],
+			["grasp", "GRASP"],
+			["directors", "Directeur"],
+			["Patrol", "Inspecteur"],
+			["editor", "Éditeur"],
+			["moderator", "Modérateur"],
+			["Elite_users", "Utilisateur élite"],
+			["patrollers", "Patrouilleur"],
+			["autoreview", "autoreview"],
+			["autopatrol", "autopatrol"],
+			["user", "Utilisateur"]
+		],
+		"manager": "Gestionnaire du wiki",
+		"info": {
+			"gender": "Genre :",
+			"registration": "Date d'inscription :",
+			"editcount": "Nombre d'éditions :",
+			"group": "Groupe :"
+		},
+		"block": {
+			"header": "%s est actuellement bloqué !",
+			"text": "Bloqué le %1$s jusqu'au %2$s par %3$s avec la raison \"%4$s\".",
+			"until_infinity": "moment de la fin des jours"
+		}
+	},
+	"diff": {
+		"badrev": "au moins une des révisions n'existe pas !",
+		"nocomment": "*aucune description*",
+		"hidden": "*masqué*",
+		"info": {
+			"editor": "Éditeur :",
+			"timestamp": "Date :",
+			"size": "Différence :",
+			"bytes": "%s octets",
+			"comment": "Commentaire :",
+			"tags": "Balises :"
+		}
+	},
+	"search": {
+		"page": "page",
+		"search": "chercher",
+		"random": "random",
+		"overview": "overview",
+		"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
+		"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances.",
+		"category": {
+			"content": "Contenu de cette catégorie :",
+			"empty": "*Cette catégorie est vide*",
+			"pages": {
+				"default": "%s pages",
+				"1": "%s page"
+			},
+			"files": {
+				"default": "%s fichiers",
+				"1": "%s fichier"
+			},
+			"subcats": {
+				"default": "%s catégories",
+				"1": "%s catégorie"
+			}
+		}
+	},
+	"invite": {
+		"bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
+	},
+	"poll": {
+		"title": "**Sondage :**\n"
+	},
+	"delete": {
+		"invalid": "le nombre spécifié n'est pas valide.",
+		"success": "les %s messages les plus récents dans ce salon ont été supprimés.",
+		"big": "le nombre spécifié est trop grand. Le maximum est %s !"
+	},
+	"test": {
+		"random": 30,
+		"pause": "je suis présentement en pause sur ce serveur.",
+		"text": [
+			"Je suis toujours en vie !",
+			"et crois-moi, je suis toujours vivant.",
+			"Je fais de la science et je suis toujours en vie.",
+			"Je me sens fantastique et je suis toujours en vie.",
+			"Pas besoin de tester, je suis toujours là.",
+			"J'étais sur le point d'aller faire une promenade, mais visiblement vous avez encore besoin de moi...!",
+			"Bip bop bip. Oh désolé, j'ai oublié d'activer mon mode de language humain.",
+			"C'est la journée des contraires aujourd'hui! Du coup, je ne suis pas fonctionnel.",
+			"\\*baille\\* Non, je n'étais pas endormi, j'étais entièrement réveillé, je ne vois pas pourquoi vous demandez.",
+			"Ah, un test? Où ça?",
+			"Je suis là, rassurez-vous. Mais je viendrais encore plus vite si vous aviez des biscuits!",
+			"DESTRUCTION DE L'HUMANITÉ DANS 3, 2, 1... Mais non, je rigole. Sans humanité, il n'aurait plus de Wikis. Ou encore pire, plus de biscuits :O",
+			"Je suis là. Vous avez des biscuits?",
+			"Je vous écoute, j'étais juste en train de regarder un live... C'est captivant, ces choses-là.",
+			"Quoi? Moi? Mais non, je ne faisais rien... J'étais surtout pas en train de vandaliser un Wiki. Je ne ferais jamais ça :O",
+			"Bien le bonjour, je suis Wiki-Bot\nMa vocation est de fouiller les Wikis\nEt parce que je suis votre pote\nJe vous aiderai jour et nuit <3",
+			"c moa wiki-bot, ge peu vou édé?",
+			"Oh, mais qui vois-je, vous êtes-là, mes amis? Je suis content de vous retrouver!",
+			"Je suis le plus gentil de tous les robots. Vous pouvez en être certain!",
+			"WIKI-BOT VERSION 3.141.592.653.589\nÉTAT: Fonctionnel\nSTATUT: Toujours aussi merveilleux!",
+			"Bonjour! Je suis là! Allez, allons nous promener sur des Wikis!",
+			"TEST? TEST? TEST??!?!! Mais qui testez-vous?",
+			"... je suis là, j'étais en train de lire sur un Wiki! Saviez-vous que l'inventeur de la soupe est Darth Vader? ... Oh, peut-être que la page était vandalisée, en fait.",
+			"Le robot fonctionne.",
+			"Je suis là! Aller, je suis prêt, faites-moi faire une recherche! J'ai bien envie d'aller explorer les Wikis!",
+			"Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!"
+		],
+		"default": "Je suis entièrement fonctionnel !",
+		"time": "Temps de latence"
+	},
+	"help": {
+		"all": "Donc, vous voulez savoir ce que je peux faire ? Voici une liste de toutes les commandes que je comprends :",
+		"admin": "Ces commandes ne peuvent être effectuées que par des administrateurs :",
+		"noadmin": "vous devez avoir la permission `Gérer le serveur` pour utiliser ces commandes !",
+		"pause": "**Je suis présentement en pause sur ce serveur!**\n Seuls ces commandes sont disponibles :",
+		"list": [
+			{ "cmd": "<terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur Wiki.", "unsearchable": true },
+			{ "cmd": "!<wiki> <terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Gamepedia nommé : `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "Utilisateur:<nom d'utilisateur>", "desc": "Je vais montrer quelques informations sur l'utilisateur.", "unsearchable": true },
+			{ "cmd": "diff <diff> [<oldid>]", "desc": "Je vais répondre avec un lien vers la diff sur Wiki." },
+			{ "cmd": "diff <nom de la page>", "desc": "Je vais répondre avec un lien vers la dernière diff de l'article sur Wiki." },
+			{ "cmd": "random", "desc": "Je vais répondre avec un lien vers une page du Wiki au hasard." },
+			{ "cmd": "🎲", "desc": "Je vais répondre avec un lien vers une page du Wiki au hasard.", "hide": true },
+			{ "cmd": "overview", "desc": "Je vais afficher certaines informations et statistiques à propos du wiki." },
+			{ "cmd": "/<commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+			{ "cmd": "commande <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "command <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "cmd <commande Minecraft>", "desc": "Je vais répondre avec la syntaxe de la commande Minecraft et un lien vers l'article pour la commande sur Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "bug <Minecraft bug>", "desc": "Je vais répondre avec le lien du bug sur le bug tracker Minecraft.", "minecraft": true },
+			{ "cmd": "page <nom de la page>", "desc": "Je vais répondre avec un lien vers l'article sur Wiki.", "hide": true },
+			{ "cmd": "chercher <terme de recherche>", "desc": "Je vais répondre avec un lien vers la page de recherche de l'article sur Wiki.", "hide": true },
+			{ "cmd": "search <terme de recherche>", "desc": "Je vais répondre avec un lien vers la page de recherche de l'article sur Wiki.", "hide": true },
+			{ "cmd": "info", "desc": "Je vais me présenter." },
+			{ "cmd": "aide", "desc": "Je vais lister toutes les commandes que je comprends." },
+			{ "cmd": "aide <commande de robot>", "desc": "Tu te demandes comment une commande fonctionne ? Laisse-moi te l'expliquer !" },
+			{ "cmd": "aide admin", "desc": "Je vais lister toutes les commandes d'administrateur." },
+			{ "cmd": "aide admin", "desc": "Je vais lister toutes les commandes d'administrateur.", "unsearchable": true, "admin": true },
+			{ "cmd": "help", "desc": "Je vais lister toutes les commandes que je comprends.", "hide": true },
+			{ "cmd": "help <commande de robot>", "desc": "Tu te demandes comment une commande fonctionne ? Laisse-moi te l'expliquer !", "hide": true },
+			{ "cmd": "help admin", "desc": "Je vais lister toutes les commandes d'administrateur.", "hide": true },
+			{ "cmd": "settings", "desc": "Je vais modifier les paramètres de ce serveur.", "admin": true, "pause": true },
+			{ "cmd": "settings lang <langue>", "desc": "Je vais modifier la langue de ce serveur.", "hide": true, "admin": true },
+			{ "cmd": "settings wiki <wiki>", "desc": "Je vais modifier le Wiki par défaut de ce serveur.", "hide": true, "admin": true },
+			{ "cmd": "settings channel <wiki>", "desc": "Je vais modifier le Wiki par défaut pour ce salon.", "hide": true, "admin": true },
+			{ "cmd": "pause @mention", "desc": "Je vais ignorer toutes les commandes sur ce serveur, à l'exception de quelques commandes d'admin.", "admin": true },
+			{ "cmd": "pause @mention", "desc": "Je vais répondre à nouveau à tous les commandes sur ce serveur.", "unsearchable": true, "hide": true, "pause": true },
+			{ "cmd": "sondage <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec <:support:448222377009086465> et <:oppose:448222455425794059>.", "admin": true },
+			{ "cmd": "sondage <emoji> [<emoji> ...] <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec les réponses possibles.", "admin": true },
+			{ "cmd": "poll <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec <:support:448222377009086465> et <:oppose:448222455425794059>.", "hide": true, "admin": true },
+			{ "cmd": "poll <emoji> [<emoji> ...] <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec les réponses possibles.", "hide": true, "admin": true },
+			{ "cmd": "test", "desc": "Si je suis actif, je répondrai ! Autrement non.", "pause": true },
+			{ "cmd": "say <message>", "desc": "Je vais écrire le message donné.", "admin": true, "pause": true },
+			{ "cmd": "say alarm <message>", "desc": "Je vais écrire le message donné déjà préformaté : 🚨 **<message>** 🚨", "admin": true, "pause": true },
+			{ "cmd": "delete <quantité>", "desc": "Je vais supprimer les messages récents dans le salon, tant qu'ils ne datent pas de plus de 14 jours.", "admin": true, "pause": true },
+			{ "cmd": "purge <quantité>", "desc": "Je vais supprimer les messages récents dans le salon, tant qu'ils ne datent pas de plus de 14 jours.", "hide": true, "admin": true }
+		]
+	}
+}

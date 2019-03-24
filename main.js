@@ -9,7 +9,8 @@ var request = require('request');
 var client = new Discord.Client( {disableEveryone:true} );
 const dbl = new DBL(process.env.dbltoken);
 
-var i18n = require('./i18n.json');
+var i18n = require('./i18n/allLangs.json');
+Object.keys(i18n.allLangs[1]).forEach( lang => i18n[lang] = require('./i18n/' + lang + '.json') );
 var minecraft = require('./minecraft.json');
 var multiManager = require('./wiki_manager.json');
 
@@ -168,7 +169,7 @@ function cmd_settings(lang, msg, args, line) {
 			if ( args[1] && ( args[0] === 'wiki' || args[0] === 'channel' ) ) {
 				var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,50})\.gamepedia\.com(?:\/|$)/ );
 			}
-			var langs = '\n' + lang.settings.langhelp.replaceSave( '%s', process.env.prefix + ' settings lang' ) + ' `' + i18n.allLangs[1].join(', ') + '`';
+			var langs = '\n' + lang.settings.langhelp.replaceSave( '%s', process.env.prefix + ' settings lang' ) + ' `' + Object.values(i18n.allLangs[1]).join(', ') + '`';
 			var wikis = '\n' + lang.settings.wikihelp.replaceSave( '%s', process.env.prefix + ' settings wiki' );
 			var channels = '\n' + lang.settings.wikihelp.replaceSave( '%s', process.env.prefix + ' settings channel' );
 			var nolangs = lang.settings.langinvalid + langs;
@@ -1729,19 +1730,19 @@ client.on( 'voiceStateUpdate', (oldm, newm) => {
 	if ( oldm.guild.me.permissions.has('MANAGE_ROLES') && oldm.voiceChannelID !== newm.voiceChannelID ) {
 		var setting = Object.assign({}, settings['default']);
 		if ( oldm.guild.id in settings ) setting = Object.assign({}, settings[oldm.guild.id]);
-		var lang = i18n[setting.lang];
+		var lang = i18n[setting.lang].voice;
 		if ( oldm.voiceChannel ) {
-			var oldrole = oldm.roles.find( role => role.name === lang.voice.channel + ' – ' + oldm.voiceChannel.name );
+			var oldrole = oldm.roles.find( role => role.name === lang.channel + ' – ' + oldm.voiceChannel.name );
 			if ( oldrole && oldrole.comparePositionTo(oldm.guild.me.highestRole) < 0 ) {
 				console.log( oldm.guild.name + ': ' + oldm.displayName + ' hat den Sprachkanal "' + oldm.voiceChannel.name + '" verlassen.' );
-				oldm.removeRole( oldrole, lang.voice.left.replaceSave( '%1$s', oldm.displayName ).replaceSave( '%2$s', oldm.voiceChannel.name ) ).catch(log_error);
+				oldm.removeRole( oldrole, lang.left.replaceSave( '%1$s', oldm.displayName ).replaceSave( '%2$s', oldm.voiceChannel.name ) ).catch(log_error);
 			}
 		}
 		if ( newm.voiceChannel ) {
-			var newrole = newm.guild.roles.find( role => role.name === lang.voice.channel + ' – ' + newm.voiceChannel.name );
+			var newrole = newm.guild.roles.find( role => role.name === lang.channel + ' – ' + newm.voiceChannel.name );
 			if ( newrole && newrole.comparePositionTo(newm.guild.me.highestRole) < 0 ) {
 				console.log( newm.guild.name + ': ' + newm.displayName + ' hat den Sprachkanal "' + newm.voiceChannel.name + '" betreten.' );
-				newm.addRole( newrole, lang.voice.join.replaceSave( '%1$s', newm.displayName ).replaceSave( '%2$s', newm.voiceChannel.name ) ).catch(log_error);
+				newm.addRole( newrole, lang.join.replaceSave( '%1$s', newm.displayName ).replaceSave( '%2$s', newm.voiceChannel.name ) ).catch(log_error);
 			}
 		}
 	}

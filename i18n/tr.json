@@ -1,0 +1,206 @@
+{
+	"__translator": [
+		"Doğukan Karakaş"
+	],
+	"lang": "tr",
+	"aliase": {
+		"purge": "delete",
+		"temizleme": "delete",
+		"bilgi": "info",
+		"yardım": "help",
+		"anket": "poll"
+	},
+	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
+	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n%s, mesajın çok fazla komut içeriyor!",
+	"disclaimer": "Ben, Gamepedia Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. %s, beni JavaScript kullanarak yazdı.\n\n**Curse/Gamepedia ile resmi bir bağım yok, ben bir gayri resmi aracım!!**",
+	"helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
+	"settings": {
+		"save_failed": "ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
+		"missing": "bu sunucu henüz kurulmamış. %1$s ve %2$s'yi kullanarak ayarları değiştirin.",
+		"foundwikis": "Bu wikilerden herhangi birini mi kastediyorsun?",
+		"current": "sunucunun mevcut ayarları bu şekilde:\nDil: `Türkçe` %1$s\nVarsayılan wiki: %2$s\nKanal wikileri",
+		"nochannels": "*Henüz hiçbir kanal wikisi yok*",
+		"lang": "Bu sunucunun dili: `Türkçe`",
+		"langinvalid": "belirtilen dil şimdilik desteklenmiyor!",
+		"langchanged": "sunucunun dilini şu dile değiştirdiniz: `Türkçe`",
+		"langhelp": "`%s <dil>` kullanarak dili değiştirebilirsin.\nŞimdilik desteklenmeyen diller:",
+		"wikimissing": "bu sunucu için varsayılan bir wiki belirlenmemiş!",
+		"wiki": "bu sunucunun varsayılan wikisi:",
+		"wikiinvalid": "lütfen Gamepedia wikiye geçerli bir bağlantı saylağın!",
+		"wikichanged": "bu sunucunun varsayılan wikisini şuna değiştirdiniz:",
+		"wikihelp": "`%s <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/`",
+		"channel": "bu kanalın varsayılan wikisi:",
+		"channelchanged": "bu kanalın varsayılan wikisini şuna değiştirdiniz:"
+	},
+	"pause": {
+		"on": "Şimdi bu sunucuda duraklatıldım ve çoğu komutu görmezden geleceğim!",
+		"off": "Artık bu sunucuda duraklatılmış durumda değilim ve tüm komutlara tekrar cevap vereceğim!"
+	},
+	"voice": {
+		"text": "Ses kanalındaki herkese belirli bir rol vermeye çalışıyorum:",
+		"name": "ses kanalı adı",
+		"channel": "Ses kanalı",
+		"join": "%1$s ses kanalına katıldı \"%2$s\".",
+		"left": "%1$s ses kanalından ayrıldı \"%2$s\"."
+	},
+	"overview": {
+		"missing": "Bu wiki için henüz bir genel bakış yok.",
+		"inaccurate": "İstatistikler yanlış olabilir",
+		"name": "Tam isim:",
+		"created": "Oluşturuldu:",
+		"manager": "Wiki yöneticisi:",
+		"talk": "mesaj",
+		"official": "Resmi wiki:",
+		"yes": "Evet",
+		"no": "Hayır",
+		"articles": "Makaleler:",
+		"pages": "Toplam sayfalar:",
+		"edits": "Düzenlemeler:",
+		"users": "Aktif kullanıcılar:"
+	},
+	"user": {
+		"gender": {
+			"unknown": "meçhul",
+			"male": "erkek",
+			"female": "kadın"
+		},
+		"dateformat": "tr-TR",
+		"groups": [
+			["global_bot", "Gamepedia bot"],
+			["hydra_staff", "Gamepedia personeli"],
+			["bot", "Bot"],
+			["bureaucrat", "Bürokrat"],
+			["wiki_guardian", "Wiki Guardian"],
+			["sysop", "Yönetici"],
+			["grasp", "GRASP"],
+			["directors", "Director"],
+			["Patrol", "Inspector"],
+			["editor", "Editor"],
+			["moderator", "Moderator"],
+			["Elite_users", "Elite user"],
+			["patrollers", "Patroller"],
+			["autoreview", "autoreview"],
+			["autopatrol", "autopatrol"],
+			["user", "Kullanıcı"]
+		],
+		"manager": "Wiki yöneticisi",
+		"info": {
+			"gender": "Cinsiyet:",
+			"registration": "Kayıt tarihi:",
+			"editcount": "Düzenleme sayısı:",
+			"group": "Grup:"
+		},
+		"block": {
+			"header": "%s şu anda engelli!",
+			"text": "%1$s'dan %2$s'a kadar %1$s tarafından \"%4$s\" nedeniyle engellendi.",
+			"until_infinity": "bütün günlerin sonu"
+		}
+	},
+	"diff": {
+		"badrev": "en az bir revizyon mevcut değil!",
+		"nocomment": "*Açıklama verilmedi*",
+		"hidden": "*gizli*",
+		"info": {
+			"editor": "Editör:",
+			"timestamp": "Düzenleme tarihi:",
+			"size": "Fark:",
+			"bytes": "%s Bayt",
+			"comment": "açıklama:",
+			"tags": "Etiketler:"
+		}
+	},
+	"search": {
+		"page": "sayfa",
+		"search": "arama",
+		"random": "random",
+		"overview": "overview",
+		"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s kullan.",
+		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s, tüm isabetlerin listesi için %2$s kullan.",
+		"category": {
+			"content": "Bu kategorinin içeriği:",
+			"empty": "*Bu kategori boş*",
+			"pages": {
+				"default": "%s sayfa"
+			},
+			"files": {
+				"default": "%s dosya"
+			},
+			"subcats": {
+				"default": "%s kategoriler",
+				"1": "%s kategori"
+			}
+		}
+	},
+	"invite": {
+		"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
+	},
+	"poll": {
+		"title": "**Anket:**\n"
+	},
+	"delete": {
+		"invalid": "belirtilen sayı geçerli değil.",
+		"success": "sunucudaki en yeni % mesaj silindi.",
+		"big": "belirtilen sayı çok büyük. En fazla %s!"
+	},
+	"test": {
+		"random": 10,
+		"pause": "Şu anda bu sunucuda duraklatılmış durumdayım.",
+		"text": [
+			"Hala hayattayım!",
+			"ve inan bana, ben hala hayattayım.",
+			"Bilim ile uğraşıyorum ve hala hayattayım.",
+			"Kendimi harika hissediyorum ve hala hayattayım."
+		],
+		"default": "Tamamen işlevselim!",
+		"time": "Tepki Süresi"
+	},
+	"help": {
+		"all": "Yapabileceklerimi öğrenmek mi istiyorsun? İşte anladığım tüm komutların bir listesi:",
+		"admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
+		"noadmin": "Bu komutlar için `Sunucuyu Yönetme` iznine ihtiyacınız var!",
+		"pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:",
+		"list": [
+			{ "cmd": "<arama terimi>", "desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim.", "unsearchable": true },
+			{ "cmd": "!<wiki> <arama terimi>", "desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "Kullanıcı:<kullanıcıadı>", "desc": "Kullanıcı hakkında bazı bilgileri göstereceğim.", "unsearchable": true },
+			{ "cmd": "diff <diff> [<oldid>]", "desc": "Wikideki farkların bağlantısıyla cevap vereceğim." },
+			{ "cmd": "diff <sayfa adı>", "desc": "Wikideki son farkın bağlantısıyla cevap vereceğim." },
+			{ "cmd": "random", "desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim." },
+			{ "cmd": "🎲", "desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim.", "hide": true },
+			{ "cmd": "overview", "desc": "Wiki ile ilgili bazı bilgileri ve istatistikleri göstereceğim." },
+			{ "cmd": "/<Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "unsearchable": true, "minecraft": true },
+			{ "cmd": "command <Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "hide": true, "minecraft": true },
+			{ "cmd": "cmd <Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "hide": true, "minecraft": true },
+			{ "cmd": "bug <Minecraft hata>", "desc": "Hatanın Minecraft hata bulucusu'ndaki bağlantısıyla cevap vereceğim.", "minecraft": true },
+			{ "cmd": "sayfa <sayfa adı>", "desc": "I will answer with a direct link to the article in the wiki.", "hide": true },
+			{ "cmd": "page <sayfa adı>", "desc": "I will answer with a direct link to the article in the wiki.", "hide": true },
+			{ "cmd": "arama <arama terimi>", "desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim.", "hide": true },
+			{ "cmd": "search <arama terimi>", "desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim.", "hide": true },
+			{ "cmd": "bilgi", "desc": "Kendimi tanıtacağım." },
+			{ "cmd": "info", "desc": "Kendimi tanıtacağım.", "hide": true },
+			{ "cmd": "yardım", "desc": "Anladığım tüm komutları listeleyeceğim." },
+			{ "cmd": "yardım <bot komutu>", "desc": "Bir komut nasıl çalışıyor biliyor musun? Sana açıklayayım!" },
+			{ "cmd": "yardım admin", "desc": "Tüm yönetici komutlarını listeleyeceğim." },
+			{ "cmd": "yardım admin", "desc": "Tüm yönetici komutlarını listeleyeceğim.", "unsearchable": true, "admin": true },
+			{ "cmd": "help", "desc": "Anladığım tüm komutları listeleyeceğim.", "hide": true },
+			{ "cmd": "help <bot komutu>", "desc": "Bir komut nasıl çalışıyor biliyor musun? Sana açıklayayım!", "hide": true },
+			{ "cmd": "help admin", "desc": "Tüm yönetici komutlarını listeleyeceğim.", "hide": true },
+			{ "cmd": "settings", "desc": "Bu sunucunun ayarlarını değiştireceğim.", "admin": true, "pause": true },
+			{ "cmd": "settings lang <dil>", "desc": "Bu sunucunun dilini değiştireceğim.", "hide": true, "admin": true },
+			{ "cmd": "settings wiki <wiki>", "desc": "Bu sunucunun varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
+			{ "cmd": "settings channel <wiki>", "desc": "Geçerli kanalın varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
+			{ "cmd": "pause @mention", "desc": "Birkaç admin komutu haricinde, bu sunucudaki bütün komutları yok sayacağım.", "admin": true },
+			{ "cmd": "pause @mention", "desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim.", "unsearchable": true, "hide": true, "pause": true },
+			{ "cmd": "anket <serbest metin olarak soru>", "desc": "Anket yaratacağım ve şu tepkileri vereceğim: <:support:448222377009086465> ve <:oppose:448222455425794059>.", "admin": true },
+			{ "cmd": "anket <emoji> [<emoji> ...] <question as free text>", "desc": "Bir anket yaratacağım ve olası cevaplarla tepki ekleyeceğim.", "admin": true },
+			{ "cmd": "poll <serbest metin olarak soru>", "desc": "Anket yaratacağım ve şu tepkileri vereceğim: <:support:448222377009086465> ve <:oppose:448222455425794059>.", "hide": true, "admin": true },
+			{ "cmd": "poll <emoji> [<emoji> ...] <question as free text>", "desc": "Bir anket yaratacağım ve olası cevaplarla tepki ekleyeceğim.", "hide": true, "admin": true },
+			{ "cmd": "test", "desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem.", "pause": true },
+			{ "cmd": "say <mesaj>", "desc": "Verilen mesajı yazacağım.", "admin": true, "pause": true },
+			{ "cmd": "say alarm <mesaj>", "desc": "Verilen mesajı biçimlendirilmiş olarak bu şekilde yazacağım: 🚨 **<mesaj>** 🚨", "admin": true, "pause": true },
+			{ "cmd": "temizleme <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "admin": true, "pause": true },
+			{ "cmd": "delete <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "hide": true, "admin": true },
+			{ "cmd": "purge <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "hide": true, "admin": true }
+		]
+	}
+}

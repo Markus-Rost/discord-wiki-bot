@@ -1,0 +1,200 @@
+{
+	"__translator": [
+		"Jack_McKalling"
+	],
+	"lang": "nl",
+	"aliase": {
+		"purge": "delete"
+	},
+	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
+	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n%s, je bericht bevatte te veel opdrachten!",
+	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia wiki's te linken. %s schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Curse/Gamepedia en ben een onofficieel hulpmiddel!**",
+	"helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
+	"settings": {
+		"save_failed": "helaas konden de instellingen niet opgeslagen worden, probeer het later nog een keer.",
+		"missing": "deze server is nog niet geconfigureerd. Gebruik %1$s en %2$s om de instellingen  te wijzigen.",
+		"foundwikis": "Bedoelde je één van deze wiki's?",
+		"current": "dit zijn de huidige instellingen voor deze server:\nTaal: `Nederlands` %1$s\nStandaard wiki: %2$s\nKanaal-specifieke wiki's",
+		"nochannels": "*Nog geen kanaal-specifieke wiki's*",
+		"lang": "de taal voor deze server is: `Nederlands`",
+		"langinvalid": "de opgegeven taal wordt niet ondersteund!",
+		"langchanged": "je hebt de taal voor deze server gewijzigd naar: `Nederlands`",
+		"langhelp": "Gebruik `%s <taal>` om de taal te wijzigen.\nOp dit moment zijn de ondersteunde talen:",
+		"wikimissing": "voor deze server is nog geen standaard wiki ingesteld!",
+		"wiki": "de standaard wiki voor deze server is:",
+		"wikiinvalid": "geef a.u.b. een geldige link naar een Gamepedia wiki!",
+		"wikichanged": "je wijzigde de standaard wiki voor deze server naar:",
+		"wikihelp": "Gebruik `%s <wiki>` om de standaard wiki te wijzigen.\nLink naar de wiki: `https://<wiki>.gamepedia.com/`",
+		"channel": "de standaard wiki voor dit kanaal is:",
+		"channelchanged": "je wijzigde de standaard wiki voor dit kanaal naar:"
+	},
+	"pause": {
+		"on": "Ik ben nu gepauzeerd op deze server en zal meeste opdrachten negeren!",
+		"off": "Ik ben niet langer gepauzeerd op deze server en zal weer reageren op alle opdrachten!"
+	},
+	"voice": {
+		"text": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven:",
+		"name": "spraakkanaal naam",
+		"channel": "Spraakkanaal",
+		"join": "%1$s kwam het spraakkanaal \"%2$s\" binnen.",
+		"left": "%1$s verlaatte het spraakkanaal \"%2$s\"."
+	},
+	"overview": {
+		"missing": "voor deze wiki is nog geen overzicht beschikbaar.",
+		"inaccurate": "Statistieken zijn mogelijk inaccuraat",
+		"name": "Volledige naam:",
+		"created": "Gecreëerd:",
+		"manager": "Wiki beheerder:",
+		"talk": "overleg",
+		"official": "Officiële wiki:",
+		"yes": "Ja",
+		"no": "Nee",
+		"articles": "Artikelen:",
+		"pages": "Totaal pagina's:",
+		"edits": "Bewerkingen:",
+		"users": "Actieve gebruikers:"
+	},
+	"user": {
+		"gender": {
+			"unknown": "Onbekend",
+			"male": "Man",
+			"female": "Vrouw"
+		},
+		"dateformat": "nl-NL",
+		"groups": [
+			["global_bot", "Gamepedia bot"],
+			["hydra_staff", "Gamepedia staff"],
+			["bot", "Bot"],
+			["bureaucrat", "Bureaucraat"],
+			["wiki_guardian", "Wiki Guardian"],
+			["sysop", "Administrator"],
+			["grasp", "GRASP"],
+			["directors", "Director"],
+			["Patrol", "Inspector"],
+			["editor", "Editor"],
+			["moderator", "Moderator"],
+			["Elite_users", "Elite user"],
+			["patrollers", "Patroller"],
+			["autoreview", "autoreview"],
+			["autopatrol", "autopatrol"],
+			["user", "Gebruiker"]
+		],
+		"manager": "Wiki beheerder",
+		"info": {
+			"gender": "Geslacht:",
+			"registration": "Registratie datum:",
+			"editcount": "Aantal bewerkingen:",
+			"group": "Groep:"
+		},
+		"block": {
+			"header": "%s is momenteel geblokkeerd!",
+			"text": "Geblokkeerd van %1$s tot %2$s door %3$s met reden \"%4$s\".",
+			"until_infinity": "het einde van de wereld"
+		}
+	},
+	"diff": {
+		"badrev": "ten minste één revisie bestaat niet!",
+		"nocomment": "*Geen beschrijving opgegeven*",
+		"hidden": "*verborgen*",
+		"info": {
+			"editor": "Bewerker:",
+			"timestamp": "Bewerkingsdatum:",
+			"size": "Verschil:",
+			"bytes": "%s Bytes",
+			"comment": "Beschrijving:",
+			"tags": "Tags:"
+		}
+	},
+	"search": {
+		"page": "pagina",
+		"search": "zoeken",
+		"random": "willekeurig",
+		"overview": "overzicht",
+		"infopage": "Niet het gewenste resultaat? Gebruik %s voor een rechtstreekse link.",
+		"infosearch": "Niet het gewenste resultaat? Gebruik %1$s voor een rechtstreekse link of %2$s voor een lijst van alle overeenkomsten.",
+		"category": {
+			"content": "Inhoud van deze categorie:",
+			"empty": "*Deze categorie is leeg*",
+			"pages": {
+				"default": "%s pagina's",
+				"1": "%s pagina"
+			},
+			"files": {
+				"default": "%s bestanden",
+				"1": "%s bestand"
+			},
+			"subcats": {
+				"default": "%s categorieën",
+				"1": "%s categorie"
+			}
+		}
+	},
+	"invite": {
+		"bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
+	},
+	"poll": {
+		"title": "**Poll:**\n"
+	},
+	"delete": {
+		"invalid": "het opgegeven nummer is ongeldig.",
+		"success": "de %s nieuwste berichten in dit kanaal zijn verwijderd.",
+		"big": "het opgegeven nummer is te groot. Het maximum is %s!"
+	},
+	"test": {
+		"random": 10,
+		"pause": "Ik ben momenteel gepauzeerd op deze server.",
+		"text": [
+			"Ik leef nog steeds!",
+			"en geloof me, ik leef nog steeds.",
+			"Yup, ik ben nog steeds beschikbaar!",
+			"Geef me een opdracht, ik verveel me!",
+			"Ik voel me goed en ben bereid om je opdrachten te volgen."
+		],
+		"default": "Ik functioneer volledig!",
+		"time": "Reactie tijd"
+	},
+	"help": {
+		"all": "Zo, dus je wilt weten welke dingen ik kan doen? Hier is een lijst van alle opdrachten die ik begrijp:",
+		"admin": "Deze opdrachten kunnen alleen door administratoren uitgevoerd worden:",
+		"noadmin": "je hebt de `Beheer Server` permissie nodig voor deze opdrachten!",
+		"pause": "**Ik ben momenteel gepauzeerd op deze server!**\nAlleen deze opdrachten kunnen worden uitgevoerd:",
+		"list": [
+			{ "cmd": "<zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki.", "unsearchable": true },
+			{ "cmd": "!<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "Gebruiker:<gebruikersnaam>", "desc": "Ik zal wat informatie over de gebruiker weergeven.", "unsearchable": true },
+			{ "cmd": "diff <diff> [<oldid>]", "desc": "Ik zal antwoorden met een link naar de diff uit de wiki." },
+			{ "cmd": "diff <pagina naam>", "desc": "Ik zal antwoorden met een link naar de laatste diff over het artikel uit de wiki." },
+			{ "cmd": "willekeurig", "desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki." },
+			{ "cmd": "random", "desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki.", "hide": true },
+			{ "cmd": "🎲", "desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki.", "hide": true },
+			{ "cmd": "overzicht", "desc": "Ik zal wat informatie en statistieken over de wiki weergeven." },
+			{ "cmd": "overview", "desc": "Ik zal wat informatie en statistieken over de wiki weergeven.", "hide": true },
+			{ "cmd": "/<Minecraft command>", "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+			{ "cmd": "command <Minecraft command>", "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "cmd <Minecraft command>", "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "bug <Minecraft bug>", "desc": "Ik zal antwoorden met een link naar de bug in de Minecraft bug tracker.", "minecraft": true },
+			{ "cmd": "pagina <pagina naam>", "desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki.", "hide": true },
+			{ "cmd": "page <pagina naam>", "desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki.", "hide": true },
+			{ "cmd": "zoeken <zoek term>", "desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki.", "hide": true },
+			{ "cmd": "search <zoek term>", "desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki.", "hide": true },
+			{ "cmd": "info", "desc": "Ik zal mezelf introduceren." },
+			{ "cmd": "help", "desc": "Ik zal alle opdrachten opsommen die ik begrijp." },
+			{ "cmd": "help <bot command>", "desc": "Vraag je je af hoe een opdracht werkt? Laat het me aan je uitleggen!" },
+			{ "cmd": "help admin", "desc": "Ik zal alle administrator opdrachten opsommen." },
+			{ "cmd": "help admin", "desc": "Ik zal alle administrator opdrachten opsommen.", "unsearchable": true, "admin": true },
+			{ "cmd": "settings", "desc": "Ik zal de instellingen voor deze server wijzigen.", "admin": true, "pause": true },
+			{ "cmd": "settings lang <taal>", "desc": "Ik zal de taal voor deze server wijzigen.", "hide": true, "admin": true },
+			{ "cmd": "settings wiki <wiki>", "desc": "Ik zal de standaard wiki voor deze server wijzigen.", "hide": true, "admin": true },
+			{ "cmd": "settings channel <wiki>", "desc": "Ik zal de standaard wiki voor het huidige kanaal wijzigen.", "hide": true, "admin": true },
+			{ "cmd": "pause @mention", "desc": "Ik zal alle opdrachten op deze server negeren, met uitzondering van enkele admin opdrachten.", "admin": true },
+			{ "cmd": "pause @mention", "desc": "Ik zal weer op alle opdrachten op deze server reageren.", "unsearchable": true, "hide": true, "pause": true },
+			{ "cmd": "poll <vraag in platte tekst>", "desc": "Ik zal een poll maken en reageren met <:support:448222377009086465> and <:oppose:448222455425794059>.", "admin": true },
+			{ "cmd": "poll <emoji> [<emoji> ...] <question as free text>", "desc": "Ik zal een poll maken en reageren met de mogelijke antwoorden.", "admin": true },
+			{ "cmd": "test", "desc": "Als ik actief ben, zal ik antwoorden! Anders niet.", "pause": true },
+			{ "cmd": "say <bericht>", "desc": "Ik zal het opgegeven bericht zeggen.", "admin": true, "pause": true },
+			{ "cmd": "say alarm <bericht>", "desc": "Ik zal het opgegeven bericht zeggen met specifieke opmaak: 🚨 **<message>** 🚨", "admin": true, "pause": true },
+			{ "cmd": "delete <aantal>", "desc": "Ik zal de recente berichten verwijderen in dit kanaal, zolang ze niet ouder zijn dan 14 dagen.", "admin": true, "pause": true },
+			{ "cmd": "purge <aantal>", "desc": "Ik zal de recente berichten verwijderen in dit kanaal, zolang ze niet ouder zijn dan 14 dagen.", "hide": true, "admin": true }
+		]
+	}
+}

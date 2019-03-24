@@ -1,0 +1,209 @@
+{
+	"__translator": [
+		"MarkusRost"
+	],
+	"lang": "de",
+	"aliase": {
+		"purge": "delete",
+		"hilfe": "help",
+		"umfrage": "poll"
+	},
+	"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
+	"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n%s, deine Nachricht enthält zu viele Befehle!",
+	"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe auf Gamepedia-Wikis zu verlinken. Geschrieben wurde ich von %s in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Curse/Gamepedia und bin ein inoffizieller Bot!**",
+	"helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
+	"settings": {
+		"save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
+		"missing": "für diesen Server wurden noch keine Einstellungen vorgenommen. Nutze %1$s und %2$s um die Einstellungen vorzunehmen.",
+		"foundwikis": "Meinst du eines dieser Wikis?",
+		"current": "dies sind die aktuellen Einstellungen für diesen Server:\nSprache: `Deutsch` %1$s\nStandard-Wiki: %2$s\nKanal-Wikis",
+		"nochannels": "*Noch keine Kanal-Wikis*",
+		"lang": "die Sprache für diesen Server ist: `Deutsch`",
+		"langinvalid": "die angegebende Sprache wird nicht unterstützt!",
+		"langchanged": "du hast die Sprache für diesen Server geändert zu: `Deutsch`",
+		"langhelp": "Nutze `%s <Sprache>` um die Sprache zu ändern.\nBisher mögliche Sprachen sind:",
+		"wikimissing": "für diesen Server wurde noch kein Wiki festgelegt!",
+		"wiki": "das Standard-Wiki für diesen Server ist:",
+		"wikiinvalid": "bitte gib einen gültigen Link zu einem Gamepedia-Wiki an!",
+		"wikichanged": "du hast das Standard-Wiki für diesen Server geändert zu:",
+		"wikihelp": "Nutze `%s <Wiki>` um das Standard-Wiki zu ändern.\nLink zum Wiki: `https://<Wiki>.gamepedia.com/`",
+		"channel": "das Standard-Wiki für diesen Kanal ist:",
+		"channelchanged": "du hast das Standard-Wiki für diesen Kanal geändert zu:"
+	},
+	"pause": {
+		"on": "ich bin auf diesem Server nun pausiert und werde die meisten Befehle ignorieren!",
+		"off": "ich bin auf diesem Server nicht länger pausiert und werde wieder auf alle Befehle reagieren!"
+	},
+	"voice": {
+		"text": "ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:",
+		"name": "Name des Sprachkanals",
+		"channel": "Sprachkanal",
+		"join": "%1$s hat den Sprachkanal \"%2$s\" betreten.",
+		"left": "%1$s hat den Sprachkanal \"%2$s\" verlassen."
+	},
+	"overview": {
+		"missing": "für dieses Wiki ist noch keine Übersicht verfügbar.",
+		"inaccurate": "Statistiken können ungenau sein",
+		"name": "Vollständiger Name:",
+		"created": "Erstellt:",
+		"manager": "Wiki-Manager:",
+		"talk": "Diskussion",
+		"official": "Offizielles Wiki:",
+		"yes": "Ja",
+		"no": "Nein",
+		"articles": "Artikel:",
+		"pages": "Seiten insgesamt:",
+		"edits": "Bearbeitungen:",
+		"users": "Aktive Benutzer:"
+	},
+	"user": {
+		"gender": {
+			"unknown": "Unbekannt",
+			"male": "Männlich",
+			"female": "Weiblich"
+		},
+		"dateformat": "de-DE",
+		"groups": [
+			["global_bot", "Gamepedia-Bot"],
+			["hydra_staff", "Gamepedia-Mitarbeiter"],
+			["bot", "Bot"],
+			["bureaucrat", "Bürokrat"],
+			["wiki_guardian", "Wiki Guardian"],
+			["sysop", "Administrator"],
+			["grasp", "GRASP"],
+			["directors", "Direktor"],
+			["Patrol", "Inspektor"],
+			["editor", "Autor"],
+			["moderator", "Moderator"],
+			["Elite_users", "Elite-Benutzer"],
+			["patrollers", "Kontrolleur"],
+			["autoreview", "autoreview"],
+			["autopatrol", "autopatrol"],
+			["user", "Benutzer"]
+		],
+		"manager": "Wiki-Manager",
+		"info": {
+			"gender": "Geschlecht:",
+			"registration": "Registriert:",
+			"editcount": "Bearbeitungen:",
+			"group": "Gruppe:"
+		},
+		"block": {
+			"header": "%s ist derzeit gesperrt!",
+			"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung „%4$s”.",
+			"until_infinity": "Ende aller Tage"
+		}
+	},
+	"diff": {
+		"badrev": "mindestens eine Version existiert nicht!",
+		"nocomment": "*Keine Zusammenfassung angegeben*",
+		"hidden": "*versteckt*",
+		"info": {
+			"editor": "Autor:",
+			"timestamp": "Zeitpunkt:",
+			"size": "Unterschied:",
+			"bytes": "%s Bytes",
+			"comment": "Zusammenfassung:",
+			"tags": "Markierungen:"
+		}
+	},
+	"search": {
+		"page": "seite",
+		"search": "suche",
+		"random": "zufall",
+		"overview": "übersicht",
+		"infopage": "Nicht das richtige Ergebnis? Nutze %s für einen direkten Link.",
+		"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern.",
+		"category": {
+			"content": "Inhalt der Kategorie:",
+			"empty": "*Diese Kategorie ist leer*",
+			"pages": {
+				"default": "%s Seiten",
+				"1": "Eine Seite"
+			},
+			"files": {
+				"default": "%s Dateien",
+				"1": "Eine Datei"
+			},
+			"subcats": {
+				"default": "%s Kategorien",
+				"1": "Eine Kategorie"
+			}
+		}
+	},
+	"invite": {
+		"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
+	},
+	"poll": {
+		"title": "**Umfrage:**\n"
+	},
+	"delete": {
+		"invalid": "du hast keine gültige Anzahl angegeben.",
+		"success": "die letzten %s Nachrichten in diesem Kanal wurden gelöscht.",
+		"big": "deine angegebene Anzahl ist zu groß. Die maximale Anzahl ist %s!"
+	},
+	"test": {
+		"random": 10,
+		"pause": "ich bin auf diesem Server derzeit pausiert.",
+		"text": [
+			"ich bin ja schon wach!",
+			"du hast mich gerufen?",
+			"ja, ich funktioniere noch!",
+			"hast du **Kekse** gesagt?",
+			"hast du **Kekse** gesagt?"
+		],
+		"default": "ich bin voll funktionsfähig!",
+		"time": "Ping"
+	},
+	"help": {
+		"all": "Du willst also wissen, was ich so drauf habe? Hier ist eine Liste aller Befehle, die ich verstehe:",
+		"admin": "Diese Befehle können nur Administratoren ausführen:",
+		"noadmin": "du benötigst die `Server verwalten`-Berechtigung für diese Befehle!",
+		"pause": "**Ich bin auf diesem Server derzeit pausiert!**\nNur diese Befehle können ausgeführt werden:",
+		"list": [
+			{ "cmd": "<Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki.", "unsearchable": true },
+			{ "cmd": "!<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "Benutzer:<Benutzername>", "desc": "Ich liste ein paar Informationen über den Benutzer auf.", "unsearchable": true },
+			{ "cmd": "diff <diff> [<oldid>]", "desc": "Ich verlinke auf die Änderung im Wiki." },
+			{ "cmd": "diff <Seitenname>", "desc": "Ich verlinke auf die letzte Änderung an der Seite im Wiki." },
+			{ "cmd": "zufall", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki." },
+			{ "cmd": "random", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki.", "hide": true },
+			{ "cmd": "🎲", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki.", "hide": true },
+			{ "cmd": "übersicht", "desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf." },
+			{ "cmd": "overview", "desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf.", "hide": true },
+			{ "cmd": "/<Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+			{ "cmd": "befehl <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "command <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "cmd <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "fehler <Minecraft-Fehler>", "desc": "Ich verlinke auf den Fehler im Minecraft-Bugtracker.", "minecraft": true },
+			{ "cmd": "bug <Minecraft-Fehler>", "desc": "Ich verlinke auf den Fehler im Minecraft-Bugtracker.", "hide": true, "minecraft": true },
+			{ "cmd": "seite <Seitenname>", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki.", "hide": true },
+			{ "cmd": "page <Seitenname>", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki.", "hide": true },
+			{ "cmd": "suche <Suchbegriff>", "desc": "Ich antworte mit einem direkten Link auf die Suchseite zu diesem Begriff im Wiki.", "hide": true },
+			{ "cmd": "search <Suchbegriff>", "desc": "Ich antworte mit einem direkten Link auf die Suchseite zu diesem Begriff im Wiki.", "hide": true },
+			{ "cmd": "info", "desc": "Ich erzähle etwas über mich." },
+			{ "cmd": "hilfe", "desc": "Ich liste alle Befehle auf." },
+			{ "cmd": "hilfe <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert." },
+			{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf." },
+			{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "unsearchable": true, "admin": true },
+			{ "cmd": "help", "desc": "Ich liste alle Befehle auf.", "hide": true },
+			{ "cmd": "help <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert.", "hide": true },
+			{ "cmd": "help admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "hide": true },
+			{ "cmd": "settings", "desc": "Ich ändere die Einstellungen für diesen Server.", "admin": true, "pause": true },
+			{ "cmd": "settings lang <Sprache>", "desc": "Ich ändere die Sprache für diesen Server.", "hide": true, "admin": true },
+			{ "cmd": "settings wiki <Wiki>", "desc": "Ich ändere das Standard-Wiki für diesen Server.", "hide": true, "admin": true },
+			{ "cmd": "settings channel <Wiki>", "desc": "Ich ändere das Standard-Wiki für den aktuellen Kanal.", "hide": true, "admin": true },
+			{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server alle Befehle ignorieren, abgesehen von ein paar Befehlen für Administratoren.", "admin": true },
+			{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server wieder auf alle Befehle reagieren.", "unsearchable": true, "hide": true, "pause": true },
+			{ "cmd": "umfrage <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit <:support:448222377009086465> und <:oppose:448222455425794059>.", "admin": true },
+			{ "cmd": "umfrage <Emoji> [<Emoji> ...] <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit den angegebenen Antworten.", "admin": true },
+			{ "cmd": "poll <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit <:support:448222377009086465> und <:oppose:448222455425794059>.", "hide": true, "admin": true },
+			{ "cmd": "poll <Emoji> [<Emoji> ...] <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit den angegebenen Antworten.", "hide": true, "admin": true },
+			{ "cmd": "test", "desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht.", "pause": true },
+			{ "cmd": "say <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht.", "admin": true, "pause": true },
+			{ "cmd": "say alarm <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht bereits vorformatiert: 🚨 **<Nachricht>** 🚨", "admin": true, "pause": true },
+			{ "cmd": "delete <Anzahl>", "desc": "Ich lösche die letzten Nachrichten in dem Kanal, solange sie nicht älter als 14 Tage sind.", "admin": true, "pause": true },
+			{ "cmd": "purge <Anzahl>", "desc": "Ich lösche die letzten Nachrichten in dem Kanal, solange sie nicht älter als 14 Tage sind.", "hide": true, "admin": true }
+		]
+	}
+}
