@@ -1,6 +1,6 @@
 {
 	"en": {
-		"link": "minecraft",
+		"link": "https://minecraft.gamepedia.com/",
 		"aliase": {
 			"cmd": "command"
 		},
@@ -15,7 +15,7 @@
 		}
 	},
 	"de": {
-		"link": "minecraft-de",
+		"link": "https://minecraft-de.gamepedia.com/",
 		"aliase": {
 			"cmd": "command",
 			"befehl": "command",
@@ -32,7 +32,7 @@
 		}
 	},
 	"fr": {
-		"link": "minecraft-fr",
+		"link": "https://minecraft-fr.gamepedia.com/",
 		"aliase": {
 			"cmd": "command",
 			"commande": "command"
@@ -48,7 +48,7 @@
 		}
 	},
 	"nl": {
-		"link": "minecraft-nl",
+		"link": "https://minecraft-nl.gamepedia.com/",
 		"aliase": {
 			"cmd": "command"
 		},
@@ -63,7 +63,7 @@
 		}
 	},
 	"pl": {
-		"link": "minecraft-pl",
+		"link": "https://minecraft-pl.gamepedia.com/",
 		"aliase": {
 			"cmd": "command",
 			"komenda": "command"
@@ -79,7 +79,7 @@
 		}
 	},
 	"pt": {
-		"link": "minecraft-pt",
+		"link": "https://minecraft-pt.gamepedia.com/",
 		"aliase": {
 			"cmd": "command",
 			"comando": "command",
@@ -96,7 +96,7 @@
 		}
 	},
 	"tr": {
-		"link": "minecraft-tr",
+		"link": "https://minecraft-tr.gamepedia.com/",
 		"aliase": {
 			"cmd": "command"
 		},
