@@ -56,7 +56,7 @@ function getSettings() {
 		}
 		else {
 			console.log( '- Settings successfully loaded.' );
-			settings = Object.assign({}, body);
+			settings = JSON.parse(JSON.stringify(body));
 		}
 		setStatus();
 	} );
@@ -84,7 +84,7 @@ function getAllSites() {
 		}
 		else {
 			console.log( '- Sites successfully loaded.' );
-			allSites = Object.assign([], body.data.wikis.filter( site => /^[a-z\d-]{1,50}\.gamepedia\.com$/.test(site.wiki_domain) ));
+			allSites = JSON.parse(JSON.stringify(body.data.wikis.filter( site => /^[a-z\d-]{1,50}\.gamepedia\.com$/.test(site.wiki_domain) )));
 			allSites.filter( site => site.wiki_domain in multiManager ).forEach( function(site) {
 				site.wiki_managers = multiManager[site.wiki_domain].concat(site.wiki_managers).filter( (value, index, self) => self.indexOf(value) === index );
 			} );
@@ -107,7 +107,7 @@ client.on( 'ready', () => {
 			body: {guildCount: client.guilds.size},
 			json: true
 		} );
-	}, 10800000);
+	}, 10800000 );
 } );
 	
 	
@@ -234,8 +234,8 @@ function edit_settings(lang, msg, key, value) {
 			if ( reaction ) reaction.removeEmoji();
 		}
 		else {
-			var temp_settings = Object.assign({}, settings);
-			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, defaultSettings['default']);
+			var temp_settings = JSON.parse(JSON.stringify(settings));
+			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, settings['default']);
 			if ( key === 'channel' ) {
 				if ( !temp_settings[msg.guild.id].channels ) temp_settings[msg.guild.id].channels = {};
 				temp_settings[msg.guild.id].channels[msg.channel.id] = value;
@@ -274,7 +274,7 @@ function edit_settings(lang, msg, key, value) {
 					msg.replyMsg( lang.settings.save_failed, {}, true );
 				}
 				else {
-					settings = Object.assign({}, temp_settings);
+					settings = JSON.parse(JSON.stringify(temp_settings));
 					if ( key === 'lang' ) lang = i18n[value];
 					cmd_settings(lang, msg, [key], 'changed');
 					console.log( '- Settings successfully updated.' );
@@ -1729,9 +1729,7 @@ client.on( 'voiceStateUpdate', (oldm, newm) => {
 	if ( !ready.settings && settings === defaultSettings ) getSettings();
 	if ( !ready.allSites && !allSites.length ) getAllSites();
 	if ( oldm.guild.me.permissions.has('MANAGE_ROLES') && oldm.voiceChannelID !== newm.voiceChannelID ) {
-		var setting = Object.assign({}, settings['default']);
-		if ( oldm.guild.id in settings ) setting = Object.assign({}, settings[oldm.guild.id]);
-		var lang = i18n[setting.lang].voice;
+		var lang = i18n[settings[( oldm.guild.id in settings ? oldm.guild.id : 'default' )].lang].voice;
 		if ( oldm.voiceChannel ) {
 			var oldrole = oldm.roles.find( role => role.name === lang.channel + ' – ' + oldm.voiceChannel.name );
 			if ( oldrole && oldrole.comparePositionTo(oldm.guild.me.highestRole) < 0 ) {
@@ -1765,7 +1763,7 @@ client.on( 'guildDelete', guild => {
 		console.log( '- Error while getting current settings.' );
 	}
 	else {
-		var temp_settings = Object.assign({}, settings);
+		var temp_settings = JSON.parse(JSON.stringify(settings));
 		Object.keys(temp_settings).forEach( function(guild) {
 			if ( !client.guilds.has(guild) && guild !== 'default' ) delete temp_settings[guild];
 		} );
@@ -1789,7 +1787,7 @@ client.on( 'guildDelete', guild => {
 				console.log( '- Error while removing the settings' + ( error ? ': ' + error : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
 			}
 			else {
-				settings = Object.assign({}, temp_settings);
+				settings = JSON.parse(JSON.stringify(temp_settings));
 				console.log( '- Settings successfully removed.' );
 			}
 		} );
