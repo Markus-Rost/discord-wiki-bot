@@ -51,7 +51,7 @@ function getSettings() {
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || response.statusCode !== 200 || !body || body.message || body.error ) {
-			console.log( '- Error while getting the settings' + ( error ? ': ' + error : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+			console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the settings' + ( error ? ': ' + error : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
 			ready.settings = false;
 		}
 		else {
@@ -79,7 +79,7 @@ function getAllSites() {
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || response.statusCode !== 200 || !body || body.status !== 'okay' || !body.data || !body.data.wikis ) {
-			console.log( '- Error while gettings all sites' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+			console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while gettings all sites' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 			ready.allSites = false;
 		}
 		else {
@@ -270,7 +270,7 @@ function edit_settings(lang, msg, key, value) {
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || response.statusCode !== 201 || !body || body.error ) {
-					console.log( '- Error while editing the settings' + ( error ? ': ' + error : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while editing the settings' + ( error ? ': ' + error : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
 					msg.replyMsg( lang.settings.save_failed, {}, true );
 				}
 				else {
@@ -393,7 +393,7 @@ function cmd_test(lang, msg, args, line) {
 						ping += ' <:unknown_wiki:505887262077353984>';
 					}
 					else {
-						console.log( '- Error while reaching the wiki' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while reaching the wiki' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 						ping += ' <:error:505887261200613376>';
 					}
 				}
@@ -537,7 +537,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					msg.reactEmoji('nowiki');
 				}
 				else {
-					console.log( '- Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 					msg.sendChannelError( spoiler + '<' + wiki + ( linksuffix || !title ? title.toTitle() + linksuffix : 'Special:Search/' + title.toTitle() ) + '>' + spoiler );
 				}
 				
@@ -567,7 +567,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							json: true
 						}, function( uerror, uresponse, ubody ) {
 							if ( uerror || !uresponse || uresponse.statusCode !== 200 || !ubody || ubody.batchcomplete === undefined || !ubody.query ) {
-								console.log( '- Error while getting the user' + ( uerror ? ': ' + uerror : ( ubody ? ( ubody.error ? ': ' + ubody.error.info : '.' ) : '.' ) ) );
+								console.log( '- ' + ( uresponse ? uresponse.statusCode + ': ' : '' ) + 'Error while getting the user' + ( uerror ? ': ' + uerror : ( ubody ? ( ubody.error ? ': ' + ubody.error.info : '.' ) : '.' ) ) );
 								msg.sendChannelError( spoiler + '<' + wiki + ( contribs + username ).toTitle() + linksuffix + '>' + spoiler );
 								
 								if ( reaction ) reaction.removeEmoji();
@@ -598,7 +598,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 						}, function( srerror, srresponse, srbody ) {
 							if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
 							if ( srerror || !srresponse || srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
-								console.log( '- Error while getting the search results' + ( srerror ? ': ' + srerror : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
+								console.log( '- ' + ( srresponse ? srresponse.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( srerror ? ': ' + srerror : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
 								msg.sendChannelError( spoiler + '<' + wiki + 'Special:Search/' + title.toTitle() + '>' + spoiler );
 							}
 							else {
@@ -746,7 +746,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					}, function( mperror, mpresponse, mpbody ) {
 						if ( mpbody && mpbody.warnings ) log_warn(body.warnings);
 						if ( mperror || !mpresponse || mpresponse.statusCode !== 200 || !mpbody || mpbody.batchcomplete === undefined || !mpbody.query ) {
-							console.log( '- Error while getting the main page' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+							console.log( '- ' + ( mpresponse ? mpresponse.statusCode + ': ' : '' ) + 'Error while getting the main page' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 						} else {
 							querypage = Object.values(mpbody.query.pages)[0];
 							if ( querypage.pageprops && querypage.pageprops.description ) {
@@ -858,7 +858,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					}
 				}
 				else {
-					console.log( '- Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 					msg.sendChannelError( spoiler + '<' + wiki + ( querypage.noRedirect ? namespace : contribs ) + username.toTitle() + linksuffix + '>' + spoiler );
 				}
 				
@@ -910,7 +910,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							msg.reactEmoji('error');
 						}
 						else {
-							console.log( '- Error while getting the search results' + ( ucerror ? ': ' + ucerror : ( ucbody ? ( ucbody.error ? ': ' + ucbody.error.info : '.' ) : '.' ) ) );
+							console.log( '- ' + ( ucresponse ? ucresponse.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( ucerror ? ': ' + ucerror : ( ucbody ? ( ucbody.error ? ': ' + ucbody.error.info : '.' ) : '.' ) ) );
 							msg.sendChannelError( spoiler + '<' + wiki + namespace + username.toTitle() + linksuffix + '>' + spoiler );
 						}
 					}
@@ -948,7 +948,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					msg.reactEmoji('nowiki');
 				}
 				else {
-					console.log( '- Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 					msg.sendChannelError( spoiler + '<' + wiki + namespace + username.toTitle() + linksuffix + '>' + spoiler );
 				}
 			}
@@ -1102,7 +1102,7 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 						msg.replyMsg( lang.diff.badrev );
 					}
 					else {
-						console.log( '- Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+						console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 						msg.sendChannelError( spoiler + '<' + wiki + title.toTitle() + '?diff=' + relative + ( title ? '' : '&oldid=' + revision ) + '>' + spoiler );
 					}
 					
@@ -1145,7 +1145,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+				console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 				msg.sendChannelError( spoiler + '<' + wiki + 'Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0] + '>' + spoiler );
 			}
 		}
@@ -1209,7 +1209,7 @@ function cmd_random(lang, msg, wiki, reaction, spoiler) {
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+				console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 				msg.sendChannelError( spoiler + '<' + wiki + 'Special:Random>' + spoiler );
 			}
 		}
@@ -1251,7 +1251,7 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+				console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 				msg.sendChannelError( spoiler + '<' + wiki + 'Special:Statistics>' + spoiler );
 			}
 		}
@@ -1310,12 +1310,12 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 						msg.sendChannel( spoiler + mclang.bug.private + '\n' + link + project + invoke + spoiler );
 					}
 					else {
-						console.log( '- Error while getting the issue: ' + body.errorMessages.join(' - ') );
+						console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the issue: ' + body.errorMessages.join(' - ') );
 						msg.reactEmoji('error');
 					}
 				}
 				else {
-					console.log( '- Error while getting the issue' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
+					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the issue' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
 					else msg.sendChannelError( spoiler + link + project + invoke + spoiler );
 				}
@@ -1352,7 +1352,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 		} );
 	}
 	else if ( invoke && invoke.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
-		var jql = encodeURIComponent( 'fixVersion="' + args.join(' ') + '"' );
+		var jql = encodeURIComponent( 'fixVersion="' + args.join(' ') + '"order by key' );
 		request( {
 			uri: 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25',
 			json: true
@@ -1364,12 +1364,12 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 						msg.reactEmoji('🤷');
 					}
 					else {
-						console.log( '- Error while getting the issue: ' + body.errorMessages.join(' - ') );
+						console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the issues: ' + body.errorMessages.join(' - ') );
 						msg.reactEmoji('error');
 					}
 				}
 				else {
-					console.log( '- Error while getting the issue' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
+					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the issues' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
 					else msg.sendChannelError( spoiler + link + spoiler );
 				}
@@ -1784,7 +1784,7 @@ client.on( 'guildDelete', guild => {
 			json: true
 		}, function( error, response, body ) {
 			if ( error || !response || response.statusCode !== 201 || !body || body.error ) {
-				console.log( '- Error while removing the settings' + ( error ? ': ' + error : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
+				console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while removing the settings' + ( error ? ': ' + error : ( body ? ( body.message ? ': ' + body.message : ( body.error ? ': ' + body.error : '.' ) ) : '.' ) ) );
 			}
 			else {
 				settings = JSON.parse(JSON.stringify(temp_settings));
