@@ -746,7 +746,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					}, function( mperror, mpresponse, mpbody ) {
 						if ( mpbody && mpbody.warnings ) log_warn(body.warnings);
 						if ( mperror || !mpresponse || mpresponse.statusCode !== 200 || !mpbody || mpbody.batchcomplete === undefined || !mpbody.query ) {
-							console.log( '- ' + ( mpresponse ? mpresponse.statusCode + ': ' : '' ) + 'Error while getting the main page' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
+							console.log( '- ' + ( mpresponse ? mpresponse.statusCode + ': ' : '' ) + 'Error while getting the main page' + ( mperror ? ': ' + mperror : ( mpbody ? ( mpbody.error ? ': ' + mpbody.error.info : '.' ) : '.' ) ) );
 						} else {
 							querypage = Object.values(mpbody.query.pages)[0];
 							if ( querypage.pageprops && querypage.pageprops.description ) {
