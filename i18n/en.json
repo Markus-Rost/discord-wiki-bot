@@ -103,7 +103,11 @@
 			"size": "Difference:",
 			"bytes": "%s Bytes",
 			"comment": "Comment:",
-			"tags": "Tags:"
+			"tags": "Tags:",
+			"removed": "Removed:",
+			"added": "Added:",
+			"more": "And more",
+			"whitespace": "Only whitespace"
 		}
 	},
 	"search": {
