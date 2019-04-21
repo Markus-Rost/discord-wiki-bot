@@ -368,6 +368,62 @@ function cmd_say(lang, msg, args, line) {
 	}
 }
 
+function cmd_umfrage(lang, msg, args, line) {
+	var imgs = [];
+	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
+		return {attachment:img.url,name:img.filename};
+	} );
+	if ( args.length || imgs.length ) {
+		var text = args.join(' ').split('\n');
+		args = text.shift().split(' ');
+		if ( text.length ) args.push('\n' + text.join('\n'));
+		var reactions = [];
+		args = args.toEmojis();
+		for ( var i = 0; ( i < args.length || imgs.length ); i++ ) {
+			var reaction = args[i];
+			var custom = /^<a?:/;
+			var pattern = /^[\u0000-\u1FFF]{1,4}$/;
+			if ( !custom.test(reaction) && ( reaction.length > 4 || pattern.test(reaction) ) ) {
+				cmd_sendumfrage(lang, msg, args.slice(i).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
+				break;
+			} else if ( reaction === '' ) {
+			} else {
+				if ( custom.test(reaction) ) {
+					reaction = reaction.substring(reaction.lastIndexOf(':') + 1, reaction.length - 1);
+				}
+				reactions[i] = reaction;
+				if ( i === args.length - 1 ) {
+					cmd_sendumfrage(lang, msg, args.slice(i + 1).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
+					break;
+				}
+			}
+		}
+	} else {
+		args[0] = line.split(' ')[1];
+		cmd_help(lang, msg, args, line);
+	}
+}
+
+function cmd_sendumfrage(lang, msg, text, reactions, imgs) {
+	msg.channel.send( lang.poll.title + text, {disableEveryone:!msg.member.hasPermission(['MENTION_EVERYONE']),files:imgs} ).then( poll => {
+		msg.deleteMsg();
+		if ( reactions.length ) {
+			reactions.forEach( function(entry) {
+				poll.react(entry).catch( error => {
+					log_error(error);
+					poll.reactEmoji('error');
+				} );
+			} );
+		} else {
+			poll.reactEmoji('support');
+			poll.reactEmoji('oppose');
+		}
+	}, error => {
+		log_error(error);
+		msg.reactEmoji('error');
+	} );
+}
+
 function cmd_test(lang, msg, args, line) {
 	if ( args.join('') ) {
 		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
@@ -485,7 +541,7 @@ function cmd_link(lang, msg, title, wiki = lang.link, cmd = ' ') {
 	}
 	if ( /^\|\|(?:(?!\|\|).)+\|\|$/.test(title) ) {
 		title = title.substring( 2, title.length - 2);
-		var spoiler = ' || ';
+		var spoiler = '||';
 	}
 	msg.reactEmoji('⏳').then( reaction => check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler) );
 }
@@ -659,7 +715,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 										else text += '\n\n' + category.join('\n');
 									}
 						
-									msg.sendChannel( spoiler + pagelink + text + spoiler, embed );
+									msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
 								}
 							}
 							
@@ -707,7 +763,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							else text += '\n\n' + category.join('\n');
 						}
 						
-						msg.sendChannel( spoiler + pagelink + text + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -774,7 +830,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							}
 						}
 						
-						msg.sendChannel( spoiler + pagelink + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -782,62 +838,6 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 			}
 		} );
 	}
-}
-
-function cmd_umfrage(lang, msg, args, line) {
-	var imgs = [];
-	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
-		return {attachment:img.url,name:img.filename};
-	} );
-	if ( args.length || imgs.length ) {
-		var text = args.join(' ').split('\n');
-		args = text.shift().split(' ');
-		if ( text.length ) args.push('\n' + text.join('\n'));
-		var reactions = [];
-		args = args.toEmojis();
-		for ( var i = 0; ( i < args.length || imgs.length ); i++ ) {
-			var reaction = args[i];
-			var custom = /^<a?:/;
-			var pattern = /^[\u0000-\u1FFF]{1,4}$/;
-			if ( !custom.test(reaction) && ( reaction.length > 4 || pattern.test(reaction) ) ) {
-				cmd_sendumfrage(lang, msg, args.slice(i).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
-				break;
-			} else if ( reaction === '' ) {
-			} else {
-				if ( custom.test(reaction) ) {
-					reaction = reaction.substring(reaction.lastIndexOf(':') + 1, reaction.length - 1);
-				}
-				reactions[i] = reaction;
-				if ( i === args.length - 1 ) {
-					cmd_sendumfrage(lang, msg, args.slice(i + 1).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
-					break;
-				}
-			}
-		}
-	} else {
-		args[0] = line.split(' ')[1];
-		cmd_help(lang, msg, args, line);
-	}
-}
-
-function cmd_sendumfrage(lang, msg, text, reactions, imgs) {
-	msg.channel.send( lang.poll.title + text, {disableEveryone:!msg.member.hasPermission(['MENTION_EVERYONE']),files:imgs} ).then( poll => {
-		msg.deleteMsg();
-		if ( reactions.length ) {
-			reactions.forEach( function(entry) {
-				poll.react(entry).catch( error => {
-					log_error(error);
-					poll.reactEmoji('error');
-				} );
-			} );
-		} else {
-			poll.reactEmoji('support');
-			poll.reactEmoji('oppose');
-		}
-	}, error => {
-		log_error(error);
-		msg.reactEmoji('error');
-	} );
 }
 
 function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, contribs, reaction, spoiler) {
@@ -867,7 +867,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 						
-						msg.sendChannel( spoiler + pagelink + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
 					}
 				}
 				else {
@@ -981,7 +981,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 						
-						msg.sendChannel( spoiler + pagelink + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
 					}
 				}
 				else {
@@ -1327,7 +1327,7 @@ function cmd_random(lang, msg, wiki, reaction, spoiler) {
 			}
 			else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 			
-			msg.sendChannel( spoiler + '🎲 ' + pagelink + spoiler, embed );
+			msg.sendChannel( spoiler + '🎲 <' + pagelink + '>' + spoiler, embed );
 		}
 		
 		if ( reaction ) reaction.removeEmoji();
@@ -1402,7 +1402,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 						msg.reactEmoji('🤷');
 					}
 					else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-						msg.sendChannel( spoiler + mclang.bug.private + '\n' + link + project + invoke + spoiler );
+						msg.sendChannel( spoiler + mclang.bug.private + '\n<' + link + project + invoke + '>' + spoiler );
 					}
 					else {
 						console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the issue: ' + body.errorMessages.join(' - ') );
@@ -1412,7 +1412,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 				else {
 					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the issue' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-					else msg.sendChannelError( spoiler + link + project + invoke + spoiler );
+					else msg.sendChannelError( spoiler + '<' + link + project + invoke + '>' + spoiler );
 				}
 			}
 			else {
@@ -1466,7 +1466,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 				else {
 					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the issues' + ( error ? ': ' + error : ( body ? ': ' + body.message : '.' ) ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-					else msg.sendChannelError( spoiler + link + spoiler );
+					else msg.sendChannelError( spoiler + '<' + link + '>' + spoiler );
 				}
 			}
 			else {
