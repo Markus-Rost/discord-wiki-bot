@@ -105,7 +105,11 @@
 			"size": "Wielkość zmiany:",
 			"bytes": "%s bajtów",
 			"comment": "Komentarz:",
-			"tags": "Tagi:"
+			"tags": "Tagi:",
+			"removed": "Usunięto:",
+			"added": "Dodano:",
+			"more": "Oraz więcej",
+			"whitespace": "Tylko znaki niedrukowane"
 		}
 	},
 	"search": {
