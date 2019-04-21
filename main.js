@@ -3,9 +3,9 @@ const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
 const Discord = require('discord.js');
-const DBL = require("dblapi.js");
+const DBL = require('dblapi.js');
 var request = require('request');
-var htmlparser = require("htmlparser2");
+var htmlparser = require('htmlparser2');
 
 var client = new Discord.Client( {disableEveryone:true} );
 const dbl = new DBL(process.env.dbltoken);
@@ -1155,12 +1155,22 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 				console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink() + 'Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0] + '>' + spoiler );
 			}
+			
+			if ( reaction ) reaction.removeEmoji();
 		}
 		else {
-			if ( body.query.badrevids ) msg.replyMsg( lang.diff.badrev );
+			if ( body.query.badrevids ) {
+				msg.replyMsg( lang.diff.badrev );
+				
+				if ( reaction ) reaction.removeEmoji();
+			}
 			else if ( body.query.pages && !body.query.pages['-1'] ) {
 				var pages = Object.values(body.query.pages);
-				if ( pages.length !== 1 ) msg.sendChannel( spoiler + '<' + wiki.toLink() + 'Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0] + '>' + spoiler );
+				if ( pages.length !== 1 ) {
+					msg.sendChannel( spoiler + '<' + wiki.toLink() + 'Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0] + '>' + spoiler );
+					
+					if ( reaction ) reaction.removeEmoji();
+				}
 				else {
 					var title = pages[0].title;
 					var revisions = pages[0].revisions.sort( (first, second) => first.timestamp < second.timestamp );
@@ -1175,120 +1185,120 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 						var tags = [lang.diff.info.tags, body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
 						var tagregex = /<a [^>]*title="([^"]+)"[^>]*>(.+)<\/a>/g;
 					}
+					
 					var pagelink = wiki.toLink() + title.toTitle() + '?diff=' + diff + '&oldid=' + oldid;
-					request( {
-						uri: wiki + 'api.php?action=compare&format=json&fromrev='+ oldid + '&torev='+ diff,
-						json: true
-					}, function( cperror, cpresponse, cpbody ) {
-						if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
-						if ( error || !cpresponse || cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare ) {
-							if ( cpresponse && cpresponse.request && cpresponse.request.uri && cpresponse.request.uri.href === 'https://www.gamepedia.com/' ) {
-								console.log( '- This wiki doesn\'t exist! ' + ( cperror ? cperror.message : ( cpbody ? ( cpbody.error ? cpbody.error.info : '' ) : '' ) ) );
-								msg.reactEmoji('nowiki');
+					if ( msg.showEmbed() ) {
+						var text = '<' + pagelink + '>';
+						var editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'User:' + editor[1].toTitle() + ')';
+						if ( /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(editor[1]) ) editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'Special:Contributions/' + editor[1].toTitle(true) + ')';
+						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( ( title + '?diff=' + diff + '&oldid=' + oldid ).escapeFormatting() ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
+						if ( tags ) {
+							var taglink = wiki.toLink() + tags[1].replace( tagregex, '$1' ).toTitle(true);
+							embed.addField( tags[0], tags[1].replace( tagregex, '[$2](' + taglink.replace( '$', '$$$$' ) + ')' ) );
+						}
+						request( {
+							uri: wiki + 'api.php?action=compare&fromrev=' + oldid + '&torev=' + diff + '&format=json',
+							json: true
+						}, function( cperror, cpresponse, cpbody ) {
+							if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
+							if ( cperror || !cpresponse || cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || !cpbody.compare['*'] ) {
+								var noerror = false;
+								if ( cpbody && cpbody.error ) {
+									switch ( cpbody.error.code ) {
+										case 'nosuchrevid':
+											noerror = true;
+											break;
+										case 'missingcontent':
+											noerror = true;
+											break;
+										default:
+											noerror = false;
+									}
+								}
+								if ( !noerror ) console.log( '- ' + ( cpresponse ? cpresponse.statusCode + ': ' : '' ) + 'Error while getting the diff' + ( cperror ? ': ' + cperror : ( cpbody ? ( cpbody.error ? ': ' + cpbody.error.info : '.' ) : '.' ) ) );
 							}
-							else {
-								console.log( '- ' + ( cpresponse ? cpresponse.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( cperror ? ': ' + cperror : ( cpbody ? ( cpbody.error ? ': ' + cpbody.error.info : '.' ) : '.' ) ) );
-								msg.sendChannelError( spoiler + '<' + wiki.toLink() + 'Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0] + '>' + spoiler );
-							}
-						} else {
-							var content_diff = cpbody.compare["*"];
-							var current_tag = "";
-							var small_prev_ins = "";
-							var small_prev_del = "";
-							var deleted = false;
-							var addedto = false;
-							var added = 0
-							var parser = new htmlparser.Parser({
-								onopentag: function(name, attribs){
-									console.log("onopentag name: " + name + " attribs: "+ JSON.stringify(attribs, null, 4)); // TODO Remove debug
-									if(name === "ins" || name == "del"){
-										current_tag = name;
+							else if ( cpbody.compare.fromtexthidden === undefined || cpbody.compare.totexthidden === undefined || cpbody.compare.fromarchive === undefined || cpbody.compare.toarchive === undefined ) {
+								var current_tag = '';
+								var small_prev_ins = '';
+								var small_prev_del = '';
+								var deleted = false;
+								var added = 0
+								var parser = new htmlparser.Parser( {
+									onopentag: (name, attribs) => {
+										if(name === 'ins' || name == 'del'){
+											current_tag = name;
+										}
+										if(name === 'td' && attribs.class === 'diff-addedline'){
+											current_tag = name+'a';
+										}
+										if(name === 'td' && attribs.class === 'diff-deletedline'){
+											current_tag = name+"d";
+										}
+										if(name === 'td' && attribs.class === 'diff-marker'){
+											added = 1
+										}
+									},
+									ontext: (text) => {
+										if (current_tag === 'ins' && ( small_prev_ins + '**' + text.escapeFormatting() + '**' ).length <= 1000) {
+											small_prev_ins += '**' + text.escapeFormatting() + '**';
+										}
+										if (current_tag === 'del' && ( small_prev_del + '~~' + text.escapeFormatting() + '~~' ).length <= 1000) {
+											small_prev_del += '~~' + text.escapeFormatting() + '~~';
+										}
+										if ((current_tag === 'afterins' || current_tag === 'tda') && ( small_prev_ins + text.escapeFormatting() ).length <= 1000 ) {
+											small_prev_ins += text.escapeFormatting();
+										}
+										if ((current_tag === 'afterdel' || current_tag === 'tdd') && ( small_prev_del + text.escapeFormatting() ).length <= 1000 ) {
+											small_prev_del += text.escapeFormatting();
+										}
+										if (added === 1 && text === '+') {
+											added = 2;
+										}
+										if (added === 1 && text === '−') {
+											added = 3;
+										}
+									},
+									onclosetag: (tagname) => {
+										if (tagname === 'ins') {
+											current_tag = 'afterins';
+										} else if (tagname === 'del') {
+											current_tag = 'afterdel';
+										} else if (tagname === 'tr' && added >= 2) {
+											if ( small_prev_ins.length <= 1000 ) small_prev_ins += '\n';
+											if ( small_prev_del.length <= 1000 ) small_prev_del += '\n';
+											added = 0;
+										} else {
+											current_tag = '';
+										}
 									}
-									if(name === "td" && attribs.class === "diff-addedline"){
-										current_tag = name+"a";
-									}
-									if(name === "td" && attribs.class === "diff-deletedline"){
-										current_tag = name+"d";
-									}
-									if(name === "td" && attribs.class === "diff-marker"){
-										added = 1
-										console.log("added=1"); // TODO Remove debug
-									}
-								},
-								ontext: function(text){
-									if (current_tag === "ins" && small_prev_ins.length < 1000) {
-										small_prev_ins = small_prev_ins + "**" + text.escapeFormatting() + "**";
-										addedto = true;
-									}
-									if (current_tag === "del" && small_prev_del.length < 1000) {
-										small_prev_del = small_prev_del + "~~" + text.escapeFormatting() + "~~";
-										addedto = true;
-									}
-									if (current_tag === "afterins" || current_tag === "tda") {
-										small_prev_ins = small_prev_ins + text.escapeFormatting();
-									}
-									if (current_tag === "afterdel" || current_tag === "tdd") {
-										small_prev_del = small_prev_del + text.escapeFormatting();
-									}
-									if (added === 1 && text === "+") {
-										added = 2;
-										console.log("added=2"); // TODO Remove debug
-									}
-									if (added === 1 && text === "-") {
-										added = 3;
-										console.log("added=3"); // TODO Remove debug
-									}
-									console.log("text: " + text) // TODO Remove debug
-								},
-								onclosetag: function(tagname){
-									console.log("onclosetag name: " + tagname); // TODO Remove debug
-									if (tagname === "ins") {
-										current_tag = "afterins";
-									} else if (tagname === "del") {
-										current_tag = "afterdel";
-									} else if (tagname === "tr" && added === 2) {
-										small_prev_ins = small_prev_ins + "\n";
-										small_prev_del = small_prev_del + "\n";
-										added = 0;
-										console.log("added=0"); // TODO Remove debug
-									} else {
-										current_tag = "";
-									}
-								}
-							}, {decodeEntities: true});
-							parser.write(content_diff);
-							parser.end();
-							console.log(small_prev_ins); // TODO Remove debug
-							console.log(small_prev_del); // TODO Remove debug
-							if ( msg.showEmbed() ) {
-								var text = '<' + pagelink + '>';
-								var editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'User:' + editor[1].toTitle() + ')';
-								if ( /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(editor[1]) ) editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'Special:Contributions/' + editor[1].toTitle(true) + ')';
-								var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( ( title + '?diff=' + diff + '&oldid=' + oldid ).escapeFormatting() ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
-								if (small_prev_del.length > 0) {
-									embed.addField("Removed", small_prev_del);
-								}
-								if (small_prev_ins.length > 0) {
-									embed.addField("Added", small_prev_ins);
-								}
-								if ( tags ) {
-									var taglink = wiki.toLink() + tags[1].replace( tagregex, '$1' ).toTitle(true);
-									embed.addField( tags[0], tags[1].replace( tagregex, '[$2](' + taglink.replace( '$', '$$$$' ) + ')' ) );
-								}
-							}
-							else {
-								var embed = {};
-								var text = '<' + pagelink + '>\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ') + ( tags ? '\n' + tags.join(' ').replace( tagregex, '$2' ) : '' );
+								}, {decodeEntities:true} );
+								parser.write( cpbody.compare['*'] );
+								parser.end();
+								if ( small_prev_del.trim().length ) embed.addField( 'Removed', small_prev_del.replace( /\~\~\~\~/g, '' ) );
+								if ( small_prev_ins.trim().length ) embed.addField( 'Added', small_prev_ins.replace( /\*\*\*\*/g, '' ) );
 							}
 							
 							msg.sendChannel( spoiler + text + spoiler, embed );
+							
+							if ( reaction ) reaction.removeEmoji();
+						} );
 					}
-				});
+					else {
+						var embed = {};
+						var text = '<' + pagelink + '>\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ') + ( tags ? '\n' + tags.join(' ').replace( tagregex, '$2' ) : '' );
+						
+						msg.sendChannel( spoiler + text + spoiler, embed );
+						
+						if ( reaction ) reaction.removeEmoji();
+					}
+				}
 			}
-			else msg.reactEmoji('error');
+			else {
+				msg.reactEmoji('error');
+				
+				if ( reaction ) reaction.removeEmoji();
 			}
 		}
-		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
