@@ -104,7 +104,11 @@
 			"size": "Unterschied:",
 			"bytes": "%s Bytes",
 			"comment": "Zusammenfassung:",
-			"tags": "Markierungen:"
+			"tags": "Markierungen:",
+			"removed": "Entfernt:",
+			"added": "Hinzugefügt:",
+			"more": "Und mehr",
+			"whitespace": "Nur Leerraum"
 		}
 	},
 	"search": {
