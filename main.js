@@ -1221,8 +1221,9 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 								var current_tag = '';
 								var small_prev_ins = '';
 								var small_prev_del = '';
-								var ins_too_long = false;
-								var del_too_long = false;
+								var more = '\n__' + lang.diff.info.more + '__';
+								var ins_length = more.length;
+								var del_length = more.length;
 								var added = false;
 								var parser = new htmlparser.Parser( {
 									onopentag: (name, attribs) => {
@@ -1240,30 +1241,37 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 										}
 									},
 									ontext: (text) => {
-										if ( current_tag === 'ins' && !ins_too_long ) {
-											if ( ( small_prev_ins + '**' + text.escapeFormatting() + '**' ).length > 1000 ) ins_too_long = true;
-											else small_prev_ins += '**' + text.escapeFormatting() + '**';
+										if ( current_tag === 'ins' && ins_length <= 1000 ) {
+											ins_length += ( '**' + text.escapeFormatting() + '**' ).length;
+											if ( ins_length <= 1000 ) small_prev_ins += '**' + text.escapeFormatting() + '**';
+											else small_prev_ins += more;
 										}
-										if ( current_tag === 'del' && !del_too_long ) {
-											if ( ( small_prev_del + '~~' + text.escapeFormatting() + '~~' ).length > 1000 ) del_too_long = true;
-											else small_prev_del += '~~' + text.escapeFormatting() + '~~';
+										if ( current_tag === 'del' && del_length <= 1000 ) {
+											del_length += ( '~~' + text.escapeFormatting() + '~~' ).length;
+											if ( del_length <= 1000 ) small_prev_del += '~~' + text.escapeFormatting() + '~~';
+											else small_prev_del += more;
 										}
-										if ( ( current_tag === 'afterins' || current_tag === 'tda') && !ins_too_long ) {
-											if ( ( small_prev_ins + text.escapeFormatting() ).length > 1000 ) ins_too_long = true;
-											else small_prev_ins += text.escapeFormatting();
+										if ( ( current_tag === 'afterins' || current_tag === 'tda') && ins_length <= 1000 ) {
+											ins_length += text.escapeFormatting().length;
+											if ( ins_length <= 1000 ) small_prev_ins += text.escapeFormatting();
+											else small_prev_ins += more;
 										}
-										if ( ( current_tag === 'afterdel' || current_tag === 'tdd') && !del_too_long ) {
-											if ( ( small_prev_del + text.escapeFormatting() ).length > 1000 ) del_too_long = true;
-											else small_prev_del += text.escapeFormatting();
+										if ( ( current_tag === 'afterdel' || current_tag === 'tdd') && del_length <= 1000 ) {
+											del_length += text.escapeFormatting().length;
+											if ( del_length <= 1000 ) small_prev_del += text.escapeFormatting();
+											else small_prev_del += more;
 										}
-										if ( added && text === '+' ) {
-											if ( !ins_too_long ) small_prev_ins += '\n';
-											if ( small_prev_ins.length > 1000 ) ins_too_long = true;
-											added = false;
-										}
-										if ( added && text === '−' ) {
-											if ( !del_too_long ) small_prev_del += '\n';
-											if ( small_prev_del.length > 1000 ) del_too_long = true;
+										if ( added ) {
+											if ( text === '+' && ins_length <= 1000 ) {
+												ins_length++;
+												if ( ins_length <= 1000 ) small_prev_ins += '\n';
+												else small_prev_ins += more;
+											}
+											if ( text === '−' && del_length <= 1000 ) {
+												del_length++;
+												if ( del_length <= 1000 ) small_prev_del += '\n';
+												else small_prev_del += more;
+											}
 											added = false;
 										}
 									},
@@ -1279,11 +1287,15 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 								}, {decodeEntities:true} );
 								parser.write( cpbody.compare['*'] );
 								parser.end();
-								if ( small_prev_del.trim().length ) {
-									embed.addField( 'Removed', small_prev_del.replace( /\~\~\~\~/g, '' ) + ( ins_too_long ? '\n\n__And more__' : '' ) );
+								if ( small_prev_del.length ) {
+									if ( small_prev_del.replace( /\~\~/g, '' ).trim().length ) {
+										embed.addField( lang.diff.info.removed, small_prev_del.replace( /\~\~\~\~/g, '' ) );
+									} else embed.addField( lang.diff.info.removed, '__' + lang.diff.info.whitespace + '__' );
 								}
-								if ( small_prev_ins.trim().length ) {
-									embed.addField( 'Added', small_prev_ins.replace( /\*\*\*\*/g, '' ) + ( del_too_long ? '\n\n__And more__' : '' ) );
+								if ( small_prev_ins.length ) {
+									if ( small_prev_ins.replace( /\*\*/g, '' ).trim().length ) {
+										embed.addField( lang.diff.info.added, small_prev_ins.replace( /\*\*\*\*/g, '' ) );
+									} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__' );
 								}
 							}
 							
