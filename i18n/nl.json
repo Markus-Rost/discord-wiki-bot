@@ -102,7 +102,11 @@
 			"size": "Verschil:",
 			"bytes": "%s Bytes",
 			"comment": "Beschrijving:",
-			"tags": "Tags:"
+			"tags": "Tags:",
+			"removed": "Verwijderd:",
+			"added": "Toegevoegd:",
+			"more": "En meer",
+			"whitespace": "Alleen witruimte"
 		}
 	},
 	"search": {
