@@ -1289,13 +1289,13 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 								parser.end();
 								if ( small_prev_del.length ) {
 									if ( small_prev_del.replace( /\~\~/g, '' ).trim().length ) {
-										embed.addField( lang.diff.info.removed, small_prev_del.replace( /\~\~\~\~/g, '' ) );
-									} else embed.addField( lang.diff.info.removed, '__' + lang.diff.info.whitespace + '__' );
+										embed.addField( lang.diff.info.removed, small_prev_del.replace( /\~\~\~\~/g, '' ), true );
+									} else embed.addField( lang.diff.info.removed, '__' + lang.diff.info.whitespace + '__', true );
 								}
 								if ( small_prev_ins.length ) {
 									if ( small_prev_ins.replace( /\*\*/g, '' ).trim().length ) {
-										embed.addField( lang.diff.info.added, small_prev_ins.replace( /\*\*\*\*/g, '' ) );
-									} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__' );
+										embed.addField( lang.diff.info.added, small_prev_ins.replace( /\*\*\*\*/g, '' ), true );
+									} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
 								}
 							}
 							
