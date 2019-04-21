@@ -1221,52 +1221,57 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 								var current_tag = '';
 								var small_prev_ins = '';
 								var small_prev_del = '';
-								var deleted = false;
-								var added = 0
+								var ins_too_long = false;
+								var del_too_long = false;
+								var added = false;
 								var parser = new htmlparser.Parser( {
 									onopentag: (name, attribs) => {
-										if(name === 'ins' || name == 'del'){
+										if ( name === 'ins' || name == 'del' ) {
 											current_tag = name;
 										}
-										if(name === 'td' && attribs.class === 'diff-addedline'){
+										if ( name === 'td' && attribs.class === 'diff-addedline' ) {
 											current_tag = name+'a';
 										}
-										if(name === 'td' && attribs.class === 'diff-deletedline'){
+										if ( name === 'td' && attribs.class === 'diff-deletedline' ) {
 											current_tag = name+"d";
 										}
-										if(name === 'td' && attribs.class === 'diff-marker'){
-											added = 1
+										if ( name === 'td' && attribs.class === 'diff-marker' ) {
+											added = true;
 										}
 									},
 									ontext: (text) => {
-										if (current_tag === 'ins' && ( small_prev_ins + '**' + text.escapeFormatting() + '**' ).length <= 1000) {
-											small_prev_ins += '**' + text.escapeFormatting() + '**';
+										if ( current_tag === 'ins' && !ins_too_long ) {
+											if ( ( small_prev_ins + '**' + text.escapeFormatting() + '**' ).length > 1000 ) ins_too_long = true;
+											else small_prev_ins += '**' + text.escapeFormatting() + '**';
 										}
-										if (current_tag === 'del' && ( small_prev_del + '~~' + text.escapeFormatting() + '~~' ).length <= 1000) {
-											small_prev_del += '~~' + text.escapeFormatting() + '~~';
+										if ( current_tag === 'del' && !del_too_long ) {
+											if ( ( small_prev_del + '~~' + text.escapeFormatting() + '~~' ).length > 1000 ) del_too_long = true;
+											else small_prev_del += '~~' + text.escapeFormatting() + '~~';
 										}
-										if ((current_tag === 'afterins' || current_tag === 'tda') && ( small_prev_ins + text.escapeFormatting() ).length <= 1000 ) {
-											small_prev_ins += text.escapeFormatting();
+										if ( ( current_tag === 'afterins' || current_tag === 'tda') && !ins_too_long ) {
+											if ( ( small_prev_ins + text.escapeFormatting() ).length > 1000 ) ins_too_long = true;
+											else small_prev_ins += text.escapeFormatting();
 										}
-										if ((current_tag === 'afterdel' || current_tag === 'tdd') && ( small_prev_del + text.escapeFormatting() ).length <= 1000 ) {
-											small_prev_del += text.escapeFormatting();
+										if ( ( current_tag === 'afterdel' || current_tag === 'tdd') && !del_too_long ) {
+											if ( ( small_prev_del + text.escapeFormatting() ).length > 1000 ) del_too_long = true;
+											else small_prev_del += text.escapeFormatting();
 										}
-										if (added === 1 && text === '+') {
-											added = 2;
+										if ( added && text === '+' ) {
+											if ( !ins_too_long ) small_prev_ins += '\n';
+											if ( small_prev_ins.length > 1000 ) ins_too_long = true;
+											added = false;
 										}
-										if (added === 1 && text === '−') {
-											added = 3;
+										if ( added && text === '−' ) {
+											if ( !del_too_long ) small_prev_del += '\n';
+											if ( small_prev_del.length > 1000 ) del_too_long = true;
+											added = false;
 										}
 									},
 									onclosetag: (tagname) => {
-										if (tagname === 'ins') {
+										if ( tagname === 'ins' ) {
 											current_tag = 'afterins';
-										} else if (tagname === 'del') {
+										} else if ( tagname === 'del' ) {
 											current_tag = 'afterdel';
-										} else if (tagname === 'tr' && added >= 2) {
-											if ( small_prev_ins.length <= 1000 ) small_prev_ins += '\n';
-											if ( small_prev_del.length <= 1000 ) small_prev_del += '\n';
-											added = 0;
 										} else {
 											current_tag = '';
 										}
@@ -1274,8 +1279,12 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 								}, {decodeEntities:true} );
 								parser.write( cpbody.compare['*'] );
 								parser.end();
-								if ( small_prev_del.trim().length ) embed.addField( 'Removed', small_prev_del.replace( /\~\~\~\~/g, '' ) );
-								if ( small_prev_ins.trim().length ) embed.addField( 'Added', small_prev_ins.replace( /\*\*\*\*/g, '' ) );
+								if ( small_prev_del.trim().length ) {
+									embed.addField( 'Removed', small_prev_del.replace( /\~\~\~\~/g, '' ) + ( ins_too_long ? '\n\n__And more__' : '' ) );
+								}
+								if ( small_prev_ins.trim().length ) {
+									embed.addField( 'Added', small_prev_ins.replace( /\*\*\*\*/g, '' ) + ( del_too_long ? '\n\n__And more__' : '' ) );
+								}
 							}
 							
 							msg.sendChannel( spoiler + text + spoiler, embed );
