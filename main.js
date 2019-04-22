@@ -1142,7 +1142,7 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 
 function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags&revids=' + args.join('|') + '&format=json',
+		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -1196,7 +1196,9 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 							var taglink = wiki.toLink() + tags[1].replace( tagregex, '$1' ).toTitle(true);
 							embed.addField( tags[0], tags[1].replace( tagregex, '[$2](' + taglink.replace( '$', '$$$$' ) + ')' ) );
 						}
-						request( {
+						
+						var more = '\n__' + lang.diff.info.more + '__';
+						if ( oldid ) request( {
 							uri: wiki + 'api.php?action=compare&fromrev=' + oldid + '&torev=' + diff + '&format=json',
 							json: true
 						}, function( cperror, cpresponse, cpbody ) {
@@ -1221,7 +1223,6 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 								var current_tag = '';
 								var small_prev_ins = '';
 								var small_prev_del = '';
-								var more = '\n__' + lang.diff.info.more + '__';
 								var ins_length = more.length;
 								var del_length = more.length;
 								var added = false;
@@ -1303,6 +1304,21 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
+						else {
+							var content = revisions[0]['*'].escapeFormatting();
+							if ( content.trim().length ) {
+								if ( content.length <= 1000 ) content = '**' + content + '**';
+								else {
+									content = content.substring(0, 1000 - more.length);
+									content = '**' + content.substring(0, content.lastIndexOf('\n')) + '**' + more;
+								}
+								embed.addField( lang.diff.info.added, content, true );
+							} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
+							
+							msg.sendChannel( spoiler + text + spoiler, embed );
+							
+							if ( reaction ) reaction.removeEmoji();
+						}
 					}
 					else {
 						var embed = {};
