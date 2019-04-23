@@ -105,7 +105,11 @@
 			"size": "Différence :",
 			"bytes": "%s octets",
 			"comment": "Commentaire :",
-			"tags": "Balises :"
+			"tags": "Balises :",
+			"removed": "Retirés :",
+			"added": "Ajoutés :",
+			"more": "Et plus",
+			"whitespace": "Espaces uniquement"
 		}
 	},
 	"search": {
