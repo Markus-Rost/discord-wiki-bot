@@ -1076,13 +1076,16 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 		}
 		else title = args.join(' ');
 		
-		if ( error ) msg.reactEmoji('error');
+		if ( error ) {
+			msg.reactEmoji('error');
+			if ( reaction ) reaction.removeEmoji();
+		}
 		else if ( diff ) {
 			cmd_diffsend(lang, msg, [diff, revision], wiki, reaction, spoiler);
 		}
 		else {
 			request( {
-				uri: wiki + 'api.php?action=compare&prop=ids' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
+				uri: wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
 				json: true
 			}, function( error, response, body ) {
 				if ( body && body.warnings ) log_warn(body.warnings);
@@ -1097,6 +1100,9 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 								noerror = true;
 								break;
 							case 'invalidtitle':
+								noerror = true;
+								break;
+							case 'missingcontent':
 								noerror = true;
 								break;
 							default:
@@ -1127,8 +1133,94 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 						var ids = body.compare;
 						if ( ids.fromrevid && !ids.torevid ) argids = [ids.fromrevid];
 						else if ( !ids.fromrevid && ids.torevid ) argids = [ids.torevid];
-						else argids = [ids.torevid, ids.fromrevid];
-						cmd_diffsend(lang, msg, argids, wiki, reaction, spoiler);
+						else {
+							argids = [ids.torevid, ids.fromrevid];
+							var compare = ['', ''];
+							if ( ids.fromtexthidden === undefined && ids.totexthidden === undefined && ids['*'] !== undefined ) {
+								var more = '\n__' + lang.diff.info.more + '__';
+								var current_tag = '';
+								var small_prev_ins = '';
+								var small_prev_del = '';
+								var ins_length = more.length;
+								var del_length = more.length;
+								var added = false;
+								var parser = new htmlparser.Parser( {
+									onopentag: (name, attribs) => {
+										if ( name === 'ins' || name == 'del' ) {
+											current_tag = name;
+										}
+										if ( name === 'td' && attribs.class === 'diff-addedline' ) {
+											current_tag = name+'a';
+										}
+										if ( name === 'td' && attribs.class === 'diff-deletedline' ) {
+											current_tag = name+"d";
+										}
+										if ( name === 'td' && attribs.class === 'diff-marker' ) {
+											added = true;
+										}
+									},
+									ontext: (text) => {
+										if ( current_tag === 'ins' && ins_length <= 1000 ) {
+											ins_length += ( '**' + text.escapeFormatting() + '**' ).length;
+											if ( ins_length <= 1000 ) small_prev_ins += '**' + text.escapeFormatting() + '**';
+											else small_prev_ins += more;
+										}
+										if ( current_tag === 'del' && del_length <= 1000 ) {
+											del_length += ( '~~' + text.escapeFormatting() + '~~' ).length;
+											if ( del_length <= 1000 ) small_prev_del += '~~' + text.escapeFormatting() + '~~';
+											else small_prev_del += more;
+										}
+										if ( ( current_tag === 'afterins' || current_tag === 'tda') && ins_length <= 1000 ) {
+											ins_length += text.escapeFormatting().length;
+											if ( ins_length <= 1000 ) small_prev_ins += text.escapeFormatting();
+											else small_prev_ins += more;
+										}
+										if ( ( current_tag === 'afterdel' || current_tag === 'tdd') && del_length <= 1000 ) {
+											del_length += text.escapeFormatting().length;
+											if ( del_length <= 1000 ) small_prev_del += text.escapeFormatting();
+											else small_prev_del += more;
+										}
+										if ( added ) {
+											if ( text === '+' && ins_length <= 1000 ) {
+												ins_length++;
+												if ( ins_length <= 1000 ) small_prev_ins += '\n';
+												else small_prev_ins += more;
+											}
+											if ( text === '−' && del_length <= 1000 ) {
+												del_length++;
+												if ( del_length <= 1000 ) small_prev_del += '\n';
+												else small_prev_del += more;
+											}
+											added = false;
+										}
+									},
+									onclosetag: (tagname) => {
+										if ( tagname === 'ins' ) {
+											current_tag = 'afterins';
+										} else if ( tagname === 'del' ) {
+											current_tag = 'afterdel';
+										} else {
+											current_tag = '';
+										}
+									}
+								}, {decodeEntities:true} );
+								parser.write( ids['*'] );
+								parser.end();
+								if ( small_prev_del.length ) {
+									if ( small_prev_del.replace( /\~\~/g, '' ).trim().length ) {
+										compare[0] = small_prev_del.replace( /\~\~\~\~/g, '' );
+									} else compare[0] = '__' + lang.diff.info.whitespace + '__';
+								}
+								if ( small_prev_ins.length ) {
+									if ( small_prev_ins.replace( /\*\*/g, '' ).trim().length ) {
+										compare[1] = small_prev_ins.replace( /\*\*\*\*/g, '' );
+									} else compare[1] = '__' + lang.diff.info.whitespace + '__';
+								}
+							}
+							else if ( ids.fromtexthidden !== undefined ) compare[0] = '__' + lang.diff.hidden + '__';
+							else if ( ids.totexthidden !== undefined ) compare[1] = '__' + lang.diff.hidden + '__';
+						}
+						cmd_diffsend(lang, msg, argids, wiki, reaction, spoiler, compare);
 					}
 				}
 			} );
@@ -1136,11 +1228,12 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 	}
 	else {
 		msg.reactEmoji('error');
+		
 		if ( reaction ) reaction.removeEmoji();
 	}
 }
 
-function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
+function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 	request( {
 		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
 		json: true
@@ -1198,12 +1291,12 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 						}
 						
 						var more = '\n__' + lang.diff.info.more + '__';
-						if ( oldid ) request( {
-							uri: wiki + 'api.php?action=compare&fromrev=' + oldid + '&torev=' + diff + '&format=json',
+						if ( !compare && oldid ) request( {
+							uri: wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json',
 							json: true
 						}, function( cperror, cpresponse, cpbody ) {
 							if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
-							if ( cperror || !cpresponse || cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || !cpbody.compare['*'] ) {
+							if ( cperror || !cpresponse || cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || cpbody.compare['*'] === undefined ) {
 								var noerror = false;
 								if ( cpbody && cpbody.error ) {
 									switch ( cpbody.error.code ) {
@@ -1219,7 +1312,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 								}
 								if ( !noerror ) console.log( '- ' + ( cpresponse ? cpresponse.statusCode + ': ' : '' ) + 'Error while getting the diff' + ( cperror ? ': ' + cperror : ( cpbody ? ( cpbody.error ? ': ' + cpbody.error.info : '.' ) : '.' ) ) );
 							}
-							else if ( cpbody.compare.fromtexthidden === undefined || cpbody.compare.totexthidden === undefined || cpbody.compare.fromarchive === undefined || cpbody.compare.toarchive === undefined ) {
+							else if ( cpbody.compare.fromtexthidden === undefined && cpbody.compare.totexthidden === undefined && cpbody.compare.fromarchive === undefined && cpbody.compare.toarchive === undefined ) {
 								var current_tag = '';
 								var small_prev_ins = '';
 								var small_prev_del = '';
@@ -1299,21 +1392,33 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler) {
 									} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
 								}
 							}
+							else if ( cpbody.compare.fromtexthidden !== undefined ) {
+								embed.addField( lang.diff.info.removed, '__' + lang.diff.hidden + '__', true );
+							}
+							else if ( cpbody.compare.totexthidden !== undefined ) {
+								embed.addField( lang.diff.info.added, '__' + lang.diff.hidden + '__', true );
+							}
 							
 							msg.sendChannel( spoiler + text + spoiler, embed );
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
 						else {
-							var content = revisions[0]['*'].escapeFormatting();
-							if ( content.trim().length ) {
-								if ( content.length <= 1000 ) content = '**' + content + '**';
-								else {
-									content = content.substring(0, 1000 - more.length);
-									content = '**' + content.substring(0, content.lastIndexOf('\n')) + '**' + more;
-								}
-								embed.addField( lang.diff.info.added, content, true );
-							} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
+							if ( compare ) {
+								if ( compare[0].length ) embed.addField( lang.diff.info.removed, compare[0], true );
+								if ( compare[1].length ) embed.addField( lang.diff.info.added, compare[1], true );
+							}
+							else if ( revisions[0]['*'] ) {
+								var content = revisions[0]['*'].escapeFormatting();
+								if ( content.trim().length ) {
+									if ( content.length <= 1000 ) content = '**' + content + '**';
+									else {
+										content = content.substring(0, 1000 - more.length);
+										content = '**' + content.substring(0, content.lastIndexOf('\n')) + '**' + more;
+									}
+									embed.addField( lang.diff.info.added, content, true );
+								} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
+							}
 							
 							msg.sendChannel( spoiler + text + spoiler, embed );
 							
