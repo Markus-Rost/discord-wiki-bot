@@ -584,7 +584,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 	else {
 		var noRedirect = ( /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring) );
 		request( {
-			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|pageprops|extracts&ppprop=description&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
+			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
 			json: true
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -650,7 +650,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					}
 					else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
 						request( {
-							uri: wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&ppprop=description&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
+							uri: wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
 							json: true
 						}, function( srerror, srresponse, srbody ) {
 							if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
@@ -677,8 +677,8 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 										if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
 										embed.setDescription( extract );
 									}
-									if ( querypage.pageimage && querypage.title !== body.query.general.mainpage ) {
-										var pageimage = wiki.toLink() + 'Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
+									if ( querypage.pageimage && querypage.original && querypage.title !== body.query.general.mainpage ) {
+										var pageimage = querypage.original.source + '?v=' + Date.now();
 										if ( querypage.ns === 6 ) {
 											if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
 											else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
@@ -736,8 +736,8 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
 							embed.setDescription( extract );
 						}
-						if ( querypage.pageimage && querypage.title !== body.query.general.mainpage ) {
-							var pageimage = wiki.toLink() + 'Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
+						if ( querypage.pageimage && querypage.original && querypage.title !== body.query.general.mainpage ) {
+							var pageimage = querypage.original.source + '?v=' + Date.now();
 							if ( querypage.ns === 6 ) {
 								if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
 								else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
@@ -862,8 +862,8 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
 							embed.setDescription( extract );
 						}
-						if ( querypage.pageimage ) {
-							var pageimage = wiki.toLink() + 'Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
+						if ( querypage.pageimage && querypage.original ) {
+							var pageimage = querypage.original.source + '?v=' + Date.now();
 							embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 						
@@ -976,8 +976,8 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
 							embed.setDescription( extract );
 						}
-						if ( querypage.pageimage ) {
-							var pageimage = wiki.toLink() + 'Special:FilePath/' + querypage.pageimage + '?v=' + Date.now();
+						if ( querypage.pageimage && querypage.original ) {
+							var pageimage = querypage.original.source + '?v=' + Date.now();
 							embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 						
@@ -1446,7 +1446,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 
 function cmd_random(lang, msg, wiki, reaction, spoiler) {
 	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&ppprop=description&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
+		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -1474,8 +1474,8 @@ function cmd_random(lang, msg, wiki, reaction, spoiler) {
 				if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
 				embed.setDescription( extract );
 			}
-			if ( querypage.pageimage && querypage.title !== body.query.general.mainpage ) {
-				embed.setThumbnail( wiki.toLink() + 'Special:FilePath/' + querypage.pageimage + '?v=' + Date.now() );
+			if ( querypage.pageimage && querypage.original && querypage.title !== body.query.general.mainpage ) {
+				embed.setThumbnail( querypage.original.source + '?v=' + Date.now() );
 			}
 			else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 			
