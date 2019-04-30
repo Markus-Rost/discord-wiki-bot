@@ -565,8 +565,8 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 	var args = title.split(' ').slice(1);
 	
 	var mclang = minecraft[lang.lang];
-	var aliasInvoke = ( invoke in mclang.aliase ) ? mclang.aliase[invoke] : invoke;
-	if ( !msg.notminecraft && wiki === mclang.link && ( aliasInvoke in minecraftcmdmap || invoke.startsWith('/') ) ) {
+	var aliasInvoke = ( invoke in mclang.aliase ? mclang.aliase[invoke] : invoke );
+	if ( !msg.notminecraft && wiki === mclang.link && ( aliasInvoke in minecraftcmdmap || invoke.startsWith( '/' ) ) ) {
 		if ( aliasInvoke in minecraftcmdmap ) minecraftcmdmap[aliasInvoke](lang, mclang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
 		else cmd_befehl(lang, mclang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
 	}
@@ -577,7 +577,8 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 		if ( reaction ) reaction.removeEmoji();
 	}
 	else if ( invoke === 'search' || invoke === lang.search.search ) {
-		msg.sendChannel( spoiler + '<' + wiki.toLink() + 'Special:Search/' + args.join('_').toTitle() + linksuffix + '>' + spoiler );
+		linksuffix = ( linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
+		msg.sendChannel( spoiler + '<' + wiki.toLink() + 'Special:Search?search=' + args.join(' ').toSearch() + linksuffix + '>' + spoiler );
 		if ( reaction ) reaction.removeEmoji();
 	}
 	else if ( invoke === 'diff' && args.join('') ) cmd_diff(lang, msg, args, wiki, reaction, spoiler);
@@ -595,20 +596,26 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 				}
 				else {
 					console.log( '- ' + ( response ? response.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( error ? ': ' + error : ( body ? ( body.error ? ': ' + body.error.info : '.' ) : '.' ) ) );
-					msg.sendChannelError( spoiler + '<' + wiki.toLink() + ( linksuffix || !title ? title.toTitle() + linksuffix : 'Special:Search/' + title.toTitle() ) + '>' + spoiler );
+					msg.sendChannelError( spoiler + '<' + wiki.toLink() + ( linksuffix || !title ? title.toTitle() + linksuffix : 'Special:Search?search=' + title.toSearch() ) + '>' + spoiler );
 				}
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
 			else {
 				if ( body.query.pages ) {
-					var querypage = Object.values(body.query.pages)[0];
+					var querypages = Object.values(body.query.pages);
+					var querypage = querypages[0];
 					if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ) ) {
 						querypage.title = body.query.redirects[0].from;
 						delete body.query.redirects[0].tofragment;
 						delete querypage.missing;
 						querypage.ns = -1;
 						querypage.special = '';
+					}
+					if ( querypages.length !== 1 ) querypage = {
+						title: title,
+						invalidreason: 'The requested page title contains invalid characters: "|".',
+						invalid: ''
 					}
 					
 					var contribs = body.query.namespaces['-1']['*'] + ':' + body.query.specialpagealiases.find( sp => sp.realname === 'Contributions' ).aliases[0] + '/';
@@ -617,7 +624,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 						querypage.noRedirect = noRedirect;
 						cmd_user(lang, msg, userparts[0].toTitle() + ':', userparts.slice(1).join(':'), wiki, linksuffix, querypage, contribs.toTitle(), reaction, spoiler);
 					}
-					else if ( querypage.ns === -1 && querypage.title.startsWith(contribs) && querypage.title.length > contribs.length ) {
+					else if ( querypage.ns === -1 && querypage.title.startsWith( contribs ) && querypage.title.length > contribs.length ) {
 						var username = querypage.title.split('/').slice(1).join('/');
 						request( {
 							uri: wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json',
@@ -656,7 +663,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
 							if ( srerror || !srresponse || srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
 								console.log( '- ' + ( srresponse ? srresponse.statusCode + ': ' : '' ) + 'Error while getting the search results' + ( srerror ? ': ' + srerror : ( srbody ? ( srbody.error ? ': ' + srbody.error.info : '.' ) : '.' ) ) );
-								msg.sendChannelError( spoiler + '<' + wiki.toLink() + 'Special:Search/' + title.toTitle() + '>' + spoiler );
+								msg.sendChannelError( spoiler + '<' + wiki.toLink() + 'Special:Search?search=' + title.toSearch() + '>' + spoiler );
 							}
 							else {
 								if ( !srbody.query ) {
@@ -1599,7 +1606,7 @@ function cmd_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, rea
 		} );
 	}
 	else if ( invoke && invoke.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
-		var jql = encodeURIComponent( 'fixVersion="' + args.join(' ') + '" order by key' );
+		var jql = 'fixVersion="' + args.join(' ').replace( /("|\\)/g, '\\$1' ).toSearch() + '"+order+by+key';
 		request( {
 			uri: 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25',
 			json: true
@@ -1667,7 +1674,7 @@ function cmd_befehl(lang, mclang, msg, befehl, args, title, cmd, querystring, fr
 
 function cmd_befehl2(lang, mclang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
 	if ( args.join('') ) {
-		if ( args[0].startsWith('/') ) cmd_befehl(lang, mclang, msg, args[0].substring(1), args.slice(1), title, cmd, querystring, fragment, reaction, spoiler);
+		if ( args[0].startsWith( '/' ) ) cmd_befehl(lang, mclang, msg, args[0].substring(1), args.slice(1), title, cmd, querystring, fragment, reaction, spoiler);
 		else cmd_befehl(lang, mclang, msg, args[0], args.slice(1), title, cmd, querystring, fragment, reaction, spoiler);
 	}
 	else {
@@ -1798,6 +1805,10 @@ String.prototype.toTitle = function(isMarkdown = false) {
 	var title = this.replace( / /g, '_' ).replace( /\%/g, '%25' ).replace( /\?/g, '%3F' ).replace( /@(here|everyone)/g, '%40$1' );
 	if ( isMarkdown ) title = title.replace( /(\(|\))/g, '\\$1' );
 	return title;
+};
+
+String.prototype.toSearch = function() {
+	return encodeURIComponent( this ).replace( /%20/g, '+' );
 };
 
 String.prototype.toSection = function() {
@@ -1937,9 +1948,9 @@ client.on( 'message', msg => {
 	if ( setting.channels && channel.id in setting.channels ) lang.link = setting.channels[channel.id];
 	
 	if ( channel.type !== 'text' || permissions.has(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']) ) {
-		var invoke = cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '';
-		var aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-		var ownercmd = msg.isOwner() && aliasInvoke in ownercmdmap;
+		var invoke = ( cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '' );
+		var aliasInvoke = ( invoke in lang.aliase ? lang.aliase[invoke] : invoke );
+		var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 		if ( cont.hasPrefix() && ( ( msg.isAdmin() && aliasInvoke in multilinecmdmap ) || ownercmd ) ) {
 			if ( ownercmd || permissions.has('MANAGE_MESSAGES') ) {
 				var args = cont.split(' ').slice(2);
@@ -1957,10 +1968,10 @@ client.on( 'message', msg => {
 			msg.cleanContent.replace(/\u200b/g, '').split('\n').forEach( function(line) {
 				if ( line.hasPrefix() && count < 10 ) {
 					count++;
-					invoke = line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '';
+					invoke = ( line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '' );
 					var args = line.split(' ').slice(2);
-					aliasInvoke = ( invoke in lang.aliase ) ? lang.aliase[invoke] : invoke;
-					ownercmd = msg.isOwner() && aliasInvoke in ownercmdmap;
+					aliasInvoke = ( invoke in lang.aliase ? lang.aliase[invoke] : invoke );
+					ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 					if ( channel.type === 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.name + ': Paused' );
 					else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + line );
 					if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line);
