@@ -1035,15 +1035,40 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					if ( msg.showEmbed() ) {
 						var text = '<' + pagelink + '>';
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle() + ')', true ).addField( group[0], group[1], true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
-						if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki) );
 					}
 					else {
 						var embed = {};
 						var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group.join(' ');
-						if ( isBlocked ) text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
 					}
 					
-					msg.sendChannel( spoiler + text + spoiler, embed );
+					request( {
+						uri: wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json',
+						json: true
+					}, function( perror, presponse, pbody ) {
+						if ( perror || !presponse || presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
+							console.log( '- ' + ( presponse ? presponse.statusCode + ': ' : '' ) + 'Error while getting the use profile' + ( perror ? ': ' + perror : ( pbody ? ( pbody.error ? ': ' + pbody.error.info : ': ' + pbody.errormsg ) : '.' ) ) );
+						}
+						else if ( pbody.profile['link-discord'] ) {
+							var discordmember = msg.guild.members.find( member => member.user.tag === pbody.profile['link-discord'] );
+							var discordname = pbody.profile['link-discord'].escapeFormatting();
+							if ( discordmember ) {
+								if ( msg.showEmbed() ) discordname = discordmember.toString();
+								else if ( discordmember.nickname ) discordname += ' (' + discordmember.nickname.escapeFormatting() + ')';
+							}
+							
+							if ( msg.showEmbed() ) embed.addField( 'Discord:', discordname, true );
+							else text += '\n' + 'Discord: ' + discordname;
+						console.log('tets2')
+						}
+						
+						if ( isBlocked ) {
+							if ( msg.showEmbed() ) embed.addField( block[0], block[1].toMarkdown(wiki) );
+							else text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
+						}
+						
+						msg.sendChannel( spoiler + text + spoiler, embed );
+						console.log('tets')
+					} );
 				}
 			}
 			
