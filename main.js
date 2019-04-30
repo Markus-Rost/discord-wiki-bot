@@ -990,6 +990,8 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						
 						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
 					}
+					
+					if ( reaction ) reaction.removeEmoji();
 				}
 				else {
 					username = body.query.users[0].name;
@@ -1058,7 +1060,6 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							
 							if ( msg.showEmbed() ) embed.addField( 'Discord:', discordname, true );
 							else text += '\n' + 'Discord: ' + discordname;
-						console.log('tets2')
 						}
 						
 						if ( isBlocked ) {
@@ -1067,12 +1068,11 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, embed );
-						console.log('tets')
+						
+						if ( reaction ) reaction.removeEmoji();
 					} );
 				}
 			}
-			
-			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 }
