@@ -1177,48 +1177,48 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 								var del_length = more.length;
 								var added = false;
 								var parser = new htmlparser.Parser( {
-									onopentag: (name, attribs) => {
-										if ( name === 'ins' || name == 'del' ) {
-											current_tag = name;
+									onopentag: (tagname, attribs) => {
+										if ( tagname === 'ins' || tagname == 'del' ) {
+											current_tag = tagname;
 										}
-										if ( name === 'td' && attribs.class === 'diff-addedline' ) {
-											current_tag = name+'a';
+										if ( tagname === 'td' && attribs.class === 'diff-addedline' ) {
+											current_tag = tagname+'a';
 										}
-										if ( name === 'td' && attribs.class === 'diff-deletedline' ) {
-											current_tag = name+"d";
+										if ( tagname === 'td' && attribs.class === 'diff-deletedline' ) {
+											current_tag = tagname+"d";
 										}
-										if ( name === 'td' && attribs.class === 'diff-marker' ) {
+										if ( tagname === 'td' && attribs.class === 'diff-marker' ) {
 											added = true;
 										}
 									},
-									ontext: (text) => {
+									ontext: (htmltext) => {
 										if ( current_tag === 'ins' && ins_length <= 1000 ) {
-											ins_length += ( '**' + text.escapeFormatting() + '**' ).length;
-											if ( ins_length <= 1000 ) small_prev_ins += '**' + text.escapeFormatting() + '**';
+											ins_length += ( '**' + htmltext.escapeFormatting() + '**' ).length;
+											if ( ins_length <= 1000 ) small_prev_ins += '**' + htmltext.escapeFormatting() + '**';
 											else small_prev_ins += more;
 										}
 										if ( current_tag === 'del' && del_length <= 1000 ) {
-											del_length += ( '~~' + text.escapeFormatting() + '~~' ).length;
-											if ( del_length <= 1000 ) small_prev_del += '~~' + text.escapeFormatting() + '~~';
+											del_length += ( '~~' + htmltext.escapeFormatting() + '~~' ).length;
+											if ( del_length <= 1000 ) small_prev_del += '~~' + htmltext.escapeFormatting() + '~~';
 											else small_prev_del += more;
 										}
 										if ( ( current_tag === 'afterins' || current_tag === 'tda') && ins_length <= 1000 ) {
-											ins_length += text.escapeFormatting().length;
-											if ( ins_length <= 1000 ) small_prev_ins += text.escapeFormatting();
+											ins_length += htmltext.escapeFormatting().length;
+											if ( ins_length <= 1000 ) small_prev_ins += htmltext.escapeFormatting();
 											else small_prev_ins += more;
 										}
 										if ( ( current_tag === 'afterdel' || current_tag === 'tdd') && del_length <= 1000 ) {
-											del_length += text.escapeFormatting().length;
-											if ( del_length <= 1000 ) small_prev_del += text.escapeFormatting();
+											del_length += htmltext.escapeFormatting().length;
+											if ( del_length <= 1000 ) small_prev_del += htmltext.escapeFormatting();
 											else small_prev_del += more;
 										}
 										if ( added ) {
-											if ( text === '+' && ins_length <= 1000 ) {
+											if ( htmltext === '+' && ins_length <= 1000 ) {
 												ins_length++;
 												if ( ins_length <= 1000 ) small_prev_ins += '\n';
 												else small_prev_ins += more;
 											}
-											if ( text === '−' && del_length <= 1000 ) {
+											if ( htmltext === '−' && del_length <= 1000 ) {
 												del_length++;
 												if ( del_length <= 1000 ) small_prev_del += '\n';
 												else small_prev_del += more;
@@ -1306,10 +1306,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 					var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
 					var size = [lang.diff.info.size, lang.diff.info.bytes.replace( '%s', ( difference > 0 ? '+' : '' ) + difference )];
 					var comment = [lang.diff.info.comment, ( revisions[0].commenthidden !== undefined ? lang.diff.hidden : ( revisions[0].comment ? revisions[0].comment.toFormatting(msg.showEmbed(), wiki, title) : lang.diff.nocomment ) )];
-					if ( revisions[0].tags.length ) {
-						var tags = [lang.diff.info.tags, body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
-						var tagregex = /<a [^>]*title="([^"]+)"[^>]*>(.+)<\/a>/g;
-					}
+					if ( revisions[0].tags.length ) var tags = [lang.diff.info.tags, body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
 					
 					var pagelink = wiki.toLink() + title.toTitle() + '?diff=' + diff + '&oldid=' + oldid;
 					if ( msg.showEmbed() ) {
@@ -1318,8 +1315,23 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 						if ( /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(editor[1]) ) editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'Special:Contributions/' + editor[1].toTitle(true) + ')';
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( ( title + '?diff=' + diff + '&oldid=' + oldid ).escapeFormatting() ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
 						if ( tags ) {
-							var taglink = wiki.toLink() + tags[1].replace( tagregex, '$1' ).toTitle(true);
-							embed.addField( tags[0], tags[1].replace( tagregex, '[$2](' + taglink.replace( '$', '$$$$' ) + ')' ) );
+							var taglink = '';
+							var tagtext = '';
+							var tagparser = new htmlparser.Parser( {
+								onopentag: (tagname, attribs) => {
+									if ( tagname === 'a' ) taglink = attribs.href;
+								},
+								ontext: (htmltext) => {
+									if ( taglink ) tagtext += '[' + htmltext.escapeFormatting() + '](' + taglink + ')'
+									else tagtext += htmltext.escapeFormatting();
+								},
+								onclosetag: (tagname) => {
+									if ( tagname === 'a' ) taglink = '';
+								}
+							}, {decodeEntities:true} );
+							tagparser.write( tags[1] );
+							tagparser.end();
+							embed.addField( tags[0], tagtext );
 						}
 						
 						var more = '\n__' + lang.diff.info.more + '__';
@@ -1352,48 +1364,48 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 								var del_length = more.length;
 								var added = false;
 								var parser = new htmlparser.Parser( {
-									onopentag: (name, attribs) => {
-										if ( name === 'ins' || name == 'del' ) {
-											current_tag = name;
+									onopentag: (tagname, attribs) => {
+										if ( tagname === 'ins' || tagname == 'del' ) {
+											current_tag = tagname;
 										}
-										if ( name === 'td' && attribs.class === 'diff-addedline' ) {
-											current_tag = name+'a';
+										if ( tagname === 'td' && attribs.class === 'diff-addedline' ) {
+											current_tag = tagname+'a';
 										}
-										if ( name === 'td' && attribs.class === 'diff-deletedline' ) {
-											current_tag = name+"d";
+										if ( tagname === 'td' && attribs.class === 'diff-deletedline' ) {
+											current_tag = tagname+"d";
 										}
-										if ( name === 'td' && attribs.class === 'diff-marker' ) {
+										if ( tagname === 'td' && attribs.class === 'diff-marker' ) {
 											added = true;
 										}
 									},
-									ontext: (text) => {
+									ontext: (htmltext) => {
 										if ( current_tag === 'ins' && ins_length <= 1000 ) {
-											ins_length += ( '**' + text.escapeFormatting() + '**' ).length;
-											if ( ins_length <= 1000 ) small_prev_ins += '**' + text.escapeFormatting() + '**';
+											ins_length += ( '**' + htmltext.escapeFormatting() + '**' ).length;
+											if ( ins_length <= 1000 ) small_prev_ins += '**' + htmltext.escapeFormatting() + '**';
 											else small_prev_ins += more;
 										}
 										if ( current_tag === 'del' && del_length <= 1000 ) {
-											del_length += ( '~~' + text.escapeFormatting() + '~~' ).length;
-											if ( del_length <= 1000 ) small_prev_del += '~~' + text.escapeFormatting() + '~~';
+											del_length += ( '~~' + htmltext.escapeFormatting() + '~~' ).length;
+											if ( del_length <= 1000 ) small_prev_del += '~~' + htmltext.escapeFormatting() + '~~';
 											else small_prev_del += more;
 										}
 										if ( ( current_tag === 'afterins' || current_tag === 'tda') && ins_length <= 1000 ) {
-											ins_length += text.escapeFormatting().length;
-											if ( ins_length <= 1000 ) small_prev_ins += text.escapeFormatting();
+											ins_length += htmltext.escapeFormatting().length;
+											if ( ins_length <= 1000 ) small_prev_ins += htmltext.escapeFormatting();
 											else small_prev_ins += more;
 										}
 										if ( ( current_tag === 'afterdel' || current_tag === 'tdd') && del_length <= 1000 ) {
-											del_length += text.escapeFormatting().length;
-											if ( del_length <= 1000 ) small_prev_del += text.escapeFormatting();
+											del_length += htmltext.escapeFormatting().length;
+											if ( del_length <= 1000 ) small_prev_del += htmltext.escapeFormatting();
 											else small_prev_del += more;
 										}
 										if ( added ) {
-											if ( text === '+' && ins_length <= 1000 ) {
+											if ( htmltext === '+' && ins_length <= 1000 ) {
 												ins_length++;
 												if ( ins_length <= 1000 ) small_prev_ins += '\n';
 												else small_prev_ins += more;
 											}
-											if ( text === '−' && del_length <= 1000 ) {
+											if ( htmltext === '−' && del_length <= 1000 ) {
 												del_length++;
 												if ( del_length <= 1000 ) small_prev_del += '\n';
 												else small_prev_del += more;
@@ -1459,7 +1471,16 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 					}
 					else {
 						var embed = {};
-						var text = '<' + pagelink + '>\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ') + ( tags ? '\n' + tags.join(' ').replace( tagregex, '$2' ) : '' );
+						var text = '<' + pagelink + '>\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ');
+						if ( tags ) {
+							var tagparser = new htmlparser.Parser( {
+								ontext: (htmltext) => {
+									text += htmltext.escapeFormatting();
+								}
+							}, {decodeEntities:true} );
+							tagparser.write( '\n' + tags.join(' ') );
+							tagparser.end();
+						}
 						
 						msg.sendChannel( spoiler + text + spoiler, embed );
 						
