@@ -93,7 +93,8 @@
 			"gender": "Gênero:",
 			"registration": "Data de registro:",
 			"editcount": "Contagem de edição:",
-			"group": "Grupo:"
+			"group": "Grupo:",
+			"discord": "Discord:"
 		},
 		"block": {
 			"header": "%s está atualmente bloqueado!",

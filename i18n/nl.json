@@ -84,7 +84,8 @@
 			"gender": "Geslacht:",
 			"registration": "Registratie datum:",
 			"editcount": "Aantal bewerkingen:",
-			"group": "Groep:"
+			"group": "Groep:",
+			"discord": "Discord:"
 		},
 		"block": {
 			"header": "%s is momenteel geblokkeerd!",

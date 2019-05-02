@@ -86,7 +86,8 @@
 			"gender": "Geschlecht:",
 			"registration": "Registriert:",
 			"editcount": "Bearbeitungen:",
-			"group": "Gruppe:"
+			"group": "Gruppe:",
+			"discord": "Discord:"
 		},
 		"block": {
 			"header": "%s ist derzeit gesperrt!",

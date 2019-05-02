@@ -87,7 +87,8 @@
 			"gender": "Genre :",
 			"registration": "Date d'inscription :",
 			"editcount": "Nombre d'éditions :",
-			"group": "Groupe :"
+			"group": "Groupe :",
+			"discord": "Discord :"
 		},
 		"block": {
 			"header": "%s est actuellement bloqué !",

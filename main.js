@@ -433,7 +433,7 @@ function cmd_test(lang, msg, args, line) {
 		if ( x < lang.test.text.length ) text = lang.test.text[x];
 		console.log( '- Test: Fully functioning!' );
 		var now = Date.now();
-		if ( msg.showEmbed() ) msg.replyMsg( text ).then( edit => {
+		msg.replyMsg( text ).then( edit => {
 			var then = Date.now();
 			var embed = new Discord.RichEmbed().setTitle( lang.test.time ).addField( 'Discord', ( then - now ) + 'ms' );
 			now = Date.now();
@@ -806,7 +806,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 								inter.url = inter.url.split('#')[0];
 							}
 							if ( querystring ) inter.url += ( inter.url.includes( '?' ) ? '&' : '?' ) + querystring.toTitle() + fragment;
-							msg.sendChannel( spoiler + inter.url.replace( /@(here|everyone)/g, '%40$1' ) + spoiler ).then( message => {
+							msg.sendChannel( spoiler + ' ' + inter.url.replace( /@(here|everyone)/g, '%40$1' ) + ' ' + spoiler ).then( message => {
 								if ( message && selfcall === 5 ) message.reactEmoji('⚠');
 							} );
 							if ( reaction ) reaction.removeEmoji();
@@ -1048,18 +1048,18 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						json: true
 					}, function( perror, presponse, pbody ) {
 						if ( perror || !presponse || presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
-							console.log( '- ' + ( presponse ? presponse.statusCode + ': ' : '' ) + 'Error while getting the use profile' + ( perror ? ': ' + perror : ( pbody ? ( pbody.error ? ': ' + pbody.error.info : ': ' + pbody.errormsg ) : '.' ) ) );
+							console.log( '- ' + ( presponse ? presponse.statusCode + ': ' : '' ) + 'Error while getting the user profile' + ( perror ? ': ' + perror : ( pbody ? ( pbody.error ? ': ' + pbody.error.info : ': ' + pbody.errormsg ) : '.' ) ) );
 						}
 						else if ( pbody.profile['link-discord'] ) {
 							var discordmember = msg.guild.members.find( member => member.user.tag === pbody.profile['link-discord'] );
-							var discordname = pbody.profile['link-discord'].escapeFormatting();
+							var discordname = [lang.user.info.discord,pbody.profile['link-discord'].escapeFormatting()];
 							if ( discordmember ) {
-								if ( msg.showEmbed() ) discordname = discordmember.toString();
-								else if ( discordmember.nickname ) discordname += ' (' + discordmember.nickname.escapeFormatting() + ')';
+								if ( msg.showEmbed() ) discordname[1] = discordmember.toString();
+								else if ( discordmember.nickname ) discordname[1] += ' (' + discordmember.nickname.escapeFormatting() + ')';
 							}
 							
-							if ( msg.showEmbed() ) embed.addField( 'Discord:', discordname, true );
-							else text += '\n' + 'Discord: ' + discordname;
+							if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
+							else text += '\n' + discordname.join(' ');
 						}
 						
 						if ( isBlocked ) {
@@ -1267,7 +1267,7 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 
 function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
+		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -1312,7 +1312,10 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 					if ( msg.showEmbed() ) {
 						var text = '<' + pagelink + '>';
 						var editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'User:' + editor[1].toTitle() + ')';
-						if ( /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(editor[1]) ) editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'Special:Contributions/' + editor[1].toTitle(true) + ')';
+						if ( revisions[0].anon !== undefined ) {
+							editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'Special:Contributions/' + editor[1].toTitle(true) + ')';
+						}
+						if ( editor[1] === lang.diff.hidden ) editorlink = editor[1];
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( ( title + '?diff=' + diff + '&oldid=' + oldid ).escapeFormatting() ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
 						if ( tags ) {
 							var taglink = '';
@@ -1805,28 +1808,23 @@ String.prototype.toLink = function() {
 
 String.prototype.isMention = function(guild) {
 	var text = this.trim();
-	if ( text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.me.displayName ) ) return true;
-	else return false;
+	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.me.displayName );
 };
 
 Discord.Message.prototype.isAdmin = function() {
-	if ( this.channel.type === 'text' && this.member && this.member.permissions.has('MANAGE_GUILD') ) return true;
-	else return false;
+	return this.channel.type === 'text' && this.member && this.member.permissions.has('MANAGE_GUILD');
 };
 
 Discord.Message.prototype.isOwner = function() {
-	if ( this.author.id === process.env.owner ) return true;
-	else return false;
+	return this.author.id === process.env.owner;
 };
 
 Discord.Message.prototype.showEmbed = function() {
-	if ( this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('EMBED_LINKS') ) return true;
-	else return false;
+	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('EMBED_LINKS');
 };
 
 Discord.Message.prototype.uploadFiles = function() {
-	if ( this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES') ) return true;
-	else return false;
+	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
 };
 
 Array.prototype.toEmojis = function() {
@@ -1971,8 +1969,7 @@ Discord.Message.prototype.allowDelete = function(author) {
 };
 
 String.prototype.hasPrefix = function(flags = '') {
-	if ( RegExp( '^' + process.env.prefix + '(?: |$)', flags ).test(this.toLowerCase()) ) return true;
-	else return false;
+	return RegExp( '^' + process.env.prefix + '(?: |$)', flags ).test(this.toLowerCase());
 };
 
 client.on( 'message', msg => {
