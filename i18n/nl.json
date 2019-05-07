@@ -67,7 +67,7 @@
 			["bot", "Bot"],
 			["bureaucrat", "Bureaucraat"],
 			["wiki_guardian", "Wiki Guardian"],
-			["sysop", "Administrator"],
+			["sysop", "Beheerder"],
 			["grasp", "GRASP"],
 			["directors", "Director"],
 			["Patrol", "Inspector"],
@@ -79,7 +79,7 @@
 			["autopatrol", "autopatrol"],
 			["user", "Gebruiker"]
 		],
-		"manager": "Wiki beheerder",
+		"manager": "Wiki manager",
 		"info": {
 			"gender": "Geslacht:",
 			"registration": "Registratie datum:",

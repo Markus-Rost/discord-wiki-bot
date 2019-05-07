@@ -65,8 +65,8 @@
 		},
 		"dateformat": "fr-FR",
 		"groups": [
-			["global_bot", "Robot Gamepedia"],
-			["hydra_staff", "Staff Gamepedia"],
+			["global_bot", "Robot de Gamepedia"],
+			["hydra_staff", "Staff de Gamepedia"],
 			["bot", "Robot"],
 			["bureaucrat", "Bureaucrate"],
 			["wiki_guardian", "Gardien du wiki"],
