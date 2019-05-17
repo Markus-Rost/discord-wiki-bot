@@ -108,7 +108,7 @@ client.on( 'ready', () => {
 			body: {guildCount: client.guilds.size},
 			json: true
 		} );
-	}, 10800000 );
+	}, 10800000 ).unref();
 } );
 	
 	
@@ -250,25 +250,42 @@ function edit_settings(lang, msg, key, value) {
 		}
 		else {
 			var temp_settings = JSON.parse(JSON.stringify(settings));
-			if ( !( msg.guild.id in temp_settings ) ) temp_settings[msg.guild.id] = Object.assign({}, settings['default']);
+			var save = false;
+			if ( !( msg.guild.id in temp_settings ) ) {
+				temp_settings[msg.guild.id] = Object.assign({}, settings['default']);
+				save = true;
+			}
 			if ( key === 'channel' ) {
 				if ( !temp_settings[msg.guild.id].channels ) temp_settings[msg.guild.id].channels = {};
-				temp_settings[msg.guild.id].channels[msg.channel.id] = value;
-			} else temp_settings[msg.guild.id][key] = value;
+				if ( temp_settings[msg.guild.id].channels[msg.channel.id] !== value ) {
+					temp_settings[msg.guild.id].channels[msg.channel.id] = value;
+					save = true;
+				}
+			} else if ( temp_settings[msg.guild.id][key] !== value ) {
+				temp_settings[msg.guild.id][key] = value;
+				save = true;
+			}
 			Object.keys(temp_settings).forEach( function(guild) {
 				if ( !client.guilds.has(guild) && guild !== 'default' ) {
 					delete temp_settings[guild];
+					save = true;
 				} else {
 					var channels = temp_settings[guild].channels;
 					if ( channels ) {
 						Object.keys(channels).forEach( function(channel) {
-							if ( channels[channel] === temp_settings[guild].wiki || !client.guilds.get(guild).channels.has(channel) ) delete channels[channel];
+							if ( channels[channel] === temp_settings[guild].wiki || !client.guilds.get(guild).channels.has(channel) ) {
+								delete channels[channel];
+								save = true;
+							}
 						} );
-						if ( !Object.keys(channels).length ) delete temp_settings[guild].channels;
+						if ( !Object.keys(channels).length ) {
+							delete temp_settings[guild].channels;
+							save = true;
+						}
 					}
 				}
 			} );
-			request.post( {
+			if ( save ) request.post( {
 				uri: process.env.save,
 				headers: access,
 				body: {
@@ -297,6 +314,11 @@ function edit_settings(lang, msg, key, value) {
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
+			else {
+				cmd_settings(lang, msg, [key], 'changed');
+				
+				if ( reaction ) reaction.removeEmoji();
+			}
 		}
 	} );
 }
@@ -599,7 +621,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 	else {
 		var noRedirect = ( /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring) );
 		request( {
-			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
+			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
 			json: true
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -671,7 +693,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					}
 					else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
 						request( {
-							uri: wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
+							uri: wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
 							json: true
 						}, function( srerror, srresponse, srbody ) {
 							if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
@@ -688,6 +710,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 									var pagelink = wiki.toLink() + querypage.title.toTitle() + linksuffix;
 									var text = '';
 									var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+									if ( querypage.pageprops && querypage.pageprops.displaytitle ) embed.setTitle( querypage.pageprops.displaytitle.escapeFormatting() );
 									if ( querypage.pageprops && querypage.pageprops.description ) {
 										var description = '';
 										var parser = new htmlparser.Parser( {
@@ -754,6 +777,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 						var pagelink = wiki.toLink() + querypage.title.toTitle() + ( querystring ? '?' + querystring.toTitle() : '' ) + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : ( fragment ? '#' + fragment.toSection() : '' ) );
 						var text = '';
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+						if ( querypage.pageprops && querypage.pageprops.displaytitle ) embed.setTitle( querypage.pageprops.displaytitle.escapeFormatting() );
 						if ( querypage.pageprops && querypage.pageprops.description ) {
 							var description = '';
 							var parser = new htmlparser.Parser( {
@@ -845,7 +869,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					var pagelink = wiki.toLink() + body.query.general.mainpage.toTitle() + linksuffix;
 					var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 					request( {
-						uri: wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageprops|extracts&ppprop=description&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json',
+						uri: wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageprops|extracts&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json',
 						json: true
 					}, function( mperror, mpresponse, mpbody ) {
 						if ( mpbody && mpbody.warnings ) log_warn(body.warnings);
@@ -853,6 +877,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							console.log( '- ' + ( mpresponse ? mpresponse.statusCode + ': ' : '' ) + 'Error while getting the main page' + ( mperror ? ': ' + mperror : ( mpbody ? ( mpbody.error ? ': ' + mpbody.error.info : '.' ) : '.' ) ) );
 						} else {
 							querypage = Object.values(mpbody.query.pages)[0];
+							if ( querypage.pageprops && querypage.pageprops.displaytitle ) embed.setTitle( querypage.pageprops.displaytitle.escapeFormatting() );
 							if ( querypage.pageprops && querypage.pageprops.description ) {
 								var description = '';
 								var parser = new htmlparser.Parser( {
@@ -899,6 +924,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					else {
 						var pagelink = wiki.toLink() + querypage.title.toTitle() + linksuffix;
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+						if ( querypage.pageprops && querypage.pageprops.displaytitle ) embed.setTitle( querypage.pageprops.displaytitle.escapeFormatting() );
 						if ( querypage.extract ) {
 							var extract = querypage.extract.escapeFormatting();
 							if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
@@ -1013,6 +1039,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					else {
 						var pagelink = wiki.toLink() + querypage.title.toTitle() + linksuffix;
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+						if ( querypage.pageprops && querypage.pageprops.displaytitle ) embed.setTitle( querypage.pageprops.displaytitle.escapeFormatting() );
 						if ( querypage.extract ) {
 							var extract = querypage.extract.escapeFormatting();
 							if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
@@ -1078,7 +1105,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group.join(' ');
 					}
 					
-					request( {
+					if ( wiki.endsWith( '.gamepedia.com/' ) ) request( {
 						uri: wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json',
 						json: true
 					}, function( perror, presponse, pbody ) {
@@ -1106,6 +1133,16 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
+					else {
+						if ( isBlocked ) {
+							if ( msg.showEmbed() ) embed.addField( block[0], block[1].toMarkdown(wiki) );
+							else text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
+						}
+						
+						msg.sendChannel( spoiler + text + spoiler, embed );
+						
+						if ( reaction ) reaction.removeEmoji();
+					}
 				}
 			}
 		} );
@@ -1537,7 +1574,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 
 function cmd_random(lang, msg, wiki, reaction, spoiler) {
 	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
+		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -1555,6 +1592,7 @@ function cmd_random(lang, msg, wiki, reaction, spoiler) {
 			querypage = Object.values(body.query.pages)[0];
 			var pagelink = wiki.toLink() + querypage.title.toTitle();
 			var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+			if ( querypage.pageprops && querypage.pageprops.displaytitle ) embed.setTitle( querypage.pageprops.displaytitle.escapeFormatting() );
 			if ( querypage.pageprops && querypage.pageprops.description ) {
 				var description = '';
 				var parser = new htmlparser.Parser( {
@@ -2122,10 +2160,14 @@ client.on( 'guildDelete', guild => {
 	}
 	else {
 		var temp_settings = JSON.parse(JSON.stringify(settings));
+		var save = false;
 		Object.keys(temp_settings).forEach( function(guild) {
-			if ( !client.guilds.has(guild) && guild !== 'default' ) delete temp_settings[guild];
+			if ( !client.guilds.has(guild) && guild !== 'default' ) {
+				delete temp_settings[guild];
+				save = true;
+			}
 		} );
-		request.post( {
+		if ( save ) request.post( {
 			uri: process.env.save,
 			headers: access,
 			body: {
@@ -2191,7 +2233,7 @@ async function graceful(code = 1) {
 			console.log( '- SIGTERM: Closing takes too long, terminating!' );
 			process.exit(code);
 		}, 1000 ).unref();
-	}, 5000 ).unref();
+	}, 2000 ).unref();
 }
 
 process.once( 'SIGINT', graceful );
