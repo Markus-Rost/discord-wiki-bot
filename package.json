@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "dblapi.js": "^2.3.0",
-    "discord.js": "^11.4.2",
+    "discord.js": "^11.5.0",
     "dotenv": "^6.2.0",
     "full-icu": "^1.2.1",
     "htmlparser2": "^3.10.1",
