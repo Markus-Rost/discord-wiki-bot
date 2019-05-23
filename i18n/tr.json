@@ -164,6 +164,7 @@
 		"admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
 		"noadmin": "Bu komutlar için `Sunucuyu Yönetme` iznine ihtiyacınız var!",
 		"pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:",
+		"footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑 ile tepki verin, mesajı sileceğim.",
 		"list": [
 			{ "cmd": "<arama terimi>", "desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim.", "unsearchable": true },
 			{ "cmd": "!<wiki> <arama terimi>", "desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`", "unsearchable": true },

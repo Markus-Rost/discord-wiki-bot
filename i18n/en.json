@@ -163,6 +163,7 @@
 		"admin": "These commands can only be performed by administrators:",
 		"noadmin": "you need the `Manage Server` permission for these commands!",
 		"pause": "**I'm currently paused on this server!**\nOnly these commands can be performed:",
+		"footer": "If you got an unwanted response, you can react with 🗑 to my message and I will delete it.",
 		"list": [
 			{ "cmd": "<search term>", "desc": "I will answer with a link to a matching article in the wiki.", "unsearchable": true },
 			{ "cmd": "!<wiki> <search term>", "desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },

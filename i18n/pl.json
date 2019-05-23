@@ -165,6 +165,7 @@
 		"admin": "Te komendy mogą być wykonane jedynie przez administrację:",
 		"noadmin": "potrzebujesz uprawnienia `Zarządzanie serwerem` aby używać tych komend!",
 		"pause": "**Moja praca na tym serwerze została wstrzymana!**\nTylko następujące komendy mogą być używane:",
+		"footer": "Jeżeli otrzymałeś niechcianą odpowiedź, możesz na nią zareagować używając emotki 🗑 a wiadomość zostanie ona usunięta.",
 		"list": [
 			{ "cmd": "<wyszukiwana fraza>", "desc": "Odpowiem linkiem do pasujacego artykułu na Wiki.", "unsearchable": true },
 			{ "cmd": "!<wiki> <wyszukiwana fraza>", "desc": "Odpowiem z pasującym linkiem do podanej wiki na Gamepedii: `https://<wiki>.gamepedia.com/`", "unsearchable": true },

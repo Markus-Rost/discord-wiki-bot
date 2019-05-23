@@ -187,6 +187,7 @@
 		"admin": "Ces commandes ne peuvent être effectuées que par des administrateurs :",
 		"noadmin": "vous devez avoir la permission `Gérer le serveur` pour utiliser ces commandes !",
 		"pause": "**Je suis présentement en pause sur ce serveur!**\n Seuls ces commandes sont disponibles :",
+		"footer": "Si vous avez reçu une réponse non-désirée, vous pouvez réagir avec 🗑 sur mon message and je le supprimerai.",
 		"list": [
 			{ "cmd": "<terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur Wiki.", "unsearchable": true },
 			{ "cmd": "!<wiki> <terme de recherche>", "desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Gamepedia nommé : `https://<wiki>.gamepedia.com/`", "unsearchable": true },

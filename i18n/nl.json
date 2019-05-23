@@ -163,6 +163,7 @@
 		"admin": "Deze opdrachten kunnen alleen door administratoren uitgevoerd worden:",
 		"noadmin": "je hebt de `Beheer Server` permissie nodig voor deze opdrachten!",
 		"pause": "**Ik ben momenteel gepauzeerd op deze server!**\nAlleen deze opdrachten kunnen worden uitgevoerd:",
+		"footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑 op mijn bericht en ik zal het verwijderen.",
 		"list": [
 			{ "cmd": "<zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki.", "unsearchable": true },
 			{ "cmd": "!<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
