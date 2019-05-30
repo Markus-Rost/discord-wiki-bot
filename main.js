@@ -945,14 +945,14 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 				if ( !querypage.noRedirect || ( querypage.missing === undefined && querypage.ns !== -1 ) ) namespace = contribs;
 				var blocks = body.query.blocks.map( function(block) {
 					var isBlocked = false;
-					var blockedtimestamp = (new Date(block.timestamp)).toLocaleString(lang.user.dateformat, timeoptions);
+					var blockedtimestamp = new Date(block.timestamp).toLocaleString(lang.user.dateformat, timeoptions);
 					var blockexpiry = block.expiry;
 					if ( blockexpiry === 'infinity' ) {
 						blockexpiry = lang.user.block.until_infinity;
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
-						blockexpiry = (new Date(blockexpiry)).toLocaleString(lang.user.dateformat, timeoptions);
+						blockexpiry = new Date(blockexpiry).toLocaleString(lang.user.dateformat, timeoptions);
 					}
 					if ( isBlocked ) return [lang.user.block.header.replaceSave( '%s', block.user ), lang.user.block.text.replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ).replaceSave( '%3$s', '[[User:' + block.by + '|' + block.by + ']]' ).replaceSave( '%4$s', block.reason )];
 				} ).filter( block => block !== undefined );
@@ -1064,7 +1064,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						default: 
 							gender.push(lang.user.gender.unknown);
 					}
-					var registration = [lang.user.info.registration, (new Date(body.query.users[0].registration)).toLocaleString(lang.user.dateformat, timeoptions)];
+					var registration = [lang.user.info.registration, new Date(body.query.users[0].registration).toLocaleString(lang.user.dateformat, timeoptions)];
 					var editcount = [lang.user.info.editcount, body.query.users[0].editcount];
 					var groups = body.query.users[0].groups;
 					var group = [lang.user.info.group];
@@ -1077,14 +1077,14 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						}
 					}
 					var isBlocked = false;
-					var blockedtimestamp = (new Date(body.query.users[0].blockedtimestamp)).toLocaleString(lang.user.dateformat, timeoptions);
+					var blockedtimestamp = new Date(body.query.users[0].blockedtimestamp).toLocaleString(lang.user.dateformat, timeoptions);
 					var blockexpiry = body.query.users[0].blockexpiry;
 					if ( blockexpiry === 'infinity' ) {
 						blockexpiry = lang.user.block.until_infinity;
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						var blockexpirydate = blockexpiry.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z');
-						blockexpiry = (new Date(blockexpirydate)).toLocaleString(lang.user.dateformat, timeoptions);
+						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.user.dateformat, timeoptions);
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
 					var blockedby = '[[User:' + body.query.users[0].blockedby + '|' + body.query.users[0].blockedby + ']]';
@@ -1366,11 +1366,11 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 				}
 				else {
 					var title = pages[0].title;
-					var revisions = pages[0].revisions;
+					var revisions = pages[0].revisions.sort( (first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp) );
 					var diff = revisions[0].revid;
 					var oldid = ( revisions[1] ? revisions[1].revid : 0 );
 					var editor = [lang.diff.info.editor, ( revisions[0].userhidden !== undefined ? lang.diff.hidden : revisions[0].user )];
-					var timestamp = [lang.diff.info.timestamp, (new Date(revisions[0].timestamp)).toLocaleString(lang.user.dateformat, timeoptions)];
+					var timestamp = [lang.diff.info.timestamp, new Date(revisions[0].timestamp).toLocaleString(lang.user.dateformat, timeoptions)];
 					var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
 					var size = [lang.diff.info.size, lang.diff.info.bytes.replace( '%s', ( difference > 0 ? '+' : '' ) + difference )];
 					var comment = [lang.diff.info.comment, ( revisions[0].commenthidden !== undefined ? lang.diff.hidden : ( revisions[0].comment ? revisions[0].comment.toFormatting(msg.showEmbed(), wiki, title) : lang.diff.nocomment ) )];
@@ -1638,7 +1638,7 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 			var site = allSites.find( site => site.wiki_domain === body.query.general.servername );
 			
 			var name = [lang.overview.name, site.wiki_display_name];
-			var created = [lang.overview.created, (new Date(parseInt(site.created + '000', 10))).toLocaleString(lang.user.dateformat, timeoptions)];
+			var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.user.dateformat, timeoptions)];
 			var manager = [lang.overview.manager, site.wiki_managers];
 			var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
 			var articles = [lang.overview.articles, site.ss_good_articles];
