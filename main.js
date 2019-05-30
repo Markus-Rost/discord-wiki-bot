@@ -1366,7 +1366,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 				}
 				else {
 					var title = pages[0].title;
-					var revisions = pages[0].revisions.sort( (first, second) => first.timestamp < second.timestamp );
+					var revisions = pages[0].revisions;
 					var diff = revisions[0].revid;
 					var oldid = ( revisions[1] ? revisions[1].revid : 0 );
 					var editor = [lang.diff.info.editor, ( revisions[0].userhidden !== undefined ? lang.diff.hidden : revisions[0].user )];
