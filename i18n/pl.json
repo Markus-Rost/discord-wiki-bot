@@ -125,15 +125,33 @@
 			"empty": "*Ta kategoria jest pusta*",
 			"pages": {
 				"default": "%s stron",
-				"1": "%s strona"
+				"1": "%s strona",
+				"*2": "%s strony",
+				"*3": "%s strony",
+				"*4": "%s strony",
+				"*12": "%s stron",
+				"*13": "%s stron",
+				"*14": "%s stron"
 			},
 			"files": {
 				"default": "%s plików",
-				"1": "%s plik"
+				"1": "%s plik",
+				"*2": "%s pliki",
+				"*3": "%s pliki",
+				"*4": "%s pliki",
+				"*12": "%s plików",
+				"*13": "%s plików",
+				"*14": "%s plików"
 			},
 			"subcats": {
 				"default": "%s kategorii",
-				"1": "%s kategoria"
+				"1": "%s kategoria",
+				"*2": "%s katerorie",
+				"*3": "%s katerorie",
+				"*4": "%s katerorie",
+				"*12": "%s kategorii",
+				"*13": "%s kategorii",
+				"*14": "%s kategorii"
 			}
 		}
 	},

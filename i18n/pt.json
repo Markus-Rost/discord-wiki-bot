@@ -173,7 +173,7 @@
 		"pause": "**Estou atualmente em pausa neste servidor!**\nSom estes comandos podem ser executados:",
 		"footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑 para minha mensagem e eu a apagarei.",
 		"list": [
-			{ "cmd": "<termo de pesquisa>", "desc": "Eu vou responder com um link para um artigo correspondente no wiki.", "unsearchable": true },
+			{ "cmd": "<termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente no wiki.", "unsearchable": true },
 			{ "cmd": "!<wiki> <termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente na wiki da Gamepedia: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 			{ "cmd": "Usuário:<username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "unsearchable": true },
 			{ "cmd": "diff <diff> [<oldid>]", "desc": "Vou responder com um link para o diff na wiki." },

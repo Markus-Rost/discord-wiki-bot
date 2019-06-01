@@ -7,7 +7,12 @@ const DBL = require('dblapi.js');
 var request = require('request');
 var htmlparser = require('htmlparser2');
 
-var client = new Discord.Client( {disableEveryone:true} );
+var client = new Discord.Client( {
+	messageCacheLifetime: 600,
+	messageSweepInterval: 6000,
+	disableEveryone: true,
+	disabledEvents: ["TYPING_START"]
+} );
 const dbl = new DBL(process.env.dbltoken);
 
 var i18n = require('./i18n/allLangs.json');
@@ -510,7 +515,7 @@ async function cmd_eval(lang, msg, args, line) {
 	} catch ( error ) {
 		var text = error.name + ': ' + error.message;
 	}
-	if ( isDebug ) console.log( '--- EVAL START ---\n\u200b' + text.replace( /\n/g, '\n\u200b' ) + '\n--- EVAL END ---' );
+	if ( isDebug ) console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
 	if ( text.length > 2000 ) msg.reactEmoji('✅', true);
 	else msg.sendChannel( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}}, true );
 }
@@ -748,15 +753,15 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 										if ( querypage.categoryinfo.size === 0 ) category.push(langCat.empty);
 										if ( querypage.categoryinfo.pages > 0 ) {
 											var pages = querypage.categoryinfo.pages;
-											category.push(( langCat.pages[pages] || langCat.pages.default ).replaceSave( '%s', pages ));
+											category.push(( langCat.pages[pages] || langCat.pages['*' + pages % 100] || langCat.pages['*' + pages % 10] || langCat.pages.default ).replaceSave( '%s', pages ));
 										}
 										if ( querypage.categoryinfo.files > 0 ) {
 											var files = querypage.categoryinfo.files;
-											category.push(( langCat.files[files] || langCat.files.default ).replaceSave( '%s', files ));
+											category.push(( langCat.files[files] || langCat.files['*' + files % 100] || langCat.files['*' + files % 10] || langCat.files.default ).replaceSave( '%s', files ));
 										}
 										if ( querypage.categoryinfo.subcats > 0 ) {
 											var subcats = querypage.categoryinfo.subcats;
-											category.push(( langCat.subcats[subcats] || langCat.subcats.default ).replaceSave( '%s', subcats ));
+											category.push(( langCat.subcats[subcats] || langCat.subcats['*' + subcats % 100] || langCat.subcats['*' + subcats % 10] || langCat.subcats.default ).replaceSave( '%s', subcats ));
 										}
 										if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
 										else text += '\n\n' + category.join('\n');
@@ -804,15 +809,15 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							if ( querypage.categoryinfo.size === 0 ) category.push(langCat.empty);
 							if ( querypage.categoryinfo.pages > 0 ) {
 								var pages = querypage.categoryinfo.pages;
-								category.push(( langCat.pages[pages] || langCat.pages.default ).replaceSave( '%s', pages ));
+								category.push(( langCat.pages[pages] || langCat.pages['*' + pages % 100] || langCat.pages['*' + pages % 10] || langCat.pages.default ).replaceSave( '%s', pages ));
 							}
 							if ( querypage.categoryinfo.files > 0 ) {
 								var files = querypage.categoryinfo.files;
-								category.push(( langCat.files[files] || langCat.files.default ).replaceSave( '%s', files ));
+								category.push(( langCat.files[files] || langCat.files['*' + files % 100] || langCat.files['*' + files % 10] || langCat.files.default ).replaceSave( '%s', files ));
 							}
 							if ( querypage.categoryinfo.subcats > 0 ) {
 								var subcats = querypage.categoryinfo.subcats;
-								category.push(( langCat.subcats[subcats] || langCat.subcats.default ).replaceSave( '%s', subcats ));
+								category.push(( langCat.subcats[subcats] || langCat.subcats['*' + subcats % 100] || langCat.subcats['*' + subcats % 10] || langCat.subcats.default ).replaceSave( '%s', subcats ));
 							}
 							if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
 							else text += '\n\n' + category.join('\n');
@@ -1972,7 +1977,7 @@ String.prototype.toPlaintext = function() {
 };
 
 String.prototype.escapeFormatting = function() {
-	return this.replace( /(`|_|\*|~|<|>|{|}|@|\||\\|\/\/)/g, '\\$1' );
+	return this.replace( /(`|_|\*|~|:|<|>|{|}|@|\||\\|\/\/)/g, '\\$1' );
 };
 
 String.prototype.replaceSave = function(pattern, replacement) {
@@ -2081,7 +2086,7 @@ client.on( 'message', msg => {
 				var args = cont.split(' ').slice(2);
 				if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
 				if ( !( ownercmd || aliasInvoke in pausecmdmap ) && pause[msg.guild.id] ) console.log( msg.guild.name + ': Paused' );
-				else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont.replace( /\n/g, '\n\u200b' ) );
+				else console.log( ( msg.guild ? msg.guild.name : '@' + author.username ) + ': ' + cont );
 				if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, cont);
 				else if ( !pause[msg.guild.id] || aliasInvoke in pausecmdmap ) multilinecmdmap[aliasInvoke](lang, msg, args, cont);
 			} else {
@@ -2209,7 +2214,7 @@ if ( isDebug ) client.on( 'debug', debug => console.log( '- Debug: ' + debug ) )
 function log_error(error, isBig = false, type = '') {
 	var time = new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' });
 	if ( isDebug ) {
-		console.error( '--- ' + type + 'ERROR START ' + time + ' ---\n\u200b' + util.inspect( error ).replace( /\n/g, '\n\u200b' ) + '\n--- ' + type + 'ERROR END ' + time + ' ---' );
+		console.error( '--- ' + type + 'ERROR START ' + time + ' ---\n' + util.inspect( error ) + '\n--- ' + type + 'ERROR END ' + time + ' ---' );
 	} else {
 		if ( isBig ) console.log( '--- ' + type + 'ERROR: ' + time + ' ---\n- ' + error.name + ': ' + error.message );
 		else console.log( '- ' + error.name + ': ' + error.message );
@@ -2218,10 +2223,10 @@ function log_error(error, isBig = false, type = '') {
 
 function log_warn(warning, api = true) {
 	if ( isDebug ) {
-		console.warn( '--- Warning start ---\n\u200b' + util.inspect( warning ).replace( /\n/g, '\n\u200b' ) + '\n--- Warning end ---' );
+		console.warn( '--- Warning start ---\n' + util.inspect( warning ) + '\n--- Warning end ---' );
 	} else {
 		if ( api ) console.warn( '- Warning: ' + Object.keys(warning).join(', ') );
-		else console.warn( '--- Warning ---\n\u200b' + util.inspect( warning ).replace( /\n/g, '\n\u200b' ) );
+		else console.warn( '--- Warning ---\n' + util.inspect( warning ) );
 	}
 }
 
