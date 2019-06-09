@@ -120,7 +120,7 @@
 		"random": "random",
 		"overview": "overview",
 		"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s kullan.",
-		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s, tüm isabetlerin listesi için %2$s kullan.",
+		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %1$s, tüm isabetlerin listesi için %2$s kullan.",
 		"category": {
 			"content": "Bu kategorinin içeriği:",
 			"empty": "*Bu kategori boş*",

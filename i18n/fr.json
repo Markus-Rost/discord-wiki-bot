@@ -17,7 +17,7 @@
 		"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",
 		"missing": "ce serveur n'est pas encore configuré. Utilisez %1$s et %2$s pour modifier les paramètres.",
 		"foundwikis": "Cherchiez-vous un de ces wikis ?",
-		"current": "voici les paramètres actuels pour ce serveur :\n Langue : `Français` %1$s\nWiki par défaut : %2$s\nWikis associés aux salons",
+		"current": "voici les paramètres actuels pour ce serveur :\nLangue : `Français` %1$s\nWiki par défaut : %2$s\nWikis associés aux salons",
 		"nochannels": "*Aucun salon n'est associé à un wiki spécifique pour l'instant*",
 		"lang": "la langue pour ce serveur est: `Français`",
 		"langinvalid": "la langue spécifiée n'est pas disponible !",
