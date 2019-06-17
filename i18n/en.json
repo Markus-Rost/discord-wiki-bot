@@ -4,8 +4,10 @@
 		"violine1101"
 	],
 	"lang": "en",
+	"dateformat": "en-US",
 	"aliase": {
-		"purge": "delete"
+		"purge": "delete",
+		"🎲": "random"
 	},
 	"missingperm": "I'm missing some permissions for this command:",
 	"limit": "🚨 **Stop, you hit a limit!** 🚨\n\n%s, your message contained too many commands!",
@@ -53,7 +55,8 @@
 		"articles": "Articles:",
 		"pages": "Total pages:",
 		"edits": "Edits:",
-		"users": "Active users:"
+		"users": "Active users:",
+		"none": "*none*"
 	},
 	"user": {
 		"gender": {
@@ -61,7 +64,6 @@
 			"male": "Male",
 			"female": "Female"
 		},
-		"dateformat": "en-US",
 		"groups": [
 			["global_bot", "Gamepedia bot"],
 			["hydra_staff", "Gamepedia staff"],
@@ -112,10 +114,6 @@
 		}
 	},
 	"search": {
-		"page": "page",
-		"search": "search",
-		"random": "random",
-		"overview": "overview",
 		"infopage": "Not the correct result? Use %s for a direct link.",
 		"infosearch": "Not the correct result? Use %1$s for a direct link or %2$s for a list of all hits.",
 		"category": {

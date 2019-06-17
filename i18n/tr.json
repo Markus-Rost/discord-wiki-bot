@@ -3,12 +3,16 @@
 		"Doğukan Karakaş"
 	],
 	"lang": "tr",
+	"dateformat": "tr-TR",
 	"aliase": {
 		"purge": "delete",
 		"temizleme": "delete",
 		"bilgi": "info",
 		"yardım": "help",
-		"anket": "poll"
+		"anket": "poll",
+		"sayfa": "page",
+		"arama": "search",
+		"🎲": "random"
 	},
 	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
 	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n%s, mesajın çok fazla komut içeriyor!",
@@ -56,7 +60,8 @@
 		"articles": "Makaleler:",
 		"pages": "Toplam sayfalar:",
 		"edits": "Düzenlemeler:",
-		"users": "Aktif kullanıcılar:"
+		"users": "Aktif kullanıcılar:",
+		"none": "*none*"
 	},
 	"user": {
 		"gender": {
@@ -64,7 +69,6 @@
 			"male": "erkek",
 			"female": "kadın"
 		},
-		"dateformat": "tr-TR",
 		"groups": [
 			["global_bot", "Gamepedia bot"],
 			["hydra_staff", "Gamepedia personeli"],
@@ -115,10 +119,6 @@
 		}
 	},
 	"search": {
-		"page": "sayfa",
-		"search": "arama",
-		"random": "random",
-		"overview": "overview",
 		"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s kullan.",
 		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %1$s, tüm isabetlerin listesi için %2$s kullan.",
 		"category": {

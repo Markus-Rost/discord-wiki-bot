@@ -4,6 +4,7 @@
 		"Jhonabf"
 	],
 	"lang": "pt",
+	"dateformat": "pt-PT",
 	"aliase": {
 		"purge": "delete",
 		"ajuda": "help",
@@ -13,7 +14,10 @@
 		"excluir": "delete",
 		"purgue": "delete",
 		"purgar": "delete",
-		"limpar": "delete"
+		"limpar": "delete",
+		"página": "page",
+		"pesquisar": "search",
+		"🎲": "random"
 	},
 	"missingperm": "eu estou perdendo algumas permissões para este comando:",
 	"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n%s, sua mensagem continha muitos comandos!",
@@ -61,7 +65,8 @@
 		"articles": "Artigos:",
 		"pages": "Total de páginas:",
 		"edits": "Edições:",
-		"users": "Usuário ativos:"
+		"users": "Usuário ativos:",
+		"none": "*none*"
 	},
 	"user": {
 		"gender": {
@@ -69,7 +74,6 @@
 			"male": "Masculino",
 			"female": "Feminino"
 		},
-		"dateformat": "pt-PT",
 		"groups": [
 			["global_bot", "Robô da Gamepedia"],
 			["hydra_staff", "Equipe da Gamepedia"],
@@ -120,10 +124,6 @@
 		}
 	},
 	"search": {
-		"page": "página",
-		"search": "pesquisar",
-		"random": "random",
-		"overview": "overview",
 		"infopage": "Não é o resultado correto? Use %s para um link direto.",
 		"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos.",
 		"category": {

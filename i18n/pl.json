@@ -3,11 +3,15 @@
 		"Frisk"
 	],
 	"lang": "pl",
+	"dateformat": "pl-PL",
 	"aliase": {
 		"purge": "delete",
 		"pomoc": "help",
 		"ankieta": "poll",
-		"usuń": "delete"
+		"usuń": "delete",
+		"strona": "page",
+		"szukaj": "search",
+		"🎲": "random"
 	},
 	"missingperm": "Brakuje mi upawnień:",
 	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n%s, Twoja wiadomość zawiera zbyt wiele komend!",
@@ -55,7 +59,8 @@
 		"articles": "Artykułów:",
 		"pages": "Stron:",
 		"edits": "Edycji:",
-		"users": "Aktywnych użytkowników:"
+		"users": "Aktywnych użytkowników:",
+		"none": "*none*"
 	},
 	"user": {
 		"gender": {
@@ -63,7 +68,6 @@
 			"male": "Mężczyzna",
 			"female": "Kobieta"
 		},
-		"dateformat": "pl-PL",
 		"groups": [
 			["global_bot", "bot Gamepedii"],
 			["hydra_staff", "personel Gamepedii"],
@@ -114,10 +118,6 @@
 		}
 	},
 	"search": {
-		"page": "strona",
-		"search": "szukaj",
-		"random": "random",
-		"overview": "overview",
 		"infopage": "Nie to czego szukałeś? Użyj %s dla bezpośredniego linku.",
 		"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników.",
 		"category": {

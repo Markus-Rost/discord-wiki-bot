@@ -4,10 +4,13 @@
 		"JSBM"
 	],
 	"lang": "fr",
+	"dateformat": "fr-FR",
 	"aliase": {
 		"purge": "delete",
 		"sondage": "poll",
-		"aide": "help"
+		"aide": "help",
+		"chercher": "search",
+		"🎲": "random"
 	},
 	"missingperm": "Il me manque certaines permissions pour cette commande :",
 	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n%s, votre message contient beaucoup trop de commandes !",
@@ -55,7 +58,8 @@
 		"articles": "Articles :",
 		"pages": "Nombre de pages total :",
 		"edits": "Modifications :",
-		"users": "Utilisateurs actifs :"
+		"users": "Utilisateurs actifs :",
+		"none": "*none*"
 	},
 	"user": {
 		"gender": {
@@ -63,7 +67,6 @@
 			"male": "Homme",
 			"female": "Femme"
 		},
-		"dateformat": "fr-FR",
 		"groups": [
 			["global_bot", "Robot de Gamepedia"],
 			["hydra_staff", "Staff de Gamepedia"],
@@ -114,10 +117,6 @@
 		}
 	},
 	"search": {
-		"page": "page",
-		"search": "chercher",
-		"random": "random",
-		"overview": "overview",
 		"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
 		"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances.",
 		"category": {

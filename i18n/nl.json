@@ -3,8 +3,14 @@
 		"Jack_McKalling"
 	],
 	"lang": "nl",
+	"dateformat": "nl-NL",
 	"aliase": {
-		"purge": "delete"
+		"purge": "delete",
+		"pagina": "page",
+		"zoeken": "search",
+		"🎲": "random",
+		"willekeurig": "random",
+		"overzicht": "overview"
 	},
 	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
 	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n%s, je bericht bevatte te veel opdrachten!",
@@ -52,7 +58,8 @@
 		"articles": "Artikelen:",
 		"pages": "Totaal pagina's:",
 		"edits": "Bewerkingen:",
-		"users": "Actieve gebruikers:"
+		"users": "Actieve gebruikers:",
+		"none": "*none*"
 	},
 	"user": {
 		"gender": {
@@ -60,7 +67,6 @@
 			"male": "Man",
 			"female": "Vrouw"
 		},
-		"dateformat": "nl-NL",
 		"groups": [
 			["global_bot", "Gamepedia bot"],
 			["hydra_staff", "Gamepedia staff"],
@@ -111,10 +117,6 @@
 		}
 	},
 	"search": {
-		"page": "pagina",
-		"search": "zoeken",
-		"random": "willekeurig",
-		"overview": "overzicht",
 		"infopage": "Niet het gewenste resultaat? Gebruik %s voor een rechtstreekse link.",
 		"infosearch": "Niet het gewenste resultaat? Gebruik %1$s voor een rechtstreekse link of %2$s voor een lijst van alle overeenkomsten.",
 		"category": {
