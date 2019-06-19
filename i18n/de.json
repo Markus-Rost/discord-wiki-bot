@@ -119,6 +119,8 @@
 		}
 	},
 	"search": {
+		"page": "seite",
+		"search": "suche",
 		"infopage": "Nicht das richtige Ergebnis? Nutze %s für einen direkten Link.",
 		"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern.",
 		"category": {

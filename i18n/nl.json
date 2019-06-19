@@ -117,6 +117,8 @@
 		}
 	},
 	"search": {
+		"page": "pagina",
+		"search": "zoeken",
 		"infopage": "Niet het gewenste resultaat? Gebruik %s voor een rechtstreekse link.",
 		"infosearch": "Niet het gewenste resultaat? Gebruik %1$s voor een rechtstreekse link of %2$s voor een lijst van alle overeenkomsten.",
 		"category": {

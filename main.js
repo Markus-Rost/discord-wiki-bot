@@ -69,8 +69,9 @@ function getSettings() {
 	} );
 }
 
-function setStatus() {
+function setStatus(hardreset) {
 	if ( settings === defaultSettings ) client.user.setStatus('invisible').catch(log_error);
+	else if ( hardreset === true ) client.user.setStatus('invisible').then(setStatus, log_error);
 	else {
 		client.user.setStatus('online').catch(log_error);
 		client.user.setActivity( process.env.prefix + ' help' ).catch(log_error);

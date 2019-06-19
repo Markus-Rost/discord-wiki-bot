@@ -124,6 +124,8 @@
 		}
 	},
 	"search": {
+		"page": "página",
+		"search": "pesquisar",
 		"infopage": "Não é o resultado correto? Use %s para um link direto.",
 		"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos.",
 		"category": {

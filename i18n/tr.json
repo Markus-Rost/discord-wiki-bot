@@ -119,6 +119,8 @@
 		}
 	},
 	"search": {
+		"page": "sayfa",
+		"search": "arama",
 		"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s kullan.",
 		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %1$s, tüm isabetlerin listesi için %2$s kullan.",
 		"category": {

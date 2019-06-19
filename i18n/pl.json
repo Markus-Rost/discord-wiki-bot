@@ -118,6 +118,8 @@
 		}
 	},
 	"search": {
+		"page": "strona",
+		"search": "szukaj",
 		"infopage": "Nie to czego szukałeś? Użyj %s dla bezpośredniego linku.",
 		"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników.",
 		"category": {

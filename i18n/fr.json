@@ -117,6 +117,8 @@
 		}
 	},
 	"search": {
+		"page": "page",
+		"search": "chercher",
 		"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
 		"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances.",
 		"category": {
