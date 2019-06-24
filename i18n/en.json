@@ -11,7 +11,7 @@
 	},
 	"missingperm": "I'm missing some permissions for this command:",
 	"limit": "🚨 **Stop, you hit a limit!** 🚨\n\n%s, your message contained too many commands!",
-	"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. %s wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**",
+	"disclaimer": "I am a small bot with the task to link to Gamepedia wikis. %s wrote me in JavaScript.\n\n**I am not affiliated with Curse/Gamepedia and am an unofficial tool!**\n\nYou can support me on Patreon:",
 	"helpserver": "For questions and problems please visit my support server:",
 	"settings": {
 		"save_failed": "sadly the settings couldn't be saved, please try again later.",

@@ -16,7 +16,7 @@
 	},
 	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
 	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n%s, mesajın çok fazla komut içeriyor!",
-	"disclaimer": "Ben, Gamepedia Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. %s, beni JavaScript kullanarak yazdı.\n\n**Curse/Gamepedia ile resmi bir bağım yok, ben bir gayri resmi aracım!!**",
+	"disclaimer": "Ben, Gamepedia Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. %s, beni JavaScript kullanarak yazdı.\n\n**Curse/Gamepedia ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",
 	"helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
 	"settings": {
 		"save_failed": "ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",

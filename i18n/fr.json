@@ -14,7 +14,7 @@
 	},
 	"missingperm": "Il me manque certaines permissions pour cette commande :",
 	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n%s, votre message contient beaucoup trop de commandes !",
-	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. %s m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**",
+	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia. %s m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Curse/Gamepedia et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",
 	"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
 	"settings": {
 		"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",

@@ -333,7 +333,7 @@ function edit_settings(lang, msg, key, value) {
 function cmd_info(lang, msg, args, line) {
 	if ( args.join('') ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
 	else {
-		msg.sendChannel( lang.disclaimer.replaceSave( '%s', ( msg.channel.type === 'text' && msg.guild.members.get(process.env.owner) || '*MarkusRost*' ) ) );
+		msg.sendChannel( lang.disclaimer.replaceSave( '%s', ( msg.channel.type === 'text' && msg.guild.members.get(process.env.owner) || '*MarkusRost*' ) ) + '\n<https://www.patreon.com/WikiBot>' );
 		cmd_helpserver(lang, msg);
 		cmd_invite(lang, msg, args, line);
 	}
@@ -341,6 +341,14 @@ function cmd_info(lang, msg, args, line) {
 
 function cmd_helpserver(lang, msg) {
 	msg.sendChannel( lang.helpserver + '\n' + process.env.invite );
+}
+
+function cmd_invite(lang, msg, args, line) {
+	if ( args.join('') ) {
+		cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
+	} else {
+		client.generateInvite(defaultPermissions).then( invite => msg.sendChannel( lang.invite.bot + '\n<' + invite + '>' ), log_error );
+	}
 }
 
 function cmd_help(lang, msg, args, line) {
@@ -507,19 +515,11 @@ function cmd_test(lang, msg, args, line) {
 	}
 }
 
-function cmd_invite(lang, msg, args, line) {
-	if ( args.join('') ) {
-		cmd_link(lang, msg, line.split(' ').slice(1).join(' '));
-	} else {
-		client.generateInvite(defaultPermissions).then( invite => msg.sendChannel( lang.invite.bot + '\n<' + invite + '>' ), log_error );
-	}
-}
-
 async function cmd_eval(lang, msg, args, line) {
 	try {
 		var text = util.inspect( await eval( args.join(' ') ) );
 	} catch ( error ) {
-		var text = error.name + ': ' + error.message;
+		var text = error.toString();
 	}
 	if ( isDebug ) console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
 	if ( text.length > 2000 ) msg.reactEmoji('✅', true);
@@ -1858,7 +1858,7 @@ function cmd_get(lang, msg, args, line) {
 		} else if ( client.guilds.some( guild => guild.members.has(id) ) ) {
 			var username = [];
 			var guildlist = ['Guilds:'];
-			var guilds = client.guilds.filter( guild => guild.members.has(id) )
+			var guilds = client.guilds.filter( guild => guild.members.has(id) );
 			guildlist.push('\n' + guilds.map( function(guild) {
 				var member = guild.members.get(id);
 				if ( !username.length ) username.push('User:', member.user.tag.escapeFormatting() + ' `' + member.id + '` ' + member.toString());
@@ -2276,7 +2276,16 @@ client.on( 'guildDelete', guild => {
 } );
 
 
-client.login(process.env.token).catch( error => log_error(error, true, 'LOGIN-') );
+client.login(process.env.token).catch( error => {
+	log_error(error, true, 'LOGIN-');
+	client.login(process.env.token).catch( error => {
+		log_error(error, true, 'LOGIN-');
+		client.login(process.env.token).catch( error => {
+			log_error(error, true, 'LOGIN-');
+			process.exit(1);
+		} );
+	} );
+} );
 
 
 client.on( 'error', error => log_error(error, true) );
@@ -2290,9 +2299,9 @@ if ( isDebug ) client.on( 'debug', debug => {
 function log_error(error, isBig = false, type = '') {
 	var time = new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' });
 	if ( isDebug ) {
-		console.error( '--- ' + type + 'ERROR START ' + time + ' ---\n' + util.inspect( error ) + '\n--- ' + type + 'ERROR END ' + time + ' ---' );
+		console.error( '--- ' + type + 'ERROR START ' + time + ' ---\n', error, '\n--- ' + type + 'ERROR END ' + time + ' ---' );
 	} else {
-		if ( isBig ) console.log( '--- ' + type + 'ERROR: ' + time + ' ---\n- ' + error.name + ': ' + error.message );
+		if ( isBig ) console.log( '--- ' + type + 'ERROR: ' + time + ' ---\n-', error );
 		else console.log( '- ' + error.name + ': ' + error.message );
 	}
 }
