@@ -69,7 +69,6 @@
 			["hydra_staff", "Gamepedia staff"],
 			["bot", "Bot"],
 			["bureaucrat", "Bureaucrat"],
-			["wiki_guardian", "Wiki Guardian"],
 			["sysop", "Administrator"],
 			["grasp", "GRASP"],
 			["directors", "Director"],
@@ -93,6 +92,7 @@
 		"block": {
 			"header": "%s is currently blocked!",
 			"text": "Blocked on %1$s until %2$s by %3$s with reason \"%4$s\".",
+			"noreason": "Blocked on %1$s until %2$s by %3$s.",
 			"until_infinity": "the end of all days"
 		}
 	},

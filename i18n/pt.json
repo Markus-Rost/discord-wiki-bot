@@ -79,7 +79,6 @@
 			["hydra_staff", "Equipe da Gamepedia"],
 			["bot", "Robô"],
 			["bureaucrat", "Burocrata"],
-			["wiki_guardian", "Guardião da Wiki"],
 			["sysop", "Administrador"],
 			["grasp", "GRASP"],
 			["directors", "Diretor"],
@@ -102,7 +101,8 @@
 		},
 		"block": {
 			"header": "%s está atualmente bloqueado!",
-			"text": "Bloqueado no %1$s até %2$s por %3$s pela razão \"%4$s\".",
+			"text": "Bloqueado em %1$s até %2$s por %3$s com motivo \"%4$s\".",
+			"noreason": "Bloqueado em %1$s até %2$s por %3$s.",
 			"until_infinity": "o fim de todos os dias"
 		}
 	},

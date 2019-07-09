@@ -74,7 +74,6 @@
 			["hydra_staff", "Gamepedia-Mitarbeiter"],
 			["bot", "Bot"],
 			["bureaucrat", "Bürokrat"],
-			["wiki_guardian", "Wiki Guardian"],
 			["sysop", "Administrator"],
 			["grasp", "GRASP"],
 			["directors", "Direktor"],
@@ -98,6 +97,7 @@
 		"block": {
 			"header": "%s ist derzeit gesperrt!",
 			"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung „%4$s”.",
+			"noreason": "Gesperrt am %1$s bis zum %2$s von %3$s.",
 			"until_infinity": "Ende aller Tage"
 		}
 	},
