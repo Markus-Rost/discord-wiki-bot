@@ -1135,7 +1135,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 							console.log( '- ' + ( presponse && presponse.statusCode ) + ': Error while getting the user profile: ' + ( perror || pbody && ( pbody.error && pbody.error.info || pbody.errormsg ) ) );
 						}
 						else if ( pbody.profile['link-discord'] ) {
-							var discordmember = msg.guild.members.find( member => {
+							if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.find( member => {
 								return member.user.tag === pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 							} );
 							var discordname = [lang.user.info.discord,pbody.profile['link-discord'].escapeFormatting()];
@@ -2130,7 +2130,7 @@ Discord.Message.prototype.deleteMsg = function(timeout = 0) {
 };
 
 Discord.Message.prototype.allowDelete = function(author) {
-	return this.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑' && user.id === author, {max:1,time:30000} ).then( reaction => {
+	return this.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑' && user.id === author, {max:1,time:60000} ).then( reaction => {
 		if ( reaction.size ) {
 			this.deleteMsg();
 		}
