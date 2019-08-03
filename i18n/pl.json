@@ -15,7 +15,7 @@
 	},
 	"missingperm": "Brakuje mi upawnień:",
 	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n%s, Twoja wiadomość zawiera zbyt wiele komend!",
-	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki Gamepedii. Zostałem napisany w JavaScript przez %s.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Curse/Gamepedią!**\n\nMożesz wesprzeć mnie na Patreon-ie:",
+	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki Gamepedii. Zostałem napisany w JavaScript przez %s.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Fandom/Gamepedią!**\n\nMożesz wesprzeć mnie na Patreon-ie:",
 	"helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
 	"settings": {
 		"save_failed": "niestety, ustawnienia nie mogły zostać zapisane, spróbuj ponownie później.",

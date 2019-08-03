@@ -14,7 +14,7 @@
 	},
 	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
 	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n%s, je bericht bevatte te veel opdrachten!",
-	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia wiki's te linken. %s schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Curse/Gamepedia en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
+	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia wiki's te linken. %s schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom/Gamepedia en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
 	"helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
 	"settings": {
 		"save_failed": "helaas konden de instellingen niet opgeslagen worden, probeer het later nog een keer.",
