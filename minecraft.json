@@ -95,6 +95,21 @@
 			"page": "en:Commands/"
 		}
 	},
+	"ru": {
+		"link": "https://minecraft-ru.gamepedia.com/",
+		"aliase": {
+			"cmd": "command"
+		},
+		"bug": {
+			"private": "**Private Issue**",
+			"fixed": "Fixed Version:",
+			"more": "And %s more.",
+			"total": "%s issues fixed"
+		},
+		"cmd": {
+			"page": "Команды_консоли/"
+		}
+	},
 	"tr": {
 		"link": "https://minecraft-tr.gamepedia.com/",
 		"aliase": {
