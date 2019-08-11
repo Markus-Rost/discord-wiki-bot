@@ -615,7 +615,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 		else cmd_befehl(lang, mclang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
 	}
 	else if ( aliasInvoke === 'random' && !args.join('') && !linksuffix ) cmd_random(lang, msg, wiki, reaction, spoiler);
-	else if ( aliasInvoke === 'overview' && !args.join('') && !linksuffix && wiki.endsWith( '.gamepedia.com/' ) ) {
+	else if ( aliasInvoke === 'overview' && !args.join('') && !linksuffix ) {
 		if ( allSites.some( site => 'https://' + site.wiki_domain + '/' === wiki ) ) cmd_overview(lang, msg, wiki, reaction, spoiler);
 		else getAllSites(cmd_overview, lang, msg, wiki, reaction, spoiler);
 	}
@@ -628,7 +628,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 		msg.sendChannel( spoiler + '<' + wiki.toLink() + 'Special:Search?search=' + args.join(' ').toSearch() + linksuffix + '>' + spoiler );
 		if ( reaction ) reaction.removeEmoji();
 	}
-	else if ( aliasInvoke === 'diff' && args.join('') ) cmd_diff(lang, msg, args, wiki, reaction, spoiler);
+	else if ( aliasInvoke === 'diff' && args.join('') && !linksuffix ) cmd_diff(lang, msg, args, wiki, reaction, spoiler);
 	else {
 		var noRedirect = ( /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring) );
 		request( {
@@ -781,8 +781,14 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
+					else if ( querypage.ns === -1 ) {
+						var pagelink = wiki.toLink() + querypage.title.toTitle() + linksuffix;
+						var embed =  new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+						var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replace( /\_/g, ' ' ) === querypage.title.split('/')[0] ).realname.toLowerCase();
+						special_page(lang, msg, querypage.title, specialpage, embed, wiki, reaction, spoiler);
+					}
 					else {
-						var pagelink = wiki.toLink() + querypage.title.toTitle() + ( querystring ? '?' + querystring.toTitle() : '' ) + ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : ( fragment ? '#' + fragment.toSection() : '' ) );
+						var pagelink = wiki.toLink() + querypage.title.toTitle() + ( querystring ? '?' + querystring.toTitle() : '' ) + ( fragment ? '#' + fragment.toSection() : ( body.query.redirects && body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : '' ) );
 						var text = '';
 						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 						if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
@@ -870,6 +876,14 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 						}
 					}
 				}
+				else if ( body.query.redirects ) {
+					var pagelink = wiki.toLink() + body.query.redirects[0].to.toTitle() + ( querystring ? '?' + querystring.toTitle() : '' ) + ( fragment ? '#' + fragment.toSection() : ( body.query.redirects[0].tofragment ? '#' + body.query.redirects[0].tofragment.toSection() : '' ) );
+					var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.redirects[0].to.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+					
+					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+					
+					if ( reaction ) reaction.removeEmoji();;
+				}
 				else {
 					var pagelink = wiki.toLink() + body.query.general.mainpage.toTitle() + linksuffix;
 					var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
@@ -907,6 +921,39 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 			}
 		} );
 	}
+}
+
+function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoiler) {
+	var overwrites = {
+		randompage: (lang, msg, args, embed, wiki, reaction, spoiler) => cmd_random(lang, msg, wiki, reaction, spoiler),
+		diff: (lang, msg, args, embed, wiki, reaction, spoiler) => cmd_diff(lang, msg, args, wiki, reaction, spoiler, embed),
+		statistics: (lang, msg, args, embed, wiki, reaction, spoiler) => cmd_overview(lang, msg, wiki, reaction, spoiler)
+	}
+	if ( specialpage in overwrites ) {
+		var args = title.split('/').slice(1,3);
+		overwrites[specialpage](lang, msg, args, embed, wiki, reaction, spoiler);
+		return;
+	}
+	request( {
+		uri: wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '-summary&format=json',
+		json: true
+	}, function( error, response, body ) {
+		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined ) {
+			console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the special page: ' + ( error || body && body.error && body.error.info ) );
+		}
+		else {
+			if ( body.query.allmessages[0]['*'] ) {
+				var description = body.query.allmessages[0]['*'].toPlaintext();
+				if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+				embed.setDescription( description );
+			}
+		}
+		
+		msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, embed );
+		
+		if ( reaction ) reaction.removeEmoji();
+	} );
 }
 
 function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, contribs, reaction, spoiler) {
@@ -1012,7 +1059,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						var pagelink = wiki.toLink() + namespace + username.toTitle() + linksuffix;
 						if ( msg.showEmbed() ) {
 							var text = '<' + pagelink + '>';
-							var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle() + ')' );
+							var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle(true) + ')' );
 							if ( blocks.length ) blocks.forEach( block => embed.addField( block[0], block[1].toMarkdown(wiki) ) );
 						}
 						else {
@@ -1120,7 +1167,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					var pagelink = wiki.toLink() + namespace + username.toTitle() + linksuffix;
 					if ( msg.showEmbed() ) {
 						var text = '<' + pagelink + '>';
-						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle() + ')', true ).addField( group[0], group[1], true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
+						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle(true) + ')', true ).addField( group[0], group[1], true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
 					}
 					else {
 						var embed = {};
@@ -1173,7 +1220,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 	}
 }
 
-function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
+function cmd_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 	if ( args[0] ) {
 		var error = false;
 		var title = '';
@@ -1355,7 +1402,8 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler) {
 		}
 	}
 	else {
-		msg.reactEmoji('error');
+		if ( embed ) msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, embed );
+		else msg.reactEmoji('error');
 		
 		if ( reaction ) reaction.removeEmoji();
 	}
@@ -1407,7 +1455,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 					var pagelink = wiki.toLink() + title.toTitle() + '?diff=' + diff + '&oldid=' + oldid;
 					if ( msg.showEmbed() ) {
 						var text = '<' + pagelink + '>';
-						var editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'User:' + editor[1].toTitle() + ')';
+						var editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'User:' + editor[1].toTitle(true) + ')';
 						if ( revisions[0].anon !== undefined ) {
 							editorlink = '[' + editor[1] + '](' + wiki.toLink() + 'Special:Contributions/' + editor[1].toTitle(true) + ')';
 						}
@@ -1651,13 +1699,16 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				msg.sendChannelError( spoiler + '<' + wiki.toLink() + 'Special:Statistics>' + spoiler );
 			}
 		}
-		else if ( allSites.some( site => site.wiki_domain === body.query.general.servername ) ) {
-			var site = allSites.find( site => site.wiki_domain === body.query.general.servername );
-			
-			var name = [lang.overview.name, site.wiki_display_name];
-			var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.dateformat, timeoptions)];
-			var manager = [lang.overview.manager, site.wiki_managers];
-			var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
+		else {
+			var site = false;
+			if ( allSites.some( site => site.wiki_domain === body.query.general.servername ) ) {
+				site = allSites.find( site => site.wiki_domain === body.query.general.servername );
+				
+				var name = [lang.overview.name, site.wiki_display_name];
+				var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.dateformat, timeoptions)];
+				var manager = [lang.overview.manager, site.wiki_managers];
+				var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
+			}
 			var articles = [lang.overview.articles, body.query.statistics.articles];
 			var pages = [lang.overview.pages, body.query.statistics.pages];
 			var edits = [lang.overview.edits, body.query.statistics.edits];
@@ -1667,19 +1718,21 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 			var pagelink = wiki.toLink() + title.toTitle();
 			if ( msg.showEmbed() ) {
 				var text = '<' + pagelink + '>';
-				var managerlist = manager[1].map( manager => '[' + manager + '](' + wiki.toLink() + 'User:' + manager.toTitle(true) + ') ([' + lang.overview.talk + '](' + wiki.toLink() + 'User_talk:' + manager.toTitle(true) + '))' ).join('\n');
-				var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo ).addField( name[0], name[1], true ).addField( created[0], created[1], true ).addField( manager[0], ( managerlist || lang.overview.none ), true ).addField( official[0], official[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
+				var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+				if ( site ) {
+					var managerlist = manager[1].map( manager => '[' + manager + '](' + wiki.toLink() + 'User:' + manager.toTitle(true) + ') ([' + lang.overview.talk + '](' + wiki.toLink() + 'User_talk:' + manager.toTitle(true) + '))' ).join('\n');
+					embed.addField( name[0], name[1], true ).addField( created[0], created[1], true ).addField( manager[0], ( managerlist || lang.overview.none ), true ).addField( official[0], official[1], true );
+				}
+				embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
 			}
 			else {
 				var embed = {};
-				var text = '<' + pagelink + '>\n\n' + name.join(' ') + '\n' + created.join(' ') + '\n' + manager[0] + ' ' + ( manager[1].join(', ') || lang.overview.none ) + '\n' + official.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.overview.inaccurate + '*';
+				var text = '<' + pagelink + '>\n\n';
+				if ( site ) text += name.join(' ') + '\n' + created.join(' ') + '\n' + manager[0] + ' ' + ( manager[1].join(', ') || lang.overview.none ) + '\n' + official.join(' ') + '\n';
+				text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.overview.inaccurate + '*';
 			}
 			
 			msg.sendChannel( spoiler + text + spoiler, embed );
-		}
-		else {
-			console.log( '- This site isn\'t listed: ' + wiki )
-			msg.replyMsg( lang.overview.missing );
 		}
 		
 		if ( reaction ) reaction.removeEmoji();
@@ -2320,7 +2373,7 @@ function log_warn(warning, api = true) {
 	}
 }
 
-async function graceful(code = 1) {
+async function graceful(code = 0) {
 	stop = true;
 	console.log( '- SIGTERM: Preparing to close...' );
 	setTimeout( async () => {

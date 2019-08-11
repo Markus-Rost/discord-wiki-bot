@@ -47,7 +47,6 @@
 		"left": "%1$s wyszedł z \"%2$s\"."
 	},
 	"overview": {
-		"missing": "brak dostępnych informacji na temat wiki.",
 		"inaccurate": "Statystuki mogą być niedokładne",
 		"name": "Pełna nazwa:",
 		"created": "Stworzona:",

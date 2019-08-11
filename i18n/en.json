@@ -43,7 +43,6 @@
 		"left": "%1$s left the voice channel \"%2$s\"."
 	},
 	"overview": {
-		"missing": "there is no overview available for this wiki yet.",
 		"inaccurate": "Statistics may be inaccurate",
 		"name": "Full name:",
 		"created": "Created:",

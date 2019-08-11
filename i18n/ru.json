@@ -44,7 +44,6 @@
 		"left": "%1$s покинул голосовой канал \"%2$s\"."
 	},
 	"overview": {
-		"missing": "there is no overview available for this wiki yet.",
 		"inaccurate": "Статистика может быть неточной ",
 		"name": "Full name:",
 		"created": "Создано:",

@@ -46,7 +46,6 @@
 		"left": "%1$s a quitté le salon vocal \"%2$s\"."
 	},
 	"overview": {
-		"missing": "il n'y a pas encore d'aperçu disponible pour ce wiki.",
 		"inaccurate": "Les statistiques peuvent être inexactes",
 		"name": "Nom complet :",
 		"created": "Créé :",

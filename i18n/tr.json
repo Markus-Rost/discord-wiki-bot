@@ -48,7 +48,6 @@
 		"left": "%1$s ses kanalından ayrıldı \"%2$s\"."
 	},
 	"overview": {
-		"missing": "Bu wiki için henüz bir genel bakış yok.",
 		"inaccurate": "İstatistikler yanlış olabilir",
 		"name": "Tam isim:",
 		"created": "Oluşturuldu:",

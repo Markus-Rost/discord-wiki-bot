@@ -48,7 +48,6 @@
 		"left": "%1$s hat den Sprachkanal \"%2$s\" verlassen."
 	},
 	"overview": {
-		"missing": "für dieses Wiki ist noch keine Übersicht verfügbar.",
 		"inaccurate": "Statistiken können ungenau sein",
 		"name": "Vollständiger Name:",
 		"created": "Erstellt:",
@@ -169,7 +168,7 @@
 		"admin": "Diese Befehle können nur Administratoren ausführen:",
 		"noadmin": "du benötigst die `Server verwalten`-Berechtigung für diese Befehle!",
 		"pause": "**Ich bin auf diesem Server derzeit pausiert!**\nNur diese Befehle können ausgeführt werden:",
-		"footer": "Falls du ein ungewolltest Ergebnis bekommen hast, kannst du mit 🗑 auf meine Nachricht reagieren und ich werde sie löschen.",
+		"footer": "Falls du ein ungewolltes Ergebnis bekommen hast, kannst du mit 🗑 auf meine Nachricht reagieren und ich werde sie löschen.",
 		"list": [
 			{ "cmd": "<Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki.", "unsearchable": true },
 			{ "cmd": "!<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`", "unsearchable": true },
