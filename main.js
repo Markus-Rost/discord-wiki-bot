@@ -102,7 +102,7 @@ function getAllSites(callback, ...args) {
 }
 
 client.on( 'ready', () => {
-	console.log( '- Successfully logged in as ' + client.user.username + '!' );
+	console.log( '\n- Successfully logged in as ' + client.user.username + '!' );
 	getSettings();
 	getAllSites();
 	
