@@ -95,7 +95,7 @@
 		},
 		"block": {
 			"header": "%s ist derzeit gesperrt!",
-			"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung „%4$s”.",
+			"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung „%4$s“.",
 			"noreason": "Gesperrt am %1$s bis zum %2$s von %3$s.",
 			"until_infinity": "Ende aller Tage"
 		}
