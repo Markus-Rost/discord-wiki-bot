@@ -83,7 +83,7 @@ var allSites = [];
 function getAllSites(callback, ...args) {
 	ready.allSites = true;
 	request( {
-		uri: 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,wiki_managers,official_wiki,created&format=json',
+		uri: 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,created&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || response.statusCode !== 200 || !body || body.status !== 'okay' || !body.data || !body.data.wikis ) {
@@ -1708,6 +1708,8 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.dateformat, timeoptions)];
 				var manager = [lang.overview.manager, site.wiki_managers];
 				var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
+				var description = [lang.overview.description, site.wiki_description.escapeFormatting()];
+				var image = [lang.overview.image, ( site.wiki_image.startsWith( '/' ) ? wiki.substring(0, wiki.length - 1) : '' ) + site.wiki_image];
 			}
 			var articles = [lang.overview.articles, body.query.statistics.articles];
 			var pages = [lang.overview.pages, body.query.statistics.pages];
@@ -1724,12 +1726,18 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 					embed.addField( name[0], name[1], true ).addField( created[0], created[1], true ).addField( manager[0], ( managerlist || lang.overview.none ), true ).addField( official[0], official[1], true );
 				}
 				embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
+				if ( site ) embed.addField( description[0], description[1] ).addField( image[0], image[1] ).setImage( image[1] );
 			}
 			else {
 				var embed = {};
 				var text = '<' + pagelink + '>\n\n';
 				if ( site ) text += name.join(' ') + '\n' + created.join(' ') + '\n' + manager[0] + ' ' + ( manager[1].join(', ') || lang.overview.none ) + '\n' + official.join(' ') + '\n';
-				text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.overview.inaccurate + '*';
+				text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ');
+				if ( site ) {
+					text += '\n' + description.join(' ') + '\n' + image.join(' ');
+					if ( msg.uploadFiles() ) embed.files = [{attachment:image[1],name:( spoiler ? 'SPOILER ' : '' ) + name[1] + image[1].substring(image[1].lastIndexOf('.'))}];
+				}
+				text += '\n\n*' + lang.overview.inaccurate + '*';
 			}
 			
 			msg.sendChannel( spoiler + text + spoiler, embed );

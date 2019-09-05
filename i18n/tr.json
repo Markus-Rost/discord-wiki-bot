@@ -60,6 +60,8 @@
 		"pages": "Toplam sayfalar:",
 		"edits": "Düzenlemeler:",
 		"users": "Aktif kullanıcılar:",
+		"description": "Description:",
+		"image": "Image:",
 		"none": "*none*"
 	},
 	"user": {

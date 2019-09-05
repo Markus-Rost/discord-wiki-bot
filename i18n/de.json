@@ -60,6 +60,8 @@
 		"pages": "Seiten insgesamt:",
 		"edits": "Bearbeitungen:",
 		"users": "Aktive Benutzer:",
+		"description": "Beschreibung:",
+		"image": "Bild:",
 		"none": "*Niemand*"
 	},
 	"user": {
