@@ -1708,7 +1708,7 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.dateformat, timeoptions)];
 				var manager = [lang.overview.manager, site.wiki_managers];
 				var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
-				var description = [lang.overview.description, site.wiki_description.escapeFormatting()];
+				var description = [lang.overview.description, ( site.wiki_description.escapeFormatting() || '-' )];
 				var image = [lang.overview.image, ( site.wiki_image.startsWith( '/' ) ? wiki.substring(0, wiki.length - 1) : '' ) + site.wiki_image];
 			}
 			var articles = [lang.overview.articles, body.query.statistics.articles];
