@@ -496,7 +496,7 @@ function cmd_test(lang, msg, args, line) {
 				if ( body && body.warnings ) log_warn(body.warnings);
 				var ping = ( then - now ) + 'ms';
 				if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !( body instanceof Object ) ) {
-					if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+					if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						ping += ' <:unknown_wiki:505887262077353984>';
 					}
@@ -637,7 +637,7 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
-				if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+				if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 				}
@@ -964,7 +964,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.blocks ) {
-				if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+				if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 				}
@@ -1082,7 +1082,7 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 		}, function( error, response, body ) {
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users[0] ) {
-				if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+				if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 				}
@@ -1284,7 +1284,7 @@ function cmd_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 								noerror = false;
 						}
 					}
-					if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+					if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						msg.reactEmoji('nowiki');
 					}
@@ -1416,7 +1416,7 @@ function cmd_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
-			if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+			if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
@@ -1643,7 +1643,7 @@ function cmd_random(lang, msg, wiki, reaction, spoiler) {
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
-			if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+			if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
@@ -1690,7 +1690,7 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
-			if ( response && response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) {
+			if ( response && ( response.request && response.request.uri && response.request.uri.href === 'https://www.gamepedia.com/' || response.statusCode === 410 ) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
@@ -1708,8 +1708,14 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.dateformat, timeoptions)];
 				var manager = [lang.overview.manager, site.wiki_managers];
 				var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
-				var description = [lang.overview.description, ( site.wiki_description.escapeFormatting() || '-' )];
-				var image = [lang.overview.image, ( site.wiki_image.startsWith( '/' ) ? wiki.substring(0, wiki.length - 1) : '' ) + site.wiki_image];
+				var description = [lang.overview.description, site.wiki_description];
+				var image = [lang.overview.image, site.wiki_image];
+				
+				if ( !description[1] ) description[1] = '-';
+				else if ( description[1].length > 1000 ) description[1] = description[1].substring(0, 1000) + '\u2026';
+				description[1] = description[1].escapeFormatting();
+				if ( !image[1] ) image[1] = '-';
+				else if ( image[1].startsWith( '/' ) ) image[1] = wiki.substring(0, wiki.length - 1) + image[1];
 			}
 			var articles = [lang.overview.articles, body.query.statistics.articles];
 			var pages = [lang.overview.pages, body.query.statistics.pages];
@@ -1726,7 +1732,10 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 					embed.addField( name[0], name[1], true ).addField( created[0], created[1], true ).addField( manager[0], ( managerlist || lang.overview.none ), true ).addField( official[0], official[1], true );
 				}
 				embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
-				if ( site ) embed.addField( description[0], description[1] ).addField( image[0], image[1] ).setImage( image[1] );
+				if ( site ) {
+					embed.addField( description[0], description[1] ).addField( image[0], image[1] );
+					if ( image[1] !== '-' ) embed.setImage( image[1] );
+				}
 			}
 			else {
 				var embed = {};
@@ -1735,7 +1744,7 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ');
 				if ( site ) {
 					text += '\n' + description.join(' ') + '\n' + image.join(' ');
-					if ( msg.uploadFiles() ) embed.files = [{attachment:image[1],name:( spoiler ? 'SPOILER ' : '' ) + name[1] + image[1].substring(image[1].lastIndexOf('.'))}];
+					if ( image[1] !== '-' && msg.uploadFiles() ) embed.files = [{attachment:image[1],name:( spoiler ? 'SPOILER ' : '' ) + name[1] + image[1].substring(image[1].lastIndexOf('.'))}];
 				}
 				text += '\n\n*' + lang.overview.inaccurate + '*';
 			}
