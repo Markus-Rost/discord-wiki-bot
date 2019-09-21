@@ -1143,9 +1143,9 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 						if ( groups.includes( lang.user.groups[i][0] ) ) {
 							var thisSite = allSites.find( site => site.wiki_domain === body.query.general.servername );
 							if ( lang.user.groups[i][0] === 'hydra_staff' && thisSite && thisSite.wiki_managers.includes( username ) ) {
-								group.push(lang.user.manager);
+								group.push('**' + lang.user.manager + '**,');
 							}
-							else group.push(lang.user.groups[i][1]);
+							group.push(lang.user.groups[i][1]);
 							break;
 						}
 					}
@@ -1167,7 +1167,18 @@ function cmd_user(lang, msg, namespace, username, wiki, linksuffix, querypage, c
 					var pagelink = wiki.toLink() + namespace + username.toTitle() + linksuffix;
 					if ( msg.showEmbed() ) {
 						var text = '<' + pagelink + '>';
-						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle(true) + ')', true ).addField( group[0], group[1], true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
+						var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle(true) + ')', true ).addField( group[0], group.slice(1).join('\n'), true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
+						
+						if ( querypage.pageprops && querypage.pageprops.description ) {
+							var description = htmlToPlain( querypage.pageprops.description );
+							if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+							embed.setDescription( description );
+						}
+						else if ( querypage.extract ) {
+							var extract = querypage.extract.escapeFormatting();
+							if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
+							embed.setDescription( extract );
+						}
 					}
 					else {
 						var embed = {};
@@ -1711,11 +1722,11 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				var description = [lang.overview.description, site.wiki_description];
 				var image = [lang.overview.image, site.wiki_image];
 				
-				if ( !description[1] ) description[1] = '-';
-				else if ( description[1].length > 1000 ) description[1] = description[1].substring(0, 1000) + '\u2026';
-				description[1] = description[1].escapeFormatting();
-				if ( !image[1] ) image[1] = '-';
-				else if ( image[1].startsWith( '/' ) ) image[1] = wiki.substring(0, wiki.length - 1) + image[1];
+				if ( description[1] ) {
+					description[1] = description[1].escapeFormatting();
+					if ( description[1].length > 1000 ) description[1] = description[1].substring(0, 1000) + '\u2026';
+				}
+				if ( image[1] && image[1].startsWith( '/' ) ) image[1] = wiki.substring(0, wiki.length - 1) + image[1];
 			}
 			var articles = [lang.overview.articles, body.query.statistics.articles];
 			var pages = [lang.overview.pages, body.query.statistics.pages];
@@ -1733,8 +1744,8 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				}
 				embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
 				if ( site ) {
-					embed.addField( description[0], description[1] ).addField( image[0], image[1] );
-					if ( image[1] !== '-' ) embed.setImage( image[1] );
+					if ( description[1] ) embed.addField( description[0], description[1] )
+					if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
 				}
 			}
 			else {
@@ -1743,8 +1754,11 @@ function cmd_overview(lang, msg, wiki, reaction, spoiler) {
 				if ( site ) text += name.join(' ') + '\n' + created.join(' ') + '\n' + manager[0] + ' ' + ( manager[1].join(', ') || lang.overview.none ) + '\n' + official.join(' ') + '\n';
 				text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ');
 				if ( site ) {
-					text += '\n' + description.join(' ') + '\n' + image.join(' ');
-					if ( image[1] !== '-' && msg.uploadFiles() ) embed.files = [{attachment:image[1],name:( spoiler ? 'SPOILER ' : '' ) + name[1] + image[1].substring(image[1].lastIndexOf('.'))}];
+					if ( description[1] ) text += '\n' + description.join(' ');
+					if ( image[1] ) {
+						text += '\n' + image.join(' ');
+						if ( msg.uploadFiles() ) embed.files = [{attachment:image[1],name:( spoiler ? 'SPOILER ' : '' ) + name[1] + image[1].substring(image[1].lastIndexOf('.'))}];
+					}
 				}
 				text += '\n\n*' + lang.overview.inaccurate + '*';
 			}
