@@ -784,7 +784,8 @@ function check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', queryst
 					else if ( querypage.ns === -1 ) {
 						var pagelink = wiki.toLink() + querypage.title.toTitle() + linksuffix;
 						var embed =  new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
-						var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replace( /\_/g, ' ' ) === querypage.title.split('/')[0] ).realname.toLowerCase();
+						var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replace( /\_/g, ' ' ) === querypage.title.split('/')[0] );
+						specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( body.query.namespaces['-1']['*'] + ':', '' ).split('/')[0] ).toLowerCase();
 						special_page(lang, msg, querypage.title, specialpage, embed, wiki, reaction, spoiler);
 					}
 					else {
