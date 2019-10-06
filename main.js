@@ -2079,7 +2079,8 @@ Array.prototype.toEmojis = function() {
 	if ( regex.test(text) ) {
 		regex.lastIndex = 0;
 		var emojis = client.emojis;
-		while ( ( var entry = regex.exec(text) ) !== null ) {
+		var entry = null;
+		while ( ( entry = regex.exec(text) ) !== null ) {
 			if ( emojis.has(entry[2]) ) {
 				text = text.replaceSave(entry[0], emojis.get(entry[2]).toString());
 			} else {
@@ -2112,7 +2113,8 @@ String.prototype.toFormatting = function(showEmbed = false, ...args) {
 
 String.prototype.toMarkdown = function(wiki, title = '') {
 	var text = this;
-	while ( ( var link = /\[\[(?:([^\|\]]+)\|)?([^\]]+)\]\]([a-z]*)/g.exec(text) ) !== null ) {
+	var link = null;
+	while ( ( link = /\[\[(?:([^\|\]]+)\|)?([^\]]+)\]\]([a-z]*)/g.exec(text) ) !== null ) {
 		if ( link[1] ) {
 			var page = ( /^(#|\/)/.test(link[1]) ? title.toTitle(true) + ( /^#/.test(link[1]) ? '#' + link[1].substring(1).toSection() : link[1].toTitle(true) ) : link[1].toTitle(true) );
 			text = text.replaceSave( link[0], '[' + link[2] + link[3] + '](' + wiki.toLink() + page + ')' );
@@ -2121,7 +2123,7 @@ String.prototype.toMarkdown = function(wiki, title = '') {
 			text = text.replaceSave( link[0], '[' + link[2] + link[3] + '](' + wiki.toLink() + page + ')' );
 		}
 	}
-	while ( title !== '' && ( var link = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g.exec(text) ) !== null ) {
+	while ( title !== '' && ( link = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g.exec(text) ) !== null ) {
 		var page = title.toTitle(true) + '#' + link[1].toSection();
 		text = text.replaceSave( link[0], '[→](' + wiki.toLink() + page + ')' + link[1] + ( link[2] ? ': ' + link[2] : '' ) );
 	}
