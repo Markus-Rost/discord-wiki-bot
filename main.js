@@ -2139,7 +2139,7 @@ String.prototype.escapeFormatting = function() {
 };
 
 String.prototype.replaceSave = function(pattern, replacement) {
-	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( '$', '$$$$' ) : replacement ) );
+	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( /\$/g, '$$$$' ) : replacement ) );
 };
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
