@@ -650,7 +650,7 @@ function cmd_info(lang, msg, args, line, wiki) {
 }
 
 function cmd_helpserver(lang, msg) {
-	if ( msg.isAdmin() && msg.guild.defaultSettings ) cmd_helpsetup(lang, msg);
+	if ( msg.isAdmin() && msg.defaultSettings ) cmd_helpsetup(lang, msg);
 	msg.sendChannel( lang.helpserver + '\n' + process.env.invite );
 }
 
@@ -664,14 +664,14 @@ function cmd_invite(lang, msg, args, line, wiki) {
 
 function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.channel.type === 'text' && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
-	if ( msg.isAdmin() && msg.guild.defaultSettings ) cmd_helpserver(lang, msg);
+	if ( msg.isAdmin() && msg.defaultSettings ) cmd_helpserver(lang, msg);
 	var cmds = lang.help.list;
 	var isMinecraft = ( wiki === minecraft[lang.lang].link );
 	var isPatreon = ( msg.channel.type === 'text' && msg.guild.id in patreons );
 	var cmdintro = '🔹 `' + ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix ) + ' ';
 	if ( args.join('') ) {
 		if ( args.join(' ').isMention(msg.guild) ) {
-			if ( !( msg.isAdmin() && msg.guild.defaultSettings ) ) cmd_helpserver(lang, msg);
+			if ( !( msg.isAdmin() && msg.defaultSettings ) ) cmd_helpserver(lang, msg);
 		}
 		else if ( args[0].toLowerCase() === 'admin' ) {
 			if ( msg.channel.type !== 'text' || msg.isAdmin() ) {
@@ -792,7 +792,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
 		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
 	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
-		if ( msg.isAdmin() && msg.guild.defaultSettings ) cmd_helpsetup(lang, msg);
+		if ( msg.isAdmin() && msg.defaultSettings ) cmd_helpsetup(lang, msg);
 		var text = lang.test.text[Math.floor(Math.random() * lang.test.random)] || lang.test.default;
 		console.log( '- Test: Fully functioning!' );
 		var now = Date.now();
@@ -892,7 +892,7 @@ function cmd_delete(lang, msg, args, line, wiki) {
 }
 
 function cmd_link(lang, msg, title, wiki, cmd = ' ') {
-	if ( msg.isAdmin() && msg.guild.defaultSettings ) cmd_helpsetup(lang, msg);
+	if ( msg.isAdmin() && msg.defaultSettings ) cmd_helpsetup(lang, msg);
 	if ( /^\|\|(?:(?!\|\|).)+\|\|$/.test(title) ) {
 		title = title.substring( 2, title.length - 2);
 		var spoiler = '||';
@@ -4764,7 +4764,7 @@ client.on( 'message', msg => {
 			}
 			if ( row ) newMessage(msg, row.wiki, i18n[row.lang], patreons[msg.guild.id]);
 			else {
-				msg.guild.defaultSettings = true;
+				msg.defaultSettings = true;
 				newMessage(msg);
 			}
 		} );
