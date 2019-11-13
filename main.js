@@ -4831,41 +4831,44 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				msg.reactEmoji('⚠️');
 				msg.sendChannelError( lang.limit.replaceSave( '%s', author ) );
 			}
-			else if ( !line.hasPrefix(prefix) && line.includes( '[[' ) && linkcount <= linkmaxcount && ( channel.type !== 'text' || !pause[msg.guild.id] ) ) {
-				console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
-				let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
-				
-				let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\[\\[([' + " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+" + ']+)\\]\\]\\1', 'g' );
-				let entry = null;
-				while ( ( entry = regex.exec(content) ) !== null ) {
-					if ( linkcount < linkmaxcount ) {
-						linkcount++;
-						links.push({title:entry[2],spoiler:entry[1]});
-					}
-					else if ( linkcount === linkmaxcount ) {
-						linkcount++;
-						console.log( '- Message contains too many links!' );
-						msg.reactEmoji('⚠️');
-						break;
+			else if ( !line.hasPrefix(prefix) && ( channel.type !== 'text' || !pause[msg.guild.id] ) ) {
+				if ( line.includes( '[[' ) && line.includes( ']]' ) && linkcount <= linkmaxcount ) {
+					console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
+					let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
+					
+					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\[\\[([' + " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+" + ']+)\\]\\]\\1', 'g' );
+					let entry = null;
+					while ( ( entry = regex.exec(content) ) !== null ) {
+						if ( linkcount < linkmaxcount ) {
+							linkcount++;
+							links.push({title:entry[2],spoiler:entry[1]});
+						}
+						else if ( linkcount === linkmaxcount ) {
+							linkcount++;
+							console.log( '- Message contains too many links!' );
+							msg.reactEmoji('⚠️');
+							break;
+						}
 					}
 				}
-			}
-			else if ( !line.hasPrefix(prefix) && line.includes( '{{' ) && count <= maxcount && ( channel.type !== 'text' || !pause[msg.guild.id] ) ) {
-				console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
-				let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
 				
-				let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\{\\{([' + " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+" + ']+)\\}\\}\\1', 'g' );
-				let entry = null;
-				while ( ( entry = regex.exec(content) ) !== null ) {
-					if ( count < maxcount ) {
-						count++;
-						embeds.push({title:entry[2],spoiler:entry[1]});
-					}
-					else if ( count === maxcount ) {
-						count++;
-						console.log( '- Message contains too many links!' );
-						msg.reactEmoji('⚠️');
-						break;
+				if ( line.includes( '{{' ) && line.includes( '}}' ) && count <= maxcount ) {
+					console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
+					let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
+					
+					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\{\\{([' + " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+" + ']+)\\}\\}\\1', 'g' );
+					let entry = null;
+					while ( ( entry = regex.exec(content) ) !== null ) {
+						if ( count < maxcount ) {
+							count++;
+							embeds.push({title:entry[2],spoiler:entry[1]});
+						}
+						else if ( count === maxcount ) {
+							count++;
+							console.log( '- Message contains too many links!' );
+							msg.reactEmoji('⚠️');
+							break;
+						}
 					}
 				}
 			}
