@@ -81,8 +81,8 @@
 		"pages": "Toplam sayfalar:",
 		"edits": "Düzenlemeler:",
 		"users": "Aktif kullanıcılar:",
-		"description": "Description:",
-		"image": "Image:",
+		"description": "Açıklama:",
+		"image": "Resim:",
 		"none": "*hiçbiri*"
 	},
 	"user": {
@@ -131,10 +131,10 @@
 			"registration": "Kayıt tarihi:",
 			"editcount": "Düzenleme sayısı:",
 			"globaleditcount": "Global düzenleme sayısı:",
-			"wikisedited": "Wikis edited:",
+			"wikisedited": "Düzenlenen wikiler:",
 			"group": "Grup:",
 			"discord": "Discord:",
-			"loading": "Loading global statistics…"
+			"loading": "Global istatistikler yükleniyor…"
 		},
 		"block": {
 			"header": "%s şu anda engelli!",
@@ -187,8 +187,8 @@
 				"1": "%s kategori"
 			}
 		},
-		"special": "Content of this special page:",
-		"empty": "*This special page is empty*"
+		"special": "Bu özel sayfanın içeriği:",
+		"empty": "*Bu özel sayfa boş*"
 	},
 	"discussion": {
 		"post": "gönderisi",
