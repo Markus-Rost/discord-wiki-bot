@@ -101,9 +101,9 @@
 			"cmd": "command"
 		},
 		"bug": {
-			"private": "**Private Issue**",
-			"fixed": "Fixed Version:",
-			"more": "And %s more.",
+			"private": "**Конфиденциальный отчёт об ошибке**",
+			"fixed": "Исправлено в версии:",
+			"more": "и ещё %s ошибок.",
 			"total": "%s issues fixed"
 		},
 		"cmd": {
@@ -123,6 +123,21 @@
 		},
 		"cmd": {
 			"page": "en:Commands/"
+		}
+	},
+	"zh": {
+		"link": "https://minecraft-zh.gamepedia.com/",
+		"aliase": {
+			"cmd": "command"
+		},
+		"bug": {
+			"private": "**Private Issue**",
+			"fixed": "Fixed Version:",
+			"more": "And %s more.",
+			"total": "%s issues fixed"
+		},
+		"cmd": {
+			"page": "命令/"
 		}
 	},
 	"cmd": {

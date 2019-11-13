@@ -24,7 +24,10 @@
 			"русский": "ru",
 			"tr": "tr",
 			"turkish": "tr",
-			"turkçe": "tr"
+			"turkçe": "tr",
+			"zh": "zh",
+			"chinese": "zh",
+			"中文": "zh"
 		},
 		{
 			"en": "English",
@@ -34,7 +37,19 @@
 			"pl": "Polish",
 			"pt": "Portuguese",
 			"ru": "Russian",
-			"tr": "Turkish"
+			"tr": "Turkish",
+			"zh": "Chinese"
+		},
+		{
+			"en": "English",
+			"de": "Deutsch",
+			"fr": "Français",
+			"nl": "Nederlands",
+			"pl": "Polski",
+			"pt": "Português",
+			"ru": "Русский",
+			"tr": "Türkçe",
+			"zh": "中文"
 		}
 	]
 }

@@ -1,7 +1,7 @@
 {
   "name": "discord-wiki-bot",
-  "version": "1.5.0",
-  "description": "Wiki-Bot is a bot for Discord with the purpose to easily link to Gamepedia wikis. He resolves redirects and follows interwiki links.",
+  "version": "2.0.0",
+  "description": "Wiki-Bot is a bot for Discord with the purpose to easily link to Gamepedia and Fandom wikis. He resolves redirects and follows interwiki links.",
   "main": "main.js",
   "scripts": {
     "test": "node --icu-data-dir=node_modules/full-icu main.js debug",
@@ -10,20 +10,24 @@
   "author": "MarkusRost",
   "license": "ISC",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "dblapi.js": "^2.3.0",
     "discord.js": "^11.5.1",
     "dotenv": "^6.2.0",
     "full-icu": "^1.3.0",
     "htmlparser2": "^3.10.1",
-    "npm": "^6.11.3",
-    "request": "^2.88.0"
+    "npm": "^6.12.0",
+    "request": "^2.88.0",
+    "sqlite3": "^4.1.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Markus-Rost/discord-wiki-bot.git"
   },
   "keywords": [
+    "fandom",
     "gamepedia",
+    "wikia",
     "discord",
     "wikibot",
     "voice-channel",

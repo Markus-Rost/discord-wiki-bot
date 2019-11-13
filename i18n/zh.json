@@ -1,0 +1,267 @@
+{
+	"__translator": [
+		"机智的小鱼君"
+	],
+	"lang": "zh",
+	"dateformat": "zh-CN",
+	"aliase": {
+		"purge": "delete",
+		"🎲": "random",
+		"页面": "page",
+		"搜索": "search"
+	},
+	"prefix": "the prefix for this server is `%s`. You can change the prefix with `%s settings prefix`. For a list of all commands see `%s help`.",
+	"missingperm": "为执行此命令我缺少一些权限：",
+	"limit": "🚨 **停一下，你太快了！** 🚨\n\n%s，你发出的指令过多了。",
+	"disclaimer": "I am a small bot with the task to link to Gamepedia and Fandom wikis. %s wrote me in JavaScript.\n\n**I am not affiliated with Fandom and am an unofficial tool!**\n\nYou can support me on Patreon:",
+	"helpserver": "有问题吗？你可以访问我的专属支援伺服器：",
+	"patreon": "this is a Patreon only feature!\nYou can support me on Patreon to get access to this feature:",
+	"settings": {
+		"save_failed": "啊喔，设置保存失败了，请稍后再试。",
+		"missing": "这个伺服器尚未完成设置，使用 %1$s 以及 %2$s 来完成设置。",
+		"foundwikis": "你也许指的是这些wiki？",
+		"current": "these are the current settings for this server:",
+		"channel current": "these are the current settings for this channel:",
+		"currentlang": "Language:",
+		"currentprefix": "Prefix:",
+		"currentwiki": "Default wiki:",
+		"currentchannel": "Channel overwrites:",
+		"nochannels": "*No channel overwrites yet*",
+		"lang": "the language for this server is:",
+		"channel lang": "the language for this channel is:",
+		"langinvalid": "暂不支持这个语言！",
+		"langchanged": "you changed the language for this server to:",
+		"channel langchanged": "you changed the language for this channel to:",
+		"langhelp": "使用 `%s <language>` 修改语言。\n目前支持的语言：",
+		"wikimissing": "暂未绑定wiki！",
+		"wiki": "本伺服器绑定的wiki是：",
+		"channel wiki": "本频道的wiki是：",
+		"wikiinvalid": "please provide a valid link to a Gamepedia or Fandom wiki!",
+		"wikichanged": "你已将伺服器wiki绑定为：",
+		"channel wikichanged": "你已将频道wiki修改为：",
+		"wikihelp": "Use `%s <link>` to change the default wiki.\nLink to the wiki: `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
+		"prefix": "the prefix for this server is:",
+		"prefixinvalid": "the specified prefix is not supported!",
+		"prefixchanged": "you changed the prefix for this server to:",
+		"prefixhelp": "Use `%s <prefix>` to change the prefix.\nThe prefix may not include spaces or mentions!"
+	},
+	"pause": {
+		"on": "我已将自己暂停，从现在起我会忽略大部分的指令！",
+		"off": "我已取消暂停，即将继续开始服务！"
+	},
+	"voice": {
+		"text": "I try to give everyone in a voice channel a specific role:",
+		"enable": "Use `%s` to enable this function.",
+		"disable": "Use `%s` to disable this function.",
+		"enabled": "you enabled the function to add roles for voice channels.",
+		"disabled": "you disabled the function to add roles for voice channels.",
+		"name": "语音频道名",
+		"channel": "语音频道",
+		"join": "%1$s 加入了语音频道 \"%2$s\".",
+		"left": "%1$s 离开了语音频道 \"%2$s\"."
+	},
+	"overview": {
+		"inaccurate": "统计信息可能出错",
+		"name": "Full name:",
+		"vertical": "主题:",
+		"topic": "分类:",
+		"founder": "创始人:",
+		"created": "创建日期:",
+		"manager": "Wiki manager:",
+		"talk": "talk",
+		"official": "Official wiki:",
+		"yes": "Yes",
+		"no": "No",
+		"articles": "文章总数:",
+		"pages": "全部页面:",
+		"edits": "总编辑数:",
+		"users": "活跃用户:",
+		"description": "Description:",
+		"image": "Image:",
+		"none": "*无*"
+	},
+	"user": {
+		"gender": {
+			"unknown": "未知",
+			"male": "男",
+			"female": "女"
+		},
+		"groups": [
+			["global_bot", "全域机器人"],
+			["hydra_staff", "Gamepedia员工"],
+			["wiki_manager", "Wiki主管"],
+			["content_team_member", "内容团队"],
+			["grasp", "GRASP"],
+			["bot-global", "全域机器人"],
+			["staff", "Fandom员工"],
+			["wiki-manager", "Wiki主管"],
+			["helper", "Fandom助手"],
+			["content-team-member", "内容团队"],
+			["vstf", "VSTF"],
+			["content-volunteer", "内容志愿者"],
+			["global-discussions-moderator", "全域讨论版主"],
+			["vanguard", "Vanguard"],
+			["voldev", "Volunteer Developer"],
+			["council", "Community Council"],
+			["bot", "机器人"],
+			["bureaucrat", "行政员"],
+			["sysop", "管理员"],
+			["content-moderator", "内容版主"],
+			["threadmoderator", "讨论版主"],
+			["chatmoderator", "聊天主持人"],
+			["directors", "Director"],
+			["Patrol", "Inspector"],
+			["editor", "Editor"],
+			["moderator", "Moderator"],
+			["Elite_users", "Elite user"],
+			["patrollers", "Patroller"],
+			["rollback", "回退员"],
+			["autoreview", "autoreview"],
+			["autopatrol", "autopatrol"],
+			["authenticated", "认证用户"],
+			["user", "用户"]
+		],
+		"info": {
+			"gender": "性别:",
+			"registration": "注册时间:",
+			"editcount": "编辑数:",
+			"globaleditcount": "Global edit count:",
+			"wikisedited": "Wikis edited:",
+			"group": "用户组:",
+			"discord": "Discord:",
+			"loading": "Loading global statistics…"
+		},
+		"block": {
+			"header": "%s 目前正被封禁！",
+			"text": "被 %3$s 封禁，时间从 %1$s 到 %2$s，理由：\"%4$s\"",
+			"noreason": "被 %3$s 封禁，时间从 %1$s 到 %2$s",
+			"nofromtext": "被 %3$s 封禁，直到 %2$s，理由：\"%4$s\"",
+			"nofromnoreason": "被 %3$s 封禁，直到 %2$s",
+			"until_infinity": "永久封禁"
+		},
+		"gblock": {
+			"header": "%s is currently globally blocked!",
+			"text": "Blocked on %1$s until %2$s by %3$s on %4$s with reason \"%5$s\".",
+			"noreason": "Blocked on %1$s until %2$s by %3$s on %4$s.",
+			"disabled": "This account is currently disabled!"
+		}
+	},
+	"diff": {
+		"badrev": "至少有一个历史版本未展现！",
+		"nocomment": "*未提供描述*",
+		"hidden": "*隐藏*",
+		"info": {
+			"editor": "编辑者:",
+			"timestamp": "时间:",
+			"size": "差异:",
+			"bytes": "%s Bytes",
+			"comment": "摘要:",
+			"tags": "标签:",
+			"removed": "删除:",
+			"added": "添加:",
+			"more": "更多",
+			"whitespace": "仅有空白"
+		}
+	},
+	"search": {
+		"page": "页面",
+		"search": "搜索",
+		"infopage": "结果不正确？用%s来指定连接",
+		"infosearch": "结果不正确？用%1$s来指定链接或%2$s列出所有结果",
+		"category": {
+			"content": "分类下的内容:",
+			"empty": "*空白分类*",
+			"pages": {
+				"default": "%s 个页面"
+			},
+			"files": {
+				"default": "%s 个文件"
+			},
+			"subcats": {
+				"default": "%s 个分类"
+			}
+		},
+		"special": "Content of this special page:",
+		"empty": "*This special page is empty*"
+	},
+	"discussion": {
+		"post": "帖子",
+		"main": "讨论版",
+		"image": "查看图片",
+		"votes": {
+			"default": "%s 个投票"
+		}
+	},
+	"invite": {
+		"bot": "使用这个链接把我添加到伺服器:"
+	},
+	"poll": {
+		"title": "**投票:**\n"
+	},
+	"delete": {
+		"invalid": "不接受的数字！",
+		"success": "频道最后%s条信息已被删除",
+		"big": "指定的数字过大，最大可设置为%s！"
+	},
+	"test": {
+		"random": 10,
+		"pause": "我正处于暂停状态",
+		"text": [
+			"I'm still alive!(此处是玩梗，游戏**传送门**的结尾曲Still Alive歌词)l",
+			"and believe me, I am still alive.(此处是玩梗，游戏**传送门**的结尾曲Still Alive歌词)",
+			"I'm doing science and I'm still alive.(此处是玩梗，游戏**传送门**的结尾曲Still Alive歌词)",
+			"I feel fantastic and I'm still alive.(此处是玩梗，游戏**传送门**的结尾曲Still Alive歌词)"
+		],
+		"default": "全功率运行中！",
+		"time": "咋瓦鲁多"
+	},
+	"help": {
+		"all": "想知道我能够干什么？让我来告诉你吧：",
+		"admin": "这些指令仅限管理员使用：",
+		"noadmin": "这个指令仅限拥有`管理员`权限的用户使用！",
+		"pause": "**我目前处于暂停状态！**\n仅能使用以下指令：",
+		"footer": "如果你觉得我的某个信息刷屏，在信息上添加一个🗑️图标我就会自己删掉这一条信息。",
+		"list": [
+			{ "cmd": "<关键字>", "desc": "我将返回一个wiki指定页面的链接", "unsearchable": true },
+			{ "cmd": "!<wiki> <关键字>", "desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "?<wiki> <关键字>", "desc": "我将返回特定wiki的指定页面的链接: `https://<wiki>.fandom.com/`", "unsearchable": true },
+			{ "cmd": "??<wiki> <关键字>", "desc": "我将返回特定的org域名下的wiki的指定页面的链接: `https://<wiki>.wikia.org/`", "unsearchable": true },
+			{ "cmd": "User:<用户名>", "desc": "我将返回指定用户的信息", "unsearchable": true },
+			{ "cmd": "diff <diff> [<oldid>]", "desc": "我将返回指定差异编号的比较页面链接" },
+			{ "cmd": "diff <页面名>", "desc": "我将返回指定页面最后一次更改的比较页面链接" },
+			{ "cmd": "random", "desc": "我将返回wiki上一个随机页面的链接" },
+			{ "cmd": "🎲", "desc": "我将返回wiki上一个随机页面的链接", "hide": true },
+			{ "cmd": "overview", "desc": "我将返回wiki的相关数据以及统计信息" },
+			{ "cmd": "/<Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "unsearchable": true, "minecraft": true },
+			{ "cmd": "command <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "cmd <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
+			{ "cmd": "bug <Minecraft bug>", "desc": "I will answer with a link to the bug in the Minecraft bug tracker.", "minecraft": true },
+			{ "cmd": "页面 <页面名>", "desc": "我将返回指定wiki页面的链接", "hide": true },
+			{ "cmd": "page <页面名>", "desc": "我将返回指定wiki页面的链接", "hide": true },
+			{ "cmd": "搜索 <关键字>", "desc": "我将返回wiki搜索结果的链接", "hide": true },
+			{ "cmd": "search <关键字>", "desc": "我将返回wiki搜索结果的链接", "hide": true },
+			{ "cmd": "discussion <关键字>", "desc": "I will answer with a link to a matching discussion thread in the Fandom wiki." },
+			{ "cmd": "discussion 帖子 <关键字>", "desc": "I will answer with a link to a matching discussion post in the Fandom wiki." },
+			{ "cmd": "info", "desc": "我将进行自我介绍" },
+			{ "cmd": "help", "desc": "我将提供使用帮助" },
+			{ "cmd": "help <指令>", "desc": "我将提供指该令的使用方法" },
+			{ "cmd": "help admin", "desc": "我将提供所有的管理指令" },
+			{ "cmd": "help admin", "desc": "我将提供所有的管理指令", "unsearchable": true, "admin": true },
+			{ "cmd": "settings", "desc": "我将修改设置参数", "admin": true, "pause": true },
+			{ "cmd": "settings lang <language>", "desc": "I will change the language for this server.", "hide": true, "admin": true },
+			{ "cmd": "settings prefix <prefix>", "desc": "I will change the prefix for this server.", "hide": true, "admin": true, "patreon": true },
+			{ "cmd": "settings wiki <wiki>", "desc": "I will change the default wiki for this server.", "hide": true, "admin": true },
+			{ "cmd": "settings channel", "desc": "I will change the overwrites for the current channel.", "hide": true, "admin": true },
+			{ "cmd": "voice", "desc": "I try to give everyone in a voice channel a specific role.", "admin": true, "pause": true },
+			{ "cmd": "pause @mention", "desc": "我将屏蔽少数管理指令外的全部指令", "admin": true },
+			{ "cmd": "pause @mention", "desc": "我将重新接受全部指令", "unsearchable": true, "hide": true, "pause": true },
+			{ "cmd": "poll <选项>", "desc": "我将创建一个带有 <:support:448222377009086465> 和 <:oppose:448222455425794059> 的投票", "admin": true },
+			{ "cmd": "poll <emoji> [<emoji> ...] <问题>", "desc": "我将创建一个带有指定emoji作为选项的投票", "admin": true },
+			{ "cmd": "test", "desc": "如果我被激活了，我就会回答你！否则不会。", "pause": true },
+			{ "cmd": "say <字符串>", "desc": "我将发送信息", "admin": true, "pause": true },
+			{ "cmd": "say alarm <字符串>", "desc": "我将发送一条看起来像这样的警告的信息: 🚨 **<信息>** 🚨", "admin": true, "pause": true },
+			{ "cmd": "delete <数字>", "desc": "我将删除此频道内所有不超过14天的消息", "admin": true, "pause": true },
+			{ "cmd": "purge <数字>", "desc": "我将删除此频道内所有不超过14天的消息", "hide": true, "admin": true }
+		]
+	}
+}

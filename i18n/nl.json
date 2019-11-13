@@ -10,29 +10,43 @@
 		"zoeken": "search",
 		"🎲": "random",
 		"willekeurig": "random",
-		"overzicht": "overview"
+		"overzicht": "overview",
+		"discussie": "discussion"
 	},
+	"prefix": "het voorvoegsel voor deze server is `%s`. Je kunt het voorvoegsel veranderen met `%s settings prefix`. Voor een lijst van alle opdrachten zie `%s help`.",
 	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
 	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n%s, je bericht bevatte te veel opdrachten!",
-	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia wiki's te linken. %s schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom/Gamepedia en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
+	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia en Fandom wiki's te linken. %s schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
 	"helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
+	"patreon": "dit is een Patreon-exclusieve functie!\nJe kunt contact met me opnemen via Patreon om toegang tot deze functie te krijgen:",
 	"settings": {
 		"save_failed": "helaas konden de instellingen niet opgeslagen worden, probeer het later nog een keer.",
 		"missing": "deze server is nog niet geconfigureerd. Gebruik %1$s en %2$s om de instellingen  te wijzigen.",
 		"foundwikis": "Bedoelde je één van deze wiki's?",
-		"current": "dit zijn de huidige instellingen voor deze server:\nTaal: `Nederlands` %1$s\nStandaard wiki: %2$s\nKanaal-specifieke wiki's",
-		"nochannels": "*Nog geen kanaal-specifieke wiki's*",
-		"lang": "de taal voor deze server is: `Nederlands`",
+		"current": "dit zijn de huidige instellingen voor deze server:",
+		"channel current": "dit zijn de huidige instellingen voor dit kanaal:",
+		"currentlang": "Taal:",
+		"currentprefix": "Voorvoegsel:",
+		"currentwiki": "Standaard wiki:",
+		"currentchannel": "Kanaal overschrijvingen:",
+		"nochannels": "*Nog geen kanaal overschrijvingen*",
+		"lang": "de taal voor deze server is:",
+		"channel lang": "de taal voor dit kanaal is:",
 		"langinvalid": "de opgegeven taal wordt niet ondersteund!",
-		"langchanged": "je hebt de taal voor deze server gewijzigd naar: `Nederlands`",
+		"langchanged": "je hebt de taal voor deze server gewijzigd naar:",
+		"channel langchanged": "je hebt de taal voor dit kanaal gewijzigd naar:",
 		"langhelp": "Gebruik `%s <taal>` om de taal te wijzigen.\nOp dit moment zijn de ondersteunde talen:",
 		"wikimissing": "voor deze server is nog geen standaard wiki ingesteld!",
 		"wiki": "de standaard wiki voor deze server is:",
-		"wikiinvalid": "geef a.u.b. een geldige link naar een Gamepedia wiki!",
+		"channel wiki": "de standaard wiki voor dit kanaal is:",
+		"wikiinvalid": "geef a.u.b. een geldige link naar een Gamepedia of Fandom wiki!",
 		"wikichanged": "je wijzigde de standaard wiki voor deze server naar:",
-		"wikihelp": "Gebruik `%s <wiki>` om de standaard wiki te wijzigen.\nLink naar de wiki: `https://<wiki>.gamepedia.com/`",
-		"channel": "de standaard wiki voor dit kanaal is:",
-		"channelchanged": "je wijzigde de standaard wiki voor dit kanaal naar:"
+		"channel wikichanged": "je wijzigde de standaard wiki voor dit kanaal naar:",
+		"wikihelp": "Gebruik `%s <link>` om de standaard wiki te wijzigen.\nLink naar de wiki: `https://<wiki>.gamepedia.com/` of `https://<wiki>.fandom.com/`",
+		"prefix": "het voorvoegsel voor deze server is:",
+		"prefixinvalid": "het opgegeven voorvoegsel wordt niet ondersteund!",
+		"prefixchanged": "je hebt het voorvoegsel voor deze server veranderd naar:",
+		"prefixhelp": "Gebruik `%s <voorvoegsel>` om het voorvoegsel te wijzigen.\nHet voorvoegsel mag geen spaties of @mentions bevatten!"
 	},
 	"pause": {
 		"on": "Ik ben nu gepauzeerd op deze server en zal meeste opdrachten negeren!",
@@ -40,6 +54,10 @@
 	},
 	"voice": {
 		"text": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven:",
+		"enable": "Gebruik `%s` om deze functie in te schakelen.",
+		"disable": "Gebruik `%s` om deze functie uit te schakelen.",
+		"enabled": "je hebt de functie ingeschakeld om rollen toe te voegen aan spraakkanalen.",
+		"disabled": "je hebt de functie uitgeschakeld om rollen toe te voegen aan spraakkanalen.",
 		"name": "spraakkanaal naam",
 		"channel": "Spraakkanaal",
 		"join": "%1$s kwam het spraakkanaal \"%2$s\" binnen.",
@@ -48,6 +66,9 @@
 	"overview": {
 		"inaccurate": "Statistieken zijn mogelijk inaccuraat",
 		"name": "Volledige naam:",
+		"vertical": "Vertical:",
+		"topic": "Thema:",
+		"founder": "Oprichter:",
 		"created": "Gecreëerd:",
 		"manager": "Wiki beheerder:",
 		"talk": "overleg",
@@ -58,9 +79,9 @@
 		"pages": "Totaal pagina's:",
 		"edits": "Bewerkingen:",
 		"users": "Actieve gebruikers:",
-		"description": "Description:",
-		"image": "Image:",
-		"none": "*none*"
+		"description": "Beschrijving:",
+		"image": "Afbeelding:",
+		"none": "*niemand*"
 	},
 	"user": {
 		"gender": {
@@ -71,33 +92,61 @@
 		"groups": [
 			["global_bot", "Gamepedia bot"],
 			["hydra_staff", "Gamepedia staff"],
+			["wiki_manager", "Wiki manager"],
+			["content_team_member", "Content Team Member"],
+			["grasp", "GRASP"],
+			["bot-global", "Fandom bot"],
+			["staff", "Fandom staff"],
+			["wiki-manager", "Wiki manager"],
+			["helper", "Fandom helper"],
+			["content-team-member", "Content Team Member"],
+			["vstf", "VSTF"],
+			["content-volunteer", "Content volunteer"],
+			["global-discussions-moderator", "Globaal discussiemoderator"],
+			["vanguard", "Vanguard"],
+			["voldev", "Vrijwillige ontwikkelaars"],
+			["council", "Communityraad"],
 			["bot", "Bot"],
 			["bureaucrat", "Bureaucraat"],
 			["sysop", "Beheerder"],
-			["grasp", "GRASP"],
+			["content-moderator", "Inhoudmoderator"],
+			["threadmoderator", "Discussiemoderator"],
+			["chatmoderator", "Chatmoderator"],
 			["directors", "Director"],
 			["Patrol", "Inspector"],
 			["editor", "Editor"],
 			["moderator", "Moderator"],
 			["Elite_users", "Elite user"],
 			["patrollers", "Patroller"],
+			["rollback", "rollback"],
 			["autoreview", "autoreview"],
 			["autopatrol", "autopatrol"],
+			["authenticated", "authenticated"],
 			["user", "Gebruiker"]
 		],
-		"manager": "Wiki manager",
 		"info": {
 			"gender": "Geslacht:",
 			"registration": "Registratie datum:",
 			"editcount": "Aantal bewerkingen:",
+			"globaleditcount": "Globaal aantal wijzigingen:",
+			"wikisedited": "Wikis bewerkt:",
 			"group": "Groep:",
-			"discord": "Discord:"
+			"discord": "Discord:",
+			"loading": "Globale statistieken laden…"
 		},
 		"block": {
 			"header": "%s is momenteel geblokkeerd!",
 			"text": "Geblokkeerd van %1$s tot %2$s door %3$s met reden \"%4$s\".",
 			"noreason": "Geblokkeerd van %1$s tot %2$s door %3$s.",
+			"nofromtext": "Geblokkeerd tot %2$s door %3$s met reden \"%4$s\".",
+			"nofromnoreason": "Geblokkeerd tot %2$s door %3$s.",
 			"until_infinity": "het einde van de wereld"
+		},
+		"gblock": {
+			"header": "%s is momenteel globaal geblokkeerd!",
+			"text": "Geblokkeerd van %1$s tot %2$s door %3$s op %4$s met reden \"%5$s\".",
+			"noreason": "Geblokkeerd van %1$s tot %2$s door %3$s op %4$s.",
+			"disabled": "Dit account is momenteel uitgeschakeld!"
 		}
 	},
 	"diff": {
@@ -137,6 +186,17 @@
 				"default": "%s categorieën",
 				"1": "%s categorie"
 			}
+		},
+		"special": "Inhoud van deze speciale pagina:",
+		"empty": "*Deze speciale pagina is leeg*"
+	},
+	"discussion": {
+		"post": "bericht",
+		"main": "Discussies",
+		"image": "Bekijk afbeelding",
+		"votes": {
+			"default": "%s stemmen",
+			"1": "%s stem"
 		}
 	},
 	"invite": {
@@ -168,10 +228,12 @@
 		"admin": "Deze opdrachten kunnen alleen door administratoren uitgevoerd worden:",
 		"noadmin": "je hebt de `Beheer Server` permissie nodig voor deze opdrachten!",
 		"pause": "**Ik ben momenteel gepauzeerd op deze server!**\nAlleen deze opdrachten kunnen worden uitgevoerd:",
-		"footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑 op mijn bericht en ik zal het verwijderen.",
+		"footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑️ op mijn bericht en ik zal het verwijderen.",
 		"list": [
 			{ "cmd": "<zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki.", "unsearchable": true },
 			{ "cmd": "!<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "?<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`", "unsearchable": true },
+			{ "cmd": "??<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`", "unsearchable": true },
 			{ "cmd": "Gebruiker:<gebruikersnaam>", "desc": "Ik zal wat informatie over de gebruiker weergeven.", "unsearchable": true },
 			{ "cmd": "diff <diff> [<oldid>]", "desc": "Ik zal antwoorden met een link naar de diff uit de wiki." },
 			{ "cmd": "diff <pagina naam>", "desc": "Ik zal antwoorden met een link naar de laatste diff over het artikel uit de wiki." },
@@ -188,6 +250,10 @@
 			{ "cmd": "page <pagina naam>", "desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki.", "hide": true },
 			{ "cmd": "zoeken <zoek term>", "desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki.", "hide": true },
 			{ "cmd": "search <zoek term>", "desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki.", "hide": true },
+			{ "cmd": "discussie <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki." },
+			{ "cmd": "discussion <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki.", "hide": true },
+			{ "cmd": "discussie bericht <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomend discussie bericht op de Fandom wiki." },
+			{ "cmd": "discussion post <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomend discussie bericht op de Fandom wiki.", "hide": true },
 			{ "cmd": "info", "desc": "Ik zal mezelf introduceren." },
 			{ "cmd": "help", "desc": "Ik zal alle opdrachten opsommen die ik begrijp." },
 			{ "cmd": "help <bot command>", "desc": "Vraag je je af hoe een opdracht werkt? Laat het me aan je uitleggen!" },
@@ -195,8 +261,10 @@
 			{ "cmd": "help admin", "desc": "Ik zal alle administrator opdrachten opsommen.", "unsearchable": true, "admin": true },
 			{ "cmd": "settings", "desc": "Ik zal de instellingen voor deze server wijzigen.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <taal>", "desc": "Ik zal de taal voor deze server wijzigen.", "hide": true, "admin": true },
+			{ "cmd": "settings prefix <voorvoegsel>", "desc": "Ik zal het voorvoegsel voor deze server wijzigen.", "hide": true, "admin": true, "patreon": true },
 			{ "cmd": "settings wiki <wiki>", "desc": "Ik zal de standaard wiki voor deze server wijzigen.", "hide": true, "admin": true },
-			{ "cmd": "settings channel <wiki>", "desc": "Ik zal de standaard wiki voor het huidige kanaal wijzigen.", "hide": true, "admin": true },
+			{ "cmd": "settings channel", "desc": "Ik zal de overschrijvingen voor het huidige kanaal wijzigen.", "hide": true, "admin": true },
+			{ "cmd": "voice", "desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Ik zal alle opdrachten op deze server negeren, met uitzondering van enkele admin opdrachten.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Ik zal weer op alle opdrachten op deze server reageren.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "poll <vraag in platte tekst>", "desc": "Ik zal een poll maken en reageren met <:support:448222377009086465> and <:oppose:448222455425794059>.", "admin": true },

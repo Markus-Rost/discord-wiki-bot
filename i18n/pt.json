@@ -17,29 +17,43 @@
 		"limpar": "delete",
 		"página": "page",
 		"pesquisar": "search",
-		"🎲": "random"
+		"🎲": "random",
+		"discussão": "discussion"
 	},
+	"prefix": "o prefixo deste servidor é `%s`. Você pode alterar o prefixo com `%s settings prefix`. Para uma lista de todos os comandos, veja `%s help`.",
 	"missingperm": "eu estou perdendo algumas permissões para este comando:",
 	"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n%s, sua mensagem continha muitos comandos!",
-	"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia. %s me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Fandom/Gamepedia e sou uma ferramenta não oficial!**\n\nVocê pode me apoiar no Patreon:",
+	"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia e Fandom. %s me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Fandom e sou uma ferramenta não oficial!**\n\nVocê pode me apoiar no Patreon:",
 	"helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
+	"patreon": "esse é um recurso exclusivo do Patreon!\nVocê pode me apoiar no Patreon para obter acesso a esse recurso:",
 	"settings": {
 		"save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
 		"missing": "este servidor ainda não está configurado. Use %1$s e %2$s para alterar as configurações.",
 		"foundwikis": "Você quer dizer algum dessas wikis?",
-		"current": "Esta é a configuração atual para este servidor:\nIdioma: `Português` %1$s\nWiki padrão: $2%s\nWiki atribuída aos canais",
-		"nochannels": "*Nenhuma canal é associado a wiki  específica ainda*",
-		"lang": "o iddioma para este servidor é: `Português`",
+		"current": "estas são as configurações atuais para este servidor:",
+		"channel current": "estas são as configurações atuais deste canal:",
+		"currentlang": "Idioma:",
+		"currentprefix": "Prefixo:",
+		"currentwiki": "Wiki padrão:",
+		"currentchannel": "Substituições de canal:",
+		"nochannels": "*Nenhum canal sobrescreve ainda*",
+		"lang": "o idioma para este servidor é:",
+		"channel lang": "o idioma para este canal é:",
 		"langinvalid": "o idioma especificado não é suportado!",
-		"langchanged": "você mudou o idioma deste servidor para: `Português`",
+		"langchanged": "você alterou o idioma deste servidor para:",
+		"channel langchanged": "você alterou o idioma deste canal para:",
 		"langhelp": "Use `%s <idioma>` para mudar o idioma.\nIdiomas atualmente suportados são:",
 		"wikimissing": "nenhuma wiki padrão está configurado para este servidor ainda!",
 		"wiki": "a wiki padrão para este servidor é:",
-		"wikiinvalid": "por favor, forneça um link válido para uma wiki da Gamepedia!",
+		"channel wiki": "a wiki padrão para este canal é:",
+		"wikiinvalid": "por favor, forneça um link válido para uma wiki da Gamepedia ou Fandom!",
 		"wikichanged": "você mudou a wiki padrão para este servidor para:",
-		"wikihelp": "Use `%s <wiki>` para alterar a wiki padrão.\nLink para a wiki: `https://<wiki>.gamepedia.com/`",
-		"channel": "a wiki padrão para este canal é:",
-		"channelchanged": "você mudou a wiki padrão para este canal para:"
+		"channel wikichanged": "você mudou a wiki padrão para este canal para:",
+		"wikihelp": "Use `%s <link>` para alterar a wiki padrão.\nLink para a wiki: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
+		"prefix": "o prefixo deste servidor é:",
+		"prefixinvalid": "o prefixo especificado não é suportado!",
+		"prefixchanged": "você mudou o prefixo deste servidor para:",
+		"prefixhelp": "Use `%s <prefixo>` para alterar o prefixo.\nO prefixo pode não incluir espaços ou menções!"
 	},
 	"pause": {
 		"on": "Agora estou pausado neste servidor e ignorarei a maioria dos comandos!",
@@ -47,6 +61,10 @@
 	},
 	"voice": {
 		"text": "Eu tento dar a todos em um canal de voz um papel específico:",
+		"enable": "Use `%s` para habilitar esta função.",
+		"disable": "Use `%s` desativar esta função.",
+		"enabled": "você ativou a função para adicionar funções aos canais de voz.",
+		"disabled": "você desabilitou a função para adicionar funções aos canais de voz.",
 		"name": "nome do canal de voz",
 		"channel": "Canal de voz",
 		"join": "%1$s juntou-se ao canal de voz \"%2$s\".",
@@ -55,6 +73,9 @@
 	"overview": {
 		"inaccurate": "Estatísticas podem ser imprecisas",
 		"name": "Nome completo:",
+		"vertical": "Vertical:",
+		"topic": "Tópico:",
+		"founder": "Fundador:",
 		"created": "Criado:",
 		"manager": "Gerenciador da Wiki:",
 		"talk": "discussão",
@@ -65,9 +86,9 @@
 		"pages": "Total de páginas:",
 		"edits": "Edições:",
 		"users": "Usuário ativos:",
-		"description": "Description:",
-		"image": "Image:",
-		"none": "*none*"
+		"description": "Descrição:",
+		"image": "Imagem:",
+		"none": "*nenhum*"
 	},
 	"user": {
 		"gender": {
@@ -78,33 +99,61 @@
 		"groups": [
 			["global_bot", "Robô da Gamepedia"],
 			["hydra_staff", "Equipe da Gamepedia"],
+			["wiki_manager", "Gerente de wiki"],
+			["content_team_member", "Membro da equipe de conteúdo"],
+			["grasp", "GRASP"],
+			["bot-global", "Robô do Fandom"],
+			["staff", "Staff do Fandom"],
+			["wiki-manager", "Gerente de wiki"],
+			["helper", "Ajudante do Fandom"],
+			["content-team-member", "Membro da equipe de conteúdo"],
+			["vstf", "VSTF"],
+			["content-volunteer", "Voluntário de conteúdo"],
+			["global-discussions-moderator", "Moderador global de discussões"],
+			["vanguard", "Vanguarda"],
+			["voldev", "Programadores Voluntários"],
+			["council", "Conselho da Comunidade"],
 			["bot", "Robô"],
 			["bureaucrat", "Burocrata"],
 			["sysop", "Administrador"],
-			["grasp", "GRASP"],
+			["content-moderator", "Moderador de conteúdo"],
+			["threadmoderator", "Moderador de discussões"],
+			["chatmoderator", "Moderador do chat"],
 			["directors", "Diretor"],
 			["Patrol", "Inspetor"],
 			["editor", "Editor"],
 			["moderator", "Moderador"],
 			["Elite_users", "Usuário elite"],
 			["patrollers", "Patrulheiro"],
+			["rollback", "rollback"],
 			["autoreview", "revisão automática"],
 			["autopatrol", "autopatrulha"],
+			["authenticated", "authenticated"],
 			["user", "Usuário"]
 		],
-		"manager": "Gerente de wiki",
 		"info": {
 			"gender": "Gênero:",
 			"registration": "Data de registro:",
 			"editcount": "Contagem de edição:",
+			"globaleditcount": "Contagem global de edições:",
+			"wikisedited": "Wikis editadas:",
 			"group": "Grupo:",
-			"discord": "Discord:"
+			"discord": "Discord:",
+			"loading": "Carregando estatísticas globais…"
 		},
 		"block": {
 			"header": "%s está atualmente bloqueado!",
 			"text": "Bloqueado em %1$s até %2$s por %3$s com motivo \"%4$s\".",
 			"noreason": "Bloqueado em %1$s até %2$s por %3$s.",
+			"nofromtext": "Bloqueado até %2$s por %3$s com motivo \"%4$s\".",
+			"nofromnoreason": "Bloqueado até %2$s por %3$s.",
 			"until_infinity": "o fim de todos os dias"
+		},
+		"gblock": {
+			"header": "%s está atualmente bloqueado globalmente!",
+			"text": "Bloqueado em %1$s até %2$s por %3$s em %4$s com motivo \"%5$s\".",
+			"noreason": "Bloqueado em %1$s até %2$s por %3$s em %4$s.",
+			"disabled": "Esta conta está desativada no momento!"
 		}
 	},
 	"diff": {
@@ -144,6 +193,17 @@
 				"default": "%s categorias",
 				"1": "%s categoria"
 			}
+		},
+		"special": "Conteúdo desta página especial:",
+		"empty": "*Esta página especial está vazia*"
+	},
+	"discussion": {
+		"post": "post",
+		"main": "Discussãos",
+		"image": "Ver imagem",
+		"votes": {
+			"default": "%s votos",
+			"1": "%s voto"
 		}
 	},
 	"invite": {
@@ -174,10 +234,12 @@
 		"admin": "Esses comandos só podem ser executados por administradores:",
 		"noadmin": "você precisa da permissão de `Gerenciar servidor` para esses comandos!",
 		"pause": "**Estou atualmente em pausa neste servidor!**\nSom estes comandos podem ser executados:",
-		"footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑 para minha mensagem e eu a apagarei.",
+		"footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ para minha mensagem e eu a apagarei.",
 		"list": [
 			{ "cmd": "<termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente no wiki.", "unsearchable": true },
 			{ "cmd": "!<wiki> <termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente na wiki da Gamepedia: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "?<wiki> <termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente na wiki da Fandom: `https://<wiki>.fandom.com/`", "unsearchable": true },
+			{ "cmd": "??<wiki> <termo de pesquisa>", "desc": "Vou responder com um link para um artigo correspondente na wiki da Wikia: `https://<wiki>.wikia.org/`", "unsearchable": true },
 			{ "cmd": "Usuário:<username>", "desc": "Vou mostrar algumas informações sobre o usuário.", "unsearchable": true },
 			{ "cmd": "diff <diff> [<oldid>]", "desc": "Vou responder com um link para o diff na wiki." },
 			{ "cmd": "diff <page name>", "desc": "Vou responder com um link para o último diff no artigo na wiki." },
@@ -194,6 +256,10 @@
 			{ "cmd": "page <nome da página>", "desc": "Vou responder com um link direto para o artigo na wiki.", "hide": true },
 			{ "cmd": "pesquisar <termo de pesquisa>", "desc": "Vou responder com um link direto para a página de busca de artigo na wiki.", "hide": true },
 			{ "cmd": "search <termo de pesquisa>", "desc": "Vou responder com um link direto para a página de busca de artigo na wiki.", "hide": true },
+			{ "cmd": "discussão <termo de pesquisa>", "desc": "Vou responder com um link para um tópico de discussão correspondente na wiki da Fandom." },
+			{ "cmd": "discussion <search term>", "desc": "Vou responder com um link para um tópico de discussão correspondente na wiki da Fandom.", "hide": true },
+			{ "cmd": "discussão post <termo de pesquisa>", "desc": "Vou responder com um link para um post de discussão correspondente na wiki da Fandom." },
+			{ "cmd": "discussion post <search term>", "desc": "Vou responder com um link para um post de discussão correspondente na wiki da Fandom.", "hide": true },
 			{ "cmd": "info", "desc": "Irei me apresentar." },
 			{ "cmd": "ajuda", "desc": "Vou listar todos os comandos que entendo." },
 			{ "cmd": "ajuda <comando do robô>", "desc": "Quer saber como funciona um comando? Deixe-me explicar isso para você!" },
@@ -204,8 +270,10 @@
 			{ "cmd": "help admin", "desc": "Vou listar todos os comandos do administrador.", "hide": true },
 			{ "cmd": "settings", "desc": "Vou mudar as configurações deste servidor.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <idioma>", "desc": "Vou mudar o idioma deste servidor.", "hide": true, "admin": true },
+			{ "cmd": "settings prefix <prefixo>", "desc": "Eu vou mudar o prefixo deste servidor.", "hide": true, "admin": true, "patreon": true },
 			{ "cmd": "settings wiki <wiki>", "desc": "Vou mudar a wiki padrão para esse servidor.", "hide": true, "admin": true },
-			{ "cmd": "settings channel <wiki>", "desc": "Vou mudar a wiki padrão para o canal atual.", "hide": true, "admin": true },
+			{ "cmd": "settings channel", "desc": "Vou mudar as substituições para o canal atual.", "hide": true, "admin": true },
+			{ "cmd": "voice", "desc": "Eu tento dar a todos em um canal de voz um papel específico.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Eu vou ignorar todos os comandos neste servidor, exceto alguns comandos de administração.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Eu responderei a todos os comandos neste servidor novamente.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "enquete <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com <:support:448222377009086465> e <:oppose:448222455425794059>.", "admin": true },

@@ -12,29 +12,43 @@
 		"anket": "poll",
 		"sayfa": "page",
 		"arama": "search",
-		"🎲": "random"
+		"🎲": "random",
+		"tartışma": "discussion"
 	},
+	"prefix": "sunucudaki önekim `%s`. Bunu `%s settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `%s yardım`.",
 	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
 	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n%s, mesajın çok fazla komut içeriyor!",
-	"disclaimer": "Ben, Gamepedia Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. %s, beni JavaScript kullanarak yazdı.\n\n**Fandom/Gamepedia ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",
+	"disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. %s, beni JavaScript kullanarak yazdı.\n\n**Fandom ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",
 	"helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
+	"patreon": "Bu, Patreon'a münhasır bir özellik!\nBu özelliğe erişim alabilmek için beni Patreon'da destekleyebilirsiniz:",
 	"settings": {
 		"save_failed": "ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
 		"missing": "bu sunucu henüz kurulmamış. %1$s ve %2$s'yi kullanarak ayarları değiştirin.",
 		"foundwikis": "Bu wikilerden herhangi birini mi kastediyorsun?",
-		"current": "sunucunun mevcut ayarları bu şekilde:\nDil: `Türkçe` %1$s\nVarsayılan wiki: %2$s\nKanal wikileri",
-		"nochannels": "*Henüz hiçbir kanal wikisi yok*",
-		"lang": "Bu sunucunun dili: `Türkçe`",
+		"current": "sunucunun mevcut ayarları:",
+		"channel current": "kanalın mevcut ayarları:",
+		"currentlang": "Dil:",
+		"currentprefix": "Önek:",
+		"currentwiki": "Varsayılan wiki:",
+		"currentchannel": "Kanal özel ayarları:",
+		"nochannels": "*Şimdilik bir kanala özel ayar yok*",
+		"lang": "bu sunucunun dili:",
+		"channel lang": "bu kanalın dili:",
 		"langinvalid": "belirtilen dil şimdilik desteklenmiyor!",
-		"langchanged": "sunucunun dilini şu dile değiştirdiniz: `Türkçe`",
+		"langchanged": "sunucunun dilini şuna değiştirdin:",
+		"channel langchanged": "kanalın dilini şuna değiştirdin:",
 		"langhelp": "`%s <dil>` kullanarak dili değiştirebilirsin.\nŞimdilik desteklenmeyen diller:",
 		"wikimissing": "bu sunucu için varsayılan bir wiki belirlenmemiş!",
 		"wiki": "bu sunucunun varsayılan wikisi:",
-		"wikiinvalid": "lütfen Gamepedia wikiye geçerli bir bağlantı saylağın!",
+		"channel wiki": "bu kanalın varsayılan wikisi:",
+		"wikiinvalid": "lütfen Gamepedia veya Fandom wikiye geçerli bir bağlantı saylağın!",
 		"wikichanged": "bu sunucunun varsayılan wikisini şuna değiştirdiniz:",
-		"wikihelp": "`%s <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/`",
-		"channel": "bu kanalın varsayılan wikisi:",
-		"channelchanged": "bu kanalın varsayılan wikisini şuna değiştirdiniz:"
+		"channel wikichanged": "bu kanalın varsayılan wikisini şuna değiştirdiniz:",
+		"wikihelp": "`%s <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/` veya `https://<wiki>.fandom.com/`",
+		"prefix": "sunucudaki önekim:",
+		"prefixinvalid": "belirtilen önek desteklenmiyor!",
+		"prefixchanged": "sunucunun öneki şuna değiştirildi:",
+		"prefixhelp": "Öneki değiştirmek için `%s <önek>`.\nÖnekte etiketler ve boşluklar bulunamaz!"
 	},
 	"pause": {
 		"on": "Şimdi bu sunucuda duraklatıldım ve çoğu komutu görmezden geleceğim!",
@@ -42,6 +56,10 @@
 	},
 	"voice": {
 		"text": "Ses kanalındaki herkese belirli bir rol vermeye çalışıyorum:",
+		"enable": "Bu fonksiyonu etkinleştirmek için `%s` komutunu kullanmalısın.",
+		"disable": "Bu fonksiyou devre dışı bırakmak için `%s` komutunu kullanmalısın.",
+		"enabled": "sesli kanallara rol ekleme fonksiyonunu etkinleştirdin.",
+		"disabled": "sesli kanallara rol ekleme fonksiyonunu devre dışı bıraktın.",
 		"name": "ses kanalı adı",
 		"channel": "Ses kanalı",
 		"join": "%1$s ses kanalına katıldı \"%2$s\".",
@@ -50,6 +68,9 @@
 	"overview": {
 		"inaccurate": "İstatistikler yanlış olabilir",
 		"name": "Tam isim:",
+		"vertical": "Konu:",
+		"topic": "Kategori:",
+		"founder": "Kurucu:",
 		"created": "Oluşturuldu:",
 		"manager": "Wiki yöneticisi:",
 		"talk": "mesaj",
@@ -62,7 +83,7 @@
 		"users": "Aktif kullanıcılar:",
 		"description": "Description:",
 		"image": "Image:",
-		"none": "*none*"
+		"none": "*hiçbiri*"
 	},
 	"user": {
 		"gender": {
@@ -73,33 +94,61 @@
 		"groups": [
 			["global_bot", "Gamepedia bot"],
 			["hydra_staff", "Gamepedia personeli"],
+			["wiki_manager", "Wiki yöneticisi"],
+			["content_team_member", "İçerik Takımı Üyesi"],
+			["grasp", "GRASP"],
+			["bot-global", "Fandom bot"],
+			["staff", "Fandom personeli"],
+			["wiki-manager", "Wiki yöneticisi"],
+			["helper", "Fandom yardımcısı"],
+			["content-team-member", "İçerik Takımı Üyesi"],
+			["vstf", "VSTF"],
+			["content-volunteer", "İçerik gönüllüsü"],
+			["global-discussions-moderator", "Global tartışma moderatörü"],
+			["vanguard", "Vanguard"],
+			["voldev", "Gönüllü Geliştirici"],
+			["council", "Topluluk Konseyi"],
 			["bot", "Bot"],
 			["bureaucrat", "Bürokrat"],
 			["sysop", "Yönetici"],
-			["grasp", "GRASP"],
+			["content-moderator", "İçerik moderatörü"],
+			["threadmoderator", "Tartışma moderatörü"],
+			["chatmoderator", "Sohbet moderatörü"],
 			["directors", "Director"],
 			["Patrol", "Inspector"],
 			["editor", "Editor"],
 			["moderator", "Moderator"],
 			["Elite_users", "Elite user"],
 			["patrollers", "Patroller"],
+			["rollback", "geri alma"],
 			["autoreview", "autoreview"],
 			["autopatrol", "autopatrol"],
+			["authenticated", "doğrulanmış"],
 			["user", "Kullanıcı"]
 		],
-		"manager": "Wiki yöneticisi",
 		"info": {
 			"gender": "Cinsiyet:",
 			"registration": "Kayıt tarihi:",
 			"editcount": "Düzenleme sayısı:",
+			"globaleditcount": "Global düzenleme sayısı:",
+			"wikisedited": "Wikis edited:",
 			"group": "Grup:",
-			"discord": "Discord:"
+			"discord": "Discord:",
+			"loading": "Loading global statistics…"
 		},
 		"block": {
 			"header": "%s şu anda engelli!",
 			"text": "%1$s platformundan %3$s tarafından \"%4$s\" nedeniyle %2$s süresinde engellendiniz.",
 			"noreason": "%1$s platformundan %3$s tarafından %2$s tarihine kadar engellendiniz.",
+			"nofromtext": "\"%4$s\" nedeniyle %3$s tarafından %2$s tarihine kadar engellendiniz.",
+			"nofromnoreason": "%3$s tarafından %2$s tarihine kadar engellendiniz.",
 			"until_infinity": "bütün günlerin sonu"
+		},
+		"gblock": {
+			"header": "%s global olarak engellendi!",
+			"text": "%4$s platformunda %3$s tarafından %1$s tarihinde, %2$s tarihine kadar \"%5$s\" nedeniyle engellendi.",
+			"noreason": "%4$s platformunda %3$s tarafından %1$s tarihinde, %2$s tarihine kadar engellendi.",
+			"disabled": "Bu hesap şu anda devre dışı!"
 		}
 	},
 	"diff": {
@@ -137,6 +186,16 @@
 				"default": "%s kategoriler",
 				"1": "%s kategori"
 			}
+		},
+		"special": "Content of this special page:",
+		"empty": "*This special page is empty*"
+	},
+	"discussion": {
+		"post": "gönderisi",
+		"main": "Tartışmalar",
+		"image": "Resmi gör",
+		"votes": {
+			"default": "%s oy"
 		}
 	},
 	"invite": {
@@ -167,10 +226,12 @@
 		"admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
 		"noadmin": "Bu komutlar için `Sunucuyu Yönetme` iznine ihtiyacınız var!",
 		"pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:",
-		"footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑 ile tepki verin, mesajı sileceğim.",
+		"footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑️ ile tepki verin, mesajı sileceğim.",
 		"list": [
 			{ "cmd": "<arama terimi>", "desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim.", "unsearchable": true },
 			{ "cmd": "!<wiki> <arama terimi>", "desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
+			{ "cmd": "?<wiki> <arama terimi>", "desc": "Belirtilen Fandom Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.fandom.com/`", "unsearchable": true },
+			{ "cmd": "??<wiki> <arama terimi>", "desc": "Belirtilen Wikia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.wikia.org/`", "unsearchable": true },
 			{ "cmd": "Kullanıcı:<kullanıcıadı>", "desc": "Kullanıcı hakkında bazı bilgileri göstereceğim.", "unsearchable": true },
 			{ "cmd": "diff <diff> [<oldid>]", "desc": "Wikideki farkların bağlantısıyla cevap vereceğim." },
 			{ "cmd": "diff <sayfa adı>", "desc": "Wikideki son farkın bağlantısıyla cevap vereceğim." },
@@ -185,6 +246,10 @@
 			{ "cmd": "page <sayfa adı>", "desc": "Makalenin wikideki bağlantısıyla cevap vereceğim.", "hide": true },
 			{ "cmd": "arama <arama terimi>", "desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim.", "hide": true },
 			{ "cmd": "search <arama terimi>", "desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim.", "hide": true },
+			{ "cmd": "tartışma <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim." },
+			{ "cmd": "discussion <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim.", "hide": true },
+			{ "cmd": "tartışma gönderisi <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma gönderisinin bağlantısıyla cevap vereceğim." },
+			{ "cmd": "discussion post <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma gönderisinin bağlantısıyla cevap vereceğim.", "hide": true },
 			{ "cmd": "bilgi", "desc": "Kendimi tanıtacağım." },
 			{ "cmd": "info", "desc": "Kendimi tanıtacağım.", "hide": true },
 			{ "cmd": "yardım", "desc": "Anladığım tüm komutları listeleyeceğim." },
@@ -196,8 +261,10 @@
 			{ "cmd": "help admin", "desc": "Tüm yönetici komutlarını listeleyeceğim.", "hide": true },
 			{ "cmd": "settings", "desc": "Bu sunucunun ayarlarını değiştireceğim.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <dil>", "desc": "Bu sunucunun dilini değiştireceğim.", "hide": true, "admin": true },
+			{ "cmd": "settings prefix <önek>", "desc": "Sunucudaki öneki değiştireceğim.", "hide": true, "admin": true, "patreon": true },
 			{ "cmd": "settings wiki <wiki>", "desc": "Bu sunucunun varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
-			{ "cmd": "settings channel <wiki>", "desc": "Geçerli kanalın varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
+			{ "cmd": "settings channel", "desc": "Mevcut kanalın kanala özel ayarlarını değiştireceğim.", "hide": true, "admin": true },
+			{ "cmd": "voice", "desc": "Sesli kanalda bulunan kişilere belirli bir rol vermeye çalışacağım.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Birkaç admin komutu haricinde, bu sunucudaki bütün komutları yok sayacağım.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "anket <serbest metin olarak soru>", "desc": "Anket yaratacağım ve şu tepkileri vereceğim: <:support:448222377009086465> ve <:oppose:448222455425794059>.", "admin": true },
