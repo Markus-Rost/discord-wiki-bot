@@ -4830,7 +4830,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 			}
 		} );
 		
-		if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && !( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
+		if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 			var links = [];
 			var embeds = [];
 			var linkcount = 0;
