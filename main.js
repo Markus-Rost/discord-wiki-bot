@@ -341,6 +341,7 @@ var minecraftcmdmap = {
 }
 
 function cmd_helpsetup(lang, msg) {
+	msg.defaultSettings = false;
 	msg.replyMsg( lang.settings.missing.replaceSave( '%1$s', '`' + process.env.prefix + ' settings lang`' ).replaceSave( '%2$s', '`' + process.env.prefix + ' settings wiki`' ) );
 }
 
@@ -4836,7 +4837,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
 					let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
 					
-					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\[\\[([' + " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+" + ']+)\\]\\]\\1', 'g' );
+					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\[\\[([^' + "#<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\]\\]\\1', 'g' );
 					let entry = null;
 					while ( ( entry = regex.exec(content) ) !== null ) {
 						if ( linkcount < linkmaxcount ) {
@@ -4856,7 +4857,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
 					let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
 					
-					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\{\\{([' + " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+" + ']+)\\}\\}\\1', 'g' );
+					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)(?<!\\{)\\{\\{([^' + "#<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\}\\}\\1', 'g' );
 					let entry = null;
 					while ( ( entry = regex.exec(content) ) !== null ) {
 						if ( count < maxcount ) {
