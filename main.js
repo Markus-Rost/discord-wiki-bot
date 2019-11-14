@@ -4793,12 +4793,8 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 			msg.replyMsg( lang.missingperm + ' `MANAGE_MESSAGES`' );
 		}
 	} else {
-		var links = [];
-		var embeds = [];
 		var count = 0;
 		var maxcount = ( channel.type === 'text' && msg.guild.id in patreons ? 15 : 10 );
-		var linkcount = 0;
-		var linkmaxcount = maxcount + 5;
 		msg.cleanContent.replace( /\u200b/g, '' ).split('\n').forEach( line => {
 			if ( line.hasPrefix(prefix) && count < maxcount ) {
 				count++;
@@ -4832,17 +4828,25 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				msg.reactEmoji('⚠️');
 				msg.sendChannelError( lang.limit.replaceSave( '%s', author ) );
 			}
-			else if ( !line.hasPrefix(prefix) && ( channel.type !== 'text' || !pause[msg.guild.id] ) ) {
+		} );
+		
+		if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && !( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
+			var links = [];
+			var embeds = [];
+			var linkcount = 0;
+			var linkmaxcount = maxcount + 5;
+			msg.cleanContent.replace( /\u200b/g, '' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
+				if ( line.hasPrefix(prefix) || !( line.includes( '[[' ) || line.includes( '{{' ) ) ) return;
 				if ( line.includes( '[[' ) && line.includes( ']]' ) && linkcount <= linkmaxcount ) {
-					console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
-					let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
-					
-					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\[\\[([^' + "#<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\]\\]\\1', 'g' );
+					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\[\\[([^' + "<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\]\\]\\1', 'g' );
 					let entry = null;
-					while ( ( entry = regex.exec(content) ) !== null ) {
+					while ( ( entry = regex.exec(line) ) !== null ) {
 						if ( linkcount < linkmaxcount ) {
 							linkcount++;
-							links.push({title:entry[2],spoiler:entry[1]});
+							console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + entry[0] );
+							let title = entry[2].split('#')[0];
+							let section = ( entry[2].includes( '#' ) ? '#' + entry[2].split('#').slice(1).join('#') : '' )
+							links.push({title,section,spoiler:entry[1]});
 						}
 						else if ( linkcount === linkmaxcount ) {
 							linkcount++;
@@ -4854,15 +4858,15 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				}
 				
 				if ( line.includes( '{{' ) && line.includes( '}}' ) && count <= maxcount ) {
-					console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
-					let content = line.replace( /(?<!\\)```.+?```/gs, 'n' ).replace( /(?<!\\)`.+?`/gs, '\n' );
-					
-					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)(?<!\\{)\\{\\{([^' + "#<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\}\\}\\1', 'g' );
+					let regex = new RegExp( '(?<!\\\\)(|\\|\\|)(?<!\\{)\\{\\{([^' + "<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\}\\}\\1', 'g' );
 					let entry = null;
-					while ( ( entry = regex.exec(content) ) !== null ) {
+					while ( ( entry = regex.exec(line) ) !== null ) {
 						if ( count < maxcount ) {
 							count++;
-							embeds.push({title:entry[2],spoiler:entry[1]});
+							console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + entry[0] );
+							let title = entry[2].split('#')[0];
+							let section = ( entry[2].includes( '#' ) ? '#' + entry[2].split('#').slice(1).join('#') : '' )
+							embeds.push({title,section,spoiler:entry[1]});
 						}
 						else if ( count === maxcount ) {
 							count++;
@@ -4872,77 +4876,77 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 						}
 					}
 				}
-			}
-		} );
+			} );
 		
-		if ( links.length ) request( {
-			uri: wiki + 'api.php?action=query&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
-			if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
-					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
+			if ( links.length ) request( {
+				uri: wiki + 'api.php?action=query&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json',
+				json: true
+			}, function( error, response, body ) {
+				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
+					if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+						console.log( '- This wiki doesn\'t exist!' );
+						msg.reactEmoji('nowiki');
+						return;
+					}
+					console.log( '- ' + ( response && response.statusCode ) + ': Error while following the links: ' + ( error || body && body.error && body.error.info ) );
 					return;
 				}
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while following the link: ' + ( error || body && body.error && body.error.info ) );
-				return;
-			}
-			if ( body.query.normalized ) {
-				body.query.normalized.forEach( title => links.filter( link => link.title === title.from ).forEach( link => link.title = title.to ) );
-			}
-			if ( body.query.interwiki ) {
-				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => link.url = interwiki.url ) );
-			}
-			if ( body.query.pages ) {
-				var querypages = Object.values(body.query.pages);
-				querypages.filter( page => page.missing !== undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
-					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-					link.url = wiki.toLink() + link.title.toTitle() + '?action=edit&redlink=1';
-				} ) );
-				querypages.filter( page => page.invalid !== undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
-					links.splice(links.indexOf(link), 1);
-				} ) );
-			}
-			if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink() + link.title.toTitle() ) + '>' + link.spoiler ).join('\n'), {split:true} );
-		} );
-		
-		if ( embeds.length ) request( {
-			uri: wiki + 'api.php?action=query&titles=' + encodeURIComponent( embeds.map( embed => embed.title ).join('|') ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
-			if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
-					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
+				if ( body.query.normalized ) {
+					body.query.normalized.forEach( title => links.filter( link => link.title === title.from ).forEach( link => link.title = title.to ) );
+				}
+				if ( body.query.interwiki ) {
+					body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => link.url = interwiki.url ) );
+				}
+				if ( body.query.pages ) {
+					var querypages = Object.values(body.query.pages);
+					querypages.filter( page => page.missing !== undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
+						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+						link.url = wiki.toLink() + link.title.toTitle() + '?action=edit&redlink=1';
+					} ) );
+					querypages.filter( page => page.invalid !== undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
+						links.splice(links.indexOf(link), 1);
+					} ) );
+				}
+				if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink() + link.title.toTitle() ) + link.section.toSection() + '>' + link.spoiler ).join('\n'), {split:true} );
+			} );
+			
+			if ( embeds.length ) request( {
+				uri: wiki + 'api.php?action=query&titles=' + encodeURIComponent( embeds.map( embed => embed.title ).join('|') ) + '&format=json',
+				json: true
+			}, function( error, response, body ) {
+				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
+					if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+						console.log( '- This wiki doesn\'t exist!' );
+						msg.reactEmoji('nowiki');
+						return;
+					}
+					console.log( '- ' + ( response && response.statusCode ) + ': Error while following the links: ' + ( error || body && body.error && body.error.info ) );
 					return;
 				}
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while following the link: ' + ( error || body && body.error && body.error.info ) );
-				return;
-			}
-			if ( body.query.normalized ) {
-				body.query.normalized.forEach( title => embeds.filter( embed => embed.title === title.from ).forEach( embed => embed.title = title.to ) );
-			}
-			if ( body.query.pages ) {
-				var querypages = Object.values(body.query.pages);
-				querypages.filter( page => page.missing !== undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
-					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-					msg.sendChannel( embed.spoiler + '<' + wiki.toLink() + embed.title.toTitle() + '?action=edit&redlink=1>' + embed.spoiler );
-					embeds.splice(embeds.indexOf(embed), 1);
-				} ) );
-				querypages.filter( page => page.invalid !== undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
-					embeds.splice(embeds.indexOf(embed), 1);
-				} ) );
-			}
-			if ( embeds.length ) {
-				if ( wiki.isFandom() ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-					fandom_check_wiki(lang, msg, embed.title, wiki, ' ', reaction, embed.spoiler);
-				} ) );
-				else embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-					gamepedia_check_wiki(lang, msg, embed.title, wiki, ' ', reaction, embed.spoiler);
-				} ) );
-			}
-		} );
+				if ( body.query.normalized ) {
+					body.query.normalized.forEach( title => embeds.filter( embed => embed.title === title.from ).forEach( embed => embed.title = title.to ) );
+				}
+				if ( body.query.pages ) {
+					var querypages = Object.values(body.query.pages);
+					querypages.filter( page => page.missing !== undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
+						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+						msg.sendChannel( embed.spoiler + '<' + wiki.toLink() + embed.title.toTitle() + '?action=edit&redlink=1' + embed.section.toSection() + '>' + embed.spoiler );
+						embeds.splice(embeds.indexOf(embed), 1);
+					} ) );
+					querypages.filter( page => page.invalid !== undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
+						embeds.splice(embeds.indexOf(embed), 1);
+					} ) );
+				}
+				if ( embeds.length ) {
+					if ( wiki.isFandom() ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
+						fandom_check_wiki(lang, msg, embed.title + embed.section, wiki, ' ', reaction, embed.spoiler);
+					} ) );
+					else embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
+						gamepedia_check_wiki(lang, msg, embed.title + embed.section, wiki, ' ', reaction, embed.spoiler);
+					} ) );
+				}
+			} );
+		}
 	}
 }
 
