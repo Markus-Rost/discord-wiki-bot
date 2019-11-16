@@ -4899,19 +4899,19 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				}
 				if ( body.query.pages ) {
 					var querypages = Object.values(body.query.pages);
-					querypages.filter( page => page.missing !== undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
-						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-						link.url = wiki.toLink() + link.title.toTitle() + '?action=edit&redlink=1';
-					} ) );
 					querypages.filter( page => page.invalid !== undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
 						links.splice(links.indexOf(link), 1);
+					} ) );
+					querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
+						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+						link.url = wiki.toLink() + link.title.toTitle() + '?action=edit&redlink=1';
 					} ) );
 				}
 				if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink() + link.title.toTitle() ) + link.section.toSection() + '>' + link.spoiler ).join('\n'), {split:true} );
 			} );
 			
 			if ( embeds.length ) request( {
-				uri: wiki + 'api.php?action=query&titles=' + encodeURIComponent( embeds.map( embed => embed.title ).join('|') ) + '&format=json',
+				uri: wiki + 'api.php?action=query&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json',
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
@@ -4928,13 +4928,20 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				}
 				if ( body.query.pages ) {
 					var querypages = Object.values(body.query.pages);
-					querypages.filter( page => page.missing !== undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
-						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-						msg.sendChannel( embed.spoiler + '<' + wiki.toLink() + embed.title.toTitle() + '?action=edit&redlink=1' + embed.section.toSection() + '>' + embed.spoiler );
-						embeds.splice(embeds.indexOf(embed), 1);
-					} ) );
 					querypages.filter( page => page.invalid !== undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
 						embeds.splice(embeds.indexOf(embed), 1);
+					} ) );
+					querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
+						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+						embeds.splice(embeds.indexOf(embed), 1);
+						if ( page.ns === 0 && !embed.section ) {
+							var template = querypages.find( template => template.title === 'Template:' + embed.title );
+							if ( template && template.missing === undefined ) {
+								msg.sendChannel( embed.spoiler + '<' + wiki.toLink() + template.title.toTitle() + '>' + embed.spoiler );
+								return;
+							}
+						}
+						msg.sendChannel( embed.spoiler + '<' + wiki.toLink() + embed.title.toTitle() + '?action=edit&redlink=1' + embed.section.toSection() + '>' + embed.spoiler );
 					} ) );
 				}
 				if ( embeds.length ) {
