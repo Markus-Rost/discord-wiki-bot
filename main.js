@@ -1925,13 +1925,13 @@ function gamepedia_user(lang, msg, namespace, username, wiki, linksuffix, queryp
 							var text = '<' + pagelink + '>';
 							var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle(true) + ')' );
 							if ( blocks.length ) blocks.forEach( block => embed.addField( block[0], block[1].toMarkdown(wiki) ) );
-							embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
 							var embed = {};
 							var text = '<' + pagelink + '>\n\n' + editcount.join(' ');
 							if ( blocks.length ) blocks.forEach( block => text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext() );
-							text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
@@ -2077,11 +2077,11 @@ function gamepedia_user(lang, msg, namespace, username, wiki, linksuffix, queryp
 						
 						if ( msg.showEmbed() ) {
 							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki) );
-							embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
 							if ( isBlocked ) text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
-							text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
@@ -2224,13 +2224,13 @@ function fandom_user(lang, msg, namespace, username, wiki, linksuffix, querypage
 							var text = '<' + pagelink + '>';
 							var embed = new Discord.RichEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink() + contribs + username.toTitle(true) + ')' );
 							if ( blocks.length ) blocks.forEach( block => embed.addField( block[0], block[1].toMarkdown(wiki) ) );
-							embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
 							var embed = {};
 							var text = '<' + pagelink + '>\n\n' + editcount.join(' ');
 							if ( blocks.length ) blocks.forEach( block => text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext() );
-							text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
@@ -2385,11 +2385,11 @@ function fandom_user(lang, msg, namespace, username, wiki, linksuffix, querypage
 						
 						if ( msg.showEmbed() ) {
 							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki) );
-							embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
 							if ( isBlocked ) text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
-							text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
@@ -4845,7 +4845,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 							linkcount++;
 							console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + entry[0] );
 							let title = entry[2].split('#')[0];
-							let section = ( entry[2].includes( '#' ) ? '#' + entry[2].split('#').slice(1).join('#') : '' )
+							let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
 							links.push({title,section,spoiler:entry[1]});
 						}
 						else if ( linkcount === linkmaxcount ) {
@@ -4865,7 +4865,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 							count++;
 							console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + entry[0] );
 							let title = entry[2].split('#')[0];
-							let section = ( entry[2].includes( '#' ) ? '#' + entry[2].split('#').slice(1).join('#') : '' )
+							let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
 							embeds.push({title,section,spoiler:entry[1]});
 						}
 						else if ( count === maxcount ) {
@@ -4895,7 +4895,9 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					body.query.normalized.forEach( title => links.filter( link => link.title === title.from ).forEach( link => link.title = title.to ) );
 				}
 				if ( body.query.interwiki ) {
-					body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => link.url = interwiki.url ) );
+					body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
+						link.url = interwiki.url + ( link.section ? '#' + link.section.toSection() : '' );
+					} ) );
 				}
 				if ( body.query.pages ) {
 					var querypages = Object.values(body.query.pages);
@@ -4907,7 +4909,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 						link.url = wiki.toLink() + link.title.toTitle() + '?action=edit&redlink=1';
 					} ) );
 				}
-				if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink() + link.title.toTitle() ) + link.section.toSection() + '>' + link.spoiler ).join('\n'), {split:true} );
+				if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink() + link.title.toTitle() + ( link.section ? '#' + link.section.toSection() : '' ) ) + '>' + link.spoiler ).join('\n'), {split:true} );
 			} );
 			
 			if ( embeds.length ) request( {
@@ -4931,25 +4933,24 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					querypages.filter( page => page.invalid !== undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
 						embeds.splice(embeds.indexOf(embed), 1);
 					} ) );
+					var missing = [];
 					querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
 						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+						missing.push(embed);
 						embeds.splice(embeds.indexOf(embed), 1);
 						if ( page.ns === 0 && !embed.section ) {
-							var template = querypages.find( template => template.title === 'Template:' + embed.title );
-							if ( template && template.missing === undefined ) {
-								msg.sendChannel( embed.spoiler + '<' + wiki.toLink() + template.title.toTitle() + '>' + embed.spoiler );
-								return;
-							}
+							var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );
+							if ( template && template.missing === undefined ) embed.template = template.title.toTitle();
 						}
-						msg.sendChannel( embed.spoiler + '<' + wiki.toLink() + embed.title.toTitle() + '?action=edit&redlink=1' + embed.section.toSection() + '>' + embed.spoiler );
 					} ) );
+					if ( missing.length ) msg.sendChannel( missing.map( embed => embed.spoiler + '<' + wiki.toLink() + ( embed.template || embed.title.toTitle() + '?action=edit&redlink=1' ) + '>' + embed.spoiler ).join('\n'), {split:true} );
 				}
 				if ( embeds.length ) {
 					if ( wiki.isFandom() ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-						fandom_check_wiki(lang, msg, embed.title + embed.section, wiki, ' ', reaction, embed.spoiler);
+						fandom_check_wiki(lang, msg, embed.title, wiki, ' ', reaction, embed.spoiler, '', embed.section);
 					} ) );
 					else embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-						gamepedia_check_wiki(lang, msg, embed.title + embed.section, wiki, ' ', reaction, embed.spoiler);
+						gamepedia_check_wiki(lang, msg, embed.title, wiki, ' ', reaction, embed.spoiler, '', embed.section);
 					} ) );
 				}
 			} );
