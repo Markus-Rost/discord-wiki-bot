@@ -29,6 +29,7 @@
 		"channel current": "dies sind die aktuellen Einstellungen für diesen Kanal:",
 		"currentlang": "Sprache:",
 		"currentprefix": "Präfix:",
+		"currentinline": "Inline-Befehle:",
 		"currentwiki": "Standard-Wiki:",
 		"currentchannel": "Kanal-Überschreibungen:",
 		"nochannels": "*Noch keine Kanal-Überschreibungen*",
@@ -48,7 +49,21 @@
 		"prefix": "das Präfix für diesen Server ist:",
 		"prefixinvalid": "das angegebende Präfix wird nicht unterstützt!",
 		"prefixchanged": "du hast das Präfix für diesen Server geändert zu:",
-		"prefixhelp": "Nutze `%s <Präfix>` um das Präfix zu ändern.\nDas Präfix darf keine Leerzeichen oder Erwähnungen enthalten!"
+		"prefixhelp": "Nutze `%s <Präfix>` um das Präfix zu ändern.\nDas Präfix darf keine Leerzeichen oder Erwähnungen enthalten!",
+		"inline enabled": {
+			"inline": "Inline-Befehle sind für diesen Server aktiviert.",
+			"channel inline": "Inline-Befehle sind für diesen Kanal aktiviert.",
+			"inlinechanged": "du hast Inline-Befehle für diesen Server aktiviert.",
+			"channel inlinechanged": "du hast Inline-Befehle für diesen Kanal aktiviert.",
+			"help": "Nutze `%1$s` um Inline-Befehle wie `[[%2$s]]` und `{{%2$s}}` zu deaktivieren."
+		},
+		"inline disabled": {
+			"inline": "Inline-Befehle sind für diesen Server deaktiviert.",
+			"channel inline": "Inline-Befehle sind für diesen Kanal deaktiviert.",
+			"inlinechanged": "du hast Inline-Befehle für diesen Server deaktiviert.",
+			"channel inlinechanged": "du hast Inline-Befehle für diesen Kanal deaktiviert.",
+			"help": "Nutze `%1$s` um Inline-Befehle wie `[[%2$s]]` und `{{%2$s}}` zu aktivieren."
+		}
 	},
 	"pause": {
 		"on": "ich bin auf diesem Server nun pausiert und werde die meisten Befehle ignorieren!",
@@ -233,6 +248,8 @@
 		"footer": "Falls du ein ungewolltes Ergebnis bekommen hast, kannst du mit 🗑️ auf meine Nachricht reagieren und ich werde sie löschen.",
 		"list": [
 			{ "cmd": "<Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki.", "unsearchable": true },
+			{ "cmd": "[[<Seitenname>]]", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki.", "unsearchable": true, "inline": true },
+			{ "cmd": "{{<Seitenname>}}", "desc": "Ich antworte mit einem Link zu der angegebenen Seite im Wiki.", "unsearchable": true, "inline": true },
 			{ "cmd": "!<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`", "unsearchable": true },
 			{ "cmd": "?<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Fandom-Wiki: `https://<Wiki>.fandom.com/`", "unsearchable": true },
 			{ "cmd": "??<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wikia-Wiki: `https://<Wiki>.wikia.org/`", "unsearchable": true },
@@ -269,6 +286,7 @@
 			{ "cmd": "settings", "desc": "Ich ändere die Einstellungen für diesen Server.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <Sprache>", "desc": "Ich ändere die Sprache für diesen Server.", "hide": true, "admin": true },
 			{ "cmd": "settings prefix <Präfix>", "desc": "Ich ändere das Präfix für diesen Server.", "hide": true, "admin": true, "patreon": true },
+			{ "cmd": "settings inline toggle", "desc": "Ich schalte Inline-Befehle für diesen Server um.", "hide": true, "admin": true },
 			{ "cmd": "settings wiki <Wiki>", "desc": "Ich ändere das Standard-Wiki für diesen Server.", "hide": true, "admin": true },
 			{ "cmd": "settings channel", "desc": "Ich ändere die Überschreibungen für den aktuellen Kanal.", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "Ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:", "admin": true, "pause": true },

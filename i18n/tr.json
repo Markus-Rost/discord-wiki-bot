@@ -29,6 +29,7 @@
 		"channel current": "kanalın mevcut ayarları:",
 		"currentlang": "Dil:",
 		"currentprefix": "Önek:",
+		"currentinline": "Inline commands:",
 		"currentwiki": "Varsayılan wiki:",
 		"currentchannel": "Kanal özel ayarları:",
 		"nochannels": "*Şimdilik bir kanala özel ayar yok*",
@@ -48,7 +49,21 @@
 		"prefix": "sunucudaki önekim:",
 		"prefixinvalid": "belirtilen önek desteklenmiyor!",
 		"prefixchanged": "sunucunun öneki şuna değiştirildi:",
-		"prefixhelp": "Öneki değiştirmek için `%s <önek>`.\nÖnekte etiketler ve boşluklar bulunamaz!"
+		"prefixhelp": "Öneki değiştirmek için `%s <önek>`.\nÖnekte etiketler ve boşluklar bulunamaz!",
+		"inline enabled": {
+			"inline": "inline commands are currently enabled for this server.",
+			"channel inline": "inline commands are currently enabled for this channel.",
+			"inlinechanged": "you enabled inline commands for this server.",
+			"channel inlinechanged": "you enabled inline commands for this channel.",
+			"help": "Use `%1$s` to disable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		},
+		"inline disabled": {
+			"inline": "inline commands are currently disabled for this server.",
+			"channel inline": "inline commands are currently disabled for this channel.",
+			"inlinechanged": "you disabled inline commands for this server.",
+			"channel inlinechanged": "you disabled inline commands for this channel.",
+			"help": "Use `%1$s` to enable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		}
 	},
 	"pause": {
 		"on": "Şimdi bu sunucuda duraklatıldım ve çoğu komutu görmezden geleceğim!",
@@ -229,6 +244,8 @@
 		"footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑️ ile tepki verin, mesajı sileceğim.",
 		"list": [
 			{ "cmd": "<arama terimi>", "desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim.", "unsearchable": true },
+			{ "cmd": "[[<sayfa adı>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
+			{ "cmd": "{{<sayfa adı>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
 			{ "cmd": "!<wiki> <arama terimi>", "desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 			{ "cmd": "?<wiki> <arama terimi>", "desc": "Belirtilen Fandom Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.fandom.com/`", "unsearchable": true },
 			{ "cmd": "??<wiki> <arama terimi>", "desc": "Belirtilen Wikia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.wikia.org/`", "unsearchable": true },
@@ -262,6 +279,7 @@
 			{ "cmd": "settings", "desc": "Bu sunucunun ayarlarını değiştireceğim.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <dil>", "desc": "Bu sunucunun dilini değiştireceğim.", "hide": true, "admin": true },
 			{ "cmd": "settings prefix <önek>", "desc": "Sunucudaki öneki değiştireceğim.", "hide": true, "admin": true, "patreon": true },
+			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
 			{ "cmd": "settings wiki <wiki>", "desc": "Bu sunucunun varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
 			{ "cmd": "settings channel", "desc": "Mevcut kanalın kanala özel ayarlarını değiştireceğim.", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "Sesli kanalda bulunan kişilere belirli bir rol vermeye çalışacağım.", "admin": true, "pause": true },

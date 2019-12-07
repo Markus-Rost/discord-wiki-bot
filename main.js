@@ -149,7 +149,7 @@ function getSettings(trysettings = 1) {
 						console.log( '- Created the patreons index.' );
 					} );
 				} );
-				db.run( 'CREATE TABLE IF NOT EXISTS discord(guild TEXT NOT NULL, channel TEXT, lang TEXT NOT NULL DEFAULT [' + defaultSettings.lang + '], wiki TEXT NOT NULL DEFAULT [' + defaultSettings.wiki + '], prefix TEXT NOT NULL DEFAULT [' + process.env.prefix + '], patreon TEXT, voice INTEGER, UNIQUE(guild, channel), FOREIGN KEY(patreon) REFERENCES patreons(patreon) ON DELETE SET NULL)', [], function (error) {
+				db.run( 'CREATE TABLE IF NOT EXISTS discord(guild TEXT NOT NULL, channel TEXT, lang TEXT NOT NULL DEFAULT [' + defaultSettings.lang + '], wiki TEXT NOT NULL DEFAULT [' + defaultSettings.wiki + '], prefix TEXT NOT NULL DEFAULT [' + process.env.prefix + '], patreon TEXT, voice INTEGER, inline INTEGER, UNIQUE(guild, channel), FOREIGN KEY(patreon) REFERENCES patreons(patreon) ON DELETE SET NULL)', [], function (error) {
 					if ( error ) {
 						console.log( '- Error while creating the discord table: ' + error );
 						return error;
@@ -347,7 +347,7 @@ function cmd_helpsetup(lang, msg) {
 
 function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
-	db.all( 'SELECT channel, lang, wiki, prefix FROM discord WHERE guild = ? ORDER BY channel DESC', [msg.guild.id], (error, rows) => {
+	db.all( 'SELECT channel, lang, wiki, prefix, inline FROM discord WHERE guild = ? ORDER BY channel DESC', [msg.guild.id], (error, rows) => {
 		if ( error ) {
 			console.log( '- Error while getting the settings: ' + error );
 			msg.reactEmoji('error', true);
@@ -360,10 +360,11 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		if ( rows.length ) {
 			text = lang.settings.current + '\n' + lang.settings.currentlang + ' `' + i18n.allLangs[2][guild.lang] + '` - `' + prefix + ' settings lang`';
 			if ( msg.guild.id in patreons ) text += '\n' + lang.settings.currentprefix + ' `' + prefix + '` - `' + prefix + ' settings prefix`';
+			text += '\n' + lang.settings.currentinline + ' ' + ( guild.inline ? '~~' : '' ) + '`[[' + lang.search.page + ']]`' + ( guild.inline ? '~~' : '' ) + ' - `' + prefix + ' settings inline`';
 			text += '\n' + lang.settings.currentwiki + ' ' + guild.wiki + ' - `' + prefix + ' settings wiki`';
 			text += '\n' + lang.settings.currentchannel + ' `' + prefix + ' settings channel`\n';
 			if ( rows.length === 1 ) text += lang.settings.nochannels;
-			else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel + '>: ' + ( msg.guild.id in patreons ? '`' + i18n.allLangs[2][row.lang] + '` - ' : '' ) + '<' + row.wiki + '>' ).join('\n');
+			else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel + '>: ' + ( msg.guild.id in patreons ? '`' + i18n.allLangs[2][row.lang] + '` - ' : '' ) + '<' + row.wiki + '>' + ( msg.guild.id in patreons ? ' - ' + ( row.inline ? '~~' : '' ) + '`[[' + lang.search.page + ']]`' + ( row.inline ? '~~' : '' ) : '' ) ).join('\n');
 		}
 		
 		if ( !args.length ) {
@@ -379,7 +380,10 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var channel = rows.find( row => row.channel === msg.channel.id );
 			if ( !channel ) channel = Object.assign({channel:msg.channel.id}, guild);
 			text = lang.settings[prelang + 'current'];
-			if ( msg.guild.id in patreons ) text += '\n' + lang.settings.currentlang + ' `' + i18n.allLangs[2][channel.lang] + '` - `' + prefix + ' settings channel lang`';
+			if ( msg.guild.id in patreons ) {
+				text += '\n' + lang.settings.currentlang + ' `' + i18n.allLangs[2][channel.lang] + '` - `' + prefix + ' settings channel lang`';
+				text += '\n' + lang.settings.currentinline + ' ' + ( channel.inline ? '~~' : '' ) + '`[[' + lang.search.page + ']]`' + ( channel.inline ? '~~' : '' ) + ' - `' + prefix + ' settings channel inline`';
+			}
 			text += '\n' + lang.settings.currentwiki + ' ' + channel.wiki + ' - `' + prefix + ' settings channel wiki`';
 			
 			if ( !args[1] ) return msg.replyMsg( text, {}, true );
@@ -441,7 +445,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 							if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = value[0];
 							if ( reaction ) reaction.removeEmoji();
 							msg.replyMsg( lang.settings[prelang + 'changed'] + ' ' + value[0] + wikihelp, {}, true );
-							var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix ).map( row => row.channel );
+							var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
 							if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
 								if ( delerror ) {
 									console.log( '- Error while removing the settings: ' + delerror );
@@ -495,7 +499,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				else guild.wiki = 'https://' + regex[1] + '/';
 				if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = 'https://' + regex[1] + '/';
 				msg.replyMsg( lang.settings[prelang + 'changed'] + ' https://' + regex[1] + '/' + wikihelp, {}, true );
-				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
 					if ( delerror ) {
 						console.log( '- Error while removing the settings: ' + delerror );
@@ -545,9 +549,9 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					guild.lang = i18n[i18n.allLangs[0][args[1]]];
 					if ( msg.guild.id in voice ) voice[msg.guild.id] = guild.lang;
 				}
-				if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) lang = i18n[i18n.allLangs[0][args[1]]];
+				if ( channel || !( msg.guild.id in patreons ) || !rows.some( row => row.channel === msg.channel.id ) ) lang = i18n[i18n.allLangs[0][args[1]]];
 				msg.replyMsg( lang.settings[prelang + 'changed'] + ' `' + i18n.allLangs[2][i18n.allLangs[0][args[1]]] + '`\n' + lang.settings.langhelp.replaceSave( '%s', prefix + ' settings ' + prelang ) + ' `' + Object.values(i18n.allLangs[1]).join('`, `') + '`', {}, true );
-				var channels = rows.filter( row => row.channel && row.lang === lang.lang && row.wiki === guild.wiki && row.prefix === guild.prefix ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === lang.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
 					if ( delerror ) {
 						console.log( '- Error while removing the settings: ' + delerror );
@@ -585,6 +589,50 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				guild.prefix = args[1];
 				patreons[msg.guild.id] = args[1];
 				msg.replyMsg( lang.settings.prefixchanged + ' `' + args[1] + '`\n' + lang.settings.prefixhelp.replaceSave( '%s', args[1] + ' settings prefix' ), {}, true );
+			} );
+		}
+		
+		if ( args[0] === 'inline' ) {
+			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.patreon + ' <' + process.env.patreon + '>', {}, true );
+			prelang += 'inline';
+			var toggle = 'inline ' + ( ( channel || guild ).inline ? 'disabled' : 'enabled' );
+			var inlinehelp = '\n' + lang.settings[toggle].help.replaceSave( '%1$s', prefix + ' settings ' + prelang + ' toggle' ).replaceSave( /%2\$s/g, lang.search.page );
+			if ( args[1] !== 'toggle' ) {
+				return msg.replyMsg( lang.settings[toggle][prelang] + inlinehelp, {}, true );
+			}
+			var value = ( ( channel || guild ).inline ? null : 1 );
+			var sql = 'UPDATE discord SET inline = ? WHERE guild = ?';
+			var sqlargs = [value, msg.guild.id];
+			if ( !rows.length ) {
+				sql = 'INSERT INTO discord(inline, guild) VALUES(?, ?)';
+			}
+			if ( channel ) {
+				sql = 'UPDATE discord SET inline = ? WHERE guild = ? AND channel = ?';
+				sqlargs.push(msg.channel.id);
+				if ( !rows.includes( channel ) ) {
+					sql = 'INSERT INTO discord(inline, guild, channel, wiki, prefix) VALUES(?, ?, ?, ?, ?)';
+					sqlargs.push(guild.wiki, guild.prefix);
+				}
+			}
+			return db.run( sql, sqlargs, function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while editing the settings: ' + dberror );
+					msg.replyMsg( lang.settings.save_failed, {}, true );
+					return dberror;
+				}
+				console.log( '- Settings successfully updated.' );
+				if ( channel ) channel.inline = value;
+				else guild.inline = value;
+				toggle = 'inline ' + ( ( channel || guild ).inline ? 'disabled' : 'enabled' );
+				msg.replyMsg( lang.settings[toggle][prelang + 'changed'] + '\n' + lang.settings[toggle].help.replaceSave( '%1$s', prefix + ' settings ' + prelang + ' toggle' ).replaceSave( /%2\$s/g, lang.search.page ), {}, true );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
+				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
+					if ( delerror ) {
+						console.log( '- Error while removing the settings: ' + delerror );
+						return delerror;
+					}
+					console.log( '- Settings successfully removed.' );
+				} );
 			} );
 		}
 		
@@ -702,7 +750,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 		msg.sendChannel( cmdlist, {split:true}, true );
 	}
 	else {
-		var cmdlist = lang.help.all + '\n' + cmds.filter( cmd => !cmd.hide && !cmd.admin && ( !cmd.patreon || isPatreon ) && ( !cmd.minecraft || isMinecraft ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n') + '\n\n🔸 ' + lang.help.footer;
+		var cmdlist = lang.help.all + '\n' + cmds.filter( cmd => !cmd.hide && !cmd.admin && ( !cmd.patreon || isPatreon ) && !( cmd.inline && msg.noInline ) && ( !cmd.minecraft || isMinecraft ) ).map( cmd => ( cmd.inline ? '🔹 `' : cmdintro ) + cmd.cmd + '`\n\t' + cmd.desc ).join('\n') + '\n\n🔸 ' + lang.help.footer;
 		cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) );
 		msg.sendChannel( cmdlist, {split:true} );
 	}
@@ -4279,14 +4327,14 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) {
 		if ( !client.guilds.has(args[1]) ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
 		if ( !( args[1] in patreons ) ) return msg.replyMsg( '"' + client.guilds.get(args[1]) + '" doesn\'t have the patreon features enabled.', {}, true );
-		return db.get( 'SELECT lang FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
+		return db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the guild: ' + dberror );
 				msg.replyMsg( 'I got an error while searching for the server, please try again later.', {}, true );
 				return dberror;
 			}
 			if ( !row ) return msg.replyMsg( 'you didn\'t enable the patreon features for "' + client.guilds.get(args[1]) + '"!', {}, true );
-			db.run( 'UPDATE discord SET lang = ?, prefix = ?, patreon = NULL WHERE guild = ?', [row.lang, process.env.prefix, args[1]], function (error) {
+			db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ?, patreon = NULL WHERE guild = ?', [row.lang, row.inline, process.env.prefix, args[1]], function (error) {
 				if ( error ) {
 					console.log( '- Error while updating the guild: ' + error );
 					msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
@@ -4353,13 +4401,13 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			}
 			console.log( '- Patreon successfully deleted.' );
 			if ( !guilds.length ) return msg.replyMsg( '<@' + args[1] + '> is no longer a patreon.', {}, true );
-			db.each( 'SELECT guild, lang FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND channel IS NULL', guilds, (eacherror, eachrow) => {
+			db.each( 'SELECT guild, lang, inline FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND channel IS NULL', guilds, (eacherror, eachrow) => {
 				if ( eacherror ) {
 					console.log( '- Error while getting the guild: ' + eacherror );
 					msg.replyMsg( 'I couldn\'t disable the patreon features.', {}, true );
 					return eacherror;
 				}
-				db.run( 'UPDATE discord SET lang = ?, prefix = ? WHERE guild = ?', [eachrow.lang, process.env.prefix, eachrow.guild], function (uperror) {
+				db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ? WHERE guild = ?', [eachrow.lang, eachrow.inline, process.env.prefix, eachrow.guild], function (uperror) {
 					if ( uperror ) {
 						console.log( '- Error while updating the guild: ' + uperror );
 						msg.replyMsg( 'I couldn\'t disable the patreon features for `' + eachrow.guild + '`.', {}, true );
@@ -4736,7 +4784,7 @@ client.on( 'message', msg => {
 				} );
 			}
 		}
-		if ( !msg.content.includes( '[[' ) && !msg.content.includes( '{{' ) ) return;
+		if ( !( msg.content.includes( '[[' ) && msg.content.includes( ']]' ) ) && !( msg.content.includes( '{{' ) && msg.content.includes( '}}' ) ) ) return;
 	}
 	if ( !ready.allSites && !allSites.length ) getAllSites();
 	if ( msg.channel.type === 'text' ) {
@@ -4748,13 +4796,15 @@ client.on( 'message', msg => {
 				if ( !missing.includes( 'SEND_MESSAGES' ) ) {
 					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 						if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
-						msg.replyMsg( i18n[( row || defaultSettings ).lang].missingperm + ' `' + missing.join('`, `') + '`', {}, true );
+						if ( msg.content.hasPrefix(( patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
+							msg.replyMsg( i18n[( row || defaultSettings ).lang].missingperm + ' `' + missing.join('`, `') + '`', {}, true );
+						}
 					} );
 				}
 			}
 			return;
 		}
-		db.get( 'SELECT wiki, lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
+		db.get( 'SELECT wiki, lang, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the wiki: ' + dberror );
 				if ( permissions.has('SEND_MESSAGES') ) {
@@ -4763,7 +4813,7 @@ client.on( 'message', msg => {
 				}
 				return dberror;
 			}
-			if ( row ) newMessage(msg, row.wiki, i18n[row.lang], patreons[msg.guild.id]);
+			if ( row ) newMessage(msg, row.wiki, i18n[row.lang], patreons[msg.guild.id], row.inline);
 			else {
 				msg.defaultSettings = true;
 				newMessage(msg);
@@ -4773,7 +4823,8 @@ client.on( 'message', msg => {
 	else newMessage(msg);
 } );
 
-function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSettings.lang], prefix = process.env.prefix ) {
+function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSettings.lang], prefix = process.env.prefix, noInline = null ) {
+	msg.noInline = noInline;
 	var cont = msg.content;
 	var author = msg.author;
 	var channel = msg.channel;
@@ -4830,7 +4881,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 			}
 		} );
 		
-		if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
+		if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 			var links = [];
 			var embeds = [];
 			var linkcount = 0;
@@ -5004,7 +5055,7 @@ client.on( 'guildDelete', guild => {
 function removePatreons(guild, msg) {
 	try {
 		if ( !guild ) return 'removePatreons(guild, msg) – No guild provided!';
-		db.get( 'SELECT lang FROM discord WHERE guild = ? AND channel IS NULL', [guild], (dberror, row) => {
+		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND channel IS NULL', [guild], (dberror, row) => {
 			try {
 				if ( dberror ) {
 					console.log( '- Error while getting the guild: ' + dberror );
@@ -5015,7 +5066,7 @@ function removePatreons(guild, msg) {
 					if ( msg ) msg.replyMsg( 'that guild doesn\'t exist!', {}, true );
 					return;
 				}
-				db.run( 'UPDATE discord SET lang = ?, prefix = ?, patreon = NULL WHERE guild = ?', [row.lang, process.env.prefix, guild], function (error) {
+				db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ?, patreon = NULL WHERE guild = ?', [row.lang, row.inline, process.env.prefix, guild], function (error) {
 					try {
 						if ( error ) {
 							console.log( '- Error while updating the guild: ' + error );

@@ -24,6 +24,7 @@
 		"channel current": "these are the current settings for this channel:",
 		"currentlang": "Language:",
 		"currentprefix": "Prefix:",
+		"currentinline": "Inline commands:",
 		"currentwiki": "Default wiki:",
 		"currentchannel": "Channel overwrites:",
 		"nochannels": "*No channel overwrites yet*",
@@ -43,7 +44,21 @@
 		"prefix": "the prefix for this server is:",
 		"prefixinvalid": "the specified prefix is not supported!",
 		"prefixchanged": "you changed the prefix for this server to:",
-		"prefixhelp": "Use `%s <prefix>` to change the prefix.\nThe prefix may not include spaces or mentions!"
+		"prefixhelp": "Use `%s <prefix>` to change the prefix.\nThe prefix may not include spaces or mentions!",
+		"inline enabled": {
+			"inline": "inline commands are currently enabled for this server.",
+			"channel inline": "inline commands are currently enabled for this channel.",
+			"inlinechanged": "you enabled inline commands for this server.",
+			"channel inlinechanged": "you enabled inline commands for this channel.",
+			"help": "Use `%1$s` to disable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		},
+		"inline disabled": {
+			"inline": "inline commands are currently disabled for this server.",
+			"channel inline": "inline commands are currently disabled for this channel.",
+			"inlinechanged": "you disabled inline commands for this server.",
+			"channel inlinechanged": "you disabled inline commands for this channel.",
+			"help": "Use `%1$s` to enable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		}
 	},
 	"pause": {
 		"on": "我已将自己暂停，从现在起我会忽略大部分的指令！",
@@ -223,6 +238,8 @@
 		"footer": "如果你觉得我的某个信息刷屏，在信息上添加一个🗑️图标我就会自己删掉这一条信息。",
 		"list": [
 			{ "cmd": "<关键字>", "desc": "我将返回一个wiki指定页面的链接", "unsearchable": true },
+			{ "cmd": "[[<页面名>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
+			{ "cmd": "{{<页面名>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
 			{ "cmd": "!<wiki> <关键字>", "desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 			{ "cmd": "?<wiki> <关键字>", "desc": "我将返回特定wiki的指定页面的链接: `https://<wiki>.fandom.com/`", "unsearchable": true },
 			{ "cmd": "??<wiki> <关键字>", "desc": "我将返回特定的org域名下的wiki的指定页面的链接: `https://<wiki>.wikia.org/`", "unsearchable": true },
@@ -250,6 +267,7 @@
 			{ "cmd": "settings", "desc": "我将修改设置参数", "admin": true, "pause": true },
 			{ "cmd": "settings lang <language>", "desc": "I will change the language for this server.", "hide": true, "admin": true },
 			{ "cmd": "settings prefix <prefix>", "desc": "I will change the prefix for this server.", "hide": true, "admin": true, "patreon": true },
+			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
 			{ "cmd": "settings wiki <wiki>", "desc": "I will change the default wiki for this server.", "hide": true, "admin": true },
 			{ "cmd": "settings channel", "desc": "I will change the overwrites for the current channel.", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "I try to give everyone in a voice channel a specific role.", "admin": true, "pause": true },

@@ -28,6 +28,7 @@
 		"channel current": "obecne ustawienia dla tego kanału:",
 		"currentlang": "Język:",
 		"currentprefix": "Prefiks:",
+		"currentinline": "Inline commands:",
 		"currentwiki": "Domyślna wiki:",
 		"currentchannel": "Ustawienia specjalne kanału:",
 		"nochannels": "*Brak ustawień specjalnych kanału*",
@@ -47,7 +48,21 @@
 		"prefix": "prefiks dla tego serwera:",
 		"prefixinvalid": "podany prefiks nie jest wspierany!",
 		"prefixchanged": "zmieniono prefiks dla tego serwera na:",
-		"prefixhelp": "Użyj `%s <prefiks>` aby zmienić prefiks.\nPrefiks nie może zawierać spacji lub wzmianek!"
+		"prefixhelp": "Użyj `%s <prefiks>` aby zmienić prefiks.\nPrefiks nie może zawierać spacji lub wzmianek!",
+		"inline enabled": {
+			"inline": "inline commands are currently enabled for this server.",
+			"channel inline": "inline commands are currently enabled for this channel.",
+			"inlinechanged": "you enabled inline commands for this server.",
+			"channel inlinechanged": "you enabled inline commands for this channel.",
+			"help": "Use `%1$s` to disable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		},
+		"inline disabled": {
+			"inline": "inline commands are currently disabled for this server.",
+			"channel inline": "inline commands are currently disabled for this channel.",
+			"inlinechanged": "you disabled inline commands for this server.",
+			"channel inlinechanged": "you disabled inline commands for this channel.",
+			"help": "Use `%1$s` to enable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		}
 	},
 	"pause": {
 		"on": "Moje działanie jest obecnie wstrzymane na tym serwerze i będę ignorował większość komend!",
@@ -255,6 +270,8 @@
 		"footer": "Jeżeli otrzymałeś niechcianą odpowiedź, możesz na nią zareagować używając emotki 🗑️ a wiadomość zostanie ona usunięta.",
 		"list": [
 			{ "cmd": "<wyszukiwana fraza>", "desc": "Odpowiem linkiem do pasujacego artykułu na Wiki.", "unsearchable": true },
+			{ "cmd": "[[<nazwa strony>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
+			{ "cmd": "{{<nazwa strony>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
 			{ "cmd": "!<wiki> <wyszukiwana fraza>", "desc": "Odpowiem z pasującym linkiem do podanej wiki na Gamepedii: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 			{ "cmd": "?<wiki> <wyszukiwana fraza>", "desc": "Odpowiem z pasującym linkiem do podanej wiki na Fandom: `https://<wiki>.fandom.com/`", "unsearchable": true },
 			{ "cmd": "??<wiki> <wyszukiwana fraza>", "desc": "Odpowiem z pasującym linkiem do podanej wiki na Wikia: `https://<wiki>.wikia.org/`", "unsearchable": true },
@@ -288,6 +305,7 @@
 			{ "cmd": "settings", "desc": "Zmienię ustawienia dla tego serwera.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <język>", "desc": "Zmienię język tego serwera.", "hide": true, "admin": true },
 			{ "cmd": "settings prefix <prefiks>", "desc": "Zmienię prefiks komend używany na tym serwerze.", "hide": true, "admin": true, "patreon": true },
+			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
 			{ "cmd": "settings wiki <wiki>", "desc": "Zmienię domyślną wiki tego serwera.", "hide": true, "admin": true },
 			{ "cmd": "settings channel", "desc": "Utworzę ustawienia specjalne dla danego kanału.", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "Nadaję każdej osobie w kanale głosowym specjalną rolę.", "admin": true, "pause": true },

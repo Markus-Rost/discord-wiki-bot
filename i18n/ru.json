@@ -25,6 +25,7 @@
 		"channel current": "вот настройки этого канала на данный момент:",
 		"currentlang": "Язык:",
 		"currentprefix": "Префикс:",
+		"currentinline": "Inline commands:",
 		"currentwiki": "Стандартная вики:",
 		"currentchannel": "Перезаписей канала:",
 		"nochannels": "*Перезаписей канала не было*",
@@ -44,7 +45,21 @@
 		"prefix": "префикс для этого сервера:",
 		"prefixinvalid": "указанный префикс не поддерживается!",
 		"prefixchanged": "вы изменили префикс для этого сервера на:",
-		"prefixhelp": "Используйте `%s <префикс>` для изменения префикса команд.\nПрефикс не может содержать пробелы или @-упоминания!"
+		"prefixhelp": "Используйте `%s <префикс>` для изменения префикса команд.\nПрефикс не может содержать пробелы или @-упоминания!",
+		"inline enabled": {
+			"inline": "inline commands are currently enabled for this server.",
+			"channel inline": "inline commands are currently enabled for this channel.",
+			"inlinechanged": "you enabled inline commands for this server.",
+			"channel inlinechanged": "you enabled inline commands for this channel.",
+			"help": "Use `%1$s` to disable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		},
+		"inline disabled": {
+			"inline": "inline commands are currently disabled for this server.",
+			"channel inline": "inline commands are currently disabled for this channel.",
+			"inlinechanged": "you disabled inline commands for this server.",
+			"channel inlinechanged": "you disabled inline commands for this channel.",
+			"help": "Use `%1$s` to enable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		}
 	},
 	"pause": {
 		"on": "Сейчас я остановлен на этом сервере и буду игнорировать большинство команд!",
@@ -228,6 +243,8 @@
 		"footer": "Если вы получили нежелательный ответ, вы можете реагировать с 🗑️ на мое сообщение и я его удалю.",
 		"list": [
 			{ "cmd": "<поисковый запрос>", "desc": "Я отвечу со ссылкой на соответствующую статью в вики.", "unsearchable": true },
+			{ "cmd": "[[<название страницы>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
+			{ "cmd": "{{<название страницы>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
 			{ "cmd": "!<вики> <поисковый запрос>", "desc": "Я отвечу с ссылкой на соответствующую статью в выбранном Gamepedia вики: `https://<вики>.gamepedia.com/`", "unsearchable": true },
 			{ "cmd": "?<вики> <поисковый запрос>", "desc": "Я отвечу с ссылкой на соответствующую статью в выбранном Fandom вики: `https://<вики>.fandom.com/`", "unsearchable": true },
 			{ "cmd": "??<вики> <поисковый запрос>", "desc": "Я отвечу с ссылкой на соответствующую статью в выбранной Wikia вики: `https://<вики>.wikia.org/`", "unsearchable": true },
@@ -256,6 +273,7 @@
 			{ "cmd": "settings", "desc": "Я изменю настройки для этого сервера.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <язык>", "desc": "Я поменяю язык для этого сервера.", "hide": true, "admin": true },
 			{ "cmd": "settings prefix <префикс>", "desc": "Бот изменит используемый в начале команд префикс для этого сервера.", "hide": true, "admin": true, "patreon": true },
+			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
 			{ "cmd": "settings wiki <вики>", "desc": "Я изменю вики по умолчанию для этого сервера.", "hide": true, "admin": true },
 			{ "cmd": "settings channel", "desc": "Я изменю перезаписи для текущего канала.", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "Я попробую выдать всем в этом голосовом канале определенную роль.", "admin": true, "pause": true },

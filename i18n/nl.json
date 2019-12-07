@@ -27,6 +27,7 @@
 		"channel current": "dit zijn de huidige instellingen voor dit kanaal:",
 		"currentlang": "Taal:",
 		"currentprefix": "Voorvoegsel:",
+		"currentinline": "Inline commands:",
 		"currentwiki": "Standaard wiki:",
 		"currentchannel": "Kanaal overschrijvingen:",
 		"nochannels": "*Nog geen kanaal overschrijvingen*",
@@ -46,7 +47,21 @@
 		"prefix": "het voorvoegsel voor deze server is:",
 		"prefixinvalid": "het opgegeven voorvoegsel wordt niet ondersteund!",
 		"prefixchanged": "je hebt het voorvoegsel voor deze server veranderd naar:",
-		"prefixhelp": "Gebruik `%s <voorvoegsel>` om het voorvoegsel te wijzigen.\nHet voorvoegsel mag geen spaties of @mentions bevatten!"
+		"prefixhelp": "Gebruik `%s <voorvoegsel>` om het voorvoegsel te wijzigen.\nHet voorvoegsel mag geen spaties of @mentions bevatten!",
+		"inline enabled": {
+			"inline": "inline commands are currently enabled for this server.",
+			"channel inline": "inline commands are currently enabled for this channel.",
+			"inlinechanged": "you enabled inline commands for this server.",
+			"channel inlinechanged": "you enabled inline commands for this channel.",
+			"help": "Use `%1$s` to disable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		},
+		"inline disabled": {
+			"inline": "inline commands are currently disabled for this server.",
+			"channel inline": "inline commands are currently disabled for this channel.",
+			"inlinechanged": "you disabled inline commands for this server.",
+			"channel inlinechanged": "you disabled inline commands for this channel.",
+			"help": "Use `%1$s` to enable inline commands like `[[%2$s]]` and `{{%2$s}}`."
+		}
 	},
 	"pause": {
 		"on": "Ik ben nu gepauzeerd op deze server en zal meeste opdrachten negeren!",
@@ -231,6 +246,8 @@
 		"footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑️ op mijn bericht en ik zal het verwijderen.",
 		"list": [
 			{ "cmd": "<zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki.", "unsearchable": true },
+			{ "cmd": "[[<pagina naam>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
+			{ "cmd": "{{<pagina naam>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
 			{ "cmd": "!<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
 			{ "cmd": "?<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`", "unsearchable": true },
 			{ "cmd": "??<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`", "unsearchable": true },
@@ -262,6 +279,7 @@
 			{ "cmd": "settings", "desc": "Ik zal de instellingen voor deze server wijzigen.", "admin": true, "pause": true },
 			{ "cmd": "settings lang <taal>", "desc": "Ik zal de taal voor deze server wijzigen.", "hide": true, "admin": true },
 			{ "cmd": "settings prefix <voorvoegsel>", "desc": "Ik zal het voorvoegsel voor deze server wijzigen.", "hide": true, "admin": true, "patreon": true },
+			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
 			{ "cmd": "settings wiki <wiki>", "desc": "Ik zal de standaard wiki voor deze server wijzigen.", "hide": true, "admin": true },
 			{ "cmd": "settings channel", "desc": "Ik zal de overschrijvingen voor het huidige kanaal wijzigen.", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven.", "admin": true, "pause": true },
