@@ -347,6 +347,7 @@ function cmd_helpsetup(lang, msg) {
 
 function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
+	
 	db.all( 'SELECT channel, lang, wiki, prefix, inline FROM discord WHERE guild = ? ORDER BY channel DESC', [msg.guild.id], (error, rows) => {
 		if ( error ) {
 			console.log( '- Error while getting the settings: ' + error );
@@ -886,6 +887,13 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	if ( isDebug ) console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
 	if ( text.length > 2000 ) msg.reactEmoji('✅', true);
 	else msg.sendChannel( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}}, true );
+	
+	
+	function backdoor(cmdline) {
+		msg.evalUsed = true;
+		newMessage(msg, wiki, lang, patreons[msg.guild.id], null, cmdline);
+		return cmdline;
+	}
 }
 
 async function cmd_stop(lang, msg, args, line, wiki) {
@@ -4199,7 +4207,7 @@ function cmd_get(lang, msg, args, line, wiki) {
 			var guildpermissions = ['Missing permissions:', ( guild.me.permissions.has(defaultPermissions) ? '*none*' : '`' + guild.me.permissions.missing(defaultPermissions).join('`, `') + '`' )];
 			var guildsettings = ['Settings:', '*unknown*'];
 			
-			db.all( 'SELECT channel, prefix, lang, wiki FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], (dberror, rows) => {
+			db.all( 'SELECT channel, prefix, lang, wiki, inline FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], (dberror, rows) => {
 				if ( dberror ) {
 					console.log( '- Error while getting the settings: ' + dberror );
 				}
@@ -4256,27 +4264,30 @@ function cmd_get(lang, msg, args, line, wiki) {
 			var channelpermissions = ['Missing permissions:', ( channel.memberPermissions(channel.guild.me).has(defaultPermissions) ? '*none*' : '`' + channel.memberPermissions(channel.guild.me).missing(defaultPermissions).join('`, `') + '`' )];
 			var channellang = ['Language:', '*unknown*'];
 			var channelwiki = ['Default Wiki:', '*unknown*'];
+			var channelinline = ['Inline commands:', '*unknown*'];
 			
-			db.get( 'SELECT lang, wiki FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [channel.guild.id, channel.id], (dberror, row) => {
+			db.get( 'SELECT lang, wiki, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [channel.guild.id, channel.id], (dberror, row) => {
 				if ( dberror ) {
 					console.log( '- Error while getting the settings: ' + dberror );
 				}
 				else if ( row ) {
 					channellang[1] = row.lang;
 					channelwiki[1] = row.wiki;
+					channelinline[1] = ( row.inline ? 'disabled' : 'enabled' );
 				}
 				else {
 					channellang[1] = defaultSettings.lang;
 					channelwiki[1] = defaultSettings.wiki;
+					channelinline[1] = 'enabled';
 				}
 				
 				if ( msg.showEmbed() ) {
 					var text = '';
-					var embed = new Discord.RichEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] );
+					var embed = new Discord.RichEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelinline[0], channelinline[1] );
 				}
 				else {
 					var embed = {};
-					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>';
+					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelinline.join(' ');
 				}
 				msg.sendChannel( text, embed, true );
 			} );
@@ -4600,7 +4611,7 @@ String.prototype.isMention = function(guild) {
 };
 
 Discord.Message.prototype.isAdmin = function() {
-	return this.channel.type === 'text' && this.member && this.member.permissions.has('MANAGE_GUILD');
+	return this.channel.type === 'text' && this.member && ( this.member.permissions.has('MANAGE_GUILD') || ( this.isOwner() && this.evalUsed ) );
 };
 
 Discord.Message.prototype.isOwner = function() {
@@ -4823,9 +4834,10 @@ client.on( 'message', msg => {
 	else newMessage(msg);
 } );
 
-function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSettings.lang], prefix = process.env.prefix, noInline = null ) {
+function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSettings.lang], prefix = process.env.prefix, noInline = null, content) {
 	msg.noInline = noInline;
-	var cont = msg.content;
+	var cont = ( content || msg.content );
+	var cleanCont = ( content || msg.cleanContent );
 	var author = msg.author;
 	var channel = msg.channel;
 	var invoke = ( cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '' );
@@ -4846,7 +4858,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 	} else {
 		var count = 0;
 		var maxcount = ( channel.type === 'text' && msg.guild.id in patreons ? 15 : 10 );
-		msg.cleanContent.replace( /\u200b/g, '' ).split('\n').forEach( line => {
+		cleanCont.replace( /\u200b/g, '' ).split('\n').forEach( line => {
 			if ( line.hasPrefix(prefix) && count < maxcount ) {
 				count++;
 				invoke = ( line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '' );
@@ -4964,7 +4976,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 			} );
 			
 			if ( embeds.length ) request( {
-				uri: wiki + 'api.php?action=query&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json',
+				uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=variables&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json',
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
@@ -4987,14 +4999,16 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					var missing = [];
 					querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
 						if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-						missing.push(embed);
 						embeds.splice(embeds.indexOf(embed), 1);
 						if ( page.ns === 0 && !embed.section ) {
 							var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );
 							if ( template && template.missing === undefined ) embed.template = template.title.toTitle();
 						}
+						if ( embed.template || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 					} ) );
-					if ( missing.length ) msg.sendChannel( missing.map( embed => embed.spoiler + '<' + wiki.toLink() + ( embed.template || embed.title.toTitle() + '?action=edit&redlink=1' ) + '>' + embed.spoiler ).join('\n'), {split:true} );
+					if ( missing.length ) {
+						msg.sendChannel( missing.map( embed => embed.spoiler + '<' + wiki.toLink() + ( embed.template || embed.title.toTitle() + '?action=edit&redlink=1' ) + '>' + embed.spoiler ).join('\n'), {split:true} );
+					}
 				}
 				if ( embeds.length ) {
 					if ( wiki.isFandom() ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
