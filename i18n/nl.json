@@ -124,6 +124,7 @@
 			["bot", "Bot"],
 			["bureaucrat", "Bureaucraat"],
 			["sysop", "Beheerder"],
+			["interface-admin", "Interfacemoderator"],
 			["content-moderator", "Inhoudmoderator"],
 			["threadmoderator", "Discussiemoderator"],
 			["chatmoderator", "Chatmoderator"],

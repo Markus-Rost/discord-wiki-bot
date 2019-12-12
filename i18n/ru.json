@@ -122,6 +122,7 @@
 			["bot", "Бот"],
 			["bureaucrat", "Бюрократ"],
 			["sysop", "Администратор"],
+			["interface-admin", "Aдминистратор интерфейса"],
 			["content-moderator", "Модератор контента"],
 			["threadmoderator", "Модератор дискуссий"],
 			["chatmoderator", "Модератор чата"],

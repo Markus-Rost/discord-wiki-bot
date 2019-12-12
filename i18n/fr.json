@@ -123,6 +123,7 @@
 			["bot", "Robot"],
 			["bureaucrat", "Bureaucrate"],
 			["sysop", "Administrateur"],
+			["interface-admin", "Administrateur d’interface"],
 			["content-moderator", "Modérateur de contenu"],
 			["threadmoderator", "Modérateur de discussions"],
 			["chatmoderator", "Modérateur du tchat"],

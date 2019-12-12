@@ -131,6 +131,7 @@
 			["bot", "Robô"],
 			["bureaucrat", "Burocrata"],
 			["sysop", "Administrador"],
+			["interface-admin", "Administrador da interface"],
 			["content-moderator", "Moderador de conteúdo"],
 			["threadmoderator", "Moderador de discussões"],
 			["chatmoderator", "Moderador do chat"],

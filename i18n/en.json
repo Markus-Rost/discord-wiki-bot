@@ -120,6 +120,7 @@
 			["bot", "Bot"],
 			["bureaucrat", "Bureaucrat"],
 			["sysop", "Administrator"],
+			["interface-admin", "Interface administrator"],
 			["content-moderator", "Content moderator"],
 			["threadmoderator", "Discussions moderator"],
 			["chatmoderator", "Chat moderator"],

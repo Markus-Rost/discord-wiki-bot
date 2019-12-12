@@ -4976,7 +4976,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 			} );
 			
 			if ( embeds.length ) request( {
-				uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=variables&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json',
+				uri: wiki + 'api.php?action=query' + ( wiki.isFandom() ? '' : '&meta=siteinfo&siprop=variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json',
 				json: true
 			}, function( error, response, body ) {
 				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
@@ -5004,7 +5004,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 							var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );
 							if ( template && template.missing === undefined ) embed.template = template.title.toTitle();
 						}
-						if ( embed.template || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
+						if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 					} ) );
 					if ( missing.length ) {
 						msg.sendChannel( missing.map( embed => embed.spoiler + '<' + wiki.toLink() + ( embed.template || embed.title.toTitle() + '?action=edit&redlink=1' ) + '>' + embed.spoiler ).join('\n'), {split:true} );

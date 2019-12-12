@@ -126,6 +126,7 @@
 			["bot", "Bot"],
 			["bureaucrat", "Bürokrat"],
 			["sysop", "Yönetici"],
+			["interface-admin", "Arayüz yöneticisi"],
 			["content-moderator", "İçerik moderatörü"],
 			["threadmoderator", "Tartışma moderatörü"],
 			["chatmoderator", "Sohbet moderatörü"],

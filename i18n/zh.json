@@ -121,6 +121,7 @@
 			["bot", "机器人"],
 			["bureaucrat", "行政员"],
 			["sysop", "管理员"],
+			["interface-admin", "界面管理员"],
 			["content-moderator", "内容版主"],
 			["threadmoderator", "讨论版主"],
 			["chatmoderator", "聊天主持人"],
