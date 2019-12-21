@@ -210,21 +210,21 @@
 				"/clone <begin> <end> <destination> replace <mode>"
 			],
 			"data": [
-				"/data get (block <targetPos>|entity <target>)",
-				"/data get (block <targetPos>|entity <target>) <path>",
-				"/data get (block <targetPos>|entity <target>) <path> <scale>",
-				"/data merge (block <targetPos>|entity <target>) <nbt>",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> append value <value>",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> append from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> insert <index> value <value>",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> insert <index> from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> merge value <value>",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> merge from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> prepend value <value>",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> prepend from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> set value <value>",
-				"/data modify (block <targetPos>|entity <target>) <targetPath> set from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data remove (block <targetPos>|entity <target>) <path>"
+				"/data get (block <targetPos>|entity|storage <target>)",
+				"/data get (block <targetPos>|entity|storage <target>) <path>",
+				"/data get (block <targetPos>|entity|storage <target>) <path> <scale>",
+				"/data merge (block <targetPos>|entity|storage <target>) <nbt>",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> append value <value>",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> append from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> insert <index> value <value>",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> insert <index> from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> merge value <value>",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> merge from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> prepend value <value>",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> prepend from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> set value <value>",
+				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> set from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data remove (block <targetPos>|entity|storage <target>) <path>"
 			],
 			"datapack": [
 				"/datapack disable <name>",
@@ -258,6 +258,7 @@
 				"/difficulty peaceful"
 			],
 			"effect": [
+				"/effect clear",
 				"/effect clear <targets>",
 				"/effect clear <targets> <effect>",
 				"/effect give <targets> <effect>",
@@ -284,6 +285,7 @@
 				"if blocks <start> <end> <destination> masked < subcommand >",
 				"if data (block <sourcePos>|entity <source>) <path> < subcommand >",
 				"if entity <entities> < subcommand >",
+				"if predicate <predicate> < subcommand >",
 				"if score <target> <targetObjective> <operation> <source> <sourceObjective> < subcommand >",
 				"if score <target> <targetObjective> matches <range> < subcommand >",
 				"unless block <pos> <block> < subcommand >",
@@ -291,6 +293,7 @@
 				"unless blocks <start> <end> <destination> masked < subcommand >",
 				"unless data (block <sourcePos>|entity <source>) <path> < subcommand >",
 				"unless entity <entities> < subcommand >",
+				"unless predicate <predicate> < subcommand >",
 				"unless score <target> <targetObjective> <operation> <source> <sourceObjective> < subcommand >",
 				"unless score <target> <targetObjective> matches <range> < subcommand >",
 				"in <dimension> < subcommand >",
@@ -367,6 +370,7 @@
 				"/kick <targets> <reason>"
 			],
 			"kill": [
+				"/kill"
 				"/kill <targets>"
 			],
 			"list": [
@@ -456,7 +460,8 @@
 				"/say <message>"
 			],
 			"schedule": [
-				"/schedule function <function> <time>"
+				"/schedule function <function> <time> append|replace",
+				"/schedule clear <function>"
 			],
 			"scoreboard": [
 				"/scoreboard objectives add <objective> <criteria>",
@@ -499,6 +504,10 @@
 				"/spawnpoint",
 				"/spawnpoint <targets>",
 				"/spawnpoint <targets> <pos>"
+			],
+			"spectate": [
+				"/spectate <target>",
+				"/spectate <target> <player>"
 			],
 			"spreadplayers": [
 				"/spreadplayers <center> <spreadDistance> <maxRange> <respectTeams> <targets>"
