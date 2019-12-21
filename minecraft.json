@@ -370,7 +370,7 @@
 				"/kick <targets> <reason>"
 			],
 			"kill": [
-				"/kill"
+				"/kill",
 				"/kill <targets>"
 			],
 			"list": [
