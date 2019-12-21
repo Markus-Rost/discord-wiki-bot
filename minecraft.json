@@ -210,21 +210,21 @@
 				"/clone <begin> <end> <destination> replace <mode>"
 			],
 			"data": [
-				"/data get (block <targetPos>|entity|storage <target>)",
-				"/data get (block <targetPos>|entity|storage <target>) <path>",
-				"/data get (block <targetPos>|entity|storage <target>) <path> <scale>",
-				"/data merge (block <targetPos>|entity|storage <target>) <nbt>",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> append value <value>",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> append from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> insert <index> value <value>",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> insert <index> from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> merge value <value>",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> merge from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> prepend value <value>",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> prepend from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> set value <value>",
-				"/data modify (block <targetPos>|entity|storage <target>) <targetPath> set from (block <sourcePos>|entity <source>) [<sourcePath>]",
-				"/data remove (block <targetPos>|entity|storage <target>) <path>"
+				"/data get (block <targetPos>|entity <target>|storage <target>)",
+				"/data get (block <targetPos>|entity <target>|storage <target>) <path>",
+				"/data get (block <targetPos>|entity <target>|storage <target>) <path> <scale>",
+				"/data merge (block <targetPos>|entity <target>|storage <target>) <nbt>",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> append value <value>",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> append from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> insert <index> value <value>",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> insert <index> from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> merge value <value>",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> merge from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> prepend value <value>",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> prepend from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> set value <value>",
+				"/data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> set from (block <sourcePos>|entity <source>) [<sourcePath>]",
+				"/data remove (block <targetPos>|entity <target>|storage <target>) <path>"
 			],
 			"datapack": [
 				"/datapack disable <name>",
@@ -460,8 +460,10 @@
 				"/say <message>"
 			],
 			"schedule": [
-				"/schedule function <function> <time> append|replace",
-				"/schedule clear <function>"
+				"/schedule clear <function>",
+				"/schedule function <function> <time>",
+				"/schedule function <function> <time> append",
+				"/schedule function <function> <time> replace"
 			],
 			"scoreboard": [
 				"/scoreboard objectives add <objective> <criteria>",
