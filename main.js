@@ -2577,61 +2577,6 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		} );
 		else msg.edit( spoiler + text + spoiler, embed ).catch(log_error);
 	} );
-	
-	/*
-	var verified = false;
-	var roles = [];
-	var failedroles = [];
-	var failedverifications = [];
-	db.each( 'SELECT wiki, editcount, usergroup, role FROM verification WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
-		if ( dberror ) {
-			console.log( '- Error while getting the verification setting: ' + dberror );
-			return dberror;
-		}
-		if ( !data.blocked && msg.member === data.discord && wiki === row.wiki && data.editcount >= row.editcount && data.usergroups.includes( row.usergroup ) ) {
-			verified = true;
-			var role = msg.guild.roles.get(row.role);
-			if ( role ) {
-				if ( role.comparePositionTo(msg.guild.me.highestRole) < 0 ) roles.push(role);
-				else if ( msg.member.roles.has(role.id) ) roles.push(role);
-				else failedroles.push(role);
-			}
-			else failedverifications.push(row);
-		}
-	}, (dberror) => {
-		if ( dberror ) {
-			console.log( '- Error while getting the verification settings: ' + dberror );
-			return dberror;
-		}
-		console.log( '- Verification settings successfully loaded.' );
-		if ( verified ) {
-			if ( msg.guild.me.permissions.has('MANAGE_ROLES') ) {
-				return data.discord.addRoles( roles.filter( role => !msg.member.roles.has(role.id) ), data.discord.user.tag + ' successfully verified as "' + username + '".' ).then( member => {
-					var desc = 'Verification successful!\n\n**Added roles:** ' + ( roles.join(', ') || '*none*' );
-					if ( failedroles.length ) desc += '\nDue to some missing permissions I couldn\'t add the following roles: ' + failedroles.join(', ');
-					embed.setDescription( desc );
-					msg.sendChannel( spoiler + text + spoiler, embed );
-				}, error => {
-					var desc = 'Verification successful!\n\n**Added roles:** *none*\nDue to some missing permissions I couldn\'t add the following roles:\n';
-					if ( roles.length ) desc += roles.join(', ');
-					if ( failedroles.length ) desc += ( roles.length ? ', ' : '' ) + failedroles.join(', ');
-					embed.setDescription( desc );
-					msg.sendChannel( spoiler + text + spoiler, embed );
-					log_error(error);
-				} );
-			}
-			var desc = 'Verification successful!\n\n**Added roles:** *none*\nDue to some missing permissions I couldn\'t add the following roles:\n';
-			if ( roles.length ) desc += roles.join(', ');
-			if ( failedroles.length ) desc += ( roles.length ? ', ' : '' ) + failedroles.join(', ');
-			embed.setDescription( desc );
-			msg.sendChannel( spoiler + text + spoiler, embed );
-		}
-		else {
-			
-		}
-	} );
-	*/
-	
 }
 
 function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
@@ -4166,8 +4111,22 @@ function minecraft_command(lang, mclang, msg, befehl, args, title, cmd, querystr
 	var aliasCmd = ( minecraft.cmd.aliase[befehl] || befehl );
 	
 	if ( aliasCmd in minecraft.cmd.list ) {
+		var cmdSyntaxMap = minecraft.cmd.list[aliasCmd].map( command => {
+			var cmdargs = command.split(' ');
+			if ( cmdargs[0].startsWith( '/' ) ) cmdargs = cmdargs.slice(1);
+			var argmatches = cmdargs.map( (arg, i) => {
+				if ( arg === args[i] ) return true;
+			} );
+			var matchCount = 0;
+			argmatches.forEach( match => {
+				if ( match ) matchCount++;
+			} );
+			return [argmatches.lastIndexOf(true),matchCount];
+		} );
+		var lastIndex = Math.max(...cmdSyntaxMap.map( command => command[0] ));
+		var matchCount = Math.max(...cmdSyntaxMap.filter( command => command[0] === lastIndex ).map( command => command[1] ));
 		var regex = new RegExp('/' + aliasCmd, 'g');
-		var cmdSyntax = minecraft.cmd.list[aliasCmd].join( '\n' ).replaceSave( regex, '/' + befehl );
+		var cmdSyntax = minecraft.cmd.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + befehl );
 		msg.sendChannel( spoiler + '```md\n' + cmdSyntax + '```<' + mclang.link + mclang.cmd.page + aliasCmd + '>' + spoiler, {split:{maxLength:2000,prepend:spoiler + '```md\n',append:'```' + spoiler}} );
 		if ( reaction ) reaction.removeEmoji();
 	}
@@ -4678,7 +4637,7 @@ String.prototype.toMarkdown = function(wiki, title = '') {
 	}
 	while ( title !== '' && ( link = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g.exec(text) ) !== null ) {
 		var page = title.toTitle(true) + '#' + link[1].toSection();
-		text = text.replaceSave( link[0], '[→](' + wiki.toLink() + page + ')' + link[1] + ( link[2] ? ': ' + link[2] : '' ) );
+		text = text.replaceSave( link[0], '[→' + link[1] + '](' + wiki.toLink() + page + ')' + ( link[2] ? ': ' + link[2] : '' ) );
 	}
 	return text.escapeFormatting(true);
 };
