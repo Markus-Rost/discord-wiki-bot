@@ -99,7 +99,6 @@ const dbl = new DBL(process.env.dbltoken);
 var i18n = require('./i18n/allLangs.json');
 Object.keys(i18n.allLangs[1]).forEach( lang => i18n[lang] = require('./i18n/' + lang + '.json') );
 const minecraft = require('./minecraft.json');
-const multiManager = require('./wiki_manager.json');
 
 var pause = {};
 var stop = false;
@@ -269,9 +268,6 @@ function getAllSites(callback, ...args) {
 		else {
 			console.log( '- Sites successfully loaded.' );
 			allSites = JSON.parse(JSON.stringify(body.data.wikis.filter( site => /^[a-z\d-]{1,50}\.gamepedia\.com$/.test(site.wiki_domain) )));
-			allSites.filter( site => site.wiki_domain in multiManager ).forEach( function(site) {
-				site.wiki_managers = multiManager[site.wiki_domain].concat(site.wiki_managers).filter( (value, index, self) => self.indexOf(value) === index );
-			} );
 		}
 		if ( callback ) callback(...args);
 	} );
