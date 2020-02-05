@@ -305,11 +305,13 @@
 				"store result bossbar <id> max < subcommand >",
 				"store result bossbar <id> value < subcommand >",
 				"store result entity <targets> <path> <dataType> <scale> < subcommand >",
+				"store result storage <storage> <path> <dataType> <scale> < subcommand >",
 				"store result score <targets> <objective> < subcommand >",
 				"store success block <pos> <path> <dataType> <scale> < subcommand >",
 				"store success bossbar <id> max < subcommand >",
 				"store success bossbar <id> value < subcommand >",
 				"store success entity <targets> <path> <dataType> <scale> < subcommand >",
+				"store success storage <storage> <path> <dataType> <scale> < subcommand >",
 				"store success score <targets> <objective> < subcommand >"
 			],
 			"experience": [
@@ -379,6 +381,9 @@
 			],
 			"locate": [
 				"/locate <structure>"
+			],
+			"locatebiome": [
+				"/locatebiome <biome>"
 			],
 			"loot": [
 				"/loot give <players> <source>",
