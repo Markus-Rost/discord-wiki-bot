@@ -89,10 +89,10 @@ function fWikiLogin(token) {
 if ( process.env.fusername && process.env.fpassword ) fWikiLogin();
 
 var client = new Discord.Client( {
-	messageCacheLifetime: 600,
-	messageSweepInterval: 6000,
+	messageCacheLifetime: 300,
+	messageSweepInterval: 300,
 	disableEveryone: true,
-	disabledEvents: ["TYPING_START"]
+	disabledEvents: ['CHANNEL_PINS_UPDATE','USER_NOTE_UPDATE','PRESENCE_UPDATE','TYPING_START']
 } );
 const dbl = new DBL(process.env.dbltoken);
 
@@ -661,7 +661,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Voice settings successfully added.' );
 					voice[msg.guild.id] = defaultSettings.lang;
-					msg.replyMsg( lang.voice.enabled, {}, true );
+					msg.replyMsg( lang.voice.enabled + '\n`' + lang.voice.channel + ' – <' + lang.voice.name + '>`', {}, true );
 				} );
 				console.log( '- Voice settings successfully updated.' );
 				if ( value ) {
@@ -674,7 +674,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 						console.log( '- Voice language successfully updated.' );
 						voice[msg.guild.id] = row.lang;
 					} );
-					msg.replyMsg( lang.voice.enabled, {}, true );
+					msg.replyMsg( lang.voice.enabled + '\n`' + lang.voice.channel + ' – <' + lang.voice.name + '>`', {}, true );
 				}
 				else {
 					delete voice[msg.guild.id];
@@ -2493,7 +2493,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				let $ = cheerio.load(gbody);
 				var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
 				if ( globaledits ) {
-					if ( msg.showEmbed() ) embed.fields.splice(1, 0, {name:lang.user.info.globaleditcount,value:globaledits,inline:true});
+					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:globaledits,inline:true});
 					else {
 						let splittext = text.split('\n');
 						splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
@@ -2551,7 +2551,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				let $ = cheerio.load(gbody);
 				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
 				if ( wikisedited ) {
-					if ( msg.showEmbed() ) embed.fields.splice(1, 0, {name:lang.user.info.wikisedited,value:wikisedited,inline:true});
+					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.wikisedited,value:wikisedited,inline:true});
 					else {
 						let splittext = text.split('\n');
 						splittext.splice(5, 0, lang.user.info.wikisedited + ' ' + wikisedited);
@@ -2560,7 +2560,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				}
 				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
 				if ( globaledits ) {
-					if ( msg.showEmbed() ) embed.fields.splice(1, 0, {name:lang.user.info.globaleditcount,value:globaledits,inline:true});
+					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:globaledits,inline:true});
 					else {
 						let splittext = text.split('\n');
 						splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
@@ -3063,7 +3063,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 
 function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
+		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -4727,7 +4727,7 @@ Discord.Message.prototype.deleteMsg = function(timeout = 0) {
 };
 
 Discord.Message.prototype.allowDelete = function(author) {
-	return this.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑️' && user.id === author, {max:1,time:60000} ).then( reaction => {
+	return this.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑️' && user.id === author, {max:1,time:120000} ).then( reaction => {
 		if ( reaction.size ) {
 			this.deleteMsg();
 		}
@@ -4739,7 +4739,7 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 };
 
 client.on( 'message', msg => {
-	if ( stop || msg.type !== 'DEFAULT' || msg.webhookID || msg.author.id === client.user.id ) return;
+	if ( stop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.author.id === client.user.id ) return;
 	if ( !msg.content.hasPrefix(( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + ' help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(client.user).has('SEND_MESSAGES') ) {
@@ -5156,7 +5156,7 @@ async function graceful(code = 0) {
 			console.log( '- SIGTERM: Closing takes too long, terminating!' );
 			process.exit(code);
 		}, 2000 ).unref();
-	}, 2000 ).unref();
+	}, 1000 ).unref();
 }
 
 process.once( 'SIGINT', graceful );
