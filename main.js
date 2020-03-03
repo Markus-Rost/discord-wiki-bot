@@ -258,7 +258,7 @@ var allSites = [];
 function getAllSites(callback, ...args) {
 	ready.allSites = true;
 	request( {
-		uri: 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,created&format=json',
+		uri: 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,wiki_crossover,created&format=json',
 		json: true
 	}, function( error, response, body ) {
 		if ( error || !response || response.statusCode !== 200 || !body || body.status !== 'okay' || !body.data || !body.data.wikis ) {
@@ -268,6 +268,7 @@ function getAllSites(callback, ...args) {
 		else {
 			console.log( '- Sites successfully loaded.' );
 			allSites = JSON.parse(JSON.stringify(body.data.wikis.filter( site => /^[a-z\d-]{1,50}\.gamepedia\.com$/.test(site.wiki_domain) )));
+			allSites.filter( site => site.wiki_crossover ).forEach( site => site.wiki_crossover = site.wiki_crossover.replace( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{1,8}))?).*/, '$1' ) );
 		}
 		if ( callback ) callback(...args);
 	} );
@@ -3817,6 +3818,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.dateformat, timeoptions)];
 				var manager = [lang.overview.manager, site.wiki_managers];
 				var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
+				var crossover = [lang.overview.crossover, 'https://' + site.wiki_crossover + '/'];
 				var description = [lang.overview.description, site.wiki_description];
 				var image = [lang.overview.image, site.wiki_image];
 				
@@ -3842,7 +3844,8 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				}
 				embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
 				if ( site ) {
-					if ( description[1] ) embed.addField( description[0], description[1] )
+					if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
+					if ( description[1] ) embed.addField( description[0], description[1] );
 					if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
 				}
 			}
@@ -3852,6 +3855,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				if ( site ) text += name.join(' ') + '\n' + created.join(' ') + '\n' + manager[0] + ' ' + ( manager[1].join(', ') || lang.overview.none ) + '\n' + official.join(' ') + '\n';
 				text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ');
 				if ( site ) {
+					if ( crossover[1] ) text += '\n' + crossover.join(' ');
 					if ( description[1] ) text += '\n' + description.join(' ');
 					if ( image[1] ) {
 						text += '\n' + image.join(' ');
