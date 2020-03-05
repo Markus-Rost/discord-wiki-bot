@@ -2494,7 +2494,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				let $ = cheerio.load(gbody);
 				var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
 				if ( globaledits ) {
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:globaledits,inline:true});
+					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',inline:true});
 					else {
 						let splittext = text.split('\n');
 						splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
@@ -2561,7 +2561,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				}
 				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
 				if ( globaledits ) {
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:globaledits,inline:true});
+					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',inline:true});
 					else {
 						let splittext = text.split('\n');
 						splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
@@ -3818,7 +3818,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				var created = [lang.overview.created, new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.dateformat, timeoptions)];
 				var manager = [lang.overview.manager, site.wiki_managers];
 				var official = [lang.overview.official, ( site.official_wiki ? lang.overview.yes : lang.overview.no )];
-				var crossover = [lang.overview.crossover, 'https://' + site.wiki_crossover + '/'];
+				var crossover = [lang.overview.crossover, ( site.wiki_crossover ? 'https://' + site.wiki_crossover + '/' : '' )];
 				var description = [lang.overview.description, site.wiki_description];
 				var image = [lang.overview.image, site.wiki_image];
 				
