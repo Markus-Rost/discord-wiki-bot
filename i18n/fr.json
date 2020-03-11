@@ -10,7 +10,8 @@
 		"sondage": "poll",
 		"aide": "help",
 		"chercher": "search",
-		"🎲": "random"
+		"🎲": "random",
+		"discussions": "discussion"
 	},
 	"prefix": "le préfixe pour ce serveur est `%s`. Vous pouvez changer le préfixe avec `%s settings prefix`. Pour une liste de toutes les commandes, voir `%s help`.",
 	"missingperm": "Il me manque certaines permissions pour cette commande :",

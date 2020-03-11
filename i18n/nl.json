@@ -11,6 +11,7 @@
 		"🎲": "random",
 		"willekeurig": "random",
 		"overzicht": "overview",
+		"discussions": "discussion",
 		"discussie": "discussion"
 	},
 	"prefix": "het voorvoegsel voor deze server is `%s`. Je kunt het voorvoegsel veranderen met `%s settings prefix`. Voor een lijst van alle opdrachten zie `%s help`.",

@@ -13,6 +13,7 @@
 		"sayfa": "page",
 		"arama": "search",
 		"🎲": "random",
+		"discussions": "discussion",
 		"tartışma": "discussion"
 	},
 	"prefix": "sunucudaki önekim `%s`. Bunu `%s settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `%s yardım`.",

@@ -8,7 +8,8 @@
 		"purge": "delete",
 		"🎲": "random",
 		"页面": "page",
-		"搜索": "search"
+		"搜索": "search",
+		"discussions": "discussion"
 	},
 	"prefix": "the prefix for this server is `%s`. You can change the prefix with `%s settings prefix`. For a list of all commands see `%s help`.",
 	"missingperm": "为执行此命令我缺少一些权限：",

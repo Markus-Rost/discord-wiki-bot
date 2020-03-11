@@ -7,7 +7,8 @@
 	"dateformat": "en-US",
 	"aliase": {
 		"purge": "delete",
-		"🎲": "random"
+		"🎲": "random",
+		"discussions": "discussion"
 	},
 	"prefix": "the prefix for this server is `%s`. You can change the prefix with `%s settings prefix`. For a list of all commands see `%s help`.",
 	"missingperm": "I'm missing some permissions for this command:",

@@ -13,6 +13,7 @@
 		"🎲": "random",
 		"zufall": "random",
 		"übersicht": "overview",
+		"discussions": "discussion",
 		"diskussion": "discussion"
 	},
 	"prefix": "das Präfix für diesen Server ist `%s`. Du kannst das Präfix mit `%s settings prefix` ändern. Für eine Liste aller Befehle nutze `%s hilfe`.",

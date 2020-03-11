@@ -18,6 +18,7 @@
 		"página": "page",
 		"pesquisar": "search",
 		"🎲": "random",
+		"discussions": "discussion",
 		"discussão": "discussion"
 	},
 	"prefix": "o prefixo deste servidor é `%s`. Você pode alterar o prefixo com `%s settings prefix`. Para uma lista de todos os comandos, veja `%s help`.",
