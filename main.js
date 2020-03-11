@@ -2577,6 +2577,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 }
 
 function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
+	if ( query && query.general && query.general.generator === 'MediaWiki 1.33.2' ) return msg.sendChannelError( '**Sorry, but I don\'t support wikis on UCP yet!**' );
 	if ( !title ) {
 		var pagelink = wiki + 'f';
 		var embed = new Discord.RichEmbed().setAuthor( query.general.sitename ).setTitle( lang.discussion.main ).setURL( pagelink );
@@ -3877,6 +3878,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 		uri: wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json',
 		json: true
 	}, function( error, response, body ) {
+		if ( body && body.general && body.general.generator === 'MediaWiki 1.33.2' ) return msg.sendChannelError( '**Sorry, but I don\'t support wikis on UCP yet!**' );
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( error || !response || response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
 			if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
