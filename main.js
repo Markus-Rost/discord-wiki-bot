@@ -4319,7 +4319,7 @@ function cmd_get(lang, msg, args, line, wiki) {
 		if ( client.guilds.cache.has(id) ) {
 			var guild = client.guilds.cache.get(id);
 			var guildname = ['Guild:', guild.name.escapeFormatting() + ' `' + guild.id + '`' + ( pause[guild.id] ? '\\*' : '' )];
-			var guildowner = ['Owner:', guild.owner.user.tag.escapeFormatting() + ' `' + guild.ownerID + '` ' + guild.owner.toString()];
+			var guildowner = ['Owner:', ( guild.owner ? guild.owner.user.tag.escapeFormatting() + ' `' + guild.ownerID + '` ' + guild.owner.toString() : '`' + guild.ownerID + '`' )];
 			var guildsize = ['Size:', guild.memberCount + ' members (' + guild.members.cache.filter( member => member.user.bot ).size + ' bots)'];
 			var guildpermissions = ['Missing permissions:', ( guild.me.permissions.has(defaultPermissions) ? '*none*' : '`' + guild.me.permissions.missing(defaultPermissions).join('`, `') + '`' )];
 			var guildsettings = ['Settings:', '*unknown*'];
