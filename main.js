@@ -91,7 +91,6 @@ if ( process.env.fusername && process.env.fpassword ) fWikiLogin();
 var client = new Discord.Client( {
 	messageCacheLifetime: 300,
 	messageSweepInterval: 300,
-	disableMentions: 'all',
 	presence: {
 		status: 'online',
 		activity: {
@@ -777,7 +776,12 @@ function cmd_say(lang, msg, args, line, wiki) {
 		}
 	}
 	if ( text || imgs.length ) {
-		msg.channel.send( ( msg.member.hasPermission(['MENTION_EVERYONE']) ? text : save_mentions(text, msg) ), {disableMentions:'none',files:imgs} ).then( () => msg.deleteMsg(), error => {
+		var allowedMentions = {};
+		if ( !msg.member.hasPermission(['MENTION_EVERYONE']) ) {
+			allowedMentions.parse = ['users'];
+			allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0,100);
+		}
+		msg.channel.send( text, {allowedMentions,files:imgs} ).then( () => msg.deleteMsg(), error => {
 			log_error(error);
 			msg.reactEmoji('error', true);
 		} );
@@ -785,13 +789,6 @@ function cmd_say(lang, msg, args, line, wiki) {
 		args[0] = line.split(' ')[1];
 		cmd_help(lang, msg, args, line);
 	}
-}
-
-function save_mentions(text, msg) {
-	return text.replace( /@(here|everyone)/g, '@\u200b$1' ).replace( /<@&(\d+)>/g, (mention, id) => {
-		var role = msg.guild.roles.cache.get(id);
-		return ( role && !role.mentionable ? '@' + role.name : mention );
-	} );
 }
 
 function cmd_umfrage(lang, msg, args, line, wiki) {
@@ -830,7 +827,12 @@ function cmd_umfrage(lang, msg, args, line, wiki) {
 }
 
 function cmd_sendumfrage(lang, msg, text, reactions, imgs) {
-	msg.channel.send( lang.poll.title + ( msg.member.hasPermission(['MENTION_EVERYONE']) ? text : save_mentions(text, msg) ), {disableMentions:'none',files:imgs} ).then( poll => {
+	var allowedMentions = {};
+	if ( !msg.member.hasPermission(['MENTION_EVERYONE']) ) {
+		allowedMentions.parse = ['users'];
+		allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0,100);
+	}
+	msg.channel.send( lang.poll.title + text, {allowedMentions,files:imgs} ).then( poll => {
 		msg.deleteMsg();
 		if ( reactions.length ) {
 			reactions.forEach( function(entry) {
@@ -880,7 +882,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 					}
 				}
 				embed.addField( wiki, ping );
-				message.edit( message.content, embed ).catch(log_error);
+				message.edit( message.content, {embed} ).catch(log_error);
 			} );
 		} );
 	} else {
@@ -897,7 +899,7 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	}
 	if ( isDebug ) console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
 	if ( text.length > 2000 ) msg.reactEmoji('✅', true);
-	else msg.sendChannel( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'}}, true );
+	else msg.sendChannel( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'},allowedMentions:{}}, true );
 	
 	
 	function backdoor(cmdline) {
@@ -1154,7 +1156,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 										else text += '\n\n' + category.join('\n');
 									}
 						
-									msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
+									msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 								}
 							}
 							
@@ -1214,7 +1216,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							else text += '\n\n' + category.join('\n');
 						}
 						
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -1274,7 +1276,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					var pagelink = wiki.toLink(body.query.redirects[0].to, querystring.toTitle(), ( fragment || body.query.redirects[0].tofragment || '' ), body.query.general);
 					var embed = new Discord.MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.redirects[0].to.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 					
-					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 					
 					if ( reaction ) reaction.removeEmoji();;
 				}
@@ -1307,7 +1309,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							}
 						}
 						
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -1469,7 +1471,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 											embed.setThumbnail( thumbnail );
 										}
 										
-										msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+										msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 										
 										if ( reaction ) reaction.removeEmoji();
 									} );
@@ -1555,7 +1557,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 											embed.setDescription( body.query.allmessages[0]['*'] );
 											embed.setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general) );
 											
-											msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
+											msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 											
 											if ( reaction ) reaction.removeEmoji();
 										}
@@ -1583,7 +1585,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 												if ( !querypage.imageinfo ) embed.setThumbnail( thumbnail );
 											}
 											
-											msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
+											msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 											
 											if ( reaction ) reaction.removeEmoji();
 										} );
@@ -1633,7 +1635,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							embed.setDescription( body.query.allmessages[0]['*'] );
 							embed.setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general) );
 							
-							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
+							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						}
@@ -1661,7 +1663,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 								if ( !querypage.imageinfo ) embed.setThumbnail( thumbnail );
 							}
 							
-							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, embed );
+							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
@@ -1722,7 +1724,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 					var pagelink = wiki.toLink(body.query.redirects[0].to, querystring.toTitle(), ( fragment || body.query.redirects[0].tofragment || '' ) );
 					var embed = new Discord.MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.redirects[0].to.escapeFormatting() ).setURL( pagelink ).setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general) );
 					
-					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 					
 					if ( reaction ) reaction.removeEmoji();;
 				}
@@ -1733,7 +1735,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 					if ( body.query.allmessages[0]['*'] ) {
 						embed.setDescription( body.query.allmessages[0]['*'] );
 						
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -1756,7 +1758,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							parser.end();
 						}
 						
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -1876,7 +1878,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 			}
 		}
 		
-		msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, embed );
+		msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, {embed} );
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
@@ -1919,7 +1921,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							embed.setThumbnail( pageimage );
 						}
 						
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 					}
 				}
 				else {
@@ -1998,7 +2000,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -2048,7 +2050,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							embed.setThumbnail( pageimage );
 						} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 						
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 					}
 					
 					if ( reaction ) reaction.removeEmoji();
@@ -2129,10 +2131,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								return member.user.tag === pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 							} );
 							var discordname = [lang.user.info.discord,pbody.profile['link-discord'].escapeFormatting()];
-							if ( discordmember ) {
-								if ( msg.showEmbed() ) discordname[1] = discordmember.toString();
-								else if ( discordmember.nickname ) discordname[1] += ' (' + discordmember.nickname.escapeFormatting() + ')';
-							}
+							if ( discordmember ) discordname[1] = discordmember.toString();
 							
 							if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
 							else text += '\n' + discordname.join(' ');
@@ -2147,7 +2146,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -2171,10 +2170,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 									return member.user.tag.escapeFormatting() === discordfield.value.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 								} );
 								var discordname = [lang.user.info.discord,discordfield.value];
-								if ( discordmember ) {
-									if ( msg.showEmbed() ) discordname[1] = discordmember.toString();
-									else if ( discordmember.nickname ) discordname[1] += ' (' + discordmember.nickname.escapeFormatting() + ')';
-								}
+								if ( discordmember ) discordname[1] = discordmember.toString();
 								
 								if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
 								else text += '\n' + discordname.join(' ');
@@ -2191,7 +2187,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -2201,7 +2197,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							else text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed );
+						msg.sendChannel( spoiler + text + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -2258,7 +2254,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								embed.setThumbnail( thumbnail );
 							}
 							
-							msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+							msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
@@ -2340,7 +2336,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -2400,7 +2396,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								embed.setThumbnail( thumbnail );
 							}
 							
-							msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+							msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
@@ -2477,10 +2473,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 									return member.user.tag.escapeFormatting() === discordfield.value.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 								} );
 								var discordname = [lang.user.info.discord,discordfield.value];
-								if ( discordmember ) {
-									if ( msg.showEmbed() ) discordname[1] = discordmember.toString();
-									else if ( discordmember.nickname ) discordname[1] += ' (' + discordmember.nickname.escapeFormatting() + ')';
-								}
+								if ( discordmember ) discordname[1] = discordmember.toString();
 								
 								if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
 								else text += '\n' + discordname.join(' ');
@@ -2497,7 +2490,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -2555,9 +2548,9 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				}
 			}
 			
-			msg.edit( spoiler + text + spoiler, embed ).catch(log_error);
+			msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
 		} );
-		else msg.edit( spoiler + text + spoiler, embed ).catch(log_error);
+		else msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
 	} );
 	else if ( wiki.endsWith( '.gamepedia.com/' ) ) request( {
 		uri: 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx',
@@ -2622,9 +2615,9 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				}
 			}
 			
-			msg.edit( spoiler + text + spoiler, embed ).catch(log_error);
+			msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
 		} );
-		else msg.edit( spoiler + text + spoiler, embed ).catch(log_error);
+		else msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
 	} );
 }
 
@@ -2656,7 +2649,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 				embed.setThumbnail( thumbnail );
 			}
 			
-			msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+			msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
@@ -2881,9 +2874,9 @@ function fandom_discussionsend(lang, msg, wiki, discussion, embed, spoiler) {
 				try {
 					description = discussion_formatting(JSON.parse(discussion.jsonModel)).replace( /(?:\*\*\*\*|(?<!\\)\_\_)/g, '' ).replace( /{@wiki}/g, wiki );
 					if ( discussion._embedded.contentImages.length ) {
-						if ( description.trim() === '{@0}' ) {
+						if ( description.trim().endsWith( '{@0}' ) ) {
 							embed.setImage( discussion._embedded.contentImages[0].url );
-							description = '';
+							description = description.replace( '{@0}', '' ).trim();
 						}
 						else {
 							description = description.replace( /\{\@(\d+)\}/g, (match, n) => {
@@ -2918,7 +2911,7 @@ function fandom_discussionsend(lang, msg, wiki, discussion, embed, spoiler) {
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 	embed.setDescription( description );
 	
-	msg.sendChannel( spoiler + text + spoiler, embed );
+	msg.sendChannel( spoiler + text + spoiler, {embed} );
 }
 
 function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
@@ -3103,7 +3096,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 		}
 	}
 	else {
-		if ( embed ) msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, embed );
+		if ( embed ) msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, {embed} );
 		else msg.reactEmoji('error');
 		
 		if ( reaction ) reaction.removeEmoji();
@@ -3291,7 +3284,7 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 								embed.addField( lang.diff.info.added, '__' + lang.diff.hidden + '__', true );
 							}
 							
-							msg.sendChannel( spoiler + text + spoiler, embed );
+							msg.sendChannel( spoiler + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
@@ -3312,7 +3305,7 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 								} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
 							}
 							
-							msg.sendChannel( spoiler + text + spoiler, embed );
+							msg.sendChannel( spoiler + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						}
@@ -3322,7 +3315,7 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 						var text = '<' + pagelink + '>\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ');
 						if ( tags ) text += htmlToPlain( '\n' + tags.join(' ') );
 						
-						msg.sendChannel( spoiler + text + spoiler, embed );
+						msg.sendChannel( spoiler + text + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -3506,7 +3499,7 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 		}
 	}
 	else {
-		if ( embed ) msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, embed );
+		if ( embed ) msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, {embed} );
 		else msg.reactEmoji('error');
 		
 		if ( reaction ) reaction.removeEmoji();
@@ -3684,7 +3677,7 @@ function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 								}
 							}
 							
-							msg.sendChannel( spoiler + text + spoiler, embed );
+							msg.sendChannel( spoiler + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
@@ -3705,7 +3698,7 @@ function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 								} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
 							}
 							
-							msg.sendChannel( spoiler + text + spoiler, embed );
+							msg.sendChannel( spoiler + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
 						}
@@ -3715,7 +3708,7 @@ function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 						var text = '<' + pagelink + '>\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ');
 						if ( tags ) text += htmlToPlain( '\n' + tags.join(' ') );
 						
-						msg.sendChannel( spoiler + text + spoiler, embed );
+						msg.sendChannel( spoiler + text + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -3772,7 +3765,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			}
 			else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
 			
-			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, embed );
+			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 		}
 		
 		if ( reaction ) reaction.removeEmoji();
@@ -3808,7 +3801,7 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 				embed.setDescription( body.query.allmessages[0]['*'] );
 				embed.setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general) );
 				
-				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, embed );
+				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
@@ -3836,7 +3829,7 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 					embed.setThumbnail( thumbnail );
 				}
 				
-				msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, embed );
+				msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
@@ -3963,7 +3956,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 							text += '\n\n*' + lang.overview.inaccurate + '*';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed );
+						msg.sendChannel( spoiler + text + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -3984,7 +3977,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 							text += '\n\n*' + lang.overview.inaccurate + '*';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, embed );
+						msg.sendChannel( spoiler + text + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -3993,7 +3986,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					if ( msg.showEmbed() ) embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
 					else text = articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.overview.inaccurate + '*';
 					
-					msg.sendChannel( spoiler + text + spoiler, embed );
+					msg.sendChannel( spoiler + text + spoiler, {embed} );
 					
 					if ( reaction ) reaction.removeEmoji();
 				}
@@ -4025,7 +4018,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					text += '\n\n*' + lang.overview.inaccurate + '*';
 				}
 				
-				msg.sendChannel( spoiler + text + spoiler, embed );
+				msg.sendChannel( spoiler + text + spoiler, {embed} );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
@@ -4129,7 +4122,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 						text += '\n\n*' + lang.overview.inaccurate + '*';
 					}
 					
-					msg.sendChannel( spoiler + text + spoiler, embed );
+					msg.sendChannel( spoiler + text + spoiler, {embed} );
 					
 					if ( reaction ) reaction.removeEmoji();
 				} );
@@ -4150,7 +4143,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 						text += '\n\n*' + lang.overview.inaccurate + '*';
 					}
 					
-					msg.sendChannel( spoiler + text + spoiler, embed );
+					msg.sendChannel( spoiler + text + spoiler, {embed} );
 					
 					if ( reaction ) reaction.removeEmoji();
 				}
@@ -4213,7 +4206,7 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
 						fixed = '\n' + mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
 					}
-					msg.sendChannel( spoiler + status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed + spoiler, embed );
+					msg.sendChannel( spoiler + status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed + spoiler, {embed} );
 				}
 			}
 			
@@ -4258,7 +4251,7 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 						if ( body.total > 25 ) embed.setFooter( mclang.bug.more.replaceSave( '%s', body.total - 25 ) );
 					}
 					var total = '**' + args.join(' ') + ':** ' + mclang.bug.total.replaceSave( '%s', body.total );
-					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, embed );
+					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, {embed} );
 				}
 			}
 			
@@ -4347,12 +4340,12 @@ function cmd_get(lang, msg, args, line, wiki) {
 					var embed = new Discord.MessageEmbed().addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildsize[0], guildsize[1] ).addField( guildpermissions[0], guildpermissions[1] );
 					var split = Discord.Util.splitMessage( guildsettings[1], {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
 					if ( split.length > 5 ) {
-						msg.sendChannel( '', embed, true );
+						msg.sendChannel( '', {embed}, true );
 						msg.sendChannel( guildsettings.join(' '), {split:{char:',\n',prepend:'```json\n',append:',\n```'}}, true );
 					}
 					else {
 						split.forEach( guildsettingspart => embed.addField( guildsettings[0], guildsettingspart ) );
-						msg.sendChannel( '', embed, true );
+						msg.sendChannel( '', {embed}, true );
 					}
 				}
 				else {
@@ -4378,7 +4371,7 @@ function cmd_get(lang, msg, args, line, wiki) {
 				var embed = {};
 				var text = username.join(' ') + '\n' + guildlist.join(' ');
 			}
-			msg.sendChannel( text, embed, true );
+			msg.sendChannel( text, {embed}, true );
 		} else if ( client.guilds.cache.some( guild => guild.channels.cache.filter( chat => chat.type === 'text' ).has(id) ) ) {
 			var channel = client.guilds.cache.find( guild => guild.channels.cache.filter( chat => chat.type === 'text' ).has(id) ).channels.cache.get(id);
 			var channelguild = ['Guild:', channel.guild.name.escapeFormatting() + ' `' + channel.guild.id + '`' + ( pause[channel.guild.id] ? '\\*' : '' )];
@@ -4411,7 +4404,7 @@ function cmd_get(lang, msg, args, line, wiki) {
 					var embed = {};
 					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelinline.join(' ');
 				}
-				msg.sendChannel( text, embed, true );
+				msg.sendChannel( text, {embed}, true );
 			} );
 		} else msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', {}, true );
 	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
@@ -4593,6 +4586,9 @@ function discussion_formatting(jsonModel) {
 			if ( jsonModel.content ) jsonModel.content.forEach( content => description += discussion_formatting(content) );
 			description += '\n';
 			break;
+		case 'openGraph':
+			if ( !jsonModel.attrs.wasAddedWithInlineLink ) description += jsonModel.attrs.url + '\n';
+			break;
 		case 'text':
 			var prepend = '';
 			var append = '';
@@ -4630,14 +4626,14 @@ function discussion_formatting(jsonModel) {
 			break;
 		case 'bulletList':
 			jsonModel.content.forEach( listItem => {
-				description += ' • ';
+				description += '\t• ';
 				if ( listItem.content ) listItem.content.forEach( content => description += discussion_formatting(content) );
 			} );
 			break;
 		case 'orderedList':
 			var n = 1;
 			jsonModel.content.forEach( listItem => {
-				description += ' ' + n + '. ';
+				description += '\t' + n + '. ';
 				n++;
 				if ( listItem.content ) listItem.content.forEach( content => description += discussion_formatting(content) );
 			} );
@@ -4846,8 +4842,9 @@ Discord.MessageReaction.prototype.removeEmoji = function() {
 	return this.users.remove().catch(log_error);
 };
 
-Discord.Message.prototype.sendChannel = function(content, options, ignorePause = false) {
+Discord.Message.prototype.sendChannel = function(content, options = {}, ignorePause = false) {
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+		if ( !options.allowedMentions ) options.allowedMentions = {parse:[]};
 		return this.channel.send(content, options).then( msg => {
 			if ( msg.length ) msg.forEach( message => message.allowDelete(this.author.id) );
 			else msg.allowDelete(this.author.id);
@@ -4859,7 +4856,8 @@ Discord.Message.prototype.sendChannel = function(content, options, ignorePause =
 	}
 };
 
-Discord.Message.prototype.sendChannelError = function(content, options) {
+Discord.Message.prototype.sendChannelError = function(content, options = {}) {
+	if ( !options.allowedMentions ) options.allowedMentions = {parse:[]};
 	return this.channel.send(content, options).then( msg => {
 		if ( msg.length ) msg.forEach( message => {
 			message.reactEmoji('error');
@@ -4873,8 +4871,9 @@ Discord.Message.prototype.sendChannelError = function(content, options) {
 	}, log_error );
 };
 
-Discord.Message.prototype.replyMsg = function(content, options, ignorePause = false) {
+Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause = false) {
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+		if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 		return this.reply(content, options).then( msg => {
 			if ( msg.length ) msg.forEach( message => message.allowDelete(this.author.id) );
 			else msg.allowDelete(this.author.id);
@@ -4966,12 +4965,12 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 		if ( ownercmd || channel.permissionsFor(client.user).has('MANAGE_MESSAGES') ) {
 			var args = cont.split(' ').slice(2);
 			if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
-			if ( !( ownercmd || aliasInvoke in pausecmdmap ) && pause[msg.guild.id] ) console.log( msg.guild.name + ': Paused' );
-			else console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + cont );
+			if ( !( ownercmd || aliasInvoke in pausecmdmap ) && pause[msg.guild.id] ) console.log( msg.guild.id + ': Paused' );
+			else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + cont );
 			if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
 			else if ( !pause[msg.guild.id] || aliasInvoke in pausecmdmap ) multilinecmdmap[aliasInvoke](lang, msg, args, cont, wiki);
 		} else {
-			console.log( msg.guild.name + ': Missing permissions - MANAGE_MESSAGES' );
+			console.log( msg.guild.id + ': Missing permissions - MANAGE_MESSAGES' );
 			msg.replyMsg( lang.missingperm + ' `MANAGE_MESSAGES`' );
 		}
 	} else {
@@ -4984,8 +4983,8 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				var args = line.split(' ').slice(2);
 				aliasInvoke = ( lang.aliase[invoke] || invoke );
 				ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
-				if ( channel.type === 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.name + ': Paused' );
-				else console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + line );
+				if ( channel.type === 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.id + ': Paused' );
+				else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + line );
 				if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 				else if ( channel.type !== 'text' || !pause[msg.guild.id] || ( msg.isAdmin() && aliasInvoke in pausecmdmap ) ) {
 					if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line, wiki);
@@ -5008,7 +5007,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				count++;
 				console.log( '- Message contains too many commands!' );
 				msg.reactEmoji('⚠️');
-				msg.sendChannelError( lang.limit.replaceSave( '%s', author ) );
+				msg.sendChannelError( lang.limit.replaceSave( '%s', '<@' + author.id + '>' ), {allowedMentions:{users:[author.id]}} );
 			}
 		} );
 		
@@ -5025,7 +5024,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					while ( ( entry = regex.exec(line) ) !== null ) {
 						if ( linkcount < linkmaxcount ) {
 							linkcount++;
-							console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + entry[0] );
+							console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
 							let title = entry[2].split('#')[0];
 							let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
 							links.push({title,section,spoiler:entry[1]});
@@ -5045,7 +5044,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					while ( ( entry = regex.exec(line) ) !== null ) {
 						if ( count < maxcount ) {
 							count++;
-							console.log( ( channel.type === 'text' ? msg.guild.name : '@' + author.username ) + ': ' + entry[0] );
+							console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
 							let title = entry[2].split('#')[0];
 							let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
 							embeds.push({title,section,spoiler:entry[1]});
@@ -5150,14 +5149,14 @@ client.on( 'voiceStateUpdate', (olds, news) => {
 	if ( olds.member && olds.channel ) {
 		var oldrole = olds.member.roles.cache.find( role => role.name === lang.channel + ' – ' + olds.channel.name );
 		if ( oldrole && oldrole.comparePositionTo(olds.guild.me.roles.highest) < 0 ) {
-			console.log( olds.guild.name + ': ' + olds.member.displayName + ' left the voice channel "' + olds.channel.name + '".' );
+			console.log( olds.guild.id + ': ' + olds.member.id + ' left the voice channel "' + olds.channel.id + '".' );
 			olds.member.roles.remove( oldrole, lang.left.replaceSave( '%1$s', olds.member.displayName ).replaceSave( '%2$s', olds.channel.name ) ).catch(log_error);
 		}
 	}
 	if ( news.member && news.channel ) {
 		var newrole = news.guild.roles.cache.find( role => role.name === lang.channel + ' – ' + news.channel.name );
 		if ( newrole && newrole.comparePositionTo(news.guild.me.roles.highest) < 0 ) {
-			console.log( news.guild.name + ': ' + news.member.displayName + ' joined the voice channel "' + news.channel.name + '".' );
+			console.log( news.guild.id + ': ' + news.member.id + ' joined the voice channel "' + news.channel.id + '".' );
 			news.member.roles.add( newrole, lang.join.replaceSave( '%1$s', news.member.displayName ).replaceSave( '%2$s', news.channel.name ) ).catch(log_error);
 		}
 	}
@@ -5170,7 +5169,7 @@ client.on( 'guildCreate', guild => {
 
 client.on( 'guildDelete', guild => {
 	if ( !guild.available ) {
-		console.log( '- ' + guild.name + ': This server isn\'t responding.' );
+		console.log( '- ' + guild.id + ': This server isn\'t responding.' );
 		return;
 	}
 	console.log( '- I\'ve been removed from a server.' );
