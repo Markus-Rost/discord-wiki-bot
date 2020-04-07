@@ -11,7 +11,8 @@ var ready = {
 
 const Discord = require('discord.js');
 const DBL = require('dblapi.js');
-const request = require('request').defaults( {
+const got = require('got').extend( {
+	throwHttpErrors: false,
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ')'
 	}
@@ -28,6 +29,7 @@ var db = new sqlite3.Database( './wikibot.db', sqlite3.OPEN_READWRITE | sqlite3.
 	console.log( '- Connected to the database.' );
 } );
 
+/* Paused until UCP
 var cookieJar = request.jar();
 function gpWikiLogin() {
 	request( {
@@ -87,6 +89,7 @@ function fWikiLogin(token) {
 	} );
 }
 if ( process.env.fusername && process.env.fpassword ) fWikiLogin();
+*/
 
 var client = new Discord.Client( {
 	messageCacheLifetime: 300,
@@ -265,12 +268,12 @@ function getVoice(trysettings = 1) {
 var allSites = [];
 function getAllSites() {
 	ready.allSites = true;
-	request( {
-		uri: 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,wiki_crossover,created&format=json',
-		json: true
-	}, function( error, response, body ) {
-		if ( error || !response || response.statusCode !== 200 || !body || body.status !== 'okay' || !body.data || !body.data.wikis ) {
-			console.log( '- ' + ( response && response.statusCode ) + ': Error while gettings all sites: ' + ( error || body && body.error && body.error.info ) );
+	got.get( 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,wiki_crossover,created&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
+		if ( response.statusCode !== 200 || !body || body.status !== 'okay' || !body.data || !body.data.wikis ) {
+			console.log( '- ' + response.statusCode + ': Error while gettings all sites: ' + ( body && body.error && body.error.info ) );
 			ready.allSites = false;
 		}
 		else {
@@ -278,6 +281,8 @@ function getAllSites() {
 			allSites = JSON.parse(JSON.stringify(body.data.wikis.filter( site => /^[a-z\d-]{1,50}\.gamepedia\.com$/.test(site.wiki_domain) )));
 			allSites.filter( site => site.wiki_crossover ).forEach( site => site.wiki_crossover = site.wiki_crossover.replace( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{1,8}))?).*/, '$1' ) );
 		}
+	}, error => {
+			console.log( '- Error while gettings all sites: ' + error );
 	} );
 }
 
@@ -289,12 +294,15 @@ client.on( 'ready', () => {
 	if ( !isDebug ) client.setInterval( () => {
 		console.log( '- Current server count: ' + client.guilds.cache.size );
 		dbl.postStats(client.guilds.cache.size).catch( () => {} );
-		request.post( {
-			uri: 'https://discord.bots.gg/api/v1/bots/' + client.user.id + '/stats',
-			headers: {Authorization: process.env.dbggtoken},
-			body: {guildCount: client.guilds.cache.size},
-			json: true
-		}, () => {} );
+		got.post( 'https://discord.bots.gg/api/v1/bots/' + client.user.id + '/stats', {
+			headers: {
+				Authorization: process.env.dbggtoken
+			},
+			json: {
+				guildCount: client.guilds.cache.size
+			},
+			responseType: 'json'
+		} ).catch( () => {} );
 	}, 10800000 ).unref();
 } );
 	
@@ -408,12 +416,12 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !regex ) {
 				var value = args[1].split(' ');
 				if ( value.length === 2 && value[1] === '--force' ) return msg.reactEmoji('⏳', true).then( reaction => {
-					request( {
-						uri: value[0] + 'api.php?action=query&format=json',
-						json: true
-					}, function( ferror, response, body ) {
-						if ( ferror || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !( body instanceof Object ) ) {
-							console.log( '- ' + ( response && response.statusCode ) + ': Error while testing the wiki: ' + ( ferror || body && body.error && body.error.info ) );
+					got.get( value[0] + 'api.php?action=query&format=json', {
+						responseType: 'json'
+					} ).then( response => {
+						var body = response.body;
+						if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !( body instanceof Object ) ) {
+							console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + ( body && body.error && body.error.info ) );
 							if ( reaction ) reaction.removeEmoji();
 							msg.reactEmoji('nowiki', true);
 							return msg.replyMsg( lang.settings.wikiinvalid + wikihelp, {}, true );
@@ -458,6 +466,11 @@ function cmd_settings(lang, msg, args, line, wiki) {
 								console.log( '- Settings successfully removed.' );
 							} );
 						} );
+					}, ferror => {
+						console.log( '- Error while testing the wiki: ' + ferror );
+						if ( reaction ) reaction.removeEmoji();
+						msg.reactEmoji('nowiki', true);
+						return msg.replyMsg( lang.settings.wikiinvalid + wikihelp, {}, true );
 					} );
 				} );
 				if ( allSites.some( site => site.wiki_domain === value.join('') + '.gamepedia.com' ) ) {
@@ -864,24 +877,31 @@ function cmd_test(lang, msg, args, line, wiki) {
 			var then = Date.now();
 			var embed = new Discord.MessageEmbed().setTitle( lang.test.time ).addField( 'Discord', ( then - now ) + 'ms' );
 			now = Date.now();
-			request( {
-				uri: wiki + 'api.php?action=query&format=json',
-				json: true
-			}, function( error, response, body ) {
+			got.get( wiki + 'api.php?action=query&format=json', {
+				responseType: 'json'
+			} ).then( response => {
 				then = Date.now();
+				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
 				var ping = ( then - now ) + 'ms';
-				if ( error || !response || response.statusCode !== 200 || !body || !( body instanceof Object ) ) {
-					if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+				if ( response.statusCode !== 200 || !body || !( body instanceof Object ) ) {
+					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						ping += ' <:unknown_wiki:505887262077353984>';
 					}
 					else {
-						console.log( '- ' + ( response && response.statusCode ) + ': Error while reaching the wiki: ' + ( error || body && body.error && body.error.info ) );
+						console.log( '- ' + response.statusCode + ': Error while reaching the wiki: ' + ( body && body.error && body.error.info ) );
 						ping += ' <:error:505887261200613376>';
 					}
 				}
 				embed.addField( wiki, ping );
+			}, error => {
+				then = Date.now();
+				var ping = ( then - now ) + 'ms';
+				console.log( '- Error while reaching the wiki: ' + error );
+				ping += ' <:error:505887261200613376>';
+				embed.addField( wiki, ping );
+			} ).finally( () => {
 				message.edit( message.content, {embed} ).catch(log_error);
 			} );
 		} );
@@ -1010,18 +1030,18 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 	else if ( aliasInvoke === 'diff' && args.join('') && !querystring && !fragment ) gamepedia_diff(lang, msg, args, wiki, reaction, spoiler);
 	else {
 		var noRedirect = ( /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring) );
-		request( {
-			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( title ) + '&format=json', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
+				if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 				}
 				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+					console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink( ( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
 				}
 				
@@ -1045,19 +1065,19 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 					
 					var contribs = body.query.namespaces['-1']['*'] + ':' + body.query.specialpagealiases.find( sp => sp.realname === 'Contributions' ).aliases[0] + '/';
-					if ( ( querypage.ns === 2 || querypage.ns === 202 ) && ( !querypage.title.includes( '/' ) || /^[^:]+:(?:(?:\d{1,3}\.){3}\d{1,3}\/\d{2}|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}\/\d{2,3})$/.test(querypage.title) ) ) {
+					if ( ( querypage.ns === 2 || querypage.ns === 202 || querypage.ns === 1200 ) && ( !querypage.title.includes( '/' ) || /^[^:]+:(?:(?:\d{1,3}\.){3}\d{1,3}\/\d{2}|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}\/\d{2,3})$/.test(querypage.title) ) ) {
 						var userparts = querypage.title.split(':');
 						querypage.noRedirect = noRedirect;
 						gamepedia_user(lang, msg, userparts[0].toTitle() + ':', userparts.slice(1).join(':'), wiki, querystring, fragment, querypage, contribs.toTitle(), reaction, spoiler);
 					}
 					else if ( querypage.ns === -1 && querypage.title.startsWith( contribs ) && querypage.title.length > contribs.length ) {
 						var username = querypage.title.split('/').slice(1).join('/');
-						request( {
-							uri: wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json',
-							json: true
-						}, function( uerror, uresponse, ubody ) {
-							if ( uerror || !uresponse || uresponse.statusCode !== 200 || !ubody || ubody.batchcomplete === undefined || !ubody.query ) {
-								console.log( '- ' + ( uresponse && uresponse.statusCode ) + ': Error while getting the user: ' + ( uerror || ubody && ubody.error && ubody.error.info ) );
+						got.get( wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json', {
+							responseType: 'json'
+						} ).then( uresponse => {
+							var ubody = uresponse.body;
+							if ( uresponse.statusCode !== 200 || !ubody || ubody.batchcomplete === undefined || !ubody.query ) {
+								console.log( '- ' + uresponse.statusCode + ': Error while getting the user: ' + ( ubody && ubody.error && ubody.error.info ) );
 								msg.sendChannelError( spoiler + '<' + wiki.toLink(contribs + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
 								
 								if ( reaction ) reaction.removeEmoji();
@@ -1079,17 +1099,22 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 									if ( reaction ) reaction.removeEmoji();
 								}
 							}
+						}, error => {
+							console.log( '- Error while getting the user: ' + error );
+							msg.sendChannelError( spoiler + '<' + wiki.toLink(contribs + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+							
+							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
 					else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
 						if ( aliasInvoke === 'discussion' && !querystring && !fragment ) fandom_discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
-						else request( {
-							uri: wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json',
-							json: true
-						}, function( srerror, srresponse, srbody ) {
+						else got.get( wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
+							responseType: 'json'
+						} ).then( srresponse => {
+							var srbody = srresponse.body;
 							if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
-							if ( srerror || !srresponse || srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
-								console.log( '- ' + ( srresponse && srresponse.statusCode ) + ': Error while getting the search results: ' + ( srerror || srbody && srbody.error && srbody.error.info ) );
+							if ( srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
+								console.log( '- ' + srresponse.statusCode + ': Error while getting the search results: ' + ( srbody && srbody.error && srbody.error.info ) );
 								msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Search', 'search=' + title.toSearch(), '', body.query.general) + '>' + spoiler );
 							}
 							else {
@@ -1159,7 +1184,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 									msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 								}
 							}
-							
+						}, error => {
+							console.log( '- Error while getting the search results: ' + error );
+							msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Search', 'search=' + title.toSearch(), '', body.query.general) + '>' + spoiler );
+						} ).finally( () => {
 							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
@@ -1283,13 +1311,13 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				else {
 					var pagelink = wiki.toLink(body.query.general.mainpage, querystring.toTitle(), fragment, body.query.general);
 					var embed = new Discord.MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
-					request( {
-						uri: wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageprops|extracts&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json',
-						json: true
-					}, function( mperror, mpresponse, mpbody ) {
+					got.get( wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageprops|extracts&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json', {
+						responseType: 'json'
+					} ).then( mpresponse => {
+						var mpbody = mpresponse.body;
 						if ( mpbody && mpbody.warnings ) log_warn(body.warnings);
-						if ( mperror || !mpresponse || mpresponse.statusCode !== 200 || !mpbody || mpbody.batchcomplete === undefined || !mpbody.query ) {
-							console.log( '- ' + ( mpresponse && mpresponse.statusCode ) + ': Error while getting the main page: ' + ( mperror || mpbody && mpbody.error && mpbody.error.info ) );
+						if ( mpresponse.statusCode !== 200 || !mpbody || mpbody.batchcomplete === undefined || !mpbody.query ) {
+							console.log( '- ' + mpresponse.statusCode + ': Error while getting the main page: ' + ( mpbody && mpbody.error && mpbody.error.info ) );
 						} else {
 							var querypage = Object.values(mpbody.query.pages)[0];
 							if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
@@ -1308,13 +1336,20 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 								embed.setDescription( extract );
 							}
 						}
-						
+					}, error => {
+						console.log( '- Error while getting the main page: ' + error );
+					} ).finally( () => {
 						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
 				}
 			}
+		}, error => {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink( ( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 }
@@ -1344,24 +1379,24 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 		if ( reaction ) reaction.removeEmoji();
 	}
 	else if ( aliasInvoke === 'search' ) {
-		msg.sendChannel( spoiler + '<' + wiki.toLink('Special:Search', 'search=' + args.join(' ').toSearch() + ( querystring ? '&' + querystring.toTitle() : '' ), fragment, body.query.general) + '>' + spoiler );
+		msg.sendChannel( spoiler + '<' + wiki.toLink('Special:Search', 'search=' + args.join(' ').toSearch() + ( querystring ? '&' + querystring.toTitle() : '' ), fragment) + '>' + spoiler );
 		if ( reaction ) reaction.removeEmoji();
 	}
 	else if ( aliasInvoke === 'diff' && args.join('') && !querystring && !fragment ) fandom_diff(lang, msg, args, wiki, reaction, spoiler);
 	else {
 		var noRedirect = ( /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring) );
-		request( {
-			uri: wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&amenableparser=true&siprop=general|namespaces|specialpagealiases|wikidesc&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( title ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
+		got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&amenableparser=true&siprop=general|namespaces|specialpagealiases|wikidesc&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( title ) + '&format=json', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+			if ( response.statusCode !== 200 || !body || !body.query ) {
+				if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 				}
 				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+					console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink(( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
 				}
 				
@@ -1395,12 +1430,12 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 					}
 					else if ( querypage.ns === -1 && querypage.title.startsWith( contribs ) && querypage.title.length > contribs.length ) {
 						var username = querypage.title.split('/').slice(1).join('/');
-						request( {
-							uri: wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json',
-							json: true
-						}, function( uerror, uresponse, ubody ) {
-							if ( uerror || !uresponse || uresponse.statusCode !== 200 || !ubody || !ubody.query ) {
-								console.log( '- ' + ( uresponse && uresponse.statusCode ) + ': Error while getting the user: ' + ( uerror || ubody && ubody.error && ubody.error.info ) );
+						got.get( wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json', {
+							responseType: 'json'
+						} ).then( uresponse => {
+							var ubody = uresponse.body;
+							if ( uresponse.statusCode !== 200 || !ubody || !ubody.query ) {
+								console.log( '- ' + uresponse.statusCode + ': Error while getting the user: ' + ( ubody && ubody.error && ubody.error.info ) );
 								msg.sendChannelError( spoiler + '<' + wiki.toLink(contribs + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
 								
 								if ( reaction ) reaction.removeEmoji();
@@ -1422,16 +1457,21 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 									if ( reaction ) reaction.removeEmoji();
 								}
 							}
+						}, error => {
+							console.log( '- Error while getting the user: ' + error );
+							msg.sendChannelError( spoiler + '<' + wiki.toLink(contribs + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+							
+							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
 					else if ( querypage.ns === 1201 && querypage.missing !== undefined ) {
 						var thread = querypage.title.split(':');
-						request( {
-							uri: wiki + 'api.php?action=query&prop=revisions&rvprop=user&rvdir=newer&rvlimit=1&pageids=' + thread.slice(1).join(':') + '&format=json',
-							json: true
-						}, function( therror, thresponse, thbody ) {
-							if ( therror || !thresponse || thresponse.statusCode !== 200 || !thbody || !thbody.query || !thbody.query.pages ) {
-								console.log( '- ' + ( thresponse && thresponse.statusCode ) + ': Error while getting the thread: ' + ( therror || thbody && thbody.error && thbody.error.info ) );
+						got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=user&rvdir=newer&rvlimit=1&pageids=' + thread.slice(1).join(':') + '&format=json', {
+							responseType: 'json'
+						} ).then( thresponse => {
+							var thbody = thresponse.body;
+							if ( thresponse.statusCode !== 200 || !thbody || !thbody.query || !thbody.query.pages ) {
+								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.error && thbody.error.info ) );
 								msg.sendChannelError( spoiler + '<' + wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
 								
 								if ( reaction ) reaction.removeEmoji();
@@ -1446,12 +1486,10 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 								else {
 									var pagelink = wiki.toLink(thread.join(':'), querystring.toTitle(), fragment, body.query.general);
 									var embed = new Discord.MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( thread.join(':').escapeFormatting() ).setURL( pagelink ).setFooter( querypage.revisions[0].user );
-									
-									request( {
-										uri: wiki.toDescLink(querypage.title)
-									}, function( descerror, descresponse, descbody ) {
-										if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-											console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+									got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+										var descbody = descresponse.body;
+										if ( descresponse.statusCode !== 200 || !descbody ) {
+											console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 										} else {
 											var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general);
 											var parser = new htmlparser.Parser( {
@@ -1470,25 +1508,32 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 											parser.end();
 											embed.setThumbnail( thumbnail );
 										}
-										
+									}, error => {
+										console.log( '- Error while getting the description: ' + error );
+									} ).finally( () => {
 										msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 										
 										if ( reaction ) reaction.removeEmoji();
 									} );
 								}
 							}
+						}, error => {
+							console.log( '- Error while getting the thread: ' + error );
+							msg.sendChannelError( spoiler + '<' + wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+							
+							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
 					else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
 						if ( aliasInvoke === 'discussion' && !querystring && !fragment ) fandom_discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
-						else request( {
-							uri: wiki + 'api/v1/Search/List?minArticleQuality=0&namespaces=4,12,14,' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join(',') + '&limit=1&query=' + encodeURIComponent( title ) + '&format=json',
-							json: true
-						}, function( wserror, wsresponse, wsbody ) {
-							if ( wserror || !wsresponse || wsresponse.statusCode !== 200 || !wsbody || wsbody.exception || !wsbody.total || !wsbody.items || !wsbody.items.length ) {
+						else got.get( wiki + 'api/v1/Search/List?minArticleQuality=0&namespaces=4,12,14,' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join(',') + '&limit=1&query=' + encodeURIComponent( title ) + '&format=json', {
+							responseType: 'json'
+						} ).then( wsresponse => {
+							var wsbody = wsresponse.body;
+							if ( wsresponse.statusCode !== 200 || !wsbody || wsbody.exception || !wsbody.total || !wsbody.items || !wsbody.items.length ) {
 								if ( wsbody && ( !wsbody.total || ( wsbody.items && !wsbody.items.length ) || ( wsbody.exception && wsbody.exception.code === 404 ) ) ) msg.reactEmoji('🤷');
 								else {
-									console.log( '- ' + ( wsresponse && wsresponse.statusCode ) + ': Error while getting the search results: ' + ( wserror || wsbody && wsbody.exception && wsbody.exception.details ) );
+									console.log( '- ' + wsresponse.statusCode + ': Error while getting the search results: ' + ( wsbody && wsbody.exception && wsbody.exception.details ) );
 									msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Search', 'search=' + title.toSearch(), '', body.query.general) + '>' + spoiler );
 								}
 								
@@ -1512,13 +1557,13 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 								else {
 									text = '\n' + lang.search.infosearch.replaceSave( '%1$s', '`' + prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' ).replaceSave( '%2$s', '`' + prefix + cmd + lang.search.search + ' ' + title + linksuffix + '`' );
 								}
-								request( {
-									uri: wiki + 'api.php?action=query&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( querypage.title ) + '&format=json',
-									json: true
-								}, function( srerror, srresponse, srbody ) {
+								got.get( wiki + 'api.php?action=query&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( querypage.title ) + '&format=json', {
+									responseType: 'json'
+								} ).then( srresponse => {
+									var srbody = srresponse.body;
 									if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
-									if ( srerror || !srresponse || srresponse.statusCode !== 200 || !srbody || !srbody.query || !srbody.query.pages ) {
-										console.log( '- ' + ( srresponse && srresponse.statusCode ) + ': Error while getting the search results: ' + ( srerror || srbody && srbody.error && srbody.error.info ) );
+									if ( srresponse.statusCode !== 200 || !srbody || !srbody.query || !srbody.query.pages ) {
+										console.log( '- ' + srresponse.statusCode + ': Error while getting the search results: ' + ( srbody && srbody.error && srbody.error.info ) );
 										msg.sendChannelError( spoiler + '<' + wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
 										
 										if ( reaction ) reaction.removeEmoji();
@@ -1561,11 +1606,10 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 											
 											if ( reaction ) reaction.removeEmoji();
 										}
-										else request( {
-											uri: wiki.toDescLink(querypage.title)
-										}, function( descerror, descresponse, descbody ) {
-											if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-												console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+										else got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+											var descbody = descresponse.body;
+											if ( descresponse.statusCode !== 200 || !descbody ) {
+												console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 											} else {
 												var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general);
 												var parser = new htmlparser.Parser( {
@@ -1584,14 +1628,26 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 												parser.end();
 												if ( !querypage.imageinfo ) embed.setThumbnail( thumbnail );
 											}
-											
+										}, error => {
+											console.log( '- Error while getting the description: ' + error );
+										} ).finally( () => {
 											msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 											
 											if ( reaction ) reaction.removeEmoji();
 										} );
 									}
+								}, error => {
+									console.log( '- Error while getting the search results: ' + error );
+									msg.sendChannelError( spoiler + '<' + wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+									
+									if ( reaction ) reaction.removeEmoji();
 								} );
 							}
+						}, error => {
+							console.log( '- Error while getting the search results: ' + error );
+							msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Search', 'search=' + title.toSearch(), '', body.query.general) + '>' + spoiler );
+							
+							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
 					else if ( querypage.ns === -1 ) {
@@ -1639,11 +1695,10 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							
 							if ( reaction ) reaction.removeEmoji();
 						}
-						else request( {
-							uri: wiki.toDescLink(querypage.title)
-						}, function( descerror, descresponse, descbody ) {
-							if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-								console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+						else got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+							var descbody = descresponse.body;
+							if ( descresponse.statusCode !== 200 || !descbody ) {
+								console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 							} else {
 								var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general);
 								var parser = new htmlparser.Parser( {
@@ -1662,7 +1717,9 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 								parser.end();
 								if ( !querypage.imageinfo ) embed.setThumbnail( thumbnail );
 							}
-							
+						}, error => {
+							console.log( '- Error while getting the description: ' + error );
+						} ).finally( () => {
 							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
@@ -1739,11 +1796,10 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
-					else request( {
-						uri: wiki.toDescLink(body.query.general.mainpage)
-					}, function( descerror, descresponse, descbody ) {
-						if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-							console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+					else got.get( wiki.toDescLink(body.query.general.mainpage) ).then( descresponse => {
+						var descbody = descresponse.body;
+						if ( descresponse.statusCode !== 200 || !descbody ) {
+							console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 						} else {
 							var parser = new htmlparser.Parser( {
 								onopentag: (tagname, attribs) => {
@@ -1757,13 +1813,20 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							parser.write( descbody );
 							parser.end();
 						}
-						
+					}, error => {
+						console.log( '- Error while getting the description: ' + error );
+					} ).finally( () => {
 						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
 				}
 			}
+		}, error => {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink(( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 }
@@ -1858,13 +1921,13 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		gadgetusage: ['&list=querypage&qplimit=10&qppage=GadgetUsage', queryfunctions.gadget],
 		recentchanges: ['&list=recentchanges&rctype=edit|new|log&rclimit=10', queryfunctions.recentchanges]
 	}
-	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo|allmessages&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '-summary' + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json',
-		json: true
-	}, function( error, response, body ) {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo|allmessages&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '-summary' + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( error || !response || response.statusCode !== 200 || !body ) {
-			console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the special page: ' + ( error || body && body.error && body.error.info ) );
+		if ( response.statusCode !== 200 || !body ) {
+			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + ( body && body.error && body.error.info ) );
 		}
 		else {
 			if ( body.query.allmessages[0]['*'] ) {
@@ -1877,7 +1940,9 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 				embed.addField( lang.search.special, ( text || lang.search.empty ) );
 			}
 		}
-		
+	}, error => {
+		console.log( '- Error while getting the special page: ' + error );
+	} ).finally( () => {
 		msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, {embed} );
 		
 		if ( reaction ) reaction.removeEmoji();
@@ -1886,17 +1951,13 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 
 function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
-		request( {
-			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.blocks ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
-					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
-				}
-				else if ( body && body.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) ) {
+			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.blocks ) {
+				if ( body && body.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) ) {
 					if ( querypage.missing !== undefined || querypage.ns === -1 ) msg.reactEmoji('error');
 					else {
 						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment);
@@ -1925,7 +1986,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					}
 				}
 				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+					console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring.toTitle(), fragment) + '>' + spoiler );
 				}
 				
@@ -1966,22 +2027,20 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						else if ( range >= 16 ) rangeprefix = username.replace( /^((?:\d{1,3}\.){2}).+$/, '$1' );
 					}
 				}
-				request( {
-					uri: wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ) + '&format=json',
-					json: true
-				}, function( ucerror, ucresponse, ucbody ) {
+				got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ) + '&format=json', {
+					responseType: 'json'
+				} ).then( ucresponse => {
+					var ucbody = ucresponse.body;
 					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 					if ( ucbody && ucbody.warnings ) log_warn(ucbody.warnings);
-					if ( ucerror || !ucresponse || ucresponse.statusCode !== 200 || !ucbody || ucbody.batchcomplete === undefined || !ucbody.query || !ucbody.query.usercontribs ) {
+					if ( ucresponse.statusCode !== 200 || !ucbody || ucbody.batchcomplete === undefined || !ucbody.query || !ucbody.query.usercontribs ) {
 						if ( ucbody && ucbody.error && ucbody.error.code === 'baduser_ucuser' ) {
 							msg.reactEmoji('error');
 						}
 						else {
-							console.log( '- ' + ( ucresponse && ucresponse.statusCode ) + ': Error while getting the search results: ' + ( ucerror || ucbody && ucbody.error && ucbody.error.info ) );
+							console.log( '- ' + ucresponse.statusCode + ': Error while getting the search results: ' + ( ucbody && ucbody.error && ucbody.error.info ) );
 							msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
 						}
-						
-						if ( reaction ) reaction.removeEmoji();
 					}
 					else {
 						var editcount = [lang.user.info.editcount, ( username.includes( '/' ) && ( ( username.includes( ':' ) && range % 16 ) || range % 8 ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
@@ -2001,27 +2060,32 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
-						
-						if ( reaction ) reaction.removeEmoji();
 					}
+				}, error => {
+					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
+					console.log( '- Error while getting the search results: ' + error );
+					msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+				} ).finally( () => {
+					if ( reaction ) reaction.removeEmoji();
 				} );
 			}
+		}, error => {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring.toTitle(), fragment) + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	} else {
-		request( {
-			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users[0] ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
-					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
-				}
-				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
-					msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
-				}
+			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users[0] ) {
+				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
+				
+				if ( reaction ) reaction.removeEmoji();
 			}
 			else {
 				var queryuser = body.query.users[0];
@@ -2119,12 +2183,12 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						var embed = {};
 						var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group[0] + ' ' + group.slice(1).join(', ');
 					}
-					if ( wiki.endsWith( '.gamepedia.com/' ) ) request( {
-						uri: wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json',
-						json: true
-					}, function( perror, presponse, pbody ) {
-						if ( perror || !presponse || presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
-							console.log( '- ' + ( presponse && presponse.statusCode ) + ': Error while getting the user profile: ' + ( perror || pbody && ( pbody.error && pbody.error.info || pbody.errormsg ) ) );
+					if ( wiki.endsWith( '.gamepedia.com/' ) ) got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json', {
+						responseType: 'json'
+					} ).then( presponse => {
+						var pbody = presponse.body;
+						if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
+							console.log( '- ' + presponse.statusCode + ': Error while getting the user profile: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg ) ) );
 						}
 						else if ( pbody.profile['link-discord'] ) {
 							if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
@@ -2136,7 +2200,9 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
 							else text += '\n' + discordname.join(' ');
 						}
-						
+					}, error => {
+						console.log( '- Error while getting the user profile: ' + error );
+					} ).finally( () => {
 						if ( msg.showEmbed() ) {
 							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) );
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
@@ -2150,15 +2216,17 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
-					else if ( wiki.isFandom() ) request( {
-						uri: 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json',
+					else if ( wiki.isFandom() ) got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json', {
 						headers: {
 							Accept: 'application/hal+json'
 						},
-						json: true
-					}, function( perror, presponse, pbody ) {
-						if ( perror || !presponse || presponse.statusCode !== 200 || !pbody || pbody.title || !pbody._embedded || !pbody._embedded.properties ) {
-							if ( !( pbody && pbody.status === 404 ) ) console.log( '- ' + ( presponse && presponse.statusCode ) + ': Error while getting the user profile: ' + ( perror || pbody && pbody.title ) );
+						responseType: 'json'
+					} ).then( presponse => {
+						var pbody = presponse.body;
+						if ( presponse.statusCode !== 200 || !pbody || pbody.title || !pbody._embedded || !pbody._embedded.properties ) {
+							if ( !( pbody && pbody.status === 404 ) ) {
+								console.log( '- ' + presponse.statusCode + ': Error while getting the user profile: ' + ( pbody && pbody.title ) );
+							}
 						}
 						else {
 							var profile = pbody._embedded.properties;
@@ -2177,7 +2245,9 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							}
 							if ( msg.showEmbed() && avatarfield && avatarfield.value ) embed.setThumbnail( avatarfield.value );
 						}
-						
+					}, error => {
+						console.log( '- Error while getting the user profile: ' + error );
+					} ).finally( () => {
 						if ( msg.showEmbed() ) {
 							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) );
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
@@ -2203,25 +2273,24 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					}
 				}
 			}
+		}, error => {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 }
 
 function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
-		request( {
-			uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || !body.query || !body.query.blocks ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
-					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else if ( body && body.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) ) {
+			if ( response.statusCode !== 200 || !body || !body.query || !body.query.blocks ) {
+				if ( body && body.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) ) {
 					if ( querypage.missing !== undefined || querypage.ns === -1 ) {
 						msg.reactEmoji('error');
 						
@@ -2230,11 +2299,10 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					else {
 						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment);
 						var embed = new Discord.MessageEmbed().setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-						request( {
-							uri: wiki.toDescLink(querypage.title)
-						}, function( descerror, descresponse, descbody ) {
-							if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-								console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+						got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+							var descbody = descresponse.body;
+							if ( descresponse.statusCode !== 200 || !descbody ) {
+								console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 							} else {
 								var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
 								var parser = new htmlparser.Parser( {
@@ -2253,7 +2321,9 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								parser.end();
 								embed.setThumbnail( thumbnail );
 							}
-							
+						}, error => {
+							console.log( '- Error while getting the description: ' + error );
+						} ).finally( () => {
 							msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
@@ -2261,7 +2331,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					}
 				}
 				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+					console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring.toTitle(), fragment) + '>' + spoiler );
 					
 					if ( reaction ) reaction.removeEmoji();
@@ -2302,22 +2372,20 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						else if ( range >= 16 ) rangeprefix = username.replace( /^((?:\d{1,3}\.){2}).+$/, '$1' );
 					}
 				}
-				request( {
-					uri: wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50&ucuser=' + encodeURIComponent( username ) + '&format=json',
-					json: true
-				}, function( ucerror, ucresponse, ucbody ) {
+				got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50&ucuser=' + encodeURIComponent( username ) + '&format=json', {
+					responseType: 'json'
+				} ).then( ucresponse => {
+					var ucbody = ucresponse.body;
 					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 					if ( ucbody && ucbody.warnings ) log_warn(ucbody.warnings);
-					if ( ucerror || !ucresponse || ucresponse.statusCode !== 200 || !ucbody || !ucbody.query || !ucbody.query.usercontribs ) {
+					if ( ucresponse.statusCode !== 200 || !ucbody || !ucbody.query || !ucbody.query.usercontribs ) {
 						if ( ucbody && ucbody.error && ucbody.error.code === 'baduser_ucuser' ) {
 							msg.reactEmoji('error');
 						}
 						else {
-							console.log( '- ' + ( ucresponse && ucresponse.statusCode ) + ': Error while getting the search results: ' + ( ucerror || ucbody && ucbody.error && ucbody.error.info ) );
+							console.log( '- ' + ucresponse.statusCode + ': Error while getting the search results: ' + ( ucbody && ucbody.error && ucbody.error.info ) );
 							msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
 						}
-						
-						if ( reaction ) reaction.removeEmoji();
 					}
 					else {
 						var editcount = [lang.user.info.editcount, ( username.includes( '/' ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
@@ -2337,27 +2405,30 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
-						
-						if ( reaction ) reaction.removeEmoji();
 					}
+				}, error => {
+					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
+					console.log( '- Error while getting the search results: ' + error );
+					msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+				} ).finally( () => {
+					if ( reaction ) reaction.removeEmoji();
 				} );
 			}
+		}, error => {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring.toTitle(), fragment) + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	} else {
-		request( {
-			uri: wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json',
-			json: true
-		}, function( error, response, body ) {
+		got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( error || !response || response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
-				if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
-					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
-				}
-				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
-					msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
-				}
+			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
+				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
@@ -2372,11 +2443,10 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					else {
 						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general);
 						var embed = new Discord.MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-						request( {
-							uri: wiki.toDescLink(querypage.title)
-						}, function( descerror, descresponse, descbody ) {
-							if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-								console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+						got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+							var descbody = descresponse.body;
+							if ( descresponse.statusCode !== 200 || !descbody ) {
+								console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 							} else {
 								var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general);
 								var parser = new htmlparser.Parser( {
@@ -2395,7 +2465,9 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								parser.end();
 								embed.setThumbnail( thumbnail );
 							}
-							
+						}, error => {
+							console.log( '- Error while getting the description: ' + error );
+						} ).finally( () => {
 							msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
@@ -2453,15 +2525,17 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group[0] + ' ' + group.slice(1).join(', ');
 					}
 					
-					request( {
-						uri: 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json',
+					got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json', {
 						headers: {
 							Accept: 'application/hal+json'
 						},
-						json: true
-					}, function( perror, presponse, pbody ) {
-						if ( perror || !presponse || presponse.statusCode !== 200 || !pbody || pbody.title || !pbody._embedded || !pbody._embedded.properties ) {
-							if ( !( pbody && pbody.status === 404 ) ) console.log( '- ' + ( presponse && presponse.statusCode ) + ': Error while getting the user profile: ' + ( perror || pbody && pbody.title ) );
+						responseType: 'json'
+					} ).then( presponse => {
+						var pbody = presponse.body;
+						if ( presponse.statusCode !== 200 || !pbody || pbody.title || !pbody._embedded || !pbody._embedded.properties ) {
+							if ( !( pbody && pbody.status === 404 ) ) {
+								console.log( '- ' + presponse.statusCode + ': Error while getting the user profile: ' + ( pbody && pbody.title ) );
+							}
 						}
 						else {
 							var profile = pbody._embedded.properties;
@@ -2480,7 +2554,9 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							}
 							if ( msg.showEmbed() && avatarfield && avatarfield.value ) embed.setThumbnail( avatarfield.value );
 						}
-						
+					}, error => {
+						console.log( '- Error while getting the user profile: ' + error );
+					} ).finally( () => {
 						if ( msg.showEmbed() ) {
 							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) );
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
@@ -2496,6 +2572,11 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					} );
 				}
 			}
+		}, error => {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 }
@@ -2510,12 +2591,10 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		text = splittext.join('\n\n');
 	}
 	
-	if ( wiki.isFandom() ) request( {
-		uri: 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1',
-		jar: cookieJar
-	}, function( error, response, body ) {
-		if ( error || !response || response.statusCode !== 200 || !body ) {
-			console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the global block: ' + error );
+	if ( wiki.isFandom() ) got.get( 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1' ).then( response => {
+		var body = response.body;
+		if ( response.statusCode !== 200 || !body ) {
+			console.log( '- ' + response.statusCode + ': Error while getting the global block.' );
 		}
 		else {
 			let $ = cheerio.load(body);
@@ -2528,36 +2607,39 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				else text += '\n\n**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**';
 			}
 		}
-		if ( !/^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) request( {
-			uri: 'https://community.fandom.com/wiki/Special:Editcount/' + encodeURIComponent( username ),
-			jar: cookieJar
-		}, function( gerror, gresponse, gbody ) {
-			if ( gerror || !gresponse || gresponse.statusCode !== 200 || !gbody ) {
-				console.log( '- ' + ( gresponse && gresponse.statusCode ) + ': Error while getting the global edit count: ' + gerror );
-			}
-			else {
-				let $ = cheerio.load(gbody);
-				var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
-				if ( globaledits ) {
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',inline:true});
-					else {
-						let splittext = text.split('\n');
-						splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
-						text = splittext.join('\n');
+	}, error => {
+		console.log( '- Error while getting the global block: ' + error );
+	} ).finally( () => {
+		if ( !/^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
+			got.get( 'https://community.fandom.com/wiki/Special:Editcount/' + encodeURIComponent( username ) ).then( gresponse => {
+				var gbody = gresponse.body;
+				if ( gresponse.statusCode !== 200 || !gbody ) {
+					console.log( '- ' + gresponse.statusCode + ': Error while getting the global edit count.' );
+				}
+				else {
+					let $ = cheerio.load(gbody);
+					var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
+					if ( globaledits ) {
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',inline:true});
+						else {
+							let splittext = text.split('\n');
+							splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
+							text = splittext.join('\n');
+						}
 					}
 				}
-			}
-			
-			msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
-		} );
+			}, error => {
+				console.log( '- Error while getting the global edit count: ' + error );
+			} ).finally( () => {
+				msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
+			} );
+		}
 		else msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
 	} );
-	else if ( wiki.endsWith( '.gamepedia.com/' ) ) request( {
-		uri: 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx',
-		jar: cookieJar
-	}, function( error, response, body ) {
-		if ( error || !response || response.statusCode !== 200 || !body ) {
-			console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the global block: ' + error );
+	else if ( wiki.endsWith( '.gamepedia.com/' ) ) got.get( 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx' ).then( response => {
+		var body = response.body;
+		if ( response.statusCode !== 200 || !body ) {
+			console.log( '- ' + response.statusCode + ': Error while getting the global block.' );
 		}
 		else {
 			let $ = cheerio.load(body);
@@ -2586,37 +2668,42 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				}
 			}
 		}
-		if ( !/^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) request( {
-			uri: 'https://help.gamepedia.com/UserProfile:' + encodeURIComponent( username ),
-			jar: cookieJar
-		}, function( gerror, gresponse, gbody ) {
-			if ( gerror || !gresponse || gresponse.statusCode !== 200 || !gbody ) {
-				console.log( '- ' + ( gresponse && gresponse.statusCode ) + ': Error while getting the global edit count: ' + gerror );
-			}
-			else {
-				let $ = cheerio.load(gbody);
-				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
-				if ( wikisedited ) {
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.wikisedited,value:wikisedited,inline:true});
-					else {
-						let splittext = text.split('\n');
-						splittext.splice(5, 0, lang.user.info.wikisedited + ' ' + wikisedited);
-						text = splittext.join('\n');
+	}, error => {
+		console.log( '- Error while getting the global block: ' + error );
+	} ).finally( () => {
+		if ( !/^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
+			got.get( 'https://help.gamepedia.com/UserProfile:' + encodeURIComponent( username ) ).then( gresponse => {
+				var gbody = gresponse.body;
+				if ( gresponse.statusCode !== 200 || !gbody ) {
+					console.log( '- ' + gresponse.statusCode + ': Error while getting the global edit count.' );
+				}
+				else {
+					let $ = cheerio.load(gbody);
+					var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
+					if ( wikisedited ) {
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.wikisedited,value:wikisedited,inline:true});
+						else {
+							let splittext = text.split('\n');
+							splittext.splice(5, 0, lang.user.info.wikisedited + ' ' + wikisedited);
+							text = splittext.join('\n');
+						}
+					}
+					var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
+					if ( globaledits ) {
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',inline:true});
+						else {
+							let splittext = text.split('\n');
+							splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
+							text = splittext.join('\n');
+						}
 					}
 				}
-				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
-				if ( globaledits ) {
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',inline:true});
-					else {
-						let splittext = text.split('\n');
-						splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
-						text = splittext.join('\n');
-					}
-				}
-			}
-			
-			msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
-		} );
+			}, error => {
+				console.log( '- Error while getting the global edit count: ' + error );
+			} ).finally( () => {
+				msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
+			} );
+		}
 		else msg.edit( spoiler + text + spoiler, {embed} ).catch(log_error);
 	} );
 }
@@ -2625,11 +2712,10 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 	if ( !title ) {
 		var pagelink = wiki + 'f';
 		var embed = new Discord.MessageEmbed().setAuthor( query.general.sitename ).setTitle( lang.discussion.main ).setURL( pagelink );
-		request( {
-			uri: wiki + 'f'
-		}, function( descerror, descresponse, descbody ) {
-			if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-				console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+		got.get( wiki + 'f' ).then( descresponse => {
+			var descbody = descresponse.body;
+			if ( descresponse.statusCode !== 200 || !descbody ) {
+				console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 			} else {
 				var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', query.general);
 				var parser = new htmlparser.Parser( {
@@ -2648,19 +2734,21 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 				parser.end();
 				embed.setThumbnail( thumbnail );
 			}
-			
+		}, error => {
+			console.log( '- Error while getting the description: ' + error );
+		} ).finally( () => {
 			msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 	else if ( !query.wikidesc ) {
-		return request( {
-			uri: wiki + 'api/v1/Mercury/WikiVariables?format=json',
-			json: true
-		}, function( wverror, wvresponse, wvbody ) {
-			if ( wverror || !wvresponse || wvresponse.statusCode !== 200 || !wvbody || !wvbody.data ) {
-				console.log( '- ' + ( wvresponse && wvresponse.statusCode ) + ': Error while getting the wiki id: ' + ( wverror || wvbody && wvbody.exception && wvbody.exception.details ) );
+		return got.get( wiki + 'api/v1/Mercury/WikiVariables?format=json', {
+			responseType: 'json'
+		} ).then( wvresponse => {
+			var wvbody = wvresponse.body;
+			if ( wvresponse.statusCode !== 200 || !wvbody || !wvbody.data ) {
+				console.log( '- ' + wvresponse.statusCode + ': Error while getting the wiki id: ' + ( wvbody && wvbody.exception && wvbody.exception.details ) );
 				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
@@ -2669,19 +2757,24 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 				query.wikidesc = {id: wvbody.data.id};
 				fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler);
 			}
+		}, error => {
+			console.log( '- Error while getting the wiki id: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.discussion.post ) {
 		title = title.split(' ').slice(1).join(' ');
-		request( {
-			uri: 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts?limit=50&format=json',
+		got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts?limit=50&format=json', {
 			headers: {
 				Accept: 'application/hal+json'
 			},
-			json: true
-		}, function( error, response, body ) {
-			if ( error || !response || response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded['doc:posts'] ) {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the posts: ' + ( error || body && body.title ) );
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
+			if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded['doc:posts'] ) {
+				console.log( '- ' + response.statusCode + ': Error while getting the posts: ' + ( body && body.title ) );
 				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
@@ -2696,14 +2789,14 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 					if ( reaction ) reaction.removeEmoji();
 				}
 				else if ( /^\d+$/.test(title) ) {
-					request( {
-						uri: 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts/' + title + '?format=json',
+					got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts/' + title + '?format=json', {
 						headers: {
 							Accept: 'application/hal+json'
 						},
-						json: true
-					}, function( perror, presponse, pbody ) {
-						if ( perror || !presponse || presponse.statusCode !== 200 || !pbody || pbody.id !== title ) {
+						responseType: 'json'
+					} ).then( presponse => {
+						var pbody = presponse.body;
+						if ( presponse.statusCode !== 200 || !pbody || pbody.id !== title ) {
 							if ( pbody && pbody.title === 'The requested resource was not found.' ) {
 								if ( posts.some( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
 									fandom_discussionsend(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler);
@@ -2711,7 +2804,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 								else msg.reactEmoji('🤷');
 							}
 							else {
-								console.log( '- ' + ( presponse && presponse.statusCode ) + ': Error while getting the post: ' + ( perror || pbody && pbody.title ) );
+								console.log( '- ' + presponse.statusCode + ': Error while getting the post: ' + ( pbody && pbody.title ) );
 								msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
 							}
 							
@@ -2722,22 +2815,31 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 							
 							if ( reaction ) reaction.removeEmoji();
 						}
-						else request( {
-							uri: 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads/' + pbody.threadId + '?format=json',
+						else got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads/' + pbody.threadId + '?format=json', {
 							headers: {
 								Accept: 'application/hal+json'
 							},
-							json: true
-						}, function( therror, thresponse, thbody ) {
-							if ( therror || !thresponse || thresponse.statusCode !== 200 || !thbody || thbody.id !== pbody.threadId ) {
-								console.log( '- ' + ( thresponse && thresponse.statusCode ) + ': Error while getting the thread: ' + ( therror || thbody && thbody.title ) );
-								msg.sendChannelError( spoiler + '<' + wiki + 'f/p/' + pbody.threadId + '>' + spoiler );
+							responseType: 'json'
+						} ).then( thresponse => {
+							var thbody = thresponse.body;
+							if ( thresponse.statusCode !== 200 || !thbody || thbody.id !== pbody.threadId ) {
+								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
+								embed.setTitle( '~~' + pbody.threadId + '~~' );
 							}
 							else embed.setTitle( thbody.title.escapeFormatting() );
+						}, error => {
+							console.log( '- Error while getting the thread: ' + error );
+							embed.setTitle( '~~' + pbody.threadId + '~~' );
+						} ).finally( () => {
 							fandom_discussionsend(lang, msg, wiki, pbody, embed, spoiler);
 							
 							if ( reaction ) reaction.removeEmoji();
 						} );
+					}, error => {
+						console.log( '- Error while getting the post: ' + error );
+						msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
+						
+						if ( reaction ) reaction.removeEmoji();
 					} );
 				}
 				else if ( posts.some( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
@@ -2756,18 +2858,23 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
+		}, error => {
+			console.log( '- Error while getting the posts: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 	else {
-		request( {
-			uri: 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads?sortKey=trending&limit=50&format=json',
+		got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads?sortKey=trending&limit=50&format=json', {
 			headers: {
 				Accept: 'application/hal+json'
 			},
-			json: true
-		}, function( error, response, body ) {
-			if ( error || !response || response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded.threads ) {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the threads: ' + ( error || body && body.title ) );
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
+			if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded.threads ) {
+				console.log( '- ' + response.statusCode + ': Error while getting the threads: ' + ( body && body.title ) );
 				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
@@ -2802,14 +2909,14 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 					if ( reaction ) reaction.removeEmoji();
 				}
 				else if ( /^\d+$/.test(title) ) {
-					request( {
-						uri: 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads/' + title + '?format=json',
+					got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads/' + title + '?format=json', {
 						headers: {
 							Accept: 'application/hal+json'
 						},
-						json: true
-					}, function( therror, thresponse, thbody ) {
-						if ( therror || !thresponse || thresponse.statusCode !== 200 || !thbody || thbody.id !== title ) {
+						responseType: 'json'
+					} ).then( thresponse => {
+						var thbody = thresponse.body;
+						if ( thresponse.statusCode !== 200 || !thbody || thbody.id !== title ) {
 							if ( thbody && thbody.status === 404 ) {
 								if (threads.some( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
 									fandom_discussionsend(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler);
@@ -2817,12 +2924,15 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 								else msg.reactEmoji('🤷');
 							}
 							else {
-								console.log( '- ' + ( thresponse && thresponse.statusCode ) + ': Error while getting the thread: ' + ( therror || thbody && thbody.title ) );
+								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
 								msg.sendChannelError( spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler );
 							}
 						}
 						else fandom_discussionsend(lang, msg, wiki, thbody, embed, spoiler);
-						
+					}, error => {
+						console.log( '- Error while getting the thread: ' + error );
+						msg.sendChannelError( spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler );
+					} ).finally( () => {
 						if ( reaction ) reaction.removeEmoji();
 					} );
 				}
@@ -2842,6 +2952,11 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
+		}, error => {
+			console.log( '- Error while getting the threads: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 }
@@ -2849,7 +2964,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 function fandom_discussionsend(lang, msg, wiki, discussion, embed, spoiler) {
 	if ( discussion.title ) {
 		embed.setTitle( discussion.title.escapeFormatting() );
-		var pagelink = wiki + 'f/p/' + ( discussion.threadId || discussion.id );
+		var pagelink = wiki + 'f/p/' + discussion.threadId;
 	}
 	else {
 		if ( discussion._embedded.thread ) embed.setTitle( discussion._embedded.thread[0].title.escapeFormatting() );
@@ -2953,12 +3068,12 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 			gamepedia_diffsend(lang, msg, [diff, revision], wiki, reaction, spoiler);
 		}
 		else {
-			request( {
-				uri: wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json',
-				json: true
-			}, function( error, response, body ) {
+			got.get( wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json', {
+				responseType: 'json'
+			} ).then( response => {
+				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
-				if ( error || !response || response.statusCode !== 200 || !body || !body.compare ) {
+				if ( response.statusCode !== 200 || !body || !body.compare ) {
 					var noerror = false;
 					if ( body && body.error ) {
 						switch ( body.error.code ) {
@@ -2978,7 +3093,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 								noerror = false;
 						}
 					}
-					if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						msg.reactEmoji('nowiki');
 					}
@@ -2986,7 +3101,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 						msg.replyMsg( lang.diff.badrev );
 					}
 					else {
-						console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+						console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 						msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + relative + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
 					}
 					
@@ -3092,6 +3207,11 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 						gamepedia_diffsend(lang, msg, argids, wiki, reaction, spoiler, compare);
 					}
 				}
+			}, error => {
+				console.log( '- Error while getting the search results: ' + error );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + relative + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
+				
+				if ( reaction ) reaction.removeEmoji();
 			} );
 		}
 	}
@@ -3104,18 +3224,18 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 }
 
 function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
-	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
-		json: true
-	}, function( error, response, body ) {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
-			if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
+			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
 			}
 			
@@ -3176,12 +3296,12 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 						}
 						
 						var more = '\n__' + lang.diff.info.more + '__';
-						if ( !compare && oldid ) request( {
-							uri: wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json',
-							json: true
-						}, function( cperror, cpresponse, cpbody ) {
+						if ( !compare && oldid ) got.get( wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json', {
+							responseType: 'json'
+						} ).then( cpresponse => {
+							var cpbody = cpresponse.body;
 							if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
-							if ( cperror || !cpresponse || cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || cpbody.compare['*'] === undefined ) {
+							if ( cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || cpbody.compare['*'] === undefined ) {
 								var noerror = false;
 								if ( cpbody && cpbody.error ) {
 									switch ( cpbody.error.code ) {
@@ -3195,7 +3315,7 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 											noerror = false;
 									}
 								}
-								if ( !noerror ) console.log( '- ' + ( cpresponse && cpresponse.statusCode ) + ': Error while getting the diff: ' + ( cperror || cpbody && cpbody.error && cpbody.error.info ) );
+								if ( !noerror ) console.log( '- ' + cpresponse.statusCode + ': Error while getting the diff: ' + ( cpbody && cpbody.error && cpbody.error.info ) );
 							}
 							else if ( cpbody.compare.fromtexthidden === undefined && cpbody.compare.totexthidden === undefined && cpbody.compare.fromarchive === undefined && cpbody.compare.toarchive === undefined ) {
 								var current_tag = '';
@@ -3283,7 +3403,9 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 							else if ( cpbody.compare.totexthidden !== undefined ) {
 								embed.addField( lang.diff.info.added, '__' + lang.diff.hidden + '__', true );
 							}
-							
+						}, error => {
+							console.log( '- Error while getting the diff: ' + error );
+						} ).finally( () => {
 							msg.sendChannel( spoiler + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
@@ -3327,6 +3449,11 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 				if ( reaction ) reaction.removeEmoji();
 			}
 		}
+	}, error => {
+		console.log( '- Error while getting the search results: ' + error );
+		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
+		
+		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
@@ -3369,18 +3496,18 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 			fandom_diffsend(lang, msg, argids, wiki, reaction, spoiler);
 		}
 		else {
-			request( {
-				uri: wiki + 'api.php?action=query&prop=revisions&rvprop=' + ( title ? '&titles=' + encodeURIComponent( title ) : '&revids=' + revision ) + '&rvdiffto=' + diff + '&format=json',
-				json: true
-			}, function( error, response, body ) {
+			got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=' + ( title ? '&titles=' + encodeURIComponent( title ) : '&revids=' + revision ) + '&rvdiffto=' + diff + '&format=json', {
+				responseType: 'json'
+			} ).then( response => {
+				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
-				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
-					if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+				if ( response.statusCode !== 200 || !body || !body.query ) {
+					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						msg.reactEmoji('nowiki');
 					}
 					else {
-						console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+						console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 						msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + diff + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
 					}
 					
@@ -3495,6 +3622,11 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 						if ( reaction ) reaction.removeEmoji();
 					}
 				}
+			}, error => {
+				console.log( '- Error while getting the search results: ' + error );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + diff + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
+				
+				if ( reaction ) reaction.removeEmoji();
 			} );
 		}
 	}
@@ -3507,18 +3639,18 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 }
 
 function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
-	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json',
-		json: true
-	}, function( error, response, body ) {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
-			if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+		if ( response.statusCode !== 200 || !body || !body.query ) {
+			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
 			}
 			
@@ -3579,13 +3711,13 @@ function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 						}
 						
 						var more = '\n__' + lang.diff.info.more + '__';
-						if ( !compare && oldid ) request( {
-							uri: wiki + 'api.php?action=query&prop=revisions&rvprop=&revids=' + oldid + '&rvdiffto=' + diff + '&format=json',
-							json: true
-						}, function( cperror, cpresponse, cpbody ) {
+						if ( !compare && oldid ) got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=&revids=' + oldid + '&rvdiffto=' + diff + '&format=json', {
+							responseType: 'json'
+						} ).then( cpresponse => {
+							var cpbody = cpresponse.body;
 							if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
-							if ( cperror || !cpresponse || cpresponse.statusCode !== 200 || !cpbody || !cpbody.query || cpbody.query.badrevids || !cpbody.query.pages && cpbody.query.pages[-1] ) {
-								console.log( '- ' + ( cpresponse && cpresponse.statusCode ) + ': Error while getting the diff: ' + ( cperror || cpbody && cpbody.error && cpbody.error.info ) );
+							if ( cpresponse.statusCode !== 200 || !cpbody || !cpbody.query || cpbody.query.badrevids || !cpbody.query.pages && cpbody.query.pages[-1] ) {
+								console.log( '- ' + cpresponse.statusCode + ': Error while getting the diff: ' + ( cpbody && cpbody.error && cpbody.error.info ) );
 							}
 							else {
 								var revision = Object.values(cpbody.query.pages)[0].revisions[0];
@@ -3676,7 +3808,9 @@ function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 									embed.addField( lang.diff.info.removed, '__' + lang.diff.hidden + '__', true );
 								}
 							}
-							
+						}, error => {
+							console.log( '- Error while getting the diff: ' + error );
+						} ).finally( () => {
 							msg.sendChannel( spoiler + text + spoiler, {embed} );
 							
 							if ( reaction ) reaction.removeEmoji();
@@ -3720,24 +3854,27 @@ function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 				if ( reaction ) reaction.removeEmoji();
 			}
 		}
+	}, error => {
+		console.log( '- Error while getting the search results: ' + error );
+		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
 function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
-	request( {
-		uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json',
-		json: true
-	}, function( error, response, body ) {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&exsentences=10&exintro=true&explaintext=true&generator=random&grnnamespace=0&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
-			if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
+			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
 			}
 		}
@@ -3767,24 +3904,27 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			
 			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 		}
-		
+	}, error => {
+		console.log( '- Error while getting the search results: ' + error );
+		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
+	} ).finally( () => {
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
 function fandom_random(lang, msg, wiki, reaction, spoiler) {
-	request( {
-		uri: wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&siprop=general&generator=random&grnnamespace=0&format=json',
-		json: true
-	}, function( error, response, body ) {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&siprop=general&generator=random&grnnamespace=0&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( error || !response || response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
-			if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+		if ( response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
+			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the search results: ' + ( error || body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
 			}
 			
@@ -3805,11 +3945,10 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
-			else request( {
-				uri: wiki.toDescLink(querypage.title)
-			}, function( descerror, descresponse, descbody ) {
-				if ( descerror || !descresponse || descresponse.statusCode !== 200 || !descbody ) {
-					console.log( '- ' + ( descresponse && descresponse.statusCode ) + ': Error while getting the description: ' + descerror );
+			else got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+				var descbody = descresponse.body;
+				if ( descresponse.statusCode !== 200 || !descbody ) {
+					console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 				} else {
 					var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general);
 					var parser = new htmlparser.Parser( {
@@ -3828,28 +3967,35 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 					parser.end();
 					embed.setThumbnail( thumbnail );
 				}
-				
+			}, error => {
+				console.log( '- Error while getting the description: ' + error );
+			} ).finally( () => {
 				msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
 		}
+	}, error => {
+		console.log( '- Error while getting the search results: ' + error );
+		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
+		
+		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
 function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
-	request( {
-		uri: wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general|statistics&titles=Special:Statistics&format=json',
-		json: true
-	}, function( error, response, body ) {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general|statistics&titles=Special:Statistics&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
-			if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
+			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the statistics: ' + ( error || body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
 			}
 			
@@ -3891,18 +4037,18 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				var text = '<' + pagelink + '>\n\n';
 			}
 			
-			if ( wiki.isFandom() ) request( {
-				uri: 'https://c.fandom.com/api/v1/Wikis/ByString?expand=true&includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json',
-				json: true
-			}, function( overror, ovresponse, ovbody ) {
-				if ( overror || !ovresponse || ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items.length ) {
-					console.log( '- ' + ( ovresponse && ovresponse.statusCode ) + ': Error while getting the wiki details: ' + ( overror || ovbody && ovbody.exception && ovbody.exception.details ) );
+			if ( wiki.isFandom() ) got.get( 'https://c.fandom.com/api/v1/Wikis/ByString?expand=true&includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
+				responseType: 'json'
+			} ).then( ovresponse => {
+				var ovbody = ovresponse.body;
+				if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items.length ) {
+					console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', '', '', body.query.general) + '>' + spoiler );
 					
 					if ( reaction ) reaction.removeEmoji();
 				}
-				else if ( ovbody.items.some( site => site.url === body.query.general.server + body.query.general.scriptpath + '/' ) ) {
-					site = ovbody.items.find( site => site.url === body.query.general.server + body.query.general.scriptpath + '/' );
+				else if ( ovbody.items.some( site => site.url === body.query.general.server + ( body.query.general.scriptpath ? body.query.general.scriptpath + '/' : '' ) ) ) {
+					site = ovbody.items.find( site => site.url === body.query.general.server + ( body.query.general.scriptpath ? body.query.general.scriptpath + '/' : '' ) );
 					
 					var vertical = [lang.overview.vertical, site.hub];
 					var topic = [lang.overview.topic, site.topic];
@@ -3924,13 +4070,13 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					}
 					else text += vertical.join(' ') + ( topic[1] ? '\n' + topic.join(' ') : '' );
 					
-					if ( founder[1] > 0 ) request( {
-						uri: wiki + 'api.php?action=query&list=users&usprop=&ususerids=' + founder[1] + '&format=json',
-						json: true
-					}, function( userror, usresponse, usbody ) {
+					if ( founder[1] > 0 ) got.get( wiki + 'api.php?action=query&list=users&usprop=&ususerids=' + founder[1] + '&format=json', {
+						responseType: 'json'
+					} ).then( usresponse => {
+						var usbody = usresponse.body;
 						if ( usbody && usbody.warnings ) log_warn(usbody.warnings);
-						if ( userror || !usresponse || usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
-							console.log( '- ' + ( usresponse && usresponse.statusCode ) + ': Error while getting the wiki founder: ' + ( userror || usbody && usbody.error && usbody.error.info ) );
+						if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
+							console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + ( usbody && usbody.error && usbody.error.info ) );
 							founder[1] = 'ID: ' + founder[1];
 						}
 						else {
@@ -3938,7 +4084,10 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 							if ( msg.showEmbed() ) founder[1] = '[' + user + '](' + wiki.toLink('User:' + user, '', '', body.query.general, true) + ')';
 							else founder[1] = user;
 						}
-						
+					}, error => {
+						console.log( '- Error while getting the wiki founder: ' + error );
+						founder[1] = 'ID: ' + founder[1];
+					} ).finally( () => {
 						if ( msg.showEmbed() ) {
 							embed.addField( founder[0], founder[1], true );
 							if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', body.query.general, true) + ') ([' + lang.overview.talk + '](' + wiki.toLink('User talk:' + manager[1], '', '', body.query.general, true) + '))', true );
@@ -3990,6 +4139,11 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					
 					if ( reaction ) reaction.removeEmoji();
 				}
+			}, error => {
+				console.log( '- Error while getting the wiki details: ' + error );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', '', '', body.query.general) + '>' + spoiler );
+				
+				if ( reaction ) reaction.removeEmoji();
 			} );
 			else {
 				if ( msg.showEmbed() ) {
@@ -4023,22 +4177,27 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				if ( reaction ) reaction.removeEmoji();
 			}
 		}
+	}, error => {
+		console.log( '- Error while getting the statistics: ' + error );
+		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+		
+		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
 function fandom_overview(lang, msg, wiki, reaction, spoiler) {
-	request( {
-		uri: wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json',
-		json: true
-	}, function( error, response, body ) {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json', {
+		responseType: 'json'
+	} ).then( response => {
+		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( error || !response || response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
-			if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+		if ( response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
+			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
 			else {
-				console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the statistics: ' + ( error || body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
 			}
 			
@@ -4047,12 +4206,12 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 		else if ( body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) {
 			return gamepedia_overview(lang, msg, wiki, reaction, spoiler);
 		}
-		else request( {
-			uri: 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + body.query.wikidesc.id + '&format=json',
-			json: true
-		}, function( overror, ovresponse, ovbody ) {
-			if ( overror || !ovresponse || ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[body.query.wikidesc.id] ) {
-				console.log( '- ' + ( ovresponse && ovresponse.statusCode ) + ': Error while getting the wiki details: ' + ( overror || ovbody && ovbody.exception && ovbody.exception.details ) );
+		else got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + body.query.wikidesc.id + '&format=json', {
+			responseType: 'json'
+		} ).then( ovresponse => {
+			var ovbody = ovresponse.body;
+			if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[body.query.wikidesc.id] ) {
+				console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', '', '', body.query.general) + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
@@ -4090,13 +4249,13 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					var text = '<' + pagelink + '>\n\n' + vertical.join(' ') + ( topic[1] ? '\n' + topic.join(' ') : '' );
 				}
 				
-				if ( founder[1] > 0 ) request( {
-					uri: wiki + 'api.php?action=query&list=users&usprop=&usids=' + founder[1] + '&format=json',
-					json: true
-				}, function( userror, usresponse, usbody ) {
+				if ( founder[1] > 0 ) got.get( wiki + 'api.php?action=query&list=users&usprop=&usids=' + founder[1] + '&format=json', {
+					responseType: 'json'
+				} ).then( usresponse => {
+					var usbody = usresponse.body;
 					if ( usbody && usbody.warnings ) log_warn(usbody.warnings);
-					if ( userror || !usresponse || usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
-						console.log( '- ' + ( usresponse && usresponse.statusCode ) + ': Error while getting the wiki founder: ' + ( userror || usbody && usbody.error && usbody.error.info ) );
+					if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
+						console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + ( usbody && usbody.error && usbody.error.info ) );
 						founder[1] = 'ID: ' + founder[1];
 					}
 					else {
@@ -4104,7 +4263,10 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 						if ( msg.showEmbed() ) founder[1] = '[' + user + '](' + wiki.toLink('User:' + user, '', '', body.query.general, true) + ')';
 						else founder[1] = user;
 					}
-					
+				}, error => {
+					console.log( '- Error while getting the wiki founder: ' + error );
+					founder[1] = 'ID: ' + founder[1];
+				} ).finally( () => {
 					if ( msg.showEmbed() ) {
 						embed.addField( founder[0], founder[1], true );
 						if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', body.query.general, true) + ') ([' + lang.overview.talk + '](' + wiki.toLink('User talk:' + manager[1], '', '', body.query.general, true) + '))', true );
@@ -4148,7 +4310,17 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					if ( reaction ) reaction.removeEmoji();
 				}
 			}
+		}, error => {
+			console.log( '- Error while getting the wiki details: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', '', '', body.query.general) + '>' + spoiler );
+			
+			if ( reaction ) reaction.removeEmoji();
 		} );
+	}, error => {
+		console.log( '- Error while getting the statistics: ' + error );
+		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+		
+		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 
@@ -4156,20 +4328,19 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 	var invoke = args[0];
 	args = args.slice(1);
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
-		var project = '';
-		if ( /^\d+$/.test(invoke) ) project = 'MC-';
-		request( {
-			uri: 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( project + invoke ) + '?fields=summary,issuelinks,fixVersions,resolution,status',
-			json: true
-		}, function( error, response, body ) {
-			var link = 'https://bugs.mojang.com/browse/';
-			if ( error || !response || response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
+		if ( /^\d+$/.test(invoke) ) invoke = 'MC-' + invoke;
+		var link = 'https://bugs.mojang.com/browse/';
+		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,issuelinks,fixVersions,resolution,status', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
+			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {
 					if ( body.errorMessages.includes( 'Issue Does Not Exist' ) ) {
 						msg.reactEmoji('🤷');
 					}
 					else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-						msg.sendChannel( spoiler + mclang.bug.private + '\n<' + link + project + invoke + '>' + spoiler );
+						msg.sendChannel( spoiler + mclang.bug.private + '\n<' + link + invoke + '>' + spoiler );
 					}
 					else {
 						console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issue: ' + body.errorMessages.join(' - ') );
@@ -4177,9 +4348,9 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 					}
 				}
 				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issue: ' + ( error || body && body.message ) );
+					console.log( '- ' + response.statusCode + ': Error while getting the issue: ' + ( body && body.message ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-					else msg.sendChannelError( spoiler + '<' + link + project + invoke + '>' + spoiler );
+					else msg.sendChannelError( spoiler + '<' + link + invoke + '>' + spoiler );
 				}
 			}
 			else {
@@ -4209,29 +4380,32 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 					msg.sendChannel( spoiler + status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed + spoiler, {embed} );
 				}
 			}
-			
+		}, error => {
+			console.log( '- Error while getting the issue: ' + error );
+			msg.sendChannelError( spoiler + '<' + link + invoke + '>' + spoiler );
+		} ).finally( () => {
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
 	else if ( invoke && invoke.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
 		var jql = 'fixVersion="' + args.join(' ').replace( /(["\\])/g, '\\$1' ).toSearch() + '"+order+by+key';
-		request( {
-			uri: 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25',
-			json: true
-		}, function( error, response, body ) {
-			var link = 'https://bugs.mojang.com/issues/?jql=' + jql;
-			if ( error || !response || response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
+		var link = 'https://bugs.mojang.com/issues/?jql=' + jql;
+		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
+			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {
 					if ( body.errorMessages.includes( 'The value \'' + args.join(' ') + '\' does not exist for the field \'fixVersion\'.' ) ) {
 						msg.reactEmoji('🤷');
 					}
 					else {
-						console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issues: ' + body.errorMessages.join(' - ') );
+						console.log( '- ' + response.statusCode + ': Error while getting the issues: ' + body.errorMessages.join(' - ') );
 						msg.reactEmoji('error');
 					}
 				}
 				else {
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issues: ' + ( error || body && body.message ) );
+					console.log( '- ' + response.statusCode + ': Error while getting the issues: ' + ( body && body.message ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
 					else msg.sendChannelError( spoiler + '<' + link + '>' + spoiler );
 				}
@@ -4254,7 +4428,10 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, {embed} );
 				}
 			}
-			
+		}, error => {
+			console.log( '- Error while getting the issues: ' + error );
+			msg.sendChannelError( spoiler + '<' + link + '>' + spoiler );
+		} ).finally( () => {
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
@@ -4705,7 +4882,7 @@ String.prototype.noWiki = function(href) {
 	else return [
 		this.replace( /^https:\/\/([a-z\d-]{1,50}\.(?:fandom\.com|wikia\.org))\/(?:[a-z-]{1,8}\/)?$/, 'https://community.fandom.com/wiki/Community_Central:Not_a_valid_community?from=$1' ),
 		this + 'language-wikis'
-	].includes( href );
+	].includes( href.replace( /Unexpected token < in JSON at position 0 in "([^ ]+)"/, '$1' ) );
 };
 
 String.prototype.isFandom = function() {
@@ -5059,17 +5236,17 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				}
 			} );
 		
-			if ( links.length ) request( {
-				uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json',
-				json: true
-			}, function( error, response, body ) {
-				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
-					if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+			if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json', {
+				responseType: 'json'
+			} ).then( response => {
+				var body = response.body;
+				if ( response.statusCode !== 200 || !body || !body.query ) {
+					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						msg.reactEmoji('nowiki');
 						return;
 					}
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while following the links: ' + ( error || body && body.error && body.error.info ) );
+					console.log( '- ' + response.statusCode + ': Error while following the links: ' + ( body && body.error && body.error.info ) );
 					return;
 				}
 				if ( body.query.normalized ) {
@@ -5091,19 +5268,21 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					} ) );
 				}
 				if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section, body.query.general) ) + '>' + link.spoiler ).join('\n'), {split:true} );
+			}, error => {
+				console.log( '- Error while following the links: ' + error );
 			} );
 			
-			if ( embeds.length ) request( {
-				uri: wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json',
-				json: true
-			}, function( error, response, body ) {
-				if ( error || !response || response.statusCode !== 200 || !body || !body.query ) {
-					if ( response && ( response.request && response.request.uri && wiki.noWiki(response.request.uri.href) || response.statusCode === 410 ) ) {
+			if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
+				responseType: 'json'
+			} ).then( response => {
+				var body = response.body;
+				if ( response.statusCode !== 200 || !body || !body.query ) {
+					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						msg.reactEmoji('nowiki');
 						return;
 					}
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while following the links: ' + ( error || body && body.error && body.error.info ) );
+					console.log( '- ' + response.statusCode + ': Error while following the links: ' + ( body && body.error && body.error.info ) );
 					return;
 				}
 				if ( body.query.normalized ) {
@@ -5136,6 +5315,8 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 						gamepedia_check_wiki(lang, msg, embed.title, wiki, ' ', reaction, embed.spoiler, '', embed.section);
 					} ) );
 				}
+			}, error => {
+				console.log( '- Error while following the links: ' + error );
 			} );
 		}
 	}
