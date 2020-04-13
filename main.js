@@ -4662,7 +4662,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( !row ) return msg.replyMsg( 'you can\'t have any server.', {}, true );
 			var text = 'you can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
-				var guilds = row.guilds.split(',').map( guild => '`' + guild + '` ' + client.guilds.cache.get(guild) );
+				var guilds = row.guilds.split(',').map( guild => '`' + guild + '` ' + ( client.guilds.cache.has(guild) ? client.guilds.cache.get(guild).name : '' );
 				text += 'Currently you have ' + guilds.length + ' server:\n' + guilds.join('\n');
 			}
 			else text += '*You don\'t have any server yet.*';
@@ -4691,10 +4691,10 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			msg.replyMsg( 'I got an error while searching for <@' + args[1] + '>, please try again later.', {}, true );
 			return dberror;
 		}
-		var value = parseInt(args[1], 10);
+		var value = parseInt(args[2], 10);
 		var count = ( row ? row.count : 0 );
 		var guilds = ( row && row.guilds ? row.guilds.split(',') : [] );
-		if ( args[1].startsWith( '+' ) || args[1].startsWith( '-' ) ) count += value;
+		if ( args[2].startsWith( '+' ) || args[2].startsWith( '-' ) ) count += value;
 		else count = value;
 		if ( count <= 0 ) return db.run( 'DELETE FROM patreons WHERE patreon = ?', [args[1]], function (error) {
 			if ( error ) {
