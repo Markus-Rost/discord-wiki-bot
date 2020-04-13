@@ -4677,7 +4677,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( !row ) return msg.replyMsg( '<@' + args[1] + '> can\'t have any server.', {}, true );
 			var text = '<@' + args[1] + '> can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
-				var guilds = row.guilds.split(',').map( guild => '`' + guild + '` ' + client.guilds.cache.get(guild) );
+				var guilds = row.guilds.split(',').map( guild => '`' + guild + '` ' + ( client.guilds.cache.has(guild) ? client.guilds.cache.get(guild).name : '' ) );
 				text += 'Currently they have ' + guilds.length + ' server:\n' + guilds.join('\n');
 			}
 			else text += '*They don\'t have any server yet.*';
