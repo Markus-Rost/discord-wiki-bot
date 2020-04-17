@@ -10,7 +10,6 @@ var ready = {
 }
 
 const Discord = require('discord.js');
-const DBL = require('dblapi.js');
 const got = require('got').extend( {
 	throwHttpErrors: false,
 	headers: {
@@ -28,68 +27,6 @@ var db = new sqlite3.Database( './wikibot.db', sqlite3.OPEN_READWRITE | sqlite3.
 	}
 	console.log( '- Connected to the database.' );
 } );
-
-/* Paused until UCP
-var cookieJar = request.jar();
-function gpWikiLogin() {
-	request( {
-		uri: 'https://help.gamepedia.com/api.php?action=query&meta=tokens&type=login&format=json',
-		json: true,
-		jar: cookieJar
-	}, function( error, response, body ) {
-		if ( error || !response || response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.tokens ) {
-			console.log( '- ' + ( response && response.statusCode ) + ': Error while gettings the login token: ' + ( error || body && body.error && body.error.info ) );
-			return;
-		}
-		console.log( '- Gamepedia: Token successfully fetched.' );
-		request.post( {
-			uri: 'https://help.gamepedia.com/api.php',
-			form: {
-				action: 'login',
-				lgname: process.env.gpusername,
-				lgpassword: process.env.gppassword,
-				lgtoken: body.query.tokens.logintoken,
-				format: 'json'
-			},
-			json: true,
-			jar: cookieJar
-		}, function( loginerror, loginresponse, loginbody ) {
-			if ( loginerror || !loginresponse || loginresponse.statusCode !== 200 || !loginbody || !loginbody.login || loginbody.login.result !== 'Success' ) {
-				console.log( '- ' + ( loginresponse && loginresponse.statusCode ) + ': Error while logging in: ' + ( loginerror || loginbody && ( ( loginbody.login && loginbody.login.result ) || loginbody.error && loginbody.error.info ) ) );
-				return;
-			}
-			console.log( '- Gamepedia: Successfully logged in as ' + loginbody.login.lgusername + '.' );
-		} );
-	} );
-}
-if ( process.env.gpusername && process.env.gppassword ) gpWikiLogin();
-
-function fWikiLogin(token) {
-	request.post( {
-		uri: 'https://community.fandom.com/api.php',
-		form: {
-			action: 'login',
-			lgname: process.env.fusername,
-			lgpassword: process.env.fpassword,
-			lgtoken: token,
-			format: 'json'
-		},
-		json: true,
-		jar: cookieJar
-	}, function( loginerror, loginresponse, loginbody ) {
-		if ( loginerror || !loginresponse || loginresponse.statusCode !== 200 || !loginbody || !loginbody.login || loginbody.login.result !== 'Success' ) {
-			if ( loginbody && loginbody.login && loginbody.login.result === 'NeedToken' ) {
-				console.log( '- Fandom: Token successfully fetched.' );
-				return fWikiLogin(loginbody.login.token);
-			}
-			console.log( '- ' + ( loginresponse && loginresponse.statusCode ) + ': Error while logging in: ' + ( loginerror || loginbody && ( ( loginbody.login && loginbody.login.result ) || loginbody.error && loginbody.error.info ) ) );
-			return;
-		}
-		console.log( '- Fandom: Successfully logged in as ' + loginbody.login.lgusername + '.' );
-	} );
-}
-if ( process.env.fusername && process.env.fpassword ) fWikiLogin();
-*/
 
 var client = new Discord.Client( {
 	messageCacheLifetime: 300,
@@ -115,7 +52,6 @@ var client = new Discord.Client( {
 		]
 	}
 } );
-const dbl = new DBL(process.env.dbltoken);
 
 var i18n = require('./i18n/allLangs.json');
 Object.keys(i18n.allLangs[1]).forEach( lang => i18n[lang] = require('./i18n/' + lang + '.json') );
@@ -293,8 +229,18 @@ client.on( 'ready', () => {
 	
 	if ( !isDebug ) client.setInterval( () => {
 		console.log( '- Current server count: ' + client.guilds.cache.size );
-		dbl.postStats(client.guilds.cache.size).catch( () => {} );
-		got.post( 'https://discord.bots.gg/api/v1/bots/' + client.user.id + '/stats', {
+		if ( process.env.dbltoken ) got.post( 'https://top.gg/api/bots/' + client.user.id + '/stats', {
+			headers: {
+				Authorization: process.env.dbltoken
+			},
+			json: {
+				server_count: client.guilds.cache.size
+			},
+			responseType: 'json'
+		} ).catch( error => {
+			console.log( '- Error while posting statistics to https://top.gg/bot/' + client.user.id + ': ' + error );
+		} );
+		if ( process.env.dbggtoken ) got.post( 'https://discord.bots.gg/api/v1/bots/' + client.user.id + '/stats', {
 			headers: {
 				Authorization: process.env.dbggtoken
 			},
@@ -302,7 +248,9 @@ client.on( 'ready', () => {
 				guildCount: client.guilds.cache.size
 			},
 			responseType: 'json'
-		} ).catch( () => {} );
+		} ).catch( error => {
+			console.log( '- Error while posting statistics to https://discord.bots.gg/bots/' + client.user.id + ': ' + error );
+		} );
 	}, 10800000 ).unref();
 } );
 	
