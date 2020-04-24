@@ -5,9 +5,7 @@
 	"lang": "de",
 	"dateformat": "de-DE",
 	"aliase": {
-		"purge": "delete",
 		"hilfe": "help",
-		"umfrage": "poll",
 		"seite": "page",
 		"suche": "search",
 		"🎲": "random",
@@ -208,7 +206,11 @@
 			}
 		},
 		"special": "Inhalt der Spezialseite:",
-		"empty": "*Diese Spezialseite ist leer*"
+		"empty": "*Diese Spezialseite ist leer*",
+		"results": {
+			"default": "%s Ergebnisse insgesamt",
+			"1": "%s Ergebnis insgesamt"
+		}
 	},
 	"discussion": {
 		"post": "post",
@@ -221,14 +223,6 @@
 	},
 	"invite": {
 		"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
-	},
-	"poll": {
-		"title": "**Umfrage:**\n"
-	},
-	"delete": {
-		"invalid": "du hast keine gültige Anzahl angegeben.",
-		"success": "die letzten %s Nachrichten in diesem Kanal wurden gelöscht.",
-		"big": "deine angegebene Anzahl ist zu groß. Die maximale Anzahl ist %s!"
 	},
 	"test": {
 		"random": 10,
@@ -295,15 +289,7 @@
 			{ "cmd": "voice", "desc": "Ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server alle Befehle ignorieren, abgesehen von ein paar Befehlen für Administratoren.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server wieder auf alle Befehle reagieren.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "umfrage <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit <:support:448222377009086465> und <:oppose:448222455425794059>.", "admin": true },
-			{ "cmd": "umfrage <Emoji> [<Emoji> ...] <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit den angegebenen Antworten.", "admin": true },
-			{ "cmd": "poll <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit <:support:448222377009086465> und <:oppose:448222455425794059>.", "hide": true, "admin": true },
-			{ "cmd": "poll <Emoji> [<Emoji> ...] <Frage als Freitext>", "desc": "Ich erstelle eine Umfrage und reagiere mit den angegebenen Antworten.", "hide": true, "admin": true },
-			{ "cmd": "test", "desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht.", "pause": true },
-			{ "cmd": "say <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht.", "admin": true, "pause": true },
-			{ "cmd": "say alarm <Nachricht>", "desc": "Ich schreibe die angegebene Nachricht bereits vorformatiert: 🚨 **<Nachricht>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "delete <Anzahl>", "desc": "Ich lösche die letzten Nachrichten in dem Kanal, solange sie nicht älter als 14 Tage sind.", "admin": true, "pause": true },
-			{ "cmd": "purge <Anzahl>", "desc": "Ich lösche die letzten Nachrichten in dem Kanal, solange sie nicht älter als 14 Tage sind.", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht.", "pause": true }
 		]
 	}
 }

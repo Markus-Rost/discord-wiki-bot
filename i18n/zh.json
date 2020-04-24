@@ -5,7 +5,6 @@
 	"lang": "zh",
 	"dateformat": "zh-CN",
 	"aliase": {
-		"purge": "delete",
 		"🎲": "random",
 		"页面": "page",
 		"搜索": "search",
@@ -200,7 +199,11 @@
 			}
 		},
 		"special": "Content of this special page:",
-		"empty": "*This special page is empty*"
+		"empty": "*This special page is empty*",
+		"results": {
+			"default": "%s total results",
+			"1": "%s total result"
+		}
 	},
 	"discussion": {
 		"post": "帖子",
@@ -212,14 +215,6 @@
 	},
 	"invite": {
 		"bot": "使用这个链接把我添加到伺服器:"
-	},
-	"poll": {
-		"title": "**投票:**\n"
-	},
-	"delete": {
-		"invalid": "不接受的数字！",
-		"success": "频道最后%s条信息已被删除",
-		"big": "指定的数字过大，最大可设置为%s！"
 	},
 	"test": {
 		"random": 10,
@@ -276,13 +271,7 @@
 			{ "cmd": "voice", "desc": "I try to give everyone in a voice channel a specific role.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "我将屏蔽少数管理指令外的全部指令", "admin": true },
 			{ "cmd": "pause @mention", "desc": "我将重新接受全部指令", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "poll <选项>", "desc": "我将创建一个带有 <:support:448222377009086465> 和 <:oppose:448222455425794059> 的投票", "admin": true },
-			{ "cmd": "poll <emoji> [<emoji> ...] <问题>", "desc": "我将创建一个带有指定emoji作为选项的投票", "admin": true },
-			{ "cmd": "test", "desc": "如果我被激活了，我就会回答你！否则不会。", "pause": true },
-			{ "cmd": "say <字符串>", "desc": "我将发送信息", "admin": true, "pause": true },
-			{ "cmd": "say alarm <字符串>", "desc": "我将发送一条看起来像这样的警告的信息: 🚨 **<信息>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "delete <数字>", "desc": "我将删除此频道内所有不超过14天的消息", "admin": true, "pause": true },
-			{ "cmd": "purge <数字>", "desc": "我将删除此频道内所有不超过14天的消息", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "如果我被激活了，我就会回答你！否则不会。", "pause": true }
 		]
 	}
 }

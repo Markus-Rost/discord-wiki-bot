@@ -46,11 +46,6 @@ For a full list with all administrator commands use `!wiki help admin`
 | `!wiki settings channel` | **Wiki-Bot** will change the channel overwrites for the current channel. |
 | `!wiki voice` | **Wiki-Bot** will try to give everyone in a voice channel a specific role. |
 | `!wiki pause @Wiki-Bot` | **Wiki-Bot** will ignore all commands on this server, except a few admin commands. |
-| `!wiki poll <question as free text>` | **Wiki-Bot** will create a poll and react with `:support:` and `:oppose:`. |
-| `!wiki poll <emoji> [<emoji> ...] <question as free text>` | **Wiki-Bot** will create a poll and react with the possible answers. |
-| `!wiki say <message>` | **Wiki-Bot** will write the given message. |
-| `!wiki say alarm <message>` | **Wiki-Bot** will write the given message already preformatted: **`🚨 <message> 🚨`** |
-| `!wiki delete <count>` | **Wiki-Bot** will delete the recent messages in the channel, as long as they aren't older than 14 days. |
 
 ## Voice channel
 **Wiki-Bot** is able to give everyone in a voice channel a specific role. Use `!wiki voice` to get the format for the role name.

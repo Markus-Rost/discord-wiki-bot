@@ -6,7 +6,6 @@
 	"lang": "en",
 	"dateformat": "en-US",
 	"aliase": {
-		"purge": "delete",
 		"🎲": "random",
 		"discussions": "discussion"
 	},
@@ -202,7 +201,11 @@
 			}
 		},
 		"special": "Content of this special page:",
-		"empty": "*This special page is empty*"
+		"empty": "*This special page is empty*",
+		"results": {
+			"default": "%s total results",
+			"1": "%s total result"
+		}
 	},
 	"discussion": {
 		"post": "post",
@@ -215,14 +218,6 @@
 	},
 	"invite": {
 		"bot": "Use this link to invite me to another server:"
-	},
-	"poll": {
-		"title": "**Poll:**\n"
-	},
-	"delete": {
-		"invalid": "the specified number isn't valid.",
-		"success": "the most recent %s messages in this channel were deleted.",
-		"big": "the specified number is too big. The maximum is %s!"
 	},
 	"test": {
 		"random": 10,
@@ -277,13 +272,7 @@
 			{ "cmd": "voice", "desc": "I try to give everyone in a voice channel a specific role.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "I will ignore all commands on this server, except a few admin commands.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "I will respond to all commands on this server again.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "poll <question as free text>", "desc": "I will create a poll and react with <:support:448222377009086465> and <:oppose:448222455425794059>.", "admin": true },
-			{ "cmd": "poll <emoji> [<emoji> ...] <question as free text>", "desc": "I will create a poll and react with the possible answers.", "admin": true },
-			{ "cmd": "test", "desc": "If I'm active, I'll answer! Otherwise not.", "pause": true },
-			{ "cmd": "say <message>", "desc": "I will write the given message.", "admin": true, "pause": true },
-			{ "cmd": "say alarm <message>", "desc": "I will write the given message already preformatted: 🚨 **<message>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "delete <count>", "desc": "I will delete the recent messages in the channel, as long as they aren't older than 14 days.", "admin": true, "pause": true },
-			{ "cmd": "purge <count>", "desc": "I will delete the recent messages in the channel, as long as they aren't older than 14 days.", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "If I'm active, I'll answer! Otherwise not.", "pause": true }
 		]
 	}
 }

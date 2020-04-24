@@ -5,10 +5,7 @@
 	"lang": "pl",
 	"dateformat": "pl-PL",
 	"aliase": {
-		"purge": "delete",
 		"pomoc": "help",
-		"ankieta": "poll",
-		"usuń": "delete",
 		"strona": "page",
 		"szukaj": "search",
 		"🎲": "random",
@@ -225,7 +222,11 @@
 			}
 		},
 		"special": "Zawartość tej strony specjalnej:",
-		"empty": "*Ta strona specjalna jest pusta*"
+		"empty": "*Ta strona specjalna jest pusta*",
+		"results": {
+			"default": "%s total results",
+			"1": "%s total result"
+		}
 	},
 	"discussion": {
 		"post": "post",
@@ -244,14 +245,6 @@
 	},
 	"invite": {
 		"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
-	},
-	"poll": {
-		"title": "**Ankieta:**\n"
-	},
-	"delete": {
-		"invalid": "podany numer nie jest poprawny.",
-		"success": "ostatnie %s wiadomości na tym kanale zostało usunięte.",
-		"big": "podany numer jest zbyt duży. Maksymalny numer wynosi %s!"
 	},
 	"test": {
 		"random": 10,
@@ -314,16 +307,7 @@
 			{ "cmd": "voice", "desc": "Nadaję każdej osobie w kanale głosowym specjalną rolę.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Od teraz będę ignorował większość komend na tym serwerze z wyjątkiem paru, administracyjnych komend.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Ponownie będę odpowiadał na wszystkie komendy na tym serwerze.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "ankieta <pytanie>", "desc": "Utworzę ankietę i dodam do niej domyślne reakcje (<:support:448222377009086465> oraz <:oppose:448222455425794059>)", "admin": true },
-			{ "cmd": "ankieta <emotka> [<emotka> ...] <pytanie>", "desc": "Utworzę ankietę i dodam do niej podane reakcje..", "admin": true },
-			{ "cmd": "poll <pytanie>", "desc": "Utworzę ankietę i dodam do niej domyślne reakcje (<:support:448222377009086465> oraz <:oppose:448222455425794059>)", "hide": true, "admin": true },
-			{ "cmd": "poll <emotka> [<emotka> ...] <pytanie>", "desc": "Utworzę ankietę i dodam do niej podane reakcje..", "hide": true, "admin": true },
-			{ "cmd": "test", "desc": "Gdy jestem aktywny - odpowiem.", "pause": true },
-			{ "cmd": "say <wiadomość>", "desc": "Napiszę podaną wiadomość", "admin": true, "pause": true },
-			{ "cmd": "say alarm <wiadomość>", "desc": "Napiszę specjalnie sformatowaną wiadomość: 🚨 **<wiadomość>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "usuń <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "admin": true, "pause": true },
-			{ "cmd": "delete <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "hide": true, "admin": true },
-			{ "cmd": "purge <ilość>", "desc": "Usunę podaną ilość najnowszych wiadomości na kanale, jeżeli nie są starsze niż 14 dni.", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "Gdy jestem aktywny - odpowiem.", "pause": true }
 		]
 	}
 }

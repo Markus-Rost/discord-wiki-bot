@@ -5,7 +5,6 @@
 	"lang": "nl",
 	"dateformat": "nl-NL",
 	"aliase": {
-		"purge": "delete",
 		"pagina": "page",
 		"zoeken": "search",
 		"🎲": "random",
@@ -206,7 +205,11 @@
 			}
 		},
 		"special": "Inhoud van deze speciale pagina:",
-		"empty": "*Deze speciale pagina is leeg*"
+		"empty": "*Deze speciale pagina is leeg*",
+		"results": {
+			"default": "%s total results",
+			"1": "%s total result"
+		}
 	},
 	"discussion": {
 		"post": "bericht",
@@ -219,14 +222,6 @@
 	},
 	"invite": {
 		"bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
-	},
-	"poll": {
-		"title": "**Poll:**\n"
-	},
-	"delete": {
-		"invalid": "het opgegeven nummer is ongeldig.",
-		"success": "de %s nieuwste berichten in dit kanaal zijn verwijderd.",
-		"big": "het opgegeven nummer is te groot. Het maximum is %s!"
 	},
 	"test": {
 		"random": 10,
@@ -288,13 +283,7 @@
 			{ "cmd": "voice", "desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Ik zal alle opdrachten op deze server negeren, met uitzondering van enkele admin opdrachten.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Ik zal weer op alle opdrachten op deze server reageren.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "poll <vraag in platte tekst>", "desc": "Ik zal een poll maken en reageren met <:support:448222377009086465> and <:oppose:448222455425794059>.", "admin": true },
-			{ "cmd": "poll <emoji> [<emoji> ...] <question as free text>", "desc": "Ik zal een poll maken en reageren met de mogelijke antwoorden.", "admin": true },
-			{ "cmd": "test", "desc": "Als ik actief ben, zal ik antwoorden! Anders niet.", "pause": true },
-			{ "cmd": "say <bericht>", "desc": "Ik zal het opgegeven bericht zeggen.", "admin": true, "pause": true },
-			{ "cmd": "say alarm <bericht>", "desc": "Ik zal het opgegeven bericht zeggen met specifieke opmaak: 🚨 **<message>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "delete <aantal>", "desc": "Ik zal de recente berichten verwijderen in dit kanaal, zolang ze niet ouder zijn dan 14 dagen.", "admin": true, "pause": true },
-			{ "cmd": "purge <aantal>", "desc": "Ik zal de recente berichten verwijderen in dit kanaal, zolang ze niet ouder zijn dan 14 dagen.", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "Als ik actief ben, zal ik antwoorden! Anders niet.", "pause": true }
 		]
 	}
 }

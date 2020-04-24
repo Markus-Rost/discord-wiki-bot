@@ -5,11 +5,8 @@
 	"lang": "tr",
 	"dateformat": "tr-TR",
 	"aliase": {
-		"purge": "delete",
-		"temizleme": "delete",
 		"bilgi": "info",
 		"yardım": "help",
-		"anket": "poll",
 		"sayfa": "page",
 		"arama": "search",
 		"🎲": "random",
@@ -206,7 +203,11 @@
 			}
 		},
 		"special": "Bu özel sayfanın içeriği:",
-		"empty": "*Bu özel sayfa boş*"
+		"empty": "*Bu özel sayfa boş*",
+		"results": {
+			"default": "%s total results",
+			"1": "%s total result"
+		}
 	},
 	"discussion": {
 		"post": "gönderisi",
@@ -218,14 +219,6 @@
 	},
 	"invite": {
 		"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
-	},
-	"poll": {
-		"title": "**Anket:**\n"
-	},
-	"delete": {
-		"invalid": "belirtilen sayı geçerli değil.",
-		"success": "sunucudaki en yeni % mesaj silindi.",
-		"big": "belirtilen sayı çok büyük. En fazla %s!"
 	},
 	"test": {
 		"random": 10,
@@ -288,16 +281,7 @@
 			{ "cmd": "voice", "desc": "Sesli kanalda bulunan kişilere belirli bir rol vermeye çalışacağım.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Birkaç admin komutu haricinde, bu sunucudaki bütün komutları yok sayacağım.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "anket <serbest metin olarak soru>", "desc": "Anket yaratacağım ve şu tepkileri vereceğim: <:support:448222377009086465> ve <:oppose:448222455425794059>.", "admin": true },
-			{ "cmd": "anket <emoji> [<emoji> ...] <question as free text>", "desc": "Bir anket yaratacağım ve olası cevaplarla tepki ekleyeceğim.", "admin": true },
-			{ "cmd": "poll <serbest metin olarak soru>", "desc": "Anket yaratacağım ve şu tepkileri vereceğim: <:support:448222377009086465> ve <:oppose:448222455425794059>.", "hide": true, "admin": true },
-			{ "cmd": "poll <emoji> [<emoji> ...] <question as free text>", "desc": "Bir anket yaratacağım ve olası cevaplarla tepki ekleyeceğim.", "hide": true, "admin": true },
-			{ "cmd": "test", "desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem.", "pause": true },
-			{ "cmd": "say <mesaj>", "desc": "Verilen mesajı yazacağım.", "admin": true, "pause": true },
-			{ "cmd": "say alarm <mesaj>", "desc": "Verilen mesajı biçimlendirilmiş olarak bu şekilde yazacağım: 🚨 **<mesaj>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "temizleme <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "admin": true, "pause": true },
-			{ "cmd": "delete <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "hide": true, "admin": true },
-			{ "cmd": "purge <adet>", "desc": "Kanaldaki son mesajları 14 günden daha eski olmadıkları sürece silerim.", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem.", "pause": true }
 		]
 	}
 }

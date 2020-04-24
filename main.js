@@ -60,7 +60,7 @@ const minecraft = require('./minecraft.json');
 
 var pause = {};
 var stop = false;
-const defaultPermissions = new Discord.Permissions(268954688).toArray();
+const defaultPermissions = new Discord.Permissions(268815424).toArray();
 const timeoptions = {
 	year: 'numeric',
 	month: 'short',
@@ -261,24 +261,16 @@ var cmdmap = {
 	test: cmd_test,
 	pause: cmd_pause,
 	invite: cmd_invite,
-	say: cmd_multiline,
-	delete: cmd_multiline,
-	poll: cmd_multiline,
 	voice: cmd_voice,
 	settings: cmd_settings,
 	info: cmd_info,
 	patreon: cmd_patreon
 }
 
-var multilinecmdmap = {
-	say: cmd_say,
-	delete: cmd_delete,
-	poll: cmd_umfrage
-}
-
 var ownercmdmap = {
 	stop: cmd_stop,
 	pause: cmd_pause,
+	say: cmd_say,
 	eval: cmd_eval,
 	get: cmd_get,
 	patreon: cmd_patreon
@@ -288,8 +280,6 @@ var pausecmdmap = {
 	help: cmd_help,
 	test: cmd_test,
 	pause: cmd_pause,
-	say: cmd_multiline,
-	delete: cmd_multiline,
 	voice: cmd_voice,
 	settings: cmd_settings,
 	patreon: cmd_patreon
@@ -725,19 +715,16 @@ function cmd_help(lang, msg, args, line, wiki) {
 function cmd_say(lang, msg, args, line, wiki) {
 	args = args.toEmojis();
 	var text = args.join(' ');
-	if ( args[0] === 'alarm' ) text = '🚨 **' + args.slice(1).join(' ') + '** 🚨';
 	var imgs = [];
 	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
 		return {attachment:img.url,name:img.filename};
 	} );
-	if ( msg.isOwner() ) {
-		try {
-			text = eval( '`' + text + '`' );
-		} catch ( error ) {
-			log_error(error);
-		}
+	try {
+		text = eval( '`' + text + '`' );
+	} catch ( error ) {
+		log_error(error);
 	}
-	if ( text || imgs.length ) {
+	if ( text.trim() || imgs.length ) {
 		var allowedMentions = {};
 		if ( !msg.member.hasPermission(['MENTION_EVERYONE']) ) {
 			allowedMentions.parse = ['users'];
@@ -747,70 +734,7 @@ function cmd_say(lang, msg, args, line, wiki) {
 			log_error(error);
 			msg.reactEmoji('error', true);
 		} );
-	} else {
-		args[0] = line.split(' ')[1];
-		cmd_help(lang, msg, args, line);
-	}
-}
-
-function cmd_umfrage(lang, msg, args, line, wiki) {
-	var imgs = [];
-	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
-		return {attachment:img.url,name:img.filename};
-	} );
-	if ( args.length || imgs.length ) {
-		var text = args.join(' ').split('\n');
-		args = text.shift().split(' ');
-		if ( text.length ) args.push('\n' + text.join('\n'));
-		var reactions = [];
-		args = args.toEmojis();
-		for ( var i = 0; ( i < args.length || imgs.length ); i++ ) {
-			var reaction = args[i];
-			var custom = /^<a?:/;
-			var pattern = /^[\u0000-\u1FFF]{1,4}$/;
-			if ( !custom.test(reaction) && ( reaction.length > 4 || pattern.test(reaction) ) ) {
-				cmd_sendumfrage(lang, msg, args.slice(i).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
-				break;
-			} else if ( reaction !== '' ) {
-				if ( custom.test(reaction) ) {
-					reaction = reaction.substring(reaction.lastIndexOf(':') + 1, reaction.length - 1);
-				}
-				reactions[i] = reaction;
-				if ( i === args.length - 1 ) {
-					cmd_sendumfrage(lang, msg, args.slice(i + 1).join(' ').replace( /^\n| (\n)/, '$1' ), reactions, imgs);
-					break;
-				}
-			}
-		}
-	} else {
-		args[0] = line.split(' ')[1];
-		cmd_help(lang, msg, args, line);
-	}
-}
-
-function cmd_sendumfrage(lang, msg, text, reactions, imgs) {
-	var allowedMentions = {};
-	if ( !msg.member.hasPermission(['MENTION_EVERYONE']) ) {
-		allowedMentions.parse = ['users'];
-		allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0,100);
-	}
-	msg.channel.send( lang.poll.title + text, {allowedMentions,files:imgs} ).then( poll => {
-		msg.deleteMsg();
-		if ( reactions.length ) {
-			reactions.forEach( function(entry) {
-				poll.react(entry).catch( error => {
-					log_error(error);
-					poll.reactEmoji('error');
-				} );
-			} );
-		} else {
-			poll.reactEmoji('support');
-			poll.reactEmoji('oppose');
-		}
-	}, error => {
-		log_error(error);
-		msg.reactEmoji('error');
-	} );
+	} else if ( !pause[msg.guild.id] ) cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
 }
 
 function cmd_test(lang, msg, args, line, wiki) {
@@ -905,28 +829,6 @@ function cmd_pause(lang, msg, args, line, wiki) {
 		}
 	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
-	}
-}
-
-function cmd_delete(lang, msg, args, line, wiki) {
-	if ( msg.channel.permissionsFor(msg.member).has('MANAGE_MESSAGES') ) {
-		if ( /^\d+$/.test(args[0]) && parseInt(args[0], 10) + 1 > 0 ) {
-			if ( parseInt(args[0], 10) > 99 ) {
-				msg.replyMsg( lang.delete.big.replace( '%s', '`99`' ), {}, true );
-			}
-			else {
-				msg.channel.bulkDelete(parseInt(args[0], 10) + 1, true).then( messages => {
-					msg.reply( lang.delete.success.replace( '%s', parseInt(args[0], 10) ) ).then( antwort => antwort.deleteMsg(5000), log_error );
-					console.log( '- The last ' + parseInt(args[0], 10) + ' messages in #' + msg.channel.name + ' were deleted by @' + msg.member.displayName + '!' );
-				}, log_error );
-			}
-		}
-		else {
-			msg.replyMsg( lang.delete.invalid, {}, true );
-		}
-	}
-	else {
-		msg.reactEmoji('❌');
 	}
 }
 
@@ -1928,7 +1830,7 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 			body.query.search.forEach( result => {
 				description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', query.general) + ')' + ( result.sectiontitle ? ' § [' + result.sectiontitle + '](' + wiki.toLink(result.title, '', result.sectiontitle, query.general) + ')' : '' ) + ( result.redirecttitle ? ' (⤷ [' + result.redirecttitle + '](' + wiki.toLink(result.redirecttitle, '', '', query.general) + '))' : '' ) );
 			} );
-			embed.setFooter( body.query.searchinfo.totalhits + ' total results' );
+			embed.setFooter( ( lang.search.results[body.query.searchinfo.totalhits] || lang.search.results['*' + body.query.searchinfo.totalhits % 100] || lang.search.results['*' + body.query.searchinfo.totalhits % 10]  || lang.search.results.default ).replaceSave( '%s', body.query.searchinfo.totalhits ) );
 		}
 	}, error => {
 		console.log( '- Error while getting the search results.' + error );
@@ -1969,7 +1871,7 @@ function fandom_search(lang, msg, searchterm, wiki, query, reaction, spoiler) {
 		body.items.forEach( result => {
 			description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', query.general) + ')' );
 		} );
-		embed.setFooter( body.total + ' total results' );
+		embed.setFooter( ( lang.search.results[body.total] || lang.search.results['*' + body.total % 100] || lang.search.results['*' + body.total % 10]  || lang.search.results.default ).replaceSave( '%s', body.total ) );
 	}, error => {
 		console.log( '- Error while getting the search results.' + error );
 	} ).finally( () => {
@@ -4514,13 +4416,6 @@ function minecraft_command2(lang, mclang, msg, args, title, cmd, querystring, fr
 	}
 }
 
-function cmd_multiline(lang, msg, args, line, wiki) {
-	if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
-		if ( msg.isAdmin() ) msg.reactEmoji('error', true);
-		else msg.reactEmoji('❌');
-	}
-}
-
 function cmd_get(lang, msg, args, line, wiki) {
 	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
 	if ( /^\d+$/.test(id) ) {
@@ -5131,7 +5026,7 @@ client.on( 'message', msg => {
 		var missing = permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']);
 		if ( missing.length ) {
 			if ( msg.isAdmin() || msg.isOwner() ) {
-				console.log( msg.guild.name + ': Missing permissions - ' + missing.join(', ') );
+				console.log( msg.guild.id + ': Missing permissions - ' + missing.join(', ') );
 				if ( !missing.includes( 'SEND_MESSAGES' ) ) {
 					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 						if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
@@ -5171,18 +5066,11 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 	var invoke = ( cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '' );
 	var aliasInvoke = ( lang.aliase[invoke] || invoke );
 	var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
-	if ( cont.hasPrefix(prefix) && ( ( msg.isAdmin() && aliasInvoke in multilinecmdmap ) || ownercmd ) ) {
-		if ( ownercmd || channel.permissionsFor(client.user).has('MANAGE_MESSAGES') ) {
-			var args = cont.split(' ').slice(2);
-			if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
-			if ( !( ownercmd || aliasInvoke in pausecmdmap ) && pause[msg.guild.id] ) console.log( msg.guild.id + ': Paused' );
-			else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + cont );
-			if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
-			else if ( !pause[msg.guild.id] || aliasInvoke in pausecmdmap ) multilinecmdmap[aliasInvoke](lang, msg, args, cont, wiki);
-		} else {
-			console.log( msg.guild.id + ': Missing permissions - MANAGE_MESSAGES' );
-			msg.replyMsg( lang.missingperm + ' `MANAGE_MESSAGES`' );
-		}
+	if ( cont.hasPrefix(prefix) && ownercmd ) {
+		var args = cont.split(' ').slice(2);
+		if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
+		else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + cont );
+		ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
 	} else {
 		var count = 0;
 		var maxcount = ( channel.type === 'text' && msg.guild.id in patreons ? 15 : 10 );

@@ -6,8 +6,6 @@
 	"lang": "fr",
 	"dateformat": "fr-FR",
 	"aliase": {
-		"purge": "delete",
-		"sondage": "poll",
 		"aide": "help",
 		"chercher": "search",
 		"🎲": "random",
@@ -205,7 +203,11 @@
 			}
 		},
 		"special": "Contenu de cette page spéciale :",
-		"empty": "*Cette page spéciale est vide*"
+		"empty": "*Cette page spéciale est vide*",
+		"results": {
+			"default": "%s total results",
+			"1": "%s total result"
+		}
 	},
 	"discussion": {
 		"post": "post",
@@ -219,14 +221,6 @@
 	},
 	"invite": {
 		"bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
-	},
-	"poll": {
-		"title": "**Sondage :**\n"
-	},
-	"delete": {
-		"invalid": "le nombre spécifié n'est pas valide.",
-		"success": "les %s messages les plus récents dans ce salon ont été supprimés.",
-		"big": "le nombre spécifié est trop grand. Le maximum est %s !"
 	},
 	"test": {
 		"random": 30,
@@ -308,15 +302,7 @@
 			{ "cmd": "voice", "desc": "J'essaye de donner un rôle spécifique à tous ceux dans un salon vocal.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Je vais ignorer toutes les commandes sur ce serveur, à l'exception de quelques commandes d'admin.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Je vais répondre à nouveau à tous les commandes sur ce serveur.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "sondage <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec <:support:448222377009086465> et <:oppose:448222455425794059>.", "admin": true },
-			{ "cmd": "sondage <emoji> [<emoji> ...] <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec les réponses possibles.", "admin": true },
-			{ "cmd": "poll <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec <:support:448222377009086465> et <:oppose:448222455425794059>.", "hide": true, "admin": true },
-			{ "cmd": "poll <emoji> [<emoji> ...] <question en texte libre>", "desc": "Je vais créer un sondage et réagir avec les réponses possibles.", "hide": true, "admin": true },
-			{ "cmd": "test", "desc": "Si je suis actif, je répondrai ! Autrement non.", "pause": true },
-			{ "cmd": "say <message>", "desc": "Je vais écrire le message donné.", "admin": true, "pause": true },
-			{ "cmd": "say alarm <message>", "desc": "Je vais écrire le message donné déjà préformaté : 🚨 **<message>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "delete <quantité>", "desc": "Je vais supprimer les messages récents dans le salon, tant qu'ils ne datent pas de plus de 14 jours.", "admin": true, "pause": true },
-			{ "cmd": "purge <quantité>", "desc": "Je vais supprimer les messages récents dans le salon, tant qu'ils ne datent pas de plus de 14 jours.", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "Si je suis actif, je répondrai ! Autrement non.", "pause": true }
 		]
 	}
 }

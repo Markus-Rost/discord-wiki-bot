@@ -6,15 +6,8 @@
 	"lang": "pt",
 	"dateformat": "pt-PT",
 	"aliase": {
-		"purge": "delete",
 		"ajuda": "help",
-		"enquete": "poll",
 		"teste": "test",
-		"dizer": "say",
-		"excluir": "delete",
-		"purgue": "delete",
-		"purgar": "delete",
-		"limpar": "delete",
 		"página": "page",
 		"pesquisar": "search",
 		"🎲": "random",
@@ -213,7 +206,11 @@
 			}
 		},
 		"special": "Conteúdo desta página especial:",
-		"empty": "*Esta página especial está vazia*"
+		"empty": "*Esta página especial está vazia*",
+		"results": {
+			"default": "%s total results",
+			"1": "%s total result"
+		}
 	},
 	"discussion": {
 		"post": "post",
@@ -226,14 +223,6 @@
 	},
 	"invite": {
 		"bot": "Use este link para me convidar para outro servidor:"
-	},
-	"poll": {
-		"title": "**Votação:**\n"
-	},
-	"delete": {
-		"invalid": "o número especificado não é válido.",
-		"success": "as mensagens %s mais recentes neste canal foram deleted.",
-		"big": "o número especificado é muito grande. O máximo é %s!"
 	},
 	"test": {
 		"random": 10,
@@ -297,22 +286,8 @@
 			{ "cmd": "voice", "desc": "Eu tento dar a todos em um canal de voz um papel específico.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "Eu vou ignorar todos os comandos neste servidor, exceto alguns comandos de administração.", "admin": true },
 			{ "cmd": "pause @mention", "desc": "Eu responderei a todos os comandos neste servidor novamente.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "enquete <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com <:support:448222377009086465> e <:oppose:448222455425794059>.", "admin": true },
-			{ "cmd": "enquete <emoji> [<emoji> ...] <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com as respostas possíveis.", "admin": true },
-			{ "cmd": "poll <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com <:support:448222377009086465> e <:oppose:448222455425794059>.", "hide": true, "admin": true },
-			{ "cmd": "poll <emoji> [<emoji> ...] <pergunta como texto livre>", "desc": "Vou criar uma enquete e reagir com as respostas possíveis.", "hide": true, "admin": true },
 			{ "cmd": "teste", "desc": "Se estou ativo, respondo! Caso contrário, não.", "pause": true },
-			{ "cmd": "test", "desc": "Se estou ativo, respondo! Caso contrário, não.", "hide": true },
-			{ "cmd": "dizer <mensagem>", "desc": "Vou escrever a mensagem dada.", "admin": true, "pause": true },
-			{ "cmd": "dizer alarm <mensagem>", "desc": "Vou escrever a mensagem já pré-formatada: 🚨 **<mensagem>** 🚨", "admin": true, "pause": true },
-			{ "cmd": "say <mensagem>", "desc": "Vou escrever a mensagem dada.", "hide": true, "admin": true },
-			{ "cmd": "say alarm <mensagem>", "desc": "Vou escrever a mensagem já pré-formatada: 🚨 **<mensagem>** 🚨", "hide": true, "admin": true },
-			{ "cmd": "excluir <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "admin": true, "pause": true },
-			{ "cmd": "purgue <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
-			{ "cmd": "purgar <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
-			{ "cmd": "limpar <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
-			{ "cmd": "delete <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true },
-			{ "cmd": "purge <contagem>", "desc": "Excluirei as mensagens recentes no canal, desde que não tenham mais de 14 dias.", "hide": true, "admin": true }
+			{ "cmd": "test", "desc": "Se estou ativo, respondo! Caso contrário, não.", "hide": true }
 		]
 	}
 }
