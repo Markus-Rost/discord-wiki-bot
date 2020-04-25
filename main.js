@@ -2897,7 +2897,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 function fandom_discussionsend(lang, msg, wiki, discussion, embed, spoiler) {
 	if ( discussion.title ) {
 		embed.setTitle( discussion.title.escapeFormatting() );
-		var pagelink = wiki + 'f/p/' + discussion.threadId;
+		var pagelink = wiki + 'f/p/' + ( discussion.threadId || discussion.id );
 	}
 	else {
 		if ( discussion._embedded.thread ) embed.setTitle( discussion._embedded.thread[0].title.escapeFormatting() );
