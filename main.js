@@ -771,8 +771,14 @@ function cmd_test(lang, msg, args, line, wiki) {
 			}, error => {
 				then = Date.now();
 				var ping = ( then - now ) + 'ms';
-				console.log( '- Error while reaching the wiki: ' + error );
-				ping += ' <:error:505887261200613376>';
+				if ( wiki.noWiki(error.message) ) {
+					console.log( '- This wiki doesn\'t exist!' );
+					ping += ' <:unknown_wiki:505887262077353984>';
+				}
+				else {
+					console.log( '- Error while reaching the wiki: ' + error );
+					ping += ' <:error:505887261200613376>';
+				}
 				embed.addField( wiki, ping );
 			} ).finally( () => {
 				message.edit( message.content, {embed} ).catch(log_error);
@@ -895,8 +901,12 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
-			else if ( aliasInvoke === 'search' ) gamepedia_search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
-			else if ( aliasInvoke === 'discussion' && !querystring && !fragment ) fandom_discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
+			else if ( aliasInvoke === 'search' ) {
+				gamepedia_search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
+			}
+			else if ( aliasInvoke === 'discussion' && wiki.isFandom() && !querystring && !fragment ) {
+				fandom_discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
+			}
 			else {
 				if ( body.query.pages ) {
 					var querypages = Object.values(body.query.pages);
@@ -1195,8 +1205,14 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				}
 			}
 		}, error => {
-			console.log( '- Error while getting the search results: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki.toLink( ( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
+			if ( wiki.noWiki(error.message) ) {
+				console.log( '- This wiki doesn\'t exist!' );
+				msg.reactEmoji('nowiki');
+			}
+			else {
+				console.log( '- Error while getting the search results: ' + error );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink( ( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
+			}
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
@@ -1251,8 +1267,12 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 			else if ( body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) {
 				return gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler, querystring, fragment, selfcall);
 			}
-			else if ( aliasInvoke === 'search' ) fandom_search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
-			else if ( aliasInvoke === 'discussion' && !querystring && !fragment ) fandom_discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
+			else if ( aliasInvoke === 'search' ) {
+				fandom_search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
+			}
+			else if ( aliasInvoke === 'discussion' && !querystring && !fragment ) {
+				fandom_discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
+			}
 			else {
 				if ( body.query.pages ) {
 					var querypages = Object.values(body.query.pages);
@@ -1670,8 +1690,14 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 				}
 			}
 		}, error => {
-			console.log( '- Error while getting the search results: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki.toLink(( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
+			if ( wiki.noWiki(error.message) ) {
+				console.log( '- This wiki doesn\'t exist!' );
+				msg.reactEmoji('nowiki');
+			}
+			else {
+				console.log( '- Error while getting the search results: ' + error );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink(( querystring || fragment || !title ? title : 'Special:Search' ), ( querystring || fragment || !title ? querystring.toTitle() : 'search=' + title.toSearch() ), fragment) + '>' + spoiler );
+			}
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
@@ -2676,19 +2702,24 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 		} );
 	}
 	else if ( !query.wikidesc ) {
-		return got.get( wiki + 'api/v1/Mercury/WikiVariables?format=json', {
+		return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + query.general.servername + query.general.scriptpath + '&format=json', {
 			responseType: 'json'
 		} ).then( wvresponse => {
 			var wvbody = wvresponse.body;
-			if ( wvresponse.statusCode !== 200 || !wvbody || !wvbody.data ) {
+			if ( wvresponse.statusCode !== 200 || !wvbody || wvbody.exception || !wvbody.items || !wvbody.items.length ) {
 				console.log( '- ' + wvresponse.statusCode + ': Error while getting the wiki id: ' + ( wvbody && wvbody.exception && wvbody.exception.details ) );
 				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
-			else {
-				query.wikidesc = {id: wvbody.data.id};
+			else if ( wvbody.items.some( site => site.domain === query.general.servername + query.general.scriptpath ) ) {
+				query.wikidesc = {id: wvbody.items.find( site => site.domain === query.general.servername + query.general.scriptpath ).id};
 				fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler);
+			}
+			else {
+				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
+				
+				if ( reaction ) reaction.removeEmoji();
 			}
 		}, error => {
 			console.log( '- Error while getting the wiki id: ' + error );
@@ -2911,7 +2942,7 @@ function fandom_discussionsend(lang, msg, wiki, discussion, embed, spoiler) {
 			embed.setImage( discussion._embedded.contentImages[0].url );
 			break;
 		case 'POLL':
-			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( lang.discussion.votes[answer.votes] || lang.discussion.votes['*' + answer.votes % 100] || lang.discussion.votes['*' + answer.votes % 10] || lang.discussion.votes.default ).replace( '%s', answer.votes ), true ) );
+			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( answer.image ? '[__' + lang.discussion.image.escapeFormatting() + '__](' + answer.image.url + ')\n' : '' ) + ( lang.discussion.votes[answer.votes] || lang.discussion.votes['*' + answer.votes % 100] || lang.discussion.votes['*' + answer.votes % 10] || lang.discussion.votes.default ).replace( '%s', answer.votes ), true ) );
 			break;
 		case 'QUIZ':
 			description = discussion.quiz.title.escapeFormatting();
@@ -3141,8 +3172,14 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 					}
 				}
 			}, error => {
-				console.log( '- Error while getting the search results: ' + error );
-				msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + relative + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
+				if ( wiki.noWiki(error.message) ) {
+					console.log( '- This wiki doesn\'t exist!' );
+					msg.reactEmoji('nowiki');
+				}
+				else {
+					console.log( '- Error while getting the search results: ' + error );
+					msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + relative + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
+				}
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
@@ -3383,8 +3420,14 @@ function gamepedia_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 			}
 		}
 	}, error => {
-		console.log( '- Error while getting the search results: ' + error );
-		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
+		if ( wiki.noWiki(error.message) ) {
+			console.log( '- This wiki doesn\'t exist!' );
+			msg.reactEmoji('nowiki');
+		}
+		else {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
+		}
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
@@ -3556,8 +3599,14 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 					}
 				}
 			}, error => {
-				console.log( '- Error while getting the search results: ' + error );
-				msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + diff + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
+				if ( wiki.noWiki(error.message) ) {
+					console.log( '- This wiki doesn\'t exist!' );
+					msg.reactEmoji('nowiki');
+				}
+				else {
+					console.log( '- Error while getting the search results: ' + error );
+					msg.sendChannelError( spoiler + '<' + wiki.toLink(title, 'diff=' + diff + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler );
+				}
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
@@ -3788,8 +3837,14 @@ function fandom_diffsend(lang, msg, args, wiki, reaction, spoiler, compare) {
 			}
 		}
 	}, error => {
-		console.log( '- Error while getting the search results: ' + error );
-		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
+		if ( wiki.noWiki(error.message) ) {
+			console.log( '- This wiki doesn\'t exist!' );
+			msg.reactEmoji('nowiki');
+		}
+		else {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
+		}
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
@@ -3838,8 +3893,14 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 		}
 	}, error => {
-		console.log( '- Error while getting the search results: ' + error );
-		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
+		if ( wiki.noWiki(error.message) ) {
+			console.log( '- This wiki doesn\'t exist!' );
+			msg.reactEmoji('nowiki');
+		}
+		else {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
+		}
 	} ).finally( () => {
 		if ( reaction ) reaction.removeEmoji();
 	} );
@@ -3909,8 +3970,14 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 			} );
 		}
 	}, error => {
-		console.log( '- Error while getting the search results: ' + error );
-		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
+		if ( wiki.noWiki(error.message) ) {
+			console.log( '- This wiki doesn\'t exist!' );
+			msg.reactEmoji('nowiki');
+		}
+		else {
+			console.log( '- Error while getting the search results: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
+		}
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
@@ -3970,7 +4037,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				var text = '<' + pagelink + '>\n\n';
 			}
 			
-			if ( wiki.isFandom() ) got.get( 'https://c.fandom.com/api/v1/Wikis/ByString?expand=true&includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
+			if ( wiki.isFandom() ) got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?expand=true&includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
 				responseType: 'json'
 			} ).then( ovresponse => {
 				var ovbody = ovresponse.body;
@@ -4111,8 +4178,14 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			}
 		}
 	}, error => {
-		console.log( '- Error while getting the statistics: ' + error );
-		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+		if ( wiki.noWiki(error.message) ) {
+			console.log( '- This wiki doesn\'t exist!' );
+			msg.reactEmoji('nowiki');
+		}
+		else {
+			console.log( '- Error while getting the statistics: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+		}
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
@@ -4250,8 +4323,14 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}, error => {
-		console.log( '- Error while getting the statistics: ' + error );
-		msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+		if ( wiki.noWiki(error.message) ) {
+			console.log( '- This wiki doesn\'t exist!' );
+			msg.reactEmoji('nowiki');
+		}
+		else {
+			console.log( '- Error while getting the statistics: ' + error );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+		}
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
@@ -5190,7 +5269,13 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				}
 				if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section, body.query.general) ) + '>' + link.spoiler ).join('\n'), {split:true} );
 			}, error => {
-				console.log( '- Error while following the links: ' + error );
+				if ( wiki.noWiki(error.message) ) {
+					console.log( '- This wiki doesn\'t exist!' );
+					msg.reactEmoji('nowiki');
+				}
+				else {
+					console.log( '- Error while following the links: ' + error );
+				}
 			} );
 			
 			if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
@@ -5237,7 +5322,13 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 					} ) );
 				}
 			}, error => {
-				console.log( '- Error while following the links: ' + error );
+				if ( wiki.noWiki(error.message) ) {
+					console.log( '- This wiki doesn\'t exist!' );
+					msg.reactEmoji('nowiki');
+				}
+				else {
+					console.log( '- Error while following the links: ' + error );
+				}
 			} );
 		}
 	}
