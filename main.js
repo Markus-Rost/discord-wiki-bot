@@ -2214,7 +2214,11 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							}
 							if ( msg.showEmbed() ) {
 								if ( avatarfield && avatarfield.value ) embed.setThumbnail( avatarfield.value );
-								if ( biofield && biofield.value && !embed.description ) embed.setDescription( biofield.value.escapeFormatting() );
+								if ( biofield && biofield.value && !embed.description ) {
+									var bio = biofield.value.escapeFormatting();
+									if ( bio.length > 2000 ) bio = bio.substring(0, 2000) + '\u2026';
+									embed.setDescription( bio );
+								}
 							}
 						}
 					}, error => {
@@ -2527,7 +2531,11 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							}
 							if ( msg.showEmbed() ) {
 								if ( avatarfield && avatarfield.value ) embed.setThumbnail( avatarfield.value );
-								if ( biofield && biofield.value && !embed.description ) embed.setDescription( biofield.value.escapeFormatting() );
+								if ( biofield && biofield.value && !embed.description ) {
+									var bio = biofield.value.escapeFormatting();
+									if ( bio.length > 2000 ) bio = bio.substring(0, 2000) + '\u2026';
+									embed.setDescription( bio );
+								}
 							}
 						}
 					}, error => {
