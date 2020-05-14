@@ -1,5 +1,6 @@
 node_modules/
 package-lock.json
+*.code-workspace
 *.env
 *.db
 *.bat

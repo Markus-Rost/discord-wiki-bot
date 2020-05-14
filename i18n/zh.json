@@ -73,7 +73,7 @@
 		"disabled": "您禁用了给予每个在这个语音频道的用户一个特定的身份组的功能。",
 		"name": "语音频道名",
 		"channel": "语音频道",
-		"join": "%1$s 加入了语音频道“%2$s\”。",
+		"join": "%1$s 加入了语音频道“%2$s”。",
 		"left": "%1$s 离开了语音频道“%2$s”。"
 	},
 	"overview": {
@@ -140,13 +140,14 @@
 			["user", "用户"]
 		],
 		"info": {
-			"gender": "性别:",
-			"registration": "注册时间:",
-			"editcount": "编辑数:",
+			"gender": "性别：",
+			"registration": "注册时间：",
+			"editcount": "编辑数：",
 			"globaleditcount": "全域编辑数：",
 			"wikisedited": "编辑过的wiki：",
-			"group": "用户组:",
+			"group": "用户组：",
 			"discord": "Discord：",
+			"favwiki": "最喜爱的wiki：",
 			"loading": "正在加载全域数据…"
 		},
 		"block": {
@@ -169,14 +170,14 @@
 		"nocomment": "*未提供描述*",
 		"hidden": "*隐藏*",
 		"info": {
-			"editor": "编辑者:",
-			"timestamp": "时间:",
-			"size": "差异:",
+			"editor": "编辑者：",
+			"timestamp": "时间：",
+			"size": "差异：",
 			"bytes": "%s Bytes",
-			"comment": "摘要:",
-			"tags": "标签:",
-			"removed": "删除:",
-			"added": "添加:",
+			"comment": "摘要：",
+			"tags": "标签：",
+			"removed": "删除：",
+			"added": "添加：",
 			"more": "更多",
 			"whitespace": "仅有空白"
 		}
@@ -187,7 +188,7 @@
 		"infopage": "结果不正确？用%s来指定连接",
 		"infosearch": "结果不正确？用%1$s来指定链接或%2$s列出所有结果",
 		"category": {
-			"content": "分类下的内容:",
+			"content": "分类下的内容：",
 			"empty": "*空白分类*",
 			"pages": {
 				"default": "%s 个页面"
@@ -270,8 +271,8 @@
 			{ "cmd": "settings wiki <wiki>", "desc": "我将更改本伺服器的默认wiki。", "hide": true, "admin": true },
 			{ "cmd": "settings channel", "desc": "我将更改本伺服器的当前频道的覆盖设置。", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "我将尝试给予每个在这个语音频道的用户一个特定的身份组。", "admin": true, "pause": true },
-			{ "cmd": "pause @提及", "desc": "我将屏蔽少数管理指令外的全部指令", "admin": true },
-			{ "cmd": "pause @提及", "desc": "我将重新接受全部指令", "unsearchable": true, "hide": true, "pause": true },
+			{ "cmd": "pause @mention", "desc": "我将屏蔽少数管理指令外的全部指令", "admin": true },
+			{ "cmd": "pause @mention", "desc": "我将重新接受全部指令", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "test", "desc": "如果我被激活了，我就会回答你！否则不会。", "pause": true }
 		]
 	}

@@ -1,12 +1,12 @@
 # Wiki-Bot
 <a href="https://top.gg/bot/461189216198590464"><img align="right" src="https://top.gg/api/widget/461189216198590464.svg" alt="Wiki-Bot"></a>
-**Wiki-Bot** is a bot for [Discord](https://discordapp.com/) with the purpose to easily link to [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis.
+**Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link to [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis.
 <br>He resolves redirects and follows interwiki links.
 <br>**Wiki-Bot** has translations for English, German, French, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
 
 **Wiki-Bot is not affiliated with Fandom and is an unofficial tool!**
 
-[Use this link to invite **Wiki-Bot** to your Discord server.](https://discordapp.com/oauth2/authorize?client_id=461189216198590464&permissions=268815424&scope=bot)
+[Use this link to invite **Wiki-Bot** to your Discord server.](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=268815424&scope=bot)
 
 Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
 
