@@ -145,14 +145,13 @@ function getSettings(trysettings = 1) {
 						getSettings(trysettings);
 					}
 				} );
-				/*
-				db.run( 'CREATE TABLE IF NOT EXISTS verification(guild TEXT NOT NULL, channel TEXT, wiki TEXT NOT NULL, role TEXT NOT NULL, editcount INTEGER NOT NULL DEFAULT [0], usergroup TEXT NOT NULL DEFAULT [user])', [], function (error) {
+				db.run( 'CREATE TABLE IF NOT EXISTS verification(guild TEXT NOT NULL, configid INTEGER NOT NULL CHECK (configid <= 10), role TEXT NOT NULL, editcount INTEGER NOT NULL DEFAULT [0], usergroup TEXT NOT NULL DEFAULT [user], accountage INTEGER NOT NULL DEFAULT [0], UNIQUE(guild, configid))', [], function (error) {
 					if ( error ) {
 						console.log( '- Error while creating the verification table: ' + error );
 						return error;
 					}
 					console.log( '- Created the verification table.' );
-					db.run( 'CREATE INDEX idx_verification_channel ON verification(guild, channel DESC)', [], function (idxerror) {
+					db.run( 'CREATE INDEX idx_verification_config ON verification(guild, configid ASC)', [], function (idxerror) {
 						if ( idxerror ) {
 							console.log( '- Error while creating the verification index: ' + idxerror );
 							return error;
@@ -160,7 +159,6 @@ function getSettings(trysettings = 1) {
 						console.log( '- Created the verification index.' );
 					} );
 				} );
-				*/
 			} );
 			else {
 				if ( trysettings < 10 ) {
@@ -262,6 +260,8 @@ var cmdmap = {
 	pause: cmd_pause,
 	invite: cmd_invite,
 	voice: cmd_voice,
+	verify: cmd_verify,
+	verification: cmd_verification,
 	settings: cmd_settings,
 	info: cmd_info,
 	patreon: cmd_patreon
@@ -281,6 +281,7 @@ var pausecmdmap = {
 	test: cmd_test,
 	pause: cmd_pause,
 	voice: cmd_voice,
+	verification: cmd_verification,
 	settings: cmd_settings,
 	patreon: cmd_patreon
 }
@@ -1905,6 +1906,320 @@ function fandom_search(lang, msg, searchterm, wiki, query, reaction, spoiler) {
 		msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 		
 		if ( reaction ) reaction.removeEmoji();
+	} );
+}
+
+function cmd_verification(lang, msg, args, line, wiki) {
+	if ( msg.channel.type !== 'text' ) return cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+	if ( !msg.isAdmin() ) {
+		if ( !pause[msg.guild.id] ) cmd_verify(lang, msg, args, line, wiki);
+		return;
+	}
+	
+	db.all( 'SELECT configid, role, editcount, usergroup, accountage FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
+		if ( error || !rows ) {
+			console.log( '- Error while getting the verifications: ' + error );
+			msg.reactEmoji('error', true);
+			return error;
+		}
+		
+		var prefix = ( patreons[msg.guild.id] || process.env.prefix );
+		if ( args[0] === 'add' ) {
+			if ( rows.length >= 10 ) return msg.replyMsg( 'you already reached the maximal amount of verifications.', {}, true );
+			args[1] = args.slice(1).join(' ').trim().replace( /^<\s*(.*)\s*>$/, '$1' );
+			if ( !args[1] ) return msg.replyMsg( 'please provide a role for the new verification.\n`' + prefix + ' verification add <new role>`', {}, true );
+			var new_role = '';
+			if ( /^\d+$/.test(args[1]) ) new_role = msg.guild.roles.cache.get(args[1]);
+			if ( !new_role ) new_role = msg.guild.roles.cache.find( role => role.name === args[1].replace( /^@/, '' ) );
+			if ( !new_role ) return msg.replyMsg( 'the provided role does not exist.', {}, true );
+			var new_configid = 1;
+			for ( let i of rows.map( row => row.configid ) ) {
+				if ( new_configid === i ) new_configid++;
+				else break;
+			}
+			return db.run( 'INSERT INTO verification(role, guild, configid) VALUES(?, ?, ?)', [new_role.id, msg.guild.id, new_configid], function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while updating the verification: ' + dberror );
+					msg.replyMsg( 'sadly the verification couldn\'t be updated, please try again later.', {}, true );
+					return dberror;
+				}
+				console.log( '- Verification successfully updated.' );
+				var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + new_configid + '`\nRole: <@&' + new_role.id + '>\nEdit count: `0`\nUser group: `user`\nAccount age: `0` (in days)';
+				if ( new_role.comparePositionTo(msg.guild.me.roles.highest) > 0 ) text += '\n\n**The role ' + new_role.toString() + ' is too high for ' + msg.guild.me.toString() + ' to assign!**'
+				msg.replyMsg( text, {}, true );
+			} );
+		}
+		if ( !rows.some( row => row.configid.toString() === args[0] ) ) {
+			if ( args.length ) {
+				if ( !pause[msg.guild.id] ) cmd_verify(lang, msg, args, line, wiki);
+				return;
+			}
+			var text = '';
+			if ( rows.length ) text += 'these are the current verifications for this server:\n\n' + rows.map( row => '`' + prefix + ' verification ' + row.configid + '`\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup + '`\nAccount age: `' + row.accountage + '` (in days)' ).join('\n\n');
+			else text += 'there are no verifications for this server yet.';
+			text += '\n\nAdd more verifications:\n`' + prefix + ' verification add <new role>`';
+			return msg.replyMsg( text, {split:true}, true );
+		}
+		var row = rows.find( row => row.configid.toString() === args[0] );
+		if ( args[1] === 'delete' && !args.slice(2).join('') ) {
+			return db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [msg.guild.id, row.configid], function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while removing the verification: ' + dberror );
+					msg.replyMsg( 'sadly the verification couldn\'t be deleted, please try again later.', {}, true );
+					return dberror;
+				}
+				console.log( '- Verification successfully removed.' );
+				msg.replyMsg( 'the verification has been deleted.', {}, true );
+			} );
+		}
+		if ( args[2] ) {
+			args[2] = args.slice(2).join(' ').trim().replace( /^<\s*(.*)\s*>$/, '$1' );
+			if ( args[1] === 'role' ) {
+				var new_role = '';
+				if ( /^\d+$/.test(args[2]) ) new_role = msg.guild.roles.cache.get(args[2]);
+				if ( !new_role ) new_role = msg.guild.roles.cache.find( role => role.name === args[2].replace( /^@/, '' ) );
+				if ( !new_role ) return msg.replyMsg( 'the provided role does not exist.', {}, true );
+				return db.run( 'UPDATE verification SET role = ? WHERE guild = ? AND configid = ?', [new_role.id, msg.guild.id, row.configid], function (dberror) {
+					if ( dberror ) {
+						console.log( '- Error while updating the verification: ' + dberror );
+						msg.replyMsg( 'sadly the verification couldn\'t be updated, please try again later.', {}, true );
+						return dberror;
+					}
+					console.log( '- Verification successfully updated.' );
+					row.role = new_role.id;
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup + '`\nAccount age: `' + row.accountage + '` (in days)';
+					if ( new_role.comparePositionTo(msg.guild.me.roles.highest) > 0 ) text += '\n\n**The role ' + new_role.toString() + ' is too high for ' + msg.guild.me.toString() + ' to assign!**'
+					msg.replyMsg( text, {}, true );
+				} );
+			}
+			if ( ( args[1] === 'editcount' || args[1] === 'accountage' ) && /^\d+$/.test(args[2]) ) {
+				args[2] = parseInt(args[2], 10);
+				if ( args[2] > 1000000 ) return msg.replyMsg( 'the provided value is too high.', {}, true );
+				return db.run( 'UPDATE verification SET ' + args[1] + ' = ? WHERE guild = ? AND configid = ?', [args[2], msg.guild.id, row.configid], function (dberror) {
+					if ( dberror ) {
+						console.log( '- Error while updating the verification: ' + dberror );
+						msg.replyMsg( 'sadly the verification couldn\'t be updated, please try again later.', {}, true );
+						return dberror;
+					}
+					console.log( '- Verification successfully updated.' );
+					row[args[1]] = args[2];
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup + '`\nAccount age: `' + row.accountage + '` (in days)';
+					msg.replyMsg( text, {}, true );
+				} );
+			}
+			if ( args[1] === 'usergroup' ) {
+				args[2] = args[2].toLowerCase().replace( / /g, '_' );
+				if ( args[2].length > 100 ) return msg.replyMsg( 'the provided usergroup is too long.', {}, true );
+				return db.run( 'UPDATE verification SET usergroup = ? WHERE guild = ? AND configid = ?', [args[2], msg.guild.id, row.configid], function (dberror) {
+					if ( dberror ) {
+						console.log( '- Error while updating the verification: ' + dberror );
+						msg.replyMsg( 'sadly the verification couldn\'t be updated, please try again later.', {}, true );
+						return dberror;
+					}
+					console.log( '- Verification successfully updated.' );
+					row.usergroup = args[2];
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup + '`\nAccount age: `' + row.accountage + '` (in days)';
+					msg.replyMsg( text, {}, true );
+				} );
+			}
+		}
+		var text = 'this is the verification `' + row.configid + '` for this server:\n\nRole: <@&' + row.role + '>\n`' + prefix + ' verification ' + row.configid + ' role <new role>`\n\nEdit count: `' + row.editcount + '`\n`' + prefix + ' verification ' + row.configid + ' editcount <new edit count>`\n\nUser group: `' + row.usergroup + '`\n`' + prefix + ' verification ' + row.configid + ' usergroup <new user group>`\n\nAccount age: `' + row.accountage + '` (in days)\n`' + prefix + ' verification ' + row.configid + ' accountage <new account age>`\n\nDelete this verification:\n`' + prefix + ' verification ' + row.configid + ' delete`';
+		return msg.replyMsg( text, {}, true );
+	} );
+}
+
+function cmd_verify(lang, msg, args, line, wiki) {
+	if ( !( wiki.endsWith( '.gamepedia.com/' ) || wiki.isFandom() ) || msg.channel.type !== 'text' ) return cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
+		if ( msg.isAdmin() ) {
+			console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
+			msg.replyMsg( lang.missingperm + ' `MANAGE_ROLES`' );
+		} else cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+		return
+	}
+	
+	var username = args.join(' ').replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0];
+	if ( username.length > 250 ) username = username.substring(0, 250).trim();
+	if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/.test(username) ) {
+		username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/, '' ) );
+	}
+	if ( wiki.endsWith( '.gamepedia.com/' ) ) username = username.replace( /^userprofile\s*:/i, '' );
+	
+	db.all( 'SELECT role, editcount, usergroup, accountage FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
+		if ( dberror || !rows ) {
+			console.log( '- Error while getting the verifications: ' + dberror );
+			embed.setTitle( username.escapeFormatting() ).setColor('#000000').setDescription( 'The verification failed due to an error, please try again.' );
+			msg.replyMsg( 'the verification failed due to an error, please try again.', {embed}, false, false ).then( message => message.reactEmoji('error') );
+			return dberror;
+		}
+		if ( !rows.length ) return cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+		
+		if ( !username.trim() ) {
+			/*
+			args[0] = line.split(' ')[1];
+			return cmd_help(lang, msg, args, line);
+			*/
+			return msg.sendChannel( '🔹 `' + ( patreons[msg.guild.id] || process.env.prefix ) + ' verify <wiki_username>`\n\tUse this command to verify your Discord account with your wiki account and get roles matching your wiki account.' );
+		}
+		var embed = new Discord.MessageEmbed().setFooter( 'Wiki Account Verification' ).setTimestamp();
+		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json', {
+			responseType: 'json'
+		} ).then( response => {
+			var body = response.body;
+			if ( body && body.warnings ) log_warn(body.warnings);
+			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
+				console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
+				embed.setTitle( username.escapeFormatting() ).setColor('#000000').setDescription( 'The verification failed due to an error, please try again.' );
+				msg.replyMsg( 'the verification failed due to an error, please try again.', {embed}, false, false ).then( message => message.reactEmoji('error') );
+				
+				if ( reaction ) reaction.removeEmoji();
+				return;
+			}
+			var queryuser = body.query.users[0];
+			embed.setAuthor( body.query.general.sitename );
+			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
+				username = ( body.query.users.length === 1 ? queryuser.name : username );
+				embed.setTitle( username.escapeFormatting() ).setColor('#0000FF').setDescription( 'The wiki user "' + username.escapeFormatting() + '" doesn\'t exist.' );
+				msg.replyMsg( 'your linked wiki user "' + username.escapeFormatting() + '" doesn\'t exist.', {embed}, false, false );
+				
+				if ( reaction ) reaction.removeEmoji();
+				return;
+			}
+			username = queryuser.name;
+			var pagelink = wiki.toLink('User:' + username, '', '', body.query.general, true);
+			embed.setTitle( username.escapeFormatting() ).setURL( pagelink );
+			if ( queryuser.blockexpiry ) {
+				embed.setColor('#FF0000').setDescription( '**The wiki user [' + username.escapeFormatting() + '](' + pagelink + ') is blocked!**' );
+				msg.replyMsg( 'your linked wiki user **"' + username.escapeFormatting() + '" is blocked!**', {embed}, false, false );
+				
+				if ( reaction ) reaction.removeEmoji();
+				return;
+			}
+			
+			var comment = '';
+			var url = '';
+			if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+				url = 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx';
+			}
+			else if ( wiki.isFandom() ) {
+				url = 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1';
+			}
+			got.get( url ).then( gbresponse => {
+				if ( gbresponse.statusCode !== 200 || !gbresponse.body ) {
+					console.log( '- ' + gbresponse.statusCode + ': Error while getting the global block.' );
+					comment += '\n**Check for global block failed!**';
+				}
+				else {
+					let $ = cheerio.load(gbresponse.body);
+					if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+						if ( $('.mw-blocklist').length ) {
+							return Promise.reject([
+							'your linked wiki user **"' + username.escapeFormatting() + '" is globally blocked!**',
+							'**The wiki user [' + username.escapeFormatting() + '](' + pagelink + ') is globally blocked!**'
+							]);
+						}
+					}
+					else if ( wiki.isFandom() ) {
+						if ( $('#mw-content-text .errorbox').length ) {
+							return Promise.reject([
+							'your linked wiki user **"' + username.escapeFormatting() + '" is disabled!**',
+							'**The wiki user [' + username.escapeFormatting() + '](' + pagelink + ') is disabled!**'
+							]);
+						}
+						else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
+							return Promise.reject([
+							'your linked wiki user **"' + username.escapeFormatting() + '" is globally blocked!**',
+							'**The wiki user [' + username.escapeFormatting() + '](' + pagelink + ') is globally blocked!**'
+							]);
+						}
+					}
+				}
+			}, error => {
+				console.log( '- Error while getting the global block: ' + error );
+				comment += '\n**Check for global block failed!**';
+			} ).then( () => {
+				var options = {responseType: 'json'};
+				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+					url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json';
+				}
+				else if ( wiki.isFandom() ) {
+					url = 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '/attr/discordHandle?format=json';
+					options.headers = {Accept: 'application/hal+json'};
+				}
+				got.get( url, options ).then( presponse => {
+					var pbody = presponse.body;
+					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || pbody.title || !( pbody.profile || pbody.value ) ) {
+						if ( !( pbody && pbody.status === 404 ) ) {
+							console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg || pbody.title ) ) );
+							embed.setColor('#000000').setDescription( 'The verification failed due to an error, please try again.' );
+							return msg.replyMsg( 'the verification failed due to an error, please try again.', {embed}, false, false ).then( message => message.reactEmoji('error') );
+						}
+					}
+					
+					var discordname = '';
+					if ( pbody.profile ) discordname = pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					else if ( pbody.value ) discordname = htmlToPlain( pbody.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					embed.addField( 'Discord user:', msg.author.tag.escapeFormatting(), true ).addField( 'Wiki user:', ( discordname.escapeFormatting() || '*none*' ), true );
+					if ( msg.author.tag !== discordname ) {
+						embed.setColor('#FFFF00').setDescription( 'Discord user ' + msg.member.toString() + ' (' + msg.author.tag.escapeFormatting() + ') doesn\'t match the wiki user [' + username.escapeFormatting() + '](' + pagelink + ').' );
+						return msg.replyMsg( '(' + msg.author.tag.escapeFormatting() + ') your Discord tag doesn\'t match the wiki user "' + username.escapeFormatting() + '".', {embed}, false, false );
+					}
+					
+					var roles = [];
+					var missing = [];
+					var verified = false;
+					var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+					rows.forEach( row => {
+						if ( queryuser.editcount >= row.editcount && queryuser.groups.includes( row.usergroup ) && accountage >= row.accountage && !roles.includes( row.role ) ) {
+							verified = true;
+							if ( msg.guild.roles.cache.has(row.role) && msg.guild.me.roles.highest.comparePositionTo(row.role) > 0 ) roles.push(row.role);
+							else if ( !missing.includes( row.role ) ) missing.push(row.role);
+						}
+					} );
+					if ( verified ) {
+						embed.setColor('#00FF00').setDescription( 'Discord user ' + msg.member.toString() + ' has been successfully verified as wiki user [' + username.escapeFormatting() + '](' + pagelink + ').' );
+						var text = 'you have been sucessfully verified as wiki user "' + username.escapeFormatting() + '".';
+						msg.member.roles.add( roles, 'Wiki Account Verification' ).catch( error => {
+							embed.setColor('#008800');
+							comment += '\n**Adding roles failed!**';
+						} ).finally( () => {
+							if ( msg.showEmbed() ) {
+								if ( roles.length ) embed.addField( 'Qualified for:', roles.map( role => '<@&' + role + '>' ).join('\n') );
+								if ( missing.length ) embed.setColor('#008800').addField( 'Qualified for, but could not add:', missing.map( role => '<@&' + role + '>' ).join('\n') );
+								if ( comment.length ) embed.setColor('#008800').addField( 'Notice:', comment );
+							}
+							else {
+								if ( roles.length ) text += '\n\nQualified for: ' + roles.map( role => '<@&' + role + '>' ).join(', ');
+								if ( missing.length ) text += '\n\nQualified for, but could not add: ' + missing.map( role => '<@&' + role + '>' ).join(', ');
+								if ( comment.length ) text += '\n\n' + comment;
+							}
+							msg.replyMsg( text, {embed}, false, false );
+						} );
+					}
+					else {
+						embed.setColor('#FFFF00').setDescription( 'Discord user ' + msg.member.toString() + ' matches the wiki user [' + username.escapeFormatting() + '](' + pagelink + '), but doesn\'t meet the requirements for any roles.' );
+						msg.replyMsg( 'your Discord tag matches the wiki user "' + username.escapeFormatting() + '", but you don\'t meet the requirements for any roles.', {embed}, false, false );
+					}
+				}, error => {
+					console.log( '- Error while getting the Discord tag: ' + error );
+					embed.setColor('#000000').setDescription( 'The verification failed due to an error, please try again.' );
+					msg.replyMsg( 'the verification failed due to an error, please try again.', {embed}, false, false ).then( message => message.reactEmoji('error') );
+				} ).finally( () => {
+					if ( reaction ) reaction.removeEmoji();
+				} );
+			}, error => {
+				embed.setColor('#FF0000').setDescription( error[1] );
+				msg.replyMsg( error[0], {embed}, false, false );
+				
+				if ( reaction ) reaction.removeEmoji();
+			} );
+		}, error => {
+			console.log( '- Error while getting the user: ' + error );
+			embed.setColor('#000000').setDescription( 'The verification failed due to an error, please try again.' );
+			msg.replyMsg( 'the verification failed due to an error, please try again.', {embed}, false, false ).then( message => message.reactEmoji('error') );
+			
+			if ( reaction ) reaction.removeEmoji();
+		} ) );
 	} );
 }
 
