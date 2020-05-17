@@ -1915,6 +1915,10 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		if ( !pause[msg.guild.id] ) cmd_verify(lang, msg, args, line, wiki);
 		return;
 	}
+	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
+		console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
+		return msg.replyMsg( lang.missingperm + ' `MANAGE_ROLES`' );
+	}
 	
 	db.all( 'SELECT configid, role, editcount, usergroup, accountage FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
 		if ( error || !rows ) {
