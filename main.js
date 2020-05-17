@@ -2152,7 +2152,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 				}
 				got.get( url, options ).then( presponse => {
 					var pbody = presponse.body;
-					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || pbody.title || !( pbody.profile || pbody.value ) ) {
+					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || pbody.title || !( pbody.profile || pbody.value !== undefined ) ) {
 						if ( !( pbody && pbody.status === 404 ) ) {
 							console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg || pbody.title ) ) );
 							embed.setColor('#000000').setDescription( 'The verification failed due to an error, please try again.' );
