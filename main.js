@@ -1982,7 +1982,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				return;
 			}
 			var text = '';
-			if ( rows.length ) text += 'these are the current verifications for this server:\n\n' + rows.map( row => '`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)' ).join('\n\n');
+			if ( rows.length ) text += 'these are the current verifications for this server:\n\n' + rows.map( row => '`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` and `') : row.usergroup.split('|').join('` or `') ) + '`\nAccount age: `' + row.accountage + '` (in days)' ).join('\n\n');
 			else text += 'there are no verifications for this server yet.';
 			text += '\n\nAdd more verifications:\n`' + prefix + ' verification add <new role>`';
 			return msg.replyMsg( text, {split:true}, true );
@@ -2020,7 +2020,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row.role = roles;
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` and `') : row.usergroup.split('|').join('` or `') ) + '`\nAccount age: `' + row.accountage + '` (in days)';
 					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
 						text += '\n';
 						row.role.split('|').forEach( role => {
@@ -2041,7 +2041,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row[args[1]] = args[2];
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` and `') : row.usergroup.split('|').join('` or `') ) + '`\nAccount age: `' + row.accountage + '` (in days)';
 					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
 						text += '\n';
 						row.role.split('|').forEach( role => {
@@ -2053,18 +2053,23 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			}
 			if ( args[1] === 'usergroup' ) {
 				var usergroups = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).replace( / /g, '_' ).toLowerCase().split('|').filter( usergroup => usergroup.length );
+				var and_or = '';
+				if ( usergroups[0] === 'and' ) {
+					usergroups = usergroups.slice(1);
+					and_or = 'AND|';
+				}
 				if ( usergroups.length > 10 ) return msg.replyMsg( 'too many usergroups provided.', {}, true );
 				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( 'the provided usergroup is too long.', {}, true );
 				usergroups = usergroups.join('|');
-				if ( usergroups.length ) return db.run( 'UPDATE verification SET usergroup = ? WHERE guild = ? AND configid = ?', [usergroups, msg.guild.id, row.configid], function (dberror) {
+				if ( usergroups.length ) return db.run( 'UPDATE verification SET usergroup = ? WHERE guild = ? AND configid = ?', [and_or + usergroups, msg.guild.id, row.configid], function (dberror) {
 					if ( dberror ) {
 						console.log( '- Error while updating the verification: ' + dberror );
 						msg.replyMsg( 'sadly the verification couldn\'t be updated, please try again later.', {}, true );
 						return dberror;
 					}
 					console.log( '- Verification successfully updated.' );
-					row.usergroup = usergroups;
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					row.usergroup = and_or + usergroups;
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` and `') : row.usergroup.split('|').join('` or `') ) + '`\nAccount age: `' + row.accountage + '` (in days)';
 					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
 						text += '\n';
 						row.role.split('|').forEach( role => {
@@ -2093,7 +2098,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row.channel = '|' + channels + '|';
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` and `') : row.usergroup.split('|').join('` or `') ) + '`\nAccount age: `' + row.accountage + '` (in days)';
 					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
 						text += '\n';
 						row.role.split('|').forEach( role => {
@@ -2104,7 +2109,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} );
 			}
 		}
-		var text = 'this is the verification `' + row.configid + '` for this server:\n\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\n`' + prefix + ' verification ' + row.configid + ' channel <new channel>`\n\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\n`' + prefix + ' verification ' + row.configid + ' role <new role>`\n\nEdit count: `' + row.editcount + '`\n`' + prefix + ' verification ' + row.configid + ' editcount <new edit count>`\n\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\n`' + prefix + ' verification ' + row.configid + ' usergroup <new user group>`\n\nAccount age: `' + row.accountage + '` (in days)\n`' + prefix + ' verification ' + row.configid + ' accountage <new account age>`';
+		var text = 'this is the verification `' + row.configid + '` for this server:\n\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\n`' + prefix + ' verification ' + row.configid + ' channel <new channel>`\n\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\n`' + prefix + ' verification ' + row.configid + ' role <new role>`\n\nEdit count: `' + row.editcount + '`\n`' + prefix + ' verification ' + row.configid + ' editcount <new edit count>`\n\nUser group: `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` and `') : row.usergroup.split('|').join('` or `') ) + '`\n`' + prefix + ' verification ' + row.configid + ' usergroup <new user group>`\n\nAccount age: `' + row.accountage + '` (in days)\n`' + prefix + ' verification ' + row.configid + ' accountage <new account age>`';
 		if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
 			text += '\n';
 			row.role.split('|').forEach( role => {
@@ -2258,16 +2263,20 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					var verified = false;
 					var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
 					rows.forEach( row => {
-						// row.usergroup.split('|').every( usergroup => queryuser.groups.includes( usergroup ) )
-						if ( queryuser.editcount >= row.editcount && row.usergroup.split('|').some( usergroup => {
+						var and_or = 'some';
+						if ( row.usergroup.startsWith( 'AND|' ) ) {
+							row.usergroup = row.usergroup.replace( 'AND|', '' );
+							and_or = 'every';
+						}
+						if ( queryuser.editcount >= row.editcount && row.usergroup.split('|')[and_or]( usergroup => {
 							if ( !queryuser.groupmemberships ) return queryuser.groups.includes( usergroup );
 							if ( !queryuser.groups.includes( 'global_' + usergroup ) || queryuser.groupmemberships.some( member => member.group === usergroup ) ) {
 								return queryuser.groups.includes( usergroup );
 							}
 							return false;
-						} ) && accountage >= row.accountage && row.roles.split('|').some( role => !roles.includes( role ) ) ) {
+						} ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
 							verified = true;
-							row.roles.split('|').forEach( role => {
+							row.role.split('|').forEach( role => {
 								if ( !roles.includes( role ) ) {
 									if ( msg.guild.roles.cache.has(role) && msg.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
 									else if ( !missing.includes( role ) ) missing.push(role);
