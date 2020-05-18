@@ -1943,26 +1943,36 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		if ( args[0] === 'add' ) {
 			var limit = ( msg.guild.id in patreons ? 15 : 10 );
 			if ( rows.length >= limit ) return msg.replyMsg( 'you already reached the maximal amount of verifications.', {}, true );
-			args[1] = args.slice(1).join(' ').trim().replace( /^<\s*(.*)\s*>$/, '$1' );
-			if ( !args[1] ) return msg.replyMsg( 'please provide a role for the new verification.\n`' + prefix + ' verification add <new role>`', {}, true );
-			var new_role = '';
-			if ( /^\d+$/.test(args[1]) ) new_role = msg.guild.roles.cache.get(args[1]);
-			if ( !new_role ) new_role = msg.guild.roles.cache.find( role => role.name === args[1].replace( /^@/, '' ) );
-			if ( !new_role ) return msg.replyMsg( 'the provided role does not exist.', {}, true );
+			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
+			if ( !roles.length ) return msg.replyMsg( 'please provide a role for the new verification.\n`' + prefix + ' verification add <new role>`', {}, true );
+			if ( roles.length > 10 ) return msg.replyMsg( 'too many roles provided.', {}, true );
+			roles = roles.map( role => {
+				var new_role = '';
+				if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
+				if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
+				return new_role;
+			} );
+			if ( roles.some( role => !role ) ) return msg.replyMsg( 'the provided role does not exist.', {}, true );
+			roles = roles.map( role => role.id ).join('|');
 			var new_configid = 1;
 			for ( let i of rows.map( row => row.configid ) ) {
 				if ( new_configid === i ) new_configid++;
 				else break;
 			}
-			return db.run( 'INSERT INTO verification(role, guild, configid, channel) VALUES(?, ?, ?, ?)', [new_role.id, msg.guild.id, new_configid, '|' + msg.channel.id + '|'], function (dberror) {
+			return db.run( 'INSERT INTO verification(guild, configid, channel, role) VALUES(?, ?, ?, ?)', [msg.guild.id, new_configid, '|' + msg.channel.id + '|', roles], function (dberror) {
 				if ( dberror ) {
 					console.log( '- Error while updating the verification: ' + dberror );
 					msg.replyMsg( 'sadly the verification couldn\'t be updated, please try again later.', {}, true );
 					return dberror;
 				}
 				console.log( '- Verification successfully updated.' );
-				var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + new_configid + '`\nChannel: <#' + msg.channel.id + '>\nRole: <@&' + new_role.id + '>\nEdit count: `0`\nUser group: `user`\nAccount age: `0` (in days)';
-				if ( new_role.comparePositionTo(msg.guild.me.roles.highest) > 0 ) text += '\n\n**The role ' + new_role.toString() + ' is too high for ' + msg.guild.me.toString() + ' to assign!**'
+				var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + new_configid + '`\nChannel: <#' + msg.channel.id + '>\nRole: <@&' + roles.split('|').join('>, <@&') + '>\nEdit count: `0`\nUser group: `user`\nAccount age: `0` (in days)';
+				if ( roles.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+					text += '\n';
+					roles.split('|').forEach( role => {
+						if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) text += '\n**The role <@&' + role + '> is too high for ' + msg.guild.me.toString() + ' to assign!**';
+					} );
+				}
 				msg.replyMsg( text, {}, true );
 			} );
 		}
@@ -1972,7 +1982,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				return;
 			}
 			var text = '';
-			if ( rows.length ) text += 'these are the current verifications for this server:\n\n' + rows.map( row => '`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)' ).join('\n\n');
+			if ( rows.length ) text += 'these are the current verifications for this server:\n\n' + rows.map( row => '`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)' ).join('\n\n');
 			else text += 'there are no verifications for this server yet.';
 			text += '\n\nAdd more verifications:\n`' + prefix + ' verification add <new role>`';
 			return msg.replyMsg( text, {split:true}, true );
@@ -1990,22 +2000,33 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			} );
 		}
 		if ( args[2] ) {
-			args[2] = args.slice(2).join(' ').trim().replace( /^<\s*(.*)\s*>$/, '$1' );
+			args[2] = args.slice(2).join(' ').replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' );
 			if ( args[1] === 'role' ) {
-				var new_role = '';
-				if ( /^\d+$/.test(args[2]) ) new_role = msg.guild.roles.cache.get(args[2]);
-				if ( !new_role ) new_role = msg.guild.roles.cache.find( role => role.name === args[2].replace( /^@/, '' ) );
-				if ( !new_role ) return msg.replyMsg( 'the provided role does not exist.', {}, true );
-				return db.run( 'UPDATE verification SET role = ? WHERE guild = ? AND configid = ?', [new_role.id, msg.guild.id, row.configid], function (dberror) {
+				var roles = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).split('|').filter( role => role.length );
+				if ( roles.length > 10 ) return msg.replyMsg( 'too many roles provided.', {}, true );
+				roles = roles.map( role => {
+					var new_role = '';
+					if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
+					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
+					return new_role;
+				} );
+				if ( roles.some( role => !role ) ) return msg.replyMsg( 'the provided role does not exist.', {}, true );
+				roles = roles.map( role => role.id ).join('|');
+				if ( roles.length ) return db.run( 'UPDATE verification SET role = ? WHERE guild = ? AND configid = ?', [roles, msg.guild.id, row.configid], function (dberror) {
 					if ( dberror ) {
 						console.log( '- Error while updating the verification: ' + dberror );
 						msg.replyMsg( 'sadly the verification couldn\'t be updated, please try again later.', {}, true );
 						return dberror;
 					}
 					console.log( '- Verification successfully updated.' );
-					row.role = new_role.id;
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
-					if ( new_role.comparePositionTo(msg.guild.me.roles.highest) > 0 ) text += '\n\n**The role ' + new_role.toString() + ' is too high for ' + msg.guild.me.toString() + ' to assign!**'
+					row.role = roles;
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+						text += '\n';
+						row.role.split('|').forEach( role => {
+							if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) text += '\n**The role <@&' + role + '> is too high for ' + msg.guild.me.toString() + ' to assign!**';
+						} );
+					}
 					msg.replyMsg( text, {split:true}, true );
 				} );
 			}
@@ -2020,12 +2041,18 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row[args[1]] = args[2];
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+						text += '\n';
+						row.role.split('|').forEach( role => {
+							if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) text += '\n**The role <@&' + role + '> is too high for ' + msg.guild.me.toString() + ' to assign!**';
+						} );
+					}
 					msg.replyMsg( text, {split:true}, true );
 				} );
 			}
 			if ( args[1] === 'usergroup' ) {
-				var usergroups = args[2].toLowerCase().split('|').map( usergroup => usergroup.trim().replace( / /g, '_' ) ).filter( usergroup => usergroup.length );
+				var usergroups = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).replace( / /g, '_' ).toLowerCase().split('|').filter( usergroup => usergroup.length );
 				if ( usergroups.length > 10 ) return msg.replyMsg( 'too many usergroups provided.', {}, true );
 				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( 'the provided usergroup is too long.', {}, true );
 				usergroups = usergroups.join('|');
@@ -2037,20 +2064,26 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row.usergroup = usergroups;
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+						text += '\n';
+						row.role.split('|').forEach( role => {
+							if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) text += '\n**The role <@&' + role + '> is too high for ' + msg.guild.me.toString() + ' to assign!**';
+						} );
+					}
 					msg.replyMsg( text, {split:true}, true );
 				} );
 			}
 			if ( args[1] === 'channel' ) {
-				var channels = args[2].split('|').map( channel => channel.trim().replace( / /g, '_' ) ).filter( channel => channel.length );
+				var channels = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).split('|').filter( channel => channel.length );
 				if ( channels.length > 10 ) return msg.replyMsg( 'too many channels provided.', {}, true );
 				channels = channels.map( channel => {
 					var new_channel = '';
 					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( tc => tc.type === 'text' ).get(channel);
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( tc => tc.type === 'text' ).find( tc => tc.name === channel.replace( /^#/, '' ) );
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.type === 'text' ).find( gc => gc.name === channel.replace( /^#/, '' ) );
 					return new_channel;
 				} );
-				if ( channels.some( channel => channel === undefined ) ) return msg.replyMsg( 'the provided channel does not exist.', {}, true );
+				if ( channels.some( channel => !channel ) ) return msg.replyMsg( 'the provided channel does not exist.', {}, true );
 				channels = channels.map( channel => channel.id ).join('|');
 				if ( channels.length ) return db.run( 'UPDATE verification SET channel = ? WHERE guild = ? AND configid = ?', ['|' + channels + '|', msg.guild.id, row.configid], function (dberror) {
 					if ( dberror ) {
@@ -2060,12 +2093,25 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row.channel = '|' + channels + '|';
-					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					var text = 'the verification has been updated:\n\n`' + prefix + ' verification ' + row.configid + '`\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\nEdit count: `' + row.editcount + '`\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\nAccount age: `' + row.accountage + '` (in days)';
+					if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+						text += '\n';
+						row.role.split('|').forEach( role => {
+							if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) text += '\n**The role <@&' + role + '> is too high for ' + msg.guild.me.toString() + ' to assign!**';
+						} );
+					}
 					msg.replyMsg( text, {split:true}, true );
 				} );
 			}
 		}
-		var text = 'this is the verification `' + row.configid + '` for this server:\n\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\n`' + prefix + ' verification ' + row.configid + ' channel <new channel>`\n\nRole: <@&' + row.role + '>\n`' + prefix + ' verification ' + row.configid + ' role <new role>`\n\nEdit count: `' + row.editcount + '`\n`' + prefix + ' verification ' + row.configid + ' editcount <new edit count>`\n\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\n`' + prefix + ' verification ' + row.configid + ' usergroup <new user group>`\n\nAccount age: `' + row.accountage + '` (in days)\n`' + prefix + ' verification ' + row.configid + ' accountage <new account age>`\n\nDelete this verification:\n`' + prefix + ' verification ' + row.configid + ' delete`';
+		var text = 'this is the verification `' + row.configid + '` for this server:\n\nChannel: <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>\n`' + prefix + ' verification ' + row.configid + ' channel <new channel>`\n\nRole: <@&' + row.role.split('|').join('>, <@&') + '>\n`' + prefix + ' verification ' + row.configid + ' role <new role>`\n\nEdit count: `' + row.editcount + '`\n`' + prefix + ' verification ' + row.configid + ' editcount <new edit count>`\n\nUser group: `' + row.usergroup.split('|').join('` or `') + '`\n`' + prefix + ' verification ' + row.configid + ' usergroup <new user group>`\n\nAccount age: `' + row.accountage + '` (in days)\n`' + prefix + ' verification ' + row.configid + ' accountage <new account age>`';
+		if ( row.role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+			text += '\n';
+			row.role.split('|').forEach( role => {
+				if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) text += '\n**The role <@&' + role + '> is too high for ' + msg.guild.me.toString() + ' to assign!**';
+			} );
+		}
+		text += '\n\nDelete this verification:\n`' + prefix + ' verification ' + row.configid + ' delete`';
 		return msg.replyMsg( text, {split:true}, true );
 	} );
 }
@@ -2219,10 +2265,14 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								return queryuser.groups.includes( usergroup );
 							}
 							return false;
-						} ) && accountage >= row.accountage && !roles.includes( row.role ) ) {
+						} ) && accountage >= row.accountage && row.roles.split('|').some( role => !roles.includes( role ) ) ) {
 							verified = true;
-							if ( msg.guild.roles.cache.has(row.role) && msg.guild.me.roles.highest.comparePositionTo(row.role) > 0 ) roles.push(row.role);
-							else if ( !missing.includes( row.role ) ) missing.push(row.role);
+							row.roles.split('|').forEach( role => {
+								if ( !roles.includes( role ) ) {
+									if ( msg.guild.roles.cache.has(role) && msg.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
+									else if ( !missing.includes( role ) ) missing.push(role);
+								}
+							} );
 						}
 					} );
 					if ( verified ) {
