@@ -2287,7 +2287,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								if ( missing.length ) text += '\n\n' + lang.verify.qualified_error + ' ' + missing.map( role => '<@&' + role + '>' ).join(', ');
 								if ( comment.length ) text += '\n\n' + comment.join('\n');
 							}
-							msg.replyMsg( text, {embed}, false, false );
+							msg.replyMsg( text, {embed,split:true}, false, false );
 						} );
 					}
 					else {
