@@ -142,7 +142,7 @@
 		"notice": "Aviso:",
 		"qualified": "Qualificado para:",
 		"qualified_error": "Qualificado para, mas não foi possível adicionar:",
-		"help_guide": "Siga [esse guia](%s) para adicionar seu nome de usuário do Discord ao seu perfil wiki.",
+		"help_guide": "Siga [esse guia](%s) para adicionar seu nome de usuário do Discord ao seu perfil wiki:",
 		"help_gamepedia": "https://help-pt.gamepedia.com/Discord",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser"
 	},

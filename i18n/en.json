@@ -137,7 +137,7 @@
 		"notice": "Notice:",
 		"qualified": "Qualified for:",
 		"qualified_error": "Qualified for, but could not add:",
-		"help_guide": "Follow [this guide](%s) to add your Discord tag to your wiki profile.",
+		"help_guide": "Follow [this guide](%s) to add your Discord tag to your wiki profile:",
 		"help_gamepedia": "https://help.gamepedia.com/Discord",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser"
 	},

@@ -2215,10 +2215,10 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			} ).then( () => {
 				var options = {responseType: 'json'};
 				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
-					url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json';
+					url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now();
 				}
 				else if ( wiki.isFandom() ) {
-					url = 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '/attr/discordHandle?format=json';
+					url = 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '/attr/discordHandle?format=json&cache=' + Date.now();
 					options.headers = {Accept: 'application/hal+json'};
 				}
 				got.get( url, options ).then( presponse => {
@@ -2239,8 +2239,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						embed.setColor('#FFFF00').setDescription( lang.verify.user_failed.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
 						var help_link = '';
 						if ( wiki.endsWith( '.gamepedia.com/' ) ) help_link = lang.verify.help_gamepedia;
-						else if ( wiki.isFandom() ) help_link = lang.verify.help_fandom + '/' + username.toTitle(true) + '?c=wb&ch=' + encodeURIComponent( msg.channel.name ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
-						if ( help_link.length ) embed.addField( lang.verify.notice, lang.verify.help_guide.replaceSave( '%s', help_link ) );
+						else if ( wiki.isFandom() ) help_link = lang.verify.help_fandom + '/' + username.toTitle(true) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + '&ch=' + encodeURIComponent( msg.channel.name ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
+						if ( help_link.length ) embed.addField( lang.verify.notice, lang.verify.help_guide.replaceSave( '%s', help_link ) + '\n' + help_link );
 						return msg.replyMsg( lang.verify.user_failed_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
 					}
 					

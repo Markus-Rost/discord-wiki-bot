@@ -142,7 +142,7 @@
 		"notice": "Hinweis:",
 		"qualified": "Qualifiziert für:",
 		"qualified_error": "Qualifiziert für, aber konnte nicht hinzugefügt werden:",
-		"help_guide": "Folge [dieser Anleitung](%s) um dein Discord-Tag auf deinem Wiki-Profil hinzuzufügen.",
+		"help_guide": "Folge [dieser Anleitung](%s) um dein Discord-Tag auf deinem Wiki-Profil hinzuzufügen:",
 		"help_gamepedia": "https://help-de.gamepedia.com/Discord",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser"
 	},
