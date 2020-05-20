@@ -169,12 +169,12 @@
 			"female": "Female"
 		},
 		"groups": [
-			["global_bot", "Gamepedia bot"],
+			["global_bot", "Global bot"],
 			["hydra_staff", "Gamepedia staff"],
 			["wiki_manager", "Wiki manager"],
 			["content_team_member", "Content Team Member"],
 			["grasp", "GRASP"],
-			["bot-global", "Fandom bot"],
+			["bot-global", "Global bot"],
 			["staff", "Fandom staff"],
 			["wiki-manager", "Wiki manager"],
 			["helper", "Fandom helper"],
@@ -202,6 +202,7 @@
 			["autoreview", "autoreview"],
 			["autopatrol", "autopatrol"],
 			["authenticated", "authenticated"],
+			["autoconfirmed", "Autoconfirmed user"],
 			["user", "User"]
 		],
 		"info": {

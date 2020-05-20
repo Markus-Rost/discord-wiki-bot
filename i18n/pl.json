@@ -208,6 +208,7 @@
 			["autoreview", "autoreview"],
 			["autopatrol", "autopatrol"],
 			["authenticated", "authenticated"],
+			["autoconfirmed", "Automatycznie zatwierdzony użytkownik"],
 			["user", "Użytkownik"]
 		],
 		"info": {

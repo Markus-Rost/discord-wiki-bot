@@ -2506,7 +2506,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					var group = [lang.user.info.group];
 					var grouplist = lang.user.groups;
 					for ( var i = 0; i < grouplist.length; i++ ) {
-						if ( groups.includes( grouplist[i][0] ) && ( group.length === 1 || grouplist[i][0] !== 'user' ) ) {
+						if ( groups.includes( grouplist[i][0] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( grouplist[i][0] ) ) ) {
 							var thisSite = allSites.find( site => site.wiki_domain === body.query.general.servername );
 							if ( grouplist[i][0] === 'wiki_manager' && thisSite && thisSite.wiki_managers.includes( username ) ) {
 								group.push('**' + grouplist[i][1] + '**');
@@ -2878,7 +2878,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					var group = [lang.user.info.group];
 					var grouplist = lang.user.groups;
 					for ( var i = 0; i < grouplist.length; i++ ) {
-						if ( groups.includes( grouplist[i][0] ) && ( group.length === 1 || grouplist[i][0] !== 'user' ) ) {
+						if ( groups.includes( grouplist[i][0] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( grouplist[i][0] ) ) ) {
 							if ( grouplist[i][0] === 'wiki-manager' && body.query.allmessages[0]['*'] === username ) {
 								group.push('**' + grouplist[i][1] + '**');
 							}

@@ -204,6 +204,7 @@
 			["autoreview", "autoreview"],
 			["autopatrol", "autopatrol"],
 			["authenticated", "подтверждено"],
+			["autoconfirmed", "Автоподтверждённый участник"],
 			["user", "Пользователь"]
 		],
 		"info": {

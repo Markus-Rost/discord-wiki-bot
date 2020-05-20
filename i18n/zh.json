@@ -204,6 +204,7 @@
 			["autoreview", "自动复核用户"],
 			["autopatrol", "自动巡查/巡查豁免者"],
 			["authenticated", "认证用户"],
+			["autoconfirmed", "自动确认用户"],
 			["user", "用户"]
 		],
 		"info": {

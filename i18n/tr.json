@@ -206,6 +206,7 @@
 			["autoreview", "autoreview"],
 			["autopatrol", "autopatrol"],
 			["authenticated", "doğrulanmış"],
+			["autoconfirmed", "Otomatik onaylanmış kullanıcı"],
 			["user", "Kullanıcı"]
 		],
 		"info": {
