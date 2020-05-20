@@ -132,7 +132,7 @@
 		"user_failed_reply": "Twoja nazwa użytkownika na Discord nie pokrywa się z nazwą podaną na wiki \"%s\".",
 		"user_matches": "Twoja nazwa użytkownika na Discordzie %1$s pokrywa się z nazwą na wiki %2$s, ale nie kwalifikuje na żadną rolę.",
 		"user_matches_reply": "Twoja nazwa użytkownika Discord pokrywa się z nazwą użytkownika z wiki \"%s\", lecz nie kwalifikuje na żadną rolę.",
-		"user_verified": "Pomyślnie zweryfikowano użytkownik Discord %1$s jako użytkownika wiki %2$s.",
+		"user_verified": "Pomyślnie zweryfikowano użytkownika Discord %1$s jako użytkownika wiki %2$s.",
 		"user_verified_reply": "pomyślnie zweryfikowano Ciebie jako użytkownika wiki \"%s\".",
 		"discord": "Użytkownik Discord:",
 		"wiki": "Użytkownik Wiki:",
