@@ -11,6 +11,7 @@
 		"szukaj": "search",
 		"🎲": "random",
 		"dyskusje": "discussion",
+		"discussions": "discussion",
 		"dyskusja": "discussion"
 	},
 	"prefix": "prefiksem komend dla tego serwera jest `%s`. Możesz zmienić prefiks używając `%s settings prefix`. Lista wszystkich komend jest dostępna przez użycie `%s pomoc`.",
