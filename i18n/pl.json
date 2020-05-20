@@ -1,6 +1,7 @@
 {
 	"__translator": [
-		"Frisk"
+		"Frisk",
+		"Rail"
 	],
 	"lang": "pl",
 	"dateformat": "pl-PL",
@@ -177,10 +178,10 @@
 			["wiki_manager", "Menedżer wiki"],
 			["content_team_member", "Członek Zespołu Treści"],
 			["GRASP", "GRASP"],
-			["bot-global", "bot Fandom"],
-			["staff", "personel Fandomu"],
+			["bot-global", "bot globalny"],
+			["staff", "Fandom Staff"],
 			["wiki-manager", "Menedżer wiki"],
-			["helper", "pomocnik Fandomu"],
+			["helper", "Helper"],
 			["content-team-member", "Członek Zespołu Treści"],
 			["vstf", "VSTF"],
 			["soap", "SOAP"],
