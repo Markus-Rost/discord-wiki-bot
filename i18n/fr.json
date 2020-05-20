@@ -5,7 +5,7 @@
 	],
 	"lang": "fr",
 	"dateformat": "fr-FR",
-	"aliase": {
+	"aliases": {
 		"aide": "help",
 		"chercher": "search",
 		"🎲": "random",

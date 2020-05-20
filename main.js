@@ -879,11 +879,11 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		msg.reactEmoji('⚠️');
 	}
 	var invoke = title.split(' ')[0].toLowerCase();
-	var aliasInvoke = ( lang.aliase[invoke] || invoke );
+	var aliasInvoke = ( lang.aliases[invoke] || invoke );
 	var args = title.split(' ').slice(1);
 	
 	var mclang = minecraft[lang.lang];
-	var mcaliasInvoke = ( mclang.aliase[invoke] || invoke );
+	var mcaliasInvoke = ( mclang.aliases[invoke] || invoke );
 	if ( !msg.notminecraft && wiki === mclang.link && ( mcaliasInvoke in minecraftcmdmap || invoke.startsWith( '/' ) ) ) {
 		if ( mcaliasInvoke in minecraftcmdmap ) minecraftcmdmap[mcaliasInvoke](lang, mclang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
 		else minecraft_command(lang, mclang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
@@ -1248,7 +1248,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 		msg.reactEmoji('⚠️');
 	}
 	var invoke = title.split(' ')[0].toLowerCase();
-	var aliasInvoke = ( lang.aliase[invoke] || invoke );
+	var aliasInvoke = ( lang.aliases[invoke] || invoke );
 	var args = title.split(' ').slice(1);
 	
 	if ( aliasInvoke === 'random' && !args.join('') && !querystring && !fragment ) fandom_random(lang, msg, wiki, reaction, spoiler);
@@ -4932,7 +4932,7 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 
 function minecraft_command(lang, mclang, msg, befehl, args, title, cmd, querystring, fragment, reaction, spoiler) {
 	befehl = befehl.toLowerCase();
-	var aliasCmd = ( minecraft.cmd.aliase[befehl] || befehl );
+	var aliasCmd = ( minecraft.cmd.aliases[befehl] || befehl );
 	
 	if ( aliasCmd in minecraft.cmd.list ) {
 		var cmdSyntaxMap = minecraft.cmd.list[aliasCmd].map( command => {
@@ -5620,7 +5620,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 	var author = msg.author;
 	var channel = msg.channel;
 	var invoke = ( cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '' );
-	var aliasInvoke = ( lang.aliase[invoke] || invoke );
+	var aliasInvoke = ( lang.aliases[invoke] || invoke );
 	var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 	if ( cont.hasPrefix(prefix) && ownercmd ) {
 		var args = cont.split(' ').slice(2);
@@ -5635,7 +5635,7 @@ function newMessage(msg, wiki = defaultSettings.wiki, lang = i18n[defaultSetting
 				count++;
 				invoke = ( line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '' );
 				var args = line.split(' ').slice(2);
-				aliasInvoke = ( lang.aliase[invoke] || invoke );
+				aliasInvoke = ( lang.aliases[invoke] || invoke );
 				ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 				if ( channel.type === 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.id + ': Paused' );
 				else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + line );

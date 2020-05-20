@@ -5,7 +5,7 @@
 	],
 	"lang": "pt",
 	"dateformat": "pt-PT",
-	"aliase": {
+	"aliases": {
 		"ajuda": "help",
 		"teste": "test",
 		"página": "page",

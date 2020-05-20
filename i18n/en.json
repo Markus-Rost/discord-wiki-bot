@@ -5,7 +5,7 @@
 	],
 	"lang": "en",
 	"dateformat": "en-US",
-	"aliase": {
+	"aliases": {
 		"🎲": "random",
 		"discussions": "discussion"
 	},

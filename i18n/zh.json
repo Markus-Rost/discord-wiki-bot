@@ -5,7 +5,7 @@
 	],
 	"lang": "zh",
 	"dateformat": "zh-CN",
-	"aliase": {
+	"aliases": {
 		"🎲": "random",
 		"页面": "page",
 		"搜索": "search",

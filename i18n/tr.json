@@ -4,7 +4,7 @@
 	],
 	"lang": "tr",
 	"dateformat": "tr-TR",
-	"aliase": {
+	"aliases": {
 		"bilgi": "info",
 		"yardım": "help",
 		"sayfa": "page",

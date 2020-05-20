@@ -5,7 +5,7 @@
 	],
 	"lang": "pl",
 	"dateformat": "pl-PL",
-	"aliase": {
+	"aliases": {
 		"pomoc": "help",
 		"strona": "page",
 		"szukaj": "search",

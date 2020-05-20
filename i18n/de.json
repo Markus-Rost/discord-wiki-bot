@@ -4,7 +4,7 @@
 	],
 	"lang": "de",
 	"dateformat": "de-DE",
-	"aliase": {
+	"aliases": {
 		"hilfe": "help",
 		"seite": "page",
 		"suche": "search",
