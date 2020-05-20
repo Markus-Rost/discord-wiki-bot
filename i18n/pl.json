@@ -48,18 +48,18 @@
 		"prefixchanged": "zmieniono prefiks dla tego serwera na:",
 		"prefixhelp": "Użyj `%s <prefiks>` aby zmienić prefiks.\nPrefiks nie może zawierać spacji lub wzmianek!",
 		"inline enabled": {
-			"inline": "linkowanie wikisyntaxu jest obecnie włączone dla tego serwera.",
-			"channel inline": "linkowanie wikisyntaxu jest obecnie włączone dla tego kanału.",
-			"inlinechanged": "włączono linkowanie wikisyntaxu dla tego serwera.",
-			"channel inlinechanged": "włączono linkowanie wikisyntaxu dla tego kanału.",
-			"help": "Użyj `%1$s` aby wyłączyć linkowanie wikisyntaxu takiego jak `[[%2$s]]` czy `{{%2$s}}`."
+			"inline": "linkowanie w stylu syntaksu wiki jest obecnie włączone dla tego serwera.",
+			"channel inline": "linkowanie w stylu syntaksu wiki jest obecnie włączone dla tego kanału.",
+			"inlinechanged": "włączono linkowanie w stylu syntaksu wiki dla tego serwera.",
+			"channel inlinechanged": "włączono linkowanie w stylu syntaksu wiki dla tego kanału.",
+			"help": "Użyj `%1$s` aby wyłączyć linkowanie w stylu syntaksu wiki takiego jak `[[%2$s]]` czy `{{%2$s}}`."
 		},
 		"inline disabled": {
-			"inline": "linkowanie wikisyntaxu jest obecnie wyłączone dla tego serwera.",
-			"channel inline": "linkowanie wikisyntaxu jest obecnie wyłączone dla tego kanału.",
-			"inlinechanged": "wyłączono linkowanie wikisyntaxu dla tego serwera.",
-			"channel inlinechanged": "wyłączono linkowanie wikisyntaxu dla tego kanału.",
-			"help": "Użyj `%1$s` aby włączyć linkowanie wikisyntaxu takiego jak `[[%2$s]]` czy `{{%2$s}}`."
+			"inline": "linkowanie w stylu syntaksu wiki jest obecnie wyłączone dla tego serwera.",
+			"channel inline": "linkowanie w stylu syntaksu wiki jest obecnie wyłączone dla tego kanału.",
+			"inlinechanged": "wyłączono linkowanie w stylu syntaksu wiki dla tego serwera.",
+			"channel inlinechanged": "wyłączono linkowanie w stylu syntaksu wiki dla tego kanału.",
+			"help": "Użyj `%1$s` aby włączyć linkowanie w stylu syntaksu wiki takiego jak `[[%2$s]]` czy `{{%2$s}}`."
 		}
 	},
 	"pause": {
