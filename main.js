@@ -63,7 +63,7 @@ const minecraft = require('./minecraft.json');
 
 var pause = {};
 var stop = false;
-const defaultPermissions = new Discord.Permissions(268815424).toArray();
+const defaultPermissions = new Discord.Permissions(403033152).toArray();
 const timeoptions = {
 	year: 'numeric',
 	month: 'short',
@@ -148,7 +148,7 @@ function getSettings(trysettings = 1) {
 						getSettings(trysettings);
 					}
 				} );
-				db.run( 'CREATE TABLE IF NOT EXISTS verification(guild TEXT NOT NULL, configid INTEGER NOT NULL, channel TEXT NOT NULL, role TEXT NOT NULL, editcount INTEGER NOT NULL DEFAULT [0], usergroup TEXT NOT NULL DEFAULT [user], accountage INTEGER NOT NULL DEFAULT [0], UNIQUE(guild, configid))', [], function (error) {
+				db.run( 'CREATE TABLE IF NOT EXISTS verification(guild TEXT NOT NULL, configid INTEGER NOT NULL, channel TEXT NOT NULL, role TEXT NOT NULL, editcount INTEGER NOT NULL DEFAULT [0], usergroup TEXT NOT NULL DEFAULT [user], accountage INTEGER NOT NULL DEFAULT [0], rename INTEGER NOT NULL DEFAULT [0], UNIQUE(guild, configid))', [], function (error) {
 					if ( error ) {
 						console.log( '- Error while creating the verification table: ' + error );
 						return error;
@@ -1932,7 +1932,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		return msg.replyMsg( lang.missingperm + ' `MANAGE_ROLES`' );
 	}
 	
-	db.all( 'SELECT configid, channel, role, editcount, usergroup, accountage FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
+	db.all( 'SELECT configid, channel, role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
 		if ( error || !rows ) {
 			console.log( '- Error while getting the verifications: ' + error );
 			msg.reactEmoji('error', true);
@@ -1991,6 +1991,22 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}
 				console.log( '- Verification successfully removed.' );
 				msg.replyMsg( lang.verification.deleted, {}, true );
+			} );
+		}
+		if ( args[1] === 'rename' && !args.slice(2).join('') ) {
+			if ( !row.rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
+				console.log( msg.guild.id + ': Missing permissions - MANAGE_NICKNAMES' );
+				return msg.replyMsg( lang.missingperm + ' `MANAGE_NICKNAMES`' );
+			}
+			return db.run( 'UPDATE verification SET rename = ? WHERE guild = ? AND configid = ?', [( row.rename ? 0 : 1 ), msg.guild.id, row.configid], function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while updating the verification: ' + dberror );
+					msg.replyMsg( lang.verification.save_failed, {}, true );
+					return dberror;
+				}
+				console.log( '- Verification successfully updated.' );
+				row.rename = ( row.rename ? 0 : 1 );
+				msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
 			} );
 		}
 		if ( args[2] ) {
@@ -2078,7 +2094,15 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		}
 		return msg.replyMsg( lang.verification.current_selected.replace( '%1', row.configid ) + formatVerification(true) +'\n\n' + lang.verification.delete_current + '\n`' + prefix + ' verification ' + row.configid + ' delete`', {split:true}, true );
 		
-		function formatVerification(showCommands, hideRoles, {configid, channel = '|' + msg.channel.id + '|', role, editcount = 0, usergroup = 'user', accountage = 0} = row) {
+		function formatVerification(showCommands, hideNotice, {
+			configid,
+			channel = '|' + msg.channel.id + '|',
+			role,
+			editcount = 0,
+			usergroup = 'user',
+			accountage = 0,
+			rename = 0
+		} = row) {
 			var verification_text = '\n\n`' + prefix + ' verification ' + configid + '`';
 			verification_text += '\n' + lang.verification.channel + ' <#' + channel.split('|').filter( channel => channel.length ).join('>, <#') + '>';
 			if ( showCommands ) verification_text += '\n`' + prefix + ' verification ' + row.configid + ' channel ' + lang.verification.new_channel + '`\n';
@@ -2090,7 +2114,12 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( showCommands ) verification_text += '\n`' + prefix + ' verification ' + row.configid + ' usergroup ' + lang.verification.new_usergroup + '`\n';
 			verification_text += '\n' + lang.verification.accountage + ' `' + accountage + '` ' + lang.verification.indays;
 			if ( showCommands ) verification_text += '\n`' + prefix + ' verification ' + row.configid + ' accountage ' + lang.verification.new_accountage + '`\n';
-			if ( !hideRoles && role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+			verification_text += '\n' + lang.verification.rename + ' *`' + ( rename ? lang.verification.enabled : lang.verification.disabled ) + '`* ' + lang.verification.toggle;
+			if ( showCommands ) verification_text += '\n`' + prefix + ' verification ' + row.configid + ' rename`\n';
+			if ( !hideNotice && rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
+				verification_text += '\n\n' + lang.verification.rename_no_permission.replaceSave( '%s', msg.guild.me.toString() );
+			}
+			if ( !hideNotice && role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
 				verification_text += '\n';
 				role.split('|').forEach( role => {
 					if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) {
@@ -2113,14 +2142,13 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		return
 	}
 	
-	var username = args.join(' ').replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0];
-	if ( username.length > 250 ) username = username.substring(0, 250).trim();
+	var username = args.join(' ').replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0].substring(0, 250).trim();
 	if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/.test(username) ) {
 		username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/, '' ) );
 	}
 	if ( wiki.endsWith( '.gamepedia.com/' ) ) username = username.replace( /^userprofile\s*:/i, '' );
 	
-	db.all( 'SELECT role, editcount, usergroup, accountage FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
+	db.all( 'SELECT role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the verifications: ' + dberror );
 			embed.setTitle( username.escapeFormatting() ).setColor('#000000').setDescription( lang.verify.error );
@@ -2271,12 +2299,21 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						}
 					} );
 					if ( verified ) {
-						embed.setColor('#00FF00').setDescription( lang.verify.user_verified.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
+						embed.setColor('#00FF00').setDescription( lang.verify.user_verified.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) + ( rows.some( row => row.rename ) ? '\n' + lang.verify.user_renamed : '' ) );
 						var text = lang.verify.user_verified_reply.replaceSave( '%s', username.escapeFormatting() );
-						msg.member.roles.add( roles, lang.verify.audit_reason.replaceSave( '%s', username ) ).catch( error => {
-							embed.setColor('#008800');
-							comment.push(lang.verify.failed_roles);
-						} ).finally( () => {
+						var verify_promise = [
+							msg.member.roles.add( roles, lang.verify.audit_reason.replaceSave( '%s', username ) ).catch( error => {
+								embed.setColor('#008800');
+								comment.push(lang.verify.failed_roles);
+							} )
+						];
+						if ( rows.some( row => row.rename ) ) {
+							verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.verify.audit_reason.replaceSave( '%s', username ) ).catch( error => {
+								embed.setColor('#008800');
+								comment.push(lang.verify.failed_rename);
+							} ));
+						}
+						Promise.all(verify_promise).finally( () => {
 							if ( msg.showEmbed() ) {
 								if ( roles.length ) embed.addField( lang.verify.qualified, roles.map( role => '<@&' + role + '>' ).join('\n') );
 								if ( missing.length ) embed.setColor('#008800').addField( lang.verify.qualified_error, missing.map( role => '<@&' + role + '>' ).join('\n') );
