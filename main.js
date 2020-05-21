@@ -2275,6 +2275,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					var roles = [];
 					var missing = [];
 					var verified = false;
+					var rename = false;
 					var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
 					rows.forEach( row => {
 						var and_or = 'some';
@@ -2290,6 +2291,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							return false;
 						} ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
 							verified = true;
+							if ( row.rename ) rename = true;
 							row.role.split('|').forEach( role => {
 								if ( !roles.includes( role ) ) {
 									if ( msg.guild.roles.cache.has(role) && msg.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
@@ -2299,7 +2301,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						}
 					} );
 					if ( verified ) {
-						embed.setColor('#00FF00').setDescription( lang.verify.user_verified.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) + ( rows.some( row => row.rename ) ? '\n' + lang.verify.user_renamed : '' ) );
+						embed.setColor('#00FF00').setDescription( lang.verify.user_verified.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) + ( rename ? '\n' + lang.verify.user_renamed : '' ) );
 						var text = lang.verify.user_verified_reply.replaceSave( '%s', username.escapeFormatting() );
 						var verify_promise = [
 							msg.member.roles.add( roles, lang.verify.audit_reason.replaceSave( '%s', username ) ).catch( error => {
@@ -2307,7 +2309,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								comment.push(lang.verify.failed_roles);
 							} )
 						];
-						if ( rows.some( row => row.rename ) ) {
+						if ( rename ) {
 							verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.verify.audit_reason.replaceSave( '%s', username ) ).catch( error => {
 								embed.setColor('#008800');
 								comment.push(lang.verify.failed_rename);
