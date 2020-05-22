@@ -9,6 +9,9 @@
   },
   "author": "MarkusRost",
   "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^12.2.0",

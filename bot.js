@@ -5117,8 +5117,8 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		return;
 	}
 	
-	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.has('${args[1]}') && this.guilds.cache.get('${args[1]}').name` ).then( results => {
-		var guild = results.find( result => result !== false );
+	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name` ).then( results => {
+		var guild = results.find( result => result !== undefined );
 		if ( guild === undefined ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
 		if ( args[1] in patreons ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
 		db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {
@@ -5152,8 +5152,8 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		} );
 	} );
 	
-	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.has('${args[1]}') && this.guilds.cache.get('${args[1]}').name` ).then( results => {
-		var guild = results.find( result => result !== false );
+	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name` ).then( results => {
+		var guild = results.find( result => result !== undefined );
 		if ( guild === undefined ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
 		if ( !( args[1] in patreons ) ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
 		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
@@ -5188,8 +5188,8 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( !row ) return msg.replyMsg( 'you can\'t have any server.', {}, true );
 			var text = 'you can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
-				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.has(guild) && this.guilds.cache.get(guild).name )` ).then( results => {
-					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( ( results.find( result => result[i] !== false ) || [] )[i] || '' ) );
+				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
+					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== undefined )?.[i] || '' ) );
 					text += 'Currently you have ' + guilds.length + ' server:\n' + guilds.join('\n');
 					msg.replyMsg( text, {}, true );
 				} );
@@ -5208,8 +5208,8 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( !row ) return msg.replyMsg( '<@' + args[1] + '> can\'t have any server.', {}, true );
 			var text = '<@' + args[1] + '> can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
-				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.has(guild) && this.guilds.cache.get(guild).name )` ).then( results => {
-					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( ( results.find( result => result[i] !== false ) || [] )[i] || '' ) );
+				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
+					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== undefined )?.[i] || '' ) );
 					text += 'Currently they have ' + guilds.length + ' server:\n' + guilds.join('\n');
 					msg.replyMsg( text, {}, true );
 				} );
@@ -5990,6 +5990,14 @@ function removeSettings() {
 }
 
 
+process.on( 'message', message => {
+	if ( !message.shard ) return;
+	shardId = message.shard.id;
+} );
+
+client.on( 'error', error => log_error(error, true) );
+client.on( 'warn', warning => log_warn(warning, false) );
+
 client.login(process.env.token).catch( error => {
 	log_error(error, true, 'LOGIN-');
 	client.login(process.env.token).catch( error => {
@@ -6001,17 +6009,8 @@ client.login(process.env.token).catch( error => {
 	} );
 } );
 
-
-client.on( 'error', error => log_error(error, true) );
-client.on( 'warn', warning => log_warn(warning, false) );
-
 if ( isDebug ) client.on( 'debug', debug => {
 	if ( isDebug ) console.log( '- ' + shardId + ': Debug: ' + debug );
-} );
-
-process.on( 'message', message => {
-	if ( !message.shard ) return;
-	shardId = message.shard.id;
 } );
 
 

@@ -24,9 +24,16 @@ manager.on( 'shardCreate', shard => {
 			manager.shards.forEach( shard => shard.kill() );
 		}
 	} );
+	
+	shard.on( 'death', message => {
+		if ( message.exitCode === 1 ) {
+			console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
+			manager.respawn = false;
+		}
+	} );
 } );
 
-manager.spawn();
+manager.spawn().catch( error => console.error( '- ' + error.name + ': ' + error.message ) );
 
 async function graceful(signal) {
 	console.log( '- ' + signal + ': Disabling respawn...' );
