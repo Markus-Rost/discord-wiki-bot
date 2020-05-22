@@ -6006,7 +6006,7 @@ client.on( 'error', error => log_error(error, true) );
 client.on( 'warn', warning => log_warn(warning, false) );
 
 if ( isDebug ) client.on( 'debug', debug => {
-	if ( isDebug ) console.log( '- ' + shardId + 'Debug: ' + debug );
+	if ( isDebug ) console.log( '- ' + shardId + ': Debug: ' + debug );
 } );
 
 process.on( 'message', message => {

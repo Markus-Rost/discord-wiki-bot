@@ -1,9 +1,8 @@
 require('dotenv').config();
 const {ShardingManager} = require('discord.js');
-const manager = new ShardingManager( './main.js', {
+const manager = new ShardingManager( './bot.js', {
 	execArgv: ['--icu-data-dir=node_modules/full-icu'],
 	shardArgs: ( process.argv[2] === 'debug' ? ['debug'] : [] ),
-	totalShards:2,
 	token: process.env.token
 } );
 
