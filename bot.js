@@ -1947,7 +1947,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			var limit = ( msg.guild.id in patreons ? 15 : 10 );
 			if ( rows.length >= limit ) return msg.replyMsg( lang.verification.max_entries, {}, true );
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
-			if ( !roles.length ) return msg.replyMsg( lang.verification.no_role + '\n`' + prefix + ' verification add' + lang.verification.new_role + '`', {}, true );
+			if ( !roles.length ) return msg.replyMsg( lang.verification.no_role + '\n`' + prefix + ' verification add ' + lang.verification.new_role + '`', {}, true );
 			if ( roles.length > 10 ) return msg.replyMsg( lang.verification.role_max, {}, true );
 			roles = roles.map( role => {
 				var new_role = '';
@@ -1981,7 +1981,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			var text = '';
 			if ( rows.length ) text += lang.verification.current + rows.map( row => formatVerification(false, true, row) ).join('');
 			else text += lang.verification.missing;
-			text += '\n\n' + lang.verification.add_more + '\n`' + prefix + ' verification add' + lang.verification.new_role + '`';
+			text += '\n\n' + lang.verification.add_more + '\n`' + prefix + ' verification add ' + lang.verification.new_role + '`';
 			return msg.replyMsg( text, {split:true}, true );
 		}
 		var row = rows.find( row => row.configid.toString() === args[0] );
@@ -2082,17 +2082,43 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}
 				if ( usergroups.length > 10 ) return msg.replyMsg( lang.verification.usergroup_max, {}, true );
 				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( lang.verification.usergroup_too_long, {}, true );
-				usergroups = usergroups.join('|');
-				if ( usergroups.length ) return db.run( 'UPDATE verification SET usergroup = ? WHERE guild = ? AND configid = ?', [and_or + usergroups, msg.guild.id, row.configid], function (dberror) {
-					if ( dberror ) {
-						console.log( '- Error while updating the verification: ' + dberror );
-						msg.replyMsg( lang.verification.save_failed, {}, true );
-						return dberror;
+				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json', {
+					responseType: 'json'
+				} ).then( response => {
+					var body = response.body;
+					if ( body && body.warnings ) log_warn(body.warnings);
+					if ( response.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
+						if ( wiki.noWiki(response.url) || response.statusCode === 410 ) console.log( '- This wiki doesn\'t exist!' );
+						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
 					}
-					console.log( '- Verification successfully updated.' );
-					row.usergroup = and_or + usergroups;
-					msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
-				} );
+					var groups = body.query.allmessages.filter( group => !/\.(?:css|js)$/.test(group.name) && group.name !== 'group-all' ).map( group => {
+						return {
+							name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
+							content: group['*'].replace( / /g, '_' ).toLowerCase()
+						};
+					} );
+					usergroups = usergroups.map( usergroup => {
+						if ( groups.some( group => group.name === usergroup ) ) return usergroup;
+						if ( groups.some( group => group.content === usergroup ) ) return groups.find( group => group.content === usergroup ).name;
+						return usergroup;
+					} );
+				}, error => {
+					console.log( '- Error while getting the usergroups: ' + error );
+				} ).finally( () => {
+					usergroups = usergroups.join('|');
+					db.run( 'UPDATE verification SET usergroup = ? WHERE guild = ? AND configid = ?', [and_or + usergroups, msg.guild.id, row.configid], function (dberror) {
+						if ( dberror ) {
+							console.log( '- Error while updating the verification: ' + dberror );
+							msg.replyMsg( lang.verification.save_failed, {}, true );
+							return dberror;
+						}
+						console.log( '- Verification successfully updated.' );
+						row.usergroup = and_or + usergroups;
+						msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
+						
+						if ( reaction ) reaction.removeEmoji();
+					} );
+				} ) );
 			}
 		}
 		return msg.replyMsg( lang.verification.current_selected.replace( '%1', row.configid ) + formatVerification(true) +'\n\n' + lang.verification.delete_current + '\n`' + prefix + ' verification ' + row.configid + ' delete`', {split:true}, true );
