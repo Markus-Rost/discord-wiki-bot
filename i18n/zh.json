@@ -148,7 +148,7 @@
 		"qualified_error": "符合，但无法添加：",
 		"help_guide": "请根据[此指导](%s)来添加您的Discord用户名至您的wiki资料页。",
 		"help_gamepedia": "https://help.gamepedia.com/Discord",
-		"help_fandom": "https://community.fandom.com/zh/wiki/Help:Profiles/Discord"
+		"help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser"
 	},
 	"overview": {
 		"inaccurate": "统计信息可能出错",
