@@ -3,6 +3,7 @@ const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
 var isDebug = ( process.argv[2] === 'debug' );
+var shardId = null;
 var ready = {
 	patreons: false,
 	voice: false,
@@ -23,10 +24,10 @@ const cheerio = require('cheerio');
 const sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database( './wikibot.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, dberror => {
 	if ( dberror ) {
-		console.log( '- Error while connecting to the database: ' + dberror );
+		console.log( '- ' + shardId + ': Error while connecting to the database: ' + dberror );
 		return dberror;
 	}
-	console.log( '- Connected to the database.' );
+	console.log( '- ' + shardId + ': Connected to the database.' );
 } );
 
 var client = new Discord.Client( {
@@ -79,11 +80,11 @@ const defaultSettings = {
 	wiki: "https://community.fandom.com/"
 }
 
-var patreons = {};
+global.patreons = {};
 function getSettings(trysettings = 1) {
 	db.each( 'SELECT guild, prefix FROM discord WHERE patreon IS NOT NULL', [], (dberror, row) => {
 		if ( dberror ) {
-			console.log( '- ' + trysettings + '. Error while getting the patreon: ' + dberror );
+			console.log( '- ' + shardId + ': ' + trysettings + '. Error while getting the patreon: ' + dberror );
 				if ( trysettings < 10 ) {
 					trysettings++;
 					getSettings(trysettings);
@@ -97,51 +98,51 @@ function getSettings(trysettings = 1) {
 			if ( dberror.message === 'SQLITE_ERROR: no such table: discord' ) db.serialize( () => {
 				db.run( 'CREATE TABLE IF NOT EXISTS patreons(patreon TEXT PRIMARY KEY UNIQUE NOT NULL, count INTEGER NOT NULL)', [], function (error) {
 					if ( error ) {
-						console.log( '- Error while creating the patreons table: ' + error );
+						console.log( '- ' + shardId + ': Error while creating the patreons table: ' + error );
 						return error;
 					}
 					console.log( '- Created the patreons table.' );
 					db.run( 'CREATE INDEX idx_patreons_patreon ON patreons(patreon)', [], function (idxerror) {
 						if ( idxerror ) {
-							console.log( '- Error while creating the patreons index: ' + idxerror );
+							console.log( '- ' + shardId + ': Error while creating the patreons index: ' + idxerror );
 							return error;
 						}
-						console.log( '- Created the patreons index.' );
+						console.log( '- ' + shardId + ': Created the patreons index.' );
 					} );
 				} );
 				db.run( 'CREATE TABLE IF NOT EXISTS discord(guild TEXT NOT NULL, channel TEXT, lang TEXT NOT NULL DEFAULT [' + defaultSettings.lang + '], wiki TEXT NOT NULL DEFAULT [' + defaultSettings.wiki + '], prefix TEXT NOT NULL DEFAULT [' + process.env.prefix + '], patreon TEXT, voice INTEGER, inline INTEGER, UNIQUE(guild, channel), FOREIGN KEY(patreon) REFERENCES patreons(patreon) ON DELETE SET NULL)', [], function (error) {
 					if ( error ) {
-						console.log( '- Error while creating the discord table: ' + error );
+						console.log( '- ' + shardId + ': Error while creating the discord table: ' + error );
 						return error;
 					}
 					console.log( '- Created the discord table.' );
 					db.run( 'CREATE TRIGGER unique_discord_guild BEFORE INSERT ON discord WHEN NEW.channel IS NULL BEGIN SELECT CASE WHEN (SELECT 1 FROM discord WHERE guild = NEW.guild AND channel IS NULL) IS NOT NULL THEN RAISE(ABORT, "UNIQUE constraint failed: discord.guild, discord.channel") END; END;', [], function (idxerror) {
 						if ( idxerror ) {
-							console.log( '- Error while creating the discord guild trigger: ' + idxerror );
+							console.log( '- ' + shardId + ': Error while creating the discord guild trigger: ' + idxerror );
 							return error;
 						}
-						console.log( '- Created the discord guild trigger.' );
+						console.log( '- ' + shardId + ': Created the discord guild trigger.' );
 					} );
 					db.run( 'CREATE INDEX idx_discord_patreon ON discord(patreon) WHERE patreon IS NOT NULL', [], function (idxerror) {
 						if ( idxerror ) {
-							console.log( '- Error while creating the discord patreon index: ' + idxerror );
+							console.log( '- ' + shardId + ': Error while creating the discord patreon index: ' + idxerror );
 							return error;
 						}
-						console.log( '- Created the discord patreon index.' );
+						console.log( '- ' + shardId + ': Created the discord patreon index.' );
 					} );
 					db.run( 'CREATE INDEX idx_discord_voice ON discord(voice) WHERE voice IS NOT NULL', [], function (idxerror) {
 						if ( idxerror ) {
-							console.log( '- Error while creating the discord voice index: ' + idxerror );
+							console.log( '- ' + shardId + ': Error while creating the discord voice index: ' + idxerror );
 							return error;
 						}
-						console.log( '- Created the discord voice index.' );
+						console.log( '- ' + shardId + ': Created the discord voice index.' );
 					} );
 					db.run( 'CREATE INDEX idx_discord_channel ON discord(guild, channel DESC)', [], function (idxerror) {
 						if ( idxerror ) {
-							console.log( '- Error while creating the discord channel index: ' + idxerror );
+							console.log( '- ' + shardId + ': Error while creating the discord channel index: ' + idxerror );
 							return error;
 						}
-						console.log( '- Created the discord channel index.' );
+						console.log( '- ' + shardId + ': Created the discord channel index.' );
 					} );
 					if ( trysettings < 10 ) {
 						trysettings++;
@@ -150,16 +151,16 @@ function getSettings(trysettings = 1) {
 				} );
 				db.run( 'CREATE TABLE IF NOT EXISTS verification(guild TEXT NOT NULL, configid INTEGER NOT NULL, channel TEXT NOT NULL, role TEXT NOT NULL, editcount INTEGER NOT NULL DEFAULT [0], usergroup TEXT NOT NULL DEFAULT [user], accountage INTEGER NOT NULL DEFAULT [0], rename INTEGER NOT NULL DEFAULT [0], UNIQUE(guild, configid))', [], function (error) {
 					if ( error ) {
-						console.log( '- Error while creating the verification table: ' + error );
+						console.log( '- ' + shardId + ': Error while creating the verification table: ' + error );
 						return error;
 					}
-					console.log( '- Created the verification table.' );
+					console.log( '- ' + shardId + ': Created the verification table.' );
 					db.run( 'CREATE INDEX idx_verification_config ON verification(guild, configid ASC, channel)', [], function (idxerror) {
 						if ( idxerror ) {
-							console.log( '- Error while creating the verification index: ' + idxerror );
+							console.log( '- ' + shardId + ': Error while creating the verification index: ' + idxerror );
 							return error;
 						}
-						console.log( '- Created the verification index.' );
+						console.log( '- ' + shardId + ': Created the verification index.' );
 					} );
 				} );
 			} );
@@ -171,7 +172,7 @@ function getSettings(trysettings = 1) {
 			}
 			return dberror;
 		}
-		console.log( '- Patreons successfully loaded.' );
+		console.log( '- ' + shardId + ': Patreons successfully loaded.' );
 		ready.patreons = true;
 		getVoice();
 	} );
@@ -181,7 +182,7 @@ var voice = {};
 function getVoice(trysettings = 1) {
 	db.each( 'SELECT guild, lang FROM discord WHERE voice IS NOT NULL', [], (dberror, row) => {
 		if ( dberror ) {
-			console.log( '- ' + trysettings + '. Error while getting the voice channel: ' + dberror );
+			console.log( '- ' + shardId + ': ' + trysettings + '. Error while getting the voice channel: ' + dberror );
 			if ( trysettings < 10 ) {
 				trysettings++;
 				getVoice(trysettings);
@@ -191,14 +192,14 @@ function getVoice(trysettings = 1) {
 		voice[row.guild] = row.lang;
 	}, (dberror) => {
 		if ( dberror ) {
-			console.log( '- ' + trysettings + '. Error while getting the voice channels: ' + dberror );
+			console.log( '- ' + shardId + ': ' + trysettings + '. Error while getting the voice channels: ' + dberror );
 			if ( trysettings < 10 ) {
 				trysettings++;
 				getVoice(trysettings);
 			}
 			return dberror;
 		}
-		console.log( '- Voice channels successfully loaded.' );
+		console.log( '- ' + shardId + ': Voice channels successfully loaded.' );
 		ready.voice = true;
 	} );
 }
@@ -211,47 +212,51 @@ function getAllSites() {
 	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body || body.status !== 'okay' || !body.data || !body.data.wikis ) {
-			console.log( '- ' + response.statusCode + ': Error while gettings all sites: ' + ( body && body.error && body.error.info ) );
+			console.log( '- ' + shardId + ': ' + response.statusCode + ': Error while gettings all sites: ' + ( body && body.error && body.error.info ) );
 			ready.allSites = false;
 		}
 		else {
-			console.log( '- Sites successfully loaded.' );
+			console.log( '- ' + shardId + ': Sites successfully loaded.' );
 			allSites = JSON.parse(JSON.stringify(body.data.wikis.filter( site => /^[a-z\d-]{1,50}\.gamepedia\.com$/.test(site.wiki_domain) )));
 			allSites.filter( site => site.wiki_crossover ).forEach( site => site.wiki_crossover = site.wiki_crossover.replace( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{1,8}))?).*/, '$1' ) );
 		}
 	}, error => {
-			console.log( '- Error while gettings all sites: ' + error );
+			console.log( '- ' + shardId + ': Error while gettings all sites: ' + error );
 	} );
 }
 
 client.on( 'ready', () => {
-	console.log( '\n- Successfully logged in as ' + client.user.username + '!' );
+	console.log( '\n- ' + shardId + ': Successfully logged in as ' + client.user.username + '!\n' );
 	getSettings();
 	getAllSites();
 	
 	if ( !isDebug ) client.setInterval( () => {
-		console.log( '- Current server count: ' + client.guilds.cache.size );
+		console.log( '- ' + shardId + ': Current server count: ' + client.guilds.cache.size );
 		if ( process.env.dbltoken ) got.post( 'https://top.gg/api/bots/' + client.user.id + '/stats', {
 			headers: {
 				Authorization: process.env.dbltoken
 			},
 			json: {
-				server_count: client.guilds.cache.size
+				server_count: client.guilds.cache.size,
+				shard_count: client.shard.count,
+				shard_id: shardId
 			},
 			responseType: 'json'
 		} ).catch( error => {
-			console.log( '- Error while posting statistics to https://top.gg/bot/' + client.user.id + ': ' + error );
+			console.log( '- ' + shardId + ': Error while posting statistics to https://top.gg/bot/' + client.user.id + ': ' + error );
 		} );
 		if ( process.env.dbggtoken ) got.post( 'https://discord.bots.gg/api/v1/bots/' + client.user.id + '/stats', {
 			headers: {
 				Authorization: process.env.dbggtoken
 			},
 			json: {
-				guildCount: client.guilds.cache.size
+				guildCount: client.guilds.cache.size,
+				shardCount: client.shard.count,
+				shardId: shardId
 			},
 			responseType: 'json'
 		} ).catch( error => {
-			console.log( '- Error while posting statistics to https://discord.bots.gg/bots/' + client.user.id + ': ' + error );
+			console.log( '- ' + shardId + ': Error while posting statistics to https://discord.bots.gg/bots/' + client.user.id + ': ' + error );
 		} );
 	}, 10800000 ).unref();
 } );
@@ -547,7 +552,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				console.log( '- Settings successfully updated.' );
 				guild.prefix = args[1];
-				patreons[msg.guild.id] = args[1];
+				client.shard.broadcastEval( `global.patreons['${msg.guild.id}'] = '${args[1]}'` );
 				msg.replyMsg( lang.settings.prefixchanged + ' `' + args[1] + '`\n' + lang.settings.prefixhelp.replaceSave( '%s', args[1] + ' settings prefix' ), {}, true );
 			} );
 		}
@@ -717,7 +722,6 @@ function cmd_help(lang, msg, args, line, wiki) {
 }
 
 function cmd_say(lang, msg, args, line, wiki) {
-	args = args.toEmojis();
 	var text = args.join(' ');
 	var imgs = [];
 	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
@@ -822,14 +826,13 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 }
 
 async function cmd_stop(lang, msg, args, line, wiki) {
-	if ( args.join(' ').split('\n')[0].isMention(msg.guild) ) {
+	if ( args[0] === 'force' && args.slice(1).join(' ').split('\n')[0].isMention(msg.guild) ) {
 		await msg.replyMsg( 'I\'ll destroy myself now!', {}, true );
-		await client.destroy();
-		console.log( '- I\'m now shutting down!' );
-		setTimeout( async () => {
-			console.log( '- I need to long to close, terminating!' );
-			process.exit(1);
-		}, 1000 ).unref();
+		await client.shard.send('SIGKILL');
+	} else if ( args.join(' ').split('\n')[0].isMention(msg.guild) ) {
+		await msg.replyMsg( 'I\'ll restart myself now!', {}, true );
+		console.log( '\n- Restarting all shards!\n\n' );
+		await client.shard.respawnAll();
 	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 		cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
 	}
@@ -5114,10 +5117,11 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		return;
 	}
 	
-	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) {
-		if ( !client.guilds.cache.has(args[1]) ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
-		if ( args[1] in patreons ) return msg.replyMsg( '"' + client.guilds.cache.get(args[1]) + '" has the patreon features already enabled.', {}, true );
-		return db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {
+	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.has('${args[1]}') && this.guilds.cache.get('${args[1]}').name` ).then( results => {
+		var guild = results.find( result => result !== false );
+		if ( guild === undefined ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
+		if ( args[1] in patreons ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
+		db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the patreon: ' + dberror );
 				msg.replyMsg( 'I got an error while searching for you, please try again later.', {}, true );
@@ -5138,26 +5142,27 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 						return inserror;
 					}
 					console.log( '- Guild successfully added.' );
-					patreons[args[1]] = process.env.prefix;
-					msg.replyMsg( 'the patreon features are now enabled on "' + client.guilds.cache.get(args[1]) + '".', {}, true );
+					client.shard.broadcastEval( `global.patreons['${args[1]}'] = '${process.env.prefix}'` );
+					msg.replyMsg( 'the patreon features are now enabled on "' + guild + '".', {}, true );
 				} );
 				console.log( '- Guild successfully updated.' );
-				patreons[args[1]] = process.env.prefix;
-				msg.replyMsg( 'the patreon features are now enabled on "' + client.guilds.cache.get(args[1]) + '".', {}, true );
+				client.shard.broadcastEval( `global.patreons['${args[1]}'] = '${process.env.prefix}'` );
+				msg.replyMsg( 'the patreon features are now enabled on "' + guild + '".', {}, true );
 			} );
 		} );
-	}
+	} );
 	
-	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) {
-		if ( !client.guilds.cache.has(args[1]) ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
-		if ( !( args[1] in patreons ) ) return msg.replyMsg( '"' + client.guilds.cache.get(args[1]) + '" doesn\'t have the patreon features enabled.', {}, true );
-		return db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
+	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.has('${args[1]}') && this.guilds.cache.get('${args[1]}').name` ).then( results => {
+		var guild = results.find( result => result !== false );
+		if ( guild === undefined ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
+		if ( !( args[1] in patreons ) ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
+		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the guild: ' + dberror );
 				msg.replyMsg( 'I got an error while searching for the server, please try again later.', {}, true );
 				return dberror;
 			}
-			if ( !row ) return msg.replyMsg( 'you didn\'t enable the patreon features for "' + client.guilds.cache.get(args[1]) + '"!', {}, true );
+			if ( !row ) return msg.replyMsg( 'you didn\'t enable the patreon features for "' + guild + '"!', {}, true );
 			db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ?, patreon = NULL WHERE guild = ?', [row.lang, row.inline, process.env.prefix, args[1]], function (error) {
 				if ( error ) {
 					console.log( '- Error while updating the guild: ' + error );
@@ -5165,11 +5170,11 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					return error;
 				}
 				console.log( '- Guild successfully updated.' );
-				delete patreons[args[1]];
-				msg.replyMsg( 'the patreon features are now disabled on "' + client.guilds.cache.get(args[1]) + '".', {}, true );
+				client.shard.broadcastEval( `delete global.patreons['${args[1]}']` );
+				msg.replyMsg( 'the patreon features are now disabled on "' + guild + '".', {}, true );
 			} );
 		} );
-	}
+	} );
 	
 	if ( args[1] ) args[1] = args[1].replace( /^\\?<@!?(\d+)>$/, '$1' );
 	
@@ -5183,11 +5188,16 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( !row ) return msg.replyMsg( 'you can\'t have any server.', {}, true );
 			var text = 'you can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
-				var guilds = row.guilds.split(',').map( guild => '`' + guild + '` ' + ( client.guilds.cache.has(guild) ? client.guilds.cache.get(guild).name : '' ) );
-				text += 'Currently you have ' + guilds.length + ' server:\n' + guilds.join('\n');
+				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.has(guild) && this.guilds.cache.get(guild).name )` ).then( results => {
+					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( ( results.find( result => result[i] !== false ) || [] )[i] || '' ) );
+					text += 'Currently you have ' + guilds.length + ' server:\n' + guilds.join('\n');
+					msg.replyMsg( text, {}, true );
+				} );
 			}
-			else text += '*You don\'t have any server yet.*';
-			msg.replyMsg( text, {}, true );
+			else {
+				text += '*You don\'t have any server yet.*';
+				msg.replyMsg( text, {}, true );
+			}
 		} );
 		if ( msg.isOwner() && /^\d+$/.test(args.slice(1).join(' ')) ) return db.get( 'SELECT count, GROUP_CONCAT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [args[1]], (dberror, row) => {
 			if ( dberror ) {
@@ -5198,11 +5208,16 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( !row ) return msg.replyMsg( '<@' + args[1] + '> can\'t have any server.', {}, true );
 			var text = '<@' + args[1] + '> can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
-				var guilds = row.guilds.split(',').map( guild => '`' + guild + '` ' + ( client.guilds.cache.has(guild) ? client.guilds.cache.get(guild).name : '' ) );
-				text += 'Currently they have ' + guilds.length + ' server:\n' + guilds.join('\n');
+				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.has(guild) && this.guilds.cache.get(guild).name )` ).then( results => {
+					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( ( results.find( result => result[i] !== false ) || [] )[i] || '' ) );
+					text += 'Currently they have ' + guilds.length + ' server:\n' + guilds.join('\n');
+					msg.replyMsg( text, {}, true );
+				} );
 			}
-			else text += '*They don\'t have any server yet.*';
-			msg.replyMsg( text, {}, true );
+			else {
+				text += '*They don\'t have any server yet.*';
+				msg.replyMsg( text, {}, true );
+			}
 		} );
 	}
 	
@@ -5238,7 +5253,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 						return uperror;
 					}
 					console.log( '- Guild successfully updated.' );
-					delete patreons[eachrow.guild];
+					client.shard.broadcastEval( `delete global.patreons['${eachrow.guild}']` );
 				} );
 			}, (eacherror) => {
 				if ( eacherror ) {
@@ -5429,25 +5444,6 @@ Discord.Message.prototype.showEmbed = function() {
 
 Discord.Message.prototype.uploadFiles = function() {
 	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
-};
-
-Array.prototype.toEmojis = function() {
-	var text = this.join(' ');
-	var regex = /(<a?:)(\d+)(>)/g;
-	if ( regex.test(text) ) {
-		regex.lastIndex = 0;
-		var emojis = client.emojis.cache;
-		var entry = null;
-		while ( ( entry = regex.exec(text) ) !== null ) {
-			if ( emojis.has(entry[2]) ) {
-				text = text.replaceSave(entry[0], emojis.get(entry[2]).toString());
-			} else {
-				text = text.replaceSave(entry[0], entry[1] + 'unknown_emoji:' + entry[2] + entry[3]);
-			}
-		}
-		return text.split(' ');
-	}
-	else return this;
 };
 
 String.prototype.toLink = function(title = '', querystring = '', fragment = '', path, isMarkdown = false) {
@@ -5889,7 +5885,7 @@ client.on( 'guildDelete', guild => {
 			console.log( '- Error while removing the settings: ' + dberror );
 			return dberror;
 		}
-		if ( guild.id in patreons ) delete patreons[guild.id];
+		if ( guild.id in patreons ) client.shard.broadcastEval( `delete global.patreons['${guild.id}']` );
 		if ( guild.id in voice ) delete voice[guild.id];
 		console.log( '- Settings successfully removed.' );
 	} );
@@ -5924,7 +5920,7 @@ function removePatreons(guild, msg) {
 							return error;
 						}
 						console.log( '- Guild successfully updated.' );
-						delete patreons[guild];
+						client.shard.broadcastEval( `delete global.patreons['${guild}']`);
 						if ( msg ) msg.replyMsg( 'the patreon features are now disabled on that guild.', {}, true );
 					}
 					catch ( tryerror ) {
@@ -5944,48 +5940,52 @@ function removePatreons(guild, msg) {
 }
 
 function removeSettings() {
-	var guilds = [];
-	var channels = [];
-	db.each( 'SELECT guild, channel FROM discord', [], (dberror, row) => {
-		if ( dberror ) {
-			console.log( '- Error while getting the setting: ' + dberror );
-			return dberror;
-		}
-		if ( !row.channel && !client.guilds.cache.has(row.guild) ) {
-			if ( row.guild in patreons ) delete patreons[row.guild];
-			if ( row.guild in voice ) delete voice[row.guild];
-			return guilds.push(row.guild);
-		}
-		if ( row.channel && client.guilds.cache.has(row.guild) && !client.channels.cache.filter( channel => channel.type === 'text' ).has(row.channel) ) return channels.push(row.channel);
-	}, (error) => {
-		if ( error ) {
-			console.log( '- Error while getting the settings: ' + error );
-			return error;
-		}
-		if ( guilds.length ) {
-			db.run( 'DELETE FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while removing the guilds: ' + dberror );
-					return dberror;
-				}
-				console.log( '- Guilds successfully removed.' );
-			} );
-			db.run( 'DELETE FROM verification WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while removing the verifications: ' + dberror );
-					return dberror;
-				}
-				console.log( '- Verifications successfully removed.' );
-			} );
-		}
-		if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( channel => '?' ).join(', ') + ')', channels, function (dberror) {
+	client.shard.broadcastEval( `[[...this.guilds.cache.keys()], [...this.channels.cache.filter( channel => channel.type === 'text' ).keys()]]` ).then( results => {
+		var all_guilds = results.map( result => result[0] ).reduce( (acc, val) => acc.concat(val), [] );
+		var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
+		var guilds = [];
+		var channels = [];
+		db.each( 'SELECT guild, channel FROM discord', [], (dberror, row) => {
 			if ( dberror ) {
-				console.log( '- Error while removing the channels: ' + dberror );
+				console.log( '- Error while getting the setting: ' + dberror );
 				return dberror;
 			}
-			console.log( '- Channels successfully removed.' );
+			if ( !row.channel && !all_guilds.some(row.guild) ) {
+				if ( row.guild in patreons ) client.shard.broadcastEval( `delete global.patreons['${row.guild}']` );
+				if ( row.guild in voice ) delete voice[row.guild];
+				return guilds.push(row.guild);
+			}
+			if ( row.channel && all_guilds.some(row.guild) && !all_channels.some(row.channel) ) return channels.push(row.channel);
+		}, (error) => {
+			if ( error ) {
+				console.log( '- Error while getting the settings: ' + error );
+				return error;
+			}
+			if ( guilds.length ) {
+				db.run( 'DELETE FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
+					if ( dberror ) {
+						console.log( '- Error while removing the guilds: ' + dberror );
+						return dberror;
+					}
+					console.log( '- Guilds successfully removed.' );
+				} );
+				db.run( 'DELETE FROM verification WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
+					if ( dberror ) {
+						console.log( '- Error while removing the verifications: ' + dberror );
+						return dberror;
+					}
+					console.log( '- Verifications successfully removed.' );
+				} );
+			}
+			if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( channel => '?' ).join(', ') + ')', channels, function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while removing the channels: ' + dberror );
+					return dberror;
+				}
+				console.log( '- Channels successfully removed.' );
+			} );
+			if ( !guilds.length && !channels.length ) console.log( '- Settings successfully removed.' );
 		} );
-		if ( !guilds.length && !channels.length ) console.log( '- Settings successfully removed.' );
 	} );
 }
 
@@ -6006,7 +6006,12 @@ client.on( 'error', error => log_error(error, true) );
 client.on( 'warn', warning => log_warn(warning, false) );
 
 if ( isDebug ) client.on( 'debug', debug => {
-	if ( isDebug ) console.log( '- Debug: ' + debug );
+	if ( isDebug ) console.log( '- ' + shardId + 'Debug: ' + debug );
+} );
+
+process.on( 'message', message => {
+	if ( !message.shard ) return;
+	shardId = message.shard.id;
 } );
 
 
@@ -6029,23 +6034,20 @@ function log_warn(warning, api = true) {
 	}
 }
 
-async function graceful(code = 0) {
+async function graceful(signal) {
 	stop = true;
-	console.log( '- SIGTERM: Preparing to close...' );
+	console.log( '- ' + shardId + ': ' + signal + ': Preparing to close...' );
 	setTimeout( async () => {
-		console.log( '- SIGTERM: Destroying client...' );
+		console.log( '- ' + shardId + ': ' + signal + ': Destroying client...' );
 		await client.destroy();
 		await db.close( dberror => {
 			if ( dberror ) {
-				console.log( '- SIGTERM: Error while closing the database connection: ' + dberror );
+				console.log( '- ' + shardId + ': ' + signal + ': Error while closing the database connection: ' + dberror );
 				return dberror;
 			}
-			console.log( '- SIGTERM: Closed the database connection.' );
+			console.log( '- ' + shardId + ': ' + signal + ': Closed the database connection.' );
+			process.exit(0);
 		} );
-		setTimeout( async () => {
-			console.log( '- SIGTERM: Closing takes too long, terminating!' );
-			process.exit(code);
-		}, 2000 ).unref();
 	}, 1000 ).unref();
 }
 

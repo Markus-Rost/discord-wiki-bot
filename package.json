@@ -4,8 +4,8 @@
   "description": "Wiki-Bot is a bot for Discord with the purpose to easily link to Gamepedia and Fandom wikis. He resolves redirects and follows interwiki links.",
   "main": "main.js",
   "scripts": {
-    "test": "node --icu-data-dir=node_modules/full-icu main.js debug",
-    "start": "node --icu-data-dir=node_modules/full-icu main.js"
+    "test": "node main.js debug",
+    "start": "node main.js"
   },
   "author": "MarkusRost",
   "license": "ISC",
