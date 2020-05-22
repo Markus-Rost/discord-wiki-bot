@@ -2269,7 +2269,19 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			}, error => {
 				console.log( '- Error while getting the global block: ' + error );
 				comment.push(lang.verify.failed_gblock);
-			} ).then( () => {
+			} ).then( async () => {
+				// async check for editcount on Gamepedia, workaround for https://gitlab.com/hydrawiki/hydra/-/issues/5054
+				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+					try {
+						let ucresponse = await got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=500&ucuser=' + encodeURIComponent( username ) + '&format=json', {
+							responseType: 'json'
+						} );
+						if ( !ucresponse.body.continue ) queryuser.editcount = ucresponse.body.query.usercontribs.length;
+					} catch ( ucerror ) {
+						console.log( '- Error while working around the edit count: ' + ucerror )
+					}
+				}
+				
 				var options = {responseType: 'json'};
 				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
 					url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now();
@@ -5137,7 +5149,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		var user = await client.users.fetch(id).catch( () => {} );
+		var user = await client.users.fetch(id, false).catch( () => {} );
 		if ( user ) {
 			var username = ['User:', user.tag.escapeFormatting() + ' `' + user.id + '` <@' + user.id + '>'];
 			var guildlist = ['Guilds:', '*none*'];
