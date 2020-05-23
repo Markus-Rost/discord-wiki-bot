@@ -151,7 +151,8 @@
 		"qualified_error": "Qualifiziert für, aber konnte nicht hinzugefügt werden:",
 		"help_guide": "Folge [dieser Anleitung](%s) um dein Discord-Tag auf deinem Wiki-Profil hinzuzufügen:",
 		"help_gamepedia": "https://help-de.gamepedia.com/Discord",
-		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser"
+		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
+		"help_subpage": "Bitte füge dein Discord-Tag (%s) zu deiner Discord-Unterseite im Wiki hinzu:"
 	},
 	"overview": {
 		"inaccurate": "Statistiken können ungenau sein",

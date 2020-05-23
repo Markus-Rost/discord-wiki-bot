@@ -151,7 +151,8 @@
 		"qualified_error": "Pozwala na otrzymanie ról, których nie udało się dodać:",
 		"help_guide": "Podążaj za [tym poradnikiem](%s) w celu dodania nazwy użytkownika Discord na profil wiki.",
 		"help_gamepedia": "https://help-pl.gamepedia.com/Discord",
-		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser"
+		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
+		"help_subpage": "Please add your Discord tag (%s) to your Discord subpage on the wiki:"
 	},
 	"overview": {
 		"inaccurate": "Statystyki mogą być niedokładne",

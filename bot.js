@@ -2162,7 +2162,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 }
 
 function cmd_verify(lang, msg, args, line, wiki) {
-	if ( !( wiki.endsWith( '.gamepedia.com/' ) || wiki.isFandom() ) || msg.channel.type !== 'text' ) return cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+	if ( msg.channel.type !== 'text' ) return cmd_link(lang, msg, line.split(' ').slice(1).join(' '), wiki);
 	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
 		if ( msg.isAdmin() || msg.isOwner() ) {
 			console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
@@ -2200,9 +2200,15 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
-				console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
-				embed.setTitle( username.escapeFormatting() ).setColor('#000000').setDescription( lang.verify.error );
-				msg.replyMsg( lang.verify.error_reply, {embed}, false, false ).then( message => message.reactEmoji('error') );
+				if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+					console.log( '- This wiki doesn\'t exist!' );
+					msg.reactEmoji('nowiki');
+				}
+				else {
+					console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
+					embed.setTitle( username.escapeFormatting() ).setColor('#000000').setDescription( lang.verify.error );
+					msg.replyMsg( lang.verify.error_reply, {embed}, false, false ).then( message => message.reactEmoji('error') );
+				}
 				
 				if ( reaction ) reaction.removeEmoji();
 				return;
@@ -2236,7 +2242,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			else if ( wiki.isFandom() ) {
 				url = 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1';
 			}
-			got.get( url ).then( gbresponse => {
+			if ( url ) return got.get( url ).then( gbresponse => {
 				if ( gbresponse.statusCode !== 200 || !gbresponse.body ) {
 					console.log( '- ' + gbresponse.statusCode + ': Error while getting the global block.' );
 					comment.push(lang.verify.failed_gblock);
@@ -2296,13 +2302,17 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						if ( !( pbody && pbody.status === 404 ) ) {
 							console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg || pbody.title ) ) );
 							embed.setColor('#000000').setDescription( lang.verify.error );
-							return msg.replyMsg( lang.verify.error_reply, {embed}, false, false ).then( message => message.reactEmoji('error') );
+							msg.replyMsg( lang.verify.error_reply, {embed}, false, false ).then( message => message.reactEmoji('error') );
+							
+							if ( reaction ) reaction.removeEmoji();
+							return;
 						}
 					}
 					
 					var discordname = '';
 					if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 					else if ( pbody.value ) discordname = htmlToPlain( pbody.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
 					embed.addField( lang.verify.discord, msg.author.tag.escapeFormatting(), true ).addField( lang.verify.wiki, ( discordname || lang.verify.empty ), true );
 					if ( msg.author.tag.escapeFormatting() !== discordname ) {
 						embed.setColor('#FFFF00').setDescription( lang.verify.user_failed.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
@@ -2310,7 +2320,10 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						if ( wiki.endsWith( '.gamepedia.com/' ) ) help_link = lang.verify.help_gamepedia;
 						else if ( wiki.isFandom() ) help_link = lang.verify.help_fandom + '/' + username.toTitle(true) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + '&ch=' + encodeURIComponent( msg.channel.name ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
 						if ( help_link.length ) embed.addField( lang.verify.notice, lang.verify.help_guide.replaceSave( '%s', help_link ) + '\n' + help_link );
-						return msg.replyMsg( lang.verify.user_failed_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+						msg.replyMsg( lang.verify.user_failed_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+						
+						if ( reaction ) reaction.removeEmoji();
+						return;
 					}
 					
 					var roles = [];
@@ -2356,7 +2369,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								comment.push(lang.verify.failed_rename);
 							} ));
 						}
-						Promise.all(verify_promise).finally( () => {
+						return Promise.all(verify_promise).finally( () => {
 							if ( msg.showEmbed() ) {
 								if ( roles.length ) embed.addField( lang.verify.qualified, roles.map( role => '<@&' + role + '>' ).join('\n') );
 								if ( missing.length ) embed.setColor('#008800').addField( lang.verify.qualified_error, missing.map( role => '<@&' + role + '>' ).join('\n') );
@@ -2368,22 +2381,125 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								if ( comment.length ) text += '\n\n' + comment.join('\n');
 							}
 							msg.replyMsg( text, {embed,split:true}, false, false );
+							
+							if ( reaction ) reaction.removeEmoji();
 						} );
 					}
-					else {
-						embed.setColor('#FFFF00').setDescription( lang.verify.user_matches.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
-						msg.replyMsg( lang.verify.user_matches_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
-					}
+					
+					embed.setColor('#FFFF00').setDescription( lang.verify.user_matches.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
+					msg.replyMsg( lang.verify.user_matches_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+					
+					if ( reaction ) reaction.removeEmoji();
 				}, error => {
 					console.log( '- Error while getting the Discord tag: ' + error );
 					embed.setColor('#000000').setDescription( lang.verify.error );
 					msg.replyMsg( lang.verify.error_reply, {embed}, false, false ).then( message => message.reactEmoji('error') );
-				} ).finally( () => {
+					
 					if ( reaction ) reaction.removeEmoji();
 				} );
 			}, error => {
 				embed.setColor('#FF0000').setDescription( error.desc );
 				msg.replyMsg( error.reply, {embed}, false, false );
+				
+				if ( reaction ) reaction.removeEmoji();
+			} );
+			
+			got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json', {
+				responseType: 'json'
+			} ).then( mwresponse => {
+				var mwbody = mwresponse.body;
+				if ( mwbody && mwbody.warnings ) log_warn(mwbody.warnings);
+				if ( mwresponse.statusCode !== 200 || !mwbody || mwbody.batchcomplete === undefined || !mwbody.query || !mwbody.query.pages ) {
+					console.log( '- ' + mwresponse.statusCode + ': Error while getting the Discord tag: ' + ( mwbody && mwbody.error && mwbody.error.info ) );
+					embed.setColor('#000000').setDescription( lang.verify.error );
+					msg.replyMsg( lang.verify.error_reply, {embed}, false, false ).then( message => message.reactEmoji('error') );
+					
+					if ( reaction ) reaction.removeEmoji();
+					return;
+				}
+				var revision = Object.values(mwbody.query.pages)[0]?.revisions?.[0];
+				
+				var discordname = '';
+				if ( revision && revision.user === username ) discordname = revision.slots.main['*'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+				if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
+				embed.addField( lang.verify.discord, msg.author.tag.escapeFormatting(), true ).addField( lang.verify.wiki, ( discordname || lang.verify.empty ), true );
+				if ( msg.author.tag.escapeFormatting() !== discordname ) {
+					embed.setColor('#FFFF00').setDescription( lang.verify.user_failed.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
+					embed.addField( lang.verify.notice, lang.verify.help_subpage.replaceSave( '%s', '***`' + msg.author.tag + '`***' ) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit', '', body.query.general) );
+					msg.replyMsg( lang.verify.user_failed_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+					
+					if ( reaction ) reaction.removeEmoji();
+					return;
+				}
+				
+				var roles = [];
+				var missing = [];
+				var verified = false;
+				var rename = false;
+				var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+				rows.forEach( row => {
+					var and_or = 'some';
+					if ( row.usergroup.startsWith( 'AND|' ) ) {
+						row.usergroup = row.usergroup.replace( 'AND|', '' );
+						and_or = 'every';
+					}
+					if ( queryuser.editcount >= row.editcount && row.usergroup.split('|')[and_or]( usergroup => {
+						if ( !queryuser.groupmemberships ) return queryuser.groups.includes( usergroup );
+						if ( !queryuser.groups.includes( 'global_' + usergroup ) || queryuser.groupmemberships.some( member => member.group === usergroup ) ) {
+							return queryuser.groups.includes( usergroup );
+						}
+						return false;
+					} ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
+						verified = true;
+						if ( row.rename ) rename = true;
+						row.role.split('|').forEach( role => {
+							if ( !roles.includes( role ) ) {
+								if ( msg.guild.roles.cache.has(role) && msg.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
+								else if ( !missing.includes( role ) ) missing.push(role);
+							}
+						} );
+					}
+				} );
+				if ( verified ) {
+					embed.setColor('#00FF00').setDescription( lang.verify.user_verified.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) + ( rename ? '\n' + lang.verify.user_renamed : '' ) );
+					var text = lang.verify.user_verified_reply.replaceSave( '%s', username.escapeFormatting() );
+					var verify_promise = [
+						msg.member.roles.add( roles, lang.verify.audit_reason.replaceSave( '%s', username ) ).catch( error => {
+							embed.setColor('#008800');
+							comment.push(lang.verify.failed_roles);
+						} )
+					];
+					if ( rename ) {
+						verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.verify.audit_reason.replaceSave( '%s', username ) ).catch( error => {
+							embed.setColor('#008800');
+							comment.push(lang.verify.failed_rename);
+						} ));
+					}
+					return Promise.all(verify_promise).finally( () => {
+						if ( msg.showEmbed() ) {
+							if ( roles.length ) embed.addField( lang.verify.qualified, roles.map( role => '<@&' + role + '>' ).join('\n') );
+							if ( missing.length ) embed.setColor('#008800').addField( lang.verify.qualified_error, missing.map( role => '<@&' + role + '>' ).join('\n') );
+							if ( comment.length ) embed.setColor('#008800').addField( lang.verify.notice, comment.join('\n') );
+						}
+						else {
+							if ( roles.length ) text += '\n\n' + lang.verify.qualified + ' ' + roles.map( role => '<@&' + role + '>' ).join(', ');
+							if ( missing.length ) text += '\n\n' + lang.verify.qualified_error + ' ' + missing.map( role => '<@&' + role + '>' ).join(', ');
+							if ( comment.length ) text += '\n\n' + comment.join('\n');
+						}
+						msg.replyMsg( text, {embed,split:true}, false, false );
+						
+						if ( reaction ) reaction.removeEmoji();
+					} );
+				}
+				
+				embed.setColor('#FFFF00').setDescription( lang.verify.user_matches.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
+				msg.replyMsg( lang.verify.user_matches_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+				
+				if ( reaction ) reaction.removeEmoji();
+			}, error => {
+				console.log( '- Error while getting the Discord tag: ' + error );
+				embed.setColor('#000000').setDescription( lang.verify.error );
+				msg.replyMsg( lang.verify.error_reply, {embed}, false, false ).then( message => message.reactEmoji('error') );
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
@@ -2631,7 +2747,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						var embed = {};
 						var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group[0] + ' ' + group.slice(1).join(', ');
 					}
-					if ( wiki.endsWith( '.gamepedia.com/' ) ) got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json', {
+					if ( wiki.endsWith( '.gamepedia.com/' ) ) got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
 						responseType: 'json'
 					} ).then( presponse => {
 						var pbody = presponse.body;
@@ -2640,6 +2756,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						}
 						else {
 							if ( pbody.profile['link-discord'] ) {
+								if ( pbody.profile['link-discord'].length > 50 ) pbody.profile['link-discord'] = pbody.profile['link-discord'].substring(0, 50) + '\u2026';
 								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag === pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 								} );
@@ -2673,7 +2790,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
-					else if ( wiki.isFandom() ) got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json', {
+					else if ( wiki.isFandom() ) got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						},
@@ -2692,6 +2809,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							var biofield = profile.find( field => field.name === 'bio' );
 							if ( discordfield && discordfield.value ) {
 								discordfield.value = htmlToPlain( discordfield.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+								if ( discordfield.value.length > 50 ) discordfield.value = discordfield.value.substring(0, 50) + '\u2026';
 								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discordfield.value;
 								} );
@@ -2990,7 +3108,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group[0] + ' ' + group.slice(1).join(', ');
 					}
 					
-					got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json', {
+					got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						},
@@ -3009,6 +3127,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							var biofield = profile.find( field => field.name === 'bio' );
 							if ( discordfield && discordfield.value ) {
 								discordfield.value = htmlToPlain( discordfield.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+								if ( discordfield.value.length > 50 ) discordfield.value = discordfield.value.substring(0, 50) + '\u2026';
 								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discordfield.value;
 								} );
@@ -5188,7 +5307,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	}
 	
 	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name` ).then( results => {
-		var guild = results.find( result => result !== undefined );
+		var guild = results.find( result => result !== null );
 		if ( guild === undefined ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
 		if ( args[1] in patreons ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
 		db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {
@@ -5223,7 +5342,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	} );
 	
 	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name` ).then( results => {
-		var guild = results.find( result => result !== undefined );
+		var guild = results.find( result => result !== null );
 		if ( guild === undefined ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
 		if ( !( args[1] in patreons ) ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
 		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
@@ -5259,7 +5378,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			var text = 'you can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
 				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
-					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== undefined )?.[i] || '' ) );
+					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== null )?.[i] || '' ) );
 					text += 'Currently you have ' + guilds.length + ' server:\n' + guilds.join('\n');
 					msg.replyMsg( text, {}, true );
 				} );
@@ -5279,7 +5398,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			var text = '<@' + args[1] + '> can have up to ' + row.count + ' server.\n\n';
 			if ( row.guilds ) {
 				client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
-					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== undefined )?.[i] || '' ) );
+					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== null )?.[i] || '' ) );
 					text += 'Currently they have ' + guilds.length + ' server:\n' + guilds.join('\n');
 					msg.replyMsg( text, {}, true );
 				} );
