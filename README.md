@@ -30,8 +30,8 @@ For a full list with all commands use `!wiki help`
 | `!wiki diff <page name>` | **Wiki-Bot** will answer with a link to the last diff on the article in the wiki. |
 | `!wiki random` | **Wiki-Bot** will answer with a link to a random page in the wiki. |
 | `!wiki overview` | **Wiki-Bot** will show some information and statistics about the wiki. |
-| `!wiki discussion <search term>` | **Wiki-Bot** will answer with a link to a matching discussion thread in the Fandom wiki.
-| `!wiki discussion post <search term>` | **Wiki-Bot** will answer with a link to a matching discussion post in the Fandom wiki.
+| `!wiki discussion <search term>` | **Wiki-Bot** will answer with a link to a matching discussion thread in the Fandom wiki. |
+| `!wiki discussion post <search term>` | **Wiki-Bot** will answer with a link to a matching discussion post in the Fandom wiki. |
 | `!wiki info` | **Wiki-Bot** will introduce himself. |
 | `!wiki help` | **Wiki-Bot** will list all the commands that he understands. |
 | `!wiki help <bot command>` | **Wiki-Bot** will explain the command. |
@@ -65,12 +65,12 @@ For a full list with all administrator commands use `!wiki help admin`
 Using the `!wiki verify <wiki username>` command, users are able to verify themselves as a specific wiki user by using the Discord field on their wiki profile. If the user matches and user verifications are set up on the server, **Wiki-Bot** will give them the roles for all verification entries they matched.
 
 Using the `!wiki verification` command, admins can add up to 10 verification entries on a server. Every verification entry allows for multiple restrictions on when a user should match the verification.
-- Channel to use the `!wiki verify` command in.
-- Role to get when matching the verification entry.
-- Required edit count on the wiki to match the verification entry.
-- Required user group to be a member of on the wiki to match the verification entry.
-- Required account age in days to match the verification entry.
-- Whether the Discord users nickname should be set to their wiki username when they match the verification entry.
+* Channel to use the `!wiki verify` command in.
+* Role to get when matching the verification entry.
+* Required edit count on the wiki to match the verification entry.
+* Required user group to be a member of on the wiki to match the verification entry.
+* Required account age in days to match the verification entry.
+* Whether the Discord users nickname should be set to their wiki username when they match the verification entry.
 
 See the [admin commands](#admin) or `!wiki help verification` on how to change the wiki verification entries on the server.
 

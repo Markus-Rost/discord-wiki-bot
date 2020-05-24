@@ -1954,7 +1954,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		}
 		
 		var prefix = ( patreons[msg.guild.id] || process.env.prefix );
-		if ( args[0] === 'add' ) {
+		if ( args[0].toLowerCase() === 'add' ) {
 			var limit = ( msg.guild.id in patreons ? 15 : 10 );
 			if ( rows.length >= limit ) return msg.replyMsg( lang.verification.max_entries, {}, true );
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
@@ -1964,6 +1964,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				var new_role = '';
 				if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
 				if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
+				if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
 				return new_role;
 			} );
 			if ( roles.some( role => !role ) ) return msg.replyMsg( lang.verification.role_missing, {}, true );
@@ -1996,6 +1997,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			return msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true}, true );
 		}
 		var row = rows.find( row => row.configid.toString() === args[0] );
+		if ( args[1] ) args[1] = args[1].toLowerCase();
 		if ( args[1] === 'delete' && !args.slice(2).join('') ) {
 			return db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [msg.guild.id, row.configid], function (dberror) {
 				if ( dberror ) {
@@ -2032,6 +2034,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					var new_channel = '';
 					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( tc => tc.type === 'text' ).get(channel);
 					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.type === 'text' ).find( gc => gc.name === channel.replace( /^#/, '' ) );
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.type === 'text' ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
 					return new_channel;
 				} );
 				if ( channels.some( channel => !channel ) ) return msg.replyMsg( lang.verification.channel_missing, {}, true );
@@ -2054,6 +2057,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					var new_role = '';
 					if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
 					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
+					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
 					return new_role;
 				} );
 				if ( roles.some( role => !role ) ) return msg.replyMsg( lang.verification.role_missing, {}, true );
@@ -2328,7 +2332,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						embed.setColor('#FFFF00').setDescription( lang.verify.user_failed.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
 						var help_link = '';
 						if ( wiki.endsWith( '.gamepedia.com/' ) ) help_link = lang.verify.help_gamepedia;
-						else if ( wiki.isFandom() ) help_link = lang.verify.help_fandom + '/' + username.toTitle(true) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + '&ch=' + encodeURIComponent( msg.channel.name ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
+						else if ( wiki.isFandom() ) help_link = lang.verify.help_fandom + '/' + username.toTitle(true) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
 						if ( help_link.length ) embed.addField( lang.verify.notice, lang.verify.help_guide.replaceSave( '%s', help_link ) + '\n' + help_link );
 						msg.replyMsg( lang.verify.user_failed_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
 						
