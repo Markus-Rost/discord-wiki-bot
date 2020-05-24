@@ -1954,7 +1954,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		}
 		
 		var prefix = ( patreons[msg.guild.id] || process.env.prefix );
-		if ( args[0].toLowerCase() === 'add' ) {
+		if ( args[0] && args[0].toLowerCase() === 'add' ) {
 			var limit = ( msg.guild.id in patreons ? 15 : 10 );
 			if ( rows.length >= limit ) return msg.replyMsg( lang.verification.max_entries, {}, true );
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
