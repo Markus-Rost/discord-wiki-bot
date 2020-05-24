@@ -226,6 +226,7 @@ function getAllSites() {
 }
 
 client.on( 'ready', () => {
+	client.ready = true;
 	console.log( '\n- ' + shardId + ': Successfully logged in as ' + client.user.username + '!\n' );
 	getSettings();
 	getAllSites();
@@ -260,6 +261,7 @@ client.on( 'ready', () => {
 		} );
 	}, 10800000 ).unref();
 } );
+client.on( 'shardDisconnect', () => client.ready = false );
 	
 	
 var cmdmap = {
@@ -682,7 +684,8 @@ function cmd_help(lang, msg, args, line, wiki) {
 	var cmds = lang.help.list;
 	var isMinecraft = ( wiki === minecraft[lang.lang].link );
 	var isPatreon = ( msg.channel.type === 'text' && msg.guild.id in patreons );
-	var cmdintro = '🔹 `' + ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix ) + ' ';
+	var prefix = ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix );
+	var cmdintro = '🔹 `' + prefix + ' ';
 	if ( args.join('') ) {
 		if ( args.join(' ').isMention(msg.guild) ) {
 			if ( !( msg.isAdmin() && msg.defaultSettings ) ) cmd_helpserver(lang, msg);
@@ -690,8 +693,8 @@ function cmd_help(lang, msg, args, line, wiki) {
 		else if ( args[0].toLowerCase() === 'admin' ) {
 			if ( msg.channel.type !== 'text' || msg.isAdmin() ) {
 				var cmdlist = lang.help.admin + '\n' + cmds.filter( cmd => cmd.admin && !cmd.hide && ( !cmd.patreon || isPatreon ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
-				cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) );
-				msg.sendChannel( cmdlist, {split:true} );
+				cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) ).replaceSave( /@prefix/g, prefix );
+				msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 			}
 			else {
 				msg.replyMsg( lang.help.noadmin );
@@ -699,25 +702,25 @@ function cmd_help(lang, msg, args, line, wiki) {
 		}
 		else if ( args[0].toLowerCase() === 'minecraft' ) {
 			var cmdlist = '<' + minecraft[lang.lang].link + '>\n' + cmds.filter( cmd => cmd.minecraft && !cmd.hide ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
-			cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) );
-			msg.sendChannel( cmdlist, {split:true} );
+			cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) ).replaceSave( /@prefix/g, prefix );
+			msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 		}
 		else {
 			var cmdlist = cmds.filter( cmd => cmd.cmd.split(' ')[0] === args[0].toLowerCase() && !cmd.unsearchable && ( msg.channel.type !== 'text' || !cmd.admin || msg.isAdmin() ) && ( !cmd.patreon || isPatreon ) && ( !cmd.minecraft || isMinecraft ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
-			cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) );
+			cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) ).replaceSave( /@prefix/g, prefix );
 			if ( cmdlist === '' ) msg.reactEmoji('❓');
-			else msg.sendChannel( cmdlist, {split:true} );
+			else msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 		}
 	}
 	else if ( msg.isAdmin() && pause[msg.guild.id] ) {
 		var cmdlist = lang.help.pause + '\n' + cmds.filter( cmd => cmd.pause && ( !cmd.patreon || isPatreon ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
-		cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) );
-		msg.sendChannel( cmdlist, {split:true}, true );
+		cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) ).replaceSave( /@prefix/g, prefix );
+		msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}}, true );
 	}
 	else {
-		var cmdlist = lang.help.all + '\n' + cmds.filter( cmd => !cmd.hide && !cmd.admin && ( !cmd.patreon || isPatreon ) && !( cmd.inline && msg.noInline ) && ( !cmd.minecraft || isMinecraft ) ).map( cmd => ( cmd.inline ? '🔹 `' : cmdintro ) + cmd.cmd + '`\n\t' + cmd.desc ).join('\n') + '\n\n🔸 ' + lang.help.footer;
-		cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) );
-		msg.sendChannel( cmdlist, {split:true} );
+		var cmdlist = lang.help.all + '\n' + cmds.filter( cmd => !cmd.hide && !cmd.admin && ( !cmd.patreon || isPatreon ) && ( !cmd.fandom || wiki.isFandom() ) && !( cmd.inline && msg.noInline ) && ( !cmd.minecraft || isMinecraft ) ).map( cmd => ( cmd.inline ? '🔹 `' : cmdintro ) + cmd.cmd + '`\n\t' + cmd.desc ).join('\n') + '\n\n🔸 ' + lang.help.footer;
+		cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) ).replaceSave( /@prefix/g, prefix );
+		msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 	}
 }
 
@@ -789,6 +792,14 @@ function cmd_test(lang, msg, args, line, wiki) {
 				}
 				embed.addField( wiki, ping );
 			} ).finally( () => {
+				if ( msg.isOwner() ) return client.shard.fetchClientValues('ready').then( values => {
+					return '```java\n' + values.map( (ready, id) => id + ': ' + ready ).join('\n') + '\n```';
+				}, error => {
+					return '```js\n' + error.name + ': ' + error.message + '\n```';
+				} ).then( shards => {
+					embed.addField( 'Shards', shards );
+					message.edit( message.content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+				} );
 				message.edit( message.content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
 			} );
 		} );
@@ -1982,7 +1993,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( rows.length ) text += lang.verification.current + rows.map( row => formatVerification(false, true, row) ).join('');
 			else text += lang.verification.missing;
 			text += '\n\n' + lang.verification.add_more + '\n`' + prefix + ' verification add ' + lang.verification.new_role + '`';
-			return msg.replyMsg( text, {split:true}, true );
+			return msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true}, true );
 		}
 		var row = rows.find( row => row.configid.toString() === args[0] );
 		if ( args[1] === 'delete' && !args.slice(2).join('') ) {
@@ -2009,7 +2020,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}
 				console.log( '- Verification successfully updated.' );
 				row.rename = ( row.rename ? 0 : 1 );
-				msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
+				msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.verification.updated + formatVerification(), {split:true}, true );
 			} );
 		}
 		if ( args[2] ) {
@@ -2033,7 +2044,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row.channel = '|' + channels + '|';
-					msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
+					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.verification.updated + formatVerification(), {split:true}, true );
 				} );
 			}
 			if ( args[1] === 'role' ) {
@@ -2056,7 +2067,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row.role = roles;
-					msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
+					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.verification.updated + formatVerification(), {split:true}, true );
 				} );
 			}
 			if ( ( args[1] === 'editcount' || args[1] === 'accountage' ) && /^\d+$/.test(args[2]) ) {
@@ -2070,7 +2081,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					}
 					console.log( '- Verification successfully updated.' );
 					row[args[1]] = args[2];
-					msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
+					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.verification.updated + formatVerification(), {split:true}, true );
 				} );
 			}
 			if ( args[1] === 'usergroup' ) {
@@ -2100,6 +2111,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					usergroups = usergroups.map( usergroup => {
 						if ( groups.some( group => group.name === usergroup ) ) return usergroup;
 						if ( groups.some( group => group.content === usergroup ) ) return groups.find( group => group.content === usergroup ).name;
+						if ( /^admins?$/.test(usergroup) ) return 'sysop'
 						return usergroup;
 					} );
 				}, error => {
@@ -2114,14 +2126,14 @@ function cmd_verification(lang, msg, args, line, wiki) {
 						}
 						console.log( '- Verification successfully updated.' );
 						row.usergroup = and_or + usergroups;
-						msg.replyMsg( lang.verification.updated + formatVerification(), {split:true}, true );
+						msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.verification.updated + formatVerification(), {split:true}, true );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
 				} ) );
 			}
 		}
-		return msg.replyMsg( lang.verification.current_selected.replace( '%1', row.configid ) + formatVerification(true) +'\n\n' + lang.verification.delete_current + '\n`' + prefix + ' verification ' + row.configid + ' delete`', {split:true}, true );
+		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.verification.current_selected.replace( '%1', row.configid ) + formatVerification(true) +'\n\n' + lang.verification.delete_current + '\n`' + prefix + ' verification ' + row.configid + ' delete`', {split:true}, true );
 		
 		function formatVerification(showCommands, hideNotice, {
 			configid,
@@ -2187,11 +2199,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		if ( !rows.length ) return msg.replyMsg( lang.verify.missing );
 		
 		if ( !username.trim() ) {
-			/*
 			args[0] = line.split(' ')[1];
+			if ( args[0] === 'verification' ) args[0] = 'verify';
 			return cmd_help(lang, msg, args, line);
-			*/
-			return msg.sendChannel( '🔹 `' + ( patreons[msg.guild.id] || process.env.prefix ) + ' verify <wiki_username>`\n\tUse this command to verify your Discord account with your wiki account and get roles matching your wiki account.' );
 		}
 		var embed = new Discord.MessageEmbed().setFooter( lang.verify.footer + ' • ' + new Date().toLocaleString(lang.dateformat, timeoptions) ).setTimestamp();
 		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json', {
@@ -2425,7 +2435,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 				embed.addField( lang.verify.discord, msg.author.tag.escapeFormatting(), true ).addField( lang.verify.wiki, ( discordname || lang.verify.empty ), true );
 				if ( msg.author.tag.escapeFormatting() !== discordname ) {
 					embed.setColor('#FFFF00').setDescription( lang.verify.user_failed.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
-					embed.addField( lang.verify.notice, lang.verify.help_subpage.replaceSave( '%s', '***`' + msg.author.tag + '`***' ) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit', '', body.query.general) );
+					embed.addField( lang.verify.notice, lang.verify.help_subpage.replaceSave( '%s', '**`' + msg.author.tag + '`**' ) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit', '', body.query.general) );
 					msg.replyMsg( lang.verify.user_failed_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
 					
 					if ( reaction ) reaction.removeEmoji();

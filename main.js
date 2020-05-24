@@ -6,6 +6,7 @@ const manager = new ShardingManager( './bot.js', {
 	token: process.env.token
 } );
 
+var diedShards = 0;
 manager.on( 'shardCreate', shard => {
 	console.log( `\n- Shard[${shard.id}]: Launched` );
 	
@@ -27,13 +28,19 @@ manager.on( 'shardCreate', shard => {
 	
 	shard.on( 'death', message => {
 		if ( message.exitCode === 1 ) {
-			console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
-			manager.respawn = false;
+			if ( manager.respawn === true ) {
+				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
+				manager.respawn = false;
+			}
+			else diedShards++;
 		}
 	} );
 } );
 
-manager.spawn().catch( error => console.error( '- ' + error.name + ': ' + error.message ) );
+manager.spawn().catch( error => {
+	console.error( '- ' + error.name + ': ' + error.message );
+	manager.respawnAll();
+} );
 
 async function graceful(signal) {
 	console.log( '- ' + signal + ': Disabling respawn...' );
@@ -42,3 +49,7 @@ async function graceful(signal) {
 
 process.once( 'SIGINT', graceful );
 process.once( 'SIGTERM', graceful );
+
+process.on( 'exit', code => {
+	if ( diedShards >= manager.totalShards ) process.exit(1);
+} );
