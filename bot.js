@@ -2583,7 +2583,12 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
 						blockexpiry = new Date(blockexpiry).toLocaleString(lang.dateformat, timeoptions);
 					}
-					if ( isBlocked ) return [lang.user.block.header.replaceSave( '%s', block.user ).escapeFormatting(), lang.user.block[( block.reason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ).replaceSave( '%3$s', '[[User:' + block.by + '|' + block.by + ']]' ).replaceSave( '%4$s', block.reason )];
+					if ( isBlocked ) return {
+						header: lang.user.block.header.replaceSave( '%s', block.user ).escapeFormatting(),
+						text: lang.user.block[( block.reason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
+						by: block.by,
+						reason: block.reason
+					};
 				} ).filter( block => block !== undefined );
 				if ( username.includes( '/' ) ) {
 					var rangeprefix = username;
@@ -2627,13 +2632,21 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						if ( msg.showEmbed() ) {
 							var text = '<' + pagelink + '>';
 							var embed = new Discord.MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', body.query.general, true) + ')' );
-							if ( blocks.length ) blocks.forEach( block => embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) ) );
+							if ( blocks.length ) blocks.forEach( block => {
+								block.text = block.text.replaceSave( '%3$s', '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
+								embed.addField( block.header, block.text );
+							} );
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
 							var embed = {};
 							var text = '<' + pagelink + '>\n\n' + editcount.join(' ');
-							if ( blocks.length ) blocks.forEach( block => text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext() );
+							if ( blocks.length ) blocks.forEach( block => {
+								block.text = block.text.replaceSave( '%3$s', block.by.escapeFormatting() );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
+								text += '\n\n**' + block.header + '**\n' + block.text;
+							} );
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
@@ -2737,9 +2750,14 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.dateformat, timeoptions);
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
-					var blockedby = '[[User:' + queryuser.blockedby + '|' + queryuser.blockedby + ']]';
+					var blockedby = queryuser.blockedby;
 					var blockreason = queryuser.blockreason;
-					var block = [lang.user.block.header.replaceSave( '%s', username ).escapeFormatting(), lang.user.block[( blockreason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ).replaceSave( '%3$s', blockedby ).replaceSave( '%4$s', blockreason )];
+					var block = {
+						header: lang.user.block.header.replaceSave( '%s', username ).escapeFormatting(),
+						text: lang.user.block[( blockreason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
+						by: blockedby,
+						reason: blockreason
+					};
 					
 					var pagelink = wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general);
 					if ( msg.showEmbed() ) {
@@ -2792,11 +2810,19 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						console.log( '- Error while getting the user profile: ' + error );
 					} ).finally( () => {
 						if ( msg.showEmbed() ) {
-							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) );
+							if ( isBlocked ) {
+								block.text = block.text.replaceSave( '%3$s', '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
+								embed.addField( block.header, block.text );
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
-							if ( isBlocked ) text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
+							if ( isBlocked ) {
+								block.text = block.text.replaceSave( '%3$s', block.by.escapeFormatting() );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
+								text += '\n\n**' + block.header + '**\n' + block.text;
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
@@ -2846,11 +2872,19 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						console.log( '- Error while getting the user profile: ' + error );
 					} ).finally( () => {
 						if ( msg.showEmbed() ) {
-							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) );
+							if ( isBlocked ) {
+								block.text = block.text.replaceSave( '%3$s', '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
+								embed.addField( block.header, block.text );
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
-							if ( isBlocked ) text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
+							if ( isBlocked ) {
+								block.text = block.text.replaceSave( '%3$s', block.by.escapeFormatting() );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
+								text += '\n\n**' + block.header + '**\n' + block.text;
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
@@ -2860,8 +2894,16 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					} );
 					else {
 						if ( isBlocked ) {
-							if ( msg.showEmbed() ) embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) );
-							else text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
+							if ( msg.showEmbed() ) {
+								block.text = block.text.replaceSave( '%3$s', '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
+								embed.addField( block.header, block.text );
+							}
+							else {
+								block.text = block.text.replaceSave( '%3$s', block.by.escapeFormatting() );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
+								text += '\n\n**' + block.header + '**\n' + block.text;
+							}
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} );
@@ -2947,7 +2989,12 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
 						blockexpiry = new Date(blockexpiry).toLocaleString(lang.dateformat, timeoptions);
 					}
-					if ( isBlocked ) return [lang.user.block.header.replaceSave( '%s', block.user ).escapeFormatting(), lang.user.block[( block.reason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ).replaceSave( '%3$s', '[[User:' + block.by + '|' + block.by + ']]' ).replaceSave( '%4$s', block.reason )];
+					if ( isBlocked ) return {
+						header: lang.user.block.header.replaceSave( '%s', block.user ).escapeFormatting(),
+						text: lang.user.block[( block.reason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
+						by: block.by,
+						reason: block.reason
+					};
 				} ).filter( block => block !== undefined );
 				if ( username.includes( '/' ) ) {
 					var rangeprefix = username;
@@ -2991,13 +3038,21 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						if ( msg.showEmbed() ) {
 							var text = '<' + pagelink + '>';
 							var embed = new Discord.MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', body.query.general, true) + ')' );
-							if ( blocks.length ) blocks.forEach( block => embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) ) );
+							if ( blocks.length ) {
+								block.text = block.text.replaceSave( '%3$s', '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
+								embed.addField( block.header, block.text );
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
 							var embed = {};
 							var text = '<' + pagelink + '>\n\n' + editcount.join(' ');
-							if ( blocks.length ) blocks.forEach( block => text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext() );
+							if ( blocks.length ) {
+								block.text = block.text.replaceSave( '%3$s', block.by.escapeFormatting() );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
+								text += '\n\n**' + block.header + '**\n' + block.text;
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
@@ -3098,7 +3153,6 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						}
 					}
 					var isBlocked = false;
-					var blockedtimestamp = new Date(queryuser.blockedtimestamp).toLocaleString(lang.dateformat, timeoptions);
 					var blockexpiry = queryuser.blockexpiry;
 					if ( blockexpiry === 'infinity' ) {
 						blockexpiry = lang.user.block.until_infinity;
@@ -3110,7 +3164,12 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					}
 					var blockedby = '[[User:' + queryuser.blockedby + '|' + queryuser.blockedby + ']]';
 					var blockreason = queryuser.blockreason;
-					var block = [lang.user.block.header.replaceSave( '%s', username ).escapeFormatting(), lang.user.block['nofrom' + ( blockreason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ).replaceSave( '%3$s', blockedby ).replaceSave( '%4$s', blockreason )];
+					var block = {
+						header: lang.user.block.header.replaceSave( '%s', username ).escapeFormatting(),
+						text: lang.user.block['nofrom' + ( blockreason ? 'text' : 'noreason' )].replaceSave( '%2$s', blockexpiry ),
+						by: blockedby,
+						reason: blockreason
+					};
 					
 					var pagelink = wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general);
 					if ( msg.showEmbed() ) {
@@ -3164,11 +3223,19 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						console.log( '- Error while getting the user profile: ' + error );
 					} ).finally( () => {
 						if ( msg.showEmbed() ) {
-							if ( isBlocked ) embed.addField( block[0], block[1].toMarkdown(wiki, body.query.general) );
+							if ( isBlocked ) {
+								block.text = block.text.replaceSave( '%3$s', '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
+								embed.addField( block.header, block.text );
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
 						}
 						else {
-							if ( isBlocked ) text += '\n\n**' + block[0] + '**\n' + block[1].toPlaintext();
+							if ( isBlocked ) {
+								block.text = block.text.replaceSave( '%3$s', block.by.escapeFormatting() );
+								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
+								text += '\n\n**' + block.header + '**\n' + block.text;
+							}
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
 						}
 						
@@ -3258,18 +3325,19 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				else expiry = new Date(expiry.replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.dateformat, timeoptions);
 				if ( msg.showEmbed() ) {
 					var gblocktitle = lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting();
-					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.user.block.header.replaceSave( '%s', username ).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1] ).replaceSave( '%4$s', reason.slice(4).join(', ') ).escapeFormatting() );
+					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.user.block.header.replaceSave( '%s', username ).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ) );
 					if ( globalblock ) globalblock.name = gblocktitle;
 					else {
-						var gblocktext = lang.user.gblock[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', '[[User:' + reason[1] + '|' + reason[1] + ']]' ).replaceSave( '%4$s', '[[Special:Contribs/' + username.toTitle() + '|' + reason[2] + ']]' ).replaceSave( '%5$s', reason.slice(4).join(', ') );
-						embed.addField( gblocktitle, gblocktext.toMarkdown( reason[3].replace( /Special:BlockList$/, '' ) ) );
+						var block_wiki = reason[3].replace( /Special:BlockList$/, '' );
+						var gblocktext = lang.user.gblock[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', '[' + reason[1] + '](' + block_wiki + 'User:' + reason[1].toTitle(true) + ')' ).replaceSave( '%4$s', '[' + reason[2] + '](' + block_wiki + 'Special:Contribs/' + username.toTitle(true) + ')' ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() );
+						embed.addField( gblocktitle, gblocktext );
 					}
 				}
 				else {
 					let splittext = text.split('\n\n');
-					var globalblock = splittext.indexOf('**' + lang.user.block.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1] ).replaceSave( '%4$s', reason.slice(4).join(', ') ).escapeFormatting());
-					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1] ).replaceSave( '%4$s', reason.slice(4).join(', ') ).escapeFormatting();
-					else splittext.push('**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.gblock[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1] ).replaceSave( '%4$s', reason[2] ).replaceSave( '%5$s', reason.slice(4).join(', ') ).escapeFormatting());
+					var globalblock = splittext.indexOf('**' + lang.user.block.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ));
+					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() );
+					else splittext.push('**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.gblock[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason[2] ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() ));
 					text = splittext.join('\n\n');
 				}
 			}
@@ -5714,16 +5782,10 @@ Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
 		var emoji = '440871715938238494';
 		switch ( name ) {
 			case 'nowiki':
-				emoji = '505884572001763348';
+				emoji = ':unknown_wiki:505884572001763348';
 				break;
 			case 'error':
-				emoji = '440871715938238494';
-				break;
-			case 'support':
-				emoji = '448222377009086465';
-				break;
-			case 'oppose':
-				emoji = '448222455425794059';
+				emoji = ':error:440871715938238494';
 				break;
 			default:
 				emoji = name;

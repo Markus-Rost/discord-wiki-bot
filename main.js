@@ -27,12 +27,13 @@ manager.on( 'shardCreate', shard => {
 	} );
 	
 	shard.on( 'death', message => {
-		if ( message.exitCode === 1 ) {
-			if ( manager.respawn === true ) {
-				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
+		if ( manager.respawn === false ) diedShards++;
+		if ( message.exitCode !== 0 ) {
+			if ( !shard.ready ) {
 				manager.respawn = false;
+				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
 			}
-			else diedShards++;
+			else console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error!\n\n` );
 		}
 	} );
 } );
