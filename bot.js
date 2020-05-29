@@ -3,12 +3,17 @@ const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
 var isDebug = ( process.argv[2] === 'debug' );
-global.shardId = null;
 var ready = {
 	patreons: false,
 	voice: false,
 	allSites: true
 }
+
+global.shardId = null;
+process.on( 'message', message => {
+	if ( !message.shard ) return;
+	shardId = message.shard.id;
+} );
 
 const Discord = require('discord.js');
 const got = require('got').extend( {
@@ -2159,8 +2164,8 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( showCommands ) verification_text += '\n`' + prefix + ' verification ' + row.configid + ' usergroup ' + lang.verification.new_usergroup + '`\n';
 			verification_text += '\n' + lang.verification.accountage + ' `' + accountage + '` ' + lang.verification.indays;
 			if ( showCommands ) verification_text += '\n`' + prefix + ' verification ' + row.configid + ' accountage ' + lang.verification.new_accountage + '`\n';
-			verification_text += '\n' + lang.verification.rename + ' *`' + ( rename ? lang.verification.enabled : lang.verification.disabled ) + '`* ' + lang.verification.toggle;
-			if ( showCommands ) verification_text += '\n`' + prefix + ' verification ' + row.configid + ' rename`\n';
+			verification_text += '\n' + lang.verification.rename + ' *`' + ( rename ? lang.verification.enabled : lang.verification.disabled ) + '`*';
+			if ( showCommands ) verification_text += ' ' + lang.verification.toggle + '\n`' + prefix + ' verification ' + row.configid + ' rename`\n';
 			if ( !hideNotice && rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
 				verification_text += '\n\n' + lang.verification.rename_no_permission.replaceSave( '%s', msg.guild.me.toString() );
 			}
@@ -6254,11 +6259,6 @@ function removeSettings() {
 	} );
 }
 
-
-process.on( 'message', message => {
-	if ( !message.shard ) return;
-	shardId = message.shard.id;
-} );
 
 client.on( 'error', error => log_error(error, true) );
 client.on( 'warn', warning => log_warn(warning, false) );
