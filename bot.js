@@ -5449,6 +5449,20 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				client.shard.broadcastEval( `delete global.patreons['${args[1]}']` );
 				msg.replyMsg( 'the patreon features are now disabled on "' + guild + '".', {}, true );
 			} );
+			db.all( 'SELECT configid FROM verification WHERE guild = ? ORDER BY configid ASC', [args[1]], (dberror, rows) => {
+				if ( dberror ) {
+					console.log( '- Error while getting the verifications: ' + dberror );
+					return dberror;
+				}
+				var ids = rows.slice(10).map( row => row.configid );
+				if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [args[1], ...ids], function (error) {
+					if ( error ) {
+						console.log( '- Error while deleting the verifications: ' + error );
+						return error;
+					}
+					console.log( '- Verifications successfully deleted.' );
+				} );
+			} );
 		} );
 	} );
 	
@@ -5538,6 +5552,25 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					return eacherror;
 				}
 				msg.replyMsg( '<@' + args[1] + '> is no longer a patreon.', {}, true );
+			} );
+			db.each( 'SELECT a.guild, GROUP_CONCAT(DISTINCT a.configid) configids FROM verification a LEFT JOIN verification b ON a.guild = b.guild WHERE a.guild IN (' + guilds.map( guild => '?' ).join(', ') + ') GROUP BY a.guild', guilds, (eacherror, eachrow) => {
+				if ( eacherror ) {
+					console.log( '- Error while getting the verifications: ' + eacherror );
+					return dberror;
+				}
+				var ids = eachrow.configids.split(',').slice(10).map( row => row.configid );
+				if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [eachrow.guild, ...ids], function (uperror) {
+					if ( uperror ) {
+						console.log( '- Error while deleting the verifications: ' + uperror );
+						return uperror;
+					}
+					console.log( '- Verifications successfully deleted.' );
+				} );
+			}, (eacherror) => {
+				if ( eacherror ) {
+					console.log( '- Error while getting the verifications: ' + eacherror );
+					return eacherror;
+				}
 			} );
 		} );
 		if ( !row ) return db.run( 'INSERT INTO patreons(patreon, count) VALUES(?, ?)', [args[1], count], function (error) {
@@ -6202,6 +6235,20 @@ function removePatreons(guild, msg) {
 				console.log( '- Error while removing the patreon features: ' + tryerror );
 			}
 		} );
+		db.all( 'SELECT configid FROM verification WHERE guild = ? ORDER BY configid ASC', [guild], (dberror, rows) => {
+			if ( dberror ) {
+				console.log( '- Error while getting the verifications: ' + dberror );
+				return dberror;
+			}
+			var ids = rows.slice(10).map( row => row.configid );
+			if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [guild, ...ids], function (error) {
+				if ( error ) {
+					console.log( '- Error while deleting the verifications: ' + error );
+					return error;
+				}
+				console.log( '- Verifications successfully deleted.' );
+			} );
+		} );
 	}
 	catch ( tryerror ) {
 		console.log( '- Error while removing the patreon features: ' + tryerror );
@@ -6220,12 +6267,12 @@ function removeSettings() {
 				console.log( '- Error while getting the setting: ' + dberror );
 				return dberror;
 			}
-			if ( !row.channel && !all_guilds.some(row.guild) ) {
+			if ( !row.channel && !all_guilds.includes(row.guild) ) {
 				if ( row.guild in patreons ) client.shard.broadcastEval( `delete global.patreons['${row.guild}']` );
 				if ( row.guild in voice ) delete voice[row.guild];
 				return guilds.push(row.guild);
 			}
-			if ( row.channel && all_guilds.some(row.guild) && !all_channels.some(row.channel) ) return channels.push(row.channel);
+			if ( row.channel && all_guilds.includes(row.guild) && !all_channels.includes(row.channel) ) return channels.push(row.channel);
 		}, (error) => {
 			if ( error ) {
 				console.log( '- Error while getting the settings: ' + error );
