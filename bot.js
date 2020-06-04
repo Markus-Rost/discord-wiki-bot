@@ -5846,7 +5846,10 @@ Discord.Message.prototype.sendChannel = function(content, options = {}, ignorePa
 			if ( msg.length ) msg.forEach( message => message.allowDelete(this.author.id) );
 			else msg.allowDelete(this.author.id);
 			return msg;
-		}, log_error );
+		}, error => {
+			log_error(error);
+			this.reactEmoji('error');
+		} );
 	} else {
 		console.log( '- Aborted, paused.' );
 		return Promise.resolve();
@@ -5865,7 +5868,10 @@ Discord.Message.prototype.sendChannelError = function(content, options = {}) {
 			msg.allowDelete(this.author.id);
 		}
 		return msg;
-	}, log_error );
+	}, error => {
+		log_error(error);
+		this.reactEmoji('error');
+	} );
 };
 
 Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause = false, allowDelete = true) {
@@ -5877,7 +5883,10 @@ Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause
 				else msg.allowDelete(this.author.id);
 			}
 			return msg;
-		}, log_error );
+		}, error => {
+			log_error(error);
+			this.reactEmoji('error');
+		} );
 	} else {
 		console.log( '- Aborted, paused.' );
 		return Promise.resolve();
