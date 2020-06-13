@@ -2336,7 +2336,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					if ( msg.author.tag.escapeFormatting() !== discordname ) {
 						embed.setColor('#FFFF00').setDescription( lang.verify.user_failed.replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
 						var help_link = '';
-						if ( wiki.endsWith( '.gamepedia.com/' ) ) help_link = lang.verify.help_gamepedia;
+						if ( wiki.endsWith( '.gamepedia.com/' ) ) help_link = lang.verify.help_gamepedia + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + username.toTitle(true, true) + '&discord=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
 						else if ( wiki.isFandom() ) help_link = lang.verify.help_fandom + '/' + username.toTitle(true) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
 						if ( help_link.length ) embed.addField( lang.verify.notice, lang.verify.help_guide.replaceSave( '%s', help_link ) + '\n' + help_link );
 						msg.replyMsg( lang.verify.user_failed_reply.replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
