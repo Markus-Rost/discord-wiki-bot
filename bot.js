@@ -687,7 +687,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.channel.type === 'text' && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) cmd_helpserver(lang, msg);
 	var cmds = lang.help.list;
-	var isMinecraft = ( wiki === minecraft[lang.lang].link );
+	var isMinecraft = ( wiki === lang.minecraft.link );
 	var isPatreon = ( msg.channel.type === 'text' && msg.guild.id in patreons );
 	var prefix = ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix );
 	var cmdintro = '🔹 `' + prefix + ' ';
@@ -706,7 +706,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			}
 		}
 		else if ( args[0].toLowerCase() === 'minecraft' ) {
-			var cmdlist = '<' + minecraft[lang.lang].link + '>\n' + cmds.filter( cmd => cmd.minecraft && !cmd.hide ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
+			var cmdlist = '<' + lang.minecraft.link + '>\n' + cmds.filter( cmd => cmd.minecraft && !cmd.hide ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
 			cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : client.user.username ) ).replaceSave( /@prefix/g, prefix );
 			msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 		}
@@ -901,11 +901,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 	var aliasInvoke = ( lang.aliases[invoke] || invoke );
 	var args = title.split(' ').slice(1);
 	
-	var mclang = minecraft[lang.lang];
-	var mcaliasInvoke = ( mclang.aliases[invoke] || invoke );
-	if ( !msg.notminecraft && wiki === mclang.link && ( mcaliasInvoke in minecraftcmdmap || invoke.startsWith( '/' ) ) ) {
-		if ( mcaliasInvoke in minecraftcmdmap ) minecraftcmdmap[mcaliasInvoke](lang, mclang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
-		else minecraft_command(lang, mclang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
+	var mcaliasInvoke = ( lang.minecraft.aliases[invoke] || invoke );
+	if ( !msg.notminecraft && wiki === lang.minecraft.link && ( mcaliasInvoke in minecraftcmdmap || invoke.startsWith( '/' ) ) ) {
+		if ( mcaliasInvoke in minecraftcmdmap ) minecraftcmdmap[mcaliasInvoke](lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
+		else minecraft_command(lang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
 	}
 	else if ( aliasInvoke === 'random' && !args.join('') && !querystring && !fragment ) gamepedia_random(lang, msg, wiki, reaction, spoiler);
 	else if ( aliasInvoke === 'overview' && !args.join('') && !querystring && !fragment ) gamepedia_overview(lang, msg, wiki, reaction, spoiler);
@@ -5106,7 +5105,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 	} );
 }
 
-function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
+function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
 	var invoke = args[0];
 	args = args.slice(1);
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
@@ -5122,7 +5121,7 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 						msg.reactEmoji('🤷');
 					}
 					else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-						msg.sendChannel( spoiler + mclang.bug.private + '\n<' + link + invoke + '>' + spoiler );
+						msg.sendChannel( spoiler + lang.minecraft.private + '\n<' + link + invoke + '>' + spoiler );
 					}
 					else {
 						console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issue: ' + body.errorMessages.join(' - ') );
@@ -5152,12 +5151,12 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
 							else extrabugs.push({name,value,inline:false});
 						} );
-						if ( extrabugs.length ) embed.setFooter( mclang.bug.more.replaceSave( '%s', extrabugs.length ) );
+						if ( extrabugs.length ) embed.setFooter( lang.minecraft.more.replaceSave( '%s', extrabugs.length ) );
 					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
 					var fixed = '';
 					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
-						fixed = '\n' + mclang.bug.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
+						fixed = '\n' + lang.minecraft.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
 					}
 					msg.sendChannel( spoiler + status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed + spoiler, {embed} );
 				}
@@ -5204,9 +5203,9 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 							var value = status + ': [' + bug.fields.summary.escapeFormatting() + '](https://bugs.mojang.com/browse/' + bug.key + ')';
 							embed.addField( bug.key, value );
 						} );
-						if ( body.total > 25 ) embed.setFooter( mclang.bug.more.replaceSave( '%s', body.total - 25 ) );
+						if ( body.total > 25 ) embed.setFooter( lang.minecraft.more.replaceSave( '%s', body.total - 25 ) );
 					}
-					var total = '**' + args.join(' ') + ':** ' + mclang.bug.total.replaceSave( '%s', body.total );
+					var total = '**' + args.join(' ') + ':** ' + lang.minecraft.total.replaceSave( '%s', body.total );
 					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, {embed} );
 				}
 			}
@@ -5219,16 +5218,16 @@ function minecraft_bug(lang, mclang, msg, args, title, cmd, querystring, fragmen
 	}
 	else {
 		msg.notminecraft = true;
-		gamepedia_check_wiki(lang, msg, title, mclang.link, cmd, reaction, spoiler, querystring, fragment);
+		gamepedia_check_wiki(lang, msg, title, lang.minecraft.link, cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 
-function minecraft_command(lang, mclang, msg, befehl, args, title, cmd, querystring, fragment, reaction, spoiler) {
+function minecraft_command(lang, msg, befehl, args, title, cmd, querystring, fragment, reaction, spoiler) {
 	befehl = befehl.toLowerCase();
-	var aliasCmd = ( minecraft.cmd.aliases[befehl] || befehl );
+	var aliasCmd = ( minecraft.aliases[befehl] || befehl );
 	
-	if ( aliasCmd in minecraft.cmd.list ) {
-		var cmdSyntaxMap = minecraft.cmd.list[aliasCmd].map( command => {
+	if ( aliasCmd in minecraft.list ) {
+		var cmdSyntaxMap = minecraft.list[aliasCmd].map( command => {
 			var cmdargs = command.split(' ');
 			if ( cmdargs[0].startsWith( '/' ) ) cmdargs = cmdargs.slice(1);
 			var argmatches = cmdargs.map( (arg, i) => {
@@ -5243,25 +5242,25 @@ function minecraft_command(lang, mclang, msg, befehl, args, title, cmd, querystr
 		var lastIndex = Math.max(...cmdSyntaxMap.map( command => command[0] ));
 		var matchCount = Math.max(...cmdSyntaxMap.filter( command => command[0] === lastIndex ).map( command => command[1] ));
 		var regex = new RegExp('/' + aliasCmd, 'g');
-		var cmdSyntax = minecraft.cmd.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + befehl );
-		msg.sendChannel( spoiler + '```md\n' + cmdSyntax + '```<' + mclang.link + mclang.cmd.page + aliasCmd + '>' + spoiler, {split:{maxLength:2000,prepend:spoiler + '```md\n',append:'```' + spoiler}} );
+		var cmdSyntax = minecraft.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + befehl );
+		msg.sendChannel( spoiler + '```md\n' + cmdSyntax + '```<' + lang.minecraft.link + lang.minecraft.cmdpage + aliasCmd + '>' + spoiler, {split:{maxLength:2000,prepend:spoiler + '```md\n',append:'```' + spoiler}} );
 		if ( reaction ) reaction.removeEmoji();
 	}
 	else {
 		msg.reactEmoji('❓');
 		msg.notminecraft = true;
-		gamepedia_check_wiki(lang, msg, title, mclang.link, cmd, reaction, spoiler, querystring, fragment);
+		gamepedia_check_wiki(lang, msg, title, lang.minecraft.link, cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 
-function minecraft_command2(lang, mclang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
+function minecraft_command2(lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
 	if ( args.join('') ) {
-		if ( args[0].startsWith( '/' ) ) minecraft_command(lang, mclang, msg, args[0].substring(1), args.slice(1), title, cmd, querystring, fragment, reaction, spoiler);
-		else minecraft_command(lang, mclang, msg, args[0], args.slice(1), title, cmd, querystring, fragment, reaction, spoiler);
+		if ( args[0].startsWith( '/' ) ) minecraft_command(lang, msg, args[0].substring(1), args.slice(1), title, cmd, querystring, fragment, reaction, spoiler);
+		else minecraft_command(lang, msg, args[0], args.slice(1), title, cmd, querystring, fragment, reaction, spoiler);
 	}
 	else {
 		msg.notminecraft = true;
-		gamepedia_check_wiki(lang, msg, title, mclang.link, cmd, reaction, spoiler, querystring, fragment);
+		gamepedia_check_wiki(lang, msg, title, lang.minecraft.link, cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 

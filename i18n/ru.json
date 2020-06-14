@@ -367,5 +367,16 @@
 			{ "cmd": "pause @mention", "desc": "Я снова буду отвечать на все команды на этом сервере.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "test", "desc": "Если я активен, я отвечу! Иначе нет.", "pause": true }
 		]
+	},
+	"minecraft": {
+		"link": "https://minecraft-ru.gamepedia.com/",
+		"cmdpage": "Команды_консоли/",
+		"aliases": {
+			"cmd": "command"
+		},
+		"private": "**Конфиденциальный отчёт об ошибке**",
+		"fixed": "Исправлено в версии:",
+		"more": "и ещё %s ошибок.",
+		"total": "%s issues fixed"
 	}
 }

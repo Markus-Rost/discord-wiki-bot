@@ -371,5 +371,16 @@
 			{ "cmd": "pause @mention", "desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "test", "desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem.", "pause": true }
 		]
+	},
+	"minecraft": {
+		"link": "https://minecraft-tr.gamepedia.com/",
+		"cmdpage": "en:Commands/",
+		"aliases": {
+			"cmd": "command"
+		},
+		"private": "**Private Issue**",
+		"fixed": "Fixed Version:",
+		"more": "Ve %s tane daha.",
+		"total": "%s hata düzeltildi"
 	}
 }

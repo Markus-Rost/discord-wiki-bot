@@ -402,5 +402,17 @@
 			{ "cmd": "pause @mention", "desc": "Ponownie będę odpowiadał na wszystkie komendy na tym serwerze.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "test", "desc": "Gdy jestem aktywny - odpowiem.", "pause": true }
 		]
+	},
+	"minecraft": {
+		"link": "https://minecraft-pl.gamepedia.com/",
+		"cmdpage": "Komendy#",
+		"aliases": {
+			"cmd": "command",
+			"komenda": "command"
+		},
+		"private": "**Private Issue**",
+		"fixed": "Naprawione w wersji:",
+		"more": "Oraz %s innych.",
+		"total": "naprawiono %s błędów"
 	}
 }

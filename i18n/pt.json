@@ -378,5 +378,18 @@
 			{ "cmd": "teste", "desc": "Se estou ativo, respondo! Caso contrário, não.", "pause": true },
 			{ "cmd": "test", "desc": "Se estou ativo, respondo! Caso contrário, não.", "hide": true }
 		]
+	},
+	"minecraft": {
+		"link": "https://minecraft-pt.gamepedia.com/",
+		"cmdpage": "Comandos/",
+		"aliases": {
+			"cmd": "command",
+			"comando": "command",
+			"erro": "bug"
+		},
+		"private": "**Private Issue**",
+		"fixed": "Versão corrigida:",
+		"more": "E %s mais.",
+		"total": "%s problemas corrigidos"
 	}
 }

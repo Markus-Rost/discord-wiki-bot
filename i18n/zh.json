@@ -364,5 +364,16 @@
 			{ "cmd": "pause @mention", "desc": "我将重新接受全部指令", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "test", "desc": "如果我被激活了，我就会回答你！否则不会。", "pause": true }
 		]
+	},
+	"minecraft": {
+		"link": "https://minecraft-zh.gamepedia.com/",
+		"cmdpage": "命令/",
+		"aliases": {
+			"cmd": "command"
+		},
+		"private": "**Private Issue**",
+		"fixed": "Fixed Version:",
+		"more": "And %s more.",
+		"total": "%s issues fixed"
 	}
 }

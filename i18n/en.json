@@ -362,5 +362,16 @@
 			{ "cmd": "pause @mention", "desc": "I will respond to all commands on this server again.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "test", "desc": "If I'm active, I'll answer! Otherwise not.", "pause": true }
 		]
+	},
+	"minecraft": {
+		"link": "https://minecraft.gamepedia.com/",
+		"cmdpage": "Commands/",
+		"aliases": {
+			"cmd": "command"
+		},
+		"private": "**Private Issue**",
+		"fixed": "Fixed Version:",
+		"more": "And %s more.",
+		"total": "%s issues fixed"
 	}
 }

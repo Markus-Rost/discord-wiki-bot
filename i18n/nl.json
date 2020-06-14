@@ -373,5 +373,16 @@
 			{ "cmd": "pause @mention", "desc": "Ik zal weer op alle opdrachten op deze server reageren.", "unsearchable": true, "hide": true, "pause": true },
 			{ "cmd": "test", "desc": "Als ik actief ben, zal ik antwoorden! Anders niet.", "pause": true }
 		]
+	},
+	"minecraft": {
+		"link": "https://minecraft-nl.gamepedia.com/",
+		"cmdpage": "Opdrachten#",
+		"aliases": {
+			"cmd": "command"
+		},
+		"private": "**Privé issue**",
+		"fixed": "Fixed versie:",
+		"more": "En %s meer.",
+		"total": "%s bugs opgelost"
 	}
 }
