@@ -1,0 +1,16 @@
+{
+	"defaultPermissions": 403033152,
+	"defaultSettings": {
+		"lang": "en",
+		"wiki": "https://community.fandom.com/"
+	},
+	"timeoptions": {
+		"year": "numeric",
+		"month": "short",
+		"day": "numeric",
+		"hour": "2-digit",
+		"minute": "2-digit",
+		"timeZone": "UTC",
+		"timeZoneName": "short"
+	}
+}
