@@ -65,7 +65,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 				var pagelink = wiki.toLink(title, '', '', body.query.general);
 				if ( msg.showEmbed() ) {
 					var text = '<' + pagelink + '>';
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( site.wordmark ).addField( vertical[0], vertical[1], true );
+					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( site.wordmark.startsWith( 'data:' ) ? wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general) : site.wordmark ) ).addField( vertical[0], vertical[1], true );
 					if ( topic[1] ) embed.addField( topic[0], topic[1], true );
 				}
 				else {
