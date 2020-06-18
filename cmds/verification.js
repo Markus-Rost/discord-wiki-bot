@@ -52,7 +52,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		}
 		if ( !rows.some( row => row.configid.toString() === args[0] ) ) {
 			if ( args.length ) {
-				if ( !pause[msg.guild.id] ) cmd_verify(lang, msg, args, line, wiki);
+				if ( !pause[msg.guild.id] ) this.verify(lang, msg, args, line, wiki);
 				return;
 			}
 			var text = '';
