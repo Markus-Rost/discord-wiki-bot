@@ -62,36 +62,6 @@ client.on( 'ready', () => {
 	Object.keys(voice).forEach( guild => {
 		if ( !client.guilds.cache.has(guild) ) delete voice[guild];
 	} );
-	
-	if ( !isDebug ) client.setInterval( () => {
-		console.log( '- ' + shardId + ': Current server count: ' + client.guilds.cache.size );
-		if ( process.env.dbltoken ) got.post( 'https://top.gg/api/bots/' + client.user.id + '/stats', {
-			headers: {
-				Authorization: process.env.dbltoken
-			},
-			json: {
-				server_count: client.guilds.cache.size,
-				shard_count: client.shard.count,
-				shard_id: shardId
-			},
-			responseType: 'json'
-		} ).catch( error => {
-			console.log( '- ' + shardId + ': Error while posting statistics to https://top.gg/bot/' + client.user.id + ': ' + error );
-		} );
-		if ( process.env.dbggtoken ) got.post( 'https://discord.bots.gg/api/v1/bots/' + client.user.id + '/stats', {
-			headers: {
-				Authorization: process.env.dbggtoken
-			},
-			json: {
-				guildCount: client.guilds.cache.size,
-				shardCount: client.shard.count,
-				shardId: shardId
-			},
-			responseType: 'json'
-		} ).catch( error => {
-			console.log( '- ' + shardId + ': Error while posting statistics to https://discord.bots.gg/bots/' + client.user.id + ': ' + error );
-		} );
-	}, 10800000 ).unref();
 } );
 client.on( 'shardDisconnect', () => client.ready = false );
 
