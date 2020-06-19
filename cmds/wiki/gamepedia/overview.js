@@ -168,7 +168,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					}
 				}
 				else {
-					if ( msg.showEmbed() ) embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
+					if ( msg.showEmbed() ) embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( msg.client.readyTimestamp ).setFooter( lang.overview.inaccurate );
 					else text = articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.overview.inaccurate + '*';
 					
 					msg.sendChannel( spoiler + text + spoiler, {embed} );
@@ -187,7 +187,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 						var managerlist = manager[1].map( wm => '[' + wm + '](' + wiki.toLink('User:' + wm, '', '', body.query.general, true) + ') ([' + lang.overview.talk + '](' + wiki.toLink('User talk:' + wm, '', '', body.query.general, true) + '))' ).join('\n');
 						embed.addField( name[0], name[1], true ).addField( created[0], created[1], true ).addField( manager[0], ( managerlist || lang.overview.none ), true ).addField( official[0], official[1], true );
 					}
-					embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( client.readyTimestamp ).setFooter( lang.overview.inaccurate );
+					embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( msg.client.readyTimestamp ).setFooter( lang.overview.inaccurate );
 					if ( site ) {
 						if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
 						if ( description[1] ) embed.addField( description[0], description[1] );
