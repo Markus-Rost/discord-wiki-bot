@@ -79,8 +79,7 @@ function postStats(shardCount = manager.totalShards) {
 				Authorization: process.env.dbggtoken
 			},
 			json: {
-				guildCount: guildCount,
-				shardCount: shardCount
+				guildCount: guildCount
 			},
 			responseType: 'json'
 		} ).catch( error => {
