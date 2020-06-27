@@ -23,7 +23,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		var text = lang.get('settings.missing').replaceSave( '%1$s', '`' + prefix + 'settings lang`' ).replaceSave( '%2$s', '`' + prefix + 'settings wiki`' );
 		if ( rows.length ) {
 			text = lang.get('settings.current') + '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang][1] + '` - `' + prefix + 'settings lang`';
-			if ( msg.guild.id in patreons ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix.replace( / $/, '·' ) + '` - `' + prefix + 'settings prefix`';
+			if ( msg.guild.id in patreons ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
 			text += '\n' + lang.get('settings.currentinline') + ' ' + ( guild.inline ? '~~' : '' ) + '`[[' + lang.get('search.page') + ']]`' + ( guild.inline ? '~~' : '' ) + ' - `' + prefix + 'settings inline`';
 			text += '\n' + lang.get('settings.currentwiki') + ' ' + guild.wiki + ' - `' + prefix + 'settings wiki`';
 			text += '\n' + lang.get('settings.currentchannel') + ' `' + prefix + 'settings channel`\n';
@@ -238,7 +238,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var prefixhelp = '\n' + lang.get('settings.prefixhelp').replaceSave( '%s', prefix + 'settings prefix' );
 			args[1] = args[1].replace( /(?<!\\)_$/, ' ' ).replace( /\\([_\W])/g, '$1' );
 			if ( !args[1].trim() ) {
-				return msg.replyMsg( lang.get('settings.prefix') + ' `' + prefix.replace( / $/, '·' ) + '`' + prefixhelp, {}, true );
+				return msg.replyMsg( lang.get('settings.prefix') + ' `' + prefix.replace( / $/, '_' ) + '`' + prefixhelp, {}, true );
 			}
 			if ( args[1].includes( '`' ) || args[1].length > 100 ) {
 				return msg.replyMsg( lang.get('settings.prefixinvalid') + prefixhelp, {}, true );
@@ -258,7 +258,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				console.log( '- Settings successfully updated.' );
 				guild.prefix = args[1];
 				msg.client.shard.broadcastEval( `global.patreons['${msg.guild.id}'] = '${args[1]}'` );
-				msg.replyMsg( lang.get('settings.prefixchanged') + ' `' + args[1].replace( / $/, '·' ) + '`\n' + lang.get('settings.prefixhelp').replaceSave( '%s', args[1] + 'settings prefix' ), {}, true );
+				msg.replyMsg( lang.get('settings.prefixchanged') + ' `' + args[1].replace( / $/, '_' ) + '`\n' + lang.get('settings.prefixhelp').replaceSave( '%s', args[1] + 'settings prefix' ), {}, true );
 			} );
 		}
 		

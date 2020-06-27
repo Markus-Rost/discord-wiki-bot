@@ -9,7 +9,7 @@
 		"🎲": "random",
 		"discussions": "discussion"
 	},
-	"prefix": "the prefix for this server is `%s`. You can change the prefix with `%s settings prefix`. For a list of all commands see `%s help`.",
+	"prefix": "the prefix for this server is `%s`. You can change the prefix with `%ssettings prefix`. For a list of all commands see `%shelp`.",
 	"missingperm": "I'm missing some permissions for this command:",
 	"limit": "🚨 **Stop, you hit a limit!** 🚨\n\n%s, your message contained too many commands!",
 	"disclaimer": "I am a small bot with the task to link to Gamepedia and Fandom wikis. %s wrote me in JavaScript.\n\n**I am not affiliated with Fandom and am an unofficial tool!**\n\nYou can support me on Patreon:",

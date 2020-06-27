@@ -1,4 +1,3 @@
-require('dotenv').config();
 const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 

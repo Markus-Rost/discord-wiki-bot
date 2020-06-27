@@ -11,7 +11,7 @@
 		"🎲": "random",
 		"discussions": "discussion"
 	},
-	"prefix": "le préfixe pour ce serveur est `%s`. Vous pouvez changer le préfixe avec `%s settings prefix`. Pour une liste de toutes les commandes, voir `%s help`.",
+	"prefix": "le préfixe pour ce serveur est `%s`. Vous pouvez changer le préfixe avec `%ssettings prefix`. Pour une liste de toutes les commandes, voir `%shelp`.",
 	"missingperm": "Il me manque certaines permissions pour cette commande :",
 	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n%s, votre message contient beaucoup trop de commandes !",
 	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. %s m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Fandom et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",

@@ -12,7 +12,7 @@
 		"验证": "verify",
 		"discussions": "discussion"
 	},
-	"prefix": "此伺服器的命令前缀是 `%s`。你可以使用 `%s settings prefix` 更改前缀。关于全部命令，请见 `%s help`。",
+	"prefix": "此伺服器的命令前缀是 `%s`。你可以使用 `%ssettings prefix` 更改前缀。关于全部命令，请见 `%shelp`。",
 	"missingperm": "为执行此命令我缺少一些权限：",
 	"limit": "🚨 **停一下，你太快了！** 🚨\n\n%s，你发出的指令过多了。",
 	"disclaimer": "我是一个链接到Gamepedia和Fandom wiki的小机器人。%s用JavaScript写了我。\n\n**我和Fandom无关联并为一个非官方工具！**\n\n你可以在Patreon支持我：",

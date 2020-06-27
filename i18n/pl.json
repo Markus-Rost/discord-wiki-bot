@@ -14,7 +14,7 @@
 		"dyskusje": "discussion",
 		"dyskusja": "discussion"
 	},
-	"prefix": "prefiksem komend dla tego serwera jest `%s`. Możesz zmienić prefiks używając `%s settings prefix`. Lista wszystkich komend jest dostępna przez użycie `%s pomoc`.",
+	"prefix": "prefiksem komend dla tego serwera jest `%s`. Możesz zmienić prefiks używając `%ssettings prefix`. Lista wszystkich komend jest dostępna przez użycie `%spomoc`.",
 	"missingperm": "Brakuje mi uprawnień:",
 	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n%s, Twoja wiadomość zawiera zbyt wiele komend!",
 	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki na Gamepedii oraz Fandomie. Zostałem napisany w JavaScript przez %s.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Fandomem!**\n\nMożesz wesprzeć mnie na Patreon-ie:",

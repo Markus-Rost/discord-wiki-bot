@@ -15,7 +15,7 @@
 		"discussions": "discussion",
 		"discussão": "discussion"
 	},
-	"prefix": "o prefixo deste servidor é `%s`. Você pode alterar o prefixo com `%s settings prefix`. Para uma lista de todos os comandos, veja `%s help`.",
+	"prefix": "o prefixo deste servidor é `%s`. Você pode alterar o prefixo com `%ssettings prefix`. Para uma lista de todos os comandos, veja `%shelp`.",
 	"missingperm": "eu estou perdendo algumas permissões para este comando:",
 	"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n%s, sua mensagem continha muitos comandos!",
 	"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia e Fandom. %s me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Fandom e sou uma ferramenta não oficial!**\n\nVocê pode me apoiar no Patreon:",

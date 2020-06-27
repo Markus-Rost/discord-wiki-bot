@@ -13,7 +13,7 @@
 		"discussions": "discussion",
 		"tartışma": "discussion"
 	},
-	"prefix": "sunucudaki önekim `%s`. Bunu `%s settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `%s yardım`.",
+	"prefix": "sunucudaki önekim `%s`. Bunu `%ssettings prefix` ile değiştirebilirsin. Komutların bütün listesi için `%syardım`.",
 	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
 	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n%s, mesajın çok fazla komut içeriyor!",
 	"disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. %s, beni JavaScript kullanarak yazdı.\n\n**Fandom ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",

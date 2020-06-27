@@ -13,7 +13,7 @@
 		"discussions": "discussion",
 		"discussie": "discussion"
 	},
-	"prefix": "het voorvoegsel voor deze server is `%s`. Je kunt het voorvoegsel veranderen met `%s settings prefix`. Voor een lijst van alle opdrachten zie `%s help`.",
+	"prefix": "het voorvoegsel voor deze server is `%s`. Je kunt het voorvoegsel veranderen met `%ssettings prefix`. Voor een lijst van alle opdrachten zie `%shelp`.",
 	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
 	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n%s, je bericht bevatte te veel opdrachten!",
 	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia en Fandom wiki's te linken. %s schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
