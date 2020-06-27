@@ -4,7 +4,7 @@ const {MessageEmbed} = require('discord.js');
 function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 	if ( !title ) {
 		var pagelink = wiki + 'f';
-		var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( lang.discussion.main ).setURL( pagelink );
+		var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
 		got.get( wiki + 'f' ).then( descresponse => {
 			var descbody = descresponse.body;
 			if ( descresponse.statusCode !== 200 || !descbody ) {
@@ -62,7 +62,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
-	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.discussion.post ) {
+	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.get('discussion.post') ) {
 		title = title.split(' ').slice(1).join(' ');
 		var limit = ( msg.channel.type === 'text' && msg.guild.id in patreons ? '100' : '50' );
 		got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts?limit=' + limit + '&format=json', {
@@ -278,7 +278,8 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 			embed.setImage( discussion._embedded.contentImages[0].url );
 			break;
 		case 'POLL':
-			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( answer.image ? '[__' + lang.discussion.image.escapeFormatting() + '__](' + answer.image.url + ')\n' : '' ) + ( lang.discussion.votes[answer.votes] || lang.discussion.votes['*' + answer.votes % 100] || lang.discussion.votes['*' + answer.votes % 10] || lang.discussion.votes.default ).replace( '%s', answer.votes ), true ) );
+			let count = lang.get('discussion.votes');
+			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( answer.image ? '[__' + lang.get('discussion.image').escapeFormatting() + '__](' + answer.image.url + ')\n' : '' ) + ( count[answer.votes] || count['*' + answer.votes % 100] || count['*' + answer.votes % 10] || lang.get('discussion.votes.default') ).replace( '%s', answer.votes ), true ) );
 			break;
 		case 'QUIZ':
 			description = discussion.quiz.title.escapeFormatting();
@@ -296,7 +297,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 						else {
 							description = description.replace( /\{\@(\d+)\}/g, (match, n) => {
 								if ( n >= discussion._embedded.contentImages.length ) return '';
-								else return '[__' + lang.discussion.image.escapeFormatting() + '__](' + discussion._embedded.contentImages[n].url + ')';
+								else return '[__' + lang.get('discussion.image').escapeFormatting() + '__](' + discussion._embedded.contentImages[n].url + ')';
 							} );
 							embed.setThumbnail( discussion._embedded.contentImages[0].url );
 						}

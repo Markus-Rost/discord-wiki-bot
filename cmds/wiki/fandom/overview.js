@@ -42,18 +42,18 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 			else {
 				var site = ovbody.items[body.query.wikidesc.id];
 				
-				var vertical = [lang.overview.vertical, site.hub];
-				var topic = [lang.overview.topic, site.topic];
-				var founder = [lang.overview.founder, site.founding_user_id];
-				var manager = [lang.overview.manager, body.query.allmessages[0]['*']];
-				var crossover = [lang.overview.crossover, ( body.query.allmessages[1]['*'] ? '<https://' + body.query.allmessages[1]['*'] + '.gamepedia.com/>' : '' )];
-				var created = [lang.overview.created, new Date(site.creation_date).toLocaleString(lang.dateformat, timeoptions)];
-				var articles = [lang.overview.articles, body.query.statistics.articles];
-				var pages = [lang.overview.pages, body.query.statistics.pages];
-				var edits = [lang.overview.edits, body.query.statistics.edits];
-				var users = [lang.overview.users, body.query.statistics.activeusers];
-				var description = [lang.overview.description, site.desc];
-				var image = [lang.overview.image, site.image];
+				var vertical = [lang.get('overview.vertical'), site.hub];
+				var topic = [lang.get('overview.topic'), site.topic];
+				var founder = [lang.get('overview.founder'), site.founding_user_id];
+				var manager = [lang.get('overview.manager'), body.query.allmessages[0]['*']];
+				var crossover = [lang.get('overview.crossover'), ( body.query.allmessages[1]['*'] ? '<https://' + body.query.allmessages[1]['*'] + '.gamepedia.com/>' : '' )];
+				var created = [lang.get('overview.created'), new Date(site.creation_date).toLocaleString(lang.get('dateformat'), timeoptions)];
+				var articles = [lang.get('overview.articles'), body.query.statistics.articles];
+				var pages = [lang.get('overview.pages'), body.query.statistics.pages];
+				var edits = [lang.get('overview.edits'), body.query.statistics.edits];
+				var users = [lang.get('overview.users'), body.query.statistics.activeusers];
+				var description = [lang.get('overview.description'), site.desc];
+				var image = [lang.get('overview.image'), site.image];
 				
 				if ( description[1] ) {
 					description[1] = description[1].escapeFormatting();
@@ -93,8 +93,8 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 				} ).finally( () => {
 					if ( msg.showEmbed() ) {
 						embed.addField( founder[0], founder[1], true );
-						if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', body.query.general, true) + ') ([' + lang.overview.talk + '](' + wiki.toLink('User talk:' + manager[1], '', '', body.query.general, true) + '))', true );
-						embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.overview.inaccurate );
+						if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', body.query.general, true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', body.query.general, true) + '))', true );
+						embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
 						if ( crossover[1] ) {
 							var crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
 							if ( crossoverSite ) embed.addField( crossover[0], '[' + crossoverSite.wiki_display_name + '](' + crossover[1] + ')', true );
@@ -111,7 +111,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 							text += '\n' + image.join(' ');
 							if ( msg.uploadFiles() ) embed.files = [image[1]];
 						}
-						text += '\n\n*' + lang.overview.inaccurate + '*';
+						text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 					}
 					
 					msg.sendChannel( spoiler + text + spoiler, {embed} );
@@ -119,9 +119,9 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					if ( reaction ) reaction.removeEmoji();
 				} );
 				else {
-					founder[1] = lang.overview.none;
+					founder[1] = lang.get('overview.none');
 					if ( msg.showEmbed() ) {
-						embed.addField( founder[0], founder[1], true ).addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.overview.inaccurate );
+						embed.addField( founder[0], founder[1], true ).addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
 						if ( crossover[1] ) {
 							var crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
 							if ( crossoverSite ) embed.addField( crossover[0], '[' + crossoverSite.wiki_display_name + '](' + crossover[1] + ')', true );
@@ -138,7 +138,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 							text += '\n' + image.join(' ');
 							if ( msg.uploadFiles() ) embed.files = [image[1]];
 						}
-						text += '\n\n*' + lang.overview.inaccurate + '*';
+						text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 					}
 					
 					msg.sendChannel( spoiler + text + spoiler, {embed} );

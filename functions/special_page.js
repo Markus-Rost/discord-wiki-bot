@@ -30,7 +30,7 @@ const queryfunctions = {
 		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', query.general, true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + result.databaseResult.b_title.escapeFormatting() + ' → ' + result.databaseResult.c_title.escapeFormatting() : '' );
 	} ).join('\n'),
 	timestamp: (query, wiki) => query.querypage.results.map( result => {
-		return new Date(result.timestamp).toLocaleString(lang.dateformat, timeoptions).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')';
+		return new Date(result.timestamp).toLocaleString(lang.get('dateformat'), timeoptions).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')';
 	} ).join('\n'),
 	media: (query) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');
@@ -116,7 +116,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 			}
 			if ( msg.channel.type === 'text' && msg.guild.id in patreons && specialpage in querypages ) {
 				var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki), {maxLength:1000} )[0];
-				embed.addField( lang.search.special, ( text || lang.search.empty ) );
+				embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			}
 		}
 	}, error => {

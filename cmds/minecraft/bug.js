@@ -16,7 +16,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 						msg.reactEmoji('🤷');
 					}
 					else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-						msg.sendChannel( spoiler + lang.minecraft.private + '\n<' + link + invoke + '>' + spoiler );
+						msg.sendChannel( spoiler + lang.get('minecraft.private') + '\n<' + link + invoke + '>' + spoiler );
 					}
 					else {
 						console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issue: ' + body.errorMessages.join(' - ') );
@@ -46,12 +46,12 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
 							else extrabugs.push({name,value,inline:false});
 						} );
-						if ( extrabugs.length ) embed.setFooter( lang.minecraft.more.replaceSave( '%s', extrabugs.length ) );
+						if ( extrabugs.length ) embed.setFooter( lang.get('minecraft.more').replaceSave( '%s', extrabugs.length ) );
 					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
 					var fixed = '';
 					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
-						fixed = '\n' + lang.minecraft.fixed + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
+						fixed = '\n' + lang.get('minecraft.fixed') + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
 					}
 					msg.sendChannel( spoiler + status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed + spoiler, {embed} );
 				}
@@ -98,9 +98,9 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							var value = status + ': [' + bug.fields.summary.escapeFormatting() + '](https://bugs.mojang.com/browse/' + bug.key + ')';
 							embed.addField( bug.key, value );
 						} );
-						if ( body.total > 25 ) embed.setFooter( lang.minecraft.more.replaceSave( '%s', body.total - 25 ) );
+						if ( body.total > 25 ) embed.setFooter( lang.get('minecraft.more').replaceSave( '%s', body.total - 25 ) );
 					}
-					var total = '**' + args.join(' ') + ':** ' + lang.minecraft.total.replaceSave( '%s', body.total );
+					var total = '**' + args.join(' ') + ':** ' + lang.get('minecraft.total').replaceSave( '%s', body.total );
 					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, {embed} );
 				}
 			}
@@ -113,7 +113,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.gamepedia(lang, msg, title, lang.minecraft.link, cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.gamepedia(lang, msg, title, lang.get('minecraft.link'), cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 

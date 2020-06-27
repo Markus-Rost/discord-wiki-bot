@@ -128,7 +128,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		}
 		
 		msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', {}, true );
-	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 }
 
 module.exports = {

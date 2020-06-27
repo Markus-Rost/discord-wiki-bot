@@ -13,12 +13,12 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	if ( isDebug ) console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
 	if ( text.length > 2000 ) msg.reactEmoji('✅', true);
 	else msg.sendChannel( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'},allowedMentions:{}}, true );
-}
 
-function backdoor(cmdline) {
-	msg.evalUsed = true;
-	newMessage(msg, lang, wiki, patreons[msg.guild.id], null, cmdline);
-	return cmdline;
+	function backdoor(cmdline) {
+		msg.evalUsed = true;
+		newMessage(msg, lang, wiki, patreons[msg.guild.id], null, cmdline);
+		return cmdline;
+	}
 }
 
 function database(sql, sqlargs = []) {

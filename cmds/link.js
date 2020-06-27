@@ -4,7 +4,7 @@ const check_wiki = {
 };
 const help_setup = require('../functions/helpsetup.js');
 
-function cmd_link(lang, msg, title, wiki, cmd = ' ') {
+function cmd_link(lang, msg, title, wiki, cmd = '') {
 	if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 	if ( /^\|\|(?:(?!\|\|).)+\|\|$/.test(title) ) {
 		title = title.substring( 2, title.length - 2);

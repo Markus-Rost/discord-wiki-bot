@@ -1,7 +1,7 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const global_block = require('../../../functions/global_block.js');
-const {timeoptions} = require('../../../util/default.json');
+const {timeoptions, usergroups} = require('../../../util/default.json');
 
 function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
@@ -62,18 +62,18 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 				if ( !querypage.noRedirect || ( querypage.missing === undefined && querypage.ns !== -1 ) ) namespace = contribs;
 				var blocks = body.query.blocks.map( block => {
 					var isBlocked = false;
-					var blockedtimestamp = new Date(block.timestamp).toLocaleString(lang.dateformat, timeoptions);
+					var blockedtimestamp = new Date(block.timestamp).toLocaleString(lang.get('dateformat'), timeoptions);
 					var blockexpiry = block.expiry;
 					if ( blockexpiry === 'infinity' ) {
-						blockexpiry = lang.user.block.until_infinity;
+						blockexpiry = lang.get('user.block.until_infinity');
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
-						blockexpiry = new Date(blockexpiry).toLocaleString(lang.dateformat, timeoptions);
+						blockexpiry = new Date(blockexpiry).toLocaleString(lang.get('dateformat'), timeoptions);
 					}
 					if ( isBlocked ) return {
-						header: lang.user.block.header.replaceSave( '%s', block.user ).escapeFormatting(),
-						text: lang.user.block[( block.reason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
+						header: lang.get('user.block.header').replaceSave( '%s', block.user ).escapeFormatting(),
+						text: lang.get('user.block.' + ( block.reason ? 'text' : 'noreason' )).replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
 						by: block.by,
 						reason: block.reason
 					};
@@ -114,7 +114,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						}
 					}
 					else {
-						var editcount = [lang.user.info.editcount, ( username.includes( '/' ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
+						var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
 						
 						var pagelink = wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general);
 						if ( msg.showEmbed() ) {
@@ -125,7 +125,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
 								embed.addField( block.header, block.text );
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 						}
 						else {
 							var embed = {};
@@ -135,7 +135,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
@@ -210,45 +210,44 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 				}
 				else {
 					username = queryuser.name;
-					var gender = [lang.user.info.gender];
+					var gender = [lang.get('user.info.gender')];
 					switch (queryuser.gender) {
 						case 'male':
-							gender.push(lang.user.gender.male);
+							gender.push(lang.get('user.gender.male'));
 							break;
 						case 'female':
-							gender.push(lang.user.gender.female);
+							gender.push(lang.get('user.gender.female'));
 							break;
 						default: 
-							gender.push(lang.user.gender.unknown);
+							gender.push(lang.get('user.gender.unknown'));
 					}
-					var registration = [lang.user.info.registration, new Date(queryuser.registration).toLocaleString(lang.dateformat, timeoptions)];
-					var editcount = [lang.user.info.editcount, queryuser.editcount];
+					var registration = [lang.get('user.info.registration'), new Date(queryuser.registration).toLocaleString(lang.get('dateformat'), timeoptions)];
+					var editcount = [lang.get('user.info.editcount'), queryuser.editcount];
 					var groups = queryuser.groups;
-					var group = [lang.user.info.group];
-					var grouplist = lang.user.groups;
-					for ( var i = 0; i < grouplist.length; i++ ) {
-						if ( groups.includes( grouplist[i][0] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( grouplist[i][0] ) ) ) {
-							if ( grouplist[i][0] === 'wiki-manager' && body.query.allmessages[0]['*'] === username ) {
-								group.push('**' + grouplist[i][1] + '**');
+					var group = [lang.get('user.info.group')];
+					for ( var i = 0; i < usergroups.length; i++ ) {
+						if ( groups.includes( usergroups[i] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( usergroups[i] ) ) ) {
+							if ( usergroups[i] === 'wiki-manager' && body.query.allmessages[0]['*'] === username ) {
+								group.push('**' + lang.get('user.groups.' + usergroups[i]) + '**');
 							}
-							else group.push(grouplist[i][1]);
+							else group.push(lang.get('user.groups.' + usergroups[i]));
 						}
 					}
 					var isBlocked = false;
 					var blockexpiry = queryuser.blockexpiry;
 					if ( blockexpiry === 'infinity' ) {
-						blockexpiry = lang.user.block.until_infinity;
+						blockexpiry = lang.get('user.block.until_infinity');
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						var blockexpirydate = blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' );
-						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.dateformat, timeoptions);
+						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.get('dateformat'), timeoptions);
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
 					var blockedby = '[[User:' + queryuser.blockedby + '|' + queryuser.blockedby + ']]';
 					var blockreason = queryuser.blockreason;
 					var block = {
-						header: lang.user.block.header.replaceSave( '%s', username ).escapeFormatting(),
-						text: lang.user.block['nofrom' + ( blockreason ? 'text' : 'noreason' )].replaceSave( '%2$s', blockexpiry ),
+						header: lang.get('user.block.header').replaceSave( '%s', username ).escapeFormatting(),
+						text: lang.get('user.block.nofrom' + ( blockreason ? 'text' : 'noreason' )).replaceSave( '%2$s', blockexpiry ),
 						by: blockedby,
 						reason: blockreason
 					};
@@ -286,7 +285,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discordfield.value;
 								} );
-								var discordname = [lang.user.info.discord,discordfield.value];
+								var discordname = [lang.get('user.info.discord'),discordfield.value];
 								if ( discordmember ) discordname[1] = discordmember.toString();
 								
 								if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
@@ -310,7 +309,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
 								embed.addField( block.header, block.text );
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 						}
 						else {
 							if ( isBlocked ) {
@@ -318,7 +317,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );

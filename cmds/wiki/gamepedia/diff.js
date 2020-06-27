@@ -71,7 +71,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 						msg.reactEmoji('nowiki');
 					}
 					else if ( noerror ) {
-						msg.replyMsg( lang.diff.badrev );
+						msg.replyMsg( lang.get('diff.badrev') );
 					}
 					else {
 						console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
@@ -94,7 +94,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 							argids = [ids.torevid, ids.fromrevid];
 							var compare = ['', ''];
 							if ( ids.fromtexthidden === undefined && ids.totexthidden === undefined && ids['*'] !== undefined ) {
-								var more = '\n__' + lang.diff.info.more + '__';
+								var more = '\n__' + lang.get('diff.info.more') + '__';
 								var current_tag = '';
 								var small_prev_ins = '';
 								var small_prev_del = '';
@@ -166,16 +166,16 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 								if ( small_prev_del.length ) {
 									if ( small_prev_del.replace( /\~\~/g, '' ).trim().length ) {
 										compare[0] = small_prev_del.replace( /\~\~\~\~/g, '' );
-									} else compare[0] = '__' + lang.diff.info.whitespace + '__';
+									} else compare[0] = '__' + lang.get('diff.info.whitespace') + '__';
 								}
 								if ( small_prev_ins.length ) {
 									if ( small_prev_ins.replace( /\*\*/g, '' ).trim().length ) {
 										compare[1] = small_prev_ins.replace( /\*\*\*\*/g, '' );
-									} else compare[1] = '__' + lang.diff.info.whitespace + '__';
+									} else compare[1] = '__' + lang.get('diff.info.whitespace') + '__';
 								}
 							}
-							else if ( ids.fromtexthidden !== undefined ) compare[0] = '__' + lang.diff.hidden + '__';
-							else if ( ids.totexthidden !== undefined ) compare[1] = '__' + lang.diff.hidden + '__';
+							else if ( ids.fromtexthidden !== undefined ) compare[0] = '__' + lang.get('diff.hidden') + '__';
+							else if ( ids.totexthidden !== undefined ) compare[1] = '__' + lang.get('diff.hidden') + '__';
 						}
 						gamepedia_diff_send(lang, msg, argids, wiki, reaction, spoiler, compare);
 					}
@@ -222,7 +222,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 		}
 		else {
 			if ( body.query.badrevids ) {
-				msg.replyMsg( lang.diff.badrev );
+				msg.replyMsg( lang.get('diff.badrev') );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
@@ -238,12 +238,12 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 					var revisions = pages[0].revisions.sort( (first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp) );
 					var diff = revisions[0].revid;
 					var oldid = ( revisions[1] ? revisions[1].revid : 0 );
-					var editor = [lang.diff.info.editor, ( revisions[0].userhidden !== undefined ? lang.diff.hidden : revisions[0].user )];
-					var timestamp = [lang.diff.info.timestamp, new Date(revisions[0].timestamp).toLocaleString(lang.dateformat, timeoptions)];
+					var editor = [lang.get('diff.info.editor'), ( revisions[0].userhidden !== undefined ? lang.get('diff.hidden') : revisions[0].user )];
+					var timestamp = [lang.get('diff.info.timestamp'), new Date(revisions[0].timestamp).toLocaleString(lang.get('dateformat'), timeoptions)];
 					var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
-					var size = [lang.diff.info.size, lang.diff.info.bytes.replace( '%s', ( difference > 0 ? '+' : '' ) + difference )];
-					var comment = [lang.diff.info.comment, ( revisions[0].commenthidden !== undefined ? lang.diff.hidden : ( revisions[0].comment ? revisions[0].comment.toFormatting(msg.showEmbed(), wiki, body.query.general, title) : lang.diff.nocomment ) )];
-					if ( revisions[0].tags.length ) var tags = [lang.diff.info.tags, body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
+					var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes').replace( '%s', ( difference > 0 ? '+' : '' ) + difference )];
+					var comment = [lang.get('diff.info.comment'), ( revisions[0].commenthidden !== undefined ? lang.get('diff.hidden') : ( revisions[0].comment ? revisions[0].comment.toFormatting(msg.showEmbed(), wiki, body.query.general, title) : lang.get('diff.nocomment') ) )];
+					if ( revisions[0].tags.length ) var tags = [lang.get('diff.info.tags'), body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
 					
 					var pagelink = wiki.toLink(title, 'diff=' + diff + '&oldid=' + oldid, '', body.query.general);
 					if ( msg.showEmbed() ) {
@@ -252,7 +252,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 						if ( revisions[0].anon !== undefined ) {
 							editorlink = '[' + editor[1] + '](' + wiki.toLink('Special:Contributions/' + editor[1], '', '', body.query.general, true) + ')';
 						}
-						if ( editor[1] === lang.diff.hidden ) editorlink = editor[1];
+						if ( editor[1] === lang.get('diff.hidden') ) editorlink = editor[1];
 						var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( ( title + '?diff=' + diff + '&oldid=' + oldid ).escapeFormatting() ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
 						if ( tags ) {
 							var taglink = '';
@@ -274,7 +274,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 							embed.addField( tags[0], tagtext );
 						}
 						
-						var more = '\n__' + lang.diff.info.more + '__';
+						var more = '\n__' + lang.get('diff.info.more') + '__';
 						if ( !compare && oldid ) got.get( wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json', {
 							responseType: 'json'
 						} ).then( cpresponse => {
@@ -367,20 +367,20 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 								parser.end();
 								if ( small_prev_del.length ) {
 									if ( small_prev_del.replace( /\~\~/g, '' ).trim().length ) {
-										embed.addField( lang.diff.info.removed, small_prev_del.replace( /\~\~\~\~/g, '' ), true );
-									} else embed.addField( lang.diff.info.removed, '__' + lang.diff.info.whitespace + '__', true );
+										embed.addField( lang.get('diff.info.removed'), small_prev_del.replace( /\~\~\~\~/g, '' ), true );
+									} else embed.addField( lang.get('diff.info.removed'), '__' + lang.get('diff.info.whitespace') + '__', true );
 								}
 								if ( small_prev_ins.length ) {
 									if ( small_prev_ins.replace( /\*\*/g, '' ).trim().length ) {
-										embed.addField( lang.diff.info.added, small_prev_ins.replace( /\*\*\*\*/g, '' ), true );
-									} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
+										embed.addField( lang.get('diff.info.added'), small_prev_ins.replace( /\*\*\*\*/g, '' ), true );
+									} else embed.addField( lang.get('diff.info.added'), '__' + lang.get('diff.info.whitespace') + '__', true );
 								}
 							}
 							else if ( cpbody.compare.fromtexthidden !== undefined ) {
-								embed.addField( lang.diff.info.removed, '__' + lang.diff.hidden + '__', true );
+								embed.addField( lang.get('diff.info.removed'), '__' + lang.get('diff.hidden') + '__', true );
 							}
 							else if ( cpbody.compare.totexthidden !== undefined ) {
-								embed.addField( lang.diff.info.added, '__' + lang.diff.hidden + '__', true );
+								embed.addField( lang.get('diff.info.added'), '__' + lang.get('diff.hidden') + '__', true );
 							}
 						}, error => {
 							console.log( '- Error while getting the diff: ' + error );
@@ -391,8 +391,8 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 						} );
 						else {
 							if ( compare ) {
-								if ( compare[0].length ) embed.addField( lang.diff.info.removed, compare[0], true );
-								if ( compare[1].length ) embed.addField( lang.diff.info.added, compare[1], true );
+								if ( compare[0].length ) embed.addField( lang.get('diff.info.removed'), compare[0], true );
+								if ( compare[1].length ) embed.addField( lang.get('diff.info.added'), compare[1], true );
 							}
 							else if ( revisions[0]['*'] ) {
 								var content = revisions[0]['*'].escapeFormatting();
@@ -402,8 +402,8 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 										content = content.substring(0, 1000 - more.length);
 										content = '**' + content.substring(0, content.lastIndexOf('\n')) + '**' + more;
 									}
-									embed.addField( lang.diff.info.added, content, true );
-								} else embed.addField( lang.diff.info.added, '__' + lang.diff.info.whitespace + '__', true );
+									embed.addField( lang.get('diff.info.added'), content, true );
+								} else embed.addField( lang.get('diff.info.added'), '__' + lang.get('diff.info.whitespace') + '__', true );
 							}
 							
 							msg.sendChannel( spoiler + text + spoiler, {embed} );

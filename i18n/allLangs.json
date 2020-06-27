@@ -1,6 +1,17 @@
 {
-	"allLangs": [
-		{
+	"allLangs": {
+		"names": {
+			"en": ["English", "English"],
+			"de": ["German", "Deutsch"],
+			"fr": ["French", "Français"],
+			"nl": ["Dutch", "Nederlands"],
+			"pl": ["Polish", "Polski"],
+			"pt": ["Portuguese", "Português"],
+			"ru": ["Russian", "Русский"],
+			"tr": ["Turkish", "Türkçe"],
+			"zh": ["Chinese", "中文"]
+		},
+		"map": {
 			"en": "en",
 			"eng": "en",
 			"english": "en",
@@ -28,28 +39,6 @@
 			"zh": "zh",
 			"chinese": "zh",
 			"中文": "zh"
-		},
-		{
-			"en": "English",
-			"de": "German",
-			"fr": "French",
-			"nl": "Dutch",
-			"pl": "Polish",
-			"pt": "Portuguese",
-			"ru": "Russian",
-			"tr": "Turkish",
-			"zh": "Chinese"
-		},
-		{
-			"en": "English",
-			"de": "Deutsch",
-			"fr": "Français",
-			"nl": "Nederlands",
-			"pl": "Polski",
-			"pt": "Português",
-			"ru": "Русский",
-			"tr": "Türkçe",
-			"zh": "中文"
 		}
-	]
+	}
 }

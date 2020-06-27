@@ -1,5 +1,6 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
+const Lang = require('../../util/i18n.js');
 
 const fs = require('fs');
 var fn = {
@@ -30,7 +31,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 		msg.reactEmoji('⚠️');
 	}
 	var invoke = title.split(' ')[0].toLowerCase();
-	var aliasInvoke = ( lang.aliases[invoke] || invoke );
+	var aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
 	var args = title.split(' ').slice(1);
 	
 	if ( aliasInvoke === 'random' && !args.join('') && !querystring && !fragment ) fn.random(lang, msg, wiki, reaction, spoiler);
@@ -214,10 +215,10 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 									text = '';
 								}
 								else if ( wsbody.total === 1 ) {
-									text = '\n' + lang.search.infopage.replaceSave( '%s', '`' + prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' );
+									text = '\n' + lang.get('search.infopage').replaceSave( '%s', '`' + prefix + cmd + lang.get('search.page') + ' ' + title + linksuffix + '`' );
 								}
 								else {
-									text = '\n' + lang.search.infosearch.replaceSave( '%1$s', '`' + prefix + cmd + lang.search.page + ' ' + title + linksuffix + '`' ).replaceSave( '%2$s', '`' + prefix + cmd + lang.search.search + ' ' + title + linksuffix + '`' );
+									text = '\n' + lang.get('search.infosearch').replaceSave( '%1$s', '`' + prefix + cmd + lang.get('search.page') + ' ' + title + linksuffix + '`' ).replaceSave( '%2$s', '`' + prefix + cmd + lang.get('search.search') + ' ' + title + linksuffix + '`' );
 								}
 								got.get( wiki + 'api.php?action=query&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( querypage.title ) + '&format=json', {
 									responseType: 'json'
@@ -241,20 +242,23 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 											else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + filename}] );
 										}
 										if ( querypage.categoryinfo ) {
-											var langCat = lang.search.category;
-											var category = [langCat.content];
-											if ( querypage.categoryinfo.size === 0 ) category.push(langCat.empty);
+											var langCat = new Lang(lang.lang, 'search.category');
+											var category = [langCat.get('content')];
+											if ( querypage.categoryinfo.size === 0 ) category.push(langCat.get('empty'));
 											if ( querypage.categoryinfo.pages > 0 ) {
-												var pages = querypage.categoryinfo.pages;
-												category.push(( langCat.pages[pages] || langCat.pages['*' + pages % 100] || langCat.pages['*' + pages % 10] || langCat.pages.default ).replaceSave( '%s', pages ));
+												let pages = querypage.categoryinfo.pages;
+												let count = langCat.get('pages');
+												category.push(( count[pages] || count['*' + pages % 100] || count['*' + pages % 10] || langCat.get('pages.default') ).replaceSave( '%s', pages ));
 											}
 											if ( querypage.categoryinfo.files > 0 ) {
-												var files = querypage.categoryinfo.files;
-												category.push(( langCat.files[files] || langCat.files['*' + files % 100] || langCat.files['*' + files % 10] || langCat.files.default ).replaceSave( '%s', files ));
+												let files = querypage.categoryinfo.files;
+												let count = langCat.get('files');
+												category.push(( count[files] || count['*' + files % 100] || count['*' + files % 10] || langCat.get('files.default') ).replaceSave( '%s', files ));
 											}
 											if ( querypage.categoryinfo.subcats > 0 ) {
-												var subcats = querypage.categoryinfo.subcats;
-												category.push(( langCat.subcats[subcats] || langCat.subcats['*' + subcats % 100] || langCat.subcats['*' + subcats % 10] || langCat.subcats.default ).replaceSave( '%s', subcats ));
+												let subcats = querypage.categoryinfo.subcats;
+												let count = langCat.get('subcats');
+												category.push(( count[subcats] || count['*' + subcats % 100] || count['*' + subcats % 10] || langCat.get('subcats.default') ).replaceSave( '%s', subcats ));
 											}
 											if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
 											else text += '\n\n' + category.join('\n');
@@ -330,20 +334,23 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + filename}] );
 						}
 						if ( querypage.categoryinfo ) {
-							var langCat = lang.search.category;
-							var category = [langCat.content];
-							if ( querypage.categoryinfo.size === 0 ) category.push(langCat.empty);
+							var langCat = new Lang(lang.lang, 'search.category');
+							var category = [langCat.get('content')];
+							if ( querypage.categoryinfo.size === 0 ) category.push(langCat.get('empty'));
 							if ( querypage.categoryinfo.pages > 0 ) {
-								var pages = querypage.categoryinfo.pages;
-								category.push(( langCat.pages[pages] || langCat.pages['*' + pages % 100] || langCat.pages['*' + pages % 10]  || langCat.pages.default ).replaceSave( '%s', pages ));
+								let pages = querypage.categoryinfo.pages;
+								let count = langCat.get('pages');
+								category.push(( count[pages] || count['*' + pages % 100] || count['*' + pages % 10]  || langCat.get('pages.default') ).replaceSave( '%s', pages ));
 							}
 							if ( querypage.categoryinfo.files > 0 ) {
-								var files = querypage.categoryinfo.files;
-								category.push(( langCat.files[files] || langCat.files['*' + files % 100] || langCat.files['*' + files % 10]  || langCat.files.default ).replaceSave( '%s', files ));
+								let files = querypage.categoryinfo.files;
+								let count = langCat.get('files');
+								category.push(( count[files] || count['*' + files % 100] || count['*' + files % 10]  || langCat.get('files.default') ).replaceSave( '%s', files ));
 							}
 							if ( querypage.categoryinfo.subcats > 0 ) {
-								var subcats = querypage.categoryinfo.subcats;
-								category.push(( langCat.subcats[subcats] || langCat.subcats['*' + subcats % 100] || langCat.subcats['*' + subcats % 10]  || langCat.subcats.default ).replaceSave( '%s', subcats ));
+								let subcats = querypage.categoryinfo.subcats;
+								let count = langCat.get('subcats');
+								category.push(( count[subcats] || count['*' + subcats % 100] || count['*' + subcats % 10]  || langCat.get('subcats.default') ).replaceSave( '%s', subcats ));
 							}
 							if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
 							else text += '\n\n' + category.join('\n');
@@ -397,7 +404,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 						if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 							var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replaceSave( intertitle.replace( /\_/g, ' ' ), intertitle );
 							selfcall++;
-							this.fandom(lang, msg, iwtitle, 'https://' + regex[1] + '/', ' ?' + ( regex[3] ? regex[3] + '.' : '' ) + regex[2] + ' ', reaction, spoiler, querystring, fragment, selfcall);
+							this.fandom(lang, msg, iwtitle, 'https://' + regex[1] + '/', '?' + ( regex[3] ? regex[3] + '.' : '' ) + regex[2] + ' ', reaction, spoiler, querystring, fragment, selfcall);
 						} else {
 							if ( reaction ) reaction.removeEmoji();
 							console.log( '- Aborted, paused.' );
@@ -408,7 +415,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 								var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replaceSave( intertitle.replace( /\_/g, ' ' ), intertitle );
 								selfcall++;
-								this.gamepedia(lang, msg, iwtitle, 'https://' + regex[1] + '.gamepedia.com/', ' !' + regex[1] + ' ', reaction, spoiler, querystring, fragment, selfcall);
+								this.gamepedia(lang, msg, iwtitle, 'https://' + regex[1] + '.gamepedia.com/', '!' + regex[1] + ' ', reaction, spoiler, querystring, fragment, selfcall);
 							} else {
 								if ( reaction ) reaction.removeEmoji();
 								console.log( '- Aborted, paused.' );

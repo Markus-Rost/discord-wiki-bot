@@ -19,12 +19,12 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		else {
 			let $ = cheerio.load(body);
 			if ( $('#mw-content-text .errorbox').length ) {
-				if ( msg.showEmbed() ) embed.addField( lang.user.gblock.disabled, '\u200b' );
-				else text += '\n\n**' + lang.user.gblock.disabled + '**';
+				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.disabled'), '\u200b' );
+				else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 			}
 			else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
-				if ( msg.showEmbed() ) embed.addField( lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting(), '\u200b' );
-				else text += '\n\n**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**';
+				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting(), '\u200b' );
+				else text += '\n\n**' + lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting() + '**';
 			}
 		}
 	}, error => {
@@ -40,10 +40,10 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 					let $ = cheerio.load(gbody);
 					var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
 					if ( globaledits ) {
-						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',inline:true});
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.get('user.info.globaleditcount'),value:'[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',inline:true});
 						else {
 							let splittext = text.split('\n');
-							splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
+							splittext.splice(5, 0, lang.get('user.info.globaleditcount') + ' ' + globaledits);
 							text = splittext.join('\n');
 						}
 					}
@@ -66,25 +66,25 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 			var gblock = $('.mw-blocklist');
 			if ( gblock.length ) {
 				var reason = gblock.find('.TablePager_col_reason').text().replace( /\)$/, '' ).split(', ');
-				var timestamp = new Date(gblock.find('.TablePager_col_timestamp').text().replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.dateformat, timeoptions);
+				var timestamp = new Date(gblock.find('.TablePager_col_timestamp').text().replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.get('dateformat'), timeoptions);
 				var expiry = gblock.find('.TablePager_col_expiry').text();
-				if ( expiry.startsWith( '(infiniteblock)' ) ) expiry = lang.user.block.until_infinity;
-				else expiry = new Date(expiry.replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.dateformat, timeoptions);
+				if ( expiry.startsWith( '(infiniteblock)' ) ) expiry = lang.get('user.block.until_infinity');
+				else expiry = new Date(expiry.replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.get('dateformat'), timeoptions);
 				if ( msg.showEmbed() ) {
-					var gblocktitle = lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting();
-					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.user.block.header.replaceSave( '%s', username ).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ) );
+					var gblocktitle = lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting();
+					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.get('user.block.header').replaceSave( '%s', username ).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ) );
 					if ( globalblock ) globalblock.name = gblocktitle;
 					else {
 						var block_wiki = reason[3].replace( /Special:BlockList$/, '' );
-						var gblocktext = lang.user.gblock[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', '[' + reason[1] + '](' + block_wiki + 'User:' + reason[1].toTitle(true) + ')' ).replaceSave( '%4$s', '[' + reason[2] + '](' + block_wiki + 'Special:Contribs/' + username.toTitle(true) + ')' ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() );
+						var gblocktext = lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', '[' + reason[1] + '](' + block_wiki + 'User:' + reason[1].toTitle(true) + ')' ).replaceSave( '%4$s', '[' + reason[2] + '](' + block_wiki + 'Special:Contribs/' + username.toTitle(true) + ')' ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() );
 						embed.addField( gblocktitle, gblocktext );
 					}
 				}
 				else {
 					let splittext = text.split('\n\n');
-					var globalblock = splittext.indexOf('**' + lang.user.block.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ));
-					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.block[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() );
-					else splittext.push('**' + lang.user.gblock.header.replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.user.gblock[( reason.length > 4 ? 'text' : 'noreason' )].replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason[2] ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() ));
+					var globalblock = splittext.indexOf('**' + lang.get('user.block.header').replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ));
+					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() );
+					else splittext.push('**' + lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason[2] ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() ));
 					text = splittext.join('\n\n');
 				}
 			}
@@ -102,19 +102,19 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 					let $ = cheerio.load(gbody);
 					var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
 					if ( wikisedited ) {
-						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.wikisedited,value:wikisedited,inline:true});
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.get('user.info.wikisedited'),value:wikisedited,inline:true});
 						else {
 							let splittext = text.split('\n');
-							splittext.splice(5, 0, lang.user.info.wikisedited + ' ' + wikisedited);
+							splittext.splice(5, 0, lang.get('user.info.wikisedited') + ' ' + wikisedited);
 							text = splittext.join('\n');
 						}
 					}
 					var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
 					if ( globaledits ) {
-						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.user.info.globaleditcount,value:'[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',inline:true});
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.get('user.info.globaleditcount'),value:'[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',inline:true});
 						else {
 							let splittext = text.split('\n');
-							splittext.splice(5, 0, lang.user.info.globaleditcount + ' ' + globaledits);
+							splittext.splice(5, 0, lang.get('user.info.globaleditcount') + ' ' + globaledits);
 							text = splittext.join('\n');
 						}
 					}

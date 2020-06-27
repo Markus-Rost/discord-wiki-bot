@@ -25,54 +25,56 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	var cleanCont = ( content && Util.cleanContent(content, msg) || msg.cleanContent );
 	var author = msg.author;
 	var channel = msg.channel;
-	var invoke = ( cont.split(' ')[1] ? cont.split(' ')[1].split('\n')[0].toLowerCase() : '' );
-	var aliasInvoke = ( lang.aliases[invoke] || invoke );
+	var invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
+	var aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
 	var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 	if ( cont.hasPrefix(prefix) && ownercmd ) {
-		var args = cont.split(' ').slice(2);
-		if ( cont.split(' ')[1].split('\n')[1] ) args.unshift( '', cont.split(' ')[1].split('\n')[1] );
-		else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + cont );
-		ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
-	} else {
-		var count = 0;
-		var maxcount = ( channel.type === 'text' && msg.guild.id in patreons ? 15 : 10 );
-		cleanCont.replace( /\u200b/g, '' ).split('\n').forEach( line => {
-			if ( line.hasPrefix(prefix) && count < maxcount ) {
-				count++;
-				invoke = ( line.split(' ')[1] ? line.split(' ')[1].toLowerCase() : '' );
-				var args = line.split(' ').slice(2);
-				aliasInvoke = ( lang.aliases[invoke] || invoke );
-				ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
-				if ( channel.type === 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.id + ': Paused' );
-				else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + line );
-				if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
-				else if ( channel.type !== 'text' || !pause[msg.guild.id] || ( msg.isAdmin() && aliasInvoke in pausecmdmap ) ) {
-					if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line, wiki);
-					else if ( /^![a-z\d-]{1,50}$/.test(invoke) ) {
-						cmdmap.LINK(lang, msg, args.join(' '), 'https://' + invoke.substring(1) + '.gamepedia.com/', ' ' + invoke + ' ');
-					}
-					else if ( /^\?(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-						var invokeWiki = wiki;
-						if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
-						else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
-						cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, ' ' + invoke + ' ');
-					}
-					else if ( /^\?\?(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-						var invokeWiki = wiki;
-						if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
-						else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
-						cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, ' ' + invoke + ' ');
-					}
-					else cmdmap.LINK(lang, msg, line.split(' ').slice(1).join(' '), wiki);
-				}
-			} else if ( line.hasPrefix(prefix) && count === maxcount ) {
-				count++;
-				console.log( '- Message contains too many commands!' );
-				msg.reactEmoji('⚠️');
-				msg.sendChannelError( lang.limit.replaceSave( '%s', '<@' + author.id + '>' ), {allowedMentions:{users:[author.id]}} );
+		cont = cont.substring(prefix.length);
+		var args = cont.split(' ').slice(1);
+		if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
+		console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + cont );
+		return ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
+	}
+	var count = 0;
+	var maxcount = ( channel.type === 'text' && msg.guild.id in patreons ? 15 : 10 );
+	cleanCont.replace( /\u200b/g, '' ).split('\n').forEach( line => {
+		if ( !line.hasPrefix(prefix) || count > maxcount ) return;
+		count++;
+		if ( count === maxcount ) {
+			console.log( '- Message contains too many commands!' );
+			msg.reactEmoji('⚠️');
+			msg.sendChannelError( lang.get('limit').replaceSave( '%s', '<@' + author.id + '>' ), {allowedMentions:{users:[author.id]}} );
+			return;
+		}
+		line = line.substring(prefix.length);
+		invoke = line.split(' ')[0].toLowerCase();
+		var args = line.split(' ').slice(1);
+		aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
+		ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
+		if ( channel.type === 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.id + ': Paused' );
+		else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + line );
+		if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
+		else if ( channel.type !== 'text' || !pause[msg.guild.id] || ( msg.isAdmin() && aliasInvoke in pausecmdmap ) ) {
+			if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line, wiki);
+			else if ( /^![a-z\d-]{1,50}$/.test(invoke) ) {
+				cmdmap.LINK(lang, msg, args.join(' '), 'https://' + invoke.substring(1) + '.gamepedia.com/', invoke + ' ');
 			}
-		} );
-		
+			else if ( /^\?(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+				var invokeWiki = wiki;
+				if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
+				else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
+				cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, invoke + ' ');
+			}
+			else if ( /^\?\?(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+				var invokeWiki = wiki;
+				if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
+				else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
+				cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, invoke + ' ');
+			}
+			else cmdmap.LINK(lang, msg, line, wiki);
+		}
+	} );
+	
 		if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 			var links = [];
 			var embeds = [];
@@ -200,10 +202,10 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				}
 				if ( embeds.length ) {
 					if ( wiki.isFandom() ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-						check_wiki.fandom(lang, msg, embed.title, wiki, ' ', reaction, embed.spoiler, '', embed.section);
+						check_wiki.fandom(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, '', embed.section);
 					} ) );
 					else embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-						check_wiki.gamepedia(lang, msg, embed.title, wiki, ' ', reaction, embed.spoiler, '', embed.section);
+						check_wiki.gamepedia(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, '', embed.section);
 					} ) );
 				}
 			}, error => {
@@ -215,7 +217,6 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					console.log( '- Error while following the links: ' + error );
 				}
 			} );
-		}
 	}
 }
 

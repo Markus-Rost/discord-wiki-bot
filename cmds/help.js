@@ -3,27 +3,27 @@ const help_server = require('../functions/helpserver.js');
 function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.channel.type === 'text' && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
-	var cmds = lang.help.list;
-	var isMinecraft = ( wiki === lang.minecraft.link );
+	var cmds = lang.get('help.list');
+	var isMinecraft = ( wiki === lang.get('minecraft.link') );
 	var isPatreon = ( msg.channel.type === 'text' && msg.guild.id in patreons );
 	var prefix = ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix );
-	var cmdintro = '🔹 `' + prefix + ' ';
+	var cmdintro = '🔹 `' + prefix;
 	if ( args.join('') ) {
 		if ( args.join(' ').isMention(msg.guild) ) {
 			if ( !( msg.isAdmin() && msg.defaultSettings ) ) help_server(lang, msg);
 		}
 		else if ( args[0].toLowerCase() === 'admin' ) {
 			if ( msg.channel.type !== 'text' || msg.isAdmin() ) {
-				var cmdlist = lang.help.admin + '\n' + cmds.filter( cmd => cmd.admin && !cmd.hide && ( !cmd.patreon || isPatreon ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
+				var cmdlist = lang.get('help.admin') + '\n' + cmds.filter( cmd => cmd.admin && !cmd.hide && ( !cmd.patreon || isPatreon ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
 				cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : msg.client.user.username ) ).replaceSave( /@prefix/g, prefix );
 				msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 			}
 			else {
-				msg.replyMsg( lang.help.noadmin );
+				msg.replyMsg( lang.get('help.noadmin') );
 			}
 		}
 		else if ( args[0].toLowerCase() === 'minecraft' ) {
-			var cmdlist = '<' + lang.minecraft.link + '>\n' + cmds.filter( cmd => cmd.minecraft && !cmd.hide ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
+			var cmdlist = '<' + lang.get('minecraft.link') + '>\n' + cmds.filter( cmd => cmd.minecraft && !cmd.hide ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
 			cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : msg.client.user.username ) ).replaceSave( /@prefix/g, prefix );
 			msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 		}
@@ -35,12 +35,12 @@ function cmd_help(lang, msg, args, line, wiki) {
 		}
 	}
 	else if ( msg.isAdmin() && pause[msg.guild.id] ) {
-		var cmdlist = lang.help.pause + '\n' + cmds.filter( cmd => cmd.pause && ( !cmd.patreon || isPatreon ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
+		var cmdlist = lang.get('help.pause') + '\n' + cmds.filter( cmd => cmd.pause && ( !cmd.patreon || isPatreon ) ).map( cmd => cmdintro + cmd.cmd + '`\n\t' + cmd.desc ).join('\n');
 		cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : msg.client.user.username ) ).replaceSave( /@prefix/g, prefix );
 		msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}}, true );
 	}
 	else {
-		var cmdlist = lang.help.all + '\n' + cmds.filter( cmd => !cmd.hide && !cmd.admin && ( !cmd.patreon || isPatreon ) && ( !cmd.fandom || wiki.isFandom() ) && !( cmd.inline && msg.noInline ) && ( !cmd.minecraft || isMinecraft ) ).map( cmd => ( cmd.inline ? '🔹 `' : cmdintro ) + cmd.cmd + '`\n\t' + cmd.desc ).join('\n') + '\n\n🔸 ' + lang.help.footer;
+		var cmdlist = lang.get('help.all') + '\n' + cmds.filter( cmd => !cmd.hide && !cmd.admin && ( !cmd.patreon || isPatreon ) && ( !cmd.fandom || wiki.isFandom() ) && !( cmd.inline && msg.noInline ) && ( !cmd.minecraft || isMinecraft ) ).map( cmd => ( cmd.inline ? '🔹 `' : cmdintro ) + cmd.cmd + '`\n\t' + cmd.desc ).join('\n') + '\n\n🔸 ' + lang.get('help.footer');
 		cmdlist = cmdlist.replaceSave( /@mention/g, '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : msg.client.user.username ) ).replaceSave( /@prefix/g, prefix );
 		msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
 	}

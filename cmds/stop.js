@@ -7,7 +7,7 @@ async function cmd_stop(lang, msg, args, line, wiki) {
 		console.log( '\n- Restarting all shards!\n\n' );
 		await msg.client.shard.respawnAll();
 	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
-		this.LINK(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+		this.LINK(lang, msg, line, wiki);
 	}
 }
 

@@ -2,7 +2,7 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const global_block = require('../../../functions/global_block.js');
 const extract_desc = require('../../../util/extract_desc.js');
-const {timeoptions} = require('../../../util/default.json');
+const {timeoptions, usergroups} = require('../../../util/default.json');
 
 var allSites = [];
 const getAllSites = require('../../../util/allSites.js');
@@ -56,18 +56,18 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( !querypage.noRedirect || ( querypage.missing === undefined && querypage.ns !== -1 ) ) namespace = contribs;
 				var blocks = body.query.blocks.map( block => {
 					var isBlocked = false;
-					var blockedtimestamp = new Date(block.timestamp).toLocaleString(lang.dateformat, timeoptions);
+					var blockedtimestamp = new Date(block.timestamp).toLocaleString(lang.get('dateformat'), timeoptions);
 					var blockexpiry = block.expiry;
 					if ( blockexpiry === 'infinity' ) {
-						blockexpiry = lang.user.block.until_infinity;
+						blockexpiry = lang.get('user.block.until_infinity');
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
-						blockexpiry = new Date(blockexpiry).toLocaleString(lang.dateformat, timeoptions);
+						blockexpiry = new Date(blockexpiry).toLocaleString(lang.get('dateformat'), timeoptions);
 					}
 					if ( isBlocked ) return {
-						header: lang.user.block.header.replaceSave( '%s', block.user ).escapeFormatting(),
-						text: lang.user.block[( block.reason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
+						header: lang.get('user.block.header').replaceSave( '%s', block.user ).escapeFormatting(),
+						text: lang.get('user.block.' + ( block.reason ? 'text' : 'noreason' )).replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
 						by: block.by,
 						reason: block.reason
 					};
@@ -108,7 +108,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						}
 					}
 					else {
-						var editcount = [lang.user.info.editcount, ( username.includes( '/' ) && ( ( username.includes( ':' ) && range % 16 ) || range % 8 ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
+						var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) && ( ( username.includes( ':' ) && range % 16 ) || range % 8 ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
 						
 						var pagelink = wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general);
 						if ( msg.showEmbed() ) {
@@ -128,7 +128,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
 								embed.addField( block.header, block.text );
 							} );
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 						}
 						else {
 							var embed = {};
@@ -138,7 +138,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							} );
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
@@ -203,49 +203,48 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				else {
 					username = queryuser.name;
-					var gender = [lang.user.info.gender];
+					var gender = [lang.get('user.info.gender')];
 					switch (queryuser.gender) {
 						case 'male':
-							gender.push(lang.user.gender.male);
+							gender.push(lang.get('user.gender.male'));
 							break;
 						case 'female':
-							gender.push(lang.user.gender.female);
+							gender.push(lang.get('user.gender.female'));
 							break;
 						default: 
-							gender.push(lang.user.gender.unknown);
+							gender.push(lang.get('user.gender.unknown'));
 					}
-					var registration = [lang.user.info.registration, new Date(queryuser.registration).toLocaleString(lang.dateformat, timeoptions)];
-					var editcount = [lang.user.info.editcount, queryuser.editcount];
+					var registration = [lang.get('user.info.registration'), new Date(queryuser.registration).toLocaleString(lang.get('dateformat'), timeoptions)];
+					var editcount = [lang.get('user.info.editcount'), queryuser.editcount];
 					var groups = queryuser.groups;
-					var group = [lang.user.info.group];
-					var grouplist = lang.user.groups;
-					for ( var i = 0; i < grouplist.length; i++ ) {
-						if ( groups.includes( grouplist[i][0] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( grouplist[i][0] ) ) ) {
+					var group = [lang.get('user.info.group')];
+					for ( var i = 0; i < usergroups.length; i++ ) {
+						if ( groups.includes( usergroups[i] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( usergroups[i] ) ) ) {
 							var thisSite = allSites.find( site => site.wiki_domain === body.query.general.servername );
-							if ( grouplist[i][0] === 'wiki_manager' && thisSite && thisSite.wiki_managers.includes( username ) ) {
-								group.push('**' + grouplist[i][1] + '**');
+							if ( usergroups[i] === 'wiki_manager' && thisSite && thisSite.wiki_managers.includes( username ) ) {
+								group.push('**' + lang.get('user.groups.' + usergroups[i]) + '**');
 							}
-							else if ( !groups.includes( 'global_' + grouplist[i][0] ) || queryuser.groupmemberships.some( member => member.group === grouplist[i][0] ) ) {
-								group.push(grouplist[i][1]);
+							else if ( !groups.includes( 'global_' + usergroups[i] ) || queryuser.groupmemberships.some( member => member.group === usergroups[i] ) ) {
+								group.push(lang.get('user.groups.' + usergroups[i]));
 							}
 						}
 					}
 					var isBlocked = false;
-					var blockedtimestamp = new Date(queryuser.blockedtimestamp).toLocaleString(lang.dateformat, timeoptions);
+					var blockedtimestamp = new Date(queryuser.blockedtimestamp).toLocaleString(lang.get('dateformat'), timeoptions);
 					var blockexpiry = queryuser.blockexpiry;
 					if ( blockexpiry === 'infinity' ) {
-						blockexpiry = lang.user.block.until_infinity;
+						blockexpiry = lang.get('user.block.until_infinity');
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						var blockexpirydate = blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' );
-						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.dateformat, timeoptions);
+						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.get('dateformat'), timeoptions);
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
 					var blockedby = queryuser.blockedby;
 					var blockreason = queryuser.blockreason;
 					var block = {
-						header: lang.user.block.header.replaceSave( '%s', username ).escapeFormatting(),
-						text: lang.user.block[( blockreason ? 'text' : 'noreason' )].replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
+						header: lang.get('user.block.header').replaceSave( '%s', username ).escapeFormatting(),
+						text: lang.get('user.block.' + ( blockreason ? 'text' : 'noreason' )).replaceSave( '%1$s', blockedtimestamp ).replaceSave( '%2$s', blockexpiry ),
 						by: blockedby,
 						reason: blockreason
 					};
@@ -282,14 +281,14 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag === pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 								} );
-								var discordname = [lang.user.info.discord,pbody.profile['link-discord'].escapeFormatting()];
+								var discordname = [lang.get('user.info.discord'),pbody.profile['link-discord'].escapeFormatting()];
 								if ( discordmember ) discordname[1] = discordmember.toString();
 								
 								if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
 								else text += '\n' + discordname.join(' ');
 							}
 							if ( pbody.profile['favwiki'] ) {
-								var favwiki = [lang.user.info.favwiki,allSites.find( site => site.md5_key === pbody.profile['favwiki'] )];
+								var favwiki = [lang.get('user.info.favwiki'),allSites.find( site => site.md5_key === pbody.profile['favwiki'] )];
 								if ( favwiki[1] ) {
 									if ( msg.showEmbed() ) embed.addField( favwiki[0], '[' + favwiki[1].wiki_display_name + '](<https://' + favwiki[1].wiki_domain + '/>)', true );
 									else text += '\n' + favwiki[0] + ' <https://' + favwiki[1].wiki_domain + '/>';
@@ -305,7 +304,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
 								embed.addField( block.header, block.text );
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 						}
 						else {
 							if ( isBlocked ) {
@@ -313,7 +312,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
@@ -343,7 +342,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discordfield.value;
 								} );
-								var discordname = [lang.user.info.discord,discordfield.value];
+								var discordname = [lang.get('user.info.discord'),discordfield.value];
 								if ( discordmember ) discordname[1] = discordmember.toString();
 								
 								if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
@@ -367,7 +366,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toMarkdown(wiki, body.query.general) );
 								embed.addField( block.header, block.text );
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.user.info.loading + '**' );
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 						}
 						else {
 							if ( isBlocked ) {
@@ -375,7 +374,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 								if ( block.reason ) block.text = block.text.replaceSave( '%4$s', block.reason.toPlaintext() );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.user.info.loading + '**';
+							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
 						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );

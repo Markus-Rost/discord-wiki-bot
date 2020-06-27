@@ -19,7 +19,7 @@ function cmd_say(lang, msg, args, line, wiki) {
 			log_error(error);
 			msg.reactEmoji('error', true);
 		} );
-	} else if ( !pause[msg.guild.id] ) this.LINK(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+	} else if ( !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 }
 
 module.exports = {

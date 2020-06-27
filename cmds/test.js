@@ -3,18 +3,18 @@ const help_setup = require('../functions/helpsetup.js');
 
 function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
-		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line.split(' ').slice(1).join(' '), wiki);
+		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
-		var text = lang.test.text[Math.floor(Math.random() * lang.test.random)] || lang.test.default;
+		var text = lang.get('test.text')[Math.floor(Math.random() * lang.get('test.random'))] || lang.get('test.default');
 		console.log( '- Test: Fully functioning!' );
 		var now = Date.now();
 		msg.replyMsg( text ).then( message => {
 			if ( !message ) return;
 			var then = Date.now();
-			var embed = new MessageEmbed().setTitle( lang.test.time ).addField( 'Discord', ( then - now ) + 'ms' );
+			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).addField( 'Discord', ( then - now ) + 'ms' );
 			now = Date.now();
-			got.get( wiki + 'api.php?action=query&format=json', {
+			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json', {
 				responseType: 'json'
 			} ).then( response => {
 				then = Date.now();
@@ -58,7 +58,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 		} );
 	} else {
 		console.log( '- Test: Paused!' );
-		msg.replyMsg( lang.test.pause, {}, true );
+		msg.replyMsg( lang.get('test.pause'), {}, true );
 	}
 }
 

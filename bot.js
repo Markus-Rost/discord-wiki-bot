@@ -18,12 +18,11 @@ global.got = require('got').extend( {
 } );
 
 const {defaultSettings} = require('./util/default.json');
+const Lang = require('./util/i18n.js');
 const newMessage = require('./util/newMessage.js');
 global.patreons = {};
 global.voice = {};
 var db = require('./util/database.js');
-var i18n = require('./i18n/allLangs.json');
-Object.keys(i18n.allLangs[1]).forEach( lang => i18n[lang] = require('./i18n/' + lang + '.json') );
 
 const Discord = require('discord.js');
 var client = new Discord.Client( {
@@ -36,7 +35,7 @@ var client = new Discord.Client( {
 		status: 'online',
 		activity: {
 			type: 'STREAMING',
-			name: process.env.prefix + ' help',
+			name: process.env.prefix + 'help',
 			url: 'https://www.twitch.tv/wikibot'
 		}
 	},
@@ -254,18 +253,24 @@ Discord.Message.prototype.allowDelete = function(author) {
 };
 
 String.prototype.hasPrefix = function(prefix, flags = '') {
-	return new RegExp( '^' + prefix.replace( /\W/g, '\\$&' ) + '(?: |$)', flags ).test(this.replace( /\u200b/g, '' ).toLowerCase());
+	var suffix = '';
+	if ( prefix.endsWith( ' ' ) ) {
+		prefix = prefix.trim();
+		suffix = '(?: |$)';
+	}
+	var regex = new RegExp( '^' + prefix.replace( /\W/g, '\\$&' ) + suffix, flags );
+	return regex.test(this.replace( /\u200b/g, '' ).toLowerCase());
 };
 
 client.on( 'message', msg => {
 	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.author.id === client.user.id ) return;
 	if ( !msg.content.hasPrefix(( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
-		if ( msg.content === process.env.prefix + ' help' && ( msg.isAdmin() || msg.isOwner() ) ) {
+		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(client.user).has('SEND_MESSAGES') ) {
 				console.log( msg.guild.name + ': ' + msg.content );
 				db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 					if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
-					msg.replyMsg( i18n[( row || defaultSettings ).lang].prefix.replaceSave( /%s/g, patreons[msg.guild.id] ), {}, true );
+					msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('prefix').replaceSave( /%s/g, patreons[msg.guild.id] ), {}, true );
 				} );
 			}
 		}
@@ -281,7 +286,7 @@ client.on( 'message', msg => {
 					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 						if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
 						if ( msg.content.hasPrefix(( patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
-							msg.replyMsg( i18n[( row || defaultSettings ).lang].missingperm + ' `' + missing.join('`, `') + '`', {}, true );
+							msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
 						}
 					} );
 				}
@@ -293,36 +298,36 @@ client.on( 'message', msg => {
 				console.log( '- Error while getting the wiki: ' + dberror );
 				if ( permissions.has('SEND_MESSAGES') ) {
 					msg.sendChannel( '⚠️ **Limited Functionality** ⚠️\nNo settings found, please contact the bot owner!\n' + process.env.invite, {}, true );
-					newMessage(msg, i18n[defaultSettings.lang]);
+					newMessage(msg, new Lang());
 				}
 				return dberror;
 			}
-			if ( row ) newMessage(msg, i18n[row.lang], row.wiki, patreons[msg.guild.id], row.inline);
+			if ( row ) newMessage(msg, new Lang(row.lang), row.wiki, patreons[msg.guild.id], row.inline);
 			else {
 				msg.defaultSettings = true;
-				newMessage(msg, i18n[defaultSettings.lang]);
+				newMessage(msg, new Lang());
 			}
 		} );
 	}
-	else newMessage(msg, i18n[defaultSettings.lang]);
+	else newMessage(msg, new Lang());
 } );
 
 
 client.on( 'voiceStateUpdate', (olds, news) => {
 	if ( isStop || !( olds.guild.id in voice ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelID === news.channelID ) return;
-	var lang = i18n[voice[olds.guild.id]].voice;
+	var lang = new Lang(voice[olds.guild.id], 'voice');
 	if ( olds.member && olds.channel ) {
-		var oldrole = olds.member.roles.cache.find( role => role.name === lang.channel + ' – ' + olds.channel.name );
+		var oldrole = olds.member.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + olds.channel.name );
 		if ( oldrole && oldrole.comparePositionTo(olds.guild.me.roles.highest) < 0 ) {
 			console.log( olds.guild.id + ': ' + olds.member.id + ' left the voice channel "' + olds.channel.id + '".' );
-			olds.member.roles.remove( oldrole, lang.left.replaceSave( '%1$s', olds.member.displayName ).replaceSave( '%2$s', olds.channel.name ) ).catch(log_error);
+			olds.member.roles.remove( oldrole, lang.get('left').replaceSave( '%1$s', olds.member.displayName ).replaceSave( '%2$s', olds.channel.name ) ).catch(log_error);
 		}
 	}
 	if ( news.member && news.channel ) {
-		var newrole = news.guild.roles.cache.find( role => role.name === lang.channel + ' – ' + news.channel.name );
+		var newrole = news.guild.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + news.channel.name );
 		if ( newrole && newrole.comparePositionTo(news.guild.me.roles.highest) < 0 ) {
 			console.log( news.guild.id + ': ' + news.member.id + ' joined the voice channel "' + news.channel.id + '".' );
-			news.member.roles.add( newrole, lang.join.replaceSave( '%1$s', news.member.displayName ).replaceSave( '%2$s', news.channel.name ) ).catch(log_error);
+			news.member.roles.add( newrole, lang.get('join').replaceSave( '%1$s', news.member.displayName ).replaceSave( '%2$s', news.channel.name ) ).catch(log_error);
 		}
 	}
 } );
