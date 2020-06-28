@@ -199,6 +199,7 @@
 			"bureaucrat": "Bureaucrat",
 			"sysop": "Administrator",
 			"interface-admin": "Interface administrator",
+			"widgeteditor": "Widget editor",
 			"content-moderator": "Content moderator",
 			"threadmoderator": "Discussions moderator",
 			"chatmoderator": "Chat moderator",
@@ -319,7 +320,11 @@
 			"I feel fantastic and I'm still alive."
 		],
 		"default": "I'm fully functional!",
-		"time": "Response time"
+		"time": "Response time",
+		"notice": "Limited functionality",
+		"MediaWiki": "Requires at least %1$s for full functionality, found `%2$s`.",
+		"TextExtracts": "Requires the extension %s for page descriptions.",
+		"PageImages": "Requires the extension %s for page thumbnails."
 	},
 	"help": {
 		"all": "So, you want to know what things I can do? Here is a list of all commands that I understand:",

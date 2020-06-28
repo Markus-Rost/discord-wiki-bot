@@ -7,7 +7,7 @@ getAllSites.then( sites => allSites = sites );
 
 function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 	if ( !allSites.length ) getAllSites.get().then( sites => allSites = sites );
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice&amenableparser=true&siprop=general|statistics&titles=Special:Statistics&format=json', {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics&titles=Special:Statistics&format=json', {
 		responseType: 'json'
 	} ).then( response => {
 		var body = response.body;
@@ -77,7 +77,14 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					var topic = [lang.get('overview.topic'), site.topic];
 					var founder = [lang.get('overview.founder'), site.founding_user_id];
 					var manager = [lang.get('overview.manager'), body.query.allmessages[0]['*']];
-					var crossover = [lang.get('overview.crossover'), ( body.query.allmessages[1]['*'] ? '<https://' + body.query.allmessages[1]['*'] + '.gamepedia.com/>' : '' )];
+					var crossover = [lang.get('overview.crossover')];
+					if ( body.query.allmessages[1]['*'] ) {
+						crossover.push('<https://' + body.query.allmessages[1]['*'] + '.gamepedia.com/>');
+					}
+					else if ( body.query.allmessages[2]['*'] ) {
+						let merge = body.query.allmessages[2]['*'].split('/');
+						crossover.push('<https://' + merge[0] + '.fandom.com/' + ( merge[1] ? merge[1] + '/' : '' ) + '>');
+					}
 					var created = [lang.get('overview.created'), new Date(site.creation_date).toLocaleString(lang.get('dateformat'), timeoptions)];
 					var description = [lang.get('overview.description'), site.desc];
 					var image = [lang.get('overview.image'), site.image];

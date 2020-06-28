@@ -21,7 +21,8 @@ function cmd_test(lang, msg, args, line, wiki) {
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
 				var ping = ( then - now ) + 'ms';
-				if ( response.statusCode !== 200 || !body || !( body instanceof Object ) ) {
+				var notice = [];
+				if ( response.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
 					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						ping += ' <:unknown_wiki:505887262077353984>';
@@ -31,7 +32,22 @@ function cmd_test(lang, msg, args, line, wiki) {
 						ping += ' <:error:505887261200613376>';
 					}
 				}
-				embed.addField( wiki, ping );
+				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() ) {
+					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
+						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
+						notice.push(lang.get('test.MediaWiki').replaceSave( '%1$s', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)' ).replaceSave( '%2$s', body.query.general.generator ));
+					}
+					if ( !body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
+						console.log( '- This wiki is missing Extension:TextExtracts.' );
+						notice.push(lang.get('test.TextExtracts').replaceSave( '%s', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)' ));
+					}
+					if ( !body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
+						console.log( '- This wiki is missing Extension:PageImages.' );
+						notice.push(lang.get('test.PageImages').replaceSave( '%s', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)' ));
+					}
+				}
+				embed.addField( wiki.toLink( '', '', '', body?.query?.general ), ping );
+				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
 			}, error => {
 				then = Date.now();
 				var ping = ( then - now ) + 'ms';

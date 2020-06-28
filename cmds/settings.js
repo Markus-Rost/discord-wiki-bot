@@ -1,3 +1,4 @@
+const {MessageEmbed} = require('discord.js');
 const {defaultSettings} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs();
@@ -64,117 +65,136 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				if ( !rows.length ) return msg.replyMsg( lang.get('settings.wikimissing') + wikihelp, {}, true );
 				else return msg.replyMsg( lang.get('settings.' + prelang) + ' ' + ( channel || guild ).wiki + wikihelp, {}, true );
 			}
-			var regex = args[1].match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,8})?))(?:\/|$)/ );
-			if ( !regex ) {
-				var value = args[1].split(' ');
-				if ( value.length === 2 && value[1] === '--force' ) return msg.reactEmoji('⏳', true).then( reaction => {
-					got.get( value[0] + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json', {
-						responseType: 'json'
-					} ).then( response => {
-						var body = response.body;
-						if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined ) {
-							console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + ( body && body.error && body.error.info ) );
-							if ( reaction ) reaction.removeEmoji();
-							msg.reactEmoji('nowiki', true);
-							return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
-						}
-						var sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND wiki = ?';
-						var sqlargs = [value[0], msg.guild.id, guild.wiki];
-						if ( !rows.length ) {
-							sql = 'INSERT INTO discord(wiki, guild) VALUES(?, ?)';
-							sqlargs.pop();
-						}
-						if ( channel ) {
-							sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND channel = ?';
-							sqlargs[2] = msg.channel.id;
-							if ( !rows.includes( channel ) ) {
-								if ( channel.wiki === value[0] ) {
-									if ( reaction ) reaction.removeEmoji();
-									return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, {}, true );
-								}
-								sql = 'INSERT INTO discord(wiki, guild, channel, lang, prefix) VALUES(?, ?, ?, ?, ?)';
-								sqlargs.push(guild.lang, guild.prefix);
-							}
-						}
-						return db.run( sql, sqlargs, function (dberror) {
-							if ( dberror ) {
-								console.log( '- Error while editing the settings: ' + dberror );
-								msg.replyMsg( lang.get('settings.save_failed'), {}, true );
-								if ( reaction ) reaction.removeEmoji();
-								return dberror;
-							}
-							console.log( '- Settings successfully updated.' );
-							if ( channel ) channel.wiki = value[0];
-							else guild.wiki = value[0];
-							if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = value[0];
-							if ( reaction ) reaction.removeEmoji();
-							msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + value[0] + wikihelp, {}, true );
-							var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
-							if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
-								if ( delerror ) {
-									console.log( '- Error while removing the settings: ' + delerror );
-									return delerror;
-								}
-								console.log( '- Settings successfully removed.' );
-							} );
-						} );
-					}, ferror => {
-						console.log( '- Error while testing the wiki: ' + ferror );
+			var wikinew = '';
+			var isForced = false;
+			var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,8})?))(?:\/|$)/ );
+			if ( regex ) wikinew = 'https://' + regex[1] + '/';
+			else if ( allSites.some( site => site.wiki_domain === args[1] + '.gamepedia.com' ) ) {
+				wikinew = 'https://' + args[1] + '.gamepedia.com/';
+			}
+			else if ( /^(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(args[1]) ) {
+				if ( !args[1].includes( '.' ) ) wikinew = 'https://' + args[1] + '.fandom.com/';
+				else wikinew = 'https://' + args[1].split('.')[1] + '.fandom.com/' + args[1].split('.')[0] + '/';
+			}
+			else if ( /^<?(?:https?:)?\/\//.test(args[1]) ) {
+				args[1] = args[1].replace( /^<?(?:https?:)?\/\//, 'https://' );
+				var value = args[1].split(/>? /);
+				if ( value.length === 2 && value[1] === '--force' ) isForced = true;
+				value[0] = value[0].replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
+				wikinew = value[0] + ( value[0].endsWith( '/' ) ? '' : '/' );
+			}
+			else {
+				var text = lang.get('settings.wikiinvalid') + wikihelp;
+				var sites = allSites.filter( site => site.wiki_display_name.toLowerCase().includes( args[1] ) );
+				if ( 0 < sites.length && sites.length < 21 ) {
+					text += '\n\n' + lang.get('settings.foundwikis') + '\n' + sites.map( site => site.wiki_display_name + ': `' + site.wiki_domain + '`' ).join('\n');
+				}
+				return msg.replyMsg( text, {split:true}, true );
+			}
+			if ( wikinew.endsWith( '.gamepedia.com/' ) && !isForced ) {
+				let site = allSites.find( site => site.wiki_domain === wikinew.replace( /^https:\/\/([a-z\d-]{1,50}\.gamepedia\.com)\/$/, '$1' ) );
+				if ( site ) wikinew = 'https://' + ( site.wiki_crossover || site.wiki_domain ) + '/';
+			}
+			return msg.reactEmoji('⏳', true).then( reaction => {
+				got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json', {
+					responseType: 'json'
+				} ).then( response => {
+					var body = response.body;
+					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
+						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						msg.reactEmoji('nowiki', true);
 						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+					}
+					if ( !isForced ) wikinew = body.query.general.server.replace( /^(?:https?:)?\/\//, 'https://' ) + body.query.general.scriptpath + '/';
+					if ( wikinew.endsWith( '.gamepedia.com/' ) && !isForced ) {
+						let site = allSites.find( site => site.wiki_domain === wikinew );
+						if ( site ) wikinew = 'https://' + ( site.wiki_crossover || site.wiki_domain ) + '/';
+					}
+					else if ( wikinew.isFandom() && !isForced ) {
+						let crossover = '';
+						if ( body.query.allmessages[0]['*'] ) {
+							crossover = 'https://' + body.query.allmessages[0]['*'] + '.gamepedia.com/';
+						}
+						else if ( body.query.allmessages[1]['*'] ) {
+							let merge = body.query.allmessages[1]['*'].split('/');
+							crossover = 'https://' + merge[0] + '.fandom.com/' + ( merge[1] ? merge[1] + '/' : '' );
+						}
+						if ( crossover ) wikinew = crossover;
+					}
+					var embed;
+					if ( !wikinew.isFandom() && !wikinew.endsWith( '.gamepedia.com/' ) ) {
+						var notice = [];
+						if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
+							console.log( '- This wiki is using ' + body.query.general.generator + '.' );
+							notice.push({
+								name: 'MediaWiki',
+								value: lang.get('test.MediaWiki').replaceSave( '%1$s', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)' ).replaceSave( '%2$s', body.query.general.generator )
+							});
+						}
+						if ( !body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
+							console.log( '- This wiki is missing Extension:TextExtracts.' );
+							notice.push({
+								name: 'TextExtracts',
+								value: lang.get('test.TextExtracts').replaceSave( '%s', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)' )
+							});
+						}
+						if ( !body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
+							console.log( '- This wiki is missing Extension:PageImages.' );
+							notice.push({
+								name: 'PageImages',
+								value: lang.get('test.PageImages').replaceSave( '%s', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)' )
+							});
+						}
+						if ( notice.length ) {
+							embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( lang.get('test.notice') ).addFields( notice );
+						}
+					}
+					var sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND wiki = ?';
+					var sqlargs = [wikinew, msg.guild.id, guild.wiki];
+					if ( !rows.length ) {
+						sql = 'INSERT INTO discord(wiki, guild) VALUES(?, ?)';
+						sqlargs.pop();
+					}
+					if ( channel ) {
+						sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND channel = ?';
+						sqlargs[2] = msg.channel.id;
+						if ( !rows.includes( channel ) ) {
+							if ( channel.wiki === wikinew ) {
+								if ( reaction ) reaction.removeEmoji();
+								return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, {embed}, true );
+							}
+							sql = 'INSERT INTO discord(wiki, guild, channel, lang, prefix) VALUES(?, ?, ?, ?, ?)';
+							sqlargs.push(guild.lang, guild.prefix);
+						}
+					}
+					return db.run( sql, sqlargs, function (dberror) {
+						if ( dberror ) {
+							console.log( '- Error while editing the settings: ' + dberror );
+							msg.replyMsg( lang.get('settings.save_failed'), {embed}, true );
+							if ( reaction ) reaction.removeEmoji();
+							return dberror;
+						}
+						console.log( '- Settings successfully updated.' );
+						if ( channel ) channel.wiki = wikinew;
+						else guild.wiki = wikinew;
+						if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = wikinew;
+						if ( reaction ) reaction.removeEmoji();
+						msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + wikinew + wikihelp, {embed}, true );
+						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
+						if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
+							if ( delerror ) {
+								console.log( '- Error while removing the settings: ' + delerror );
+								return delerror;
+							}
+							console.log( '- Settings successfully removed.' );
+						} );
 					} );
-				} );
-				if ( allSites.some( site => site.wiki_domain === value.join('') + '.gamepedia.com' ) ) {
-					regex = ['https://' + value.join('') + '.gamepedia.com/',value.join('') + '.gamepedia.com'];
-				}
-				else if ( /^(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(value.join('')) ) {
-					if ( !value.join('').includes( '.' ) ) regex = ['https://' + value.join('') + '.fandom.com/',value.join('') + '.fandom.com'];
-					else regex = ['https://' + value.join('').split('.')[1] + '.fandom.com/' + value.join('').split('.')[0] + '/',value.join('').split('.')[1] + '.fandom.com/' + value.join('').split('.')[0]];
-				} else {
-					var text = lang.get('settings.wikiinvalid') + wikihelp;
-					var sites = allSites.filter( site => site.wiki_display_name.toLowerCase().includes( value.join(' ') ) );
-					if ( 0 < sites.length && sites.length < 21 ) {
-						text += '\n\n' + lang.get('settings.foundwikis') + '\n' + sites.map( site => site.wiki_display_name + ': `' + site.wiki_domain + '`' ).join('\n');
-					}
-					return msg.replyMsg( text, {split:true}, true );
-				}
-			}
-			var sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND wiki = ?';
-			var sqlargs = ['https://' + regex[1] + '/', msg.guild.id, guild.wiki];
-			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(wiki, guild) VALUES(?, ?)';
-				sqlargs.pop();
-			}
-			if ( channel ) {
-				sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND channel = ?';
-				sqlargs[2] = msg.channel.id;
-				if ( !rows.includes( channel ) ) {
-					if ( channel.wiki === 'https://' + regex[1] + '/' ) {
-						return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, {}, true );
-					}
-					sql = 'INSERT INTO discord(wiki, guild, channel, lang, prefix) VALUES(?, ?, ?, ?, ?)';
-					sqlargs.push(guild.lang, guild.prefix);
-				}
-			}
-			return db.run( sql, sqlargs, function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while editing the settings: ' + dberror );
-					msg.replyMsg( lang.get('settings.save_failed'), {}, true );
-					return dberror;
-				}
-				console.log( '- Settings successfully updated.' );
-				if ( channel ) channel.wiki = 'https://' + regex[1] + '/';
-				else guild.wiki = 'https://' + regex[1] + '/';
-				if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = 'https://' + regex[1] + '/';
-				msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' https://' + regex[1] + '/' + wikihelp, {}, true );
-				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
-				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
-					if ( delerror ) {
-						console.log( '- Error while removing the settings: ' + delerror );
-						return delerror;
-					}
-					console.log( '- Settings successfully removed.' );
+				}, ferror => {
+					console.log( '- Error while testing the wiki: ' + ferror );
+					if ( reaction ) reaction.removeEmoji();
+					msg.reactEmoji('nowiki', true);
+					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 				} );
 			} );
 		}
@@ -220,7 +240,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				if ( channel || !( msg.guild.id in patreons ) || !rows.some( row => row.channel === msg.channel.id ) ) lang = new Lang(allLangs.map[args[1]]);
 				msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]][1] + '`\n' + lang.get('settings.langhelp').replaceSave( '%s', prefix + 'settings ' + prelang ) + ' `' + Object.values(allLangs.names).join('`, `') + '`', {}, true );
-				var channels = rows.filter( row => row.channel && row.lang === lang.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join('|') + ')', channels, function (delerror) {
 					if ( delerror ) {
 						console.log( '- Error while removing the settings: ' + delerror );

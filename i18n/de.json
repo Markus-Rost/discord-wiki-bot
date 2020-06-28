@@ -204,6 +204,7 @@
 			"bureaucrat": "Bürokrat",
 			"sysop": "Administrator",
 			"interface-admin": "Oberflächen-Administrator",
+			"widgeteditor": "Widget-Bearbeiter",
 			"content-moderator": "Inhalts-Moderator",
 			"threadmoderator": "Diskussions-Moderator",
 			"chatmoderator": "Chat-Moderator",
@@ -324,7 +325,11 @@
 			"hast du **Kekse** gesagt?"
 		],
 		"default": "ich bin voll funktionsfähig!",
-		"time": "Ping"
+		"time": "Ping",
+		"notice": "Eingeschränkte Funktionalität",
+		"MediaWiki": "Benötigt mindestens %1$s für vollständige Funktionalität, fand `%2$s`.",
+		"TextExtracts": "Benötigt die Erweiterung %s für Seiten-Beschreibungen.",
+		"PageImages": "Benötigt die Erweiterung %s für Seiten-Vorschaubilder."
 	},
 	"help": {
 		"all": "Du willst also wissen, was ich so drauf habe? Hier ist eine Liste aller Befehle, die ich verstehe:",
