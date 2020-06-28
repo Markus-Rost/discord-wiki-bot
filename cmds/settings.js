@@ -64,7 +64,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				if ( !rows.length ) return msg.replyMsg( lang.get('settings.wikimissing') + wikihelp, {}, true );
 				else return msg.replyMsg( lang.get('settings.' + prelang) + ' ' + ( channel || guild ).wiki + wikihelp, {}, true );
 			}
-			var regex = args[1].match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{1,8})?))(?:\/|$)/ );
+			var regex = args[1].match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,8})?))(?:\/|$)/ );
 			if ( !regex ) {
 				var value = args[1].split(' ');
 				if ( value.length === 2 && value[1] === '--force' ) return msg.reactEmoji('⏳', true).then( reaction => {

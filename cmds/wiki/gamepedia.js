@@ -303,7 +303,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							console.log( '- Aborted, paused.' );
 						}
 					} else {
-						regex = inter.url.match( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{1,8}))?)(?:\/wiki\/|\/?$)/ );
+						regex = inter.url.match( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{2,8}))?)(?:\/wiki\/|\/?$)/ );
 						if ( regex !== null && selfcall < maxselfcall ) {
 							if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 								var iwtitle = decodeURIComponent( inter.url.replace( regex[0], '' ) ).replace( /\_/g, ' ' ).replaceSave( intertitle.replace( /\_/g, ' ' ), intertitle );

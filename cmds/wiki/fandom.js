@@ -398,7 +398,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 				else if ( body.query.interwiki ) {
 					var inter = body.query.interwiki[0];
 					var intertitle = inter.title.substring(inter.iw.length + 1);
-					var regex = inter.url.match( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{1,8}))?)(?:\/wiki\/|\/?$)/ );
+					var regex = inter.url.match( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{2,8}))?)(?:\/wiki\/|\/?$)/ );
 					var maxselfcall = ( msg.channel.type === 'text' && msg.guild.id in patreons ? 10 : 5 );
 					if ( regex !== null && selfcall < maxselfcall ) {
 						if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
