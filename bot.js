@@ -267,7 +267,7 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 };
 
 client.on( 'message', msg => {
-	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.user.bot || msg.author.id === msg.client.user.id ) return;
+	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.author.bot || msg.author.id === msg.client.user.id ) return;
 	if ( !msg.content.hasPrefix(( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has('SEND_MESSAGES') ) {
