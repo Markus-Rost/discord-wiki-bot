@@ -21,7 +21,20 @@ function getAllSites() {
 	} );
 }
 
+function updateAllSites() {
+	return new Promise( function(resolve, reject) {
+		getAllSites.then( newSites => {
+			if ( newSites.length ) allSites.then( sites => {
+				sites.splice(0, sites.length);
+				sites.push(...newSites);
+				resolve(sites);
+			} );
+			else resolve(newSites);
+		} );
+	} );
+}
+
 module.exports = {
-	get: getAllSites,
+	update: updateAllSites,
 	then: (callback) => allSites.then(callback)
 };

@@ -3,7 +3,9 @@
 		"Frisk",
 		"Rail"
 	],
-	"lang": "pl",
+	"fallback": [
+		"en"
+	],
 	"dateformat": "pl-PL",
 	"aliases": {
 		"pomoc": "help",
@@ -14,15 +16,15 @@
 		"dyskusje": "discussion",
 		"dyskusja": "discussion"
 	},
-	"prefix": "prefiksem komend dla tego serwera jest `%s`. Możesz zmienić prefiks używając `%ssettings prefix`. Lista wszystkich komend jest dostępna przez użycie `%spomoc`.",
+	"prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
 	"missingperm": "Brakuje mi uprawnień:",
-	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n%s, Twoja wiadomość zawiera zbyt wiele komend!",
-	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki na Gamepedii oraz Fandomie. Zostałem napisany w JavaScript przez %s.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Fandomem!**\n\nMożesz wesprzeć mnie na Patreon-ie:",
+	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
+	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki na Gamepedii oraz Fandomie. Zostałem napisany w JavaScript przez $1.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Fandomem!**\n\nMożesz wesprzeć mnie na Patreon-ie:",
 	"helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
 	"patreon": "to funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie aby uzyskać dostęp do tej funkcji:",
 	"settings": {
 		"save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
-		"missing": "ten serwer nie został jeszcze skonfigurowany. Użyj %1$s oraz %2$s aby zmienić ustawienia.",
+		"missing": "ten serwer nie został jeszcze skonfigurowany. Użyj $1 oraz $2 aby zmienić ustawienia.",
 		"foundwikis": "Czy chodziło Ci o jedną z tych wiki?",
 		"current": "obecne ustawienia dla tego serwera:",
 		"channel current": "obecne ustawienia dla tego kanału:",
@@ -37,14 +39,14 @@
 		"langinvalid": "podany język nie jest wspierany!",
 		"langchanged": "zmieniono język serwera na:",
 		"channel langchanged": "zmieniono język kanału na:",
-		"langhelp": "Użyj `%s <język>` aby zmienić język.\nObecnie wspieranymi językami są:",
+		"langhelp": "Użyj `$1 <język>` aby zmienić język.\nObecnie wspieranymi językami są:",
 		"wikimissing": "domyślna wiki nie została ustawiona dla tego serwera!",
 		"wiki": "domyślną wiki tego serwera jest:",
 		"channel wiki": "domyślną wiki tego kanału jest:",
 		"wikiinvalid": "podaj poprawny link do wiki na Gamepedii lub Fandomie!",
 		"wikichanged": "zmieniono domyślną wiki dla tego serwera na:",
 		"channel wikichanged": "zmieniono domyślną wiki dla tego kanału na:",
-		"wikihelp": "Użyj `%s <link>` aby zmienić domyślną wiki.\nLink do wiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
+		"wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
 		"prefix": "prefiks dla tego serwera:",
 		"prefixinvalid": "podany prefiks nie jest wspierany!",
 		"prefixchanged": "zmieniono prefiks dla tego serwera na:",
@@ -53,14 +55,14 @@
 			"channel inline": "linkowanie składnią wiki jest obecnie włączone dla tego kanału.",
 			"inlinechanged": "włączono linkowanie składnią wiki dla tego serwera.",
 			"channel inlinechanged": "włączono linkowanie składnią wiki dla tego kanału.",
-			"help": "Użyj `%1$s` aby wyłączyć linkowanie składnią wiki takiego jak `[[%2$s]]` czy `{{%2$s}}`."
+			"help": "Użyj `$1` aby wyłączyć linkowanie składnią wiki takiego jak `[[$2]]` czy `{{$2}}`."
 		},
 		"inline disabled": {
 			"inline": "linkowanie składnią wiki jest obecnie wyłączone dla tego serwera.",
 			"channel inline": "linkowanie składnią wiki jest obecnie wyłączone dla tego kanału.",
 			"inlinechanged": "wyłączono linkowanie składnią wiki dla tego serwera.",
 			"channel inlinechanged": "wyłączono linkowanie składnią wiki dla tego kanału.",
-			"help": "Użyj `%1$s` aby włączyć linkowanie składnią wiki takiego jak `[[%2$s]]` czy `{{%2$s}}`."
+			"help": "Użyj `$1` aby włączyć linkowanie składnią wiki takiego jak `[[$2]]` czy `{{$2}}`."
 		}
 	},
 	"pause": {
@@ -69,14 +71,14 @@
 	},
 	"voice": {
 		"text": "nadaję każdemu w kanale głosowym określoną rolę:",
-		"enable": "Użyj `%s` aby włączyć tę funkcję.",
-		"disable": "Użyj `%s` aby wyłączyć tę funkcję.",
+		"enable": "Użyj `$1` aby włączyć tę funkcję.",
+		"disable": "Użyj `$1` aby wyłączyć tę funkcję.",
 		"enabled": "włączono funkcję nadawania ról dla osób korzystających z czatów głosowych.",
 		"disabled": "wyłączono funkcję nadawania ról dla osób korzystających z czatów głosowych.",
 		"name": "nazwa kanału głosowego",
 		"channel": "Kanał głosowy",
-		"join": "%1$s dołączył do \"%2$s\".",
-		"left": "%1$s wyszedł z \"%2$s\"."
+		"join": "$1 dołączył do \"$2\".",
+		"left": "$1 wyszedł z \"$2\"."
 	},
 	"verification": {
 		"save_failed": "niestety, weryfikacja nie mogła zostać zapisana, spróbuj ponownie później.",
@@ -86,7 +88,7 @@
 		"max_entries": "osiągnięto maksymalną ilość weryfikacji.",
 		"no_role": "podaj rolę dla nowej weryfikacji.",
 		"current": "lista obecnych weryfikacji na tym serwerze:",
-		"current_selected": "to weryfikacja `%s` dla tego serwera:",
+		"current_selected": "to weryfikacja `$1` dla tego serwera:",
 		"missing": "na tym serwerze nie istnieją żadne weryfikacje na tę chwilę.",
 		"add_more": "Dodaj więcej weryfikacji:",
 		"delete_current": "Usuń tę weryfikację:",
@@ -102,8 +104,8 @@
 		"enabled": "włączone",
 		"disabled": "wyłączone",
 		"toggle": "(przełącz)",
-		"rename_no_permission": "**%s wymaga uprawnienia `Zarządzanie pseudonimami` do zmiany nazw użytkowników na wiki!**",
-		"role_too_high": "**Rola %1$s jest wyżej niż najwyższa rola %2$s, dlatego nie będzie możliwe jej ustawienie!**",
+		"rename_no_permission": "**$1 wymaga uprawnienia `Zarządzanie pseudonimami` do zmiany nazw użytkowników na wiki!**",
+		"role_too_high": "**Rola $1 jest wyżej niż najwyższa rola $2, dlatego nie będzie możliwe jej ustawienie!**",
 		"channel_max": "podano zbyt dużo kanałów.",
 		"channel_missing": "podany kanał nie istnieje.",
 		"role_max": "podano zbyt dużo ról.",
@@ -126,21 +128,21 @@
 		"failed_gblock": "**Sprawdzenie globalnych blokad nie powiodło się!**",
 		"failed_roles": "**Dodawanie ról nie powiodło się!**",
 		"failed_rename": "**Zmiana nazwy użytkownika nie powiodła się!**",
-		"audit_reason": "Zweryfikowano jako \"%s\"",
-		"user_missing": "Użytkownik wiki \"%s\" nie istnieje.",
-		"user_missing_reply": "konto zalinkowanego użytkownika wiki \"%s\" nie istnieje.",
-		"user_blocked": "**Konto użytkownika wiki %s jest zablokowane!**",
-		"user_blocked_reply": "konto zalinkowanego użytkownika wiki **\"%s\" jest zablokowane!**",
-		"user_gblocked": "**Konto użytkownika wiki %s jest globalnie zablokowane!**",
-		"user_gblocked_reply": "konto zalinkowanego użytkownika wiki **\"%s\" jest globalnie zablokowane!**",
-		"user_disabled": "**Konto użytkownika wiki %s jest zablokowane!**",
-		"user_disabled_reply": "konto zalinkowanego użytkownika wiki **\"%s\" jest wyłączone!**",
-		"user_failed": "Nazwa użytkownika Discord %1$s nie jest zgodna z nazwą podaną na profilu wiki %2$s.",
-		"user_failed_reply": "Twoja nazwa użytkownika na Discord nie pokrywa się z nazwą podaną na wiki \"%s\".",
-		"user_matches": "Twoja nazwa użytkownika na Discordzie %1$s pokrywa się z nazwą na wiki %2$s, ale nie kwalifikuje na żadną rolę.",
-		"user_matches_reply": "Twoja nazwa użytkownika Discord pokrywa się z nazwą użytkownika z wiki \"%s\", lecz nie kwalifikuje na żadną rolę.",
-		"user_verified": "Pomyślnie zweryfikowano użytkownika Discord %1$s jako użytkownika wiki %2$s.",
-		"user_verified_reply": "pomyślnie zweryfikowano Ciebie jako użytkownika wiki \"%s\".",
+		"audit_reason": "Zweryfikowano jako \"$1\"",
+		"user_missing": "Użytkownik wiki \"$1\" nie istnieje.",
+		"user_missing_reply": "konto zalinkowanego użytkownika wiki \"$1\" nie istnieje.",
+		"user_blocked": "**Konto użytkownika wiki $1 jest zablokowane!**",
+		"user_blocked_reply": "konto zalinkowanego użytkownika wiki **\"$1\" jest zablokowane!**",
+		"user_gblocked": "**Konto użytkownika wiki $1 jest globalnie zablokowane!**",
+		"user_gblocked_reply": "konto zalinkowanego użytkownika wiki **\"$1\" jest globalnie zablokowane!**",
+		"user_disabled": "**Konto użytkownika wiki $1 jest zablokowane!**",
+		"user_disabled_reply": "konto zalinkowanego użytkownika wiki **\"$1\" jest wyłączone!**",
+		"user_failed": "Nazwa użytkownika Discord $1 nie jest zgodna z nazwą podaną na profilu wiki $2.",
+		"user_failed_reply": "Twoja nazwa użytkownika na Discord nie pokrywa się z nazwą podaną na wiki \"$1\".",
+		"user_matches": "Twoja nazwa użytkownika na Discordzie $1 pokrywa się z nazwą na wiki $2, ale nie kwalifikuje na żadną rolę.",
+		"user_matches_reply": "Twoja nazwa użytkownika Discord pokrywa się z nazwą użytkownika z wiki \"$1\", lecz nie kwalifikuje na żadną rolę.",
+		"user_verified": "Pomyślnie zweryfikowano użytkownika Discord $1 jako użytkownika wiki $2.",
+		"user_verified_reply": "pomyślnie zweryfikowano Ciebie jako użytkownika wiki \"$1\".",
 		"user_renamed": "Nazwa użytkownika Discord została zmieniona.",
 		"discord": "Użytkownik Discord:",
 		"wiki": "Użytkownik Wiki:",
@@ -148,10 +150,10 @@
 		"notice": "Powiadomienie:",
 		"qualified": "Pozwala na otrzymanie ról:",
 		"qualified_error": "Pozwala na otrzymanie ról, których nie udało się dodać:",
-		"help_guide": "Podążaj za [tym poradnikiem](%s) w celu dodania nazwy użytkownika Discord na profil wiki.",
+		"help_guide": "Podążaj za [tym poradnikiem]($1) w celu dodania nazwy użytkownika Discord na profil wiki.",
 		"help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-		"help_subpage": "Dodaj swoją nazwę użytkownika Discord (%s) do podstrony Discord na wiki:"
+		"help_subpage": "Dodaj swoją nazwę użytkownika Discord ($1) do podstrony Discord na wiki:"
 	},
 	"overview": {
 		"inaccurate": "Statystyki mogą być niedokładne",
@@ -230,17 +232,17 @@
 			"loading": "Ładowanie globalnych statystyk…"
 		},
 		"block": {
-			"header": "%s jest obecnie zablokowany(-na)!",
-			"text": "Zablokowano %1$s do %2$s przez %3$s z powodem \"%4$s\".",
-			"noreason": "Zablokowano %1$s do %2$s przez %3$s.",
-			"nofromtext": "Zablokowano do %2$s przez %3$s z powodem \"%4$s\".",
-			"nofromnoreason": "Zablokowano do %2$s przez %3$s.",
+			"header": "$1 jest obecnie zablokowany(-na)!",
+			"text": "Zablokowano $1 do $2 przez $3 z powodem \"$4\".",
+			"noreason": "Zablokowano $1 do $2 przez $3.",
+			"nofromtext": "Zablokowano do $2 przez $3 z powodem \"$4\".",
+			"nofromnoreason": "Zablokowano do $2 przez $3.",
 			"until_infinity": "do końca wszechświata"
 		},
 		"gblock": {
-			"header": "%s jest zablokowany(-na) globalnie!",
-			"text": "Zablokowano %1$s do %2$s przez %3$s na %4$s z podanym powodem \"%5$s\".",
-			"noreason": "Zablokowano %1$s do %2$s przez %3$s na %4$s.",
+			"header": "$1 jest zablokowany(-na) globalnie!",
+			"text": "Zablokowano $1 do $2 przez $3 na $4 z podanym powodem \"$5\".",
+			"noreason": "Zablokowano $1 do $2 przez $3 na $4.",
 			"disabled": "To konto jest obecnie wyłączone!"
 		}
 	},
@@ -252,7 +254,7 @@
 			"editor": "Autor:",
 			"timestamp": "Data edycji:",
 			"size": "Wielkość zmiany:",
-			"bytes": "%s bajtów",
+			"bytes": "$1 {{PLURAL:$1|bajt|bajty|bajtów}}",
 			"comment": "Komentarz:",
 			"tags": "Tagi:",
 			"removed": "Usunięto:",
@@ -264,63 +266,24 @@
 	"search": {
 		"page": "strona",
 		"search": "szukaj",
-		"infopage": "Nie to czego szukałeś? Użyj %s dla bezpośredniego linku.",
-		"infosearch": "Nie to czego szukałeś? Użyj %1$s dla bezpośredniego linku lub %2$s dla listy wszystkich wyników.",
+		"infopage": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku.",
+		"infosearch": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku lub $2 dla listy wszystkich wyników.",
 		"category": {
 			"content": "Zawartość tej kategorii:",
 			"empty": "*Ta kategoria jest pusta*",
-			"pages": {
-				"default": "%s stron",
-				"1": "%s strona",
-				"*2": "%s strony",
-				"*3": "%s strony",
-				"*4": "%s strony",
-				"*12": "%s stron",
-				"*13": "%s stron",
-				"*14": "%s stron"
-			},
-			"files": {
-				"default": "%s plików",
-				"1": "%s plik",
-				"*2": "%s pliki",
-				"*3": "%s pliki",
-				"*4": "%s pliki",
-				"*12": "%s plików",
-				"*13": "%s plików",
-				"*14": "%s plików"
-			},
-			"subcats": {
-				"default": "%s kategorii",
-				"1": "%s kategoria",
-				"*2": "%s katerorie",
-				"*3": "%s katerorie",
-				"*4": "%s katerorie",
-				"*12": "%s kategorii",
-				"*13": "%s kategorii",
-				"*14": "%s kategorii"
-			}
+			"pages": "$1 {{PLURAL:$1|strona|strony|stron}}",
+			"files": "$1 {{PLURAL:$1|plik|pliki|plików}}",
+			"subcats": "$1 {{PLURAL:$1|kategoria|katerorie|kategorii}}"
 		},
 		"special": "Zawartość tej strony specjalnej:",
 		"empty": "*Ta strona specjalna jest pusta*",
-		"results": {
-			"default": "%s wszystkich wyników",
-			"1": "%s wynik"
-		}
+		"results": "$1 {{PLURAL:$1|wynik|wyniki|wszystkich wyników}}"
 	},
 	"discussion": {
 		"post": "post",
 		"main": "Dyskusje",
 		"image": "Zobacz zdjęcie",
-		"votes": {
-			"default": "%s głosów",
-			"1": "%s głos",
-			"*2": "%s głosy",
-			"*3": "%s głosy",
-			"*4": "%s głosy",
-			"*12": "%s głosów",
-			"*13": "%s głosów",
-			"*14": "%s głosów"
-		}
+		"votes": "$1 {{PLURAL:$1|głos|głosy|głosów}}"
 	},
 	"invite": {
 		"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
@@ -412,7 +375,7 @@
 		},
 		"private": "**Private Issue**",
 		"fixed": "Naprawione w wersji:",
-		"more": "Oraz %s innych.",
-		"total": "naprawiono %s błędów"
+		"more": "Oraz $1 {{PLURAL:$1|inny|inne|innych}}.",
+		"total": "naprawiono $1 {{PLURAL:$1|błąd|błędy|błędów}}"
 	}
 }

@@ -30,6 +30,10 @@ function database(sql, sqlargs = []) {
 	} );
 }
 
+function updateAllSites() {
+	return require('../util/allSites.js').update();
+}
+
 function removePatreons(guild, msg) {
 	try {
 		if ( !guild || !msg ) return 'removePatreons(guild, msg) – No guild or message provided!';

@@ -35,15 +35,15 @@ function cmd_test(lang, msg, args, line, wiki) {
 				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() ) {
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
-						notice.push(lang.get('test.MediaWiki').replaceSave( '%1$s', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)' ).replaceSave( '%2$s', body.query.general.generator ));
+						notice.push(lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator));
 					}
 					if ( !body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
 						console.log( '- This wiki is missing Extension:TextExtracts.' );
-						notice.push(lang.get('test.TextExtracts').replaceSave( '%s', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)' ));
+						notice.push(lang.get('test.TextExtracts', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)'));
 					}
 					if ( !body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
 						console.log( '- This wiki is missing Extension:PageImages.' );
-						notice.push(lang.get('test.PageImages').replaceSave( '%s', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)' ));
+						notice.push(lang.get('test.PageImages', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)'));
 					}
 				}
 				embed.addField( wiki.toLink( '', '', '', body?.query?.general ), ping );

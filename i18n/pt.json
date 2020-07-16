@@ -4,7 +4,9 @@
 		"Jhonabf",
 		"dr03ramos"
 	],
-	"lang": "pt",
+	"fallback": [
+		"en"
+	],
 	"dateformat": "pt-PT",
 	"aliases": {
 		"ajuda": "help",
@@ -15,15 +17,15 @@
 		"discussions": "discussion",
 		"discussão": "discussion"
 	},
-	"prefix": "o prefixo deste servidor é `%s`. Você pode alterar o prefixo com `%ssettings prefix`. Para uma lista de todos os comandos, veja `%shelp`.",
+	"prefix": "o prefixo deste servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`.",
 	"missingperm": "eu estou perdendo algumas permissões para este comando:",
-	"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n%s, sua mensagem continha muitos comandos!",
-	"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia e Fandom. %s me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Fandom e sou uma ferramenta não oficial!**\n\nVocê pode me apoiar no Patreon:",
+	"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n$1, sua mensagem continha muitos comandos!",
+	"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia e Fandom. $1 me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Fandom e sou uma ferramenta não oficial!**\n\nVocê pode me apoiar no Patreon:",
 	"helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
 	"patreon": "esse é um recurso exclusivo do Patreon!\nVocê pode me apoiar no Patreon para obter acesso a esse recurso:",
 	"settings": {
 		"save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
-		"missing": "este servidor ainda não está configurado. Use %1$s e %2$s para alterar as configurações.",
+		"missing": "este servidor ainda não está configurado. Use $1 e $2 para alterar as configurações.",
 		"foundwikis": "Você quer dizer algum dessas wikis?",
 		"current": "estas são as configurações atuais para este servidor:",
 		"channel current": "estas são as configurações atuais deste canal:",
@@ -37,14 +39,14 @@
 		"langinvalid": "o idioma especificado não é suportado!",
 		"langchanged": "você alterou o idioma deste servidor para:",
 		"channel langchanged": "você alterou o idioma deste canal para:",
-		"langhelp": "Use `%s <idioma>` para mudar o idioma.\nIdiomas atualmente suportados são:",
+		"langhelp": "Use `$1 <idioma>` para mudar o idioma.\nIdiomas atualmente suportados são:",
 		"wikimissing": "nenhuma wiki padrão está configurado para este servidor ainda!",
 		"wiki": "a wiki padrão para este servidor é:",
 		"channel wiki": "a wiki padrão para este canal é:",
 		"wikiinvalid": "por favor, forneça um link válido para uma wiki da Gamepedia ou Fandom!",
 		"wikichanged": "você mudou a wiki padrão para este servidor para:",
 		"channel wikichanged": "você mudou a wiki padrão para este canal para:",
-		"wikihelp": "Use `%s <link>` para alterar a wiki padrão.\nLink para a wiki: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
+		"wikihelp": "Use `$1 <link>` para alterar a wiki padrão.\nLink para a wiki: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
 		"prefix": "o prefixo deste servidor é:",
 		"prefixinvalid": "o prefixo especificado não é suportado!",
 		"prefixchanged": "você mudou o prefixo deste servidor para:"
@@ -55,14 +57,14 @@
 	},
 	"voice": {
 		"text": "Eu tento dar a todos em um canal de voz um papel específico:",
-		"enable": "Use `%s` para habilitar esta função.",
-		"disable": "Use `%s` desativar esta função.",
+		"enable": "Use `$1` para habilitar esta função.",
+		"disable": "Use `$1` desativar esta função.",
 		"enabled": "você ativou a função para adicionar funções aos canais de voz.",
 		"disabled": "você desabilitou a função para adicionar funções aos canais de voz.",
 		"name": "nome do canal de voz",
 		"channel": "Canal de voz",
-		"join": "%1$s juntou-se ao canal de voz \"%2$s\".",
-		"left": "%1$s deixou o canal de voz \"%2$s\"."
+		"join": "$1 juntou-se ao canal de voz \"$2\".",
+		"left": "$1 deixou o canal de voz \"$2\"."
 	},
 	"verification": {
 		"save_failed": "infelizmente a verificação não pôde ser salva, tente novamente mais tarde.",
@@ -72,7 +74,7 @@
 		"max_entries": "você já atingiu a quantidade máxima de verificações.",
 		"no_role": "por favor forneça um cargo para a nova verificação.",
 		"current": "estas são as verificações disponíveis para este servidor:",
-		"current_selected": "esta é a verificação `%s` para este servidor:",
+		"current_selected": "esta é a verificação `$1` para este servidor:",
 		"missing": "ainda não há verificações para este servidor.",
 		"add_more": "Para adicionar mais verificações:",
 		"delete_current": "Para excluir esta verificação:",
@@ -88,8 +90,8 @@
 		"enabled": "ativado",
 		"disabled": "desativado",
 		"toggle": "(alternar)",
-		"rename_no_permission": "**%s não tem a permissão de `Gerenciar apelidos` para substituir o apelido pelos nomes de usuário da wiki!**",
-		"role_too_high": "**O cargo %1$s é muito alto para o %2$s atribuí-la!**",
+		"rename_no_permission": "**$1 não tem a permissão de `Gerenciar apelidos` para substituir o apelido pelos nomes de usuário da wiki!**",
+		"role_too_high": "**O cargo $1 é muito alto para o $2 atribuí-la!**",
 		"channel_max": "muitos canais fornecidos.",
 		"channel_missing": "o canal fornecido não existe.",
 		"role_max": "muitos cargos fornecidos.",
@@ -112,21 +114,21 @@
 		"failed_gblock": "**Falha na verificação de bloqueios globais!**",
 		"failed_roles": "**A adição de cargos falhou!**",
 		"failed_rename": "**A alteração do apelido falhou!**",
-		"audit_reason": "Verificado como \"%s\"",
-		"user_missing": "O usuário \"%s\" não existe na wiki.",
-		"user_missing_reply": "seu usuário da wiki \"%s\" vinculado não existe.",
-		"user_blocked": "**O usuário %s está bloqueado na wiki!**",
-		"user_blocked_reply": "seu usuário da wiki **\"%s\" vinculado está bloqueado!**",
-		"user_gblocked": "**O usuário %s está bloqueado globalmente na wiki!**",
-		"user_gblocked_reply": "seu usuário da wiki **\"%s\" vinculado está bloqueado globalmente!**",
-		"user_disabled": "**O usuário %s está desabilitado na wiki!**",
-		"user_disabled_reply": "seu usuário da wiki **\"%s\" vinculado está desabilitado!**",
-		"user_failed": "O usuário %1$s do Discord não corresponde ao usuário %2$s da wiki.",
-		"user_failed_reply": "seu nome de usuário do Discord não corresponde ao usuário \"%s\" da wiki.",
-		"user_matches": "O usuário %1$s do Discord corresponde ao usuário %2$s da wiki, mas não atende aos requisitos mínimos para nenhum cargo.",
-		"user_matches_reply": "seu nome de usuário do Discord corresponde ao usuário \"%s\" da wiki, mas não atende aos requisitos mínimos para nenhum cargo.",
-		"user_verified": "O usuário %1$s do Discord foi verificado com sucesso como o usuário %2$s da wiki.",
-		"user_verified_reply": "você foi verificado com sucesso como o usuário \"%s\" da wiki.",
+		"audit_reason": "Verificado como \"$1\"",
+		"user_missing": "O usuário \"$1\" não existe na wiki.",
+		"user_missing_reply": "seu usuário da wiki \"$1\" vinculado não existe.",
+		"user_blocked": "**O usuário $1 está bloqueado na wiki!**",
+		"user_blocked_reply": "seu usuário da wiki **\"$1\" vinculado está bloqueado!**",
+		"user_gblocked": "**O usuário $1 está bloqueado globalmente na wiki!**",
+		"user_gblocked_reply": "seu usuário da wiki **\"$1\" vinculado está bloqueado globalmente!**",
+		"user_disabled": "**O usuário $1 está desabilitado na wiki!**",
+		"user_disabled_reply": "seu usuário da wiki **\"$1\" vinculado está desabilitado!**",
+		"user_failed": "O usuário $1 do Discord não corresponde ao usuário $2 da wiki.",
+		"user_failed_reply": "seu nome de usuário do Discord não corresponde ao usuário \"$1\" da wiki.",
+		"user_matches": "O usuário $1 do Discord corresponde ao usuário $2 da wiki, mas não atende aos requisitos mínimos para nenhum cargo.",
+		"user_matches_reply": "seu nome de usuário do Discord corresponde ao usuário \"$1\" da wiki, mas não atende aos requisitos mínimos para nenhum cargo.",
+		"user_verified": "O usuário $1 do Discord foi verificado com sucesso como o usuário $2 da wiki.",
+		"user_verified_reply": "você foi verificado com sucesso como o usuário \"$1\" da wiki.",
 		"user_renamed": "Seus apelidos do Discord foram alterados para os nomes de usuário da wiki.",
 		"discord": "Usuário do Discord:",
 		"wiki": "Usuário da wiki:",
@@ -134,10 +136,10 @@
 		"notice": "Aviso:",
 		"qualified": "Qualificado para o cargo:",
 		"qualified_error": "Não foi possível adicionar, mas está qualificado para o cargo:",
-		"help_guide": "Siga [esse guia](%s) para associar seu nome de usuário do Discord ao seu usuário na wiki:",
+		"help_guide": "Siga [esse guia]($1) para associar seu nome de usuário do Discord ao seu usuário na wiki:",
 		"help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-		"help_subpage": "Adicione seu nome de usuário do Discord (%s) para sua subpágina do Discord na wiki:"
+		"help_subpage": "Adicione seu nome de usuário do Discord ($1) para sua subpágina do Discord na wiki:"
 	},
 	"overview": {
 		"inaccurate": "Estatísticas podem ser imprecisas",
@@ -215,17 +217,17 @@
 			"loading": "Carregando estatísticas globais…"
 		},
 		"block": {
-			"header": "%s está atualmente bloqueado!",
-			"text": "Bloqueado em %1$s até %2$s por %3$s com motivo \"%4$s\".",
-			"noreason": "Bloqueado em %1$s até %2$s por %3$s.",
-			"nofromtext": "Bloqueado até %2$s por %3$s com motivo \"%4$s\".",
-			"nofromnoreason": "Bloqueado até %2$s por %3$s.",
+			"header": "$1 está atualmente bloqueado!",
+			"text": "Bloqueado em $1 até $2 por $3 com motivo \"$4\".",
+			"noreason": "Bloqueado em $1 até $2 por $3.",
+			"nofromtext": "Bloqueado até $2 por $3 com motivo \"$4\".",
+			"nofromnoreason": "Bloqueado até $2 por $3.",
 			"until_infinity": "o fim de todos os dias"
 		},
 		"gblock": {
-			"header": "%s está atualmente bloqueado globalmente!",
-			"text": "Bloqueado em %1$s até %2$s por %3$s em %4$s com motivo \"%5$s\".",
-			"noreason": "Bloqueado em %1$s até %2$s por %3$s em %4$s.",
+			"header": "$1 está atualmente bloqueado globalmente!",
+			"text": "Bloqueado em $1 até $2 por $3 em $4 com motivo \"$5\".",
+			"noreason": "Bloqueado em $1 até $2 por $3 em $4.",
 			"disabled": "Esta conta está desativada no momento!"
 		}
 	},
@@ -237,7 +239,7 @@
 			"editor": "Editor:",
 			"timestamp": "Editar data:",
 			"size": "Diferença:",
-			"bytes": "%s Bytes",
+			"bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
 			"comment": "Comment:",
 			"tags": "Tags:",
 			"removed": "Removido:",
@@ -249,39 +251,23 @@
 	"search": {
 		"page": "página",
 		"search": "pesquisar",
-		"infopage": "Não é o resultado correto? Use %s para um link direto.",
-		"infosearch": "Não é o resultado correto? Use %1$s para um link direto ou %2$s para uma lista de todos os acessos.",
+		"infopage": "Não é o resultado correto? Use $1 para um link direto.",
+		"infosearch": "Não é o resultado correto? Use $1 para um link direto ou $2 para uma lista de todos os acessos.",
 		"category": {
 			"content": "Conteúdo  nessa categoria:",
 			"empty": "*Esta categoria está vazia*",
-			"pages": {
-				"default": "%s páginas",
-				"1": "%s página"
-			},
-			"files": {
-				"default": "%s arquivos",
-				"1": "%s arquivo"
-			},
-			"subcats": {
-				"default": "%s categorias",
-				"1": "%s categoria"
-			}
+			"pages": "$1 {{PLURAL:$1|página|páginas}}",
+			"files": "$1 {{PLURAL:$1|arquivo|arquivos}}",
+			"subcats": "$1 {{PLURAL:$1|categoria|categorias}}"
 		},
 		"special": "Conteúdo desta página especial:",
-		"empty": "*Esta página especial está vazia*",
-		"results": {
-			"default": "%s total results",
-			"1": "%s total result"
-		}
+		"empty": "*Esta página especial está vazia*"
 	},
 	"discussion": {
 		"post": "post",
 		"main": "Discussãos",
 		"image": "Ver imagem",
-		"votes": {
-			"default": "%s votos",
-			"1": "%s voto"
-		}
+		"votes": "$1 {{PLURAL:$1|voto|votos}}"
 	},
 	"invite": {
 		"bot": "Use este link para me convidar para outro servidor:"
@@ -374,7 +360,7 @@
 		},
 		"private": "**Private Issue**",
 		"fixed": "Versão corrigida:",
-		"more": "E %s mais.",
-		"total": "%s problemas corrigidos"
+		"more": "E $1 {{PLURAL:$1|mais}}.",
+		"total": "$1 {{PLURAL:$1|problema|problemas}} corrigidos"
 	}
 }

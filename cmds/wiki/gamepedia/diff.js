@@ -241,7 +241,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 					var editor = [lang.get('diff.info.editor'), ( revisions[0].userhidden !== undefined ? lang.get('diff.hidden') : revisions[0].user )];
 					var timestamp = [lang.get('diff.info.timestamp'), new Date(revisions[0].timestamp).toLocaleString(lang.get('dateformat'), timeoptions)];
 					var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
-					var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes').replace( '%s', ( difference > 0 ? '+' : '' ) + difference )];
+					var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes', ( difference > 0 ? '+' : '' ) + difference)];
 					var comment = [lang.get('diff.info.comment'), ( revisions[0].commenthidden !== undefined ? lang.get('diff.hidden') : ( revisions[0].comment ? revisions[0].comment.toFormatting(msg.showEmbed(), wiki, body.query.general, title) : lang.get('diff.nocomment') ) )];
 					if ( revisions[0].tags.length ) var tags = [lang.get('diff.info.tags'), body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
 					

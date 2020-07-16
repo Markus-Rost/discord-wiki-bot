@@ -2,7 +2,9 @@
 	"__translator": [
 		"Doğukan Karakaş"
 	],
-	"lang": "tr",
+	"fallback": [
+		"en"
+	],
 	"dateformat": "tr-TR",
 	"aliases": {
 		"bilgi": "info",
@@ -13,15 +15,15 @@
 		"discussions": "discussion",
 		"tartışma": "discussion"
 	},
-	"prefix": "sunucudaki önekim `%s`. Bunu `%ssettings prefix` ile değiştirebilirsin. Komutların bütün listesi için `%syardım`.",
+	"prefix": "sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`.",
 	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
-	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n%s, mesajın çok fazla komut içeriyor!",
-	"disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. %s, beni JavaScript kullanarak yazdı.\n\n**Fandom ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",
+	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n$1, mesajın çok fazla komut içeriyor!",
+	"disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. $1, beni JavaScript kullanarak yazdı.\n\n**Fandom ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",
 	"helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
 	"patreon": "Bu, Patreon'a münhasır bir özellik!\nBu özelliğe erişim alabilmek için beni Patreon'da destekleyebilirsiniz:",
 	"settings": {
 		"save_failed": "ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
-		"missing": "bu sunucu henüz kurulmamış. %1$s ve %2$s'yi kullanarak ayarları değiştirin.",
+		"missing": "bu sunucu henüz kurulmamış. $1 ve $2'yi kullanarak ayarları değiştirin.",
 		"foundwikis": "Bu wikilerden herhangi birini mi kastediyorsun?",
 		"current": "sunucunun mevcut ayarları:",
 		"channel current": "kanalın mevcut ayarları:",
@@ -35,14 +37,14 @@
 		"langinvalid": "belirtilen dil şimdilik desteklenmiyor!",
 		"langchanged": "sunucunun dilini şuna değiştirdin:",
 		"channel langchanged": "kanalın dilini şuna değiştirdin:",
-		"langhelp": "`%s <dil>` kullanarak dili değiştirebilirsin.\nŞimdilik desteklenmeyen diller:",
+		"langhelp": "`$1 <dil>` kullanarak dili değiştirebilirsin.\nŞimdilik desteklenmeyen diller:",
 		"wikimissing": "bu sunucu için varsayılan bir wiki belirlenmemiş!",
 		"wiki": "bu sunucunun varsayılan wikisi:",
 		"channel wiki": "bu kanalın varsayılan wikisi:",
 		"wikiinvalid": "lütfen Gamepedia veya Fandom wikiye geçerli bir bağlantı saylağın!",
 		"wikichanged": "bu sunucunun varsayılan wikisini şuna değiştirdiniz:",
 		"channel wikichanged": "bu kanalın varsayılan wikisini şuna değiştirdiniz:",
-		"wikihelp": "`%s <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/` veya `https://<wiki>.fandom.com/`",
+		"wikihelp": "`$1 <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/` veya `https://<wiki>.fandom.com/`",
 		"prefix": "sunucudaki önekim:",
 		"prefixinvalid": "belirtilen önek desteklenmiyor!",
 		"prefixchanged": "sunucunun öneki şuna değiştirildi:"
@@ -53,14 +55,14 @@
 	},
 	"voice": {
 		"text": "Ses kanalındaki herkese belirli bir rol vermeye çalışıyorum:",
-		"enable": "Bu fonksiyonu etkinleştirmek için `%s` komutunu kullanmalısın.",
-		"disable": "Bu fonksiyou devre dışı bırakmak için `%s` komutunu kullanmalısın.",
+		"enable": "Bu fonksiyonu etkinleştirmek için `$1` komutunu kullanmalısın.",
+		"disable": "Bu fonksiyou devre dışı bırakmak için `$1` komutunu kullanmalısın.",
 		"enabled": "sesli kanallara rol ekleme fonksiyonunu etkinleştirdin.",
 		"disabled": "sesli kanallara rol ekleme fonksiyonunu devre dışı bıraktın.",
 		"name": "ses kanalı adı",
 		"channel": "Ses kanalı",
-		"join": "%1$s ses kanalına katıldı \"%2$s\".",
-		"left": "%1$s ses kanalından ayrıldı \"%2$s\"."
+		"join": "$1 ses kanalına katıldı \"$2\".",
+		"left": "$1 ses kanalından ayrıldı \"$2\"."
 	},
 	"overview": {
 		"inaccurate": "İstatistikler yanlış olabilir",
@@ -138,17 +140,17 @@
 			"loading": "Global istatistikler yükleniyor…"
 		},
 		"block": {
-			"header": "%s şu anda engelli!",
-			"text": "%1$s platformundan %3$s tarafından \"%4$s\" nedeniyle %2$s süresinde engellendiniz.",
-			"noreason": "%1$s platformundan %3$s tarafından %2$s tarihine kadar engellendiniz.",
-			"nofromtext": "\"%4$s\" nedeniyle %3$s tarafından %2$s tarihine kadar engellendiniz.",
-			"nofromnoreason": "%3$s tarafından %2$s tarihine kadar engellendiniz.",
+			"header": "$1 şu anda engelli!",
+			"text": "$1 platformundan $3 tarafından \"$4\" nedeniyle $2 süresinde engellendiniz.",
+			"noreason": "$1 platformundan $3 tarafından $2 tarihine kadar engellendiniz.",
+			"nofromtext": "\"$4\" nedeniyle $3 tarafından $2 tarihine kadar engellendiniz.",
+			"nofromnoreason": "$3 tarafından $2 tarihine kadar engellendiniz.",
 			"until_infinity": "bütün günlerin sonu"
 		},
 		"gblock": {
-			"header": "%s global olarak engellendi!",
-			"text": "%4$s platformunda %3$s tarafından %1$s tarihinde, %2$s tarihine kadar \"%5$s\" nedeniyle engellendi.",
-			"noreason": "%4$s platformunda %3$s tarafından %1$s tarihinde, %2$s tarihine kadar engellendi.",
+			"header": "$1 global olarak engellendi!",
+			"text": "$4 platformunda $3 tarafından $1 tarihinde, $2 tarihine kadar \"$5\" nedeniyle engellendi.",
+			"noreason": "$4 platformunda $3 tarafından $1 tarihinde, $2 tarihine kadar engellendi.",
 			"disabled": "Bu hesap şu anda devre dışı!"
 		}
 	},
@@ -160,7 +162,7 @@
 			"editor": "Editör:",
 			"timestamp": "Düzenleme tarihi:",
 			"size": "Fark:",
-			"bytes": "%s Bayt",
+			"bytes": "$1 {{PLURAL:$1|Bayt}}",
 			"comment": "açıklama:",
 			"tags": "Etiketler:",
 			"removed": "Kaldırıldı:",
@@ -172,36 +174,23 @@
 	"search": {
 		"page": "sayfa",
 		"search": "arama",
-		"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %s kullan.",
-		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için %1$s, tüm isabetlerin listesi için %2$s kullan.",
+		"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1 kullan.",
+		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1, tüm isabetlerin listesi için $2 kullan.",
 		"category": {
 			"content": "Bu kategorinin içeriği:",
 			"empty": "*Bu kategori boş*",
-			"pages": {
-				"default": "%s sayfa"
-			},
-			"files": {
-				"default": "%s dosya"
-			},
-			"subcats": {
-				"default": "%s kategoriler",
-				"1": "%s kategori"
-			}
+			"pages": "$1 {{PLURAL:$1|sayfa}}",
+			"files": "$1 {{PLURAL:$1|dosya}}",
+			"subcats": "$1 {{PLURAL:$1|kategori|kategoriler}}"
 		},
 		"special": "Bu özel sayfanın içeriği:",
-		"empty": "*Bu özel sayfa boş*",
-		"results": {
-			"default": "%s total results",
-			"1": "%s total result"
-		}
+		"empty": "*Bu özel sayfa boş*"
 	},
 	"discussion": {
 		"post": "gönderisi",
 		"main": "Tartışmalar",
 		"image": "Resmi gör",
-		"votes": {
-			"default": "%s oy"
-		}
+		"votes": "$1 {{PLURAL:$1|oy}}"
 	},
 	"invite": {
 		"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
@@ -288,7 +277,7 @@
 		"aliases": {
 			"cmd": "command"
 		},
-		"more": "Ve %s tane daha.",
-		"total": "%s hata düzeltildi"
+		"more": "Ve $1 {{PLURAL:$1|tane}} daha.",
+		"total": "$1 {{PLURAL:$1|hata}} düzeltildi"
 	}
 }

@@ -23,8 +23,8 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 			}
 			else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
-				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting(), '\u200b' );
-				else text += '\n\n**' + lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting() + '**';
+				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.header', username).escapeFormatting(), '\u200b' );
+				else text += '\n\n**' + lang.get('user.gblock.header', username).escapeFormatting() + '**';
 			}
 		}
 	}, error => {
@@ -71,20 +71,20 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				if ( expiry.startsWith( '(infiniteblock)' ) ) expiry = lang.get('user.block.until_infinity');
 				else expiry = new Date(expiry.replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.get('dateformat'), timeoptions);
 				if ( msg.showEmbed() ) {
-					var gblocktitle = lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting();
-					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.get('user.block.header').replaceSave( '%s', username ).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ) );
+					var gblocktitle = lang.get('user.gblock.header', username).escapeFormatting();
+					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.get('user.block.header', username).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting()) );
 					if ( globalblock ) globalblock.name = gblocktitle;
 					else {
 						var block_wiki = reason[3].replace( /Special:BlockList$/, '' );
-						var gblocktext = lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', '[' + reason[1] + '](' + block_wiki + 'User:' + reason[1].toTitle(true) + ')' ).replaceSave( '%4$s', '[' + reason[2] + '](' + block_wiki + 'Special:Contribs/' + username.toTitle(true) + ')' ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() );
+						var gblocktext = lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, '[' + reason[1] + '](' + block_wiki + 'User:' + reason[1].toTitle(true) + ')', '[' + reason[2] + '](' + block_wiki + 'Special:Contribs/' + username.toTitle(true) + ')', reason.slice(4).join(', ').escapeFormatting());
 						embed.addField( gblocktitle, gblocktext );
 					}
 				}
 				else {
 					let splittext = text.split('\n\n');
-					var globalblock = splittext.indexOf('**' + lang.get('user.block.header').replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() ));
-					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason.slice(4).join(', ').escapeFormatting() );
-					else splittext.push('**' + lang.get('user.gblock.header').replaceSave( '%s', username ).escapeFormatting() + '**\n' + lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' )).replaceSave( '%1$s', timestamp ).replaceSave( '%2$s', expiry ).replaceSave( '%3$s', reason[1].escapeFormatting() ).replaceSave( '%4$s', reason[2] ).replaceSave( '%5$s', reason.slice(4).join(', ').escapeFormatting() ));
+					var globalblock = splittext.indexOf('**' + lang.get('user.block.header', username).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting()));
+					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.get('user.gblock.header', username).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting());
+					else splittext.push('**' + lang.get('user.gblock.header', username).escapeFormatting() + '**\n' + lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason[2], reason.slice(4).join(', ').escapeFormatting()));
 					text = splittext.join('\n\n');
 				}
 			}

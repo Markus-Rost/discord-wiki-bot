@@ -43,7 +43,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		if ( count === maxcount ) {
 			console.log( '- Message contains too many commands!' );
 			msg.reactEmoji('⚠️');
-			msg.sendChannelError( lang.get('limit').replaceSave( '%s', '<@' + author.id + '>' ), {allowedMentions:{users:[author.id]}} );
+			msg.sendChannelError( lang.get('limit', '<@' + author.id + '>'), {allowedMentions:{users:[author.id]}} );
 			return;
 		}
 		line = line.substring(prefix.length);
@@ -59,13 +59,13 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			else if ( /^![a-z\d-]{1,50}$/.test(invoke) ) {
 				cmdmap.LINK(lang, msg, args.join(' '), 'https://' + invoke.substring(1) + '.gamepedia.com/', invoke + ' ');
 			}
-			else if ( /^\?(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+			else if ( /^\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
 				var invokeWiki = wiki;
 				if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
 				else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
 				cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, invoke + ' ');
 			}
-			else if ( /^\?\?(?:[a-z-]{1,8}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+			else if ( /^\?\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
 				var invokeWiki = wiki;
 				if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
 				else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';

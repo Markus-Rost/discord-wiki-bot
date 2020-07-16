@@ -202,7 +202,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} ) );
 			}
 		}
-		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected').replace( '%1', row.configid ) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true}, true );
+		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected', row.configid) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true}, true );
 		
 		function formatVerification(showCommands, hideNotice, {
 			configid,
@@ -227,13 +227,13 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			verification_text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( rename ? 'enabled' : 'disabled')) + '`*';
 			if ( showCommands ) verification_text += ' ' + lang.get('verification.toggle') + '\n`' + prefix + 'verification ' + row.configid + ' rename`\n';
 			if ( !hideNotice && rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
-				verification_text += '\n\n' + lang.get('verification.rename_no_permission').replaceSave( '%s', msg.guild.me.toString() );
+				verification_text += '\n\n' + lang.get('verification.rename_no_permission', msg.guild.me.toString());
 			}
 			if ( !hideNotice && role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
 				verification_text += '\n';
 				role.split('|').forEach( role => {
 					if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) {
-						verification_text += '\n' + lang.get('verification.role_too_high').replaceSave( '%1$s', '<@&' + role + '>' ).replaceSave( '%2$s', msg.guild.me.toString() );
+						verification_text += '\n' + lang.get('verification.role_too_high', '<@&' + role + '>', msg.guild.me.toString());
 					}
 				} );
 			}

@@ -278,8 +278,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 			embed.setImage( discussion._embedded.contentImages[0].url );
 			break;
 		case 'POLL':
-			let count = lang.get('discussion.votes');
-			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( answer.image ? '[__' + lang.get('discussion.image').escapeFormatting() + '__](' + answer.image.url + ')\n' : '' ) + ( count[answer.votes] || count['*' + answer.votes % 100] || count['*' + answer.votes % 10] || lang.get('discussion.votes.default') ).replace( '%s', answer.votes ), true ) );
+			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( answer.image ? '[__' + lang.get('discussion.image').escapeFormatting() + '__](' + answer.image.url + ')\n' : '' ) + lang.get('discussion.votes', answer.votes), true ) );
 			break;
 		case 'QUIZ':
 			description = discussion.quiz.title.escapeFormatting();

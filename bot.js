@@ -16,7 +16,7 @@ global.got = require('got').extend( {
 	}
 } );
 
-const {defaultSettings} = require('./util/default.json');
+const {defaultSettings, wikiProjects} = require('./util/default.json');
 const Lang = require('./util/i18n.js');
 const newMessage = require('./util/newMessage.js');
 global.patreons = {};
@@ -65,13 +65,13 @@ client.on( 'shardDisconnect', () => client.ready = false );
 
 
 String.prototype.noWiki = function(href) {
-	if ( !href ) return false;
-	else if ( this.startsWith( 'https://www.' ) ) return true;
-	else if ( this.endsWith( '.gamepedia.com/' ) ) return 'https://www.gamepedia.com/' === href;
-	else return [
+	if ( !href ) return true;
+	else if ( this.startsWith( 'https://www.' ) && ( this.endsWith( '.gamepedia.com/' ) || this.isFandom() ) ) return true;
+	else if ( this.isFandom() ) return [
 		this.replace( /^https:\/\/([a-z\d-]{1,50}\.(?:fandom\.com|wikia\.org))\/(?:[a-z-]{1,8}\/)?$/, 'https://community.fandom.com/wiki/Community_Central:Not_a_valid_community?from=$1' ),
 		this + 'language-wikis'
 	].includes( href.replace( /Unexpected token < in JSON at position 0 in "([^ ]+)"/, '$1' ) );
+	else return false;
 };
 
 String.prototype.isFandom = function() {
@@ -102,9 +102,14 @@ Discord.Message.prototype.uploadFiles = function() {
 String.prototype.toLink = function(title = '', querystring = '', fragment = '', path, isMarkdown = false) {
 	var linksuffix = ( querystring ? '?' + querystring : '' ) + ( fragment ? '#' + fragment.toSection() : '' );
 	if ( path ) return ( path.server.startsWith( '//' ) ? 'https:' : '' ) + path.server + path.articlepath.replaceSave( '$1', title.toTitle(isMarkdown, path.articlepath.includes( '?' )) ) + ( path.articlepath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
-	else if ( this.endsWith( '.gamepedia.com/' ) ) return this + title.toTitle(isMarkdown) + linksuffix;
-	else if ( this.isFandom() ) return this + 'wiki/' + title.toTitle(isMarkdown) + linksuffix;
-	else return this + 'index.php?title=' + title.toTitle(isMarkdown, true) + ( linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
+	if ( this.endsWith( '.gamepedia.com/' ) ) return this + title.toTitle(isMarkdown) + linksuffix;
+	if ( this.isFandom() ) return this + 'wiki/' + title.toTitle(isMarkdown) + linksuffix;
+	if ( wikiProjects.some( project => this.includes( project.name ) ) ) {
+		let project = wikiProjects.find( project => this.includes( project.name ) );
+		let regex = this.match( new RegExp( project.regex ) );
+		if ( regex ) return 'https://' + regex[1] + project.articlePath + title.toTitle(isMarkdown, project.articlePath.includes( '?' )) + ( project.articlePath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
+	}
+	return this + 'index.php?title=' + title.toTitle(isMarkdown, true) + ( linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
 };
 
 String.prototype.toDescLink = function(title = '') {
@@ -262,21 +267,21 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 };
 
 client.on( 'message', msg => {
-	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.author.id === client.user.id ) return;
+	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.user.bot || msg.author.id === msg.client.user.id ) return;
 	if ( !msg.content.hasPrefix(( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
-			if ( msg.channel.permissionsFor(client.user).has('SEND_MESSAGES') ) {
+			if ( msg.channel.permissionsFor(msg.client.user).has('SEND_MESSAGES') ) {
 				console.log( msg.guild.name + ': ' + msg.content );
 				db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 					if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
-					msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('prefix').replaceSave( /%s/g, patreons[msg.guild.id] ), {}, true );
+					msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('prefix', patreons[msg.guild.id]), {}, true );
 				} );
 			}
 		}
 		if ( !( msg.content.includes( '[[' ) && msg.content.includes( ']]' ) ) && !( msg.content.includes( '{{' ) && msg.content.includes( '}}' ) ) ) return;
 	}
 	if ( msg.channel.type === 'text' ) {
-		var permissions = msg.channel.permissionsFor(client.user);
+		var permissions = msg.channel.permissionsFor(msg.client.user);
 		var missing = permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']);
 		if ( missing.length ) {
 			if ( msg.isAdmin() || msg.isOwner() ) {
@@ -319,14 +324,14 @@ client.on( 'voiceStateUpdate', (olds, news) => {
 		var oldrole = olds.member.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + olds.channel.name );
 		if ( oldrole && oldrole.comparePositionTo(olds.guild.me.roles.highest) < 0 ) {
 			console.log( olds.guild.id + ': ' + olds.member.id + ' left the voice channel "' + olds.channel.id + '".' );
-			olds.member.roles.remove( oldrole, lang.get('left').replaceSave( '%1$s', olds.member.displayName ).replaceSave( '%2$s', olds.channel.name ) ).catch(log_error);
+			olds.member.roles.remove( oldrole, lang.get('left', olds.member.displayName, olds.channel.name) ).catch(log_error);
 		}
 	}
 	if ( news.member && news.channel ) {
 		var newrole = news.guild.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + news.channel.name );
 		if ( newrole && newrole.comparePositionTo(news.guild.me.roles.highest) < 0 ) {
 			console.log( news.guild.id + ': ' + news.member.id + ' joined the voice channel "' + news.channel.id + '".' );
-			news.member.roles.add( newrole, lang.get('join').replaceSave( '%1$s', news.member.displayName ).replaceSave( '%2$s', news.channel.name ) ).catch(log_error);
+			news.member.roles.add( newrole, lang.get('join', news.member.displayName, news.channel.name) ).catch(log_error);
 		}
 	}
 } );

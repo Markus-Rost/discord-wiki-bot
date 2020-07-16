@@ -2,7 +2,9 @@
 	"__translator": [
 		"MarkusRost"
 	],
-	"lang": "de",
+	"fallback": [
+		"en"
+	],
 	"dateformat": "de-DE",
 	"aliases": {
 		"hilfe": "help",
@@ -14,15 +16,15 @@
 		"discussions": "discussion",
 		"diskussion": "discussion"
 	},
-	"prefix": "das Präfix für diesen Server ist `%s`. Du kannst das Präfix mit `%ssettings prefix` ändern. Für eine Liste aller Befehle nutze `%shilfe`.",
+	"prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
 	"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
-	"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n%s, deine Nachricht enthält zu viele Befehle!",
-	"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe auf Gamepedia- und Fandom-Wikis zu verlinken. Geschrieben wurde ich von %s in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Fandom und bin ein inoffizieller Bot!**\n\nDu kannst mich auf Patreon unterstützen:",
+	"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n$1, deine Nachricht enthält zu viele Befehle!",
+	"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe auf Gamepedia- und Fandom-Wikis zu verlinken. Geschrieben wurde ich von $1 in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Fandom und bin ein inoffizieller Bot!**\n\nDu kannst mich auf Patreon unterstützen:",
 	"helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
 	"patreon": "dies ist eine Patreon-Funktion!\nDu kannst mich auf Patreon unterstützen um Zugang zu dieser Funktion zu erhalten:",
 	"settings": {
 		"save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
-		"missing": "für diesen Server wurden noch keine Einstellungen vorgenommen. Nutze %1$s und %2$s um die Einstellungen vorzunehmen.",
+		"missing": "für diesen Server wurden noch keine Einstellungen vorgenommen. Nutze $1 und $2 um die Einstellungen vorzunehmen.",
 		"foundwikis": "Meinst du eines dieser Wikis?",
 		"current": "dies sind die aktuellen Einstellungen für diesen Server:",
 		"channel current": "dies sind die aktuellen Einstellungen für diesen Kanal:",
@@ -37,31 +39,31 @@
 		"langinvalid": "die angegebende Sprache wird nicht unterstützt!",
 		"langchanged": "du hast die Sprache für diesen Server geändert zu:",
 		"channel langchanged": "du hast die Sprache für diesen Kanal geändert zu:",
-		"langhelp": "Nutze `%s <Sprache>` um die Sprache zu ändern.\nBisher mögliche Sprachen sind:",
+		"langhelp": "Nutze `$1 <Sprache>` um die Sprache zu ändern.\nBisher mögliche Sprachen sind:",
 		"wikimissing": "für diesen Server wurde noch kein Wiki festgelegt!",
 		"wiki": "das Standard-Wiki für diesen Server ist:",
 		"channel wiki": "das Standard-Wiki für diesen Kanal ist:",
 		"wikiinvalid": "bitte gib einen gültigen Link zu einem Gamepedia- oder Fandom-Wiki an!",
 		"wikichanged": "du hast das Standard-Wiki für diesen Server geändert zu:",
 		"channel wikichanged": "du hast das Standard-Wiki für diesen Kanal geändert zu:",
-		"wikihelp": "Nutze `%s <Link>` um das Standard-Wiki zu ändern.\nLink zum Wiki: `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
+		"wikihelp": "Nutze `$1 <Link>` um das Standard-Wiki zu ändern.\nLink zum Wiki: `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
 		"prefix": "das Präfix für diesen Server ist:",
 		"prefixinvalid": "das angegebende Präfix wird nicht unterstützt!",
 		"prefixchanged": "du hast das Präfix für diesen Server geändert zu:",
-		"prefixhelp": "Nutze `%s <Präfix>` um das Präfix zu ändern.\nNutze `_` am Ende um ein Leerzeichen am Ende des Präfixes anzugeben.\nDas Präfix darf keine Erwähnungen enthalten!",
+		"prefixhelp": "Nutze `$1 <Präfix>` um das Präfix zu ändern.\nNutze `_` am Ende um ein Leerzeichen am Ende des Präfixes anzugeben.\nDas Präfix darf keine Erwähnungen enthalten!",
 		"inline enabled": {
 			"inline": "Inline-Befehle sind für diesen Server aktiviert.",
 			"channel inline": "Inline-Befehle sind für diesen Kanal aktiviert.",
 			"inlinechanged": "du hast Inline-Befehle für diesen Server aktiviert.",
 			"channel inlinechanged": "du hast Inline-Befehle für diesen Kanal aktiviert.",
-			"help": "Nutze `%1$s` um Inline-Befehle wie `[[%2$s]]` und `{{%2$s}}` zu deaktivieren."
+			"help": "Nutze `$1` um Inline-Befehle wie `[[$2]]` und `{{$2}}` zu deaktivieren."
 		},
 		"inline disabled": {
 			"inline": "Inline-Befehle sind für diesen Server deaktiviert.",
 			"channel inline": "Inline-Befehle sind für diesen Kanal deaktiviert.",
 			"inlinechanged": "du hast Inline-Befehle für diesen Server deaktiviert.",
 			"channel inlinechanged": "du hast Inline-Befehle für diesen Kanal deaktiviert.",
-			"help": "Nutze `%1$s` um Inline-Befehle wie `[[%2$s]]` und `{{%2$s}}` zu aktivieren."
+			"help": "Nutze `$1` um Inline-Befehle wie `[[$2]]` und `{{$2}}` zu aktivieren."
 		}
 	},
 	"pause": {
@@ -70,14 +72,14 @@
 	},
 	"voice": {
 		"text": "ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:",
-		"enable": "Nutze `%s` um diese Funktion zu aktivieren.",
-		"disable": "Nutze `%s` um diese Funktion zu deaktivieren.",
+		"enable": "Nutze `$1` um diese Funktion zu aktivieren.",
+		"disable": "Nutze `$1` um diese Funktion zu deaktivieren.",
 		"enabled": "du hast die Funktion, Rollen für Sprachkanäle hinzuzufügen, aktiviert.",
 		"disabled": "du hast die Funktion, Rollen für Sprachkanäle hinzuzufügen, deaktiviert.",
 		"name": "Name des Sprachkanals",
 		"channel": "Sprachkanal",
-		"join": "%1$s hat den Sprachkanal „%2$s“ betreten.",
-		"left": "%1$s hat den Sprachkanal „%2$s“ verlassen."
+		"join": "$1 hat den Sprachkanal „$2“ betreten.",
+		"left": "$1 hat den Sprachkanal „$2“ verlassen."
 	},
 	"verification": {
 		"save_failed": "die Verifizierungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
@@ -87,7 +89,7 @@
 		"max_entries": "du hast bereits die maximale Anzahl an Verifizierungen erreicht.",
 		"no_role": "bitte gib eine Rolle für die neue Verifizierung an.",
 		"current": "dies sind die aktuellen Verifizierungen für diesen Server:",
-		"current_selected": "dies ist die Verifizierung `%s` für diesen Server:",
+		"current_selected": "dies ist die Verifizierung `$1` für diesen Server:",
 		"missing": "es sind noch keine Verifizierungen für diesen Server vorhanden.",
 		"add_more": "Füge mehr Verifizierungen hinzu:",
 		"delete_current": "Lösche diese Verifizierung:",
@@ -103,8 +105,8 @@
 		"enabled": "aktiviert",
 		"disabled": "deaktiviert",
 		"toggle": "(umschalten)",
-		"rename_no_permission": "**%s fehlt die `Nicknames verwalten` Berechtigung um Wiki-Benutzernamen zu erzwingen!**",
-		"role_too_high": "**Die Rolle %1$s ist zu hoch für %2$s um sie zu vergeben!**",
+		"rename_no_permission": "**$1 fehlt die `Nicknames verwalten` Berechtigung um Wiki-Benutzernamen zu erzwingen!**",
+		"role_too_high": "**Die Rolle $1 ist zu hoch für $2 um sie zu vergeben!**",
 		"channel_max": "du hast zu viele Kanäle angegeben.",
 		"channel_missing": "der angegebe Kanal existiert nicht.",
 		"role_max": "du hast zu viele Rollen angegeben.",
@@ -127,21 +129,21 @@
 		"failed_gblock": "**Test auf globale Sperre schlug fehl!**",
 		"failed_roles": "**Hinzufügen von Rollen schlug fehl!**",
 		"failed_rename": "**Ändern des Nickname schlug fehl!**",
-		"audit_reason": "Verifziert als „%s“",
-		"user_missing": "Der Wiki-Benutzer „%s“ existiert nicht.",
-		"user_missing_reply": "der von dir verlinkte Wiki-Benutzer „%s“ existiert nicht.",
-		"user_blocked": "**Der Wiki-Benutzer %s ist gesperrt!**",
-		"user_blocked_reply": "der von dir verlinkte Wiki-Benutzer **„%s“ ist gesperrt!**",
-		"user_gblocked": "**Der Wiki-Benutzer %s ist global gesperrt!**",
-		"user_gblocked_reply": "der von dir verlinkte Wiki-Benutzer **„%s“ ist global gesperrt!**",
-		"user_disabled": "**Der Wiki-Benutzer %s ist deaktiviert!**",
-		"user_disabled_reply": "der von dir verlinkte Wiki-Benutzer **„%s“ ist deaktiviert!**",
-		"user_failed": "Discord-Benutzer %1$s stimmt nicht mit dem Wiki-Benutzer %2$s überein.",
-		"user_failed_reply": "dein Discord-Tag stimmt nicht mit dem Wiki-Benutzer „%s“ überein.",
-		"user_matches": "Discord-Benutzer %1$s stimmt mit dem Wiki-Benutzer %2$s überein, erfüllt aber keine Kriterien für Rollen.",
-		"user_matches_reply": "dein Discord-Tag stimmt mit dem Wiki-Benutzer „%s“ überein, du erfüllst aber keine Kriterien für Rollen.",
-		"user_verified": "Discord-Benutzer %1$s wurde erfolgreich als Wiki-Benutzer %2$s verifiziert.",
-		"user_verified_reply": "du wurdest erfolgreich als Wiki-Benutzer „%s“ verifiziert.",
+		"audit_reason": "Verifziert als „$1“",
+		"user_missing": "Der Wiki-Benutzer „$1“ existiert nicht.",
+		"user_missing_reply": "der von dir verlinkte Wiki-Benutzer „$1“ existiert nicht.",
+		"user_blocked": "**Der Wiki-Benutzer $1 ist gesperrt!**",
+		"user_blocked_reply": "der von dir verlinkte Wiki-Benutzer **„$1“ ist gesperrt!**",
+		"user_gblocked": "**Der Wiki-Benutzer $1 ist global gesperrt!**",
+		"user_gblocked_reply": "der von dir verlinkte Wiki-Benutzer **„$1“ ist global gesperrt!**",
+		"user_disabled": "**Der Wiki-Benutzer $1 ist deaktiviert!**",
+		"user_disabled_reply": "der von dir verlinkte Wiki-Benutzer **„$1“ ist deaktiviert!**",
+		"user_failed": "Discord-Benutzer $1 stimmt nicht mit dem Wiki-Benutzer $2 überein.",
+		"user_failed_reply": "dein Discord-Tag stimmt nicht mit dem Wiki-Benutzer „$1“ überein.",
+		"user_matches": "Discord-Benutzer $1 stimmt mit dem Wiki-Benutzer $2 überein, erfüllt aber keine Kriterien für Rollen.",
+		"user_matches_reply": "dein Discord-Tag stimmt mit dem Wiki-Benutzer „$1“ überein, du erfüllst aber keine Kriterien für Rollen.",
+		"user_verified": "Discord-Benutzer $1 wurde erfolgreich als Wiki-Benutzer $2 verifiziert.",
+		"user_verified_reply": "du wurdest erfolgreich als Wiki-Benutzer „$1“ verifiziert.",
 		"user_renamed": "Sein Discord-Nickname wurde zu seinem Wiki-Benutzernamen geändert.",
 		"discord": "Discord-Benutzer:",
 		"wiki": "Wiki-Benutzer:",
@@ -149,10 +151,10 @@
 		"notice": "Hinweis:",
 		"qualified": "Qualifiziert für:",
 		"qualified_error": "Qualifiziert für, aber konnte nicht hinzugefügt werden:",
-		"help_guide": "Folge [dieser Anleitung](%s) um dein Discord-Tag auf deinem Wiki-Profil hinzuzufügen:",
+		"help_guide": "Folge [dieser Anleitung]($1) um dein Discord-Tag auf deinem Wiki-Profil hinzuzufügen:",
 		"help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-		"help_subpage": "Bitte füge dein Discord-Tag (%s) zu deiner Discord-Unterseite im Wiki hinzu:"
+		"help_subpage": "Bitte füge dein Discord-Tag ($1) zu deiner Discord-Unterseite im Wiki hinzu:"
 	},
 	"overview": {
 		"inaccurate": "Statistiken können ungenau sein",
@@ -243,17 +245,17 @@
 			"loading": "Lade globale Statistiken…"
 		},
 		"block": {
-			"header": "%s ist derzeit gesperrt!",
-			"text": "Gesperrt am %1$s bis zum %2$s von %3$s mit der Begründung „%4$s“.",
-			"noreason": "Gesperrt am %1$s bis zum %2$s von %3$s.",
-			"nofromtext": "Gesperrt bis zum %2$s von %3$s mit der Begründung „%4$s“.",
-			"nofromnoreason": "Gesperrt bis zum %2$s von %3$s.",
+			"header": "$1 ist derzeit gesperrt!",
+			"text": "Gesperrt am $1 bis zum $2 von $3 mit der Begründung „$4“.",
+			"noreason": "Gesperrt am $1 bis zum $2 von $3.",
+			"nofromtext": "Gesperrt bis zum $2 von $3 mit der Begründung „$4“.",
+			"nofromnoreason": "Gesperrt bis zum $2 von $3.",
 			"until_infinity": "Ende aller Tage"
 		},
 		"gblock": {
-			"header": "%s ist derzeit global gesperrt!",
-			"text": "Gesperrt am %1$s bis zum %2$s von %3$s auf %4$s mit der Begründung „%5$s“.",
-			"noreason": "Gesperrt am %1$s bis zum %2$s von %3$s auf %4$s.",
+			"header": "$1 ist derzeit global gesperrt!",
+			"text": "Gesperrt am $1 bis zum $2 von $3 auf $4 mit der Begründung „$5“.",
+			"noreason": "Gesperrt am $1 bis zum $2 von $3 auf $4.",
 			"disabled": "Dieses Konto ist derzeit deaktiviert!"
 		}
 	},
@@ -265,7 +267,7 @@
 			"editor": "Autor:",
 			"timestamp": "Zeitpunkt:",
 			"size": "Unterschied:",
-			"bytes": "%s Bytes",
+			"bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
 			"comment": "Zusammenfassung:",
 			"tags": "Markierungen:",
 			"removed": "Entfernt:",
@@ -277,39 +279,24 @@
 	"search": {
 		"page": "seite",
 		"search": "suche",
-		"infopage": "Nicht das richtige Ergebnis? Nutze %s für einen direkten Link.",
-		"infosearch": "Nicht das richtige Ergebnis? Nutze %1$s für einen direkten Link oder %2$s für eine Liste mit allen Treffern.",
+		"infopage": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link.",
+		"infosearch": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link oder $2 für eine Liste mit allen Treffern.",
 		"category": {
 			"content": "Inhalt der Kategorie:",
 			"empty": "*Diese Kategorie ist leer*",
-			"pages": {
-				"default": "%s Seiten",
-				"1": "Eine Seite"
-			},
-			"files": {
-				"default": "%s Dateien",
-				"1": "Eine Datei"
-			},
-			"subcats": {
-				"default": "%s Kategorien",
-				"1": "Eine Kategorie"
-			}
+			"pages":  "{{PLURAL:$1|Eine Seite|$1 Seiten}}",
+			"files": "{{PLURAL:$1|Eine Datei|$1 Dateien}}",
+			"subcats": "{{PLURAL:$1|Eine Kategorie|$1 Kategorien}}"
 		},
 		"special": "Inhalt der Spezialseite:",
 		"empty": "*Diese Spezialseite ist leer*",
-		"results": {
-			"default": "%s Ergebnisse insgesamt",
-			"1": "%s Ergebnis insgesamt"
-		}
+		"results": "$1 {{PLURAL:$1|Ergebnis|Ergebnisse}} insgesamt"
 	},
 	"discussion": {
 		"post": "post",
 		"main": "Diskussionen",
 		"image": "Bild öffnen",
-		"votes": {
-			"default": "%s Stimmen",
-			"1": "Eine Stimme"
-		}
+		"votes": "{{PLURAL:$1|Eine Stimme|$1 Stimmen}}"
 	},
 	"invite": {
 		"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
@@ -327,9 +314,9 @@
 		"default": "ich bin voll funktionsfähig!",
 		"time": "Ping",
 		"notice": "Eingeschränkte Funktionalität",
-		"MediaWiki": "Benötigt mindestens %1$s für vollständige Funktionalität, fand `%2$s`.",
-		"TextExtracts": "Benötigt die Erweiterung %s für Seiten-Beschreibungen.",
-		"PageImages": "Benötigt die Erweiterung %s für Seiten-Vorschaubilder."
+		"MediaWiki": "Benötigt mindestens $1 für vollständige Funktionalität, fand `$2`.",
+		"TextExtracts": "Benötigt die Erweiterung $1 für Seiten-Beschreibungen.",
+		"PageImages": "Benötigt die Erweiterung $1 für Seiten-Vorschaubilder."
 	},
 	"help": {
 		"all": "Du willst also wissen, was ich so drauf habe? Hier ist eine Liste aller Befehle, die ich verstehe:",
@@ -408,7 +395,7 @@
 		},
 		"private": "**Privater Fehler**",
 		"fixed": "Lösungsversion:",
-		"more": "Und %s mehr.",
-		"total": "%s Fehler korrigiert"
+		"more": "Und $1 {{PLURAL:$1|mehr}}.",
+		"total": "$1 {{PLURAL:$1|Fehler}} korrigiert"
 	}
 }

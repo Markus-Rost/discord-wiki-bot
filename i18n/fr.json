@@ -3,7 +3,9 @@
 		"Yanis48",
 		"JSBM"
 	],
-	"lang": "fr",
+	"fallback": [
+		"en"
+	],
 	"dateformat": "fr-FR",
 	"aliases": {
 		"aide": "help",
@@ -11,15 +13,15 @@
 		"🎲": "random",
 		"discussions": "discussion"
 	},
-	"prefix": "le préfixe pour ce serveur est `%s`. Vous pouvez changer le préfixe avec `%ssettings prefix`. Pour une liste de toutes les commandes, voir `%shelp`.",
+	"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
 	"missingperm": "Il me manque certaines permissions pour cette commande :",
-	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n%s, votre message contient beaucoup trop de commandes !",
-	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. %s m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Fandom et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",
+	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",
+	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. $1 m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Fandom et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",
 	"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
 	"patreon": "c'est une fonctionnalité réservée au Patreon !\nVous pouver me supporter sur Patreon pour avoir accès à cette fonctionnalité :",
 	"settings": {
 		"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",
-		"missing": "ce serveur n'est pas encore configuré. Utilisez %1$s et %2$s pour modifier les paramètres.",
+		"missing": "ce serveur n'est pas encore configuré. Utilisez $1 et $2 pour modifier les paramètres.",
 		"foundwikis": "Cherchiez-vous un de ces wikis ?",
 		"current": "voici les paramètres actuels pour ce serveur :",
 		"channel current": "voici les paramètres actuels pour ce salon :",
@@ -33,14 +35,14 @@
 		"langinvalid": "la langue spécifiée n'est pas disponible !",
 		"langchanged": "vous avez changé la langue pour ce serveur en :",
 		"channel langchanged": "vous avez changé la langue pour ce salon en :",
-		"langhelp": "Entrez `%s <langue>` pour changez la langue.\nLes langues disponibles sont les suivantes :",
+		"langhelp": "Entrez `$1 <langue>` pour changez la langue.\nLes langues disponibles sont les suivantes :",
 		"wikimissing": "aucun wiki n'est encore défini pour ce serveur.",
 		"wiki": "le wiki associé à ce serveur est :",
 		"channel wiki": "le wiki défini pour ce salon est :",
 		"wikiinvalid": "veuillez fournir un lien valide vers un wiki de Gamepedia ou Fandom !",
 		"wikichanged": "le wiki par défaut a été changé pour :",
 		"channel wikichanged": "le wiki défini pour ce salon sera désormais :",
-		"wikihelp": "Utilisez `%s <lien>` pour changer le wiki par défaut.\nLien du wiki : `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
+		"wikihelp": "Utilisez `$1 <lien>` pour changer le wiki par défaut.\nLien du wiki : `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
 		"prefix": "le préfixe pour ce serveur est :",
 		"prefixinvalid": "le préfixe spécifié n'est pas supporté !",
 		"prefixchanged": "vous avez changé le préfixe pour ce serveur en :"
@@ -51,14 +53,14 @@
 	},
 	"voice": {
 		"text": "j'essaye de donner un rôle spécifique à tout le monde dans un salon vocal :",
-		"enable": "Utilisez `%s` pour activer cette fonction.",
-		"disable": "Utilisez `%s` pour désactiver cette fonction.",
+		"enable": "Utilisez `$1` pour activer cette fonction.",
+		"disable": "Utilisez `$1` pour désactiver cette fonction.",
 		"enabled": "vous avez activé la fonction pour ajouter des rôles aux salons vocaux.",
 		"disabled": "vous avez désactivé la fonction pour ajouter des rôles aux salons vocaux.",
 		"name": "nom du salon vocal",
 		"channel": "Salon vocal",
-		"join": "%1$s a rejoint le salon vocal \"%2$s\".",
-		"left": "%1$s a quitté le salon vocal \"%2$s\"."
+		"join": "$1 a rejoint le salon vocal \"$2\".",
+		"left": "$1 a quitté le salon vocal \"$2\"."
 	},
 	"overview": {
 		"inaccurate": "Les statistiques peuvent être inexactes",
@@ -138,17 +140,17 @@
 			"loading": "Chargement des statistiques globales…"
 		},
 		"block": {
-			"header": "%s est actuellement bloqué !",
-			"text": "Bloqué le %1$s jusqu'au %2$s par %3$s avec la raison « %4$s ».",
-			"noreason": "Bloqué le %1$s jusqu'au %2$s par %3$s.",
-			"nofromtext": "Bloqué jusqu'au %2$s par %3$s avec la raison « %4$s ».",
-			"nofromnoreason": "Bloqué jusqu'au %2$s par %3$s.",
+			"header": "$1 est actuellement bloqué !",
+			"text": "Bloqué le $1 jusqu'au $2 par $3 avec la raison « $4 ».",
+			"noreason": "Bloqué le $1 jusqu'au $2 par $3.",
+			"nofromtext": "Bloqué jusqu'au $2 par $3 avec la raison « $4 ».",
+			"nofromnoreason": "Bloqué jusqu'au $2 par $3.",
 			"until_infinity": "moment de la fin des jours"
 		},
 		"gblock": {
-			"header": "%s est actuellement bloqué globalement !",
-			"text": "Bloqué le %1$s jusqu'au %2$s par %3$s sur %4$s, pour la raison « %5$s ».",
-			"noreason": "Bloqué le %1$s jusqu'au %2$s par %3$s sur %4$s.",
+			"header": "$1 est actuellement bloqué globalement !",
+			"text": "Bloqué le $1 jusqu'au $2 par $3 sur $4, pour la raison « $5 ».",
+			"noreason": "Bloqué le $1 jusqu'au $2 par $3 sur $4.",
 			"disabled": "Ce compte est actuellement désactivé !"
 		}
 	},
@@ -160,7 +162,7 @@
 			"editor": "Éditeur :",
 			"timestamp": "Date :",
 			"size": "Différence :",
-			"bytes": "%s octets",
+			"bytes": "$1 {{PLURAL:$1|octet|octets}}",
 			"comment": "Commentaire :",
 			"tags": "Balises :",
 			"removed": "Retirés :",
@@ -172,23 +174,14 @@
 	"search": {
 		"page": "page",
 		"search": "chercher",
-		"infopage": "Pas le bon résultat ? Utilisez %s pour un lien direct.",
-		"infosearch": "Pas le bon résultat ? Utilisez %1$s pour un lien direct ou %2$s pour une liste de toutes les correspondances.",
+		"infopage": "Pas le bon résultat ? Utilisez $1 pour un lien direct.",
+		"infosearch": "Pas le bon résultat ? Utilisez $1 pour un lien direct ou $2 pour une liste de toutes les correspondances.",
 		"category": {
 			"content": "Contenu de cette catégorie :",
 			"empty": "*Cette catégorie est vide*",
-			"pages": {
-				"default": "%s pages",
-				"1": "%s page"
-			},
-			"files": {
-				"default": "%s fichiers",
-				"1": "%s fichier"
-			},
-			"subcats": {
-				"default": "%s catégories",
-				"1": "%s catégorie"
-			}
+			"pages": "$1 {{PLURAL:$1|page|pages}}",
+			"files": "$1 {{PLURAL:$1|fichier|fichiers}}",
+			"subcats": "$1 {{PLURAL:$1|catégorie|catégories}}"
 		},
 		"special": "Contenu de cette page spéciale :",
 		"empty": "*Cette page spéciale est vide*"
@@ -197,11 +190,7 @@
 		"post": "post",
 		"main": "Discussions",
 		"image": "Afficher l'image",
-		"votes": {
-			"default": "%s votes",
-			"0": "%s vote",
-			"1": "%s vote"
-		}
+		"votes": "$1 {{PLURAL:$1|vote|votes}}"
 	},
 	"invite": {
 		"bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
@@ -310,7 +299,7 @@
 		},
 		"private": "**Problème privé**",
 		"fixed": "Corrigé lors de la version",
-		"more": "Et %s autres.",
-		"total": "%s bugs corrigés"
+		"more": "Et $1 {{PLURAL:$1|autres}}.",
+		"total": "$1 {{PLURAL:$1|bug|bugs}} corrigés"
 	}
 }

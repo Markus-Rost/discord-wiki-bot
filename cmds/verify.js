@@ -58,8 +58,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			embed.setAuthor( body.query.general.sitename );
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 				username = ( body.query.users.length === 1 ? queryuser.name : username );
-				embed.setTitle( username.escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing').replaceSave( '%s', username.escapeFormatting() ) );
-				msg.replyMsg( lang.get('verify.user_missing_reply').replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+				embed.setTitle( username.escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', username.escapeFormatting()) );
+				msg.replyMsg( lang.get('verify.user_missing_reply', username.escapeFormatting()), {embed}, false, false );
 				
 				if ( reaction ) reaction.removeEmoji();
 				return;
@@ -68,8 +68,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			var pagelink = wiki.toLink('User:' + username, '', '', body.query.general, true);
 			embed.setTitle( username.escapeFormatting() ).setURL( pagelink );
 			if ( queryuser.blockexpiry ) {
-				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked').replaceSave( '%s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
-				msg.replyMsg( lang.get('verify.user_blocked_reply').replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + username.escapeFormatting() + '](' + pagelink + ')') );
+				msg.replyMsg( lang.get('verify.user_blocked_reply', username.escapeFormatting()), {embed}, false, false );
 				
 				if ( reaction ) reaction.removeEmoji();
 				return;
@@ -93,22 +93,22 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					if ( wiki.endsWith( '.gamepedia.com/' ) ) {
 						if ( $('.mw-blocklist').length ) {
 							return Promise.reject({
-								desc: lang.get('verify.user_gblocked').replaceSave( '%s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ),
-								reply: lang.get('verify.user_gblocked_reply').replaceSave( '%s', username.escapeFormatting() )
+								desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')'),
+								reply: lang.get('verify.user_gblocked_reply', username.escapeFormatting())
 							});
 						}
 					}
 					else if ( wiki.isFandom() ) {
 						if ( $('#mw-content-text .errorbox').length ) {
 							return Promise.reject({
-								desc: lang.get('verify.user_disabled').replaceSave( '%s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ),
-								reply: lang.get('verify.user_disabled_reply').replaceSave( '%s', username.escapeFormatting() )
+								desc: lang.get('verify.user_disabled', '[' + username.escapeFormatting() + '](' + pagelink + ')'),
+								reply: lang.get('verify.user_disabled_reply', username.escapeFormatting())
 							});
 						}
 						else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
 							return Promise.reject({
-								desc: lang.get('verify.user_gblocked').replaceSave( '%s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ),
-								reply: lang.get('verify.user_gblocked_reply').replaceSave( '%s', username.escapeFormatting() )
+								desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')'),
+								reply: lang.get('verify.user_gblocked_reply', username.escapeFormatting())
 							});
 						}
 					}
@@ -156,12 +156,12 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
 					embed.addField( lang.get('verify.discord'), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki'), ( discordname || lang.get('verify.empty') ), true );
 					if ( msg.author.tag.escapeFormatting() !== discordname ) {
-						embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed').replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
+						embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')') );
 						var help_link = '';
 						if ( wiki.endsWith( '.gamepedia.com/' ) ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + username.toTitle(true, true) + '&discord=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
 						else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + username.toTitle(true) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
-						if ( help_link.length ) embed.addField( lang.get('verify.notice'), lang.get('verify.help_guide').replaceSave( '%s', help_link ) + '\n' + help_link );
-						msg.replyMsg( lang.get('verify.user_failed_reply').replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+						if ( help_link.length ) embed.addField( lang.get('verify.notice'), lang.get('verify.help_guide', help_link) + '\n' + help_link );
+						msg.replyMsg( lang.get('verify.user_failed_reply', username.escapeFormatting()), {embed}, false, false );
 						
 						if ( reaction ) reaction.removeEmoji();
 						return;
@@ -196,16 +196,18 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						}
 					} );
 					if ( verified ) {
-						embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified').replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) + ( rename ? '\n' + lang.get('verify.user_renamed') : '' ) );
-						var text = lang.get('verify.user_verified_reply').replaceSave( '%s', username.escapeFormatting() );
+						embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')') + ( rename ? '\n' + lang.get('verify.user_renamed') : '' ) );
+						var text = lang.get('verify.user_verified_reply', username.escapeFormatting());
 						var verify_promise = [
-							msg.member.roles.add( roles, lang.get('verify.audit_reason').replaceSave( '%s', username ) ).catch( error => {
+							msg.member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
+								log_error(error);
 								embed.setColor('#008800');
 								comment.push(lang.get('verify.failed_roles'));
 							} )
 						];
 						if ( rename ) {
-							verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason').replaceSave( '%s', username ) ).catch( error => {
+							verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
+								log_error(error);
 								embed.setColor('#008800');
 								comment.push(lang.get('verify.failed_rename'));
 							} ));
@@ -227,8 +229,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						} );
 					}
 					
-					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches').replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
-					msg.replyMsg( lang.get('verify.user_matches_reply').replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')') );
+					msg.replyMsg( lang.get('verify.user_matches_reply', username.escapeFormatting()), {embed}, false, false );
 					
 					if ( reaction ) reaction.removeEmoji();
 				}, error => {
@@ -265,9 +267,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 				if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
 				embed.addField( lang.get('verify.discord'), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki'), ( discordname || lang.get('verify.empty') ), true );
 				if ( msg.author.tag.escapeFormatting() !== discordname ) {
-					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed').replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
-					embed.addField( lang.get('verify.notice'), lang.get('verify.help_subpage').replaceSave( '%s', '**`' + msg.author.tag + '`**' ) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit', '', body.query.general) );
-					msg.replyMsg( lang.get('verify.user_failed_reply').replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')') );
+					embed.addField( lang.get('verify.notice'), lang.get('verify.help_subpage', '**`' + msg.author.tag + '`**') + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit', '', body.query.general) );
+					msg.replyMsg( lang.get('verify.user_failed_reply', username.escapeFormatting()), {embed}, false, false );
 					
 					if ( reaction ) reaction.removeEmoji();
 					return;
@@ -302,16 +304,18 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					}
 				} );
 				if ( verified ) {
-					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified').replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) + ( rename ? '\n' + lang.get('verify.user_renamed') : '' ) );
-					var text = lang.get('verify.user_verified_reply').replaceSave( '%s', username.escapeFormatting() );
+					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')') + ( rename ? '\n' + lang.get('verify.user_renamed') : '' ) );
+					var text = lang.get('verify.user_verified_reply', username.escapeFormatting());
 					var verify_promise = [
-						msg.member.roles.add( roles, lang.get('verify.audit_reason').replaceSave( '%s', username ) ).catch( error => {
+						msg.member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
+							log_error(error);
 							embed.setColor('#008800');
 							comment.push(lang.get('verify.failed_roles'));
 						} )
 					];
 					if ( rename ) {
-						verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason').replaceSave( '%s', username ) ).catch( error => {
+						verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
+							log_error(error);
 							embed.setColor('#008800');
 							comment.push(lang.get('verify.failed_rename'));
 						} ));
@@ -333,8 +337,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					} );
 				}
 				
-				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches').replaceSave( '%1$s', msg.member.toString() ).replaceSave( '%2$s', '[' + username.escapeFormatting() + '](' + pagelink + ')' ) );
-				msg.replyMsg( lang.get('verify.user_matches_reply').replaceSave( '%s', username.escapeFormatting() ), {embed}, false, false );
+				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')') );
+				msg.replyMsg( lang.get('verify.user_matches_reply', username.escapeFormatting()), {embed}, false, false );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}, error => {

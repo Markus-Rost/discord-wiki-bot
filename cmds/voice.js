@@ -5,7 +5,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 	if ( msg.isAdmin() ) {
 		if ( !args.join('') ) {
 			var text = lang.get('voice.text') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`\n';
-			text += lang.get('voice.' + ( msg.guild.id in voice ? 'disable' : 'enable' )).replaceSave( '%s', ( patreons[msg.guild.id] || process.env.prefix ) + 'voice toggle' );
+			text += lang.get('voice.' + ( msg.guild.id in voice ? 'disable' : 'enable' ), ( patreons[msg.guild.id] || process.env.prefix ) + 'voice toggle');
 			return msg.replyMsg( text, {}, true );
 		}
 		args[1] = args.slice(1).join(' ').trim()
