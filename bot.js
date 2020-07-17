@@ -99,7 +99,7 @@ Discord.Message.prototype.uploadFiles = function() {
 	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
 };
 
-String.prototype.toLink = function(title = '', querystring = '', fragment = '', {server: serverURL, articlepath: articlePath}, isMarkdown = false) {
+String.prototype.toLink = function(title = '', querystring = '', fragment = '', {server: serverURL, articlepath: articlePath} = {}, isMarkdown = false) {
 	var linksuffix = ( querystring ? '?' + querystring : '' ) + ( fragment ? '#' + fragment.toSection() : '' );
 	if ( serverURL && articlePath ) return serverURL.replace( /^(?:https?:)?\/\//, 'https://' ) + articlePath.replaceSave( '$1', title.toTitle(isMarkdown, articlePath.includes( '?' )) ) + ( articlePath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
 	if ( this.endsWith( '.gamepedia.com/' ) ) return this + title.toTitle(isMarkdown) + linksuffix;
