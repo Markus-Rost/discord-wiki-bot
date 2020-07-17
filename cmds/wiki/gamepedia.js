@@ -1,6 +1,7 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const extract_desc = require('../../util/extract_desc.js');
+const {wikiProjects} = require('../../util/default.json');
 
 const fs = require('fs');
 var fn = {
