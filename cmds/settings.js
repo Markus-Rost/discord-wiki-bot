@@ -65,30 +65,15 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				if ( !rows.length ) return msg.replyMsg( lang.get('settings.wikimissing') + wikihelp, {}, true );
 				else return msg.replyMsg( lang.get('settings.' + prelang) + ' ' + ( channel || guild ).wiki + wikihelp, {}, true );
 			}
-			var wikinew = '';
 			var isForced = false;
-			var regex = args[1].match( /^(?:(?:https?:)?\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-			if ( regex ) wikinew = 'https://' + regex[1] + '/';
-			else if ( allSites.some( site => site.wiki_domain === args[1] + '.gamepedia.com' ) ) {
-				wikinew = 'https://' + args[1] + '.gamepedia.com/';
-			}
-			else if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(args[1]) ) {
-				if ( !args[1].includes( '.' ) ) wikinew = 'https://' + args[1] + '.fandom.com/';
-				else wikinew = 'https://' + args[1].split('.')[1] + '.fandom.com/' + args[1].split('.')[0] + '/';
-			}
-			else if ( /^<?(?:https?:)?\/\//.test(args[1]) ) {
+			if ( /^<?(?:https?:)?\/\//.test(args[1]) ) {
 				args[1] = args[1].replace( /^<?(?:https?:)?\/\//, 'https://' );
-				[wikinew, ...value] = args[1].split(/>? /);
+				let value = [];
+				[args[1], ...value] = args[1].split(/>? /);
 				if ( value.join(' ') === '--force' ) isForced = true;
-				let project = wikiProjects.find( project => wikinew.split('/')[2].endsWith( project.name ) );
-				if ( project ) {
-					let regex = wikinew.match( new RegExp( project.regex ) );
-					if ( regex ) wikinew = 'https://' + regex[1] + project.scriptPath;
-				}
-				else wikinew = wikinew.replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
-				if ( !wikinew.endsWith( '/' ) ) wikinew += '/';
 			}
-			else {
+			var wikinew = input_to_wiki(args[1]);
+			if ( !wikinew ) {
 				var text = lang.get('settings.wikiinvalid') + wikihelp;
 				var sites = allSites.filter( site => site.wiki_display_name.toLowerCase().includes( args[1] ) );
 				if ( 0 < sites.length && sites.length < 21 ) {
@@ -346,6 +331,34 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		
 		return msg.replyMsg( text, {split:true}, true );
 	} );
+}
+
+function input_to_wiki(input) {
+	var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
+	if ( regex ) return 'https://' + regex[1] + '/';
+	if ( input.startsWith( 'https://' ) ) {
+		let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
+		if ( project ) {
+			regex = input.match( new RegExp( project.regex ) );
+			if ( regex ) return 'https://' + regex[1] + project.scriptPath;
+		}
+		let wiki = input.replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
+		if ( !wiki.endsWith( '/' ) ) wiki += '/';
+		return wiki;
+	}
+	let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
+	if ( project ) {
+		regex = input.match( new RegExp( project.regex ) );
+		if ( regex ) return 'https://' + regex[1] + project.scriptPath;
+	}
+	if ( allSites.some( site => site.wiki_domain === input + '.gamepedia.com' ) ) {
+		return 'https://' + input + '.gamepedia.com/';
+	}
+	if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
+		if ( !input.includes( '.' ) ) return 'https://' + input + '.fandom.com/';
+		else return 'https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/';
+	}
+	return;
 }
 
 module.exports = {

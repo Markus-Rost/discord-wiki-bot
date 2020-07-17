@@ -138,10 +138,10 @@
 			"scriptPath": "/w/"
 		},
 		{
-			"name": "shoutwiki.com",
-			"regex": "DOES NOT SUPPORT HTTPS – ((?:[a-z\\d-]{1,50}\\.)?shoutwiki\\.com)(?:\\/wiki\\/|\\/?$)",
+			"name": "metapedia.org",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)metapedia\\.org)(?:\\/wiki\\/|\\/?$)",
 			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
+			"scriptPath": "/m/"
 		},
 		{
 			"name": "paradoxwikis.com",
@@ -150,10 +150,22 @@
 			"scriptPath": "/"
 		},
 		{
+			"name": "brickimedia.org",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)brickimedia\\.org)(?:\\/wiki\\/|\\/?$)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "runescape.wiki",
 			"regex": "((?:(?:classic|oldschool|pt|www)\\.)?runescape\\.wiki)(?:\\/w\\/|\\/?$)",
 			"articlePath": "/w/",
 			"scriptPath": "/"
+		},
+		{
+			"name": "shoutwiki.com",
+			"regex": "DOES NOT SUPPORT HTTPS – ((?:[a-z\\d-]{1,50}\\.)?shoutwiki\\.com)(?:\\/wiki\\/|\\/?$)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
 		}
 	]
 }
