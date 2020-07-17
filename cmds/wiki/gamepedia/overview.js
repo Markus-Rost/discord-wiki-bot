@@ -53,7 +53,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			
 			if ( msg.showEmbed() ) {
 				var text = '<' + pagelink + '>';
-				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( /^(?:https?:)?\/\//.test(body.query.general.logo) ? body.query.general.logo.replace( /^(?:https?:)?\/\//, 'https://' ) : body.query.general.server + ( body.query.general.logo.startsWith( '/' ) ? '' : '/' ) + body.query.general.logo ) );
 			}
 			else {
 				var embed = {};

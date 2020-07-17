@@ -176,7 +176,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 											if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
 											else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
 										} else embed.setThumbnail( pageimage );
-									} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+									} else embed.setThumbnail( logoToURL(body.query.general) );
 									
 									var prefix = ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix );
 									var linksuffix = ( querystring ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' );
@@ -220,7 +220,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 					else if ( querypage.ns === -1 ) {
 						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general);
-						var embed =  new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+						var embed =  new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( logoToURL(body.query.general) );
 						var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replace( /\_/g, ' ' ) === querypage.title.split('/')[0] );
 						specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( body.query.namespaces['-1']['*'] + ':', '' ).split('/')[0] ).toLowerCase();
 						fn.special_page(lang, msg, querypage.title, specialpage, embed, wiki, reaction, spoiler);
@@ -250,7 +250,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 								if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.pageimage.toLowerCase()) ) embed.setImage( pageimage );
 								else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.pageimage}] );
 							} else embed.setThumbnail( pageimage );
-						} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+						} else embed.setThumbnail( logoToURL(body.query.general) );
 						if ( querypage.categoryinfo ) {
 							var category = [lang.get('search.category.content')];
 							if ( querypage.categoryinfo.size === 0 ) {
@@ -282,7 +282,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 					interwiki = body.query.interwiki[0].url;
 					var maxselfcall = ( msg.channel.type === 'text' && msg.guild.id in patreons ? 10 : 5 );
-					if ( selfcall < maxselfcall ) {
+					if ( selfcall < maxselfcall && /^(?:https?:)?\/\//.test(interwiki) ) {
 						selfcall++;
 						var regex = interwiki.match( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.gamepedia\.com(?:\/|$)/ );
 						if ( regex ) {
@@ -296,8 +296,8 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							this.fandom(lang, msg, iwtitle, 'https://' + regex[1] + '/', ( regex[1].includes( '.wikia.org' ) ? '??' : '?' ) + ( regex[3] ? regex[3] + '.' : '' ) + regex[2] + ' ', reaction, spoiler, querystring, fragment, interwiki, selfcall);
 							return;
 						}
-						if ( wikiProjects.some( project => interwiki.includes( project.name ) ) ) {
-							let project = wikiProjects.find( project => interwiki.includes( project.name ) );
+						let project = wikiProjects.find( project => interwiki.split('/')[2].endsWith( project.name ) );
+						if ( project ) {
 							regex = interwiki.match( new RegExp( '^(?:https?:)?\\/\\/' + project.regex ) );
 							if ( regex ) {
 								let iwtitle = decodeURIComponent( interwiki.replace( regex[0], '' ) ).replace( /\_/g, ' ' );
@@ -319,7 +319,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				}
 				else if ( body.query.redirects ) {
 					var pagelink = wiki.toLink(body.query.redirects[0].to, querystring.toTitle(), ( fragment || body.query.redirects[0].tofragment || '' ), body.query.general);
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.redirects[0].to.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.redirects[0].to.escapeFormatting() ).setURL( pagelink ).setThumbnail( logoToURL(body.query.general) );
 					
 					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 					
@@ -327,7 +327,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				}
 				else {
 					var pagelink = wiki.toLink(body.query.general.mainpage, querystring.toTitle(), fragment, body.query.general);
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( logoToURL(body.query.general) );
 					got.get( wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageprops|extracts&ppprop=description|displaytitle&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json', {
 						responseType: 'json'
 					} ).then( mpresponse => {
@@ -376,6 +376,12 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
+}
+
+function logoToURL({logo, server: serverURL}) {
+	if ( /^(?:https?:)?\/\//.test(logo) ) logo = logo.replace( /^(?:https?:)?\/\//, 'https://' );
+	else logo = serverURL + ( logo.startsWith( '/' ) ? '' : '/' ) + logo;
+	return logo;
 }
 
 function htmlToPlain(html) {

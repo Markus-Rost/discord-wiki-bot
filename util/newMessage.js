@@ -1,5 +1,5 @@
 const {Util} = require('discord.js');
-const {defaultSettings} = require('./default.json');
+const {defaultSettings, wikiProjects} = require('./default.json');
 const check_wiki = {
 	fandom: require('../cmds/wiki/fandom.js'),
 	gamepedia: require('../cmds/wiki/gamepedia.js')
@@ -25,15 +25,16 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	var cleanCont = ( content && Util.cleanContent(content, msg) || msg.cleanContent );
 	var author = msg.author;
 	var channel = msg.channel;
-	var invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
-	var aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
-	var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
-	if ( cont.hasPrefix(prefix) && ownercmd ) {
-		cont = cont.substring(prefix.length);
-		var args = cont.split(' ').slice(1);
-		if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
-		console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + cont );
-		return ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
+	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
+		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
+		let aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
+		if ( aliasInvoke in ownercmdmap ) {
+			cont = cont.substring(prefix.length);
+			let args = cont.split(' ').slice(1);
+			if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
+			console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + cont );
+			return ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
+		}
 	}
 	var count = 0;
 	var maxcount = ( channel.type === 'text' && msg.guild.id in patreons ? 15 : 10 );
@@ -47,32 +48,41 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			return;
 		}
 		line = line.substring(prefix.length);
-		invoke = line.split(' ')[0].toLowerCase();
+		var invoke = line.split(' ')[0].toLowerCase();
 		var args = line.split(' ').slice(1);
-		aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
-		ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
-		if ( channel.type === 'text' && pause[msg.guild.id] && !( ( msg.isAdmin() && aliasInvoke in pausecmdmap ) || ownercmd ) ) console.log( msg.guild.id + ': Paused' );
-		else console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + line );
-		if ( ownercmd ) ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
-		else if ( channel.type !== 'text' || !pause[msg.guild.id] || ( msg.isAdmin() && aliasInvoke in pausecmdmap ) ) {
-			if ( aliasInvoke in cmdmap ) cmdmap[aliasInvoke](lang, msg, args, line, wiki);
-			else if ( /^![a-z\d-]{1,50}$/.test(invoke) ) {
-				cmdmap.LINK(lang, msg, args.join(' '), 'https://' + invoke.substring(1) + '.gamepedia.com/', invoke + ' ');
-			}
-			else if ( /^\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-				var invokeWiki = wiki;
-				if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
-				else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
-				cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, invoke + ' ');
-			}
-			else if ( /^\?\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-				var invokeWiki = wiki;
-				if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
-				else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
-				cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, invoke + ' ');
-			}
-			else cmdmap.LINK(lang, msg, line, wiki);
+		var aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
+		var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
+		var pausecmd = ( msg.isAdmin() && pause[msg.guild.id] && aliasInvoke in pausecmdmap );
+		if ( channel.type === 'text' && pause[msg.guild.id] && !( pausecmd || ownercmd ) ) {
+			return console.log( msg.guild.id + ': Paused' );
 		}
+		console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + line );
+		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
+		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
+		if ( aliasInvoke in cmdmap ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
+		if ( /^![a-z\d-]{1,50}$/.test(invoke) ) {
+			return cmdmap.LINK(lang, msg, args.join(' '), 'https://' + invoke.substring(1) + '.gamepedia.com/', invoke + ' ');
+		}
+		if ( /^\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+			let invokeWiki = wiki;
+			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
+			else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
+			return cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, invoke + ' ');
+		}
+		if ( /^\?\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+			let invokeWiki = wiki;
+			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
+			else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
+			return cmdmap.LINK(lang, msg, args.join(' '), invokeWiki, invoke + ' ');
+		}
+		if ( /^!!(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}(?:\/|$)/.test(invoke) ) {
+			let project = wikiProjects.find( project => invoke.split('/')[0].endsWith( project.name ) );
+			if ( project ) {
+				let regex = invoke.match( new RegExp( project.regex ) );
+				if ( regex && invoke === '!!' + regex[1] ) return cmdmap.LINK(lang, msg, args.join(' '), 'https://' + regex[1] + project.scriptPath, invoke + ' ');
+			}
+		}
+		return cmdmap.LINK(lang, msg, line, wiki);
 	} );
 	
 		if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {

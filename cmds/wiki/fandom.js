@@ -389,7 +389,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 					}
 					interwiki = body.query.interwiki[0].url;
 					var maxselfcall = ( msg.channel.type === 'text' && msg.guild.id in patreons ? 10 : 5 );
-					if ( selfcall < maxselfcall ) {
+					if ( selfcall < maxselfcall && /^(?:https?:)?\/\//.test(interwiki) ) {
 						selfcall++;
 						var regex = interwiki.match( /^(?:https?:)?\/\/(([a-z\d-]{1,50})\.(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/([a-z-]{2,12}))?)(?:\/wiki\/|\/?$)/ );
 						if ( regex ) {
@@ -403,8 +403,8 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							this.gamepedia(lang, msg, iwtitle, 'https://' + regex[1] + '.gamepedia.com/', '!' + regex[1] + ' ', reaction, spoiler, querystring, fragment, interwiki, selfcall);
 							return;
 						}
-						if ( wikiProjects.some( project => interwiki.includes( project.name ) ) ) {
-							let project = wikiProjects.find( project => interwiki.includes( project.name ) );
+						let project = wikiProjects.find( project => interwiki.split('/')[2].endsWith( project.name ) );
+						if ( project ) {
 							regex = interwiki.match( new RegExp( '^(?:https?:)?\\/\\/' + project.regex ) );
 							if ( regex ) {
 								let iwtitle = decodeURIComponent( interwiki.replace( regex[0], '' ) ).replace( /\_/g, ' ' );

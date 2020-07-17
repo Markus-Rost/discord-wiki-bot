@@ -39,7 +39,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			if ( querypage.pageimage && querypage.original && querypage.title !== body.query.general.mainpage ) {
 				embed.setThumbnail( querypage.original.source );
 			}
-			else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+			else embed.setThumbnail( ( /^(?:https?:)?\/\//.test(body.query.general.logo) ? body.query.general.logo.replace( /^(?:https?:)?\/\//, 'https://' ) : body.query.general.server + ( body.query.general.logo.startsWith( '/' ) ? '' : '/' ) + body.query.general.logo ) );
 			
 			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 		}

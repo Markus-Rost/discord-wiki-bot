@@ -99,13 +99,13 @@ Discord.Message.prototype.uploadFiles = function() {
 	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
 };
 
-String.prototype.toLink = function(title = '', querystring = '', fragment = '', path, isMarkdown = false) {
+String.prototype.toLink = function(title = '', querystring = '', fragment = '', {server: serverURL, articlepath: articlePath}, isMarkdown = false) {
 	var linksuffix = ( querystring ? '?' + querystring : '' ) + ( fragment ? '#' + fragment.toSection() : '' );
-	if ( path ) return ( path.server.startsWith( '//' ) ? 'https:' : '' ) + path.server + path.articlepath.replaceSave( '$1', title.toTitle(isMarkdown, path.articlepath.includes( '?' )) ) + ( path.articlepath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
+	if ( serverURL && articlePath ) return serverURL.replace( /^(?:https?:)?\/\//, 'https://' ) + articlePath.replaceSave( '$1', title.toTitle(isMarkdown, articlePath.includes( '?' )) ) + ( articlePath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
 	if ( this.endsWith( '.gamepedia.com/' ) ) return this + title.toTitle(isMarkdown) + linksuffix;
 	if ( this.isFandom() ) return this + 'wiki/' + title.toTitle(isMarkdown) + linksuffix;
-	if ( wikiProjects.some( project => this.includes( project.name ) ) ) {
-		let project = wikiProjects.find( project => this.includes( project.name ) );
+	let project = wikiProjects.find( project => this.split('/')[2].endsWith( project.name ) );
+	if ( project ) {
 		let regex = this.match( new RegExp( project.regex ) );
 		if ( regex ) return 'https://' + regex[1] + project.articlePath + title.toTitle(isMarkdown, project.articlePath.includes( '?' )) + ( project.articlePath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
 	}

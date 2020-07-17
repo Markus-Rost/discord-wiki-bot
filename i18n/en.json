@@ -359,7 +359,7 @@
 			{ "cmd": "verification <id> editcount <new edit count>", "desc": "I will change the minimal edit count for the wiki verification.", "hide": true, "admin": true },
 			{ "cmd": "verification <id> usergroup <new user group>", "desc": "I will change the user group for the wiki verification. Accepts a `|` separated list.\n\t• Provide `AND` as the first list entry to make all provided user groups required.", "hide": true, "admin": true },
 			{ "cmd": "verification <id> accountage <new account age>", "desc": "I will change the minimal account age (in days) for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> rename", "desc": "I will change if the users Discord nickname should be changed to their wiki username for the wiki verification.", "hide": true, "admin": true },
+			{ "cmd": "verification <id> rename", "desc": "I will change if the user's Discord nickname should be changed to their wiki username for the wiki verification.", "hide": true, "admin": true },
 			{ "cmd": "verification <id> delete", "desc": "I will delete the wiki verification.", "hide": true, "admin": true },
 			{ "cmd": "voice", "desc": "I try to give everyone in a voice channel a specific role.", "admin": true, "pause": true },
 			{ "cmd": "pause @mention", "desc": "I will ignore all commands on this server, except a few admin commands.", "admin": true },

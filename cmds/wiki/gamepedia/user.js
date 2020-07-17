@@ -194,7 +194,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						if ( querypage.pageimage && querypage.original ) {
 							var pageimage = querypage.original.source;
 							embed.setThumbnail( pageimage );
-						} else embed.setThumbnail( ( body.query.general.logo.startsWith( '//' ) ? 'https:' : '' ) + body.query.general.logo );
+						} else embed.setThumbnail( ( /^(?:https?:)?\/\//.test(body.query.general.logo) ? body.query.general.logo.replace( /^(?:https?:)?\/\//, 'https://' ) : body.query.general.server + ( body.query.general.logo.startsWith( '/' ) ? '' : '/' ) + body.query.general.logo ) );
 						
 						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 					}

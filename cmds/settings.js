@@ -78,15 +78,15 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			}
 			else if ( /^<?(?:https?:)?\/\//.test(args[1]) ) {
 				args[1] = args[1].replace( /^<?(?:https?:)?\/\//, 'https://' );
-				var value = args[1].split(/>? /);
-				if ( value.length === 2 && value[1] === '--force' ) isForced = true;
-				if ( wikiProjects.some( project => value[0].includes( project.name ) ) ) {
-					let project = wikiProjects.find( project => value[0].includes( project.name ) );
-					let regex = value[0].match( new RegExp( project.regex ) );
-					if ( regex ) value[0] = 'https://' + regex[1] + project.scriptPath;
+				[wikinew, ...value] = args[1].split(/>? /);
+				if ( value.join(' ') === '--force' ) isForced = true;
+				let project = wikiProjects.find( project => wikinew.split('/')[2].endsWith( project.name ) );
+				if ( project ) {
+					let regex = wikinew.match( new RegExp( project.regex ) );
+					if ( regex ) wikinew = 'https://' + regex[1] + project.scriptPath;
 				}
-				value[0] = value[0].replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
-				wikinew = value[0] + ( value[0].endsWith( '/' ) ? '' : '/' );
+				else wikinew = wikinew.replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
+				if ( !wikinew.endsWith( '/' ) ) wikinew += '/';
 			}
 			else {
 				var text = lang.get('settings.wikiinvalid') + wikihelp;
