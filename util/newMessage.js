@@ -1,5 +1,5 @@
 const {Util} = require('discord.js');
-const {defaultSettings, wikiProjects} = require('./default.json');
+const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const check_wiki = {
 	fandom: require('../cmds/wiki/fandom.js'),
 	gamepedia: require('../cmds/wiki/gamepedia.js')
@@ -37,7 +37,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		}
 	}
 	var count = 0;
-	var maxcount = ( channel.type === 'text' && msg.guild.id in patreons ? 15 : 10 );
+	var maxcount = commandLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
 	cleanCont.replace( /\u200b/g, '' ).split('\n').forEach( line => {
 		if ( !line.hasPrefix(prefix) || count > maxcount ) return;
 		count++;

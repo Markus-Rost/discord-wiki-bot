@@ -106,7 +106,7 @@ String.prototype.toLink = function(title = '', querystring = '', fragment = '', 
 	if ( this.isFandom() ) return this + 'wiki/' + title.toTitle(isMarkdown) + linksuffix;
 	let project = wikiProjects.find( project => this.split('/')[2].endsWith( project.name ) );
 	if ( project ) {
-		let regex = this.match( new RegExp( project.regex ) );
+		let regex = this.match( new RegExp( '^https://' + project.regex + project.scriptPath + '$' ) );
 		if ( regex ) return 'https://' + regex[1] + project.articlePath + title.toTitle(isMarkdown, project.articlePath.includes( '?' )) + ( project.articlePath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
 	}
 	return this + 'index.php?title=' + title.toTitle(isMarkdown, true) + ( linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
@@ -192,7 +192,7 @@ Discord.MessageReaction.prototype.removeEmoji = function() {
 
 Discord.Message.prototype.sendChannel = function(content, options = {}, ignorePause = false) {
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		if ( !options.allowedMentions ) options.allowedMentions = {parse:[]};
+		if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 		return this.channel.send(content, options).then( msg => {
 			if ( msg.length ) msg.forEach( message => message.allowDelete(this.author.id) );
 			else msg.allowDelete(this.author.id);
@@ -208,7 +208,7 @@ Discord.Message.prototype.sendChannel = function(content, options = {}, ignorePa
 };
 
 Discord.Message.prototype.sendChannelError = function(content, options = {}) {
-	if ( !options.allowedMentions ) options.allowedMentions = {parse:[]};
+	if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 	return this.channel.send(content, options).then( msg => {
 		if ( msg.length ) msg.forEach( message => {
 			message.reactEmoji('error');

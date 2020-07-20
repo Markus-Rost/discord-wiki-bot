@@ -1,5 +1,23 @@
 {
 	"defaultPermissions": 403033152,
+	"limit": {
+		"command": {
+			"default": 10,
+			"patreon": 15
+		},
+		"interwiki": {
+			"default": 5,
+			"patreon": 10
+		},
+		"discussion": {
+			"default": 50,
+			"patreon": 100
+		},
+		"verification": {
+			"default": 10,
+			"patreon": 15
+		}
+	},
 	"defaultSettings": {
 		"lang": "en",
 		"wiki": "https://community.fandom.com/"
@@ -67,105 +85,99 @@
 	"wikiProjects": [
 		{
 			"name": "wikipedia.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikipedia\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikipedia\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "mediawiki.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?mediawiki\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?mediawiki\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikimedia.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikimedia\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikimedia\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wiktionary.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wiktionary\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wiktionary\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikibooks.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikibooks\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikibooks\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikisource.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikisource\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikisource\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikidata.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikidata\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikidata\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikiversity.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikiversity\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikiversity\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikiquote.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikiquote\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikiquote\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikinews.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikinews\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikinews\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wikivoyage.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikivoyage\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wikivoyage\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "miraheze.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)miraheze\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)miraheze\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "metapedia.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)metapedia\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)metapedia\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/m/"
 		},
 		{
 			"name": "paradoxwikis.com",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)paradoxwikis\\.com)(?:\\/|$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)paradoxwikis\\.com)",
 			"articlePath": "/",
 			"scriptPath": "/"
 		},
 		{
 			"name": "brickimedia.org",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)brickimedia\\.org)(?:\\/wiki\\/|\\/?$)",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)brickimedia\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "runescape.wiki",
-			"regex": "((?:(?:classic|oldschool|pt|www)\\.)?runescape\\.wiki)(?:\\/w\\/|\\/?$)",
+			"regex": "((?:(?:classic|oldschool|pt|www)\\.)?runescape\\.wiki)",
 			"articlePath": "/w/",
 			"scriptPath": "/"
-		},
-		{
-			"name": "shoutwiki.com",
-			"regex": "DOES NOT SUPPORT HTTPS – ((?:[a-z\\d-]{1,50}\\.)?shoutwiki\\.com)(?:\\/wiki\\/|\\/?$)",
-			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
 		}
 	]
 }

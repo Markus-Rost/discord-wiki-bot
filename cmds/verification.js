@@ -1,3 +1,4 @@
+const {limit: {verification: verificationLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
 function cmd_verification(lang, msg, args, line, wiki) {
@@ -20,7 +21,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		
 		var prefix = ( patreons[msg.guild.id] || process.env.prefix );
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
-			var limit = ( msg.guild.id in patreons ? 15 : 10 );
+			var limit = verificationLimit[( msg.guild.id in patreons ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), {}, true );
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
 			if ( !roles.length ) return msg.replyMsg( lang.get('verification.no_role') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`', {}, true );

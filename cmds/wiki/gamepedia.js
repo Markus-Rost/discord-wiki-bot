@@ -1,7 +1,7 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const extract_desc = require('../../util/extract_desc.js');
-const {wikiProjects} = require('../../util/default.json');
+const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 
 const fs = require('fs');
 var fn = {
@@ -51,6 +51,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 	}
 	else if ( aliasInvoke === 'random' && !args.join('') && !querystring && !fragment ) fn.random(lang, msg, wiki, reaction, spoiler);
 	else if ( aliasInvoke === 'overview' && !args.join('') && !querystring && !fragment ) fn.overview(lang, msg, wiki, reaction, spoiler);
+	else if ( aliasInvoke === 'test' && !args.join('') && !querystring && !fragment ) {
+		this.test(lang, msg, args, '', wiki);
+		if ( reaction ) reaction.removeEmoji();
+	}
 	else if ( aliasInvoke === 'page' ) {
 		msg.sendChannel( spoiler + '<' + wiki.toLink(args.join('_'), querystring.toTitle(), fragment) + '>' + spoiler );
 		if ( reaction ) reaction.removeEmoji();
@@ -281,7 +285,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 						return;
 					}
 					interwiki = body.query.interwiki[0].url;
-					var maxselfcall = ( msg.channel.type === 'text' && msg.guild.id in patreons ? 10 : 5 );
+					var maxselfcall = interwikiLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
 					if ( selfcall < maxselfcall && /^(?:https?:)?\/\//.test(interwiki) ) {
 						selfcall++;
 						var regex = interwiki.match( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.gamepedia\.com(?:\/|$)/ );
@@ -298,7 +302,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 						}
 						let project = wikiProjects.find( project => interwiki.split('/')[2].endsWith( project.name ) );
 						if ( project ) {
-							regex = interwiki.match( new RegExp( '^(?:https?:)?\\/\\/' + project.regex ) );
+							regex = interwiki.match( new RegExp( '^(?:https?:)?//' + project.regex + `(?:${project.articlePath}|/?$)` ) );
 							if ( regex ) {
 								let iwtitle = decodeURIComponent( interwiki.replace( regex[0], '' ) ).replace( /\_/g, ' ' );
 								this.gamepedia(lang, msg, iwtitle, 'https://' + regex[1] + project.scriptPath, cmd + body.query.interwiki[0].iw + ':', reaction, spoiler, querystring, fragment, interwiki, selfcall);

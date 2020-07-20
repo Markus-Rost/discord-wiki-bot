@@ -33,7 +33,7 @@ function getSettings(trysettings = 1) {
 					db.run( 'CREATE INDEX idx_patreons_patreon ON patreons(patreon)', [], function (idxerror) {
 						if ( idxerror ) {
 							console.log( '- ' + shardId + ': Error while creating the patreons index: ' + idxerror );
-							return error;
+							return idxerror;
 						}
 						console.log( '- ' + shardId + ': Created the patreons index.' );
 					} );
@@ -44,33 +44,40 @@ function getSettings(trysettings = 1) {
 						return error;
 					}
 					console.log( '- Created the discord table.' );
-					db.run( 'CREATE TRIGGER unique_discord_guild BEFORE INSERT ON discord WHEN NEW.channel IS NULL BEGIN SELECT CASE WHEN (SELECT 1 FROM discord WHERE guild = NEW.guild AND channel IS NULL) IS NOT NULL THEN RAISE(ABORT, "UNIQUE constraint failed: discord.guild, discord.channel") END; END;', [], function (idxerror) {
-						if ( idxerror ) {
-							console.log( '- ' + shardId + ': Error while creating the discord guild trigger: ' + idxerror );
-							return error;
+					db.run( 'CREATE TRIGGER unique_discord_guild BEFORE INSERT ON discord WHEN NEW.channel IS NULL BEGIN SELECT CASE WHEN (SELECT 1 FROM discord WHERE guild = NEW.guild AND channel IS NULL) IS NOT NULL THEN RAISE(ABORT, "UNIQUE constraint failed: discord.guild, discord.channel") END; END;', [], function (tgerror) {
+						if ( tgerror ) {
+							console.log( '- ' + shardId + ': Error while creating the discord guild trigger: ' + tgerror );
+							return tgerror;
 						}
 						console.log( '- ' + shardId + ': Created the discord guild trigger.' );
 					} );
 					db.run( 'CREATE INDEX idx_discord_patreon ON discord(patreon) WHERE patreon IS NOT NULL', [], function (idxerror) {
 						if ( idxerror ) {
 							console.log( '- ' + shardId + ': Error while creating the discord patreon index: ' + idxerror );
-							return error;
+							return idxerror;
 						}
 						console.log( '- ' + shardId + ': Created the discord patreon index.' );
 					} );
 					db.run( 'CREATE INDEX idx_discord_voice ON discord(voice) WHERE voice IS NOT NULL', [], function (idxerror) {
 						if ( idxerror ) {
 							console.log( '- ' + shardId + ': Error while creating the discord voice index: ' + idxerror );
-							return error;
+							return idxerror;
 						}
 						console.log( '- ' + shardId + ': Created the discord voice index.' );
 					} );
 					db.run( 'CREATE INDEX idx_discord_channel ON discord(guild, channel DESC)', [], function (idxerror) {
 						if ( idxerror ) {
 							console.log( '- ' + shardId + ': Error while creating the discord channel index: ' + idxerror );
-							return error;
+							return idxerror;
 						}
 						console.log( '- ' + shardId + ': Created the discord channel index.' );
+					} );
+					db.run( 'PRAGMA foreign_keys = ON;', [], function (fkerror) {
+						if ( fkerror ) {
+							console.log( '- ' + shardId + ': Error while enabling the foreign key constraint: ' + fkerror );
+							return fkerror;
+						}
+						console.log( '- ' + shardId + ': Enabled the foreign key constraint.' );
 					} );
 					if ( trysettings < 10 ) {
 						trysettings++;
@@ -86,7 +93,7 @@ function getSettings(trysettings = 1) {
 					db.run( 'CREATE INDEX idx_verification_config ON verification(guild, configid ASC, channel)', [], function (idxerror) {
 						if ( idxerror ) {
 							console.log( '- ' + shardId + ': Error while creating the verification index: ' + idxerror );
-							return error;
+							return idxerror;
 						}
 						console.log( '- ' + shardId + ': Created the verification index.' );
 					} );

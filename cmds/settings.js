@@ -339,7 +339,7 @@ function input_to_wiki(input) {
 	if ( input.startsWith( 'https://' ) ) {
 		let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
 		if ( project ) {
-			regex = input.match( new RegExp( project.regex ) );
+			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
 			if ( regex ) return 'https://' + regex[1] + project.scriptPath;
 		}
 		let wiki = input.replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
@@ -348,7 +348,7 @@ function input_to_wiki(input) {
 	}
 	let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
 	if ( project ) {
-		regex = input.match( new RegExp( project.regex ) );
+		regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
 		if ( regex ) return 'https://' + regex[1] + project.scriptPath;
 	}
 	if ( allSites.some( site => site.wiki_domain === input + '.gamepedia.com' ) ) {

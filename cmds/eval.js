@@ -2,6 +2,7 @@ const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
 const Discord = require('discord.js');
+const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
 async function cmd_eval(lang, msg, args, line, wiki) {
@@ -73,7 +74,7 @@ function removePatreons(guild, msg) {
 				console.log( '- Error while getting the verifications: ' + dberror );
 				return dberror;
 			}
-			var ids = rows.slice(10).map( row => row.configid );
+			var ids = rows.slice(verificationLimit.default).map( row => row.configid );
 			if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [guild, ...ids], function (error) {
 				if ( error ) {
 					console.log( '- Error while deleting the verifications: ' + error );

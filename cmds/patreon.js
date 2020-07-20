@@ -1,3 +1,4 @@
+const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
 function cmd_patreon(lang, msg, args, line, wiki) {
@@ -67,7 +68,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the verifications: ' + dberror );
 					return dberror;
 				}
-				var ids = rows.slice(10).map( row => row.configid );
+				var ids = rows.slice(verificationLimit.default).map( row => row.configid );
 				if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [args[1], ...ids], function (error) {
 					if ( error ) {
 						console.log( '- Error while deleting the verifications: ' + error );
@@ -149,7 +150,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					msg.replyMsg( 'I couldn\'t disable the patreon features.', {}, true );
 					return eacherror;
 				}
-				db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ? WHERE guild = ?', [eachrow.lang, eachrow.inline, process.env.prefix, eachrow.guild], function (uperror) {
+				db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ?, patreon = NULL WHERE guild = ?', [eachrow.lang, eachrow.inline, process.env.prefix, eachrow.guild], function (uperror) {
 					if ( uperror ) {
 						console.log( '- Error while updating the guild: ' + uperror );
 						msg.replyMsg( 'I couldn\'t disable the patreon features for `' + eachrow.guild + '`.', {}, true );
@@ -171,7 +172,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the verifications: ' + eacherror );
 					return dberror;
 				}
-				var ids = eachrow.configids.split(',').slice(10).map( row => row.configid );
+				var ids = eachrow.configids.split(',').slice(verificationLimit.default);
 				if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [eachrow.guild, ...ids], function (uperror) {
 					if ( uperror ) {
 						console.log( '- Error while deleting the verifications: ' + uperror );

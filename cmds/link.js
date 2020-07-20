@@ -1,6 +1,7 @@
 const check_wiki = {
 	fandom: require('./wiki/fandom.js'),
-	gamepedia: require('./wiki/gamepedia.js')
+	gamepedia: require('./wiki/gamepedia.js'),
+	test: require('./test.js').run
 };
 const help_setup = require('../functions/helpsetup.js');
 

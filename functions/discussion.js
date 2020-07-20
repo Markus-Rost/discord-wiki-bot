@@ -1,7 +1,9 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
+const {limit: {discussion: discussionLimit}} = require('../util/default.json');
 
 function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
+	var limit = discussionLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
 	if ( !title ) {
 		var pagelink = wiki + 'f';
 		var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
@@ -64,7 +66,6 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 	}
 	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.get('discussion.post') ) {
 		title = title.split(' ').slice(1).join(' ');
-		var limit = ( msg.channel.type === 'text' && msg.guild.id in patreons ? '100' : '50' );
 		got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts?limit=' + limit + '&format=json', {
 			headers: {
 				Accept: 'application/hal+json'
@@ -165,7 +166,6 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 		} );
 	}
 	else {
-		var limit = ( msg.channel.type === 'text' && msg.guild.id in patreons ? '100' : '50' );
 		got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads?sortKey=trending&limit=' + limit + '&format=json', {
 			headers: {
 				Accept: 'application/hal+json'

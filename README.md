@@ -1,5 +1,4 @@
 # Wiki-Bot
-<a href="https://top.gg/bot/461189216198590464"><img align="right" src="https://top.gg/api/widget/461189216198590464.svg" alt="Wiki-Bot"></a>
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link to [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis.
 <br>He resolves redirects and follows interwiki links.
 <br>**Wiki-Bot** has translations for English, German, French, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
@@ -77,3 +76,10 @@ See the [admin commands](#admin) or `!wiki help verification` on how to change t
 ## Voice Channel
 **Wiki-Bot** is able to give everyone in a voice channel a specific role. This allows for the creation of channels only visible or writable when in a specific voice channel.
 <br>Use `!wiki voice` to get the format for the role name.
+
+## Bot Lists
+[![Wiki-Bot](https://botsfordiscord.com/api/bot/461189216198590464/widget)](https://botsfordiscord.com/bot/461189216198590464)
+[![Wiki-Bot](https://discord.boats/api/widget/461189216198590464)](https://discord.boats/bot/461189216198590464)
+[![Wiki-Bot](https://top.gg/api/widget/461189216198590464.svg)](https://top.gg/bot/461189216198590464)
+
+[Privacy Policy](privacy.md)
