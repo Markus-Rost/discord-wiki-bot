@@ -74,7 +74,44 @@ class Lang {
 		return ( text || '⧼' + message + ( isDebug && args.length ? ': ' + args.join(', ') : '' ) + '⧽' );
 	}
 
-	static allLangs() {
+//	/**
+//	 * Get a localized message.
+//	 * @param {String} message - Name of the message.
+//	 * @param {String[]} args - Arguments for the message.
+//	 * @returns {String}
+//	 */
+//	get(message = '', ...args) {
+//		if ( this.namespace.length ) message = this.namespace + '.' + message;
+//		let lang = this.lang;
+//		let text = i18n?.[lang]?.[message];
+//		let fallback = 0;
+//		while ( !text ) {
+//			if ( fallback < this.fallback.length ) {
+//				lang = this.fallback[fallback];
+//				fallback++;
+//				text = i18n?.[lang]?.[message];
+//			}
+//			else break;
+//		}
+//		if ( typeof text === 'string' ) {
+//			args.forEach( (arg, i) => {
+//				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
+//			} );
+//			text = text.replace( /{{\s*PLURAL:\s*(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
+//				return plural(lang, parseInt(number, 10), cases.split(/\s*\|\s*/));
+//			} );
+//		}
+//		return ( text || '⧼' + message + ( isDebug && args.length ? ': ' + args.join(', ') : '' ) + '⧽' );
+//	}
+
+	/**
+	 * Get names for all langauges.
+	 * @param {Boolean} isRcGcDw - Get the langauge for RcGcDw?
+	 * @returns {Object}
+	 * @static
+	 */
+	static allLangs(isRcGcDw = false) {
+		if ( isRcGcDw ) return i18n.RcGcDw;
 		return i18n.allLangs;
 	}
 }

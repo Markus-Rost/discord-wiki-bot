@@ -5,7 +5,6 @@
 	"fallback": [
 		"en"
 	],
-	"dateformat": "tr-TR",
 	"aliases": {
 		"info": ["bilgi"],
 		"help": ["yardım"],
@@ -13,6 +12,7 @@
 		"search": ["arama"],
 		"discussion": ["tartışma"]
 	},
+	"dateformat": "tr-TR",
 	"prefix": "sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`.",
 	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
 	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n$1, mesajın çok fazla komut içeriyor!",
@@ -329,7 +329,7 @@
 					"cmd": "pause $1",
 					"desc": "Birkaç admin komutu haricinde, bu sunucudaki bütün komutları yok sayacağım."
 				},
-				"pause": {
+				"active": {
 					"cmd": "pause $1",
 					"desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim."
 				}

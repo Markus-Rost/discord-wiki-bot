@@ -5,7 +5,6 @@
 	"fallback": [
 		"en"
 	],
-	"dateformat": "nl-NL",
 	"aliases": {
 		"page": ["pagina"],
 		"search": ["zoeken"],
@@ -13,6 +12,7 @@
 		"overview": ["overzicht"],
 		"discussion": ["discussie"]
 	},
+	"dateformat": "nl-NL",
 	"prefix": "het voorvoegsel voor deze server is `$1`. Je kunt het voorvoegsel veranderen met `$1settings prefix`. Voor een lijst van alle opdrachten zie `$1help`.",
 	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
 	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n$1, je bericht bevatte te veel opdrachten!",

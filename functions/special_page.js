@@ -48,12 +48,12 @@ const queryfunctions = {
 	} ).join('\n')
 }
 
-var querypages = {
+const querypages = {
 	ancientpages: ['&list=querypage&qplimit=10&qppage=Ancientpages', queryfunctions.timestamp],
 	brokenredirects: ['&list=querypage&qplimit=10&qppage=BrokenRedirects', queryfunctions.redirect],
 	deadendpages: ['&list=querypage&qplimit=10&qppage=Deadendpages', queryfunctions.title],
-	disambiguations: ['&list=querypage&qplimit=10&qppage=Disambiguations', queryfunctions.title],
 	doubleredirects: ['&list=querypage&qplimit=10&qppage=DoubleRedirects', queryfunctions.doubleredirect],
+	fewestrevisions: ['&list=querypage&qplimit=10&qppage=Fewestrevisions', queryfunctions.times],
 	listduplicatedfiles: ['&list=querypage&qplimit=10&qppage=ListDuplicatedFiles', queryfunctions.times],
 	listredirects: ['&list=querypage&qplimit=10&qppage=Listredirects', queryfunctions.redirect],
 	lonelypages: ['&list=querypage&qplimit=10&qppage=Lonelypages', queryfunctions.title],
@@ -62,11 +62,10 @@ var querypages = {
 	mostcategories: ['&list=querypage&qplimit=10&qppage=Mostcategories', queryfunctions.times],
 	mostimages: ['&list=querypage&qplimit=10&qppage=Mostimages', queryfunctions.times],
 	mostinterwikis: ['&list=querypage&qplimit=10&qppage=Mostinterwikis', queryfunctions.times],
+	mostlinked: ['&list=querypage&qplimit=10&qppage=Mostlinked', queryfunctions.times],
 	mostlinkedcategories: ['&list=querypage&qplimit=10&qppage=Mostlinkedcategories', queryfunctions.times],
 	mostlinkedtemplates: ['&list=querypage&qplimit=10&qppage=Mostlinkedtemplates', queryfunctions.times],
-	mostlinked: ['&list=querypage&qplimit=10&qppage=Mostlinked', queryfunctions.times],
 	mostrevisions: ['&list=querypage&qplimit=10&qppage=Mostrevisions', queryfunctions.times],
-	fewestrevisions: ['&list=querypage&qplimit=10&qppage=Fewestrevisions', queryfunctions.times],
 	shortpages: ['&list=querypage&qplimit=10&qppage=Shortpages', queryfunctions.size],
 	uncategorizedcategories: ['&list=querypage&qplimit=10&qppage=Uncategorizedcategories', queryfunctions.title],
 	uncategorizedpages: ['&list=querypage&qplimit=10&qppage=Uncategorizedpages', queryfunctions.title],
@@ -74,24 +73,40 @@ var querypages = {
 	uncategorizedtemplates: ['&list=querypage&qplimit=10&qppage=Uncategorizedtemplates', queryfunctions.title],
 	unusedcategories: ['&list=querypage&qplimit=10&qppage=Unusedcategories', queryfunctions.title],
 	unusedimages: ['&list=querypage&qplimit=10&qppage=Unusedimages', queryfunctions.title],
+	unusedtemplates: ['&list=querypage&qplimit=10&qppage=Unusedtemplates', queryfunctions.title],
+	unwatchedpages: ['&list=querypage&qplimit=10&qppage=Unwatchedpages', queryfunctions.title],
 	wantedcategories: ['&list=querypage&qplimit=10&qppage=Wantedcategories', queryfunctions.times],
 	wantedfiles: ['&list=querypage&qplimit=10&qppage=Wantedfiles', queryfunctions.times],
 	wantedpages: ['&list=querypage&qplimit=10&qppage=Wantedpages', queryfunctions.times],
 	wantedtemplates: ['&list=querypage&qplimit=10&qppage=Wantedtemplates', queryfunctions.times],
-	unwatchedpages: ['&list=querypage&qplimit=10&qppage=Unwatchedpages', queryfunctions.title],
-	unusedtemplates: ['&list=querypage&qplimit=10&qppage=Unusedtemplates', queryfunctions.title],
 	withoutinterwiki: ['&list=querypage&qplimit=10&qppage=Withoutinterwiki', queryfunctions.title],
+	gadgetusage: ['&list=querypage&qplimit=10&qppage=GadgetUsage', queryfunctions.gadget],
+	recentchanges: ['&list=recentchanges&rctype=edit|new|log&rclimit=10', queryfunctions.recentchanges],
+	disambiguations: ['&list=querypage&qplimit=10&qppage=Disambiguations', queryfunctions.title],
 	mostpopularcategories: ['&list=querypage&qplimit=10&qppage=Mostpopularcategories', queryfunctions.category],
-	mostimagesincontent: ['&list=querypage&qplimit=10&qppage=MostLinkedFilesInContent', queryfunctions.times],
+	mostlinkedfilesincontent: ['&list=querypage&qplimit=10&qppage=MostLinkedFilesInContent', queryfunctions.times],
 	unusedvideos: ['&list=querypage&qplimit=10&qppage=UnusedVideos', queryfunctions.title],
 	withoutimages: ['&list=querypage&qplimit=10&qppage=Withoutimages', queryfunctions.title],
 	nonportableinfoboxes: ['&list=querypage&qplimit=10&qppage=Nonportableinfoboxes', queryfunctions.title],
 	popularpages: ['&list=querypage&qplimit=10&qppage=Popularpages', queryfunctions.title],
 	pageswithoutinfobox: ['&list=querypage&qplimit=10&qppage=Pageswithoutinfobox', queryfunctions.title],
 	templateswithouttype: ['&list=querypage&qplimit=10&qppage=Templateswithouttype', queryfunctions.title],
-	allinfoboxes: ['&list=querypage&qplimit=10&qppage=AllInfoboxes', queryfunctions.title],
-	gadgetusage: ['&list=querypage&qplimit=10&qppage=GadgetUsage', queryfunctions.gadget],
-	recentchanges: ['&list=recentchanges&rctype=edit|new|log&rclimit=10', queryfunctions.recentchanges]
+	allinfoboxes: ['&list=querypage&qplimit=10&qppage=AllInfoboxes', queryfunctions.title]
+}
+
+const descriptions = {
+	checkuser: 'checkuser-summary&amargs=16|19',
+	resettokens: 'resettokens-text',
+	allmessages: 'allmessagestext',
+	expandtemplates: 'expand_templates_intro',
+	apisandbox: 'apisandbox-intro',
+	abusefilter: 'abusefilter-intro',
+	gadgets: 'gadgets-pagetext',
+	categorytree: 'categorytree-header',
+	drafts: 'drafts-view-summary&amargs=30',
+	analytics: 'analytics_confidential',
+	mostlinkedfilesincontent: 'mostimagesincontent-summary',
+	popularpages: 'insights-list-description-popularpages'
 }
 
 /**
@@ -111,7 +126,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		overwrites[specialpage](this, lang, msg, wiki, reaction, spoiler, args, embed);
 		return;
 	}
-	got.get( wiki + 'api.php?action=query&meta=siteinfo|allmessages&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '-summary' + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json', {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo|allmessages&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( specialpage in descriptions ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json', {
 		responseType: 'json'
 	} ).then( response => {
 		var body = response.body;

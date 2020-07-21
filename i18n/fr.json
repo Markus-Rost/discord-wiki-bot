@@ -6,12 +6,12 @@
 	"fallback": [
 		"en"
 	],
-	"dateformat": "fr-FR",
 	"aliases": {
 		"help": ["aide"],
 		"search": ["chercher"],
 		"command": ["commande"]
 	},
+	"dateformat": "fr-FR",
 	"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
 	"missingperm": "Il me manque certaines permissions pour cette commande :",
 	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",

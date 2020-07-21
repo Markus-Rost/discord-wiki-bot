@@ -354,14 +354,14 @@ client.on( 'guildDelete', guild => {
 		}
 		if ( guild.id in patreons ) client.shard.broadcastEval( `delete global.patreons['${guild.id}']` );
 		if ( guild.id in voice ) delete voice[guild.id];
-		console.log( '- Settings successfully removed.' );
+		if ( this.changes ) console.log( '- Settings successfully removed.' );
 	} );
 	db.run( 'DELETE FROM verification WHERE guild = ?', [guild.id], function (dberror) {
 		if ( dberror ) {
 			console.log( '- Error while removing the verifications: ' + dberror );
 			return dberror;
 		}
-		console.log( '- Verifications successfully removed.' );
+		if ( this.changes ) console.log( '- Verifications successfully removed.' );
 	} );
 } );
 

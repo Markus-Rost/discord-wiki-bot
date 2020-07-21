@@ -6,7 +6,6 @@
 	"fallback": [
 		"en"
 	],
-	"dateformat": "pl-PL",
 	"aliases": {
 		"help": ["pomoc"],
 		"page": ["strona"],
@@ -14,6 +13,7 @@
 		"discussion": ["dyskusje", "dyskusja"],
 		"command": ["komenda"]
 	},
+	"dateformat": "pl-PL",
 	"prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
 	"missingperm": "Brakuje mi uprawnień:",
 	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
@@ -185,7 +185,7 @@
 			"hydra_staff": "personel Gamepedii",
 			"wiki_manager": "Menedżer wiki",
 			"content_team_member": "Członek Zespołu Treści",
-			"GRASP": "GRASP",
+			"grasp": "GRASP",
 			"bot-global": "bot globalny",
 			"staff": "Fandom Staff",
 			"wiki-manager": "Menedżer wiki",

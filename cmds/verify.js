@@ -11,8 +11,9 @@ var db = require('../util/database.js');
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
  * @param {String} wiki - The wiki for the message.
+ * @param {String} [old_username] - The username before the search.
  */
-function cmd_verify(lang, msg, args, line, wiki) {
+function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	if ( msg.channel.type !== 'text' ) return this.LINK(lang, msg, line, wiki);
 	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
 		if ( msg.isAdmin() || msg.isOwner() ) {
@@ -28,10 +29,11 @@ function cmd_verify(lang, msg, args, line, wiki) {
 	}
 	if ( wiki.endsWith( '.gamepedia.com/' ) ) username = username.replace( /^userprofile\s*:/i, '' );
 	
+	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') + ' • ' + new Date().toLocaleString(lang.get('dateformat'), timeoptions) ).setTimestamp();
 	db.all( 'SELECT role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the verifications: ' + dberror );
-			embed.setTitle( username.escapeFormatting() ).setColor('#000000').setDescription( lang.get('verify.error') );
+			embed.setColor('#000000').setDescription( lang.get('verify.error') );
 			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
 			return dberror;
 		}
@@ -39,10 +41,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		
 		if ( !username.trim() ) {
 			args[0] = line.split(' ')[0];
-			if ( args[0] === 'verification' ) args[0] = 'verify';
+			if ( args[0] === 'verification' ) args[0] = ( lang.localNames.verify || 'verify' );
 			return this.help(lang, msg, args, line);
 		}
-		var embed = new MessageEmbed().setFooter( lang.get('verify.footer') + ' • ' + new Date().toLocaleString(lang.get('dateformat'), timeoptions) ).setTimestamp();
 		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json', {
 			responseType: 'json'
 		} ).then( response => {
@@ -55,7 +56,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 				}
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
-					embed.setTitle( username.escapeFormatting() ).setColor('#000000').setDescription( lang.get('verify.error') );
+					embed.setColor('#000000').setDescription( lang.get('verify.error') );
 					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
 				}
 				
@@ -66,8 +67,26 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			embed.setAuthor( body.query.general.sitename );
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 				username = ( body.query.users.length === 1 ? queryuser.name : username );
-				embed.setTitle( username.escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', username.escapeFormatting()) );
-				msg.replyMsg( lang.get('verify.user_missing_reply', username.escapeFormatting()), {embed}, false, false );
+				embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
+				if ( ( wiki.isFandom() || wiki.endsWith( '.gamepedia.com/' ) ) && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json', {
+					responseType: 'json'
+				} ).then( wsresponse => {
+					var wsbody = wsresponse.body;
+					if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
+						if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + wsbody?.exception?.details );
+						msg.replyMsg( lang.get('verify.user_missing_reply', username.escapeFormatting()), {embed}, false, false );
+						
+						if ( reaction ) reaction.removeEmoji();
+						return;
+					}
+					this.verify(lang, msg, wsbody.users[0].name.split(' '), line, wiki, username);
+				}, error => {
+					console.log( '- Error while searching the user: ' + error );
+					msg.replyMsg( lang.get('verify.user_missing_reply', username.escapeFormatting()), {embed}, false, false );
+					
+					if ( reaction ) reaction.removeEmoji();
+				} );
+				msg.replyMsg( lang.get('verify.user_missing_reply', ( old_username || username ).escapeFormatting()), {embed}, false, false );
 				
 				if ( reaction ) reaction.removeEmoji();
 				return;

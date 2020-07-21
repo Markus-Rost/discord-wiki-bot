@@ -7,7 +7,6 @@
 	"fallback": [
 		"en"
 	],
-	"dateformat": "pt-PT",
 	"aliases": {
 		"help": ["ajuda"],
 		"test": ["teste"],
@@ -17,6 +16,7 @@
 		"command": ["comando"],
 		"bug": ["erro"]
 	},
+	"dateformat": "pt-PT",
 	"prefix": "o prefixo deste servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`.",
 	"missingperm": "eu estou perdendo algumas permissões para este comando:",
 	"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n$1, sua mensagem continha muitos comandos!",

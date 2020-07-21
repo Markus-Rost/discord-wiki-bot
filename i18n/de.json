@@ -5,7 +5,6 @@
 	"fallback": [
 		"en"
 	],
-	"dateformat": "de-DE",
 	"aliases": {
 		"help": ["hilfe"],
 		"page": ["seite"],
@@ -17,6 +16,7 @@
 		"command": ["befehl"],
 		"bug": ["fehler"]
 	},
+	"dateformat": "de-DE",
 	"prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
 	"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
 	"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n$1, deine Nachricht enthält zu viele Befehle!",
