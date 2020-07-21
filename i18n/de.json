@@ -7,14 +7,15 @@
 	],
 	"dateformat": "de-DE",
 	"aliases": {
-		"hilfe": "help",
-		"seite": "page",
-		"suche": "search",
-		"🎲": "random",
-		"zufall": "random",
-		"übersicht": "overview",
-		"discussions": "discussion",
-		"diskussion": "discussion"
+		"help": ["hilfe"],
+		"page": ["seite"],
+		"search": ["suche"],
+		"random": ["zufall"],
+		"overview": ["übersicht"],
+		"discussion": ["diskussionen", "diskussion"],
+		"user": ["benutzer"],
+		"command": ["befehl"],
+		"bug": ["fehler"]
 	},
 	"prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
 	"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
@@ -277,8 +278,6 @@
 		}
 	},
 	"search": {
-		"page": "seite",
-		"search": "suche",
 		"infopage": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link.",
 		"infosearch": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link oder $2 für eine Liste mit allen Treffern.",
 		"category": {
@@ -324,75 +323,200 @@
 		"noadmin": "du benötigst die `Server verwalten`-Berechtigung für diese Befehle!",
 		"pause": "**Ich bin auf diesem Server derzeit pausiert!**\nNur diese Befehle können ausgeführt werden:",
 		"footer": "Falls du ein ungewolltes Ergebnis bekommen hast, kannst du mit 🗑️ auf meine Nachricht reagieren und ich werde sie löschen.",
-		"list": [
-			{ "cmd": "<Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki.", "unsearchable": true },
-			{ "cmd": "[[<Seitenname>]]", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "{{<Seitenname>}}", "desc": "Ich antworte mit einem Link zu der angegebenen Seite im Wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "!<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`", "unsearchable": true },
-			{ "cmd": "?<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Fandom-Wiki: `https://<Wiki>.fandom.com/`", "unsearchable": true },
-			{ "cmd": "??<Wiki> <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wikia-Wiki: `https://<Wiki>.wikia.org/`", "unsearchable": true },
-			{ "cmd": "Benutzer:<Benutzername>", "desc": "Ich liste ein paar Informationen über den Benutzer auf.", "unsearchable": true },
-			{ "cmd": "diff <diff> [<oldid>]", "desc": "Ich verlinke auf die Änderung im Wiki." },
-			{ "cmd": "diff <Seitenname>", "desc": "Ich verlinke auf die letzte Änderung an der Seite im Wiki." },
-			{ "cmd": "zufall", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki." },
-			{ "cmd": "random", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki.", "hide": true },
-			{ "cmd": "🎲", "desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki.", "hide": true },
-			{ "cmd": "übersicht", "desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf." },
-			{ "cmd": "overview", "desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf.", "hide": true },
-			{ "cmd": "/<Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "unsearchable": true, "minecraft": true },
-			{ "cmd": "befehl <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
-			{ "cmd": "command <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
-			{ "cmd": "cmd <Minecraft-Befehl>", "desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki.", "hide": true, "minecraft": true },
-			{ "cmd": "fehler <Minecraft-Fehler>", "desc": "Ich verlinke auf den Fehler im Minecraft-Bugtracker.", "minecraft": true },
-			{ "cmd": "bug <Minecraft-Fehler>", "desc": "Ich verlinke auf den Fehler im Minecraft-Bugtracker.", "hide": true, "minecraft": true },
-			{ "cmd": "seite <Seitenname>", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki.", "hide": true },
-			{ "cmd": "page <Seitenname>", "desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki.", "hide": true },
-			{ "cmd": "suche <Suchbegriff>", "desc": "Ich antworte mit einem direkten Link auf die Suchseite zu diesem Begriff im Wiki.", "hide": true },
-			{ "cmd": "search <Suchbegriff>", "desc": "Ich antworte mit einem direkten Link auf die Suchseite zu diesem Begriff im Wiki.", "hide": true },
-			{ "cmd": "diskussion <Suchbegriff>", "desc": "Ich antworte mit einem Link auf ein passendes Diskussionsthema im Fandom-Wiki.", "fandom": true },
-			{ "cmd": "discussion <Suchbegriff>", "desc": "Ich antworte mit einem Link auf ein passendes Diskussionsthema im Fandom-Wiki.", "hide": true, "fandom": true },
-			{ "cmd": "diskussion post <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Diskussionsbeitrag im Fandom-Wiki.", "fandom": true },
-			{ "cmd": "discussion post <Suchbegriff>", "desc": "Ich antworte mit einem Link auf einen passenden Diskussionsbeitrag im Fandom-Wiki.", "hide": true, "fandom": true },
-			{ "cmd": "info", "desc": "Ich erzähle etwas über mich." },
-			{ "cmd": "hilfe", "desc": "Ich liste alle Befehle auf." },
-			{ "cmd": "hilfe <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert." },
-			{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf." },
-			{ "cmd": "hilfe admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "unsearchable": true, "admin": true },
-			{ "cmd": "help", "desc": "Ich liste alle Befehle auf.", "hide": true },
-			{ "cmd": "help <Bot-Befehl>", "desc": "Frage mich, wie ein Befehl funktioniert.", "hide": true },
-			{ "cmd": "help admin", "desc": "Ich liste alle Befehle für Administratoren auf.", "hide": true },
-			{ "cmd": "settings", "desc": "Ich ändere die Einstellungen für diesen Server.", "admin": true, "pause": true },
-			{ "cmd": "settings lang <Sprache>", "desc": "Ich ändere die Sprache für diesen Server.", "hide": true, "admin": true },
-			{ "cmd": "settings prefix <Präfix>", "desc": "Ich ändere das Präfix für diesen Server.", "hide": true, "admin": true, "patreon": true },
-			{ "cmd": "settings inline toggle", "desc": "Ich schalte Inline-Befehle für diesen Server um.", "hide": true, "admin": true },
-			{ "cmd": "settings wiki <Wiki>", "desc": "Ich ändere das Standard-Wiki für diesen Server.", "hide": true, "admin": true },
-			{ "cmd": "settings channel", "desc": "Ich ändere die Überschreibungen für den aktuellen Kanal.", "hide": true, "admin": true },
-			{ "cmd": "verify <Wiki-Benutzername>", "desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten.", "hide": true },
-			{ "cmd": "verification", "desc": "Ich ändere die Wiki-Verifizierungen, die von dem `@prefixverify`-Befehl genutzt werden.", "admin": true, "pause": true },
-			{ "cmd": "hilfe verification", "desc": "Ich erkläre genauer wie der Verifizierungs-Befehl funktioniert.", "admin": true },
-			{ "cmd": "help verification", "desc": "Ich erkläre genauer wie der Verifizierungs-Befehl funktioniert.", "hide": true, "admin": true },
-			{ "cmd": "verification add <Rolle>", "desc": "Ich füge eine neue Wiki-Verifizierung hinzu. Akzeptiert eine durch `|` getrennte Liste.", "hide": true, "admin": true },
-			{ "cmd": "verification <ID> channel <neuer Kanal>", "desc": "Ich ändere den Kanal für die Wiki-Verifizierung. Akzeptiert eine durch `|` getrennte Liste.", "hide": true, "admin": true },
-			{ "cmd": "verification <ID> role <neue Rolle>", "desc": "Ich ändere die Rolle für die Wiki-Verifizierung. Akzeptiert eine durch `|` getrennte Liste.", "hide": true, "admin": true },
-			{ "cmd": "verification <ID> editcount <neues Bearbeitungslimit>", "desc": "Ich ändere das Bearbeitunglimit für die Wiki-Verifizierung.", "hide": true, "admin": true },
-			{ "cmd": "verification <ID> usergroup <neue Benutzergruppe>", "desc": "Ich ändere die Benutzergruppe für die Wiki-Verifizierung. Akzeptiert eine durch `|` getrennte Liste.\n\t• Gib `AND` als ersten Eintrag in der Liste an um alle angegebenen Benutzergruppen zu benötigen.", "hide": true, "admin": true },
-			{ "cmd": "verification <ID> accountage <neues Account-Alter>", "desc": "Ich ändere das Account-Alter für die Wiki-Verifizierung.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> rename", "desc": "Ich ändere ob der Discord-Nickname des Benutzers zu deren Wiki-Benutzernamen geändert werden soll für die Wiki-Verifizierung.", "hide": true, "admin": true },
-			{ "cmd": "verification <ID> delete", "desc": "Ich lösche die Wiki-Verifizierung.", "hide": true, "admin": true },
-			{ "cmd": "voice", "desc": "Ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:", "admin": true, "pause": true },
-			{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server alle Befehle ignorieren, abgesehen von ein paar Befehlen für Administratoren.", "admin": true },
-			{ "cmd": "pause @mention", "desc": "Ich werde auf diesem Server wieder auf alle Befehle reagieren.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "test", "desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht.", "pause": true }
-		]
+		"list": {
+			"default": {
+				"cmd": "<Suchbegriff>",
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki."
+			},
+			"inline": {
+				"link": {
+					"cmd": "[[<Seitenname>]]",
+					"desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki."
+				},
+				"template": {
+					"cmd": "{{<Seitenname>}}",
+					"desc": "Ich antworte mit einem Link zu der angegebenen Seite im Wiki."
+				}
+			},
+			"gamepedia": {
+				"cmd": "!<Wiki> <Suchbegriff>",
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`"
+			},
+			"fandom": {
+				"cmd": "?<Wiki> <Suchbegriff>",
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Fandom-Wiki: `https://<Wiki>.fandom.com/`"
+			},
+			"wikia": {
+				"cmd": "??<Wiki> <Suchbegriff>",
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wikia-Wiki: `https://<Wiki>.wikia.org/`"
+			},
+			"user": {
+				"cmd": "Benutzer:<Benutzername>",
+				"desc": "Ich liste ein paar Informationen über den Benutzer auf."
+			},
+			"overview": {
+				"cmd": "overview",
+				"desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf."
+			},
+			"random": {
+				"cmd": "random",
+				"desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki."
+			},
+			"diff": {
+				"id": {
+					"cmd": "diff <diff> [<oldid>]",
+					"desc": "Ich verlinke auf die Änderung im Wiki."
+				},
+				"name": {
+					"cmd": "diff <Seitenname>",
+					"desc": "Ich verlinke auf die letzte Änderung an der Seite im Wiki."
+				}
+			},
+			"page": {
+				"cmd": "page <Seitenname>",
+				"desc": "Ich antworte mit einem direkten Link zu der angegebenen Seite im Wiki."
+			},
+			"search": {
+				"cmd": "search <Suchbegriff>",
+				"desc": "Ich antworte mit einem direkten Link auf die Suchseite zu diesem Begriff im Wiki."
+			},
+			"minecraft": {
+				"default": {
+					"cmd": "/<Minecraft-Befehl>",
+					"desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki."
+				},
+				"command": {
+					"cmd": "command <Minecraft-Befehl>",
+					"desc": "Ich antworte mit der Syntax des angegebenen Minecraft-Befehls und einem Link auf den Artikel zu diesem Befehl im Minecraft Wiki."
+				},
+				"bug": {
+					"cmd": "bug <Minecraft-Fehler>",
+					"desc": "Ich verlinke auf den Fehler im Minecraft-Bugtracker."
+				}
+			},
+			"discussion": {
+				"thread": {
+					"cmd": "discussion <Suchbegriff>",
+					"desc": "Ich antworte mit einem Link auf ein passendes Diskussionsthema im Fandom-Wiki."
+				},
+				"post": {
+					"cmd": "discussion post <Suchbegriff>",
+					"desc": "Ich antworte mit einem Link auf einen passenden Diskussionsbeitrag im Fandom-Wiki."
+				}
+			},
+			"info": {
+				"cmd": "info",
+				"desc": "Ich erzähle etwas über mich."
+			},
+			"help": {
+				"default": {
+					"cmd": "help",
+					"desc": "Ich liste alle Befehle auf."
+				},
+				"command": {
+					"cmd": "help <Bot-Befehl>",
+					"desc": "Frage mich, wie ein Befehl funktioniert."
+				},
+				"admin": {
+					"cmd": "help admin",
+					"desc": "Ich liste alle Befehle für Administratoren auf."
+				},
+				"verification": {
+					"cmd": "help verification",
+					"desc": "Ich erkläre genauer wie der Verifizierungs-Befehl funktioniert."
+				}
+			},
+			"settings": {
+				"default": {
+					"cmd": "settings",
+					"desc": "Ich ändere die Einstellungen für diesen Server."
+				},
+				"wiki": {
+					"cmd": "settings wiki <Wiki>",
+					"desc": "Ich ändere das Standard-Wiki für diesen Server."
+				},
+				"lang": {
+					"cmd": "settings lang <Sprache>",
+					"desc": "Ich ändere die Sprache für diesen Server."
+				},
+				"inline": {
+					"cmd": "settings inline toggle",
+					"desc": "Ich schalte Inline-Befehle für diesen Server um."
+				},
+				"prefix": {
+					"cmd": "settings prefix <Präfix>",
+					"desc": "Ich ändere das Präfix für diesen Server."
+				},
+				"channel": {
+					"cmd": "settings channel",
+					"desc": "Ich ändere die Überschreibungen für den aktuellen Kanal."
+				}
+			},
+			"verify": {
+				"cmd": "verify <Wiki-Benutzername>",
+				"desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
+			},
+			"verification": {
+				"default": {
+					"cmd": "verification",
+					"desc": "Ich ändere die Wiki-Verifizierungen, die von dem `$1verify`-Befehl genutzt werden."
+				},
+				"add": {
+					"cmd": "verification add <Rolle>",
+					"desc": "Ich füge eine neue Wiki-Verifizierung hinzu. Akzeptiert eine durch `|` getrennte Liste."
+				},
+				"channel": {
+					"cmd": "verification <ID> channel <neuer Kanal>",
+					"desc": "Ich ändere den Kanal für die Wiki-Verifizierung. Akzeptiert eine durch `|` getrennte Liste."
+				},
+				"role": {
+					"cmd": "verification <ID> role <neue Rolle>",
+					"desc": "Ich ändere die Rolle für die Wiki-Verifizierung. Akzeptiert eine durch `|` getrennte Liste."
+				},
+				"editcount": {
+					"cmd": "verification <ID> editcount <neues Bearbeitungslimit>",
+					"desc": "Ich ändere das Bearbeitunglimit für die Wiki-Verifizierung."
+				},
+				"usergroup": {
+					"cmd": "verification <ID> usergroup <neue Benutzergruppe>",
+					"desc": "Ich ändere die Benutzergruppe für die Wiki-Verifizierung. Akzeptiert eine durch `|` getrennte Liste.\n\t• Gib `AND` als ersten Eintrag in der Liste an um alle angegebenen Benutzergruppen zu benötigen."
+				},
+				"accountage": {
+					"cmd": "verification <ID> accountage <neues Account-Alter>",
+					"desc": "Ich ändere das Account-Alter für die Wiki-Verifizierung."
+				},
+				"rename": {
+					"cmd": "verification <id> rename",
+					"desc": "Ich ändere ob der Discord-Nickname des Benutzers zu deren Wiki-Benutzernamen geändert werden soll für die Wiki-Verifizierung."
+				},
+				"delete": {
+					"cmd": "verification <ID> delete",
+					"desc": "Ich lösche die Wiki-Verifizierung."
+				}
+			},
+			"voice": {
+				"cmd": "voice",
+				"desc": "Ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:"
+			},
+			"pause": {
+				"inactive": {
+					"cmd": "pause $1",
+					"desc": "Ich werde auf diesem Server alle Befehle ignorieren, abgesehen von ein paar Befehlen für Administratoren."
+				},
+				"active": {
+					"cmd": "pause $1",
+					"desc": "Ich werde auf diesem Server wieder auf alle Befehle reagieren."
+				}
+			},
+			"test": {
+				"cmd": "test",
+				"desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht."
+			}
+		}
 	},
 	"minecraft": {
 		"link": "https://minecraft-de.gamepedia.com/",
 		"cmdpage": "Befehl/",
-		"aliases": {
-			"cmd": "command",
-			"befehl": "command",
-			"fehler": "bug"
-		},
 		"private": "**Privater Fehler**",
 		"fixed": "Lösungsversion:",
 		"more": "Und $1 {{PLURAL:$1|mehr}}.",

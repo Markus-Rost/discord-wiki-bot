@@ -1,3 +1,11 @@
+/**
+ * Processes the "pause" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_pause(lang, msg, args, line, wiki) {
 	if ( msg.channel.type === 'text' && args.join(' ').split('\n')[0].isMention(msg.guild) && ( msg.isAdmin() || msg.isOwner() ) ) {
 		if ( pause[msg.guild.id] ) {

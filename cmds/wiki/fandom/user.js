@@ -3,6 +3,20 @@ const {MessageEmbed} = require('discord.js');
 const global_block = require('../../../functions/global_block.js');
 const {timeoptions, usergroups} = require('../../../util/default.json');
 
+/**
+ * Processes a Fandom user.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} namespace - The user namespace on the wiki.
+ * @param {String} username - The name of the user.
+ * @param {String} wiki - The wiki for the page.
+ * @param {String} querystring - The querystring for the link.
+ * @param {String} fragment - The section for the link.
+ * @param {Object} querypage - The user page on the wiki.
+ * @param {String} contribs - The contributions page on the wiki.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
 		got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
@@ -335,6 +349,11 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 	}
 }
 
+/**
+ * Change HTML text to plain text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
 function htmlToPlain(html) {
 	var text = '';
 	var parser = new htmlparser.Parser( {

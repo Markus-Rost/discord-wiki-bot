@@ -1,8 +1,21 @@
 const commands = require('./commands.json');
 
-function minecraft_syntax(lang, msg, befehl, args, title, cmd, querystring, fragment, reaction, spoiler) {
-	befehl = befehl.toLowerCase();
-	var aliasCmd = ( commands.aliases[befehl] || befehl );
+/**
+ * Sends a Minecraft command.
+ * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} mccmd - The Minecraft command argument.
+ * @param {String[]} args - The command arguments.
+ * @param {String} title - The page title.
+ * @param {String} cmd - The command at this point.
+ * @param {String} querystring - The querystring for the link.
+ * @param {String} fragment - The section for the link.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
+function minecraft_syntax(lang, msg, mccmd, args, title, cmd, querystring, fragment, reaction, spoiler) {
+	mccmd = mccmd.toLowerCase();
+	var aliasCmd = ( commands.aliases[mccmd] || mccmd );
 	
 	if ( aliasCmd in commands.list ) {
 		var cmdSyntaxMap = commands.list[aliasCmd].map( command => {
@@ -20,7 +33,7 @@ function minecraft_syntax(lang, msg, befehl, args, title, cmd, querystring, frag
 		var lastIndex = Math.max(...cmdSyntaxMap.map( command => command[0] ));
 		var matchCount = Math.max(...cmdSyntaxMap.filter( command => command[0] === lastIndex ).map( command => command[1] ));
 		var regex = new RegExp('/' + aliasCmd, 'g');
-		var cmdSyntax = commands.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + befehl );
+		var cmdSyntax = commands.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + mccmd );
 		msg.sendChannel( spoiler + '```md\n' + cmdSyntax + '```<' + lang.get('minecraft.link') + lang.get('minecraft.cmdpage') + aliasCmd + '>' + spoiler, {split:{maxLength:2000,prepend:spoiler + '```md\n',append:'```' + spoiler}} );
 		if ( reaction ) reaction.removeEmoji();
 	}

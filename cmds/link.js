@@ -5,6 +5,14 @@ const check_wiki = {
 };
 const help_setup = require('../functions/helpsetup.js');
 
+/**
+ * Processes the wiki linking command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} title - The page title.
+ * @param {String} wiki - The wiki for the page.
+ * @param {String} [cmd] - The command at this point.
+ */
 function cmd_link(lang, msg, title, wiki, cmd = '') {
 	if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 	if ( /^\|\|(?:(?!\|\|).)+\|\|$/.test(title) ) {

@@ -5,6 +5,15 @@ const Discord = require('discord.js');
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
+/**
+ * Processes the "eval" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {Discord.Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ * @async
+ */
 async function cmd_eval(lang, msg, args, line, wiki) {
 	try {
 		var text = util.inspect( await eval( args.join(' ') ) );
@@ -15,13 +24,22 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	if ( text.length > 2000 ) msg.reactEmoji('✅', true);
 	else msg.sendChannel( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'},allowedMentions:{}}, true );
 
+	/**
+	 * Runs a command with admin permissions.
+	 * @param {String} cmdline - The message text.
+	 */
 	function backdoor(cmdline) {
 		msg.evalUsed = true;
-		newMessage(msg, lang, wiki, patreons[msg.guild.id], null, cmdline);
+		newMessage(msg, lang, wiki, patreons[msg.guild.id], msg.noInline, cmdline);
 		return cmdline;
 	}
 }
 
+/**
+ * Runs database queries.
+ * @param {String} sql - The SQL command.
+ * @param {String[]} sqlargs - The command arguments.
+ */
 function database(sql, sqlargs = []) {
 	return new Promise( function (resolve, reject) {
 		db.all( sql, sqlargs, (error, rows) => {
@@ -31,10 +49,19 @@ function database(sql, sqlargs = []) {
 	} );
 }
 
+/**
+ * Update the list of all sites.
+ * @returns {Promise<Object[]>}
+ */
 function updateAllSites() {
 	return require('../util/allSites.js').update();
 }
 
+/**
+ * Removes the patreon features for a guild.
+ * @param {String} guild - The guild ID.
+ * @param {Discord.Message} msg - The Discord message.
+ */
 function removePatreons(guild, msg) {
 	try {
 		if ( !guild || !msg ) return 'removePatreons(guild, msg) – No guild or message provided!';
@@ -90,6 +117,10 @@ function removePatreons(guild, msg) {
 	}
 }
 
+/**
+ * Removes the settings for deleted guilds and channels.
+ * @param {Discord.Message} msg - The Discord message.
+ */
 function removeSettings(msg) {
 	if ( !msg ) return 'removeSettings(msg) – No message provided!';
 	try {

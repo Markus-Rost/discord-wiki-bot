@@ -9,6 +9,10 @@ var db = new sqlite3.Database( './wikibot.db', sqlite3.OPEN_READWRITE | sqlite3.
 	getSettings();
 } );
 
+/**
+ * Fill the patreon list.
+ * @param {Number} [trysettings] - The amount of tries.
+ */
 function getSettings(trysettings = 1) {
 	db.each( 'SELECT guild, prefix FROM discord WHERE patreon IS NOT NULL', [], (dberror, row) => {
 		if ( dberror ) {
@@ -112,6 +116,10 @@ function getSettings(trysettings = 1) {
 	} );
 }
 
+/**
+ * Fill the voice list.
+ * @param {Number} [trysettings] - The amount of tries.
+ */
 function getVoice(trysettings = 1) {
 	db.each( 'SELECT guild, lang FROM discord WHERE voice IS NOT NULL', [], (dberror, row) => {
 		if ( dberror ) {

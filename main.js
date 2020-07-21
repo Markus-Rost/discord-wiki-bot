@@ -17,7 +17,7 @@ const manager = new ShardingManager( './bot.js', {
 
 var diedShards = 0;
 manager.on( 'shardCreate', shard => {
-	console.log( `\n- Shard[${shard.id}]: Launched` );
+	console.log( `- Shard[${shard.id}]: Launched` );
 	
 	shard.on( 'spawn', message => {
 		console.log( `- Shard[${shard.id}]: Spawned` );
@@ -61,6 +61,11 @@ manager.spawn().then( shards => {
 	manager.respawnAll();
 } );
 
+/**
+ * Post bot statistics to bot lists.
+ * @param {Object} botList - The list of bot lists to post to.
+ * @param {Number} shardCount - The total number of shards.
+ */
 function postStats(botList = JSON.parse(process.env.botlist), shardCount = manager.totalShards) {
 	manager.fetchClientValues('guilds.cache.size').then( results => {
 		var guildCount = results.reduce( (acc, val) => acc + val, 0 );
@@ -91,6 +96,10 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 }
 
 
+/**
+ * End the process gracefully.
+ * @param {String} signal - The signal received.
+ */
 async function graceful(signal) {
 	console.log( '- ' + signal + ': Disabling respawn...' );
 	manager.respawn = false;

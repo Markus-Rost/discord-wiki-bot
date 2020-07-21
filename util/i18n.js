@@ -2,13 +2,47 @@ const {defaultSettings} = require('./default.json');
 var i18n = require('../i18n/allLangs.json');
 Object.keys(i18n.allLangs.names).forEach( lang => i18n[lang] = require('../i18n/' + lang + '.json') );
 
+const defaultAliases = ( i18n?.[defaultSettings.lang]?.aliases || {} );
+
+/**
+ * A langauge.
+ * @class
+ */
 class Lang {
+	/**
+	 * Creates a new language.
+	 * @param {String} [lang] - The language code.
+	 * @param {String} [namespace] - The namespace for the language.
+	 * @constructs Lang
+	 */
 	constructor(lang = defaultSettings.lang, namespace = '') {
 		this.lang = lang;
 		this.namespace = namespace;
-		this.fallback = ( i18n?.[lang]?.fallback || [] );
+		this.fallback = ( i18n?.[lang]?.fallback.slice() || [] );
+
+		this.localNames = {};
+		this.aliases = {};
+		let aliases = ( i18n?.[lang]?.aliases || {} );
+		Object.keys(aliases).forEach( cmd => {
+			if ( !( cmd in this.localNames ) ) this.localNames[cmd] = aliases[cmd][0];
+			aliases[cmd].forEach( alias => {
+				if ( !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+			} );
+		} );
+		Object.keys(defaultAliases).forEach( cmd => {
+			if ( !( cmd in this.localNames ) ) this.localNames[cmd] = defaultAliases[cmd][0];
+			defaultAliases[cmd].forEach( alias => {
+				if ( !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+			} );
+		} );
 	}
 
+	/**
+	 * Get a localized message.
+	 * @param {String} message - Name of the message.
+	 * @param {String[]} args - Arguments for the message.
+	 * @returns {String}
+	 */
 	get(message = '', ...args) {
 		if ( this.namespace.length ) message = this.namespace + '.' + message;
 		let keys = ( message.length ? message.split('.') : [] );
@@ -45,6 +79,13 @@ class Lang {
 	}
 }
 
+/**
+ * Parse plural text.
+ * @param {String} lang - The language code.
+ * @param {Number} number - The amount.
+ * @param {String[]} args - The possible text.
+ * @returns {String}
+ */
 function plural(lang, number, args) {
 	var text = args[args.length - 1];
 	switch ( lang ) {
@@ -85,6 +126,12 @@ function plural(lang, number, args) {
 	return text;
 }
 
+/**
+ * Get text option.
+ * @param {String[]} args - The list of options.
+ * @param {Number} index - The preferred option.
+ * @returns {String}
+ */
 function getArg(args, index) {
 	return ( args.length > index ? args[index] : args[args.length - 1] );
 }

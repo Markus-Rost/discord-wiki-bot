@@ -2,6 +2,16 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const {limit: {discussion: discussionLimit}} = require('../util/default.json');
 
+/**
+ * Processes discussion commands.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} wiki - The wiki for the page.
+ * @param {String} title - The title of the discussion post.
+ * @param {Object} query - The siteinfo from the wiki.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 	var limit = discussionLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
 	if ( !title ) {
@@ -261,6 +271,15 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 	}
 }
 
+/**
+ * Send discussion posts.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} wiki - The wiki for the page.
+ * @param {Object} discussion - The discussion post.
+ * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 	if ( discussion.title ) {
 		embed.setTitle( discussion.title.escapeFormatting() );
@@ -344,6 +363,11 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 	msg.sendChannel( spoiler + text + spoiler, {embed} );
 }
 
+/**
+ * Format discussion content
+ * @param {Object} jsonModel - The content of the discussion post.
+ * @returns {String}
+ */
 function discussion_formatting(jsonModel) {
 	var description = '';
 	switch ( jsonModel.type ) {

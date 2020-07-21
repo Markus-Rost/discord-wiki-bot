@@ -1,6 +1,14 @@
 const {MessageEmbed} = require('discord.js');
 const help_setup = require('../functions/helpsetup.js');
 
+/**
+ * Processes the "test" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
 		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);

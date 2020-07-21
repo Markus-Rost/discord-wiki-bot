@@ -1,3 +1,9 @@
+/**
+ * Get the description for a page.
+ * @param {String} [text] - The full page extract.
+ * @param {String} [fragment] - The section title.
+ * @returns {String[]}
+ */
 function extract_desc(text = '', fragment = '') {
 	var sectionIndex = text.indexOf('\ufffd\ufffd');
 	var extract = ( sectionIndex !== -1 ? text.substring(0, sectionIndex) : text ).trim().escapeFormatting();
@@ -41,6 +47,12 @@ function extract_desc(text = '', fragment = '') {
 	return [extract, sectionHeader, sectionText];
 }
 
+/**
+ * Format section title.
+ * @param {String} title - The section title.
+ * @param {String} n - The header level.
+ * @returns {String}
+ */
 function section_formatting(title, n) {
 	switch ( n ) {
 		case '1':

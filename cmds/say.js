@@ -1,3 +1,11 @@
+/**
+ * Processes the "say" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_say(lang, msg, args, line, wiki) {
 	var text = args.join(' ');
 	var imgs = [];

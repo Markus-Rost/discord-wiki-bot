@@ -2,6 +2,16 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const {timeoptions} = require('../../../util/default.json');
 
+/**
+ * Processes a Gamepedia edit.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} wiki - The wiki for the edit.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ * @param {MessageEmbed} [embed] - The embed for the page.
+ */
 function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 	if ( args[0] ) {
 		var error = false;
@@ -202,6 +212,16 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 	}
 }
 
+/**
+ * Sends a Gamepedia edit.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} wiki - The wiki for the edit.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ * @param {String[]} [compare] - The edit difference.
+ */
 function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) {
 	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
 		responseType: 'json'
@@ -442,6 +462,11 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 	} );
 }
 
+/**
+ * Change HTML text to plain text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
 function htmlToPlain(html) {
 	var text = '';
 	var parser = new htmlparser.Parser( {

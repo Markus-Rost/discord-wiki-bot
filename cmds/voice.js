@@ -1,6 +1,14 @@
 const {defaultSettings} = require('../util/default.json');
 var db = require('../util/database.js');
 
+/**
+ * Processes the "voice" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_voice(lang, msg, args, line, wiki) {
 	if ( msg.isAdmin() ) {
 		if ( !args.join('') ) {

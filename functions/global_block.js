@@ -1,6 +1,16 @@
 const cheerio = require('cheerio');
 const {timeoptions} = require('../util/default.json');
 
+/**
+ * Add global blocks to user messages.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} username - The name of the user.
+ * @param {String} text - The text of the response.
+ * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
+ * @param {String} wiki - The wiki for the page.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 	if ( !msg || msg.channel.type !== 'text' || !( msg.guild.id in patreons ) ) return;
 	

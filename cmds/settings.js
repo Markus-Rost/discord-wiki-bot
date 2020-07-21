@@ -8,6 +8,14 @@ var allSites = [];
 const getAllSites = require('../util/allSites.js');
 getAllSites.then( sites => allSites = sites );
 
+/**
+ * Processes the "settings" command.
+ * @param {Lang} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !allSites.length ) getAllSites.update();
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
@@ -333,6 +341,10 @@ function cmd_settings(lang, msg, args, line, wiki) {
 	} );
 }
 
+/**
+ * Turn user input into a wiki.
+ * @param {String} input - The user input referring to a wiki.
+ */
 function input_to_wiki(input) {
 	var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
 	if ( regex ) return 'https://' + regex[1] + '/';

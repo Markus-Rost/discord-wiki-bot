@@ -7,13 +7,11 @@
 	],
 	"dateformat": "tr-TR",
 	"aliases": {
-		"bilgi": "info",
-		"yardım": "help",
-		"sayfa": "page",
-		"arama": "search",
-		"🎲": "random",
-		"discussions": "discussion",
-		"tartışma": "discussion"
+		"info": ["bilgi"],
+		"help": ["yardım"],
+		"page": ["sayfa"],
+		"search": ["arama"],
+		"discussion": ["tartışma"]
 	},
 	"prefix": "sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`.",
 	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
@@ -172,8 +170,6 @@
 		}
 	},
 	"search": {
-		"page": "sayfa",
-		"search": "arama",
 		"infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1 kullan.",
 		"infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1, tüm isabetlerin listesi için $2 kullan.",
 		"category": {
@@ -213,70 +209,140 @@
 		"noadmin": "Bu komutlar için `Sunucuyu Yönetme` iznine ihtiyacınız var!",
 		"pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:",
 		"footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑️ ile tepki verin, mesajı sileceğim.",
-		"list": [
-			{ "cmd": "<arama terimi>", "desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim.", "unsearchable": true },
-			{ "cmd": "[[<sayfa adı>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "{{<sayfa adı>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "!<wiki> <arama terimi>", "desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
-			{ "cmd": "?<wiki> <arama terimi>", "desc": "Belirtilen Fandom Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.fandom.com/`", "unsearchable": true },
-			{ "cmd": "??<wiki> <arama terimi>", "desc": "Belirtilen Wikia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.wikia.org/`", "unsearchable": true },
-			{ "cmd": "Kullanıcı:<kullanıcıadı>", "desc": "Kullanıcı hakkında bazı bilgileri göstereceğim.", "unsearchable": true },
-			{ "cmd": "diff <diff> [<oldid>]", "desc": "Wikideki farkların bağlantısıyla cevap vereceğim." },
-			{ "cmd": "diff <sayfa adı>", "desc": "Wikideki son farkın bağlantısıyla cevap vereceğim." },
-			{ "cmd": "random", "desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim." },
-			{ "cmd": "🎲", "desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim.", "hide": true },
-			{ "cmd": "overview", "desc": "Wiki ile ilgili bazı bilgileri ve istatistikleri göstereceğim." },
-			{ "cmd": "/<Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "unsearchable": true, "minecraft": true },
-			{ "cmd": "command <Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "hide": true, "minecraft": true },
-			{ "cmd": "cmd <Minecraft komutu>", "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim.", "hide": true, "minecraft": true },
-			{ "cmd": "bug <Minecraft hata>", "desc": "Hatanın Minecraft hata bulucusu'ndaki bağlantısıyla cevap vereceğim.", "minecraft": true },
-			{ "cmd": "sayfa <sayfa adı>", "desc": "Makalenin wikideki bağlantısıyla cevap vereceğim.", "hide": true },
-			{ "cmd": "page <sayfa adı>", "desc": "Makalenin wikideki bağlantısıyla cevap vereceğim.", "hide": true },
-			{ "cmd": "arama <arama terimi>", "desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim.", "hide": true },
-			{ "cmd": "search <arama terimi>", "desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim.", "hide": true },
-			{ "cmd": "tartışma <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim.", "fandom": true },
-			{ "cmd": "discussion <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim.", "hide": true, "fandom": true },
-			{ "cmd": "tartışma gönderisi <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma gönderisinin bağlantısıyla cevap vereceğim.", "fandom": true },
-			{ "cmd": "discussion post <arama terimi>", "desc": "Fandom Wikideki eşleşen tartışma gönderisinin bağlantısıyla cevap vereceğim.", "hide": true, "fandom": true },
-			{ "cmd": "bilgi", "desc": "Kendimi tanıtacağım." },
-			{ "cmd": "info", "desc": "Kendimi tanıtacağım.", "hide": true },
-			{ "cmd": "yardım", "desc": "Anladığım tüm komutları listeleyeceğim." },
-			{ "cmd": "yardım <bot komutu>", "desc": "Bir komut nasıl çalışıyor biliyor musun? Sana açıklayayım!" },
-			{ "cmd": "yardım admin", "desc": "Tüm yönetici komutlarını listeleyeceğim." },
-			{ "cmd": "yardım admin", "desc": "Tüm yönetici komutlarını listeleyeceğim.", "unsearchable": true, "admin": true },
-			{ "cmd": "help", "desc": "Anladığım tüm komutları listeleyeceğim.", "hide": true },
-			{ "cmd": "help <bot komutu>", "desc": "Bir komut nasıl çalışıyor biliyor musun? Sana açıklayayım!", "hide": true },
-			{ "cmd": "help admin", "desc": "Tüm yönetici komutlarını listeleyeceğim.", "hide": true },
-			{ "cmd": "settings", "desc": "Bu sunucunun ayarlarını değiştireceğim.", "admin": true, "pause": true },
-			{ "cmd": "settings lang <dil>", "desc": "Bu sunucunun dilini değiştireceğim.", "hide": true, "admin": true },
-			{ "cmd": "settings prefix <önek>", "desc": "Sunucudaki öneki değiştireceğim.", "hide": true, "admin": true, "patreon": true },
-			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
-			{ "cmd": "settings wiki <wiki>", "desc": "Bu sunucunun varsayılan wikisini değiştireceğim.", "hide": true, "admin": true },
-			{ "cmd": "settings channel", "desc": "Mevcut kanalın kanala özel ayarlarını değiştireceğim.", "hide": true, "admin": true },
-			{ "cmd": "verify <wiki username>", "desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account.", "hide": true },
-			{ "cmd": "verification", "desc": "I will change the wiki verifications used by the `@prefixverify` command.", "admin": true, "pause": true },
-			{ "cmd": "yardım verification", "desc": "I will explain in more detail how the verification command works.", "admin": true },
-			{ "cmd": "help verification", "desc": "I will explain in more detail how the verification command works.", "hide": true, "admin": true },
-			{ "cmd": "verification add <role>", "desc": "I will add a new wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> channel <new channel>", "desc": "I will update the channel for the wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> role <new role>", "desc": "I will update the role for the wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> editcount <new edit count>", "desc": "I will update the minimal edit count for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> usergroup <new user group>", "desc": "I will update the user group for the wiki verification. Accepts a `|` separated list.\n\t• Provide `AND` as the first list entry to make all provided user groups required.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> accountage <new account age>", "desc": "I will update the minimal account age (in days) for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> rename", "desc": "I will change if the users Discord nickname should be changed to their wiki username for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> delete", "desc": "I will delete the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "voice", "desc": "Sesli kanalda bulunan kişilere belirli bir rol vermeye çalışacağım.", "admin": true, "pause": true },
-			{ "cmd": "pause @mention", "desc": "Birkaç admin komutu haricinde, bu sunucudaki bütün komutları yok sayacağım.", "admin": true },
-			{ "cmd": "pause @mention", "desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "test", "desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem.", "pause": true }
-		]
+		"list": {
+			"default": {
+				"cmd": "<arama terimi>",
+				"desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim."
+			},
+			"gamepedia": {
+				"cmd": "!<wiki> <arama terimi>",
+				"desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`"
+			},
+			"fandom": {
+				"cmd": "?<wiki> <arama terimi>",
+				"desc": "Belirtilen Fandom Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.fandom.com/`"
+			},
+			"wikia": {
+				"cmd": "??<wiki> <arama terimi>",
+				"desc": "Belirtilen Wikia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.wikia.org/`"
+			},
+			"user": {
+				"cmd": "Kullanıcı:<kullanıcıadı>",
+				"desc": "Kullanıcı hakkında bazı bilgileri göstereceğim."
+			},
+			"overview": {
+				"cmd": "overview",
+				"desc": "Wiki ile ilgili bazı bilgileri ve istatistikleri göstereceğim."
+			},
+			"random": {
+				"cmd": "random",
+				"desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim."
+			},
+			"diff": {
+				"id": {
+					"cmd": "diff <diff> [<oldid>]",
+					"desc": "Wikideki farkların bağlantısıyla cevap vereceğim."
+				},
+				"name": {
+					"cmd": "diff <sayfa adı>",
+					"desc": "Wikideki son farkın bağlantısıyla cevap vereceğim."
+				}
+			},
+			"page": {
+				"cmd": "page <sayfa adı>",
+				"desc": "Makalenin wikideki bağlantısıyla cevap vereceğim."
+			},
+			"search": {
+				"cmd": "search <arama terimi>",
+				"desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim."
+			},
+			"minecraft": {
+				"default": {
+					"cmd": "/<Minecraft komutu>",
+					"desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim."
+				},
+				"command": {
+					"cmd": "command <Minecraft komutu>",
+					"desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim."
+				},
+				"bug": {
+					"cmd": "bug <Minecraft hata>",
+					"desc": "Hatanın Minecraft hata bulucusu'ndaki bağlantısıyla cevap vereceğim."
+				}
+			},
+			"discussion": {
+				"thread": {
+					"cmd": "discussion <arama terimi>",
+					"desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim."
+				},
+				"post": {
+					"cmd": "discussion gönderisi <arama terimi>",
+					"desc": "Fandom Wikideki eşleşen tartışma gönderisinin bağlantısıyla cevap vereceğim."
+				}
+			},
+			"info": {
+				"cmd": "info",
+				"desc": "Kendimi tanıtacağım."
+			},
+			"help": {
+				"default": {
+					"cmd": "help",
+					"desc": "Anladığım tüm komutları listeleyeceğim."
+				},
+				"command": {
+					"cmd": "help <bot komutu>",
+					"desc": "Bir komut nasıl çalışıyor biliyor musun? Sana açıklayayım!"
+				},
+				"admin": {
+					"cmd": "help admin",
+					"desc": "Tüm yönetici komutlarını listeleyeceğim."
+				}
+			},
+			"settings": {
+				"default": {
+					"cmd": "settings",
+					"desc": "Bu sunucunun ayarlarını değiştireceğim."
+				},
+				"wiki": {
+					"cmd": "settings wiki <wiki>",
+					"desc": "Bu sunucunun varsayılan wikisini değiştireceğim."
+				},
+				"lang": {
+					"cmd": "settings lang <dil>",
+					"desc": "Bu sunucunun dilini değiştireceğim."
+				},
+				"prefix": {
+					"cmd": "settings prefix <önek>",
+					"desc": "Sunucudaki öneki değiştireceğim."
+				},
+				"channel": {
+					"cmd": "settings channel",
+					"desc": "Mevcut kanalın kanala özel ayarlarını değiştireceğim."
+				}
+			},
+			"voice": {
+				"cmd": "voice",
+				"desc": "Sesli kanalda bulunan kişilere belirli bir rol vermeye çalışacağım."
+			},
+			"pause": {
+				"inactive": {
+					"cmd": "pause $1",
+					"desc": "Birkaç admin komutu haricinde, bu sunucudaki bütün komutları yok sayacağım."
+				},
+				"pause": {
+					"cmd": "pause $1",
+					"desc": "Bu sunucudaki tüm komutlara tekrar cevap vereceğim."
+				}
+			},
+			"test": {
+				"cmd": "test",
+				"desc": "Eğer aktifsem, cevap veririm! Aksi takdirde vermem."
+			}
+		}
 	},
 	"minecraft": {
 		"link": "https://minecraft-tr.gamepedia.com/",
 		"cmdpage": "en:Commands/",
-		"aliases": {
-			"cmd": "command"
-		},
 		"more": "Ve $1 {{PLURAL:$1|tane}} daha.",
 		"total": "$1 {{PLURAL:$1|hata}} düzeltildi"
 	}

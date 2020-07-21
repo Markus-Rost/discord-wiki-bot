@@ -7,8 +7,9 @@
 	],
 	"dateformat": "en-US",
 	"aliases": {
-		"🎲": "random",
-		"discussions": "discussion"
+		"random": ["random", "🎲"],
+		"discussion": ["discussions"],
+		"command": ["command", "cmd"]
 	},
 	"prefix": "the prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`.",
 	"missingperm": "I'm missing some permissions for this command:",
@@ -272,8 +273,6 @@
 		}
 	},
 	"search": {
-		"page": "page",
-		"search": "search",
 		"infopage": "Not the correct result? Use $1 for a direct link.",
 		"infosearch": "Not the correct result? Use $1 for a direct link or $2 for a list of all hits.",
 		"category": {
@@ -318,61 +317,200 @@
 		"noadmin": "you need the `Manage Server` permission for these commands!",
 		"pause": "**I'm currently paused on this server!**\nOnly these commands can be performed:",
 		"footer": "If you got an unwanted response, you can react with 🗑️ to my message and I will delete it.",
-		"list": [
-			{ "cmd": "<search term>", "desc": "I will answer with a link to a matching article in the wiki.", "unsearchable": true },
-			{ "cmd": "[[<page name>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "{{<page name>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "!<wiki> <search term>", "desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
-			{ "cmd": "?<wiki> <search term>", "desc": "I will answer with a link to a matching article in the named Fandom wiki: `https://<wiki>.fandom.com/`", "unsearchable": true },
-			{ "cmd": "??<wiki> <search term>", "desc": "I will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/`", "unsearchable": true },
-			{ "cmd": "User:<username>", "desc": "I will show some information about the user.", "unsearchable": true },
-			{ "cmd": "diff <diff> [<oldid>]", "desc": "I will answer with a link to the diff in the wiki." },
-			{ "cmd": "diff <page name>", "desc": "I will answer with a link to the last diff on the article in the wiki." },
-			{ "cmd": "random", "desc": "I will answer with a link to a random page in the wiki." },
-			{ "cmd": "🎲", "desc": "I will answer with a link to a random page in the wiki.", "hide": true },
-			{ "cmd": "overview", "desc": "I will show some information and statistics about the wiki." },
-			{ "cmd": "/<Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "unsearchable": true, "minecraft": true },
-			{ "cmd": "command <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
-			{ "cmd": "cmd <Minecraft command>", "desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki.", "hide": true, "minecraft": true },
-			{ "cmd": "bug <Minecraft bug>", "desc": "I will answer with a link to the bug in the Minecraft bug tracker.", "minecraft": true },
-			{ "cmd": "page <page name>", "desc": "I will answer with a direct link to the article in the wiki.", "hide": true },
-			{ "cmd": "search <search term>", "desc": "I will answer with a direct link to the search page for the article in the wiki.", "hide": true },
-			{ "cmd": "discussion <search term>", "desc": "I will answer with a link to a matching discussion thread in the Fandom wiki.", "fandom": true },
-			{ "cmd": "discussion post <search term>", "desc": "I will answer with a link to a matching discussion post in the Fandom wiki.", "fandom": true },
-			{ "cmd": "info", "desc": "I will introduce myself." },
-			{ "cmd": "help", "desc": "I will list all the commands that I understand." },
-			{ "cmd": "help <bot command>", "desc": "Wonder how a command works? Let me explain it to you!" },
-			{ "cmd": "help admin", "desc": "I will list all administrator commands." },
-			{ "cmd": "help admin", "desc": "I will list all administrator commands.", "unsearchable": true, "admin": true },
-			{ "cmd": "settings", "desc": "I will change the settings for this server.", "admin": true, "pause": true },
-			{ "cmd": "settings lang <language>", "desc": "I will change the language for this server.", "hide": true, "admin": true },
-			{ "cmd": "settings prefix <prefix>", "desc": "I will change the prefix for this server.", "hide": true, "admin": true, "patreon": true },
-			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
-			{ "cmd": "settings wiki <wiki>", "desc": "I will change the default wiki for this server.", "hide": true, "admin": true },
-			{ "cmd": "settings channel", "desc": "I will change the overwrites for the current channel.", "hide": true, "admin": true },
-			{ "cmd": "verify <wiki username>", "desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account.", "hide": true },
-			{ "cmd": "verification", "desc": "I will change the wiki verifications used by the `@prefixverify` command.", "admin": true, "pause": true },
-			{ "cmd": "help verification", "desc": "I will explain in more detail how the verification command works.", "unsearchable": true, "admin": true },
-			{ "cmd": "verification add <role>", "desc": "I will add a new wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> channel <new channel>", "desc": "I will change the channel for the wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> role <new role>", "desc": "I will change the role for the wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> editcount <new edit count>", "desc": "I will change the minimal edit count for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> usergroup <new user group>", "desc": "I will change the user group for the wiki verification. Accepts a `|` separated list.\n\t• Provide `AND` as the first list entry to make all provided user groups required.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> accountage <new account age>", "desc": "I will change the minimal account age (in days) for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> rename", "desc": "I will change if the user's Discord nickname should be changed to their wiki username for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> delete", "desc": "I will delete the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "voice", "desc": "I try to give everyone in a voice channel a specific role.", "admin": true, "pause": true },
-			{ "cmd": "pause @mention", "desc": "I will ignore all commands on this server, except a few admin commands.", "admin": true },
-			{ "cmd": "pause @mention", "desc": "I will respond to all commands on this server again.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "test", "desc": "If I'm active, I'll answer! Otherwise not.", "pause": true }
-		]
+		"list": {
+			"default": {
+				"cmd": "<search term>",
+				"desc": "I will answer with a link to a matching article in the wiki."
+			},
+			"inline": {
+				"link": {
+					"cmd": "[[<page name>]]",
+					"desc": "I will answer with a direct link to the article in the wiki."
+				},
+				"template": {
+					"cmd": "{{<page name>}}",
+					"desc": "I will answer with a link to the article in the wiki."
+				}
+			},
+			"gamepedia": {
+				"cmd": "!<wiki> <search term>",
+				"desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
+			},
+			"fandom": {
+				"cmd": "?<wiki> <search term>",
+				"desc": "I will answer with a link to a matching article in the named Fandom wiki: `https://<wiki>.fandom.com/`"
+			},
+			"wikia": {
+				"cmd": "??<wiki> <search term>",
+				"desc": "I will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/`"
+			},
+			"user": {
+				"cmd": "User:<username>",
+				"desc": "I will show some information about the user."
+			},
+			"overview": {
+				"cmd": "overview",
+				"desc": "I will show some information and statistics about the wiki."
+			},
+			"random": {
+				"cmd": "random",
+				"desc": "I will answer with a link to a random page in the wiki."
+			},
+			"diff": {
+				"id": {
+					"cmd": "diff <diff> [<oldid>]",
+					"desc": "I will answer with a link to the diff in the wiki."
+				},
+				"name": {
+					"cmd": "diff <page name>",
+					"desc": "I will answer with a link to the last diff on the article in the wiki."
+				}
+			},
+			"page": {
+				"cmd": "page <page name>",
+				"desc": "I will answer with a direct link to the article in the wiki."
+			},
+			"search": {
+				"cmd": "search <search term>",
+				"desc": "I will answer with a direct link to the search page for the article in the wiki."
+			},
+			"minecraft": {
+				"default": {
+					"cmd": "/<Minecraft command>",
+					"desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki."
+				},
+				"command": {
+					"cmd": "command <Minecraft command>",
+					"desc": "I will answer with the syntax of the Minecraft command and a link to the article for the command in the Minecraft Wiki."
+				},
+				"bug": {
+					"cmd": "bug <Minecraft bug>",
+					"desc": "I will answer with a link to the bug in the Minecraft bug tracker."
+				}
+			},
+			"discussion": {
+				"thread": {
+					"cmd": "discussion <search term>",
+					"desc": "I will answer with a link to a matching discussion thread in the Fandom wiki."
+				},
+				"post": {
+					"cmd": "discussion post <search term>",
+					"desc": "I will answer with a link to a matching discussion post in the Fandom wiki."
+				}
+			},
+			"info": {
+				"cmd": "info",
+				"desc": "I will introduce myself."
+			},
+			"help": {
+				"default": {
+					"cmd": "help",
+					"desc": "I will list all the commands that I understand."
+				},
+				"command": {
+					"cmd": "help <bot command>",
+					"desc": "Wonder how a command works? Let me explain it to you!"
+				},
+				"admin": {
+					"cmd": "help admin",
+					"desc": "I will list all administrator commands."
+				},
+				"verification": {
+					"cmd": "help verification",
+					"desc": "I will explain in more detail how the verification command works."
+				}
+			},
+			"settings": {
+				"default": {
+					"cmd": "settings",
+					"desc": "I will change the settings for this server."
+				},
+				"wiki": {
+					"cmd": "settings wiki <wiki>",
+					"desc": "I will change the default wiki for this server."
+				},
+				"lang": {
+					"cmd": "settings lang <language>",
+					"desc": "I will change the language for this server."
+				},
+				"inline": {
+					"cmd": "settings inline toggle",
+					"desc": "I will toggle inline commands for this server."
+				},
+				"prefix": {
+					"cmd": "settings prefix <prefix>",
+					"desc": "I will change the prefix for this server."
+				},
+				"channel": {
+					"cmd": "settings channel",
+					"desc": "I will change the overwrites for the current channel."
+				}
+			},
+			"verify": {
+				"cmd": "verify <wiki username>",
+				"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
+			},
+			"verification": {
+				"default": {
+					"cmd": "verification",
+					"desc": "I will change the wiki verifications used by the `$1verify` command."
+				},
+				"add": {
+					"cmd": "verification add <role>",
+					"desc": "I will add a new wiki verification. Accepts a `|` separated list."
+				},
+				"channel": {
+					"cmd": "verification <id> channel <new channel>",
+					"desc": "I will change the channel for the wiki verification. Accepts a `|` separated list."
+				},
+				"role": {
+					"cmd": "verification <id> role <new role>",
+					"desc": "I will change the role for the wiki verification. Accepts a `|` separated list."
+				},
+				"editcount": {
+					"cmd": "verification <id> editcount <new edit count>",
+					"desc": "I will change the minimal edit count for the wiki verification."
+				},
+				"usergroup": {
+					"cmd": "verification <id> usergroup <new user group>",
+					"desc": "I will change the user group for the wiki verification. Accepts a `|` separated list.\n\t• Provide `AND` as the first list entry to make all provided user groups required."
+				},
+				"accountage": {
+					"cmd": "verification <id> accountage <new account age>",
+					"desc": "I will change the minimal account age (in days) for the wiki verification."
+				},
+				"rename": {
+					"cmd": "verification <id> rename",
+					"desc": "I will change if the user's Discord nickname should be changed to their wiki username for the wiki verification."
+				},
+				"delete": {
+					"cmd": "verification <id> delete",
+					"desc": "I will delete the wiki verification."
+				}
+			},
+			"voice": {
+				"cmd": "voice",
+				"desc": "I try to give everyone in a voice channel a specific role."
+			},
+			"pause": {
+				"inactive":{
+					"cmd": "pause $1",
+					"desc": "I will ignore all commands on this server, except a few admin commands."
+				},
+				"active": {
+					"cmd": "pause $1",
+					"desc": "I will respond to all commands on this server again."
+				}
+			},
+			"test": {
+				"cmd": "test",
+				"desc": "If I'm active, I'll answer! Otherwise not."
+			}
+		}
 	},
 	"minecraft": {
 		"link": "https://minecraft.gamepedia.com/",
 		"cmdpage": "Commands/",
-		"aliases": {
-			"cmd": "command"
-		},
 		"private": "**Private Issue**",
 		"fixed": "Fixed Version:",
 		"more": "And $1 {{PLURAL:$1|more}}.",

@@ -1,3 +1,12 @@
+/**
+ * Processes the "stop" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ * @async
+ */
 async function cmd_stop(lang, msg, args, line, wiki) {
 	if ( args[0] === 'force' && args.slice(1).join(' ').split('\n')[0].isMention(msg.guild) ) {
 		await msg.replyMsg( 'I\'ll destroy myself now!', {}, true );

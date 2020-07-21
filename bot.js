@@ -404,6 +404,10 @@ global.log_warn = function(warning, api = true) {
 	}
 }
 
+/**
+ * End the process gracefully.
+ * @param {String} signal - The signal received.
+ */
 async function graceful(signal) {
 	isStop = true;
 	console.log( '- ' + shardId + ': ' + signal + ': Preparing to close...' );

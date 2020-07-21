@@ -2,6 +2,14 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const extract_desc = require('../../../util/extract_desc.js');
 
+/**
+ * Sends a random Gamepedia page.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} wiki - The wiki for the page.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&explaintext=true&exsectionformat=raw&exlimit=1&generator=random&grnnamespace=0&format=json', {
 		responseType: 'json'
@@ -57,6 +65,11 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 	} );
 }
 
+/**
+ * Change HTML text to plain text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
 function htmlToPlain(html) {
 	var text = '';
 	var parser = new htmlparser.Parser( {
@@ -69,6 +82,11 @@ function htmlToPlain(html) {
 	return text;
 };
 
+/**
+ * Change HTML text to markdown text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
 function htmlToDiscord(html) {
 	var text = '';
 	var parser = new htmlparser.Parser( {

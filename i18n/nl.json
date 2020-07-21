@@ -7,13 +7,11 @@
 	],
 	"dateformat": "nl-NL",
 	"aliases": {
-		"pagina": "page",
-		"zoeken": "search",
-		"🎲": "random",
-		"willekeurig": "random",
-		"overzicht": "overview",
-		"discussions": "discussion",
-		"discussie": "discussion"
+		"page": ["pagina"],
+		"search": ["zoeken"],
+		"random": ["willekeurig"],
+		"overview": ["overzicht"],
+		"discussion": ["discussie"]
 	},
 	"prefix": "het voorvoegsel voor deze server is `$1`. Je kunt het voorvoegsel veranderen met `$1settings prefix`. Voor een lijst van alle opdrachten zie `$1help`.",
 	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
@@ -172,8 +170,6 @@
 		}
 	},
 	"search": {
-		"page": "pagina",
-		"search": "zoeken",
 		"infopage": "Niet het gewenste resultaat? Gebruik $1 voor een rechtstreekse link.",
 		"infosearch": "Niet het gewenste resultaat? Gebruik $1 voor een rechtstreekse link of $2 voor een lijst van alle overeenkomsten.",
 		"category": {
@@ -214,67 +210,140 @@
 		"noadmin": "je hebt de `Beheer Server` permissie nodig voor deze opdrachten!",
 		"pause": "**Ik ben momenteel gepauzeerd op deze server!**\nAlleen deze opdrachten kunnen worden uitgevoerd:",
 		"footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑️ op mijn bericht en ik zal het verwijderen.",
-		"list": [
-			{ "cmd": "<zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki.", "unsearchable": true },
-			{ "cmd": "[[<pagina naam>]]", "desc": "I will answer with a direct link to the article in the wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "{{<pagina naam>}}", "desc": "I will answer with a link to the article in the wiki.", "unsearchable": true, "inline": true },
-			{ "cmd": "!<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`", "unsearchable": true },
-			{ "cmd": "?<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`", "unsearchable": true },
-			{ "cmd": "??<wiki> <zoek term>", "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`", "unsearchable": true },
-			{ "cmd": "Gebruiker:<gebruikersnaam>", "desc": "Ik zal wat informatie over de gebruiker weergeven.", "unsearchable": true },
-			{ "cmd": "diff <diff> [<oldid>]", "desc": "Ik zal antwoorden met een link naar de diff uit de wiki." },
-			{ "cmd": "diff <pagina naam>", "desc": "Ik zal antwoorden met een link naar de laatste diff over het artikel uit de wiki." },
-			{ "cmd": "willekeurig", "desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki." },
-			{ "cmd": "random", "desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki.", "hide": true },
-			{ "cmd": "🎲", "desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki.", "hide": true },
-			{ "cmd": "overzicht", "desc": "Ik zal wat informatie en statistieken over de wiki weergeven." },
-			{ "cmd": "overview", "desc": "Ik zal wat informatie en statistieken over de wiki weergeven.", "hide": true },
-			{ "cmd": "/<Minecraft command>", "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki.", "unsearchable": true, "minecraft": true },
-			{ "cmd": "command <Minecraft command>", "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki.", "hide": true, "minecraft": true },
-			{ "cmd": "cmd <Minecraft command>", "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki.", "hide": true, "minecraft": true },
-			{ "cmd": "bug <Minecraft bug>", "desc": "Ik zal antwoorden met een link naar de bug in de Minecraft bug tracker.", "minecraft": true },
-			{ "cmd": "pagina <pagina naam>", "desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki.", "hide": true },
-			{ "cmd": "page <pagina naam>", "desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki.", "hide": true },
-			{ "cmd": "zoeken <zoek term>", "desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki.", "hide": true },
-			{ "cmd": "search <zoek term>", "desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki.", "hide": true },
-			{ "cmd": "discussie <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki.", "fandom": true },
-			{ "cmd": "discussion <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki.", "hide": true, "fandom": true },
-			{ "cmd": "discussie bericht <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomend discussie bericht op de Fandom wiki.", "fandom": true },
-			{ "cmd": "discussion post <zoek term>", "desc": "Ik zal antwoorden met een link naar een overeenkomend discussie bericht op de Fandom wiki.", "hide": true, "fandom": true },
-			{ "cmd": "info", "desc": "Ik zal mezelf introduceren." },
-			{ "cmd": "help", "desc": "Ik zal alle opdrachten opsommen die ik begrijp." },
-			{ "cmd": "help <bot command>", "desc": "Vraag je je af hoe een opdracht werkt? Laat het me aan je uitleggen!" },
-			{ "cmd": "help admin", "desc": "Ik zal alle administrator opdrachten opsommen." },
-			{ "cmd": "help admin", "desc": "Ik zal alle administrator opdrachten opsommen.", "unsearchable": true, "admin": true },
-			{ "cmd": "settings", "desc": "Ik zal de instellingen voor deze server wijzigen.", "admin": true, "pause": true },
-			{ "cmd": "settings lang <taal>", "desc": "Ik zal de taal voor deze server wijzigen.", "hide": true, "admin": true },
-			{ "cmd": "settings prefix <voorvoegsel>", "desc": "Ik zal het voorvoegsel voor deze server wijzigen.", "hide": true, "admin": true, "patreon": true },
-			{ "cmd": "settings inline toggle", "desc": "I will toggle inline commands for this server.", "hide": true, "admin": true },
-			{ "cmd": "settings wiki <wiki>", "desc": "Ik zal de standaard wiki voor deze server wijzigen.", "hide": true, "admin": true },
-			{ "cmd": "settings channel", "desc": "Ik zal de overschrijvingen voor het huidige kanaal wijzigen.", "hide": true, "admin": true },
-			{ "cmd": "verify <wiki username>", "desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account.", "hide": true },
-			{ "cmd": "verification", "desc": "I will change the wiki verifications used by the `@prefixverify` command.", "admin": true, "pause": true },
-			{ "cmd": "help verification", "desc": "I will explain in more detail how the verification command works.", "admin": true },
-			{ "cmd": "verification add <role>", "desc": "I will add a new wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> channel <new channel>", "desc": "I will update the channel for the wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> role <new role>", "desc": "I will update the role for the wiki verification. Accepts a `|` separated list.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> editcount <new edit count>", "desc": "I will update the minimal edit count for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> usergroup <new user group>", "desc": "I will update the user group for the wiki verification. Accepts a `|` separated list.\n\t• Provide `AND` as the first list entry to make all provided user groups required.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> accountage <new account age>", "desc": "I will update the minimal account age (in days) for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> rename", "desc": "I will change if the users Discord nickname should be changed to their wiki username for the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "verification <id> delete", "desc": "I will delete the wiki verification.", "hide": true, "admin": true },
-			{ "cmd": "voice", "desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven.", "admin": true, "pause": true },
-			{ "cmd": "pause @mention", "desc": "Ik zal alle opdrachten op deze server negeren, met uitzondering van enkele admin opdrachten.", "admin": true },
-			{ "cmd": "pause @mention", "desc": "Ik zal weer op alle opdrachten op deze server reageren.", "unsearchable": true, "hide": true, "pause": true },
-			{ "cmd": "test", "desc": "Als ik actief ben, zal ik antwoorden! Anders niet.", "pause": true }
-		]
+		"list": {
+			"default": {
+				"cmd": "<zoek term>",
+				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki."
+			},
+			"gamepedia": {
+				"cmd": "!<wiki> <zoek term>",
+				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
+			},
+			"fandom": {
+				"cmd": "?<wiki> <zoek term>",
+				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`"
+			},
+			"wikia": {
+				"cmd": "??<wiki> <zoek term>",
+				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`"
+			},
+			"user": {
+				"cmd": "Gebruiker:<gebruikersnaam>",
+				"desc": "Ik zal wat informatie over de gebruiker weergeven."
+			},
+			"overview": {
+				"cmd": "overview",
+				"desc": "Ik zal wat informatie en statistieken over de wiki weergeven."
+			},
+			"random": {
+				"cmd": "random",
+				"desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki."
+			},
+			"diff": {
+				"id": {
+					"cmd": "diff <diff> [<oldid>]",
+					"desc": "Ik zal antwoorden met een link naar de diff uit de wiki."
+				},
+				"name": {
+					"cmd": "diff <pagina naam>",
+					"desc": "Ik zal antwoorden met een link naar de laatste diff over het artikel uit de wiki."
+				}
+			},
+			"page": {
+				"cmd": "page <pagina naam>",
+				"desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki."
+			},
+			"search": {
+				"cmd": "search <zoek term>",
+				"desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki."
+			},
+			"minecraft": {
+				"default": {
+					"cmd": "/<Minecraft command>",
+					"desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki."
+				},
+				"command": {
+					"cmd": "command <Minecraft command>",
+					"desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki."
+				},
+				"bug": {
+					"cmd": "bug <Minecraft bug>",
+					"desc": "Ik zal antwoorden met een link naar de bug in de Minecraft bug tracker."
+				}
+			},
+			"discussion": {
+				"thread": {
+					"cmd": "discussion <zoek term>",
+					"desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki."
+				},
+				"post": {
+					"cmd": "discussion post <zoek term>",
+					"desc": "Ik zal antwoorden met een link naar een overeenkomend discussie bericht op de Fandom wiki."
+				}
+			},
+			"info": {
+				"cmd": "info",
+				"desc": "Ik zal mezelf introduceren."
+			},
+			"help": {
+				"default": {
+					"cmd": "help",
+					"desc": "Ik zal alle opdrachten opsommen die ik begrijp."
+				},
+				"command": {
+					"cmd": "help <bot command>",
+					"desc": "Vraag je je af hoe een opdracht werkt? Laat het me aan je uitleggen!"
+				},
+				"admin": {
+					"cmd": "help admin",
+					"desc": "Ik zal alle administrator opdrachten opsommen."
+				}
+			},
+			"settings": {
+				"default": {
+					"cmd": "settings",
+					"desc": "Ik zal de instellingen voor deze server wijzigen."
+				},
+				"wiki": {
+					"cmd": "settings wiki <wiki>",
+					"desc": "Ik zal de standaard wiki voor deze server wijzigen."
+				},
+				"lang": {
+					"cmd": "settings lang <taal>",
+					"desc": "Ik zal de taal voor deze server wijzigen."
+				},
+				"prefix": {
+					"cmd": "settings prefix <voorvoegsel>",
+					"desc": "Ik zal het voorvoegsel voor deze server wijzigen."
+				},
+				"channel": {
+					"cmd": "settings channel",
+					"desc": "Ik zal de overschrijvingen voor het huidige kanaal wijzigen."
+				}
+			},
+			"voice": {
+				"cmd": "voice",
+				"desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven."
+			},
+			"pause": {
+				"inactive": {
+					"cmd": "pause $1",
+					"desc": "Ik zal alle opdrachten op deze server negeren, met uitzondering van enkele admin opdrachten."
+				},
+				"active": {
+					"cmd": "pause $1",
+					"desc": "Ik zal weer op alle opdrachten op deze server reageren."
+				}
+			},
+			"test": {
+				"cmd": "test",
+				"desc": "Als ik actief ben, zal ik antwoorden! Anders niet."
+			}
+		}
 	},
 	"minecraft": {
 		"link": "https://minecraft-nl.gamepedia.com/",
 		"cmdpage": "Opdrachten#",
-		"aliases": {
-			"cmd": "command"
-		},
 		"private": "**Privé issue**",
 		"fixed": "Fixed versie:",
 		"more": "En $1 {{PLURAL:$1|meer}}.",

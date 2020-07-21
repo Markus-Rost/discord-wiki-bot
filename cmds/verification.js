@@ -1,6 +1,14 @@
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
+/**
+ * Processes the "verification" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
 		if ( msg.channel.type === 'text' && !pause[msg.guild.id] ) this.verify(lang, msg, args, line, wiki);

@@ -94,6 +94,17 @@ var querypages = {
 	recentchanges: ['&list=recentchanges&rctype=edit|new|log&rclimit=10', queryfunctions.recentchanges]
 }
 
+/**
+ * Processes special pages.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} title - The title of the special page.
+ * @param {String} specialpage - The canonical name of the special page.
+ * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
+ * @param {String} wiki - The wiki for the page.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoiler) {
 	if ( specialpage in overwrites ) {
 		var args = title.split('/').slice(1,3);

@@ -1,5 +1,15 @@
 const {MessageEmbed, Util} = require('discord.js');
 
+/**
+ * Searches a Gamepedia wiki.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} searchterm - The searchterm.
+ * @param {String} wiki - The wiki for the search.
+ * @param {Object} query - The siteinfo from the wiki.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler) {
 	if ( searchterm.length > 250 ) {
 		searchterm = searchterm.substring(0, 250);

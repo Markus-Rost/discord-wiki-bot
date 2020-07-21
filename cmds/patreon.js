@@ -1,6 +1,14 @@
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
+/**
+ * Processes the "patreon" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( msg.channel.id !== process.env.channel || !args.join('') ) {
 		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);

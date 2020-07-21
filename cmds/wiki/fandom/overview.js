@@ -7,6 +7,14 @@ var allSites = [];
 const getAllSites = require('../../../util/allSites.js');
 getAllSites.then( sites => allSites = sites );
 
+/**
+ * Sends a Fandom wiki overview.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} wiki - The wiki for the overview.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 	if ( !allSites.length ) getAllSites.get().then( sites => allSites = sites );
 	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json', {

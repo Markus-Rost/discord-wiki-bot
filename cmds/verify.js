@@ -4,6 +4,14 @@ const {MessageEmbed} = require('discord.js');
 const {timeoptions} = require('../util/default.json');
 var db = require('../util/database.js');
 
+/**
+ * Processes the "verify" command.
+ * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} line - The command as plain text.
+ * @param {String} wiki - The wiki for the message.
+ */
 function cmd_verify(lang, msg, args, line, wiki) {
 	if ( msg.channel.type !== 'text' ) return this.LINK(lang, msg, line, wiki);
 	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
@@ -358,6 +366,11 @@ function cmd_verify(lang, msg, args, line, wiki) {
 	} );
 }
 
+/**
+ * Change HTML text to plain text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
 function htmlToPlain(html) {
 	var text = '';
 	var parser = new htmlparser.Parser( {

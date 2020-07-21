@@ -2,7 +2,8 @@ const {Util} = require('discord.js');
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const check_wiki = {
 	fandom: require('../cmds/wiki/fandom.js'),
-	gamepedia: require('../cmds/wiki/gamepedia.js')
+	gamepedia: require('../cmds/wiki/gamepedia.js'),
+	test: require('../cmds/test.js').run
 };
 
 const fs = require('fs');
@@ -19,6 +20,15 @@ fs.readdir( './cmds', (error, files) => {
 	} );
 } );
 
+/**
+ * Processes new messages.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('./i18n.js')} lang - The user language.
+ * @param {String} [wiki] - The default wiki.
+ * @param {String} [prefix] - The prefix for the message.
+ * @param {Boolean} [noInline] - Parse inline commands?
+ * @param {String} [content] - Overwrite for the message content.
+ */
 function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, content = '') {
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
@@ -27,7 +37,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	var channel = msg.channel;
 	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
 		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
-		let aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
+		let aliasInvoke = ( lang.aliases[invoke] || invoke );
 		if ( aliasInvoke in ownercmdmap ) {
 			cont = cont.substring(prefix.length);
 			let args = cont.split(' ').slice(1);
@@ -50,7 +60,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		line = line.substring(prefix.length);
 		var invoke = line.split(' ')[0].toLowerCase();
 		var args = line.split(' ').slice(1);
-		var aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
+		var aliasInvoke = ( lang.aliases[invoke] || invoke );
 		var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 		var pausecmd = ( msg.isAdmin() && pause[msg.guild.id] && aliasInvoke in pausecmdmap );
 		if ( channel.type === 'text' && pause[msg.guild.id] && !( pausecmd || ownercmd ) ) {

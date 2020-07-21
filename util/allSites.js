@@ -1,5 +1,9 @@
 var allSites = getAllSites();
 
+/**
+ * Get all Gamepedia sites.
+ * @returns {Promise<Object[]>}
+ */
 function getAllSites() {
 	return got.get( 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|md5_key,wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,wiki_crossover,created&format=json', {
 		responseType: 'json'
@@ -21,6 +25,10 @@ function getAllSites() {
 	} );
 }
 
+/**
+ * Update the list of all sites.
+ * @returns {Promise<Object[]>}
+ */
 function updateAllSites() {
 	return new Promise( function(resolve, reject) {
 		getAllSites.then( newSites => {

@@ -1,5 +1,17 @@
 const {MessageEmbed} = require('discord.js');
 
+/**
+ * Sends a Minecraft issue.
+ * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ * @param {String} title - The page title.
+ * @param {String} cmd - The command at this point.
+ * @param {String} querystring - The querystring for the link.
+ * @param {String} fragment - The section for the link.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
 	var invoke = args[0];
 	args = args.slice(1);

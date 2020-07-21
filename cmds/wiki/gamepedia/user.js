@@ -8,6 +8,20 @@ var allSites = [];
 const getAllSites = require('../../../util/allSites.js');
 getAllSites.then( sites => allSites = sites );
 
+/**
+ * Processes a Gamepedia user.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} namespace - The user namespace on the wiki.
+ * @param {String} username - The name of the user.
+ * @param {String} wiki - The wiki for the page.
+ * @param {String} querystring - The querystring for the link.
+ * @param {String} fragment - The section for the link.
+ * @param {Object} querypage - The user page on the wiki.
+ * @param {String} contribs - The contributions page on the wiki.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler) {
 	if ( !allSites.length ) getAllSites.update();
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
@@ -395,7 +409,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							}
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, {embed} );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -410,6 +424,11 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 	}
 }
 
+/**
+ * Change HTML text to plain text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
 function htmlToPlain(html) {
 	var text = '';
 	var parser = new htmlparser.Parser( {
@@ -422,6 +441,11 @@ function htmlToPlain(html) {
 	return text;
 };
 
+/**
+ * Change HTML text to markdown text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
 function htmlToDiscord(html) {
 	var text = '';
 	var parser = new htmlparser.Parser( {

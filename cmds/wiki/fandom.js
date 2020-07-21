@@ -15,6 +15,20 @@ fs.readdir( './cmds/wiki/fandom', (error, files) => {
 	} );
 } );
 
+/**
+ * Checks a Fandom wiki.
+ * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} title - The page title.
+ * @param {String} wiki - The wiki for the page.
+ * @param {String} cmd - The command at this point.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} [spoiler] - If the response is in a spoiler.
+ * @param {String} [querystring] - The querystring for the link.
+ * @param {String} [fragment] - The section for the link.
+ * @param {String} [interwiki] - The fallback interwiki link.
+ * @param {Number} [selfcall] - The amount of followed interwiki links.
+ */
 function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', querystring = '', fragment = '', interwiki = '', selfcall = 0) {
 	var full_title = title;
 	if ( title.includes( '#' ) ) {
@@ -31,7 +45,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 		msg.reactEmoji('⚠️');
 	}
 	var invoke = title.split(' ')[0].toLowerCase();
-	var aliasInvoke = ( lang.get('aliases')[invoke] || invoke );
+	var aliasInvoke = ( lang.aliases[invoke] || invoke );
 	var args = title.split(' ').slice(1);
 	
 	if ( aliasInvoke === 'random' && !args.join('') && !querystring && !fragment ) fn.random(lang, msg, wiki, reaction, spoiler);
@@ -215,10 +229,10 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 									text = '';
 								}
 								else if ( wsbody.total === 1 ) {
-									text = '\n' + lang.get('search.infopage', '`' + prefix + cmd + lang.get('search.page') + ' ' + title + linksuffix + '`');
+									text = '\n' + lang.get('search.infopage', '`' + prefix + cmd + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`');
 								}
 								else {
-									text = '\n' + lang.get('search.infosearch', '`' + prefix + cmd + lang.get('search.page') + ' ' + title + linksuffix + '`', '`' + prefix + cmd + lang.get('search.search') + ' ' + title + linksuffix + '`');
+									text = '\n' + lang.get('search.infosearch', '`' + prefix + cmd + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`', '`' + prefix + cmd + ( lang.localNames.search || 'search' ) + ' ' + title + linksuffix + '`');
 								}
 								got.get( wiki + 'api.php?action=query&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( querypage.title ) + '&format=json', {
 									responseType: 'json'

@@ -2,6 +2,14 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const gamepedia_random = require('../gamepedia/random.js').run;
 
+/**
+ * Sends a random Fandom page.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} wiki - The wiki for the page.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
+ * @param {String} spoiler - If the response is in a spoiler.
+ */
 function fandom_random(lang, msg, wiki, reaction, spoiler) {
 	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&siprop=general&generator=random&grnnamespace=0&format=json', {
 		responseType: 'json'
