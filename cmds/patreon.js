@@ -178,7 +178,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			db.each( 'SELECT a.guild, GROUP_CONCAT(DISTINCT a.configid) configids FROM verification a LEFT JOIN verification b ON a.guild = b.guild WHERE a.guild IN (' + guilds.map( guild => '?' ).join(', ') + ') GROUP BY a.guild', guilds, (eacherror, eachrow) => {
 				if ( eacherror ) {
 					console.log( '- Error while getting the verifications: ' + eacherror );
-					return dberror;
+					return eacherror;
 				}
 				var ids = eachrow.configids.split(',').slice(verificationLimit.default);
 				if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [eachrow.guild, ...ids], function (uperror) {

@@ -53,14 +53,16 @@ class Lang {
 			if ( text ) {
 				text = text?.[keys[n]];
 			}
-			else if ( fallback < this.fallback.length ) {
-				lang = this.fallback[fallback];
-				fallback++;
-				text = i18n?.[lang];
-				n = 0;
-			}
-			else {
-				n = keys.length;
+			if ( !text ) {
+				if ( fallback < this.fallback.length ) {
+					lang = this.fallback[fallback];
+					fallback++;
+					text = i18n?.[lang];
+					n = -1;
+				}
+				else {
+					n = keys.length;
+				}
 			}
 		}
 		if ( typeof text === 'string' ) {

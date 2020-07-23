@@ -64,7 +64,9 @@ function updateAllSites() {
  */
 function removePatreons(guild, msg) {
 	try {
-		if ( !guild || !msg ) return 'removePatreons(guild, msg) – No guild or message provided!';
+		if ( !( typeof guild === 'string' || msg instanceof Discord.Message ) ) {
+			return 'removePatreons(guild, msg) – No guild or message provided!';
+		}
 		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND channel IS NULL', [guild], (dberror, row) => {
 			try {
 				if ( dberror ) {
