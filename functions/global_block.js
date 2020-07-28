@@ -73,8 +73,10 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		}
 		else {
 			let $ = cheerio.load(body);
-			var gblock = $('.mw-blocklist');
-			if ( gblock.length ) {
+			var gblocklist = $('.mw-blocklist');
+			let splittext = text.split('\n\n');
+			if ( gblocklist.length ) gblocklist.find('tbody tr').each( (i, gblock) => {
+				gblock = $(gblock);
 				var reason = gblock.find('.TablePager_col_reason').text().replace( /\)$/, '' ).split(', ');
 				var timestamp = new Date(gblock.find('.TablePager_col_timestamp').text().replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.get('dateformat'), timeoptions);
 				var expiry = gblock.find('.TablePager_col_expiry').text();
@@ -91,13 +93,12 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 					}
 				}
 				else {
-					let splittext = text.split('\n\n');
 					var globalblock = splittext.indexOf('**' + lang.get('user.block.header', username).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting()));
 					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.get('user.gblock.header', username).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting());
 					else splittext.push('**' + lang.get('user.gblock.header', username).escapeFormatting() + '**\n' + lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason[2], reason.slice(4).join(', ').escapeFormatting()));
-					text = splittext.join('\n\n');
 				}
-			}
+			} );
+			text = splittext.join('\n\n');
 		}
 	}, error => {
 		console.log( '- Error while getting the global block: ' + error );
