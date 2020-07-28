@@ -112,6 +112,30 @@ function removePatreons(guild, msg) {
 				console.log( '- Verifications successfully deleted.' );
 			} );
 		} );
+		db.all( 'SELECT webhook FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [guild], (dberror, rows) => {
+			if ( dberror ) {
+				console.log( '- Error while getting the RcGcDw: ' + dberror );
+				return dberror;
+			}
+			var webhooks = rows.slice(rcgcdwLimit.default).map( row => row.webhook );
+			if ( webhooks.length ) db.run( 'DELETE FROM rcgcdw WHERE webhook IN (' + webhooks.map( webhook => '?' ).join(', ') + ')', webhooks, function (error) {
+				if ( error ) {
+					console.log( '- Error while deleting the RcGcDw: ' + error );
+					return error;
+				}
+				console.log( '- RcGcDw successfully deleted.' );
+				webhooks.forEach( hook => guild.client.fetchWebhook(...hook.split('/')).then( webhook => {
+					webhook.delete('Removed extra recent changes webhook').catch(log_error);
+				}, log_error ) );
+			} );
+		} );
+		db.run( 'UPDATE rcgcdw SET display = ? WHERE guild = ? AND display > ?', [rcgcdwLimit.display, guild, rcgcdwLimit.display], function (dberror) {
+			if ( dberror ) {
+				console.log( '- Error while updating the RcGcDw: ' + dberror );
+				return dberror;
+			}
+			console.log( '- RcGcDw successfully updated.' );
+		} );
 	}
 	catch ( tryerror ) {
 		console.log( '- Error while removing the patreon features: ' + tryerror );
@@ -161,6 +185,14 @@ function removeSettings(msg) {
 						if ( dberror ) {
 							console.log( '- Error while removing the verifications: ' + dberror );
 							msg.replyMsg( 'I got an error while removing the verifications!', {}, true );
+							return dberror;
+						}
+						console.log( '- Verifications successfully removed.' );
+					} );
+					db.run( 'DELETE FROM rcgcdw WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
+						if ( dberror ) {
+							console.log( '- Error while removing the RcGcDw: ' + dberror );
+							msg.replyMsg( 'I got an error while removing the RcGcDw!', {}, true );
 							return dberror;
 						}
 						console.log( '- Verifications successfully removed.' );

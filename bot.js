@@ -363,6 +363,13 @@ client.on( 'guildDelete', guild => {
 		}
 		if ( this.changes ) console.log( '- Verifications successfully removed.' );
 	} );
+	db.run( 'DELETE FROM rcgcdw WHERE guild = ?', [guild.id], function (dberror) {
+		if ( dberror ) {
+			console.log( '- Error while removing the RcGcDw: ' + dberror );
+			return dberror;
+		}
+		if ( this.changes ) console.log( '- RcGcDw successfully removed.' );
+	} );
 } );
 
 

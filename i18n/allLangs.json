@@ -40,5 +40,23 @@
 			"chinese": "zh",
 			"中文": "zh"
 		}
+	},
+	"RcGcDw": {
+		"names": {
+			"en": "English",
+			"de": "German",
+			"pl": "Polish"
+		},
+		"map": {
+			"en": "en",
+			"eng": "en",
+			"english": "en",
+			"de": "de",
+			"german": "de",
+			"deutsch": "de",
+			"pl": "pl",
+			"polish": "pl",
+			"polski": "pl"
+		}
 	}
 }

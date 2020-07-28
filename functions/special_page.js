@@ -126,6 +126,9 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		overwrites[specialpage](this, lang, msg, wiki, reaction, spoiler, args, embed);
 		return;
 	}
+	if ( specialpage === 'recentchanges' && msg.isAdmin() && msg.guild.id in patreon ) {
+		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix )) );
+	}
 	got.get( wiki + 'api.php?action=query&meta=siteinfo|allmessages&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( specialpage in descriptions ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json', {
 		responseType: 'json'
 	} ).then( response => {

@@ -85,6 +85,30 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Verifications successfully deleted.' );
 				} );
 			} );
+			db.all( 'SELECT webhook FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [args[1]], (dberror, rows) => {
+				if ( dberror ) {
+					console.log( '- Error while getting the RcGcDw: ' + dberror );
+					return dberror;
+				}
+				var webhooks = rows.slice(rcgcdwLimit.default).map( row => row.webhook );
+				if ( webhooks.length ) db.run( 'DELETE FROM rcgcdw WHERE webhook IN (' + webhooks.map( webhook => '?' ).join(', ') + ')', webhooks, function (error) {
+					if ( error ) {
+						console.log( '- Error while deleting the RcGcDw: ' + error );
+						return error;
+					}
+					console.log( '- RcGcDw successfully deleted.' );
+					webhooks.forEach( hook => msg.client.fetchWebhook(...hook.split('/')).then( webhook => {
+						webhook.delete('Removed extra recent changes webhook').catch(log_error);
+					}, log_error ) );
+				} );
+			} );
+			db.run( 'UPDATE rcgcdw SET display = ? WHERE guild = ? AND display > ?', [rcgcdwLimit.display, args[1], rcgcdwLimit.display], function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while updating the RcGcDw: ' + dberror );
+					return dberror;
+				}
+				console.log( '- RcGcDw successfully updated.' );
+			} );
 		} );
 	} );
 	
@@ -193,6 +217,35 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the verifications: ' + eacherror );
 					return eacherror;
 				}
+			} );
+			db.each( 'SELECT GROUP_CONCAT(DISTINCT a.webhook) webhooks FROM rcgcdw a LEFT JOIN verification b ON a.guild = b.guild WHERE a.guild IN (' + guilds.map( guild => '?' ).join(', ') + ') GROUP BY a.guild', guilds, (eacherror, eachrow) => {
+				if ( eacherror ) {
+					console.log( '- Error while getting the RcGcDw: ' + eacherror );
+					return eacherror;
+				}
+				var webhooks = eachrow.webhooks.split(',').slice(rcgcdwLimit.default);
+				if ( webhooks.length ) db.run( 'DELETE FROM rcgcdw WHERE webhook IN (' + webhooks.map( webhook => '?' ).join(', ') + ')', webhooks, function (uperror) {
+					if ( uperror ) {
+						console.log( '- Error while deleting the RcGcDw: ' + uperror );
+						return uperror;
+					}
+					console.log( '- RcGcDw successfully deleted.' );
+					webhooks.forEach( hook => msg.client.fetchWebhook(...hook.split('/')).then( webhook => {
+						webhook.delete('Removed extra recent changes webhook').catch(log_error);
+					}, log_error ) );
+				} );
+			}, (eacherror) => {
+				if ( eacherror ) {
+					console.log( '- Error while getting the RcGcDw: ' + eacherror );
+					return eacherror;
+				}
+			} );
+			db.run( 'UPDATE rcgcdw SET display = ? WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND display > ?', [rcgcdwLimit.display, ...guilds, rcgcdwLimit.display], function (uperror) {
+				if ( uperror ) {
+					console.log( '- Error while updating the RcGcDw: ' + uperror );
+					return uperror;
+				}
+				console.log( '- RcGcDw successfully updated.' );
 			} );
 		} );
 		if ( !row ) return db.run( 'INSERT INTO patreons(patreon, count) VALUES(?, ?)', [args[1], count], function (error) {

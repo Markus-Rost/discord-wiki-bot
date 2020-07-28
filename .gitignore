@@ -1,4 +1,5 @@
 node_modules/
+rcgcdb/
 package-lock.json
 *.code-workspace
 *.env

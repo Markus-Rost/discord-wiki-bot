@@ -1,5 +1,4 @@
 {
-	"defaultPermissions": 403033152,
 	"limit": {
 		"command": {
 			"default": 10,
@@ -16,8 +15,14 @@
 		"verification": {
 			"default": 10,
 			"patreon": 15
+		},
+		"rcgcdw": {
+			"default": 1,
+			"patreon": 1,
+			"display": 1
 		}
 	},
+	"defaultPermissions": 939912256,
 	"defaultSettings": {
 		"lang": "en",
 		"wiki": "https://community.fandom.com/"
