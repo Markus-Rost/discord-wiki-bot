@@ -1,4 +1,4 @@
-const {limit: {rcgcdw: rcgcdwLimit}, defaultSettings} = require('../util/default.json');
+const {defaultSettings} = require('../util/default.json');
 const sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database( './wikibot.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, dberror => {
 	if ( dberror ) {
@@ -102,7 +102,7 @@ function getSettings(trysettings = 1) {
 						console.log( '- ' + shardId + ': Created the verification index.' );
 					} );
 				} );
-				db.run( 'CREATE TABLE IF NOT EXISTS rcgcdw(guild TEXT NOT NULL, configid INTEGER NOT NULL, webhook TEXT NOT NULL UNIQUE, wiki TEXT NOT NULL, lang TEXT NOT NULL DEFAULT ?, display INTEGER NOT NULL DEFAULT ?, wikiid INTEGER, rcid INTEGER, postid TEXT, UNIQUE(guild, configid))', [defaultSettings.lang, rcgcdwLimit.display], function (error) {
+				db.run( 'CREATE TABLE IF NOT EXISTS rcgcdw(guild TEXT NOT NULL, configid INTEGER NOT NULL, webhook TEXT NOT NULL UNIQUE, wiki TEXT NOT NULL, lang TEXT NOT NULL DEFAULT ?, display INTEGER NOT NULL DEFAULT ?, wikiid INTEGER, rcid INTEGER, postid TEXT, UNIQUE(guild, configid))', [defaultSettings.lang, 1], function (error) {
 					if ( error ) {
 						console.log( '- ' + shardId + ': Error while creating the rcgcdw table: ' + error );
 						return error;
