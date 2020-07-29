@@ -20,7 +20,7 @@
 	"prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
 	"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
 	"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n$1, deine Nachricht enthält zu viele Befehle!",
-	"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe auf Gamepedia- und Fandom-Wikis zu verlinken. Geschrieben wurde ich von $1 in JavaScript.\n\n**Ich stehe in keinem Zusammenhang mit Fandom und bin ein inoffizieller Bot!**\n\nDu kannst mich auf Patreon unterstützen:",
+	"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe einfach auf MediaWiki Websites, wie Gamepedia- und Fandom-Wikis, zu verlinken und diese zu durchsuchen. Ich zeige kurze Beschreibungen und zusätliche Informationen zu Seiten und kann Weiterleitungen auflösen und Interwiki-Links folgen. Geschrieben wurde ich von $1 in JavaScript.\n\nDu kannst mich auf Patreon unterstützen:",
 	"helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
 	"patreon": "dies ist eine Patreon-Funktion!\nDu kannst mich auf Patreon unterstützen um Zugang zu dieser Funktion zu erhalten:",
 	"settings": {

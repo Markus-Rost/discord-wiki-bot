@@ -1,7 +1,8 @@
 const help_server = require('../functions/helpserver.js');
 
 const helpmap = {
-	link: ['default', 'inline.link', 'inline.template', 'gamepedia', 'fandom', 'wikia'],
+	linkHelp: ['default', 'inline.link', 'inline.template', 'gamepedia', 'fandom', 'wikia'],
+	link: ['default', 'inline.link', 'inline.template', 'gamepedia', 'fandom', 'wikia', 'mwprojects'],
 	inline: ['inline.link', 'inline.template'],
 	user: ['user'],
 	overview: ['overview'],
@@ -9,7 +10,7 @@ const helpmap = {
 	diff: ['diff.name', 'diff.id'],
 	page: ['page'],
 	search: ['search'],
-	minecraft: ['minecraft.default', 'minecraft.bug'],
+	minecraftHelp: ['minecraft.default', 'minecraft.bug'],
 	command: ['minecraft.default', 'minecraft.command'],
 	bug: ['minecraft.bug'],
 	discussion: ['discussion.thread', 'discussion.post'],
@@ -18,6 +19,7 @@ const helpmap = {
 	settings: ['settings.default', 'settings.wiki', 'settings.lang', 'settings.inline', 'settings.prefix', 'settings.channel'],
 	verify: ['verify'],
 	verification: ['verification.default', 'verification.add', 'verification.channel', 'verification.role', 'verification.editcount', 'verification.usergroup', 'verification.accountage', 'verification.rename', 'verification.delete'],
+	rcscript: ['rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete'],
 	voice: ['voice'],
 	pause: ['pause.inactive'],
 	test: ['test'],
@@ -25,12 +27,12 @@ const helpmap = {
 
 const helplist = {
 	default: [
-		'link',
+		'linkHelp',
 		'user',
 		'overview',
 		'random',
 		'diff',
-		'minecraft',
+		'minecraftHelp',
 		'discussion',
 		'info',
 		'help',
@@ -41,6 +43,7 @@ const helplist = {
 		'settings.default',
 		'verification.default',
 		'help.verification',
+		'rcscript.default',
 		'voice',
 		'pause.inactive'
 	],
@@ -48,6 +51,7 @@ const helplist = {
 		'pause.active',
 		'settings.default',
 		'verification.default',
+		'rcscript.default',
 		'voice',
 		'test'
 	],
@@ -60,9 +64,9 @@ const helplist = {
 const restrictions = {
 	fandom: ['discussion'],
 	minecraft: ['command', 'bug'],
-	admin: ['settings', 'verification', 'voice', 'pause'],
+	admin: ['settings', 'verification', 'rcscript', 'voice', 'pause'],
 	inline: ['inline.link', 'inline.template'],
-	patreon: ['settings.prefix']
+	patreon: ['settings.prefix', 'rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete']
 }
 
 /**

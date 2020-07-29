@@ -127,7 +127,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		return;
 	}
 	if ( specialpage === 'recentchanges' && msg.isAdmin() && msg.guild.id in patreons ) {
-		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix )) );
+		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
 	got.get( wiki + 'api.php?action=query&meta=siteinfo|allmessages&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( specialpage in descriptions ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json', {
 		responseType: 'json'

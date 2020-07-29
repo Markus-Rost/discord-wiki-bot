@@ -14,7 +14,7 @@
 	"prefix": "the prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`.",
 	"missingperm": "I'm missing some permissions for this command:",
 	"limit": "🚨 **Stop, you hit a limit!** 🚨\n\n$1, your message contained too many commands!",
-	"disclaimer": "I am a small bot with the task to link to Gamepedia and Fandom wikis. $1 wrote me in JavaScript.\n\n**I am not affiliated with Fandom and am an unofficial tool!**\n\nYou can support me on Patreon:",
+	"disclaimer": "I am a small bot with the purpose to easily link and search MediaWiki sites like Gamepedia and Fandom wikis. I show short descriptions and additional info about pages and am able to resolve redirects and follow interwiki links. $1 wrote me in JavaScript.\n\nYou can support me on Patreon:",
 	"helpserver": "For questions and problems please visit my support server:",
 	"patreon": "this is a Patreon only feature!\nYou can support me on Patreon to get access to this feature:",
 	"settings": {
@@ -153,7 +153,7 @@
 	},
 	"rcscript": {
 		"title": "Recent changes webhook",
-		"ad": "You want recent changes directly in Discord? Use `$1rcscript` to add a **Recent changes Goat compatible Discord webhook** to your Discord server!",
+		"ad": "You want recent changes directly in Discord? Use `$1rcscript` to add a recent changes webhook based on **$2** to your Discord server!",
 		"missing": "there are no recent changes webhooks for this server yet.",
 		"current": "these are the current recent changes webhooks for this server:",
 		"current_selected": "this is the recent changes webhook for this server:",
@@ -398,6 +398,10 @@
 				"cmd": "??<wiki> <search term>",
 				"desc": "I will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/`"
 			},
+			"mwprojects": {
+				"cmd": "!!<wiki> <search term>",
+				"desc": "I will answer with a link to a matching article in the named MediaWiki project. Example: `$1!!en.wikipedia.org Cookie`"
+			},
 			"user": {
 				"cmd": "User:<username>",
 				"desc": "I will show some information about the user."
@@ -540,6 +544,36 @@
 				"delete": {
 					"cmd": "verification <id> delete",
 					"desc": "I will delete the wiki verification."
+				}
+			},
+			"rcscript": {
+				"default": {
+					"cmd": "rcscript",
+					"desc": "I will change the recent changes webhook."
+				},
+				"add": {
+					"cmd": "rcscript add [<wiki>]",
+					"desc": "I will add a new recent changes webhook."
+				},
+				"wiki": {
+					"cmd": "rcscript wiki <new wiki>",
+					"desc": "I will change the wiki for the recent changes webhook."
+				},
+				"lang": {
+					"cmd": "rcscript lang <new language>",
+					"desc": "I will change the language for the recent changes webhook."
+				},
+				"display": {
+					"cmd": "rcscript display <new display mode>",
+					"desc": "I will change the display mode for the recent changes webhook."
+				},
+				"feeds": {
+					"cmd": "rcscript feeds",
+					"desc": "I will toggle discussions changes on a Fandom wiki for the recent changes webhook."
+				},
+				"delete": {
+					"cmd": "rcscript delete",
+					"desc": "I will delete the recent changes webhook."
 				}
 			},
 			"voice": {
