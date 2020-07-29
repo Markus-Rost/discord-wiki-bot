@@ -33,7 +33,7 @@
 	"prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
 	"missingperm": "Brakuje mi uprawnień:",
 	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
-	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki na Gamepedii oraz Fandomie. Zostałem napisany w JavaScript przez $1.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Fandomem!**\n\nMożesz wesprzeć mnie na Patreon-ie:",
+	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki z rodziny MediaWiki takich jak Gamepedia oraz Fandom. Zostałem napisany w JavaScript przez $1.\n\nMożesz wesprzeć mnie na Patreon-ie:",
 	"helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
 	"patreon": "to funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie aby uzyskać dostęp do tej funkcji:",
 	"settings": {
