@@ -157,6 +157,61 @@
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
 		"help_subpage": "Bitte füge dein Discord-Tag ($1) zu deiner Discord-Unterseite im Wiki hinzu:"
 	},
+	"rcscript": {
+		"title": "Letzte Änderungen-Webhook",
+		"ad": "Du möchtest letzte Änderungen direkt in Discord? Nutze `$1rcscript` um einen Letzte Änderungen-Webhook basierend auf **$2** zu deinen Diesocrd server hinzuzufügen!",
+		"missing": "es ist noch kein Letzte Änderungen-Webhook für diesen Server vorhanden.",
+		"current": "dies sind die aktuellen Letzte Änderungen-Webhooks für diesen Server:",
+		"current_selected": "dies ist der Letzte Änderungen-Webhook für diesen Server:",
+		"channel": "Kanal:",
+		"wiki": "Wiki:",
+		"lang": "Sprache:",
+		"display": "Anzeigemodus:",
+		"feeds": "Feeds-basierte Änderungen:",
+		"enabled": "aktiviert",
+		"disabled": "deaktiviert",
+		"toggle": "(umschalten)",
+		"help_feeds": "(Diskussionen, Nachrichtenseiten, Artikelkommentare)",
+		"delete": "Lösche diesen Letzte Änderungen-Webhook:",
+		"add_more": "Füge mehr Letzte Änderungen-Webhooks hinzu:",
+		"noadmin": "du benötigst die `WebHooks verwalten`-Berechtigung für diesen Befehl!",
+		"max_entries": "du hast bereits die maximale Anzahl an Letzte Änderungen-Webhooks erreicht.",
+		"sysmessage": "die Systemnachricht `$1` muss die Server-ID `$2` sein um einen Letzte Änderungen-Webhook hinzuzufügen.",
+		"audit_reason": "Letzte Änderungen-Webhook für \"$1\"",
+		"audit_reason_delete": "Letzte Änderungen-Webhook entfernt",
+		"added": "ein Letzte Änderungen-Webhook wurde hinzugefügt für:",
+		"deleted": "der Letzte Änderungen-Webhook wurde gelöscht.",
+		"webhook_failed": "der Webhook konnten leider nicht erstellt werden, bitte versuche es später erneut.",
+		"current_wiki": "das Wiki für diesen Webhook ist:",
+		"help_wiki": "Link zum Wiki: `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
+		"new_wiki": "<neues Wiki>",
+		"updated_wiki": "das Wiki für diesen Webhook wurde geändert zu:",
+		"current_lang": "die Sprache für diesen Webhook ist:",
+		"help_lang": "Bisher mögliche Sprachen sind:",
+		"new_lang": "<neue Sprache>",
+		"updated_lang": "die Sprache für diesen Webhook wurde geändert zu:",
+		"current_display": "der Anzeigemodus für diesen Webhook ist:",
+		"help_display_compact": "Kompakte Textnachrichten mit Inline-Links.",
+		"help_display_embed": "Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen.",
+		"help_display_image": "Einbettungen mit Bildvorschau.",
+		"help_display_diff": "Einbettungen mit Bildvorschau und Bearbeitungsunterschieden.",
+		"updated_display": "der Anzeigemodus für diesen Webhook wurde geändert zu:",
+		"disabled_feeds": "die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, für diesen Webhook wurden deaktiviert.",
+		"enabled_feeds": "die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, für diesen Webhook wurden aktiviert.",
+		"no_feeds": "das Wiki für diesen Webhook hat keine Feeds-basierten Funktionen, wie Diskussionen, Nachrichtenseiten oder Artikelkommentare, aktiviert.",
+		"webhook": {
+			"created": "Ein Letzte Änderungen-Webhook für $1 wurde zu diesem Kanal hinzugefügt.",
+			"updated_wiki": "Das Wiki für diesen Letzte Änderungen-Webhook wurde zu $1 geändert.",
+			"updated_lang": "Die Sprache für diesen Letzte Änderungen-Webhook wurde zu `$1` geändert.",
+			"updated_display_compact": "Der Anzeigemodus für diesen Letzte Änderungen-Webhook wurde zu kompakten Textnachrichten mit Inline-Links geändert.",
+			"updated_display_embed": "Der Anzeigemodus für diesen Letzte Änderungen-Webhook wurde zu Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen geändert.",
+			"updated_display_image": "Der Anzeigemodus für diesen Letzte Änderungen-Webhook wurde zu Einbettungen mit Bildvorschau geändert.",
+			"updated_display_diff": "Der Anzeigemodus für diesen Letzte Änderungen-Webhook wurde zu Einbettungen mit Bildvorschau und Bearbeitungsunterschieden geändert.",
+			"disabled_feeds": "Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden für diesen Letzte Änderungen-Webhook deaktiviert.",
+			"enabled_feeds": "Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden für diesen Letzte Änderungen-Webhook aktiviert.",
+			"deleted": "Dieser Letzte Änderungen-Webhook wird gelöscht."
+		}
+	},
 	"overview": {
 		"inaccurate": "Statistiken können ungenau sein",
 		"name": "Vollständiger Name:",
@@ -349,6 +404,10 @@
 				"cmd": "??<Wiki> <Suchbegriff>",
 				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wikia-Wiki: `https://<Wiki>.wikia.org/`"
 			},
+			"mwprojects": {
+				"cmd": "!!<Wiki> <Suchbegriff>",
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen MediaWiki-Projekt. Beispiel: `$1!!de.wikipedia.org Keks`"
+			},
 			"user": {
 				"cmd": "Benutzer:<Benutzername>",
 				"desc": "Ich liste ein paar Informationen über den Benutzer auf."
@@ -491,6 +550,36 @@
 				"delete": {
 					"cmd": "verification <ID> delete",
 					"desc": "Ich lösche die Wiki-Verifizierung."
+				}
+			},
+			"rcscript": {
+				"default": {
+					"cmd": "rcscript",
+					"desc": "Ich ändere den Letzte Änderungen-Webhook."
+				},
+				"add": {
+					"cmd": "rcscript add [<Wiki>]",
+					"desc": "Ich füge einen neuen Letzte Änderungen-Webhook hinzu."
+				},
+				"wiki": {
+					"cmd": "rcscript wiki <neues Wiki>",
+					"desc": "Ich ändere das Wiki für den Letzte Änderungen-Webhook."
+				},
+				"lang": {
+					"cmd": "rcscript lang <neue Sprache>",
+					"desc": "Ich ändere die Sprache für den Letzte Änderungen-Webhook."
+				},
+				"display": {
+					"cmd": "rcscript display <neuer Anzeigemodus>",
+					"desc": "Ich ändere den Anzeigemodus für den Letzte Änderungen-Webhook."
+				},
+				"feeds": {
+					"cmd": "rcscript feeds",
+					"desc": "Ich ändere ob Feeds-basierte Änderungen von einen Fandom-Wiki angezeigt werden sollen für den Letzte Änderungen-Webhook."
+				},
+				"delete": {
+					"cmd": "rcscript delete",
+					"desc": "Ich lösche den Letzte Änderungen-Webhook."
 				}
 			},
 			"voice": {

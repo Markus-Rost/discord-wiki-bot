@@ -169,17 +169,17 @@
 		"delete": "Delete this recent changes webhook:",
 		"add_more": "Add more recent changes webhooks:",
 		"noadmin": "you need the `Manage Webhooks` permission for this command!",
-		"max_entries":"you already reached the maximal amount of recent changes webhooks.",
-		"sysmessage": "the system message `$1` has to be the server ID `$2` to add a recent changes webhook.",
+		"max_entries": "you already reached the maximal amount of recent changes webhooks.",
+		"sysmessage": "the system message `$1` has to be the server id `$2` to add a recent changes webhook.",
 		"audit_reason": "Recent changes webhook for \"$1\"",
 		"audit_reason_delete": "Removed recent changes webhook",
 		"added": "a recent changes webhook has been added for:",
-		"deleted":"the recent changes webhook has be deleted.",
+		"deleted": "the recent changes webhook has be deleted.",
 		"webhook_failed": "sadly the webhook couldn't be created, please try again later.",
 		"current_wiki": "the wiki for this webhook is:",
 		"help_wiki": "Link to the wiki: `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
 		"new_wiki": "<new wiki>",
-		"updated_wiki":"the wiki for this webhook has been changed to:",
+		"updated_wiki": "the wiki for this webhook has been changed to:",
 		"current_lang": "the language for this webhook is:",
 		"help_lang": "Currently supported languages are:",
 		"new_lang": "<new language>",
@@ -192,7 +192,7 @@
 		"updated_display": "the display mode for this webhook has been changed to:",
 		"disabled_feeds": "the feeds based changes, like discussions, message walls and article comments, for this webhook have been disabled.",
 		"enabled_feeds": "the feeds based changes, like discussions, message walls and article comments, for this webhook have been enabled.",
-		"no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls and article comments, enabled.",
+		"no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
 		"webhook": {
 			"created": "A recent changes webhook for $1 has been added to this channel.",
 			"updated_wiki": "The wiki has been changed to $1 for this recent changes webhook.",
@@ -581,7 +581,7 @@
 				"desc": "I try to give everyone in a voice channel a specific role."
 			},
 			"pause": {
-				"inactive":{
+				"inactive": {
 					"cmd": "pause $1",
 					"desc": "I will ignore all commands on this server, except a few admin commands."
 				},
