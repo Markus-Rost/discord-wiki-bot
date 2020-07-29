@@ -26,11 +26,6 @@ const display_types = [
  */
 function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
-	// Patreon only during testing
-	if ( !( msg.guild.id in patreons ) ) {
-		return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
-	}
-	// Patreon only during testing
 	if ( !msg.channel.permissionsFor(msg.client.user).has('MANAGE_WEBHOOKS') ) {
 		console.log( msg.guild.id + ': Missing permissions - MANAGE_WEBHOOKS' );
 		return msg.replyMsg( lang.get('missingperm') + ' `MANAGE_WEBHOOKS`' );

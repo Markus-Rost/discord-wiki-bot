@@ -66,7 +66,7 @@ const restrictions = {
 	minecraft: ['command', 'bug'],
 	admin: ['settings', 'verification', 'rcscript', 'voice', 'pause'],
 	inline: ['inline.link', 'inline.template'],
-	patreon: ['settings.prefix', 'rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete']
+	patreon: ['settings.prefix']
 }
 
 /**

@@ -1,19 +1,26 @@
 # Wiki-Bot
-**Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link to [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis.
-<br>He resolves redirects and follows interwiki links.
-<br>**Wiki-Bot** has translations for English, German, French, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
+**Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
 
-**Wiki-Bot is not affiliated with Fandom and is an unofficial tool!**
+**Wiki-Bot** has translations for English, German, French, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
 
-[Use this link to invite **Wiki-Bot** to your Discord server.](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=403033152&scope=bot)
+[Use this link to invite **Wiki-Bot** to your Discord server.](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot)
 
 Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
 
 #### Table of Contents
+* [Setup](#setup)
 * [Commands](#commands)
   * [Admin](#admin)
 * [User Verification](#user-verification)
+* [Recent Changes Webhook](#recent-changes-webhook)
 * [Voice Channel](#voice-channel)
+
+## Setup
+After [inviting](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot) **Wiki-Bot** to your server you need to set the wiki you want to search by default. You do this with the `!wiki settings` command.
+* Change the wiki with `!wiki settings wiki <url>`
+  * Example: `!wiki settings wiki https://minecraft.gamepedia.com/Minecraft_Wiki`
+* Change the language with `!wiki settings lang <language>`
+  * Example: `!wiki settings lang German`
 
 ## Commands
 For a full list with all commands use `!wiki help`
@@ -24,6 +31,7 @@ For a full list with all commands use `!wiki help`
 | `!wiki !<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/` |
 | `!wiki ?<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Fandom wiki: `https://<wiki>.fandom.com/` |
 | `!wiki ??<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/` |
+| `!wiki !!<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named MediaWiki project. Example: `!wiki !!en.wikipedia.org Cookie` |
 | `!wiki User:<username>` | **Wiki-Bot** will show some information about the user. |
 | `!wiki diff <diff> [<oldid>]` | **Wiki-Bot** will answer with a link to the diff in the wiki. |
 | `!wiki diff <page name>` | **Wiki-Bot** will answer with a link to the last diff on the article in the wiki. |
@@ -57,6 +65,7 @@ For a full list with all administrator commands use `!wiki help admin`
 | `!wiki verification <id> usergroup <new user group>` | **Wiki-Bot** will change the user group for the wiki verification. Accepts a `\|` separated list.<br>• Provide `AND` as the first list entry to make all provided user groups required. |
 | `!wiki verification <id> accountage <new account age>` | **Wiki-Bot** will change the minimal account age (in days) for the wiki verification. |
 | `!wiki verification <id> rename` | **Wiki-Bot** will change if the users Discord nickname should be changed to their wiki username for the wiki verification. |
+| `!wiki rcscript` | **Wiki-Bot** will change the recent changes webhook. |
 | `!wiki voice` | **Wiki-Bot** will try to give everyone in a voice channel a specific role. |
 | `!wiki pause @Wiki-Bot` | **Wiki-Bot** will ignore all commands on this server, except a few admin commands. |
 
@@ -73,13 +82,24 @@ Using the `!wiki verification` command, admins can add up to 10 verification ent
 
 See the [admin commands](#admin) or `!wiki help verification` on how to change the wiki verification entries on the server.
 
+## Recent Changes Webhook
+**Wiki-Bot** is able to run a recent changes webhook based on [RcGcDw](https://gitlab.com/piotrex43/RcGcDw) by using the `!wiki rcscript` command. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.
+
+Requirements to add a recent changes webhook:
+* The wiki needs to run on [MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30) or higher.
+* The system message `MediaWiki:Custom-RcGcDw` need to be set to the Discord server id.
+
 ## Voice Channel
 **Wiki-Bot** is able to give everyone in a voice channel a specific role. This allows for the creation of channels only visible or writable when in a specific voice channel.
-<br>Use `!wiki voice` to get the format for the role name.
+
+Use `!wiki voice` to get the format for the role name.
 
 ## Bot Lists
 [![Wiki-Bot](https://botsfordiscord.com/api/bot/461189216198590464/widget)](https://botsfordiscord.com/bot/461189216198590464)
 [![Wiki-Bot](https://discord.boats/api/widget/461189216198590464)](https://discord.boats/bot/461189216198590464)
 [![Wiki-Bot](https://top.gg/api/widget/461189216198590464.svg)](https://top.gg/bot/461189216198590464)
+
+## Other
+Credits to [Encredechine](https://community.fandom.com/wiki/User:Encredechine) for the **Wiki-Bot** logo.
 
 [Privacy Policy](privacy.md)
