@@ -363,10 +363,10 @@
 		],
 		"default": "Jestem w pełni funkcjonalny!",
 		"time": "Czas odpowiedzi",
-		"notice": "",
-		"MediaWiki": "",
-		"TextExtracts": "",
-		"PageImages": ""
+		"notice": "Niepełna funkcjonalność",
+		"MediaWiki": "Wymaga przynajmniej $1 dla pełnej funkcjonalności, znaleziono `$2`.",
+		"TextExtracts": "Wymaga rozszerzenia $1 dla opisów stron.",
+		"PageImages": "Wymaga rozszerzenia $1 dla miniaturek stron."
 	},
 	"help": {
 		"all": "A więc chcesz wiedzieć co potrafię? Tutaj jest lista komend, które rozumiem:",
