@@ -7,27 +7,11 @@
 		"en"
 	],
 	"aliases": {
-		"help": [
-			"pomoc"
-		],
-		"page": [
-			"strona"
-		],
-		"search": [
-			"szukaj"
-		],
-		"discussion": [
-			"dyskusje",
-			"dyskusja"
-		],
-		"command": [
-			"komenda",
-			""
-		],
-		"random": [
-			"",
-			""
-		]
+		"help": ["pomoc"],
+		"page": ["strona"],
+		"search": ["szukaj"],
+		"discussion": ["dyskusje", "dyskusja"],
+		"command": ["komenda"]
 	},
 	"dateformat": "pl-PL",
 	"prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
@@ -64,6 +48,7 @@
 		"prefix": "prefiks dla tego serwera:",
 		"prefixinvalid": "podany prefiks nie jest wspierany!",
 		"prefixchanged": "zmieniono prefiks dla tego serwera na:",
+		"prefixhelp": "Użyj `$1 <prefiks>` aby zmienić prefiks.\nUżyj `_` na końcu jako zamiennik spacji na końcu prefiksu.\nPrefiks nie może zawierać wzmianek!",
 		"inline enabled": {
 			"inline": "linkowanie składnią wiki jest obecnie włączone dla tego serwera.",
 			"channel inline": "linkowanie składnią wiki jest obecnie włączone dla tego kanału.",
@@ -77,8 +62,7 @@
 			"inlinechanged": "wyłączono linkowanie składnią wiki dla tego serwera.",
 			"channel inlinechanged": "wyłączono linkowanie składnią wiki dla tego kanału.",
 			"help": "Użyj `$1` aby włączyć linkowanie składnią wiki takiego jak `[[$2]]` czy `{{$2}}`."
-		},
-		"prefixhelp": "Użyj `$1 <prefiks>` aby zmienić prefiks.\nUżyj `_` na końcu jako zamiennik spacji na końcu prefiksu.\nPrefiks nie może zawierać wzmianek!"
+		}
 	},
 	"pause": {
 		"on": "Moje działanie jest obecnie wstrzymane na tym serwerze i będę ignorował większość komend!",
@@ -170,6 +154,61 @@
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
 		"help_subpage": "Dodaj swoją nazwę użytkownika Discord ($1) do podstrony Discord na wiki:"
 	},
+	"rcscript": {
+		"title": "Webhook ostatnich zmian",
+		"ad": "Chcesz mieć ostatnie zmiany na Discordzie? Użyj `$1rcscript` aby dodać webhook ostatnich zmian bazowany na **$2** do swojego serwera Discord!",
+		"missing": "obecnie nie istnieją żadne webhooki ostatnich zmian na tym serwerze.",
+		"current": "to są istniejące webhooki ostatnich zmian dla tego serwera:",
+		"current_selected": "to jest webhook ostatnich zmian dla tego serwera:",
+		"channel": "Kanał:",
+		"wiki": "Wiki:",
+		"lang": "Język:",
+		"display": "Tryb wyświetlania:",
+		"feeds": "Zmiany bazowane na Feeds:",
+		"enabled": "włączone",
+		"disabled": "wyłączone",
+		"toggle": "(przełącznik)",
+		"help_feeds": "(dyskusje, tablice wiadomości)",
+		"delete": "Usuń ten webhook ostatnich zmian:",
+		"add_more": "Dodaj więcej webhooków ostatnich zmian:",
+		"noadmin": "potrzebujesz uprawnienia `Zarządzaj webhookami` aby używać tej komendy!",
+		"max_entries": "osiągnięto maksymalną ilość webhooków ostatnich zmian.",
+		"sysmessage": "wiadomość systemowa `$1` musi zawierać numer ID tego serwera `$2` aby dodać webhook ostatnich zmian.",
+		"audit_reason": "Webhook ostatnich zmian dla \"$1\"",
+		"audit_reason_delete": "Usunięto webhook ostatnich zmian",
+		"added": "dodano webhook ostatnich zmian dla:",
+		"deleted": "webhook ostatnich zmian został usunięty.",
+		"webhook_failed": "niestety, webhook nie mógł zostać utworzony, spróbuj ponownie później.",
+		"current_wiki": "wiki dla tego webhooka to:",
+		"help_wiki": "Link do wiki: `https://<wiki>.gamepedia.com` lub `https://<wiki>.fandom.com`",
+		"new_wiki": "<nowa wiki>",
+		"updated_wiki": "wiki dla tego webhooka została zmieniona na:",
+		"current_lang": "językiem tego webhooka jest:",
+		"help_lang": "Aktualnie wspieranymi językami są:",
+		"new_lang": "<nowy język>",
+		"updated_lang": "język tego webhooka został zmieniony na:",
+		"current_display": "tryb wyświetlania webhooka jest ustawiony na:",
+		"help_display_compact": "Kompaktowe wiadomości.",
+		"help_display_embed": "Szczegółowe wiadomości z tagami oraz zmianami kategorii.",
+		"help_display_image": "Szczegółowe wiadomości podglądami zdjęć.",
+		"help_display_diff": "Szczegółowe wiadomości podglądami zdjęć oraz podglądem zmian edycji.",
+		"updated_display": "tryb wyświetlania dla tego webhooka został zmieniony na:",
+		"disabled_feeds": "postowanie zmian z Dyskusji dla tego webhooka zostało wyłączone.",
+		"enabled_feeds": "postowanie zmian z Dyskusji dla tego webhooka zostało włączone.",
+		"no_feeds": "wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
+		"webhook": {
+			"created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
+			"updated_wiki": "Ta wiki została zmieniona na $1 dla tego webhooka ostatnich zmian.",
+			"updated_lang": "Język został zmieniony na `$1` dla tego webhooka ostatnich zmian.",
+			"updated_display_compact": "Tryb wyświetlania został zmieniony na kompaktowy dla tego webhooka ostatnich zmian.",
+			"updated_display_embed": "Tryb wyświetlania został zmieniony na szczegółowy z tagami oraz zmianami w kategoriach dla tego webhooka ostatnich zmian.",
+			"updated_display_image": "Tryb wyświetlania został zmieniony na szczegółowy z podglądami zdjęć dla tego webhooka ostatnich zmian.",
+			"updated_display_diff": "Tryb wyświetlania został zmieniony na szczegółowy z podglądami zdjęć oraz podglądami zmian edycji dla tego webhooka ostatnich zmian.",
+			"disabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały wyłączone dla tego webhooka ostatnich zmian.",
+			"enabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały włączone dla tego webhooka ostatnich zmian.",
+			"deleted": "Ten webhook ostatnich zmian zostanie usunięty."
+		}
+	},
 	"overview": {
 		"inaccurate": "Statystyki mogą być niedokładne",
 		"name": "Pełna nazwa:",
@@ -215,37 +254,35 @@
 			"vanguard": "Vanguard",
 			"voldev": "Volunteer Developer",
 			"bot": "Bot",
+			"checkuser": "Check user",
 			"bureaucrat": "Biurokrata",
 			"sysop": "Administrator",
 			"interface-admin": "Administrator interfejsu",
+			"widgeteditor": "Edytor widżetów",
 			"content-moderator": "moderator treści",
 			"threadmoderator": "moderator dyskusji",
 			"chatmoderator": "moderator czatu",
+			"junioradmin": "Junior administrator",
 			"directors": "Dyrektor",
 			"Patrol": "Inspektor",
 			"editor": "Redaktor",
-			"moderator": "Moderator",
-			"Elite_users": "Elitarni użytkownicy",
-			"patrollers": "Przeglądający",
-			"rollback": "rollback",
-			"autoreview": "autoreview",
-			"autopatrol": "autopatrol",
-			"authenticated": "authenticated",
-			"autoconfirmed": "Automatycznie zatwierdzony użytkownik",
-			"user": "Użytkownik",
-			"checkuser": "Check user",
-			"widgeteditor": "Edytor widżetów",
-			"junioradmin": "Junior administrator",
 			"supmoderator": "Senior moderator",
+			"moderator": "Moderator",
 			"assistant": "Asystent",
 			"blogpatrol": "Patroller blogów",
 			"imagecontrol": "Kontroler zdjęć",
 			"commentcontrol": "Kontroler komentarzy",
-			"custodian": "",
-			"doyen": "",
+			"Elite_users": "Elitarni użytkownicy",
 			"codeeditor": "Edytor kodu",
+			"patrollers": "Przeglądający",
 			"patroller": "Patroller",
-			"autopatroller": "Auto patroller"
+			"rollback": "rollback",
+			"autoreview": "autoreview",
+			"autopatroller": "Auto patroller",
+			"autopatrol": "autopatrol",
+			"authenticated": "authenticated",
+			"autoconfirmed": "Automatycznie zatwierdzony użytkownik",
+			"user": "Użytkownik"
 		},
 		"info": {
 			"gender": "Płeć:",
@@ -363,6 +400,10 @@
 			"wikia": {
 				"cmd": "??<wiki> <wyszukiwana fraza>",
 				"desc": "Odpowiem z pasującym linkiem do podanej wiki na Wikia: `https://<wiki>.wikia.org/`"
+			},
+			"mwprojects": {
+				"cmd": "!!<wiki> <wyszukiwana fraza>",
+				"desc": "Odpowiem linkiem do odpowiedniego artykułu w nazwanym projekcie MediaWiki. Na przykład `$1!!pl.wikipedia.org Ciastko`"
 			},
 			"user": {
 				"cmd": "Użytkownik:<nazwa użytkownika>",
@@ -508,28 +549,6 @@
 					"desc": "Usunę weryfikację."
 				}
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Nadaję każdej osobie w kanale głosowym specjalną rolę."
-			},
-			"pause": {
-				"inactive": {
-					"cmd": "pause $1",
-					"desc": "Od teraz będę ignorował większość komend na tym serwerze z wyjątkiem paru, administracyjnych komend."
-				},
-				"active": {
-					"cmd": "pause $1",
-					"desc": "Ponownie będę odpowiadał na wszystkie komendy na tym serwerze."
-				}
-			},
-			"test": {
-				"cmd": "test",
-				"desc": "Gdy jestem aktywny - odpowiem."
-			},
-			"mwprojects": {
-				"cmd": "!!<wiki> <szukana fraza>",
-				"desc": "Odpowiem linkiem do odpowiedniego artykułu w nazwanym projekcie MediaWiki. Na przykład `$1!!pl.wikipedia.org Ciastko`"
-			},
 			"rcscript": {
 				"default": {
 					"cmd": "rcscript",
@@ -559,6 +578,24 @@
 					"cmd": "rcscript delete",
 					"desc": "Usunę webhook ostatnich zmian."
 				}
+			},
+			"voice": {
+				"cmd": "voice",
+				"desc": "Nadaję każdej osobie w kanale głosowym specjalną rolę."
+			},
+			"pause": {
+				"inactive": {
+					"cmd": "pause $1",
+					"desc": "Od teraz będę ignorował większość komend na tym serwerze z wyjątkiem paru, administracyjnych komend."
+				},
+				"active": {
+					"cmd": "pause $1",
+					"desc": "Ponownie będę odpowiadał na wszystkie komendy na tym serwerze."
+				}
+			},
+			"test": {
+				"cmd": "test",
+				"desc": "Gdy jestem aktywny - odpowiem."
 			}
 		}
 	},
@@ -569,60 +606,5 @@
 		"fixed": "Naprawione w wersji:",
 		"more": "Oraz $1 {{PLURAL:$1|inny|inne|innych}}.",
 		"total": "naprawiono $1 {{PLURAL:$1|błąd|błędy|błędów}}"
-	},
-	"rcscript": {
-		"title": "Webhook ostatnich zmian",
-		"ad": "Chcesz mieć ostatnie zmiany na Discordzie? Użyj `$1rcscript` aby dodać webhook ostatnich zmian bazowany na **$2** do swojego serwera Discord!",
-		"missing": "obecnie nie istnieją żadne webhooki ostatnich zmian na tym serwerze.",
-		"current": "to są istniejące webhooki ostatnich zmian dla tego serwera:",
-		"current_selected": "to jest webhook ostatnich zmian dla tego serwera:",
-		"channel": "Kanał:",
-		"wiki": "Wiki:",
-		"lang": "Język:",
-		"display": "Tryb wyświetlania:",
-		"feeds": "Zmiany bazowane na Feeds:",
-		"enabled": "włączone",
-		"disabled": "wyłączone",
-		"toggle": "(przełącznik)",
-		"help_feeds": "(dyskusje, tablice wiadomości)",
-		"delete": "Usuń ten webhook ostatnich zmian:",
-		"add_more": "Dodaj więcej webhooków ostatnich zmian:",
-		"noadmin": "potrzebujesz uprawnienia `Zarządzaj webhookami` aby używać tej komendy!",
-		"max_entries": "osiągnięto maksymalną ilość webhooków ostatnich zmian.",
-		"sysmessage": "wiadomość systemowa `$1` musi zawierać numer ID tego serwera `$2` aby dodać webhook ostatnich zmian.",
-		"audit_reason": "Webhook ostatnich zmian dla \"$1\"",
-		"audit_reason_delete": "Usunięto webhook ostatnich zmian",
-		"added": "dodano webhook ostatnich zmian dla:",
-		"deleted": "webhook ostatnich zmian został usunięty.",
-		"webhook_failed": "niestety, webhook nie mógł zostać utworzony, spróbuj ponownie później.",
-		"current_wiki": "wiki dla tego webhooka to:",
-		"help_wiki": "Link do wiki: `https://<wiki>.gamepedia.com` lub `https://<wiki>.fandom.com`",
-		"new_wiki": "<nowa wiki>",
-		"updated_wiki": "wiki dla tego webhooka została zmieniona na:",
-		"current_lang": "językiem tego webhooka jest:",
-		"help_lang": "Aktualnie wspieranymi językami są:",
-		"new_lang": "<nowy język>",
-		"updated_lang": "język tego webhooka został zmieniony na:",
-		"current_display": "tryb wyświetlania webhooka jest ustawiony na:",
-		"help_display_compact": "Kompaktowe wiadomości.",
-		"help_display_embed": "Szczegółowe wiadomości z tagami oraz zmianami kategorii.",
-		"help_display_image": "Szczegółowe wiadomości podglądami zdjęć.",
-		"help_display_diff": "Szczegółowe wiadomości podglądami zdjęć oraz podglądem zmian edycji.",
-		"updated_display": "tryb wyświetlania dla tego webhooka został zmieniony na:",
-		"disabled_feeds": "postowanie zmian z Dyskusji dla tego webhooka zostało wyłączone.",
-		"enabled_feeds": "postowanie zmian z Dyskusji dla tego webhooka zostało włączone.",
-		"no_feeds": "wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
-		"webhook": {
-			"created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
-			"updated_wiki": "Ta wiki została zmieniona na $1 dla tego webhooka ostatnich zmian.",
-			"updated_lang": "Język został zmieniony na `$1` dla tego webhooka ostatnich zmian.",
-			"updated_display_compact": "Tryb wyświetlania został zmieniony na kompaktowy  dla tego webhooka ostatnich zmian.",
-			"updated_display_embed": "Tryb wyświetlania został zmieniony na szczegółowy z tagami oraz zmianami w kategoriach  dla tego webhooka ostatnich zmian.",
-			"updated_display_image": "Tryb wyświetlania został zmieniony na szczegółowy z podglądami zdjęć  dla tego webhooka ostatnich zmian.",
-			"updated_display_diff": "Tryb wyświetlania został zmieniony na szczegółowy z podglądami zdjęć  oraz podglądami zmian edycji dla tego webhooka ostatnich zmian.",
-			"disabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały wyłączone dla tego webhooka ostatnich zmian.",
-			"enabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały włączone dla tego webhooka ostatnich zmian.",
-			"deleted": "Ten webhook ostatnich zmian zostanie usunięty."
-		}
 	}
 }
