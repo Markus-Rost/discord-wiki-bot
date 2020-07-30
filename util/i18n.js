@@ -157,7 +157,8 @@ function plural(lang, number, args) {
 		case 'nl':
 		case 'pt':
 		case 'tr':
-		case 'zh':
+		case 'zh-hans':
+		case 'zh-hant':
 		default:
 			if ( number === 1 ) text = getArg(args, 0);
 			else text = getArg(args, 1);
