@@ -45,7 +45,8 @@
 		"names": {
 			"en": "English",
 			"de": "Deutsch",
-			"pl": "Polski"
+			"pl": "Polski",
+			"pt": "Português"
 		},
 		"map": {
 			"en": "en",
@@ -56,7 +57,10 @@
 			"deutsch": "de",
 			"pl": "pl",
 			"polish": "pl",
-			"polski": "pl"
+			"polski": "pl",
+			"pt": "pt",
+			"portuguese": "pt",
+			"português": "pt"
 		}
 	}
 }
