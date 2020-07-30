@@ -5,7 +5,7 @@ Object.keys(i18n.allLangs.names).forEach( lang => i18n[lang] = require('../i18n/
 const defaultAliases = ( i18n?.[defaultSettings.lang]?.aliases || {} );
 
 /**
- * A langauge.
+ * A language.
  * @class
  */
 class Lang {
@@ -18,7 +18,7 @@ class Lang {
 	constructor(lang = defaultSettings.lang, namespace = '') {
 		this.lang = lang;
 		this.namespace = namespace;
-		this.fallback = ( i18n?.[lang]?.fallback.slice() || [] );
+		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] );
 
 		this.localNames = {};
 		this.aliases = {};
@@ -107,8 +107,8 @@ class Lang {
 //	}
 
 	/**
-	 * Get names for all langauges.
-	 * @param {Boolean} isRcGcDw - Get the langauge for RcGcDw?
+	 * Get names for all languages.
+	 * @param {Boolean} isRcGcDw - Get the languages for RcGcDw?
 	 * @returns {Object}
 	 * @static
 	 */
