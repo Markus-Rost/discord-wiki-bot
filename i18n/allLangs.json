@@ -9,7 +9,8 @@
 			"pt": ["Portuguese", "Português"],
 			"ru": ["Russian", "Русский"],
 			"tr": ["Turkish", "Türkçe"],
-			"zh": ["Chinese", "中文"]
+			"zh-hans": ["Chinese (Simplified)", "简体中文"],
+			"zh-hant": ["Chinese (Traditional)", "繁體中文"]
 		},
 		"map": {
 			"en": "en",
@@ -36,9 +37,17 @@
 			"tr": "tr",
 			"turkish": "tr",
 			"turkçe": "tr",
-			"zh": "zh",
-			"chinese": "zh",
-			"中文": "zh"
+			"zh": "zh-hans",
+			"chinese": "zh-hans",
+			"中文": "zh-hans",
+			"zh-hans": "zh-hans",
+			"Chinese (Simplified)": "zh-hans",
+			"Simplified Chinese": "zh-hans",
+			"简体中文": "zh-hans",
+			"zh-hant": "zh-hant",
+			"Chinese (Traditional)": "zh-hant",
+			"Traditional Chinese": "zh-hant",
+			"繁體中文": "zh-hant"
 		}
 	},
 	"RcGcDw": {
