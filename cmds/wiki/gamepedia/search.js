@@ -44,7 +44,9 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 			body.query.search.forEach( result => {
 				description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')' + ( result.sectiontitle ? ' § [' + result.sectiontitle + '](' + wiki.toLink(result.title, '', result.sectiontitle, query.general, true) + ')' : '' ) + ( result.redirecttitle ? ' (⤷ [' + result.redirecttitle + '](' + wiki.toLink(result.redirecttitle, '', '', query.general, true) + '))' : '' ) );
 			} );
-			embed.setFooter( lang.get('search.results', body.query.searchinfo.totalhits) );
+			if ( body.query.searchinfo ) {
+				embed.setFooter( lang.get('search.results', body.query.searchinfo.totalhits) );
+			}
 		}
 	}, error => {
 		console.log( '- Error while getting the search results.' + error );
