@@ -157,11 +157,11 @@
 		"help_subpage": "請將您的 Discord 使用者名（$1）添加至您在 wiki 上的 `/Discord` 子頁面："
 	},
 	"rcscript": {
-		"title": "最近更改 webhook",
-		"ad": "你想要在 Discord 裏直接看最近更改嗎？使用 `$1rcscript` 來爲你的 Discord 伺服器增加一個基於 **$2** 的最近更改 webhook！",
-		"missing": "本伺服器內暫無最近更改 webhook。",
-		"current": "這些是本伺服器當前的最近更改 webhook：",
-		"current_selected": "這是本伺服器的最近更改 webhook：",
+		"title": "最近更改網路勾手",
+		"ad": "你想要在 Discord 裏直接看最近更改嗎？使用 `$1rcscript` 來爲你的 Discord 伺服器增加一個基於 **$2** 的最近更改網路勾手！",
+		"missing": "本伺服器內暫無最近更改網路勾手。",
+		"current": "這些是本伺服器當前的最近更改網路勾手：",
+		"current_selected": "這是本伺服器的最近更改網路勾手：",
 		"channel": "頻道：",
 		"wiki": "Wiki：",
 		"lang": "語言：",
@@ -172,43 +172,44 @@
 		"toggle": "（開關）",
 		"help_feeds": "（討論版、留言牆、文章評論）",
 		"delete": "刪除此最近更改 webhook：",
-		"add_more": "增加更多的最近更改 webhook：",
-		"noadmin": "你需要 `管理 webhook` 權限來運行此指令！",
-		"max_entries": "已到達最近更改 webhook 的最大數量。",
-		"sysmessage": "要添加最近更改 webhook，系統消息 `$1` 必須是伺服器 ID `$2`。",
-		"audit_reason": "“$1”的最近更改 webhook",
-		"audit_reason_delete": "最近更改 webhook 已刪除",
-		"added": "一個最近更改 webhook 已添加到：",
-		"deleted": "最近更改 webhook 已被刪除。",
-		"webhook_failed": "抱歉，此 Webhook 不可被創建，請稍後再試。",
-		"current_wiki": "此 Webhook 的 wiki 是：",
+		"delete": "刪除此最近更改網路勾手：",
+		"add_more": "增加更多的最近更改網路勾手：",
+		"noadmin": "你需要 `管理網路勾手` 權限來運行此指令！",
+		"max_entries": "已到達最近更改網路勾手的最大數量。",
+		"sysmessage": "要添加最近更改網路勾手，系統消息 `$1` 必須是伺服器 ID `$2`。",
+		"audit_reason": "“$1”的最近更改網路勾手",
+		"audit_reason_delete": "最近更改網路勾手已刪除",
+		"added": "一個最近更改網路勾手已添加到：",
+		"deleted": "最近更改網路勾手已被刪除。",
+		"webhook_failed": "抱歉，此網路勾手不可被創建，請稍後再試。",
+		"current_wiki": "此網路勾手的 wiki 是：",
 		"help_wiki": "wiki 的連結：`https://<wiki>.gamepedia.com/`或`https://<wiki>.fandom.com/`",
 		"new_wiki": "<新 wiki>",
-		"updated_wiki": "此 webhook 對應的 wiki 已被改爲：",
-		"current_lang": "此 webhook 的語言爲：",
+		"updated_wiki": "此網路勾手對應的 wiki 已被改爲：",
+		"current_lang": "此網路勾手的語言爲：",
 		"help_lang": "目前支援的語言爲：",
 		"new_lang": "<新語言>",
-		"updated_lang": "此 webhook 的語言已被改爲：",
-		"current_display": "此 webhook 的顯示模式爲：",
+		"updated_lang": "此網路勾手的語言已被改爲：",
+		"current_display": "此網路勾手的顯示模式爲：",
 		"help_display_compact": "緊湊的文字式消息，包含行內連結。",
 		"help_display_embed": "嵌入式消息，包含編輯標籤和分類更改。",
 		"help_display_image": "嵌入式消息，包含圖像預覽。",
 		"help_display_diff": "嵌入式消息，包含圖像預覽和編輯差異。",
-		"updated_display": "此 webhook 的顯示模式已被改爲：",
-		"disabled_feeds": "此 webhook 中如討論版、留言牆和條目評論等基於 RSS 源的更改推送已禁用。",
-		"enabled_feeds": "此 webhook 中如討論版、留言牆和條目評論等基於 RSS 源的更改推送已啓用。",
-		"no_feeds": "此 webhook 的 wiki 沒有如討論版、留言牆和條目評論等基於 RSS 源的更改，已啓用。",
+		"updated_display": "此網路勾手的顯示模式已被改爲：",
+		"disabled_feeds": "此網路勾手中如討論版、留言牆和條目評論等基於 RSS 源的更改推送已禁用。",
+		"enabled_feeds": "此網路勾手中如討論版、留言牆和條目評論等基於 RSS 源的更改推送已啓用。",
+		"no_feeds": "此網路勾手的 wiki 沒有如討論版、留言牆和條目評論等基於 RSS 源的更改，已啓用。",
 		"webhook": {
-			"created": "$1 的最近更改 webhook 已被添加到此頻道。",
-			"updated_wiki": "此最近更改 webhook 的 wiki 已改爲 $1",
-			"updated_lang": "此最近更改 webhook 的語言已被改爲 $1。",
-			"updated_display_compact": "此最近更改 webhook 的顯示模式已改爲緊湊的文字式消息，包含行內連結。",
-			"updated_display_embed": "此最近更改 webhook 的顯示模式已改爲嵌入式消息，包含編輯標籤和分類更改。",
-			"updated_display_image": "此最近更改 webhook 的顯示模式已改爲嵌入式消息，包含圖像預覽。",
-			"updated_display_diff": "此最近更改 webhook 的顯示模式已改爲嵌入式消息，包含圖像預覽和編輯差異。",
-			"disabled_feeds": "此最近更改 webhook 中如討論版、留言牆和條目評論等基於 RSS 源的更改已禁用。",
-			"enabled_feeds": "此最近更改 webhook 中如討論版、留言牆和條目評論等基於 RSS 源的更改已啓用。",
-			"deleted": "此最近更改 webhook 將會被刪除。"
+			"created": "$1 的最近更改網路勾手已被添加到此頻道。",
+			"updated_wiki": "此最近更改網路勾手的 wiki 已改爲 $1",
+			"updated_lang": "此最近更改網路勾手的語言已被改爲 $1。",
+			"updated_display_compact": "此最近更改網路勾手的顯示模式已改爲緊湊的文字式消息，包含行內連結。",
+			"updated_display_embed": "此最近更改網路勾手的顯示模式已改爲嵌入式消息，包含編輯標籤和分類更改。",
+			"updated_display_image": "此最近更改網路勾手的顯示模式已改爲嵌入式消息，包含圖像預覽。",
+			"updated_display_diff": "此最近更改網路勾手的顯示模式已改爲嵌入式消息，包含圖像預覽和編輯差異。",
+			"disabled_feeds": "此最近更改網路勾手中如討論版、留言牆和條目評論等基於 RSS 源的更改已禁用。",
+			"enabled_feeds": "此最近更改網路勾手中如討論版、留言牆和條目評論等基於 RSS 源的更改已啓用。",
+			"deleted": "此最近更改網路勾手將會被刪除。"
 		}
 	},
 	"overview": {
@@ -550,31 +551,31 @@
 			"rcscript": {
 				"default": {
 					"cmd": "rcscript",
-					"desc": "我將更改最近更改 webhook。"
+					"desc": "我將更改最近更改網路勾手。"
 				},
 				"add": {
 					"cmd": "rcscript add [<wiki>]",
-					"desc": "我將添加一個新的最近更改 webhook。"
+					"desc": "我將添加一個新的最近更改網路勾手。"
 				},
 				"wiki": {
 					"cmd": "rcscript wiki <新 wiki>",
-					"desc": "我將更改最近更改 webhook 的 wiki。"
+					"desc": "我將更改最近更改網路勾手的 wiki。"
 				},
 				"lang": {
 					"cmd": "rcscript lang <新語言>",
-					"desc": "我將更改最近更改 webhook 的語言。"
+					"desc": "我將更改最近更改網路勾手的語言。"
 				},
 				"display": {
 					"cmd": "rcscript display <新顯示模式>",
-					"desc": "我將更改最近更改 webhook 的顯示模式。"
+					"desc": "我將更改最近更改網路勾手的顯示模式。"
 				},
 				"feeds": {
 					"cmd": "rc script feeds",
-					"desc": "我將切換是否在最近更改 webhook 上推送 Fandom wiki 上的討論版更改。"
+					"desc": "我將切換是否在最近更改網路勾手上推送 Fandom wiki 上的討論版更改。"
 				},
 				"delete": {
 					"cmd": "rcscript delete",
-					"desc": "我將刪除最近更改 webhook。"
+					"desc": "我將刪除最近更改網路勾手。"
 				}
 			},
 			"voice": {
