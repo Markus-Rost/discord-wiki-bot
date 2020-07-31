@@ -560,7 +560,7 @@
 		"wiki": "Wiki：",
 		"lang": "语言：",
 		"display": "显示模式：",
-		"feeds": "基于 RSS 源的更改",
+		"feeds": "讨论式的更改",
 		"enabled": "已启用",
 		"disabled": "已禁用",
 		"toggle": "（开关）",
@@ -589,9 +589,9 @@
 		"help_display_image": "嵌入式消息，包含图像预览。",
 		"help_display_diff": "嵌入式消息，包含图像预览和编辑差异。",
 		"updated_display": "此 webhook 的显示模式已被改为：",
-		"disabled_feeds": "此 webhook 中如讨论版、留言墙和条目评论等基于 RSS 源的更改推送已禁用。",
-		"enabled_feeds": "此 webhook 中如讨论版、留言墙和条目评论等基于 RSS 源的更改推送已启用。",
-		"no_feeds": "此 webhook 的 wiki 没有如讨论版、留言墙和条目评论等基于 RSS 源的更改，已启用。",
+		"disabled_feeds": "此 webhook 中如讨论版、留言墙和条目评论等讨论式的更改推送已禁用。",
+		"enabled_feeds": "此 webhook 中如讨论版、留言墙和条目评论等讨论式的更改推送已启用。",
+		"no_feeds": "此 webhook 的 wiki 没有如讨论版、留言墙和条目评论等讨论式的更改，已启用。",
 		"webhook": {
 			"created": "$1 的最近更改 webhook 已被添加到此频道。",
 			"updated_wiki": "此最近更改 webhook 的 wiki 已改为 $1",
@@ -600,8 +600,8 @@
 			"updated_display_embed": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含编辑标签和分类更改。",
 			"updated_display_image": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含图像预览。",
 			"updated_display_diff": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含图像预览和编辑差异。",
-			"disabled_feeds": "此最近更改 webhook 中如讨论版、留言墙和条目评论等基于 RSS 源的更改已禁用。",
-			"enabled_feeds": "此最近更改 webhook 中如讨论版、留言墙和条目评论等基于 RSS 源的更改已启用。",
+			"disabled_feeds": "此最近更改 webhook 中如讨论版、留言墙和条目评论等讨论式的更改已禁用。",
+			"enabled_feeds": "此最近更改 webhook 中如讨论版、留言墙和条目评论等讨论式的更改已启用。",
 			"deleted": "此最近更改 webhook 将会被删除。"
 		}
 	}
