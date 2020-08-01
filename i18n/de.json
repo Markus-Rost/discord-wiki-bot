@@ -20,7 +20,7 @@
 	"prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
 	"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
 	"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n$1, deine Nachricht enthält zu viele Befehle!",
-	"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe einfach auf MediaWiki Websites, wie Gamepedia- und Fandom-Wikis, zu verlinken und diese zu durchsuchen. Ich zeige kurze Beschreibungen und zusätliche Informationen zu Seiten und kann Weiterleitungen auflösen und Interwiki-Links folgen. Geschrieben wurde ich von $1 in JavaScript.\n\nDu kannst mich auf Patreon unterstützen:",
+	"disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe einfach auf MediaWiki Websites, wie Gamepedia- und Fandom-Wikis, zu verlinken und diese zu durchsuchen. Ich zeige kurze Beschreibungen und zusätzliche Informationen zu Seiten und kann Weiterleitungen auflösen sowie Interwiki-Links folgen. Geschrieben wurde ich von $1 in JavaScript.\n\nDu kannst mich auf Patreon unterstützen:",
 	"helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
 	"patreon": "dies ist eine Patreon-Funktion!\nDu kannst mich auf Patreon unterstützen um Zugang zu dieser Funktion zu erhalten:",
 	"settings": {
@@ -151,7 +151,7 @@
 		"empty": "*leer*",
 		"notice": "Hinweis:",
 		"qualified": "Qualifiziert für:",
-		"qualified_error": "Qualifiziert für, aber konnte nicht hinzugefügt werden:",
+		"qualified_error": "Qualifiziert für, aber kann nicht hinzugefügt werden:",
 		"help_guide": "Folge [dieser Anleitung]($1) um dein Discord-Tag auf deinem Wiki-Profil hinzuzufügen:",
 		"help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",

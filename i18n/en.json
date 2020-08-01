@@ -145,7 +145,7 @@
 		"empty": "*empty*",
 		"notice": "Notice:",
 		"qualified": "Qualified for:",
-		"qualified_error": "Qualified for, but could not add:",
+		"qualified_error": "Qualified for, but can't add:",
 		"help_guide": "Follow [this guide]($1) to add your Discord tag to your wiki profile:",
 		"help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
