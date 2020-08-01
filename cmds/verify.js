@@ -29,7 +29,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	}
 	if ( wiki.endsWith( '.gamepedia.com/' ) ) username = username.replace( /^userprofile\s*:/i, '' );
 	
-	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') + ' • ' + new Date().toLocaleString(lang.get('dateformat'), timeoptions) ).setTimestamp();
+	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	db.all( 'SELECT role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the verifications: ' + dberror );
