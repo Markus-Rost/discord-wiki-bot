@@ -174,7 +174,7 @@
 		"audit_reason": "Recent changes webhook for \"$1\"",
 		"audit_reason_delete": "Removed recent changes webhook",
 		"added": "a recent changes webhook has been added for:",
-		"deleted": "the recent changes webhook has be deleted.",
+		"deleted": "the recent changes webhook has been deleted.",
 		"webhook_failed": "sadly the webhook couldn't be created, please try again later.",
 		"current_wiki": "the wiki for this webhook is:",
 		"help_wiki": "Link to the wiki: `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
