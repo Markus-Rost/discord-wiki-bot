@@ -167,6 +167,7 @@
 		"wiki": "Wiki:",
 		"lang": "Sprache:",
 		"display": "Anzeigemodus:",
+		"rc": "Wiki-Änderungen:",
 		"feeds": "Feeds-basierte Änderungen:",
 		"enabled": "aktiviert",
 		"disabled": "deaktiviert",
@@ -199,6 +200,9 @@
 		"disabled_feeds": "die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, für diesen Webhook wurden deaktiviert.",
 		"enabled_feeds": "die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, für diesen Webhook wurden aktiviert.",
 		"no_feeds": "das Wiki für diesen Webhook hat keine Feeds-basierten Funktionen, wie Diskussionen, Nachrichtenseiten oder Artikelkommentare, aktiviert.",
+		"disabled_rc": "die Wiki-Änderungen für diesen Webhook wurden deaktiviert.",
+		"enabled_rc": "die Wiki-Änderungen für diesen Webhook wurden aktiviert.",
+		"all_inactive": "du kannst nicht Wiki-Änderungen und Feeds-basierte Änderungen gleichzeitig deaktivieren.",
 		"webhook": {
 			"created": "Ein Letzte Änderungen-Webhook für $1 wurde zu diesem Kanal hinzugefügt.",
 			"updated_wiki": "Das Wiki für diesen Letzte Änderungen-Webhook wurde zu $1 geändert.",
@@ -209,6 +213,8 @@
 			"updated_display_diff": "Der Anzeigemodus für diesen Letzte Änderungen-Webhook wurde zu Einbettungen mit Bildvorschau und Bearbeitungsunterschieden geändert.",
 			"disabled_feeds": "Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden für diesen Letzte Änderungen-Webhook deaktiviert.",
 			"enabled_feeds": "Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden für diesen Letzte Änderungen-Webhook aktiviert.",
+			"disabled_rc": "Die Wiki-Änderungen wurden für diesen Letzte Änderungen-Webhook deaktiviert.",
+			"enabled_rc": "Die Wiki-Änderungen wurden für diesen Letzte Änderungen-Webhook aktiviert.",
 			"deleted": "Dieser Letzte Änderungen-Webhook wird gelöscht."
 		}
 	},

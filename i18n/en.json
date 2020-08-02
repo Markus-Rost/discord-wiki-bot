@@ -161,6 +161,7 @@
 		"wiki": "Wiki:",
 		"lang": "Language:",
 		"display": "Display mode:",
+		"rc": "Wiki changes:",
 		"feeds": "Feeds based changes:",
 		"enabled": "enabled",
 		"disabled": "disabled",
@@ -193,6 +194,9 @@
 		"disabled_feeds": "the feeds based changes, like discussions, message walls and article comments, for this webhook have been disabled.",
 		"enabled_feeds": "the feeds based changes, like discussions, message walls and article comments, for this webhook have been enabled.",
 		"no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
+		"disabled_rc": "the wiki changes for this webhook have been disabled.",
+		"enabled_rc": "the wiki changes for this webhook have been enabled.",
+		"all_inactive": "you can't disable wiki changes and feeds based changes at the same time.",
 		"webhook": {
 			"created": "A recent changes webhook for $1 has been added to this channel.",
 			"updated_wiki": "The wiki has been changed to $1 for this recent changes webhook.",
@@ -203,6 +207,8 @@
 			"updated_display_diff": "The display mode has been changed to embed messages with image previews and edit differences for this recent changes webhook.",
 			"disabled_feeds": "The feeds based changes, like discussions, message walls and article comments, have been disabled for this recent changes webhook.",
 			"enabled_feeds": "The feeds based changes, like discussions, message walls and article comments, have been enabled for this recent changes webhook.",
+			"disabled_rc": "The wiki changes have been disabled for this recent changes webhook.",
+			"enabled_rc": "The wiki changes have been enabled for this recent changes webhook.",
 			"deleted": "This recent changes webhook will be deleted."
 		}
 	},
