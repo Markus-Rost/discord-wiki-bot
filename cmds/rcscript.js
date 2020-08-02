@@ -31,7 +31,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		return msg.replyMsg( lang.get('missingperm') + ' `MANAGE_WEBHOOKS`' );
 	}
 	
-	db.all( 'SELECT configid, webhook, wiki, lang, display, wikiid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
+	db.all( 'SELECT configid, webhook, wiki, lang, display, wikiid, rcid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the RcGcDw: ' + dberror );
 			msg.reactEmoji('error', true);
@@ -332,7 +332,43 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				} );
 			}
 			if ( selected_row.wiki.isFandom() && args[0] === 'feeds' ) {
+				if ( args[1] === 'only' ) {
+					if ( selected_row.rcid === -1 ) {
+						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
+							webhook.send( lang.get('rcscript.webhook.enabled_rc') ).catch(log_error);
+						}, log_error );
+						return db.run( 'UPDATE rcgcdw SET rcid = ? WHERE webhook = ?', [null, selected_row.webhook], function (error) {
+							if ( error ) {
+								console.log( '- Error while updating the RcGcDw: ' + error );
+								msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+								return error;
+							}
+							console.log( '- RcGcDw successfully updated.' );
+							msg.replyMsg( lang.get('rcscript.enabled_rc') + '\n`' + cmd + '`', {}, true );
+						} );
+					}
+
+					if ( !selected_row.wikiid ) {
+						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
+					}
+					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
+						webhook.send( lang.get('rcscript.webhook.disabled_rc') ).catch(log_error);
+					}, log_error );
+					return db.run( 'UPDATE rcgcdw SET rcid = ? WHERE webhook = ?', [-1, selected_row.webhook], function (error) {
+						if ( error ) {
+							console.log( '- Error while updating the RcGcDw: ' + error );
+							msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+							return error;
+						}
+						console.log( '- RcGcDw successfully updated.' );
+						msg.replyMsg( lang.get('rcscript.disabled_rc') + '\n`' + cmd + '`', {}, true );
+					} );
+				}
+
 				if ( selected_row.wikiid ) {
+					if ( selected_row.rcid === -1 ) {
+						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
+					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 						webhook.send( lang.get('rcscript.webhook.disabled_feeds') ).catch(log_error);
 					}, log_error );
@@ -421,6 +457,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				text += '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n';
 				text += '\n' + lang.get('rcscript.display') + ' `' + display_types[selected_row.display] + '`';
 				text += '\n`' + cmd + ' display (' + display.join('|') + ')`\n';
+				if ( selected_row.rcid === -1 ) {
+					text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
+					text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
+				}
 				if ( selected_row.wiki.isFandom() ) {
 					text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( selected_row.wikiid ? 'enabled' : 'disabled' )) + '`*';
 					text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
@@ -460,6 +500,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( only ) row_text += '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n';
 				row_text += '\n' + lang.get('rcscript.display') + ' `' + display_types[row.display] + '`';
 				if ( only ) row_text += '\n`' + cmd + ' display (' + display.join('|') + ')`\n';
+				if ( row.rcid === -1 ) {
+					row_text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
+					if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
+				}
 				if ( row.wiki.isFandom() ) {
 					row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.wikiid ? 'enabled' : 'disabled' )) + '`*';
 					if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
