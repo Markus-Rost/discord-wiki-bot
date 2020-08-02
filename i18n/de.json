@@ -202,7 +202,7 @@
 		"no_feeds": "das Wiki für diesen Webhook hat keine Feeds-basierten Funktionen, wie Diskussionen, Nachrichtenseiten oder Artikelkommentare, aktiviert.",
 		"disabled_rc": "die Wiki-Änderungen für diesen Webhook wurden deaktiviert.",
 		"enabled_rc": "die Wiki-Änderungen für diesen Webhook wurden aktiviert.",
-		"all_inactive": "du kannst nicht Wiki-Änderungen und Feeds-basierte Änderungen gleichzeitig deaktivieren.",
+		"all_inactive": "du kannst Wiki-Änderungen und Feeds-basierte Änderungen nicht gleichzeitig deaktiviert haben.",
 		"webhook": {
 			"created": "Ein Letzte Änderungen-Webhook für $1 wurde zu diesem Kanal hinzugefügt.",
 			"updated_wiki": "Das Wiki für diesen Letzte Änderungen-Webhook wurde zu $1 geändert.",

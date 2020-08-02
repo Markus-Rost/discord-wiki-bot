@@ -196,7 +196,7 @@
 		"no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
 		"disabled_rc": "the wiki changes for this webhook have been disabled.",
 		"enabled_rc": "the wiki changes for this webhook have been enabled.",
-		"all_inactive": "you can't disable wiki changes and feeds based changes at the same time.",
+		"all_inactive": "you can't have wiki changes and feeds based changes disabled at the same time.",
 		"webhook": {
 			"created": "A recent changes webhook for $1 has been added to this channel.",
 			"updated_wiki": "The wiki has been changed to $1 for this recent changes webhook.",
