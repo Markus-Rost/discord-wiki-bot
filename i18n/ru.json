@@ -1,14 +1,34 @@
 {
 	"__translator": [
 		"Hosh",
-		"AttemptToCallNil"
+		"AttemptToCallNil",
+		null, null,
+		null, null,
+		null, null,
+		null, null
 	],
 	"fallback": [
-		"en"
+		"en",
+		null,
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"page": ["страница"],
-		"search": ["поиск"]
+		"bug": [null, null, null, null, null],
+		"command": [null,null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": [null, null, null, null, null],
+		"help": [null, null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": [null, null, null, null, null],
+		"page": ["страница", null, null, null, null],
+		"random": [null, null, null, null, null],
+		"search": ["поиск", null, null, null, null],
+		"test": [null, null, null, null, null],
+		"user": [null, null, null, null, null],
+		"verify": [null, null, null, null, null]
 	},
 	"dateformat": "ru-RU",
 	"prefix": "префикс для этого сервера `$1`. Вы можете изменить префикс, введя команду `$1settings prefix`. Чтобы получить список всех команд, введите `$1help`.",
@@ -263,12 +283,17 @@
 	"test": {
 		"pause": "В настоящее время я приостановлен на этом сервере.",
 		"text": [
+			"Я полностью работоспособен!",
 			"Я все еще жив!",
 			"и поверь мне, Я еще жив.",
 			"Я занимаюсь наукой и все еще жив.",
-			"Я чувствую себя фантастически, и Я все еще жив."
+			"Я чувствую себя фантастически, и Я все еще жив.",
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null
 		],
-		"default": "Я полностью работоспособен!",
 		"time": "Время отклика"
 	},
 	"help": {

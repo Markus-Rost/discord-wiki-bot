@@ -42,7 +42,7 @@ function getSettings(trysettings = 1) {
 						console.log( '- ' + shardId + ': Created the patreons index.' );
 					} );
 				} );
-				db.run( 'CREATE TABLE IF NOT EXISTS discord(guild TEXT NOT NULL, channel TEXT, lang TEXT NOT NULL DEFAULT ?, wiki TEXT NOT NULL DEFAULT ?, prefix TEXT NOT NULL DEFAULT ?, patreon TEXT, voice INTEGER, inline INTEGER, UNIQUE(guild, channel), FOREIGN KEY(patreon) REFERENCES patreons(patreon) ON DELETE SET NULL)', [defaultSettings.lang, defaultSettings.wiki, process.env.prefix], function (error) {
+				db.run( 'CREATE TABLE IF NOT EXISTS discord(guild TEXT NOT NULL, channel TEXT, lang TEXT NOT NULL DEFAULT [' + defaultSettings.lang + '], wiki TEXT NOT NULL DEFAULT [' + defaultSettings.wiki + '], prefix TEXT NOT NULL DEFAULT [' + process.env.prefix + '], patreon TEXT, voice INTEGER, inline INTEGER, UNIQUE(guild, channel), FOREIGN KEY(patreon) REFERENCES patreons(patreon) ON DELETE SET NULL)', [], function (error) {
 					if ( error ) {
 						console.log( '- ' + shardId + ': Error while creating the discord table: ' + error );
 						return error;
@@ -88,7 +88,7 @@ function getSettings(trysettings = 1) {
 						getSettings(trysettings);
 					}
 				} );
-				db.run( 'CREATE TABLE IF NOT EXISTS verification(guild TEXT NOT NULL, configid INTEGER NOT NULL, channel TEXT NOT NULL, role TEXT NOT NULL, editcount INTEGER NOT NULL DEFAULT ?, usergroup TEXT NOT NULL DEFAULT ?, accountage INTEGER NOT NULL DEFAULT ?, rename INTEGER NOT NULL DEFAULT ?, UNIQUE(guild, configid))', [0, 'user', 0, 0], function (error) {
+				db.run( 'CREATE TABLE IF NOT EXISTS verification(guild TEXT NOT NULL, configid INTEGER NOT NULL, channel TEXT NOT NULL, role TEXT NOT NULL, editcount INTEGER NOT NULL DEFAULT [0], usergroup TEXT NOT NULL DEFAULT [user], accountage INTEGER NOT NULL DEFAULT [0], rename INTEGER NOT NULL DEFAULT [0], UNIQUE(guild, configid))', [], function (error) {
 					if ( error ) {
 						console.log( '- ' + shardId + ': Error while creating the verification table: ' + error );
 						return error;
@@ -102,7 +102,7 @@ function getSettings(trysettings = 1) {
 						console.log( '- ' + shardId + ': Created the verification index.' );
 					} );
 				} );
-				db.run( 'CREATE TABLE IF NOT EXISTS rcgcdw(guild TEXT NOT NULL, configid INTEGER NOT NULL, webhook TEXT NOT NULL UNIQUE, wiki TEXT NOT NULL, lang TEXT NOT NULL DEFAULT ?, display INTEGER NOT NULL DEFAULT ?, wikiid INTEGER, rcid INTEGER, postid TEXT, UNIQUE(guild, configid))', [defaultSettings.lang, 1], function (error) {
+				db.run( 'CREATE TABLE IF NOT EXISTS rcgcdw(guild TEXT NOT NULL, configid INTEGER NOT NULL, webhook TEXT NOT NULL UNIQUE, wiki TEXT NOT NULL, lang TEXT NOT NULL DEFAULT [' + defaultSettings.lang + '], display INTEGER NOT NULL DEFAULT [1], wikiid INTEGER, rcid INTEGER, postid TEXT, UNIQUE(guild, configid))', [], function (error) {
 					if ( error ) {
 						console.log( '- ' + shardId + ': Error while creating the rcgcdw table: ' + error );
 						return error;

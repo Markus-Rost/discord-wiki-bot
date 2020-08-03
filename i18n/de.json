@@ -1,20 +1,34 @@
 {
 	"__translator": [
-		"MarkusRost"
+		"MarkusRost",
+		null, null,
+		null, null,
+		null, null,
+		null, null,
+		null
 	],
 	"fallback": [
-		"en"
+		"en",
+		null,
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"help": ["hilfe"],
-		"page": ["seite"],
-		"search": ["suche"],
-		"random": ["zufall"],
-		"overview": ["übersicht"],
-		"discussion": ["diskussionen", "diskussion"],
-		"user": ["benutzer"],
-		"command": ["befehl"],
-		"bug": ["fehler"]
+		"bug": ["fehler", null, null, null, null],
+		"command": ["befehl",null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": ["diskussionen", "diskussion", null, null, null],
+		"help": ["hilfe", null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": ["übersicht", null, null, null, null],
+		"page": ["seite", null, null, null, null],
+		"random": ["zufall", null, null, null, null],
+		"search": ["suche", null, null, null, null],
+		"test": [null, null, null, null, null],
+		"user": ["benutzer", null, null, null, null],
+		"verify": [null, null, null, null, null]
 	},
 	"dateformat": "de-DE",
 	"prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
@@ -363,13 +377,18 @@
 	"test": {
 		"pause": "ich bin auf diesem Server derzeit pausiert.",
 		"text": [
+			"ich bin voll funktionsfähig!",
 			"ich bin ja schon wach!",
 			"du hast mich gerufen?",
 			"ja, ich funktioniere noch!",
 			"hast du **Kekse** gesagt?",
-			"hast du **Kekse** gesagt?"
+			"hast du **Kekse** gesagt?",
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null
 		],
-		"default": "ich bin voll funktionsfähig!",
 		"time": "Ping",
 		"notice": "Eingeschränkte Funktionalität",
 		"MediaWiki": "Benötigt mindestens $1 für vollständige Funktionalität, fand `$2`.",

@@ -1,16 +1,34 @@
 {
 	"__translator": [
-		"Jack_McKalling"
+		"Jack_McKalling",
+		null, null,
+		null, null,
+		null, null,
+		null, null,
+		null
 	],
 	"fallback": [
-		"en"
+		"en",
+		null,
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"page": ["pagina"],
-		"search": ["zoeken"],
-		"random": ["willekeurig"],
-		"overview": ["overzicht"],
-		"discussion": ["discussie"]
+		"bug": [null, null, null, null, null],
+		"command": [null,null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": ["discussie", null, null, null, null],
+		"help": [null, null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": ["overzicht", null, null, null, null],
+		"page": ["pagina", null, null, null, null],
+		"random": ["willekeurig", null, null, null, null],
+		"search": ["zoeken", null, null, null, null],
+		"test": [null, null, null, null, null],
+		"user": [null, null, null, null, null],
+		"verify": [null, null, null, null, null]
 	},
 	"dateformat": "nl-NL",
 	"prefix": "het voorvoegsel voor deze server is `$1`. Je kunt het voorvoegsel veranderen met `$1settings prefix`. Voor een lijst van alle opdrachten zie `$1help`.",
@@ -192,13 +210,18 @@
 	"test": {
 		"pause": "Ik ben momenteel gepauzeerd op deze server.",
 		"text": [
+			"Ik functioneer volledig!",
 			"Ik leef nog steeds!",
 			"en geloof me, ik leef nog steeds.",
 			"Yup, ik ben nog steeds beschikbaar!",
 			"Geef me een opdracht, ik verveel me!",
-			"Ik voel me goed en ben bereid om je opdrachten te volgen."
+			"Ik voel me goed en ben bereid om je opdrachten te volgen.",
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null
 		],
-		"default": "Ik functioneer volledig!",
 		"time": "Reactie tijd"
 	},
 	"help": {

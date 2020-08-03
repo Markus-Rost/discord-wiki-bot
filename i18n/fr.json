@@ -1,15 +1,34 @@
 {
 	"__translator": [
 		"Yanis48",
-		"JSBM"
+		"JSBM",
+		null, null,
+		null, null,
+		null, null,
+		null, null
 	],
 	"fallback": [
-		"en"
+		"en",
+		null,
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"help": ["aide"],
-		"search": ["chercher"],
-		"command": ["commande"]
+		"bug": [null, null, null, null, null],
+		"command": ["commande",null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": [null, null, null, null, null],
+		"help": ["aide", null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": [null, null, null, null, null],
+		"page": [null, null, null, null, null],
+		"random": [null, null, null, null, null],
+		"search": ["chercher", null, null, null, null],
+		"test": [null, null, null, null, null],
+		"user": [null, null, null, null, null],
+		"verify": [null, null, null, null, null]
 	},
 	"dateformat": "fr-FR",
 	"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
@@ -193,6 +212,7 @@
 	"test": {
 		"pause": "je suis présentement en pause sur ce serveur.",
 		"text": [
+			"Je suis entièrement fonctionnel !",
 			"Je suis toujours en vie !",
 			"et crois-moi, je suis toujours vivant.",
 			"Je fais de la science et je suis toujours en vie.",
@@ -218,9 +238,9 @@
 			"... je suis là, j'étais en train de lire sur un Wiki! Saviez-vous que l'inventeur de la soupe est Darth Vader? ... Oh, peut-être que la page était vandalisée, en fait.",
 			"Le robot fonctionne.",
 			"Je suis là! Aller, je suis prêt, faites-moi faire une recherche! J'ai bien envie d'aller explorer les Wikis!",
-			"Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!"
+			"Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!",
+			null, null, null
 		],
-		"default": "Je suis entièrement fonctionnel !",
 		"time": "Temps de latence"
 	},
 	"help": {

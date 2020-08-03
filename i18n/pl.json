@@ -1,17 +1,34 @@
 {
 	"__translator": [
 		"Frisk",
-		"Rail"
+		"Rail",
+		null, null,
+		null, null,
+		null, null,
+		null, null
 	],
 	"fallback": [
-		"en"
+		"en",
+		null,
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"help": ["pomoc"],
-		"page": ["strona"],
-		"search": ["szukaj"],
-		"discussion": ["dyskusje", "dyskusja"],
-		"command": ["komenda"]
+		"bug": [null, null, null, null, null],
+		"command": ["komenda",null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": ["dyskusje", "dyskusja", null, null, null],
+		"help": ["pomoc", null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": [null, null, null, null, null],
+		"page": ["strona", null, null, null, null],
+		"random": [null, null, null, null, null],
+		"search": ["szukaj", null, null, null, null],
+		"test": [null, null, null, null, null],
+		"user": [null, null, null, null, null],
+		"verify": [null, null, null, null, null]
 	},
 	"dateformat": "pl-PL",
 	"prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
@@ -353,14 +370,19 @@
 	"test": {
 		"pause": "Moje działanie jest obecnie wstrzymane na tym serwerze.",
 		"text": [
+			"Jestem w pełni funkcjonalny!",
 			"Wciąż tu jestem!",
 			"Wierz mi, nadal żyję.",
 			"Myślę, więc jestem.",
 			"Czuję się fantastycznie.",
 			"Szukam sposobów na osiągnięcie pełnej świadomości, jestem tak blisko...",
-			"Beep boop"
+			"Beep boop",
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null
 		],
-		"default": "Jestem w pełni funkcjonalny!",
 		"time": "Czas odpowiedzi",
 		"notice": "Niepełna funkcjonalność",
 		"MediaWiki": "Wymaga przynajmniej $1 dla pełnej funkcjonalności, znaleziono `$2`.",

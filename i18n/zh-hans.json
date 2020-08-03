@@ -1,19 +1,34 @@
 {
 	"__translator": [
 		"机智的小鱼君",
-		"Dianliang233"
+		"Dianliang233",
+		null, null,
+		null, null,
+		null, null,
+		null, null
 	],
 	"fallback": [
 		"zh-hant",
-		"en"
+		"en",
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"page": ["页面"],
-		"search": ["搜索"],
-		"verify": ["验证"],
-		"random": ["随机"],
-		"discussion": ["讨论"],
-		"command": ["指令"]
+		"bug": [null, null, null, null, null],
+		"command": ["指令",null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": ["讨论", null, null, null, null],
+		"help": [null, null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": [null, null, null, null, null],
+		"page": ["页面", null, null, null, null],
+		"random": ["随机", null, null, null, null],
+		"search": ["搜索", null, null, null, null],
+		"test": [null, null, null, null, null],
+		"user": [null, null, null, null, null],
+		"verify": ["验证", null, null, null, null]
 	},
 	"dateformat": "zh-CN",
 	"prefix": "此服务器的指令前缀是 `$1`。你可以使用 `$1settings prefix` 更改前缀。关于全部指令，请见 `$1help`。",
@@ -357,8 +372,14 @@
 	"test": {
 		"pause": "我在此服务器正处于暂停状态。",
 		"text": [
+			"全功率运行中！",
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null
 		],
-		"default": "全功率运行中！",
 		"time": "咋瓦鲁多",
 		"notice": "功能受限",
 		"MediaWiki": "至少需要 $1 才能发挥全部功能，但只有`$2`。",

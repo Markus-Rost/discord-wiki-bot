@@ -2,19 +2,34 @@
 	"__translator": [
 		"Eduaddad",
 		"Jhonabf",
-		"dr03ramos"
+		"dr03ramos",
+		null, null,
+		null, null,
+		null, null,
+		null
 	],
 	"fallback": [
-		"en"
+		"en",
+		null,
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"help": ["ajuda"],
-		"test": ["teste"],
-		"page": ["página"],
-		"search": ["pesquisar"],
-		"discussion": ["discussão"],
-		"command": ["comando"],
-		"bug": ["erro"]
+		"bug": ["erro", null, null, null, null],
+		"command": ["comando",null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": ["discussão", null, null, null, null],
+		"help": ["ajuda", null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": [null, null, null, null, null],
+		"page": ["página", null, null, null, null],
+		"random": [null, null, null, null, null],
+		"search": ["pesquisar", null, null, null, null],
+		"test": ["teste", null, null, null, null],
+		"user": [null, null, null, null, null],
+		"verify": [null, null, null, null, null]
 	},
 	"dateformat": "pt-PT",
 	"prefix": "o prefixo deste servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`.",
@@ -271,12 +286,17 @@
 	"test": {
 		"pause": "eu estou atualmente em pausa neste servidor.",
 		"text": [
+			"eu estou totalmente funcional!",
 			"eu ainda estou vivo!",
 			"e acredite em mim, eu ainda estou vivo.",
 			"eu estou fazendo ciência e ainda estou vivo.",
-			"eu me sinto fantástica e ainda estou viva."
+			"eu me sinto fantástica e ainda estou viva.",
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null
 		],
-		"default": "eu estou totalmente funcional!",
 		"time": "Ping"
 	},
 	"help": {
