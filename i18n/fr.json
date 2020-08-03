@@ -2,41 +2,43 @@
 	"__translator": [
 		"Yanis48",
 		"JSBM",
-		null, null,
-		null, null,
-		null, null,
-		null, null
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " "
 	],
 	"fallback": [
 		"en",
-		null,
-		null,
-		null,
-		null
+		" ",
+		" ",
+		" ",
+		" "
 	],
 	"aliases": {
-		"bug": [null, null, null, null, null],
-		"command": ["commande",null, null, null, null],
-		"diff": [null, null, null, null, null],
-		"discussion": [null, null, null, null, null],
-		"help": ["aide", null, null, null, null],
-		"info": [null, null, null, null, null],
-		"invite": [null, null, null, null, null],
-		"overview": [null, null, null, null, null],
-		"page": [null, null, null, null, null],
-		"random": [null, null, null, null, null],
-		"search": ["chercher", null, null, null, null],
-		"test": [null, null, null, null, null],
-		"user": [null, null, null, null, null],
-		"verify": [null, null, null, null, null]
+		"bug": [" ", " ", " ", " ", " "],
+		"command": ["commande"," ", " ", " ", " "],
+		"diff": [" ", " ", " ", " ", " "],
+		"discussion": [" ", " ", " ", " ", " "],
+		"help": ["aide", " ", " ", " ", " "],
+		"info": [" ", " ", " ", " ", " "],
+		"invite": [" ", " ", " ", " ", " "],
+		"overview": [" ", " ", " ", " ", " "],
+		"page": [" ", " ", " ", " ", " "],
+		"random": [" ", " ", " ", " ", " "],
+		"search": ["chercher", " ", " ", " ", " "],
+		"test": [" ", " ", " ", " ", " "],
+		"user": [" ", " ", " ", " ", " "],
+		"verify": [" ", " ", " ", " ", " "]
 	},
 	"dateformat": "fr-FR",
-	"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
-	"missingperm": "Il me manque certaines permissions pour cette commande :",
-	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",
-	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. $1 m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Fandom et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",
-	"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
-	"patreon": "c'est une fonctionnalité réservée au Patreon !\nVous pouver me supporter sur Patreon pour avoir accès à cette fonctionnalité :",
+	"general": {
+		"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
+		"missingperm": "Il me manque certaines permissions pour cette commande :",
+		"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",
+		"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. $1 m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Fandom et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",
+		"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
+		"patreon": "c'est une fonctionnalité réservée au Patreon !\nVous pouver me supporter sur Patreon pour avoir accès à cette fonctionnalité :"
+	},
 	"settings": {
 		"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",
 		"missing": "ce serveur n'est pas encore configuré. Utilisez $1 et $2 pour modifier les paramètres.",
@@ -239,7 +241,7 @@
 			"Le robot fonctionne.",
 			"Je suis là! Aller, je suis prêt, faites-moi faire une recherche! J'ai bien envie d'aller explorer les Wikis!",
 			"Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!",
-			null, null, null
+			" ", " ", " "
 		],
 		"time": "Temps de latence"
 	},

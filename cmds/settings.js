@@ -204,7 +204,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		}
 		
 		if ( args[0] === 'lang' ) {
-			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 			prelang += 'lang';
 			var langhelp = '\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`';
 			if ( !args[1] ) {
@@ -260,7 +260,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		
 		if ( args[0] === 'prefix' && !channel ) {
 			if ( !( msg.guild.id in patreons ) ) {
-				return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+				return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 			}
 			var prefixhelp = '\n' + lang.get('settings.prefixhelp', prefix + 'settings prefix');
 			args[1] = args[1].replace( /(?<!\\)_$/, ' ' ).replace( /\\([_\W])/g, '$1' );
@@ -290,7 +290,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		}
 		
 		if ( args[0] === 'inline' ) {
-			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 			prelang += 'inline';
 			var toggle = 'inline ' + ( ( channel || guild ).inline ? 'disabled' : 'enabled' );
 			var inlinehelp = '\n' + lang.get('settings.' + toggle + '.help', prefix + 'settings ' + prelang + ' toggle', inlinepage);

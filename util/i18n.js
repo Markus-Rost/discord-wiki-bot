@@ -18,25 +18,25 @@ class Lang {
 	constructor(lang = defaultSettings.lang, namespace = '') {
 		this.lang = lang;
 		this.namespace = namespace;
-		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb );
+		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb.trim() );
 
 		this.localNames = {};
 		this.aliases = {};
 		let aliases = ( i18n?.[lang]?.aliases || {} );
 		Object.keys(aliases).forEach( cmd => {
-			if ( aliases[cmd][0] && !( cmd in this.localNames ) ) {
+			if ( aliases[cmd][0].trim() && !( cmd in this.localNames ) ) {
 				this.localNames[cmd] = aliases[cmd][0];
 			}
 			aliases[cmd].forEach( alias => {
-				if ( alias && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias.trim() && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
 			} );
 		} );
 		Object.keys(defaultAliases).forEach( cmd => {
-			if ( defaultAliases[cmd][0] && !( cmd in this.localNames ) ) {
+			if ( defaultAliases[cmd][0].trim() && !( cmd in this.localNames ) ) {
 				this.localNames[cmd] = defaultAliases[cmd][0];
 			}
 			defaultAliases[cmd].forEach( alias => {
-				if ( alias && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias.trim() && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
 			} );
 		} );
 	}
@@ -56,6 +56,7 @@ class Lang {
 		for (let n = 0; n < keys.length; n++) {
 			if ( text ) {
 				text = text?.[keys[n]];
+				if ( typeof text === 'string' ) text = text.trim()
 			}
 			if ( !text ) {
 				if ( fallback < this.fallback.length ) {

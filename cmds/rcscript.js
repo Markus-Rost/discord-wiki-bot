@@ -28,12 +28,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	// Patreon only during testing
 	if ( !( msg.guild.id in patreons ) ) {
-		return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+		return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 	}
 	// Patreon only during testing
 	if ( !msg.channel.permissionsFor(msg.client.user).has('MANAGE_WEBHOOKS') ) {
 		console.log( msg.guild.id + ': Missing permissions - MANAGE_WEBHOOKS' );
-		return msg.replyMsg( lang.get('missingperm') + ' `MANAGE_WEBHOOKS`' );
+		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_WEBHOOKS`' );
 	}
 	
 	db.all( 'SELECT configid, webhook, wiki, lang, display, wikiid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
@@ -320,7 +320,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					return msg.replyMsg( lang.get('rcscript.current_display') + ' `' + display_types[selected_row.display] + '`\n`' + cmd + ' display (' + display.join('|') + ')`\n' + display.map( display_type => '`' + display_type + '`: ' + lang.get('rcscript.help_display_' + display_type) ).join('\n'), {}, true );
 				}
 				if ( !display.includes( args[1] ) ) {
-					return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+					return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 				}
 
 				msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
