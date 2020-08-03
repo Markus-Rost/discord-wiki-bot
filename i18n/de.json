@@ -2,37 +2,15 @@
     "__translator": [
         "MarkusRost"
     ],
-    "fallback": [
-        "en"
-    ],
     "aliases": {
-        "help": [
-            "hilfe"
-        ],
-        "page": [
-            "seite"
-        ],
-        "search": [
-            "suche"
-        ],
         "random": [
             "zufall"
         ],
-        "overview": [
-            "übersicht"
-        ],
         "discussion": [
-            "diskussionen",
-            "diskussion"
-        ],
-        "user": [
-            "benutzer"
+            "diskussionen"
         ],
         "command": [
             "befehl"
-        ],
-        "bug": [
-            "fehler"
         ]
     },
     "dateformat": "de-DE",
@@ -386,7 +364,6 @@
             "ich bin ja schon wach!",
             "du hast mich gerufen?",
             "ja, ich funktioniere noch!",
-            "hast du **Kekse** gesagt?",
             "hast du **Kekse** gesagt?"
         ],
         "default": "ich bin voll funktionsfähig!",

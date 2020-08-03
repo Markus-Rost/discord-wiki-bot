@@ -2,22 +2,7 @@
     "__translator": [
         "Doğukan Karakaş"
     ],
-    "fallback": [
-        "en"
-    ],
     "aliases": {
-        "info": [
-            "bilgi"
-        ],
-        "help": [
-            "yardım"
-        ],
-        "page": [
-            "sayfa"
-        ],
-        "search": [
-            "arama"
-        ],
         "discussion": [
             "tartışma"
         ]

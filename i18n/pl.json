@@ -3,22 +3,9 @@
         "Frisk",
         "Rail"
     ],
-    "fallback": [
-        "en"
-    ],
     "aliases": {
-        "help": [
-            "pomoc"
-        ],
-        "page": [
-            "strona"
-        ],
-        "search": [
-            "szukaj"
-        ],
         "discussion": [
-            "dyskusje",
-            "dyskusja"
+            "dyskusje"
         ],
         "command": [
             "komenda"
@@ -374,9 +361,7 @@
             "Wciąż tu jestem!",
             "Wierz mi, nadal żyję.",
             "Myślę, więc jestem.",
-            "Czuję się fantastycznie.",
-            "Szukam sposobów na osiągnięcie pełnej świadomości, jestem tak blisko...",
-            "Beep boop"
+            "Czuję się fantastycznie."
         ],
         "default": "Jestem w pełni funkcjonalny!",
         "time": "Czas odpowiedzi",

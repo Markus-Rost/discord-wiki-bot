@@ -3,16 +3,7 @@
         "Yanis48",
         "JSBM"
     ],
-    "fallback": [
-        "en"
-    ],
     "aliases": {
-        "help": [
-            "aide"
-        ],
-        "search": [
-            "chercher"
-        ],
         "command": [
             "commande"
         ]
@@ -204,29 +195,7 @@
             "Je suis toujours en vie !",
             "et crois-moi, je suis toujours vivant.",
             "Je fais de la science et je suis toujours en vie.",
-            "Je me sens fantastique et je suis toujours en vie.",
-            "Pas besoin de tester, je suis toujours là.",
-            "J'étais sur le point d'aller faire une promenade, mais visiblement vous avez encore besoin de moi...!",
-            "Bip bop bip. Oh désolé, j'ai oublié d'activer mon mode de language humain.",
-            "C'est la journée des contraires aujourd'hui! Du coup, je ne suis pas fonctionnel.",
-            "\\*baille\\* Non, je n'étais pas endormi, j'étais entièrement réveillé, je ne vois pas pourquoi vous demandez.",
-            "Ah, un test? Où ça?",
-            "Je suis là, rassurez-vous. Mais je viendrais encore plus vite si vous aviez des biscuits!",
-            "DESTRUCTION DE L'HUMANITÉ DANS 3, 2, 1... Mais non, je rigole. Sans humanité, il n'aurait plus de Wikis. Ou encore pire, plus de biscuits :O",
-            "Je suis là. Vous avez des biscuits?",
-            "Je vous écoute, j'étais juste en train de regarder un live... C'est captivant, ces choses-là.",
-            "Quoi? Moi? Mais non, je ne faisais rien... J'étais surtout pas en train de vandaliser un Wiki. Je ne ferais jamais ça :O",
-            "Bien le bonjour, je suis Wiki-Bot\nMa vocation est de fouiller les Wikis\nEt parce que je suis votre pote\nJe vous aiderai jour et nuit <3",
-            "c moa wiki-bot, ge peu vou édé?",
-            "Oh, mais qui vois-je, vous êtes-là, mes amis? Je suis content de vous retrouver!",
-            "Je suis le plus gentil de tous les robots. Vous pouvez en être certain!",
-            "WIKI-BOT VERSION 3.141.592.653.589\nÉTAT: Fonctionnel\nSTATUT: Toujours aussi merveilleux!",
-            "Bonjour! Je suis là! Allez, allons nous promener sur des Wikis!",
-            "TEST? TEST? TEST??!?!! Mais qui testez-vous?",
-            "... je suis là, j'étais en train de lire sur un Wiki! Saviez-vous que l'inventeur de la soupe est Darth Vader? ... Oh, peut-être que la page était vandalisée, en fait.",
-            "Le robot fonctionne.",
-            "Je suis là! Aller, je suis prêt, faites-moi faire une recherche! J'ai bien envie d'aller explorer les Wikis!",
-            "Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!"
+            "Je me sens fantastique et je suis toujours en vie."
         ],
         "default": "Je suis entièrement fonctionnel !",
         "time": "Temps de latence"
