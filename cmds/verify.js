@@ -54,6 +54,10 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 				}
+				else if ( body?.error?.code === 'us400' ) { // special catch for Fandom
+					embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
+					msg.replyMsg( lang.get('verify.user_missing_reply', ( old_username || username ).escapeFormatting()), {embed}, false, false );
+				}
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
 					embed.setColor('#000000').setDescription( lang.get('verify.error') );
