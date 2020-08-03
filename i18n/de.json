@@ -1,14 +1,10 @@
 {
 	"__translator": [
 		"MarkusRost",
-		null,
-		null,
-		null,
-		null,
-		null,
-		null,
-		null,
-		null,
+		null, null,
+		null, null,
+		null, null,
+		null, null,
 		null
 	],
 	"fallback": [
@@ -19,104 +15,20 @@
 		null
 	],
 	"aliases": {
-		"bug": [
-			"fehler",
-			null,
-			null,
-			null,
-			null
-		],
-		"command": [
-			"befehl",
-			null,
-			null,
-			null,
-			null
-		],
-		"diff": [
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		"discussion": [
-			"diskussionen",
-			"diskussion",
-			null,
-			null,
-			null
-		],
-		"help": [
-			"hilfe",
-			null,
-			null,
-			null,
-			null
-		],
-		"info": [
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		"invite": [
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		"overview": [
-			"übersicht",
-			null,
-			null,
-			null,
-			null
-		],
-		"page": [
-			"seite",
-			null,
-			null,
-			null,
-			null
-		],
-		"random": [
-			"zufall",
-			null,
-			null,
-			null,
-			null
-		],
-		"search": [
-			"suche",
-			null,
-			null,
-			null,
-			null
-		],
-		"test": [
-			null,
-			null,
-			null,
-			null,
-			null
-		],
-		"user": [
-			"benutzer",
-			null,
-			null,
-			null,
-			null
-		],
-		"verify": [
-			null,
-			null,
-			null,
-			null,
-			null
-		]
+		"bug": ["fehler", null, null, null, null],
+		"command": ["befehl",null, null, null, null],
+		"diff": [null, null, null, null, null],
+		"discussion": ["diskussionen", "diskussion", null, null, null],
+		"help": ["hilfe", null, null, null, null],
+		"info": [null, null, null, null, null],
+		"invite": [null, null, null, null, null],
+		"overview": ["übersicht", null, null, null, null],
+		"page": ["seite", null, null, null, null],
+		"random": ["zufall", null, null, null, null],
+		"search": ["suche", null, null, null, null],
+		"test": [null, null, null, null, null],
+		"user": ["benutzer", null, null, null, null],
+		"verify": [null, null, null, null, null]
 	},
 	"dateformat": "de-DE",
 	"prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
@@ -445,7 +357,7 @@
 		"category": {
 			"content": "Inhalt der Kategorie:",
 			"empty": "*Diese Kategorie ist leer*",
-			"pages": "{{PLURAL:$1|Eine Seite|$1 Seiten}}",
+			"pages":  "{{PLURAL:$1|Eine Seite|$1 Seiten}}",
 			"files": "{{PLURAL:$1|Eine Datei|$1 Dateien}}",
 			"subcats": "{{PLURAL:$1|Eine Kategorie|$1 Kategorien}}"
 		},
@@ -471,30 +383,11 @@
 			"ja, ich funktioniere noch!",
 			"hast du **Kekse** gesagt?",
 			"hast du **Kekse** gesagt?",
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null
 		],
 		"time": "Ping",
 		"notice": "Eingeschränkte Funktionalität",
@@ -715,7 +608,7 @@
 			},
 			"voice": {
 				"cmd": "voice",
-				"desc": "Ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben."
+				"desc": "Ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:"
 			},
 			"pause": {
 				"inactive": {
