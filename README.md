@@ -94,6 +94,9 @@ Requirements to add a recent changes webhook:
 
 Use `!wiki voice` to get the format for the role name.
 
+## Translations
+[![Translation status](https://weblate.frisk.space/widgets/wiki-bot/-/multi-auto.svg)](https://weblate.frisk.space/engage/wiki-bot/?utm_source=widget)
+
 ## Bot Lists
 [![Wiki-Bot](https://bots.ondiscord.xyz/bots/461189216198590464/embed?theme=dark&showGuilds=true)](https://bots.ondiscord.xyz/bots/461189216198590464)
 [![Wiki-Bot](https://botsfordiscord.com/api/bot/461189216198590464/widget?theme=dark)](https://botsfordiscord.com/bot/461189216198590464)
