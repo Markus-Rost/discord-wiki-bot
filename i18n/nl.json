@@ -1,351 +1,361 @@
 {
-	"__translator": [
-		"Jack_McKalling"
-	],
-	"fallback": [
-		"en"
-	],
-	"aliases": {
-		"page": ["pagina"],
-		"search": ["zoeken"],
-		"random": ["willekeurig"],
-		"overview": ["overzicht"],
-		"discussion": ["discussie"]
-	},
-	"dateformat": "nl-NL",
-	"prefix": "het voorvoegsel voor deze server is `$1`. Je kunt het voorvoegsel veranderen met `$1settings prefix`. Voor een lijst van alle opdrachten zie `$1help`.",
-	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
-	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n$1, je bericht bevatte te veel opdrachten!",
-	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia en Fandom wiki's te linken. $1 schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
-	"helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
-	"patreon": "dit is een Patreon-exclusieve functie!\nJe kunt contact met me opnemen via Patreon om toegang tot deze functie te krijgen:",
-	"settings": {
-		"save_failed": "helaas konden de instellingen niet opgeslagen worden, probeer het later nog een keer.",
-		"missing": "deze server is nog niet geconfigureerd. Gebruik $1 en $2 om de instellingen  te wijzigen.",
-		"foundwikis": "Bedoelde je één van deze wiki's?",
-		"current": "dit zijn de huidige instellingen voor deze server:",
-		"channel current": "dit zijn de huidige instellingen voor dit kanaal:",
-		"currentlang": "Taal:",
-		"currentprefix": "Voorvoegsel:",
-		"currentwiki": "Standaard wiki:",
-		"currentchannel": "Kanaal overschrijvingen:",
-		"nochannels": "*Nog geen kanaal overschrijvingen*",
-		"lang": "de taal voor deze server is:",
-		"channel lang": "de taal voor dit kanaal is:",
-		"langinvalid": "de opgegeven taal wordt niet ondersteund!",
-		"langchanged": "je hebt de taal voor deze server gewijzigd naar:",
-		"channel langchanged": "je hebt de taal voor dit kanaal gewijzigd naar:",
-		"langhelp": "Gebruik `$1 <taal>` om de taal te wijzigen.\nOp dit moment zijn de ondersteunde talen:",
-		"wikimissing": "voor deze server is nog geen standaard wiki ingesteld!",
-		"wiki": "de standaard wiki voor deze server is:",
-		"channel wiki": "de standaard wiki voor dit kanaal is:",
-		"wikiinvalid": "geef a.u.b. een geldige link naar een Gamepedia of Fandom wiki!",
-		"wikichanged": "je wijzigde de standaard wiki voor deze server naar:",
-		"channel wikichanged": "je wijzigde de standaard wiki voor dit kanaal naar:",
-		"wikihelp": "Gebruik `$1 <link>` om de standaard wiki te wijzigen.\nLink naar de wiki: `https://<wiki>.gamepedia.com/` of `https://<wiki>.fandom.com/`",
-		"prefix": "het voorvoegsel voor deze server is:",
-		"prefixinvalid": "het opgegeven voorvoegsel wordt niet ondersteund!",
-		"prefixchanged": "je hebt het voorvoegsel voor deze server veranderd naar:"
-	},
-	"pause": {
-		"on": "Ik ben nu gepauzeerd op deze server en zal meeste opdrachten negeren!",
-		"off": "Ik ben niet langer gepauzeerd op deze server en zal weer reageren op alle opdrachten!"
-	},
-	"voice": {
-		"text": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven:",
-		"enable": "Gebruik `$1` om deze functie in te schakelen.",
-		"disable": "Gebruik `$1` om deze functie uit te schakelen.",
-		"enabled": "je hebt de functie ingeschakeld om rollen toe te voegen aan spraakkanalen.",
-		"disabled": "je hebt de functie uitgeschakeld om rollen toe te voegen aan spraakkanalen.",
-		"name": "spraakkanaal naam",
-		"channel": "Spraakkanaal",
-		"join": "$1 kwam het spraakkanaal \"$2\" binnen.",
-		"left": "$1 verlaatte het spraakkanaal \"$2\"."
-	},
-	"overview": {
-		"inaccurate": "Statistieken zijn mogelijk inaccuraat",
-		"name": "Volledige naam:",
-		"vertical": "Vertical:",
-		"topic": "Thema:",
-		"founder": "Oprichter:",
-		"created": "Gecreëerd:",
-		"manager": "Wiki beheerder:",
-		"talk": "overleg",
-		"official": "Officiële wiki:",
-		"yes": "Ja",
-		"no": "Nee",
-		"articles": "Artikelen:",
-		"pages": "Totaal pagina's:",
-		"edits": "Bewerkingen:",
-		"users": "Actieve gebruikers:",
-		"crossover": "Merged into:",
-		"description": "Beschrijving:",
-		"image": "Afbeelding:",
-		"none": "*niemand*"
-	},
-	"user": {
-		"gender": {
-			"unknown": "Onbekend",
-			"male": "Man",
-			"female": "Vrouw"
-		},
-		"groups": {
-			"global_bot": "Gamepedia bot",
-			"hydra_staff": "Gamepedia staff",
-			"wiki_manager": "Wiki manager",
-			"content_team_member": "Content Team Member",
-			"grasp": "GRASP",
-			"bot-global": "Fandom bot",
-			"staff": "Fandom staff",
-			"wiki-manager": "Wiki manager",
-			"helper": "Fandom helper",
-			"content-team-member": "Content Team Member",
-			"vstf": "VSTF",
-			"content-volunteer": "Content volunteer",
-			"global-discussions-moderator": "Globaal discussiemoderator",
-			"vanguard": "Vanguard",
-			"voldev": "Vrijwillige ontwikkelaars",
-			"bot": "Bot",
-			"bureaucrat": "Bureaucraat",
-			"sysop": "Beheerder",
-			"interface-admin": "Interfacemoderator",
-			"content-moderator": "Inhoudmoderator",
-			"threadmoderator": "Discussiemoderator",
-			"chatmoderator": "Chatmoderator",
-			"directors": "Director",
-			"Patrol": "Inspector",
-			"editor": "Editor",
-			"moderator": "Moderator",
-			"Elite_users": "Elite user",
-			"patrollers": "Patroller",
-			"rollback": "rollback",
-			"autoreview": "autoreview",
-			"autopatrol": "autopatrol",
-			"authenticated": "authenticated",
-			"autoconfirmed": "Autobevestigde gebruiker",
-			"user": "Gebruiker"
-		},
-		"info": {
-			"gender": "Geslacht:",
-			"registration": "Registratie datum:",
-			"editcount": "Aantal bewerkingen:",
-			"globaleditcount": "Globaal aantal wijzigingen:",
-			"wikisedited": "Wikis bewerkt:",
-			"group": "Groep:",
-			"discord": "Discord:",
-			"favwiki": "Favorite wiki:",
-			"loading": "Globale statistieken laden…"
-		},
-		"block": {
-			"header": "$1 is momenteel geblokkeerd!",
-			"text": "Geblokkeerd van $1 tot $2 door $3 met reden \"$4\".",
-			"noreason": "Geblokkeerd van $1 tot $2 door $3.",
-			"nofromtext": "Geblokkeerd tot $2 door $3 met reden \"$4\".",
-			"nofromnoreason": "Geblokkeerd tot $2 door $3.",
-			"until_infinity": "het einde van de wereld"
-		},
-		"gblock": {
-			"header": "$1 is momenteel globaal geblokkeerd!",
-			"text": "Geblokkeerd van $1 tot $2 door $3 op $4 met reden \"$5\".",
-			"noreason": "Geblokkeerd van $1 tot $2 door $3 op $4.",
-			"disabled": "Dit account is momenteel uitgeschakeld!"
-		}
-	},
-	"diff": {
-		"badrev": "ten minste één revisie bestaat niet!",
-		"nocomment": "*Geen beschrijving opgegeven*",
-		"hidden": "*verborgen*",
-		"info": {
-			"editor": "Bewerker:",
-			"timestamp": "Bewerkingsdatum:",
-			"size": "Verschil:",
-			"bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
-			"comment": "Beschrijving:",
-			"tags": "Tags:",
-			"removed": "Verwijderd:",
-			"added": "Toegevoegd:",
-			"more": "En meer",
-			"whitespace": "Alleen witruimte"
-		}
-	},
-	"search": {
-		"infopage": "Niet het gewenste resultaat? Gebruik $1 voor een rechtstreekse link.",
-		"infosearch": "Niet het gewenste resultaat? Gebruik $1 voor een rechtstreekse link of $2 voor een lijst van alle overeenkomsten.",
-		"category": {
-			"content": "Inhoud van deze categorie:",
-			"empty": "*Deze categorie is leeg*",
-			"pages": "$1 {{PLURAL:$1|pagina|pagina's}}",
-			"files": "$1 {{PLURAL:$1|bestand|bestanden}}",
-			"subcats": "$1 {{PLURAL:$1|categorie|categorieën}}"
-		},
-		"special": "Inhoud van deze speciale pagina:",
-		"empty": "*Deze speciale pagina is leeg*"
-	},
-	"discussion": {
-		"post": "bericht",
-		"main": "Discussies",
-		"image": "Bekijk afbeelding",
-		"votes": "$1 {{PLURAL:$1|stem|stemmen}}"
-	},
-	"invite": {
-		"bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
-	},
-	"test": {
-		"random": 10,
-		"pause": "Ik ben momenteel gepauzeerd op deze server.",
-		"text": [
-			"Ik leef nog steeds!",
-			"en geloof me, ik leef nog steeds.",
-			"Yup, ik ben nog steeds beschikbaar!",
-			"Geef me een opdracht, ik verveel me!",
-			"Ik voel me goed en ben bereid om je opdrachten te volgen."
-		],
-		"default": "Ik functioneer volledig!",
-		"time": "Reactie tijd"
-	},
-	"help": {
-		"all": "Zo, dus je wilt weten welke dingen ik kan doen? Hier is een lijst van alle opdrachten die ik begrijp:",
-		"admin": "Deze opdrachten kunnen alleen door administratoren uitgevoerd worden:",
-		"noadmin": "je hebt de `Beheer Server` permissie nodig voor deze opdrachten!",
-		"pause": "**Ik ben momenteel gepauzeerd op deze server!**\nAlleen deze opdrachten kunnen worden uitgevoerd:",
-		"footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑️ op mijn bericht en ik zal het verwijderen.",
-		"list": {
-			"default": {
-				"cmd": "<zoek term>",
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki."
-			},
-			"gamepedia": {
-				"cmd": "!<wiki> <zoek term>",
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
-			},
-			"fandom": {
-				"cmd": "?<wiki> <zoek term>",
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`"
-			},
-			"wikia": {
-				"cmd": "??<wiki> <zoek term>",
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`"
-			},
-			"user": {
-				"cmd": "Gebruiker:<gebruikersnaam>",
-				"desc": "Ik zal wat informatie over de gebruiker weergeven."
-			},
-			"overview": {
-				"cmd": "overview",
-				"desc": "Ik zal wat informatie en statistieken over de wiki weergeven."
-			},
-			"random": {
-				"cmd": "random",
-				"desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki."
-			},
-			"diff": {
-				"id": {
-					"cmd": "diff <diff> [<oldid>]",
-					"desc": "Ik zal antwoorden met een link naar de diff uit de wiki."
-				},
-				"name": {
-					"cmd": "diff <pagina naam>",
-					"desc": "Ik zal antwoorden met een link naar de laatste diff over het artikel uit de wiki."
-				}
-			},
-			"page": {
-				"cmd": "page <pagina naam>",
-				"desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki."
-			},
-			"search": {
-				"cmd": "search <zoek term>",
-				"desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki."
-			},
-			"minecraft": {
-				"default": {
-					"cmd": "/<Minecraft command>",
-					"desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki."
-				},
-				"command": {
-					"cmd": "command <Minecraft command>",
-					"desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki."
-				},
-				"bug": {
-					"cmd": "bug <Minecraft bug>",
-					"desc": "Ik zal antwoorden met een link naar de bug in de Minecraft bug tracker."
-				}
-			},
-			"discussion": {
-				"thread": {
-					"cmd": "discussion <zoek term>",
-					"desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki."
-				},
-				"post": {
-					"cmd": "discussion post <zoek term>",
-					"desc": "Ik zal antwoorden met een link naar een overeenkomend discussie bericht op de Fandom wiki."
-				}
-			},
-			"info": {
-				"cmd": "info",
-				"desc": "Ik zal mezelf introduceren."
-			},
-			"help": {
-				"default": {
-					"cmd": "help",
-					"desc": "Ik zal alle opdrachten opsommen die ik begrijp."
-				},
-				"command": {
-					"cmd": "help <bot command>",
-					"desc": "Vraag je je af hoe een opdracht werkt? Laat het me aan je uitleggen!"
-				},
-				"admin": {
-					"cmd": "help admin",
-					"desc": "Ik zal alle administrator opdrachten opsommen."
-				}
-			},
-			"settings": {
-				"default": {
-					"cmd": "settings",
-					"desc": "Ik zal de instellingen voor deze server wijzigen."
-				},
-				"wiki": {
-					"cmd": "settings wiki <wiki>",
-					"desc": "Ik zal de standaard wiki voor deze server wijzigen."
-				},
-				"lang": {
-					"cmd": "settings lang <taal>",
-					"desc": "Ik zal de taal voor deze server wijzigen."
-				},
-				"prefix": {
-					"cmd": "settings prefix <voorvoegsel>",
-					"desc": "Ik zal het voorvoegsel voor deze server wijzigen."
-				},
-				"channel": {
-					"cmd": "settings channel",
-					"desc": "Ik zal de overschrijvingen voor het huidige kanaal wijzigen."
-				}
-			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven."
-			},
-			"pause": {
-				"inactive": {
-					"cmd": "pause $1",
-					"desc": "Ik zal alle opdrachten op deze server negeren, met uitzondering van enkele admin opdrachten."
-				},
-				"active": {
-					"cmd": "pause $1",
-					"desc": "Ik zal weer op alle opdrachten op deze server reageren."
-				}
-			},
-			"test": {
-				"cmd": "test",
-				"desc": "Als ik actief ben, zal ik antwoorden! Anders niet."
-			}
-		}
-	},
-	"minecraft": {
-		"link": "https://minecraft-nl.gamepedia.com/",
-		"cmdpage": "Opdrachten#",
-		"private": "**Privé issue**",
-		"fixed": "Fixed versie:",
-		"more": "En $1 {{PLURAL:$1|meer}}.",
-		"total": "$1 {{PLURAL:$1|bug|bugs}} opgelost"
-	}
+    "__translator": [
+        "Jack_McKalling"
+    ],
+    "fallback": [
+        "en"
+    ],
+    "aliases": {
+        "page": [
+            "pagina"
+        ],
+        "search": [
+            "zoeken"
+        ],
+        "random": [
+            "willekeurig"
+        ],
+        "overview": [
+            "overzicht"
+        ],
+        "discussion": [
+            "discussie"
+        ]
+    },
+    "dateformat": "nl-NL",
+    "prefix": "het voorvoegsel voor deze server is `$1`. Je kunt het voorvoegsel veranderen met `$1settings prefix`. Voor een lijst van alle opdrachten zie `$1help`.",
+    "missingperm": "Ik mis een aantal permissies voor deze opdracht:",
+    "limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n$1, je bericht bevatte te veel opdrachten!",
+    "disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia en Fandom wiki's te linken. $1 schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
+    "helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
+    "patreon": "dit is een Patreon-exclusieve functie!\nJe kunt contact met me opnemen via Patreon om toegang tot deze functie te krijgen:",
+    "settings": {
+        "save_failed": "helaas konden de instellingen niet opgeslagen worden, probeer het later nog een keer.",
+        "missing": "deze server is nog niet geconfigureerd. Gebruik $1 en $2 om de instellingen  te wijzigen.",
+        "foundwikis": "Bedoelde je één van deze wiki's?",
+        "current": "dit zijn de huidige instellingen voor deze server:",
+        "channel current": "dit zijn de huidige instellingen voor dit kanaal:",
+        "currentlang": "Taal:",
+        "currentprefix": "Voorvoegsel:",
+        "currentwiki": "Standaard wiki:",
+        "currentchannel": "Kanaal overschrijvingen:",
+        "nochannels": "*Nog geen kanaal overschrijvingen*",
+        "lang": "de taal voor deze server is:",
+        "channel lang": "de taal voor dit kanaal is:",
+        "langinvalid": "de opgegeven taal wordt niet ondersteund!",
+        "langchanged": "je hebt de taal voor deze server gewijzigd naar:",
+        "channel langchanged": "je hebt de taal voor dit kanaal gewijzigd naar:",
+        "langhelp": "Gebruik `$1 <taal>` om de taal te wijzigen.\nOp dit moment zijn de ondersteunde talen:",
+        "wikimissing": "voor deze server is nog geen standaard wiki ingesteld!",
+        "wiki": "de standaard wiki voor deze server is:",
+        "channel wiki": "de standaard wiki voor dit kanaal is:",
+        "wikiinvalid": "geef a.u.b. een geldige link naar een Gamepedia of Fandom wiki!",
+        "wikichanged": "je wijzigde de standaard wiki voor deze server naar:",
+        "channel wikichanged": "je wijzigde de standaard wiki voor dit kanaal naar:",
+        "wikihelp": "Gebruik `$1 <link>` om de standaard wiki te wijzigen.\nLink naar de wiki: `https://<wiki>.gamepedia.com/` of `https://<wiki>.fandom.com/`",
+        "prefix": "het voorvoegsel voor deze server is:",
+        "prefixinvalid": "het opgegeven voorvoegsel wordt niet ondersteund!",
+        "prefixchanged": "je hebt het voorvoegsel voor deze server veranderd naar:"
+    },
+    "pause": {
+        "on": "Ik ben nu gepauzeerd op deze server en zal meeste opdrachten negeren!",
+        "off": "Ik ben niet langer gepauzeerd op deze server en zal weer reageren op alle opdrachten!"
+    },
+    "voice": {
+        "text": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven:",
+        "enable": "Gebruik `$1` om deze functie in te schakelen.",
+        "disable": "Gebruik `$1` om deze functie uit te schakelen.",
+        "enabled": "je hebt de functie ingeschakeld om rollen toe te voegen aan spraakkanalen.",
+        "disabled": "je hebt de functie uitgeschakeld om rollen toe te voegen aan spraakkanalen.",
+        "name": "spraakkanaal naam",
+        "channel": "Spraakkanaal",
+        "join": "$1 kwam het spraakkanaal \"$2\" binnen.",
+        "left": "$1 verlaatte het spraakkanaal \"$2\"."
+    },
+    "overview": {
+        "inaccurate": "Statistieken zijn mogelijk inaccuraat",
+        "name": "Volledige naam:",
+        "vertical": "Vertical:",
+        "topic": "Thema:",
+        "founder": "Oprichter:",
+        "created": "Gecreëerd:",
+        "manager": "Wiki beheerder:",
+        "talk": "overleg",
+        "official": "Officiële wiki:",
+        "yes": "Ja",
+        "no": "Nee",
+        "articles": "Artikelen:",
+        "pages": "Totaal pagina's:",
+        "edits": "Bewerkingen:",
+        "users": "Actieve gebruikers:",
+        "crossover": "",
+        "description": "Beschrijving:",
+        "image": "Afbeelding:",
+        "none": "*niemand*"
+    },
+    "user": {
+        "gender": {
+            "unknown": "Onbekend",
+            "male": "Man",
+            "female": "Vrouw"
+        },
+        "groups": {
+            "global_bot": "Gamepedia bot",
+            "hydra_staff": "Gamepedia staff",
+            "wiki_manager": "Wiki manager",
+            "content_team_member": "Content Team Member",
+            "grasp": "GRASP",
+            "bot-global": "Fandom bot",
+            "staff": "Fandom staff",
+            "wiki-manager": "Wiki manager",
+            "helper": "Fandom helper",
+            "content-team-member": "Content Team Member",
+            "vstf": "VSTF",
+            "content-volunteer": "Content volunteer",
+            "global-discussions-moderator": "Globaal discussiemoderator",
+            "vanguard": "Vanguard",
+            "voldev": "Vrijwillige ontwikkelaars",
+            "bot": "Bot",
+            "bureaucrat": "Bureaucraat",
+            "sysop": "Beheerder",
+            "interface-admin": "Interfacemoderator",
+            "content-moderator": "Inhoudmoderator",
+            "threadmoderator": "Discussiemoderator",
+            "chatmoderator": "Chatmoderator",
+            "directors": "Director",
+            "Patrol": "Inspector",
+            "editor": "Editor",
+            "moderator": "Moderator",
+            "Elite_users": "Elite user",
+            "patrollers": "Patroller",
+            "rollback": "rollback",
+            "autoreview": "autoreview",
+            "autopatrol": "autopatrol",
+            "authenticated": "authenticated",
+            "autoconfirmed": "Autobevestigde gebruiker",
+            "user": "Gebruiker"
+        },
+        "info": {
+            "gender": "Geslacht:",
+            "registration": "Registratie datum:",
+            "editcount": "Aantal bewerkingen:",
+            "globaleditcount": "Globaal aantal wijzigingen:",
+            "wikisedited": "Wikis bewerkt:",
+            "group": "Groep:",
+            "discord": "Discord:",
+            "favwiki": "Favorite wiki:",
+            "loading": "Globale statistieken laden…"
+        },
+        "block": {
+            "header": "$1 is momenteel geblokkeerd!",
+            "text": "Geblokkeerd van $1 tot $2 door $3 met reden \"$4\".",
+            "noreason": "Geblokkeerd van $1 tot $2 door $3.",
+            "nofromtext": "Geblokkeerd tot $2 door $3 met reden \"$4\".",
+            "nofromnoreason": "Geblokkeerd tot $2 door $3.",
+            "until_infinity": "het einde van de wereld"
+        },
+        "gblock": {
+            "header": "$1 is momenteel globaal geblokkeerd!",
+            "text": "Geblokkeerd van $1 tot $2 door $3 op $4 met reden \"$5\".",
+            "noreason": "Geblokkeerd van $1 tot $2 door $3 op $4.",
+            "disabled": "Dit account is momenteel uitgeschakeld!"
+        }
+    },
+    "diff": {
+        "badrev": "ten minste één revisie bestaat niet!",
+        "nocomment": "*Geen beschrijving opgegeven*",
+        "hidden": "*verborgen*",
+        "info": {
+            "editor": "Bewerker:",
+            "timestamp": "Bewerkingsdatum:",
+            "size": "Verschil:",
+            "bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
+            "comment": "Beschrijving:",
+            "tags": "Tags:",
+            "removed": "Verwijderd:",
+            "added": "Toegevoegd:",
+            "more": "En meer",
+            "whitespace": "Alleen witruimte"
+        }
+    },
+    "search": {
+        "infopage": "Niet het gewenste resultaat? Gebruik $1 voor een rechtstreekse link.",
+        "infosearch": "Niet het gewenste resultaat? Gebruik $1 voor een rechtstreekse link of $2 voor een lijst van alle overeenkomsten.",
+        "category": {
+            "content": "Inhoud van deze categorie:",
+            "empty": "*Deze categorie is leeg*",
+            "pages": "$1 {{PLURAL:$1|pagina|pagina's}}",
+            "files": "$1 {{PLURAL:$1|bestand|bestanden}}",
+            "subcats": "$1 {{PLURAL:$1|categorie|categorieën}}"
+        },
+        "special": "Inhoud van deze speciale pagina:",
+        "empty": "*Deze speciale pagina is leeg*"
+    },
+    "discussion": {
+        "post": "bericht",
+        "main": "Discussies",
+        "image": "Bekijk afbeelding",
+        "votes": "$1 {{PLURAL:$1|stem|stemmen}}"
+    },
+    "invite": {
+        "bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
+    },
+    "test": {
+        "random": 10,
+        "pause": "Ik ben momenteel gepauzeerd op deze server.",
+        "text": [
+            "Ik leef nog steeds!",
+            "en geloof me, ik leef nog steeds.",
+            "Yup, ik ben nog steeds beschikbaar!",
+            "Geef me een opdracht, ik verveel me!",
+            "Ik voel me goed en ben bereid om je opdrachten te volgen."
+        ],
+        "default": "Ik functioneer volledig!",
+        "time": "Reactie tijd"
+    },
+    "help": {
+        "all": "Zo, dus je wilt weten welke dingen ik kan doen? Hier is een lijst van alle opdrachten die ik begrijp:",
+        "admin": "Deze opdrachten kunnen alleen door administratoren uitgevoerd worden:",
+        "noadmin": "je hebt de `Beheer Server` permissie nodig voor deze opdrachten!",
+        "pause": "**Ik ben momenteel gepauzeerd op deze server!**\nAlleen deze opdrachten kunnen worden uitgevoerd:",
+        "footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑️ op mijn bericht en ik zal het verwijderen.",
+        "list": {
+            "default": {
+                "cmd": "<zoek term>",
+                "desc": "Ik zal antwoorden met een link naar een passend artikel uit de wiki."
+            },
+            "gamepedia": {
+                "cmd": "!<wiki> <zoek term>",
+                "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
+            },
+            "fandom": {
+                "cmd": "?<wiki> <zoek term>",
+                "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`"
+            },
+            "wikia": {
+                "cmd": "??<wiki> <zoek term>",
+                "desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`"
+            },
+            "user": {
+                "cmd": "Gebruiker:<gebruikersnaam>",
+                "desc": "Ik zal wat informatie over de gebruiker weergeven."
+            },
+            "overview": {
+                "cmd": "overview",
+                "desc": "Ik zal wat informatie en statistieken over de wiki weergeven."
+            },
+            "random": {
+                "cmd": "random",
+                "desc": "Ik zal antwoorden met een link naar een willekeurige pagina uit de wiki."
+            },
+            "diff": {
+                "id": {
+                    "cmd": "diff <diff> [<oldid>]",
+                    "desc": "Ik zal antwoorden met een link naar de diff uit de wiki."
+                },
+                "name": {
+                    "cmd": "diff <pagina naam>",
+                    "desc": "Ik zal antwoorden met een link naar de laatste diff over het artikel uit de wiki."
+                }
+            },
+            "page": {
+                "cmd": "page <pagina naam>",
+                "desc": "Ik zal antwoorden met een rechtstreekse link naar het artikel uit de wiki."
+            },
+            "search": {
+                "cmd": "search <zoek term>",
+                "desc": "Ik zal antwoorden met een rechtstreekse link naar de zoekpagina van het artikel uit de wiki."
+            },
+            "minecraft": {
+                "default": {
+                    "cmd": "/<Minecraft command>",
+                    "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki."
+                },
+                "command": {
+                    "cmd": "command <Minecraft command>",
+                    "desc": "Ik zal antwoorden met de syntax van de Minecraft opdracht en een link naar het artikel van de opdracht uit de Minecraft Wiki."
+                },
+                "bug": {
+                    "cmd": "bug <Minecraft bug>",
+                    "desc": "Ik zal antwoorden met een link naar de bug in de Minecraft bug tracker."
+                }
+            },
+            "discussion": {
+                "thread": {
+                    "cmd": "discussion <zoek term>",
+                    "desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki."
+                },
+                "post": {
+                    "cmd": "discussion post <zoek term>",
+                    "desc": "Ik zal antwoorden met een link naar een overeenkomend discussie bericht op de Fandom wiki."
+                }
+            },
+            "info": {
+                "cmd": "info",
+                "desc": "Ik zal mezelf introduceren."
+            },
+            "help": {
+                "default": {
+                    "cmd": "help",
+                    "desc": "Ik zal alle opdrachten opsommen die ik begrijp."
+                },
+                "command": {
+                    "cmd": "help <bot command>",
+                    "desc": "Vraag je je af hoe een opdracht werkt? Laat het me aan je uitleggen!"
+                },
+                "admin": {
+                    "cmd": "help admin",
+                    "desc": "Ik zal alle administrator opdrachten opsommen."
+                }
+            },
+            "settings": {
+                "default": {
+                    "cmd": "settings",
+                    "desc": "Ik zal de instellingen voor deze server wijzigen."
+                },
+                "wiki": {
+                    "cmd": "settings wiki <wiki>",
+                    "desc": "Ik zal de standaard wiki voor deze server wijzigen."
+                },
+                "lang": {
+                    "cmd": "settings lang <taal>",
+                    "desc": "Ik zal de taal voor deze server wijzigen."
+                },
+                "prefix": {
+                    "cmd": "settings prefix <voorvoegsel>",
+                    "desc": "Ik zal het voorvoegsel voor deze server wijzigen."
+                },
+                "channel": {
+                    "cmd": "settings channel",
+                    "desc": "Ik zal de overschrijvingen voor het huidige kanaal wijzigen."
+                }
+            },
+            "voice": {
+                "cmd": "voice",
+                "desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven."
+            },
+            "pause": {
+                "inactive": {
+                    "cmd": "pause $1",
+                    "desc": "Ik zal alle opdrachten op deze server negeren, met uitzondering van enkele admin opdrachten."
+                },
+                "active": {
+                    "cmd": "pause $1",
+                    "desc": "Ik zal weer op alle opdrachten op deze server reageren."
+                }
+            },
+            "test": {
+                "cmd": "test",
+                "desc": "Als ik actief ben, zal ik antwoorden! Anders niet."
+            }
+        }
+    },
+    "minecraft": {
+        "link": "https://minecraft-nl.gamepedia.com/",
+        "cmdpage": "Opdrachten#",
+        "private": "**Privé issue**",
+        "fixed": "Fixed versie:",
+        "more": "En $1 {{PLURAL:$1|meer}}.",
+        "total": "$1 {{PLURAL:$1|bug|bugs}} opgelost"
+    }
 }
