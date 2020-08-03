@@ -1,0 +1,21 @@
+name: Change indentation to tabs
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git config filter.tabspace.smudge 'unexpand --tabs=4 --first-only'
+          git config filter.tabspace.clean 'unexpand --tabs=4 --first-only'
+          git config user.name Markus-Rost
+          git config user.email 37275477+Markus-Rost@users.noreply.github.com
+          git add .
+          git commit -m "Change indentation to tabs"
+          git push
