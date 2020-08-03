@@ -1,33 +1,14 @@
 {
     "__translator": [
         "Eduaddad",
-        "Jhonabf",
-        "dr03ramos"
-    ],
-    "fallback": [
-        "en"
+        "Jhonabf"
     ],
     "aliases": {
-        "help": [
-            "ajuda"
-        ],
-        "test": [
-            "teste"
-        ],
-        "page": [
-            "página"
-        ],
-        "search": [
-            "pesquisar"
-        ],
         "discussion": [
             "discussão"
         ],
         "command": [
             "comando"
-        ],
-        "bug": [
-            "erro"
         ]
     },
     "dateformat": "pt-PT",

@@ -2,21 +2,9 @@
     "__translator": [
         "Jack_McKalling"
     ],
-    "fallback": [
-        "en"
-    ],
     "aliases": {
-        "page": [
-            "pagina"
-        ],
-        "search": [
-            "zoeken"
-        ],
         "random": [
             "willekeurig"
-        ],
-        "overview": [
-            "overzicht"
         ],
         "discussion": [
             "discussie"
@@ -207,8 +195,7 @@
             "Ik leef nog steeds!",
             "en geloof me, ik leef nog steeds.",
             "Yup, ik ben nog steeds beschikbaar!",
-            "Geef me een opdracht, ik verveel me!",
-            "Ik voel me goed en ben bereid om je opdrachten te volgen."
+            "Geef me een opdracht, ik verveel me!"
         ],
         "default": "Ik functioneer volledig!",
         "time": "Reactie tijd"
