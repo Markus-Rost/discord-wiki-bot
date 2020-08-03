@@ -160,7 +160,7 @@
         "notice": "Powiadomienie:",
         "qualified": "Pozwala na otrzymanie ról:",
         "qualified_error": "Pozwala na otrzymanie ról, których nie udało się dodać:",
-        "help_guide": "Podążaj za [tym poradnikiem]($1) w celu dodania nazwy użytkownika Discord na profil wiki.",
+        "help_guide": "Podążaj za [tym poradnikiem]($1) w celu dodania nazwy użytkownika Discord na profil wiki:",
         "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_subpage": "Dodaj swoją nazwę użytkownika Discord ($1) do podstrony Discord na wiki:"
@@ -218,7 +218,8 @@
             "disabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały wyłączone dla tego webhooka ostatnich zmian.",
             "enabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały włączone dla tego webhooka ostatnich zmian.",
             "deleted": "Ten webhook ostatnich zmian zostanie usunięty.",
-            "disabled_rc": "Śledzenie ostatnich zmian zostało wyłączone dla tego webhooka."
+            "disabled_rc": "Śledzenie ostatnich zmian zostało wyłączone dla tego webhooka.",
+            "enabled_rc": "Ostatnie zmiany zostały aktywowane dla tego webhooka."
         },
         "rc": "Ostatnie zmiany:",
         "all_inactive": "śledzenie ostatnich zmian oraz dyskusji nie może być wyłączone jednocześnie.",
@@ -305,7 +306,7 @@
             "registration": "Data rejestracji:",
             "editcount": "Ilość edycji:",
             "globaleditcount": "Globalna ilość edycji:",
-            "wikisedited": "Edytowanych wiki",
+            "wikisedited": "Edytowanych wiki:",
             "group": "Grupa:",
             "discord": "Discord:",
             "favwiki": "Ulubiona wiki:",
