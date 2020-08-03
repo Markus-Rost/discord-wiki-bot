@@ -1,14 +1,31 @@
 {
 	"__translator": [
 		"MarkusRost",
-		"violine1101"
+		"violine1101",
+		null, null,
+		null, null,
+		null, null,
+		null, null
 	],
 	"fallback": [
+		null,
+		null,
+		null,
+		null,
+		null
 	],
 	"aliases": {
-		"random": ["random", "🎲"],
-		"discussion": ["discussions"],
-		"command": ["command", "cmd"]
+		"bug": ["bug", null, null, null, null],
+		"command": ["command", "cmd", null, null, null],
+		"diff": ["diff", null, null, null, null],
+		"discussion": ["discussions", "discussion", null, null, null],
+		"help": ["help", null, null, null, null],
+		"invite": ["invite", null, null, null, null],
+		"overview": ["overview", null, null, null, null],
+		"page": ["page", null, null, null, null],
+		"random": ["random", "🎲", null, null, null],
+		"search": ["search", null, null, null, null],
+		"verify": ["verify", null, null, null, null]
 	},
 	"dateformat": "en-US",
 	"prefix": "the prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`.",
@@ -356,13 +373,18 @@
 		"bot": "Use this link to invite me to another server:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "I'm currently paused on this server.",
 		"text": [
 			"I'm still alive!",
 			"and believe me, I am still alive.",
 			"I'm doing science and I'm still alive.",
-			"I feel fantastic and I'm still alive."
+			"I feel fantastic and I'm still alive.",
+			"stop poking me, I'm working fine.",
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null,
+			null, null, null, null, null
 		],
 		"default": "I'm fully functional!",
 		"time": "Response time",

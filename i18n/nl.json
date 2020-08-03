@@ -78,7 +78,6 @@
 		"pages": "Totaal pagina's:",
 		"edits": "Bewerkingen:",
 		"users": "Actieve gebruikers:",
-		"crossover": "Merged into:",
 		"description": "Beschrijving:",
 		"image": "Afbeelding:",
 		"none": "*niemand*"
@@ -191,7 +190,6 @@
 		"bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "Ik ben momenteel gepauzeerd op deze server.",
 		"text": [
 			"Ik leef nog steeds!",

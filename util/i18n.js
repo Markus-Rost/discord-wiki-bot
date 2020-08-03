@@ -18,21 +18,25 @@ class Lang {
 	constructor(lang = defaultSettings.lang, namespace = '') {
 		this.lang = lang;
 		this.namespace = namespace;
-		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] );
+		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb );
 
 		this.localNames = {};
 		this.aliases = {};
 		let aliases = ( i18n?.[lang]?.aliases || {} );
 		Object.keys(aliases).forEach( cmd => {
-			if ( !( cmd in this.localNames ) ) this.localNames[cmd] = aliases[cmd][0];
+			if ( aliases[cmd][0] && !( cmd in this.localNames ) ) {
+				this.localNames[cmd] = aliases[cmd][0];
+			}
 			aliases[cmd].forEach( alias => {
-				if ( !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
 			} );
 		} );
 		Object.keys(defaultAliases).forEach( cmd => {
-			if ( !( cmd in this.localNames ) ) this.localNames[cmd] = defaultAliases[cmd][0];
+			if ( defaultAliases[cmd][0] && !( cmd in this.localNames ) ) {
+				this.localNames[cmd] = defaultAliases[cmd][0];
+			}
 			defaultAliases[cmd].forEach( alias => {
-				if ( !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
 			} );
 		} );
 	}

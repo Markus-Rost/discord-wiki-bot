@@ -361,7 +361,6 @@
 		"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "ich bin auf diesem Server derzeit pausiert.",
 		"text": [
 			"ich bin ja schon wach!",
