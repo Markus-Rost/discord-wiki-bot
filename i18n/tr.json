@@ -78,7 +78,6 @@
 		"pages": "Toplam sayfalar:",
 		"edits": "Düzenlemeler:",
 		"users": "Aktif kullanıcılar:",
-		"crossover": "Merged into:",
 		"description": "Açıklama:",
 		"image": "Resim:",
 		"none": "*hiçbiri*"
@@ -191,7 +190,6 @@
 		"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "Şu anda bu sunucuda duraklatılmış durumdayım.",
 		"text": [
 			"Hala hayattayım!",

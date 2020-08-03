@@ -351,7 +351,6 @@
 		"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "Moje działanie jest obecnie wstrzymane na tym serwerze.",
 		"text": [
 			"Wciąż tu jestem!",

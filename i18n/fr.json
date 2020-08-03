@@ -77,7 +77,6 @@
 		"pages": "Nombre de pages total :",
 		"edits": "Modifications :",
 		"users": "Utilisateurs actifs :",
-		"crossover": "Merged into:",
 		"description": "Description :",
 		"image": "Image :",
 		"none": "*aucun*"
@@ -192,7 +191,6 @@
 		"bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
 	},
 	"test": {
-		"random": 50,
 		"pause": "je suis présentement en pause sur ce serveur.",
 		"text": [
 			"Je suis toujours en vie !",

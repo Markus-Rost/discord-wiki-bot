@@ -157,7 +157,6 @@
 		"pages": "Total de páginas:",
 		"edits": "Edições:",
 		"users": "Usuário ativos:",
-		"crossover": "Merged into:",
 		"description": "Descrição:",
 		"image": "Imagem:",
 		"none": "*nenhum*"
@@ -270,7 +269,6 @@
 		"bot": "Use este link para me convidar para outro servidor:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "eu estou atualmente em pausa neste servidor.",
 		"text": [
 			"eu ainda estou vivo!",
