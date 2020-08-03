@@ -54,7 +54,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		if ( count === maxcount ) {
 			console.log( '- Message contains too many commands!' );
 			msg.reactEmoji('⚠️');
-			msg.sendChannelError( lang.get('limit', '<@' + author.id + '>'), {allowedMentions:{users:[author.id]}} );
+			msg.sendChannelError( lang.get('general.limit', '<@' + author.id + '>'), {allowedMentions:{users:[author.id]}} );
 			return;
 		}
 		line = line.substring(prefix.length);

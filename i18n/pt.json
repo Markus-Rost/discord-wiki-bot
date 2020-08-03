@@ -2,27 +2,44 @@
 	"__translator": [
 		"Eduaddad",
 		"Jhonabf",
-		"dr03ramos"
+		"dr03ramos",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" "
 	],
 	"fallback": [
-		"en"
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
 	],
 	"aliases": {
-		"help": ["ajuda"],
-		"test": ["teste"],
-		"page": ["página"],
-		"search": ["pesquisar"],
-		"discussion": ["discussão"],
-		"command": ["comando"],
-		"bug": ["erro"]
+		"bug": ["erro", " ", " ", " ", " "],
+		"command": ["comando"," ", " ", " ", " "],
+		"diff": [" ", " ", " ", " ", " "],
+		"discussion": ["discussão", " ", " ", " ", " "],
+		"help": ["ajuda", " ", " ", " ", " "],
+		"info": [" ", " ", " ", " ", " "],
+		"invite": [" ", " ", " ", " ", " "],
+		"overview": [" ", " ", " ", " ", " "],
+		"page": ["página", " ", " ", " ", " "],
+		"random": [" ", " ", " ", " ", " "],
+		"search": ["pesquisar", " ", " ", " ", " "],
+		"test": ["teste", " ", " ", " ", " "],
+		"user": [" ", " ", " ", " ", " "],
+		"verify": [" ", " ", " ", " ", " "]
 	},
 	"dateformat": "pt-PT",
-	"prefix": "o prefixo deste servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`.",
-	"missingperm": "eu estou perdendo algumas permissões para este comando:",
-	"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n$1, sua mensagem continha muitos comandos!",
-	"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia e Fandom. $1 me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Fandom e sou uma ferramenta não oficial!**\n\nVocê pode me apoiar no Patreon:",
-	"helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
-	"patreon": "esse é um recurso exclusivo do Patreon!\nVocê pode me apoiar no Patreon para obter acesso a esse recurso:",
+	"general": {
+		"prefix": "o prefixo deste servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`.",
+		"missingperm": "eu estou perdendo algumas permissões para este comando:",
+		"limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n$1, sua mensagem continha muitos comandos!",
+		"disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia e Fandom. $1 me escreveu em JavaScript.\n\n**Eu não sou afiliado com a Fandom e sou uma ferramenta não oficial!**\n\nVocê pode me apoiar no Patreon:",
+		"helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
+		"patreon": "esse é um recurso exclusivo do Patreon!\nVocê pode me apoiar no Patreon para obter acesso a esse recurso:"
+	},
 	"settings": {
 		"save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
 		"missing": "este servidor ainda não está configurado. Use $1 e $2 para alterar as configurações.",
@@ -157,7 +174,6 @@
 		"pages": "Total de páginas:",
 		"edits": "Edições:",
 		"users": "Usuário ativos:",
-		"crossover": "Merged into:",
 		"description": "Descrição:",
 		"image": "Imagem:",
 		"none": "*nenhum*"
@@ -270,15 +286,19 @@
 		"bot": "Use este link para me convidar para outro servidor:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "eu estou atualmente em pausa neste servidor.",
 		"text": [
+			"eu estou totalmente funcional!",
 			"eu ainda estou vivo!",
 			"e acredite em mim, eu ainda estou vivo.",
 			"eu estou fazendo ciência e ainda estou vivo.",
-			"eu me sinto fantástica e ainda estou viva."
+			"eu me sinto fantástica e ainda estou viva.",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " "
 		],
-		"default": "eu estou totalmente funcional!",
 		"time": "Ping"
 	},
 	"help": {

@@ -5,7 +5,7 @@ Object.keys(i18n.allLangs.names).forEach( lang => i18n[lang] = require('../i18n/
 const defaultAliases = ( i18n?.[defaultSettings.lang]?.aliases || {} );
 
 /**
- * A langauge.
+ * A language.
  * @class
  */
 class Lang {
@@ -18,21 +18,25 @@ class Lang {
 	constructor(lang = defaultSettings.lang, namespace = '') {
 		this.lang = lang;
 		this.namespace = namespace;
-		this.fallback = ( i18n?.[lang]?.fallback.slice() || [] );
+		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb.trim() );
 
 		this.localNames = {};
 		this.aliases = {};
 		let aliases = ( i18n?.[lang]?.aliases || {} );
 		Object.keys(aliases).forEach( cmd => {
-			if ( !( cmd in this.localNames ) ) this.localNames[cmd] = aliases[cmd][0];
+			if ( aliases[cmd][0].trim() && !( cmd in this.localNames ) ) {
+				this.localNames[cmd] = aliases[cmd][0];
+			}
 			aliases[cmd].forEach( alias => {
-				if ( !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias.trim() && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
 			} );
 		} );
 		Object.keys(defaultAliases).forEach( cmd => {
-			if ( !( cmd in this.localNames ) ) this.localNames[cmd] = defaultAliases[cmd][0];
+			if ( defaultAliases[cmd][0].trim() && !( cmd in this.localNames ) ) {
+				this.localNames[cmd] = defaultAliases[cmd][0];
+			}
 			defaultAliases[cmd].forEach( alias => {
-				if ( !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias.trim() && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
 			} );
 		} );
 	}
@@ -52,6 +56,7 @@ class Lang {
 		for (let n = 0; n < keys.length; n++) {
 			if ( text ) {
 				text = text?.[keys[n]];
+				if ( typeof text === 'string' ) text = text.trim()
 			}
 			if ( !text ) {
 				if ( fallback < this.fallback.length ) {
@@ -107,8 +112,8 @@ class Lang {
 //	}
 
 	/**
-	 * Get names for all langauges.
-	 * @param {Boolean} isRcGcDw - Get the langauge for RcGcDw?
+	 * Get names for all languages.
+	 * @param {Boolean} isRcGcDw - Get the languages for RcGcDw?
 	 * @returns {Object}
 	 * @static
 	 */
@@ -157,7 +162,8 @@ function plural(lang, number, args) {
 		case 'nl':
 		case 'pt':
 		case 'tr':
-		case 'zh':
+		case 'zh-hans':
+		case 'zh-hant':
 		default:
 			if ( number === 1 ) text = getArg(args, 0);
 			else text = getArg(args, 1);

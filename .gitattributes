@@ -1,0 +1,2 @@
+*.json  filter=tabindent
+package.json -filter

@@ -1,23 +1,44 @@
 {
 	"__translator": [
 		"Yanis48",
-		"JSBM"
+		"JSBM",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " "
 	],
 	"fallback": [
-		"en"
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
 	],
 	"aliases": {
-		"help": ["aide"],
-		"search": ["chercher"],
-		"command": ["commande"]
+		"bug": [" ", " ", " ", " ", " "],
+		"command": ["commande"," ", " ", " ", " "],
+		"diff": [" ", " ", " ", " ", " "],
+		"discussion": [" ", " ", " ", " ", " "],
+		"help": ["aide", " ", " ", " ", " "],
+		"info": [" ", " ", " ", " ", " "],
+		"invite": [" ", " ", " ", " ", " "],
+		"overview": [" ", " ", " ", " ", " "],
+		"page": [" ", " ", " ", " ", " "],
+		"random": [" ", " ", " ", " ", " "],
+		"search": ["chercher", " ", " ", " ", " "],
+		"test": [" ", " ", " ", " ", " "],
+		"user": [" ", " ", " ", " ", " "],
+		"verify": [" ", " ", " ", " ", " "]
 	},
 	"dateformat": "fr-FR",
-	"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
-	"missingperm": "Il me manque certaines permissions pour cette commande :",
-	"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",
-	"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. $1 m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Fandom et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",
-	"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
-	"patreon": "c'est une fonctionnalité réservée au Patreon !\nVous pouver me supporter sur Patreon pour avoir accès à cette fonctionnalité :",
+	"general": {
+		"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
+		"missingperm": "Il me manque certaines permissions pour cette commande :",
+		"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",
+		"disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. $1 m'a écrit en JavaScript.\n\n**Je ne suis pas affilié avec Fandom et ne suis pas un outil officiel !**\n\nVous pouvez également me soutenir sur Patreon :",
+		"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
+		"patreon": "c'est une fonctionnalité réservée au Patreon !\nVous pouver me supporter sur Patreon pour avoir accès à cette fonctionnalité :"
+	},
 	"settings": {
 		"save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",
 		"missing": "ce serveur n'est pas encore configuré. Utilisez $1 et $2 pour modifier les paramètres.",
@@ -77,7 +98,6 @@
 		"pages": "Nombre de pages total :",
 		"edits": "Modifications :",
 		"users": "Utilisateurs actifs :",
-		"crossover": "Merged into:",
 		"description": "Description :",
 		"image": "Image :",
 		"none": "*aucun*"
@@ -192,9 +212,9 @@
 		"bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
 	},
 	"test": {
-		"random": 50,
 		"pause": "je suis présentement en pause sur ce serveur.",
 		"text": [
+			"Je suis entièrement fonctionnel !",
 			"Je suis toujours en vie !",
 			"et crois-moi, je suis toujours vivant.",
 			"Je fais de la science et je suis toujours en vie.",
@@ -220,9 +240,9 @@
 			"... je suis là, j'étais en train de lire sur un Wiki! Saviez-vous que l'inventeur de la soupe est Darth Vader? ... Oh, peut-être que la page était vandalisée, en fait.",
 			"Le robot fonctionne.",
 			"Je suis là! Aller, je suis prêt, faites-moi faire une recherche! J'ai bien envie d'aller explorer les Wikis!",
-			"Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!"
+			"Est-ce que Markus est parti? Oui? Aller, allons-nous amuser!",
+			" ", " ", " "
 		],
-		"default": "Je suis entièrement fonctionnel !",
 		"time": "Temps de latence"
 	},
 	"help": {

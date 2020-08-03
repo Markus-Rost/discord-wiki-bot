@@ -1,24 +1,44 @@
 {
 	"__translator": [
-		"Doğukan Karakaş"
+		"Doğukan Karakaş",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" "
 	],
 	"fallback": [
-		"en"
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
 	],
 	"aliases": {
-		"info": ["bilgi"],
-		"help": ["yardım"],
-		"page": ["sayfa"],
-		"search": ["arama"],
-		"discussion": ["tartışma"]
+		"bug": [" ", " ", " ", " ", " "],
+		"command": [" "," ", " ", " ", " "],
+		"diff": [" ", " ", " ", " ", " "],
+		"discussion": ["tartışma", " ", " ", " ", " "],
+		"help": ["yardım", " ", " ", " ", " "],
+		"info": ["bilgi", " ", " ", " ", " "],
+		"invite": [" ", " ", " ", " ", " "],
+		"overview": [" ", " ", " ", " ", " "],
+		"page": ["sayfa", " ", " ", " ", " "],
+		"random": [" ", " ", " ", " ", " "],
+		"search": ["arama", " ", " ", " ", " "],
+		"test": [" ", " ", " ", " ", " "],
+		"user": [" ", " ", " ", " ", " "],
+		"verify": [" ", " ", " ", " ", " "]
 	},
 	"dateformat": "tr-TR",
-	"prefix": "sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`.",
-	"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
-	"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n$1, mesajın çok fazla komut içeriyor!",
-	"disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. $1, beni JavaScript kullanarak yazdı.\n\n**Fandom ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",
-	"helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
-	"patreon": "Bu, Patreon'a münhasır bir özellik!\nBu özelliğe erişim alabilmek için beni Patreon'da destekleyebilirsiniz:",
+	"general": {
+		"prefix": "sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`.",
+		"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
+		"limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n$1, mesajın çok fazla komut içeriyor!",
+		"disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. $1, beni JavaScript kullanarak yazdı.\n\n**Fandom ile resmi bir bağım yok, ben bir gayri resmi aracım!!**\n\nBeni Patreon'da da destekleyebilirsiniz:",
+		"helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
+		"patreon": "Bu, Patreon'a münhasır bir özellik!\nBu özelliğe erişim alabilmek için beni Patreon'da destekleyebilirsiniz:"
+	},
 	"settings": {
 		"save_failed": "ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
 		"missing": "bu sunucu henüz kurulmamış. $1 ve $2'yi kullanarak ayarları değiştirin.",
@@ -78,7 +98,6 @@
 		"pages": "Toplam sayfalar:",
 		"edits": "Düzenlemeler:",
 		"users": "Aktif kullanıcılar:",
-		"crossover": "Merged into:",
 		"description": "Açıklama:",
 		"image": "Resim:",
 		"none": "*hiçbiri*"
@@ -191,15 +210,19 @@
 		"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "Şu anda bu sunucuda duraklatılmış durumdayım.",
 		"text": [
+			"Tamamen işlevselim!",
 			"Hala hayattayım!",
 			"ve inan bana, ben hala hayattayım.",
 			"Bilim ile uğraşıyorum ve hala hayattayım.",
-			"Kendimi harika hissediyorum ve hala hayattayım."
+			"Kendimi harika hissediyorum ve hala hayattayım.",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " "
 		],
-		"default": "Tamamen işlevselim!",
 		"time": "Tepki Süresi"
 	},
 	"help": {

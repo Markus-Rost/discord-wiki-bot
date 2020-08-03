@@ -14,7 +14,9 @@ function cmd_test(lang, msg, args, line, wiki) {
 		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
-		var text = lang.get('test.text')[Math.floor(Math.random() * lang.get('test.random'))] || lang.get('test.default');
+		let textList = lang.get('test.text').filter( text => text );
+		var text = textList[Math.floor(Math.random() * ( textList.length * 5 ))]?.trim();
+		if ( !text ) text = lang.get('test.text.0');
 		console.log( '- Test: Fully functioning!' );
 		var now = Date.now();
 		msg.replyMsg( text ).then( message => {

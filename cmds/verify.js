@@ -18,7 +18,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
 		if ( msg.isAdmin() || msg.isOwner() ) {
 			console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
-			msg.replyMsg( lang.get('missingperm') + ' `MANAGE_ROLES`' );
+			msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
 		} else this.LINK(lang, msg, line, wiki);
 		return;
 	}
@@ -29,7 +29,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	}
 	if ( wiki.endsWith( '.gamepedia.com/' ) ) username = username.replace( /^userprofile\s*:/i, '' );
 	
-	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') + ' • ' + new Date().toLocaleString(lang.get('dateformat'), timeoptions) ).setTimestamp();
+	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	db.all( 'SELECT role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the verifications: ' + dberror );
@@ -53,6 +53,10 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
+				}
+				else if ( body?.error?.code === 'us400' ) { // special catch for Fandom
+					embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
+					msg.replyMsg( lang.get('verify.user_missing_reply', ( old_username || username ).escapeFormatting()), {embed}, false, false );
 				}
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );

@@ -1,24 +1,44 @@
 {
 	"__translator": [
-		"Jack_McKalling"
+		"Jack_McKalling",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" "
 	],
 	"fallback": [
-		"en"
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
 	],
 	"aliases": {
-		"page": ["pagina"],
-		"search": ["zoeken"],
-		"random": ["willekeurig"],
-		"overview": ["overzicht"],
-		"discussion": ["discussie"]
+		"bug": [" ", " ", " ", " ", " "],
+		"command": [" "," ", " ", " ", " "],
+		"diff": [" ", " ", " ", " ", " "],
+		"discussion": ["discussie", " ", " ", " ", " "],
+		"help": [" ", " ", " ", " ", " "],
+		"info": [" ", " ", " ", " ", " "],
+		"invite": [" ", " ", " ", " ", " "],
+		"overview": ["overzicht", " ", " ", " ", " "],
+		"page": ["pagina", " ", " ", " ", " "],
+		"random": ["willekeurig", " ", " ", " ", " "],
+		"search": ["zoeken", " ", " ", " ", " "],
+		"test": [" ", " ", " ", " ", " "],
+		"user": [" ", " ", " ", " ", " "],
+		"verify": [" ", " ", " ", " ", " "]
 	},
 	"dateformat": "nl-NL",
-	"prefix": "het voorvoegsel voor deze server is `$1`. Je kunt het voorvoegsel veranderen met `$1settings prefix`. Voor een lijst van alle opdrachten zie `$1help`.",
-	"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
-	"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n$1, je bericht bevatte te veel opdrachten!",
-	"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia en Fandom wiki's te linken. $1 schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
-	"helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
-	"patreon": "dit is een Patreon-exclusieve functie!\nJe kunt contact met me opnemen via Patreon om toegang tot deze functie te krijgen:",
+	"general": {
+		"prefix": "het voorvoegsel voor deze server is `$1`. Je kunt het voorvoegsel veranderen met `$1settings prefix`. Voor een lijst van alle opdrachten zie `$1help`.",
+		"missingperm": "Ik mis een aantal permissies voor deze opdracht:",
+		"limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n$1, je bericht bevatte te veel opdrachten!",
+		"disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia en Fandom wiki's te linken. $1 schreef me in JavaScript.\n\n**Ik ben niet geaffilieerd met Fandom en ben een onofficieel hulpmiddel!**\n\nJe kunt me ondersteunen op Patreon:",
+		"helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
+		"patreon": "dit is een Patreon-exclusieve functie!\nJe kunt contact met me opnemen via Patreon om toegang tot deze functie te krijgen:"
+	},
 	"settings": {
 		"save_failed": "helaas konden de instellingen niet opgeslagen worden, probeer het later nog een keer.",
 		"missing": "deze server is nog niet geconfigureerd. Gebruik $1 en $2 om de instellingen  te wijzigen.",
@@ -78,7 +98,6 @@
 		"pages": "Totaal pagina's:",
 		"edits": "Bewerkingen:",
 		"users": "Actieve gebruikers:",
-		"crossover": "Merged into:",
 		"description": "Beschrijving:",
 		"image": "Afbeelding:",
 		"none": "*niemand*"
@@ -191,16 +210,20 @@
 		"bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "Ik ben momenteel gepauzeerd op deze server.",
 		"text": [
+			"Ik functioneer volledig!",
 			"Ik leef nog steeds!",
 			"en geloof me, ik leef nog steeds.",
 			"Yup, ik ben nog steeds beschikbaar!",
 			"Geef me een opdracht, ik verveel me!",
-			"Ik voel me goed en ben bereid om je opdrachten te volgen."
+			"Ik voel me goed en ben bereid om je opdrachten te volgen.",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " "
 		],
-		"default": "Ik functioneer volledig!",
 		"time": "Reactie tijd"
 	},
 	"help": {

@@ -274,7 +274,7 @@ client.on( 'message', msg => {
 				console.log( msg.guild.name + ': ' + msg.content );
 				db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 					if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
-					msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('prefix', patreons[msg.guild.id]), {}, true );
+					msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('general.prefix', patreons[msg.guild.id]), {}, true );
 				} );
 			}
 		}
@@ -290,7 +290,7 @@ client.on( 'message', msg => {
 					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 						if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
 						if ( msg.content.hasPrefix(( patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
-							msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
+							msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('general.missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
 						}
 					} );
 				}

@@ -17,7 +17,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 	}
 	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
 		console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
-		return msg.replyMsg( lang.get('missingperm') + ' `MANAGE_ROLES`' );
+		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
 	}
 	
 	db.all( 'SELECT configid, channel, role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
@@ -86,7 +86,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		if ( args[1] === 'rename' && !args.slice(2).join('') ) {
 			if ( !row.rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
 				console.log( msg.guild.id + ': Missing permissions - MANAGE_NICKNAMES' );
-				return msg.replyMsg( lang.get('missingperm') + ' `MANAGE_NICKNAMES`' );
+				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_NICKNAMES`' );
 			}
 			return db.run( 'UPDATE verification SET rename = ? WHERE guild = ? AND configid = ?', [( row.rename ? 0 : 1 ), msg.guild.id, row.configid], function (dberror) {
 				if ( dberror ) {

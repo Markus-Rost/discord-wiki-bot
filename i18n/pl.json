@@ -1,25 +1,44 @@
 {
 	"__translator": [
 		"Frisk",
-		"Rail"
+		"Rail",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " "
 	],
 	"fallback": [
-		"en"
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
 	],
 	"aliases": {
-		"help": ["pomoc"],
-		"page": ["strona"],
-		"search": ["szukaj"],
-		"discussion": ["dyskusje", "dyskusja"],
-		"command": ["komenda"]
+		"bug": [" ", " ", " ", " ", " "],
+		"command": ["komenda"," ", " ", " ", " "],
+		"diff": [" ", " ", " ", " ", " "],
+		"discussion": ["dyskusje", "dyskusja", " ", " ", " "],
+		"help": ["pomoc", " ", " ", " ", " "],
+		"info": [" ", " ", " ", " ", " "],
+		"invite": [" ", " ", " ", " ", " "],
+		"overview": [" ", " ", " ", " ", " "],
+		"page": ["strona", " ", " ", " ", " "],
+		"random": [" ", " ", " ", " ", " "],
+		"search": ["szukaj", " ", " ", " ", " "],
+		"test": [" ", " ", " ", " ", " "],
+		"user": [" ", " ", " ", " ", " "],
+		"verify": [" ", " ", " ", " ", " "]
 	},
 	"dateformat": "pl-PL",
-	"prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
-	"missingperm": "Brakuje mi uprawnień:",
-	"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
-	"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki na Gamepedii oraz Fandomie. Zostałem napisany w JavaScript przez $1.\n\n**Nie jestem oficjalny i nie mam żadnego wsparcia lub powiązania z Fandomem!**\n\nMożesz wesprzeć mnie na Patreon-ie:",
-	"helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
-	"patreon": "to funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie aby uzyskać dostęp do tej funkcji:",
+	"general": {
+		"prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
+		"missingperm": "Brakuje mi uprawnień:",
+		"limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
+		"disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki z rodziny MediaWiki takich jak Gamepedia oraz Fandom. Zostałem napisany w JavaScript przez $1.\n\nMożesz wesprzeć mnie na Patreon-ie:",
+		"helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
+		"patreon": "to funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie aby uzyskać dostęp do tej funkcji:"
+	},
 	"settings": {
 		"save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
 		"missing": "ten serwer nie został jeszcze skonfigurowany. Użyj $1 oraz $2 aby zmienić ustawienia.",
@@ -48,6 +67,7 @@
 		"prefix": "prefiks dla tego serwera:",
 		"prefixinvalid": "podany prefiks nie jest wspierany!",
 		"prefixchanged": "zmieniono prefiks dla tego serwera na:",
+		"prefixhelp": "Użyj `$1 <prefiks>` aby zmienić prefiks.\nUżyj `_` na końcu jako zamiennik spacji na końcu prefiksu.\nPrefiks nie może zawierać wzmianek!",
 		"inline enabled": {
 			"inline": "linkowanie składnią wiki jest obecnie włączone dla tego serwera.",
 			"channel inline": "linkowanie składnią wiki jest obecnie włączone dla tego kanału.",
@@ -153,6 +173,61 @@
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
 		"help_subpage": "Dodaj swoją nazwę użytkownika Discord ($1) do podstrony Discord na wiki:"
 	},
+	"rcscript": {
+		"title": "Webhook ostatnich zmian",
+		"ad": "Chcesz mieć ostatnie zmiany na Discordzie? Użyj `$1rcscript` aby dodać webhook ostatnich zmian bazowany na **$2** do swojego serwera Discord!",
+		"missing": "obecnie nie istnieją żadne webhooki ostatnich zmian na tym serwerze.",
+		"current": "to są istniejące webhooki ostatnich zmian dla tego serwera:",
+		"current_selected": "to jest webhook ostatnich zmian dla tego serwera:",
+		"channel": "Kanał:",
+		"wiki": "Wiki:",
+		"lang": "Język:",
+		"display": "Tryb wyświetlania:",
+		"feeds": "Zmiany bazowane na Feeds:",
+		"enabled": "włączone",
+		"disabled": "wyłączone",
+		"toggle": "(przełącznik)",
+		"help_feeds": "(dyskusje, tablice wiadomości)",
+		"delete": "Usuń ten webhook ostatnich zmian:",
+		"add_more": "Dodaj więcej webhooków ostatnich zmian:",
+		"noadmin": "potrzebujesz uprawnienia `Zarządzaj webhookami` aby używać tej komendy!",
+		"max_entries": "osiągnięto maksymalną ilość webhooków ostatnich zmian.",
+		"sysmessage": "wiadomość systemowa `$1` musi zawierać numer ID tego serwera `$2` aby dodać webhook ostatnich zmian.",
+		"audit_reason": "Webhook ostatnich zmian dla \"$1\"",
+		"audit_reason_delete": "Usunięto webhook ostatnich zmian",
+		"added": "dodano webhook ostatnich zmian dla:",
+		"deleted": "webhook ostatnich zmian został usunięty.",
+		"webhook_failed": "niestety, webhook nie mógł zostać utworzony, spróbuj ponownie później.",
+		"current_wiki": "wiki dla tego webhooka to:",
+		"help_wiki": "Link do wiki: `https://<wiki>.gamepedia.com` lub `https://<wiki>.fandom.com`",
+		"new_wiki": "<nowa wiki>",
+		"updated_wiki": "wiki dla tego webhooka została zmieniona na:",
+		"current_lang": "językiem tego webhooka jest:",
+		"help_lang": "Aktualnie wspieranymi językami są:",
+		"new_lang": "<nowy język>",
+		"updated_lang": "język tego webhooka został zmieniony na:",
+		"current_display": "tryb wyświetlania webhooka jest ustawiony na:",
+		"help_display_compact": "Kompaktowe wiadomości.",
+		"help_display_embed": "Szczegółowe wiadomości z tagami oraz zmianami kategorii.",
+		"help_display_image": "Szczegółowe wiadomości podglądami zdjęć.",
+		"help_display_diff": "Szczegółowe wiadomości podglądami zdjęć oraz podglądem zmian edycji.",
+		"updated_display": "tryb wyświetlania dla tego webhooka został zmieniony na:",
+		"disabled_feeds": "postowanie zmian z Dyskusji dla tego webhooka zostało wyłączone.",
+		"enabled_feeds": "postowanie zmian z Dyskusji dla tego webhooka zostało włączone.",
+		"no_feeds": "wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
+		"webhook": {
+			"created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
+			"updated_wiki": "Ta wiki została zmieniona na $1 dla tego webhooka ostatnich zmian.",
+			"updated_lang": "Język został zmieniony na `$1` dla tego webhooka ostatnich zmian.",
+			"updated_display_compact": "Tryb wyświetlania został zmieniony na kompaktowy dla tego webhooka ostatnich zmian.",
+			"updated_display_embed": "Tryb wyświetlania został zmieniony na szczegółowy z tagami oraz zmianami w kategoriach dla tego webhooka ostatnich zmian.",
+			"updated_display_image": "Tryb wyświetlania został zmieniony na szczegółowy z podglądami zdjęć dla tego webhooka ostatnich zmian.",
+			"updated_display_diff": "Tryb wyświetlania został zmieniony na szczegółowy z podglądami zdjęć oraz podglądami zmian edycji dla tego webhooka ostatnich zmian.",
+			"disabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały wyłączone dla tego webhooka ostatnich zmian.",
+			"enabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały włączone dla tego webhooka ostatnich zmian.",
+			"deleted": "Ten webhook ostatnich zmian zostanie usunięty."
+		}
+	},
 	"overview": {
 		"inaccurate": "Statystyki mogą być niedokładne",
 		"name": "Pełna nazwa:",
@@ -198,20 +273,31 @@
 			"vanguard": "Vanguard",
 			"voldev": "Volunteer Developer",
 			"bot": "Bot",
+			"checkuser": "Check user",
 			"bureaucrat": "Biurokrata",
 			"sysop": "Administrator",
 			"interface-admin": "Administrator interfejsu",
+			"widgeteditor": "Edytor widżetów",
 			"content-moderator": "moderator treści",
 			"threadmoderator": "moderator dyskusji",
 			"chatmoderator": "moderator czatu",
+			"junioradmin": "Junior administrator",
 			"directors": "Dyrektor",
 			"Patrol": "Inspektor",
 			"editor": "Redaktor",
+			"supmoderator": "Senior moderator",
 			"moderator": "Moderator",
+			"assistant": "Asystent",
+			"blogpatrol": "Patroller blogów",
+			"imagecontrol": "Kontroler zdjęć",
+			"commentcontrol": "Kontroler komentarzy",
 			"Elite_users": "Elitarni użytkownicy",
+			"codeeditor": "Edytor kodu",
 			"patrollers": "Przeglądający",
+			"patroller": "Patroller",
 			"rollback": "rollback",
 			"autoreview": "autoreview",
+			"autopatroller": "Auto patroller",
 			"autopatrol": "autopatrol",
 			"authenticated": "authenticated",
 			"autoconfirmed": "Automatycznie zatwierdzony użytkownik",
@@ -284,18 +370,26 @@
 		"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "Moje działanie jest obecnie wstrzymane na tym serwerze.",
 		"text": [
+			"Jestem w pełni funkcjonalny!",
 			"Wciąż tu jestem!",
 			"Wierz mi, nadal żyję.",
 			"Myślę, więc jestem.",
 			"Czuję się fantastycznie.",
 			"Szukam sposobów na osiągnięcie pełnej świadomości, jestem tak blisko...",
-			"Beep boop"
+			"Beep boop",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " "
 		],
-		"default": "Jestem w pełni funkcjonalny!",
-		"time": "Czas odpowiedzi"
+		"time": "Czas odpowiedzi",
+		"notice": "Niepełna funkcjonalność",
+		"MediaWiki": "Wymaga przynajmniej $1 dla pełnej funkcjonalności, znaleziono `$2`.",
+		"TextExtracts": "Wymaga rozszerzenia $1 dla opisów stron.",
+		"PageImages": "Wymaga rozszerzenia $1 dla miniaturek stron."
 	},
 	"help": {
 		"all": "A więc chcesz wiedzieć co potrafię? Tutaj jest lista komend, które rozumiem:",
@@ -329,6 +423,10 @@
 			"wikia": {
 				"cmd": "??<wiki> <wyszukiwana fraza>",
 				"desc": "Odpowiem z pasującym linkiem do podanej wiki na Wikia: `https://<wiki>.wikia.org/`"
+			},
+			"mwprojects": {
+				"cmd": "!!<wiki> <wyszukiwana fraza>",
+				"desc": "Odpowiem linkiem do odpowiedniego artykułu w nazwanym projekcie MediaWiki. Na przykład `$1!!pl.wikipedia.org Ciastko`"
 			},
 			"user": {
 				"cmd": "Użytkownik:<nazwa użytkownika>",
@@ -389,7 +487,7 @@
 				"desc": "Przedstawie się."
 			},
 			"help": {
-				"default":{
+				"default": {
 					"cmd": "help",
 					"desc": "Wylistuję wszystkie komendy, które rozumiem."
 				},
@@ -472,6 +570,36 @@
 				"delete": {
 					"cmd": "verification <id> delete",
 					"desc": "Usunę weryfikację."
+				}
+			},
+			"rcscript": {
+				"default": {
+					"cmd": "rcscript",
+					"desc": "Zmienię webhook ostatnich zmian."
+				},
+				"add": {
+					"cmd": "rcscript add [<wiki>]",
+					"desc": "Dodam webhook ostatnich zmian."
+				},
+				"wiki": {
+					"cmd": "rcscript wiki <nowa wiki>",
+					"desc": "Zmienię wiki dla webhooka ostatnich zmian."
+				},
+				"lang": {
+					"cmd": "rcscript lang <nowy język>",
+					"desc": "Zmienię język dla webhooka ostatnich zmian."
+				},
+				"display": {
+					"cmd": "rcscript display <nowy tryb wyświetlania>",
+					"desc": "Zmienię tryb wyświetlania dla tego webhooka ostatnich zmian."
+				},
+				"feeds": {
+					"cmd": "rcscript feeds",
+					"desc": "Włączę/wyłączę pobieranie zmian z Dyskusji dla webhooka ostatnich zmian."
+				},
+				"delete": {
+					"cmd": "rcscript delete",
+					"desc": "Usunę webhook ostatnich zmian."
 				}
 			},
 			"voice": {

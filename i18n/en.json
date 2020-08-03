@@ -1,22 +1,44 @@
 {
 	"__translator": [
 		"MarkusRost",
-		"violine1101"
+		"violine1101",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " "
 	],
 	"fallback": [
+		" ",
+		" ",
+		" ",
+		" ",
+		" "
 	],
 	"aliases": {
-		"random": ["random", "🎲"],
-		"discussion": ["discussions"],
-		"command": ["command", "cmd"]
+		"bug": ["bug", " ", " ", " ", " "],
+		"command": ["command", "cmd", " ", " ", " "],
+		"diff": ["diff", " ", " ", " ", " "],
+		"discussion": ["discussions", "discussion", " ", " ", " "],
+		"help": ["help", " ", " ", " ", " "],
+		"info": ["info", " ", " ", " ", " "],
+		"invite": ["invite", " ", " ", " ", " "],
+		"overview": ["overview", " ", " ", " ", " "],
+		"page": ["page", " ", " ", " ", " "],
+		"random": ["random", "🎲", " ", " ", " "],
+		"search": ["search", " ", " ", " ", " "],
+		"test": ["test", " ", " ", " ", " "],
+		"user": ["user", " ", " ", " ", " "],
+		"verify": ["verify", " ", " ", " ", " "]
 	},
 	"dateformat": "en-US",
-	"prefix": "the prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`.",
-	"missingperm": "I'm missing some permissions for this command:",
-	"limit": "🚨 **Stop, you hit a limit!** 🚨\n\n$1, your message contained too many commands!",
-	"disclaimer": "I am a small bot with the purpose to easily link and search MediaWiki sites like Gamepedia and Fandom wikis. I show short descriptions and additional info about pages and am able to resolve redirects and follow interwiki links. $1 wrote me in JavaScript.\n\nYou can support me on Patreon:",
-	"helpserver": "For questions and problems please visit my support server:",
-	"patreon": "this is a Patreon only feature!\nYou can support me on Patreon to get access to this feature:",
+	"general": {
+		"prefix": "the prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`.",
+		"missingperm": "I'm missing some permissions for this command:",
+		"limit": "🚨 **Stop, you hit a limit!** 🚨\n\n$1, your message contained too many commands!",
+		"disclaimer": "I am a small bot with the purpose to easily link and search MediaWiki sites like Gamepedia and Fandom wikis. I show short descriptions and additional info about pages and am able to resolve redirects and follow interwiki links. $1 wrote me in JavaScript.\n\nYou can support me on Patreon:",
+		"helpserver": "For questions and problems please visit my support server:",
+		"patreon": "this is a Patreon only feature!\nYou can support me on Patreon to get access to this feature:"
+	},
 	"settings": {
 		"save_failed": "sadly the settings couldn't be saved, please try again later.",
 		"missing": "this server isn't set up yet. Use $1 and $2 to change the settings.",
@@ -145,7 +167,7 @@
 		"empty": "*empty*",
 		"notice": "Notice:",
 		"qualified": "Qualified for:",
-		"qualified_error": "Qualified for, but could not add:",
+		"qualified_error": "Qualified for, but can't add:",
 		"help_guide": "Follow [this guide]($1) to add your Discord tag to your wiki profile:",
 		"help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
@@ -161,6 +183,7 @@
 		"wiki": "Wiki:",
 		"lang": "Language:",
 		"display": "Display mode:",
+		"rc": "Wiki changes:",
 		"feeds": "Feeds based changes:",
 		"enabled": "enabled",
 		"disabled": "disabled",
@@ -169,17 +192,17 @@
 		"delete": "Delete this recent changes webhook:",
 		"add_more": "Add more recent changes webhooks:",
 		"noadmin": "you need the `Manage Webhooks` permission for this command!",
-		"max_entries":"you already reached the maximal amount of recent changes webhooks.",
-		"sysmessage": "the system message `$1` has to be the server ID `$2` to add a recent changes webhook.",
+		"max_entries": "you already reached the maximal amount of recent changes webhooks.",
+		"sysmessage": "the system message `$1` has to be the server id `$2` to add a recent changes webhook.",
 		"audit_reason": "Recent changes webhook for \"$1\"",
 		"audit_reason_delete": "Removed recent changes webhook",
 		"added": "a recent changes webhook has been added for:",
-		"deleted":"the recent changes webhook has be deleted.",
+		"deleted": "the recent changes webhook has been deleted.",
 		"webhook_failed": "sadly the webhook couldn't be created, please try again later.",
 		"current_wiki": "the wiki for this webhook is:",
 		"help_wiki": "Link to the wiki: `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
 		"new_wiki": "<new wiki>",
-		"updated_wiki":"the wiki for this webhook has been changed to:",
+		"updated_wiki": "the wiki for this webhook has been changed to:",
 		"current_lang": "the language for this webhook is:",
 		"help_lang": "Currently supported languages are:",
 		"new_lang": "<new language>",
@@ -192,7 +215,10 @@
 		"updated_display": "the display mode for this webhook has been changed to:",
 		"disabled_feeds": "the feeds based changes, like discussions, message walls and article comments, for this webhook have been disabled.",
 		"enabled_feeds": "the feeds based changes, like discussions, message walls and article comments, for this webhook have been enabled.",
-		"no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls and article comments, enabled.",
+		"no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
+		"disabled_rc": "the wiki changes for this webhook have been disabled.",
+		"enabled_rc": "the wiki changes for this webhook have been enabled.",
+		"all_inactive": "you can't have wiki changes and feeds based changes disabled at the same time.",
 		"webhook": {
 			"created": "A recent changes webhook for $1 has been added to this channel.",
 			"updated_wiki": "The wiki has been changed to $1 for this recent changes webhook.",
@@ -203,6 +229,8 @@
 			"updated_display_diff": "The display mode has been changed to embed messages with image previews and edit differences for this recent changes webhook.",
 			"disabled_feeds": "The feeds based changes, like discussions, message walls and article comments, have been disabled for this recent changes webhook.",
 			"enabled_feeds": "The feeds based changes, like discussions, message walls and article comments, have been enabled for this recent changes webhook.",
+			"disabled_rc": "The wiki changes have been disabled for this recent changes webhook.",
+			"enabled_rc": "The wiki changes have been enabled for this recent changes webhook.",
 			"deleted": "This recent changes webhook will be deleted."
 		}
 	},
@@ -350,15 +378,19 @@
 		"bot": "Use this link to invite me to another server:"
 	},
 	"test": {
-		"random": 10,
 		"pause": "I'm currently paused on this server.",
 		"text": [
+			"I'm fully functional!",
 			"I'm still alive!",
 			"and believe me, I am still alive.",
 			"I'm doing science and I'm still alive.",
-			"I feel fantastic and I'm still alive."
+			"I feel fantastic and I'm still alive.",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " ",
+			" ", " ", " ", " ", " "
 		],
-		"default": "I'm fully functional!",
 		"time": "Response time",
 		"notice": "Limited functionality",
 		"MediaWiki": "Requires at least $1 for full functionality, found `$2`.",
@@ -581,7 +613,7 @@
 				"desc": "I try to give everyone in a voice channel a specific role."
 			},
 			"pause": {
-				"inactive":{
+				"inactive": {
 					"cmd": "pause $1",
 					"desc": "I will ignore all commands on this server, except a few admin commands."
 				},

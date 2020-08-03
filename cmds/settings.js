@@ -32,13 +32,13 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		var inlinepage = ( lang.localNames.page || 'page' );
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
 		if ( rows.length ) {
-			text = lang.get('settings.current') + '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang][1] + '` - `' + prefix + 'settings lang`';
+			text = lang.get('settings.current') + '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
 			if ( msg.guild.id in patreons ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
 			text += '\n' + lang.get('settings.currentinline') + ' ' + ( guild.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( guild.inline ? '~~' : '' ) + ' - `' + prefix + 'settings inline`';
 			text += '\n' + lang.get('settings.currentwiki') + ' ' + guild.wiki + ' - `' + prefix + 'settings wiki`';
 			text += '\n' + lang.get('settings.currentchannel') + ' `' + prefix + 'settings channel`\n';
 			if ( rows.length === 1 ) text += lang.get('settings.nochannels');
-			else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel + '>: ' + ( msg.guild.id in patreons ? '`' + allLangs.names[row.lang][1] + '` - ' : '' ) + '<' + row.wiki + '>' + ( msg.guild.id in patreons ? ' - ' + ( row.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( row.inline ? '~~' : '' ) : '' ) ).join('\n');
+			else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel + '>: ' + ( msg.guild.id in patreons ? '`' + allLangs.names[row.lang] + '` - ' : '' ) + '<' + row.wiki + '>' + ( msg.guild.id in patreons ? ' - ' + ( row.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( row.inline ? '~~' : '' ) : '' ) ).join('\n');
 		}
 		
 		if ( !args.length ) {
@@ -55,7 +55,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !channel ) channel = Object.assign({channel:msg.channel.id}, guild);
 			text = lang.get('settings.' + prelang + 'current');
 			if ( msg.guild.id in patreons ) {
-				text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[channel.lang][1] + '` - `' + prefix + 'settings channel lang`';
+				text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[channel.lang] + '` - `' + prefix + 'settings channel lang`';
 				text += '\n' + lang.get('settings.currentinline') + ' ' + ( channel.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( channel.inline ? '~~' : '' ) + ' - `' + prefix + 'settings channel inline`';
 			}
 			text += '\n' + lang.get('settings.currentwiki') + ' ' + channel.wiki + ' - `' + prefix + 'settings channel wiki`';
@@ -204,11 +204,11 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		}
 		
 		if ( args[0] === 'lang' ) {
-			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 			prelang += 'lang';
-			var langhelp = '\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).map( val => val[0] ).join('`, `') + '`';
+			var langhelp = '\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`';
 			if ( !args[1] ) {
-				return msg.replyMsg( lang.get('settings.' + prelang) + ' `' + allLangs.names[( channel || guild ).lang][1] + '`' + langhelp, {}, true );
+				return msg.replyMsg( lang.get('settings.' + prelang) + ' `' + allLangs.names[( channel || guild ).lang] + '`' + langhelp, {}, true );
 			}
 			if ( !( args[1] in allLangs.map ) ) {
 				return msg.replyMsg( lang.get('settings.langinvalid') + langhelp, {}, true );
@@ -224,7 +224,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				sqlargs[2] = msg.channel.id;
 				if ( !rows.includes( channel ) ) {
 					if ( channel.lang === allLangs.map[args[1]] ) {
-						return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang][1] + '`' + langhelp, {}, true );
+						return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang] + '`' + langhelp, {}, true );
 					}
 					sql = 'INSERT INTO discord(lang, guild, channel, wiki, prefix) VALUES(?, ?, ?, ?, ?)';
 					sqlargs.push(guild.wiki, guild.prefix);
@@ -246,7 +246,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					if ( msg.guild.id in voice ) voice[msg.guild.id] = guild.lang;
 				}
 				if ( channel || !( msg.guild.id in patreons ) || !rows.some( row => row.channel === msg.channel.id ) ) lang = new Lang(allLangs.map[args[1]]);
-				msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]][1] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).map( val => val[0] ).join('`, `') + '`', {}, true );
+				msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`', {}, true );
 				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join(', ') + ')', channels, function (delerror) {
 					if ( delerror ) {
@@ -260,7 +260,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		
 		if ( args[0] === 'prefix' && !channel ) {
 			if ( !( msg.guild.id in patreons ) ) {
-				return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+				return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 			}
 			var prefixhelp = '\n' + lang.get('settings.prefixhelp', prefix + 'settings prefix');
 			args[1] = args[1].replace( /(?<!\\)_$/, ' ' ).replace( /\\([_\W])/g, '$1' );
@@ -290,7 +290,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		}
 		
 		if ( args[0] === 'inline' ) {
-			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('patreon') + '\n<' + process.env.patreon + '>', {}, true );
+			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 			prelang += 'inline';
 			var toggle = 'inline ' + ( ( channel || guild ).inline ? 'disabled' : 'enabled' );
 			var inlinehelp = '\n' + lang.get('settings.' + toggle + '.help', prefix + 'settings ' + prelang + ' toggle', inlinepage);
