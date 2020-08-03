@@ -1,8 +1,8 @@
 name: Change indentation to tabs
 
 on:
-  pull_request:
-    branches: [ master ]
+  push:
+    branches: [ translations ]
 
 jobs:
   run:
