@@ -136,7 +136,7 @@
         "votes": "$1 {{PLURAL:$1|voto|votos}}"
     },
     "fallback": [
-        "en",
+        "pt",
         " ",
         " ",
         " ",
@@ -209,6 +209,16 @@
                 "cmd": "info",
                 "desc": "Irei me apresentar."
             },
+            "inline": {
+                "link": {
+                    "cmd": "[[<nome da página>]]",
+                    "desc": "Vou responder com um link direto para o artigo na wiki."
+                },
+                "template": {
+                    "cmd": "{{<nome da página>}}",
+                    "desc": "Vou responder com um link para o artigo na wiki."
+                }
+            },
             "minecraft": {
                 "bug": {
                     "cmd": "bug <erro do Minecraft>",
@@ -222,6 +232,9 @@
                     "cmd": "/<comando do Minecraft>",
                     "desc": "Vou responder com a sintaxe do comando do Minecraft e um link para o artigo do comando na Minecraft Wiki."
                 }
+            },
+            "mwprojects": {
+                "cmd": "!!<wiki> <termo de pesquisa>"
             },
             "overview": {
                 "cmd": "overview",
@@ -244,6 +257,23 @@
             "random": {
                 "cmd": "random",
                 "desc": "Vou responder com um link para uma página aleatória na wiki."
+            },
+            "rcscript": {
+                "delete": {
+                    "cmd": "exclusão de rcscript",
+                    "desc": "Excluirei o webhook das alterações recentes."
+                },
+                "feeds": {
+                    "desc": "Eu alternarei as alterações das discussões em uma wiki da Fandom para o webhook das mudanças recentes."
+                },
+                "lang": {
+                    "cmd": "rcscript lang <novo idioma>",
+                    "desc": "Eu vou mudar o idioma para o webhook de mudanças recentes."
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <nova wiki>",
+                    "desc": "Eu vou mudar a wiki para o webhook de mudanças recentes."
+                }
             },
             "search": {
                 "cmd": "search <termo de pesquisa>",
