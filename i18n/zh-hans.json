@@ -143,7 +143,7 @@
         " "
     ],
     "general": {
-        "disclaimer": "我是一个链接到 Gamepedia 和 Fandom wiki 的小机器人。$1用 JavaScript 编写了我。\n\n你可以在 Patreon 支持我：",
+        "disclaimer": "我是一个可以提供链接并检索如 Gamepedia 和 Fandom 等 MediaWiki 站点的小机器人。我会展示页面的简介和其他信息，并可以处理重定向和跨 wiki 链接。$1 用 JavaScript 编写了我。\n\n你可以在 Patreon 支持我：",
         "helpserver": "有问题吗？你可以访问我的专属支持服务器：",
         "limit": "🚨 **停一下，你太快了！** 🚨\n\n$1，你发出的指令过多了。",
         "missingperm": "我缺少一些权限来运行此指令：",
@@ -421,6 +421,7 @@
         "ad": "你想要在 Discord 里直接看最近更改吗？使用 `$1rcscript` 来为你的 Discord 服务器增加一个基于 **$2** 的最近更改 webhook！",
         "add_more": "增加更多的最近更改 webhook：",
         "added": "一个最近更改 webhook 已添加到：",
+        "all_inactive": "Wiki 式更改和讨论式更改无法同时禁用。",
         "audit_reason": "“$1”的最近更改 webhook",
         "audit_reason_delete": "最近更改 webhook 已删除",
         "channel": "频道：",
