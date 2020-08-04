@@ -168,7 +168,7 @@ String.prototype.replaceSave = function(pattern, replacement) {
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		var emoji = '440871715938238494';
+		var emoji = ':error:440871715938238494';
 		switch ( name ) {
 			case 'nowiki':
 				emoji = ':unknown_wiki:505884572001763348';
