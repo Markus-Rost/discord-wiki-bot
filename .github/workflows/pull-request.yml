@@ -1,0 +1,16 @@
+name: Create Pull Request
+on:
+  push:
+    branches: [ translations ]
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        pr_title: "Update translations"
+        pr_body: "Update translations from https://weblate.frisk.space/engage/wiki-bot/"
+        pr_label: "translation"
+        github_token: ${{ secrets.WIKIBOT_TOKEN }}
