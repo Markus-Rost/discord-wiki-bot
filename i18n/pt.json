@@ -288,6 +288,9 @@
                     "cmd": "settings",
                     "desc": "Vou mudar as configurações deste servidor."
                 },
+                "inline": {
+                    "desc": "Eu vou alternar comandos em linha para este servidor."
+                },
                 "lang": {
                     "cmd": "settings lang <idioma>",
                     "desc": "Vou mudar o idioma deste servidor."
@@ -377,6 +380,7 @@
     "overview": {
         "articles": "Artigos:",
         "created": "Criado:",
+        "crossover": "Mesclado em:",
         "description": "Descrição:",
         "edits": "Edições:",
         "founder": "Fundador:",
@@ -397,6 +401,19 @@
     "pause": {
         "off": "Não estou mais pausado neste servidor e responderei a todos os comandos novamente!",
         "on": "Agora estou pausado neste servidor e ignorarei a maioria dos comandos!"
+    },
+    "rcscript": {
+        "ad": "Deseja alterações recentes diretamente no Discord? Usar `$1rcscript` para adicionar um webhook de alterações recentes com base em **$2** para o seu servidor no Discord!",
+        "add_more": "Adicione webhooks de mudanças recentes:",
+        "added": "um webhook de mudanças recentes foi adicionado para:",
+        "all_inactive": "você não pode ter mudanças da wiki e alterações baseadas em feeds desativadas ao mesmo tempo.",
+        "audit_reason": "Mudanças recentes no webhook para \"$1\"",
+        "audit_reason_delete": "Removido o webhook das mudanças recentes",
+        "channel": "Canal:",
+        "current": "estas são as webhooks para as mudanças recentes para este servidor:",
+        "current_display": "o modo de exibição para este webhook é:",
+        "current_lang": "o idioma para este webhook é:",
+        "current_selected": "estas são as mudanças recentes no webhook para este servidor:"
     },
     "search": {
         "category": {
