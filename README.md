@@ -1,4 +1,6 @@
 # Wiki-Bot
+[<img src="https://commons.gamepedia.com/media/9/93/Cursebot.png" alt="Wiki-Bot" align="right" />](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot)
+
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
 
 **Wiki-Bot** has translations for English, German, French, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
@@ -95,7 +97,7 @@ Requirements to add a recent changes webhook:
 Use `!wiki voice` to get the format for the role name.
 
 ## Translations
-[![Translation status](https://weblate.frisk.space/widgets/wiki-bot/-/multi-auto.svg)](https://weblate.frisk.space/engage/wiki-bot/?utm_source=widget)
+<img src="https://weblate.frisk.space/widgets/wiki-bot/-/multi-auto.svg" alt="Translation status" width="100%" />
 
 ## Bot Lists
 [![Wiki-Bot](https://bots.ondiscord.xyz/bots/461189216198590464/embed?theme=dark&showGuilds=true)](https://bots.ondiscord.xyz/bots/461189216198590464)
