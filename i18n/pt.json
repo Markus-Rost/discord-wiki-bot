@@ -136,7 +136,7 @@
         "votes": "$1 {{PLURAL:$1|voto|votos}}"
     },
     "fallback": [
-        "pt",
+        "en",
         " ",
         " ",
         " ",
@@ -260,7 +260,7 @@
             },
             "rcscript": {
                 "delete": {
-                    "cmd": "exclusão de rcscript",
+                    "cmd": "rcscript delete",
                     "desc": "Excluirei o webhook das alterações recentes."
                 },
                 "feeds": {
@@ -417,7 +417,7 @@
     },
     "search": {
         "category": {
-            "content": "Conteúdo  nessa categoria:",
+            "content": "Conteúdo nessa categoria:",
             "empty": "*Esta categoria está vazia*",
             "files": "$1 {{PLURAL:$1|arquivo|arquivos}}",
             "pages": "$1 {{PLURAL:$1|página|páginas}}",
