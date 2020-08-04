@@ -351,7 +351,7 @@
         "langchanged": "je hebt de taal voor deze server gewijzigd naar:",
         "langhelp": "Gebruik `$1 <taal>` om de taal te wijzigen.\nOp dit moment zijn de ondersteunde talen:",
         "langinvalid": "de opgegeven taal wordt niet ondersteund!",
-        "missing": "deze server is nog niet geconfigureerd. Gebruik $1 en $2 om de instellingen  te wijzigen.",
+        "missing": "deze server is nog niet geconfigureerd. Gebruik $1 en $2 om de instellingen te wijzigen.",
         "nochannels": "*Nog geen kanaal overschrijvingen*",
         "prefix": "het voorvoegsel voor deze server is:",
         "prefixchanged": "je hebt het voorvoegsel voor deze server veranderd naar:",
