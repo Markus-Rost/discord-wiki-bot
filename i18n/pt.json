@@ -473,7 +473,7 @@
             "updated_display_embed": "O modo de exibição foi alterado para incorporar mensagens com marcações de edição e mudanças de categoria para este webhook de mudanças recentes.",
             "updated_display_image": "O modo de exibição foi alterado para incorporar mensagens com pré-visualizações de imagem para este webhook de mudanças recentes.",
             "updated_lang": "O idioma foi alterado para `$1` para este webhook de mudanças recentes.",
-            "updated_wiki": "A wiki foi alterado para $ =1 para este webhook de mudanças recentes."
+            "updated_wiki": "A wiki foi alterado para $ 1 para este webhook de mudanças recentes."
         },
         "webhook_failed": "infelizmente, o webhook não pôde ser criado, tente novamente mais tarde.",
         "wiki": "Wiki:"
@@ -537,7 +537,7 @@
         "wikimissing": "nenhuma wiki padrão está configurado para este servidor ainda!"
     },
     "test": {
-        "MediaWiki": "Requer pelo menos $1 para funcionalidade completa, encontrado`$2`.",
+        "MediaWiki": "Requer pelo menos $1 para funcionalidade completa, encontrado `$2`.",
         "PageImages": "Requer a extensão $1 para miniaturas de páginas.",
         "TextExtracts": "Requer a extensão $1 para descrições de página.",
         "notice": "Funcionalidade limitada",
