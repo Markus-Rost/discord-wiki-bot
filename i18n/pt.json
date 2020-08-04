@@ -413,7 +413,9 @@
         "current": "estas são as webhooks para as mudanças recentes para este servidor:",
         "current_display": "o modo de exibição para este webhook é:",
         "current_lang": "o idioma para este webhook é:",
-        "current_selected": "estas são as mudanças recentes no webhook para este servidor:"
+        "current_selected": "estas são as mudanças recentes no webhook para este servidor:",
+        "current_wiki": "a wiki para este webhook é:",
+        "delete": "Exclua as mudanças recentes no webhook:"
     },
     "search": {
         "category": {
