@@ -1,6 +1,6 @@
+[<img src="https://weblate.frisk.space/widgets/wiki-bot/-/svg-badge.svg" alt="Translation status" align="right" />](#translations)
 # Wiki-Bot
 [<img src="https://commons.gamepedia.com/media/9/93/Cursebot.png" alt="Wiki-Bot" align="right" />](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot)
-[<img src="https://weblate.frisk.space/widgets/wiki-bot/-/svg-badge.svg" alt="Translation status" align="right" />](#translations)
 
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
 
