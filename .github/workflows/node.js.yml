@@ -21,3 +21,4 @@ jobs:
     - run: sed -i -e 's/"<Discord bot token>"/"${{secrets.DISCORD_TOKEN}}"/g' .env
     - run: sed -i -e 's/"!wiki "/"!test "/g' .env
     - run: npm test
+      timeout-minutes: 5
