@@ -20,7 +20,7 @@
             " "
         ],
         "command": [
-            "指令",
+            "命令",
             " ",
             " ",
             " ",
@@ -145,13 +145,13 @@
     "general": {
         "disclaimer": "我是一个可以提供链接并检索如 Gamepedia 和 Fandom 等 MediaWiki 站点的小机器人。我会展示页面的简介和其他信息，并可以处理重定向和跨 wiki 链接。$1 用 JavaScript 编写了我。\n\n你可以在 Patreon 支持我：",
         "helpserver": "有问题吗？你可以访问我的专属支持服务器：",
-        "limit": "🚨 **停一下，你太快了！** 🚨\n\n$1，你发出的指令过多了。",
-        "missingperm": "我缺少一些权限来运行此指令：",
+        "limit": "🚨 **停一下，你太快了！** 🚨\n\n$1，你发出的命令过多了。",
+        "missingperm": "我缺少一些权限来运行此命令：",
         "patreon": "这是 Patreon 支持者专属功能！\n你可以在 Patreon 支持我来使用这个功能：",
-        "prefix": "此服务器的指令前缀是 `$1`。你可以使用 `$1settings prefix` 更改前缀。关于全部指令，请见 `$1help`。"
+        "prefix": "此服务器的命令前缀是 `$1`。你可以使用 `$1settings prefix` 更改前缀。关于全部命令，请见 `$1help`。"
     },
     "help": {
-        "admin": "这些指令仅限管理员使用：",
+        "admin": "这些命令仅限管理员使用：",
         "all": "想知道我能够干什么？让我来告诉你吧：",
         "footer": "如果你觉得我的某个信息刷屏，在信息上添加一个🗑️图标我就会自己删掉这一条信息。",
         "list": {
@@ -190,10 +190,10 @@
             "help": {
                 "admin": {
                     "cmd": "help admin",
-                    "desc": "我将提供所有的管理指令。"
+                    "desc": "我将提供所有的管理命令。"
                 },
                 "command": {
-                    "cmd": "help <指令>",
+                    "cmd": "help <命令>",
                     "desc": "我将提供的使用方法。"
                 },
                 "default": {
@@ -202,7 +202,7 @@
                 },
                 "verification": {
                     "cmd": "help verification",
-                    "desc": "我将解释验证指令如何工作。"
+                    "desc": "我将解释验证命令如何工作。"
                 }
             },
             "info": {
@@ -225,12 +225,12 @@
                     "desc": "我将返回此漏洞在 Minecraft 漏洞追踪器上的链接。"
                 },
                 "command": {
-                    "cmd": "command <Minecraft 指令>",
-                    "desc": "我将返回此 Minecraft 指令的语法和此指令在 Minecraft Wiki 上的链接。"
+                    "cmd": "command <Minecraft 命令>",
+                    "desc": "我将返回此 Minecraft 命令的语法和此命令在 Minecraft Wiki 上的链接。"
                 },
                 "default": {
-                    "cmd": "/<Minecraft 指令>",
-                    "desc": "我将返回此 Minecraft 指令的语法和此指令在 Minecraft Wiki 上的链接。"
+                    "cmd": "/<Minecraft 命令>",
+                    "desc": "我将返回此 Minecraft 命令的语法和此命令在 Minecraft Wiki 上的链接。"
                 }
             },
             "mwprojects": {
@@ -248,11 +248,11 @@
             "pause": {
                 "active": {
                     "cmd": "pause $1",
-                    "desc": "我将重新接受全部指令。"
+                    "desc": "我将重新接受全部命令。"
                 },
                 "inactive": {
                     "cmd": "pause $1",
-                    "desc": "我将屏蔽少数管理指令外的全部指令。"
+                    "desc": "我将屏蔽少数管理命令外的全部命令。"
                 }
             },
             "random": {
@@ -304,7 +304,7 @@
                 },
                 "inline": {
                     "cmd": "settings inline toggle",
-                    "desc": "我将更改本服务器的行内指令启用情况。"
+                    "desc": "我将更改本服务器的行内命令启用情况。"
                 },
                 "lang": {
                     "cmd": "settings lang <语言>",
@@ -312,7 +312,7 @@
                 },
                 "prefix": {
                     "cmd": "settings prefix <前缀>",
-                    "desc": "我将更改本服务器的指令前缀。"
+                    "desc": "我将更改本服务器的命令前缀。"
                 },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
@@ -342,7 +342,7 @@
                 },
                 "default": {
                     "cmd": "verification",
-                    "desc": "我将更改由 `$1验证` 触发的 wiki 验证方式指令。"
+                    "desc": "我将更改由 `$1验证` 触发的 wiki 验证方式命令。"
                 },
                 "delete": {
                     "cmd": "verification <id> delete",
@@ -367,7 +367,7 @@
             },
             "verify": {
                 "cmd": "verify <wiki 用户名>",
-                "desc": "使用此指令来验证您的 Discord 账户和您的 wiki 账户，并获取您的 wiki 账户对应的身份组。"
+                "desc": "使用此命令来验证您的 Discord 账户和您的 wiki 账户，并获取您的 wiki 账户对应的身份组。"
             },
             "voice": {
                 "cmd": "voice",
@@ -378,14 +378,14 @@
                 "desc": "我将返回特定的 org 域名下的 wiki 的指定页面的链接：`https://<wiki>.wikia.org/`。"
             }
         },
-        "noadmin": "这个指令仅限拥有 `管理员` 权限的用户使用！",
-        "pause": "**我目前处于暂停状态！**\n仅能使用以下指令："
+        "noadmin": "这个命令仅限拥有 `管理员` 权限的用户使用！",
+        "pause": "**我目前处于暂停状态！**\n仅能使用以下命令："
     },
     "invite": {
         "bot": "使用这个链接把我添加到其他服务器："
     },
     "minecraft": {
-        "cmdpage": "指令 /",
+        "cmdpage": "命令/",
         "fixed": "修复版本：",
         "link": "https://minecraft-zh.gamepedia.com/",
         "more": "还有 $1 个。",
@@ -415,7 +415,7 @@
     },
     "pause": {
         "off": "我已取消暂停，即将继续开始服务！",
-        "on": "我已将自己暂停，从现在起我会忽略大部分的指令！"
+        "on": "我已将自己暂停，从现在起我会忽略大部分的命令！"
     },
     "rcscript": {
         "ad": "你想要在 Discord 里直接看最近更改吗？使用 `$1rcscript` 来为你的 Discord 服务器增加一个基于 **$2** 的最近更改 webhook！",
@@ -434,9 +434,11 @@
         "deleted": "最近更改 webhook 已被删除。",
         "disabled": "已禁用",
         "disabled_feeds": "此 webhook 中如讨论版、留言墙和条目评论等讨论式的更改推送已禁用。",
+        "disabled_rc": "此 webhook 的 wiki 式更改已禁用。",
         "display": "显示模式：",
         "enabled": "已启用",
         "enabled_feeds": "此 webhook 中如讨论版、留言墙和条目评论等讨论式的更改推送已启用。",
+        "enabled_rc": "此 webhook 的 wiki 式更改已被禁用。",
         "feeds": "讨论式的更改",
         "help_display_compact": "紧凑的文本式消息，包含行内链接。",
         "help_display_diff": "嵌入式消息，包含图像预览和编辑差异。",
@@ -451,7 +453,8 @@
         "new_lang": "<新语言>",
         "new_wiki": "<新 wiki>",
         "no_feeds": "此 webhook 的 wiki 没有如讨论版、留言墙和条目评论等讨论式的更改，已启用。",
-        "noadmin": "你需要 `管理 webhook` 权限来运行此指令！",
+        "noadmin": "你需要 `管理 webhook` 权限来运行此命令！",
+        "rc": "Wiki 式更改：",
         "sysmessage": "要添加最近更改 webhook，系统消息 `$1` 必须是服务器 ID `$2`。",
         "title": "最近更改 webhook",
         "toggle": "（开关）",
@@ -462,7 +465,9 @@
             "created": "$1 的最近更改 webhook 已被添加到此频道。",
             "deleted": "此最近更改 webhook 将会被删除。",
             "disabled_feeds": "此最近更改 webhook 中如讨论版、留言墙和条目评论等讨论式的更改已禁用。",
+            "disabled_rc": "此最近更改 webhook 的 wiki 式更改已禁用。",
             "enabled_feeds": "此最近更改 webhook 中如讨论版、留言墙和条目评论等讨论式的更改已启用。",
+            "enabled_rc": "此最近更改 webhook 的 wiki 式更改已启用。",
             "updated_display_compact": "此最近更改 webhook 的显示模式已改为紧凑的文本式消息，包含行内链接。",
             "updated_display_diff": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含图像预览和编辑差异。",
             "updated_display_embed": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含编辑标签和分类更改。",
@@ -495,24 +500,24 @@
         "channel wikichanged": "你已将频道 wiki 更改为：",
         "current": "这是本服务器的当前设置：",
         "currentchannel": "频道复写：",
-        "currentinline": "行内指令：",
+        "currentinline": "行内命令：",
         "currentlang": "语言：",
         "currentprefix": "前缀：",
         "currentwiki": "默认 wiki：",
         "foundwikis": "你也许指的是这些 wiki？",
         "inline disabled": {
-            "channel inline": "行内指令目前已在本频道禁用。",
-            "channel inlinechanged": "您禁用了本频道的行内指令。",
-            "help": "使用 `$1` 启用如 `[[$2]]` 和 `{{$2}}` 的行内指令。",
-            "inline": "行内指令目前已在本服务器禁用。",
-            "inlinechanged": "您禁用了本服务器的行内指令。"
+            "channel inline": "行内命令目前已在本频道禁用。",
+            "channel inlinechanged": "您禁用了本频道的行内命令。",
+            "help": "使用 `$1` 启用如 `[[$2]]` 和 `{{$2}}` 的行内命令。",
+            "inline": "行内命令目前已在本服务器禁用。",
+            "inlinechanged": "您禁用了本服务器的行内命令。"
         },
         "inline enabled": {
-            "channel inline": "行内指令目前已在本频道启用。",
-            "channel inlinechanged": "您启用了本频道的行内指令。",
-            "help": "使用 `$1` 禁用如 `[[$2]]` 和 `{{$2}}` 的行内指令。",
-            "inline": "行内指令目前已在本服务器启用。",
-            "inlinechanged": "您启用了本服务器的行内指令。"
+            "channel inline": "行内命令目前已在本频道启用。",
+            "channel inlinechanged": "您启用了本频道的行内命令。",
+            "help": "使用 `$1` 禁用如 `[[$2]]` 和 `{{$2}}` 的行内命令。",
+            "inline": "行内命令目前已在本服务器启用。",
+            "inlinechanged": "您启用了本服务器的行内命令。"
         },
         "lang": "本服务器的语言为：",
         "langchanged": "您已将本服务器的语言更改为：",
@@ -521,7 +526,7 @@
         "missing": "这个服务器尚未完成设置，使用 $1 以及 $2 来完成设置。",
         "nochannels": "*还没有频道复写设置*",
         "prefix": "本服务器的前缀是：",
-        "prefixchanged": "您将本服务器指令前缀更改为：",
+        "prefixchanged": "您将本服务器命令前缀更改为：",
         "prefixhelp": "使用 `$1 <前缀>` 来更改前缀。在最后使用 `_` 来表示一个空格。前缀不能含有提及！",
         "prefixinvalid": "我不支持提供的前缀！",
         "save_failed": "啊喔，设置保存失败了，请稍后再试。",
