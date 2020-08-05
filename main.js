@@ -38,7 +38,7 @@ manager.on( 'shardCreate', shard => {
 	
 	shard.on( 'death', message => {
 		if ( manager.respawn === false ) diedShards++;
-		if ( message.exitCode !== 0 ) {
+		if ( ![null, 0].includes( message.exitCode ) ) {
 			if ( !shard.ready ) {
 				manager.respawn = false;
 				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
@@ -117,6 +117,6 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	console.log( `\n- Close process in ${timeout} seconds!\n` );
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
-		process.kill( process.pid, 'SIGINT' );
+		manager.shards.forEach( shard => shard.kill() );
 	}, timeout  * 1000 ).unref();
 }
