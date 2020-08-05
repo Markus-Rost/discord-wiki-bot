@@ -21,8 +21,8 @@
         ],
         "command": [
             "comando",
-            " ",
-            " ",
+            " cmd",
+            " comandos",
             " ",
             " "
         ],
@@ -35,7 +35,7 @@
         ],
         "discussion": [
             "discussão",
-            " ",
+            " discussões",
             " ",
             " ",
             " "
@@ -48,15 +48,15 @@
             " "
         ],
         "info": [
-            " ",
-            " ",
+            " informação",
+            "informações ",
             " ",
             " ",
             " "
         ],
         "invite": [
-            " ",
-            " ",
+            " convite",
+            " convidar",
             " ",
             " ",
             " "
@@ -70,22 +70,22 @@
         ],
         "page": [
             "página",
-            " ",
+            " artigo",
             " ",
             " ",
             " "
         ],
         "random": [
-            " ",
-            " ",
+            " aleatório",
+            " aleatória",
             " ",
             " ",
             " "
         ],
         "search": [
             "pesquisar",
-            " ",
-            " ",
+            " pesquisa",
+            " procurar",
             " ",
             " "
         ],
@@ -97,14 +97,14 @@
             " "
         ],
         "user": [
-            " ",
-            " ",
+            " usuário",
+            " usuária",
             " ",
             " ",
             " "
         ],
         "verify": [
-            " ",
+            " verificar",
             " ",
             " ",
             " ",
@@ -123,7 +123,7 @@
             "more": "E mais",
             "removed": "Removido:",
             "size": "Diferença:",
-            "tags": "Tags:",
+            "tags": "Etiquetas:",
             "timestamp": "Editar data:",
             "whitespace": "Apenas espaço em branco"
         },
@@ -143,16 +143,16 @@
         " "
     ],
     "general": {
-        "disclaimer": "Eu sou um pequeno robô com a tarefa de vincular a Wikis da Gamepedia e Fandom. $1 me escreveu em JavaScript.\n\nVocê pode me apoiar no Patreon:",
+        "disclaimer": "Eu sou um robô com a tarefa de vincular sites com Mediawiki como as wikis da Gamepedia e da Fandom. Mostro descrições curtas e informações adicionais sobre as páginas e sou capaz de resolver redirecionamentos e seguir os links de interwiki. $1 me escreveu em JavaScript.\n\nVocê pode me apoiar no Patreon:",
         "helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
-        "limit": "🚨 **Pare, você atingiu um limite!** 🚨\n\n$1, sua mensagem continha muitos comandos!",
-        "missingperm": "eu estou perdendo algumas permissões para este comando:",
+        "limit": "🚨 **Pare, isso é demais para mim!** 🚨\n\n$1, sua mensagem continha muitos comandos!",
+        "missingperm": "Eu não tenho permissão para executar este comando:",
         "patreon": "esse é um recurso exclusivo do Patreon!\nVocê pode me apoiar no Patreon para obter acesso a esse recurso:",
-        "prefix": "o prefixo deste servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`."
+        "prefix": "o prefixo para este servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`."
     },
     "help": {
         "admin": "Esses comandos só podem ser executados por administradores:",
-        "all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os comandos que eu entendo:",
+        "all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os meus comandos:",
         "footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ para minha mensagem e eu a apagarei.",
         "list": {
             "default": {
@@ -166,7 +166,7 @@
                 },
                 "name": {
                     "cmd": "diff <nome da página>",
-                    "desc": "Vou responder com um link para o último diff no artigo na wiki."
+                    "desc": "Vou responder com um link para o último diff do artigo na wiki."
                 }
             },
             "discussion": {
@@ -235,7 +235,7 @@
             },
             "mwprojects": {
                 "cmd": "!!<wiki> <termo de pesquisa>",
-                "desc": "Eu vou responder com um link para um artigo correspondente no projeto chamado MediaWiki. Exemplo: `$1!!pt.wikipedia.org Biscoito`"
+                "desc": "Vou responder com um link para um artigo correspondente em um projeto MediaWiki. Exemplo: `$1!!pt.wikipedia.org Biscoito`"
             },
             "overview": {
                 "cmd": "overview",
@@ -248,11 +248,11 @@
             "pause": {
                 "active": {
                     "cmd": "pause $1",
-                    "desc": "Eu responderei a todos os comandos neste servidor novamente."
+                    "desc": "Vou responder a todos os comandos neste servidor mais uma vez."
                 },
                 "inactive": {
                     "cmd": "pause $1",
-                    "desc": "Eu vou ignorar todos os comandos neste servidor, exceto alguns comandos de administração."
+                    "desc": "Vou ignorar todos os comandos neste servidor, exceto alguns administrativos."
                 }
             },
             "random": {
@@ -266,62 +266,62 @@
                 },
                 "default": {
                     "cmd": "rcscript",
-                    "desc": "Eu vou mudar as mudanças recentes no webhook."
+                    "desc": "Vou alterar o webhook das mudanças recentes."
                 },
                 "delete": {
                     "cmd": "rcscript delete",
-                    "desc": "Excluirei o webhook das alterações recentes."
+                    "desc": "Vou excluir o webhook das mudanças recentes."
                 },
                 "display": {
                     "cmd": "rcscript display <novo modo de exibição>",
-                    "desc": "Eu vou mudar o modo de exibição para o webhook de mudanças recentes."
+                    "desc": "Vou mudar o modo de exibição do webhook das mudanças recentes."
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
-                    "desc": "Eu alternarei as alterações das discussões em uma wiki da Fandom para o webhook das mudanças recentes."
+                    "desc": "Vou ativar ou desativar as notificações de alterações das discussões em uma wiki da Fandom no webhook das mudanças recentes."
                 },
                 "lang": {
                     "cmd": "rcscript lang <novo idioma>",
-                    "desc": "Eu vou mudar o idioma para o webhook de mudanças recentes."
+                    "desc": "Vou mudar o idioma do webhook das mudanças recentes."
                 },
                 "wiki": {
                     "cmd": "rcscript wiki <nova wiki>",
-                    "desc": "Eu vou mudar a wiki para o webhook de mudanças recentes."
+                    "desc": "Vou mudar a wiki do webhook das mudanças recentes."
                 }
             },
             "search": {
                 "cmd": "search <termo de pesquisa>",
-                "desc": "Vou responder com um link direto para a página de busca de artigo na wiki."
+                "desc": "Vou responder com um link direto para a página de busca de artigos da wiki."
             },
             "settings": {
                 "channel": {
                     "cmd": "settings channel",
-                    "desc": "Vou mudar as substituições para o canal atual."
+                    "desc": "Vou alterar as configurações específicas para o canal atual."
                 },
                 "default": {
                     "cmd": "settings",
-                    "desc": "Vou mudar as configurações deste servidor."
+                    "desc": "Vou alterar as configurações para este servidor."
                 },
                 "inline": {
                     "cmd": "settings inline toggle",
-                    "desc": "Eu vou alternar comandos em linha para este servidor."
+                    "desc": "Vou ativar ou desativar os comandos em linha para este servidor."
                 },
                 "lang": {
                     "cmd": "settings lang <idioma>",
-                    "desc": "Vou mudar o idioma deste servidor."
+                    "desc": "Vou alterar o idioma para este servidor."
                 },
                 "prefix": {
                     "cmd": "settings prefix <prefixo>",
-                    "desc": "Eu vou mudar o prefixo deste servidor."
+                    "desc": "Vou alterar o prefixo para este servidor."
                 },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
-                    "desc": "Vou mudar a wiki padrão para esse servidor."
+                    "desc": "Vou alterar a wiki padrão para esse servidor."
                 }
             },
             "test": {
                 "cmd": "test",
-                "desc": "Se estou ativo, respondo! Caso contrário, não."
+                "desc": "Se eu estiver ativo, vou responder! Caso contrário, não."
             },
             "user": {
                 "cmd": "Usuário:<username>",
@@ -334,15 +334,15 @@
                 },
                 "add": {
                     "cmd": "verification add <função>",
-                    "desc": "Vou adicionar uma nova verificação da wiki. Aceita uma `|` lista separada."
+                    "desc": "Vou adicionar uma nova verificação da wiki. Aceita uma lista separada com `|`."
                 },
                 "channel": {
                     "cmd": "verification <id> channel <novo canal>",
-                    "desc": "Vou mudar o canal para a verificação da wiki. Aceita uma `|` lista separada."
+                    "desc": "Vou alterar o canal para a verificação da wiki. Aceita uma lista separada com `|`."
                 },
                 "default": {
                     "cmd": "verification",
-                    "desc": "Vou mudar as verificações da wiki usadas pelo comando `$1verify`."
+                    "desc": "Vou alterar a verificação da wiki usada pelo comando `$1verify`."
                 },
                 "delete": {
                     "cmd": "verification <id> delete",
@@ -354,7 +354,7 @@
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
-                    "desc": "Eu mudarei se o apelido do Discord dos usuários for alterado para o nome de usuário do wiki para a verificação da wiki."
+                    "desc": "Vou alterar se o apelido do Discord dos usuários deve ser alterado para o nome de usuário da wiki para a verificação da wiki."
                 },
                 "role": {
                     "cmd": "verification <id> role <nova função>",
