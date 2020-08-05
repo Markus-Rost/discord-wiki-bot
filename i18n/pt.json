@@ -21,8 +21,8 @@
         ],
         "command": [
             "comando",
-            " cmd",
-            " comandos",
+            "cmd",
+            "comandos",
             " ",
             " "
         ],
@@ -35,7 +35,7 @@
         ],
         "discussion": [
             "discussão",
-            " discussões",
+            "discussões",
             " ",
             " ",
             " "
@@ -48,15 +48,15 @@
             " "
         ],
         "info": [
-            " informação",
+            "informação",
             "informações ",
             " ",
             " ",
             " "
         ],
         "invite": [
-            " convite",
-            " convidar",
+            "convite",
+            "convidar",
             " ",
             " ",
             " "
@@ -70,22 +70,22 @@
         ],
         "page": [
             "página",
-            " artigo",
+            "artigo",
             " ",
             " ",
             " "
         ],
         "random": [
-            " aleatório",
-            " aleatória",
+            "aleatório",
+            "aleatória",
             " ",
             " ",
             " "
         ],
         "search": [
             "pesquisar",
-            " pesquisa",
-            " procurar",
+            "pesquisa",
+            "procurar",
             " ",
             " "
         ],
@@ -97,14 +97,14 @@
             " "
         ],
         "user": [
-            " usuário",
-            " usuária",
+            "usuário",
+            "usuária",
             " ",
             " ",
             " "
         ],
         "verify": [
-            " verificar",
+            "verificar",
             " ",
             " ",
             " ",
