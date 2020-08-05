@@ -145,7 +145,7 @@
     "general": {
         "disclaimer": "我是一个可以提供链接并检索如 Gamepedia 和 Fandom 等 MediaWiki 站点的小机器人。我会展示页面的简介和其他信息，并可以处理重定向和跨 wiki 链接。$1 用 JavaScript 编写了我。\n\n你可以在 Patreon 支持我：",
         "helpserver": "有问题吗？你可以访问我的专属支持服务器：",
-        "limit": "🚨 **停一下，你太快了！** 🚨\n\n$1，你发出的命令过多了。",
+        "limit": "🚨 **停一下，你太快了！** 🚨\n\n$1，你发出的命令太多了！",
         "missingperm": "我缺少一些权限来运行此命令：",
         "patreon": "这是 Patreon 支持者专属功能！\n你可以在 Patreon 支持我来使用这个功能：",
         "prefix": "此服务器的命令前缀是 `$1`。你可以使用 `$1settings prefix` 更改前缀。关于全部命令，请见 `$1help`。"
@@ -181,11 +181,11 @@
             },
             "fandom": {
                 "cmd": "?<wiki> <关键词>",
-                "desc": "我将返回特定 Fandom wiki 的指定页面的链接：`https://<wiki>.fandom.com/`。"
+                "desc": "我将返回特定 Fandom wiki 的指定页面的链接：`https://<wiki>.fandom.com/`"
             },
             "gamepedia": {
                 "cmd": "!<wiki> <关键字>",
-                "desc": "我将返回特定 Gamepedia wiki 指定页面的链接：`https://<wiki>.gamepedia.com/`。"
+                "desc": "我将返回特定 Gamepedia wiki 指定页面的链接：`https://<wiki>.gamepedia.com/`"
             },
             "help": {
                 "admin": {
@@ -194,7 +194,7 @@
                 },
                 "command": {
                     "cmd": "help <命令>",
-                    "desc": "我将提供的使用方法。"
+                    "desc": "想知道某个命令如何使用吗？我来解释给你听吧！"
                 },
                 "default": {
                     "cmd": "help",
@@ -375,7 +375,7 @@
             },
             "wikia": {
                 "cmd": "??<wiki> <关键词>",
-                "desc": "我将返回特定的 org 域名下的 wiki 的指定页面的链接：`https://<wiki>.wikia.org/`。"
+                "desc": "我将返回特定的 org 域名下的 wiki 的指定页面的链接：`https://<wiki>.wikia.org/`"
             }
         },
         "noadmin": "这个命令仅限拥有 `管理员` 权限的用户使用！",
@@ -439,7 +439,7 @@
         "enabled": "已启用",
         "enabled_feeds": "此 webhook 中如讨论版、留言墙和条目评论等讨论式的更改推送已启用。",
         "enabled_rc": "此 webhook 的 wiki 式更改已被禁用。",
-        "feeds": "讨论式的更改",
+        "feeds": "讨论式的更改：",
         "help_display_compact": "紧凑的文本式消息，包含行内链接。",
         "help_display_diff": "嵌入式消息，包含图像预览和编辑差异。",
         "help_display_embed": "嵌入式消息，包含编辑标签和分类更改。",
@@ -473,7 +473,7 @@
             "updated_display_embed": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含编辑标签和分类更改。",
             "updated_display_image": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含图像预览。",
             "updated_lang": "此最近更改 webhook 的语言已被改为 $1。",
-            "updated_wiki": "此最近更改 webhook 的 wiki 已改为 $1"
+            "updated_wiki": "此最近更改 webhook 的 wiki 已改为 $1。"
         },
         "webhook_failed": "抱歉，此 Webhook 不可被创建，请稍后再试。",
         "wiki": "Wiki："
@@ -487,8 +487,8 @@
             "subcats": "$1 个分类"
         },
         "empty": "*此特殊页面内容为空*",
-        "infopage": "结果不正确？使用 $1 来指定连接",
-        "infosearch": "结果不正确？使用 $1 来指定链接或使用 $2 列出所有结果",
+        "infopage": "结果不正确？使用 $1 来指定连接。",
+        "infosearch": "结果不正确？使用 $1 来指定链接或使用 $2 列出所有结果。",
         "results": "共 $1 个结果",
         "special": "此特殊页面的内容："
     },
@@ -527,7 +527,7 @@
         "nochannels": "*还没有频道复写设置*",
         "prefix": "本服务器的前缀是：",
         "prefixchanged": "您将本服务器命令前缀更改为：",
-        "prefixhelp": "使用 `$1 <前缀>` 来更改前缀。在最后使用 `_` 来表示一个空格。前缀不能含有提及！",
+        "prefixhelp": "使用 `$1 <前缀>` 来更改前缀。\n在前缀的末尾使用 `_` 来表示一个空格。\n前缀不能含有提及！",
         "prefixinvalid": "我不支持提供的前缀！",
         "save_failed": "啊喔，设置保存失败了，请稍后再试。",
         "wiki": "本服务器的默认 wiki 是：",
@@ -579,7 +579,7 @@
     "user": {
         "block": {
             "header": "$1 目前正被封禁！",
-            "nofromnoreason": "被 $3 封禁，直到 $2",
+            "nofromnoreason": "被 $3 封禁，直到 $2。",
             "nofromtext": "被 $3 封禁，直到 $2，理由：“$4”",
             "noreason": "被 $3 封禁，时间从 $1 到 $2",
             "text": "被 $3 封禁，时间从 $1 到 $2，理由：“$4”",
@@ -588,7 +588,7 @@
         "gblock": {
             "disabled": "此账户目前正被禁用！",
             "header": "$1 目前正被全域封禁！",
-            "noreason": "被 $3 封禁，时间从 $1 到 $2",
+            "noreason": "被 $3 封禁，时间从 $1 到 $2。",
             "text": "被 $3 封禁，时间从 $1 到 $2，理由：“$4”"
         },
         "gender": {
@@ -709,7 +709,7 @@
         "footer": "Wiki 账户验证",
         "help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help-zh.gamepedia.com/Gamepedia帮助Wiki:Discord验证",
-        "help_guide": "请根据[此指导]($1)来添加您的 Discord 用户名至您的 wiki 数据页。",
+        "help_guide": "请根据[此指导]($1)来添加您的 Discord 用户名至您的 wiki 资料页：",
         "help_subpage": "请将您的 Discord 用户名（$1）添加至您在 wiki 上的 `/Discord` 子页面：",
         "missing": "本频道无可用的验证方式。",
         "notice": "注意：",
