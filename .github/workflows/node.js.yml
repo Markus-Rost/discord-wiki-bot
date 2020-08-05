@@ -20,5 +20,5 @@ jobs:
     - run: npm run build --if-present
     - run: sed -i -e 's/"<Discord bot token>"/"${{secrets.DISCORD_TOKEN}}"/g' .env
     - run: sed -i -e 's/"!wiki "/"!test "/g' .env
-    - run: npm test
+    - run: npm test -- --timeout:60
       timeout-minutes: 5
