@@ -111,3 +111,12 @@ process.once( 'SIGTERM', graceful );
 process.on( 'exit', code => {
 	if ( diedShards >= manager.totalShards ) process.exit(1);
 } );
+
+if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
+	let timeout = process.argv[3].split(':')[1];
+	console.log( `\n- Close process in ${timeout} seconds!\n` );
+	setTimeout( () => {
+		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
+		process.kill( process.pid, 'SIGINT' );
+	}, timeout  * 1000 ).unref();
+}
