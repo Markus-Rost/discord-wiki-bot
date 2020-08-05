@@ -74,7 +74,7 @@ class Lang {
 			args.forEach( (arg, i) => {
 				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
 			} );
-			text = text.replace( /{{\s*PLURAL:\s*(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
+			text = text.replace( /{{\s*PLURAL:\s*[+-]?(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
 				return plural(lang, parseInt(number, 10), cases.split(/\s*\|\s*/));
 			} );
 		}
@@ -104,7 +104,7 @@ class Lang {
 //			args.forEach( (arg, i) => {
 //				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
 //			} );
-//			text = text.replace( /{{\s*PLURAL:\s*(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
+//			text = text.replace( /{{\s*PLURAL:\s*[+-]?(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
 //				return plural(lang, parseInt(number, 10), cases.split(/\s*\|\s*/));
 //			} );
 //		}
