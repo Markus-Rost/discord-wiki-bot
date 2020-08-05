@@ -277,7 +277,7 @@
                     "desc": "我将更改最近更改 webhook 的显示模式。"
                 },
                 "feeds": {
-                    "cmd": "rc script feeds",
+                    "cmd": "rcscript feeds",
                     "desc": "我将切换是否在最近更改 webhook 上推送 Fandom wiki 上的讨论版更改。"
                 },
                 "lang": {
