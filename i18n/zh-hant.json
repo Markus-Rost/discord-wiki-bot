@@ -375,7 +375,7 @@
             },
             "wikia": {
                 "cmd": "??<wiki> <關鍵詞>",
-                "desc": "我將返回特定的 org 域名下的 wiki 的指定頁面的連結：`https://<wiki>.wikia.org/`。"
+                "desc": "我將返回特定的 org 域名下的 wiki 的指定頁面的連結：`https://<wiki>.wikia.org/`"
             }
         },
         "noadmin": "這個指令僅限擁有 `管理員` 權限的使用者使用！",
@@ -467,7 +467,7 @@
             "updated_display_embed": "此最近更改webhook的顯示模式已改爲嵌入式消息，包含編輯標籤和分類更改。",
             "updated_display_image": "此最近更改webhook的顯示模式已改爲嵌入式消息，包含圖像預覽。",
             "updated_lang": "此最近更改webhook的語言已被改爲 $1。",
-            "updated_wiki": "此最近更改webhook的 wiki 已改爲 $1"
+            "updated_wiki": "此最近更改webhook的 wiki 已改爲 $1。"
         },
         "webhook_failed": "抱歉，此webhook不可被創建，請稍後再試。",
         "wiki": "Wiki："

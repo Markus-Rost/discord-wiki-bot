@@ -153,7 +153,7 @@
     "help": {
         "admin": "These commands can only be performed by administrators:",
         "all": "So, you want to know what things I can do? Here is a list of all commands that I understand:",
-        "footer": "If you got an unwanted response, you can react with 🗑️ to my message and I will delete it.",
+        "footer": "If you got an unwanted response, you can react with 🗑️ (`:wastebasket:`) to my message and I will delete it.",
         "list": {
             "default": {
                 "cmd": "<search term>",
