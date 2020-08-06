@@ -153,7 +153,7 @@
     "help": {
         "admin": "Diese Befehle können nur Administratoren ausführen:",
         "all": "Du willst also wissen, was ich so drauf habe? Hier ist eine Liste aller Befehle, die ich verstehe:",
-        "footer": "Falls du ein ungewolltes Ergebnis bekommen hast, kannst du mit 🗑️ auf meine Nachricht reagieren und ich werde sie löschen.",
+        "footer": "Falls du ein ungewolltes Ergebnis bekommen hast, kannst du mit 🗑️ (`:wastebasket:`) auf meine Nachricht reagieren und ich werde sie löschen.",
         "list": {
             "default": {
                 "cmd": "<Suchbegriff>",
