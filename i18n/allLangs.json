@@ -6,7 +6,7 @@
 			"fr": "Français",
 			"nl": "Nederlands",
 			"pl": "Polski",
-			"pt": "Português",
+			"pt-br": "Português do Brasil",
 			"ru": "Русский",
 			"tr": "Türkçe",
 			"zh-hans": "简体中文",
@@ -28,9 +28,12 @@
 			"pl": "pl",
 			"polish": "pl",
 			"polski": "pl",
-			"pt": "pt",
-			"portuguese": "pt",
-			"português": "pt",
+			"pt": "pt-br",
+			"portuguese": "pt-br",
+			"português": "pt-br",
+			"pt-br": "pt-br",
+			"brazilian portuguese": "pt-br",
+			"português do brasil": "pt-br",
 			"ru": "ru",
 			"russian": "ru",
 			"русский": "ru",
@@ -57,7 +60,7 @@
 			"en": "English",
 			"de": "Deutsch",
 			"pl": "Polski",
-			"pt": "Português"
+			"pt-br": "Português do Brasil"
 		},
 		"map": {
 			"en": "en",
@@ -69,9 +72,12 @@
 			"pl": "pl",
 			"polish": "pl",
 			"polski": "pl",
-			"pt": "pt",
-			"portuguese": "pt",
-			"português": "pt"
+			"pt": "pt-br",
+			"portuguese": "pt-br",
+			"português": "pt-br",
+			"pt-br": "pt-br",
+			"brazilian portuguese": "pt-br",
+			"português do brasil": "pt-br"
 		}
 	}
 }
