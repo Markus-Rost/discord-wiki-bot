@@ -153,7 +153,7 @@
     "help": {
         "admin": "Te komendy mogą być wykonane jedynie przez administrację:",
         "all": "A więc chcesz wiedzieć co potrafię? Tutaj jest lista komend, które rozumiem:",
-        "footer": "Jeżeli otrzymałeś niechcianą odpowiedź, możesz na nią zareagować używając emotki 🗑️ a wiadomość zostanie ona usunięta.",
+        "footer": "Jeżeli otrzymałeś niechcianą odpowiedź, możesz na nią zareagować używając emotki 🗑️ (`:wastebasket:`) a wiadomość zostanie ona usunięta.",
         "list": {
             "default": {
                 "cmd": "<wyszukiwana fraza>",
