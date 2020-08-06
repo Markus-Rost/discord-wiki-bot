@@ -222,7 +222,7 @@
             "minecraft": {
                 "bug": {
                     "cmd": "bug <Minecraft 錯誤>",
-                    "desc": "我將返回此漏洞在 Minecraft 漏洞追蹤器上的連結。"
+                    "desc": "我將返回此錯誤在 Minecraft 錯誤追蹤器上的連結。"
                 },
                 "command": {
                     "cmd": "command <Minecraft 指令>",
@@ -697,7 +697,7 @@
         "empty": "*空白*",
         "error": "由於一個錯誤，驗證失敗。",
         "error_reply": "由於一個錯誤，驗證失敗，請重試。",
-        "failed_gblock": "** 全域封禁檢查失敗！**",
+        "failed_gblock": "** 全域封鎖檢查失敗！**",
         "failed_rename": "** 更改暱稱失敗！**",
         "failed_roles": "** 添加身份組失敗！**",
         "footer": "Wiki 賬戶驗證",
@@ -710,13 +710,13 @@
         "qualified": "符合：",
         "qualified_error": "符合，但無法添加：",
         "user_blocked": "**Wiki 使用者 $1 已被封鎖！**",
-        "user_blocked_reply": "您連接的 wiki 使用者**“$1”已被封禁！**",
+        "user_blocked_reply": "您連接的 wiki 使用者**“$1”已被封鎖！**",
         "user_disabled": "**Wiki 使用者 $1 已被禁用！**",
         "user_disabled_reply": "您連接的 wiki 使用者**“$1”已被禁用！**",
         "user_failed": "Discord 使用者 $1 不和 wiki 使用者 $2 對應。",
         "user_failed_reply": "您的 Discord 使用者名不和“$1”的對應。",
-        "user_gblocked": "**Wiki 使用者 $1 已被全域封禁！**",
-        "user_gblocked_reply": "您連接的 wiki 使用者**“$1”已被全域封禁！**",
+        "user_gblocked": "**Wiki 使用者 $1 已被全域封鎖！**",
+        "user_gblocked_reply": "您連接的 wiki 使用者**“$1”已被全域封鎖！**",
         "user_matches": "Discord 使用者 $1 和 wiki 使用者 $2 對應，但沒有達到任何身份組的條件。",
         "user_matches_reply": "您的 Discord 使用者名和 wiki 使用者“$1”對應，但您沒有達到添加任何身份組的條件。",
         "user_missing": "Wiki 使用者“$1”不存在。",
