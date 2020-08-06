@@ -153,7 +153,7 @@
     "help": {
         "admin": "Esses comandos só podem ser executados por administradores:",
         "all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os meus comandos:",
-        "footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ para minha mensagem e eu a apagarei.",
+        "footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ (`:wastebasket:`) para minha mensagem e eu a apagarei.",
         "list": {
             "default": {
                 "cmd": "<termo de pesquisa>",
