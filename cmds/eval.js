@@ -38,7 +38,7 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 /**
  * Runs database queries.
  * @param {String} sql - The SQL command.
- * @param {String[]} sqlargs - The command arguments.
+ * @param {String[]} [sqlargs] - The command arguments.
  */
 function database(sql, sqlargs = []) {
 	return new Promise( function (resolve, reject) {

@@ -88,7 +88,7 @@ Discord.Message.prototype.isAdmin = function() {
 };
 
 Discord.Message.prototype.isOwner = function() {
-	return this.author.id === process.env.owner;
+	return process.env.owner.split('|').includes( this.author.id );
 };
 
 Discord.Message.prototype.showEmbed = function() {

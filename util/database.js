@@ -130,6 +130,20 @@ function getSettings(trysettings = 1) {
 						console.log( '- ' + shardId + ': Created the rcgcdw config index.' );
 					} );
 				} );
+				db.run( 'CREATE TABLE IF NOT EXISTS blocklist(wiki TEXT UNIQUE NOT NULL, reason TEXT)', [], function (error) {
+					if ( error ) {
+						console.log( '- ' + shardId + ': Error while creating the blocklist table: ' + error );
+						return error;
+					}
+					console.log( '- ' + shardId + ': Created the blocklist table.' );
+					db.run( 'CREATE INDEX idx_blocklist_wiki ON blocklist(wiki)', [], function (idxerror) {
+						if ( idxerror ) {
+							console.log( '- ' + shardId + ': Error while creating the blocklist wiki index: ' + idxerror );
+							return idxerror;
+						}
+						console.log( '- ' + shardId + ': Created the blocklist wiki index.' );
+					} );
+				} );
 			} );
 			else {
 				if ( trysettings < 10 ) {

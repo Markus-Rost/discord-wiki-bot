@@ -1,5 +1,6 @@
 const {limit: {rcgcdw: rcgcdwLimit}, defaultSettings, wikiProjects} = require('../util/default.json');
-const allLangs = require('../util/i18n.js').allLangs(true);
+const Lang = require('../util/i18n.js');
+const allLangs = Lang.allLangs(true);
 var db = require('../util/database.js');
 
 const fs = require('fs');
@@ -25,6 +26,7 @@ const display_types = [
  * @param {String} wiki - The wiki for the message.
  */
 function cmd_rcscript(lang, msg, args, line, wiki) {
+	if ( args[0] === 'block' && msg.isOwner() ) return blocklist(msg, args.slice(1));
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	if ( !msg.channel.permissionsFor(msg.client.user).has('MANAGE_WEBHOOKS') ) {
 		console.log( msg.guild.id + ': Missing permissions - MANAGE_WEBHOOKS' );
@@ -80,72 +82,85 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit', '', body.query.general) + '>', {}, true );
 				}
-				if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
-					responseType: 'json'
-				} ).then( wiresponse => {
-					var wibody = wiresponse.body;
-					if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
-						console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
-						return createWebhook();
+				return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew], (blerror, row) => {
+					if ( blerror ) {
+						console.log( '- Error while getting the blocklist: ' + blerror );
+						if ( reaction ) reaction.removeEmoji();
+						msg.reactEmoji('error', true);
+						return blerror;
 					}
-					var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
-					if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json', {
-						headers: {
-							Accept: 'application/hal+json'
-						},
+					if ( row ) {
+						console.log( '- This wiki is blocked: ' + row.reason );
+						if ( reaction ) reaction.removeEmoji();
+						return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
+					}
+					if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
 						responseType: 'json'
-					} ).then( dsresponse => {
-						var dsbody = dsresponse.body;
-						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-							if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+					} ).then( wiresponse => {
+						var wibody = wiresponse.body;
+						if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
+							console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
 							return createWebhook();
 						}
-						return createWebhook(parseInt(site.id, 10));
+						var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
+						if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json', {
+							headers: {
+								Accept: 'application/hal+json'
+							},
+							responseType: 'json'
+						} ).then( dsresponse => {
+							var dsbody = dsresponse.body;
+							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
+								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+								return createWebhook();
+							}
+							return createWebhook(parseInt(site.id, 10));
+						}, error => {
+							console.log( '- Error while checking for discussions: ' + error );
+							return createWebhook();
+						} );
+						console.log( '- No result while getting the wiki id.' );
+						return createWebhook();
 					}, error => {
-						console.log( '- Error while checking for discussions: ' + error );
+						console.log( '- Error while getting the wiki id: ' + error );
 						return createWebhook();
 					} );
-					console.log( '- No result while getting the wiki id.' );
 					return createWebhook();
-				}, error => {
-					console.log( '- Error while getting the wiki id: ' + error );
-					return createWebhook();
-				} );
-				return createWebhook();
 
-				/**
-				 * Creates the webhook.
-				 * @param {Number} wikiid - The ID of the wiki.
-				 */
-				function createWebhook(wikiid = null) {
-					msg.channel.createWebhook( ( body.query.allmessages[1]['*'] || 'Recent changes' ), {
-						avatar: msg.client.user.displayAvatarURL({format:'png',size:4096}),
-						reason: lang.get('rcscript.audit_reason', wikinew)
-					} ).then( webhook => {
-						console.log( '- Webhook successfully created.' );
-						webhook.send( lang.get('rcscript.webhook.created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
-						var new_configid = 1;
-						for ( let i of rows.map( row => row.configid ) ) {
-							if ( new_configid === i ) new_configid++;
-							else break;
-						}
-						db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew, ( allLangs.map[lang.lang] || defaultSettings.lang ), ( msg.showEmbed() ? 1 : 0 ), wikiid], function (error) {
-							if ( error ) {
-								console.log( '- Error while adding the RcGcDw: ' + error );
-								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('settings.save_failed'), {}, true );
-								return error;
+					/**
+					 * Creates the webhook.
+					 * @param {Number} wikiid - The ID of the wiki.
+					 */
+					function createWebhook(wikiid = null) {
+						msg.channel.createWebhook( ( body.query.allmessages[1]['*'] || 'Recent changes' ), {
+							avatar: msg.client.user.displayAvatarURL({format:'png',size:4096}),
+							reason: lang.get('rcscript.audit_reason', wikinew)
+						} ).then( webhook => {
+							console.log( '- Webhook successfully created.' );
+							webhook.send( lang.get('rcscript.webhook.created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
+							var new_configid = 1;
+							for ( let i of rows.map( row => row.configid ) ) {
+								if ( new_configid === i ) new_configid++;
+								else break;
 							}
-							console.log( '- RcGcDw successfully added.' );
+							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew, ( allLangs.map[lang.lang] || defaultSettings.lang ), ( msg.showEmbed() ? 1 : 0 ), wikiid], function (error) {
+								if ( error ) {
+									console.log( '- Error while adding the RcGcDw: ' + error );
+									if ( reaction ) reaction.removeEmoji();
+									msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+									return error;
+								}
+								console.log( '- RcGcDw successfully added.' );
+								if ( reaction ) reaction.removeEmoji();
+								msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', {}, true );
+							} );
+						}, error => {
+							console.log( '- Error while creating the webhook: ' + error );
 							if ( reaction ) reaction.removeEmoji();
-							msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', {}, true );
+							msg.replyMsg( lang.get('rcscript.webhook_failed'), {}, true );
 						} );
-					}, error => {
-						console.log( '- Error while creating the webhook: ' + error );
-						if ( reaction ) reaction.removeEmoji();
-						msg.replyMsg( lang.get('rcscript.webhook_failed'), {}, true );
-					} );
-				}
+					}
+				} );
 			}, error => {
 				console.log( '- Error while testing the wiki: ' + error );
 				if ( reaction ) reaction.removeEmoji();
@@ -166,6 +181,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		if ( args[0] ) args[0] = args[0].toLowerCase();
 
 		if ( selected_row ) {
+			let webhook_lang = new Lang(selected_row.lang, 'rcscript.webhook');
 			let cmd = prefix + 'rcscript' + ( rows.length === 1 ? '' : ' ' + selected_row.configid );
 
 			if ( args[0] === 'delete' && !args[1] ) {
@@ -174,7 +190,6 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( !channel || !channel.permissionsFor(msg.member).has('MANAGE_WEBHOOKS') ) {
 						return msg.replyMsg( lang.get('rcscript.noadmin') );
 					}
-					webhook.send( lang.get('rcscript.webhook.deleted') ).catch(log_error);
 					db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [selected_row.webhook], function (delerror) {
 						if ( delerror ) {
 							console.log( '- Error while removing the RcGcDw: ' + delerror );
@@ -182,8 +197,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							return delerror;
 						}
 						console.log( '- RcGcDw successfully removed.' );
+						webhook.send( webhook_lang.get('deleted') ).catch(log_error).finally( () => {
+							webhook.delete(lang.get('rcscript.audit_reason_delete')).catch(log_error);
+						} );
 						msg.replyMsg( lang.get('rcscript.deleted'), {}, true );
-						webhook.delete(lang.get('rcscript.audit_reason_delete')).catch(log_error);
 					} );
 				}, error => {
 					log_error(error);
@@ -229,59 +246,72 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit', '', body.query.general) + '>', {}, true );
 					}
-					if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
-						responseType: 'json'
-					} ).then( wiresponse => {
-						var wibody = wiresponse.body;
-						if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
-							console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
-							return updateWiki();
+					return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew], (blerror, row) => {
+						if ( blerror ) {
+							console.log( '- Error while getting the blocklist: ' + blerror );
+							if ( reaction ) reaction.removeEmoji();
+							msg.reactEmoji('error', true);
+							return blerror;
 						}
-						var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
-						if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json', {
-							headers: {
-								Accept: 'application/hal+json'
-							},
+						if ( row ) {
+							console.log( '- This wiki is blocked: ' + row.reason );
+							if ( reaction ) reaction.removeEmoji();
+							return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
+						}
+						if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
 							responseType: 'json'
-						} ).then( dsresponse => {
-							var dsbody = dsresponse.body;
-							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+						} ).then( wiresponse => {
+							var wibody = wiresponse.body;
+							if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
+								console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
 								return updateWiki();
 							}
-							return updateWiki(parseInt(site.id, 10));
+							var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
+							if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json', {
+								headers: {
+									Accept: 'application/hal+json'
+								},
+								responseType: 'json'
+							} ).then( dsresponse => {
+								var dsbody = dsresponse.body;
+								if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
+									if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+									return updateWiki();
+								}
+								return updateWiki(parseInt(site.id, 10));
+							}, error => {
+								console.log( '- Error while checking for discussions: ' + error );
+								return updateWiki();
+							} );
+							console.log( '- No result while getting the wiki id.' );
+							return updateWiki();
 						}, error => {
-							console.log( '- Error while checking for discussions: ' + error );
+							console.log( '- Error while getting the wiki id: ' + error );
 							return updateWiki();
 						} );
-						console.log( '- No result while getting the wiki id.' );
 						return updateWiki();
-					}, error => {
-						console.log( '- Error while getting the wiki id: ' + error );
-						return updateWiki();
-					} );
-					return updateWiki();
 
-					/**
-					 * Changes the wiki.
-					 * @param {Number} wikiid - The ID of the wiki.
-					 */
-					function updateWiki(wikiid = null) {
-						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-							webhook.send( lang.get('rcscript.webhook.updated_wiki', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
-						}, log_error );
-						db.run( 'UPDATE rcgcdw SET wiki = ?, wikiid = ?, rcid = ?, postid = ? WHERE webhook = ?', [wikinew, wikiid, null, null, selected_row.webhook], function (error) {
-							if ( error ) {
-								console.log( '- Error while updating the RcGcDw: ' + error );
+						/**
+						 * Changes the wiki.
+						 * @param {Number} wikiid - The ID of the wiki.
+						 */
+						function updateWiki(wikiid = null) {
+							msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
+								webhook.send( webhook_lang.get('updated_wiki', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
+							}, log_error );
+							db.run( 'UPDATE rcgcdw SET wiki = ?, wikiid = ?, rcid = ?, postid = ? WHERE webhook = ?', [wikinew, wikiid, null, null, selected_row.webhook], function (error) {
+								if ( error ) {
+									console.log( '- Error while updating the RcGcDw: ' + error );
+									if ( reaction ) reaction.removeEmoji();
+									msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+									return error;
+								}
+								console.log( '- RcGcDw successfully updated.' );
 								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('settings.save_failed'), {}, true );
-								return error;
-							}
-							console.log( '- RcGcDw successfully updated.' );
-							if ( reaction ) reaction.removeEmoji();
-							msg.replyMsg( lang.get('rcscript.updated_wiki') + ' <' + wikinew + '>\n`' + cmd + '`', {}, true );
-						} );
-					}
+								msg.replyMsg( lang.get('rcscript.updated_wiki') + ' <' + wikinew + '>\n`' + cmd + '`', {}, true );
+							} );
+						}
+					} );
 				}, error => {
 					console.log( '- Error while testing the wiki: ' + error );
 					if ( reaction ) reaction.removeEmoji();
@@ -298,7 +328,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 
 				msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-					webhook.send( lang.get('rcscript.webhook.updated_lang', allLangs.names[allLangs.map[args[1]]]) ).catch(log_error);
+					webhook.send( new Lang(allLangs.map[args[1]]).get('rcscript.webhook.updated_lang', allLangs.names[allLangs.map[args[1]]]) ).catch(log_error);
 				}, log_error );
 				return db.run( 'UPDATE rcgcdw SET lang = ? WHERE webhook = ?', [allLangs.map[args[1]], selected_row.webhook], function (error) {
 					if ( error ) {
@@ -319,7 +349,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 
 				msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-					webhook.send( lang.get('rcscript.webhook.updated_display_' + args[1]) ).catch(log_error);
+					webhook.send( webhook_lang.get('updated_display_' + args[1]) ).catch(log_error);
 				}, log_error );
 				return db.run( 'UPDATE rcgcdw SET display = ? WHERE webhook = ?', [display_types.indexOf(args[1]), selected_row.webhook], function (error) {
 					if ( error ) {
@@ -335,7 +365,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( args[1] === 'only' ) {
 					if ( selected_row.rcid === -1 ) {
 						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-							webhook.send( lang.get('rcscript.webhook.enabled_rc') ).catch(log_error);
+							webhook.send( webhook_lang.get('enabled_rc') ).catch(log_error);
 						}, log_error );
 						return db.run( 'UPDATE rcgcdw SET rcid = ? WHERE webhook = ?', [null, selected_row.webhook], function (error) {
 							if ( error ) {
@@ -352,7 +382,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-						webhook.send( lang.get('rcscript.webhook.disabled_rc') ).catch(log_error);
+						webhook.send( webhook_lang.get('disabled_rc') ).catch(log_error);
 					}, log_error );
 					return db.run( 'UPDATE rcgcdw SET rcid = ? WHERE webhook = ?', [-1, selected_row.webhook], function (error) {
 						if ( error ) {
@@ -370,7 +400,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-						webhook.send( lang.get('rcscript.webhook.disabled_feeds') ).catch(log_error);
+						webhook.send( webhook_lang.get('disabled_feeds') ).catch(log_error);
 					}, log_error );
 					return db.run( 'UPDATE rcgcdw SET wikiid = ?, postid = ? WHERE webhook = ?', [null, null, selected_row.webhook], function (error) {
 						if ( error ) {
@@ -407,7 +437,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 						}
 						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-							webhook.send( lang.get('rcscript.webhook.enabled_feeds', site.name) + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
+							webhook.send( webhook_lang.get('enabled_feeds', site.name) + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
 						}, log_error );
 						db.run( 'UPDATE rcgcdw SET wikiid = ?, postid = ? WHERE webhook = ?', [parseInt(site.id, 10), null, selected_row.webhook], function (error) {
 							if ( error ) {
@@ -515,6 +545,90 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
 			msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true}, true );
 		} );
+	} );
+}
+
+/**
+ * Processes the blocklist.
+ * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String[]} args - The command arguments.
+ */
+function blocklist(msg, args) {
+	var prefix = ( patreons[msg?.guild?.id] || process.env.prefix );
+	if ( args[0] === 'add' ) {
+		if ( !args[1] ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
+		let input = args[1].toLowerCase().replace( /^<(.*?)>$/, '$1' );
+		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
+		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
+		let reason = ( args.slice(2).join(' ').trim() || null );
+		return db.run( 'INSERT INTO blocklist(wiki, reason) VALUES(?, ?)', [wiki, reason], function (error) {
+			if ( error ) {
+				if ( error.message === 'SQLITE_CONSTRAINT: UNIQUE constraint failed: blocklist.wiki' ) {
+					return msg.replyMsg( '`' + wiki + '` is already on the blocklist.\n`' + prefix + 'rcscript block <' + wiki + '>`', {}, true );
+				}
+				console.log( '- Error while adding to the blocklist: ' + error );
+				msg.replyMsg( 'I got an error while adding to the blocklist: ' + error, {}, true );
+				return error;
+			}
+			console.log( '- Successfully added to the blocklist.' );
+			db.each( 'SELECT webhook, lang FROM rcgcdw WHERE wiki = ?', [wiki], (dberror, row) => {
+				if ( dberror ) return dberror;
+				msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
+					var lang = new Lang(row.lang, 'rcscript.webhook');
+					webhook.send( ( reason ? lang.get('blocked_reason', reason) : lang.get('blocked') ) ).catch(log_error).finally( () => {
+						webhook.delete().catch(log_error);
+					} );
+				}, log_error );
+			}, (dberror, count) => {
+				if ( dberror ) console.log( '- Error while deleting the webhooks: ' + dberror );
+				db.run( 'DELETE FROM rcgcdw WHERE wiki = ?', [wiki], function (delerror) {
+					if ( delerror ) {
+						console.log( '- Error while removing the webhooks: ' + delerror );
+						msg.replyMsg( 'I added `' + wiki + '` to the blocklist for `' + reason + '` but got an error while removing the webhooks: ' + delerror, {}, true );
+						return delerror;
+					}
+					console.log( '- Successfully removed ' + count + ' webhooks.' );
+					msg.replyMsg( 'I added `' + wiki + '` to the blocklist for `' + reason + '` and removed ' + count + ' webhooks.', {}, true );
+				} );
+			} );
+		} );
+	}
+	if ( args[0] === 'remove' ) {
+		let wiki = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
+		wiki = input_to_wiki(wiki.replace( /^(?:https?:)?\/\//, 'https://' ));
+		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block remove <wiki>`', {}, true );
+		return db.run( 'DELETE FROM blocklist WHERE wiki = ?', [wiki], function (error) {
+			if ( error ) {
+				console.log( '- Error while removing from the blocklist: ' + error );
+				msg.replyMsg( 'I got an error while removing from the blocklist: ' + error, {}, true );
+				return error;
+			}
+			console.log( '- Successfully removed from the blocklist.' );
+			msg.replyMsg( 'I removed `' + wiki + '` from the blocklist.', {}, true );
+		} );
+	}
+	if ( args.length ) {
+		let wiki = args.join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
+		wiki = input_to_wiki(wiki.replace( /^(?:https?:)?\/\//, 'https://' ));
+		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block <wiki>`\n`' + prefix + 'rcscript block add <wiki> [<reason>]`\n`' + prefix + 'rcscript block remove <wiki>`', {}, true );
+		return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki], function (error, row) {
+			if ( error ) {
+				console.log( '- Error while checking the blocklist: ' + error );
+				msg.replyMsg( 'I got an error while checking the blocklist: ' + error, {}, true );
+				return error;
+			}
+			if ( !row ) return msg.replyMsg( '`' + wiki + '` is currently not on the blocklist.\n`' + prefix + 'rcscript block add <' + wiki + '> [<reason>]`', {}, true );
+			msg.replyMsg( '`' + wiki + '` is currently on the blocklist ' + ( row.reason ? 'for `' + row.reason + '`' : 'with no reason provided' ) + '.\n`' + prefix + 'rcscript block remove <' + wiki + '>`', {}, true );
+		} );
+	}
+	db.all( 'SELECT wiki, reason FROM blocklist', [], function (error, rows) {
+		if ( error ) {
+			console.log( '- Error while checking the blocklist: ' + error );
+			msg.replyMsg( 'I got an error while checking the blocklist: ' + error, {}, true );
+			return error;
+		}
+		if ( !rows.length ) return msg.replyMsg( 'there are currently no wikis on the blocklist.\n`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
+		msg.replyMsg( 'there are currently ' + row.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`', {}, true );
 	} );
 }
 
