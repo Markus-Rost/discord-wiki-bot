@@ -424,6 +424,8 @@
         "all_inactive": "you can't have wiki changes and feeds based changes disabled at the same time.",
         "audit_reason": "Recent changes webhook for \"$1\"",
         "audit_reason_delete": "Removed recent changes webhook",
+        "blocked": "this wiki has been blocked from being added as a recent changes webhook!",
+        "blocked_reason": "this wiki has been blocked from being added as a recent changes webhook for `$1`!",
         "channel": "Channel:",
         "current": "these are the current recent changes webhooks for this server:",
         "current_display": "the display mode for this webhook is:",
@@ -462,6 +464,8 @@
         "updated_lang": "the language for this webhook has been changed to:",
         "updated_wiki": "the wiki for this webhook has been changed to:",
         "webhook": {
+            "blocked": "This recent changes webhook will be deleted because the wiki has been blocked!",
+            "blocked_reason": "This recent changes webhook will be deleted because the wiki has been blocked for `$1`!",
             "created": "A recent changes webhook for $1 has been added to this channel.",
             "deleted": "This recent changes webhook will be deleted.",
             "disabled_feeds": "The feeds based changes, like discussions, message walls and article comments, have been disabled for this recent changes webhook.",
