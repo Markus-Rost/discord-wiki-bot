@@ -424,6 +424,8 @@
         "all_inactive": "você não pode ter mudanças da wiki e alterações baseadas em feeds desativadas ao mesmo tempo.",
         "audit_reason": "Mudanças recentes no webhook para \"$1\"",
         "audit_reason_delete": "Removido o webhook das mudanças recentes",
+        "blocked": "",
+        "blocked_reason": "",
         "channel": "Canal:",
         "current": "estas são as webhooks para as mudanças recentes para este servidor:",
         "current_display": "o modo de exibição para este webhook é:",
@@ -462,6 +464,8 @@
         "updated_lang": "o idioma para este webhook foi alterado para:",
         "updated_wiki": "a wiki para este webhook foi alterado para:",
         "webhook": {
+            "blocked": "",
+            "blocked_reason": "",
             "created": "Um webhook de mudanças recentes para $1 foi adicionado a este canal.",
             "deleted": "Este webhook de mudanças recentes será excluído.",
             "disabled_feeds": "As mudanças baseadas em feeds, como discussões, murais de mensagens e comentários de artigos, foram desativadas para este webhook de mudanças recentes.",
