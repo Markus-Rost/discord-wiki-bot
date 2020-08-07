@@ -575,7 +575,7 @@ function blocklist(msg, args) {
 				if ( dberror ) return dberror;
 				msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
 					var lang = new Lang(row.lang, 'rcscript.webhook');
-					webhook.send( ( reason ? lang.get('blocked_reason', reason) : lang.get('blocked') ) ).catch(log_error).finally( () => {
+					webhook.send( '**' + ( reason ? lang.get('blocked_reason', reason) : lang.get('blocked') ) + '**' ).catch(log_error).finally( () => {
 						webhook.delete().catch(log_error);
 					} );
 				}, log_error );
@@ -628,7 +628,7 @@ function blocklist(msg, args) {
 			return error;
 		}
 		if ( !rows.length ) return msg.replyMsg( 'there are currently no wikis on the blocklist.\n`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
-		msg.replyMsg( 'there are currently ' + row.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`', {}, true );
+		msg.replyMsg( 'there are currently ' + row.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`', {split:true}, true );
 	} );
 }
 
