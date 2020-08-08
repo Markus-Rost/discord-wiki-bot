@@ -424,6 +424,8 @@
         "all_inactive": "du kannst Wiki-Änderungen und Feeds-basierte Änderungen nicht gleichzeitig deaktiviert haben.",
         "audit_reason": "Letzte Änderungen-Webhook für \"$1\"",
         "audit_reason_delete": "Letzte Änderungen-Webhook entfernt",
+        "blocked": "diese Wiki wurde davon gesperrt als Letzte Änderungen-Webhook hinzugefügt zu werden!",
+        "blocked_reason": "diese Wiki wurde wegen `$1` davon gesperrt als Letzte Änderungen-Webhook hinzugefügt zu werden!",
         "channel": "Kanal:",
         "current": "dies sind die aktuellen Letzte Änderungen-Webhooks für diesen Server:",
         "current_display": "der Anzeigemodus für diesen Webhook ist:",
@@ -462,6 +464,8 @@
         "updated_lang": "die Sprache für diesen Webhook wurde geändert zu:",
         "updated_wiki": "das Wiki für diesen Webhook wurde geändert zu:",
         "webhook": {
+            "blocked": "Dieser Letzte Änderungen-Webhook wird gelöscht, da das Wiki gesperrt wurde!",
+            "blocked_reason": "Dieser Letzte Änderungen-Webhook wird gelöscht, da das Wiki wegen `$1` gesperrt wurde!",
             "created": "Ein Letzte Änderungen-Webhook für $1 wurde zu diesem Kanal hinzugefügt.",
             "deleted": "Dieser Letzte Änderungen-Webhook wird gelöscht.",
             "disabled_feeds": "Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden für diesen Letzte Änderungen-Webhook deaktiviert.",
