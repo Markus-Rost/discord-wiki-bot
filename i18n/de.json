@@ -144,6 +144,7 @@
     ],
     "general": {
         "disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe einfach auf MediaWiki Websites, wie Gamepedia- und Fandom-Wikis, zu verlinken und diese zu durchsuchen. Ich zeige kurze Beschreibungen und zusätzliche Informationen zu Seiten und kann Weiterleitungen auflösen sowie Interwiki-Links folgen. Geschrieben wurde ich von $1 in JavaScript.\n\nDu kannst mich auf Patreon unterstützen:",
+        "experimental": "**Diese Funktion ist experimentell! Sie ist nicht garantiert richtig zu funktionieren und könnte in Zukunft eventuell entfernt werden.**",
         "helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
         "limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n$1, deine Nachricht enthält zu viele Befehle!",
         "missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
