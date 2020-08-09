@@ -144,6 +144,7 @@
     ],
     "general": {
         "disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki z rodziny MediaWiki takich jak Gamepedia oraz Fandom. Zostałem napisany w JavaScript przez $1.\n\nMożesz wesprzeć mnie na Patreon-ie:",
+        "experimental": "**Ta funkcja jest w fazie eksperymentalnej! Może ona nie działać poprawnie bądź zostać usunięta w przyszłości.**",
         "helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
         "limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
         "missingperm": "Brakuje mi uprawnień:",
