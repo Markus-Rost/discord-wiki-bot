@@ -66,7 +66,8 @@ const restrictions = {
 	minecraft: ['minecraftHelp', 'command', 'bug'],
 	admin: ['settings', 'verification', 'rcscript', 'voice', 'pause'],
 	inline: ['inline.link', 'inline.template'],
-	patreon: ['settings.prefix', 'rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete']
+	patreon: ['settings.prefix'],
+	experimental: ['rcscript.default']
 }
 
 /**
@@ -147,7 +148,7 @@ function formathelp(messages, msg, lang) {
 	} ).map( message => {
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );
-		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '`\n\t' + lang.get('help.list.' + message + '.desc', prefix)
+		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '`\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc', prefix)
 	} ).join('\n');
 }
 

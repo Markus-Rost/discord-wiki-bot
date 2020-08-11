@@ -1,0 +1,4 @@
+[submodule "RcGcDb"]
+	path = RcGcDb
+	url = https://gitlab.com/chicken-riders/RcGcDb.git
+	branch = master

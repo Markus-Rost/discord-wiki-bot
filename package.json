@@ -4,6 +4,7 @@
   "description": "Wiki-Bot is a bot with the purpose to easily search for and link to wiki pages. Wiki-Bot shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.",
   "main": "main.js",
   "scripts": {
+    "build": "cp -n .env.example .env",
     "test": "node main.js debug",
     "start": "node main.js"
   },
