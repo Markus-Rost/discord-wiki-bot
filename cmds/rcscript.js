@@ -4,7 +4,7 @@ const allLangs = Lang.allLangs(true);
 var db = require('../util/database.js');
 
 const fs = require('fs');
-const rcscriptExists = fs.existsSync('./rcgcdb');
+const rcscriptExists = fs.existsSync('./RcGcDb');
 
 var allSites = [];
 const getAllSites = require('../util/allSites.js');
