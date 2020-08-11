@@ -1,5 +1,5 @@
 const htmlparser = require('htmlparser2');
-const {MessageEmbed} = require('discord.js');
+const {MessageEmbed, Util} = require('discord.js');
 const {limit: {discussion: discussionLimit}} = require('../util/default.json');
 
 /**
@@ -359,6 +359,9 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 	}
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 	embed.setDescription( description );
+	if ( discussion.tags?.length ) {
+		embed.addField( lang.get('discussion.tags'), Util.splitMessage( discussion.tags.map( tag => '[' + tag.articleTitle.escapeFormatting() + '](' + wiki.toLink(tag.articleTitle, '', '', {}, true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
+	}
 	
 	msg.sendChannel( spoiler + text + spoiler, {embed} );
 }
