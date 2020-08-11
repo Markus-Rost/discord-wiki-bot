@@ -300,8 +300,8 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( answer.image ? '[__' + lang.get('discussion.image').escapeFormatting() + '__](' + answer.image.url + ')\n' : '' ) + lang.get('discussion.votes', answer.votes), true ) );
 			break;
 		case 'QUIZ':
-			description = discussion.quiz.title.escapeFormatting();
-			if ( discussion._embedded.openGraph ) embed.setThumbnail( discussion._embedded.openGraph[0].imageUrl );
+			description = discussion._embedded.quizzes[0].title.escapeFormatting();
+			embed.setThumbnail( discussion._embedded.quizzes[0].image );
 			break;
 		default:
 			if ( discussion.jsonModel ) {

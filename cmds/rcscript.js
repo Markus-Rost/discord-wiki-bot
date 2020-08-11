@@ -152,7 +152,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 								}
 								console.log( '- RcGcDw successfully added.' );
 								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', {}, true );
+								msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`' + '\n' + lang.get('general.experimental'), {}, true );
 							} );
 						}, error => {
 							console.log( '- Error while creating the webhook: ' + error );
@@ -204,7 +204,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}, error => {
 					log_error(error);
-					if ( error.toString() !== 'DiscordAPIError: Unknown Webhook' ) {
+					if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
 						return msg.replyMsg( lang.get('settings.save_failed'), {}, true );
 					}
 					db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [selected_row.webhook], function (delerror) {
@@ -469,7 +469,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return webhook.channelID;
 			}, error => {
 				log_error(error);
-				if ( error.toString() !== 'DiscordAPIError: Unknown Webhook' ) return;
+				if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) return;
 				db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [selected_row.webhook], function (delerror) {
 					if ( delerror ) {
 						console.log( '- Error while removing the RcGcDw: ' + delerror );
@@ -502,7 +502,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 
 		Promise.all(rows.map( row => msg.client.fetchWebhook(...row.webhook.split('/')).catch( error => {
 			log_error(error);
-			if ( error.toString() !== 'DiscordAPIError: Unknown Webhook' ) return {};
+			if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) return {};
 			db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [row.webhook], function (delerror) {
 				if ( delerror ) {
 					console.log( '- Error while removing the RcGcDw: ' + delerror );
@@ -543,7 +543,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			} ).join('');
 			else text += lang.get('rcscript.missing');
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
-			msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true}, true );
+			msg.sendChannel( lang.get('general.experimental') + '\n' + '<@' + msg.author.id + '>, ' + text, {split:true}, true );
 		} );
 	} );
 }
