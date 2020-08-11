@@ -144,6 +144,7 @@
     ],
     "general": {
         "disclaimer": "Eu sou um robô com a tarefa de vincular sites com Mediawiki como as wikis da Gamepedia e da Fandom. Mostro descrições curtas e informações adicionais sobre as páginas e sou capaz de resolver redirecionamentos e seguir os links de interwiki. $1 me escreveu em JavaScript.\n\nVocê pode me apoiar no Patreon:",
+        "experimental": "**Este recurso é experimental! Não é garantido que funcione corretamente e pode ser removido no futuro.**",
         "helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
         "limit": "🚨 **Pare, isso é demais para mim!** 🚨\n\n$1, sua mensagem continha muitos comandos!",
         "missingperm": "Eu não tenho permissão para executar este comando:",
