@@ -143,7 +143,7 @@
         " "
     ],
     "general": {
-        "disclaimer": "我是一個連結到 Gamepedia 和 Fandom wiki 的小機器人。$1用 JavaScript 編寫了我。\n\n你可以在 Patreon 支援我：",
+        "disclaimer": "我是一個可以提供連結並檢索如 Gamepedia 和 Fandom 等 MediaWiki 站點的小機器人。我會展示頁面的簡介和其他訊息，並可以處理重新導向和跨 wiki 鏈接。$1用 JavaScript 編寫了我。\n\n你可以在 Patreon 支援我：",
         "helpserver": "有問題嗎？你可以訪問我的專屬支援伺服器：",
         "limit": "🚨 **停一下，你太快了！** 🚨\n\n$1，你發出的指令過多了！",
         "missingperm": "我缺少一些權限來執行此指令：",
@@ -194,7 +194,7 @@
                 },
                 "command": {
                     "cmd": "help <指令>",
-                    "desc": "我將提供指令的使用方法。"
+                    "desc": "想知道某個指令如何使用嗎？我來解釋給你聽吧！"
                 },
                 "default": {
                     "cmd": "help",
@@ -421,6 +421,7 @@
         "ad": "你想要在 Discord 裏直接看最近更改嗎？使用 `$1rcscript` 來爲你的 Discord 伺服器增加一個基於 **$2** 的最近更改webhook！",
         "add_more": "增加更多的最近更改webhook：",
         "added": "一個最近更改webhook已添加到：",
+        "all_inactive": "Wiki 式更改和討論式更改無法同時停用。",
         "audit_reason": "“$1”的最近更改webhook",
         "audit_reason_delete": "最近更改webhook已刪除",
         "channel": "頻道：",
@@ -433,9 +434,11 @@
         "deleted": "最近更改webhook已被刪除。",
         "disabled": "已禁用",
         "disabled_feeds": "此webhook中如討論版、留言牆和條目評論等基於討論式的更改推送已禁用。",
+        "disabled_rc": "此 webhook 的 wiki 式更改已停用。",
         "display": "顯示模式：",
         "enabled": "已啓用",
         "enabled_feeds": "此webhook中如討論版、留言牆和條目評論等基於討論式的更改推送已啓用。",
+        "enabled_rc": "此 webhook 的 wiki 式更改已被停用。",
         "feeds": "基於討論式的更改:",
         "help_display_compact": "緊湊的文字式消息，包含行內連結。",
         "help_display_diff": "嵌入式消息，包含圖像預覽和編輯差異。",
@@ -451,6 +454,7 @@
         "new_wiki": "<新 wiki>",
         "no_feeds": "此webhook的 wiki 沒有如討論版、留言牆和條目評論等基於討論式的更改，已啓用。",
         "noadmin": "你需要 `管理webhook` 權限來運行此指令！",
+        "rc": "Wiki 式更改：",
         "sysmessage": "要添加最近更改webhook，系統消息 `$1` 必須是伺服器 ID `$2`。",
         "title": "最近更改webhook",
         "toggle": "（開關）",
@@ -461,7 +465,9 @@
             "created": "$1 的最近更改webhook已被添加到此頻道。",
             "deleted": "此最近更改webhook將會被刪除。",
             "disabled_feeds": "此最近更改webhook中如討論版、留言牆和條目評論等基於討論式的更改已禁用。",
+            "disabled_rc": "此最近更改 webhook 的 wiki 式更改已停用。",
             "enabled_feeds": "此最近更改webhook中如討論版、留言牆和條目評論等基於討論式的更改已啓用。",
+            "enabled_rc": "此最近更改 webhook 的 wiki 式更改已啟用。",
             "updated_display_compact": "此最近更改webhook的顯示模式已改爲緊湊的文字式消息，包含行內連結。",
             "updated_display_diff": "此最近更改webhook的顯示模式已改爲嵌入式消息，包含圖像預覽和編輯差異。",
             "updated_display_embed": "此最近更改webhook的顯示模式已改爲嵌入式消息，包含編輯標籤和分類更改。",
@@ -521,7 +527,7 @@
         "nochannels": "*還沒有頻道複寫設定*",
         "prefix": "本伺服器的前綴是：",
         "prefixchanged": "您將本伺服器指令前綴更改爲：",
-        "prefixhelp": "使用 `$1 <前綴>` 來更改前綴。在最後使用 `_` 來表示一個空格。前綴不能含有提及！",
+        "prefixhelp": "使用 `$1 <前綴>` 來更改前綴。\n前綴末端使用 `_` 來表示一個空格。\n前綴不能含有提及！",
         "prefixinvalid": "我不支援提供的前綴！",
         "save_failed": "啊喔，設定保存失敗了，請稍後再試。",
         "wiki": "本伺服器的默認 wiki 是：",
@@ -573,17 +579,17 @@
     "user": {
         "block": {
             "header": "$1 目前正被封鎖！",
-            "nofromnoreason": "被 $3 封鎖，直到 $2",
-            "nofromtext": "被 $3 封鎖，直到 $2，理由：“$4”",
-            "noreason": "被 $3 封鎖，時間從 $1 到 $2",
-            "text": "被 $3 封鎖，時間從 $1 到 $2，理由：“$4”",
+            "nofromnoreason": "被 $3 封鎖，直到 $2。",
+            "nofromtext": "被 $3 封鎖，直到 $2，理由：「$4」。",
+            "noreason": "被 $3 封鎖，時間從 $1 到 $2。",
+            "text": "被 $3 封鎖，時間從 $1 到 $2，理由：「$4」。",
             "until_infinity": "天荒地老"
         },
         "gblock": {
             "disabled": "此賬戶目前正被禁用！",
             "header": "$1 目前正被全域封鎖！",
-            "noreason": "被 $3 封鎖，時間從 $1 到 $2",
-            "text": "被 $3 封鎖，時間從 $1 到 $2，理由：“$4”"
+            "noreason": "被 $3 封鎖，時間從 $1 到 $2。",
+            "text": "被 $3 封鎖，時間從 $1 到 $2，理由：「$4」。"
         },
         "gender": {
             "female": "女",
@@ -703,7 +709,7 @@
         "footer": "Wiki 賬戶驗證",
         "help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help-zh.gamepedia.com/Gamepedia帮助Wiki:Discord验证",
-        "help_guide": "請根據[此指導]($1)來添加您的 Discord 使用者名至您的 wiki 資料頁。",
+        "help_guide": "請根據[此指導]($1)來添加您的 Discord 使用者名至您的 wiki 資料頁：",
         "help_subpage": "請將您的 Discord 使用者名（$1）添加至您在 wiki 上的 `/Discord` 子頁面：",
         "missing": "本頻道無可用的驗證方式。",
         "notice": "注意：",
