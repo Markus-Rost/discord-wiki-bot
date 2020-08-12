@@ -133,6 +133,7 @@
         "image": "Bild öffnen",
         "main": "Diskussionen",
         "post": "post",
+        "tags": "Tags:",
         "votes": "{{PLURAL:$1|Eine Stimme|$1 Stimmen}}"
     },
     "fallback": [
@@ -449,12 +450,12 @@
         "help_display_image": "Einbettungen mit Bildvorschau.",
         "help_feeds": "(Diskussionen, Nachrichtenseiten, Artikelkommentare)",
         "help_lang": "Bisher mögliche Sprachen sind:",
-        "help_wiki": "Link zum Wiki: `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
+        "help_wiki": "Link zu einer MediaWiki Website, wie `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
         "lang": "Sprache:",
         "max_entries": "du hast bereits die maximale Anzahl an Letzte Änderungen-Webhooks erreicht.",
         "missing": "es ist noch kein Letzte Änderungen-Webhook für diesen Server vorhanden.",
         "new_lang": "<neue Sprache>",
-        "new_wiki": "<neues Wiki>",
+        "new_wiki": "<Link>",
         "no_feeds": "das Wiki für diesen Webhook hat keine Feeds-basierten Funktionen, wie Diskussionen, Nachrichtenseiten oder Artikelkommentare, aktiviert.",
         "noadmin": "du benötigst die `WebHooks verwalten`-Berechtigung für diesen Befehl!",
         "rc": "Wiki-Änderungen:",
@@ -537,8 +538,8 @@
         "save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
         "wiki": "das Standard-Wiki für diesen Server ist:",
         "wikichanged": "du hast das Standard-Wiki für diesen Server geändert zu:",
-        "wikihelp": "Nutze `$1 <Link>` um das Standard-Wiki zu ändern.\nLink zum Wiki: `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
-        "wikiinvalid": "bitte gib einen gültigen Link zu einem Gamepedia- oder Fandom-Wiki an!",
+        "wikihelp": "Nutze `$1 <Link>` um das Standard-Wiki zu ändern.\nLink zu einer MediaWiki Website, wie `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
+        "wikiinvalid": "bitte gib einen gültigen Link zu einer MediaWiki Website, wie ein Gamepedia- oder Fandom-Wiki, an!",
         "wikimissing": "für diesen Server wurde noch kein Wiki festgelegt!"
     },
     "test": {
