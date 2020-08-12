@@ -47,7 +47,7 @@ For a full list with all commands use `!wiki help`
 | `!wiki help admin` | **Wiki-Bot** will list all administrator commands. |
 | `!wiki test` | If **Wiki-Bot** is active, he will answer! Otherwise not. |
 
-If you got an unwanted response, you can react with 🗑️ to his message and **Wiki-Bot** will delete it.
+If you got an unwanted response, you can react with 🗑️ (`:wastebasket:`) to his message and **Wiki-Bot** will delete it.
 
 ### Admin
 For a full list with all administrator commands use `!wiki help admin`
