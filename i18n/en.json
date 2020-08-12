@@ -133,6 +133,7 @@
         "image": "View Image",
         "main": "Discussions",
         "post": "post",
+        "tags": "Tags",
         "votes": "$1 {{PLURAL:$1|vote|votes}}"
     },
     "fallback": [
