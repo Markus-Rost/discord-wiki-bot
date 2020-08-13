@@ -13,7 +13,7 @@
     ],
     "aliases": {
         "bug": [
-            " ",
+            "błąd",
             " ",
             " ",
             " ",
@@ -27,10 +27,10 @@
             " "
         ],
         "diff": [
-            " ",
-            " ",
-            " ",
-            " ",
+            "różn",
+            "różnice",
+            "zmiana",
+            "zmiany",
             " "
         ],
         "discussion": [
@@ -48,22 +48,22 @@
             " "
         ],
         "info": [
-            " ",
+            "informacje",
             " ",
             " ",
             " ",
             " "
         ],
         "invite": [
-            " ",
-            " ",
+            "zaproś",
+            "zaproszenie",
             " ",
             " ",
             " "
         ],
         "overview": [
-            " ",
-            " ",
+            "przegląd",
+            "podgląd",
             " ",
             " ",
             " "
@@ -76,9 +76,9 @@
             " "
         ],
         "random": [
+            "losuj",
             " ",
-            " ",
-            " ",
+            "losowa_strona",
             " ",
             " "
         ],
@@ -97,15 +97,15 @@
             " "
         ],
         "user": [
-            " ",
-            " ",
+            "użytkownik",
+            "użytkowniczka",
             " ",
             " ",
             " "
         ],
         "verify": [
-            " ",
-            " ",
+            "weryfikacja",
+            "weryfikuj",
             " ",
             " ",
             " "
@@ -133,6 +133,7 @@
         "image": "Zobacz zdjęcie",
         "main": "Dyskusje",
         "post": "post",
+        "tags": "Tagi:",
         "votes": "$1 {{PLURAL:$1|głos|głosy|głosów}}"
     },
     "fallback": [
@@ -143,18 +144,18 @@
         " "
     ],
     "general": {
-        "disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do różnych wiki z rodziny MediaWiki takich jak Gamepedia oraz Fandom. Zostałem napisany w JavaScript przez $1.\n\nMożesz wesprzeć mnie na Patreon-ie:",
-        "experimental": "**Ta funkcja jest w fazie eksperymentalnej! Może ona nie działać poprawnie bądź zostać usunięta w przyszłości.**",
-        "helpserver": "W przypadku pytań lub problemów, odwiedź mój serwer:",
+        "disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do stron i wyszukiwanie na różnych wiki działających na MediaWiki, takich jak Gamepedia oraz Fandom. Wyświetlam krótkie opisy i dodatkowe informacje o stronach, a także jestem w stanie śledzić przekierowania. Zostałem napisany w języku JavaScript przez $1.\n\nMożesz wesprzeć mnie na Patreonie:",
+        "experimental": "**Ta funkcja jest w fazie eksperymentalnej! Może nie działać poprawnie bądź zostać usunięta w przyszłości.**",
+        "helpserver": "W przypadku pytań lub problemów odwiedź mój serwer:",
         "limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
         "missingperm": "Brakuje mi uprawnień:",
-        "patreon": "to funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie aby uzyskać dostęp do tej funkcji:",
-        "prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`."
+        "patreon": "to funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie, aby uzyskać dostęp do tej funkcji:",
+        "prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks, używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`."
     },
     "help": {
         "admin": "Te komendy mogą być wykonane jedynie przez administrację:",
-        "all": "A więc chcesz wiedzieć co potrafię? Tutaj jest lista komend, które rozumiem:",
-        "footer": "Jeżeli otrzymałeś niechcianą odpowiedź, możesz na nią zareagować używając emotki 🗑️ (`:wastebasket:`) a wiadomość zostanie ona usunięta.",
+        "all": "A więc chcesz wiedzieć, co potrafię? Tutaj jest lista komend, które rozumiem:",
+        "footer": "Jeżeli otrzymałeś niechcianą odpowiedź, możesz na nią zareagować używając emoji 🗑️ (`:wastebasket:`), a wiadomość zostanie usunięta.",
         "list": {
             "default": {
                 "cmd": "<wyszukiwana fraza>",
@@ -173,11 +174,11 @@
             "discussion": {
                 "post": {
                     "cmd": "discussion post <wyszukiwana fraza>",
-                    "desc": "Odpowiem linkiem do odpowiadającego postu na Fandomowej wiki."
+                    "desc": "Odpowiem linkiem do odpowiadającego postu na wiki na Fandomie."
                 },
                 "thread": {
                     "cmd": "discussion <wyszukiwana fraza>",
-                    "desc": "Odpowiem linkiem do odpowiadającego wątku dyskusji na Fandomowej wiki."
+                    "desc": "Odpowiem linkiem do odpowiadającego wątku w dyskusji na wiki na Fandomie."
                 }
             },
             "fandom": {
@@ -191,7 +192,7 @@
             "help": {
                 "admin": {
                     "cmd": "help admin",
-                    "desc": "Wylistuję wszystkie komendy administracyjne."
+                    "desc": "Wymienię wszystkie komendy administracyjne."
                 },
                 "command": {
                     "cmd": "help <komenda bota>",
@@ -199,7 +200,7 @@
                 },
                 "default": {
                     "cmd": "help",
-                    "desc": "Wylistuję wszystkie komendy, które rozumiem."
+                    "desc": "Wymienię wszystkie komendy, które rozumiem."
                 },
                 "verification": {
                     "cmd": "help verification",
@@ -208,7 +209,7 @@
             },
             "info": {
                 "cmd": "info",
-                "desc": "Przedstawie się."
+                "desc": "Przedstawię się."
             },
             "inline": {
                 "link": {
@@ -223,7 +224,7 @@
             "minecraft": {
                 "bug": {
                     "cmd": "bug <Minecraft bug>",
-                    "desc": "Odpowiem z linkiem do błędu na bug trackerze Mojangu."
+                    "desc": "Odpowiem z linkiem do błędu w systemie śledzenia błędów Minecrafta."
                 },
                 "command": {
                     "cmd": "command <komenda>",
@@ -244,7 +245,7 @@
             },
             "page": {
                 "cmd": "page <nazwa strony>",
-                "desc": "Odpowiem linkiem do podanego artykułu na Wiki."
+                "desc": "Odpowiem linkiem do podanego artykułu na wiki."
             },
             "pause": {
                 "active": {
@@ -275,7 +276,7 @@
                 },
                 "display": {
                     "cmd": "rcscript display <nowy tryb wyświetlania>",
-                    "desc": "Zmienię tryb wyświetlania dla tego webhooka ostatnich zmian."
+                    "desc": "Zmienię tryb wyświetlania dla webhooka ostatnich zmian."
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
@@ -449,12 +450,12 @@
         "help_display_image": "Szczegółowe wiadomości podglądami zdjęć.",
         "help_feeds": "(dyskusje, tablice wiadomości)",
         "help_lang": "Aktualnie wspieranymi językami są:",
-        "help_wiki": "Link do wiki: `https://<wiki>.gamepedia.com` lub `https://<wiki>.fandom.com`",
+        "help_wiki": "Użyj linku do wiki na bazie MediaWiki takiej jak: `https://<wiki>.gamepedia.com` lub `https://<wiki>.fandom.com`",
         "lang": "Język:",
         "max_entries": "osiągnięto maksymalną ilość webhooków ostatnich zmian.",
         "missing": "obecnie nie istnieją żadne webhooki ostatnich zmian na tym serwerze.",
         "new_lang": "<nowy język>",
-        "new_wiki": "<nowa wiki>",
+        "new_wiki": "<link>",
         "no_feeds": "wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
         "noadmin": "potrzebujesz uprawnienia `Zarządzaj webhookami` aby używać tej komendy!",
         "rc": "Ostatnie zmiany:",
@@ -537,8 +538,8 @@
         "save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
         "wiki": "domyślną wiki tego serwera jest:",
         "wikichanged": "zmieniono domyślną wiki dla tego serwera na:",
-        "wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "podaj poprawny link do wiki na Gamepedii lub Fandomie!",
+        "wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki na bazie MediaWiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
+        "wikiinvalid": "podaj poprawny link do strony wiki, np. na Gamepedii lub Fandomie!",
         "wikimissing": "domyślna wiki nie została ustawiona dla tego serwera!"
     },
     "test": {

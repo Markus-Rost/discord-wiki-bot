@@ -133,6 +133,7 @@
         "image": "View Image",
         "main": "Discussions",
         "post": "post",
+        "tags": "Tags:",
         "votes": "$1 {{PLURAL:$1|vote|votes}}"
     },
     "fallback": [
@@ -449,12 +450,12 @@
         "help_display_image": "Embed messages with image previews.",
         "help_feeds": "(discussions, message walls, article comments)",
         "help_lang": "Currently supported languages are:",
-        "help_wiki": "Link to the wiki: `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
+        "help_wiki": "Link to a MediaWiki site like `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
         "lang": "Language:",
         "max_entries": "you already reached the maximal amount of recent changes webhooks.",
         "missing": "there are no recent changes webhooks for this server yet.",
         "new_lang": "<new language>",
-        "new_wiki": "<new wiki>",
+        "new_wiki": "<link>",
         "no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
         "noadmin": "you need the `Manage Webhooks` permission for this command!",
         "rc": "Wiki changes:",
@@ -537,8 +538,8 @@
         "save_failed": "sadly the settings couldn't be saved, please try again later.",
         "wiki": "the default wiki for this server is:",
         "wikichanged": "you changed the default wiki for this server to:",
-        "wikihelp": "Use `$1 <link>` to change the default wiki.\nLink to the wiki: `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "please provide a valid link to a Gamepedia or Fandom wiki!",
+        "wikihelp": "Use `$1 <link>` to change the default wiki.\nLink to a MediaWiki site like `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
+        "wikiinvalid": "please provide a valid link to a MediaWiki site, like a Gamepedia or Fandom wiki!",
         "wikimissing": "no default wiki is set for this server yet!"
     },
     "test": {
