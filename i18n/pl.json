@@ -539,7 +539,7 @@
         "wiki": "domyślną wiki tego serwera jest:",
         "wikichanged": "zmieniono domyślną wiki dla tego serwera na:",
         "wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki na bazie MediaWiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "podaj poprawny link do wiki na Gamepedii lub Fandomie!",
+        "wikiinvalid": "podaj poprawny link do strony wiki, np. na Gamepedii lub Fandomie!",
         "wikimissing": "domyślna wiki nie została ustawiona dla tego serwera!"
     },
     "test": {
