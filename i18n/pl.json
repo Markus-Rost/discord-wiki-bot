@@ -133,6 +133,7 @@
         "image": "Zobacz zdjęcie",
         "main": "Dyskusje",
         "post": "post",
+        "tags": "Tagi:",
         "votes": "$1 {{PLURAL:$1|głos|głosy|głosów}}"
     },
     "fallback": [
@@ -449,12 +450,12 @@
         "help_display_image": "Szczegółowe wiadomości podglądami zdjęć.",
         "help_feeds": "(dyskusje, tablice wiadomości)",
         "help_lang": "Aktualnie wspieranymi językami są:",
-        "help_wiki": "Link do wiki: `https://<wiki>.gamepedia.com` lub `https://<wiki>.fandom.com`",
+        "help_wiki": "Użyj linku do wiki na bazie MediaWiki takiej jak: `https://<wiki>.gamepedia.com` lub `https://<wiki>.fandom.com`",
         "lang": "Język:",
         "max_entries": "osiągnięto maksymalną ilość webhooków ostatnich zmian.",
         "missing": "obecnie nie istnieją żadne webhooki ostatnich zmian na tym serwerze.",
         "new_lang": "<nowy język>",
-        "new_wiki": "<nowa wiki>",
+        "new_wiki": "<link>",
         "no_feeds": "wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
         "noadmin": "potrzebujesz uprawnienia `Zarządzaj webhookami` aby używać tej komendy!",
         "rc": "Ostatnie zmiany:",
@@ -537,7 +538,7 @@
         "save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
         "wiki": "domyślną wiki tego serwera jest:",
         "wikichanged": "zmieniono domyślną wiki dla tego serwera na:",
-        "wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
+        "wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki na bazie MediaWiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
         "wikiinvalid": "podaj poprawny link do wiki na Gamepedii lub Fandomie!",
         "wikimissing": "domyślna wiki nie została ustawiona dla tego serwera!"
     },
