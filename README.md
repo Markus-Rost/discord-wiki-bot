@@ -108,4 +108,4 @@ Use `!wiki voice` to get the format for the role name.
 ## Other
 Credits to [Encredechine](https://community.fandom.com/wiki/User:Encredechine) for the **Wiki-Bot** logo.
 
-[Privacy Policy](privacy.md)
+[Privacy Policy](PRIVACY.md#privacy-policy)

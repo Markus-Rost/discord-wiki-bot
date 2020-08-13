@@ -1,0 +1,32 @@
+name: Update translations
+on:
+  push:
+    branches: [ translations ]
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Update Widgets
+      run: |
+        sudo apt-get install inkscape
+        for language in i18n/[a-z-]*.json
+        do
+          wget https://weblate.frisk.space/widgets/wiki-bot/$(basename $language .json)/discord/svg-badge.svg
+          convert svg-badge.svg i18n/widgets/$(basename $language .json).png
+          rm svg-badge.svg
+        done
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v4
+      with:
+        message: "Update translation widgets"
+        add: "i18n/widgets/*.png"
+      env:
+        GITHUB_TOKEN: ${{ secrets.WIKIBOT_TOKEN }}
+    - name: Create Pull Request
+      uses: repo-sync/pull-request@v2
+      with:
+        pr_title: "Update translations"
+        pr_body: "Update translations from https://weblate.frisk.space/engage/wiki-bot/"
+        pr_label: "translation"
+        github_token: ${{ secrets.WIKIBOT_TOKEN }}
