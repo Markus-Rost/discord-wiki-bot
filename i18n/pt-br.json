@@ -133,6 +133,7 @@
         "image": "Ver imagem",
         "main": "Discussãos",
         "post": "post",
+        "tags": "Etiquetas:",
         "votes": "$1 {{PLURAL:$1|voto|votos}}"
     },
     "fallback": [
@@ -449,12 +450,12 @@
         "help_display_image": "Incorpore mensagens com pré-visualizações de imagens.",
         "help_feeds": "(discussões, mural de mensagens, comentários de artigos)",
         "help_lang": "Os idiomas suportados atualmente são:",
-        "help_wiki": "Link para a wiki: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
+        "help_wiki": "Link para um site MediaWiki como: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
         "lang": "Idioma:",
         "max_entries": "você já atingiu a quantidade máxima de webhooks de mudanças recentes.",
         "missing": "ainda não há webhooks de mudanças recentes para este servidor.",
         "new_lang": "<novo idioma>",
-        "new_wiki": "<nova wiki>",
+        "new_wiki": "<link>",
         "no_feeds": "a wiki deste webhook não possui recursos baseados em feeds, como discussões, murais de mensagens ou comentários de artigos, ativados.",
         "noadmin": "você precisa da permissão `Gerenciar Webhooks` para este comando!",
         "rc": "Mudanças da wiki:",
@@ -537,8 +538,8 @@
         "save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
         "wiki": "a wiki padrão para este servidor é:",
         "wikichanged": "você mudou a wiki padrão para este servidor para:",
-        "wikihelp": "Use `$1 <link>` para alterar a wiki padrão.\nLink para a wiki: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "por favor, forneça um link válido para uma wiki da Gamepedia ou Fandom!",
+        "wikihelp": "Use `$1 <link>` para alterar a wiki padrão.\nLink para um site MediaWiki como: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
+        "wikiinvalid": "por favor, forneça um link válido para um site MediaWiki , como wiki da Gamepedia ou Fandom!",
         "wikimissing": "nenhuma wiki padrão está configurado para este servidor ainda!"
     },
     "test": {

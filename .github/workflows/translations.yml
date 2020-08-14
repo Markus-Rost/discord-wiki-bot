@@ -10,15 +10,23 @@ jobs:
     - name: Update Widgets
       run: |
         sudo apt-get install inkscape
-        for language in i18n/[a-z-]*.json
+        for language in i18n/*.json
         do
-          wget https://weblate.frisk.space/widgets/wiki-bot/$(basename $language .json)/discord/svg-badge.svg
-          convert -background none svg-badge.svg i18n/widgets/$(basename $language .json).png
-          rm svg-badge.svg
+          language=$(basename $language .json)
+          if [[ "$language" =~ [^[:lower:]-] ]]
+          then
+            echo "$language" is not a translation
+          else
+            wget https://weblate.frisk.space/widgets/wiki-bot/$language/discord/svg-badge.svg
+            convert -background none svg-badge.svg i18n/widgets/$language.png
+            rm svg-badge.svg
+          fi
         done
     - name: Commit changes
       uses: EndBug/add-and-commit@v4
       with:
+        author_name: WikiBot-bot
+        author_email: 69196528+WikiBot-bot@users.noreply.github.com
         message: "Update translation widgets"
         add: "i18n/widgets/*.png"
       env:
