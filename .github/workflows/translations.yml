@@ -1,12 +1,18 @@
 name: Update translations
 on:
   push:
-    branches: [ translations ]
+    branches:
+      - translations
+    paths:
+      - 'i18n/*.json'
 jobs:
-  pull-request:
+  translations:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Load Repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.WIKIBOT_TOKEN }}
     - name: Update Widgets
       run: |
         sudo apt-get install inkscape
@@ -29,8 +35,6 @@ jobs:
         author_email: 69196528+WikiBot-bot@users.noreply.github.com
         message: "Update translation widgets"
         add: "i18n/widgets/*.png"
-      env:
-        GITHUB_TOKEN: ${{ secrets.WIKIBOT_TOKEN }}
     - name: Create Pull Request
       uses: repo-sync/pull-request@v2
       with:
