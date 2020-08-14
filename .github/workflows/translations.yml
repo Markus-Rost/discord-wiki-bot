@@ -13,7 +13,7 @@ jobs:
         for language in i18n/[a-z-]*.json
         do
           wget https://weblate.frisk.space/widgets/wiki-bot/$(basename $language .json)/discord/svg-badge.svg
-          convert svg-badge.svg i18n/widgets/$(basename $language .json).png
+          convert -background none svg-badge.svg i18n/widgets/$(basename $language .json).png
           rm svg-badge.svg
         done
     - name: Commit changes
