@@ -131,6 +131,7 @@ class Lang {
  * @returns {String}
  */
 function plural(lang, number, args) {
+	// https://translatewiki.net/wiki/Plural/Mediawiki_plural_rules
 	var text = args[args.length - 1];
 	switch ( lang ) {
 		case 'fr':
@@ -159,9 +160,11 @@ function plural(lang, number, args) {
 			break;
 		case 'de':
 		case 'en':
+		case 'es':
 		case 'nl':
 		case 'pt':
 		case 'tr':
+		case 'ja':
 		case 'zh-hans':
 		case 'zh-hant':
 		default:

@@ -328,7 +328,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 
 				msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-					webhook.send( new Lang(allLangs.map[args[1]]).get('rcscript.webhook.updated_lang', allLangs.names[allLangs.map[args[1]]]), {files:[`./RcGcDb/locale/widgets/${args[1]}.png`]} ).catch(log_error);
+					webhook.send( new Lang(allLangs.map[args[1]]).get('rcscript.webhook.updated_lang', allLangs.names[allLangs.map[args[1]]]), {files:[`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`]} ).catch(log_error);
 				}, log_error );
 				return db.run( 'UPDATE rcgcdw SET lang = ? WHERE webhook = ?', [allLangs.map[args[1]], selected_row.webhook], function (error) {
 					if ( error ) {
@@ -337,7 +337,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						return error;
 					}
 					console.log( '- RcGcDw successfully updated.' );
-					msg.replyMsg( lang.get('rcscript.updated_lang') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n`' + cmd + '`', {files:[`./RcGcDb/locale/widgets/${args[1]}.png`]}, true );
+					msg.replyMsg( lang.get('rcscript.updated_lang') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n`' + cmd + '`', {files:[`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`]}, true );
 				} );
 			}
 			if ( args[0] === 'display' ) {
