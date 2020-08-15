@@ -1,6 +1,18 @@
 const {MessageEmbed} = require('discord.js');
 const help_setup = require('../functions/helpsetup.js');
 
+const wsStatus = [
+	'READY',
+	'CONNECTING',
+	'RECONNECTING',
+	'IDLE',
+	'NEARLY',
+	'DISCONNECTED',
+	'WAITING_FOR_GUILDS',
+	'IDENTIFYING',
+	'RESUMING'
+];
+
 /**
  * Processes the "test" command.
  * @param {import('../util/i18n.js')} lang - The user language.
@@ -70,10 +82,10 @@ function cmd_test(lang, msg, args, line, wiki) {
 				}
 				embed.addField( wiki, ping );
 			} ).finally( () => {
-				if ( msg.isOwner() ) return msg.client.shard.fetchClientValues('ready').then( values => {
-					return '```java\n' + values.map( (ready, id) => id + ': ' + ready ).join('\n') + '\n```';
+				if ( msg.isOwner() ) return msg.client.shard.fetchClientValues('ws.status').then( values => {
+					return '```css\n' + values.map( (status, id) => '[' + id + ']: ' + ( wsStatus[status] || status ) ).join('\n') + '\n```';
 				}, error => {
-					return '```js\n' + error.name + ': ' + error.message + '\n```';
+					return '```js\n' + error + '\n```';
 				} ).then( shards => {
 					embed.addField( 'Shards', shards );
 					message.edit( message.content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);

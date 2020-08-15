@@ -24,7 +24,7 @@ global.voice = {};
 var db = require('./util/database.js');
 
 const Discord = require('discord.js');
-var client = new Discord.Client( {
+const client = new Discord.Client( {
 	messageCacheLifetime: 300,
 	messageSweepInterval: 300,
 	allowedMentions: {
@@ -55,13 +55,11 @@ var client = new Discord.Client( {
 global.pause = {};
 var isStop = false;
 client.on( 'ready', () => {
-	client.ready = true;
 	console.log( '\n- ' + shardId + ': Successfully logged in as ' + client.user.username + '!\n' );
 	Object.keys(voice).forEach( guild => {
 		if ( !client.guilds.cache.has(guild) ) delete voice[guild];
 	} );
 } );
-client.on( 'shardDisconnect', () => client.ready = false );
 
 
 String.prototype.noWiki = function(href) {
