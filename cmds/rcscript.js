@@ -4,7 +4,7 @@ const allLangs = Lang.allLangs(true);
 var db = require('../util/database.js');
 
 const fs = require('fs');
-const rcscriptExists = fs.existsSync('./RcGcDb');
+const rcscriptExists = fs.existsSync('./RcGcDb/start.py');
 
 var allSites = [];
 const getAllSites = require('../util/allSites.js');
@@ -311,7 +311,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			}
 			if ( args[0] === 'lang' ) {
 				if ( !args[1] ) {
-					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:[`./RcGcDb/locale/widgets/${selected_row.lang}.png`]}, true );
+					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${selected_row.lang}.png`] : [] )}, true );
 				}
 				if ( !( args[1] in allLangs.map ) ) {
 					return msg.replyMsg( lang.get('settings.langinvalid') + '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {}, true );
@@ -327,7 +327,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						return error;
 					}
 					console.log( '- RcGcDw successfully updated.' );
-					msg.replyMsg( lang.get('rcscript.updated_lang') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n`' + cmd + '`', {files:[`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`]}, true );
+					msg.replyMsg( lang.get('rcscript.updated_lang') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n`' + cmd + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`] : [] )}, true );
 				} );
 			}
 			if ( args[0] === 'display' ) {
