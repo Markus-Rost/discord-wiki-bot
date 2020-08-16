@@ -214,43 +214,43 @@
             "inline": {
                 "link": {
                     "cmd": "[[<頁面名>]]",
-                    "desc": "我將返回一個 wiki 指定頁面的直接連結。"
+                    "desc": "我將傳回一個 wiki 指定頁面的直接連結。"
                 },
                 "template": {
                     "cmd": "{{<頁面名>}}",
-                    "desc": "我將返回一個 wiki 指定頁面的連結。"
+                    "desc": "我將傳回一個 wiki 指定頁面的連結。"
                 }
             },
             "minecraft": {
                 "bug": {
                     "cmd": "bug <Minecraft 錯誤>",
-                    "desc": "我將返回此錯誤在 Minecraft 錯誤追蹤器上的連結。"
+                    "desc": "我將傳回此錯誤在 Minecraft 錯誤追蹤器上的連結。"
                 },
                 "command": {
                     "cmd": "command <Minecraft 指令>",
-                    "desc": "我將返回此 Minecraft 指令的語法和此指令在 Minecraft Wiki 上的連結。"
+                    "desc": "我將傳回此 Minecraft 指令的語法和此指令在 Minecraft Wiki 上的連結。"
                 },
                 "default": {
                     "cmd": "/<Minecraft 指令>",
-                    "desc": "我將返回此 Minecraft 指令的語法和此指令在 Minecraft Wiki 上的連結。"
+                    "desc": "我將傳回此 Minecraft 指令的語法和此指令在 Minecraft Wiki 上的連結。"
                 }
             },
             "mwprojects": {
                 "cmd": "!!<wiki> <關鍵詞>",
-                "desc": "我將返回特定 MediaWiki 項目中指定頁面的連結：`$1!!zh.wikipedia.org 曲奇`"
+                "desc": "我將傳回特定 MediaWiki 專案中指定頁面的連結：`$1!!zh.wikipedia.org 曲奇`"
             },
             "overview": {
                 "cmd": "overview",
-                "desc": "我將返回 wiki 的相關數據以及統計信息。"
+                "desc": "我將傳回 wiki 的相關資訊以及統計資料。"
             },
             "page": {
                 "cmd": "page <頁面名>",
-                "desc": "我將返回指定 wiki 頁面的連結。"
+                "desc": "我將傳回指定 wiki 頁面的連結。"
             },
             "pause": {
                 "active": {
                     "cmd": "pause $1",
-                    "desc": "我將重新接受全部指令。"
+                    "desc": "我將重新接收所有指令。"
                 },
                 "inactive": {
                     "cmd": "pause $1",
@@ -259,66 +259,66 @@
             },
             "random": {
                 "cmd": "random",
-                "desc": "我將返回 wiki 上一個隨機頁面的連結。"
+                "desc": "我將傳回 wiki 上一個隨機頁面的連結。"
             },
             "rcscript": {
                 "add": {
                     "cmd": "rcscript add [<wiki>]",
-                    "desc": "我將添加一個新的最近更改webhook。"
+                    "desc": "我將新增一個新的近期變更webhook。"
                 },
                 "default": {
                     "cmd": "rcscript",
-                    "desc": "我將更改最近更改webhook。"
+                    "desc": "我將變更近期變更webhook。"
                 },
                 "delete": {
                     "cmd": "rcscript delete",
-                    "desc": "我將刪除最近更改webhook。"
+                    "desc": "我將刪除近期變更webhook。"
                 },
                 "display": {
                     "cmd": "rcscript display <新顯示模式>",
-                    "desc": "我將更改最近更改webhook的顯示模式。"
+                    "desc": "我將變更近期變更webhook的顯示模式。"
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
-                    "desc": "我將切換是否在最近更改webhook上推送 Fandom wiki 上的討論版更改。"
+                    "desc": "我將切換是否在近期變更webhook推送 Fandom wiki 上的討論版變更。"
                 },
                 "lang": {
                     "cmd": "rcscript lang <新語言>",
-                    "desc": "我將更改最近更改webhook的語言。"
+                    "desc": "我將變更近期變更webhook的語言。"
                 },
                 "wiki": {
                     "cmd": "rcscript wiki <新 wiki>",
-                    "desc": "我將更改最近更改webhook的 wiki。"
+                    "desc": "我將變更近期變更webhook的wiki。"
                 }
             },
             "search": {
                 "cmd": "search <關鍵字>",
-                "desc": "我將返回 wiki 搜索結果的連結。"
+                "desc": "我將傳回 wiki 搜尋結果的連結。"
             },
             "settings": {
                 "channel": {
                     "cmd": "settings channel",
-                    "desc": "我將更改本伺服器當前頻道的複寫設定。"
+                    "desc": "我將變更本伺服器目前頻道的覆寫設定。"
                 },
                 "default": {
                     "cmd": "settings",
-                    "desc": "我將更改設定參數。"
+                    "desc": "我將變更設定參數。"
                 },
                 "inline": {
                     "cmd": "settings inline toggle",
-                    "desc": "我將更改本伺服器的行內指令啓用情況。"
+                    "desc": "我將變更本伺服器的行內指令啟用情況。"
                 },
                 "lang": {
                     "cmd": "settings lang <語言>",
-                    "desc": "我將更改本伺服器的語言。"
+                    "desc": "我將變更本伺服器的語言。"
                 },
                 "prefix": {
                     "cmd": "settings prefix <前綴>",
-                    "desc": "我將更改本伺服器的指令前綴。"
+                    "desc": "我將變更本伺服器的指令前綴。"
                 },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
-                    "desc": "我將更改本伺服器的預設 wiki。"
+                    "desc": "我將變更本伺服器的預設wiki。"
                 }
             },
             "test": {
@@ -327,24 +327,24 @@
             },
             "user": {
                 "cmd": "User:<使用者名>",
-                "desc": "我將返回指定使用者的信息。"
+                "desc": "我將傳回指定使用者的資訊。"
             },
             "verification": {
                 "accountage": {
-                    "cmd": "verification <id> accountage <新賬戶註冊時長>",
-                    "desc": "我將更改驗證方式的最小注冊時長（以天爲計數）。"
+                    "cmd": "verification <id> accountage <新帳號註冊時長>",
+                    "desc": "我將變更驗證方式的最小註冊時長（以天為單位）。"
                 },
                 "add": {
                     "cmd": "verification add <身份組>",
-                    "desc": "我將添加一個新的驗證方式。可用 `|` 來分割多個身份組。"
+                    "desc": "我將新增一個驗證方式。可用 `|` 來分隔多個身份組。"
                 },
                 "channel": {
                     "cmd": "verification <id> channel <新頻道>",
-                    "desc": "我將更改適用於驗證方式的頻道。可用 `|` 來分割多個頻道。"
+                    "desc": "我將變更適用於驗證方式的頻道。可用 `|` 來分隔多個頻道。"
                 },
                 "default": {
                     "cmd": "verification",
-                    "desc": "我將更改由 `$1驗證` 觸發的 wiki 驗證方式指令。"
+                    "desc": "我將變更由 `$1驗證` 觸發的 wiki 驗證方式指令。"
                 },
                 "delete": {
                     "cmd": "verification <id> delete",
@@ -352,24 +352,24 @@
                 },
                 "editcount": {
                     "cmd": "verification <id> editcount <新編輯數>",
-                    "desc": "我將更改驗證方式的最小編輯數。"
+                    "desc": "我將變更驗證方式的最小編輯數。"
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
-                    "desc": "在驗證時，若需要，我將會將使用者的 Discord 暱稱改爲 wiki 使用者名。"
+                    "desc": "在驗證時，若需要，我將會將使用者的 Discord 暱稱改爲 wiki 使用者名稱。"
                 },
                 "role": {
                     "cmd": "verification <id> role <新身份組>",
-                    "desc": "我將更改驗證方式的身份組。可用 `|` 來分割多個身份組。"
+                    "desc": "我將變更驗證方式的身份組。可用 `|` 來分隔多個身份組。"
                 },
                 "usergroup": {
-                    "cmd": "verification <id> usergroup <新 wiki 使用者組>",
-                    "desc": "我將更改驗證方式的 wiki 使用者組。可用 `|` 來分割多個使用者組。\n以 `AND` 關鍵詞作爲開頭可限制必須擁有下列全部使用者組。"
+                    "cmd": "verification <id> usergroup <新 wiki 使用者群組>",
+                    "desc": "我將變更驗證方式的 wiki 使用者群組。可用 `|` 來分隔多個使用者群組。\n以 `AND` 關鍵詞作為開頭可限制必須擁有下列所有使用者群組。"
                 }
             },
             "verify": {
-                "cmd": "verify <wiki 使用者名>",
-                "desc": "使用此指令來驗證您的 Discord 賬戶和您的 wiki 賬戶，並獲取您的 wiki 賬戶對應的身份組。"
+                "cmd": "verify <wiki 使用者名稱>",
+                "desc": "使用此指令來驗證您的 Discord 帳號和您的 wiki 帳號，並取得您的 wiki 帳號對應的身份組。"
             },
             "voice": {
                 "cmd": "voice",
@@ -384,7 +384,7 @@
         "pause": "**我目前處於暫停狀態！**\n僅能使用以下指令："
     },
     "invite": {
-        "bot": "使用這個連結把我添加到其他伺服器："
+        "bot": "使用這個連結把我加入到其他伺服器："
     },
     "minecraft": {
         "cmdpage": "指令 /",
@@ -396,19 +396,19 @@
     },
     "overview": {
         "articles": "文章總數：",
-        "created": "創建日期：",
+        "created": "建立日期：",
         "crossover": "合併到：",
         "description": "說明：",
         "edits": "總編輯數：",
         "founder": "創始人：",
-        "image": "圖像：",
-        "inaccurate": "統計信息可能出錯",
+        "image": "圖片：",
+        "inaccurate": "統計資料可能出錯",
         "manager": "Wiki 經理 / 主管：",
         "name": "全名：",
         "no": "否",
         "none": "*無*",
         "official": "官方 wiki：",
-        "pages": "全部頁面：",
+        "pages": "總頁面數：",
         "talk": "討論",
         "topic": "分類：",
         "users": "活躍使用者：",
