@@ -95,9 +95,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				if ( site ) wikinew = 'https://' + ( site.wiki_crossover || site.wiki_domain ) + '/';
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
-				got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json', {
-					responseType: 'json'
-				} ).then( response => {
+				got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
 					var body = response.body;
 					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );

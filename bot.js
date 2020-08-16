@@ -13,7 +13,8 @@ global.got = require('got').extend( {
 	timeout: 5000,
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ')'
-	}
+	},
+	responseType: 'json'
 } );
 
 const {defaultSettings, wikiProjects} = require('./util/default.json');

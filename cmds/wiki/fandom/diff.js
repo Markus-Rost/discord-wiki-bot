@@ -51,9 +51,7 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 			fandom_diff_send(lang, msg, argids, wiki, reaction, spoiler);
 		}
 		else {
-			got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=' + ( title ? '&titles=' + encodeURIComponent( title ) : '&revids=' + revision ) + '&rvdiffto=' + diff + '&format=json', {
-				responseType: 'json'
-			} ).then( response => {
+			got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=' + ( title ? '&titles=' + encodeURIComponent( title ) : '&revids=' + revision ) + '&rvdiffto=' + diff + '&format=json' ).then( response => {
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
 				if ( response.statusCode !== 200 || !body || !body.query ) {
@@ -210,9 +208,7 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
  * @param {String[]} [compare] - The edit difference.
  */
 function fandom_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) {
-	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
-		responseType: 'json'
-	} ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.query ) {
@@ -282,9 +278,7 @@ function fandom_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) {
 						}
 						
 						var more = '\n__' + lang.get('diff.info.more') + '__';
-						if ( !compare && oldid ) got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=&revids=' + oldid + '&rvdiffto=' + diff + '&format=json', {
-							responseType: 'json'
-						} ).then( cpresponse => {
+						if ( !compare && oldid ) got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=&revids=' + oldid + '&rvdiffto=' + diff + '&format=json' ).then( cpresponse => {
 							var cpbody = cpresponse.body;
 							if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
 							if ( cpresponse.statusCode !== 200 || !cpbody || !cpbody.query || cpbody.query.badrevids || !cpbody.query.pages && cpbody.query.pages[-1] ) {

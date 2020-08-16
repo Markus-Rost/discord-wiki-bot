@@ -6,7 +6,8 @@ const got = require('got').extend( {
 	timeout: 30000,
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ')'
-	}
+	},
+	responseType: 'json'
 } );
 const {ShardingManager} = require('discord.js');
 const manager = new ShardingManager( './bot.js', {
@@ -78,8 +79,7 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 				server_count: guildCount,
 				shard_count: shardCount,
 				shards: results
-			}, botList ),
-			responseType: 'json'
+			}, botList )
 		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body.error ) {

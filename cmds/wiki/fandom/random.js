@@ -11,9 +11,7 @@ const gamepedia_random = require('../gamepedia/random.js').run;
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function fandom_random(lang, msg, wiki, reaction, spoiler) {
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&siprop=general&generator=random&grnnamespace=0&format=json', {
-		responseType: 'json'
-	} ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&siprop=general&generator=random&grnnamespace=0&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
@@ -43,7 +41,9 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
-			else got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+			else got.get( wiki.toDescLink(querypage.title), {
+				responseType: 'text'
+			} ).then( descresponse => {
 				var descbody = descresponse.body;
 				if ( descresponse.statusCode !== 200 || !descbody ) {
 					console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );

@@ -18,9 +18,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
 		if ( /^\d+$/.test(invoke) ) invoke = 'MC-' + invoke;
 		var link = 'https://bugs.mojang.com/browse/';
-		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,issuelinks,fixVersions,resolution,status', {
-			responseType: 'json'
-		} ).then( response => {
+		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,issuelinks,fixVersions,resolution,status' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {
@@ -78,9 +76,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	else if ( invoke && invoke.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
 		var jql = 'fixVersion="' + args.join(' ').replace( /(["\\])/g, '\\$1' ).toSearch() + '"+order+by+key';
 		var link = 'https://bugs.mojang.com/issues/?jql=' + jql;
-		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25', {
-			responseType: 'json'
-		} ).then( response => {
+		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {

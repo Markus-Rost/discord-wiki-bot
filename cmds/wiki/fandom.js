@@ -61,9 +61,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 	else if ( aliasInvoke === 'diff' && args.join('') && !querystring && !fragment ) fn.diff(lang, msg, args, wiki, reaction, spoiler);
 	else {
 		var noRedirect = ( /(?:^|&)redirect=no(?:&|$)/.test(querystring) || /(?:^|&)action=(?!view(?:&|$))/.test(querystring) );
-		got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&amenableparser=true&siprop=general|namespaces|specialpagealiases|wikidesc&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( title.replace( /\|/g, '\ufffd' ) ) + '&format=json', {
-			responseType: 'json'
-		} ).then( response => {
+		got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&amenableparser=true&siprop=general|namespaces|specialpagealiases|wikidesc&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( title.replace( /\|/g, '\ufffd' ) ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( response.statusCode !== 200 || !body || !body.query ) {
@@ -108,9 +106,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 					}
 					else if ( querypage.ns === -1 && querypage.title.startsWith( contribs ) && querypage.title.length > contribs.length ) {
 						var username = querypage.title.split('/').slice(1).join('/');
-						got.get( wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json', {
-							responseType: 'json'
-						} ).then( uresponse => {
+						got.get( wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json' ).then( uresponse => {
 							var ubody = uresponse.body;
 							if ( uresponse.statusCode !== 200 || !ubody || !ubody.query ) {
 								console.log( '- ' + uresponse.statusCode + ': Error while getting the user: ' + ( ubody && ubody.error && ubody.error.info ) );
@@ -144,9 +140,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 					}
 					else if ( querypage.ns === 1201 && querypage.missing !== undefined ) {
 						var thread = querypage.title.split(':');
-						got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=user&rvdir=newer&rvlimit=1&pageids=' + thread.slice(1).join(':') + '&format=json', {
-							responseType: 'json'
-						} ).then( thresponse => {
+						got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=user&rvdir=newer&rvlimit=1&pageids=' + thread.slice(1).join(':') + '&format=json' ).then( thresponse => {
 							var thbody = thresponse.body;
 							if ( thresponse.statusCode !== 200 || !thbody || !thbody.query || !thbody.query.pages ) {
 								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.error && thbody.error.info ) );
@@ -164,7 +158,9 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 								else {
 									var pagelink = wiki.toLink(thread.join(':'), querystring.toTitle(), fragment, body.query.general);
 									var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( thread.join(':').escapeFormatting() ).setURL( pagelink ).setFooter( querypage.revisions[0].user );
-									got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+									got.get( wiki.toDescLink(querypage.title), {
+										responseType: 'text'
+									} ).then( descresponse => {
 										var descbody = descresponse.body;
 										if ( descresponse.statusCode !== 200 || !descbody ) {
 											console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
@@ -203,9 +199,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 						} );
 					}
 					else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
-						got.get( wiki + 'api/v1/Search/List?minArticleQuality=0&namespaces=4,12,14,' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join(',') + '&limit=1&query=' + encodeURIComponent( title ) + '&format=json', {
-							responseType: 'json'
-						} ).then( wsresponse => {
+						got.get( wiki + 'api/v1/Search/List?minArticleQuality=0&namespaces=4,12,14,' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join(',') + '&limit=1&query=' + encodeURIComponent( title ) + '&format=json&cache=' + Date.now() ).then( wsresponse => {
 							var wsbody = wsresponse.body;
 							if ( wsresponse.statusCode !== 200 || !wsbody || wsbody.exception || !wsbody.total || !wsbody.items || !wsbody.items.length ) {
 								if ( wsbody && ( !wsbody.total || ( wsbody.items && !wsbody.items.length ) || ( wsbody.exception && wsbody.exception.code === 404 ) ) ) msg.reactEmoji('🤷');
@@ -234,9 +228,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 								else {
 									text = '\n' + lang.get('search.infosearch', '`' + prefix + cmd + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`', '`' + prefix + cmd + ( lang.localNames.search || 'search' ) + ' ' + title + linksuffix + '`');
 								}
-								got.get( wiki + 'api.php?action=query&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( querypage.title ) + '&format=json', {
-									responseType: 'json'
-								} ).then( srresponse => {
+								got.get( wiki + 'api.php?action=query&prop=imageinfo|categoryinfo&titles=' + encodeURIComponent( querypage.title ) + '&format=json' ).then( srresponse => {
 									var srbody = srresponse.body;
 									if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
 									if ( srresponse.statusCode !== 200 || !srbody || !srbody.query || !srbody.query.pages ) {
@@ -281,7 +273,9 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 											
 											if ( reaction ) reaction.removeEmoji();
 										}
-										else got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+										else got.get( wiki.toDescLink(querypage.title), {
+											responseType: 'text'
+										} ).then( descresponse => {
 											var descbody = descresponse.body;
 											if ( descresponse.statusCode !== 200 || !descbody ) {
 												console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
@@ -368,7 +362,9 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							
 							if ( reaction ) reaction.removeEmoji();
 						}
-						else got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+						else got.get( wiki.toDescLink(querypage.title), {
+							responseType: 'text'
+						} ).then( descresponse => {
 							var descbody = descresponse.body;
 							if ( descresponse.statusCode !== 200 || !descbody ) {
 								console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
@@ -461,7 +457,9 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
-					else got.get( wiki.toDescLink(body.query.general.mainpage) ).then( descresponse => {
+					else got.get( wiki.toDescLink(body.query.general.mainpage), {
+						responseType: 'text'
+					} ).then( descresponse => {
 						var descbody = descresponse.body;
 						if ( descresponse.statusCode !== 200 || !descbody ) {
 							console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );

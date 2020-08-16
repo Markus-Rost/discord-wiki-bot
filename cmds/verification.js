@@ -171,9 +171,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}
 				if ( usergroups.length > 10 ) return msg.replyMsg( lang.get('verification.usergroup_max'), {}, true );
 				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( lang.get('verification.usergroup_too_long'), {}, true );
-				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json', {
-					responseType: 'json'
-				} ).then( response => {
+				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( response => {
 					var body = response.body;
 					if ( body && body.warnings ) log_warn(body.warnings);
 					if ( response.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {

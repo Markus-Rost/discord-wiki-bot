@@ -35,9 +35,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 			var then = Date.now();
 			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).addField( 'Discord', ( then - now ) + 'ms' );
 			now = Date.now();
-			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json', {
-				responseType: 'json'
-			} ).then( response => {
+			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' ).then( response => {
 				then = Date.now();
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);

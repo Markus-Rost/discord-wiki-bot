@@ -62,9 +62,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				wikinew = input_to_wiki(wikinew.replace( /^(?:https?:)?\/\//, 'https://' ));
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general|extensions&titles=Special:RecentChanges&format=json', {
-				responseType: 'json'
-			} ).then( response => {
+			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general|extensions&titles=Special:RecentChanges&format=json' ).then( response => {
 				var body = response.body;
 				if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions || !body?.query?.pages?.['-1'] ) {
 					console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
@@ -94,20 +92,17 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
 					}
-					if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
-						responseType: 'json'
-					} ).then( wiresponse => {
+					if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
 						var wibody = wiresponse.body;
 						if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
 							console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
 							return createWebhook();
 						}
 						var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
-						if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json', {
+						if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
-							},
-							responseType: 'json'
+							}
 						} ).then( dsresponse => {
 							var dsbody = dsresponse.body;
 							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
@@ -226,9 +221,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = input_to_wiki(args[1].replace( /^(?:https?:)?\/\//, 'https://' ));
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&titles=Special:RecentChanges&format=json', {
-					responseType: 'json'
-				} ).then( response => {
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&titles=Special:RecentChanges&format=json' ).then( response => {
 					var body = response.body;
 					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions || !body?.query?.pages?.['-1'] ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
@@ -258,20 +251,17 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							if ( reaction ) reaction.removeEmoji();
 							return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
 						}
-						if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json', {
-							responseType: 'json'
-						} ).then( wiresponse => {
+						if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
 							var wibody = wiresponse.body;
 							if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
 								console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
 								return updateWiki();
 							}
 							var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
-							if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json', {
+							if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json&cache=' + Date.now(), {
 								headers: {
 									Accept: 'application/hal+json'
-								},
-								responseType: 'json'
+								}
 							} ).then( dsresponse => {
 								var dsbody = dsresponse.body;
 								if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
@@ -414,9 +404,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 
 				let scriptPath = selected_row.wiki.replace( /^https:\/\/(.*)\/$/, '$1' );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + scriptPath + '&format=json', {
-					responseType: 'json'
-				} ).then( wiresponse => {
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + scriptPath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
 					var wibody = wiresponse.body;
 					if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
 						console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
@@ -424,11 +412,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 					}
 					var site = wibody.items.find( site => site.domain === scriptPath );
-					if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json', {
+					if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
-						},
-						responseType: 'json'
+						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
 						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {

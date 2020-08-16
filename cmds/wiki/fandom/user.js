@@ -19,9 +19,7 @@ const {timeoptions, usergroups} = require('../../../util/default.json');
  */
 function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
-		got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
-			responseType: 'json'
-		} ).then( response => {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( response.statusCode !== 200 || !body || !body.query || !body.query.blocks ) {
@@ -34,7 +32,9 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					else {
 						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment);
 						var embed = new MessageEmbed().setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-						got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+						got.get( wiki.toDescLink(querypage.title), {
+							responseType: 'text'
+						} ).then( descresponse => {
 							var descbody = descresponse.body;
 							if ( descresponse.statusCode !== 200 || !descbody ) {
 								console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
@@ -112,9 +112,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						else if ( range >= 16 ) rangeprefix = username.replace( /^((?:\d{1,3}\.){2}).+$/, '$1' );
 					}
 				}
-				got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50&ucuser=' + encodeURIComponent( username ) + '&format=json', {
-					responseType: 'json'
-				} ).then( ucresponse => {
+				got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50&ucuser=' + encodeURIComponent( username ) + '&format=json' ).then( ucresponse => {
 					var ucbody = ucresponse.body;
 					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 					if ( ucbody && ucbody.warnings ) log_warn(ucbody.warnings);
@@ -169,9 +167,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	} else {
-		got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
-			responseType: 'json'
-		} ).then( response => {
+		got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
@@ -191,7 +187,9 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					else {
 						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general);
 						var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-						got.get( wiki.toDescLink(querypage.title) ).then( descresponse => {
+						got.get( wiki.toDescLink(querypage.title), {
+							responseType: 'text'
+						} ).then( descresponse => {
 							var descbody = descresponse.body;
 							if ( descresponse.statusCode !== 200 || !descbody ) {
 								console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
@@ -279,8 +277,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
-						},
-						responseType: 'json'
+						}
 					} ).then( presponse => {
 						var pbody = presponse.body;
 						if ( presponse.statusCode !== 200 || !pbody || pbody.title || !pbody._embedded || !pbody._embedded.properties ) {

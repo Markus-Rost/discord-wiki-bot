@@ -26,9 +26,7 @@ function fandom_search(lang, msg, searchterm, wiki, query, reaction, spoiler) {
 		return;
 	}
 	var description = [];
-	got.get( wiki + 'api/v1/Search/List?minArticleQuality=0&namespaces=4,12,14,' + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join(',') + '&limit=10&query=' + encodeURIComponent( searchterm ) + '&format=json', {
-		responseType: 'json'
-	} ).then( response => {
+	got.get( wiki + 'api/v1/Search/List?minArticleQuality=0&namespaces=4,12,14,' + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join(',') + '&limit=10&query=' + encodeURIComponent( searchterm ) + '&format=json&cache=' + Date.now() ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body || body.exception || !body.items ) {
 			if ( !( body && body.exception && body.exception.code === 404 ) ) {

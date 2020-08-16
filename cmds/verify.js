@@ -44,9 +44,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			if ( args[0] === 'verification' ) args[0] = ( lang.localNames.verify || 'verify' );
 			return this.help(lang, msg, args, line);
 		}
-		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json', {
-			responseType: 'json'
-		} ).then( response => {
+		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
@@ -72,9 +70,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 				username = ( body.query.users.length === 1 ? queryuser.name : username );
 				embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
-				if ( ( wiki.isFandom() || wiki.endsWith( '.gamepedia.com/' ) ) && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json', {
-					responseType: 'json'
-				} ).then( wsresponse => {
+				if ( ( wiki.isFandom() || wiki.endsWith( '.gamepedia.com/' ) ) && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
 					var wsbody = wsresponse.body;
 					if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
 						if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + wsbody?.exception?.details );
@@ -109,12 +105,14 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			var comment = [];
 			var url = '';
 			if ( wiki.endsWith( '.gamepedia.com/' ) ) {
-				url = 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx';
+				url = 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx&cache=' + Date.now();
 			}
 			else if ( wiki.isFandom() ) {
-				url = 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1';
+				url = 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now();
 			}
-			if ( url ) return got.get( url ).then( gbresponse => {
+			if ( url ) return got.get( url, {
+				responseType: 'text'
+			} ).then( gbresponse => {
 				if ( gbresponse.statusCode !== 200 || !gbresponse.body ) {
 					console.log( '- ' + gbresponse.statusCode + ': Error while getting the global block.' );
 					comment.push(lang.get('verify.failed_gblock'));
@@ -151,16 +149,14 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				// async check for editcount on Gamepedia, workaround for https://gitlab.com/hydrawiki/hydra/-/issues/5054
 				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
 					try {
-						let ucresponse = await got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=500&ucuser=' + encodeURIComponent( username ) + '&format=json', {
-							responseType: 'json'
-						} );
+						let ucresponse = await got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=500&ucuser=' + encodeURIComponent( username ) + '&format=json' );
 						if ( !ucresponse.body.continue ) queryuser.editcount = ucresponse.body.query.usercontribs.length;
 					} catch ( ucerror ) {
 						console.log( '- Error while working around the edit count: ' + ucerror )
 					}
 				}
 				
-				var options = {responseType: 'json'};
+				var options = {};
 				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
 					url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now();
 				}
@@ -278,9 +274,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				if ( reaction ) reaction.removeEmoji();
 			} );
 			
-			got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json', {
-				responseType: 'json'
-			} ).then( mwresponse => {
+			got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json' ).then( mwresponse => {
 				var mwbody = mwresponse.body;
 				if ( mwbody && mwbody.warnings ) log_warn(mwbody.warnings);
 				if ( mwresponse.statusCode !== 200 || !mwbody || mwbody.batchcomplete === undefined || !mwbody.query || !mwbody.query.pages ) {

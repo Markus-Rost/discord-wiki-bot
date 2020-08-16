@@ -17,9 +17,7 @@ getAllSites.then( sites => allSites = sites );
  */
 function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 	if ( !allSites.length ) getAllSites.get().then( sites => allSites = sites );
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json', {
-		responseType: 'json'
-	} ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
@@ -37,9 +35,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 		else if ( body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) {
 			return gamepedia_overview(lang, msg, wiki, reaction, spoiler);
 		}
-		else got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + body.query.wikidesc.id + '&format=json', {
-			responseType: 'json'
-		} ).then( ovresponse => {
+		else got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + body.query.wikidesc.id + '&format=json&cache=' + Date.now() ).then( ovresponse => {
 			var ovbody = ovresponse.body;
 			if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[body.query.wikidesc.id] ) {
 				console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
@@ -88,9 +84,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					var text = '<' + pagelink + '>\n\n' + vertical.join(' ') + ( topic[1] ? '\n' + topic.join(' ') : '' );
 				}
 				
-				if ( founder[1] > 0 ) got.get( wiki + 'api.php?action=query&list=users&usprop=&usids=' + founder[1] + '&format=json', {
-					responseType: 'json'
-				} ).then( usresponse => {
+				if ( founder[1] > 0 ) got.get( wiki + 'api.php?action=query&list=users&usprop=&usids=' + founder[1] + '&format=json' ).then( usresponse => {
 					var usbody = usresponse.body;
 					if ( usbody && usbody.warnings ) log_warn(usbody.warnings);
 					if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {

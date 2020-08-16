@@ -51,9 +51,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 			gamepedia_diff_send(lang, msg, [diff, revision], wiki, reaction, spoiler);
 		}
 		else {
-			got.get( wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json', {
-				responseType: 'json'
-			} ).then( response => {
+			got.get( wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json' ).then( response => {
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
 				if ( response.statusCode !== 200 || !body || !body.compare ) {
@@ -223,9 +221,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
  * @param {String[]} [compare] - The edit difference.
  */
 function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) {
-	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
-		responseType: 'json'
-	} ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
@@ -295,9 +291,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 						}
 						
 						var more = '\n__' + lang.get('diff.info.more') + '__';
-						if ( !compare && oldid ) got.get( wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json', {
-							responseType: 'json'
-						} ).then( cpresponse => {
+						if ( !compare && oldid ) got.get( wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json' ).then( cpresponse => {
 							var cpbody = cpresponse.body;
 							if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
 							if ( cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || cpbody.compare['*'] === undefined ) {

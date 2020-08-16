@@ -21,7 +21,9 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		text = splittext.join('\n\n');
 	}
 	
-	if ( wiki.isFandom() ) got.get( 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1' ).then( response => {
+	if ( wiki.isFandom() ) got.get( 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1', {
+		responseType: 'text'
+	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the global block.' );
@@ -41,7 +43,9 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		console.log( '- Error while getting the global block: ' + error );
 	} ).finally( () => {
 		if ( !/^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
-			got.get( 'https://community.fandom.com/wiki/Special:Editcount/' + encodeURIComponent( username ) ).then( gresponse => {
+			got.get( 'https://community.fandom.com/wiki/Special:Editcount/' + encodeURIComponent( username ), {
+				responseType: 'text'
+			} ).then( gresponse => {
 				var gbody = gresponse.body;
 				if ( gresponse.statusCode !== 200 || !gbody ) {
 					console.log( '- ' + gresponse.statusCode + ': Error while getting the global edit count.' );
@@ -66,7 +70,9 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		}
 		else msg.edit( spoiler + text + spoiler, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
 	} );
-	else if ( wiki.endsWith( '.gamepedia.com/' ) ) got.get( 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx' ).then( response => {
+	else if ( wiki.endsWith( '.gamepedia.com/' ) ) got.get( 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx', {
+		responseType: 'text'
+	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the global block.' );
@@ -104,7 +110,9 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		console.log( '- Error while getting the global block: ' + error );
 	} ).finally( () => {
 		if ( !/^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) {
-			got.get( 'https://help.gamepedia.com/UserProfile:' + encodeURIComponent( username ) ).then( gresponse => {
+			got.get( 'https://help.gamepedia.com/UserProfile:' + encodeURIComponent( username ), {
+				responseType: 'text'
+			} ).then( gresponse => {
 				var gbody = gresponse.body;
 				if ( gresponse.statusCode !== 200 || !gbody ) {
 					console.log( '- ' + gresponse.statusCode + ': Error while getting the global edit count.' );
