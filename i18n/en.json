@@ -455,7 +455,7 @@
         "max_entries": "you already reached the maximal amount of recent changes webhooks.",
         "missing": "there are no recent changes webhooks for this server yet.",
         "new_lang": "<new language>",
-        "new_wiki": "<link>",
+        "new_wiki": "<link to wiki>",
         "no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
         "noadmin": "you need the `Manage Webhooks` permission for this command!",
         "rc": "Wiki changes:",
