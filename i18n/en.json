@@ -396,6 +396,7 @@
     },
     "overview": {
         "articles": "Articles:",
+        "comments": "Article comments:",
         "created": "Created:",
         "crossover": "Merged into:",
         "description": "Description:",
