@@ -240,9 +240,9 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					for ( var i = 0; i < usergroups.length; i++ ) {
 						if ( groups.includes( usergroups[i] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( usergroups[i] ) ) ) {
 							if ( usergroups[i] === 'wiki-manager' && body.query.allmessages[0]['*'] === username ) {
-								group.push('**' + lang.get('user.groups.' + usergroups[i]) + '**');
+								group.push('**' + lang.get('user.groups.' + usergroups[i], queryuser.gender) + '**');
 							}
-							else group.push(lang.get('user.groups.' + usergroups[i]));
+							else group.push(lang.get('user.groups.' + usergroups[i], queryuser.gender));
 						}
 					}
 					var isBlocked = false;
@@ -258,7 +258,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					var blockedby = '[[User:' + queryuser.blockedby + '|' + queryuser.blockedby + ']]';
 					var blockreason = queryuser.blockreason;
 					var block = {
-						header: lang.get('user.block.header', username).escapeFormatting(),
+						header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(),
 						text: lang.get('user.block.nofrom' + ( blockreason ? 'text' : 'noreason' ), '', blockexpiry ),
 						by: blockedby,
 						reason: blockreason
@@ -331,7 +331,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
