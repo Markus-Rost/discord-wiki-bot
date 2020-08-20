@@ -396,6 +396,7 @@
     },
     "overview": {
         "articles": "Artikel:",
+        "comments": "Artikelkommentare:",
         "created": "Erstellt:",
         "crossover": "Verschoben nach:",
         "description": "Beschreibung:",
@@ -409,10 +410,13 @@
         "none": "*Niemand*",
         "official": "Offizielles Wiki:",
         "pages": "Seiten insgesamt:",
+        "posts": "Diskussionsbeiträge:",
         "talk": "Diskussion",
         "topic": "Thema:",
         "users": "Aktive Benutzer:",
         "vertical": "Hub:",
+        "walls": "Nachrichtenseitenbeiträge:",
+        "wikiid": "Wiki-ID:",
         "yes": "Ja"
     },
     "pause": {
