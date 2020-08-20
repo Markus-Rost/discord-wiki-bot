@@ -588,7 +588,7 @@
     },
     "user": {
         "block": {
-            "header": "$1 jest obecnie zablokowany(-na)!",
+            "header": "$1 jest obecnie {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}}!",
             "nofromnoreason": "Zablokowano do $2 przez $3.",
             "nofromtext": "Zablokowano do $2 przez $3 z powodem „$4”.",
             "noreason": "Zablokowano $1 do $2 przez $3.",
@@ -597,7 +597,7 @@
         },
         "gblock": {
             "disabled": "To konto jest obecnie wyłączone!",
-            "header": "$1 jest zablokowany(-na) globalnie!",
+            "header": "$1 jest {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}} globalnie!",
             "noreason": "Zablokowano $1 do $2 przez $3 na $4.",
             "text": "Zablokowano $1 do $2 przez $3 na $4 z podanym powodem „$5”."
         },
