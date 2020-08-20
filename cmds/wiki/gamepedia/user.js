@@ -219,6 +219,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						case 'female':
 							gender.push(lang.get('user.gender.female'));
 							break;
+						case 'unknown':
 						default: 
 							gender.push(lang.get('user.gender.unknown'));
 					}

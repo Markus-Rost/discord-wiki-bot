@@ -28,10 +28,6 @@ const display_types = [
 function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( args[0] === 'block' && msg.isOwner() ) return blocklist(msg, args.slice(1));
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
-	if ( !msg.channel.permissionsFor(msg.client.user).has('MANAGE_WEBHOOKS') ) {
-		console.log( msg.guild.id + ': Missing permissions - MANAGE_WEBHOOKS' );
-		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_WEBHOOKS`' );
-	}
 	
 	db.all( 'SELECT configid, webhook, wiki, lang, display, wikiid, rcid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
 		if ( dberror || !rows ) {
@@ -50,7 +46,11 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		}
 
 		if ( args[0] === 'add' ) {
-			if ( !msg.channel.permissionsFor(msg.member).has('MANAGE_WEBHOOKS') ) {
+			if ( !msg.channel.permissionsFor(msg.client.user).has('MANAGE_WEBHOOKS') ) {
+				console.log( msg.guild.id + ': Missing permissions - MANAGE_WEBHOOKS' );
+				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_WEBHOOKS`' );
+			}
+			if ( !( msg.channel.permissionsFor(msg.member).has('MANAGE_WEBHOOKS') || ( this.isOwner() && this.evalUsed ) ) ) {
 				return msg.replyMsg( lang.get('rcscript.noadmin') );
 			}
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), {}, true );
@@ -452,19 +452,21 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				} ) );
 			}
 
-			return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
+			if ( rows.length > 1 ) return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 				return webhook.channelID;
 			}, error => {
 				log_error(error);
-				if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) return;
-				db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [selected_row.webhook], function (delerror) {
-					if ( delerror ) {
-						console.log( '- Error while removing the RcGcDw: ' + delerror );
-						return delerror;
-					}
-					console.log( '- RcGcDw successfully removed.' );
-				} );
-				Promise.reject();
+				if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
+					db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [selected_row.webhook], function (delerror) {
+						if ( delerror ) {
+							console.log( '- Error while removing the RcGcDw: ' + delerror );
+							return delerror;
+						}
+						console.log( '- RcGcDw successfully removed.' );
+					} );
+					Promise.reject();
+				}
+				return;
 			} ).then( channel => {
 				var text = lang.get('rcscript.current_selected') + '\n';
 				text += '\n' + lang.get('rcscript.channel') + ' <#' + channel + '>\n';
@@ -487,17 +489,21 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			}, () => msg.replyMsg( lang.get('rcscript.deleted'), {}, true ) );
 		}
 
-		Promise.all(rows.map( row => msg.client.fetchWebhook(...row.webhook.split('/')).catch( error => {
+		Promise.all(rows.map( row => msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
+			return webhook.channelID;
+		}, error => {
 			log_error(error);
-			if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) return {};
-			db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [row.webhook], function (delerror) {
-				if ( delerror ) {
-					console.log( '- Error while removing the RcGcDw: ' + delerror );
-					return delerror;
-				}
-				console.log( '- RcGcDw successfully removed.' );
-			} );
-			return;
+			if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
+				db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [row.webhook], function (delerror) {
+					if ( delerror ) {
+						console.log( '- Error while removing the RcGcDw: ' + delerror );
+						return delerror;
+					}
+					console.log( '- RcGcDw successfully removed.' );
+				} );
+				return;
+			}
+			return {};
 		} ) )).then( webhooks => {
 			rows.forEach( (row, i) => {
 				if ( webhooks[i] ) row.channel = webhooks[i].channelID;

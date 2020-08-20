@@ -162,7 +162,7 @@ function plural(lang, number, args) {
 		case 'en':
 		case 'es':
 		case 'nl':
-		case 'pt':
+		case 'pt-br':
 		case 'tr':
 		case 'ja':
 		case 'zh-hans':
