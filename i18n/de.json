@@ -396,6 +396,7 @@
     },
     "overview": {
         "articles": "Artikel:",
+        "comments": "Artikelkommentare:",
         "created": "Erstellt:",
         "crossover": "Verschoben nach:",
         "description": "Beschreibung:",
@@ -409,10 +410,13 @@
         "none": "*Niemand*",
         "official": "Offizielles Wiki:",
         "pages": "Seiten insgesamt:",
+        "posts": "Diskussionsbeiträge:",
         "talk": "Diskussion",
         "topic": "Thema:",
         "users": "Aktive Benutzer:",
         "vertical": "Hub:",
+        "walls": "Nachrichtenseitenbeiträge:",
+        "wikiid": "Wiki-ID:",
         "yes": "Ja"
     },
     "pause": {
@@ -455,7 +459,7 @@
         "max_entries": "du hast bereits die maximale Anzahl an Letzte Änderungen-Webhooks erreicht.",
         "missing": "es ist noch kein Letzte Änderungen-Webhook für diesen Server vorhanden.",
         "new_lang": "<neue Sprache>",
-        "new_wiki": "<Link>",
+        "new_wiki": "<Link zum Wiki>",
         "no_feeds": "das Wiki für diesen Webhook hat keine Feeds-basierten Funktionen, wie Diskussionen, Nachrichtenseiten oder Artikelkommentare, aktiviert.",
         "noadmin": "du benötigst die `WebHooks verwalten`-Berechtigung für diesen Befehl!",
         "rc": "Wiki-Änderungen:",

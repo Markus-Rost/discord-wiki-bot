@@ -396,6 +396,7 @@
     },
     "overview": {
         "articles": "Artykułów:",
+        "comments": "Komentarze artykułów:",
         "created": "Stworzona:",
         "crossover": "Połączona z:",
         "description": "Opis:",
@@ -409,10 +410,13 @@
         "none": "*brak*",
         "official": "Oficjalna wiki:",
         "pages": "Stron:",
+        "posts": "Posty dyskusji:",
         "talk": "dyskusja",
         "topic": "Temat:",
         "users": "Aktywnych użytkowników:",
         "vertical": "Hub:",
+        "walls": "Posty tablic wiadomości:",
+        "wikiid": "ID Wiki:",
         "yes": "Tak"
     },
     "pause": {
@@ -455,7 +459,7 @@
         "max_entries": "osiągnięto maksymalną ilość webhooków ostatnich zmian.",
         "missing": "obecnie nie istnieją żadne webhooki ostatnich zmian na tym serwerze.",
         "new_lang": "<nowy język>",
-        "new_wiki": "<link>",
+        "new_wiki": "<link do wiki>",
         "no_feeds": "wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
         "noadmin": "potrzebujesz uprawnienia `Zarządzaj webhookami` aby używać tej komendy!",
         "rc": "Ostatnie zmiany:",
