@@ -10,8 +10,9 @@ const {timeoptions} = require('../util/default.json');
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
  * @param {String} wiki - The wiki for the page.
  * @param {String} spoiler - If the response is in a spoiler.
+ * @param {String} [gender] - The gender of the user.
  */
-function global_block(lang, msg, username, text, embed, wiki, spoiler) {
+function global_block(lang, msg, username, text, embed, wiki, spoiler, gender = 'unknown') {
 	if ( !msg || msg.channel.type !== 'text' || !( msg.guild.id in patreons ) ) return;
 	
 	if ( msg.showEmbed() ) embed.fields.pop();
@@ -31,12 +32,12 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 		else {
 			let $ = cheerio.load(body);
 			if ( $('#mw-content-text .errorbox').length ) {
-				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.disabled'), '\u200b' );
-				else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
+				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.disabled', gender), '\u200b' );
+				else text += '\n\n**' + lang.get('user.gblock.disabled', gender) + '**';
 			}
 			else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
-				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.header', username).escapeFormatting(), '\u200b' );
-				else text += '\n\n**' + lang.get('user.gblock.header', username).escapeFormatting() + '**';
+				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.header', username, gender).escapeFormatting(), '\u200b' );
+				else text += '\n\n**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**';
 			}
 		}
 	}, error => {
@@ -89,8 +90,8 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 				if ( expiry.startsWith( '(infiniteblock)' ) ) expiry = lang.get('user.block.until_infinity');
 				else expiry = new Date(expiry.replace( /(\d{2}:\d{2}), (\d{1,2}) \((\w+)\) (\d{4})/, '$3 $2, $4 $1 UTC' )).toLocaleString(lang.get('dateformat'), timeoptions);
 				if ( msg.showEmbed() ) {
-					var gblocktitle = lang.get('user.gblock.header', username).escapeFormatting();
-					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.get('user.block.header', username).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting()) );
+					var gblocktitle = lang.get('user.gblock.header', username, gender).escapeFormatting();
+					var globalblock = embed.fields.find( field => field.inline === false && field.name === lang.get('user.block.header', username, gender).escapeFormatting() && field.value.replace( /\[([^\]]*)\]\([^\)]*\)/g, '$1' ) === lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting()) );
 					if ( globalblock ) globalblock.name = gblocktitle;
 					else {
 						var block_wiki = reason[3].replace( /Special:BlockList$/, '' );
@@ -99,9 +100,9 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler) {
 					}
 				}
 				else {
-					var globalblock = splittext.indexOf('**' + lang.get('user.block.header', username).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting()));
-					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.get('user.gblock.header', username).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting());
-					else splittext.push('**' + lang.get('user.gblock.header', username).escapeFormatting() + '**\n' + lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason[2], reason.slice(4).join(', ').escapeFormatting()));
+					var globalblock = splittext.indexOf('**' + lang.get('user.block.header', username, gender).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting()));
+					if ( globalblock !== -1 ) splittext[globalblock] = '**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**\n' + lang.get('user.block.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason.slice(4).join(', ').escapeFormatting());
+					else splittext.push('**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**\n' + lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, reason[1].escapeFormatting(), reason[2], reason.slice(4).join(', ').escapeFormatting()));
 				}
 			} );
 			text = splittext.join('\n\n');

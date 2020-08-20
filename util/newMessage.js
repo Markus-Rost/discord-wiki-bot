@@ -48,8 +48,10 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	}
 	var count = 0;
 	var maxcount = commandLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
-	cleanCont.replace( /\u200b/g, '' ).split('\n').forEach( line => {
-		if ( !line.hasPrefix(prefix) || count > maxcount ) return;
+	var breakLines = false;
+	cleanCont.replace( /\u200b/g, '' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
+		if ( line.startsWith( '>>> ' ) ) breakLines = true;
+		if ( !line.hasPrefix(prefix) || breakLines || count > maxcount ) return;
 		count++;
 		if ( count === maxcount ) {
 			console.log( '- Message contains too many commands!' );
@@ -101,8 +103,8 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		var linkcount = 0;
 		var linkmaxcount = maxcount + 5;
 		var breakInline = false;
-		msg.cleanContent.replace( /\u200b/g, '' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
-			if ( line.startsWith( '>>> ' ) ) breakinline = true;
+		cleanCont.replace( /\u200b/g, '' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
+			if ( line.startsWith( '>>> ' ) ) breakInline = true;
 			if ( line.startsWith( '> ' ) || breakInline ) return;
 			if ( line.hasPrefix(prefix) || !( line.includes( '[[' ) || line.includes( '{{' ) ) ) return;
 			if ( line.includes( '[[' ) && line.includes( ']]' ) && linkcount <= linkmaxcount ) {

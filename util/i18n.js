@@ -74,7 +74,9 @@ class Lang {
 			args.forEach( (arg, i) => {
 				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
 			} );
-			text = text.replace( /{{\s*PLURAL:\s*[+-]?(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
+			text = text.replace( /{{\s*GENDER:\s*([a-z]+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, type, cases) => {
+				return gender(type, cases.split(/\s*\|\s*/));
+			} ).replace( /{{\s*PLURAL:\s*[+-]?(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
 				return plural(lang, parseInt(number, 10), cases.split(/\s*\|\s*/));
 			} );
 		}
@@ -104,7 +106,9 @@ class Lang {
 //			args.forEach( (arg, i) => {
 //				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
 //			} );
-//			text = text.replace( /{{\s*PLURAL:\s*[+-]?(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
+//			text = text.replace( /{{\s*GENDER:\s*([a-z]+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, type, cases) => {
+//				return gender(type, cases.split(/\s*\|\s*/));
+//			} ).replace( /{{\s*PLURAL:\s*[+-]?(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
 //				return plural(lang, parseInt(number, 10), cases.split(/\s*\|\s*/));
 //			} );
 //		}
@@ -162,7 +166,7 @@ function plural(lang, number, args) {
 		case 'en':
 		case 'es':
 		case 'nl':
-		case 'pt':
+		case 'pt-br':
 		case 'tr':
 		case 'ja':
 		case 'zh-hans':
@@ -182,6 +186,28 @@ function plural(lang, number, args) {
  */
 function getArg(args, index) {
 	return ( args.length > index ? args[index] : args[args.length - 1] );
+}
+
+/**
+ * Parse gender text.
+ * @param {String} gender - The gender.
+ * @param {String[]} args - The possible text.
+ * @returns {String}
+ */
+function gender(gender, args) {
+	var text = args[0];
+	switch ( gender ) {
+		case 'male':
+			if ( args.length > 0 ) text = args[0];
+			break;
+		case 'female':
+			if ( args.length > 1 ) text = args[1];
+			break;
+		case 'unknown':
+		default:
+			if ( args.length > 2 ) text = args[2];
+	}
+	return text;
 }
 
 module.exports = Lang;

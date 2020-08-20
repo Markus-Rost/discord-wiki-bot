@@ -219,6 +219,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						case 'female':
 							gender.push(lang.get('user.gender.female'));
 							break;
+						case 'unknown':
 						default: 
 							gender.push(lang.get('user.gender.unknown'));
 					}
@@ -230,10 +231,10 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						if ( groups.includes( usergroups[i] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( usergroups[i] ) ) ) {
 							var thisSite = allSites.find( site => site.wiki_domain === body.query.general.servername );
 							if ( usergroups[i] === 'wiki_manager' && thisSite && thisSite.wiki_managers.includes( username ) ) {
-								group.push('**' + lang.get('user.groups.' + usergroups[i]) + '**');
+								group.push('**' + lang.get('user.groups.' + usergroups[i], queryuser.gender) + '**');
 							}
 							else if ( !groups.includes( 'global_' + usergroups[i] ) || queryuser.groupmemberships.some( member => member.group === usergroups[i] ) ) {
-								group.push(lang.get('user.groups.' + usergroups[i]));
+								group.push(lang.get('user.groups.' + usergroups[i], queryuser.gender));
 							}
 						}
 					}
@@ -251,7 +252,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					var blockedby = queryuser.blockedby;
 					var blockreason = queryuser.blockreason;
 					var block = {
-						header: lang.get('user.block.header', username).escapeFormatting(),
+						header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(),
 						text: lang.get('user.block.' + ( blockreason ? 'text' : 'noreason' ), blockedtimestamp, blockexpiry),
 						by: blockedby,
 						reason: blockreason
@@ -321,7 +322,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -382,7 +383,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -400,7 +401,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							}
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
