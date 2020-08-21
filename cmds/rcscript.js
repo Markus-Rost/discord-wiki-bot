@@ -504,10 +504,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				} );
 				return;
 			}
-			return {};
+			return 'undefined';
 		} ) )).then( webhooks => {
 			rows.forEach( (row, i) => {
-				if ( webhooks[i] ) row.channel = webhooks[i].channelID;
+				if ( webhooks[i] ) row.channel = webhooks[i];
 			} );
 			rows = rows.filter( row => row.channel );
 			var only = ( rows.length === 1 );
