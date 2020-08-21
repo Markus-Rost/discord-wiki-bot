@@ -50,7 +50,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				console.log( msg.guild.id + ': Missing permissions - MANAGE_WEBHOOKS' );
 				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_WEBHOOKS`' );
 			}
-			if ( !( msg.channel.permissionsFor(msg.member).has('MANAGE_WEBHOOKS') || ( this.isOwner() && this.evalUsed ) ) ) {
+			if ( !( msg.channel.permissionsFor(msg.member).has('MANAGE_WEBHOOKS') || ( msg.isOwner() && msg.evalUsed ) ) ) {
 				return msg.replyMsg( lang.get('rcscript.noadmin') );
 			}
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), {}, true );
