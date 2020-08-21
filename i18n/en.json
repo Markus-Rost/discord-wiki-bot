@@ -596,7 +596,7 @@
             "until_infinity": "the end of all days"
         },
         "gblock": {
-            "disabled": "This account is currently {{GENDER:$1|disabled}}!",
+            "disabled": "This account is currently disabled!",
             "header": "$1 is currently globally {{GENDER:$2|blocked}}!",
             "noreason": "Blocked on $1 until $2 by $3 on $4.",
             "text": "Blocked on $1 until $2 by $3 on $4 with reason \"$5\"."
@@ -608,7 +608,7 @@
         },
         "groups": {
             "Elite_users": "{{GENDER:$1|Elite user}}",
-            "Patrol": "{{GENDER:$1|{{GENDER:$1|Inspector}}}}",
+            "Patrol": "{{GENDER:$1|Inspector}}",
             "assistant": "{{GENDER:$1|Assistant}}",
             "authenticated": "{{GENDER:$1|authenticated}}",
             "autoconfirmed": "{{GENDER:$1|Autoconfirmed user}}",
@@ -709,12 +709,12 @@
     },
     "verify": {
         "audit_reason": "Verified as \"$1\"",
-        "discord": "Discord user:",
+        "discord": "{{GENDER:$1|Discord user}}:",
         "empty": "*empty*",
         "error": "The verification failed due to an error.",
         "error_reply": "the verification failed due to an error, please try again.",
         "failed_gblock": "**Check for global block failed!**",
-        "failed_rename": "**Changing the nickname failed!**",
+        "failed_rename": "**Changing {{GENDER:$1|his|her|their}} Discord nickname failed!**",
         "failed_roles": "**Adding roles failed!**",
         "footer": "Wiki Account Verification",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
@@ -727,20 +727,20 @@
         "qualified_error": "Qualified for, but can't add:",
         "user_blocked": "**The wiki user $1 is {{GENDER:$2|blocked}}!**",
         "user_blocked_reply": "your linked wiki user **\"$1\" is {{GENDER:$2|blocked}}!**",
-        "user_disabled": "**The wiki user $1 is {{GENDER:$2|disabled}}!**",
-        "user_disabled_reply": "your linked wiki user **\"$1\" is {{GENDER:$2|disabled}}!**",
+        "user_disabled": "**The wiki account $1 is disabled!**",
+        "user_disabled_reply": "your linked wiki account **\"$1\" is disabled!**",
         "user_failed": "Discord user $1 doesn't {{GENDER:$3|match}} the wiki user $2.",
-        "user_failed_reply": "your Discord tag doesn't {{GENDER:$3|match}} the wiki user \"$1\".",
+        "user_failed_reply": "your Discord tag doesn't {{GENDER:$2|match}} the wiki user \"$1\".",
         "user_gblocked": "**The wiki user $1 is globally {{GENDER:$2|blocked}}!**",
         "user_gblocked_reply": "your linked wiki user **\"$1\" is globally {{GENDER:$2|blocked}}!**",
         "user_matches": "Discord user $1 {{GENDER:$3|matches}} the wiki user $2, but doesn't {{GENDER:$3|meet}} the requirements for any roles.",
         "user_matches_reply": "your Discord tag {{GENDER:$2|matches}} the wiki user \"$1\", but you don't {{GENDER:$2|meet}} the requirements for any roles.",
         "user_missing": "The wiki user \"$1\" doesn't exist.",
         "user_missing_reply": "your linked wiki user \"$1\" doesn't exist.",
-        "user_renamed": "Their Discord nickname has been {{GENDER:$1|changed}} to their wiki username.",
+        "user_renamed": "{{GENDER:$1|His|Her|Their}} Discord nickname has been changed to {{GENDER:$1|his|her|their}} wiki username.",
         "user_verified": "Discord user $1 has been successfully {{GENDER:$3|verified}} as wiki user $2.",
         "user_verified_reply": "you have been successfully {{GENDER:$2|verified}} as wiki user \"$1\".",
-        "wiki": "Wiki user:"
+        "wiki": "{{GENDER:$1|Wiki user}}:"
     },
     "voice": {
         "channel": "Voice channel",
