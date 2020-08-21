@@ -32,8 +32,8 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender = 
 		else {
 			let $ = cheerio.load(body);
 			if ( $('#mw-content-text .errorbox').length ) {
-				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.disabled', gender), '\u200b' );
-				else text += '\n\n**' + lang.get('user.gblock.disabled', gender) + '**';
+				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.disabled'), '\u200b' );
+				else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 			}
 			else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
 				if ( msg.showEmbed() ) embed.addField( lang.get('user.gblock.header', username, gender).escapeFormatting(), '\u200b' );

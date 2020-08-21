@@ -86,7 +86,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						blockexpiry = new Date(blockexpiry).toLocaleString(lang.get('dateformat'), timeoptions);
 					}
 					if ( isBlocked ) return {
-						header: lang.get('user.block.header', block.user).escapeFormatting(),
+						header: lang.get('user.block.header', block.user, 'unknown').escapeFormatting(),
 						text: lang.get('user.block.' + ( block.reason ? 'text' : 'noreason' ), blockedtimestamp, blockexpiry),
 						by: block.by,
 						reason: block.reason

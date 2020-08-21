@@ -130,8 +130,8 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					else if ( wiki.isFandom() ) {
 						if ( $('#mw-content-text .errorbox').length ) {
 							return Promise.reject({
-								desc: lang.get('verify.user_disabled', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender),
-								reply: lang.get('verify.user_disabled_reply', username.escapeFormatting(), queryuser.gender)
+								desc: lang.get('verify.user_disabled', '[' + username.escapeFormatting() + '](' + pagelink + ')'),
+								reply: lang.get('verify.user_disabled_reply', username.escapeFormatting())
 							});
 						}
 						else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
@@ -181,7 +181,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 					else if ( pbody.value ) discordname = htmlToPlain( pbody.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 					if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
-					embed.addField( lang.get('verify.discord'), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki'), ( discordname || lang.get('verify.empty') ), true );
+					embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
 					if ( msg.author.tag.escapeFormatting() !== discordname ) {
 						embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
 						var help_link = '';
@@ -236,7 +236,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 							verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
 								log_error(error);
 								embed.setColor('#008800');
-								comment.push(lang.get('verify.failed_rename'));
+								comment.push(lang.get('verify.failed_rename', queryuser.gender));
 							} ));
 						}
 						return Promise.all(verify_promise).finally( () => {
@@ -290,7 +290,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				var discordname = '';
 				if ( revision && revision.user === username ) discordname = revision.slots.main['*'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 				if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
-				embed.addField( lang.get('verify.discord'), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki'), ( discordname || lang.get('verify.empty') ), true );
+				embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
 				if ( msg.author.tag.escapeFormatting() !== discordname ) {
 					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
 					embed.addField( lang.get('verify.notice'), lang.get('verify.help_subpage', '**`' + msg.author.tag + '`**', queryuser.gender) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit', '', body.query.general) );
@@ -342,7 +342,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 						verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
 							log_error(error);
 							embed.setColor('#008800');
-							comment.push(lang.get('verify.failed_rename'));
+							comment.push(lang.get('verify.failed_rename', queryuser.gender));
 						} ));
 					}
 					return Promise.all(verify_promise).finally( () => {

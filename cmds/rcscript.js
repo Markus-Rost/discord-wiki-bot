@@ -132,13 +132,14 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							reason: lang.get('rcscript.audit_reason', wikinew)
 						} ).then( webhook => {
 							console.log( '- Webhook successfully created.' );
-							webhook.send( lang.get('rcscript.webhook.created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
+							var webhook_lang = new Lang(( allLangs.map[lang.lang] || allLangs.map[body.query.general.lang] || defaultSettings.lang ), 'rcscript.webhook');
+							webhook.send( webhook_lang.get('created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
 							var new_configid = 1;
 							for ( let i of rows.map( row => row.configid ) ) {
 								if ( new_configid === i ) new_configid++;
 								else break;
 							}
-							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew, ( allLangs.map[lang.lang] || defaultSettings.lang ), ( msg.showEmbed() ? 1 : 0 ), wikiid], function (error) {
+							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), wikiid], function (error) {
 								if ( error ) {
 									console.log( '- Error while adding the RcGcDw: ' + error );
 									if ( reaction ) reaction.removeEmoji();
@@ -318,7 +319,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 
 				msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-					webhook.send( new Lang(allLangs.map[args[1]]).get('rcscript.webhook.updated_lang', allLangs.names[allLangs.map[args[1]]]), {files:[`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`]} ).catch(log_error);
+					webhook.send( new Lang(allLangs.map[args[1]], 'rcscript.webhook').get('updated_lang', allLangs.names[allLangs.map[args[1]]]), {files:[`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`]} ).catch(log_error);
 				}, log_error );
 				return db.run( 'UPDATE rcgcdw SET lang = ? WHERE webhook = ?', [allLangs.map[args[1]], selected_row.webhook], function (error) {
 					if ( error ) {
