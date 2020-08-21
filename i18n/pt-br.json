@@ -608,7 +608,7 @@
         },
         "groups": {
             "Elite_users": "{{GENDER:$1|Usuário elite|Usuária elite}}",
-            "Patrol": "{{GENDER:$1|{{GENDER:$1|Inspetor|Inspetora}}}}",
+            "Patrol": "{{GENDER:$1|Inspetor|Inspetora}}",
             "assistant": "Assistente",
             "authenticated": "{{GENDER:$1|autenticado|autenticada}}",
             "autoconfirmed": "{{GENDER:$1|Usuário autoconfirmado|Usuária autoconfirmada}}",
