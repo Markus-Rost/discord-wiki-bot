@@ -144,6 +144,7 @@
     ],
     "general": {
         "disclaimer": "Ik ben een kleine bot met de taak om naar Gamepedia en Fandom wiki's te linken. $1 schreef me in JavaScript.\n\nJe kunt me ondersteunen op Patreon:",
+        "experimental": "**Deze functie is experimenteel! Er is geen garantie dat het correct werkt en het kan verwijderd worden in de toekomst.**",
         "helpserver": "Voor vragen en problemen verwijs ik je graag naar mijn support server:",
         "limit": "🚨 **Stop, je hebt een limiet bereikt!** 🚨\n\n$1, je bericht bevatte te veel opdrachten!",
         "missingperm": "Ik mis een aantal permissies voor deze opdracht:",
@@ -199,6 +200,9 @@
                 "default": {
                     "cmd": "help",
                     "desc": "Ik zal alle opdrachten opsommen die ik begrijp."
+                },
+                "verification": {
+                    "desc": "Ik zal gedetailleerder uitleggen hoe de verificatieopdracht werkt."
                 }
             },
             "info": {
@@ -465,6 +469,45 @@
             "registration": "Registratie datum:",
             "wikisedited": "Wikis bewerkt:"
         }
+    },
+    "verification": {
+        "accountage": "Account leeftijd:",
+        "add_more": "Meer verificaties toevoegen met:",
+        "added": "de verificatie is toegevoegd:",
+        "and": "en",
+        "channel": "Kanaal:",
+        "channel_max": "je hebt te veel kanalen opgegeven.",
+        "channel_missing": "het opgegeven kanaal bestaat niet.",
+        "current": "dit zijn de huidige verificaties voor deze server:",
+        "current_selected": "dit is de verificatie `$1` voor deze server:",
+        "delete_current": "Deze verificatie verwijderen:",
+        "deleted": "de verificatie is verwijderd.",
+        "disabled": "uitgeschakeld",
+        "enabled": "ingeschakeld",
+        "indays": "(in dagen)",
+        "max_entries": "je hebt al het maximale aantal verificaties bereikt.",
+        "missing": "er zijn nog geen verificaties voor deze server.",
+        "new_channel": "<nieuw kanaal>",
+        "new_role": "<nieuwe rol>",
+        "new_usergroup": "<nieuwe gebruikersgroep>",
+        "or": "of",
+        "role": "Rol:",
+        "role_managed": "de opgegeven rol kan niet toegekend worden.",
+        "role_max": "je hebt te veel rollen opgegeven.",
+        "role_missing": "de opgegeven rol bestaat niet.",
+        "role_too_high": "**De rol $1 is te hoog voor $2 om toe te kennen!**",
+        "save_failed": "helaas kon de verificatie niet opgeslagen worden, probeer het later nog een keer.",
+        "updated": "de verificatie is bijgewerkt:",
+        "usergroup": "Gebruikersgroep:",
+        "usergroup_max": "je hebt te veel gebruikersgroepen opgegeven.",
+        "usergroup_too_long": "de opgegeven gebruikersgroep is te lang.",
+        "value_too_high": "de opgegeven waarde is te hoog."
+    },
+    "verify": {
+        "error": "De verificatie is mislukt vanwege een fout.",
+        "error_reply": "de verificatie is mislukt vanwege een fout, probeer het opnieuw.",
+        "user_verified_reply": "je bent succesvol {{GENDER:$2|geverifiëerd}} als wiki gebruiker \"$1\".",
+        "wiki": "{{GENDER:$1|Wiki gebruiker}}:"
     },
     "voice": {
         "channel": "Spraakkanaal",
