@@ -55,7 +55,11 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender = 
 					let $ = cheerio.load(gbody);
 					var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
 					if ( globaledits ) {
-						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.get('user.info.globaleditcount'),value:'[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',inline:true});
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
+							name: lang.get('user.info.globaleditcount'),
+							value: '[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',
+							inline: true
+						});
 						else {
 							let splittext = text.split('\n');
 							splittext.splice(5, 0, lang.get('user.info.globaleditcount') + ' ' + globaledits);
@@ -122,7 +126,11 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender = 
 					let $ = cheerio.load(gbody);
 					var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
 					if ( wikisedited ) {
-						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.get('user.info.wikisedited'),value:wikisedited,inline:true});
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
+							name: lang.get('user.info.wikisedited'),
+							value: wikisedited,
+							inline: true
+						});
 						else {
 							let splittext = text.split('\n');
 							splittext.splice(5, 0, lang.get('user.info.wikisedited') + ' ' + wikisedited);
@@ -131,7 +139,11 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender = 
 					}
 					var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
 					if ( globaledits ) {
-						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {name:lang.get('user.info.globaleditcount'),value:'[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',inline:true});
+						if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
+							name: lang.get('user.info.globaleditcount'),
+							value: '[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',
+							inline: true
+						});
 						else {
 							let splittext = text.split('\n');
 							splittext.splice(5, 0, lang.get('user.info.globaleditcount') + ' ' + globaledits);

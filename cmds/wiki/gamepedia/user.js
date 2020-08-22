@@ -326,38 +326,38 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
-					else if ( wiki.isFandom() ) got.get( 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '?format=json&cache=' + Date.now(), {
-						headers: {
-							Accept: 'application/hal+json'
-						}
-					} ).then( presponse => {
+					else if ( wiki.isFandom() ) got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now() ).then( presponse => {
 						var pbody = presponse.body;
-						if ( presponse.statusCode !== 200 || !pbody || pbody.title || !pbody._embedded || !pbody._embedded.properties ) {
-							if ( !( pbody && pbody.status === 404 ) ) {
-								console.log( '- ' + presponse.statusCode + ': Error while getting the user profile: ' + ( pbody && pbody.title ) );
-							}
-						}
+						if ( presponse.statusCode !== 200 || !pbody || !pbody.userData || !pbody.userData.id ) console.log( '- ' + presponse.statusCode + ': Error while getting the user profile.' );
 						else {
-							var profile = pbody._embedded.properties;
-							var discordfield = profile.find( field => field.name === 'discordHandle' );
-							var avatarfield = profile.find( field => field.name === 'avatar' );
-							var biofield = profile.find( field => field.name === 'bio' );
-							if ( discordfield && discordfield.value ) {
-								discordfield.value = htmlToPlain( discordfield.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
-								if ( discordfield.value.length > 50 ) discordfield.value = discordfield.value.substring(0, 50) + '\u2026';
+							if ( pbody.userData.posts ) {
+								if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
+									name: lang.get('user.info.postcount'),
+									value: '[' + pbody.userData.posts + '](' + wiki + 'f/u/' + queryuser.userid + ')',
+									inline: true
+								});
+								else {
+									let splittext = text.split('\n');
+									splittext.splice(5, 0, lang.get('user.info.postcount') + ' ' + pbody.userData.posts);
+									text = splittext.join('\n');
+								}
+							}
+							if ( pbody.userData.discordHandle ) {
+								let discord = pbody.userData.discordHandle.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+								if ( discord.length > 50 ) discord = discord.substring(0, 50) + '\u2026';
 								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
-									return member.user.tag.escapeFormatting() === discordfield.value;
+									return member.user.tag.escapeFormatting() === discord;
 								} );
-								var discordname = [lang.get('user.info.discord'),discordfield.value];
+								let discordname = [lang.get('user.info.discord'),discord];
 								if ( discordmember ) discordname[1] = discordmember.toString();
 								
 								if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
 								else text += '\n' + discordname.join(' ');
 							}
 							if ( msg.showEmbed() ) {
-								if ( avatarfield && avatarfield.value ) embed.setThumbnail( avatarfield.value );
-								if ( biofield && biofield.value && !embed.description ) {
-									var bio = biofield.value.escapeFormatting();
+								if ( pbody.userData.avatar ) embed.setThumbnail( pbody.userData.avatar.replace( '/thumbnail/width/400/height/400', '' ) );
+								if ( pbody.userData.bio && !embed.description ) {
+									let bio = pbody.userData.bio.escapeFormatting();
 									if ( bio.length > 2000 ) bio = bio.substring(0, 2000) + '\u2026';
 									embed.setDescription( bio );
 								}
