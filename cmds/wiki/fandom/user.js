@@ -137,7 +137,6 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toMarkdown(wiki, body.query.general) );
 								embed.addField( block.header, block.text );
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 						}
 						else {
 							var embed = {};
@@ -147,10 +146,15 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toPlaintext() );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						if ( msg.channel.type === 'text' && msg.guild.id in patreons ) {
+							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
+							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
+							
+							msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+						}
+						else msg.sendChannel( spoiler + text + spoiler, {embed} );
 					}
 				}, error => {
 					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
@@ -320,7 +324,6 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toMarkdown(wiki, body.query.general) );
 								embed.addField( block.header, block.text );
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 						}
 						else {
 							if ( isBlocked ) {
@@ -328,10 +331,15 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toPlaintext() );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
-							if ( msg.channel.type === 'text' && msg.guild.id in patreons ) text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 						}
 						
-						msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
+						if ( msg.channel.type === 'text' && msg.guild.id in patreons ) {
+							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
+							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
+							
+							msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
+						}
+						else msg.sendChannel( spoiler + text + spoiler, {embed} );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
