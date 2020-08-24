@@ -1,3 +1,4 @@
+const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
 const {defaultSettings, wikiProjects} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
@@ -95,7 +96,16 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				if ( site ) wikinew = 'https://' + ( site.wiki_crossover || site.wiki_domain ) + '/';
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
-				got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
+				got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
+					if ( !isForced && response.statusCode === 404 && typeof response.body === 'string' ) {
+						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+						if ( api ) {
+							wikinew = api.replace( /^(?:https?:)?\/\//, 'https://' ).split('api.php?')[0];
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' );
+						}
+					}
+					return response;
+				} ).then( response => {
 					var body = response.body;
 					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
@@ -353,7 +363,7 @@ function input_to_wiki(input) {
 			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
 			if ( regex ) return 'https://' + regex[1] + project.scriptPath;
 		}
-		let wiki = input.replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
+		let wiki = input.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '/' );
 		if ( !wiki.endsWith( '/' ) ) wiki += '/';
 		return wiki;
 	}

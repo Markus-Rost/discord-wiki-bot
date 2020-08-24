@@ -1,3 +1,4 @@
+const cheerio = require('cheerio');
 const {limit: {rcgcdw: rcgcdwLimit}, defaultSettings, wikiProjects} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs(true);
@@ -62,9 +63,18 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				wikinew = input_to_wiki(wikinew.replace( /^(?:https?:)?\/\//, 'https://' ));
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general|extensions&titles=Special:RecentChanges&format=json' ).then( response => {
+			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
+				if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+					let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+					if ( api ) {
+						wikinew = api.replace( /^(?:https?:)?\/\//, 'https://' ).split('api.php?')[0];
+						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+					}
+				}
+				return response;
+			} ).then( response => {
 				var body = response.body;
-				if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions || !body?.query?.pages?.['-1'] ) {
+				if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 					console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 					if ( reaction ) reaction.removeEmoji();
 					msg.reactEmoji('nowiki', true);
@@ -222,9 +232,18 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = input_to_wiki(args[1].replace( /^(?:https?:)?\/\//, 'https://' ));
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&titles=Special:RecentChanges&format=json' ).then( response => {
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
+					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+						if ( api ) {
+							wikinew = api.replace( /^(?:https?:)?\/\//, 'https://' ).split('api.php?')[0];
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+						}
+					}
+					return response;
+				} ).then( response => {
 					var body = response.body;
-					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions || !body?.query?.pages?.['-1'] ) {
+					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						msg.reactEmoji('nowiki', true);
@@ -639,7 +658,7 @@ function input_to_wiki(input) {
 			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
 			if ( regex ) return 'https://' + regex[1] + project.scriptPath;
 		}
-		let wiki = input.replace( /\/(?:api|index)\.php(?:|\?.*)$/, '/' );
+		let wiki = input.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '/' );
 		if ( !wiki.endsWith( '/' ) ) wiki += '/';
 		return wiki;
 	}

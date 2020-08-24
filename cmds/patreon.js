@@ -10,7 +10,7 @@ var db = require('../util/database.js');
  * @param {String} wiki - The wiki for the message.
  */
 function cmd_patreon(lang, msg, args, line, wiki) {
-	if ( msg.channel.id !== process.env.channel || !args.join('') ) {
+	if ( !( process.env.channel.split('|').includes( msg.channel.id ) && args.join('') ) ) {
 		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
