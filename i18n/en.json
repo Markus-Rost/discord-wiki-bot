@@ -538,7 +538,7 @@
         "nochannels": "*No channel overwrites yet*",
         "prefix": "the prefix for this server is:",
         "prefixchanged": "you changed the prefix for this server to:",
-        "prefixhelp": "Use `$1 <prefix>` to change the prefix.\nUse `_` at the end to indicate a space at end of the prefix.\nThe prefix may not include mentions!",
+        "prefixhelp": "Use `$1 <prefix>` to change the prefix.\nUse `_` at the end to indicate a space at the end of the prefix.\nThe prefix may not include mentions!",
         "prefixinvalid": "the specified prefix is not supported!",
         "save_failed": "sadly the settings couldn't be saved, please try again later.",
         "wiki": "the default wiki for this server is:",
