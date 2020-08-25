@@ -236,6 +236,17 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 						specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( body.query.namespaces['-1']['*'] + ':', '' ).split('/')[0] ).toLowerCase();
 						fn.special_page(lang, msg, querypage.title, specialpage, embed, wiki, reaction, spoiler);
 					}
+					else if ( querypage.ns === -2 ) {
+						var filepath = body.query.specialpagealiases.find( sp => sp.realname === 'Filepath' );
+						var pagelink = wiki.toLink(body.query.namespaces['-1']['*'] + ':' + ( filepath?.aliases?.[0] || 'FilePath' ) + querypage.title.replace( body.query.namespaces['-2']['*'] + ':', '/' ), querystring.toTitle(), fragment, body.query.general);
+						var embed =  new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](' + wiki.toLink(querypage.title, '', '', body.query.general, true) + ')' );
+						if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pagelink );
+						else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pagelink,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
+						
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
+						
+						if ( reaction ) reaction.removeEmoji();
+					}
 					else {
 						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ), body.query.general);
 						var text = '';
@@ -327,14 +338,6 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 						if ( message && selfcall === maxselfcall ) message.reactEmoji('⚠️');
 					} );
 					if ( reaction ) reaction.removeEmoji();
-				}
-				else if ( body.query.redirects ) {
-					var pagelink = wiki.toLink(body.query.redirects[0].to, querystring.toTitle(), ( fragment || body.query.redirects[0].tofragment || '' ), body.query.general);
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.redirects[0].to.escapeFormatting() ).setURL( pagelink ).setThumbnail( logoToURL(body.query.general) );
-					
-					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
-					
-					if ( reaction ) reaction.removeEmoji();;
 				}
 				else {
 					var pagelink = wiki.toLink(body.query.general.mainpage, querystring.toTitle(), fragment, body.query.general);

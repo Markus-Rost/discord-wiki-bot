@@ -499,6 +499,7 @@
         "empty": "*This special page is empty*",
         "infopage": "Not the correct result? Use $1 for a direct link.",
         "infosearch": "Not the correct result? Use $1 for a direct link or $2 for a list of all hits.",
+        "media": "To file page",
         "results": "$1 total {{PLURAL:$1|result|results}}",
         "special": "Content of this special page:"
     },
