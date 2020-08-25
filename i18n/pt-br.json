@@ -663,6 +663,7 @@
             "globaleditcount": "Contagem global de edições:",
             "group": "Grupo:",
             "loading": "Carregando estatísticas globais…",
+            "postcount": "Postagens de discussão:",
             "registration": "Data de registro:",
             "wikisedited": "Wikis editadas:"
         }
@@ -709,12 +710,12 @@
     },
     "verify": {
         "audit_reason": "Verificado como \"$1\"",
-        "discord": "Usuário do Discord:",
+        "discord": "{{GENDER:$1|Usuário do Discord|Usuária do Discord}}:",
         "empty": "*vazio*",
         "error": "Ocorreu um erro ao verificar o usuário.",
         "error_reply": "ocorreu um erro ao verificar o usuário, por favor tente novamente.",
         "failed_gblock": "**Falha na verificação de bloqueios globais!**",
-        "failed_rename": "**A alteração do apelido falhou!**",
+        "failed_rename": "**A alteração do apelido no Discord falhou!**",
         "failed_roles": "**A adição de cargos falhou!**",
         "footer": "Verificação de conta da wiki",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
@@ -727,8 +728,8 @@
         "qualified_error": "Não foi possível adicionar, mas está qualificado para o cargo:",
         "user_blocked": "**{{GENDER:$2|O usuário|A usuária}} $1 está {{GENDER:$2|bloqueado|bloqueada}} na wiki!**",
         "user_blocked_reply": "Seu usuário vinculado da wiki **\"$1\" está bloqueado!**",
-        "user_disabled": "**O usuário $1 está desabilitado na wiki!**",
-        "user_disabled_reply": "seu usuário da wiki **\"$1\" vinculado está desabilitado!**",
+        "user_disabled": "**A conta $1 está desabilitado na wiki!**",
+        "user_disabled_reply": "sua conta da wiki **\"$1\" vinculado está desabilitado!**",
         "user_failed": "O usuário $1 do Discord não corresponde ao usuário $2 da wiki.",
         "user_failed_reply": "seu nome de usuário do Discord não corresponde ao usuário \"$1\" da wiki.",
         "user_gblocked": "**O usuário $1 está bloqueado globalmente na wiki!**",
@@ -740,7 +741,7 @@
         "user_renamed": "Seus apelidos do Discord foram alterados para os nomes de usuário da wiki.",
         "user_verified": "O usuário $1 do Discord foi verificado com sucesso como o usuário $2 da wiki.",
         "user_verified_reply": "você foi verificado com sucesso como o usuário \"$1\" da wiki.",
-        "wiki": "Usuário da wiki:"
+        "wiki": "{{GENDER:$1|Usuário da wiki|Usuária da wiki}}:"
     },
     "voice": {
         "channel": "Canal de voz",

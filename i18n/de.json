@@ -499,6 +499,7 @@
         "empty": "*Diese Spezialseite ist leer*",
         "infopage": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link.",
         "infosearch": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link oder $2 für eine Liste mit allen Treffern.",
+        "media": "Zur Dateibeschreibungsseite",
         "results": "$1 {{PLURAL:$1|Ergebnis|Ergebnisse}} insgesamt",
         "special": "Inhalt der Spezialseite:"
     },
@@ -663,6 +664,7 @@
             "globaleditcount": "Globale Bearbeitungen:",
             "group": "Gruppe:",
             "loading": "Lade globale Statistiken…",
+            "postcount": "Diskussionsbeiträge:",
             "registration": "Registriert:",
             "wikisedited": "Wikis bearbeitet:"
         }
