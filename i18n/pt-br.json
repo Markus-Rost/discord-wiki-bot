@@ -499,6 +499,7 @@
         "empty": "*Esta página especial está vazia*",
         "infopage": "Não é o resultado correto? Use $1 para um link direto.",
         "infosearch": "Não é o resultado correto? Use $1 para um link direto ou $2 para uma lista de todos os acessos.",
+        "media": "Para a página de descrição do arquivo",
         "results": "$1 total {{PLURAL:$1|resultado|resultados}}",
         "special": "Conteúdo desta página especial:"
     },
