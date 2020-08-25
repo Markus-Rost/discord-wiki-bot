@@ -1,5 +1,6 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
+const parse_page = require('../../functions/parse_page.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 
@@ -219,7 +220,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 										else text += '\n\n' + category.join('\n');
 									}
 						
-									msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
+									msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : logoToURL(body.query.general) )) );
 								}
 							}
 						}, error => {
@@ -291,7 +292,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							else text += '\n\n' + category.join('\n');
 						}
 						
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : logoToURL(body.query.general) )) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}
@@ -368,7 +369,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}, error => {
 						console.log( '- Error while getting the main page: ' + error );
 					} ).finally( () => {
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, '') );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -398,9 +399,8 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
  * @returns {String}
  */
 function logoToURL({logo, server: serverURL}) {
-	if ( /^(?:https?:)?\/\//.test(logo) ) logo = logo.replace( /^(?:https?:)?\/\//, 'https://' );
-	else logo = serverURL + ( logo.startsWith( '/' ) ? '' : '/' ) + logo;
-	return logo;
+	if ( !/^(?:https?:)?\/\//.test(logo) ) logo = serverURL + ( logo.startsWith( '/' ) ? '' : '/' ) + logo;
+	return logo.replace( /^(?:https?:)?\/\//, 'https://' );
 }
 
 /**

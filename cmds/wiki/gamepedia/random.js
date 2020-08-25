@@ -1,5 +1,6 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
+const parse_page = require('../../../functions/parse_page.js');
 const extract_desc = require('../../../util/extract_desc.js');
 
 /**
@@ -45,9 +46,9 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			if ( querypage.pageimage && querypage.original && querypage.title !== body.query.general.mainpage ) {
 				embed.setThumbnail( querypage.original.source );
 			}
-			else embed.setThumbnail( ( /^(?:https?:)?\/\//.test(body.query.general.logo) ? body.query.general.logo.replace( /^(?:https?:)?\/\//, 'https://' ) : body.query.general.server + ( body.query.general.logo.startsWith( '/' ) ? '' : '/' ) + body.query.general.logo ) );
+			else embed.setThumbnail( logoToURL(body.query.general) );
 			
-			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} );
+			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : logoToURL(body.query.general) )) );
 		}
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
@@ -61,6 +62,18 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 	} ).finally( () => {
 		if ( reaction ) reaction.removeEmoji();
 	} );
+}
+
+/**
+ * Turns the siteinfo logo into an URL.
+ * @param {Object} arg - The siteinfo from the wiki.
+ * @param {String} arg.logo - The logo from the wiki.
+ * @param {String} arg.server - The server URL from the wiki.
+ * @returns {String}
+ */
+function logoToURL({logo, server: serverURL}) {
+	if ( !/^(?:https?:)?\/\//.test(logo) ) logo = serverURL + ( logo.startsWith( '/' ) ? '' : '/' ) + logo;
+	return logo.replace( /^(?:https?:)?\/\//, 'https://' );
 }
 
 /**
