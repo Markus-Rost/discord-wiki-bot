@@ -369,7 +369,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}, error => {
 						console.log( '- Error while getting the main page: ' + error );
 					} ).finally( () => {
-						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, '') );
+						msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, body.query.general.mainpage, embed, wiki, '') );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );

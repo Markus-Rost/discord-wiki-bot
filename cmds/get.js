@@ -18,7 +18,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var {name, id, memberCount, ownerID, owner, me: {permissions}} = this.guilds.cache.get('${id}');
 			( {
 				name, id, memberCount, ownerID,
-				owner: owner?.user.tag,
+				owner: owner?.user?.tag,
 				permissions: permissions.missing(${defaultPermissions}),
 				pause: id in global.pause,
 				voice: id in global.voice,
