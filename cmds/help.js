@@ -76,12 +76,12 @@ const restrictions = {
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.channel.type === 'text' && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
-	var isMinecraft = ( wiki === lang.get('minecraft.link') );
+	var isMinecraft = ( wiki.href === lang.get('minecraft.link') );
 	if ( args.join('') ) {
 		if ( args.join(' ').isMention(msg.guild) ) {
 			if ( !( msg.isAdmin() && msg.defaultSettings ) ) help_server(lang, msg);

@@ -2,6 +2,7 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const global_block = require('../../../functions/global_block.js');
 const {timeoptions, usergroups} = require('../../../util/default.json');
+const {toMarkdown, toPlaintext} = require('../../../util/functions.js');
 
 /**
  * Processes a Fandom user.
@@ -9,8 +10,8 @@ const {timeoptions, usergroups} = require('../../../util/default.json');
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} namespace - The user namespace on the wiki.
  * @param {String} username - The name of the user.
- * @param {String} wiki - The wiki for the page.
- * @param {String} querystring - The querystring for the link.
+ * @param {import('../../../util/wiki.js')} wiki - The wiki for the page.
+ * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
  * @param {Object} querypage - The user page on the wiki.
  * @param {String} contribs - The contributions page on the wiki.
@@ -30,7 +31,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						if ( reaction ) reaction.removeEmoji();
 					}
 					else {
-						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment);
+						var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 						var embed = new MessageEmbed().setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 						got.get( wiki.toDescLink(querypage.title), {
 							responseType: 'text'
@@ -67,7 +68,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 				}
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
-					msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring.toTitle(), fragment) + '>' + spoiler );
+					msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring, fragment) + '>' + spoiler );
 					
 					if ( reaction ) reaction.removeEmoji();
 				}
@@ -112,7 +113,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						else if ( range >= 16 ) rangeprefix = username.replace( /^((?:\d{1,3}\.){2}).+$/, '$1' );
 					}
 				}
-				got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50&ucuser=' + encodeURIComponent( username ) + '&format=json' ).then( ucresponse => {
+				got.get( wiki.updateWiki(body.query.general) + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50&ucuser=' + encodeURIComponent( username ) + '&format=json' ).then( ucresponse => {
 					var ucbody = ucresponse.body;
 					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 					if ( ucbody && ucbody.warnings ) log_warn(ucbody.warnings);
@@ -122,19 +123,19 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						}
 						else {
 							console.log( '- ' + ucresponse.statusCode + ': Error while getting the search results: ' + ( ucbody && ucbody.error && ucbody.error.info ) );
-							msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+							msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler );
 						}
 					}
 					else {
 						var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
 						
-						var pagelink = wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general);
+						var pagelink = wiki.toLink(namespace + username, querystring, fragment);
 						if ( msg.showEmbed() ) {
 							var text = '<' + pagelink + '>';
-							var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', body.query.general, true) + ')' );
+							var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
 							if ( blocks.length ) {
-								block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
-								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toMarkdown(wiki, body.query.general) );
+								block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toMarkdown(block.reason, wiki) );
 								embed.addField( block.header, block.text );
 							}
 						}
@@ -143,7 +144,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							var text = '<' + pagelink + '>\n\n' + editcount.join(' ');
 							if ( blocks.length ) {
 								block.text = block.text.replaceSave( /\$3/g, block.by.escapeFormatting() );
-								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toPlaintext() );
+								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toPlaintext(block.reason) );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
 						}
@@ -159,14 +160,14 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 				}, error => {
 					if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 					console.log( '- Error while getting the search results: ' + error );
-					msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general) + '>' + spoiler );
+					msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler );
 				} ).finally( () => {
 					if ( reaction ) reaction.removeEmoji();
 				} );
 			}
 		}, error => {
 			console.log( '- Error while getting the search results: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring.toTitle(), fragment) + '>' + spoiler );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring, fragment) + '>' + spoiler );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
@@ -176,11 +177,12 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
-				msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
 			else {
+				wiki.updateWiki(body.query.general);
 				var queryuser = body.query.users[0];
 				if ( !queryuser ) {
 					if ( querypage.missing !== undefined || querypage.ns === -1 ) {
@@ -189,7 +191,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						if ( reaction ) reaction.removeEmoji();
 					}
 					else {
-						var pagelink = wiki.toLink(querypage.title, querystring.toTitle(), fragment, body.query.general);
+						var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 						var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 						got.get( wiki.toDescLink(querypage.title), {
 							responseType: 'text'
@@ -198,7 +200,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							if ( descresponse.statusCode !== 200 || !descbody ) {
 								console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 							} else {
-								var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general);
+								var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
 								var parser = new htmlparser.Parser( {
 									onopentag: (tagname, attribs) => {
 										if ( tagname === 'meta' && attribs.property === 'og:description' ) {
@@ -268,10 +270,10 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						reason: blockreason
 					};
 					
-					var pagelink = wiki.toLink(namespace + username, querystring.toTitle(), fragment, body.query.general);
+					var pagelink = wiki.toLink(namespace + username, querystring, fragment);
 					if ( msg.showEmbed() ) {
 						var text = '<' + pagelink + '>';
-						var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', body.query.general, true) + ')', true ).addField( group[0], group.slice(1).join(',\n'), true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
+						var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true ).addField( group[0], group.slice(1).join(',\n'), true ).addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
 					}
 					else {
 						var embed = {};
@@ -320,15 +322,15 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					} ).finally( () => {
 						if ( msg.showEmbed() ) {
 							if ( isBlocked ) {
-								block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', body.query.general, true) + ')' );
-								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toMarkdown(wiki, body.query.general) );
+								block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')' );
+								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toMarkdown(block.reason, wiki) );
 								embed.addField( block.header, block.text );
 							}
 						}
 						else {
 							if ( isBlocked ) {
 								block.text = block.text.replaceSave( /\$3/g, block.by.escapeFormatting() );
-								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, block.reason.toPlaintext() );
+								if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toPlaintext(block.reason) );
 								text += '\n\n**' + block.header + '**\n' + block.text;
 							}
 						}
@@ -347,7 +349,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 			}
 		}, error => {
 			console.log( '- Error while getting the search results: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring.toTitle(), fragment) + '>' + spoiler );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );

@@ -4,7 +4,7 @@
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_say(lang, msg, args, line, wiki) {
 	var text = args.join(' ');
@@ -23,7 +23,7 @@ function cmd_say(lang, msg, args, line, wiki) {
 		var allowedMentions = {parse:['users']};
 		if ( msg.member.hasPermission(['MENTION_EVERYONE']) ) allowedMentions.parse = ['users','roles','everyone'];
 		else allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0,100)
-		msg.channel.send( text, {allowedMentions,files:imgs} ).then( () => msg.deleteMsg(), error => {
+		msg.channel.send( text, {allowedMentions,files:imgs} ).then( () => msg.delete().catch(log_error), error => {
 			log_error(error);
 			msg.reactEmoji('error', true);
 		} );

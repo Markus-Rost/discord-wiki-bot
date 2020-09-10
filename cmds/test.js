@@ -19,7 +19,7 @@ const wsStatus = [
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
@@ -39,6 +39,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 				then = Date.now();
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
+				if ( body?.query?.general ) wiki.updateWiki(body.query.general);
 				var ping = ( then - now ) + 'ms';
 				var notice = [];
 				if ( response.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
@@ -51,7 +52,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 						ping += ' <:error:505887261200613376>';
 					}
 				}
-				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() ) {
+				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() && !wiki.isGamepedia() ) {
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						notice.push(lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator));
@@ -65,7 +66,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 						notice.push(lang.get('test.PageImages', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)'));
 					}
 				}
-				embed.addField( wiki.toLink( '', '', '', body?.query?.general ), ping );
+				embed.addField( wiki, ping );
 				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
 			}, error => {
 				then = Date.now();

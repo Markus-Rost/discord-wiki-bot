@@ -6,7 +6,7 @@ const {limit: {discussion: discussionLimit}} = require('../util/default.json');
  * Processes discussion commands.
  * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {String} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {String} title - The title of the discussion post.
  * @param {Object} query - The siteinfo from the wiki.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
@@ -24,7 +24,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 			if ( descresponse.statusCode !== 200 || !descbody ) {
 				console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 			} else {
-				var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', query.general);
+				var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
 				var parser = new htmlparser.Parser( {
 					onopentag: (tagname, attribs) => {
 						if ( tagname === 'meta' && attribs.property === 'og:description' ) {
@@ -270,7 +270,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
  * Send discussion posts.
  * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {String} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {Object} discussion - The discussion post.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
  * @param {String} spoiler - If the response is in a spoiler.
@@ -355,7 +355,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 	embed.setDescription( description );
 	if ( discussion.tags?.length ) {
-		embed.addField( lang.get('discussion.tags'), Util.splitMessage( discussion.tags.map( tag => '[' + tag.articleTitle.escapeFormatting() + '](' + wiki.toLink(tag.articleTitle, '', '', {}, true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
+		embed.addField( lang.get('discussion.tags'), Util.splitMessage( discussion.tags.map( tag => '[' + tag.articleTitle.escapeFormatting() + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
 	}
 	
 	msg.sendChannel( spoiler + text + spoiler, {embed} );

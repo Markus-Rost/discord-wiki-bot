@@ -7,7 +7,7 @@ var db = require('../util/database.js');
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
@@ -178,7 +178,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 						if ( wiki.noWiki(response.url) || response.statusCode === 410 ) console.log( '- This wiki doesn\'t exist!' );
 						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
 					}
-					var groups = body.query.allmessages.filter( group => !/\.(?:css|js)$/.test(group.name) && group.name !== 'group-all' ).map( group => {
+					var groups = body.query.allmessages.filter( group => !['group-all','group-membership-link-with-expiry'].includes( group.name ) && !/\.(?:css|js)$/.test(group.name) ).map( group => {
 						return {
 							name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
 							content: group['*'].replace( / /g, '_' ).toLowerCase()
@@ -187,7 +187,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					usergroups = usergroups.map( usergroup => {
 						if ( groups.some( group => group.name === usergroup ) ) return usergroup;
 						if ( groups.some( group => group.content === usergroup ) ) return groups.find( group => group.content === usergroup ).name;
-						if ( /^admins?$/.test(usergroup) ) return 'sysop'
+						if ( /^admins?$/.test(usergroup) ) return 'sysop';
 						return usergroup;
 					} );
 				}, error => {

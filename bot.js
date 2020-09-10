@@ -22,7 +22,7 @@ const Lang = require('./util/i18n.js');
 const newMessage = require('./util/newMessage.js');
 global.patreons = {};
 global.voice = {};
-var db = require('./util/database.js');
+const db = require('./util/database.js');
 
 const Discord = require('discord.js');
 const client = new Discord.Client( {
@@ -63,20 +63,6 @@ client.on( 'ready', () => {
 } );
 
 
-String.prototype.noWiki = function(href) {
-	if ( !href ) return true;
-	else if ( this.startsWith( 'https://www.' ) && ( this.endsWith( '.gamepedia.com/' ) || this.isFandom() ) ) return true;
-	else if ( this.isFandom() ) return [
-		this.replace( /^https:\/\/([a-z\d-]{1,50}\.(?:fandom\.com|wikia\.org))\/(?:[a-z-]{1,8}\/)?$/, 'https://community.fandom.com/wiki/Community_Central:Not_a_valid_community?from=$1' ),
-		this + 'language-wikis'
-	].includes( href.replace( /Unexpected token < in JSON at position 0 in "([^ ]+)"/, '$1' ) );
-	else return false;
-};
-
-String.prototype.isFandom = function() {
-	return /^https:\/\/[a-z\d-]{1,50}\.(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?$/.test(this);
-};
-
 String.prototype.isMention = function(guild) {
 	var text = this.trim();
 	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.me.displayName );
@@ -96,63 +82,6 @@ Discord.Message.prototype.showEmbed = function() {
 
 Discord.Message.prototype.uploadFiles = function() {
 	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
-};
-
-String.prototype.toLink = function(title = '', querystring = '', fragment = '', {server: serverURL, articlepath: articlePath} = {}, isMarkdown = false) {
-	var linksuffix = ( querystring ? '?' + querystring : '' ) + ( fragment ? '#' + fragment.toSection() : '' );
-	if ( serverURL && articlePath ) return serverURL.replace( /^(?:https?:)?\/\//, 'https://' ) + articlePath.replaceSave( '$1', title.toTitle(isMarkdown, articlePath.includes( '?' )) ) + ( articlePath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
-	if ( this.endsWith( '.gamepedia.com/' ) ) return this + title.toTitle(isMarkdown) + linksuffix;
-	if ( this.isFandom() ) return this + 'wiki/' + title.toTitle(isMarkdown) + linksuffix;
-	let project = wikiProjects.find( project => this.split('/')[2].endsWith( project.name ) );
-	if ( project ) {
-		let regex = this.match( new RegExp( '^https://' + project.regex + project.scriptPath + '$' ) );
-		if ( regex ) return 'https://' + regex[1] + project.articlePath + title.toTitle(isMarkdown, project.articlePath.includes( '?' )) + ( project.articlePath.includes( '?' ) && linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
-	}
-	return this + 'index.php?title=' + title.toTitle(isMarkdown, true) + ( linksuffix.startsWith( '?' ) ? '&' + linksuffix.substring(1) : linksuffix );
-};
-
-String.prototype.toDescLink = function(title = '') {
-	return this + 'wiki/' + encodeURIComponent( title.replace( / /g, '_' ) );
-};
-
-String.prototype.toTitle = function(isMarkdown = false, inQuery = false) {
-	var title = this.replace( / /g, '_' ).replace( /\%/g, '%25' ).replace( /\\/g, '%5C' ).replace( /\?/g, '%3F' ).replace( /@(here|everyone)/g, '%40$1' );
-	if ( inQuery ) title = title.replace( /\&/g, '%26' );
-	if ( isMarkdown ) title = title.replace( /([\(\)])/g, '\\$1' );
-	return title;
-};
-
-String.prototype.toSearch = function() {
-	return encodeURIComponent( this ).replace( /%20/g, '+' );
-};
-
-String.prototype.toSection = function() {
-	return encodeURIComponent( this.replace( / /g, '_' ) ).replace( /\'/g, '%27' ).replace( /\(/g, '%28' ).replace( /\)/g, '%29' ).replace( /\%/g, '.' );
-};
-
-String.prototype.toFormatting = function(showEmbed = false, ...args) {
-	if ( showEmbed ) return this.toMarkdown(...args);
-	else return this.toPlaintext();
-};
-
-String.prototype.toMarkdown = function(wiki, path, title = '') {
-	var text = this.replace( /[\(\)\\]/g, '\\$&' );
-	var link = null;
-	var regex = /\[\[(?:([^\|\]]+)\|)?([^\]]+)\]\]([a-z]*)/g;
-	while ( ( link = regex.exec(text) ) !== null ) {
-		var pagetitle = ( link[1] || link[2] );
-		var page = wiki.toLink(( /^[#\/]/.test(pagetitle) ? title + ( pagetitle.startsWith( '/' ) ? pagetitle : '' ) : pagetitle ), '', ( pagetitle.startsWith( '#' ) ? pagetitle.substring(1) : '' ), path, true);
-		text = text.replaceSave( link[0], '[' + link[2] + link[3] + '](' + page + ')' );
-	}
-	regex = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g;
-	while ( title !== '' && ( link = regex.exec(text) ) !== null ) {
-		text = text.replaceSave( link[0], '[→' + link[1] + '](' + wiki.toLink(title, '', link[1], path, true) + ')' + ( link[2] ? ': ' + link[2] : '' ) );
-	}
-	return text.escapeFormatting(true);
-};
-
-String.prototype.toPlaintext = function() {
-	return this.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' ).escapeFormatting();
 };
 
 String.prototype.escapeFormatting = function(isMarkdown) {
@@ -193,8 +122,8 @@ Discord.Message.prototype.sendChannel = function(content, options = {}, ignorePa
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 		return this.channel.send(content, options).then( msg => {
-			if ( msg.length ) msg.forEach( message => message.allowDelete(this.author.id) );
-			else msg.allowDelete(this.author.id);
+			if ( msg.length ) msg.forEach( message => allowDelete(message, this.author.id) );
+			else allowDelete(msg, this.author.id);
 			return msg;
 		}, error => {
 			log_error(error);
@@ -211,11 +140,11 @@ Discord.Message.prototype.sendChannelError = function(content, options = {}) {
 	return this.channel.send(content, options).then( msg => {
 		if ( msg.length ) msg.forEach( message => {
 			message.reactEmoji('error');
-			message.allowDelete(this.author.id);
+			allowDelete(message, this.author.id);
 		} );
 		else {
 			msg.reactEmoji('error');
-			msg.allowDelete(this.author.id);
+			allowDelete(msg, this.author.id);
 		}
 		return msg;
 	}, error => {
@@ -229,8 +158,8 @@ Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause
 		if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 		return this.reply(content, options).then( msg => {
 			if ( allowDelete ) {
-				if ( msg.length ) msg.forEach( message => message.allowDelete(this.author.id) );
-				else msg.allowDelete(this.author.id);
+				if ( msg.length ) msg.forEach( message => allowDelete(message, this.author.id) );
+				else allowDelete(msg, this.author.id);
 			}
 			return msg;
 		}, error => {
@@ -243,14 +172,15 @@ Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause
 	}
 };
 
-Discord.Message.prototype.deleteMsg = function(timeout = 0) {
-	return this.delete({timeout}).catch(log_error);
-};
-
-Discord.Message.prototype.allowDelete = function(author) {
-	return this.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑️' && user.id === author, {max:1,time:120000} ).then( reaction => {
+/**
+ * All users to delete their command responses.
+ * @param {Discord.Message} msg - The response.
+ * @param {String} author - The user.
+ */
+function allowDelete(msg, author) {
+	msg.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑️' && user.id === author, {max:1,time:120000} ).then( reaction => {
 		if ( reaction.size ) {
-			this.deleteMsg();
+			msg.delete().catch(log_error);
 		}
 	} );
 };
@@ -412,7 +342,7 @@ global.log_warn = function(warning, api = true) {
 
 /**
  * End the process gracefully.
- * @param {String} signal - The signal received.
+ * @param {NodeJS.Signals} signal - The signal received.
  */
 async function graceful(signal) {
 	isStop = true;

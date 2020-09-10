@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const {timeoptions} = require('../util/default.json');
+const toTitle = require('../util/wiki.js').toTitle;
 
 /**
  * Add global blocks to user messages.
@@ -8,7 +9,7 @@ const {timeoptions} = require('../util/default.json');
  * @param {String} username - The name of the user.
  * @param {String} text - The text of the response.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
- * @param {String} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {String} [gender] - The gender of the user.
  */
@@ -63,7 +64,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				if ( globaledits ) {
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
-						value: '[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + username.toTitle(true) + ')',
+						value: '[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + toTitle(username) + ')',
 						inline: true
 					});
 					else {
@@ -79,7 +80,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 	]).finally( () => {
 		msg.edit( spoiler + text + spoiler, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
 	} );
-	else if ( wiki.endsWith( '.gamepedia.com/' ) ) Promise.all([
+	else if ( wiki.isGamepedia() ) Promise.all([
 		got.get( 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx', {
 			responseType: 'text'
 		} ).then( response => {
@@ -104,7 +105,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 						if ( globalblock ) globalblock.name = gblocktitle;
 						else {
 							var block_wiki = reason[3].replace( /Special:BlockList$/, '' );
-							var gblocktext = lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, '[' + reason[1] + '](' + block_wiki + 'User:' + reason[1].toTitle(true) + ')', '[' + reason[2] + '](' + block_wiki + 'Special:Contribs/' + username.toTitle(true) + ')', reason.slice(4).join(', ').escapeFormatting());
+							var gblocktext = lang.get('user.gblock.' + ( reason.length > 4 ? 'text' : 'noreason' ), timestamp, expiry, '[' + reason[1] + '](' + block_wiki + 'User:' + toTitle(reason[1]) + ')', '[' + reason[2] + '](' + block_wiki + 'Special:Contribs/' + toTitle(username) + ')', reason.slice(4).join(', ').escapeFormatting());
 							embed.addField( gblocktitle, gblocktext );
 						}
 					}
@@ -145,7 +146,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				if ( globaledits ) {
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
-						value: '[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.replace( /^https:\/\/([a-z\d-]{1,50})\.gamepedia\.com\/$/, '$1/' ) + username.toTitle(true) + ')',
+						value: '[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.hostname.replace( '.gamepedia.com', '/' ) + toTitle(username) + ')',
 						inline: true
 					});
 					else {

@@ -11,7 +11,7 @@ getAllSites.then( sites => allSites = sites );
  * Sends a Fandom wiki overview.
  * @param {import('../../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {String} wiki - The wiki for the overview.
+ * @param {import('../../../util/wiki.js')} wiki - The wiki for the overview.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
@@ -36,10 +36,11 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 			return gamepedia_overview(lang, msg, wiki, reaction, spoiler);
 		}
 		else got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + body.query.wikidesc.id + '&format=json&cache=' + Date.now() ).then( ovresponse => {
+			wiki.updateWiki(body.query.general);
 			var ovbody = ovresponse.body;
 			if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[body.query.wikidesc.id] ) {
 				console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
-				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', '', '', body.query.general) + '>' + spoiler );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink(body.query.pages['-1'].title) + '>' + spoiler );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
@@ -70,13 +71,13 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					description[1] = description[1].escapeFormatting();
 					if ( description[1].length > 1000 ) description[1] = description[1].substring(0, 1000) + '\u2026';
 				}
-				if ( image[1] && image[1].startsWith( '/' ) ) image[1] = wiki.substring(0, wiki.length - 1) + image[1];
+				if ( image[1] && image[1].startsWith( '/' ) ) image[1] = new URL(image[1], wiki).href;
 				
 				var title = body.query.pages['-1'].title;
-				var pagelink = wiki.toLink(title, '', '', body.query.general);
+				var pagelink = wiki.toLink(title);
 				if ( msg.showEmbed() ) {
 					var text = '<' + pagelink + '>';
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( site.wordmark.startsWith( 'data:' ) ? wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general) : site.wordmark ) ).addField( vertical[0], vertical[1], true );
+					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( site.wordmark.startsWith( 'data:' ) ? wiki.toLink('Special:FilePath/Wiki-wordmark.png') : site.wordmark ) ).addField( vertical[0], vertical[1], true );
 					if ( topic[1] ) embed.addField( topic[0], topic[1], true );
 				}
 				else {
@@ -93,7 +94,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					}
 					else {
 						var user = usbody.query.users[0].name;
-						if ( msg.showEmbed() ) founder[1] = '[' + user + '](' + wiki.toLink('User:' + user, '', '', body.query.general, true) + ')';
+						if ( msg.showEmbed() ) founder[1] = '[' + user + '](' + wiki.toLink('User:' + user, '', '', true) + ')';
 						else founder[1] = user;
 					}
 				}, error => {
@@ -102,7 +103,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 				} ).finally( () => {
 					if ( msg.showEmbed() ) {
 						embed.addField( founder[0], founder[1], true );
-						if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', body.query.general, true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', body.query.general, true) + '))', true );
+						if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
 						embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
 						if ( crossover[1] ) {
 							var crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
@@ -157,7 +158,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 			}
 		}, error => {
 			console.log( '- Error while getting the wiki details: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', '', '', body.query.general) + '>' + spoiler );
+			msg.sendChannelError( spoiler + '<' + wiki.updateWiki(body.query.general).toLink(body.query.pages['-1'].title) + '>' + spoiler );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );

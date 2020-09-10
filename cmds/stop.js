@@ -4,7 +4,7 @@
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  * @async
  */
 async function cmd_stop(lang, msg, args, line, wiki) {

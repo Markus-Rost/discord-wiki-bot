@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js');
+const Wiki = require('../../util/wiki.js');
 
 /**
  * Sends a Minecraft issue.
@@ -7,7 +8,7 @@ const {MessageEmbed} = require('discord.js');
  * @param {String[]} args - The command arguments.
  * @param {String} title - The page title.
  * @param {String} cmd - The command at this point.
- * @param {String} querystring - The querystring for the link.
+ * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
@@ -74,9 +75,11 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 		} );
 	}
 	else if ( invoke && invoke.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
-		var jql = 'fixVersion="' + args.join(' ').replace( /(["\\])/g, '\\$1' ).toSearch() + '"+order+by+key';
-		var link = 'https://bugs.mojang.com/issues/?jql=' + jql;
-		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&jql=' + jql + '&maxResults=25' ).then( response => {
+		var jql = new URLSearchParams({
+			jql: 'fixVersion="' + args.join(' ').replace( /["\\]/g, '\\$&' ) + '" order by key'
+		});
+		var link = 'https://bugs.mojang.com/issues/?' + jql;
+		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&' + jql + '&maxResults=25' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {
@@ -121,7 +124,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.gamepedia(lang, msg, title, lang.get('minecraft.link'), cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.gamepedia(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 

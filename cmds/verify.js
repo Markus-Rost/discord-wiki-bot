@@ -2,6 +2,7 @@ const htmlparser = require('htmlparser2');
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
 const {timeoptions} = require('../util/default.json');
+const toTitle = require('../util/wiki.js').toTitle;
 var db = require('../util/database.js');
 
 /**
@@ -10,7 +11,7 @@ var db = require('../util/database.js');
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  * @param {String} [old_username] - The username before the search.
  */
 function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
@@ -27,7 +28,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/.test(username) ) {
 		username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/, '' ) );
 	}
-	if ( wiki.endsWith( '.gamepedia.com/' ) ) username = username.replace( /^userprofile\s*:/i, '' );
+	if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:/i, '' );
 	
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	db.all( 'SELECT role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
@@ -37,7 +38,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
 			return dberror;
 		}
-		if ( !rows.length ) return msg.replyMsg( lang.get('verify.missing') );
+		if ( !rows.length ) return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + lang.localNames.verification + '`' : '' ) );
 		
 		if ( !username.trim() ) {
 			args[0] = line.split(' ')[0];
@@ -65,12 +66,13 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
+			wiki.updateWiki(body.query.general);
 			var queryuser = body.query.users[0];
 			embed.setAuthor( body.query.general.sitename );
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 				username = ( body.query.users.length === 1 ? queryuser.name : username );
 				embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
-				if ( ( wiki.isFandom() || wiki.endsWith( '.gamepedia.com/' ) ) && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
+				if ( ( wiki.isFandom() || wiki.isGamepedia() ) && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
 					var wsbody = wsresponse.body;
 					if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
 						if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + wsbody?.exception?.details );
@@ -92,7 +94,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				return;
 			}
 			username = queryuser.name;
-			var pagelink = wiki.toLink('User:' + username, '', '', body.query.general, true);
+			var pagelink = wiki.toLink('User:' + username, '', '', true);
 			embed.setTitle( username.escapeFormatting() ).setURL( pagelink );
 			if ( queryuser.blockexpiry ) {
 				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
@@ -104,7 +106,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			
 			var comment = [];
 			var url = '';
-			if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+			if ( wiki.isGamepedia() ) {
 				url = 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx&cache=' + Date.now();
 			}
 			else if ( wiki.isFandom() ) {
@@ -119,7 +121,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				}
 				else {
 					let $ = cheerio.load(gbresponse.body);
-					if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+					if ( wiki.isGamepedia() ) {
 						if ( $('.mw-blocklist').length ) {
 							return Promise.reject({
 								desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender),
@@ -147,7 +149,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				comment.push(lang.get('verify.failed_gblock'));
 			} ).then( async () => {
 				// async check for editcount on Gamepedia, workaround for https://gitlab.com/hydrawiki/hydra/-/issues/5054
-				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+				if ( wiki.isGamepedia() || ( wiki.isFandom() && body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) ) {
 					try {
 						let ucresponse = await got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=500&ucuser=' + encodeURIComponent( username ) + '&format=json' );
 						if ( !ucresponse.body.continue ) queryuser.editcount = ucresponse.body.query.usercontribs.length;
@@ -157,7 +159,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				}
 				
 				var options = {};
-				if ( wiki.endsWith( '.gamepedia.com/' ) ) {
+				if ( wiki.isGamepedia() ) {
 					url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now();
 				}
 				else if ( wiki.isFandom() ) {
@@ -185,8 +187,8 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					if ( msg.author.tag.escapeFormatting() !== discordname ) {
 						embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
 						var help_link = '';
-						if ( wiki.endsWith( '.gamepedia.com/' ) ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + username.toTitle(true, true) + '&discord=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
-						else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + username.toTitle(true) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
+						if ( wiki.isGamepedia() ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + toTitle(username) + '&discord=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
+						else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + toTitle(username) + '?c=' + ( msg.guild.id in patreons && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
 						if ( help_link.length ) embed.addField( lang.get('verify.notice'), lang.get('verify.help_guide', help_link, queryuser.gender) + '\n' + help_link );
 						msg.replyMsg( lang.get('verify.user_failed_reply', username.escapeFormatting(), queryuser.gender), {embed}, false, false );
 						
@@ -293,7 +295,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
 				if ( msg.author.tag.escapeFormatting() !== discordname ) {
 					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
-					embed.addField( lang.get('verify.notice'), lang.get('verify.help_subpage', '**`' + msg.author.tag + '`**', queryuser.gender) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit', '', body.query.general) );
+					embed.addField( lang.get('verify.notice'), lang.get('verify.help_subpage', '**`' + msg.author.tag + '`**', queryuser.gender) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit') );
 					msg.replyMsg( lang.get('verify.user_failed_reply', username.escapeFormatting(), queryuser.gender), {embed}, false, false );
 					
 					if ( reaction ) reaction.removeEmoji();

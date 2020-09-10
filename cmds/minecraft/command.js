@@ -1,3 +1,5 @@
+const Wiki = require('../../util/wiki.js');
+
 /**
  * Processes Minecraft commands.
  * @param {import('../../util/i18n.js')} lang - The user language.
@@ -5,7 +7,7 @@
  * @param {String[]} args - The command arguments.
  * @param {String} title - The page title.
  * @param {String} cmd - The command at this point.
- * @param {String} querystring - The querystring for the link.
+ * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
@@ -17,7 +19,7 @@ function minecraft_command(lang, msg, args, title, cmd, querystring, fragment, r
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.gamepedia(lang, msg, title, lang.get('minecraft.link'), cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.gamepedia(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 
