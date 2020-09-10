@@ -1,4 +1,5 @@
 require('dotenv').config();
+const child_process = require('child_process');
 
 const isDebug = ( process.argv[2] === 'debug' );
 const got = require('got').extend( {
@@ -34,12 +35,12 @@ manager.on( 'shardCreate', shard => {
 			console.log( '\n- Killing all shards!\n\n' );
 			manager.shards.forEach( shard => shard.kill() );
 		}
-		if ( message === 'postStats' ) postStats();
+		if ( message === 'postStats' && process.env.botlist ) postStats();
 	} );
 	
 	shard.on( 'death', message => {
 		if ( manager.respawn === false ) diedShards++;
-		if ( ![null, 0].includes( message.exitCode ) ) {
+		if ( message.exitCode ) {
 			if ( !shard.ready ) {
 				manager.respawn = false;
 				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
@@ -50,17 +51,36 @@ manager.on( 'shardCreate', shard => {
 } );
 
 manager.spawn().then( shards => {
-	if ( !isDebug ) {
+	if ( !isDebug && process.env.botlist ) {
 		var botList = JSON.parse(process.env.botlist);
 		for ( let [key, value] of Object.entries(botList) ) {
 			if ( !value ) delete botList[key];
 		}
-		setInterval( postStats, 10800000, botList, shards.size ).unref();
+		if ( Object.keys(botlist).length ) {
+			setInterval( postStats, 10800000, botList, shards.size ).unref();
+		}
 	}
 }, error => {
 	console.error( '- Error while spawning the shards: ' + error );
 	manager.respawnAll();
 } );
+
+if ( process.env.dashboard ) {
+	const dashboard = child_process.fork('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
+	dashboard.on( 'exit', (code) => {
+		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
+	} );
+	dashboard.on( 'error', error => {
+		console.log( '- [Dashboard]: Error received!', error );
+	} );
+	dashboard.on( 'message', message => {
+		if ( message.id ) {
+			message.data = message.data;
+			dashboard.send( message );
+		}
+		console.log( '- Dashboard: Message received!', message );
+	} );
+}
 
 /**
  * Post bot statistics to bot lists.
@@ -98,7 +118,7 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 
 /**
  * End the process gracefully.
- * @param {String} signal - The signal received.
+ * @param {NodeJS.Signals} signal - The signal received.
  */
 async function graceful(signal) {
 	console.log( '- ' + signal + ': Disabling respawn...' );
@@ -118,5 +138,6 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
 		manager.shards.forEach( shard => shard.kill() );
+		if ( process.env.dashboard ) dashboard.kill('SIGTERM');
 	}, timeout  * 1000 ).unref();
 }
