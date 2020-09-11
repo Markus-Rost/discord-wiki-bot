@@ -1,6 +1,7 @@
 const {defaultSettings} = require('../util/default.json');
 const sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database( './wikibot.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, dberror => {
+const mode = ( process.env.READONLY ? sqlite3.OPEN_READONLY : sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE );
+const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
 	if ( dberror ) {
 		console.log( '- ' + shardId + ': Error while connecting to the database: ' + dberror );
 		return dberror;

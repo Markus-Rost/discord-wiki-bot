@@ -2,6 +2,7 @@ require('dotenv').config();
 const child_process = require('child_process');
 
 const isDebug = ( process.argv[2] === 'debug' );
+process.env.READONLY = ( process.argv[2] === 'readonly' );
 const got = require('got').extend( {
 	throwHttpErrors: false,
 	timeout: 30000,
