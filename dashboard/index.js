@@ -21,16 +21,31 @@ const oauth = new DiscordOauth2( {
 } );
 
 const fs = require('fs');
-const file = fs.readFileSync('./dashboard/index.html');
+const files = {
+	index: fs.readFileSync('./dashboard/index.html'),
+	login: fs.readFileSync('./dashboard/login.html')
+}
 
-var messageId = 1;
+/**
+ * @type {Map<Number, PromiseConstructor>}
+ */
 var messages = new Map();
+var messageId = 1;
 
 process.on( 'message', message => {
-	messages.get(message.id).resolve(message.data);
-	messages.delete(message.id);
+	if ( message.id ) {
+		if ( message.data.error ) messages.get(message.id).reject(message.data.error);
+		else messages.get(message.id).resolve(message.data.response);
+		return messages.delete(message.id);
+	}
+	console.log( '- [Dashboard]: Message received!', message );
 } );
 
+/**
+ * Send messages to the manager.
+ * @param {Object} [message] - The message.
+ * @returns {Promise<Object>}
+ */
 function sendMsg(message) {
 	var id = messageId++;
 	var promise = new Promise( (resolve, reject) => {
@@ -45,7 +60,9 @@ function sendMsg(message) {
  * @property {String} state
  * @property {String} access_token
  * @property {User} user
- * @property {Map<String, Guild>} guilds
+ * @property {Object} guilds
+ * @property {Map<String, Guild>} guilds.isMember
+ * @property {Map<String, Guild>} guilds.notMember
  */
 
 /**
@@ -72,24 +89,29 @@ function sendMsg(message) {
 var settingsData = new Map();
 
 const server = http.createServer((req, res) => {
-	res.setHeader('Content-Type', 'text/html');
-	res.setHeader('Content-Language', ['en']);
-
 	if ( req.method !== 'GET' ) {
 		let notice = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
 		res.writeHead(418, {'Content-Length': notice.length});
 		res.write( notice );
 		return res.end();
 	}
-	
-	var guild = req.headers?.cookie?.split('; ')?.filter( cookie => {
+
+	if ( req.url === '/favicon.ico' ) {
+		res.writeHead(302, {Location: 'https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64'});
+		return res.end();
+	}
+
+	res.setHeader('Content-Type', 'text/html');
+	res.setHeader('Content-Language', ['en']);
+
+	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
 		return cookie.split('=')[0] === 'guild';
 	} )?.map( cookie => cookie.replace( /^guild="(\w+)"$/, '$1' ) )?.join();
-	if ( guild ) res.setHeader('Set-Cookie', [`guild="${guild}"; Max-Age=0; HttpOnly; Path=/oauth`]);
+	if ( lastGuild ) res.setHeader('Set-Cookie', [`guild="${lastGuild}"; Max-Age=0; HttpOnly; Path=/`]);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
 		return cookie.split('=')[0] === 'wikibot';
-	} )?.map( cookie => cookie.replace( /^wikibot="(\w+)"$/, '$1' ) )?.join();
+	} )?.map( cookie => cookie.replace( /^wikibot="(\w+(?:-\d+)?)"$/, '$1' ) )?.join();
 
 	var reqURL = new URL(req.url, process.env.dashboard);
 
@@ -98,28 +120,44 @@ const server = http.createServer((req, res) => {
 			res.writeHead(302, {Location: '/'});
 			return res.end();
 		}
+		if ( state ) res.setHeader('Set-Cookie', [`wikibot="${state}"; Max-Age=0; HttpOnly`]);
+		var $ = cheerio.load(files.login);
+		$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
+			scope: ['identify', 'guilds', 'bot'],
+			permissions: defaultPermissions, state
+		} ));
 		let responseCode = 200;
-		let notice = '';
 		if ( reqURL.searchParams.get('action') === 'failed' ) {
 			responseCode = 400;
-			notice = '<img width="400" src="https://http.cat/' + responseCode + '"><br><strong>Login failed, please try again!</strong><br><br>';
+			$('replace#notice').replaceWith(`<div class="notice">
+				<b>Login failed!</b>
+				<div>An error occurred while logging you in, please try again.</div>
+			</div>`);
 		}
 		if ( reqURL.searchParams.get('action') === 'unauthorized' ) {
 			responseCode = 401;
-			notice = '<img width="400" src="https://http.cat/' + responseCode + '"><br><strong>Please login first!</strong><br><br>';
+			$('replace#notice').replaceWith(`<div class="notice">
+				<b>Not logged in!</b>
+				<div>Please login before you can change any settings.</div>
+			</div>`);
 		}
 		if ( reqURL.searchParams.get('action') === 'logout' ) {
-			notice = '<img width="400" src="https://http.cat/' + responseCode + '"><br><strong>Successfully logged out!</strong><br><br>';
+			$('replace#notice').replaceWith(`<div class="notice">
+				<b>Successfully logged out!</b>
+				<div>You have been successfully logged out. To change any settings you need to login again.</div>
+			</div>`);
 		}
+		$('replace#notice').replaceWith('');
 		state = crypto.randomBytes(16).toString("hex");
 		while ( settingsData.has(state) ) {
 			state = crypto.randomBytes(16).toString("hex");
 		}
 		let url = oauth.generateAuthUrl( {
 			scope: ['identify', 'guilds'],
-			promt: 'none', state
+			prompt: 'none', state
 		} );
-		notice += `<a href="${url}">Login</a>`;
+		$('replace#text').replaceWith(`<a href="${url}">Login</a>`);
+		let notice = $.html();
 		res.writeHead(responseCode, {
 			'Set-Cookie': [`wikibot="${state}"; HttpOnly`],
 			'Content-Length': notice.length
@@ -138,12 +176,17 @@ const server = http.createServer((req, res) => {
 	}
 
 	if ( !state ) {
-		res.writeHead(302, {Location: '/login?action=unauthorized'});
+		res.writeHead(302, {
+			Location: ( reqURL.pathname === '/' ? '/login' : '/login?action=unauthorized' )
+		});
 		return res.end();
 	}
 
 	if ( reqURL.pathname === '/oauth' ) {
-		console.log(req.url)
+		if ( settingsData.has(state) ) {
+			res.writeHead(302, {Location: '/'});
+			return res.end();
+		}
 		if ( state !== reqURL.searchParams.get('state') || !reqURL.searchParams.get('code') ) {
 			res.writeHead(302, {Location: '/login?action=unauthorized'});
 			return res.end();
@@ -157,33 +200,56 @@ const server = http.createServer((req, res) => {
 				oauth.getUser(access_token),
 				oauth.getUserGuilds(access_token)
 			]).then( ([user, guilds]) => {
-				settingsData.set(state, {
-					state, access_token,
-					user: {
-						id: user.id,
-						username: user.username,
-						discriminator: user.discriminator,
-						avatar: 'https://cdn.discordapp.com/' + ( user.avatar ? 
-							`embed/avatars/${user.discriminator % 5}.png` : 
-							`avatars/${user.id}/${user.avatar}.` + 
-							( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) ) + '?size=128',
-						locale: user.locale
-					},
-					guilds: new Map(guilds.filter( guild => {
-						return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
-					} ).map( guild => [guild.id, {
+				guilds = guilds.filter( guild => {
+					return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
+				} ).map( guild => {
+					return {
 						id: guild.id,
 						name: guild.name,
 						acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
 						icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
-						 + ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) + '?size=128' : null ),
+						+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) + '?size=128' : null ),
 						permissions: guild.permissions
-					}] ))
-				});
-				res.writeHead(302, {
-					Location: ( guild ? '/guild/' + guild : '/' )
-				});
-				return res.end();
+					};
+				} );
+				sendMsg( {
+					type: 'isMemberAll',
+					guilds: guilds.map( guild => guild.id )
+				} ).then( response => {
+					let isMember = new Map();
+					let notMember = new Map();
+					response.forEach( (guild, i) => {
+						if ( guild ) isMember.set(guilds[i].id, guilds[i]);
+						else notMember.set(guilds[i].id, guilds[i]);
+					} );
+					settingsData.set(`${state}-${user.id}`, {
+						state: `${state}-${user.id}`,
+						access_token,
+						user: {
+							id: user.id,
+							username: user.username,
+							discriminator: user.discriminator,
+							avatar: 'https://cdn.discordapp.com/' + ( user.avatar ? 
+								`avatars/${user.id}/${user.avatar}.` + 
+								( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : 
+								`embed/avatars/${user.discriminator % 5}.png` ) + '?size=64',
+							locale: user.locale
+						},
+						guilds: {isMember, notMember}
+					});
+					res.writeHead(302, {
+						Location: ( lastGuild ? '/guild/' + lastGuild : '/' ),
+						'Set-Cookie': [
+							`wikibot="${state}"; Max-Age=0; HttpOnly`,
+							`wikibot="${state}-${user.id}"; HttpOnly`
+						]
+					});
+					return res.end();
+				}, error => {
+					console.log( '- Dashboard: Error while checking the guilds:', error );
+					res.writeHead(302, {Location: '/login?action=failed'});
+					return res.end();
+				} );
 			}, error => {
 				console.log( '- Dashboard: Error while getting user and guilds: ' + error );
 				res.writeHead(302, {Location: '/login?action=failed'});
@@ -197,27 +263,47 @@ const server = http.createServer((req, res) => {
 	}
 
 	if ( !settingsData.has(state) ) {
-		res.writeHead(302, {Location: '/login?action=unauthorized'});
+		res.writeHead(302, {
+			Location: ( reqURL.pathname === '/' ? '/login' : '/login?action=unauthorized' )
+		});
 		return res.end();
 	}
 	var settings = settingsData.get(state);
 
 	if ( reqURL.pathname === '/refresh' ) {
 		return oauth.getUserGuilds(settings.access_token).then( guilds => {
-			settings.guilds = new Map(guilds.filter( guild => {
+			guilds = guilds.filter( guild => {
 				return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
-			} ).map( guild => [guild.id, {
-				id: guild.id,
-				name: guild.name,
-				acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
-				icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
-				 + ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) + '?size=128' : null ),
-				permissions: guild.permissions
-			}] ));
-			res.writeHead(302, {
-				Location: ( reqURL.searchParams.get('return') || '/' )
-			});
-			return res.end();
+			} ).map( guild => {
+				return {
+					id: guild.id,
+					name: guild.name,
+					acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
+					icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
+					+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) + '?size=128' : null ),
+					permissions: guild.permissions
+				};
+			} );
+			sendMsg( {
+				type: 'isMemberAll',
+				guilds: guilds.map( guild => guild.id )
+			} ).then( response => {
+				let isMember = new Map();
+				let notMember = new Map();
+				response.forEach( (guild, i) => {
+					if ( guild ) isMember.set(guilds[i].id, guilds[i]);
+					else notMember.set(guilds[i].id, guilds[i]);
+				} );
+				settings.guilds = {isMember, notMember};
+				res.writeHead(302, {
+					Location: ( reqURL.searchParams.get('return') || '/' )
+				});
+				return res.end();
+			}, error => {
+				console.log( '- Dashboard: Error while checking refreshed guilds:', error );
+				res.writeHead(302, {Location: '/login?action=failed'});
+				return res.end();
+			} );
 		}, error => {
 			console.log( '- Dashboard: Error while refreshing guilds: ' + error );
 			res.writeHead(302, {Location: '/login?action=failed'});
@@ -225,38 +311,66 @@ const server = http.createServer((req, res) => {
 		} );
 	}
 
-	var $ = cheerio.load(file);
-	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
+	var $ = cheerio.load(files.index);
+	$('replace#notice').replaceWith('');
+	$('.navbar #logout img').attr('src', settings.user.avatar);
+	$('.navbar #logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds', 'bot'],
 		permissions: defaultPermissions, state
 	} ));
-	$('.guild#logout img').attr('src', settings.user.avatar);
+	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
 	let guilds = '';
-	settings.guilds.forEach( guild => {
-		guilds += `<div class="guild" id="${guild.id}">
-			<div class="bar"></div>
-			<a href="/guild/${guild.id}" alt="${guild.name}">` + ( guild.icon ? 
-				`<img class="avatar" src="${guild.icon}" alt="${guild.acronym}" width="48" height="48">`
-				 : `<div class="avatar noicon">${guild.acronym}</div>` ) + 
-			`</a>
-		</div>`
-	} );
+	if ( settings.guilds.isMember.size ) {
+		guilds += `<div class="guild">
+			<div class="separator"></div>
+		</div>`;
+		settings.guilds.isMember.forEach( guild => {
+			guilds += `<div class="guild" id="${guild.id}">
+				<div class="bar"></div>
+				<a href="/guild/${guild.id}" alt="${guild.name}">` + ( guild.icon ? 
+					`<img class="avatar" src="${guild.icon}" alt="${guild.acronym}" width="48" height="48">`
+					: `<div class="avatar noicon">${guild.acronym}</div>` ) + 
+				`</a>
+			</div>`;
+		} );
+	}
+	if ( settings.guilds.notMember.size ) {
+		guilds += `<div class="guild">
+			<div class="separator"></div>
+		</div>`;
+		settings.guilds.notMember.forEach( guild => {
+			guilds += `<div class="guild" id="${guild.id}">
+				<div class="bar"></div>
+				<a href="/guild/${guild.id}" alt="${guild.name}">` + ( guild.icon ? 
+					`<img class="avatar" src="${guild.icon}" alt="${guild.acronym}" width="48" height="48">`
+					: `<div class="avatar noicon">${guild.acronym}</div>` ) + 
+				`</a>
+			</div>`;
+		} );
+	}
 	$('replace#guilds').replaceWith(guilds);
 
 	if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 		let id = reqURL.pathname.replace( '/guild/', '' );
-		if ( settings.guilds.has(id) ) {
+		if ( settings.guilds.isMember.has(id) ) {
 			$('.guild#' + id).addClass('selected');
-			let guild = settings.guilds.get(id);
+			let guild = settings.guilds.isMember.get(id);
 			$('head title').text(guild.name + ' – ' + $('head title').text());
+			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
+			$('replace#text').replaceWith(`${guild.permissions}`);
+		}
+		if ( settings.guilds.notMember.has(id) ) {
+			$('.guild#' + id).addClass('selected');
+			let guild = settings.guilds.notMember.get(id);
+			$('head title').text(guild.name + ' – ' + $('head title').text());
+			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
 			let url = oauth.generateAuthUrl( {
 				scope: ['identify', 'guilds', 'bot'],
 				permissions: defaultPermissions,
 				guild_id: id, state
 			} );
-			$('replace#text').replaceWith(`<a href="${url}">${guild.permissions} Keks</a>`);
-			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/oauth`]);
+			$('replace#text').replaceWith(`<a href="${url}">${guild.permissions}</a>`);
 		}
 		$('replace#text').replaceWith('You are missing the <code>MANAGE_GUILD</code> permission.');
 	}

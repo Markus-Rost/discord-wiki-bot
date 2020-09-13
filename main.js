@@ -68,18 +68,52 @@ manager.spawn().then( shards => {
 
 if ( process.env.dashboard ) {
 	const dashboard = child_process.fork('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
-	dashboard.on( 'exit', (code) => {
-		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
+
+	dashboard.on( 'message', message => {
+		if ( message.id ) {
+			var data = {
+				type: message.data.type,
+				response: null,
+				error: null
+			};
+			switch ( message.data.type ) {
+				case 'isMember':
+					return manager.broadcastEval(`this.guilds.cache.has('${message.data.guild}')`).then( results => {
+						data.response = results.includes( true );
+					}, error => {
+						data.error = error;
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				case 'isMemberAll':
+					return manager.broadcastEval(`${JSON.stringify(message.data.guilds)}.map( guild => {
+						return this.guilds.cache.has(guild);
+					} )`).then( results => {
+						data.response = message.data.guilds.map( (guild, i) => {
+							return results.map( result => result[i] ).includes( true );
+						} );
+					}, error => {
+						data.error = error;
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				default:
+					console.log( '- [Dashboard]: Unknown message received!', message.data );
+					data.error = 'Unknown message type: ' + message.data.type;
+					return dashboard.send( {id: message.id, data} );
+			}
+		}
+		console.log( '- [Dashboard]: Message received!', message );
 	} );
+
 	dashboard.on( 'error', error => {
 		console.log( '- [Dashboard]: Error received!', error );
 	} );
-	dashboard.on( 'message', message => {
-		if ( message.id ) {
-			message.data = message.data;
-			dashboard.send( message );
-		}
-		console.log( '- Dashboard: Message received!', message );
+
+	dashboard.on( 'exit', (code) => {
+		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
 	} );
 }
 
