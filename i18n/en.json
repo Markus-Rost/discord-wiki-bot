@@ -150,7 +150,8 @@
         "limit": "🚨 **Stop, you hit a limit!** 🚨\n\n$1, your message contained too many commands!",
         "missingperm": "I'm missing some permissions for this command:",
         "patreon": "this is a Patreon only feature!\nYou can support me on Patreon to get access to this feature:",
-        "prefix": "the prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`."
+        "prefix": "the prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`.",
+        "readonly": "**The database is currently in read-only mode, you can't change any settings right now!**"
     },
     "help": {
         "admin": "These commands can only be performed by administrators:",
