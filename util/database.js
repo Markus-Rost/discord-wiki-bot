@@ -34,7 +34,7 @@ function getSettings(trysettings = 1) {
 						console.log( '- ' + shardId + ': Error while creating the patreons table: ' + error );
 						return error;
 					}
-					console.log( '- Created the patreons table.' );
+					console.log( '- ' + shardId + ': Created the patreons table.' );
 					db.run( 'CREATE INDEX idx_patreons_patreon ON patreons(patreon)', [], function (idxerror) {
 						if ( idxerror ) {
 							console.log( '- ' + shardId + ': Error while creating the patreons index: ' + idxerror );
@@ -48,7 +48,7 @@ function getSettings(trysettings = 1) {
 						console.log( '- ' + shardId + ': Error while creating the discord table: ' + error );
 						return error;
 					}
-					console.log( '- Created the discord table.' );
+					console.log( '- ' + shardId + ': Created the discord table.' );
 					db.run( 'CREATE TRIGGER unique_discord_guild BEFORE INSERT ON discord WHEN NEW.channel IS NULL BEGIN SELECT CASE WHEN (SELECT 1 FROM discord WHERE guild = NEW.guild AND channel IS NULL) IS NOT NULL THEN RAISE(ABORT, "UNIQUE constraint failed: discord.guild, discord.channel") END; END;', [], function (tgerror) {
 						if ( tgerror ) {
 							console.log( '- ' + shardId + ': Error while creating the discord guild trigger: ' + tgerror );

@@ -90,9 +90,9 @@ var settingsData = new Map();
 
 const server = http.createServer((req, res) => {
 	if ( req.method !== 'GET' ) {
-		let notice = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
-		res.writeHead(418, {'Content-Length': notice.length});
-		res.write( notice );
+		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
+		res.writeHead(418, {'Content-Length': body.length});
+		res.write( body );
 		return res.end();
 	}
 
@@ -127,27 +127,28 @@ const server = http.createServer((req, res) => {
 			permissions: defaultPermissions, state
 		} ));
 		let responseCode = 200;
+		let notice = '';
 		if ( reqURL.searchParams.get('action') === 'failed' ) {
 			responseCode = 400;
-			$('replace#notice').replaceWith(`<div class="notice">
-				<b>Login failed!</b>
-				<div>An error occurred while logging you in, please try again.</div>
-			</div>`);
+			notice = createNotice($, {
+				title: 'Login failed!',
+				text: 'An error occurred while logging you in, please try again.'
+			});
 		}
 		if ( reqURL.searchParams.get('action') === 'unauthorized' ) {
 			responseCode = 401;
-			$('replace#notice').replaceWith(`<div class="notice">
-				<b>Not logged in!</b>
-				<div>Please login before you can change any settings.</div>
-			</div>`);
+			notice = createNotice($, {
+				title: 'Not logged in!',
+				text: 'Please login before you can change any settings.'
+			});
 		}
 		if ( reqURL.searchParams.get('action') === 'logout' ) {
-			$('replace#notice').replaceWith(`<div class="notice">
-				<b>Successfully logged out!</b>
-				<div>You have been successfully logged out. To change any settings you need to login again.</div>
-			</div>`);
+			notice = createNotice($, {
+				title: 'Successfully logged out!',
+				text: 'You have been successfully logged out. To change any settings you need to login again.'
+			});
 		}
-		$('replace#notice').replaceWith('');
+		$('replace#notice').replaceWith(notice);
 		state = crypto.randomBytes(16).toString("hex");
 		while ( settingsData.has(state) ) {
 			state = crypto.randomBytes(16).toString("hex");
@@ -157,12 +158,12 @@ const server = http.createServer((req, res) => {
 			prompt: 'none', state
 		} );
 		$('replace#text').replaceWith(`<a href="${url}">Login</a>`);
-		let notice = $.html();
+		let body = $.html();
 		res.writeHead(responseCode, {
 			'Set-Cookie': [`wikibot="${state}"; HttpOnly`],
-			'Content-Length': notice.length
+			'Content-Length': body.length
 		});
-		res.write( notice );
+		res.write( body );
 		return res.end();
 	}
 
@@ -312,7 +313,14 @@ const server = http.createServer((req, res) => {
 	}
 
 	var $ = cheerio.load(files.index);
-	$('replace#notice').replaceWith('');
+	let notice = '';
+	if ( process.env.READONLY ) {
+		notice = createNotice($, {
+			title: 'Read-only database!',
+			text: 'You can currently only view your settings but not change them.'
+		});
+	}
+	$('replace#notice').replaceWith(notice);
 	$('.navbar #logout img').attr('src', settings.user.avatar);
 	$('.navbar #logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
@@ -320,71 +328,88 @@ const server = http.createServer((req, res) => {
 		permissions: defaultPermissions, state
 	} ));
 	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
-	let guilds = '';
+	let guilds = $('<div>');
 	if ( settings.guilds.isMember.size ) {
-		guilds += `<div class="guild">
-			<div class="separator"></div>
-		</div>`;
+		$('<div class="guild">').append(
+			$('<div class="separator">')
+		).appendTo(guilds);
 		settings.guilds.isMember.forEach( guild => {
-			guilds += `<div class="guild" id="${guild.id}">
-				<div class="bar"></div>
-				<a href="/guild/${guild.id}" alt="${guild.name}">` + ( guild.icon ? 
-					`<img class="avatar" src="${guild.icon}" alt="${guild.acronym}" width="48" height="48">`
-					: `<div class="avatar noicon">${guild.acronym}</div>` ) + 
-				`</a>
-			</div>`;
+			$('<div class="guild">').attr('id', guild.id).append(
+				$('<div class="bar">'),
+				$('<a>').attr('href', `/guild/${guild.id}`).attr('alt', guild.name).append(
+					( guild.icon ? 
+						$('<img class="avatar" width="48" height="48">').attr('src', guild.icon).attr('alt', guild.name)
+					 : $('<div class="avatar noicon">').text(guild.acronym) )
+				)
+			).appendTo(guilds);
 		} );
 	}
 	if ( settings.guilds.notMember.size ) {
-		guilds += `<div class="guild">
-			<div class="separator"></div>
-		</div>`;
+		$('<div class="guild">').append(
+			$('<div class="separator">')
+		).appendTo(guilds);
 		settings.guilds.notMember.forEach( guild => {
-			guilds += `<div class="guild" id="${guild.id}">
-				<div class="bar"></div>
-				<a href="/guild/${guild.id}" alt="${guild.name}">` + ( guild.icon ? 
-					`<img class="avatar" src="${guild.icon}" alt="${guild.acronym}" width="48" height="48">`
-					: `<div class="avatar noicon">${guild.acronym}</div>` ) + 
-				`</a>
-			</div>`;
+			$('<div class="guild">').attr('id', guild.id).append(
+				$('<div class="bar">'),
+				$('<a>').attr('href', `/guild/${guild.id}`).attr('alt', guild.name).append(
+					( guild.icon ? 
+						$('<img class="avatar" width="48" height="48">').attr('src', guild.icon).attr('alt', guild.name)
+					 : $('<div class="avatar noicon">').text(guild.acronym) )
+				)
+			).appendTo(guilds);
 		} );
 	}
-	$('replace#guilds').replaceWith(guilds);
+	$('replace#guilds').replaceWith(guilds.children());
 
 	if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 		let id = reqURL.pathname.replace( '/guild/', '' );
 		if ( settings.guilds.isMember.has(id) ) {
-			$('.guild#' + id).addClass('selected');
+			$(`.guild#${id}`).addClass('selected');
 			let guild = settings.guilds.isMember.get(id);
-			$('head title').text(guild.name + ' – ' + $('head title').text());
+			$('head title').text(`${guild.name} – ` + $('head title').text());
 			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
 			$('replace#text').replaceWith(`${guild.permissions}`);
 		}
 		if ( settings.guilds.notMember.has(id) ) {
-			$('.guild#' + id).addClass('selected');
+			$(`.guild#${id}`).addClass('selected');
 			let guild = settings.guilds.notMember.get(id);
-			$('head title').text(guild.name + ' – ' + $('head title').text());
+			$('head title').text(`${guild.name} – ` + $('head title').text());
 			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
 			let url = oauth.generateAuthUrl( {
 				scope: ['identify', 'guilds', 'bot'],
 				permissions: defaultPermissions,
 				guild_id: id, state
 			} );
-			$('replace#text').replaceWith(`<a href="${url}">${guild.permissions}</a>`);
+			$('replace#text').replaceWith($('<a>').attr('href', url).text(guild.permissions));
 		}
 		$('replace#text').replaceWith('You are missing the <code>MANAGE_GUILD</code> permission.');
 	}
 
 	$('replace#text').replaceWith('Keks');
-	let notice = $.html();
-	res.writeHead(200, {'Content-Length': notice.length});
-	res.write( notice );
+	let body = $.html();
+	res.writeHead(200, {'Content-Length': body.length});
+	res.write( body );
 	return res.end();
 });
 
 server.listen(8080, 'localhost', () => {
 	console.log( '- Dashboard: Server running at http://localhost:8080/' );
 });
+
+/**
+ * Create a red notice
+ * @param {CheerioStatic} $ - The cheerio static
+ * @param {{title: String, text: String}[]} notices - The notices to create
+ * @returns {Cheerio}
+ */
+function createNotice($, ...notices) {
+	return notices.map( notice => {
+		return $('<div class="notice">').append(
+			$('<b>').text(notice.title),
+			$('<div>').text(notice.text)
+		);
+	} );
+}
 
 const permissions = {
 	ADMINISTRATOR: 1 << 3,
@@ -401,7 +426,7 @@ const permissions = {
 /**
  * Check if a permission is included in the BitField
  * @param {String|Number} all - BitField of multiple permissions
- * @param {String?} permission - Name of the permission to check for
+ * @param {String} permission - Name of the permission to check for
  * @param {Boolean} [admin] - If administrator permission can overwrite
  * @returns {Boolean}
  */

@@ -29,6 +29,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			}
 			if ( !row ) return msg.replyMsg( 'you can\'t have any server.', {}, true );
 			if ( row.count <= row.guilds ) return msg.replyMsg( 'you already reached your maximal server count.', {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 			db.run( 'UPDATE discord SET patreon = ? WHERE guild = ? AND channel IS NULL', [msg.author.id, args[1]], function (error) {
 				if ( error ) {
 					console.log( '- Error while updating the guild: ' + error );
@@ -63,6 +64,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				return dberror;
 			}
 			if ( !row ) return msg.replyMsg( 'you didn\'t enable the patreon features for "' + guild + '"!', {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 			db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ?, patreon = NULL WHERE guild = ?', [row.lang, row.inline, process.env.prefix, args[1]], function (error) {
 				if ( error ) {
 					console.log( '- Error while updating the guild: ' + error );
@@ -170,6 +172,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		var guilds = ( row && row.guilds ? row.guilds.split(',') : [] );
 		if ( args[2].startsWith( '+' ) || args[2].startsWith( '-' ) ) count += value;
 		else count = value;
+		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 		if ( count <= 0 ) return db.run( 'DELETE FROM patreons WHERE patreon = ?', [args[1]], function (error) {
 			if ( error ) {
 				console.log( '- Error while deleting the patreon: ' + error );

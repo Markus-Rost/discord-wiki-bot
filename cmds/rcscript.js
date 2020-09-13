@@ -56,6 +56,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return msg.replyMsg( lang.get('rcscript.noadmin') );
 			}
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 
 			var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 			var input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
@@ -192,6 +193,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			let cmd = prefix + 'rcscript' + ( rows.length === 1 ? '' : ' ' + selected_row.configid );
 
 			if ( args[0] === 'delete' && !args[1] ) {
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 				return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 					var channel = msg.guild.channels.cache.get(webhook.channelID);
 					if ( !channel || !channel.permissionsFor(msg.member).has('MANAGE_WEBHOOKS') ) {
@@ -229,6 +231,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !args[1] ) {
 					return msg.replyMsg( lang.get('rcscript.current_wiki') + ' <' + selected_row.wiki + '>\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki'), {}, true );
 				}
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = input_to_wiki(args[1].replace( /^(?:https?:)?\/\//, 'https://' ));
@@ -334,6 +337,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !args[1] ) {
 					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${selected_row.lang}.png`] : [] )}, true );
 				}
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 				if ( !( args[1] in allLangs.map ) ) {
 					return msg.replyMsg( lang.get('settings.langinvalid') + '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {}, true );
 				}
@@ -355,6 +359,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !args[1] || !display_types.includes( args[1] ) ) {
 					return msg.replyMsg( lang.get('rcscript.current_display') + ' `' + display_types[selected_row.display] + '`\n`' + cmd + ' display (' + display.join('|') + ')`\n' + display.map( display_type => '`' + display_type + '`: ' + lang.get('rcscript.help_display_' + display_type) ).join('\n'), {}, true );
 				}
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 				if ( !display.includes( args[1] ) ) {
 					return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 				}
@@ -373,6 +378,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				} );
 			}
 			if ( selected_row.wiki.isFandom() && args[0] === 'feeds' ) {
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 				if ( args[1] === 'only' ) {
 					if ( selected_row.rcid === -1 ) {
 						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
@@ -571,6 +577,7 @@ function blocklist(msg, args) {
 	var prefix = ( patreons[msg?.guild?.id] || process.env.prefix );
 	if ( args[0] === 'add' ) {
 		if ( !args[1] ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
+		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 		let input = args[1].toLowerCase().replace( /^<(.*?)>$/, '$1' );
 		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
@@ -611,6 +618,7 @@ function blocklist(msg, args) {
 		let input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
 		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block remove <wiki>`', {}, true );
+		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
 		return db.run( 'DELETE FROM blocklist WHERE wiki = ?', [wiki.href], function (error) {
 			if ( error ) {
 				console.log( '- Error while removing from the blocklist: ' + error );

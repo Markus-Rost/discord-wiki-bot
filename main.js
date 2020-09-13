@@ -2,7 +2,7 @@ require('dotenv').config();
 const child_process = require('child_process');
 
 const isDebug = ( process.argv[2] === 'debug' );
-process.env.READONLY = ( process.argv[2] === 'readonly' );
+if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
 const got = require('got').extend( {
 	throwHttpErrors: false,
 	timeout: 30000,
@@ -57,7 +57,7 @@ manager.spawn().then( shards => {
 		for ( let [key, value] of Object.entries(botList) ) {
 			if ( !value ) delete botList[key];
 		}
-		if ( Object.keys(botlist).length ) {
+		if ( Object.keys(botList).length ) {
 			setInterval( postStats, 10800000, botList, shards.size ).unref();
 		}
 	}
