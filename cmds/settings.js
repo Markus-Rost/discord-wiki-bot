@@ -76,7 +76,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				if ( !rows.length ) return msg.replyMsg( lang.get('settings.wikimissing') + wikihelp, {}, true );
 				else return msg.replyMsg( lang.get('settings.' + prelang) + ' ' + ( channel || guild ).wiki + wikihelp, {}, true );
 			}
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var isForced = false;
 			if ( /^<?(?:https?:)?\/\//.test(args[1]) ) {
 				args[1] = args[1].replace( /^<?(?:https?:)?\/\//, 'https://' );
@@ -220,7 +220,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !args[1] ) {
 				return msg.replyMsg( lang.get('settings.' + prelang) + ' `' + allLangs.names[( channel || guild ).lang] + '`' + langhelp, {files:( msg.uploadFiles() ? [`./i18n/widgets/${( channel || guild ).lang}.png`] : [] )}, true );
 			}
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			if ( !( args[1] in allLangs.map ) ) {
 				return msg.replyMsg( lang.get('settings.langinvalid') + langhelp, {}, true );
 			}
@@ -278,7 +278,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !args[1].trim() ) {
 				return msg.replyMsg( lang.get('settings.prefix') + ' `' + prefix + '`' + prefixhelp, {}, true );
 			}
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			if ( args[1].includes( '`' ) || args[1].length > 100 ) {
 				return msg.replyMsg( lang.get('settings.prefixinvalid') + prefixhelp, {}, true );
 			}
@@ -309,7 +309,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( args[1] !== 'toggle' ) {
 				return msg.replyMsg( lang.get('settings.' + toggle + '.' + prelang) + inlinehelp, {}, true );
 			}
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var value = ( ( channel || guild ).inline ? null : 1 );
 			var sql = 'UPDATE discord SET inline = ? WHERE guild = ?';
 			var sqlargs = [value, msg.guild.id];

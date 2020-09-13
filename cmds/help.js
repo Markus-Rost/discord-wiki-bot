@@ -67,7 +67,7 @@ const restrictions = {
 	admin: ['settings', 'verification', 'rcscript', 'voice', 'pause'],
 	inline: ['inline.link', 'inline.template'],
 	patreon: ['settings.prefix'],
-	experimental: ['rcscript.default']
+	experimental: []
 }
 
 /**

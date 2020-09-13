@@ -31,7 +31,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
 			var limit = verificationLimit[( msg.guild.id in patreons ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), {}, true );
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
 			if ( !roles.length ) return msg.replyMsg( lang.get('verification.no_role') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`', {}, true );
 			if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {}, true );
@@ -74,7 +74,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		var row = rows.find( row => row.configid.toString() === args[0] );
 		if ( args[1] ) args[1] = args[1].toLowerCase();
 		if ( args[1] === 'delete' && !args.slice(2).join('') ) {
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			return db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [msg.guild.id, row.configid], function (dberror) {
 				if ( dberror ) {
 					console.log( '- Error while removing the verification: ' + dberror );
@@ -90,7 +90,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				console.log( msg.guild.id + ': Missing permissions - MANAGE_NICKNAMES' );
 				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_NICKNAMES`' );
 			}
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			return db.run( 'UPDATE verification SET rename = ? WHERE guild = ? AND configid = ?', [( row.rename ? 0 : 1 ), msg.guild.id, row.configid], function (dberror) {
 				if ( dberror ) {
 					console.log( '- Error while updating the verification: ' + dberror );
@@ -103,7 +103,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			} );
 		}
 		if ( args[2] ) {
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			args[2] = args.slice(2).join(' ').replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' );
 			if ( args[1] === 'channel' ) {
 				var channels = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).split('|').filter( channel => channel.length );

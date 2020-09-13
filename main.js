@@ -66,8 +66,10 @@ manager.spawn().then( shards => {
 	manager.respawnAll();
 } );
 
+var server;
 if ( process.env.dashboard ) {
 	const dashboard = child_process.fork('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
+	server = dashboard;
 
 	dashboard.on( 'message', message => {
 		if ( message.id ) {
@@ -173,6 +175,6 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
 		manager.shards.forEach( shard => shard.kill() );
-		if ( process.env.dashboard ) dashboard.kill('SIGTERM');
+		if ( typeof server !== 'undefined' ) server.kill('SIGTERM');
 	}, timeout  * 1000 ).unref();
 }

@@ -18,7 +18,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 		}
 		args[1] = args.slice(1).join(' ').trim()
 		if ( args[0].toLowerCase() === 'toggle' && !args[1] ) {
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var value = ( msg.guild.id in voice ? null : 1 );
 			return db.run( 'UPDATE discord SET voice = ? WHERE guild = ? AND channel IS NULL', [value, msg.guild.id], function (dberror) {
 				if ( dberror ) {
