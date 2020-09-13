@@ -1,3 +1,4 @@
+const Wiki = require('../../util/wiki.js');
 const commands = require('./commands.json');
 
 /**
@@ -8,7 +9,7 @@ const commands = require('./commands.json');
  * @param {String[]} args - The command arguments.
  * @param {String} title - The page title.
  * @param {String} cmd - The command at this point.
- * @param {String} querystring - The querystring for the link.
+ * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
@@ -40,7 +41,7 @@ function minecraft_syntax(lang, msg, mccmd, args, title, cmd, querystring, fragm
 	else {
 		msg.reactEmoji('❓');
 		msg.notMinecraft = true;
-		this.WIKI.gamepedia(lang, msg, title, lang.get('minecraft.link'), cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.gamepedia(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 

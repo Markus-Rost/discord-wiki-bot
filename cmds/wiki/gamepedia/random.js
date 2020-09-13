@@ -7,12 +7,12 @@ const extract_desc = require('../../../util/extract_desc.js');
  * Sends a random Gamepedia page.
  * @param {import('../../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {String} wiki - The wiki for the page.
+ * @param {import('../../../util/wiki.js')} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
-	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle&explaintext=true&exsectionformat=raw&exlimit=1&generator=random&grnnamespace=0&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free&explaintext=true&exsectionformat=raw&exlimit=1&generator=random&grnnamespace=0&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -27,7 +27,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 		}
 		else {
 			var querypage = Object.values(body.query.pages)[0];
-			var pagelink = wiki.toLink(querypage.title, '', '', body.query.general);
+			var pagelink = wiki.updateWiki(body.query.general).toLink(querypage.title);
 			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 			if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 				var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
@@ -43,12 +43,18 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 				var extract = extract_desc(querypage.extract);
 				embed.setDescription( extract[0] );
 			}
-			if ( querypage.pageimage && querypage.original && querypage.title !== body.query.general.mainpage ) {
+			if ( querypage.title === body.query.general.mainpage ) {
+				embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+			}
+			else if ( querypage.pageimage && querypage.original ) {
 				embed.setThumbnail( querypage.original.source );
 			}
-			else embed.setThumbnail( logoToURL(body.query.general) );
+			else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
+				embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
+			}
+			else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 			
-			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : logoToURL(body.query.general) )) );
+			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href )) );
 		}
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
@@ -62,18 +68,6 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 	} ).finally( () => {
 		if ( reaction ) reaction.removeEmoji();
 	} );
-}
-
-/**
- * Turns the siteinfo logo into an URL.
- * @param {Object} arg - The siteinfo from the wiki.
- * @param {String} arg.logo - The logo from the wiki.
- * @param {String} arg.server - The server URL from the wiki.
- * @returns {String}
- */
-function logoToURL({logo, server: serverURL}) {
-	if ( !/^(?:https?:)?\/\//.test(logo) ) logo = serverURL + ( logo.startsWith( '/' ) ? '' : '/' ) + logo;
-	return logo.replace( /^(?:https?:)?\/\//, 'https://' );
 }
 
 /**

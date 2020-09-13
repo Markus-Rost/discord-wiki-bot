@@ -2,6 +2,7 @@ const cheerio = require('cheerio');
 const {limit: {rcgcdw: rcgcdwLimit}, defaultSettings, wikiProjects} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs(true);
+const Wiki = require('../util/wiki.js');
 var db = require('../util/database.js');
 
 const fs = require('fs');
@@ -20,11 +21,11 @@ const display_types = [
 
 /**
  * Processes the "rcscript" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {Lang} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {Wiki} wiki - The wiki for the message.
  */
 function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( args[0] === 'block' && msg.isOwner() ) return blocklist(msg, args.slice(1));
@@ -55,19 +56,20 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return msg.replyMsg( lang.get('rcscript.noadmin') );
 			}
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 
 			var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
-			var wikinew = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
-			if ( !wikinew ) wikinew = wiki;
-			else {
-				wikinew = input_to_wiki(wikinew.replace( /^(?:https?:)?\/\//, 'https://' ));
+			var input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
+			var wikinew = new Wiki(wiki);
+			if ( input ) {
+				wikinew = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
 				if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 					let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 					if ( api ) {
-						wikinew = api.replace( /^(?:https?:)?\/\//, 'https://' ).split('api.php?')[0];
+						wikinew = new Wiki(api.split('api.php?')[0], wikinew);
 						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
 					}
 				}
@@ -80,7 +82,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					msg.reactEmoji('nowiki', true);
 					return msg.replyMsg( wikiinvalid, {}, true );
 				}
-				wikinew = body.query.general.server.replace( /^(?:https?:)?\/\//, 'https://' ) + body.query.general.scriptpath + '/';
+				wikinew.updateWiki(body.query.general);
 				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 					console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 					if ( reaction ) reaction.removeEmoji();
@@ -88,9 +90,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 				if ( body.query.allmessages[0]['*'] !== msg.guild.id ) {
 					if ( reaction ) reaction.removeEmoji();
-					return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit', '', body.query.general) + '>', {}, true );
+					return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {}, true );
 				}
-				return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew], (blerror, row) => {
+				return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew.href], (blerror, row) => {
 					if ( blerror ) {
 						console.log( '- Error while getting the blocklist: ' + blerror );
 						if ( reaction ) reaction.removeEmoji();
@@ -143,13 +145,13 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						} ).then( webhook => {
 							console.log( '- Webhook successfully created.' );
 							var webhook_lang = new Lang(( allLangs.map[lang.lang] || allLangs.map[body.query.general.lang] || defaultSettings.lang ), 'rcscript.webhook');
-							webhook.send( webhook_lang.get('created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
+							webhook.send( webhook_lang.get('created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
 							var new_configid = 1;
 							for ( let i of rows.map( row => row.configid ) ) {
 								if ( new_configid === i ) new_configid++;
 								else break;
 							}
-							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), wikiid], function (error) {
+							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), wikiid], function (error) {
 								if ( error ) {
 									console.log( '- Error while adding the RcGcDw: ' + error );
 									if ( reaction ) reaction.removeEmoji();
@@ -158,7 +160,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 								}
 								console.log( '- RcGcDw successfully added.' );
 								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`' + '\n' + lang.get('general.experimental'), {}, true );
+								msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', {}, true );
 							} );
 						}, error => {
 							console.log( '- Error while creating the webhook: ' + error );
@@ -191,6 +193,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			let cmd = prefix + 'rcscript' + ( rows.length === 1 ? '' : ' ' + selected_row.configid );
 
 			if ( args[0] === 'delete' && !args[1] ) {
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 					var channel = msg.guild.channels.cache.get(webhook.channelID);
 					if ( !channel || !channel.permissionsFor(msg.member).has('MANAGE_WEBHOOKS') ) {
@@ -228,6 +231,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !args[1] ) {
 					return msg.replyMsg( lang.get('rcscript.current_wiki') + ' <' + selected_row.wiki + '>\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki'), {}, true );
 				}
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = input_to_wiki(args[1].replace( /^(?:https?:)?\/\//, 'https://' ));
@@ -236,7 +240,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
-							wikinew = api.replace( /^(?:https?:)?\/\//, 'https://' ).split('api.php?')[0];
+							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
 							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
 						}
 					}
@@ -249,7 +253,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						msg.reactEmoji('nowiki', true);
 						return msg.replyMsg( wikiinvalid, {}, true );
 					}
-					wikinew = body.query.general.server.replace( /^(?:https?:)?\/\//, 'https://' ) + body.query.general.scriptpath + '/';
+					wikinew.updateWiki(body.query.general);
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						if ( reaction ) reaction.removeEmoji();
@@ -257,9 +261,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					}
 					if ( body.query.allmessages[0]['*'] !== msg.guild.id ) {
 						if ( reaction ) reaction.removeEmoji();
-						return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit', '', body.query.general) + '>', {}, true );
+						return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {}, true );
 					}
-					return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew], (blerror, row) => {
+					return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew.href], (blerror, row) => {
 						if ( blerror ) {
 							console.log( '- Error while getting the blocklist: ' + blerror );
 							if ( reaction ) reaction.removeEmoji();
@@ -307,9 +311,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						 */
 						function updateWiki(wikiid = null) {
 							msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-								webhook.send( webhook_lang.get('updated_wiki', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title, '', '', body.query.general) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
+								webhook.send( webhook_lang.get('updated_wiki', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
 							}, log_error );
-							db.run( 'UPDATE rcgcdw SET wiki = ?, wikiid = ?, rcid = ?, postid = ? WHERE webhook = ?', [wikinew, wikiid, null, null, selected_row.webhook], function (error) {
+							db.run( 'UPDATE rcgcdw SET wiki = ?, wikiid = ?, rcid = ?, postid = ? WHERE webhook = ?', [wikinew.href, wikiid, null, null, selected_row.webhook], function (error) {
 								if ( error ) {
 									console.log( '- Error while updating the RcGcDw: ' + error );
 									if ( reaction ) reaction.removeEmoji();
@@ -333,6 +337,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !args[1] ) {
 					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${selected_row.lang}.png`] : [] )}, true );
 				}
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				if ( !( args[1] in allLangs.map ) ) {
 					return msg.replyMsg( lang.get('settings.langinvalid') + '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {}, true );
 				}
@@ -354,6 +359,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !args[1] || !display_types.includes( args[1] ) ) {
 					return msg.replyMsg( lang.get('rcscript.current_display') + ' `' + display_types[selected_row.display] + '`\n`' + cmd + ' display (' + display.join('|') + ')`\n' + display.map( display_type => '`' + display_type + '`: ' + lang.get('rcscript.help_display_' + display_type) ).join('\n'), {}, true );
 				}
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				if ( !display.includes( args[1] ) ) {
 					return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 				}
@@ -372,6 +378,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				} );
 			}
 			if ( selected_row.wiki.isFandom() && args[0] === 'feeds' ) {
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				if ( args[1] === 'only' ) {
 					if ( selected_row.rcid === -1 ) {
 						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
@@ -556,7 +563,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			} ).join('');
 			else text += lang.get('rcscript.missing');
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
-			msg.sendChannel( lang.get('general.experimental') + '\n' + '<@' + msg.author.id + '>, ' + text, {split:true}, true );
+			msg.replyMsg( text, {split:true}, true );
 		} );
 	} );
 }
@@ -570,11 +577,12 @@ function blocklist(msg, args) {
 	var prefix = ( patreons[msg?.guild?.id] || process.env.prefix );
 	if ( args[0] === 'add' ) {
 		if ( !args[1] ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
+		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 		let input = args[1].toLowerCase().replace( /^<(.*?)>$/, '$1' );
 		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
 		let reason = ( args.slice(2).join(' ').trim() || null );
-		return db.run( 'INSERT INTO blocklist(wiki, reason) VALUES(?, ?)', [wiki, reason], function (error) {
+		return db.run( 'INSERT INTO blocklist(wiki, reason) VALUES(?, ?)', [wiki.href, reason], function (error) {
 			if ( error ) {
 				if ( error.message === 'SQLITE_CONSTRAINT: UNIQUE constraint failed: blocklist.wiki' ) {
 					return msg.replyMsg( '`' + wiki + '` is already on the blocklist.\n`' + prefix + 'rcscript block <' + wiki + '>`', {}, true );
@@ -584,7 +592,7 @@ function blocklist(msg, args) {
 				return error;
 			}
 			console.log( '- Successfully added to the blocklist.' );
-			db.each( 'SELECT webhook, lang FROM rcgcdw WHERE wiki = ?', [wiki], (dberror, row) => {
+			db.each( 'SELECT webhook, lang FROM rcgcdw WHERE wiki = ?', [wiki.href], (dberror, row) => {
 				if ( dberror ) return dberror;
 				msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
 					var lang = new Lang(row.lang, 'rcscript.webhook');
@@ -594,7 +602,7 @@ function blocklist(msg, args) {
 				}, log_error );
 			}, (dberror, count) => {
 				if ( dberror ) console.log( '- Error while deleting the webhooks: ' + dberror );
-				db.run( 'DELETE FROM rcgcdw WHERE wiki = ?', [wiki], function (delerror) {
+				db.run( 'DELETE FROM rcgcdw WHERE wiki = ?', [wiki.href], function (delerror) {
 					if ( delerror ) {
 						console.log( '- Error while removing the webhooks: ' + delerror );
 						msg.replyMsg( 'I added `' + wiki + '` to the blocklist for `' + reason + '` but got an error while removing the webhooks: ' + delerror, {}, true );
@@ -607,10 +615,11 @@ function blocklist(msg, args) {
 		} );
 	}
 	if ( args[0] === 'remove' ) {
-		let wiki = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
-		wiki = input_to_wiki(wiki.replace( /^(?:https?:)?\/\//, 'https://' ));
+		let input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
+		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block remove <wiki>`', {}, true );
-		return db.run( 'DELETE FROM blocklist WHERE wiki = ?', [wiki], function (error) {
+		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
+		return db.run( 'DELETE FROM blocklist WHERE wiki = ?', [wiki.href], function (error) {
 			if ( error ) {
 				console.log( '- Error while removing from the blocklist: ' + error );
 				msg.replyMsg( 'I got an error while removing from the blocklist: ' + error, {}, true );
@@ -621,10 +630,10 @@ function blocklist(msg, args) {
 		} );
 	}
 	if ( args.length ) {
-		let wiki = args.join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
-		wiki = input_to_wiki(wiki.replace( /^(?:https?:)?\/\//, 'https://' ));
+		let input = args.join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
+		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block <wiki>`\n`' + prefix + 'rcscript block add <wiki> [<reason>]`\n`' + prefix + 'rcscript block remove <wiki>`', {}, true );
-		return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki], function (error, row) {
+		return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki.href], function (error, row) {
 			if ( error ) {
 				console.log( '- Error while checking the blocklist: ' + error );
 				msg.replyMsg( 'I got an error while checking the blocklist: ' + error, {}, true );
@@ -648,31 +657,32 @@ function blocklist(msg, args) {
 /**
  * Turn user input into a wiki.
  * @param {String} input - The user input referring to a wiki.
+ * @returns {Wiki}
  */
 function input_to_wiki(input) {
-	var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-	if ( regex ) return 'https://' + regex[1] + '/';
+	var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
+	if ( regex ) return new Wiki('https://' + regex[1] + '/');
 	if ( input.startsWith( 'https://' ) ) {
 		let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
 		if ( project ) {
 			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-			if ( regex ) return 'https://' + regex[1] + project.scriptPath;
+			if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
 		}
 		let wiki = input.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '/' );
 		if ( !wiki.endsWith( '/' ) ) wiki += '/';
-		return wiki;
+		return new Wiki(wiki);
 	}
 	let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
 	if ( project ) {
 		regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-		if ( regex ) return 'https://' + regex[1] + project.scriptPath;
+		if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
 	}
 	if ( allSites.some( site => site.wiki_domain === input + '.gamepedia.com' ) ) {
-		return 'https://' + input + '.gamepedia.com/';
+		return new Wiki('https://' + input + '.gamepedia.com/');
 	}
 	if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
-		if ( !input.includes( '.' ) ) return 'https://' + input + '.fandom.com/';
-		else return 'https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/';
+		if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');
+		else return new Wiki('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
 	}
 	return;
 }

@@ -7,7 +7,7 @@ var db = require('../util/database.js');
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_voice(lang, msg, args, line, wiki) {
 	if ( msg.isAdmin() ) {
@@ -18,6 +18,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 		}
 		args[1] = args.slice(1).join(' ').trim()
 		if ( args[0].toLowerCase() === 'toggle' && !args[1] ) {
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var value = ( msg.guild.id in voice ? null : 1 );
 			return db.run( 'UPDATE discord SET voice = ? WHERE guild = ? AND channel IS NULL', [value, msg.guild.id], function (dberror) {
 				if ( dberror ) {

@@ -7,7 +7,7 @@ var db = require('../util/database.js');
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
@@ -31,6 +31,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
 			var limit = verificationLimit[( msg.guild.id in patreons ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), {}, true );
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
 			if ( !roles.length ) return msg.replyMsg( lang.get('verification.no_role') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`', {}, true );
 			if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {}, true );
@@ -73,6 +74,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		var row = rows.find( row => row.configid.toString() === args[0] );
 		if ( args[1] ) args[1] = args[1].toLowerCase();
 		if ( args[1] === 'delete' && !args.slice(2).join('') ) {
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			return db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [msg.guild.id, row.configid], function (dberror) {
 				if ( dberror ) {
 					console.log( '- Error while removing the verification: ' + dberror );
@@ -88,6 +90,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				console.log( msg.guild.id + ': Missing permissions - MANAGE_NICKNAMES' );
 				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_NICKNAMES`' );
 			}
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			return db.run( 'UPDATE verification SET rename = ? WHERE guild = ? AND configid = ?', [( row.rename ? 0 : 1 ), msg.guild.id, row.configid], function (dberror) {
 				if ( dberror ) {
 					console.log( '- Error while updating the verification: ' + dberror );
@@ -100,6 +103,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			} );
 		}
 		if ( args[2] ) {
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			args[2] = args.slice(2).join(' ').replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' );
 			if ( args[1] === 'channel' ) {
 				var channels = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).split('|').filter( channel => channel.length );
@@ -178,7 +182,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 						if ( wiki.noWiki(response.url) || response.statusCode === 410 ) console.log( '- This wiki doesn\'t exist!' );
 						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
 					}
-					var groups = body.query.allmessages.filter( group => !/\.(?:css|js)$/.test(group.name) && group.name !== 'group-all' ).map( group => {
+					var groups = body.query.allmessages.filter( group => !['group-all','group-membership-link-with-expiry'].includes( group.name ) && !/\.(?:css|js)$/.test(group.name) ).map( group => {
 						return {
 							name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
 							content: group['*'].replace( / /g, '_' ).toLowerCase()
@@ -187,7 +191,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					usergroups = usergroups.map( usergroup => {
 						if ( groups.some( group => group.name === usergroup ) ) return usergroup;
 						if ( groups.some( group => group.content === usergroup ) ) return groups.find( group => group.content === usergroup ).name;
-						if ( /^admins?$/.test(usergroup) ) return 'sysop'
+						if ( /^admins?$/.test(usergroup) ) return 'sysop';
 						return usergroup;
 					} );
 				}, error => {

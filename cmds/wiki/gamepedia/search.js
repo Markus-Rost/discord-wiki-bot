@@ -5,7 +5,7 @@ const {MessageEmbed, Util} = require('discord.js');
  * @param {import('../../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} searchterm - The searchterm.
- * @param {String} wiki - The wiki for the search.
+ * @param {import('../../../util/wiki.js')} wiki - The wiki for the search.
  * @param {Object} query - The siteinfo from the wiki.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
@@ -15,10 +15,10 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 		searchterm = searchterm.substring(0, 250);
 		msg.reactEmoji('⚠️');
 	}
-	var pagelink = wiki.toLink('Special:Search', 'search=' + searchterm.toSearch() + '&fulltext=1', '', query.general);
+	var pagelink = wiki.toLink('Special:Search', {search:searchterm,fulltext:1});
 	var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( '`' + searchterm + '`' ).setURL( pagelink );
 	if ( !searchterm.trim() ) {
-		pagelink = wiki.toLink('Special:Search', '', '', query.general);
+		pagelink = wiki.toLink('Special:Search');
 		embed.setTitle( 'Special:Search' ).setURL( pagelink );
 	}
 	var description = [];
@@ -30,17 +30,17 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 		}
 		if ( body.query.pages && body.query.pages['-1'] && body.query.pages['-1'].title ) {
 			if ( searchterm.trim() ) {
-				pagelink = wiki.toLink(body.query.pages['-1'].title, 'search=' + searchterm.toSearch() + '&fulltext=1', '', query.general);
+				pagelink = wiki.toLink(body.query.pages['-1'].title, {search:searchterm,fulltext:1});
 				embed.setURL( pagelink );
 			}
 			else {
-				pagelink = wiki.toLink(body.query.pages['-1'].title, '', '', query.general);
+				pagelink = wiki.toLink(body.query.pages['-1'].title);
 				embed.setTitle( body.query.pages['-1'].title ).setURL( pagelink );
 			}
 		}
 		if ( searchterm.trim() ) {
 			body.query.search.forEach( result => {
-				description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')' + ( result.sectiontitle ? ' § [' + result.sectiontitle + '](' + wiki.toLink(result.title, '', result.sectiontitle, query.general, true) + ')' : '' ) + ( result.redirecttitle ? ' (⤷ [' + result.redirecttitle + '](' + wiki.toLink(result.redirecttitle, '', '', query.general, true) + '))' : '' ) );
+				description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', true) + ')' + ( result.sectiontitle ? ' § [' + result.sectiontitle + '](' + wiki.toLink(result.title, '', result.sectiontitle, true) + ')' : '' ) + ( result.redirecttitle ? ' (⤷ [' + result.redirecttitle + '](' + wiki.toLink(result.redirecttitle, 'redirect=no', '', true) + '))' : '' ) );
 			} );
 			if ( body.query.searchinfo ) {
 				embed.setFooter( lang.get('search.results', body.query.searchinfo.totalhits) );

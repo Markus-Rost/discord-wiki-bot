@@ -1,6 +1,8 @@
 require('dotenv').config();
+const child_process = require('child_process');
 
 const isDebug = ( process.argv[2] === 'debug' );
+if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
 const got = require('got').extend( {
 	throwHttpErrors: false,
 	timeout: 30000,
@@ -34,12 +36,12 @@ manager.on( 'shardCreate', shard => {
 			console.log( '\n- Killing all shards!\n\n' );
 			manager.shards.forEach( shard => shard.kill() );
 		}
-		if ( message === 'postStats' ) postStats();
+		if ( message === 'postStats' && process.env.botlist ) postStats();
 	} );
 	
 	shard.on( 'death', message => {
 		if ( manager.respawn === false ) diedShards++;
-		if ( ![null, 0].includes( message.exitCode ) ) {
+		if ( message.exitCode ) {
 			if ( !shard.ready ) {
 				manager.respawn = false;
 				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
@@ -50,17 +52,72 @@ manager.on( 'shardCreate', shard => {
 } );
 
 manager.spawn().then( shards => {
-	if ( !isDebug ) {
+	if ( !isDebug && process.env.botlist ) {
 		var botList = JSON.parse(process.env.botlist);
 		for ( let [key, value] of Object.entries(botList) ) {
 			if ( !value ) delete botList[key];
 		}
-		setInterval( postStats, 10800000, botList, shards.size ).unref();
+		if ( Object.keys(botList).length ) {
+			setInterval( postStats, 10800000, botList, shards.size ).unref();
+		}
 	}
 }, error => {
 	console.error( '- Error while spawning the shards: ' + error );
 	manager.respawnAll();
 } );
+
+var server;
+if ( process.env.dashboard ) {
+	const dashboard = child_process.fork('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
+	server = dashboard;
+
+	dashboard.on( 'message', message => {
+		if ( message.id ) {
+			var data = {
+				type: message.data.type,
+				response: null,
+				error: null
+			};
+			switch ( message.data.type ) {
+				case 'isMember':
+					return manager.broadcastEval(`this.guilds.cache.has('${message.data.guild}')`).then( results => {
+						data.response = results.includes( true );
+					}, error => {
+						data.error = error;
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				case 'isMemberAll':
+					return manager.broadcastEval(`${JSON.stringify(message.data.guilds)}.map( guild => {
+						return this.guilds.cache.has(guild);
+					} )`).then( results => {
+						data.response = message.data.guilds.map( (guild, i) => {
+							return results.map( result => result[i] ).includes( true );
+						} );
+					}, error => {
+						data.error = error;
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				default:
+					console.log( '- [Dashboard]: Unknown message received!', message.data );
+					data.error = 'Unknown message type: ' + message.data.type;
+					return dashboard.send( {id: message.id, data} );
+			}
+		}
+		console.log( '- [Dashboard]: Message received!', message );
+	} );
+
+	dashboard.on( 'error', error => {
+		console.log( '- [Dashboard]: Error received!', error );
+	} );
+
+	dashboard.on( 'exit', (code) => {
+		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
+	} );
+}
 
 /**
  * Post bot statistics to bot lists.
@@ -98,7 +155,7 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 
 /**
  * End the process gracefully.
- * @param {String} signal - The signal received.
+ * @param {NodeJS.Signals} signal - The signal received.
  */
 async function graceful(signal) {
 	console.log( '- ' + signal + ': Disabling respawn...' );
@@ -118,5 +175,6 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
 		manager.shards.forEach( shard => shard.kill() );
+		if ( typeof server !== 'undefined' ) server.kill('SIGTERM');
 	}, timeout  * 1000 ).unref();
 }

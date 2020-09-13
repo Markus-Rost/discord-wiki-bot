@@ -6,7 +6,7 @@ const gamepedia_random = require('../gamepedia/random.js').run;
  * Sends a random Fandom page.
  * @param {import('../../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {String} wiki - The wiki for the page.
+ * @param {import('../../../util/wiki.js')} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
@@ -31,11 +31,11 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 		}
 		else {
 			var querypage = Object.values(body.query.pages)[0];
-			var pagelink = wiki.toLink(querypage.title, '', '', body.query.general);
+			var pagelink = wiki.updateWiki(body.query.general).toLink(querypage.title);
 			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 			if ( querypage.title === body.query.general.mainpage && body.query.allmessages[0]['*'] ) {
 				embed.setDescription( body.query.allmessages[0]['*'] );
-				embed.setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general) );
+				embed.setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png') );
 				
 				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 				
@@ -48,7 +48,7 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 				if ( descresponse.statusCode !== 200 || !descbody ) {
 					console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 				} else {
-					var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png', '', '', body.query.general);
+					var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
 					var parser = new htmlparser.Parser( {
 						onopentag: (tagname, attribs) => {
 							if ( tagname === 'meta' && attribs.property === 'og:description' ) {

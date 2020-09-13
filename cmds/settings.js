@@ -3,6 +3,7 @@ const {MessageEmbed} = require('discord.js');
 const {defaultSettings, wikiProjects} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs();
+const Wiki = require('../util/wiki.js');
 var db = require('../util/database.js');
 
 var allSites = [];
@@ -15,7 +16,7 @@ getAllSites.then( sites => allSites = sites );
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {Wiki} wiki - The wiki for the message.
  */
 function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !allSites.length ) getAllSites.update();
@@ -75,6 +76,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				if ( !rows.length ) return msg.replyMsg( lang.get('settings.wikimissing') + wikihelp, {}, true );
 				else return msg.replyMsg( lang.get('settings.' + prelang) + ' ' + ( channel || guild ).wiki + wikihelp, {}, true );
 			}
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var isForced = false;
 			if ( /^<?(?:https?:)?\/\//.test(args[1]) ) {
 				args[1] = args[1].replace( /^<?(?:https?:)?\/\//, 'https://' );
@@ -91,16 +93,16 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				return msg.replyMsg( text, {split:true}, true );
 			}
-			if ( wikinew.endsWith( '.gamepedia.com/' ) && !isForced ) {
-				let site = allSites.find( site => site.wiki_domain === wikinew.replace( /^https:\/\/([a-z\d-]{1,50}\.gamepedia\.com)\/$/, '$1' ) );
-				if ( site ) wikinew = 'https://' + ( site.wiki_crossover || site.wiki_domain ) + '/';
+			if ( wikinew.isGamepedia() && !isForced ) {
+				let site = allSites.find( site => site.wiki_domain === wikinew.hostname );
+				if ( site ) wikinew = new Wiki('https://' + ( site.wiki_crossover || site.wiki_domain ) + '/');
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
 				got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
 					if ( !isForced && response.statusCode === 404 && typeof response.body === 'string' ) {
 						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
-							wikinew = api.replace( /^(?:https?:)?\/\//, 'https://' ).split('api.php?')[0];
+							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
 							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' );
 						}
 					}
@@ -113,10 +115,10 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						msg.reactEmoji('nowiki', true);
 						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 					}
-					if ( !isForced ) wikinew = body.query.general.server.replace( /^(?:https?:)?\/\//, 'https://' ) + body.query.general.scriptpath + '/';
-					if ( wikinew.endsWith( '.gamepedia.com/' ) && !isForced ) {
-						let site = allSites.find( site => site.wiki_domain === wikinew );
-						if ( site ) wikinew = 'https://' + ( site.wiki_crossover || site.wiki_domain ) + '/';
+					if ( !isForced ) wikinew.updateWiki(body.query.general);
+					if ( wikinew.isGamepedia() && !isForced ) {
+						let site = allSites.find( site => site.wiki_domain === wikinew.hostname );
+						if ( site ) wikinew = new Wiki('https://' + ( site.wiki_crossover || site.wiki_domain ) + '/');
 					}
 					else if ( wikinew.isFandom() && !isForced ) {
 						let crossover = '';
@@ -127,10 +129,10 @@ function cmd_settings(lang, msg, args, line, wiki) {
 							let merge = body.query.allmessages[1]['*'].split('/');
 							crossover = 'https://' + merge[0] + '.fandom.com/' + ( merge[1] ? merge[1] + '/' : '' );
 						}
-						if ( crossover ) wikinew = crossover;
+						if ( crossover ) wikinew = new Wiki(crossover);
 					}
 					var embed;
-					if ( !wikinew.isFandom() && !wikinew.endsWith( '.gamepedia.com/' ) ) {
+					if ( !wikinew.isFandom() && !wikinew.isGamepedia() ) {
 						var notice = [];
 						if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 							console.log( '- This wiki is using ' + body.query.general.generator + '.' );
@@ -158,7 +160,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						}
 					}
 					var sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND wiki = ?';
-					var sqlargs = [wikinew, msg.guild.id, guild.wiki];
+					var sqlargs = [wikinew.href, msg.guild.id, guild.wiki];
 					if ( !rows.length ) {
 						sql = 'INSERT INTO discord(wiki, guild) VALUES(?, ?)';
 						sqlargs.pop();
@@ -167,7 +169,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND channel = ?';
 						sqlargs[2] = msg.channel.id;
 						if ( !rows.includes( channel ) ) {
-							if ( channel.wiki === wikinew ) {
+							if ( channel.wiki === wikinew.href ) {
 								if ( reaction ) reaction.removeEmoji();
 								return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, {embed}, true );
 							}
@@ -183,14 +185,14 @@ function cmd_settings(lang, msg, args, line, wiki) {
 							return dberror;
 						}
 						console.log( '- Settings successfully updated.' );
-						if ( channel ) channel.wiki = wikinew;
+						if ( channel ) channel.wiki = wikinew.href;
 						else {
 							rows.forEach( row => {
-								if ( row.channel && row.wiki === guild.wiki ) row.wiki = wikinew;
+								if ( row.channel && row.wiki === guild.wiki ) row.wiki = wikinew.href;
 							} );
-							guild.wiki = wikinew;
+							guild.wiki = wikinew.href;
 						}
-						if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = wikinew;
+						if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = new Wiki(wikinew);
 						if ( reaction ) reaction.removeEmoji();
 						msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + wikinew + wikihelp, {embed}, true );
 						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
@@ -218,6 +220,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !args[1] ) {
 				return msg.replyMsg( lang.get('settings.' + prelang) + ' `' + allLangs.names[( channel || guild ).lang] + '`' + langhelp, {files:( msg.uploadFiles() ? [`./i18n/widgets/${( channel || guild ).lang}.png`] : [] )}, true );
 			}
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			if ( !( args[1] in allLangs.map ) ) {
 				return msg.replyMsg( lang.get('settings.langinvalid') + langhelp, {}, true );
 			}
@@ -275,6 +278,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !args[1].trim() ) {
 				return msg.replyMsg( lang.get('settings.prefix') + ' `' + prefix + '`' + prefixhelp, {}, true );
 			}
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			if ( args[1].includes( '`' ) || args[1].length > 100 ) {
 				return msg.replyMsg( lang.get('settings.prefixinvalid') + prefixhelp, {}, true );
 			}
@@ -305,6 +309,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( args[1] !== 'toggle' ) {
 				return msg.replyMsg( lang.get('settings.' + toggle + '.' + prelang) + inlinehelp, {}, true );
 			}
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var value = ( ( channel || guild ).inline ? null : 1 );
 			var sql = 'UPDATE discord SET inline = ? WHERE guild = ?';
 			var sqlargs = [value, msg.guild.id];
@@ -353,31 +358,32 @@ function cmd_settings(lang, msg, args, line, wiki) {
 /**
  * Turn user input into a wiki.
  * @param {String} input - The user input referring to a wiki.
+ * @returns {Wiki}
  */
 function input_to_wiki(input) {
-	var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/wiki\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-	if ( regex ) return 'https://' + regex[1] + '/';
+	var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
+	if ( regex ) return new Wiki('https://' + regex[1] + '/');
 	if ( input.startsWith( 'https://' ) ) {
 		let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
 		if ( project ) {
 			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-			if ( regex ) return 'https://' + regex[1] + project.scriptPath;
+			if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
 		}
 		let wiki = input.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '/' );
 		if ( !wiki.endsWith( '/' ) ) wiki += '/';
-		return wiki;
+		return new Wiki(wiki);
 	}
 	let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
 	if ( project ) {
 		regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-		if ( regex ) return 'https://' + regex[1] + project.scriptPath;
+		if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
 	}
 	if ( allSites.some( site => site.wiki_domain === input + '.gamepedia.com' ) ) {
-		return 'https://' + input + '.gamepedia.com/';
+		return new Wiki('https://' + input + '.gamepedia.com/');
 	}
 	if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
-		if ( !input.includes( '.' ) ) return 'https://' + input + '.fandom.com/';
-		else return 'https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/';
+		if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');
+		else return new Wiki('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
 	}
 	return;
 }

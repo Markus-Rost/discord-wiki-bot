@@ -10,7 +10,7 @@ const help_setup = require('../functions/helpsetup.js');
  * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} title - The page title.
- * @param {String} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {String} [cmd] - The command at this point.
  */
 function cmd_link(lang, msg, title, wiki, cmd = '') {

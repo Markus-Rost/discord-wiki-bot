@@ -1,5 +1,6 @@
 const {Util} = require('discord.js');
 const {timeoptions} = require('../util/default.json');
+const {toPlaintext} = require('../util/functions.js');
 
 const overwrites = {
 	randompage: (fn, lang, msg, wiki, reaction, spoiler) => {
@@ -15,36 +16,36 @@ const overwrites = {
 
 const queryfunctions = {
 	title: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')';
+		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	times: (query, wiki) => query.querypage.results.map( result => {
-		return result.value + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')';
+		return result.value + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	size: (query, wiki) => query.querypage.results.map( result => {
-		return result.value + ' bytes: [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')';
+		return result.value + ' bytes: [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	redirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', query.general, true) + ')' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + result.databaseResult.rd_title.escapeFormatting() : '' );
+		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + result.databaseResult.rd_title.escapeFormatting() : '' );
 	} ).join('\n'),
 	doubleredirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', query.general, true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + result.databaseResult.b_title.escapeFormatting() + ' → ' + result.databaseResult.c_title.escapeFormatting() : '' );
+		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + result.databaseResult.b_title.escapeFormatting() + ' → ' + result.databaseResult.c_title.escapeFormatting() : '' );
 	} ).join('\n'),
 	timestamp: (query, wiki) => query.querypage.results.map( result => {
-		return new Date(result.timestamp).toLocaleString(lang.get('dateformat'), timeoptions).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', query.general, true) + ')';
+		return new Date(result.timestamp).toLocaleString(lang.get('dateformat'), timeoptions).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	media: (query) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');
 		return '**' + ms[1] + '**: ' + ms[2] + ' files (' + ms[3] + ' bytes)';
 	} ).join('\n'),
 	category: (query, wiki) => query.querypage.results.map( result => {
-		return result.value + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink('Category:' + result.title, '', '', query.general, true) + ')';
+		return result.value + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink('Category:' + result.title, '', '', true) + ')';
 	} ).join('\n'),
 	gadget: (query) => query.querypage.results.map( result => {
 		result.title = result.title.replace( /^(?:.*:)?gadget-/, '' );
 		return '**' + result.title.escapeFormatting() + '**: ' + result.value + ' users (' + result.ns + ' active)';
 	} ).join('\n'),
 	recentchanges: (query, wiki) => query.recentchanges.map( result => {
-		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, ( result.type === 'edit' ? 'diff=' + result.revid + '&oldid=' + result.old_revid : '' ), '', query.general, true) + ')';
+		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, ( result.type === 'edit' ? {diff:result.revid,oldid:result.old_revid} : '' ), '', true) + ')';
 	} ).join('\n')
 }
 
@@ -116,7 +117,7 @@ const descriptions = {
  * @param {String} title - The title of the special page.
  * @param {String} specialpage - The canonical name of the special page.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
- * @param {String} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
@@ -129,7 +130,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
 		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
-	got.get( wiki + 'api.php?action=query&meta=siteinfo|allmessages&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( specialpage in descriptions ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( specialpage in descriptions ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body ) {
@@ -137,7 +138,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		}
 		else {
 			if ( body.query.allmessages[0]['*'] ) {
-				var description = body.query.allmessages[0]['*'].toPlaintext();
+				var description = toPlaintext(body.query.allmessages[0]['*']);
 				if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 				embed.setDescription( description );
 			}

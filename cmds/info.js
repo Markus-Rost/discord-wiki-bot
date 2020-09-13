@@ -6,7 +6,7 @@ const help_server = require('../functions/helpserver.js');
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {String} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_info(lang, msg, args, line, wiki) {
 	if ( args.join('') ) this.LINK(lang, msg, line, wiki);
