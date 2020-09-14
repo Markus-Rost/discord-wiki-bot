@@ -12,7 +12,7 @@ class Wiki extends URL {
 	 * @param {String|URL|Wiki} [base] - The base for the wiki.
 	 * @constructs Wiki
 	 */
-	constructor(wiki = defaultSettings.wiki, base) {
+	constructor(wiki = defaultSettings.wiki, base = defaultSettings.wiki) {
 		super(wiki, base);
 		this.protocol = 'https';
 		let articlepath = '/index.php?title=$1';
