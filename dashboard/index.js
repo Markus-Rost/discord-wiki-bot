@@ -21,9 +21,34 @@ const oauth = new DiscordOauth2( {
 } );
 
 const fs = require('fs');
+const path = require('path');
 const files = {
 	index: fs.readFileSync('./dashboard/index.html'),
-	login: fs.readFileSync('./dashboard/login.html')
+	login: fs.readFileSync('./dashboard/login.html'),
+	src: new Map(fs.readdirSync( './dashboard/src' ).map( file => {
+		let contentType = 'text/html';
+		switch ( path.extname(file) ) {
+			case '.css':
+				contentType = 'text/css';
+				break;
+			case '.js':
+				contentType = 'text/javascript';
+				break;
+			case '.json':
+				contentType = 'application/json';
+				break;
+			case '.png':
+				contentType = 'image/png';
+				break;
+			case '.jpg':
+				contentType = 'image/jpg';
+				break;
+		}
+		return [`/src/${file}`, {
+			name: file, contentType,
+			path: `./dashboard/src/${file}`
+		}];
+	} ))
 }
 
 /**
@@ -96,9 +121,17 @@ const server = http.createServer((req, res) => {
 		return res.end();
 	}
 
-	if ( req.url === '/favicon.ico' ) {
+	var reqURL = new URL(req.url, process.env.dashboard);
+
+	if ( reqURL.pathname === '/favicon.ico' ) {
 		res.writeHead(302, {Location: 'https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64'});
 		return res.end();
+	}
+
+	if ( files.src.has(reqURL.pathname) ) {
+		let file = files.src.get(reqURL.pathname);
+		res.writeHead(200, {'Content-Type': file.contentType});
+		return fs.createReadStream(file.path).pipe(res);
 	}
 
 	res.setHeader('Content-Type', 'text/html');
@@ -112,8 +145,6 @@ const server = http.createServer((req, res) => {
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
 		return cookie.split('=')[0] === 'wikibot';
 	} )?.map( cookie => cookie.replace( /^wikibot="(\w+(?:-\d+)?)"$/, '$1' ) )?.join();
-
-	var reqURL = new URL(req.url, process.env.dashboard);
 
 	if ( reqURL.pathname === '/login' ) {
 		if ( settingsData.has(state) ) {
@@ -157,6 +188,7 @@ const server = http.createServer((req, res) => {
 			scope: ['identify', 'guilds'],
 			prompt: 'none', state
 		} );
+		$('a#login').attr('href', url);
 		$('replace#text').replaceWith(`<a href="${url}">Login</a>`);
 		let body = $.html();
 		res.writeHead(responseCode, {
@@ -441,17 +473,18 @@ function hasPerm(all, permission, admin = true) {
  * End the process gracefully.
  * @param {NodeJS.Signals} signal - The signal received.
  */
-async function graceful(signal) {
+function graceful(signal) {
 	console.log( '- Dashboard: ' + signal + ': Closing the dashboard...' );
-	await server.close( () => {
+	server.close( () => {
 		console.log( '- Dashboard: ' + signal + ': Closed the dashboard server.' );
 	} );
-	await db.close( dberror => {
+	db.close( dberror => {
 		if ( dberror ) {
 			console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
 			return dberror;
 		}
 		console.log( '- Dashboard: ' + signal + ': Closed the database connection.' );
+		process.exit(0);
 	} );
 }
 

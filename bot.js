@@ -344,13 +344,13 @@ global.log_warn = function(warning, api = true) {
  * End the process gracefully.
  * @param {NodeJS.Signals} signal - The signal received.
  */
-async function graceful(signal) {
+function graceful(signal) {
 	isStop = true;
 	console.log( '- ' + shardId + ': ' + signal + ': Preparing to close...' );
-	setTimeout( async () => {
+	setTimeout( () => {
 		console.log( '- ' + shardId + ': ' + signal + ': Destroying client...' );
-		await client.destroy();
-		await db.close( dberror => {
+		client.destroy();
+		db.close( dberror => {
 			if ( dberror ) {
 				console.log( '- ' + shardId + ': ' + signal + ': Error while closing the database connection: ' + dberror );
 				return dberror;

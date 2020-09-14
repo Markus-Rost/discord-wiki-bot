@@ -35,6 +35,7 @@ manager.on( 'shardCreate', shard => {
 		if ( message === 'SIGKILL' ) {
 			console.log( '\n- Killing all shards!\n\n' );
 			manager.shards.forEach( shard => shard.kill() );
+			if ( typeof server !== 'undefined' ) server.kill();
 		}
 		if ( message === 'postStats' && process.env.botlist ) postStats();
 	} );
@@ -157,7 +158,7 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
  * End the process gracefully.
  * @param {NodeJS.Signals} signal - The signal received.
  */
-async function graceful(signal) {
+function graceful(signal) {
 	console.log( '- ' + signal + ': Disabling respawn...' );
 	manager.respawn = false;
 }
@@ -175,6 +176,10 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
 		manager.shards.forEach( shard => shard.kill() );
-		if ( typeof server !== 'undefined' ) server.kill('SIGTERM');
+		if ( typeof server !== 'undefined' ) server.kill();
+		setTimeout( () => {
+			console.log( `\n- Process stayed open, exiting maually!\n` );
+			process.exit(0);
+		}, timeout  * 1000 ).unref();
 	}, timeout  * 1000 ).unref();
 }
