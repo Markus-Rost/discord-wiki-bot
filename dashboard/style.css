@@ -1,0 +1,168 @@
+		html {
+			height: calc(100% - 48px);
+		}
+		body {
+			font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+			text-rendering: optimizeLegibility;
+			background: #36393f;
+			color: #dcddde;
+			position: relative;
+			min-height: 100%;
+			margin: 0;
+		}
+		a {
+			text-decoration: none;
+			color: inherit;
+		}
+		.text a {
+			color: #00b0f4;
+		}
+		.text a:hover {
+			text-decoration: underline;
+		}
+		.text {
+			position: relative;
+			padding: 8px;
+			width: calc(100% - 88px);
+			top: 48px;
+			left: 72px;
+		}
+		.notice {
+			padding: 5px 10px;
+			line-height: 1.6;
+			text-align: center;
+			margin: 0 auto 1em;
+			width: fit-content;
+			background: #200;
+			border: 2px solid #500;
+		}
+		.navbar {
+			background: #2f3136;
+			position: fixed;
+			top: 0;
+			left: 72px;
+			right: 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			height: 48px;
+			padding: 0 0 0 8px;
+			font-size: 16px;
+			line-height: 20px;
+			font-weight: bold;
+		}
+		.navbar a {
+			display: flex;
+			align-items: center;
+			height: 100%;
+			padding-left: 10px;
+		}
+		.navbar a:hover {
+			background: #202225;
+		}
+		.navbar .avatar {
+			width: 32px;
+			height: 32px;
+		}
+		.navbar span {
+			padding: 0 10px;
+		}
+		.sidebar {
+			background: #202225;
+			position: absolute;
+			top: 0;
+			left: 0;
+			min-height: calc(100% + 48px);
+			width: 72px;
+			display: flex;
+		}
+		.guildlist {
+			padding: 12px 0;
+			position: relative;
+			flex: 1 1 auto;
+		}
+		.guild {
+			margin: 0 0 8px;
+			position: relative;
+			display: flex;
+			justify-content: center;
+		}
+		.avatar {
+			border-radius: 50%;
+			width: 48px;
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 500;
+			line-height: 1.2em;
+			white-space: nowrap;
+			overflow: hidden;
+			color: #dcddde;
+			font-weight: bold;
+		}
+		.navbar a:hover .avatar,
+		.guild.selected .avatar,
+		.guild:hover .avatar {
+			border-radius: 30%;
+			color: #ffffff;
+		}
+		.noicon {
+			width: 48px;
+			height: 48px;
+			background: #36393f;
+		}
+		.guild.selected .noicon,
+		.guild:hover .noicon {
+			background-color: #7289da;
+		}
+		.svg-avatar {
+			color: #43b581;
+			background: #36393f;
+		}
+		.guild:hover .svg-avatar {
+			color: #ffffff;
+			background-color: #43b581;
+		}
+		.separator {
+			height: 2px;
+			width: 32px;
+			border-radius: 1px;
+			background-color: rgba(255,255,255,0.06);;
+		}
+		.bar {
+			position: absolute;
+			left: 0;
+			top: 0;
+			display: block;
+			width: 8px;
+			border-radius: 0 4px 4px 0;
+			margin-left: -4px;
+			background-color: #ffffff;
+		}
+		.guild:hover .bar {
+			margin-top: 14px;
+			height: 20px;
+		}
+		.guild.selected .bar {
+			margin-top: 4px;
+			height: 40px;
+		}
+		a[alt]:hover:after {
+			content: attr(alt);
+			position: absolute;
+			background: #000000;
+			color: #dcddde;
+			font-weight: bold;
+			font-size: 90%;
+			white-space: nowrap;
+			border-radius: 4px;
+			padding: 8px;
+		}
+		.guild a[alt]:hover:after {
+			top: 20%;
+			left: 72px;
+		}
+		.navbar a[alt]:hover:after {
+			top: 48px;
+		}
