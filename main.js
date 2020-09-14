@@ -177,9 +177,5 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
 		manager.shards.forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' ) server.kill();
-		setTimeout( () => {
-			console.log( `\n- Process stayed open, exiting maually!\n` );
-			process.exit(0);
-		}, timeout  * 1000 ).unref();
-	}, timeout  * 1000 ).unref();
+	}, timeout * 1000 ).unref();
 }
