@@ -27,33 +27,33 @@ function dashboard_login(res, state, action) {
 		res.setHeader('Set-Cookie', [`wikibot="${state}"; Max-Age=0; HttpOnly`]);
 	}
 	var $ = cheerio.load(file);
-	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
+	let invite = oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds', 'bot'],
 		permissions: defaultPermissions, state
-	} ));
+	} );
+	$('.guild#invite a').attr('href', invite);
+	$('.channel#invite-wikibot').attr('href', invite);
 	let responseCode = 200;
-	let notice = '';
 	if ( action === 'failed' ) {
 		responseCode = 400;
-		notice = createNotice($, {
+		createNotice($, {
 			title: 'Login failed!',
 			text: 'An error occurred while logging you in, please try again.'
-		});
+		}).prependTo('#text');
 	}
 	if ( action === 'unauthorized' ) {
 		responseCode = 401;
-		notice = createNotice($, {
+		createNotice($, {
 			title: 'Not logged in!',
 			text: 'Please login before you can change any settings.'
-		});
+		}).prependTo('#text');
 	}
 	if ( action === 'logout' ) {
-		notice = createNotice($, {
+		createNotice($, {
 			title: 'Successfully logged out!',
 			text: 'You have been successfully logged out. To change any settings you need to login again.'
-		});
+		}).prependTo('#text');
 	}
-	$('replace#notice').replaceWith(notice);
 	state = crypto.randomBytes(16).toString("hex");
 	while ( settingsData.has(state) ) {
 		state = crypto.randomBytes(16).toString("hex");
@@ -62,8 +62,8 @@ function dashboard_login(res, state, action) {
 		scope: ['identify', 'guilds'],
 		prompt: 'none', state
 	} );
-	$('a#login').attr('href', url);
-	$('replace#text').replaceWith(`<a href="${url}">Login</a>`);
+	$('.channel#login').attr('href', url);
+	$('<a>').attr('href', url).text('Login').appendTo('#text');
 	let body = $.html();
 	res.writeHead(responseCode, {
 		'Set-Cookie': [`wikibot="${state}"; HttpOnly`],
@@ -106,7 +106,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 					name: guild.name,
 					acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
 					icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
-					+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) + '?size=128' : null ),
+					+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
 					permissions: guild.permissions
 				};
 			} );
@@ -177,7 +177,7 @@ function dashboard_refresh(res, state, returnLocation = '/') {
 				name: guild.name,
 				acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
 				icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
-				+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) + '?size=128' : null ),
+				+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
 				permissions: guild.permissions
 			};
 		} );

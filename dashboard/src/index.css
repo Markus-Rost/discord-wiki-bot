@@ -21,17 +21,17 @@ a[alt]:hover:after {
 	color: #dcddde;
 	font-weight: bold;
 	font-size: 90%;
-	white-space: nowrap;
+	word-break: break-word;
 	border-radius: 4px;
 	padding: 8px;
 }
-.text a {
+#text a {
 	color: #00b0f4;
 }
-.text a:hover {
+#text a:hover {
 	text-decoration: underline;
 }
-.text {
+#text {
 	position: relative;
 	padding: 8px;
 	width: calc(100% - 328px);
@@ -47,7 +47,38 @@ a[alt]:hover:after {
 	background: #200;
 	border: 2px solid #500;
 }
-.navbar {
+.server-selector {
+	display: flex;
+	flex-wrap: wrap;
+}
+.server {
+	background-color: rgba(0,0,0,0.5);
+	text-align: center;
+	border-radius: 10%;
+	width: 200px;
+	margin: 5px;
+}
+.server-selector .server:hover {
+	background: rgba(0,0,0,0.3);
+	filter: brightness(1.2);
+	text-decoration: none;
+}
+.server .avatar {
+	border-radius: 10%;
+	width: 200px;
+	height: 200px;
+}
+.server .noicon {
+	font-size: 416%;
+	background-color: unset;
+}
+.server .server-name {
+	padding: 8px 12px;
+	word-break: break-word;
+	font-weight: bold;
+	font-size: 90%;
+}
+#navbar {
 	background: #2f3136;
 	position: fixed;
 	top: 0;
@@ -56,46 +87,62 @@ a[alt]:hover:after {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	height: 48px;
+	height: 47px;
 	padding: 0 0 0 8px;
 	font-size: 16px;
 	line-height: 20px;
 	font-weight: bold;
-	box-shadow: 0 1px 0 rgba(4,4,5,0.2),
-				0 1.5px 0 rgba(6,6,7,0.05),
-				0 2px 0 rgba(4,4,5,0.05);
-	z-index: 2;
+	border-bottom: 1px solid rgba(4,4,5,0.2);
 }
-.navbar a {
+:target::before {
+	content: "";
+	display: block;
+	height: 48px;
+	margin: -48px 0 0;
+}
+#navbar a {
 	display: flex;
 	align-items: center;
 	height: 100%;
 	padding-left: 10px;
 }
-.navbar a:hover {
+#navbar a:hover {
 	background: #202225;
 }
-.navbar .avatar {
+#navbar a[alt]:hover:after {
+	top: 48px;
+}
+#navbar .avatar {
 	width: 32px;
 	height: 32px;
 }
-.navbar span {
+#navbar span {
 	padding: 0 10px;
 }
-.sidebar {
-	background: #202225;
-	position: absolute;
+.scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+.scrollbar::-webkit-scrollbar {
+	display: none;
+}
+#sidebar {
+	position: fixed;
+	display: flex;
 	top: 0;
 	left: 0;
-	min-height: calc(100% + 48px);
-	width: 72px;
-	display: flex;
+	bottom: 0;
+	width: 312px;
+	overflow: visible scroll;
 }
-.guildlist {
+#guildlist {
+	background: #202225;
+	position: absolute;
 	padding: 12px 0;
-	position: relative;
 	flex: 1 1 auto;
-	z-index: 2;
+	min-height: calc(100% - 24px);
+	width: 72px;
+	z-index: 1;
 }
 .guild {
 	margin: 0 0 8px;
@@ -110,14 +157,13 @@ a[alt]:hover:after {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-weight: 500;
 	line-height: 1.2em;
 	white-space: nowrap;
 	overflow: hidden;
 	color: #dcddde;
 	font-weight: bold;
 }
-.navbar a:hover .avatar,
+#navbar a:hover .avatar,
 .guild.selected .avatar,
 .guild:hover .avatar {
 	border-radius: 30%;
@@ -167,19 +213,19 @@ a[alt]:hover:after {
 .guild a[alt]:hover:after {
 	top: 20%;
 	left: 72px;
+	max-width: 224px;
+	width: max-content;
 }
-.navbar a[alt]:hover:after {
-	top: 48px;
-}
-.channellist {
+#channellist {
 	background: #2f3136;
-	position: absolute;
-	min-height: calc(100% - 80px);
+	position: fixed;
+	overflow: hidden scroll;
 	padding: 16px 0;
 	width: 240px;
 	top: 48px;
 	left: 72px;
-	z-index: 1;
+	bottom: 0;
+	z-index: 0;
 }
 .channel {
 	padding: 0 8px;

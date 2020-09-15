@@ -6,6 +6,10 @@ const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require(
 const newMessage = require('../util/newMessage.js');
 var db = require('../util/database.js');
 
+var allSites = [];
+const getAllSites = require('../util/allSites.js');
+getAllSites.then( sites => allSites = sites );
+
 /**
  * Processes the "eval" command.
  * @param {import('../util/i18n.js')} lang - The user language.

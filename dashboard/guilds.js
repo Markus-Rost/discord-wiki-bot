@@ -21,64 +21,60 @@ function dashboard_guilds(res, state, reqURL) {
 	var arguments = reqURL.pathname.split('/');
 	var settings = settingsData.get(state);
 	var $ = cheerio.load(file);
-	let notice = '';
 	if ( process.env.READONLY ) {
-		notice = createNotice($, {
+		createNotice($, {
 			title: 'Read-only database!',
 			text: 'You can currently only view your settings but not change them.'
-		});
+		}).prependTo('#text');
 	}
-	$('replace#notice').replaceWith(notice);
-	$('.navbar #logout img').attr('src', settings.user.avatar);
-	$('.navbar #logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
+	$('#logout img').attr('src', settings.user.avatar);
+	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds', 'bot'],
 		permissions: defaultPermissions, state
 	} ));
 	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
-	let guilds = $('<div>');
 	if ( settings.guilds.isMember.size ) {
 		$('<div class="guild">').append(
 			$('<div class="separator">')
-		).appendTo(guilds);
+		).insertBefore('.guild#last-separator');
 		settings.guilds.isMember.forEach( guild => {
 			$('<div class="guild">').attr('id', guild.id).append(
 				$('<div class="bar">'),
 				$('<a>').attr('href', `/guild/${guild.id}`).attr('alt', guild.name).append(
 					( guild.icon ? 
-						$('<img class="avatar" width="48" height="48">').attr('src', guild.icon).attr('alt', guild.name)
+						$('<img class="avatar">').attr('src', `${guild.icon}?size=64`).attr('alt', guild.name)
 					 : $('<div class="avatar noicon">').text(guild.acronym) )
 				)
-			).appendTo(guilds);
+			).insertBefore('.guild#last-separator');
 		} );
 	}
 	if ( settings.guilds.notMember.size ) {
 		$('<div class="guild">').append(
 			$('<div class="separator">')
-		).appendTo(guilds);
+		).insertBefore('.guild#last-separator');
 		settings.guilds.notMember.forEach( guild => {
 			$('<div class="guild">').attr('id', guild.id).append(
 				$('<div class="bar">'),
 				$('<a>').attr('href', `/guild/${guild.id}`).attr('alt', guild.name).append(
 					( guild.icon ? 
-						$('<img class="avatar" width="48" height="48">').attr('src', guild.icon).attr('alt', guild.name)
+						$('<img class="avatar">').attr('src', `${guild.icon}?size=64`).attr('alt', guild.name)
 					 : $('<div class="avatar noicon">').text(guild.acronym) )
 				)
-			).appendTo(guilds);
+			).insertBefore('.guild#last-separator');
 		} );
 	}
-	$('replace#guilds').replaceWith(guilds.children());
 
-	if ( reqURL.pathname.startsWith( '/guild/' ) ) {
-		let id = reqURL.pathname.replace( '/guild/', '' );
+	if ( arguments[1] === 'guild' ) {
+		let id = arguments[2];
 		if ( settings.guilds.isMember.has(id) ) {
 			$(`.guild#${id}`).addClass('selected');
 			let guild = settings.guilds.isMember.get(id);
 			$('head title').text(`${guild.name} – ` + $('head title').text());
 			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
-			$('replace#text').replaceWith(`${guild.permissions}`);
+			$('<a>').text(`${guild.permissions}`).appendTo('#text');
 		}
-		if ( settings.guilds.notMember.has(id) ) {
+		else if ( settings.guilds.notMember.has(id) ) {
 			$(`.guild#${id}`).addClass('selected');
 			let guild = settings.guilds.notMember.get(id);
 			$('head title').text(`${guild.name} – ` + $('head title').text());
@@ -88,12 +84,49 @@ function dashboard_guilds(res, state, reqURL) {
 				permissions: defaultPermissions,
 				guild_id: id, state
 			} );
-			$('replace#text').replaceWith($('<a>').attr('href', url).text(guild.permissions));
+			$('<a>').attr('href', url).text(guild.permissions).appendTo('#text');
 		}
-		$('replace#text').replaceWith('You are missing the <code>MANAGE_GUILD</code> permission.');
+		else {
+			$('<p>').text('You are missing the <code>MANAGE_GUILD</code> permission.').appendTo('#text');
+		}
 	}
-
-	$('replace#text').replaceWith('Keks');
+	else {
+		$('#channellist').empty();
+		$('<div>').text('This is a list of all servers you can change settings on. Please select a server:').appendTo('#text');
+		if ( settings.guilds.isMember.size ) {
+			$('<h2 id="with-wikibot">').text('Server with Wiki-Bot').appendTo('#text');
+			$('<a class="channel">').attr('href', '#with-wikibot').append(
+				$('<img>').attr('src', '/src/channel.svg'),
+				$('<div>').text('Server with Wiki-Bot')
+			).appendTo('#channellist');
+			$('<div class="server-selector" id="isMember">').appendTo('#text');
+			settings.guilds.isMember.forEach( guild => {
+				$('<a class="server">').attr('href', `/guild/${guild.id}`).append(
+					( guild.icon ? 
+						$('<img class="avatar">').attr('src', `${guild.icon}?size=256`).attr('alt', guild.name)
+					 : $('<div class="avatar noicon">').text(guild.acronym) ),
+					$('<div class="server-name">').text(guild.name)
+				).appendTo('.server-selector#isMember');
+			} );
+		}
+		if ( settings.guilds.notMember.size ) {
+			$('<h2 id="without-wikibot">').text('Server without Wiki-Bot').appendTo('#text');
+			$('<a class="channel">').attr('href', '#without-wikibot').append(
+				$('<img>').attr('src', '/src/channel.svg'),
+				$('<div>').text('Server without Wiki-Bot')
+			).appendTo('#channellist');
+			$('<div class="server-selector" id="notMember">').appendTo('#text');
+			settings.guilds.notMember.forEach( guild => {
+				$('<a class="server">').attr('href', `/guild/${guild.id}`).append(
+					( guild.icon ? 
+						$('<img class="avatar">').attr('src', `${guild.icon}?size=256`).attr('alt', guild.name)
+					 : $('<div class="avatar noicon">').text(guild.acronym) ),
+					$('<div class="server-name">').text(guild.name)
+				).appendTo('.server-selector#notMember');
+			} );
+		}
+		$('#channellist:empty').remove();
+	}
 	let body = $.html();
 	res.writeHead(200, {'Content-Length': body.length});
 	res.write( body );

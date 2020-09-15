@@ -73,16 +73,16 @@ function sendMsg(message) {
 /**
  * Create a red notice
  * @param {CheerioStatic} $ - The cheerio static
- * @param {{title: String, text: String}[]} notices - The notices to create
+ * @param {Object} notice - The notices to create
+ * @param {String} notice.title - The title of the notice
+ * @param {String} notice.text - The text of the notice
  * @returns {Cheerio}
  */
-function createNotice($, ...notices) {
-	return notices.map( notice => {
-		return $('<div class="notice">').append(
-			$('<b>').text(notice.title),
-			$('<div>').text(notice.text)
-		);
-	} );
+function createNotice($, notice) {
+	return $('<div class="notice">').append(
+		$('<b>').text(notice.title),
+		$('<div>').text(notice.text)
+	);
 }
 
 const permissions = {

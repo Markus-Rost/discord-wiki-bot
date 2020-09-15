@@ -12,24 +12,21 @@
 	<meta itemprop="author" content="MarkusRost">
 	<link rel="stylesheet" type="text/css" href="/src/index.css">
 </head>
-<body class="settings">
-	<div class="text">
-		<replace id="notice">Some text here</replace>
-		<replace id="text">Some text here</replace>
-	</div>
-	<div class="navbar">
+<body>
+	<div id="text"></div>
+	<div id="navbar">
 		<div style="width: 150px;"></div>
 		<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Support server">
-			<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=128" alt="Support server" width="32" height="32">
+			<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=128" alt="Support server">
 			<span>Support server</span>
 		</a>
 		<a id="logout" href="/logout" alt="Logout">
-			<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Logout" width="32" height="32">
+			<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Logout">
 			<span>Wiki-Bot #2998</span>
 		</a>
 	</div>
-	<div class="sidebar">
-		<div class="guildlist">
+	<div class="scrollbar" id="sidebar">
+		<div id="guildlist">
 			<div class="guild" id="invite">
 				<div class="bar"></div>
 				<a href="https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot" alt="Invite Wiki-Bot">
@@ -40,8 +37,7 @@
 					</div>
 				</a>
 			</div>
-			<replace id="guilds">List of guilds here</replace>
-			<div class="guild">
+			<div class="guild" id="last-separator">
 				<div class="separator"></div>
 			</div>
 			<div class="guild" id="refresh">
@@ -55,21 +51,21 @@
 				</a>
 			</div>
 		</div>
-		<div class="channellist">
+		<div class="scrollbar" id="channellist">
 			<a class="channel channel-header" id="settings">
-				<svg width="24" height="24" viewBox="0 0 24 24">
+				<svg viewBox="0 0 24 24">
 					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
 				</svg>
 				<div>Settings</div>
 			</a>
 			<a class="channel channel-header" id="verification">
-				<svg width="24" height="24" viewBox="0 0 24 24">
+				<svg viewBox="0 0 24 24">
 					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
 				</svg>
 				<div>Verifications</div>
 			</a>
 			<a class="channel channel-header" id="rcgcdb">
-				<svg width="24" height="24" viewBox="0 0 24 24">
+				<svg viewBox="0 0 24 24">
 					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
 				</svg>
 				<div>Recent Changes</div>
