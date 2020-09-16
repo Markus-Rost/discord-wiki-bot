@@ -88,7 +88,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					
 					if ( reaction ) reaction.removeEmoji();
 				}
-				else if ( ovbody.items.some( site => new URL(site.url).href === wiki.href ) {
+				else if ( ovbody.items.some( site => new URL(site.url).href === wiki.href ) ) {
 					site = ovbody.items.find( site => new URL(site.url).href === wiki.href );
 					
 					var vertical = [lang.get('overview.vertical'), site.hub];
