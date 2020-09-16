@@ -153,11 +153,11 @@ Discord.Message.prototype.sendChannelError = function(content, options = {}) {
 	} );
 };
 
-Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause = false, allowDelete = true) {
+Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause = false, letDelete = true) {
 	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 		return this.reply(content, options).then( msg => {
-			if ( allowDelete ) {
+			if ( letDelete ) {
 				if ( msg.length ) msg.forEach( message => allowDelete(message, this.author.id) );
 				else allowDelete(msg, this.author.id);
 			}
