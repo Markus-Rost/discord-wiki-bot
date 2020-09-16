@@ -25,10 +25,12 @@ a[alt]:hover:after {
 	border-radius: 4px;
 	padding: 8px;
 }
-#text a {
+.description a,
+a .description {
 	color: #00b0f4;
 }
-#text a:hover {
+.description a:hover,
+a:hover .description {
 	text-decoration: underline;
 }
 #text {
@@ -58,10 +60,9 @@ a[alt]:hover:after {
 	width: 200px;
 	margin: 5px;
 }
-.server-selector .server:hover {
+.server:hover {
 	background: rgba(0,0,0,0.3);
 	filter: brightness(1.2);
-	text-decoration: none;
 }
 .server .avatar {
 	border-radius: 10%;

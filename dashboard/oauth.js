@@ -63,7 +63,7 @@ function dashboard_login(res, state, action) {
 		prompt: 'none', state
 	} );
 	$('.channel#login').attr('href', url);
-	$('<a>').attr('href', url).text('Login').appendTo('#text');
+	$('<a>').attr('href', url).text('Login').appendTo('#text .description');
 	let body = $.html();
 	res.writeHead(responseCode, {
 		'Set-Cookie': [`wikibot="${state}"; HttpOnly`],
@@ -133,7 +133,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 							`embed/avatars/${user.discriminator % 5}.png` ) + '?size=64',
 						locale: user.locale
 					},
-					guilds: {isMember, notMember}
+					guilds: {count: guilds.length, isMember, notMember}
 				});
 				res.writeHead(302, {
 					Location: ( lastGuild ? '/guild/' + lastGuild : '/' ),
@@ -191,7 +191,7 @@ function dashboard_refresh(res, state, returnLocation = '/') {
 				if ( guild ) isMember.set(guilds[i].id, guilds[i]);
 				else notMember.set(guilds[i].id, guilds[i]);
 			} );
-			settings.guilds = {isMember, notMember};
+			settings.guilds = {count: guilds.length, isMember, notMember};
 			res.writeHead(302, {Location: returnLocation});
 			return res.end();
 		}, error => {

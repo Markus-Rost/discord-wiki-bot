@@ -72,7 +72,7 @@ function dashboard_guilds(res, state, reqURL) {
 			let guild = settings.guilds.isMember.get(id);
 			$('head title').text(`${guild.name} – ` + $('head title').text());
 			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
-			$('<a>').text(`${guild.permissions}`).appendTo('#text');
+			$('<a>').text(`${guild.permissions}`).appendTo('#text .description');
 		}
 		else if ( settings.guilds.notMember.has(id) ) {
 			$(`.guild#${id}`).addClass('selected');
@@ -84,15 +84,15 @@ function dashboard_guilds(res, state, reqURL) {
 				permissions: defaultPermissions,
 				guild_id: id, state
 			} );
-			$('<a>').attr('href', url).text(guild.permissions).appendTo('#text');
+			$('<a>').attr('href', url).text(guild.permissions).appendTo('#text .description');
 		}
 		else {
-			$('<p>').text('You are missing the <code>MANAGE_GUILD</code> permission.').appendTo('#text');
+			$('#text .description').text('You are missing the <code>MANAGE_GUILD</code> permission.');
 		}
 	}
 	else {
 		$('#channellist').empty();
-		$('<div>').text('This is a list of all servers you can change settings on. Please select a server:').appendTo('#text');
+		$('#text .description').text('This is a list of all servers you can change settings on. Please select a server:');
 		if ( settings.guilds.isMember.size ) {
 			$('<h2 id="with-wikibot">').text('Server with Wiki-Bot').appendTo('#text');
 			$('<a class="channel">').attr('href', '#with-wikibot').append(
@@ -105,7 +105,7 @@ function dashboard_guilds(res, state, reqURL) {
 					( guild.icon ? 
 						$('<img class="avatar">').attr('src', `${guild.icon}?size=256`).attr('alt', guild.name)
 					 : $('<div class="avatar noicon">').text(guild.acronym) ),
-					$('<div class="server-name">').text(guild.name)
+					$('<div class="server-name description">').text(guild.name)
 				).appendTo('.server-selector#isMember');
 			} );
 		}
@@ -121,11 +121,17 @@ function dashboard_guilds(res, state, reqURL) {
 					( guild.icon ? 
 						$('<img class="avatar">').attr('src', `${guild.icon}?size=256`).attr('alt', guild.name)
 					 : $('<div class="avatar noicon">').text(guild.acronym) ),
-					$('<div class="server-name">').text(guild.name)
+					$('<div class="server-name description">').text(guild.name)
 				).appendTo('.server-selector#notMember');
 			} );
 		}
-		$('#channellist:empty').remove();
+		if ( !settings.guilds.count ) {
+			$('#text .description').text('You currently don\'t have the MANAGE_SERVER permission on any servers, are you logged into the correct account?');
+			$('<a class="channel">').attr('href', '/logout').append(
+				$('<img>').attr('src', '/src/channel.svg'),
+				$('<div>').text('Switch accounts')
+			).appendTo('#channellist');
+		}
 	}
 	let body = $.html();
 	res.writeHead(200, {'Content-Length': body.length});

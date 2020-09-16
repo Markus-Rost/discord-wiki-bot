@@ -14,6 +14,7 @@ const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
  * @property {String} access_token
  * @property {User} user
  * @property {Object} guilds
+ * @property {Number} guilds.count
  * @property {Map<String, Guild>} guilds.isMember
  * @property {Map<String, Guild>} guilds.notMember
  */
