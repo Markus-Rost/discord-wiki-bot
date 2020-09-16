@@ -227,10 +227,10 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			}
 			if ( embeds.length ) {
 				if ( wiki.isFandom() ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-					check_wiki.fandom(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, '', embed.section);
+					check_wiki.fandom(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, new URLSearchParams(), embed.section);
 				} ) );
 				else embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-					check_wiki.gamepedia(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, '', embed.section);
+					check_wiki.gamepedia(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, new URLSearchParams(), embed.section);
 				} ) );
 			}
 		}, error => {

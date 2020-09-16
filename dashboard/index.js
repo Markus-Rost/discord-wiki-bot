@@ -441,17 +441,18 @@ function hasPerm(all, permission, admin = true) {
  * End the process gracefully.
  * @param {NodeJS.Signals} signal - The signal received.
  */
-async function graceful(signal) {
+function graceful(signal) {
 	console.log( '- Dashboard: ' + signal + ': Closing the dashboard...' );
-	await server.close( () => {
+	server.close( () => {
 		console.log( '- Dashboard: ' + signal + ': Closed the dashboard server.' );
 	} );
-	await db.close( dberror => {
+	db.close( dberror => {
 		if ( dberror ) {
 			console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
 			return dberror;
 		}
 		console.log( '- Dashboard: ' + signal + ': Closed the database connection.' );
+		process.exit(0);
 	} );
 }
 

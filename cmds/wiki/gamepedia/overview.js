@@ -32,9 +32,9 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		}
 		else {
 			wiki.updateWiki(body.query.general);
-			var site = false;
-			if ( allSites.some( site => site.wiki_domain === body.hostname ) ) {
-				site = allSites.find( site => site.wiki_domain === body.hostname );
+			var site = null;
+			if ( allSites.some( site => site.wiki_domain === wiki.hostname ) ) {
+				site = allSites.find( site => site.wiki_domain === wiki.hostname );
 				
 				var name = [lang.get('overview.name'), site.wiki_display_name];
 				var created = [lang.get('overview.created'), new Date(parseInt(site.created + '000', 10)).toLocaleString(lang.get('dateformat'), timeoptions)];
