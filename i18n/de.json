@@ -151,7 +151,7 @@
         "missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
         "patreon": "dies ist eine Patreon-Funktion!\nDu kannst mich auf Patreon unterstützen um Zugang zu dieser Funktion zu erhalten:",
         "prefix": "das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
-        "readonly": "**Die Datenbank ist derzeit im Nur-Lese-Modus, du kanst aktuell keine Einstellungen ändern!**"
+        "readonly": "**die Datenbank ist derzeit im Nur-Lese-Modus, du kanst aktuell keine Einstellungen ändern!**"
     },
     "help": {
         "admin": "Diese Befehle können nur Administratoren ausführen:",
