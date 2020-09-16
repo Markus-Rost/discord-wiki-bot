@@ -1,10 +1,6 @@
 const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
-var allSites = [];
-const getAllSites = require('../util/allSites.js');
-getAllSites.then( sites => allSites = sites );
-
 const Discord = require('discord.js');
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const newMessage = require('../util/newMessage.js');
