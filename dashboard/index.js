@@ -40,6 +40,8 @@ const files = new Map(fs.readdirSync( './dashboard/src' ).map( file => {
 	}];
 } ));
 
+process.env.READONLY = 'true';
+
 const server = http.createServer((req, res) => {
 	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) ) {
 		let args = req.url.split('/');
@@ -47,7 +49,7 @@ const server = http.createServer((req, res) => {
 			return cookie.split('=')[0] === 'wikibot';
 		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
 
-		if ( args.length <= 4 && ['settings', 'verification', 'rcscript'].incluses( args[3] ) 
+		if ( args.length <= 4 && ['settings', 'verification', 'rcscript'].includes( args[3] ) 
 		&& settingsData.has(state) && settingsData.get(state).guilds.isMember.has(args[2]) ) {
 			let body = '';
 			req.on( 'data', chunk => {
