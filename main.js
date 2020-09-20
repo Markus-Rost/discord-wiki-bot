@@ -89,7 +89,7 @@ if ( process.env.dashboard ) {
 									return {
 										botPermissions: guild.me.permissions.bitfield,
 										channels: guild.channels.cache.filter( channel => {
-											return ( channel.type === 'text' );
+											return channel.isGuild();
 										} ).sort( (a, b) => {
 											return a.rawPosition - b.rawPosition;
 										} ).map( channel => {

@@ -11,7 +11,7 @@ var db = require('../util/database.js');
  */
 function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( !( process.env.channel.split('|').includes( msg.channel.id ) && args.join('') ) ) {
-		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
 	
@@ -275,7 +275,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		} );
 	} );
 	
-	if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+	if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 }
 
 module.exports = {

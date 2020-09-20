@@ -208,7 +208,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							}
 							else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 							
-							var prefix = ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix );
+							var prefix = ( msg.channel.isGuild() && patreons[msg.guild.id] || process.env.prefix );
 							var linksuffix = ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' );
 							if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
 								text = '';
@@ -324,7 +324,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			}
 		}
 		else if ( body.query.interwiki ) {
-			if ( msg.channel.type === 'text' && pause[msg.guild.id] ) {
+			if ( msg.channel.isGuild() && pause[msg.guild.id] ) {
 				if ( reaction ) reaction.removeEmoji();
 				console.log( '- Aborted, paused.' );
 				return;

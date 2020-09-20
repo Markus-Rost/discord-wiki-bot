@@ -44,7 +44,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			cont = cont.substring(prefix.length);
 			let args = cont.split(' ').slice(1);
 			if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
-			console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + cont );
+			console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + prefix + cont );
 			return ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
 		}
 	}
@@ -67,10 +67,10 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		var aliasInvoke = ( lang.aliases[invoke] || invoke );
 		var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 		var pausecmd = ( msg.isAdmin() && pause[msg.guild.id] && aliasInvoke in pausecmdmap );
-		if ( channel.type === 'text' && pause[msg.guild.id] && !( pausecmd || ownercmd ) ) {
+		if ( channel.isGuild() && pause[msg.guild.id] && !( pausecmd || ownercmd ) ) {
 			return console.log( msg.guild.id + ': Paused' );
 		}
-		console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + prefix + line );
+		console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + prefix + line );
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( aliasInvoke in cmdmap ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
@@ -99,7 +99,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		return cmdmap.LINK(lang, msg, line, wiki);
 	} );
 	
-	if ( ( channel.type !== 'text' || !pause[msg.guild.id] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
+	if ( ( !channel.isGuild() || !pause[msg.guild.id] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 		var links = [];
 		var embeds = [];
 		var linkcount = 0;
@@ -115,7 +115,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( linkcount < linkmaxcount ) {
 						linkcount++;
-						console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
 						links.push({title,section,spoiler:entry[1]});
@@ -135,7 +135,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( count < maxcount ) {
 						count++;
-						console.log( ( channel.type === 'text' ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
 						embeds.push({title,section,spoiler:entry[1]});

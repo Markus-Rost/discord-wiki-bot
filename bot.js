@@ -68,8 +68,12 @@ String.prototype.isMention = function(guild) {
 	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.me.displayName );
 };
 
+Discord.Channel.prototype.isGuild = function() {
+	return ['text', 'news'].includes( this.type );
+}
+
 Discord.Message.prototype.isAdmin = function() {
-	return this.channel.type === 'text' && this.member && ( this.member.permissions.has('MANAGE_GUILD') || ( this.isOwner() && this.evalUsed ) );
+	return this.channel.isGuild() && this.member && ( this.member.permissions.has('MANAGE_GUILD') || ( this.isOwner() && this.evalUsed ) );
 };
 
 Discord.Message.prototype.isOwner = function() {
@@ -77,11 +81,11 @@ Discord.Message.prototype.isOwner = function() {
 };
 
 Discord.Message.prototype.showEmbed = function() {
-	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('EMBED_LINKS');
+	return !this.channel.isGuild() || this.channel.permissionsFor(client.user).has('EMBED_LINKS');
 };
 
 Discord.Message.prototype.uploadFiles = function() {
-	return this.channel.type !== 'text' || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
+	return !this.channel.isGuild() || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
 };
 
 String.prototype.escapeFormatting = function(isMarkdown) {
@@ -95,7 +99,7 @@ String.prototype.replaceSave = function(pattern, replacement) {
 };
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
-	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+	if ( !this.channel.isGuild() || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		var emoji = ':error:440871715938238494';
 		switch ( name ) {
 			case 'nowiki':
@@ -119,7 +123,7 @@ Discord.MessageReaction.prototype.removeEmoji = function() {
 };
 
 Discord.Message.prototype.sendChannel = function(content, options = {}, ignorePause = false) {
-	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+	if ( !this.channel.isGuild() || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 		return this.channel.send(content, options).then( msg => {
 			if ( msg.length ) msg.forEach( message => allowDelete(message, this.author.id) );
@@ -154,7 +158,7 @@ Discord.Message.prototype.sendChannelError = function(content, options = {}) {
 };
 
 Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause = false, letDelete = true) {
-	if ( this.channel.type !== 'text' || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+	if ( !this.channel.isGuild() || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		if ( !options.allowedMentions ) options.allowedMentions = {users:[this.author.id]};
 		return this.reply(content, options).then( msg => {
 			if ( letDelete ) {
@@ -197,7 +201,7 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 
 client.on( 'message', msg => {
 	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.author.bot || msg.author.id === msg.client.user.id ) return;
-	if ( !msg.content.hasPrefix(( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
+	if ( !msg.content.hasPrefix(( msg.channel.isGuild() && patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has('SEND_MESSAGES') ) {
 				console.log( msg.guild.name + ': ' + msg.content );
@@ -209,7 +213,7 @@ client.on( 'message', msg => {
 		}
 		if ( !( msg.content.includes( '[[' ) && msg.content.includes( ']]' ) ) && !( msg.content.includes( '{{' ) && msg.content.includes( '}}' ) ) ) return;
 	}
-	if ( msg.channel.type === 'text' ) {
+	if ( msg.channel.isGuild() ) {
 		var permissions = msg.channel.permissionsFor(msg.client.user);
 		var missing = permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']);
 		if ( missing.length ) {
