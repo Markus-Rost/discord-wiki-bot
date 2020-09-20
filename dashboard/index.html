@@ -11,23 +11,41 @@
 	<meta property="og:site_name" content="Wiki-Bot Settings">
 	<meta itemprop="author" content="MarkusRost">
 	<link rel="stylesheet" type="text/css" href="/src/index.css">
+	<!--<script src="/src/index.js"></script>-->
 </head>
 <body>
 	<div id="text">
 		<div class="description"></div>
 	</div>
-	<div id="navbar">
-		<div style="width: 150px;"></div>
-		<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Support server">
-			<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=128" alt="Support server">
-			<span>Support server</span>
-		</a>
-		<a id="logout" href="/logout" alt="Logout">
-			<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Logout">
-			<span>Wiki-Bot #2998</span>
-		</a>
-	</div>
 	<div class="scrollbar" id="sidebar">
+		<div class="scrollbar" id="channellist">
+			<a class="channel channel-header" id="settings">
+				<img src="/src/settings.svg" alt="Settings">
+				<div>Settings</div>
+			</a>
+			<a class="channel channel-header" id="verification">
+				<img src="/src/settings.svg" alt="Settings">
+				<div>Verifications</div>
+			</a>
+			<a class="channel channel-header" id="rcgcdb">
+				<img src="/src/settings.svg" alt="Settings">
+				<div>Recent Changes</div>
+			</a>
+		</div>
+		<div id="navbar">
+			<a id="selector" href="/" style="width: 230px;">
+				<img class="avatar" src="https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg" alt="Discord">
+				<span>Server Selector</span>
+			</a>
+			<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Help with Wiki-Bot">
+				<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=64" alt="Wiki-Bot">
+				<span>Support Server</span>
+			</a>
+			<a id="logout" href="/logout" alt="Logout">
+				<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Logout">
+				<span>Wiki-Bot #2998</span>
+			</a>
+		</div>
 		<div id="guildlist">
 			<div class="guild" id="invite">
 				<div class="bar"></div>
@@ -44,7 +62,7 @@
 			</div>
 			<div class="guild" id="refresh">
 				<div class="bar"></div>
-				<a href="/refresh" alt="Refresh guild list">
+				<a href="/refresh" alt="Refresh server list">
 					<div class="avatar svg-avatar">
 						<svg width="20" height="23" viewBox="0 1.35 17.3 20" style="overflow: visible;">
 							<path fill="currentColor" d="M8.6,2.7V0.4c0-0.4-0.4-0.5-0.7-0.3L4.2,3.9C4,4,4,4.3,4.2,4.4l3.7,3.7c0.3,0.3,0.7,0.1,0.7-0.3V5.6c3.4,0,6.1,2.9,5.7,6.4  c-0.3,2.6-2.4,4.8-5.1,5.1c-3.5,0.4-6.4-2.3-6.4-5.7c0-1.1,0.3-2.1,0.8-2.9c0.1-0.2,0.1-0.4-0.1-0.5L2.1,6.5  C1.9,6.3,1.6,6.3,1.5,6.5C0.5,8-0.1,9.8,0,11.8c0.2,4.4,3.8,8.1,8.3,8.2c4.9,0.2,9-3.7,9-8.6C17.3,6.6,13.4,2.7,8.6,2.7z"></path>
@@ -52,26 +70,6 @@
 					</div>
 				</a>
 			</div>
-		</div>
-		<div class="scrollbar" id="channellist">
-			<a class="channel channel-header" id="settings">
-				<svg viewBox="0 0 24 24">
-					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
-				</svg>
-				<div>Settings</div>
-			</a>
-			<a class="channel channel-header" id="verification">
-				<svg viewBox="0 0 24 24">
-					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
-				</svg>
-				<div>Verifications</div>
-			</a>
-			<a class="channel channel-header" id="rcgcdb">
-				<svg viewBox="0 0 24 24">
-					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
-				</svg>
-				<div>Recent Changes</div>
-			</a>
 		</div>
 	</div>
 </body>

@@ -1,6 +1,12 @@
 const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
-const {db, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
+const {settingsData, createNotice} = require('./util.js');
+
+const forms = {
+	settings: require('./settings.js').get,
+	verification: require('./verification.js').get,
+	rcscript: require('./rcscript.js').get
+};
 
 const DiscordOauth2 = require('discord-oauth2');
 const oauth = new DiscordOauth2( {
@@ -12,17 +18,46 @@ const oauth = new DiscordOauth2( {
 const file = require('fs').readFileSync('./dashboard/index.html');
 
 /**
- * Let a user change settings
+ * Let a user view settings
  * @param {import('http').ServerResponse} res - The server response
  * @param {String} state - The user state
  * @param {URL} reqURL - The used url
  */
 function dashboard_guilds(res, state, reqURL) {
-	var arguments = reqURL.pathname.split('/');
+	var args = reqURL.pathname.split('/');
 	var settings = settingsData.get(state);
 	var $ = cheerio.load(file);
+	if ( reqURL.searchParams.get('refresh') === 'success' ) {
+		createNotice($, {
+			type: 'success',
+			title: 'Refresh successful!',
+			text: 'Your server list has been successfully refeshed.'
+		}).prependTo('#text');
+	}
+	if ( reqURL.searchParams.get('refresh') === 'failed' ) {
+		createNotice($, {
+			type: 'error',
+			title: 'Refresh failed!',
+			text: 'You server list could not be refreshed, please try again.'
+		}).prependTo('#text');
+	}
+	if ( reqURL.searchParams.get('save') === 'success' ) {
+		createNotice($, {
+			type: 'success',
+			title: 'Settings saved!',
+			text: 'The settings have been updated successfully.'
+		}).prependTo('#text');
+	}
+	if ( reqURL.searchParams.get('save') === 'failed' ) {
+		createNotice($, {
+			type: 'error',
+			title: 'Save failed!',
+			text: 'The settings could not be saved, please try again.'
+		}).prependTo('#text');
+	}
 	if ( process.env.READONLY ) {
 		createNotice($, {
+			type: 'info',
 			title: 'Read-only database!',
 			text: 'You can currently only view your settings but not change them.'
 		}).prependTo('#text');
@@ -65,32 +100,37 @@ function dashboard_guilds(res, state, reqURL) {
 		} );
 	}
 
-	if ( arguments[1] === 'guild' ) {
-		let id = arguments[2];
+	if ( args[1] === 'guild' ) {
+		let id = args[2];
+		$(`.guild#${id}`).addClass('selected');
 		if ( settings.guilds.isMember.has(id) ) {
-			$(`.guild#${id}`).addClass('selected');
 			let guild = settings.guilds.isMember.get(id);
 			$('head title').text(`${guild.name} – ` + $('head title').text());
-			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
-			$('<a>').text(`${guild.permissions}`).appendTo('#text .description');
+			$('.channel#settings').attr('href', `/guild/${guild.id}`);
+			$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
+			$('.channel#rcgcdb').attr('href', `/guild/${guild.id}/rcscript`);
+			if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args);
+			if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args);
+			return forms.settings(res, $, guild, args);
 		}
 		else if ( settings.guilds.notMember.has(id) ) {
-			$(`.guild#${id}`).addClass('selected');
 			let guild = settings.guilds.notMember.get(id);
 			$('head title').text(`${guild.name} – ` + $('head title').text());
-			res.setHeader('Set-Cookie', [`guild="${id}"; HttpOnly; Path=/`]);
+			res.setHeader('Set-Cookie', [`guild="${guild.id}"; HttpOnly; Path=/`]);
 			let url = oauth.generateAuthUrl( {
 				scope: ['identify', 'guilds', 'bot'],
 				permissions: defaultPermissions,
-				guild_id: id, state
+				guildId: guild.id, state
 			} );
-			$('<a>').attr('href', url).text(guild.permissions).appendTo('#text .description');
+			$('<a>').attr('href', url).text(guild.name).appendTo('#text .description');
 		}
 		else {
+			$('head title').text('Unknown Server – ' + $('head title').text());
 			$('#text .description').text('You are missing the <code>MANAGE_GUILD</code> permission.');
 		}
 	}
 	else {
+		$('head title').text('Server Selector – ' + $('head title').text());
 		$('#channellist').empty();
 		$('#text .description').text('This is a list of all servers you can change settings on. Please select a server:');
 		if ( settings.guilds.isMember.size ) {
@@ -127,7 +167,10 @@ function dashboard_guilds(res, state, reqURL) {
 		}
 		if ( !settings.guilds.count ) {
 			$('#text .description').text('You currently don\'t have the MANAGE_SERVER permission on any servers, are you logged into the correct account?');
-			$('<a class="channel">').attr('href', '/logout').append(
+			$('<a class="channel">').attr('href', oauth.generateAuthUrl( {
+				scope: ['identify', 'guilds'],
+				prompt: 'consent', state
+			} )).append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text('Switch accounts')
 			).appendTo('#channellist');

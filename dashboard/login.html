@@ -10,20 +10,44 @@
 	<meta property="og:title" content="Login – Wiki-Bot Settings">
 	<meta property="og:site_name" content="Wiki-Bot Settings">
 	<meta itemprop="author" content="MarkusRost">
-	<link rel="stylesheet" type="text/css" href="/src/index.css">
+	<link rel="stylesheet" type="text/css" href="src/index.css">
 </head>
 <body>
 	<div id="text">
-		<div class="description"></div>
-	</div>
-	<div id="navbar">
-		<div style="width: 150px;"></div>
-		<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Support server">
-			<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=128" alt="Support server">
-			<span>Support server</span>
-		</a>
+		<div class="description">
+			<h2>Welcome on Wiki-Bot Dashboard.</h2>
+			<p>Wiki-Bot is a Discord bot made to bring Discord servers and MediaWiki wikis together. It helps with linking wiki pages, verifying wiki users, informing about latest changes on the wiki and more.</p>
+			<p>Here you can change different bot settings for servers you have Manage Server permission on. To begin, you will have to authenticate your Discord account which you can do with this button:</p>
+			<a id="login-button">
+				<img src="https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg" alt="Discord">
+				Login
+			</a>
+			<h3>Enjoy a little story?</h3>
+			<p>A long time ago, when the world was still figuring out itself, a new faction was born, Gamepedia its name. The kingdom grew quickly, people wanted their own place in the kingdom, it was said the kingdom was a better place than any other kingdoms, which were ridden with very old infrastructure, the taxes enforced by their kings were too high and the kings not too merciful. On the other side, the new kingdom was blossoming, people from all over the world wanted to live there, have their own place there and to do that, they joined existing guilds of people who share their interests. The king here really cared about his most devoted citizens giving them tax exemption status and helping all of them so each of the guilds in the kingdom can prosper and spread the good word about the kingdom.</p>
+			<p>Soon enough the first bigger guilds were joining the kingdom, seeing the greatness of it they joined the kingdom along with their huge tracts. The momentum of growth became a sign of change, a change for the better future. One of the first great King's advisors was Wyn. She was passionate and very talented in all fields needed to manage the kingdom. She enthusiastically  welcomed new guilds and made sure there is nothing on their way to be a fully functioning guilds on Gamepedia.</p>
+			<p>At first the biggest guilds in the kingdom included a guild which consisted of people who devoted their lives to punching the trees with their bare fists, …</p>
+			<a onclick="alert('Not available yet…')">[Read more]</a>
+		</div>
 	</div>
 	<div class="scrollbar" id="sidebar">
+		<div class="scrollbar" id="channellist">
+			<a class="channel channel-header" id="login">
+				<img src="src/settings.svg" alt="Settings">
+				<div>Login</div>
+			</a>
+			<a class="channel" id="invite-wikibot" href="https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot">
+				<img src="src/channel.svg" alt="Channel">
+				<div>Invite Wiki-Bot</div>
+			</a>
+		</div>
+		<div id="navbar">
+			<div></div>
+			<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Help with Wiki-Bot">
+				<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=64" alt="Wiki-Bot">
+				<span>Support Server</span>
+			</a>
+			<div></div>
+		</div>
 		<div id="guildlist">
 			<div class="guild" id="invite">
 				<div class="bar"></div>
@@ -35,18 +59,6 @@
 					</div>
 				</a>
 			</div>
-		</div>
-		<div class="scrollbar" id="channellist">
-			<a class="channel channel-header" id="login">
-				<svg viewBox="0 0 24 24">
-					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
-				</svg>
-				<div>Login</div>
-			</a>
-			<a class="channel" id="invite-wikibot">
-				<img src="/src/channel.svg" width="20" height="20">
-				<div>Invite Wiki-Bot</div>
-			</a>
 		</div>
 	</div>
 </body>

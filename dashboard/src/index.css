@@ -46,8 +46,19 @@ a:hover .description {
 	text-align: center;
 	margin: 0 auto 1em;
 	width: fit-content;
-	background: #200;
-	border: 2px solid #500;
+	border: 2px solid;
+}
+.notice-error {
+	background-color: #200;
+	border-color: #500;
+}
+.notice-info {
+	background-color: #220;
+	border-color: #550;
+}
+.notice-success {
+	background-color: #020;
+	border-color: #050;
 }
 .server-selector {
 	display: flex;
@@ -88,12 +99,13 @@ a:hover .description {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	height: 47px;
-	padding: 0 0 0 8px;
+	height: 48px;
 	font-size: 16px;
 	line-height: 20px;
 	font-weight: bold;
-	border-bottom: 1px solid rgba(4,4,5,0.2);
+	box-shadow: 0 1px 0 rgba(4,4,5,0.2),
+				0 1.5px 0 rgba(6,6,7,0.05),
+				0 2px 0 rgba(4,4,5,0.05);
 }
 :target::before {
 	content: "";
@@ -104,6 +116,7 @@ a:hover .description {
 #navbar a {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	height: 100%;
 	padding-left: 10px;
 }
@@ -143,7 +156,6 @@ a:hover .description {
 	flex: 1 1 auto;
 	min-height: calc(100% - 24px);
 	width: 72px;
-	z-index: 1;
 }
 .guild {
 	margin: 0 0 8px;
@@ -226,7 +238,6 @@ a:hover .description {
 	top: 48px;
 	left: 72px;
 	bottom: 0;
-	z-index: 0;
 }
 .channel {
 	padding: 0 8px;
@@ -236,9 +247,6 @@ a:hover .description {
 	display: flex;
 	align-items: center;
 	color: #8e9297;
-}
-.channel:hover {
-	background: rgba(79,84,92,0.16);
 }
 .channel img {
 	margin-right: 6px;
@@ -252,6 +260,12 @@ a:hover .description {
 	white-space: nowrap;
 	overflow: hidden;
 }
+.channel:hover {
+	background: rgba(79,84,92,0.16);
+}
+.channel.selected {
+	background: rgba(79,84,92,0.32);
+}
 .channel:hover div {
 	color: #dcddde;
 }
@@ -262,8 +276,7 @@ a:hover .description {
 	margin-left: 8px;
 	height: 44px;
 }
-.channel-header svg {
-	margin-right: 6px;
+.channel-header img {
 	width: 24px;
 	height: 24px;
 }
@@ -272,4 +285,35 @@ a:hover .description {
 	line-height: 24px;
 	font-weight: bold;
 	text-shadow: none;
+}
+fieldset div {
+	margin: 10px 0;
+}
+fieldset label {
+	display: inline-block;
+	min-width: 20%;
+}
+fieldset input[type="url"] {
+	min-width: 30%;
+	margin-right: 5px;
+}
+#login-button {
+	display: flex;
+	margin: 20px auto;
+	padding: 20px 50px;
+	width: fit-content;
+	justify-content: center;
+	align-items: center;
+	font-size: 300%;
+	background: #2f3136;
+	border: 5px solid #202225;
+	border-radius: 30px;
+}
+#login-button:hover {
+	background-color:#36393f;
+}
+#login-button img {
+	width: 60px;
+	height: 60px;
+	padding-right: 10px;
 }

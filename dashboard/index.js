@@ -1,7 +1,14 @@
 const http = require('http');
+const {parse} = require('querystring');
 const pages = require('./oauth.js');
 const dashboard = require('./guilds.js');
 const {db, settingsData} = require('./util.js');
+
+const posts = {
+	settings: require('./settings.js').post,
+	verification: require('./verification.js').post,
+	rcscript: require('./rcscript.js').post
+};
 
 const fs = require('fs');
 const path = require('path');
@@ -34,9 +41,37 @@ const files = new Map(fs.readdirSync( './dashboard/src' ).map( file => {
 } ));
 
 const server = http.createServer((req, res) => {
+	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) ) {
+		let args = req.url.split('/');
+		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
+			return cookie.split('=')[0] === 'wikibot';
+		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
+
+		if ( args.length <= 4 && ['settings', 'verification', 'rcscript'].incluses( args[3] ) 
+		&& settingsData.has(state) && settingsData.get(state).guilds.isMember.has(args[2]) ) {
+			let body = '';
+			req.on( 'data', chunk => {
+				body += chunk.toString();
+			} );
+			req.on( 'error', () => {
+				console.log( error );
+				res.end('error');
+			} );
+			return req.on( 'end', () => {
+				console.log( parse(body) );
+				//return posts[args[3]](res, settingsData.get(state).user.id, args[2], parse(body));
+				res.writeHead(302, {Location: req.url});
+				res.end();
+			} );
+		}
+	}
+
 	if ( req.method !== 'GET' ) {
 		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
-		res.writeHead(418, {'Content-Length': body.length});
+		res.writeHead(418, {
+			'Content-Type': 'text/html',
+			'Content-Length': body.length
+		});
 		res.write( body );
 		return res.end();
 	}
@@ -59,12 +94,12 @@ const server = http.createServer((req, res) => {
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
 		return cookie.split('=')[0] === 'guild';
-	} )?.map( cookie => cookie.replace( /^guild="(\w+)"$/, '$1' ) )?.join();
-	if ( lastGuild ) res.setHeader('Set-Cookie', [`guild="${lastGuild}"; Max-Age=0; HttpOnly; Path=/`]);
+	} )?.map( cookie => cookie.replace( /^guild="(\w*)"$/, '$1' ) )?.join();
+	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; HttpOnly; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
 		return cookie.split('=')[0] === 'wikibot';
-	} )?.map( cookie => cookie.replace( /^wikibot="(\w+(?:-\d+)?)"$/, '$1' ) )?.join();
+	} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
 
 	if ( reqURL.pathname === '/login' ) {
 		return pages.login(res, state, reqURL.searchParams.get('action'));
@@ -74,7 +109,10 @@ const server = http.createServer((req, res) => {
 		settingsData.delete(state);
 		res.writeHead(302, {
 			Location: '/login?action=logout',
-			'Set-Cookie': [`wikibot="${state}"; Max-Age=0; HttpOnly`]
+			'Set-Cookie': [
+				...( res.getHeader('Set-Cookie') || [] ),
+				'wikibot=""; HttpOnly; Path=/; Max-Age=0'
+			]
 		});
 		return res.end();
 	}
