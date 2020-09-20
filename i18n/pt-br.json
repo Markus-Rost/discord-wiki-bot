@@ -150,7 +150,8 @@
         "limit": "🚨 **Pare, isso é demais para mim!** 🚨\n\n$1, sua mensagem continha muitos comandos!",
         "missingperm": "Eu não tenho permissão para executar este comando:",
         "patreon": "esse é um recurso exclusivo do Patreon!\nVocê pode me apoiar no Patreon para obter acesso a esse recurso:",
-        "prefix": "o prefixo para este servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`."
+        "prefix": "o prefixo para este servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`.",
+        "readonly": "**a base de dados está temporariamente no modo somente leitura, você não pode alterar as configurações agora!**"
     },
     "help": {
         "admin": "Esses comandos só podem ser executados por administradores:",
