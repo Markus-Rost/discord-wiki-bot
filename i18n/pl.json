@@ -150,7 +150,8 @@
         "limit": "🚨 **Chwila moment! Osiągnięto limit!** 🚨\n\n$1, Twoja wiadomość zawiera zbyt wiele komend!",
         "missingperm": "Brakuje mi uprawnień:",
         "patreon": "to funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie, aby uzyskać dostęp do tej funkcji:",
-        "prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks, używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`."
+        "prefix": "prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks, używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
+        "readonly": "**baza danych jest obecnie w trybie tylko do odczytu, zmiana ustawień obecnie nie jest możliwa!**"
     },
     "help": {
         "admin": "Te komendy mogą być wykonane jedynie przez administrację:",
