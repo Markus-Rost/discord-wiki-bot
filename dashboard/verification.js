@@ -9,7 +9,7 @@ const {db, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
  */
 function dashboard_verification(res, $, guild, args) {
 	$('.channel#verification').addClass('selected');
-	db.all( 'SELECT * FROM verification WHERE guild = ? ORDER BY configid ASC', [guild.id], function(dberror, rows) {
+	db.all( 'SELECT configid, channel, role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
 			$('#text .description').text('Failed to load the verifications!');

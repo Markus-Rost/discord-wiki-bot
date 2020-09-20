@@ -119,30 +119,30 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 					userPermissions: guild.permissions
 				};
 			} );
-			var settings = {
-				state: `${state}-${user.id}`,
-				access_token,
-				user: {
-					id: user.id,
-					username: user.username,
-					discriminator: user.discriminator,
-					avatar: 'https://cdn.discordapp.com/' + ( user.avatar ? 
-						`avatars/${user.id}/${user.avatar}.` + 
-						( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : 
-						`embed/avatars/${user.discriminator % 5}.png` ) + '?size=64',
-					locale: user.locale
-				},
-				guilds: {
-					count: guilds.length,
-					isMember: new Map(),
-					notMember: new Map()
-				}
-			};
 			sendMsg( {
 				type: 'getGuilds',
 				member: user.id,
 				guilds: guilds.map( guild => guild.id )
 			} ).then( response => {
+				var settings = {
+					state: `${state}-${user.id}`,
+					access_token,
+					user: {
+						id: user.id,
+						username: user.username,
+						discriminator: user.discriminator,
+						avatar: 'https://cdn.discordapp.com/' + ( user.avatar ? 
+							`avatars/${user.id}/${user.avatar}.` + 
+							( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : 
+							`embed/avatars/${user.discriminator % 5}.png` ) + '?size=64',
+						locale: user.locale
+					},
+					guilds: {
+						count: guilds.length,
+						isMember: new Map(),
+						notMember: new Map()
+					}
+				};
 				response.forEach( (guild, i) => {
 					if ( guild ) {
 						settings.guilds.isMember.set(guilds[i].id, Object.assign(guilds[i], guild));
@@ -157,28 +157,8 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				return res.end();
 			}, error => {
 				console.log( '- Dashboard: Error while getting the guilds:', error );
-				db.all( 'SELECT guild FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND channel IS NULL', guilds.map( guild => guild.id ), (dberror, rows) => {
-					if ( dberror ) {
-						console.log( '- Error while checking for settings: ' + dberror );
-						res.writeHead(302, {Location: '/login?action=failed'});
-						return res.end();
-					}
-					guilds.forEach( guild => {
-						if ( rows.some( row => row.guild === guild.id ) ) {
-							settings.guilds.isMember.set(guild.id, Object.assign(guild, {
-								botPermissions: 0,
-								channels: []
-							}));
-						}
-						else settings.guilds.notMember.set(guild.id, guild);
-					} );
-					settingsData.set(settings.state, settings);
-					res.writeHead(302, {
-						Location: ( lastGuild ? '/guild/' + lastGuild : '/' ),
-						'Set-Cookie': [`wikibot="${settings.state}"; HttpOnly; Path=/`]
-					});
-					return res.end();
-				} );
+				res.writeHead(302, {Location: '/login?action=failed'});
+				return res.end();
 			} );
 		}, error => {
 			console.log( '- Dashboard: Error while getting user and guilds: ' + error );

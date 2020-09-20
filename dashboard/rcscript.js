@@ -9,7 +9,7 @@ const {db, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
  */
 function dashboard_rcscript(res, $, guild, args) {
 	$('.channel#rcgcdb').addClass('selected');
-	db.all( 'SELECT * FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [guild.id], function(dberror, rows) {
+	db.all( 'SELECT configid, wiki, lang, display, wikiid, rcid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the RcGcDw: ' + dberror );
 			$('#text .description').text('Failed to load the recent changes webhooks!');
