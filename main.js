@@ -80,22 +80,58 @@ if ( process.env.dashboard ) {
 				error: null
 			};
 			switch ( message.data.type ) {
-				case 'isMember':
-					return manager.broadcastEval(`this.guilds.cache.has('${message.data.guild}')`).then( results => {
-						data.response = results.includes( true );
+				case 'getGuilds':
+					return manager.broadcastEval(`Promise.all(
+						${JSON.stringify(message.data.guilds)}.map( id => {
+							if ( this.guilds.cache.has(id) ) {
+								let guild = this.guilds.cache.get(id);
+								return guild.members.fetch('${message.data.member}').then( member => {
+									return {
+										botPermissions: guild.me.permissions.bitfield,
+										channels: guild.channels.cache.filter( channel => {
+											return channel.isGuild();
+										} ).sort( (a, b) => {
+											return a.rawPosition - b.rawPosition;
+										} ).map( channel => {
+											return {
+												id: channel.id,
+												name: channel.name,
+												permissions: member.permissionsIn(channel).bitfield
+											};
+										} ),
+										roles: guild.roles.cache.filter( role => {
+											return ( role.id !== guild.id );
+										} ).sort( (a, b) => {
+											return b.rawPosition - a.rawPosition;
+										} ).map( role => {
+											return {
+												id: role.id,
+												name: role.name,
+												lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
+											};
+										} )
+									};
+								} )
+							}
+						} )
+					)`).then( results => {
+						data.response = message.data.guilds.map( (guild, i) => {
+							return results.find( result => result[i] )?.[i];
+						} );
 					}, error => {
 						data.error = error;
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );
 					} );
 					break;
-				case 'isMemberAll':
-					return manager.broadcastEval(`${JSON.stringify(message.data.guilds)}.map( guild => {
-						return this.guilds.cache.has(guild);
-					} )`).then( results => {
-						data.response = message.data.guilds.map( (guild, i) => {
-							return results.map( result => result[i] ).includes( true );
+				case 'getMember':
+					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
+						let guild = this.guilds.cache.get('${message.data.guild}');
+						guild.members.fetch('${message.data.member}').then( member => {
+							return member.permissions.bitfield;
 						} );
+					}`).then( results => {
+						data.response = results.find( result => result );
 					}, error => {
 						data.error = error;
 					} ).finally( () => {

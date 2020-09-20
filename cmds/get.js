@@ -64,7 +64,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		var channel = await msg.client.shard.broadcastEval( `if ( this.channels.cache.filter( channel => channel.type === 'text' ).has('${id}') ) {
+		var channel = await msg.client.shard.broadcastEval( `if ( this.channels.cache.filter( channel => channel.isGuild() ).has('${id}') ) {
 			var {name, id, guild: {name: guild, id: guildID, me}} = this.channels.cache.get('${id}');
 			( {
 				name, id, guild, guildID,
@@ -137,7 +137,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		}
 		
 		msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', {}, true );
-	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+	} else if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 }
 
 module.exports = {

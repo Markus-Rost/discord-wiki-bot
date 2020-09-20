@@ -377,7 +377,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					msg.replyMsg( lang.get('rcscript.updated_display') + ' `' + args[1] + '`\n`' + cmd + '`', {}, true );
 				} );
 			}
-			if ( selected_row.wiki.isFandom() && args[0] === 'feeds' ) {
+			if ( new Wiki(selected_row.wiki).isFandom() && args[0] === 'feeds' ) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				if ( args[1] === 'only' ) {
 					if ( selected_row.rcid === -1 ) {
@@ -507,7 +507,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
 					text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
-				if ( selected_row.wiki.isFandom() ) {
+				if ( new Wiki(selected_row.wiki).isFandom() ) {
 					text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( selected_row.wikiid ? 'enabled' : 'disabled' )) + '`*';
 					text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}
@@ -554,7 +554,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					row_text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
 					if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
-				if ( row.wiki.isFandom() ) {
+				if ( new Wiki(row.wiki).isFandom() ) {
 					row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.wikiid ? 'enabled' : 'disabled' )) + '`*';
 					if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}

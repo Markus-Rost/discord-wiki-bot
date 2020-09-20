@@ -23,8 +23,9 @@ const wsStatus = [
  */
 function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
-		if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
-	} else if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) {
+		if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+	}
+	else if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 		let textList = lang.get('test.text').filter( text => text.trim() );
 		var text = textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0');
@@ -92,7 +93,8 @@ function cmd_test(lang, msg, args, line, wiki) {
 				message.edit( message.content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
 			} );
 		} );
-	} else {
+	}
+	else {
 		console.log( '- Test: Paused!' );
 		msg.replyMsg( lang.get('test.pause'), {}, true );
 	}

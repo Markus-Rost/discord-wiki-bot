@@ -142,7 +142,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 				if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 				embed.setDescription( description );
 			}
-			if ( msg.channel.type === 'text' && msg.guild.id in patreons && specialpage in querypages ) {
+			if ( msg.channel.isGuild() && msg.guild.id in patreons && specialpage in querypages ) {
 				var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki), {maxLength:1000} )[0];
 				embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			}

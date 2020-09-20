@@ -11,7 +11,7 @@ var db = require('../util/database.js');
  */
 function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
-		if ( msg.channel.type === 'text' && !pause[msg.guild.id] ) this.verify(lang, msg, args, line, wiki);
+		if ( msg.channel.isGuild() && !pause[msg.guild.id] ) this.verify(lang, msg, args, line, wiki);
 		else msg.reactEmoji('❌');
 		return;
 	}
@@ -110,9 +110,9 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( channels.length > 10 ) return msg.replyMsg( lang.get('verification.channel_max'), {}, true );
 				channels = channels.map( channel => {
 					var new_channel = '';
-					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( tc => tc.type === 'text' ).get(channel);
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.type === 'text' ).find( gc => gc.name === channel.replace( /^#/, '' ) );
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.type === 'text' ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
+					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( tc => tc.isGuild() ).get(channel);
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isGuild() ).find( gc => gc.name === channel.replace( /^#/, '' ) );
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isGuild() ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
 					return new_channel;
 				} );
 				if ( channels.some( channel => !channel ) ) return msg.replyMsg( lang.get('verification.channel_missing'), {}, true );

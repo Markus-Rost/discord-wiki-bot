@@ -5,199 +5,48 @@
 	<title>Wiki-Bot Settings</title>
 	<link rel="shortcut icon" href="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64">
 	<meta name="description" content="Wiki-Bot is a bot with the purpose to easily search for and link to wiki pages. Wiki-Bot shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.">
+	<meta property="og:description" content="Wiki-Bot is a bot with the purpose to easily search for and link to wiki pages. Wiki-Bot shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.">
 	<meta property="og:image" content="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=1024">
 	<meta property="og:title" content="Wiki-Bot Settings">
 	<meta property="og:site_name" content="Wiki-Bot Settings">
 	<meta itemprop="author" content="MarkusRost">
-	<style>
-		html {
-			height: calc(100% - 48px);
-		}
-		body {
-			font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
-			text-rendering: optimizeLegibility;
-			background: #36393f;
-			color: #dcddde;
-			position: relative;
-			min-height: 100%;
-			margin: 0;
-		}
-		a {
-			text-decoration: none;
-			color: inherit;
-		}
-		.text a {
-			color: #00b0f4;
-		}
-		.text a:hover {
-			text-decoration: underline;
-		}
-		.text {
-			position: relative;
-			padding: 8px;
-			width: calc(100% - 88px);
-			top: 48px;
-			left: 72px;
-		}
-		.notice {
-			padding: 5px 10px;
-			line-height: 1.6;
-			text-align: center;
-			margin: 0 auto 1em;
-			width: fit-content;
-			background: #200;
-			border: 2px solid #500;
-		}
-		.navbar {
-			background: #2f3136;
-			position: fixed;
-			top: 0;
-			left: 72px;
-			right: 0;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			height: 48px;
-			padding: 0 0 0 8px;
-			font-size: 16px;
-			line-height: 20px;
-			font-weight: bold;
-		}
-		.navbar a {
-			display: flex;
-			align-items: center;
-			height: 100%;
-			padding-left: 10px;
-		}
-		.navbar a:hover {
-			background: #202225;
-		}
-		.navbar .avatar {
-			width: 32px;
-			height: 32px;
-		}
-		.navbar span {
-			padding: 0 10px;
-		}
-		.sidebar {
-			background: #202225;
-			position: absolute;
-			top: 0;
-			left: 0;
-			min-height: calc(100% + 48px);
-			width: 72px;
-			display: flex;
-		}
-		.guildlist {
-			padding: 12px 0;
-			position: relative;
-			flex: 1 1 auto;
-		}
-		.guild {
-			margin: 0 0 8px;
-			position: relative;
-			display: flex;
-			justify-content: center;
-		}
-		.avatar {
-			border-radius: 50%;
-			width: 48px;
-			height: 48px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-weight: 500;
-			line-height: 1.2em;
-			white-space: nowrap;
-			overflow: hidden;
-			color: #dcddde;
-			font-weight: bold;
-		}
-		.navbar a:hover .avatar,
-		.guild.selected .avatar,
-		.guild:hover .avatar {
-			border-radius: 30%;
-			color: #ffffff;
-		}
-		.noicon {
-			width: 48px;
-			height: 48px;
-			background: #36393f;
-		}
-		.guild.selected .noicon,
-		.guild:hover .noicon {
-			background-color: #7289da;
-		}
-		.svg-avatar {
-			color: #43b581;
-			background: #36393f;
-		}
-		.guild:hover .svg-avatar {
-			color: #ffffff;
-			background-color: #43b581;
-		}
-		.separator {
-			height: 2px;
-			width: 32px;
-			border-radius: 1px;
-			background-color: rgba(255,255,255,0.06);;
-		}
-		.bar {
-			position: absolute;
-			left: 0;
-			top: 0;
-			display: block;
-			width: 8px;
-			border-radius: 0 4px 4px 0;
-			margin-left: -4px;
-			background-color: #ffffff;
-		}
-		.guild:hover .bar {
-			margin-top: 14px;
-			height: 20px;
-		}
-		.guild.selected .bar {
-			margin-top: 4px;
-			height: 40px;
-		}
-		a[alt]:hover:after {
-			content: attr(alt);
-			position: absolute;
-			background: #000000;
-			color: #dcddde;
-			font-weight: bold;
-			font-size: 90%;
-			white-space: nowrap;
-			border-radius: 4px;
-			padding: 8px;
-		}
-		.guild a[alt]:hover:after {
-			top: 20%;
-			left: 72px;
-		}
-		.navbar a[alt]:hover:after {
-			top: 48px;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="/src/index.css">
+	<!--<script src="/src/index.js"></script>-->
 </head>
-<body class="settings">
-	<div class="text">
-		<replace id="notice">Some text here</replace>
-		<replace id="text">Some text here</replace>
+<body>
+	<div id="text">
+		<div class="description"></div>
 	</div>
-	<div class="navbar">
-		<div style="width: 150px;"></div>
-		<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Support server">
-			<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Support server" width="32" height="32">
-			<span>Support server</span>
-		</a>
-		<a id="logout" href="/logout" alt="Logout">
-			<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Logout" width="32" height="32">
-			<span>Wiki-Bot #2998</span>
-		</a>
-	</div>
-	<div class="sidebar">
-		<div class="guildlist">
+	<div class="scrollbar" id="sidebar">
+		<div class="scrollbar" id="channellist">
+			<a class="channel channel-header" id="settings">
+				<img src="/src/settings.svg" alt="Settings">
+				<div>Settings</div>
+			</a>
+			<a class="channel channel-header" id="verification">
+				<img src="/src/settings.svg" alt="Settings">
+				<div>Verifications</div>
+			</a>
+			<a class="channel channel-header" id="rcgcdb">
+				<img src="/src/settings.svg" alt="Settings">
+				<div>Recent Changes</div>
+			</a>
+		</div>
+		<div id="navbar">
+			<a id="selector" href="/" style="width: 230px;">
+				<img class="avatar" src="https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg" alt="Discord">
+				<span>Server Selector</span>
+			</a>
+			<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Help with Wiki-Bot">
+				<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=64" alt="Wiki-Bot">
+				<span>Support Server</span>
+			</a>
+			<a id="logout" href="/logout" alt="Logout">
+				<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Logout">
+				<span>Wiki-Bot #2998</span>
+			</a>
+		</div>
+		<div id="guildlist">
 			<div class="guild" id="invite">
 				<div class="bar"></div>
 				<a href="https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot" alt="Invite Wiki-Bot">
@@ -208,13 +57,12 @@
 					</div>
 				</a>
 			</div>
-			<replace id="guilds">List of guilds here</replace>
-			<div class="guild">
+			<div class="guild" id="last-separator">
 				<div class="separator"></div>
 			</div>
 			<div class="guild" id="refresh">
 				<div class="bar"></div>
-				<a href="/refresh" alt="Refresh guild list">
+				<a href="/refresh" alt="Refresh server list">
 					<div class="avatar svg-avatar">
 						<svg width="20" height="23" viewBox="0 1.35 17.3 20" style="overflow: visible;">
 							<path fill="currentColor" d="M8.6,2.7V0.4c0-0.4-0.4-0.5-0.7-0.3L4.2,3.9C4,4,4,4.3,4.2,4.4l3.7,3.7c0.3,0.3,0.7,0.1,0.7-0.3V5.6c3.4,0,6.1,2.9,5.7,6.4  c-0.3,2.6-2.4,4.8-5.1,5.1c-3.5,0.4-6.4-2.3-6.4-5.7c0-1.1,0.3-2.1,0.8-2.9c0.1-0.2,0.1-0.4-0.1-0.5L2.1,6.5  C1.9,6.3,1.6,6.3,1.5,6.5C0.5,8-0.1,9.8,0,11.8c0.2,4.4,3.8,8.1,8.3,8.2c4.9,0.2,9-3.7,9-8.6C17.3,6.6,13.4,2.7,8.6,2.7z"></path>

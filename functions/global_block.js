@@ -14,7 +14,7 @@ const toTitle = require('../util/wiki.js').toTitle;
  * @param {String} [gender] - The gender of the user.
  */
 function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
-	if ( !msg || msg.channel.type !== 'text' || !( msg.guild.id in patreons ) ) return;
+	if ( !msg || !msg.channel.isGuild() || !( msg.guild.id in patreons ) ) return;
 	
 	var isUser = true;
 	if ( !gender ) {

@@ -158,7 +158,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							} );
 						}
 						
-						if ( msg.channel.type === 'text' && msg.guild.id in patreons && ( wiki.isFandom() || wiki.isGamepedia() ) ) {
+						if ( msg.channel.isGuild() && msg.guild.id in patreons && ( wiki.isFandom() || wiki.isGamepedia() ) ) {
 							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 
@@ -305,7 +305,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						else {
 							if ( pbody.profile['link-discord'] ) {
 								if ( pbody.profile['link-discord'].length > 50 ) pbody.profile['link-discord'] = pbody.profile['link-discord'].substring(0, 50) + '\u2026';
-								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
+								if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag === pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 								} );
 								var discordname = [lang.get('user.info.discord'),pbody.profile['link-discord'].escapeFormatting()];
@@ -340,7 +340,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							}
 						}
 						
-						if ( msg.channel.type === 'text' && msg.guild.id in patreons ) {
+						if ( msg.channel.isGuild() && msg.guild.id in patreons ) {
 							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 							
@@ -369,7 +369,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							if ( pbody.userData.discordHandle ) {
 								let discord = pbody.userData.discordHandle.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 								if ( discord.length > 50 ) discord = discord.substring(0, 50) + '\u2026';
-								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
+								if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discord;
 								} );
 								let discordname = [lang.get('user.info.discord'),discord];
@@ -405,7 +405,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 							}
 						}
 						
-						if ( msg.channel.type === 'text' && msg.guild.id in patreons ) {
+						if ( msg.channel.isGuild() && msg.guild.id in patreons ) {
 							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 							

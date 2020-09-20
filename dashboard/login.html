@@ -5,195 +5,50 @@
 	<title>Login – Wiki-Bot Settings</title>
 	<link rel="shortcut icon" href="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64">
 	<meta name="description" content="Wiki-Bot is a bot with the purpose to easily search for and link to wiki pages. Wiki-Bot shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.">
+	<meta property="og:description" content="Wiki-Bot is a bot with the purpose to easily search for and link to wiki pages. Wiki-Bot shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.">
 	<meta property="og:image" content="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=1024">
 	<meta property="og:title" content="Login – Wiki-Bot Settings">
 	<meta property="og:site_name" content="Wiki-Bot Settings">
 	<meta itemprop="author" content="MarkusRost">
-	<style>
-		html {
-			height: calc(100% - 48px);
-		}
-		body {
-			font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
-			text-rendering: optimizeLegibility;
-			background: #36393f;
-			color: #dcddde;
-			position: relative;
-			min-height: 100%;
-			margin: 0;
-		}
-		a {
-			text-decoration: none;
-			color: inherit;
-		}
-		.text a {
-			color: #00b0f4;
-		}
-		.text a:hover {
-			text-decoration: underline;
-		}
-		.text {
-			position: relative;
-			padding: 8px;
-			width: calc(100% - 88px);
-			top: 48px;
-			left: 72px;
-		}
-		.notice {
-			padding: 5px 10px;
-			line-height: 1.6;
-			text-align: center;
-			margin: 0 auto 1em;
-			width: fit-content;
-			background: #200;
-			border: 2px solid #500;
-		}
-		.navbar {
-			background: #2f3136;
-			position: fixed;
-			top: 0;
-			left: 72px;
-			right: 0;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			height: 48px;
-			padding: 0 0 0 8px;
-			font-size: 16px;
-			line-height: 20px;
-			font-weight: bold;
-		}
-		.navbar a {
-			display: flex;
-			align-items: center;
-			height: 100%;
-			padding-left: 10px;
-		}
-		.navbar a:hover {
-			background: #202225;
-		}
-		.navbar .avatar {
-			width: 32px;
-			height: 32px;
-		}
-		.navbar span {
-			padding: 0 10px;
-		}
-		.sidebar {
-			background: #202225;
-			position: absolute;
-			top: 0;
-			left: 0;
-			min-height: calc(100% + 48px);
-			width: 72px;
-			display: flex;
-		}
-		.guildlist {
-			padding: 12px 0;
-			position: relative;
-			flex: 1 1 auto;
-		}
-		.guild {
-			margin: 0 0 8px;
-			position: relative;
-			display: flex;
-			justify-content: center;
-		}
-		.avatar {
-			border-radius: 50%;
-			width: 48px;
-			height: 48px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-weight: 500;
-			line-height: 1.2em;
-			white-space: nowrap;
-			overflow: hidden;
-			color: #dcddde;
-			font-weight: bold;
-		}
-		.navbar a:hover .avatar,
-		.guild.selected .avatar,
-		.guild:hover .avatar {
-			border-radius: 30%;
-			color: #ffffff;
-		}
-		.noicon {
-			width: 48px;
-			height: 48px;
-			background: #36393f;
-		}
-		.guild.selected .noicon,
-		.guild:hover .noicon {
-			background-color: #7289da;
-		}
-		.svg-avatar {
-			color: #43b581;
-			background: #36393f;
-		}
-		.guild:hover .svg-avatar {
-			color: #ffffff;
-			background-color: #43b581;
-		}
-		.separator {
-			height: 2px;
-			width: 32px;
-			border-radius: 1px;
-			background-color: rgba(255,255,255,0.06);;
-		}
-		.bar {
-			position: absolute;
-			left: 0;
-			top: 0;
-			display: block;
-			width: 8px;
-			border-radius: 0 4px 4px 0;
-			margin-left: -4px;
-			background-color: #ffffff;
-		}
-		.guild:hover .bar {
-			margin-top: 14px;
-			height: 20px;
-		}
-		.guild.selected .bar {
-			margin-top: 4px;
-			height: 40px;
-		}
-		a[alt]:hover:after {
-			content: attr(alt);
-			position: absolute;
-			background: #000000;
-			color: #dcddde;
-			font-weight: bold;
-			font-size: 90%;
-			white-space: nowrap;
-			border-radius: 4px;
-			padding: 8px;
-		}
-		.guild a[alt]:hover:after {
-			top: 20%;
-			left: 72px;
-		}
-		.navbar a[alt]:hover:after {
-			top: 48px;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="src/index.css">
 </head>
-<body class="settings">
-	<div class="text">
-		<replace id="notice">Some text here</replace>
-		<replace id="text">Some text here</replace>
+<body>
+	<div id="text">
+		<div class="description">
+			<h2>Welcome on Wiki-Bot Dashboard.</h2>
+			<p>Wiki-Bot is a Discord bot made to bring Discord servers and MediaWiki wikis together. It helps with linking wiki pages, verifying wiki users, informing about latest changes on the wiki and more.</p>
+			<p>Here you can change different bot settings for servers you have Manage Server permission on. To begin, you will have to authenticate your Discord account which you can do with this button:</p>
+			<a id="login-button">
+				<img src="https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg" alt="Discord">
+				Login
+			</a>
+			<h3>Enjoy a little story?</h3>
+			<p>A long time ago, when the world was still figuring out itself, a new faction was born, Gamepedia its name. The kingdom grew quickly, people wanted their own place in the kingdom, it was said the kingdom was a better place than any other kingdoms, which were ridden with very old infrastructure, the taxes enforced by their kings were too high and the kings not too merciful. On the other side, the new kingdom was blossoming, people from all over the world wanted to live there, have their own place there and to do that, they joined existing guilds of people who share their interests. The king here really cared about his most devoted citizens giving them tax exemption status and helping all of them so each of the guilds in the kingdom can prosper and spread the good word about the kingdom.</p>
+			<p>Soon enough the first bigger guilds were joining the kingdom, seeing the greatness of it they joined the kingdom along with their huge tracts. The momentum of growth became a sign of change, a change for the better future. One of the first great King's advisors was Wyn. She was passionate and very talented in all fields needed to manage the kingdom. She enthusiastically  welcomed new guilds and made sure there is nothing on their way to be a fully functioning guilds on Gamepedia.</p>
+			<p>At first the biggest guilds in the kingdom included a guild which consisted of people who devoted their lives to punching the trees with their bare fists, …</p>
+			<a onclick="alert('Not available yet…')">[Read more]</a>
+		</div>
 	</div>
-	<div class="navbar">
-		<div style="width: 150px;"></div>
-		<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Support server">
-			<img class="avatar" src="https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64" alt="Support server" width="32" height="32">
-			<span>Support server</span>
-		</a>
-	</div>
-	<div class="sidebar">
-		<div class="guildlist">
+	<div class="scrollbar" id="sidebar">
+		<div class="scrollbar" id="channellist">
+			<a class="channel channel-header" id="login">
+				<img src="src/settings.svg" alt="Settings">
+				<div>Login</div>
+			</a>
+			<a class="channel" id="invite-wikibot" href="https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot">
+				<img src="src/channel.svg" alt="Channel">
+				<div>Invite Wiki-Bot</div>
+			</a>
+		</div>
+		<div id="navbar">
+			<div></div>
+			<a id="support" href="https://discord.gg/v77RTk5" target="_blank" alt="Help with Wiki-Bot">
+				<img class="avatar" src="https://cdn.discordapp.com/icons/464084451165732868/c6a8b9fc902b09545de8194a911e6045.png?size=64" alt="Wiki-Bot">
+				<span>Support Server</span>
+			</a>
+			<div></div>
+		</div>
+		<div id="guildlist">
 			<div class="guild" id="invite">
 				<div class="bar"></div>
 				<a href="https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939912256&scope=bot" alt="Invite Wiki-Bot">

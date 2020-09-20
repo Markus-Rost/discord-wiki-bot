@@ -56,7 +56,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 			} );
 		}
 	}
-	if ( msg.channel.type !== 'text' || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+	if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
 }
 
 module.exports = {

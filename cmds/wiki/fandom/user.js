@@ -149,7 +149,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							}
 						}
 						
-						if ( msg.channel.type === 'text' && msg.guild.id in patreons ) {
+						if ( msg.channel.isGuild() && msg.guild.id in patreons ) {
 							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 							
@@ -299,7 +299,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							if ( discordfield && discordfield.value ) {
 								discordfield.value = htmlToPlain( discordfield.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 								if ( discordfield.value.length > 50 ) discordfield.value = discordfield.value.substring(0, 50) + '\u2026';
-								if ( msg.channel.type === 'text' ) var discordmember = msg.guild.members.cache.find( member => {
+								if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discordfield.value;
 								} );
 								var discordname = [lang.get('user.info.discord'),discordfield.value];
@@ -335,7 +335,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							}
 						}
 						
-						if ( msg.channel.type === 'text' && msg.guild.id in patreons ) {
+						if ( msg.channel.isGuild() && msg.guild.id in patreons ) {
 							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 							

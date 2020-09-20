@@ -151,7 +151,7 @@ function removePatreons(guild, msg) {
 function removeSettings(msg) {
 	if ( !msg ) return 'removeSettings(msg) – No message provided!';
 	try {
-		msg.client.shard.broadcastEval( `[[...this.guilds.cache.keys()], [...this.channels.cache.filter( channel => channel.type === 'text' ).keys()]]` ).then( results => {
+		msg.client.shard.broadcastEval( `[[...this.guilds.cache.keys()], [...this.channels.cache.filter( channel => channel.isGuild() ).keys()]]` ).then( results => {
 			var all_guilds = results.map( result => result[0] ).reduce( (acc, val) => acc.concat(val), [] );
 			var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
 			var guilds = [];

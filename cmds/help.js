@@ -79,7 +79,7 @@ const restrictions = {
  * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_help(lang, msg, args, line, wiki) {
-	if ( msg.channel.type === 'text' && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
+	if ( msg.channel.isGuild() && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
 	var isMinecraft = ( wiki.href === lang.get('minecraft.link') );
 	if ( args.join('') ) {
@@ -90,7 +90,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 		var invoke = args[0].toLowerCase();
 		var cmd = ( lang.aliases[invoke] || invoke );
 		if ( cmd === 'admin' ) {
-			if ( msg.channel.type !== 'text' || msg.isAdmin() ) {
+			if ( !msg.channel.isGuild() || msg.isAdmin() ) {
 				var cmdlist = lang.get('help.admin') + '\n';
 				cmdlist += formathelp(helplist.admin, msg, lang);
 				msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
@@ -139,12 +139,12 @@ function cmd_help(lang, msg, args, line, wiki) {
  * @param {import('../util/i18n.js')} lang - The user language.
  */
 function formathelp(messages, msg, lang) {
-	var prefix = ( msg.channel.type === 'text' && patreons[msg.guild.id] || process.env.prefix );
-	var mention = '@' + ( msg.channel.type === 'text' ? msg.guild.me.displayName : msg.client.user.username );
+	var prefix = ( msg.channel.isGuild() && patreons[msg.guild.id] || process.env.prefix );
+	var mention = '@' + ( msg.channel.isGuild() ? msg.guild.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
 		if ( !restrictions.patreon.includes( message ) ) return true;
-		return ( msg.channel.type === 'text' && msg.guild.id in patreons );
+		return ( msg.channel.isGuild() && msg.guild.id in patreons );
 	} ).map( message => {
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );
