@@ -87,6 +87,7 @@ if ( process.env.dashboard ) {
 								let guild = this.guilds.cache.get(id);
 								return guild.members.fetch('${message.data.member}').then( member => {
 									return {
+										patreon: guild.id in global.patreons,
 										botPermissions: guild.me.permissions.bitfield,
 										channels: guild.channels.cache.filter( channel => {
 											return channel.isGuild();

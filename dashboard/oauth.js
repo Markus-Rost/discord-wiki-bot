@@ -93,6 +93,10 @@ function dashboard_login(res, state, action) {
  * @param {String} [lastGuild] - The guild to return to
  */
 function dashboard_oauth(res, state, searchParams, lastGuild) {
+	if ( searchParams.get('error') === 'access_denied' && state === searchParams.get('state') && settingsData.has(state) ) {
+		res.writeHead(302, {Location: '/'});
+		return res.end();
+	}
 	if ( state !== searchParams.get('state') || !searchParams.get('code') ) {
 		res.writeHead(302, {Location: '/login?action=failed'});
 		return res.end();

@@ -43,7 +43,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 		if ( !username.trim() ) {
 			args[0] = line.split(' ')[0];
 			if ( args[0] === 'verification' ) args[0] = ( lang.localNames.verify || 'verify' );
-			return this.help(lang, msg, args, line);
+			return this.help(lang, msg, args, line, wiki);
 		}
 		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
@@ -148,15 +148,20 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				console.log( '- Error while getting the global block: ' + error );
 				comment.push(lang.get('verify.failed_gblock'));
 			} ).then( async () => {
-				// async check for editcount on Gamepedia, workaround for https://gitlab.com/hydrawiki/hydra/-/issues/5054
-				if ( wiki.isGamepedia() || ( wiki.isFandom() && body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) ) {
-					try {
-						let ucresponse = await got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=500&ucuser=' + encodeURIComponent( username ) + '&format=json' );
-						if ( !ucresponse.body.continue ) queryuser.editcount = ucresponse.body.query.usercontribs.length;
-					} catch ( ucerror ) {
-						console.log( '- Error while working around the edit count: ' + ucerror )
+				// async check for editcount on Gamepedia and Fandom,
+				// workaround for https://gitlab.com/hydrawiki/hydra/-/issues/5054
+				if ( wiki.isGamepedia() || ( wiki.isFandom() && body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) ) await got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=500&ucuser=' + encodeURIComponent( username ) + '&format=json' ).then( ucresponse => {
+					var ucbody = ucresponse.body;
+					if ( ucbody?.warnings ) log_warn(ucbody.warnings);
+					if ( ucresponse.statusCode !== 200 || !ucbody?.query?.usercontribs ) {
+						return console.log( '- ' + ucresponse.statusCode + ': Error while working around the edit count: ' + ucbody?.error?.info );
 					}
-				}
+					if ( !ucbody.continue || ucbody.query.usercontribs.length > queryuser.editcount ) {
+						queryuser.editcount = ucbody.query.usercontribs.length;
+					}
+				}, ucerror => {
+					console.log( '- Error while working around the edit count: ' + ucerror );
+				} );
 				
 				var options = {};
 				if ( wiki.isGamepedia() ) {
@@ -290,7 +295,9 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				var revision = Object.values(mwbody.query.pages)[0]?.revisions?.[0];
 				
 				var discordname = '';
-				if ( revision && revision.user === username ) discordname = revision.slots.main['*'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+				if ( revision && revision.user === username ) {
+					discordname = ( revision?.slots?.main || revision )['*'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+				}
 				if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
 				embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
 				if ( msg.author.tag.escapeFormatting() !== discordname ) {

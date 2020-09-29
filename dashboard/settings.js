@@ -100,6 +100,7 @@ function dashboard_settings(res, $, guild, args) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the settings: ' + dberror );
 			$('#text .description').text('Failed to load the settings!');
+			$('.channel#settings').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
 			res.write( body );
