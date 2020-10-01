@@ -163,6 +163,7 @@ function plural(lang, number, args) {
 	var text = args[args.length - 1];
 	switch ( lang ) {
 		case 'fr':
+		case 'hi':
 			if ( number <= 1 ) text = getArg(args, 0);
 			else text = getArg(args, 1);
 			break;
