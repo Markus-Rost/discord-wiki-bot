@@ -628,7 +628,6 @@
             "content-moderator": "{{GENDER:$1|moderator treści|moderatorka treści|moderator(-ka) treści}}",
             "content-team-member": "Członek Zespołu Treści",
             "content-volunteer": "{{GENDER:$1|wolontariusz treści|wolontariuszka treści|wolontariusz(-ka) treści}}",
-            "content_team_member": "Członek Zespołu Treści",
             "custodian": "{{GENDER:$1|opiekun|opiekunka|opiekun(-ka)}}",
             "directors": "{{GENDER:$1|dyrektor|dyrektorka|dyrektor(-ka)}}",
             "doyen": "Dean",

@@ -628,7 +628,6 @@
             "content-moderator": "{{GENDER:$1|Inhalts-Moderator|Inhalts-Moderatorin}}",
             "content-team-member": "Content-Team-Mitglied",
             "content-volunteer": "Content-Volunteer",
-            "content_team_member": "Content-Team-Mitglied",
             "custodian": "{{GENDER:$1|Verwalter|Verwalterin}}",
             "directors": "{{GENDER:$1|Direktor|Direktorin}}",
             "doyen": "{{GENDER:$1|Dekan|Dekanin}}",
