@@ -5,7 +5,7 @@ var allSites = getAllSites();
  * @returns {Promise<Object[]>}
  */
 function getAllSites() {
-	return got.get( 'https://help.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|md5_key,wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,wiki_crossover,created&format=json' ).then( response => {
+	return got.get( 'https://wikisandbox.gamepedia.com/api.php?action=allsites&formatversion=2&do=getSiteStats&filter=wikis|md5_key,wiki_domain,wiki_display_name,wiki_image,wiki_description,wiki_managers,official_wiki,wiki_crossover,created&format=json' ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body || body.status !== 'okay' || !body.data || !body.data.wikis ) {
 			console.log( '- ' + shardId + ': ' + response.statusCode + ': Error while gettings all sites: ' + ( body && body.error && body.error.info ) );
@@ -29,7 +29,7 @@ function getAllSites() {
  */
 function updateAllSites() {
 	return new Promise( function(resolve, reject) {
-		getAllSites.then( newSites => {
+		getAllSites().then( newSites => {
 			if ( newSites.length ) allSites.then( sites => {
 				sites.splice(0, sites.length);
 				sites.push(...newSites);

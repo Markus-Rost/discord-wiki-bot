@@ -16,7 +16,7 @@ getAllSites.then( sites => allSites = sites );
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function fandom_overview(lang, msg, wiki, reaction, spoiler) {
-	if ( !allSites.length ) getAllSites.get().then( sites => allSites = sites );
+	if ( !allSites.length ) getAllSites.update();
 	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
