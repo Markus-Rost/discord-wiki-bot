@@ -1,7 +1,6 @@
 const htmlparser = require('htmlparser2');
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
-const {timeoptions} = require('../util/default.json');
 const toTitle = require('../util/wiki.js').toTitle;
 var db = require('../util/database.js');
 
