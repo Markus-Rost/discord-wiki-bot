@@ -611,7 +611,6 @@
             "content-moderator": "{{GENDER:$1|कंटेंट मॉडरेटर}}",
             "content-team-member": "{{GENDER:$1|कंटेंट टीम सदस्य}}",
             "content-volunteer": "{{GENDER:$1|कंटेंट वोलंटियर}}",
-            "content_team_member": "{{GENDER:$1|कंटेंट टीम सदस्य}}",
             "custodian": "{{GENDER:$1|कस्टोडियन}}",
             "directors": "{{GENDER:$1|निर्देशक}}",
             "doyen": "{{GENDER:$1|डीन}}",
