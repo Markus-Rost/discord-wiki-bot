@@ -391,7 +391,7 @@
         "cmdpage": "Comandos/",
         "fixed": "Versão corrigida:",
         "link": "https://minecraft-pt.gamepedia.com/",
-        "more": "E $1 {{PLURAL:$1|mais}}.",
+        "more": "E $1 mais.",
         "private": "**Problema privado**",
         "total": "$1 {{PLURAL:$1|problema|problemas}} corrigidos"
     },

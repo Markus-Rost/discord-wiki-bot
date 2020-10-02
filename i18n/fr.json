@@ -294,7 +294,7 @@
         "cmdpage": "Commandes#",
         "fixed": "Corrigé lors de la version",
         "link": "https://minecraft-fr.gamepedia.com/",
-        "more": "Et $1 {{PLURAL:$1|autres}}.",
+        "more": "Et $1 autres.",
         "private": "**Problème privé**",
         "total": "$1 {{PLURAL:$1|bug|bugs}} corrigés"
     },

@@ -391,9 +391,9 @@
         "cmdpage": "Befehl/",
         "fixed": "Lösungsversion:",
         "link": "https://minecraft-de.gamepedia.com/",
-        "more": "Und $1 {{PLURAL:$1|mehr}}.",
+        "more": "Und $1 mehr.",
         "private": "**Privater Fehler**",
-        "total": "$1 {{PLURAL:$1|Fehler}} korrigiert"
+        "total": "$1 Fehler korrigiert"
     },
     "overview": {
         "articles": "Artikel:",

@@ -117,7 +117,7 @@
         "hidden": "*gizli*",
         "info": {
             "added": "Eklendi:",
-            "bytes": "$1 {{PLURAL:$1|Bayt}}",
+            "bytes": "$1 Bayt",
             "comment": "açıklama:",
             "editor": "Editör:",
             "more": "Daha fazlası",
@@ -133,7 +133,7 @@
         "image": "Resmi gör",
         "main": "Tartışmalar",
         "post": "gönderisi",
-        "votes": "$1 {{PLURAL:$1|oy}}"
+        "votes": "$1 oy"
     },
     "fallback": [
         "en",
@@ -293,8 +293,8 @@
     "minecraft": {
         "cmdpage": "en:Commands/",
         "link": "https://minecraft-tr.gamepedia.com/",
-        "more": "Ve $1 {{PLURAL:$1|tane}} daha.",
-        "total": "$1 {{PLURAL:$1|hata}} düzeltildi"
+        "more": "Ve $1 tane daha.",
+        "total": "$1 hata düzeltildi"
     },
     "overview": {
         "articles": "Makaleler:",
@@ -324,8 +324,8 @@
         "category": {
             "content": "Bu kategorinin içeriği:",
             "empty": "*Bu kategori boş*",
-            "files": "$1 {{PLURAL:$1|dosya}}",
-            "pages": "$1 {{PLURAL:$1|sayfa}}",
+            "files": "$1 dosya",
+            "pages": "$1 sayfa",
             "subcats": "$1 {{PLURAL:$1|kategori|kategoriler}}"
         },
         "empty": "*Bu özel sayfa boş*",

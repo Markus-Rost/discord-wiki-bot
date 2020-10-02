@@ -298,7 +298,7 @@
         "cmdpage": "Opdrachten#",
         "fixed": "Fixed versie:",
         "link": "https://minecraft-nl.gamepedia.com/",
-        "more": "En $1 {{PLURAL:$1|meer}}.",
+        "more": "En $1 meer.",
         "private": "**Privé issue**",
         "total": "$1 {{PLURAL:$1|bug|bugs}} opgelost"
     },
@@ -505,8 +505,8 @@
     "verify": {
         "error": "De verificatie is mislukt vanwege een fout.",
         "error_reply": "de verificatie is mislukt vanwege een fout, probeer het opnieuw.",
-        "user_verified_reply": "je bent succesvol {{GENDER:$2|geverifiëerd}} als wiki gebruiker \"$1\".",
-        "wiki": "{{GENDER:$1|Wiki gebruiker}}:"
+        "user_verified_reply": "je bent succesvol geverifiëerd als wiki gebruiker \"$1\".",
+        "wiki": "Wiki gebruiker:"
     },
     "voice": {
         "channel": "Spraakkanaal",
