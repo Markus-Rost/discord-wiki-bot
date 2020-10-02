@@ -82,6 +82,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.channel.isGuild() && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
 	var isMinecraft = ( wiki.href === lang.get('minecraft.link') );
+	var maxLength = ( lang.lang === 'hi' ? 480 : 2000 );
 	if ( args.join('') ) {
 		if ( args.join(' ').isMention(msg.guild) ) {
 			if ( !( msg.isAdmin() && msg.defaultSettings ) ) help_server(lang, msg);
@@ -93,7 +94,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			if ( !msg.channel.isGuild() || msg.isAdmin() ) {
 				var cmdlist = lang.get('help.admin') + '\n';
 				cmdlist += formathelp(helplist.admin, msg, lang);
-				msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
+				msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 			}
 			else {
 				msg.replyMsg( lang.get('help.noadmin') );
@@ -102,7 +103,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 		else if ( cmd === 'minecraft' ) {
 			var cmdlist = '<' + lang.get('minecraft.link') + '>\n';
 			cmdlist += formathelp(helplist.minecraft, msg, lang);
-			msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
+			msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 		}
 		else if ( cmd in helpmap && 
 		( !restrictions.fandom.includes( cmd ) || wiki.isFandom() ) && 
@@ -110,14 +111,14 @@ function cmd_help(lang, msg, args, line, wiki) {
 		( !restrictions.admin.includes( cmd ) || msg.isAdmin() ) ) {
 			var cmdlist = formathelp(helpmap[cmd], msg, lang);
 			if ( !cmdlist.length ) msg.reactEmoji('❓');
-			else msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
+			else msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 		}
 		else msg.reactEmoji('❓');
 	}
 	else if ( msg.isAdmin() && pause[msg.guild.id] ) {
 		var cmdlist = lang.get('help.pause') + '\n';
 		cmdlist += formathelp(helplist.pause, msg, lang);
-		msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}}, true );
+		msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}}, true );
 	}
 	else {
 		var cmdlist = lang.get('help.all') + '\n';
@@ -128,7 +129,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			}
 		} );
 		cmdlist += '\n🔸 ' + lang.get('help.footer');
-		msg.sendChannel( cmdlist, {split:{char:'🔹',prepend:'🔹'}} );
+		msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 	}
 }
 

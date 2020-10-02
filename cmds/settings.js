@@ -235,7 +235,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				sqlargs[2] = msg.channel.id;
 				if ( !rows.includes( channel ) ) {
 					if ( channel.lang === allLangs.map[args[1]] ) {
-						return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang] + '`' + langhelp, {}, true );
+						return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang] + '`' + langhelp, {files:( msg.uploadFiles() ? [`./i18n/widgets/${channel.lang}.png`] : [] )}, true );
 					}
 					sql = 'INSERT INTO discord(lang, guild, channel, wiki, prefix) VALUES(?, ?, ?, ?, ?)';
 					sqlargs.push(guild.wiki, guild.prefix);
