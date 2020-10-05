@@ -106,7 +106,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			var comment = [];
 			var url = '';
 			if ( wiki.isGamepedia() ) {
-				url = 'https://help.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx&cache=' + Date.now();
+				url = 'https://wikisandbox.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx&cache=' + Date.now();
 			}
 			else if ( wiki.isFandom() ) {
 				url = 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now();

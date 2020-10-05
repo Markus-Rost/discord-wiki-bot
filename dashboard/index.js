@@ -43,7 +43,7 @@ const files = new Map(fs.readdirSync( './dashboard/src' ).map( file => {
 process.env.READONLY = 'true';
 
 const server = http.createServer((req, res) => {
-	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) ) {
+	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) && !process.env.READONLY ) {
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot';
