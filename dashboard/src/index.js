@@ -1,4 +1,4 @@
-const wiki = document.getElementById('wb-settings-wiki');
+/*const wiki = document.getElementById('wb-settings-wiki');
 if ( wiki ) wiki.addEventListener( 'input', function (event) {
 	if ( wiki.validity.valid ) {
 		wiki.setCustomValidity('I am expecting an e-mail address!');
@@ -26,7 +26,7 @@ if ( form ) form.addEventListener( 'submit', function (event) {
 	}
 	else if ( wiki && wiki.validity.valid ) {
 		wiki.value
-		fetch()/*
+		fetch()
 		got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json' ).then( response => {
 			if ( !isForced && response.statusCode === 404 && typeof response.body === 'string' ) {
 				let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
@@ -65,7 +65,7 @@ if ( form ) form.addEventListener( 'submit', function (event) {
 			if ( reaction ) reaction.removeEmoji();
 			msg.reactEmoji('nowiki', true);
 			return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
-		} );*/
+		} );
 	}
 	else form.dispatchEvent(new Event('submit'));
 } );
@@ -84,5 +84,97 @@ for ( var i = 0; i < collapsible.length; i++ ) {
 		else {
 			content.style.display = 'block';
 		}
+	}
+}
+*/
+
+var baseSelect = document.getElementsByTagName('select');
+for ( var b = 0; b < baseSelect.length; b++ ) {
+	if ( baseSelect[b].parentNode.querySelector('button.addmore') ) {
+		baseSelect[b].addEventListener( 'input', toggleOption );
+		toggleOption.call(baseSelect[b]);
+	}
+}
+
+var addmore = document.getElementsByClassName('addmore');
+for ( var j = 0; j < addmore.length; j++ ) {
+	addmore[j].onclick = function() {
+		var clone = this.previousElementSibling.cloneNode(true);
+		clone.classList.add('wb-settings-additional-select');
+		clone.removeAttribute('id');
+		clone.removeAttribute('required');
+		clone.childNodes.forEach( function(child) {
+			child.removeAttribute('hidden');
+			child.removeAttribute('selected');
+		} );
+		clone.querySelector('option.defaultSelect').setAttribute('selected', '');
+		clone.addEventListener( 'input', toggleOption );
+		this.before(clone);
+		toggleOption.call(clone);
+	}
+}
+
+/**
+ * @this HTMLSelectElement
+ */
+function toggleOption() {
+	var options = [];
+	var selected = [];
+	var allSelect = this.parentNode.querySelectorAll('select');
+	allSelect.forEach( function(select) {
+		options.push(...select.options);
+		selected.push(...select.selectedOptions);
+	} );
+	var button = this.parentNode.querySelector('button.addmore');
+	if ( selected.some( function(option) {
+		if ( option && option.value ) return false;
+		else return true;
+	} ) || allSelect.length >= 10 || allSelect.length >= this.options.length-1 ) {
+		button.setAttribute('hidden', '');
+	}
+	else button.removeAttribute('hidden');
+	selected = selected.filter( function(option) {
+		if ( option && option.value ) return true;
+		else return false;
+	} ).map( function(option) {
+		return option.value;
+	} );
+	options.forEach( function(option) {
+		if ( selected.includes(option.value) && !option.selected ) {
+			option.setAttribute('disabled', '');
+		}
+		else if ( option.disabled ) option.removeAttribute('disabled');
+	} );
+}
+
+const wiki = document.getElementById('wb-settings-wiki');
+if ( wiki ) {
+	const feeds = document.getElementById('wb-settings-feeds');
+	if ( feeds ) {
+		const hidefeeds = document.getElementById('wb-settings-feeds-hide');
+		const feedsonly = document.getElementById('wb-settings-feeds-only');
+		const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
+		feeds.addEventListener( 'change', function() {
+			if ( this.checked ) {
+				hidefeedsonly.removeAttribute('style');
+				if ( !hidefeeds.hasAttribute('style') ) feedsonly.removeAttribute('disabled');
+			}
+			else {
+				hidefeedsonly.setAttribute('style', 'visibility: hidden;');
+				feedsonly.setAttribute('disabled', '');
+			}
+		} );
+		wiki.addEventListener( 'input', function() {
+			if ( this.validity.valid && /\.(?:fandom\.com|wikia\.org)$/.test(new URL(this.value).hostname) ) {
+				hidefeeds.removeAttribute('style');
+				feeds.removeAttribute('disabled');
+				if ( !hidefeedsonly.hasAttribute('style') ) feedsonly.removeAttribute('disabled');
+			}
+			else {
+				hidefeeds.setAttribute('style', 'visibility: hidden;');
+				feeds.setAttribute('disabled', '');
+				feedsonly.setAttribute('disabled', '');
+			}
+		} );
 	}
 }

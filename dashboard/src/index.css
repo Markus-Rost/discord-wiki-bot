@@ -286,16 +286,37 @@ a:hover .description {
 	font-weight: bold;
 	text-shadow: none;
 }
-fieldset div {
+fieldset > div {
 	margin: 10px 0;
 }
-fieldset label {
+fieldset label,
+fieldset span {
 	display: inline-block;
 	min-width: 20%;
 }
 fieldset input[type="url"] {
 	min-width: 30%;
 	margin-right: 5px;
+}
+.wb-settings-display:first-of-type {
+	display: inline-block;
+}
+.wb-settings-display:not(:first-of-type),
+.wb-settings-additional-select,
+button.addmore:not([hidden]) {
+	display: block;
+	margin-left: 20%;
+}
+.wb-settings-error {
+	color: red;
+}
+.wb-settings-error:disabled {
+	color: darkred;
+}
+#wb-settings-delete {
+	float: right;
+	color: red;
+	font-weight: bold;
 }
 #login-button {
 	display: flex;

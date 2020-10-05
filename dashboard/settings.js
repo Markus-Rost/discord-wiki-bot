@@ -18,19 +18,34 @@ const fieldset = {
 	} ).join('\n')
 	+ '</select>',
 	prefix: '<label for="wb-settings-prefix">Prefix:</label>'
-	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^[^ \`]+$" required>'
+	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^\\s*[^\\s`]+\\s*$" required>'
 	+ '<br>'
 	+ '<label for="wb-settings-prefix-space">Prefix ends with space:</label>'
 	+ '<input type="checkbox" id="wb-settings-prefix-space" name="prefix-space">',
 	inline: '<label for="wb-settings-inline">Inline commands:</label>'
 	+ '<input type="checkbox" id="wb-settings-inline" name="inline">',
 	voice: '<label for="wb-settings-voice">Voice channels:</label>'
-	+ '<input type="checkbox" id="wb-settings-voice" name="voice">'
+	+ '<input type="checkbox" id="wb-settings-voice" name="voice">',
+	save: '<input type="submit" id="wb-settings-save" name="save-settings">',
+	delete: '<input type="submit" id="wb-settings-delete" name="delete-settings">'
 };
 
 /**
- * Let a user change settings
- * @param {CheerioStatic} $ - The response body
+ * Create a settings form
+ * @param {import('cheerio')} $ - The response body
+ * @param {String} header - The form header
+ * @param {Object} settings - The current settings
+ * @param {Boolean} settings.patreon
+ * @param {String} settings.channel
+ * @param {String} settings.wiki
+ * @param {String} settings.lang
+ * @param {Boolean} settings.inline
+ * @param {String} settings.prefix
+ * @param {Boolean} settings.voice
+ * @param {Object[]} guildChannels - The guild channels
+ * @param {String} guildChannels.id
+ * @param {String} guildChannels.name
+ * @param {Number} guildChannels.permissions
  */
 function createForm($, header, settings, guildChannels) {
 	var readonly = ( process.env.READONLY ? true : false );
@@ -77,10 +92,15 @@ function createForm($, header, settings, guildChannels) {
 		if ( settings.voice ) voice.find('#wb-settings-voice').attr('checked', '');
 		fields.push(voice);
 	}
-	var form = $('<fieldset>').append(...fields, '<input type="submit">');
+	fields.push($(fieldset.save).val('Save'));
+	if ( settings.channel && settings.channel !== 'new' ) {
+		fields.push($(fieldset.delete).val('Delete').attr('onclick', `return confirm('Are you sure?');`));
+	}
+	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
 		form.find('input').attr('readonly', '');
-		form.find('input[type="submit"], input[type="checkbox"], option').attr('disabled', '');
+		form.find('input[type="checkbox"], option').attr('disabled', '');
+		form.find('input[type="submit"]').remove();
 	}
 	return $('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
 		$('<h2>').text(header),
@@ -91,7 +111,7 @@ function createForm($, header, settings, guildChannels) {
 /**
  * Let a user change settings
  * @param {import('http').ServerResponse} res - The server response
- * @param {CheerioStatic} $ - The response body
+ * @param {import('cheerio')} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
  */
@@ -111,7 +131,7 @@ function dashboard_settings(res, $, guild, args) {
 			$('.channel#settings').addClass('selected');
 			createForm($, 'Server-wide Settings', Object.assign({
 				prefix: process.env.prefix
-			}, defaultSettings)).attr('action', `/guild/${guild.id}`).appendTo('#text');
+			}, defaultSettings)).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
 			res.write( body );
@@ -126,45 +146,41 @@ function dashboard_settings(res, $, guild, args) {
 		} );
 		$('#channellist #settings').after(
 			...channellist.map( channel => {
-				return $('<a class="channel">').attr('href', `/guild/${guild.id}/${channel.id}`).append(
+				return $('<a class="channel">').attr('id', `channel-${channel.id}`).append(
 					$('<img>').attr('src', '/src/channel.svg'),
 					$('<div>').text(channel.name)
-				).attr('id', `channel-${channel.id}`).attr('title', channel.id);
+				).attr('href', `/guild/${guild.id}/settings/${channel.id}`).attr('title', channel.id);
 			} ),
-			( process.env.READONLY ? '' :
-			$('<a class="channel" id="channel-new">').attr('href', `/guild/${guild.id}/new`).append(
+			( process.env.READONLY || !guild.channels.filter( channel => {
+				return ( hasPerm(channel.permissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
+			} ).length ? '' :
+			$('<a class="channel" id="channel-new">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text('New channel overwrite')
-			) )
+			).attr('href', `/guild/${guild.id}/settings/new`) )
 		);
-		if ( args[3] === 'new' ) {
+		if ( args[4] === 'new' ) {
 			$('.channel#channel-new').addClass('selected');
-			createForm($, 'New channel overwrite', Object.assign({}, rows.find( row => !row.channel ), {
+			createForm($, 'New Channel Overwrite', Object.assign({}, rows.find( row => !row.channel ), {
 				patreon: isPatreon,
 				channel: 'new'
 			}), guild.channels.filter( channel => {
-				return hasPerm(channel.permissions, 'VIEW_CHANNEL', 'SEND_MESSAGES');
-			} )).attr('action', `/guild/${guild.id}`).appendTo('#text');
-			let body = $.html();
-			res.writeHead(200, {'Content-Length': body.length});
-			res.write( body );
-			return res.end();
+				return ( hasPerm(channel.permissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
+			} )).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#text');
 		}
-		if ( channellist.some( channel => channel.id === args[3] ) ) {
-			let channel = channellist.find( channel => channel.id === args[3] );
+		else if ( channellist.some( channel => channel.id === args[4] ) ) {
+			let channel = channellist.find( channel => channel.id === args[4] );
 			$(`.channel#channel-${channel.id}`).addClass('selected');
 			createForm($, `#${channel.name} Settings`, Object.assign({}, rows.find( row => {
 				return row.channel === channel.id;
 			} ), {
 				patreon: isPatreon
-			}), [channel]).attr('action', `/guild/${guild.id}`).appendTo('#text');
-			let body = $.html();
-			res.writeHead(200, {'Content-Length': body.length});
-			res.write( body );
-			return res.end();
+			}), [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
 		}
-		$('.channel#settings').addClass('selected');
-		createForm($, 'Server-wide Settings', rows.find( row => !row.channel )).attr('action', `/guild/${guild.id}`).appendTo('#text');
+		else {
+			$('.channel#settings').addClass('selected');
+			createForm($, 'Server-wide Settings', rows.find( row => !row.channel )).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});
 		res.write( body );

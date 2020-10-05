@@ -49,7 +49,7 @@ const server = http.createServer((req, res) => {
 			return cookie.split('=')[0] === 'wikibot';
 		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
 
-		if ( args.length <= 4 && ['settings', 'verification', 'rcscript'].includes( args[3] ) 
+		if ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] ) 
 		&& settingsData.has(state) && settingsData.get(state).guilds.isMember.has(args[2]) ) {
 			let body = '';
 			req.on( 'data', chunk => {

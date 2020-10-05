@@ -76,7 +76,7 @@ function dashboard_guilds(res, state, reqURL) {
 		settings.guilds.isMember.forEach( guild => {
 			$('<div class="guild">').attr('id', guild.id).append(
 				$('<div class="bar">'),
-				$('<a>').attr('href', `/guild/${guild.id}`).attr('alt', guild.name).append(
+				$('<a>').attr('href', `/guild/${guild.id}/settings`).attr('alt', guild.name).append(
 					( guild.icon ? 
 						$('<img class="avatar">').attr('src', `${guild.icon}?size=64`).attr('alt', guild.name)
 					 : $('<div class="avatar noicon">').text(guild.acronym) )
@@ -106,11 +106,13 @@ function dashboard_guilds(res, state, reqURL) {
 		if ( settings.guilds.isMember.has(id) ) {
 			let guild = settings.guilds.isMember.get(id);
 			$('head title').text(`${guild.name} – ` + $('head title').text());
-			$('.channel#settings').attr('href', `/guild/${guild.id}`);
+			$('<script>').text(`const isPatreon = ${guild.patreon};`).insertBefore('script#indexjs');
+			$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
 			$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
-			$('.channel#rcgcdb').attr('href', `/guild/${guild.id}/rcscript`);
-			if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args);
+			$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
+			if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args);
 			if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args);
+			if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args);
 			return forms.settings(res, $, guild, args);
 		}
 		else if ( settings.guilds.notMember.has(id) ) {
@@ -141,7 +143,7 @@ function dashboard_guilds(res, state, reqURL) {
 			).appendTo('#channellist');
 			$('<div class="server-selector" id="isMember">').appendTo('#text');
 			settings.guilds.isMember.forEach( guild => {
-				$('<a class="server">').attr('href', `/guild/${guild.id}`).append(
+				$('<a class="server">').attr('href', `/guild/${guild.id}/settings`).append(
 					( guild.icon ? 
 						$('<img class="avatar">').attr('src', `${guild.icon}?size=256`).attr('alt', guild.name)
 					 : $('<div class="avatar noicon">').text(guild.acronym) ),

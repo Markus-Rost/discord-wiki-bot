@@ -155,7 +155,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				} );
 				settingsData.set(settings.state, settings);
 				res.writeHead(302, {
-					Location: ( lastGuild ? '/guild/' + lastGuild : '/' ),
+					Location: ( lastGuild ? '/guild/' + lastGuild : '/settings' ),
 					'Set-Cookie': [`wikibot="${settings.state}"; HttpOnly; Path=/`]
 				});
 				return res.end();
