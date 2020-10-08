@@ -182,9 +182,9 @@ function cmd_verification(lang, msg, args, line, wiki) {
 						if ( wiki.noWiki(response.url) || response.statusCode === 410 ) console.log( '- This wiki doesn\'t exist!' );
 						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
 					}
-					var groups = body.query.allmessages.filter( group => !['group-all','group-membership-link-with-expiry'].includes( group.normalizedname ) && !/\.(?:css|js)$/.test(group.normalizedname) ).map( group => {
+					var groups = body.query.allmessages.filter( group => !['group-all','group-membership-link-with-expiry'].includes( group.name ) && !/\.(?:css|js)$/.test(group.name) ).map( group => {
 						return {
-							name: group.normalizedname.replace( /^group-/, '' ).replace( /-member$/, '' ),
+							name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
 							content: group['*'].replace( / /g, '_' ).toLowerCase()
 						};
 					} );
