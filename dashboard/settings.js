@@ -21,13 +21,13 @@ const fieldset = {
 	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^\\s*[^\\s`]+\\s*$" required>'
 	+ '<br>'
 	+ '<label for="wb-settings-prefix-space">Prefix ends with space:</label>'
-	+ '<input type="checkbox" id="wb-settings-prefix-space" name="prefix-space">',
+	+ '<input type="checkbox" id="wb-settings-prefix-space" name="prefix_space">',
 	inline: '<label for="wb-settings-inline">Inline commands:</label>'
 	+ '<input type="checkbox" id="wb-settings-inline" name="inline">',
 	voice: '<label for="wb-settings-voice">Voice channels:</label>'
 	+ '<input type="checkbox" id="wb-settings-voice" name="voice">',
-	save: '<input type="submit" id="wb-settings-save" name="save-settings">',
-	delete: '<input type="submit" id="wb-settings-delete" name="delete-settings">'
+	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
+	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings">'
 };
 
 /**
@@ -188,7 +188,23 @@ function dashboard_settings(res, $, guild, args) {
 	} );
 }
 
-function update_settings(user, guild, settings) {
+/**
+ * Change settings
+ * @param {import('http').ServerResponse} res - The server response
+ * @param {String} user - The id of the user
+ * @param {String} guild - The id of the guild
+ * @param {Object} settings - The new settings
+ * @param {String} [settings.channel]
+ * @param {String} settings.wiki
+ * @param {String} [settings.lang]
+ * @param {String} [settings.inline]
+ * @param {String} [settings.prefix]
+ * @param {String} [settings.prefix_space]
+ * @param {String} [settings.voice]
+ * @param {String} [settings.save_settings]
+ * @param {String} [settings.delete_settings]
+ */
+function update_settings(res, user, guild, settings) {
 	
 }
 

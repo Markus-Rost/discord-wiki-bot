@@ -16,8 +16,8 @@ const fieldset = {
 	+ '<input type="number" id="wb-settings-accountage" name="accountage" min="0" required>',
 	rename: '<label for="wb-settings-rename">Rename users:</label>'
 	+ '<input type="checkbox" id="wb-settings-rename" name="rename">',
-	save: '<input type="submit" id="wb-settings-save" name="save-settings">',
-	delete: '<input type="submit" id="wb-settings-delete" name="delete-settings">'
+	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
+	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings">'
 };
 
 /**
@@ -204,7 +204,22 @@ function dashboard_verification(res, $, guild, args) {
 	} );
 }
 
-function update_verification() {
+/**
+ * Change verifications
+ * @param {import('http').ServerResponse} res - The server response
+ * @param {String} user - The id of the user
+ * @param {String} guild - The id of the guild
+ * @param {Object} settings - The new settings
+ * @param {String|String[]} settings.channel
+ * @param {String|String[]} settings.role
+ * @param {String|String[]} settings.usergroup
+ * @param {String} settings.editcount
+ * @param {String} settings.accountage
+ * @param {String} [settings.rename]
+ * @param {String} [settings.save_settings]
+ * @param {String} [settings.delete_settings]
+ */
+function update_verification(res, user, guild, settings) {
 	
 }
 

@@ -44,7 +44,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			if ( args[0] === 'verification' ) args[0] = ( lang.localNames.verify || 'verify' );
 			return this.help(lang, msg, args, line, wiki);
 		}
-		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|groupmemberships|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
+		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
 			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
@@ -106,7 +106,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			var comment = [];
 			var url = '';
 			if ( wiki.isGamepedia() ) {
-				url = 'https://wikisandbox.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx&cache=' + Date.now();
+				url = 'https://commons.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx&cache=' + Date.now();
 			}
 			else if ( wiki.isFandom() ) {
 				url = 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now();
@@ -211,13 +211,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 							row.usergroup = row.usergroup.replace( 'AND|', '' );
 							and_or = 'every';
 						}
-						if ( queryuser.editcount >= row.editcount && row.usergroup.split('|')[and_or]( usergroup => {
-							if ( !queryuser.groupmemberships ) return queryuser.groups.includes( usergroup );
-							if ( !queryuser.groups.includes( 'global_' + usergroup ) || queryuser.groupmemberships.some( member => member.group === usergroup ) ) {
-								return queryuser.groups.includes( usergroup );
-							}
-							return false;
-						} ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
+						if ( queryuser.editcount >= row.editcount && row.usergroup.split('|')[and_or]( usergroup => queryuser.groups.includes( usergroup ) ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
 							verified = true;
 							if ( row.rename ) rename = true;
 							row.role.split('|').forEach( role => {
@@ -319,13 +313,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 						row.usergroup = row.usergroup.replace( 'AND|', '' );
 						and_or = 'every';
 					}
-					if ( queryuser.editcount >= row.editcount && row.usergroup.split('|')[and_or]( usergroup => {
-						if ( !queryuser.groupmemberships ) return queryuser.groups.includes( usergroup );
-						if ( !queryuser.groups.includes( 'global_' + usergroup ) || queryuser.groupmemberships.some( member => member.group === usergroup ) ) {
-							return queryuser.groups.includes( usergroup );
-						}
-						return false;
-					} ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
+					if ( queryuser.editcount >= row.editcount && row.usergroup.split('|')[and_or]( usergroup => queryuser.groups.includes( usergroup ) ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
 						verified = true;
 						if ( row.rename ) rename = true;
 						row.role.split('|').forEach( role => {

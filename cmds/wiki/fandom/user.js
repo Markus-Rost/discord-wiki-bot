@@ -243,12 +243,19 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					var editcount = [lang.get('user.info.editcount'), queryuser.editcount];
 					var groups = queryuser.groups;
 					var group = [lang.get('user.info.group')];
-					for ( var i = 0; i < usergroups.length; i++ ) {
-						if ( groups.includes( usergroups[i] ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( usergroups[i] ) ) ) {
-							if ( usergroups[i] === 'wiki-manager' && body.query.allmessages[0]['*'] === username ) {
-								group.push('**' + lang.get('user.groups.' + usergroups[i], queryuser.gender) + '**');
+					for ( var i = 0; i < usergroups.sorted.length; i++ ) {
+						let usergroup = usergroups.sorted[i];
+						if ( usergroup === '__CUSTOM__' ) {
+							let customgroups = groups.filter( customgroup => {
+								return ( !usergroups.sorted.includes( customgroup ) && !usergroups.ignored.includes( customgroup ) );
+							} );
+							group.push(...customgroups);
+						}
+						else if ( groups.includes( usergroup ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( usergroup ) ) ) {
+							if ( usergroup === 'wiki-manager' && body.query.allmessages[0]['*'] === username ) {
+								group.push('**' + lang.get('user.groups.' + usergroup, queryuser.gender) + '**');
 							}
-							else group.push(lang.get('user.groups.' + usergroups[i], queryuser.gender));
+							else group.push(lang.get('user.groups.' + usergroup, queryuser.gender));
 						}
 					}
 					var isBlocked = false;

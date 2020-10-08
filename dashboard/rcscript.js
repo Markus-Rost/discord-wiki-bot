@@ -41,10 +41,10 @@ const fieldset = {
 	+ '<input type="checkbox" id="wb-settings-feeds" name="feeds">'
 	+ '<div id="wb-settings-feeds-only-hide">'
 	+ '<label for="wb-settings-feeds-only">Only feeds based changes:</label>'
-	+ '<input type="checkbox" id="wb-settings-feeds-only" name="feeds-only">'
+	+ '<input type="checkbox" id="wb-settings-feeds-only" name="feeds_only">'
 	+ '</div>',
-	save: '<input type="submit" id="wb-settings-save" name="save-settings">',
-	delete: '<input type="submit" id="wb-settings-delete" name="delete-settings">'
+	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
+	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings">'
 };
 
 /**
@@ -196,7 +196,22 @@ function dashboard_rcscript(res, $, guild, args) {
 	} );
 }
 
-function update_rcscript() {
+/**
+ * Change recent changes scripts
+ * @param {import('http').ServerResponse} res - The server response
+ * @param {String} user - The id of the user
+ * @param {String} guild - The id of the guild
+ * @param {Object} settings - The new settings
+ * @param {String} settings.channel
+ * @param {String} settings.wiki
+ * @param {String} settings.lang
+ * @param {String} settings.display
+ * @param {String} [settings.feeds]
+ * @param {String} [settings.feeds_only]
+ * @param {String} [settings.save_settings]
+ * @param {String} [settings.delete_settings]
+ */
+function update_rcscript(res, user, guild, settings) {
 	
 }
 

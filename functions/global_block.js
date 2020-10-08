@@ -64,7 +64,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				if ( globaledits ) {
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
-						value: '[' + globaledits + '](https://community.fandom.com/wiki/Special:Editcount/' + toTitle(username) + ')',
+						value: globaledits,
 						inline: true
 					});
 					else {
@@ -81,7 +81,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 		msg.edit( spoiler + text + spoiler, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
 	} );
 	else if ( wiki.isGamepedia() ) Promise.all([
-		got.get( 'https://wikisandbox.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx', {
+		got.get( 'https://commons.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx', {
 			responseType: 'text'
 		} ).then( response => {
 			var body = response.body;
@@ -120,7 +120,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 		}, error => {
 			console.log( '- Error while getting the global block: ' + error );
 		} ),
-		( isUser ? got.get( 'https://wikisandbox.gamepedia.com/UserProfile:' + encodeURIComponent( username ), {
+		( isUser ? got.get( 'https://commons.gamepedia.com/UserProfile:' + encodeURIComponent( username ), {
 			responseType: 'text'
 		} ).then( gresponse => {
 			var gbody = gresponse.body;
@@ -146,7 +146,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				if ( globaledits ) {
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
-						value: '[' + globaledits + '](https://help.gamepedia.com/Gamepedia_Help_Wiki:Global_user_tracker#' + wiki.hostname.replace( '.gamepedia.com', '/' ) + toTitle(username) + ')',
+						value: globaledits,
 						inline: true
 					});
 					else {
