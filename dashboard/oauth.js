@@ -149,6 +149,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				};
 				response.forEach( (guild, i) => {
 					if ( guild ) {
+						if ( guild === 'noMember' ) return;
 						settings.guilds.isMember.set(guilds[i].id, Object.assign(guilds[i], guild));
 					}
 					else settings.guilds.notMember.set(guilds[i].id, guilds[i]);
@@ -205,7 +206,10 @@ function dashboard_refresh(res, state, returnLocation = '/') {
 			let isMember = new Map();
 			let notMember = new Map();
 			response.forEach( (guild, i) => {
-				if ( guild ) isMember.set(guilds[i].id, Object.assign(guilds[i], guild));
+				if ( guild ) {
+					if ( guild === 'noMember' ) return;
+					isMember.set(guilds[i].id, Object.assign(guilds[i], guild));
+				}
 				else notMember.set(guilds[i].id, guilds[i]);
 			} );
 			settings.guilds = {count: guilds.length, isMember, notMember};

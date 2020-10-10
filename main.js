@@ -112,6 +112,8 @@ if ( process.env.dashboard ) {
 											};
 										} )
 									};
+								}, error => {
+									return 'noMember';
 								} )
 							}
 						} )

@@ -213,6 +213,9 @@ function dashboard_rcscript(res, $, guild, args) {
  */
 function update_rcscript(res, user, guild, settings) {
 	
+	console.log( settings );
+	res.writeHead(302, {Location: req.url});
+	res.end();
 }
 
 module.exports = {

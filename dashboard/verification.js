@@ -221,6 +221,9 @@ function dashboard_verification(res, $, guild, args) {
  */
 function update_verification(res, user, guild, settings) {
 	
+	console.log( settings );
+	res.writeHead(302, {Location: req.url});
+	res.end();
 }
 
 module.exports = {

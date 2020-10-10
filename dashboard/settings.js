@@ -206,6 +206,9 @@ function dashboard_settings(res, $, guild, args) {
  */
 function update_settings(res, user, guild, settings) {
 	
+	console.log( settings );
+	res.writeHead(302, {Location: req.url});
+	res.end();
 }
 
 module.exports = {

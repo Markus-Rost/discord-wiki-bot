@@ -60,10 +60,7 @@ const server = http.createServer((req, res) => {
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
-				console.log( parse(body) );
-				//return posts[args[3]](res, settingsData.get(state).user.id, args[2], parse(body));
-				res.writeHead(302, {Location: req.url});
-				res.end();
+				return posts[args[3]](res, settingsData.get(state).user.id, args[2], parse(body));
 			} );
 		}
 	}
