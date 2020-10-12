@@ -36,7 +36,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 							thumbnail = attribs.content;
 						}
 					}
-				}, {decodeEntities:true} );
+				} );
 				parser.write( descbody );
 				parser.end();
 				embed.setThumbnail( thumbnail );
@@ -342,7 +342,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 						}
 						if ( tagname === 'p' ) description += '\n';
 					}
-				}, {decodeEntities:true} );
+				} );
 				parser.write( discussion.renderedContent );
 				parser.end();
 				if ( discussion._embedded.contentImages.length ) embed.setThumbnail( discussion._embedded.contentImages[0].url );

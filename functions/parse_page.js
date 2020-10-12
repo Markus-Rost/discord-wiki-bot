@@ -6,6 +6,8 @@ const removeClasses = [
 	'script',
 	'input',
 	'style',
+	'script',
+	'noscript',
 	'ul.gallery',
 	'.mw-editsection',
 	'sup.reference',
@@ -40,6 +42,7 @@ function parse_page(msg, title, embed, wiki, thumbnail) {
 		}
 		var change = false;
 		var $ = cheerio.load(response.body.parse.text['*']);
+		console.log($.text())
 		if ( embed.thumbnail?.url === thumbnail ) {
 			var image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
 			if ( !image ) {

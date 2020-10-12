@@ -1,3 +1,13 @@
+const htmlparser = require('htmlparser2');
+const got = require('got').extend( {
+	throwHttpErrors: false,
+	timeout: 5000,
+	headers: {
+		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ')'
+	},
+	responseType: 'json'
+} );
+
 /**
  * Make wikitext formatting usage.
  * @param {String} [text] - The text to modify.
@@ -36,10 +46,81 @@ function toMarkdown(text = '', wiki, title = '') {
 /**
  * Removes wikitext formatting.
  * @param {String} [text] - The text to modify.
+ * @param {Boolean} [canHTML] - If the text can contain HTML.
  * @returns {String}
  */
-function toPlaintext(text = '') {
-	return escapeFormatting(text.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' ));
+function toPlaintext(text = '', fullWikitext = false) {
+	text = text.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' );
+	if ( fullWikitext ) {
+		return htmlToPlain( text.replace( /\[(?:https?:)?\/\/(?:[^ ]+) ([^\]]+)\]/g, '$1' ) );
+	}
+	else return escapeFormatting(text);
+};
+
+/**
+ * Change HTML text to plain text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
+function htmlToPlain(html) {
+	var text = '';
+	var parser = new htmlparser.Parser( {
+		ontext: (htmltext) => {
+			text += escapeFormatting(htmltext);
+		}
+	} );
+	parser.write( html );
+	parser.end();
+	return text;
+};
+
+/**
+ * Change HTML text to markdown text.
+ * @param {String} html - The text in HTML.
+ * @returns {String}
+ */
+function htmlToDiscord(html) {
+	var text = '';
+	var parser = new htmlparser.Parser( {
+		onopentag: (tagname, attribs) => {
+			switch (tagname) {
+				case 'b':
+					text += '**';
+					break;
+				case 'i':
+					text += '*';
+					break;
+				case 's':
+					text += '~~';
+					break;
+				case 'u':
+					text += '__';
+					break;
+			}
+		},
+		ontext: (htmltext) => {
+			text += escapeFormatting(htmltext);
+		},
+		onclosetag: (tagname) => {
+			switch (tagname) {
+				case 'b':
+					text += '**';
+					break;
+				case 'i':
+					text += '*';
+					break;
+				case 's':
+					text += '~~';
+					break;
+				case 'u':
+					text += '__';
+					break;
+			}
+		}
+	} );
+	parser.write( html );
+	parser.end();
+	return text;
 };
 
 /**
@@ -54,8 +135,11 @@ function escapeFormatting(text = '', isMarkdown = false) {
 };
 
 module.exports = {
+	got,
 	toFormatting,
 	toMarkdown,
 	toPlaintext,
+	htmlToPlain,
+	htmlToDiscord,
 	escapeFormatting
 };

@@ -2,7 +2,7 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const global_block = require('../../../functions/global_block.js');
 const {timeoptions, usergroups} = require('../../../util/default.json');
-const {toMarkdown, toPlaintext} = require('../../../util/functions.js');
+const {toMarkdown, toPlaintext, htmlToPlain} = require('../../../util/functions.js');
 
 /**
  * Processes a Fandom user.
@@ -52,7 +52,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 											thumbnail = attribs.content;
 										}
 									}
-								}, {decodeEntities:true} );
+								} );
 								parser.write( descbody );
 								parser.end();
 								embed.setThumbnail( thumbnail );
@@ -212,7 +212,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 											thumbnail = attribs.content;
 										}
 									}
-								}, {decodeEntities:true} );
+								} );
 								parser.write( descbody );
 								parser.end();
 								embed.setThumbnail( thumbnail );
@@ -362,23 +362,6 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 		} );
 	}
 }
-
-/**
- * Change HTML text to plain text.
- * @param {String} html - The text in HTML.
- * @returns {String}
- */
-function htmlToPlain(html) {
-	var text = '';
-	var parser = new htmlparser.Parser( {
-		ontext: (htmltext) => {
-			text += htmltext.escapeFormatting();
-		}
-	}, {decodeEntities:true} );
-	parser.write( html );
-	parser.end();
-	return text;
-};
 
 module.exports = {
 	name: 'user',

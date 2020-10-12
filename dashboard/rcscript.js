@@ -1,12 +1,7 @@
-const got = require('got').extend( {
-	headers: {
-		'User-Agent': 'Wiki-Bot/dashboard (Discord; ' + process.env.npm_package_name + ')'
-	},
-	responseType: 'json'
-} );
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
-const {RcGcDw: {names: allLangs}} = require('../i18n/allLangs.json');
-const {db, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
+const {RcGcDw: allLangs} = require('../i18n/allLangs.json');
+const {got, db, sendMsg, hasPerm} = require('./util.js');
+const dashboard = require('./guilds.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -19,8 +14,8 @@ const fieldset = {
 	//+ '</fieldset>',
 	lang: '<label for="wb-settings-lang">Language:</label>'
 	+ '<select id="wb-settings-lang" name="lang" required>'
-	+ Object.keys(allLangs).map( lang => {
-		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs[lang]}</option>`
+	+ Object.keys(allLangs.names).map( lang => {
+		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
 	} ).join('\n')
 	+ '</select>',
 	display: '<span>Display mode:</span>'
@@ -199,8 +194,9 @@ function dashboard_rcscript(res, $, guild, args) {
 /**
  * Change recent changes scripts
  * @param {import('http').ServerResponse} res - The server response
- * @param {String} user - The id of the user
+ * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
+ * @param {String} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String} settings.channel
  * @param {String} settings.wiki
@@ -211,11 +207,11 @@ function dashboard_rcscript(res, $, guild, args) {
  * @param {String} [settings.save_settings]
  * @param {String} [settings.delete_settings]
  */
-function update_rcscript(res, user, guild, settings) {
+function update_rcscript(res, userSettings, guild, type, settings) {
 	
 	console.log( settings );
-	res.writeHead(302, {Location: req.url});
-	res.end();
+	return dashboard(res, userSettings.state,
+		new URL(`/guild/${guild}/rcscript/${type}?save=failed`, process.env.dashboard));
 }
 
 module.exports = {

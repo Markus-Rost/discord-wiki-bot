@@ -191,7 +191,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			}
 		} );
 		
-		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json' ).then( response => {
+		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() || wiki.isGamepedia() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || !body.query ) {
 				if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {

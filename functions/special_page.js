@@ -138,7 +138,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		}
 		else {
 			if ( body.query.allmessages[0]['*'] ) {
-				var description = toPlaintext(body.query.allmessages[0]['*']);
+				var description = toPlaintext(body.query.allmessages[0]['*'], true);
 				if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 				embed.setDescription( description );
 			}

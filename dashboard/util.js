@@ -1,3 +1,9 @@
+const got = require('got').extend( {
+	headers: {
+		'User-Agent': 'Wiki-Bot/dashboard (Discord; ' + process.env.npm_package_name + ')'
+	},
+	responseType: 'json'
+} );
 const sqlite3 = require('sqlite3').verbose();
 const mode = ( process.env.READONLY ? sqlite3.OPEN_READONLY : sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE );
 const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
@@ -123,4 +129,4 @@ function hasPerm(all, ...permission) {
 	} ).every( perm => perm );
 }
 
-module.exports = {db, settingsData, sendMsg, createNotice, hasPerm};
+module.exports = {got, db, settingsData, sendMsg, createNotice, hasPerm};

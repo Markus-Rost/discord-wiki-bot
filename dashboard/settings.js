@@ -1,6 +1,7 @@
 const {defaultSettings} = require('../util/default.json');
-const {allLangs: {names: allLangs}} = require('../i18n/allLangs.json');
-const {db, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
+const {allLangs} = require('../i18n/allLangs.json');
+const {got, db, sendMsg, hasPerm} = require('./util.js');
+const dashboard = require('./guilds.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -13,8 +14,8 @@ const fieldset = {
 	//+ '</fieldset>',
 	lang: '<label for="wb-settings-lang">Language:</label>'
 	+ '<select id="wb-settings-lang" name="lang" required>'
-	+ Object.keys(allLangs).map( lang => {
-		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs[lang]}</option>`
+	+ Object.keys(allLangs.names).map( lang => {
+		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
 	} ).join('\n')
 	+ '</select>',
 	prefix: '<label for="wb-settings-prefix">Prefix:</label>'
@@ -191,8 +192,9 @@ function dashboard_settings(res, $, guild, args) {
 /**
  * Change settings
  * @param {import('http').ServerResponse} res - The server response
- * @param {String} user - The id of the user
+ * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
+ * @param {String} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String} [settings.channel]
  * @param {String} settings.wiki
@@ -204,11 +206,58 @@ function dashboard_settings(res, $, guild, args) {
  * @param {String} [settings.save_settings]
  * @param {String} [settings.delete_settings]
  */
-function update_settings(res, user, guild, settings) {
-	
+function update_settings(res, userSettings, guild, type, settings) {
 	console.log( settings );
-	res.writeHead(302, {Location: req.url});
-	res.end();
+	sendMsg( {
+		type: 'getMember',
+		member: userSettings.user.id,
+		guild: guild
+	} ).then( response => {
+		if ( !response ) {
+			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+			userSettings.guilds.isMember.delete(guild);
+			return dashboard(res, userSettings.state,
+				new URL(`/guild/${guild}?save=failed`, process.env.dashboard));
+		}
+		if ( response === 'noMember' || !hasPerm(response.permissions, 'MANAGE_SERVER') ) {
+			userSettings.guilds.isMember.delete(guild);
+			return dashboard(res, userSettings.state,
+				new URL('/?save=failed', process.env.dashboard));
+		}
+		if ( type === 'default' ) {
+			if ( !settings.save_settings || settings.channel
+			|| ( !response.patreon && settings.prefix ) ) {
+				return dashboard(res, userSettings.state,
+					new URL(`/guild/${guild}/settings?save=failed`, process.env.dashboard));
+			}
+			return dashboard(res, userSettings.state,
+				new URL(`/guild/${guild}/settings?save=success`, process.env.dashboard));
+		}
+		if ( ( !settings.save_settings && !settings.delete_settings )
+		|| !settings.channel || settings.voice || ( !response.patreon
+		&& ( settings.prefix || settings.lang || settings.inline ) ) ) {
+			return dashboard(res, userSettings.state,
+				new URL(`/guild/${guild}/settings/${type}?save=failed`, process.env.dashboard));
+		}
+		if ( type === 'new' ) {
+			if ( !settings.save_settings ) {
+				return dashboard(res, userSettings.state,
+					new URL(`/guild/${guild}/settings/new?save=failed`, process.env.dashboard));
+			}
+			return dashboard(res, userSettings.state,
+				new URL(`/guild/${guild}/settings/new?save=success`, process.env.dashboard));
+		}
+		if ( !settings.save_settings && settings.delete_settings ) {
+			return dashboard(res, userSettings.state,
+				new URL(`/guild/${guild}/settings?save=success`, process.env.dashboard));
+		}
+		return dashboard(res, userSettings.state,
+			new URL(`/guild/${guild}/settings/${type}?save=success`, process.env.dashboard));
+	}, error => {
+		console.log( '- Dashboard: Error while getting the member: ' + error );
+		return dashboard(res, userSettings.state,
+			new URL(`/guild/${guild}/settings/${type}?save=failed`, process.env.dashboard));
+	} );
 }
 
 module.exports = {

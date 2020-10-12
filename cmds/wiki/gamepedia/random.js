@@ -1,6 +1,6 @@
-const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../../functions/parse_page.js');
+const {htmlToPlain, htmlToDiscord} = require('../../../util/functions.js');
 const extract_desc = require('../../../util/extract_desc.js');
 
 /**
@@ -69,72 +69,6 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
-
-/**
- * Change HTML text to plain text.
- * @param {String} html - The text in HTML.
- * @returns {String}
- */
-function htmlToPlain(html) {
-	var text = '';
-	var parser = new htmlparser.Parser( {
-		ontext: (htmltext) => {
-			text += htmltext.escapeFormatting();
-		}
-	}, {decodeEntities:true} );
-	parser.write( html );
-	parser.end();
-	return text;
-};
-
-/**
- * Change HTML text to markdown text.
- * @param {String} html - The text in HTML.
- * @returns {String}
- */
-function htmlToDiscord(html) {
-	var text = '';
-	var parser = new htmlparser.Parser( {
-		onopentag: (tagname, attribs) => {
-			switch (tagname) {
-				case 'b':
-					text += '**';
-					break;
-				case 'i':
-					text += '*';
-					break;
-				case 's':
-					text += '~~';
-					break;
-				case 'u':
-					text += '__';
-					break;
-			}
-		},
-		ontext: (htmltext) => {
-			text += htmltext.escapeFormatting();
-		},
-		onclosetag: (tagname) => {
-			switch (tagname) {
-				case 'b':
-					text += '**';
-					break;
-				case 'i':
-					text += '*';
-					break;
-				case 's':
-					text += '~~';
-					break;
-				case 'u':
-					text += '__';
-					break;
-			}
-		}
-	}, {decodeEntities:true} );
-	parser.write( html );
-	parser.end();
-	return text;
-};
 
 module.exports = {
 	name: 'random',

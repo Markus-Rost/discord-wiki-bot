@@ -1,5 +1,6 @@
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
-const {db, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
+const {db, sendMsg, hasPerm} = require('./util.js');
+const dashboard = require('./guilds.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -207,8 +208,9 @@ function dashboard_verification(res, $, guild, args) {
 /**
  * Change verifications
  * @param {import('http').ServerResponse} res - The server response
- * @param {String} user - The id of the user
+ * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
+ * @param {String} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String|String[]} settings.channel
  * @param {String|String[]} settings.role
@@ -219,11 +221,11 @@ function dashboard_verification(res, $, guild, args) {
  * @param {String} [settings.save_settings]
  * @param {String} [settings.delete_settings]
  */
-function update_verification(res, user, guild, settings) {
+function update_verification(res, userSettings, guild, type, settings) {
 	
 	console.log( settings );
-	res.writeHead(302, {Location: req.url});
-	res.end();
+	return dashboard(res, userSettings.state,
+		new URL(`/guild/${guild}/verification/${type}?save=failed`, process.env.dashboard));
 }
 
 module.exports = {

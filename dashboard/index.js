@@ -43,14 +43,18 @@ const files = new Map(fs.readdirSync( './dashboard/src' ).map( file => {
 process.env.READONLY = 'true';
 
 const server = http.createServer((req, res) => {
-	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) && !process.env.READONLY ) {
+	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) ) {
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot';
 		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
 
-		if ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] ) 
-		&& settingsData.has(state) && settingsData.get(state).guilds.isMember.has(args[2]) ) {
+		if ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] )
+		&& /^(?:default|new|\d+)$/.test(args[4]) && settingsData.has(state)
+		&& settingsData.get(state).guilds.isMember.has(args[2]) ) {
+			if ( process.env.READONLY ) {
+				return dashboard(res, state, new URL(`${req.url}?save=failed`, process.env.dashboard));
+			}
 			let body = '';
 			req.on( 'data', chunk => {
 				body += chunk.toString();
@@ -60,7 +64,7 @@ const server = http.createServer((req, res) => {
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
-				return posts[args[3]](res, settingsData.get(state).user.id, args[2], parse(body));
+				return posts[args[3]](res, settingsData.get(state), args[2], args[4], parse(body));
 			} );
 		}
 	}
@@ -106,21 +110,15 @@ const server = http.createServer((req, res) => {
 
 	if ( reqURL.pathname === '/logout' ) {
 		settingsData.delete(state);
-		res.writeHead(302, {
-			Location: '/login?action=logout',
-			'Set-Cookie': [
-				...( res.getHeader('Set-Cookie') || [] ),
-				'wikibot=""; HttpOnly; Path=/; Max-Age=0'
-			]
-		});
-		return res.end();
+		res.setHeader('Set-Cookie', [
+			...( res.getHeader('Set-Cookie') || [] ),
+			'wikibot=""; HttpOnly; Path=/; Max-Age=0'
+		]);
+		return pages.login(res, state, 'logout');
 	}
 
 	if ( !state ) {
-		res.writeHead(302, {
-			Location: ( reqURL.pathname === '/' ? '/login' : '/login?action=unauthorized' )
-		});
-		return res.end();
+		return pages.login(res, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
 	}
 
 	if ( reqURL.pathname === '/oauth' ) {
@@ -128,22 +126,22 @@ const server = http.createServer((req, res) => {
 	}
 
 	if ( !settingsData.has(state) ) {
-		res.writeHead(302, {
-			Location: ( reqURL.pathname === '/' ? '/login' : '/login?action=unauthorized' )
-		});
-		return res.end();
+		return pages.login(res, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
 	}
 
 	if ( reqURL.pathname === '/refresh' ) {
-		return pages.refresh(res, state, reqURL.searchParams.get('return'));
+		let returnLocation = reqURL.searchParams.get('return');
+		if ( returnLocation && ( !returnLocation.startsWith('/') || returnLocation.startsWith('//') ) ) {
+			returnLocation = '/';
+		}
+		return pages.refresh(res, state, returnLocation);
 	}
 
 	if ( reqURL.pathname === '/' || reqURL.pathname.startsWith( '/guild/' ) ) {
 		return dashboard(res, state, reqURL);
 	}
 
-	res.writeHead(302, {Location: '/'});
-	return res.end();
+	return dashboard(res, state, new URL('/', process.env.dashboard));
 });
 
 server.listen(8080, 'localhost', () => {

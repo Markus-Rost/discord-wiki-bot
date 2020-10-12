@@ -131,7 +131,12 @@ if ( process.env.dashboard ) {
 					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
 						let guild = this.guilds.cache.get('${message.data.guild}');
 						guild.members.fetch('${message.data.member}').then( member => {
-							return member.permissions.bitfield;
+							return {
+								patreon: guild.id in global.patreons,
+								permissions: member.permissions.bitfield
+							};
+						}, error => {
+							return 'noMember';
 						} );
 					}`).then( results => {
 						data.response = results.find( result => result );

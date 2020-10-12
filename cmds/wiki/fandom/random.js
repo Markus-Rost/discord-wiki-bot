@@ -60,7 +60,7 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 								thumbnail = attribs.content;
 							}
 						}
-					}, {decodeEntities:true} );
+					} );
 					parser.write( descbody );
 					parser.end();
 					embed.setThumbnail( thumbnail );

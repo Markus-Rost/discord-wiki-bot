@@ -27,11 +27,6 @@ function dashboard_login(res, state, action) {
 		settingsData.delete(state);
 	}
 	var $ = cheerio.load(file);
-	let invite = oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds', 'bot'],
-		permissions: defaultPermissions, state
-	} );
-	$('.guild#invite a, .channel#invite-wikibot').attr('href', invite);
 	let responseCode = 200;
 	let prompt = 'none';
 	if ( action === 'unauthorized' ) {
@@ -68,6 +63,11 @@ function dashboard_login(res, state, action) {
 	while ( settingsData.has(state) ) {
 		state = crypto.randomBytes(16).toString("hex");
 	}
+	let invite = oauth.generateAuthUrl( {
+		scope: ['identify', 'guilds', 'bot'],
+		permissions: defaultPermissions, state
+	} );
+	$('.guild#invite a, .channel#invite-wikibot').attr('href', invite);
 	let url = oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds'],
 		prompt, state
@@ -156,7 +156,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				} );
 				settingsData.set(settings.state, settings);
 				res.writeHead(302, {
-					Location: ( lastGuild ? '/guild/' + lastGuild : '/settings' ),
+					Location: ( lastGuild ? `/guild/${lastGuild}/settings` : '/' ),
 					'Set-Cookie': [`wikibot="${settings.state}"; HttpOnly; Path=/`]
 				});
 				return res.end();

@@ -1,4 +1,3 @@
-const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const gamepedia_overview = require('../gamepedia/overview.js').run;
 const {timeoptions} = require('../../../util/default.json');

@@ -1,6 +1,6 @@
-const htmlparser = require('htmlparser2');
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
+const {htmlToPlain} = require('../util/functions.js');
 const toTitle = require('../util/wiki.js').toTitle;
 var db = require('../util/database.js');
 
@@ -378,23 +378,6 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 		} ) );
 	} );
 }
-
-/**
- * Change HTML text to plain text.
- * @param {String} html - The text in HTML.
- * @returns {String}
- */
-function htmlToPlain(html) {
-	var text = '';
-	var parser = new htmlparser.Parser( {
-		ontext: (htmltext) => {
-			text += htmltext.escapeFormatting();
-		}
-	}, {decodeEntities:true} );
-	parser.write( html );
-	parser.end();
-	return text;
-};
 
 module.exports = {
 	name: 'verify',

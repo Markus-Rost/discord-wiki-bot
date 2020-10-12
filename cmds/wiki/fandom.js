@@ -186,7 +186,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 												thumbnail = attribs.content;
 											}
 										}
-									}, {decodeEntities:true} );
+									} );
 									parser.write( descbody );
 									parser.end();
 									embed.setThumbnail( thumbnail );
