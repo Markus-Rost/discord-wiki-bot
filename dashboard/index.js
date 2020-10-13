@@ -1,5 +1,4 @@
 const http = require('http');
-const {parse} = require('querystring');
 const pages = require('./oauth.js');
 const dashboard = require('./guilds.js');
 const {db, settingsData} = require('./util.js');
@@ -64,7 +63,19 @@ const server = http.createServer((req, res) => {
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
-				return posts[args[3]](res, settingsData.get(state), args[2], args[4], parse(body));
+				var settings = {};
+				body.split('&').forEach( arg => {
+					if ( arg ) {
+						let setting = decodeURIComponent(arg).split('=');
+						if ( setting[0] && setting.slice(1).join('=').trim() ) {
+							if ( settings[setting[0]] ) {
+								settings[setting[0]] += '|' + setting.slice(1).join('=').trim();
+							}
+							else settings[setting[0]] = setting.slice(1).join('=').trim();
+						}
+					}
+				} );
+				return posts[args[3]](res, settingsData.get(state), args[2], args[4], settings);
 			} );
 		}
 	}
