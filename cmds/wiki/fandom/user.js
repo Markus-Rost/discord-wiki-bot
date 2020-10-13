@@ -79,7 +79,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					var isBlocked = false;
 					var blockedtimestamp = new Date(block.timestamp).toLocaleString(lang.get('dateformat'), timeoptions);
 					var blockexpiry = block.expiry;
-					if ( ['infinity', 'infinite'].includes(blockexpiry) ) {
+					if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
 						blockexpiry = lang.get('user.block.until_infinity');
 						isBlocked = true;
 					} else if ( blockexpiry ) {
@@ -260,7 +260,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					}
 					var isBlocked = false;
 					var blockexpiry = queryuser.blockexpiry;
-					if ( ['infinity', 'infinite'].includes(blockexpiry) ) {
+					if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
 						blockexpiry = lang.get('user.block.until_infinity');
 						isBlocked = true;
 					} else if ( blockexpiry ) {
