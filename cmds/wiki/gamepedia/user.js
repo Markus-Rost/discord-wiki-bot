@@ -314,63 +314,80 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				var embed = {};
 				var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ') + '\n' + group[0] + ' ' + group.slice(1).join(', ');
 			}
-			if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
-				var pbody = presponse.body;
-				if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
-					console.log( '- ' + presponse.statusCode + ': Error while getting the user profile: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg ) ) );
-					return;
-				}
-				if ( pbody.profile['link-discord'] ) {
-					if ( pbody.profile['link-discord'].length > 50 ) pbody.profile['link-discord'] = pbody.profile['link-discord'].substring(0, 50) + '\u2026';
-					if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
-						return member.user.tag === pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
-					} );
-					var discordname = [lang.get('user.info.discord'),pbody.profile['link-discord'].escapeFormatting()];
-					if ( discordmember ) discordname[1] = discordmember.toString();
-					
-					if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
-					else text += '\n' + discordname.join(' ');
-				}
-				if ( pbody.profile['favwiki'] ) {
-					var favwiki = [lang.get('user.info.favwiki'),allSites.find( site => site.md5_key === pbody.profile['favwiki'] )];
-					if ( favwiki[1] ) {
-						if ( msg.showEmbed() ) embed.addField( favwiki[0], '[' + favwiki[1].wiki_display_name + '](<https://' + favwiki[1].wiki_domain + '/>)', true );
-						else text += '\n' + favwiki[0] + ' <https://' + favwiki[1].wiki_domain + '/>';
-					}
-				}
-			}, error => {
-				console.log( '- Error while getting the user profile: ' + error );
-			} ).finally( () => {
-				if ( msg.showEmbed() ) {
-					if ( isBlocked ) {
-						block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')' );
-						if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toMarkdown(block.reason, wiki) );
-						embed.addField( block.header, block.text );
-					}
-				}
-				else {
-					if ( isBlocked ) {
-						block.text = block.text.replaceSave( /\$3/g, block.by.escapeFormatting() );
-						if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toPlaintext(block.reason) );
-						text += '\n\n**' + block.header + '**\n' + block.text;
-					}
-				}
-				
-				if ( msg.channel.isGuild() && msg.guild.id in patreons ) {
-					if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
-					else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
-					
-					msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
-				}
-				else msg.sendChannel( spoiler + text + spoiler, {embed} );
-				
-				if ( reaction ) reaction.removeEmoji();
-			} );
-			else if ( wiki.isFandom() ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now() ).then( presponse => {
+			if ( wiki.isFandom() ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now() ).then( presponse => {
 				var pbody = presponse.body;
 				if ( presponse.statusCode !== 200 || !pbody || !pbody.userData || !pbody.userData.id ) {
 					console.log( '- ' + presponse.statusCode + ': Error while getting the user profile.' );
 					return;
+				}
+				if ( msg.showEmbed() ) {
+					embed.spliceFields(0, 1, {
+						name: editcount[0],
+						value: '[' + pbody.userData.localEdits + '](' + wiki.toLink(contribs + username, '', '', true) + ')',
+						inline: true
+					});
+					if ( pbody.userData.avatar && pbody.userData.avatar !== 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400' ) {
+						embed.setThumbnail( pbody.userData.avatar.replace( '/thumbnail/width/400/height/400', '' ) );
+					}
+					if ( pbody.userData.bio && !embed.description ) {
+						let bio = pbody.userData.bio.escapeFormatting();
+						if ( bio.length > 2000 ) bio = bio.substring(0, 2000) + '\u2026';
+						embed.setDescription( bio );
+					}
+				}
+				else {
+					let splittext = text.split('\n');
+					splittext.splice(4, 1, editcount[0] + ' ' + pbody.userData.localEdits);
+					text = splittext.join('\n');
+				}
+				var discord = '';
+				if ( pbody.userData.discordHandle ) {
+					discord = pbody.userData.discordHandle.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					if ( discord.length > 50 ) discord = discord.substring(0, 50) + '\u2026';
+				}
+				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( cpresponse => {
+					var cpbody = cpresponse.body;
+					if ( cpresponse.statusCode !== 200 || !cpbody || cpbody.error || cpbody.errormsg || !cpbody.profile ) {
+						console.log( '- ' + cpresponse.statusCode + ': Error while getting the user profile: ' + ( cpbody && ( cpbody.error && cpbody.error.info || cpbody.errormsg ) ) );
+						return;
+					}
+					if ( cpbody.profile['link-discord'] ) {
+						discord = cpbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+						if ( discord.length > 50 ) discord = discord.substring(0, 50) + '\u2026';
+					}
+					if ( discord ) {
+						if ( msg.channel.isGuild() ) {
+							var discordmember = msg.guild.members.cache.find( member => {
+								return member.user.tag.escapeFormatting() === discord;
+							} );
+						}
+						var discordname = [lang.get('user.info.discord'),discord];
+						if ( discordmember ) discordname[1] = discordmember.toString();
+						
+						if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
+						else text += '\n' + discordname.join(' ');
+					}
+					if ( cpbody.profile['favwiki'] ) {
+						var favwiki = [lang.get('user.info.favwiki'),allSites.find( site => site.md5_key === cpbody.profile['favwiki'] )];
+						if ( favwiki[1] ) {
+							if ( msg.showEmbed() ) embed.addField( favwiki[0], '[' + favwiki[1].wiki_display_name + '](<https://' + favwiki[1].wiki_domain + '/>)', true );
+							else text += '\n' + favwiki[0] + ' <https://' + favwiki[1].wiki_domain + '/>';
+						}
+					}
+				}, error => {
+					console.log( '- Error while getting the user profile: ' + error );
+				} );
+				if ( discord ) {
+					if ( msg.channel.isGuild() ) {
+						var discordmember = msg.guild.members.cache.find( member => {
+							return member.user.tag.escapeFormatting() === discord;
+						} );
+					}
+					let discordname = [lang.get('user.info.discord'),discord];
+					if ( discordmember ) discordname[1] = discordmember.toString();
+					
+					if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
+					else text += '\n' + discordname.join(' ');
 				}
 				if ( pbody.userData.posts ) {
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
@@ -382,26 +399,6 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						let splittext = text.split('\n');
 						splittext.splice(5, 0, lang.get('user.info.postcount') + ' ' + pbody.userData.posts);
 						text = splittext.join('\n');
-					}
-				}
-				if ( pbody.userData.discordHandle ) {
-					let discord = pbody.userData.discordHandle.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
-					if ( discord.length > 50 ) discord = discord.substring(0, 50) + '\u2026';
-					if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
-						return member.user.tag.escapeFormatting() === discord;
-					} );
-					let discordname = [lang.get('user.info.discord'),discord];
-					if ( discordmember ) discordname[1] = discordmember.toString();
-					
-					if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
-					else text += '\n' + discordname.join(' ');
-				}
-				if ( msg.showEmbed() ) {
-					if ( pbody.userData.avatar ) embed.setThumbnail( pbody.userData.avatar.replace( '/thumbnail/width/400/height/400', '' ) );
-					if ( pbody.userData.bio && !embed.description ) {
-						let bio = pbody.userData.bio.escapeFormatting();
-						if ( bio.length > 2000 ) bio = bio.substring(0, 2000) + '\u2026';
-						embed.setDescription( bio );
 					}
 				}
 			}, error => {

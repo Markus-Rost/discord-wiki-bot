@@ -1,6 +1,5 @@
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
-const {htmlToPlain} = require('../util/functions.js');
 const toTitle = require('../util/wiki.js').toTitle;
 var db = require('../util/database.js');
 
@@ -129,46 +128,59 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			}, error => {
 				console.log( '- Error while getting the global block: ' + error );
 				comment.push(lang.get('verify.failed_gblock'));
-			} ).then( async () => {
-				// async check for editcount on Gamepedia and Fandom,
-				// workaround for https://gitlab.com/hydrawiki/hydra/-/issues/5054
-				if ( wiki.isGamepedia() || ( wiki.isFandom() && body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) ) await got.get( wiki + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=500&ucuser=' + encodeURIComponent( username ) + '&format=json' ).then( ucresponse => {
+			} ).then( () => {
+				var discordname = '';
+				got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now(), {
+					throwHttpErrors: true
+				} ).then( ucresponse => {
 					var ucbody = ucresponse.body;
-					if ( ucbody?.warnings ) log_warn(ucbody.warnings);
-					if ( ucresponse.statusCode !== 200 || !ucbody?.query?.usercontribs ) {
-						return console.log( '- ' + ucresponse.statusCode + ': Error while working around the edit count: ' + ucbody?.error?.info );
+					if ( ucresponse.statusCode !== 200 || !ucbody?.userData?.id ) {
+						console.log( '- ' + ucresponse.statusCode + ': Error while working around the edit count.' );
+						return Promise.reject();
 					}
-					if ( !ucbody.continue || ucbody.query.usercontribs.length > queryuser.editcount ) {
-						queryuser.editcount = ucbody.query.usercontribs.length;
-					}
-				}, ucerror => {
-					console.log( '- Error while working around the edit count: ' + ucerror );
-				} );
-				
-				var options = {};
-				if ( wiki.isGamepedia() ) {
-					url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now();
-				}
-				else if ( wiki.isFandom() ) {
-					url = 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '/attr/discordHandle?format=json&cache=' + Date.now();
-					options.headers = {Accept: 'application/hal+json'};
-				}
-				got.get( url, options ).then( presponse => {
-					var pbody = presponse.body;
-					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || pbody.title || !( pbody.profile || pbody.value !== undefined ) ) {
-						if ( !( pbody && pbody.status === 404 ) ) {
-							console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg || pbody.title ) ) );
-							embed.setColor('#000000').setDescription( lang.get('verify.error') );
-							msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
-							
-							if ( reaction ) reaction.removeEmoji();
-							return;
-						}
-					}
+					queryuser.editcount = ucbody.userData.localEdits;
+					discordname = ucbody.userData.discordHandle.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 					
-					var discordname = '';
-					if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
-					else if ( pbody.value ) discordname = htmlToPlain( pbody.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
+						var pbody = presponse.body;
+						if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
+							console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody?.error?.info || pbody?.errormsg ) );
+							return Promise.reject();
+						}
+						if ( pbody.profile['link-discord'] ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					}, error => {
+						console.log( '- Error while getting the Discord tag: ' + error );
+						return Promise.reject();
+					} );
+				}, ucerror => {
+					if ( body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) {
+						console.log( '- Error while working around the edit count: ' + ucerror );
+					}
+
+					var url = '';
+					var options = {};
+					if ( wiki.isGamepedia() ) {
+						url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now();
+					}
+					else if ( wiki.isFandom() ) {
+						url = 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '/attr/discordHandle?format=json&cache=' + Date.now();
+						options.headers = {Accept: 'application/hal+json'};
+					}
+					return got.get( url, options ).then( presponse => {
+						var pbody = presponse.body;
+						if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || pbody.title || !( pbody?.userData?.id || pbody.profile || pbody.value !== undefined ) ) {
+							if ( !( pbody && pbody.status === 404 ) ) {
+								console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg || pbody.title ) ) );
+								return Promise.reject();
+							}
+						}
+						if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+						else if ( pbody.value ) discordname = pbody.value.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					}, error => {
+						console.log( '- Error while getting the Discord tag: ' + error );
+						return Promise.reject();
+					} );
+				} ).then( () => {
 					if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
 					embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
 					if ( msg.author.tag.escapeFormatting() !== discordname ) {
@@ -243,8 +255,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					msg.replyMsg( lang.get('verify.user_matches_reply', username.escapeFormatting(), queryuser.gender), {embed}, false, false );
 					
 					if ( reaction ) reaction.removeEmoji();
-				}, error => {
-					console.log( '- Error while getting the Discord tag: ' + error );
+				}, () => {
 					embed.setColor('#000000').setDescription( lang.get('verify.error') );
 					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
 					
