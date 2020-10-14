@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js');
+const fandom_random = require('../fandom/random.js').run;
 const parse_page = require('../../../functions/parse_page.js');
 const {htmlToPlain, htmlToDiscord} = require('../../../util/functions.js');
 const extract_desc = require('../../../util/extract_desc.js');
@@ -19,6 +20,9 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
+			}
+			else if ( body?.query?.general?.generator === 'MediaWiki 1.19.24' && wiki.isFandom(false) ) {
+				return fandom_random(lang, msg, wiki, reaction, spoiler);
 			}
 			else {
 				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );

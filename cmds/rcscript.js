@@ -104,7 +104,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
 					}
-					if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
+					if ( wikinew.isFandom(false) ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
 						var wibody = wiresponse.body;
 						if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
 							console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
@@ -275,7 +275,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							if ( reaction ) reaction.removeEmoji();
 							return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
 						}
-						if ( wikinew.isFandom() ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
+						if ( wikinew.isFandom(false) ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
 							var wibody = wiresponse.body;
 							if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
 								console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
@@ -377,7 +377,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					msg.replyMsg( lang.get('rcscript.updated_display') + ' `' + args[1] + '`\n`' + cmd + '`', {}, true );
 				} );
 			}
-			if ( new Wiki(selected_row.wiki).isFandom() && args[0] === 'feeds' ) {
+			if ( new Wiki(selected_row.wiki).isFandom(false) && args[0] === 'feeds' ) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				if ( args[1] === 'only' ) {
 					if ( selected_row.rcid === -1 ) {
@@ -507,7 +507,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
 					text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
-				if ( new Wiki(selected_row.wiki).isFandom() ) {
+				if ( new Wiki(selected_row.wiki).isFandom(false) ) {
 					text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( selected_row.wikiid ? 'enabled' : 'disabled' )) + '`*';
 					text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}
@@ -554,7 +554,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					row_text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
 					if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
-				if ( new Wiki(row.wiki).isFandom() ) {
+				if ( new Wiki(row.wiki).isFandom(false) ) {
 					row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.wikiid ? 'enabled' : 'disabled' )) + '`*';
 					if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}

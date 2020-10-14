@@ -106,7 +106,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 		}
 		else if ( cmd in helpmap && 
-		( !restrictions.fandom.includes( cmd ) || wiki.isFandom() ) && 
+		( !restrictions.fandom.includes( cmd ) || wiki.isFandom(false) ) && 
 		( !restrictions.minecraft.includes( cmd ) || isMinecraft ) && 
 		( !restrictions.admin.includes( cmd ) || msg.isAdmin() ) ) {
 			var cmdlist = formathelp(helpmap[cmd], msg, lang);
@@ -123,7 +123,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 	else {
 		var cmdlist = lang.get('help.all') + '\n';
 		helplist.default.forEach( cmd => {
-			if ( ( !restrictions.fandom.includes( cmd ) || wiki.isFandom() ) && 
+			if ( ( !restrictions.fandom.includes( cmd ) || wiki.isFandom(false) ) && 
 			( !restrictions.minecraft.includes( cmd ) || isMinecraft ) ) {
 				cmdlist += formathelp(helpmap[cmd], msg, lang) + '\n';
 			}

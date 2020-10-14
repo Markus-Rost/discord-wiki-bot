@@ -268,7 +268,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.get('dateformat'), timeoptions);
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
-					var blockedby = '[[User:' + queryuser.blockedby + '|' + queryuser.blockedby + ']]';
+					var blockedby = queryuser.blockedby;
 					var blockreason = queryuser.blockreason;
 					var block = {
 						header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(),

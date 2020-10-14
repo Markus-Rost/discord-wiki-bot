@@ -1,5 +1,4 @@
 const {MessageEmbed} = require('discord.js');
-const gamepedia_overview = require('../gamepedia/overview.js').run;
 const {timeoptions} = require('../../../util/default.json');
 
 var allSites = [];
@@ -30,9 +29,6 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 			}
 			
 			if ( reaction ) reaction.removeEmoji();
-		}
-		else if ( body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) {
-			return gamepedia_overview(lang, msg, wiki, reaction, spoiler);
 		}
 		else got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + body.query.wikidesc.id + '&format=json&cache=' + Date.now() ).then( ovresponse => {
 			wiki.updateWiki(body.query.general);

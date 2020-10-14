@@ -1,6 +1,5 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
-const gamepedia_random = require('../gamepedia/random.js').run;
 
 /**
  * Sends a random Fandom page.
@@ -25,9 +24,6 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 			}
 			
 			if ( reaction ) reaction.removeEmoji();
-		}
-		else if ( body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) {
-			return gamepedia_random(lang, msg, wiki, reaction, spoiler);
 		}
 		else {
 			var querypage = Object.values(body.query.pages)[0];

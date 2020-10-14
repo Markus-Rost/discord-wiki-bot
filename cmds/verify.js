@@ -37,7 +37,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
 			return dberror;
 		}
-		if ( !rows.length ) return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + lang.localNames.verification + '`' : '' ) );
+		if ( !rows.length ) return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + 'verification`' : '' ) );
 		
 		if ( !username.trim() ) {
 			args[0] = line.split(' ')[0];
@@ -71,7 +71,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 				username = ( body.query.users.length === 1 ? queryuser.name : username );
 				embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
-				if ( ( wiki.isFandom() || wiki.isGamepedia() ) && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
+				if ( wiki.isFandom() && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
 					var wsbody = wsresponse.body;
 					if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
 						if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + wsbody?.exception?.details );
@@ -104,14 +104,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			}
 			
 			var comment = [];
-			var url = '';
-			if ( wiki.isGamepedia() ) {
-				url = 'https://commons.gamepedia.com/Special:GlobalBlockList/' + encodeURIComponent( username ) + '?uselang=qqx&cache=' + Date.now();
-			}
-			else if ( wiki.isFandom() ) {
-				url = 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now();
-			}
-			if ( url ) return got.get( url, {
+			if ( wiki.isFandom() ) return got.get( 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
 				responseType: 'text'
 			} ).then( gbresponse => {
 				if ( gbresponse.statusCode !== 200 || !gbresponse.body ) {
@@ -120,27 +113,17 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				}
 				else {
 					let $ = cheerio.load(gbresponse.body);
-					if ( wiki.isGamepedia() ) {
-						if ( $('.mw-blocklist').length ) {
-							return Promise.reject({
-								desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender),
-								reply: lang.get('verify.user_gblocked_reply', username.escapeFormatting(), queryuser.gender)
-							});
-						}
+					if ( $('#mw-content-text .errorbox').length ) {
+						return Promise.reject({
+							desc: lang.get('verify.user_disabled', '[' + username.escapeFormatting() + '](' + pagelink + ')'),
+							reply: lang.get('verify.user_disabled_reply', username.escapeFormatting())
+						});
 					}
-					else if ( wiki.isFandom() ) {
-						if ( $('#mw-content-text .errorbox').length ) {
-							return Promise.reject({
-								desc: lang.get('verify.user_disabled', '[' + username.escapeFormatting() + '](' + pagelink + ')'),
-								reply: lang.get('verify.user_disabled_reply', username.escapeFormatting())
-							});
-						}
-						else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
-							return Promise.reject({
-								desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender),
-								reply: lang.get('verify.user_gblocked_reply', username.escapeFormatting(), queryuser.gender)
-							});
-						}
+					if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
+						return Promise.reject({
+							desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender),
+							reply: lang.get('verify.user_gblocked_reply', username.escapeFormatting(), queryuser.gender)
+						});
 					}
 				}
 			}, error => {

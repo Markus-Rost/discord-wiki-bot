@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js');
+const fandom_overview = require('../fandom/overview.js').run;
 const {timeoptions} = require('../../../util/default.json');
 
 var allSites = [];
@@ -22,6 +23,9 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
+			}
+			else if ( body?.query?.general?.generator === 'MediaWiki 1.19.24' && wiki.isFandom(false) ) {
+				return fandom_overview(lang, msg, wiki, reaction, spoiler);
 			}
 			else {
 				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
@@ -67,7 +71,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				var text = '<' + pagelink + '>\n\n';
 			}
 			
-			if ( wiki.isFandom() ) got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?expand=true&includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( ovresponse => {
+			if ( wiki.isFandom(false) ) got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?expand=true&includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( ovresponse => {
 				var manager = [lang.get('overview.manager'), body.query.allmessages[0]['*']];
 				var crossover = [lang.get('overview.crossover')];
 				if ( body.query.allmessages[1]['*'] ) {

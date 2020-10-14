@@ -120,7 +120,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						let site = allSites.find( site => site.wiki_domain === wikinew.hostname );
 						if ( site ) wikinew = new Wiki('https://' + ( site.wiki_crossover || site.wiki_domain ) + '/');
 					}
-					else if ( wikinew.isFandom() && !isForced ) {
+					else if ( wikinew.isFandom(false) && !isForced ) {
 						let crossover = '';
 						if ( body.query.allmessages[0]['*'] ) {
 							crossover = 'https://' + body.query.allmessages[0]['*'] + '.gamepedia.com/';
@@ -132,7 +132,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						if ( crossover ) wikinew = new Wiki(crossover);
 					}
 					var embed;
-					if ( !wikinew.isFandom() && !wikinew.isGamepedia() ) {
+					if ( !wikinew.isFandom() ) {
 						var notice = [];
 						if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 							console.log( '- This wiki is using ' + body.query.general.generator + '.' );

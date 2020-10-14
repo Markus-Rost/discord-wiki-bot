@@ -156,7 +156,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				} );
 			}
 			
-			if ( msg.channel.isGuild() && msg.guild.id in patreons && ( wiki.isFandom() || wiki.isGamepedia() ) ) {
+			if ( msg.channel.isGuild() && msg.guild.id in patreons && wiki.isFandom() ) {
 				if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 				else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 

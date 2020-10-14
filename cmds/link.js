@@ -20,8 +20,7 @@ function cmd_link(lang, msg, title, wiki, cmd = '') {
 		var spoiler = '||';
 	}
 	msg.reactEmoji('⏳').then( reaction => {
-		if ( wiki.isFandom() ) check_wiki.fandom(lang, msg, title, wiki, cmd, reaction, spoiler);
-		else check_wiki.gamepedia(lang, msg, title, wiki, cmd, reaction, spoiler);
+		check_wiki.gamepedia(lang, msg, title, wiki, cmd, reaction, spoiler);
 	} );
 }
 

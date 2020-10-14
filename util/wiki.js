@@ -68,10 +68,12 @@ class Wiki extends URL {
 
 	/**
 	 * Check for a Fandom wiki.
+	 * @param {Boolean} [includeGP] - If Gamepedia wikis are included.
 	 * @returns {Boolean}
 	 */
-	isFandom() {
-		return ( this.hostname.endsWith( '.fandom.com' ) || this.hostname.endsWith( '.wikia.org' ) );
+	isFandom(includeGP = true) {
+		return ( this.hostname.endsWith( '.fandom.com' ) || this.hostname.endsWith( '.wikia.org' )
+		|| ( includeGP && this.hostname.endsWith( '.gamepedia.com' ) ) );
 	}
 
 	/**
@@ -88,7 +90,7 @@ class Wiki extends URL {
 	 * @returns {Boolean}
 	 */
 	noWiki(message = '') {
-		if ( !( this.isGamepedia() || this.isFandom() ) ) return false;
+		if ( !this.isFandom() ) return false;
 		if ( this.hostname.startsWith( 'www.' ) || message.startsWith( 'https://www.' ) ) return true;
 		return [
 			'https://community.fandom.com/wiki/Community_Central:Not_a_valid_community?from=' + this.hostname,

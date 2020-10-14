@@ -81,7 +81,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
-	if ( aliasInvoke === 'diff' && args.join('') && !querystring.toString() && !fragment ) {
+	if ( aliasInvoke === 'diff' && !wiki.isFandom(false) && args.join('') && !querystring.toString() && !fragment ) {
 		return fn.diff(lang, msg, args, wiki, reaction, spoiler);
 	}
 	var noRedirect = ( querystring.getAll('redirect').pop() === 'no' || ( querystring.has('action') && querystring.getAll('action').pop() !== 'view' ) );
@@ -89,7 +89,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
-			if ( interwiki ) msg.sendChannel( spoiler + ' ' + interwiki + ' ' + spoiler );
+			if ( body?.query?.general?.generator === 'MediaWiki 1.19.24' && wiki.isFandom(false) ) {
+				return this.fandom(lang, msg, title, wiki, cmd, reaction, spoiler, querystring, fragment, selfcall);
+			}
+			else if ( interwiki ) msg.sendChannel( spoiler + ' ' + interwiki + ' ' + spoiler );
 			else if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
@@ -106,7 +109,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		if ( aliasInvoke === 'search' ) {
 			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
 		}
-		if ( aliasInvoke === 'discussion' && wiki.isFandom() && !querystring.toString() && !fragment ) {
+		if ( aliasInvoke === 'diff' && args.join('') && !querystring.toString() && !fragment ) {
+			return fn.diff(lang, msg, args, wiki, reaction, spoiler);
+		}
+		if ( aliasInvoke === 'discussion' && wiki.isFandom(false) && !querystring.toString() && !fragment ) {
 			return fn.discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
 		}
 		if ( body.query.pages ) {
@@ -349,7 +355,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 						let path = ( regex[1] || '' );
 						let iwtitle = decodeURIComponent( iw.pathname.replace( regex[0], '' ) ).replace( /_/g, ' ' );
 						cmd = ( iw.hostname.endsWith( '.wikia.org' ) ? '??' : '?' ) + ( path ? path.substring(1) + '.' : '' ) + iw.hostname.replace( /\.(?:fandom\.com|wikia\.org)/, ' ' );
-						return this.fandom(lang, msg, iwtitle, new Wiki(iw.origin + path + '/'), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
+						return this.gamepedia(lang, msg, iwtitle, new Wiki(iw.origin + path + '/'), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );

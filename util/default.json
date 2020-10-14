@@ -48,6 +48,7 @@
 			"content-reviewer",
 			"imagereviewer",
 			"restricted-login",
+			"restricted-login-auto",
 			"restricted-login-exempt",
 			"council",
 			"*"

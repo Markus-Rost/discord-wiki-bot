@@ -599,9 +599,7 @@
         },
         "gblock": {
             "disabled": "This account is currently disabled!",
-            "header": "$1 is currently globally blocked!",
-            "noreason": "Blocked on $1 until $2 by $3 on $4.",
-            "text": "Blocked on $1 until $2 by $3 on $4 with reason \"$5\"."
+            "header": "$1 is currently globally blocked!"
         },
         "gender": {
             "female": "Female",
