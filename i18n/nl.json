@@ -414,9 +414,7 @@
         },
         "gblock": {
             "disabled": "Dit account is momenteel uitgeschakeld!",
-            "header": "$1 is momenteel globaal geblokkeerd!",
-            "noreason": "Geblokkeerd van $1 tot $2 door $3 op $4.",
-            "text": "Geblokkeerd van $1 tot $2 door $3 op $4 met reden \"$5\"."
+            "header": "$1 is momenteel globaal geblokkeerd!"
         },
         "gender": {
             "female": "Vrouw",

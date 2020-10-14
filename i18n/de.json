@@ -599,9 +599,7 @@
         },
         "gblock": {
             "disabled": "Dieses Konto ist derzeit deaktiviert!",
-            "header": "$1 ist derzeit global gesperrt!",
-            "noreason": "Gesperrt am $1 bis zum $2 von $3 auf $4.",
-            "text": "Gesperrt am $1 bis zum $2 von $3 auf $4 mit der Begründung „$5“."
+            "header": "$1 ist derzeit global gesperrt!"
         },
         "gender": {
             "female": "Weiblich",
