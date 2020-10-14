@@ -1,16 +1,16 @@
 const {MessageEmbed} = require('discord.js');
-const fandom_overview = require('../fandom/overview.js').run;
-const {timeoptions} = require('../../../util/default.json');
+const fandom_overview = require('./fandom/overview.js').run;
+const {timeoptions} = require('../../util/default.json');
 
 var allSites = [];
-const getAllSites = require('../../../util/allSites.js');
+const getAllSites = require('../../util/allSites.js');
 getAllSites.then( sites => allSites = sites );
 
 /**
  * Sends a Gamepedia wiki overview.
- * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../../../util/wiki.js')} wiki - The wiki for the overview.
+ * @param {import('../../util/wiki.js')} wiki - The wiki for the overview.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */

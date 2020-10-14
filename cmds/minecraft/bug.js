@@ -124,7 +124,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.gamepedia(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.general(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 

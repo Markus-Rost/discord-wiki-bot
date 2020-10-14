@@ -19,7 +19,7 @@ function minecraft_command(lang, msg, args, title, cmd, querystring, fragment, r
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.gamepedia(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.general(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 

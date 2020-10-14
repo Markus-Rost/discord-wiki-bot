@@ -10,10 +10,10 @@ var fn = {
 	special_page: require('../../functions/special_page.js'),
 	discussion: require('../../functions/discussion.js')
 };
-fs.readdir( './cmds/wiki/gamepedia', (error, files) => {
+fs.readdir( './cmds/wiki', (error, files) => {
 	if ( error ) return error;
-	files.filter( file => file.endsWith('.js') ).forEach( file => {
-		var command = require('./gamepedia/' + file);
+	files.filter( file => ( file !== 'general.js' && file.endsWith('.js') ) ).forEach( file => {
+		var command = require('./' + file);
 		fn[command.name] = command.run;
 	} );
 } );
@@ -347,7 +347,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( iw.hostname.endsWith( '.gamepedia.com' ) ) {
 					let iwtitle = decodeURIComponent( iw.pathname.substring(1) ).replace( /_/g, ' ' );
 					cmd = '!' + iw.hostname.replace( '.gamepedia.com', ' ' );
-					if ( cmd !== '!www ' ) return this.gamepedia(lang, msg, iwtitle, new Wiki(iw.origin), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
+					if ( cmd !== '!www ' ) return this.general(lang, msg, iwtitle, new Wiki(iw.origin), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
 				}
 				if ( iw.hostname.endsWith( '.fandom.com' ) || iw.hostname.endsWith( '.wikia.org' ) ) {
 					let regex = iw.pathname.match( /^(\/(?!wiki\/)[a-z-]{2,12})?(?:\/wiki\/|\/?$)/ );
@@ -355,7 +355,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 						let path = ( regex[1] || '' );
 						let iwtitle = decodeURIComponent( iw.pathname.replace( regex[0], '' ) ).replace( /_/g, ' ' );
 						cmd = ( iw.hostname.endsWith( '.wikia.org' ) ? '??' : '?' ) + ( path ? path.substring(1) + '.' : '' ) + iw.hostname.replace( /\.(?:fandom\.com|wikia\.org)/, ' ' );
-						return this.gamepedia(lang, msg, iwtitle, new Wiki(iw.origin + path + '/'), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
+						return this.general(lang, msg, iwtitle, new Wiki(iw.origin + path + '/'), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
@@ -364,7 +364,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					if ( regex ) {
 						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replace( /_/g, ' ' );
 						cmd = '!!' + regex[1] + ' ';
-						return this.gamepedia(lang, msg, iwtitle, new Wiki('https://' + regex[1] + project.scriptPath), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
+						return this.general(lang, msg, iwtitle, new Wiki('https://' + regex[1] + project.scriptPath), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 			}

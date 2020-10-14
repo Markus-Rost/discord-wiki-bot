@@ -1,24 +1,24 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
-const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
-const Wiki = require('../../util/wiki.js');
+const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../../util/default.json');
+const Wiki = require('../../../util/wiki.js');
 
 const fs = require('fs');
 var fn = {
-	special_page: require('../../functions/special_page.js'),
-	discussion: require('../../functions/discussion.js')
+	special_page: require('../../../functions/special_page.js'),
+	discussion: require('../../../functions/discussion.js')
 };
 fs.readdir( './cmds/wiki/fandom', (error, files) => {
 	if ( error ) return error;
-	files.filter( file => file.endsWith('.js') ).forEach( file => {
-		var command = require('./fandom/' + file);
+	files.filter( file => ( file !== 'general.js' && file.endsWith('.js') ) ).forEach( file => {
+		var command = require('./' + file);
 		fn[command.name] = command.run;
 	} );
 } );
 
 /**
  * Checks a Fandom wiki.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} title - The page title.
  * @param {Wiki} wiki - The wiki for the page.
@@ -422,13 +422,13 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 						let path = ( regex[1] || '' );
 						let iwtitle = decodeURIComponent( iw.pathname.replace( regex[0], '' ) ).replace( /_/g, ' ' );
 						cmd = ( iw.hostname.endsWith( '.wikia.org' ) ? '??' : '?' ) + ( path ? path.substring(1) + '.' : '' ) + iw.hostname.replace( /\.(?:fandom\.com|wikia\.org)/, ' ' );
-						return this.gamepedia(lang, msg, iwtitle, new Wiki(iw.origin + path + '/'), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
+						return this.general(lang, msg, iwtitle, new Wiki(iw.origin + path + '/'), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 				if ( iw.hostname.endsWith( '.gamepedia.com' ) ) {
 					let iwtitle = decodeURIComponent( iw.pathname.substring(1) ).replace( /_/g, ' ' );
 					cmd = '!' + iw.hostname.replace( '.gamepedia.com', ' ' );
-					if ( cmd !== '!www ' ) return this.gamepedia(lang, msg, iwtitle, new Wiki(iw.origin), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
+					if ( cmd !== '!www ' ) return this.general(lang, msg, iwtitle, new Wiki(iw.origin), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
 				}
 				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
 				if ( project ) {
@@ -436,7 +436,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 					if ( regex ) {
 						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replace( /_/g, ' ' );
 						cmd = '!!' + regex[1] + ' ';
-						return this.gamepedia(lang, msg, iwtitle, new Wiki('https://' + regex[1] + project.scriptPath), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
+						return this.general(lang, msg, iwtitle, new Wiki('https://' + regex[1] + project.scriptPath), cmd, reaction, spoiler, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 			}

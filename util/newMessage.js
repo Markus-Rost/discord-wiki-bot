@@ -2,8 +2,8 @@ const {Util} = require('discord.js');
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const Wiki = require('./wiki.js');
 const check_wiki = {
-	fandom: require('../cmds/wiki/fandom.js'),
-	gamepedia: require('../cmds/wiki/gamepedia.js'),
+	fandom: require('../cmds/wiki/fandom/general.js'),
+	general: require('../cmds/wiki/general.js'),
 	test: require('../cmds/test.js').run
 };
 
@@ -226,7 +226,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				}
 			}
 			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-				check_wiki.gamepedia(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, new URLSearchParams(), embed.section);
+				check_wiki.general(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, new URLSearchParams(), embed.section);
 			} ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {

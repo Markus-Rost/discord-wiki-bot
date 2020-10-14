@@ -1,14 +1,14 @@
 const {MessageEmbed} = require('discord.js');
-const {timeoptions} = require('../../../util/default.json');
-const {toFormatting, htmlToPlain} = require('../../../util/functions.js');
-const diffParser = require('../../../util/edit_diff.js');
+const {timeoptions} = require('../../util/default.json');
+const {toFormatting, htmlToPlain} = require('../../util/functions.js');
+const diffParser = require('../../util/edit_diff.js');
 
 /**
  * Processes a Gamepedia edit.
- * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
- * @param {import('../../../util/wiki.js')} wiki - The wiki for the edit.
+ * @param {import('../../util/wiki.js')} wiki - The wiki for the edit.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {MessageEmbed} [embed] - The embed for the page.
@@ -137,10 +137,10 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 
 /**
  * Sends a Gamepedia edit.
- * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
- * @param {import('../../../util/wiki.js')} wiki - The wiki for the edit.
+ * @param {import('../../util/wiki.js')} wiki - The wiki for the edit.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {String[]} [compare] - The edit difference.

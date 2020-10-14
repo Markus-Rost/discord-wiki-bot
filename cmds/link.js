@@ -1,6 +1,6 @@
 const check_wiki = {
-	fandom: require('./wiki/fandom.js'),
-	gamepedia: require('./wiki/gamepedia.js'),
+	fandom: require('./wiki/fandom/general.js'),
+	general: require('./wiki/general.js'),
 	test: require('./test.js').run
 };
 const help_setup = require('../functions/helpsetup.js');
@@ -20,7 +20,7 @@ function cmd_link(lang, msg, title, wiki, cmd = '') {
 		var spoiler = '||';
 	}
 	msg.reactEmoji('⏳').then( reaction => {
-		check_wiki.gamepedia(lang, msg, title, wiki, cmd, reaction, spoiler);
+		check_wiki.general(lang, msg, title, wiki, cmd, reaction, spoiler);
 	} );
 }
 

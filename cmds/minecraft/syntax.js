@@ -41,7 +41,7 @@ function minecraft_syntax(lang, msg, mccmd, args, title, cmd, querystring, fragm
 	else {
 		msg.reactEmoji('❓');
 		msg.notMinecraft = true;
-		this.WIKI.gamepedia(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.general(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
 	}
 }
 

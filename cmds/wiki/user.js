@@ -1,21 +1,21 @@
 const {MessageEmbed} = require('discord.js');
-const global_block = require('../../../functions/global_block.js');
-const parse_page = require('../../../functions/parse_page.js');
-const extract_desc = require('../../../util/extract_desc.js');
-const {timeoptions, usergroups} = require('../../../util/default.json');
-const {toMarkdown, toPlaintext, htmlToPlain, htmlToDiscord} = require('../../../util/functions.js');
+const global_block = require('../../functions/global_block.js');
+const parse_page = require('../../functions/parse_page.js');
+const extract_desc = require('../../util/extract_desc.js');
+const {timeoptions, usergroups} = require('../../util/default.json');
+const {toMarkdown, toPlaintext, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
 
 var allSites = [];
-const getAllSites = require('../../../util/allSites.js');
+const getAllSites = require('../../util/allSites.js');
 getAllSites.then( sites => allSites = sites );
 
 /**
  * Processes a Gamepedia user.
- * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} namespace - The user namespace on the wiki.
  * @param {String} username - The name of the user.
- * @param {import('../../../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../../util/wiki.js')} wiki - The wiki for the page.
  * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
  * @param {Object} querypage - The user page on the wiki.

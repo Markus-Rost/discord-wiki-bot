@@ -1,14 +1,14 @@
 const {MessageEmbed} = require('discord.js');
-const fandom_random = require('../fandom/random.js').run;
-const parse_page = require('../../../functions/parse_page.js');
-const {htmlToPlain, htmlToDiscord} = require('../../../util/functions.js');
-const extract_desc = require('../../../util/extract_desc.js');
+const fandom_random = require('./fandom/random.js').run;
+const parse_page = require('../../functions/parse_page.js');
+const {htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
+const extract_desc = require('../../util/extract_desc.js');
 
 /**
  * Sends a random Gamepedia page.
- * @param {import('../../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../../../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../../util/wiki.js')} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
