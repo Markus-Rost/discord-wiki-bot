@@ -599,9 +599,7 @@
         },
         "gblock": {
             "disabled": "Esta conta está desativada no momento!",
-            "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}} globalmente!",
-            "noreason": "Bloqueado em $1 até $2 por $3 em $4.",
-            "text": "Bloqueado em $1 até $2 por $3 em $4 com motivo \"$5\"."
+            "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}} globalmente!"
         },
         "gender": {
             "female": "Feminino",

@@ -408,9 +408,7 @@
         },
         "gblock": {
             "disabled": "Bu hesap şu anda devre dışı!",
-            "header": "$1 global olarak engellendi!",
-            "noreason": "$4 platformunda $3 tarafından $1 tarihinde, $2 tarihine kadar engellendi.",
-            "text": "$4 platformunda $3 tarafından $1 tarihinde, $2 tarihine kadar \"$5\" nedeniyle engellendi."
+            "header": "$1 global olarak engellendi!"
         },
         "gender": {
             "female": "kadın",

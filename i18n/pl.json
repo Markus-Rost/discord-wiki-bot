@@ -599,9 +599,7 @@
         },
         "gblock": {
             "disabled": "To konto jest obecnie wyłączone!",
-            "header": "$1 jest {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}} globalnie!",
-            "noreason": "Zablokowano $1 do $2 przez $3 na $4.",
-            "text": "Zablokowano $1 do $2 przez $3 na $4 z podanym powodem „$5”."
+            "header": "$1 jest {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}} globalnie!"
         },
         "gender": {
             "female": "Kobieta",
