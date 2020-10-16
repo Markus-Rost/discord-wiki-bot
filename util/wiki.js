@@ -25,6 +25,7 @@ class Wiki extends URL {
 		}
 		this.articlepath = articlepath;
 		this.mainpage = '';
+		this.centralauth = 'local';
 	}
 
 	/**
@@ -55,14 +56,16 @@ class Wiki extends URL {
 	 * @param {String} siteinfo.scriptpath - Scriptpath of the wiki.
 	 * @param {String} siteinfo.articlepath - Articlepath of the wiki.
 	 * @param {String} siteinfo.mainpage - Main page of the wiki.
+	 * @param {String} siteinfo.centralidlookupprovider - Central auth of the wiki.
 	 * @returns {Wiki}
 	 */
-	updateWiki({server, servername, scriptpath, articlepath, mainpage}) {
+	updateWiki({server, servername, scriptpath, articlepath, mainpage, centralidlookupprovider}) {
 		if ( servername ) this.hostname = servername;
 		else this.hostname = server.replace( /^(?:https?:)?\/\//, '' );
 		this.pathname = scriptpath + '/';
 		this.articlepath = articlepath;
 		this.mainpage = mainpage;
+		this.centralauth = centralidlookupprovider;
 		return this;
 	}
 
@@ -82,6 +85,14 @@ class Wiki extends URL {
 	 */
 	isGamepedia() {
 		return this.hostname.endsWith( '.gamepedia.com' );
+	}
+
+	/**
+	 * Check for CentralAuth.
+	 * @returns {Boolean}
+	 */
+	hasCentralAuth() {
+		return this.centralauth === 'CentralAuth';
 	}
 
 	/**

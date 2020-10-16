@@ -268,7 +268,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				if ( reaction ) reaction.removeEmoji();
 			} );
 			
-			got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json' ).then( mwresponse => {
+			got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json' ).then( mwresponse => {
 				var mwbody = mwresponse.body;
 				if ( mwbody && mwbody.warnings ) log_warn(mwbody.warnings);
 				if ( mwresponse.statusCode !== 200 || !mwbody || mwbody.batchcomplete === undefined || !mwbody.query || !mwbody.query.pages ) {
@@ -278,6 +278,16 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					
 					if ( reaction ) reaction.removeEmoji();
 					return;
+				}
+				if ( wiki.hasCentralAuth() ) {
+					if ( mwbody.query.globaluserinfo.locked !== undefined ) {
+						embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
+						msg.replyMsg( lang.get('verify.user_gblocked_reply', username.escapeFormatting(), queryuser.gender), {embed}, false, false );
+						
+						if ( reaction ) reaction.removeEmoji();
+						return;
+					}
+					queryuser.groups.push(...mwbody.query.globaluserinfo.groups);
 				}
 				var revision = Object.values(mwbody.query.pages)[0]?.revisions?.[0];
 				

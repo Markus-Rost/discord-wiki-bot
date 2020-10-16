@@ -77,13 +77,6 @@ function getSettings(trysettings = 1) {
 						}
 						console.log( '- ' + shardId + ': Created the discord channel index.' );
 					} );
-					db.run( 'PRAGMA foreign_keys = ON;', [], function (fkerror) {
-						if ( fkerror ) {
-							console.log( '- ' + shardId + ': Error while enabling the foreign key constraint: ' + fkerror );
-							return fkerror;
-						}
-						console.log( '- ' + shardId + ': Enabled the foreign key constraint.' );
-					} );
 					if ( trysettings < 10 ) {
 						trysettings++;
 						getSettings(trysettings);
@@ -154,6 +147,13 @@ function getSettings(trysettings = 1) {
 			}
 			return dberror;
 		}
+		db.run( 'PRAGMA foreign_keys = ON;', [], function (fkerror) {
+			if ( fkerror ) {
+				console.log( '- ' + shardId + ': Error while enabling the foreign key constraint: ' + fkerror );
+				return fkerror;
+			}
+			console.log( '- ' + shardId + ': Enabled the foreign key constraint.' );
+		} );
 		console.log( '- ' + shardId + ': Patreons successfully loaded.' );
 		getVoice();
 	} );

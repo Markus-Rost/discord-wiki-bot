@@ -242,7 +242,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 					var registration = [lang.get('user.info.registration'), new Date(queryuser.registration).toLocaleString(lang.get('dateformat'), timeoptions)];
 					var editcount = [lang.get('user.info.editcount'), queryuser.editcount];
 					var groups = queryuser.groups;
-					var group = [lang.get('user.info.group')];
+					var group = [lang.get('user.info.group', groups.length)];
 					for ( var i = 0; i < usergroups.sorted.length; i++ ) {
 						let usergroup = usergroups.sorted[i];
 						if ( usergroup === '__CUSTOM__' ) {
