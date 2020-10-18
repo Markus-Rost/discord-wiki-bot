@@ -15,13 +15,13 @@ async function cmd_get(lang, msg, args, line, wiki) {
 	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
 	if ( /^\d+$/.test(id) ) {
 		var guild = await msg.client.shard.broadcastEval( `if ( this.guilds.cache.has('${id}') ) {
-			var {name, id, memberCount, ownerID, owner, me: {permissions}} = this.guilds.cache.get('${id}');
+			var guild = this.guilds.cache.get('${id}');
 			( {
-				name, id, memberCount, ownerID,
-				owner: owner?.user?.tag,
-				permissions: permissions.missing(${defaultPermissions}),
-				pause: id in global.pause,
-				voice: id in global.voice,
+				name: guild.name, id: guild.id,
+				memberCount: guild.memberCount, ownerID: guild.ownerID,
+				owner: guild.owner?.user?.tag, icon: guild.iconURL({dynamic:true}),
+				permissions: guild.me.permissions.missing(${defaultPermissions}),
+				pause: guild.id in global.pause, voice: guild.id in global.voice,
 				shardId: global.shardId
 			} )
 		}` ).then( results => results.find( result => result !== null ) );
@@ -46,7 +46,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				else guildsettings[1] = '*default*';
 				
 				if ( msg.showEmbed() ) {
-					var embed = new MessageEmbed().addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildsize[0], guildsize[1], true ).addField( guildshard[0], guildshard[1], true ).addField( guildpermissions[0], guildpermissions[1] );
+					var embed = new MessageEmbed().setThumbnail( guild.icon ).addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildsize[0], guildsize[1], true ).addField( guildshard[0], guildshard[1], true ).addField( guildpermissions[0], guildpermissions[1] );
 					var split = Util.splitMessage( guildsettings[1], {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
 					if ( split.length > 5 ) {
 						msg.sendChannel( '', {embed}, true );
@@ -127,7 +127,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length;
 			if ( msg.showEmbed() ) {
 				var text = '';
-				var embed = new MessageEmbed().addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
+				var embed = new MessageEmbed().setThumbnail( user.displayAvatarURL({dynamic:true}) ).addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
 			}
 			else {
 				var embed = {};

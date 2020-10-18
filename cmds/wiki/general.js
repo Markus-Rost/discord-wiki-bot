@@ -93,7 +93,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				return this.fandom(lang, msg, title, wiki, cmd, reaction, spoiler, querystring, fragment, selfcall);
 			}
 			else if ( interwiki ) msg.sendChannel( spoiler + ' ' + interwiki + ' ' + spoiler );
-			else if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+			else if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}
@@ -165,6 +165,20 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					
 					if ( reaction ) reaction.removeEmoji();
 				} );
+			}
+			else if ( wiki.isMiraheze() && querypage.ns === 0 && /^Mh:[a-z\d]+:/.test(querypage.title) ) {
+				var iw_parts = querypage.title.split(':');
+				var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
+				var iw_link = iw.toLink(iw_parts.slice(2).join(':'), querystring, fragment);
+				var maxselfcall = interwikiLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+				if ( selfcall < maxselfcall ) {
+					selfcall++;
+					return this.general(lang, msg, iw_parts.slice(2).join(':'), iw, '!!' + iw.hostname + ' ', reaction, spoiler, querystring, fragment, iw_link, selfcall);
+				}
+				msg.sendChannel( spoiler + ' ' + iw_link + ' ' + spoiler ).then( message => {
+					if ( message && selfcall === maxselfcall ) message.reactEmoji('⚠️');
+				} );
+				if ( reaction ) reaction.removeEmoji();
 			}
 			else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
 				got.get( wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {

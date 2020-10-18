@@ -146,6 +146,20 @@ if ( process.env.dashboard ) {
 						return dashboard.send( {id: message.id, data} );
 					} );
 					break;
+				case 'notifyGuild':
+					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
+						let channel = this.guilds.cache.get('${message.data.guild}').publicUpdatesChannel;
+						if ( channel ) channel.send('${message.data.text}').catch( error => {
+							console.log( '- ' + error.name + ': ' + error.message );
+						} );
+					}`).then( results => {
+						data.response = results.find( result => result );
+					}, error => {
+						data.error = error;
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
 				default:
 					console.log( '- [Dashboard]: Unknown message received!', message.data );
 					data.error = 'Unknown message type: ' + message.data.type;

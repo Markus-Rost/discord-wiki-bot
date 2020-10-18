@@ -26,6 +26,7 @@ class Wiki extends URL {
 		this.articlepath = articlepath;
 		this.mainpage = '';
 		this.centralauth = 'local';
+		this.miraheze = this.hostname.endsWith( '.miraheze.org' );
 	}
 
 	/**
@@ -57,15 +58,17 @@ class Wiki extends URL {
 	 * @param {String} siteinfo.articlepath - Articlepath of the wiki.
 	 * @param {String} siteinfo.mainpage - Main page of the wiki.
 	 * @param {String} siteinfo.centralidlookupprovider - Central auth of the wiki.
+	 * @param {String} siteinfo.logo - Logo of the wiki.
 	 * @returns {Wiki}
 	 */
-	updateWiki({server, servername, scriptpath, articlepath, mainpage, centralidlookupprovider}) {
+	updateWiki({server, servername, scriptpath, articlepath, mainpage, centralidlookupprovider, logo}) {
 		if ( servername ) this.hostname = servername;
 		else this.hostname = server.replace( /^(?:https?:)?\/\//, '' );
 		this.pathname = scriptpath + '/';
 		this.articlepath = articlepath;
 		this.mainpage = mainpage;
 		this.centralauth = centralidlookupprovider;
+		this.miraheze = /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo);
 		return this;
 	}
 
@@ -88,6 +91,14 @@ class Wiki extends URL {
 	}
 
 	/**
+	 * Check for a Miraheze wiki.
+	 * @returns {Boolean}
+	 */
+	isMiraheze() {
+		return this.miraheze;
+	}
+
+	/**
 	 * Check for CentralAuth.
 	 * @returns {Boolean}
 	 */
@@ -98,9 +109,11 @@ class Wiki extends URL {
 	/**
 	 * Check if a wiki is missing.
 	 * @param {String} [message] - Error message or response url.
+	 * @param {Number} [statusCode] - Status code of the response.
 	 * @returns {Boolean}
 	 */
-	noWiki(message = '') {
+	noWiki(message = '', statusCode = 0) {
+		if ( statusCode === 410 || statusCode === 404 ) return true;
 		if ( !this.isFandom() ) return false;
 		if ( this.hostname.startsWith( 'www.' ) || message.startsWith( 'https://www.' ) ) return true;
 		return [

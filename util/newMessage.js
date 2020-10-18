@@ -153,7 +153,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || !body.query ) {
-				if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 					return;
@@ -177,6 +177,12 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				} ) );
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
 					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
+						var iw_parts = page.title.split(':');
+						var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
+						link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section);
+						return;
+					}
 					link.url = wiki.toLink(link.title, 'action=edit&redlink=1');
 				} ) );
 			}
@@ -194,7 +200,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || !body.query ) {
-				if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
 					return;
@@ -214,6 +220,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				var missing = [];
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
 					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) return;
 					embeds.splice(embeds.indexOf(embed), 1);
 					if ( page.ns === 0 && !embed.section ) {
 						var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );

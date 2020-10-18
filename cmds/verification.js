@@ -179,7 +179,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					var body = response.body;
 					if ( body && body.warnings ) log_warn(body.warnings);
 					if ( response.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
-						if ( wiki.noWiki(response.url) || response.statusCode === 410 ) console.log( '- This wiki doesn\'t exist!' );
+						if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
 						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
 					}
 					var groups = body.query.allmessages.filter( group => !['group-all','group-membership-link-with-expiry'].includes( group.name ) && !/\.(?:css|js)$/.test(group.name) ).map( group => {

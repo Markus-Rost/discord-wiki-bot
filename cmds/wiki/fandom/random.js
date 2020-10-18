@@ -14,7 +14,7 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.query || !body.query.pages ) {
-			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}

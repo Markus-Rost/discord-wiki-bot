@@ -56,7 +56,7 @@ function fandom_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
 				if ( response.statusCode !== 200 || !body || !body.query ) {
-					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+					if ( wiki.noWiki(response.url, response.statusCode) ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						msg.reactEmoji('nowiki');
 					}
@@ -137,7 +137,7 @@ function fandom_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.query ) {
-			if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
 			}

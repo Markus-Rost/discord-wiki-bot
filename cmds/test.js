@@ -34,7 +34,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 		msg.replyMsg( text ).then( message => {
 			if ( !message ) return;
 			var then = Date.now();
-			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).addField( 'Discord', ( then - now ) + 'ms' );
+			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + global.shardId ).addField( 'Discord', ( then - now ) + 'ms' );
 			now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' ).then( response => {
 				then = Date.now();
@@ -44,7 +44,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 				var ping = ( then - now ) + 'ms';
 				var notice = [];
 				if ( response.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
-					if ( wiki.noWiki(response.url) || response.statusCode === 410 ) {
+					if ( wiki.noWiki(response.url, response.statusCode) ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						ping += ' <:unknown_wiki:505887262077353984>';
 					}
