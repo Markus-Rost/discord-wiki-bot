@@ -1,7 +1,6 @@
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const {RcGcDw: allLangs} = require('../i18n/allLangs.json');
 const {got, db, sendMsg, hasPerm} = require('./util.js');
-const dashboard = require('./guilds.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -193,7 +192,7 @@ function dashboard_rcscript(res, $, guild, args) {
 
 /**
  * Change recent changes scripts
- * @param {import('http').ServerResponse} res - The server response
+ * @param {Function} res - The server response
  * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
  * @param {String} type - The setting to change
@@ -210,8 +209,7 @@ function dashboard_rcscript(res, $, guild, args) {
 function update_rcscript(res, userSettings, guild, type, settings) {
 	
 	console.log( settings );
-	return dashboard(res, userSettings.state,
-		new URL(`/guild/${guild}/rcscript/${type}?save=failed`, process.env.dashboard));
+	return res(`/guild/${guild}/rcscript/${type}?save=failed`);
 }
 
 module.exports = {

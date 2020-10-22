@@ -122,7 +122,7 @@ if ( process.env.dashboard ) {
 							return results.find( result => result[i] )?.[i];
 						} );
 					}, error => {
-						data.error = error;
+						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );
 					} );
@@ -141,7 +141,7 @@ if ( process.env.dashboard ) {
 					}`).then( results => {
 						data.response = results.find( result => result );
 					}, error => {
-						data.error = error;
+						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );
 					} );
@@ -149,13 +149,9 @@ if ( process.env.dashboard ) {
 				case 'notifyGuild':
 					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
 						let channel = this.guilds.cache.get('${message.data.guild}').publicUpdatesChannel;
-						if ( channel ) channel.send('${message.data.text}').catch( error => {
-							console.log( '- ' + error.name + ': ' + error.message );
-						} );
-					}`).then( results => {
-						data.response = results.find( result => result );
-					}, error => {
-						data.error = error;
+						if ( channel ) channel.send(\`${message.data.text.replace( /`/g, '\\`' )}\`).catch( error => console.log( '- Dashboard: ' + error.name + ': ' + error.message ) );
+					}`).catch( error => {
+						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );
 					} );

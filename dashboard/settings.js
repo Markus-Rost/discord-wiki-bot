@@ -1,7 +1,6 @@
 const {defaultSettings} = require('../util/default.json');
 const {allLangs} = require('../i18n/allLangs.json');
 const {got, db, sendMsg, hasPerm} = require('./util.js');
-const dashboard = require('./guilds.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -191,7 +190,7 @@ function dashboard_settings(res, $, guild, args) {
 
 /**
  * Change settings
- * @param {import('http').ServerResponse} res - The server response
+ * @param {Function} res - The server response
  * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
  * @param {String} type - The setting to change
@@ -207,7 +206,6 @@ function dashboard_settings(res, $, guild, args) {
  * @param {String} [settings.delete_settings]
  */
 function update_settings(res, userSettings, guild, type, settings) {
-	console.log( settings );
 	sendMsg( {
 		type: 'getMember',
 		member: userSettings.user.id,
@@ -216,47 +214,50 @@ function update_settings(res, userSettings, guild, type, settings) {
 		if ( !response ) {
 			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
 			userSettings.guilds.isMember.delete(guild);
-			return dashboard(res, userSettings.state,
-				new URL(`/guild/${guild}?save=failed`, process.env.dashboard));
+			return res(`/guild/${guild}?save=failed`);
 		}
 		if ( response === 'noMember' || !hasPerm(response.permissions, 'MANAGE_SERVER') ) {
 			userSettings.guilds.isMember.delete(guild);
-			return dashboard(res, userSettings.state,
-				new URL('/?save=failed', process.env.dashboard));
+			return res('/?save=failed');
 		}
 		if ( type === 'default' ) {
 			if ( !settings.save_settings || settings.channel
 			|| ( !response.patreon && settings.prefix ) ) {
-				return dashboard(res, userSettings.state,
-					new URL(`/guild/${guild}/settings?save=failed`, process.env.dashboard));
+				return res(`/guild/${guild}/settings?save=failed`);
 			}
-			return dashboard(res, userSettings.state,
-				new URL(`/guild/${guild}/settings?save=success`, process.env.dashboard));
+			return res(`/guild/${guild}/settings?save=success`);
 		}
 		if ( ( !settings.save_settings && !settings.delete_settings )
 		|| !settings.channel || settings.voice || ( !response.patreon
 		&& ( settings.prefix || settings.lang || settings.inline ) ) ) {
-			return dashboard(res, userSettings.state,
-				new URL(`/guild/${guild}/settings/${type}?save=failed`, process.env.dashboard));
+			return res(`/guild/${guild}/settings/${type}?save=failed`);
 		}
 		if ( type === 'new' ) {
 			if ( !settings.save_settings ) {
-				return dashboard(res, userSettings.state,
-					new URL(`/guild/${guild}/settings/new?save=failed`, process.env.dashboard));
+				return res(`/guild/${guild}/settings/new?save=failed`);
 			}
-			return dashboard(res, userSettings.state,
-				new URL(`/guild/${guild}/settings/new?save=success`, process.env.dashboard));
+			return res(`/guild/${guild}/settings/new?save=success`);
 		}
 		if ( !settings.save_settings && settings.delete_settings ) {
-			return dashboard(res, userSettings.state,
-				new URL(`/guild/${guild}/settings?save=success`, process.env.dashboard));
+			return db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
+				if ( delerror ) {
+					console.log( '- Dashboard: Error while removing the settings: ' + delerror );
+					return res(`/guild/${guild}/settings/${type}?save=failed`);
+				}
+				console.log( '- Dashboard: Settings successfully removed: ' + guild );
+				sendMsg( {
+					type: 'notifyGuild', guild,
+					text: `<@${userSettings.user.id}> removed the settings for <#${type}>.\n${new URL(`/guild/${guild}/settings`, process.env.dashboard)}`
+				} ).catch( error => {
+					console.log( '- Dashboard: Error while notifying the guild: ' + error );
+				} );
+				return res(`/guild/${guild}/settings?save=success`);
+			} );
 		}
-		return dashboard(res, userSettings.state,
-			new URL(`/guild/${guild}/settings/${type}?save=success`, process.env.dashboard));
+		return res(`/guild/${guild}/settings/${type}?save=success`);
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
-		return dashboard(res, userSettings.state,
-			new URL(`/guild/${guild}/settings/${type}?save=failed`, process.env.dashboard));
+		return res(`/guild/${guild}/settings/${type}?save=failed`);
 	} );
 }
 

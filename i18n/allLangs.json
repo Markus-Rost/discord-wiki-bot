@@ -2,6 +2,7 @@
 	"allLangs": {
 		"names": {
 			"en": "English",
+			"bn": "বাংলা",
 			"de": "Deutsch",
 			"fr": "Français",
 			"hi": "हिन्दी",
@@ -17,6 +18,9 @@
 			"en": "en",
 			"eng": "en",
 			"english": "en",
+			"bn": "bn",
+			"bengali": "bn",
+			"বাংলা": "bn",
 			"de": "de",
 			"german": "de",
 			"deutsch": "de",

@@ -51,9 +51,7 @@ const server = http.createServer((req, res) => {
 		if ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] )
 		&& /^(?:default|new|\d+)$/.test(args[4]) && settingsData.has(state)
 		&& settingsData.get(state).guilds.isMember.has(args[2]) ) {
-			if ( process.env.READONLY ) {
-				return dashboard(res, state, new URL(`${req.url}?save=failed`, process.env.dashboard));
-			}
+			if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
 			let body = '';
 			req.on( 'data', chunk => {
 				body += chunk.toString();
@@ -75,8 +73,16 @@ const server = http.createServer((req, res) => {
 						}
 					}
 				} );
-				return posts[args[3]](res, settingsData.get(state), args[2], args[4], settings);
+				console.log( settings );
+				return posts[args[3]](save_response, settingsData.get(state), args[2], args[4], settings);
 			} );
+
+			/**
+			 * @param {String} [resURL]
+			 */
+			function save_response(resURL = '/') {
+				return dashboard(res, state, new URL(resURL, process.env.dashboard));
+			}
 		}
 	}
 
