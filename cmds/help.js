@@ -82,7 +82,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.channel.isGuild() && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
 	var isMinecraft = ( wiki.href === lang.get('minecraft.link') );
-	var maxLength = ( lang.lang === 'hi' ? 480 : 2000 );
+	var maxLength = ( ['hi', 'bn'].includes( lang.lang ) ? 480 : 2000 );
 	if ( args.join('') ) {
 		if ( args.join(' ').isMention(msg.guild) ) {
 			if ( !( msg.isAdmin() && msg.defaultSettings ) ) help_server(lang, msg);
