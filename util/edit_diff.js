@@ -65,7 +65,7 @@ function diffParser(html, more, whitespace) {
 				}
 				if ( last_del !== null ) {
 					del_length++;
-					if ( empty && last_del.trim().length && !last_ins.includes( '~~' ) ) {
+					if ( empty && last_del.trim().length && !last_del.includes( '~~' ) ) {
 						del_length += 4;
 						last_del = '~~' + last_del + '~~';
 					}

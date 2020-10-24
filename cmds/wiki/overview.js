@@ -16,7 +16,7 @@ getAllSites.then( sites => allSites = sites );
  */
 function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 	if ( !allSites.length ) getAllSites.update();
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|languages&siinlanguagecode=' + lang.lang + '&list=allrevisions&arvdir=newer&arvlimit=1&arvprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|languages&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -55,9 +55,9 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			}
 			var created = [lang.get('overview.created')];
 			var creation_date = null;
-			if ( body.query.allrevisions?.[0]?.revisions?.[0]?.timestamp ) {
-				creation_date = new Date(body.query.allrevisions[0].revisions[0].timestamp);
-				created.push(creation_date.toLocaleString(lang.get('dateformat'), timeoptions));
+			if ( body.query.logevents?.[0]?.timestamp ) {
+				creation_date = new Date(body.query.logevents[0].timestamp);
+				created[1] = creation_date.toLocaleString(lang.get('dateformat'), timeoptions);
 			}
 			var language = [lang.get('overview.lang'), body.query.languages.find( language => {
 				return language.code === body.query.general.lang;
@@ -112,7 +112,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					var vertical = [lang.get('overview.vertical'), site.hub];
 					var topic = [lang.get('overview.topic'), site.topic];
 					var founder = [lang.get('overview.founder'), site.founding_user_id];
-					if ( created[1] && creation_date > new Date(site.creation_date) ) {
+					if ( site.creation_date && creation_date > new Date(site.creation_date) ) {
 						creation_date = new Date(site.creation_date);
 						created[1] = creation_date.toLocaleString(lang.get('dateformat'), timeoptions);
 					}

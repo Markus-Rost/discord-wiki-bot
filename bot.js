@@ -335,13 +335,28 @@ global.log_error = function(error, isBig = false, type = '') {
 	}
 }
 
+const common_warnings = {
+	main: [
+		'Unrecognized parameters: piprop, explaintext, exsectionformat, exlimit.',
+		'Unrecognized parameter: piprop.'
+	],
+	query: [
+		'Unrecognized values for parameter "prop": pageimages, extracts.',
+		'Unrecognized value for parameter "prop": pageimages.'
+	]
+}
+
 global.log_warn = function(warning, api = true) {
 	if ( isDebug ) {
 		console.warn( '--- Warning start ---\n' + util.inspect( warning ) + '\n--- Warning end ---' );
-	} else {
-		if ( api ) console.warn( '- Warning: ' + Object.keys(warning).join(', ') );
-		else console.warn( '--- Warning ---\n' + util.inspect( warning ) );
 	}
+	else if ( api ) {
+		if ( common_warnings.main.includes( warning?.main?.['*'] ) ) delete warning.main;
+		if ( common_warnings.query.includes( warning?.query?.['*'] ) ) delete warning.query;
+		var warningKeys = Object.keys(warning);
+		if ( warningKeys.length ) console.warn( '- Warning: ' + warningKeys.join(', ') );
+	}
+	else console.warn( '--- Warning ---\n' + util.inspect( warning ) );
 }
 
 /**

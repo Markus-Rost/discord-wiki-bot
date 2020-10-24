@@ -369,6 +369,11 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						value: '[' + pbody.userData.localEdits + '](' + wiki.toLink(contribs + username, '', '', true) + ')',
 						inline: true
 					});
+					if ( pbody.userData.posts ) embed.spliceFields(1, 0, {
+						name: lang.get('user.info.postcount'),
+						value: '[' + pbody.userData.posts + '](' + wiki + 'f/u/' + queryuser.userid + ')',
+						inline: true
+					});
 					if ( pbody.userData.avatar && pbody.userData.avatar !== 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400' ) {
 						embed.setThumbnail( pbody.userData.avatar.replace( '/thumbnail/width/400/height/400', '' ) );
 					}
@@ -381,6 +386,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				else {
 					let splittext = text.split('\n');
 					splittext.splice(4, 1, editcount[0] + ' ' + pbody.userData.localEdits);
+					if ( pbody.userData.posts ) splittext.splice(5, 0, lang.get('user.info.postcount') + ' ' + pbody.userData.posts);
 					text = splittext.join('\n');
 				}
 				var discord = '';
@@ -418,7 +424,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						}
 					}
 				}, error => {
-					console.log( '- Error while getting the user profile: ' + error );
+					console.log( '- Error while getting the curse profile: ' + error );
 				} );
 				if ( discord ) {
 					if ( msg.channel.isGuild() ) {
@@ -431,18 +437,6 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					
 					if ( msg.showEmbed() ) embed.addField( discordname[0], discordname[1], true );
 					else text += '\n' + discordname.join(' ');
-				}
-				if ( pbody.userData.posts ) {
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
-						name: lang.get('user.info.postcount'),
-						value: '[' + pbody.userData.posts + '](' + wiki + 'f/u/' + queryuser.userid + ')',
-						inline: true
-					});
-					else {
-						let splittext = text.split('\n');
-						splittext.splice(5, 0, lang.get('user.info.postcount') + ' ' + pbody.userData.posts);
-						text = splittext.join('\n');
-					}
 				}
 			}, error => {
 				console.log( '- Error while getting the user profile: ' + error );
