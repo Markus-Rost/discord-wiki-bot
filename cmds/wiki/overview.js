@@ -1,6 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const fandom_overview = require('./fandom/overview.js').run;
 const {timeoptions} = require('../../util/default.json');
+const {toFormatting, toPlaintext} = require('../../util/functions.js');
 
 var allSites = [];
 const getAllSites = require('../../util/allSites.js');
@@ -16,7 +17,7 @@ getAllSites.then( sites => allSites = sites );
  */
 function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 	if ( !allSites.length ) getAllSites.update();
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|languages&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|languages|rightsinfo&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -53,8 +54,9 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				}
 				if ( image[1] && image[1].startsWith( '/' ) ) image[1] = new URL(image[1], wiki).href;
 			}
-			var created = [lang.get('overview.created')];
+			var version = [lang.get('overview.version'), body.query.general.generator];
 			var creation_date = null;
+			var created = [lang.get('overview.created'), lang.get('overview.unknown')];
 			if ( body.query.logevents?.[0]?.timestamp ) {
 				creation_date = new Date(body.query.logevents[0].timestamp);
 				created[1] = creation_date.toLocaleString(lang.get('dateformat'), timeoptions);
@@ -62,10 +64,38 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			var language = [lang.get('overview.lang'), body.query.languages.find( language => {
 				return language.code === body.query.general.lang;
 			} )['*']];
+			var rtl = [lang.get('overview.rtl'), ( body.query.general.rtl !== undefined ? lang.get('overview.yes') : undefined )];
 			var articles = [lang.get('overview.articles'), body.query.statistics.articles];
 			var pages = [lang.get('overview.pages'), body.query.statistics.pages];
 			var edits = [lang.get('overview.edits'), body.query.statistics.edits];
 			var users = [lang.get('overview.users'), body.query.statistics.activeusers];
+			var license = [lang.get('overview.license'), lang.get('overview.unknown')];
+			if ( body.query.rightsinfo.url ) {
+				let licenseurl = body.query.rightsinfo.url
+				if ( /^(?:https?:\/)?\//.test(licenseurl) ) licenseurl = new URL(licenseurl, wiki).href;
+				else licenseurl = wiki.toLink(licenseurl, '', '', true);
+				
+				if ( body.query.rightsinfo.text ) {
+					let licensetext = body.query.rightsinfo.text;
+					if ( msg.showEmbed() ) {
+						license[1] = '[' + toPlaintext(licensetext, true) + '](' + licenseurl + ')';
+					}
+					else license[1] = toPlaintext(licensetext, true) + ' (<' + licenseurl + '>)';
+				}
+				else license[1] = '<' + licenseurl + '>';
+			}
+			else if ( body.query.rightsinfo.text ) {
+				license[1] = toFormatting(body.query.rightsinfo.text, msg.showEmbed(), wiki, '', true);
+			}
+			var misermode = [lang.get('overview.misermode'), lang.get('overview.' + ( body.query.general.misermode !== undefined ? 'yes' : 'no' ))];
+			var readonly = [lang.get('overview.readonly')];
+			if ( body.query.general.readonly !== undefined ) {
+				if ( body.query.general.readonlyreason ) {
+					let readonlyreason = body.query.general.readonlyreason;
+					readonly.push(toFormatting(readonlyreason, msg.showEmbed(), wiki, '', true));
+				}
+				else readonly = ['\u200b', '**' + lang.get('overview.readonly') + '**'];
+			}
 			
 			var title = body.query.pages['-1'].title;
 			var pagelink = wiki.toLink(title);
@@ -94,12 +124,17 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
 
 					if ( msg.showEmbed() ) {
-						if ( created[1] ) embed.addField( created[0], created[1], true );
-						embed.addField( language[0], language[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
+						embed.addField( version[0], version[1], true ).addField( created[0], created[1], true ).addField( language[0], language[1], true );
+						if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
+						embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
+						if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 					}
 					else {
-						if ( created[1] ) text += created.join(' ') + '\n';
-						text += language.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.get('overview.inaccurate') + '*';
+						text += version.join(' ') + '\n' + created.join(' ') + '\n' + language.join(' ') + '\n';
+						if ( rtl[1] ) text += rtl.join(' ') + '\n';
+						text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
+						if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );
+						text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 					}
 	
 					msg.sendChannelError( spoiler + text + spoiler, {embed} );
@@ -176,12 +211,13 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 						if ( msg.showEmbed() ) {
 							embed.addField( founder[0], founder[1], true );
 							if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
-							if ( created[1] ) embed.addField( created[0], created[1], true );
-							embed.addField( language[0], language[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true );
+							embed.addField( version[0], version[1], true ).addField( created[0], created[1], true ).addField( language[0], language[1], true );
+							if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
+							embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true );
 							if ( posts[1] ) embed.addField( posts[0], posts[1], true );
 							if ( walls[1] ) embed.addField( walls[0], walls[1], true );
 							if ( comments[1] ) embed.addField( comments[0], comments[1], true );
-							embed.addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') + ' • ' + lang.get('overview.wikiid') + ' ' + site.id );
+							embed.addField( users[0], users[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') + ' • ' + lang.get('overview.wikiid') + ' ' + site.id );
 							if ( crossover[1] ) {
 								var crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
 								if ( crossoverSite ) embed.addField( crossover[0], '[' + crossoverSite.wiki_display_name + '](' + crossover[1] + ')', true );
@@ -189,22 +225,25 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 							}
 							if ( description[1] ) embed.addField( description[0], description[1] );
 							if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
+							if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 						}
 						else {
 							text += '\n' + founder.join(' ');
 							if ( manager[1] ) text += '\n' + manager.join(' ');
-							if ( created[1] ) text += '\n' + created.join(' ');
-							text += '\n' + language.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ');
+							text += '\n' + version.join(' ') + '\n' + created.join(' ') + '\n' + language.join(' ');
+							if ( rtl[1] ) text += '\n' + rtl.join(' ');
+							text += '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ');
 							if ( posts[1] ) text += '\n' + posts.join(' ');
 							if ( walls[1] ) text += '\n' + walls.join(' ');
 							if ( comments[1] ) text += '\n' + comments.join(' ');
-							text += '\n' + users.join(' ');
+							text += '\n' + users.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
 							if ( crossover[1] ) text += '\n' + crossover.join(' ');
 							if ( description[1] ) text += '\n' + description.join(' ');
 							if ( image[1] ) {
 								text += '\n' + image.join(' ');
-								if ( msg.uploadFiles() ) embed.files = [image[1]];
+								if ( msg.uploadFiles() ) embed.files = [{attachment:image[1],name:( spoiler ? 'SPOILER ' : '' ) + body.query.general.sitename + image[1].substring(image[1].lastIndexOf('.'))}];
 							}
+							if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );
 							text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 						}
 						
@@ -216,19 +255,23 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				else {
 					if ( msg.showEmbed() ) {
 						if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
-						if ( created[1] ) embed.addField( created[0], created[1], true );
-						embed.addField( language[0], language[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
+						embed.addField( version[0], version[1], true ).addField( created[0], created[1], true ).addField( language[0], language[1], true );
+						if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
+						embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
 						if ( crossover[1] ) {
 							var crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
 							if ( crossoverSite ) embed.addField( crossover[0], '[' + crossoverSite.wiki_display_name + '](' + crossover[1] + ')', true );
 							else embed.addField( crossover[0], crossover[1], true );
 						}
+						if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 					}
 					else {
 						if ( manager[1] ) text += manager.join(' ') + '\n';
-						if ( created[1] ) text += created.join(' ') + '\n';
-						text += language.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ');
+						text += version.join(' ') + '\n' + created.join(' ') + '\n' + language.join(' ') + '\n';
+						if ( rtl[1] ) text += rtl.join(' ') + '\n';
+						text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
 						if ( crossover[1] ) text += '\n' + crossover.join(' ');
+						if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );
 						text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 					}
 					
@@ -239,8 +282,19 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			}, error => {
 				console.log( '- Error while getting the wiki details: ' + error );
 
-				if ( msg.showEmbed() ) embed.addField( language[0], language[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
-				else text += language.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n\n*' + lang.get('overview.inaccurate') + '*';
+				if ( msg.showEmbed() ) {
+					embed.addField( version[0], version[1], true ).addField( created[0], created[1], true ).addField( language[0], language[1], true );
+					if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
+					embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
+					if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
+				}
+				else {
+					text += version.join(' ') + '\n' + created.join(' ') + '\n' + language.join(' ') + '\n';
+					if ( rtl[1] ) text += rtl.join(' ') + '\n';
+					text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
+					if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );
+					text += '\n\n*' + lang.get('overview.inaccurate') + '*';
+				}
 
 				msg.sendChannelError( spoiler + text + spoiler, {embed} );
 				
@@ -250,20 +304,23 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				if ( msg.showEmbed() ) {
 					if ( site ) {
 						var managerlist = manager[1].map( wm => '[' + wm + '](' + wiki.toLink('User:' + wm, '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + wm, '', '', true) + '))' ).join('\n');
-						embed.addField( name[0], name[1], true ).addField( manager[0], ( managerlist || lang.get('overview.none') ), true ).addField( official[0], official[1], true );
+						embed.addField( name[0], name[1], true ).addField( manager[0], ( managerlist || lang.get('overview.none') ), true ).addField( official[0], official[1], true ).setTimestamp( msg.client.readyTimestamp );
 					}
-					if ( created[1] ) embed.addField( created[0], created[1], true );
-					embed.addField( language[0], language[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setTimestamp( msg.client.readyTimestamp ).setFooter( lang.get('overview.inaccurate') );
+					embed.addField( version[0], version[1], true ).addField( created[0], created[1], true ).addField( language[0], language[1], true );
+					if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
+					embed.addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
 					if ( site ) {
 						if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
 						if ( description[1] ) embed.addField( description[0], description[1] );
 						if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
 					}
+					if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 				}
 				else {
 					if ( site ) text += name.join(' ') + '\n' + manager[0] + ' ' + ( manager[1].join(', ') || lang.get('overview.none') ) + '\n' + official.join(' ') + '\n';
-					if ( created[1] ) text += created.join(' ') + '\n';
-					text += language.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ');
+					text += version.join(' ') + '\n' + created.join(' ') + '\n' + language.join(' ') + '\n';
+					if ( rtl[1] ) text += rtl.join(' ') + '\n';
+					text += articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
 					if ( site ) {
 						if ( crossover[1] ) text += '\n' + crossover.join(' ');
 						if ( description[1] ) text += '\n' + description.join(' ');
@@ -272,6 +329,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 							if ( msg.uploadFiles() ) embed.files = [{attachment:image[1],name:( spoiler ? 'SPOILER ' : '' ) + name[1] + image[1].substring(image[1].lastIndexOf('.'))}];
 						}
 					}
+					if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );
 					text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 				}
 				
