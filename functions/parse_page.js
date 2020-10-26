@@ -1,5 +1,12 @@
 const cheerio = require('cheerio');
 
+const infoboxList = [
+	'.infobox',
+	'.portable-infobox',
+	'.infoboxtable',
+	'.notaninfobox'
+];
+
 const removeClasses = [
 	'table',
 	'div',
@@ -41,15 +48,21 @@ function parse_page(msg, title, embed, wiki, thumbnail) {
 			return;
 		}
 		var change = false;
-		var $ = cheerio.load(response.body.parse.text['*']);
+		var $ = cheerio.load(response.body.parse.text['*'].replace( /<br\/?>/g, '\n' ));
 		if ( embed.thumbnail?.url === thumbnail ) {
 			var image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
 			if ( !image ) {
-				thumbnail = $('img').filter( (i, img) => {
+				thumbnail = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
 					img = $(img).prop('src')?.toLowerCase();
 					return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
 				} ).first().prop('src');
-				if ( !thumbnail ) image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) ) );
+				if ( !thumbnail ) thumbnail = $('img').filter( (i, img) => {
+					img = $(img).prop('src')?.toLowerCase();
+					return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
+				} ).first().prop('src');
+				if ( !thumbnail ) image = response.body.parse.images.find( pageimage => {
+					return /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase());
+				} );
 			}
 			if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
 			if ( thumbnail ) {

@@ -17,8 +17,11 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	
 	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name` ).then( results => {
 		var guild = results.find( result => result !== null );
-		if ( guild === undefined ) return msg.client.generateInvite(defaultPermissions).then( invite => {
-			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '&guild_id=' + args[1] + '>', {}, true )
+		if ( guild === undefined ) return msg.client.generateInvite({
+			permissions: defaultPermissions,
+			guild: args[1]
+		}).then( invite => {
+			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '>', {}, true )
 		}, log_error );
 		if ( args[1] in patreons ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
 		db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {

@@ -12,7 +12,11 @@ function cmd_invite(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
 		this.LINK(lang, msg, line, wiki);
 	} else {
-		msg.client.generateInvite(defaultPermissions).then( invite => msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '>' ), log_error );
+		msg.client.generateInvite({
+			permissions: defaultPermissions
+		}).then( invite => {
+			msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '>' );
+		}, log_error );
 	}
 }
 

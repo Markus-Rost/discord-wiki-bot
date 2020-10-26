@@ -187,11 +187,14 @@ function plural(lang, number, args) {
 				else text = getArg(args, 1);
 			}
 			break;
+		case 'bn':
 		case 'de':
 		case 'en':
 		case 'es':
+		case 'ja':
 		case 'nl':
 		case 'pt-br':
+		case 'th':
 		case 'tr':
 		case 'ja':
 		case 'zh-hans':
