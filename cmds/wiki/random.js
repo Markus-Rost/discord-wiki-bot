@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const fandom_random = require('./fandom/random.js').run;
 const parse_page = require('../../functions/parse_page.js');
-const {htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
+const {parse_infobox, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 
 /**
@@ -13,7 +13,7 @@ const extract_desc = require('../../util/extract_desc.js');
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
-	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free&explaintext=true&exsectionformat=raw&exlimit=1&generator=random&grnnamespace=0&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=random&grnnamespace=0&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -57,6 +57,18 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 				embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
 			}
 			else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+			
+			if ( !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
+				try {
+					var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
+					if ( infobox?.parser_tag_version === 2 ) infobox.data.forEach( group => {
+						parse_infobox(group, embed, new URL(body.query.general.logo, wiki).href);
+					} );
+				}
+				catch ( error ) {
+					console.log( '- Failed to parse the infobox: ' + error );
+				}
+			}
 			
 			msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href )) );
 		}
