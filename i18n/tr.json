@@ -133,6 +133,7 @@
         "image": "Resmi gör",
         "main": "Tartışmalar",
         "post": "gönderisi",
+        "tags": "Etiketler:",
         "votes": "$1 oy"
     },
     "fallback": [
@@ -143,12 +144,14 @@
         " "
     ],
     "general": {
-        "disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. $1, beni JavaScript kullanarak yazdı.\n\nBeni Patreon'da da destekleyebilirsiniz:",
+        "disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. Sayfalar için kısa açıklamalar ve ek bilgiler verebilir ve interwiki bağlantıları ile yönlendirmeleri takip edebilirim. $1, beni JavaScript kullanarak yazdı.\n\nBeni Patreon'da da destekleyebilirsiniz:",
+        "experimental": "**Bu özellik deneme aşamasında! Çalışması garanti değil ve gelecekte kaldırılabilir.**",
         "helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
         "limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n$1, mesajın çok fazla komut içeriyor!",
         "missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
         "patreon": "Bu, Patreon'a münhasır bir özellik!\nBu özelliğe erişim alabilmek için beni Patreon'da destekleyebilirsiniz:",
-        "prefix": "sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`."
+        "prefix": "sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`.",
+        "readonly": "**veri tabanı şimdilik sadece okuma modunda, bu ayarları şu an değiştiremezsin!**"
     },
     "help": {
         "admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
@@ -199,11 +202,25 @@
                 "default": {
                     "cmd": "help",
                     "desc": "Anladığım tüm komutları listeleyeceğim."
+                },
+                "verification": {
+                    "cmd": "help verification",
+                    "desc": "Bu komutun nasıl çalıştığını daha detaylı bir şekilde açıklayacağım."
                 }
             },
             "info": {
                 "cmd": "info",
                 "desc": "Kendimi tanıtacağım."
+            },
+            "inline": {
+                "link": {
+                    "cmd": "[[<sayfa adı>]]",
+                    "desc": "Vikideki makalenin direkt bir bağlantısı ile yanıt vereceğim."
+                },
+                "template": {
+                    "cmd": "{{<sayfa adı>}}",
+                    "desc": "Vikideki makalenin bir bağlantısı ise yanıt vereceğim."
+                }
             },
             "minecraft": {
                 "bug": {
@@ -218,6 +235,10 @@
                     "cmd": "/<Minecraft komutu>",
                     "desc": "Minecraft komutunun sözdizimini ve Minecraft Wiki'deki komutun makalesini içeren bir bağlantıyla cevap vereceğim."
                 }
+            },
+            "mwprojects": {
+                "cmd": "!!<viki> <aranacak terim>",
+                "desc": "Verilen MediaWiki projesinde eşleşen bir makale bağlantısı ile yanıt vereceğim. Örnek: `$1!!en.wikipedia.org Cookie`"
             },
             "overview": {
                 "cmd": "overview",
@@ -241,6 +262,36 @@
                 "cmd": "random",
                 "desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim."
             },
+            "rcscript": {
+                "add": {
+                    "cmd": "rcscript add [<viki>]",
+                    "desc": "Yeni bir son değişiklikler webhook'u ekleyeceğim."
+                },
+                "default": {
+                    "cmd": "rcscript",
+                    "desc": "Son değişiklikler webhook'unu değiştireceğim."
+                },
+                "delete": {
+                    "cmd": "rcscript delete",
+                    "desc": "Son değişiklikler webhook'unu sileceğim."
+                },
+                "display": {
+                    "cmd": "rcscript display <yeni görünüm modu>",
+                    "desc": "Bu son değişiklikler webhook'unun görüntüleme modunu değiştireceğim."
+                },
+                "feeds": {
+                    "cmd": "rcscript feeds",
+                    "desc": "Son değişiklikler webhook'u için Fandom vikisindeki tartışmalar değişikliklerini kapatacak veya açacağım."
+                },
+                "lang": {
+                    "cmd": "rcscript lang <yeni dil>",
+                    "desc": "Son değişiklikler webhook'unun dilini değiştireceğim."
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <yeni viki>",
+                    "desc": "Son değişiklikler webhook'unun vikisini değiştireceğim."
+                }
+            },
             "search": {
                 "cmd": "search <arama terimi>",
                 "desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim."
@@ -253,6 +304,10 @@
                 "default": {
                     "cmd": "settings",
                     "desc": "Bu sunucunun ayarlarını değiştireceğim."
+                },
+                "inline": {
+                    "cmd": "settings inline toggle",
+                    "desc": "Sunucuda satıriçi komut kullanımını etkinleştireceğim."
                 },
                 "lang": {
                     "cmd": "settings lang <dil>",
@@ -275,6 +330,47 @@
                 "cmd": "Kullanıcı:<kullanıcıadı>",
                 "desc": "Kullanıcı hakkında bazı bilgileri göstereceğim."
             },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <yeni hesap yaşı>",
+                    "desc": "Viki doğrulaması için minimum hesap yaşını (gün bazında) değiştireceğim."
+                },
+                "add": {
+                    "cmd": "verification add <rol>",
+                    "desc": "Yeni bir viki doğrulaması ekleyeceğim. `|` ile ayrılan listeler kabul edilir."
+                },
+                "channel": {
+                    "cmd": "verification <id> channel <yeni kanal>",
+                    "desc": "Viki doğrulaması kanalını değiştireceğim. `|` ile ayrılan listeler kabul edilir."
+                },
+                "default": {
+                    "cmd": "verification",
+                    "desc": "`$1verify` komutu ile kullanılan viki doğrulamalarını değiştireceğim."
+                },
+                "delete": {
+                    "cmd": "verification <id> delete",
+                    "desc": "Viki doğrulamasını sileceğim."
+                },
+                "editcount": {
+                    "cmd": "verification <id> editcount <yeni düzenleme sayısı>",
+                    "desc": "Viki doğrulaması için minimum düzenleme sayısını değiştireceğim."
+                },
+                "rename": {
+                    "cmd": "verification <id> rename",
+                    "desc": "Viki doğrulaması için kullanıcının Discord kullanıcı adı ile viki kullanıcı adının aynı olması gerekiyorsa değiştireceğim."
+                },
+                "role": {
+                    "cmd": "verification <id> role <yeni rol>",
+                    "desc": "Viki doğrulaması rolünü değiştireceğim. `|` ile ayrılan listeler kabul edilir."
+                },
+                "usergroup": {
+                    "cmd": "verification <id> usergroup <yeni kullanıcı grubu>",
+                    "desc": ""
+                }
+            },
+            "verify": {
+                "cmd": "verify <viki kullanıcı adı>"
+            },
             "voice": {
                 "cmd": "voice",
                 "desc": "Sesli kanalda bulunan kişilere belirli bir rol vermeye çalışacağım."
@@ -292,18 +388,24 @@
     },
     "minecraft": {
         "cmdpage": "en:Commands/",
+        "fixed": "Düzeltilmiş Sürüm:",
         "link": "https://minecraft-tr.gamepedia.com/",
         "more": "Ve $1 tane daha.",
+        "private": "**Özel Sorun**",
         "total": "$1 hata düzeltildi"
     },
     "overview": {
         "articles": "Makaleler:",
+        "comments": "Makale yorumları:",
         "created": "Oluşturuldu:",
+        "crossover": "Şuna birleştirildi:",
         "description": "Açıklama:",
         "edits": "Düzenlemeler:",
         "founder": "Kurucu:",
         "image": "Resim:",
         "inaccurate": "İstatistikler yanlış olabilir",
+        "lang": "Dil:",
+        "license": "Lisans:",
         "manager": "Wiki yöneticisi:",
         "name": "Tam isim:",
         "no": "Hayır",
@@ -443,10 +545,10 @@
         "info": {
             "discord": "Discord:",
             "editcount": "Düzenleme sayısı:",
-            "favwiki": "Favorite wiki:",
+            "favwiki": "Favori viki:",
             "gender": "Cinsiyet:",
             "globaleditcount": "Global düzenleme sayısı:",
-            "group": "Grup:",
+            "group": "{{PLURAL:$1|Grup|Grup}}:",
             "loading": "Global istatistikler yükleniyor…",
             "registration": "Kayıt tarihi:",
             "wikisedited": "Düzenlenen wikiler:"
