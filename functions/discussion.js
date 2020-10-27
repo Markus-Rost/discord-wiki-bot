@@ -49,30 +49,12 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
-	else if ( !query.wikidesc ) {
-		return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + query.general.servername + query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wvresponse => {
-			var wvbody = wvresponse.body;
-			if ( wvresponse.statusCode !== 200 || !wvbody || wvbody.exception || !wvbody.items || !wvbody.items.length ) {
-				console.log( '- ' + wvresponse.statusCode + ': Error while getting the wiki id: ' + ( wvbody && wvbody.exception && wvbody.exception.details ) );
-				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-				
-				if ( reaction ) reaction.removeEmoji();
-			}
-			else if ( wvbody.items.some( site => site.domain === query.general.servername + query.general.scriptpath ) ) {
-				query.wikidesc = {id: wvbody.items.find( site => site.domain === query.general.servername + query.general.scriptpath ).id};
-				fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler);
-			}
-			else {
-				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-				
-				if ( reaction ) reaction.removeEmoji();
-			}
-		}, error => {
-			console.log( '- Error while getting the wiki id: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-			
-			if ( reaction ) reaction.removeEmoji();
-		} );
+	else if ( !query.wikidesc?.id ) {
+		console.log( '- Error while getting the wiki id.' );
+		msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
+		
+		if ( reaction ) reaction.removeEmoji();
+		return;
 	}
 	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.get('discussion.post') ) {
 		title = title.split(' ').slice(1).join(' ');

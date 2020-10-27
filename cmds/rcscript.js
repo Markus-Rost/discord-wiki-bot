@@ -65,12 +65,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				wikinew = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
+			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
 				if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 					let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 					if ( api ) {
 						wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
 					}
 				}
 				return response;
@@ -104,32 +104,20 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
 					}
-					if ( wikinew.isFandom(false) ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
-						var wibody = wiresponse.body;
-						if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
-							console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
+					var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
+					if ( wikinew.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
+						headers: {
+							Accept: 'application/hal+json'
+						}
+					} ).then( dsresponse => {
+						var dsbody = dsresponse.body;
+						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
+							if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 							return createWebhook();
 						}
-						var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
-						if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json&cache=' + Date.now(), {
-							headers: {
-								Accept: 'application/hal+json'
-							}
-						} ).then( dsresponse => {
-							var dsbody = dsresponse.body;
-							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
-								return createWebhook();
-							}
-							return createWebhook(parseInt(site.id, 10));
-						}, error => {
-							console.log( '- Error while checking for discussions: ' + error );
-							return createWebhook();
-						} );
-						console.log( '- No result while getting the wiki id.' );
-						return createWebhook();
+						return createWebhook(parseInt(wikiid, 10));
 					}, error => {
-						console.log( '- Error while getting the wiki id: ' + error );
+						console.log( '- Error while checking for discussions: ' + error );
 						return createWebhook();
 					} );
 					return createWebhook();
@@ -236,12 +224,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = input_to_wiki(args[1].replace( /^(?:https?:)?\/\//, 'https://' ));
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
 						}
 					}
 					return response;
@@ -275,32 +263,20 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							if ( reaction ) reaction.removeEmoji();
 							return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
 						}
-						if ( wikinew.isFandom(false) ) return got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + body.query.general.servername + body.query.general.scriptpath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
-							var wibody = wiresponse.body;
-							if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
-								console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
+						var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
+						if ( wikinew.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
+							headers: {
+								Accept: 'application/hal+json'
+							}
+						} ).then( dsresponse => {
+							var dsbody = dsresponse.body;
+							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
+								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 								return updateWiki();
 							}
-							var site = wibody.items.find( site => site.domain === body.query.general.servername + body.query.general.scriptpath );
-							if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json&cache=' + Date.now(), {
-								headers: {
-									Accept: 'application/hal+json'
-								}
-							} ).then( dsresponse => {
-								var dsbody = dsresponse.body;
-								if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-									if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
-									return updateWiki();
-								}
-								return updateWiki(parseInt(site.id, 10));
-							}, error => {
-								console.log( '- Error while checking for discussions: ' + error );
-								return updateWiki();
-							} );
-							console.log( '- No result while getting the wiki id.' );
-							return updateWiki();
+							return updateWiki(parseInt(wikiid, 10));
 						}, error => {
-							console.log( '- Error while getting the wiki id: ' + error );
+							console.log( '- Error while checking for discussions: ' + error );
 							return updateWiki();
 						} );
 						return updateWiki();
@@ -430,16 +406,15 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}
 
-				let scriptPath = selected_row.wiki.replace( /^https:\/\/(.*)\/$/, '$1' );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( 'https://community.fandom.com/api/v1/Wikis/ByString?includeDomain=true&limit=10&string=' + scriptPath + '&format=json&cache=' + Date.now() ).then( wiresponse => {
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( selected_row.wiki + 'api.php?action=query&meta=siteinfo&siprop=general|variables&format=json' ).then( wiresponse => {
 					var wibody = wiresponse.body;
-					if ( wiresponse.statusCode !== 200 || !wibody || wibody.exception || !wibody.items || !wibody.items.length ) {
-						console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.exception?.details );
+					if ( wiresponse.statusCode !== 200 || !wibody?.query?.variables?.some?.( variable => variable?.id === 'wgCityId' )?.['*'] ) {
+						console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 					}
-					var site = wibody.items.find( site => site.domain === scriptPath );
-					if ( site ) return got.get( 'https://services.fandom.com/discussion/' + site.id + '/posts?limit=1&format=json&cache=' + Date.now(), {
+					var wikiid = wibody.query.variables.find( variable => variable.id === 'wgCityId' )['*'];
+					return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						}
@@ -451,9 +426,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 						}
 						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-							webhook.send( webhook_lang.get('enabled_feeds', site.name) + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
+							webhook.send( webhook_lang.get('enabled_feeds', body.query.general.sitename) + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
 						}, log_error );
-						db.run( 'UPDATE rcgcdw SET wikiid = ?, postid = ? WHERE webhook = ?', [parseInt(site.id, 10), null, selected_row.webhook], function (error) {
+						db.run( 'UPDATE rcgcdw SET wikiid = ?, postid = ? WHERE webhook = ?', [parseInt(wikiid, 10), null, selected_row.webhook], function (error) {
 							if ( error ) {
 								console.log( '- Error while updating the RcGcDw: ' + error );
 								if ( reaction ) reaction.removeEmoji();
@@ -469,9 +444,6 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 					} );
-					console.log( '- No result while getting the wiki id.' );
-					if ( reaction ) reaction.removeEmoji();
-					return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 				}, error => {
 					console.log( '- Error while getting the wiki id: ' + error );
 					if ( reaction ) reaction.removeEmoji();

@@ -139,7 +139,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 						return Promise.reject();
 					}
 					queryuser.editcount = ucbody.userData.localEdits;
-					discordname = ucbody.userData.discordHandle.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					if ( ucbody.userData.discordHandle ) discordname = ucbody.userData.discordHandle.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 					
 					if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
 						var pbody = presponse.body;
@@ -173,6 +173,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 								console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg || pbody.title ) ) );
 								return Promise.reject();
 							}
+							return;
 						}
 						if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
 						else if ( pbody.value ) discordname = pbody.value.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
@@ -255,7 +256,8 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					msg.replyMsg( lang.get('verify.user_matches_reply', username.escapeFormatting(), queryuser.gender), {embed}, false, false );
 					
 					if ( reaction ) reaction.removeEmoji();
-				}, () => {
+				}, error => {
+					if ( error ) console.log( '- Error while getting the Discord tag: ' + error );
 					embed.setColor('#000000').setDescription( lang.get('verify.error') );
 					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
 					
