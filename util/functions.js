@@ -15,12 +15,22 @@ const got = require('got').extend( {
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
  */
 function parse_infobox(infobox, embed, thumbnail) {
-	if ( embed.fields.length >= 25 ) return;
+	if ( embed.fields.length >= 25 || embed.length > 5500 ) return;
 	switch ( infobox.type ) {
 		case 'data':
-			var {label = '', value = ''} = infobox.data;
+			var {label = '', value = '', source = ''} = infobox.data;
 			label = htmlToPlain(label).trim();
 			value = htmlToPlain(value).trim();
+			if ( label.includes( '*UNKNOWN LINK*' ) ) {
+				label = '`' + source + '`';
+				embed.brokenInfobox = true;
+			}
+			if ( value.includes( '*UNKNOWN LINK*' ) ) {
+				value = '`' + source + '`';
+				embed.brokenInfobox = true;
+			}
+			if ( label.length > 50 ) label = label.substring(0, 50) + '\u2026';
+			if ( value.length > 250 ) value = value.substring(0, 250) + '\u2026';
 			if ( label && value ) embed.addField( label, value, true );
 			break;
 		case 'group':
@@ -31,6 +41,7 @@ function parse_infobox(infobox, embed, thumbnail) {
 		case 'header':
 			var {value = ''} = infobox.data;
 			value = htmlToPlain(value).trim();
+			if ( value.length > 100 ) value = value.substring(0, 100) + '\u2026';
 			if ( value ) embed.addField( '\u200b', '__**' + value + '**__', false );
 			break;
 		case 'image':
@@ -112,16 +123,31 @@ function toPlaintext(text = '', fullWikitext = false) {
 function htmlToPlain(html) {
 	var text = '';
 	var reference = false;
+	var listlevel = -1;
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
 			if ( tagname === 'sup' && attribs.class === 'reference' ) reference = true;
-			if ( tagname === 'br' ) text += '\n';
+			if ( tagname === 'br' ) {
+				text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4*listlevel+3);
+			}
+			if ( tagname === 'ul' ) listlevel++;
+			if ( tagname === 'li' ) text += '\n' + '\u200b '.repeat(4*listlevel) + '• ';
 		},
 		ontext: (htmltext) => {
-			if ( !reference ) text += escapeFormatting(htmltext);
+			if ( !reference ) {
+				if ( listlevel > -1 ) {
+					htmltext = htmltext.replace( /\n/g, '\n' + '\u200b '.repeat(4*listlevel+3) );
+				}
+				text += escapeFormatting(htmltext);
+			}
 		},
 		onclosetag: (tagname) => {
 			if ( tagname === 'sup' ) reference = false;
+			if ( tagname === 'ul' ) listlevel--;
+		},
+		oncomment: (commenttext) => {
+			if ( /^LINK'" \d+:\d+$/.test(commenttext) ) text += '*UNKNOWN LINK*';
 		}
 	} );
 	parser.write( html );

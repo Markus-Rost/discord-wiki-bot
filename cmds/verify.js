@@ -139,7 +139,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 						return Promise.reject();
 					}
 					queryuser.editcount = ucbody.userData.localEdits;
-					if ( ucbody.userData.discordHandle ) discordname = ucbody.userData.discordHandle.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					if ( ucbody.userData.discordHandle ) discordname = ucbody.userData.discordHandle.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					
 					if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
 						var pbody = presponse.body;
@@ -147,7 +147,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 							console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody?.error?.info || pbody?.errormsg ) );
 							return Promise.reject();
 						}
-						if ( pbody.profile['link-discord'] ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+						if ( pbody.profile['link-discord'] ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					}, error => {
 						console.log( '- Error while getting the Discord tag: ' + error );
 						return Promise.reject();
@@ -175,14 +175,14 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 							}
 							return;
 						}
-						if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
-						else if ( pbody.value ) discordname = pbody.value.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+						if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+						else if ( pbody.value ) discordname = pbody.value.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					}, error => {
 						console.log( '- Error while getting the Discord tag: ' + error );
 						return Promise.reject();
 					} );
 				} ).then( () => {
-					if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
+					if ( discordname.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 					embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
 					if ( msg.author.tag.escapeFormatting() !== discordname ) {
 						embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
@@ -295,9 +295,9 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				
 				var discordname = '';
 				if ( revision && revision.user === username ) {
-					discordname = ( revision?.slots?.main || revision )['*'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
+					discordname = ( revision?.slots?.main || revision )['*'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 				}
-				if ( discordname.length > 50 ) discordname = discordname.substring(0, 50) + '\u2026';
+				if ( discordname.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 				embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
 				if ( msg.author.tag.escapeFormatting() !== discordname ) {
 					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );

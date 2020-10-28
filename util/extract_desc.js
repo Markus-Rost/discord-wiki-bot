@@ -7,7 +7,7 @@
 function extract_desc(text = '', fragment = '') {
 	var sectionIndex = text.indexOf('\ufffd\ufffd');
 	var extract = ( sectionIndex !== -1 ? text.substring(0, sectionIndex) : text ).trim().escapeFormatting();
-	if ( extract.length > 2000 ) extract = extract.substring(0, 2000) + '\u2026';
+	if ( extract.length > 1000 ) extract = extract.substring(0, 1000) + '\u2026';
 	var section = null;
 	var regex = /\ufffd{2}(\d)\ufffd{2}([^\n]+)/g;
 	var sectionHeader = '';

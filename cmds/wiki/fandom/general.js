@@ -176,7 +176,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 										onopentag: (tagname, attribs) => {
 											if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 												var description = attribs.content.escapeFormatting();
-												if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+												if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 												embed.setDescription( description );
 											}
 											if ( tagname === 'meta' && attribs.property === 'og:image' ) {
@@ -291,7 +291,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 											onopentag: (tagname, attribs) => {
 												if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 													var description = attribs.content.escapeFormatting();
-													if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+													if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 													embed.setDescription( description );
 												}
 												if ( tagname === 'meta' && attribs.property === 'og:image' && querypage.title !== body.query.general.mainpage ) {
@@ -380,7 +380,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 							onopentag: (tagname, attribs) => {
 								if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 									var description = attribs.content.escapeFormatting();
-									if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+									if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 									embed.setDescription( description );
 								}
 								if ( tagname === 'meta' && attribs.property === 'og:image' && querypage.title !== body.query.general.mainpage ) {
@@ -475,7 +475,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 						onopentag: (tagname, attribs) => {
 							if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 								var description = attribs.content.escapeFormatting();
-								if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+								if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 								embed.setDescription( description );
 							}
 						}

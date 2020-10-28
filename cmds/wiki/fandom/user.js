@@ -45,7 +45,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 									onopentag: (tagname, attribs) => {
 										if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 											var description = attribs.content.escapeFormatting();
-											if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+											if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 											embed.setDescription( description );
 										}
 										if ( tagname === 'meta' && attribs.property === 'og:image' ) {
@@ -205,7 +205,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 									onopentag: (tagname, attribs) => {
 										if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 											var description = attribs.content.escapeFormatting();
-											if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+											if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 											embed.setDescription( description );
 										}
 										if ( tagname === 'meta' && attribs.property === 'og:image' ) {
@@ -304,8 +304,8 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							var avatarfield = profile.find( field => field.name === 'avatar' );
 							var biofield = profile.find( field => field.name === 'bio' );
 							if ( discordfield && discordfield.value ) {
-								discordfield.value = htmlToPlain( discordfield.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/, '$1#$2' );
-								if ( discordfield.value.length > 50 ) discordfield.value = discordfield.value.substring(0, 50) + '\u2026';
+								discordfield.value = htmlToPlain( discordfield.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+								if ( discordfield.value.length > 100 ) discordfield.value = discordfield.value.substring(0, 100) + '\u2026';
 								if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discordfield.value;
 								} );
@@ -319,7 +319,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 								if ( avatarfield && avatarfield.value ) embed.setThumbnail( avatarfield.value );
 								if ( biofield && biofield.value && !embed.description ) {
 									var bio = biofield.value.escapeFormatting();
-									if ( bio.length > 2000 ) bio = bio.substring(0, 2000) + '\u2026';
+									if ( bio.length > 1000 ) bio = bio.substring(0, 1000) + '\u2026';
 									embed.setDescription( bio );
 								}
 							}

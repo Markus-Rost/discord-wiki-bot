@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const {htmlToPlain} = require('../util/functions.js');
 
 const infoboxList = [
 	'.infobox',
@@ -40,7 +41,9 @@ const keepMainPageTag = [
  * @param {String} thumbnail - The default thumbnail for the wiki.
  */
 function parse_page(msg, title, embed, wiki, thumbnail) {
-	if ( !msg || ( embed.description && embed.thumbnail?.url !== thumbnail ) ) return;
+	if ( !msg || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox ) ) {
+		return;
+	}
 	got.get( wiki + 'api.php?action=parse&prop=text|images|parsewarnings&section=0&disablelimitreport=true&disableeditsection=true&disabletoc=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		if ( response?.body?.parse?.parsewarnings?.length ) log_warn(response.body.parse.parsewarnings);
 		if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
@@ -49,6 +52,25 @@ function parse_page(msg, title, embed, wiki, thumbnail) {
 		}
 		var change = false;
 		var $ = cheerio.load(response.body.parse.text['*'].replace( /<br\/?>/g, '\n' ));
+		if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
+			var infobox = $('aside.portable-infobox');
+			embed.fields.forEach( field => {
+				if ( embed.length > 5500 ) return;
+				if ( /^`.+`$/.test(field.name) ) {
+					let label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-label, .pi-data-label[data-source="$1"]' )).html();
+					label = htmlToPlain(label).trim();
+					if ( label.length > 50 ) label = label.substring(0, 50) + '\u2026';
+					if ( label ) field.name = label;
+				}
+				if ( /^`.+`$/.test(field.value) ) {
+					let value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-value, .pi-data-value[data-source="$1"]' )).html();
+					value = htmlToPlain(value).trim();
+					if ( value.length > 250 ) value = value.substring(0, 250) + '\u2026';
+					if ( value ) field.value = value;
+				}
+			} );
+			change = true;
+		}
 		if ( embed.thumbnail?.url === thumbnail ) {
 			var image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
 			if ( !image ) {
@@ -70,13 +92,14 @@ function parse_page(msg, title, embed, wiki, thumbnail) {
 				change = true;
 			}
 		}
-		if ( !embed.description ) {
+		if ( !embed.description && embed.length < 5000 ) {
 			$('h1, h2, h3, h4, h5, h6').nextAll().remove();
 			$('h1, h2, h3, h4, h5, h6').remove();
+			$(infoboxList.join(', ')).remove();
 			$(removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
 			var description = $.text().trim().replace( /\n{3,}/g, '\n\n' ).escapeFormatting();
 			if ( description ) {
-				if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.setDescription( description );
 				change = true;
 			}

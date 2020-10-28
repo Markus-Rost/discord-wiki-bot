@@ -40,7 +40,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			}
 			if ( querypage.pageprops && querypage.pageprops.description ) {
 				var description = htmlToPlain( querypage.pageprops.description );
-				if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.setDescription( description );
 			}
 			else if ( querypage.extract ) {
