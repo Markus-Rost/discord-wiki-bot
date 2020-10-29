@@ -94,7 +94,7 @@ function checkWiki(wiki) {
 				if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
 					if ( dsbody?.title !== 'site doesn\'t exists' ) result.postid = dsresponse.statusCode + ': Error while getting the discussions: ' + dsbody?.title;
 				}
-				else result.postid = ( dsbody._embedded?.['doc:posts']?.id || 0 );
+				else result.postid = ( dsbody._embedded?.['doc:posts']?.[0]?.id || 0 );
 			}, error => {
 				result.postid = 'Error while getting the discussions: ' + error;
 			} ) : null )

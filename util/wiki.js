@@ -146,7 +146,7 @@ class Wiki extends URL {
 	toLink(title = '', querystring = '', fragment = '', isMarkdown = false) {
 		querystring = new URLSearchParams(querystring);
 		if ( !querystring.toString().length ) title = ( title || this.mainpage );
-		title = title.replace( / /g, '_' );
+		title = title.replace( / /g, '_' ).replace( /%/g, '%2525' );
 		let link = new URL(this.articleURL);
 		link.pathname = link.pathname.replace( '$1', title.replace( /\\/g, '%5C' ) );
 		link.searchParams.forEach( (value, name, searchParams) => {
@@ -159,7 +159,7 @@ class Wiki extends URL {
 			link.searchParams.append(name, value);
 		} );
 		let output = decodeURI( link ).replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' );
-		if ( isMarkdown ) output = output.replace( /([\(\)])/g, '\\$1' );
+		if ( isMarkdown ) output = output.replace( /[()]/g, '\\$&' );
 		return output + Wiki.toSection(fragment);
 	}
 
