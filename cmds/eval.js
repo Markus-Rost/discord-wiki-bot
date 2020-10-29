@@ -4,6 +4,7 @@ util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 const Discord = require('discord.js');
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const newMessage = require('../util/newMessage.js');
+const Wiki = require('../util/wiki.js');
 var db = require('../util/database.js');
 
 /**
@@ -12,7 +13,7 @@ var db = require('../util/database.js');
  * @param {Discord.Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {Wiki} wiki - The wiki for the message.
  * @async
  */
 async function cmd_eval(lang, msg, args, line, wiki) {
@@ -47,6 +48,50 @@ function database(sql, sqlargs = []) {
 			if (error) reject(error);
 			resolve(rows);
 		} );
+	} );
+}
+
+/**
+ * Checks a wiki and it's recent changes webhooks.
+ * @param {Wiki} wiki - The wiki to check.
+ */
+function checkWiki(wiki) {
+	wiki = new Wiki(wiki);
+	return got.get( wiki + 'api.php?action=query' + ( wiki.isFandom() ? '&meta=siteinfo&siprop=variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids&rclimit=1&format=json' ).then( response => {
+		var body = response.body;
+		if ( response.statusCode !== 200 || !body?.query?.recentchanges ) {
+			return response.statusCode + ': Error while getting the recent changes: ' + body?.error?.info;
+		}
+		var result = {
+			wiki: wiki.href,
+			rcid: ( body.query.recentchanges[0]?.rcid || 0 ),
+			wikiid: body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'],
+			postid: null
+		}
+		return Promise.all([
+			database('SELECT guild, lang, display, rcid, wikiid, postid FROM rcgcdw WHERE wiki = ?', [result.wiki]).then( rows => {
+				result.rcgcdb = rows;
+			}, error => {
+				result.rcgcdb = error.toString();
+			} ),
+			( result.wikiid ? got.get( 'https://services.fandom.com/discussion/' + result.wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
+				headers: {
+					Accept: 'application/hal+json'
+				}
+			} ).then( dsresponse => {
+				var dsbody = dsresponse.body;
+				if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
+					if ( dsbody?.title !== 'site doesn\'t exists' ) result.postid = dsresponse.statusCode + ': Error while getting the discussions: ' + dsbody?.title;
+				}
+				else result.postid = ( dsbody._embedded?.['doc:posts']?.id || 0 );
+			}, error => {
+				result.postid = 'Error while getting the discussions: ' + error;
+			} ) : null )
+		]).then( () => {
+			return result;
+		} );
+	}, error => {
+		return 'Error while getting the recent changes: ' + error;
 	} );
 }
 
