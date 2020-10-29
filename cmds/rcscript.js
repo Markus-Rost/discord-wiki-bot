@@ -8,10 +8,6 @@ var db = require('../util/database.js');
 const fs = require('fs');
 const rcscriptExists = fs.existsSync('./RcGcDb/start.py');
 
-var allSites = [];
-const getAllSites = require('../util/allSites.js');
-getAllSites.then( sites => allSites = sites );
-
 const display_types = [
 	'compact',
 	'embed',
@@ -62,7 +58,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			var input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
 			var wikinew = new Wiki(wiki);
 			if ( input ) {
-				wikinew = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
+				wikinew = Wiki.fromInput(input);
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
@@ -222,7 +218,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
-				var wikinew = input_to_wiki(args[1].replace( /^(?:https?:)?\/\//, 'https://' ));
+				var wikinew = Wiki.fromInput(args[1]);
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
@@ -551,7 +547,7 @@ function blocklist(msg, args) {
 		if ( !args[1] ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
 		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 		let input = args[1].toLowerCase().replace( /^<(.*?)>$/, '$1' );
-		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
+		let wiki = Wiki.fromInput(input);
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
 		let reason = ( args.slice(2).join(' ').trim() || null );
 		return db.run( 'INSERT INTO blocklist(wiki, reason) VALUES(?, ?)', [wiki.href, reason], function (error) {
@@ -588,7 +584,7 @@ function blocklist(msg, args) {
 	}
 	if ( args[0] === 'remove' ) {
 		let input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
-		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
+		let wiki = Wiki.fromInput(input);
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block remove <wiki>`', {}, true );
 		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 		return db.run( 'DELETE FROM blocklist WHERE wiki = ?', [wiki.href], function (error) {
@@ -603,7 +599,7 @@ function blocklist(msg, args) {
 	}
 	if ( args.length ) {
 		let input = args.join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
-		let wiki = input_to_wiki(input.replace( /^(?:https?:)?\/\//, 'https://' ));
+		let wiki = Wiki.fromInput(input);
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block <wiki>`\n`' + prefix + 'rcscript block add <wiki> [<reason>]`\n`' + prefix + 'rcscript block remove <wiki>`', {}, true );
 		return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki.href], function (error, row) {
 			if ( error ) {
@@ -624,39 +620,6 @@ function blocklist(msg, args) {
 		if ( !rows.length ) return msg.replyMsg( 'there are currently no wikis on the blocklist.\n`' + prefix + 'rcscript block add <wiki> [<reason>]`', {}, true );
 		msg.replyMsg( 'there are currently ' + row.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`', {split:true}, true );
 	} );
-}
-
-/**
- * Turn user input into a wiki.
- * @param {String} input - The user input referring to a wiki.
- * @returns {Wiki}
- */
-function input_to_wiki(input) {
-	var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-	if ( regex ) return new Wiki('https://' + regex[1] + '/');
-	if ( input.startsWith( 'https://' ) ) {
-		let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
-		if ( project ) {
-			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-			if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
-		}
-		let wiki = input.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '/' );
-		if ( !wiki.endsWith( '/' ) ) wiki += '/';
-		return new Wiki(wiki);
-	}
-	let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
-	if ( project ) {
-		regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-		if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
-	}
-	if ( allSites.some( site => site.wiki_domain === input + '.gamepedia.com' ) ) {
-		return new Wiki('https://' + input + '.gamepedia.com/');
-	}
-	if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
-		if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');
-		else return new Wiki('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
-	}
-	return;
 }
 
 module.exports = {

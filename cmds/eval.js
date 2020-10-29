@@ -1,6 +1,7 @@
 const util = require('util');
 util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 
+const cheerio = require('cheerio');
 const Discord = require('discord.js');
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const newMessage = require('../util/newMessage.js');
@@ -56,16 +57,26 @@ function database(sql, sqlargs = []) {
  * @param {Wiki} wiki - The wiki to check.
  */
 function checkWiki(wiki) {
-	wiki = new Wiki(wiki);
-	return got.get( wiki + 'api.php?action=query' + ( wiki.isFandom() ? '&meta=siteinfo&siprop=variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids&rclimit=1&format=json' ).then( response => {
+	wiki = Wiki.fromInput(wiki);
+	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids&rclimit=1&format=json' ).then( response => {
+		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+			if ( api ) {
+				wiki = new Wiki(api.split('api.php?')[0], wiki);
+				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids&rclimit=1&format=json' );
+			}
+		}
+		return response;
+	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.query?.recentchanges ) {
 			return response.statusCode + ': Error while getting the recent changes: ' + body?.error?.info;
 		}
+		wiki.updateWiki(body.query.general);
 		var result = {
 			wiki: wiki.href,
 			rcid: ( body.query.recentchanges[0]?.rcid || 0 ),
-			wikiid: body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'],
+			wikiid: ( body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'] || null ),
 			postid: null
 		}
 		return Promise.all([

@@ -1,6 +1,10 @@
 const util = require('util');
 const {defaultSettings, wikiProjects} = require('./default.json');
 
+var allSites = [];
+const getAllSites = require('../util/allSites.js');
+getAllSites.then( sites => allSites = sites );
+
 /**
  * A wiki.
  * @class Wiki
@@ -184,6 +188,42 @@ class Wiki extends URL {
 		return '#' + encodeURIComponent( fragment ).replace( /[!'()*~]/g, (match) => {
 			return '%' + match.charCodeAt().toString(16).toUpperCase();
 		} ).replace( /%3A/g, ':' ).replace( /%/g, '.' );
+	}
+
+	/**
+	 * Turn user input into a wiki.
+	 * @param {String} input - The user input referring to a wiki.
+	 * @returns {Wiki}
+	 * @static
+	 */
+	static fromInput(input = '') {
+		if ( input instanceof URL ) return new this(input);
+		input = input.replace( /^(?:https?:)?\/\//, 'https://' );
+		var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
+		if ( regex ) return new this('https://' + regex[1] + '/');
+		if ( input.startsWith( 'https://' ) ) {
+			let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
+			if ( project ) {
+				regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
+				if ( regex ) return new this('https://' + regex[1] + project.scriptPath);
+			}
+			let wiki = input.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '/' );
+			if ( !wiki.endsWith( '/' ) ) wiki += '/';
+			return new this(wiki);
+		}
+		let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
+		if ( project ) {
+			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
+			if ( regex ) return new this('https://' + regex[1] + project.scriptPath);
+		}
+		if ( allSites.some( site => site.wiki_domain === input + '.gamepedia.com' ) ) {
+			return new this('https://' + input + '.gamepedia.com/');
+		}
+		if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
+			if ( !input.includes( '.' ) ) return new this('https://' + input + '.fandom.com/');
+			else return new this('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
+		}
+		return null;
 	}
 
 	[util.inspect.custom](depth, opts) {
