@@ -522,6 +522,11 @@
         "currentlang": "Idioma:",
         "currentprefix": "Prefixo:",
         "currentwiki": "Wiki padrão:",
+        "dashboard": {
+            "channel": "$1 atualizou as configurações para $2.",
+            "removed": "$1 removeu as configurações de $2.",
+            "updated": "$1 atualizou as configurações do servidor."
+        },
         "foundwikis": "Você quer dizer algum dessas wikis?",
         "inline disabled": {
             "channel inline": "Os comandos embutidos estão atualmente desativados para este canal.",
