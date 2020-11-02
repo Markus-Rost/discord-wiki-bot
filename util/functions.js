@@ -13,9 +13,20 @@ const got = require('got').extend( {
  * @param {Object} infobox - The content of the infobox.
  * @param {import('discord.js').MessageEmbed} embed - The message embed.
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
+ * @returns {import('discord.js').MessageEmbed?}
  */
 function parse_infobox(infobox, embed, thumbnail) {
-	if ( embed.fields.length >= 25 || embed.length > 5500 ) return;
+	if ( !infobox || embed.fields.length >= 25 || embed.length > 5500 ) return;
+	if ( infobox.parser_tag_version === 2 ) {
+		infobox.data.forEach( group => {
+			parse_infobox(group, embed, thumbnail);
+		} );
+		embed.fields = embed.fields.filter( (field, i, fields) => {
+			if ( field.name !== '\u200b' ) return true;
+			return ( fields[i + 1]?.name && fields[i + 1].name !== '\u200b' );
+		} );
+		return embed;
+	}
 	switch ( infobox.type ) {
 		case 'data':
 			var {label = '', value = '', source = ''} = infobox.data;
@@ -49,7 +60,7 @@ function parse_infobox(infobox, embed, thumbnail) {
 			var image = infobox.data.find( img => {
 				return ( /^(?:https?:)?\/\//.test(img.url) && /\.(?:png|jpg|jpeg|gif)$/.test(img.name) );
 			} );
-			if ( image ) embed.setThumbnail( image.url );
+			if ( image ) embed.setThumbnail( image.url.replace( /^(?:https?:)?\/\//, 'https://' ) );
 			break;
 	}
 }

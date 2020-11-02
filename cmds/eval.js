@@ -58,12 +58,12 @@ function database(sql, sqlargs = []) {
  */
 function checkWiki(wiki) {
 	wiki = Wiki.fromInput(wiki);
-	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids&rclimit=1&format=json' ).then( response => {
+	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' ).then( response => {
 		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 			if ( api ) {
 				wiki = new Wiki(api.split('api.php?')[0], wiki);
-				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids&rclimit=1&format=json' );
+				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' );
 			}
 		}
 		return response;
@@ -75,9 +75,38 @@ function checkWiki(wiki) {
 		wiki.updateWiki(body.query.general);
 		var result = {
 			wiki: wiki.href,
-			rcid: ( body.query.recentchanges[0]?.rcid || 0 ),
+			activity: [],
+			rcid: 0,
 			wikiid: ( body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'] || null ),
 			postid: null
+		}
+		var rc = body.query.recentchanges;
+		if ( rc.length ) {
+			result.rcid = rc[0].rcid;
+			let text = '';
+			let len = ( Date.parse(rc[0].timestamp) - Date.parse(rc[rc.length - 1].timestamp) ) / 60000;
+			len = Math.round(len);
+			let rdays = ( len / 1440 );
+			let days = Math.floor(rdays);
+			if ( days > 0 ) {
+				if ( days === 1 ) text += ` ${days} day`;
+				else text += ` ${days} days`;
+			}
+			let rhours = ( rdays - days ) * 24;
+			let hours = Math.floor(rhours);
+			if ( hours > 0 ) {
+				if ( text.length ) text += ' and';
+				if ( hours === 1 ) text += ` ${hours} hour`;
+				else text += ` ${hours} hours`;
+			}
+			let rminutes = ( rhours - hours ) * 60;
+			let minutes = Math.round(rminutes);
+			if ( minutes > 0 ) {
+				if ( text.length ) text += ' and';
+				if ( minutes === 1 ) text += ` ${minutes} minute`;
+				else text += ` ${minutes} minutes`;
+			}
+			result.activity.push(`${rc.length} edits in${text}`);
 		}
 		return Promise.all([
 			database('SELECT guild, lang, display, rcid, wikiid, postid FROM rcgcdw WHERE wiki = ?', [result.wiki]).then( rows => {
@@ -85,7 +114,7 @@ function checkWiki(wiki) {
 			}, error => {
 				result.rcgcdb = error.toString();
 			} ),
-			( result.wikiid ? got.get( 'https://services.fandom.com/discussion/' + result.wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
+			( result.wikiid ? got.get( 'https://services.fandom.com/discussion/' + result.wikiid + '/posts?limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'
 				}
@@ -93,8 +122,36 @@ function checkWiki(wiki) {
 				var dsbody = dsresponse.body;
 				if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
 					if ( dsbody?.title !== 'site doesn\'t exists' ) result.postid = dsresponse.statusCode + ': Error while getting the discussions: ' + dsbody?.title;
+					return;
 				}
-				else result.postid = ( dsbody._embedded?.['doc:posts']?.[0]?.id || 0 );
+				var posts = dsbody._embedded?.['doc:posts'];
+				result.postid = ( posts[0]?.id || 0 );
+				if ( posts?.length ) {
+					let text = '';
+					let len = ( posts[0].creationDate.epochSecond - posts[posts.length - 1].creationDate.epochSecond ) / 60;
+					len = Math.round(len);
+					let rdays = ( len / 1440 );
+					let days = Math.floor(rdays);
+					if ( days > 0 ) {
+						if ( days === 1 ) text += ` ${days} day`;
+						else text += ` ${days} days`;
+					}
+					let rhours = ( rdays - days ) * 24;
+					let hours = Math.floor(rhours);
+					if ( hours > 0 ) {
+						if ( text.length ) text += ' and';
+						if ( hours === 1 ) text += ` ${hours} hour`;
+						else text += ` ${hours} hours`;
+					}
+					let rminutes = ( rhours - hours ) * 60;
+					let minutes = Math.round(rminutes);
+					if ( minutes > 0 ) {
+						if ( text.length ) text += ' and';
+						if ( minutes === 1 ) text += ` ${minutes} minute`;
+						else text += ` ${minutes} minutes`;
+					}
+					result.activity.push(`${posts.length} posts in${text}`);
+				}
 			}, error => {
 				result.postid = 'Error while getting the discussions: ' + error;
 			} ) : null )
@@ -218,8 +275,10 @@ function removeSettings(msg) {
 					return dberror;
 				}
 				if ( !row.channel && !all_guilds.includes(row.guild) ) {
-					if ( row.guild in patreons ) msg.client.shard.broadcastEval( `delete global.patreons['${row.guild}']` );
-					if ( row.guild in voice ) delete voice[row.guild];
+					if ( row.guild in patreons || row.guild in voice ) {
+						msg.client.shard.broadcastEval( `delete global.patreons['${row.guild}'];
+						delete global.voice['${row.guild}'];` );
+					}
 					return guilds.push(row.guild);
 				}
 				if ( row.channel && all_guilds.includes(row.guild) && !all_channels.includes(row.channel) ) return channels.push(row.channel);
