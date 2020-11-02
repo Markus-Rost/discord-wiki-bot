@@ -42,6 +42,7 @@ function dashboard_guilds(res, state, reqURL) {
 		}).prependTo('#text');
 	}
 	if ( reqURL.searchParams.get('save') === 'success' ) {
+		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}')`).insertBefore('script#indexjs');
 		createNotice($, {
 			type: 'success',
 			title: 'Settings saved!',
@@ -49,6 +50,7 @@ function dashboard_guilds(res, state, reqURL) {
 		}).prependTo('#text');
 	}
 	if ( reqURL.searchParams.get('save') === 'failed' ) {
+		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}')`).insertBefore('script#indexjs');
 		let reason = '';
 		if ( reqURL.searchParams.has('reason') ) {
 			reason += '\nReason: ' + reqURL.searchParams.get('reason');
@@ -122,7 +124,7 @@ function dashboard_guilds(res, state, reqURL) {
 		else if ( settings.guilds.notMember.has(id) ) {
 			let guild = settings.guilds.notMember.get(id);
 			$('head title').text(`${guild.name} – ` + $('head title').text());
-			res.setHeader('Set-Cookie', [`guild="${guild.id}"; HttpOnly; Path=/`]);
+			res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; HttpOnly; Path=/`]);
 			let url = oauth.generateAuthUrl( {
 				scope: ['identify', 'guilds', 'bot'],
 				permissions: defaultPermissions,

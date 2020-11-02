@@ -113,8 +113,8 @@ const server = http.createServer((req, res) => {
 	res.setHeader('Content-Language', ['en']);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild';
-	} )?.map( cookie => cookie.replace( /^guild="(\w*)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; HttpOnly; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -135,6 +135,12 @@ const server = http.createServer((req, res) => {
 	}
 
 	if ( !state ) {
+		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
+			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
+				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
+			}
+		}
 		return pages.login(res, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
 	}
 
@@ -143,6 +149,12 @@ const server = http.createServer((req, res) => {
 	}
 
 	if ( !settingsData.has(state) ) {
+		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
+			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
+				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
+			}
+		}
 		return pages.login(res, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
 	}
 

@@ -237,7 +237,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					}
 					if ( !row ) return;
 					var lang = new Lang(row.lang);
-					var text = `<@${userSettings.user.id}> removed the settings for <#${type}>.`;
+					var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 					text += '\n' + new URL(`/guild/${guild}/settings`, process.env.dashboard).href;
 					sendMsg( {
 						type: 'notifyGuild', guild, text
@@ -333,7 +333,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					}
 					console.log( '- Dashboard: Settings successfully saved: ' + guild );
 					res(`/guild/${guild}/settings?save=success`);
-					var text = `<@${userSettings.user.id}> updated the server settings.`;
+					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
 					text += '\n' + lang.get('settings.currentwiki') + ` <${wiki.href}>`;
 					text += '\n' + lang.get('settings.currentlang') + ` \`${allLangs.names[settings.lang]}\``;
 					if ( response.patreon ) {
@@ -368,7 +368,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					}
 					console.log( '- Dashboard: Settings successfully saved: ' + guild );
 					res(`/guild/${guild}/settings?save=success`);
-					var text = `<@${userSettings.user.id}> updated the server settings.`;
+					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
 					text += '\n' + diff.join('\n');
 					text += '\n' + new URL(`/guild/${guild}/settings`, process.env.dashboard).href;
 					sendMsg( {
@@ -396,7 +396,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					}
 					console.log( `- Dashboard: Settings successfully removed: ${guild}#${type}` );
 					res(`/guild/${guild}/settings?save=success`);
-					var text = `<@${userSettings.user.id}> removed the settings for <#${type}>.`;
+					var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 					text += '\n' + new URL(`/guild/${guild}/settings`, process.env.dashboard).href;
 					sendMsg( {
 						type: 'notifyGuild', guild, text
@@ -436,7 +436,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						}
 						console.log( `- Dashboard: Settings successfully saved: ${guild}#${settings.channel}` );
 						res(`/guild/${guild}/settings/${settings.channel}?save=success`);
-						var text = `<@${userSettings.user.id}> updated the settings for <#${settings.channel}>.`;
+						var text = lang.get('settings.dashboard.channel', `<@${userSettings.user.id}>`, `<#${settings.channel}>`);
 						text += '\n' + diff.join('\n');
 						text += '\n' + new URL(`/guild/${guild}/settings/${settings.channel}`, process.env.dashboard).href;
 						sendMsg( {
