@@ -178,6 +178,10 @@ server.listen(8080, 'localhost', () => {
 });
 
 
+String.prototype.replaceSave = function(pattern, replacement) {
+	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( /\$/g, '$$$$' ) : replacement ) );
+};
+
 /**
  * End the process gracefully.
  * @param {NodeJS.Signals} signal - The signal received.

@@ -270,7 +270,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					}
 					var body = fresponse.body;
 					if ( fresponse.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
-						console.log( '- ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
+						console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( row?.wiki === wiki.href ) resolve(row);
 						reject();
 					}
@@ -279,7 +279,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				} );
 			} );
 		}, error => {
-			console.log( '- Error while testing the wiki: ' + error );
+			console.log( '- Dashboard: Error while testing the wiki: ' + error );
 			return Promise.reject();
 		} ).then( (row, query) => {
 			var lang = new Lang(( type === 'default' && settings.lang || row.lang ));
@@ -287,21 +287,21 @@ function update_settings(res, userSettings, guild, type, settings) {
 			if ( !wiki.isFandom() && query ) {
 				let notice = [];
 				if ( query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
-					console.log( '- This wiki is using ' + query.general.generator + '.' );
+					console.log( '- Dashboard: This wiki is using ' + query.general.generator + '.' );
 					notice.push({
 						name: 'MediaWiki',
 						value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', query.general.generator)
 					});
 				}
 				if ( !query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
-					console.log( '- This wiki is missing Extension:TextExtracts.' );
+					console.log( '- Dashboard: This wiki is missing Extension:TextExtracts.' );
 					notice.push({
 						name: 'TextExtracts',
 						value: lang.get('test.TextExtracts', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)')
 					});
 				}
 				if ( !query.extensions.some( extension => extension.name === 'PageImages' ) ) {
-					console.log( '- This wiki is missing Extension:PageImages.' );
+					console.log( '- Dashboard: This wiki is missing Extension:PageImages.' );
 					notice.push({
 						name: 'PageImages',
 						value: lang.get('test.PageImages', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)')
