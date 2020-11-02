@@ -147,9 +147,17 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'notifyGuild':
-					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
+					return manager.broadcastEval(`if ( '${( message.data.prefix || '' )}' ) {
+						global.patreons['${message.data.guild}'] = '${message.data.prefix}';
+					}
+					if ( '${( message.data.voice || '' )}' && '${message.data.guild}' in global.voice ) {
+						global.voice['${message.data.guild}'] = '${message.data.voice}';
+					}
+					if ( this.guilds.cache.has('${message.data.guild}') ) {
 						let channel = this.guilds.cache.get('${message.data.guild}').publicUpdatesChannel;
-						if ( channel ) channel.send(\`${message.data.text.replace( /`/g, '\\`' )}\`).catch( error => console.log( '- Dashboard: ' + error.name + ': ' + error.message ) );
+						if ( channel ) channel.send( \`${message.data.text.replace( /`/g, '\\`' )}\`, {
+							embed: ${JSON.stringify(message.data.embed)}
+						} ).catch( error => console.log( '- Dashboard: ' + error.name + ': ' + error.message ) );
 					}`).catch( error => {
 						data.error = error.toString();
 					} ).finally( () => {

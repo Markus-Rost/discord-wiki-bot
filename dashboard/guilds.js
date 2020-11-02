@@ -49,10 +49,14 @@ function dashboard_guilds(res, state, reqURL) {
 		}).prependTo('#text');
 	}
 	if ( reqURL.searchParams.get('save') === 'failed' ) {
+		let reason = '';
+		if ( reqURL.searchParams.has('reason') ) {
+			reason += '\nReason: ' + reqURL.searchParams.get('reason');
+		}
 		createNotice($, {
 			type: 'error',
 			title: 'Save failed!',
-			text: 'The settings could not be saved, please try again.'
+			text: 'The settings could not be saved, please try again.' + reason
 		}).prependTo('#text');
 	}
 	if ( process.env.READONLY ) {
@@ -168,7 +172,7 @@ function dashboard_guilds(res, state, reqURL) {
 			} );
 		}
 		if ( !settings.guilds.count ) {
-			$('#text .description').text('You currently don\'t have the MANAGE_SERVER permission on any servers, are you logged into the correct account?');
+			$('#text .description').text('You currently don\'t have the MANAGE_GUILD permission on any servers, are you logged into the correct account?');
 			$('<a class="channel">').attr('href', oauth.generateAuthUrl( {
 				scope: ['identify', 'guilds'],
 				prompt: 'consent', state

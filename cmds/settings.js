@@ -279,7 +279,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				return msg.replyMsg( lang.get('settings.prefix') + ' `' + prefix + '`' + prefixhelp, {}, true );
 			}
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			if ( args[1].includes( '`' ) || args[1].length > 100 ) {
+			if ( args[1].includes( '`' ) || args[1].includes( '\\' ) || args[1].length > 100 ) {
 				return msg.replyMsg( lang.get('settings.prefixinvalid') + prefixhelp, {}, true );
 			}
 			if ( args[1] === 'reset' || args[1] === 'default' ) args[1] = process.env.prefix;

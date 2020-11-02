@@ -42,6 +42,7 @@ const fieldset = {
  */
 function createForm($, header, settings, guildChannels, guildRoles) {
 	var readonly = ( process.env.READONLY ? true : false );
+	readonly = true;
 	var fields = [];
 	let channel = $('<div>').append(fieldset.channel);
 	channel.find('#wb-settings-channel').append(

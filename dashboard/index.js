@@ -3,6 +3,8 @@ const pages = require('./oauth.js');
 const dashboard = require('./guilds.js');
 const {db, settingsData} = require('./util.js');
 
+const isDebug = ( process.argv[2] === 'debug' );
+
 const posts = {
 	settings: require('./settings.js').post,
 	verification: require('./verification.js').post,
@@ -39,8 +41,6 @@ const files = new Map(fs.readdirSync( './dashboard/src' ).map( file => {
 	}];
 } ));
 
-process.env.READONLY = 'true';
-
 const server = http.createServer((req, res) => {
 	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) ) {
 		let args = req.url.split('/');
@@ -64,7 +64,7 @@ const server = http.createServer((req, res) => {
 				var settings = {};
 				body.split('&').forEach( arg => {
 					if ( arg ) {
-						let setting = decodeURIComponent(arg).split('=');
+						let setting = decodeURIComponent(arg.replace( /\+/g, ' ' )).split('=');
 						if ( setting[0] && setting.slice(1).join('=').trim() ) {
 							if ( settings[setting[0]] ) {
 								settings[setting[0]] += '|' + setting.slice(1).join('=').trim();
@@ -73,7 +73,7 @@ const server = http.createServer((req, res) => {
 						}
 					}
 				} );
-				console.log( settings );
+				if ( isDebug ) console.log( settings );
 				return posts[args[3]](save_response, settingsData.get(state), args[2], args[4], settings);
 			} );
 
