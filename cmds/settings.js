@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
-const {defaultSettings, wikiProjects} = require('../util/default.json');
+const {defaultSettings} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs();
 const Wiki = require('../util/wiki.js');
@@ -134,7 +134,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					var embed;
 					if ( !wikinew.isFandom() ) {
 						var notice = [];
-						if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
+						if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 							console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 							notice.push({
 								name: 'MediaWiki',

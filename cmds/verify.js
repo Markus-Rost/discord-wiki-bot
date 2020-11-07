@@ -15,7 +15,7 @@ var db = require('../util/database.js');
 function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	if ( !msg.channel.isGuild() ) return this.LINK(lang, msg, line, wiki);
 	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
-		if ( msg.isAdmin() || msg.isOwner() ) {
+		if ( msg.isAdmin() ) {
 			console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
 			msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
 		} else this.LINK(lang, msg, line, wiki);

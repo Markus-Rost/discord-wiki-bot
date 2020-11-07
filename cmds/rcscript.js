@@ -81,8 +81,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					return msg.replyMsg( wikiinvalid, {}, true );
 				}
 				wikinew.updateWiki(body.query.general);
-				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
-					console.log( '- This wiki is using ' + body.query.general.generator + '.' );
+				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', {}, true );
 				}
@@ -90,17 +89,17 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {}, true );
 				}
-				return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew.href], (blerror, row) => {
+				return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew.href], (blerror, block) => {
 					if ( blerror ) {
 						console.log( '- Error while getting the blocklist: ' + blerror );
 						if ( reaction ) reaction.removeEmoji();
 						msg.reactEmoji('error', true);
 						return blerror;
 					}
-					if ( row ) {
-						console.log( '- This wiki is blocked: ' + row.reason );
+					if ( block ) {
+						console.log( '- This wiki is blocked: ' + block.reason );
 						if ( reaction ) reaction.removeEmoji();
-						return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
+						return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {}, true );
 					}
 					var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
 					if ( wikinew.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
@@ -127,7 +126,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					function createWebhook(wikiid = null) {
 						msg.channel.createWebhook( ( body.query.allmessages[1]['*'] || 'Recent changes' ), {
 							avatar: msg.client.user.displayAvatarURL({format:'png',size:4096}),
-							reason: lang.get('rcscript.audit_reason', wikinew)
+							reason: lang.get('rcscript.audit_reason', wikinew.href)
 						} ).then( webhook => {
 							console.log( '- Webhook successfully created.' );
 							var webhook_lang = new Lang(( allLangs.map[lang.lang] || allLangs.map[body.query.general.lang] || defaultSettings.lang ), 'rcscript.webhook');
@@ -249,17 +248,17 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {}, true );
 					}
-					return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew.href], (blerror, row) => {
+					return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wikinew.href], (blerror, block) => {
 						if ( blerror ) {
 							console.log( '- Error while getting the blocklist: ' + blerror );
 							if ( reaction ) reaction.removeEmoji();
 							msg.reactEmoji('error', true);
 							return blerror;
 						}
-						if ( row ) {
-							console.log( '- This wiki is blocked: ' + row.reason );
+						if ( block ) {
+							console.log( '- This wiki is blocked: ' + block.reason );
 							if ( reaction ) reaction.removeEmoji();
-							return msg.replyMsg( ( row.reason ? lang.get('rcscript.blocked_reason', row.reason) : lang.get('rcscript.blocked') ), {}, true );
+							return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {}, true );
 						}
 						var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
 						if ( wikinew.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
@@ -474,7 +473,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				text += '\n' + lang.get('rcscript.display') + ' `' + display_types[selected_row.display] + '`';
 				text += '\n`' + cmd + ' display (' + display.join('|') + ')`\n';
 				if ( selected_row.rcid === -1 ) {
-					text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
+					text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled') + '`*';
 					text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
 				if ( new Wiki(selected_row.wiki).isFandom(false) ) {

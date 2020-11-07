@@ -38,10 +38,6 @@
 	},
 	"usergroups": {
 		"ignored": [
-			"hydra_admin",
-			"ads_manager",
-			"report_manager",
-			"promo_manager",
 			"fandom-editor",
 			"request-to-be-forgotten-admin",
 			"util",
@@ -73,10 +69,6 @@
 			"user"
 		],
 		"global": [
-			"global_bot",
-			"hydra_staff",
-			"wiki_manager",
-			"grasp",
 			"founder",
 			"global-bot",
 			"bot-global",

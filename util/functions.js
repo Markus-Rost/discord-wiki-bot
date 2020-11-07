@@ -140,15 +140,24 @@ function htmlToPlain(html) {
 			if ( tagname === 'sup' && attribs.class === 'reference' ) reference = true;
 			if ( tagname === 'br' ) {
 				text += '\n';
-				if ( listlevel > -1 ) text += '\u200b '.repeat(4*listlevel+3);
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel + 3);
 			}
+			if ( tagname === 'hr' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '─'.repeat(10) + '\n';
+			}
+			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
 			if ( tagname === 'ul' ) listlevel++;
-			if ( tagname === 'li' ) text += '\n' + '\u200b '.repeat(4*listlevel) + '• ';
+			if ( tagname === 'li' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				text += '• ';
+			}
 		},
 		ontext: (htmltext) => {
 			if ( !reference ) {
 				if ( listlevel > -1 ) {
-					htmltext = htmltext.replace( /\n/g, '\n' + '\u200b '.repeat(4*listlevel+3) );
+					htmltext = htmltext.replace( /\n/g, '\n' + '\u200b '.repeat(4 * listlevel + 3) );
 				}
 				text += escapeFormatting(htmltext);
 			}

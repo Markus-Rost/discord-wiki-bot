@@ -108,7 +108,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			args[2] = args.slice(2).join(' ').replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' );
 			if ( args[1] === 'channel' ) {
-				var channels = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).split('|').filter( channel => channel.length );
+				var channels = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).split('|').filter( channel => channel.length );
 				if ( channels.length > 10 ) return msg.replyMsg( lang.get('verification.channel_max'), {}, true );
 				channels = channels.map( channel => {
 					var new_channel = '';
@@ -131,7 +131,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} );
 			}
 			if ( args[1] === 'role' ) {
-				var roles = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).split('|').filter( role => role.length );
+				var roles = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).split('|').filter( role => role.length );
 				if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {}, true );
 				roles = roles.map( role => {
 					var new_role = '';
@@ -169,7 +169,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} );
 			}
 			if ( args[1] === 'usergroup' ) {
-				var usergroups = args[2].replace( /\s*>?\s*\|\s*<?\s*/g, '|' ).replace( / /g, '_' ).toLowerCase().split('|').filter( usergroup => usergroup.length );
+				var usergroups = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).replace( / /g, '_' ).toLowerCase().split('|').filter( usergroup => usergroup.length );
 				var and_or = '';
 				if ( /^\s*AND\s*\|/.test(args[2]) ) {
 					usergroups = usergroups.slice(1);
@@ -183,8 +183,14 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					if ( response.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
 						if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
 						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
+						return;
 					}
-					var groups = body.query.allmessages.filter( group => !['group-all','group-membership-link-with-expiry'].includes( group.name ) && !/\.(?:css|js)$/.test(group.name) ).map( group => {
+					var groups = body.query.allmessages.filter( group => {
+						if ( group.name === 'group-all' ) return false;
+						if ( group.name === 'group-membership-link-with-expiry' ) return false;
+						if ( group.name.endsWith( '.css' ) || group.name.endsWith( '.js' ) ) return false;
+						return true;
+					} ).map( group => {
 						return {
 							name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
 							content: group['*'].replace( / /g, '_' ).toLowerCase()
@@ -192,8 +198,11 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					} );
 					usergroups = usergroups.map( usergroup => {
 						if ( groups.some( group => group.name === usergroup ) ) return usergroup;
-						if ( groups.some( group => group.content === usergroup ) ) return groups.find( group => group.content === usergroup ).name;
+						if ( groups.some( group => group.content === usergroup ) ) {
+							return groups.find( group => group.content === usergroup ).name;
+						}
 						if ( /^admins?$/.test(usergroup) ) return 'sysop';
+						if ( usergroup === '*' ) return 'user';
 						return usergroup;
 					} );
 				}, error => {
@@ -242,10 +251,15 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( !hideNotice && rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
 				verification_text += '\n\n' + lang.get('verification.rename_no_permission', msg.guild.me.toString());
 			}
-			if ( !hideNotice && role.split('|').some( role => msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) ) {
+			if ( !hideNotice && role.split('|').some( role => {
+				return ( !msg.guild.roles.cache.has(role) || msg.guild.me.roles.highest.comparePositionTo(role) <= 0 );
+			} ) ) {
 				verification_text += '\n';
 				role.split('|').forEach( role => {
-					if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) {
+					if ( !msg.guild.roles.cache.has(role) ) {
+						verification_text += '\n' + lang.get('verification.role_deleted', '<@&' + role + '>');
+					}
+					else if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) {
 						verification_text += '\n' + lang.get('verification.role_too_high', '<@&' + role + '>', msg.guild.me.toString());
 					}
 				} );

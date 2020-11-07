@@ -17,9 +17,9 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		var guild = await msg.client.shard.broadcastEval( `if ( this.guilds.cache.has('${id}') ) {
 			var guild = this.guilds.cache.get('${id}');
 			( {
-				name: guild.name, id: guild.id,
-				memberCount: guild.memberCount, ownerID: guild.ownerID,
-				owner: guild.owner?.user?.tag, icon: guild.iconURL({dynamic:true}),
+				name: guild.name, id: guild.id, memberCount: guild.memberCount,
+				ownerID: guild.ownerID, owner: guild.owner?.user?.tag,
+				channel: guild.publicUpdatesChannelID, icon: guild.iconURL({dynamic:true}),
 				permissions: guild.me.permissions.missing(${defaultPermissions}),
 				pause: guild.id in global.pause, voice: guild.id in global.voice,
 				shardId: global.shardId
@@ -31,6 +31,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var guildsize = ['Size:', guild.memberCount + ' members'];
 			var guildshard = ['Shard:', guild.shardId];
 			var guildpermissions = ['Missing permissions:', ( guild.permissions.length ? '`' + guild.permissions.join('`, `') + '`' : '*none*' )];
+			var guildchannel = ['Updates channel:', '`' + guild.channel + '`'];
 			var guildsettings = ['Settings:', '*unknown*'];
 			
 			return db.all( 'SELECT channel, prefix, lang, wiki, inline FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], (dberror, rows) => {
@@ -47,6 +48,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				
 				if ( msg.showEmbed() ) {
 					var embed = new MessageEmbed().setThumbnail( guild.icon ).addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildsize[0], guildsize[1], true ).addField( guildshard[0], guildshard[1], true ).addField( guildpermissions[0], guildpermissions[1] );
+					if ( guild.channel ) embed.addField( guildchannel[0], guildchannel[1] );
 					var split = Util.splitMessage( guildsettings[1], {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
 					if ( split.length > 5 ) {
 						msg.sendChannel( '', {embed}, true );
@@ -58,7 +60,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 					}
 				}
 				else {
-					var text = guildname.join(' ') + '\n' + guildowner.join(' ') + '\n' + guildsize.join(' ') + '\n' + guildshard.join(' ') + '\n' + guildpermissions.join(' ') + '\n' + guildsettings.join(' ');
+					var text = guildname.join(' ') + '\n' + guildowner.join(' ') + '\n' + guildsize.join(' ') + '\n' + guildshard.join(' ') + '\n' + guildpermissions.join(' ') + ( guild.channel ? '\n' + guildchannel.join(' ') : '' ) + '\n' + guildsettings.join(' ');
 					msg.sendChannel( text, {split:{char:',\n',prepend:'```json\n',append:',\n```'}}, true );
 				}
 			} );

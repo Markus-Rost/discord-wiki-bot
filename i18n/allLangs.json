@@ -1,18 +1,18 @@
 {
 	"allLangs": {
 		"names": {
-			"en": "English",
-			"bn": "বাংলা",
-			"de": "Deutsch",
-			"fr": "Français",
-			"hi": "हिन्दी",
-			"nl": "Nederlands",
-			"pl": "Polski",
-			"pt-br": "Português do Brasil",
-			"ru": "Русский",
-			"tr": "Türkçe",
-			"zh-hans": "简体中文",
-			"zh-hant": "繁體中文"
+			"en": "English (en)",
+			"bn": "বাংলা (bn)",
+			"de": "Deutsch (de)",
+			"fr": "Français (fr)",
+			"hi": "हिन्दी (hi)",
+			"nl": "Nederlands (nl)",
+			"pl": "Polski (pl)",
+			"pt-br": "Português do Brasil (pt-br)",
+			"ru": "Русский (ru)",
+			"tr": "Türkçe (tr)",
+			"zh-hans": "简体中文 (zh-hans)",
+			"zh-hant": "繁體中文 (zh-hant)"
 		},
 		"map": {
 			"en": "en",
@@ -65,10 +65,10 @@
 	},
 	"RcGcDw": {
 		"names": {
-			"en": "English",
-			"de": "Deutsch",
-			"pl": "Polski",
-			"pt-br": "Português do Brasil"
+			"en": "English (en)",
+			"de": "Deutsch (de)",
+			"pl": "Polski (pl)",
+			"pt-br": "Português do Brasil (pt-br)"
 		},
 		"map": {
 			"en": "en",

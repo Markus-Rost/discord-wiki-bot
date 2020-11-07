@@ -16,6 +16,7 @@ class Lang {
 	 * @constructs Lang
 	 */
 	constructor(lang = defaultSettings.lang, namespace = '') {
+		if ( typeof lang !== 'string' ) lang = defaultSettings.lang;
 		this.lang = lang;
 		this.namespace = namespace;
 		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb.trim() );
@@ -120,7 +121,7 @@ class Lang {
 	/**
 	 * Get names for all languages.
 	 * @param {Boolean} isRcGcDw - Get the languages for RcGcDw?
-	 * @returns {Object}
+	 * @returns {{names: {en: 'English'}, map: {english: 'en'}}}
 	 * @static
 	 */
 	static allLangs(isRcGcDw = false) {
