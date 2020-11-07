@@ -33,6 +33,7 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	 */
 	function backdoor(cmdline) {
 		msg.evalUsed = true;
+		msg.onlyVerifyCommand = false;
 		newMessage(msg, lang, wiki, patreons[msg.guild.id], msg.noInline, cmdline);
 		return cmdline;
 	}
