@@ -489,7 +489,16 @@
             "dashboard": {
                 "channel": "• O webhook foi movido para esse canal.",
                 "disabled_feeds": "• As mudanças baseadas em feeds, como discussões, mural de mensagens e comentários de artigos, foram desabilitadas.",
-                "disabled_rc": "As mudanças da wiki foram desativadas."
+                "disabled_rc": "As mudanças da wiki foram desativadas.",
+                "display_compact": "• O modo de exibição foi alterado para compactar mensagens de texto com links embutidos.",
+                "display_diff": "• O modo de exibição foi alterado para incorporar mensagens com visualizações de imagens e editar diferenças.",
+                "display_embed": "• O modo de exibição foi alterado para incorporar mensagens com tags de edição e mudanças de categoria.",
+                "display_image": "• O modo de exibição foi alterado para incorporar mensagens com visualizações de imagens.",
+                "enabled_feeds": "• As mudanças baseadas em feeds, como discussões, mural de mensagens e comentários de artigos, foram habilitadas.",
+                "enabled_rc": "• As mudanças da wiki foram habilitadas.",
+                "lang": "• O idioma foi alterado para $1.",
+                "updated": "Este webhook de mudanças recentes foi atualizado:",
+                "wiki": "• A wiki foi alterada para $1."
             },
             "deleted": "Este webhook de mudanças recentes será excluído.",
             "disabled_feeds": "As mudanças baseadas em feeds, como discussões, murais de mensagens e comentários de artigos, foram desativadas para este webhook de mudanças recentes.",
@@ -532,6 +541,7 @@
         "currentinline": "Comandos em linha:",
         "currentlang": "Idioma:",
         "currentprefix": "Prefixo:",
+        "currentrole": "Função mínima:",
         "currentwiki": "Wiki padrão:",
         "dashboard": {
             "channel": "$1 atualizou as configurações para $2.",
@@ -680,6 +690,11 @@
         "channel_missing": "o canal fornecido não existe.",
         "current": "estas são as verificações disponíveis para este servidor:",
         "current_selected": "esta é a verificação `$1` para este servidor:",
+        "dashboard": {
+            "added": "$1 adicionou a verificação com id `$2`.",
+            "removed": "$1 removeu a verificação com id `$2`.",
+            "updated": "$1 atualizou a verificação com id `$2`."
+        },
         "delete_current": "Para excluir esta verificação:",
         "deleted": "a verificação foi excluída.",
         "disabled": "desativado",
@@ -698,6 +713,7 @@
         "rename": "Mudar apelido:",
         "rename_no_permission": "**$1 não tem a permissão de `Gerenciar apelidos` para substituir o apelido pelos nomes de usuário da wiki!**",
         "role": "Cargo:",
+        "role_deleted": "**A função $1 parece não existir mais! **",
         "role_managed": "o cargo fornecido não pode ser atribuído.",
         "role_max": "muitos cargos fornecidos.",
         "role_missing": "o cargo fornecido não existe.",
