@@ -18,7 +18,8 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 		if ( msg.isAdmin() ) {
 			console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
 			msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
-		} else this.LINK(lang, msg, line, wiki);
+		}
+		else if ( !msg.onlyVerifyCommand ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
 	

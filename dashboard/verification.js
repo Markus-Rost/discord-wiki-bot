@@ -35,6 +35,7 @@ const fieldset = {
  * @param {Number} settings.editcount
  * @param {Number} settings.accountage
  * @param {Boolean} settings.rename
+ * @param {String} [settings.defaultrole]
  * @param {Object[]} guildChannels - The guild channels
  * @param {String} guildChannels.id
  * @param {String} guildChannels.name
@@ -117,7 +118,10 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 		role.find(`#wb-settings-role .wb-settings-role-${settingsRoles[0]}`).attr('selected', '');
 	}
 	else {
-		role.find('.wb-settings-role-default').attr('selected', '');
+		if ( role.find(`.wb-settings-role-${settings.defaultrole}`).length ) {
+			role.find(`.wb-settings-role-${settings.defaultrole}`).attr('selected', '');
+		}
+		else role.find('.wb-settings-role-default').attr('selected', '');
 		role.find('button.addmore').attr('hidden', '');
 	}
 	fields.push(role);
@@ -169,7 +173,7 @@ function dashboard_verification(res, $, guild, args) {
 		res.write( body );
 		return res.end();
 	}
-	db.all( 'SELECT wiki, configid, verification.channel, role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
+	db.all( 'SELECT wiki, discord.role defaultrole, configid, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
 			$('#text .description').text('Failed to load the verifications!');
@@ -188,6 +192,7 @@ function dashboard_verification(res, $, guild, args) {
 			return res.end();
 		}
 		var wiki = rows[0].wiki;
+		var defaultrole = rows[0].defaultrole;
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
 		$('#text .description').text(`These are the verifications for "${guild.name}":`);
 		$('#channellist #verification').after(
@@ -211,7 +216,7 @@ function dashboard_verification(res, $, guild, args) {
 			$('.channel#channel-new').addClass('selected');
 			createForm($, 'New Verification', {
 				channel: '', role: '', usergroup: 'user',
-				editcount: 0, accountage: 0, rename: false
+				editcount: 0, accountage: 0, rename: false, defaultrole
 			}, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
 		}
 		else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
@@ -314,7 +319,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/?save=failed');
 		}
-		if ( settings.delete_settings ) return db.get( 'SELECT lang, verification.channel, role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(dberror, row) {
+		if ( settings.delete_settings ) return db.get( 'SELECT lang, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(dberror, row) {
 			if ( !dberror && !row?.channel ) return res(`/guild/${guild}/verification?save=success`);
 			db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [guild, type], function (delerror) {
 				if ( delerror ) {
@@ -440,7 +445,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 				} );
 			} );
 		} );
-		return db.get( 'SELECT wiki, lang, verification.channel, role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
+		return db.get( 'SELECT wiki, lang, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
 			if ( curerror ) {
 				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
 				return res(`/guild/${guild}/verification/${type}?save=failed`);

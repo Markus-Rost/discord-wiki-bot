@@ -230,7 +230,7 @@ client.on( 'message', msg => {
 			}
 			return;
 		}
-		db.get( 'SELECT wiki, lang, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
+		db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the wiki: ' + dberror );
 				if ( permissions.has('SEND_MESSAGES') ) {
@@ -239,7 +239,12 @@ client.on( 'message', msg => {
 				}
 				return dberror;
 			}
-			if ( row ) newMessage(msg, new Lang(row.lang), row.wiki, patreons[msg.guild.id], row.inline);
+			if ( row ) {
+				if ( msg.guild.roles.cache.has(row.role) && msg.guild.roles.cache.get(row.role).comparePositionTo(msg.member.roles.highest) > 0 && !msg.isAdmin() ) {
+					msg.onlyVerifyCommand = true;
+				}
+				newMessage(msg, new Lang(row.lang), row.wiki, patreons[msg.guild.id], row.inline);
+			}
 			else {
 				msg.defaultSettings = true;
 				newMessage(msg, new Lang());

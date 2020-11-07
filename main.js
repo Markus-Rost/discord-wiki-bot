@@ -106,14 +106,14 @@ if ( process.env.dashboard ) {
 											};
 										} ),
 										roles: guild.roles.cache.filter( role => {
-											return ( role.id !== guild.id && !role.managed );
+											return ( role.id !== guild.id );
 										} ).sort( (a, b) => {
 											return b.rawPosition - a.rawPosition;
 										} ).map( role => {
 											return {
 												id: role.id,
 												name: role.name,
-												lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 )
+												lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
 											};
 										} )
 									};

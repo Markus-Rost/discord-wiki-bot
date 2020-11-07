@@ -17,20 +17,21 @@ CREATE INDEX idx_patreons_patreon ON patreons (
 );
 
 CREATE TABLE discord (
+    main    TEXT    UNIQUE
+                    CHECK (main = guild),
     guild   TEXT    NOT NULL
                     REFERENCES discord (main) ON DELETE CASCADE,
     channel TEXT,
-    lang    TEXT    NOT NULL
-                    DEFAULT [${defaultSettings.lang}],
     wiki    TEXT    NOT NULL
                     DEFAULT [${defaultSettings.wiki}],
+    lang    TEXT    NOT NULL
+                    DEFAULT [${defaultSettings.lang}],
+    role    TEXT,
+    inline  INTEGER,
     prefix  TEXT    NOT NULL
                     DEFAULT [${process.env.prefix}],
     patreon TEXT    REFERENCES patreons (patreon) ON DELETE SET NULL,
     voice   INTEGER,
-    inline  INTEGER,
-    main    TEXT    UNIQUE
-                    CHECK (main = guild),
     UNIQUE (
         guild,
         channel

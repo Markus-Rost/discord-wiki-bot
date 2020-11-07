@@ -22,14 +22,17 @@ function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !allSites.length ) getAllSites.update();
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	
-	db.all( 'SELECT channel, lang, wiki, prefix, inline FROM discord WHERE guild = ? ORDER BY channel DESC', [msg.guild.id], (error, rows) => {
+	db.all( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = ? ORDER BY channel DESC', [msg.guild.id], (error, rows) => {
 		if ( error ) {
 			console.log( '- Error while getting the settings: ' + error );
 			msg.reactEmoji('error', true);
 			return error;
 		}
 		var guild = rows.find( row => !row.channel );
-		if ( !guild ) guild = Object.assign({prefix: process.env.prefix}, defaultSettings);
+		if ( !guild ) guild = Object.assign({
+			role: null, inline: null,
+			prefix: process.env.prefix
+		}, defaultSettings);
 		var prefix = guild.prefix;
 		var inlinepage = ( lang.localNames.page || 'page' );
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
@@ -173,8 +176,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 								if ( reaction ) reaction.removeEmoji();
 								return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, {embed}, true );
 							}
-							sql = 'INSERT INTO discord(wiki, guild, channel, lang, prefix) VALUES(?, ?, ?, ?, ?)';
-							sqlargs.push(guild.lang, guild.prefix);
+							sql = 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES(?, ?, ?, ?, ?, ?, ?)';
+							sqlargs.push(guild.lang, guild.role, guild.inline, guild.prefix);
 						}
 					}
 					return db.run( sql, sqlargs, function (dberror) {
@@ -195,7 +198,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						if ( channel || !rows.some( row => row.channel === msg.channel.id ) ) wiki = new Wiki(wikinew);
 						if ( reaction ) reaction.removeEmoji();
 						msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + wikinew + wikihelp, {embed}, true );
-						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
+						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
 						if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join(', ') + ')', channels, function (delerror) {
 							if ( delerror ) {
 								console.log( '- Error while removing the settings: ' + delerror );
@@ -237,8 +240,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					if ( channel.lang === allLangs.map[args[1]] ) {
 						return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang] + '`' + langhelp, {files:( msg.uploadFiles() ? [`./i18n/widgets/${channel.lang}.png`] : [] )}, true );
 					}
-					sql = 'INSERT INTO discord(lang, guild, channel, wiki, prefix) VALUES(?, ?, ?, ?, ?)';
-					sqlargs.push(guild.wiki, guild.prefix);
+					sql = 'INSERT INTO discord(lang, guild, channel, wiki, role, inline, prefix) VALUES(?, ?, ?, ?, ?, ?, ?)';
+					sqlargs.push(guild.wiki, guild.role, guild.inline, guild.prefix);
 				}
 			}
 			return db.run( sql, sqlargs, function (dberror) {
@@ -258,7 +261,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				if ( channel || !( msg.guild.id in patreons ) || !rows.some( row => row.channel === msg.channel.id ) ) lang = new Lang(allLangs.map[args[1]]);
 				msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./i18n/widgets/${allLangs.map[args[1]]}.png`] : [] )}, true );
-				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join(', ') + ')', channels, function (delerror) {
 					if ( delerror ) {
 						console.log( '- Error while removing the settings: ' + delerror );
@@ -322,8 +325,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				sql = 'UPDATE discord SET inline = ? WHERE guild = ? AND channel = ?';
 				sqlargs.push(msg.channel.id);
 				if ( !rows.includes( channel ) ) {
-					sql = 'INSERT INTO discord(inline, guild, channel, wiki, prefix) VALUES(?, ?, ?, ?, ?)';
-					sqlargs.push(guild.wiki, guild.prefix);
+					sql = 'INSERT INTO discord(inline, guild, channel, wiki, lang, role, prefix) VALUES(?, ?, ?, ?, ?, ?, ?)';
+					sqlargs.push(guild.wiki, guild.lang, guild.role, guild.prefix);
 				}
 			}
 			return db.run( sql, sqlargs, function (dberror) {
@@ -342,7 +345,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				toggle = 'inline ' + ( ( channel || guild ).inline ? 'disabled' : 'enabled' );
 				msg.replyMsg( lang.get('settings.' + toggle + '.' + prelang + 'changed') + '\n' + lang.get('settings.' + toggle + '.help', prefix + 'settings ' + prelang + ' toggle', inlinepage), {}, true );
-				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.inline === guild.inline ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join(', ') + ')', channels, function (delerror) {
 					if ( delerror ) {
 						console.log( '- Error while removing the settings: ' + delerror );

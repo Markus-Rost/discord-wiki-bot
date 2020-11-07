@@ -20,6 +20,8 @@ const fieldset = {
 		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
 	} ).join('\n')
 	+ '</select>',
+	role: '<label for="wb-settings-role">Minimal Role:</label>'
+	+ '<select id="wb-settings-role" name="role"></select>',
 	prefix: '<label for="wb-settings-prefix">Prefix:</label>'
 	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^\\s*[^\\s`\\\\]{1,100}\\s*$" required>'
 	+ '<br>'
@@ -40,14 +42,18 @@ const fieldset = {
  * @param {String} settings.channel
  * @param {String} settings.wiki
  * @param {String} settings.lang
+ * @param {String} settings.role
  * @param {Boolean} settings.inline
  * @param {String} settings.prefix
+ * @param {Object[]} guildRoles - The guild roles
+ * @param {String} guildRoles.id
+ * @param {String} guildRoles.name
  * @param {Object[]} guildChannels - The guild channels
  * @param {String} guildChannels.id
  * @param {String} guildChannels.name
  * @param {Number} guildChannels.userPermissions
  */
-function createForm($, header, settings, guildChannels) {
+function createForm($, header, settings, guildRoles, guildChannels = []) {
 	var readonly = ( process.env.READONLY ? true : false );
 	if ( settings.channel && guildChannels.userPermissions === 0 && guildChannels.name === 'UNKNOWN' ) {
 		readonly = true;
@@ -78,6 +84,16 @@ function createForm($, header, settings, guildChannels) {
 		let lang = $('<div>').append(fieldset.lang);
 		lang.find(`#wb-settings-lang-${settings.lang}`).attr('selected', '');
 		fields.push(lang);
+		let role = $('<div>').append(fieldset.role);
+		role.find('#wb-settings-role').append(
+			...guildRoles.map( guildRole => {
+				return $(`<option id="wb-settings-role-${guildRole.id}">`).val(guildRole.id).text(`${guildRole.id} – @${guildRole.name}`)
+			} ),
+			$(`<option id="wb-settings-role-everyone">`).val('').text(`@everyone`),
+		);
+		if ( settings.role ) role.find(`#wb-settings-role-${settings.role}`).attr('selected', '');
+		else role.find(`#wb-settings-role-everyone`).attr('selected', '');
+		fields.push(role);
 		let inline = $('<div>').append(fieldset.inline);
 		if ( !settings.inline ) inline.find('#wb-settings-inline').attr('checked', '');
 		fields.push(inline);
@@ -114,7 +130,7 @@ function createForm($, header, settings, guildChannels) {
  * @param {String[]} args - The url parts
  */
 function dashboard_settings(res, $, guild, args) {
-	db.all( 'SELECT channel, lang, wiki, prefix, inline, patreon FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], function(dberror, rows) {
+	db.all( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the settings: ' + dberror );
 			$('#text .description').text('Failed to load the settings!');
@@ -129,7 +145,7 @@ function dashboard_settings(res, $, guild, args) {
 			$('.channel#settings').addClass('selected');
 			createForm($, 'Server-wide Settings', Object.assign({
 				prefix: process.env.prefix
-			}, defaultSettings)).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			}, defaultSettings), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
 			res.write( body );
@@ -162,7 +178,7 @@ function dashboard_settings(res, $, guild, args) {
 			createForm($, 'New Channel Overwrite', Object.assign({}, rows.find( row => !row.channel ), {
 				patreon: isPatreon,
 				channel: 'new'
-			}), guild.channels.filter( channel => {
+			}), guild.roles, guild.channels.filter( channel => {
 				return ( hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
 			} )).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#text');
 		}
@@ -173,11 +189,11 @@ function dashboard_settings(res, $, guild, args) {
 				return row.channel === channel.id;
 			} ), {
 				patreon: isPatreon
-			}), [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
+			}), guild.roles, [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
 		}
 		else {
 			$('.channel#settings').addClass('selected');
-			createForm($, 'Server-wide Settings', rows.find( row => !row.channel )).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			createForm($, 'Server-wide Settings', rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});
@@ -196,6 +212,7 @@ function dashboard_settings(res, $, guild, args) {
  * @param {String} [settings.channel]
  * @param {String} settings.wiki
  * @param {String} [settings.lang]
+ * @param {String} [settings.role]
  * @param {String} [settings.inline]
  * @param {String} [settings.prefix]
  * @param {String} [settings.prefix_space]
@@ -215,6 +232,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 		}
 		if ( settings.channel && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
 			return ( channel.id === settings.channel );
+		} ) ) return res(`/guild/${guild}/settings/${type}?save=failed`);
+		if ( settings.role && !userSettings.guilds.isMember.get(guild).roles.some( role => {
+			return ( role.id === settings.role );
 		} ) ) return res(`/guild/${guild}/settings/${type}?save=failed`);
 	}
 	if ( settings.delete_settings && ( type === 'default' || type === 'new' ) ) {
@@ -247,7 +267,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 		if ( type === settings.channel && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
 			return res(`/guild/${guild}/settings/${type}?save=failed`);
 		}
-		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.patreon, main.lang mainwiki, main.lang maininline, old.wiki, old.lang, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND main.channel IS NULL', [type, guild], function(dberror, row) {
+		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.patreon, main.lang mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND main.channel IS NULL', [type, guild], function(dberror, row) {
 			db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
 				if ( delerror ) {
 					console.log( '- Dashboard: Error while removing the settings: ' + delerror );
@@ -265,6 +285,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( row.wiki !== row.mainwiki ) text += `\n${lang.get('settings.currentwiki')} <${row.wiki}>`;
 				if ( row.patreon ) {
 					if ( row.lang !== row.mainlang ) text += `\n${lang.get('settings.currentlang')} \`${allLangs.names[row.lang]}\``;
+					if ( row.role !== row.mainrole ) text += `\n${lang.get('settings.currentrole')} ` + ( row.role ? `<@&${row.role}>` : '@everyone' );
 					if ( row.inline !== row.maininline ) text += `\n${lang.get('settings.currentinline')} ${( row.inline ? '~~' : '' )}\`[[${inlinepage}]]\`${( row.inline ? '~~' : '' )}`;
 				}
 				text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
@@ -287,7 +308,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return fresponse;
 		} ).then( fresponse => {
 			return new Promise( function (resolve, reject) {
-				db.get( 'SELECT lang, wiki, prefix, inline FROM discord WHERE guild = ? AND channel IS NULL', [guild], function(error, row) {
+				db.get( 'SELECT lang, wiki, role, inline, prefix FROM discord WHERE guild = ? AND channel IS NULL', [guild], function(error, row) {
 					if ( error ) {
 						console.log( '- Dashboard: Error while getting the settings: ' + error );
 						reject();
@@ -350,7 +371,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					settings.prefix = settings.prefix.trim().toLowerCase();
 					if ( settings.prefix_space ) settings.prefix += ' ';
 				}
-				if ( !row ) return db.run( 'INSERT INTO discord(wiki, lang, inline, prefix, guild, main) VALUES(?, ?, ?, ?, ?, ?)', [wiki.href, settings.lang, ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild, guild], function(dberror) {
+				if ( !row ) return db.run( 'INSERT INTO discord(wiki, lang, role, inline, prefix, guild, main) VALUES(?, ?, ?, ?, ?, ?)', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild, guild], function(dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
 						return res(`/guild/${guild}/settings?save=failed`);
@@ -360,6 +381,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
 					text += '\n' + lang.get('settings.currentwiki') + ` <${wiki.href}>`;
 					text += '\n' + lang.get('settings.currentlang') + ` \`${allLangs.names[settings.lang]}\``;
+					text += '\n' + lang.get('settings.currentrole') + ( settings.role ? ` <@&${settings.role}>` : ' @everyone' );
 					if ( response.patreon ) {
 						text += '\n' + lang.get('settings.currentprefix') + ` \`${settings.prefix.replace( /\\/g, '\\$&' )}\``;
 					}
@@ -381,11 +403,14 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( response.patreon && row.prefix !== settings.prefix ) {
 					diff.push(lang.get('settings.currentprefix') + ` ~~\`${row.prefix.replace( /\\/g, '\\$&' )}\`~~ → \`${settings.prefix.replace( /\\/g, '\\$&' )}\``);
 				}
+				if ( row.role !== ( settings.role || null ) ) {
+					diff.push(lang.get('settings.currentrole') + ` ~~${( row.role ? `<@&${row.role}>` : '@everyone' )}~~ → ${( settings.role ? `<@&${settings.role}>` : '@everyone' )}`);
+				}
 				if ( row.inline !== ( settings.inline ? null : 1 ) ) {
 					let inlinepage = ( lang.localNames.page || 'page' );
 					diff.push(lang.get('settings.currentinline') + ` ${( row.inline ? '~~' : '' )}\`[[${inlinepage}]]\`${( row.inline ? '~~' : '' )} → ${( settings.inline ? '' : '~~' )}\`[[${inlinepage}]]\`${( settings.inline ? '' : '~~' )}`);
 				}
-				if ( diff.length ) return db.run( 'UPDATE discord SET wiki = ?, lang = ?, inline = ?, prefix = ? WHERE guild = ? AND channel IS NULL', [wiki.href, settings.lang, ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild], function(dberror) {
+				if ( diff.length ) return db.run( 'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ?, prefix = ? WHERE guild = ? AND channel IS NULL', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild], function(dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
 						return res(`/guild/${guild}/settings?save=failed`);
@@ -405,11 +430,11 @@ function update_settings(res, userSettings, guild, type, settings) {
 				return res(`/guild/${guild}/settings?save=success`);
 			}
 			if ( !row || !settings.channel || settings.prefix || 
-			( !response.patreon && ( settings.inline || settings.lang ) ) ) {
+			( !response.patreon && ( settings.lang || settings.role || settings.inline ) ) ) {
 				return res(`/guild/${guild}/settings?save=failed`);
 			}
 			if ( row.wiki === wiki.href && ( !response.patreon || 
-			( row.lang === settings.lang && row.inline === ( settings.inline ? null : 1 ) ) ) ) {
+			( row.lang === settings.lang && row.inline === ( settings.inline ? null : 1 ) && row.role === ( settings.role || null ) ) ) ) {
 				if ( type === 'new' ) {
 					return res(`/guild/${guild}/settings/${type}?save=failed`);
 				}
@@ -429,7 +454,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					} );
 				} );
 			}
-			return db.get( 'SELECT lang, wiki, inline FROM discord WHERE guild = ? AND channel = ?', [guild, settings.channel], function(curerror, channel) {
+			return db.get( 'SELECT lang, wiki, role, inline FROM discord WHERE guild = ? AND channel = ?', [guild, settings.channel], function(curerror, channel) {
 				if ( curerror ) {
 					console.log( '- Dashboard: Error while getting the channel settings: ' + curerror );
 					return res(`/guild/${guild}/settings/${type}?save=failed`);
@@ -442,6 +467,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( response.patreon && channel.lang !== settings.lang ) {
 					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs.names[channel.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
 				}
+				if ( response.patreon && channel.role !== ( settings.role || null ) ) {
+					diff.push(lang.get('settings.currentrole') + ` ~~${( channel.role ? `<@&${channel.role}>` : '@everyone' )}~~ → ${( settings.role ? `<@&${settings.role}>` : '@everyone' )}`);
+				}
 				if ( response.patreon && channel.inline !== ( settings.inline ? null : 1 ) ) {
 					let inlinepage = ( lang.localNames.page || 'page' );
 					diff.push(lang.get('settings.currentinline') + ` ${( channel.inline ? '~~' : '' )}\`[[${inlinepage}]]\`${( channel.inline ? '~~' : '' )} → ${( settings.inline ? '' : '~~' )}\`[[${inlinepage}]]\`${( settings.inline ? '' : '~~' )}`);
@@ -449,10 +477,10 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( !diff.length ) {
 					return res(`/guild/${guild}/settings/${settings.channel}?save=success`);
 				}
-				let sql = 'UPDATE discord SET wiki = ?, lang = ?, inline = ? WHERE guild = ? AND channel = ?';
-				let sqlargs = [wiki.href, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, settings.channel];
+				let sql = 'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ? WHERE guild = ? AND channel = ?';
+				let sqlargs = [wiki.href, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, settings.channel];
 				if ( channel === row ) {
-					sql = 'INSERT INTO discord(wiki, lang, inline, guild, channel, prefix) VALUES(?, ?, ?, ?, ?, ?)';
+					sql = 'INSERT INTO discord(wiki, lang, role, inline, guild, channel, prefix) VALUES(?, ?, ?, ?, ?, ?)';
 					sqlargs.push(row.prefix);
 				}
 				return db.run( sql, sqlargs, function(dberror) {

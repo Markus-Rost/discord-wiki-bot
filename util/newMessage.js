@@ -67,6 +67,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		var aliasInvoke = ( lang.aliases[invoke] || invoke );
 		var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
 		var pausecmd = ( msg.isAdmin() && pause[msg.guild.id] && aliasInvoke in pausecmdmap );
+		if ( msg.onlyVerifyCommand && !( aliasInvoke === 'verify' || pausecmd || ownercmd ) ) return;
 		if ( channel.isGuild() && pause[msg.guild.id] && !( pausecmd || ownercmd ) ) {
 			return console.log( msg.guild.id + ': Paused' );
 		}
@@ -98,6 +99,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		}
 		return cmdmap.LINK(lang, msg, line, wiki);
 	} );
+	if ( msg.onlyVerifyCommand ) return;
 	
 	if ( ( !channel.isGuild() || !pause[msg.guild.id] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 		var links = [];
