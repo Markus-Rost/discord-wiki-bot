@@ -101,18 +101,19 @@ if ( process.env.dashboard ) {
 											return {
 												id: channel.id,
 												name: channel.name,
-												permissions: member.permissionsIn(channel).bitfield
+												userPermissions: member.permissionsIn(channel).bitfield,
+												botPermissions: guild.me.permissionsIn(channel).bitfield
 											};
 										} ),
 										roles: guild.roles.cache.filter( role => {
-											return ( role.id !== guild.id );
+											return ( role.id !== guild.id && !role.managed );
 										} ).sort( (a, b) => {
 											return b.rawPosition - a.rawPosition;
 										} ).map( role => {
 											return {
 												id: role.id,
 												name: role.name,
-												lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
+												lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 )
 											};
 										} )
 									};
@@ -135,10 +136,28 @@ if ( process.env.dashboard ) {
 					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
 						let guild = this.guilds.cache.get('${message.data.guild}');
 						guild.members.fetch('${message.data.member}').then( member => {
-							return {
+							var response = {
 								patreon: guild.id in global.patreons,
-								permissions: member.permissions.bitfield
+								userPermissions: member.permissions.bitfield,
+								botPermissions: guild.me.permissions.bitfield
 							};
+							if ( '${( message.data.channel || '' )}' ) {
+								let channel = guild.channels.cache.get('${message.data.channel}');
+								if ( channel?.isText() ) {
+									response.userPermissions = channel.permissionsFor(member).bitfield;
+									response.botPermissions = channel.permissionsFor(guild.me).bitfield;
+								}
+								else response.message = 'noChannel';
+							}
+							if ( '${( message.data.newchannel || '' )}' ) {
+								let newchannel = guild.channels.cache.get('${message.data.newchannel}');
+								if ( newchannel?.isText() ) {
+									response.userPermissionsNew = newchannel.permissionsFor(member).bitfield;
+									response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield;
+								}
+								else response.message = 'noChannel';
+							}
+							return response;
 						}, error => {
 							return 'noMember';
 						} );
@@ -160,9 +179,54 @@ if ( process.env.dashboard ) {
 					if ( this.guilds.cache.has('${message.data.guild}') ) {
 						let channel = this.guilds.cache.get('${message.data.guild}').publicUpdatesChannel;
 						if ( channel ) channel.send( \`${message.data.text.replace( /`/g, '\\`' )}\`, {
-							embed: ${JSON.stringify(message.data.embed)}
-						} ).catch( error => console.log( '- Dashboard: ' + error.name + ': ' + error.message ) );
+							embed: ${JSON.stringify(message.data.embed)},
+							allowedMentions: {parse: []}, split: true
+						} ).catch( error => {} );
 					}`).catch( error => {
+						data.error = error.toString();
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				case 'createWebhook':
+					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
+						let channel = this.guilds.cache.get('${message.data.guild}').channels.cache.get('${message.data.channel}');
+						if ( channel ) channel.createWebhook( \`${message.data.name.replace( /`/g, '\\`' )}\`, {
+							avatar: this.user.displayAvatarURL({format:'png',size:4096}),
+							reason: \`${message.data.reason.replace( /`/g, '\\`' )}\`
+						} ).then( webhook => {
+							console.log( '- Dashboard: Webhook successfully created: ${message.data.guild}#${message.data.channel}' );
+							webhook.send( \`${message.data.text.replace( /`/g, '\\`' )}\` ).catch(log_error);
+							return webhook.id + '/' + webhook.token;
+						}, error => {
+							console.log( '- Dashboard: Error while creating the webhook: ' + error );
+						} );
+					}`).then( results => {
+						data.response = results.find( result => result );
+					}, error => {
+						data.error = error.toString();
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				case 'moveWebhook':
+					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
+						this.fetchWebhook(...'${message.data.webhook}'.split('/')).then( webhook => {
+							return webhook.edit( {
+								channel: '${message.data.channel}'
+							}, \`${message.data.reason.replace( /`/g, '\\`' )}\` ).then( newwebhook => {
+								console.log( '- Dashboard: Webhook successfully moved: ${message.data.guild}#${message.data.channel}' );
+								webhook.send( \`${message.data.text.replace( /`/g, '\\`' )}\` ).catch(log_error);
+								return true;
+							}, error => {
+								console.log( '- Dashboard: Error while moving the webhook: ' + error );
+							} );
+						}, error => {
+							console.log( '- Dashboard: Error while moving the webhook: ' + error );
+						} );
+					}`).then( results => {
+						data.response = results.find( result => result );
+					}, error => {
 						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );

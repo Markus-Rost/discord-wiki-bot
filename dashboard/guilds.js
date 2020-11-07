@@ -42,7 +42,7 @@ function dashboard_guilds(res, state, reqURL) {
 		}).prependTo('#text');
 	}
 	if ( reqURL.searchParams.get('save') === 'success' ) {
-		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}')`).insertBefore('script#indexjs');
+		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`).insertBefore('script#indexjs');
 		createNotice($, {
 			type: 'success',
 			title: 'Settings saved!',
@@ -50,15 +50,19 @@ function dashboard_guilds(res, state, reqURL) {
 		}).prependTo('#text');
 	}
 	if ( reqURL.searchParams.get('save') === 'failed' ) {
-		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}')`).insertBefore('script#indexjs');
-		let reason = '';
-		if ( reqURL.searchParams.has('reason') ) {
-			reason += '\nReason: ' + reqURL.searchParams.get('reason');
-		}
+		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`).insertBefore('script#indexjs');
 		createNotice($, {
 			type: 'error',
 			title: 'Save failed!',
-			text: 'The settings could not be saved, please try again.' + reason
+			text: 'The settings could not be saved, please try again.'
+		}).prependTo('#text');
+	}
+	if ( reqURL.searchParams.get('save') === 'partial' ) {
+		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`).insertBefore('script#indexjs');
+		createNotice($, {
+			type: 'info',
+			title: 'Settings partially saved!',
+			text: 'The settings have only been partially updated.'
 		}).prependTo('#text');
 	}
 	if ( process.env.READONLY ) {

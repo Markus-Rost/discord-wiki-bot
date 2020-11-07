@@ -3,7 +3,7 @@ const pages = require('./oauth.js');
 const dashboard = require('./guilds.js');
 const {db, settingsData} = require('./util.js');
 
-const isDebug = ( process.argv[2] === 'debug' );
+global.isDebug = ( process.argv[2] === 'debug' );
 
 const posts = {
 	settings: require('./settings.js').post,
@@ -73,7 +73,7 @@ const server = http.createServer((req, res) => {
 						}
 					}
 				} );
-				if ( isDebug ) console.log( settings );
+				if ( isDebug ) console.log( '- Dashboard:', req.url, settings, settingsData.get(state).user.id );
 				return posts[args[3]](save_response, settingsData.get(state), args[2], args[4], settings);
 			} );
 
@@ -113,12 +113,12 @@ const server = http.createServer((req, res) => {
 	res.setHeader('Content-Language', ['en']);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(( cookie.split('=')[1] || '' ));
+		return cookie.split('=')[0] === 'guild' && /^"\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?"$/.test(( cookie.split('=')[1] || '' ));
 	} )?.map( cookie => cookie.replace( /^guild="(\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; HttpOnly; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'wikibot';
+		return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)?)"$/.test(( cookie.split('=')[1] || '' ));
 	} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
 
 	if ( reqURL.pathname === '/login' ) {
@@ -160,7 +160,7 @@ const server = http.createServer((req, res) => {
 
 	if ( reqURL.pathname === '/refresh' ) {
 		let returnLocation = reqURL.searchParams.get('return');
-		if ( returnLocation && ( !returnLocation.startsWith('/') || returnLocation.startsWith('//') ) ) {
+		if ( !/^\/guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, state, returnLocation);

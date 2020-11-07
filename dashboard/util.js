@@ -1,4 +1,6 @@
 const got = require('got').extend( {
+	throwHttpErrors: false,
+	timeout: 5000,
 	headers: {
 		'User-Agent': 'Wiki-Bot/dashboard (Discord; ' + process.env.npm_package_name + ')'
 	},
@@ -48,7 +50,7 @@ const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
  * @property {String} userPermissions
  * @property {Boolean} [patreon]
  * @property {String} [botPermissions]
- * @property {{id: String, name: String, permissions: Number}[]} [channels]
+ * @property {{id: String, name: String, userPermissions: Number, botPermissions: Number}[]} [channels]
  * @property {{id: String, name: String, lower: Boolean}[]} [roles]
  */
 
@@ -126,7 +128,7 @@ const permissions = {
  * @param {String[]} permission - Name of the permission to check for
  * @returns {Boolean}
  */
-function hasPerm(all, ...permission) {
+function hasPerm(all = 0, ...permission) {
 	if ( (all & permissions.ADMINISTRATOR) === permissions.ADMINISTRATOR ) return true;
 	return permission.map( perm => {
 		let bit = permissions[perm];

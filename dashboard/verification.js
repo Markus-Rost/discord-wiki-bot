@@ -1,5 +1,6 @@
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
-const {db, sendMsg, hasPerm} = require('./util.js');
+const Lang = require('../util/i18n.js');
+const {got, db, sendMsg, hasPerm} = require('./util.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -9,7 +10,10 @@ const fieldset = {
 	+ '<select id="wb-settings-role" name="role" required></select>'
 	+ '<button type="button" id="wb-settings-role-more" class="addmore">Add more</button>',
 	usergroup: '<label for="wb-settings-usergroup">Wiki user group:</label>'
-	+ '<input type="text" id="wb-settings-usergroup" name="usergroup" required>',
+	+ '<input type="text" id="wb-settings-usergroup" name="usergroup">'
+	+ '<br>'
+	+ '<label for="wb-settings-usergroup-and">Require all user groups:</label>'
+	+ '<input type="checkbox" id="wb-settings-usergroup-and" name="usergroup_and">',
 	editcount: '<label for="wb-settings-editcount">Minimal edit count:</label>'
 	+ '<input type="number" id="wb-settings-editcount" name="editcount" min="0" required>',
 	accountage: '<label for="wb-settings-accountage">Account age (in days):</label>'
@@ -34,7 +38,7 @@ const fieldset = {
  * @param {Object[]} guildChannels - The guild channels
  * @param {String} guildChannels.id
  * @param {String} guildChannels.name
- * @param {Number} guildChannels.permissions
+ * @param {Number} guildChannels.userPermissions
  * @param {Object[]} guildRoles - The guild roles
  * @param {String} guildRoles.id
  * @param {String} guildRoles.name
@@ -42,16 +46,15 @@ const fieldset = {
  */
 function createForm($, header, settings, guildChannels, guildRoles) {
 	var readonly = ( process.env.READONLY ? true : false );
-	readonly = true;
 	var fields = [];
 	let channel = $('<div>').append(fieldset.channel);
 	channel.find('#wb-settings-channel').append(
 		$('<option class="wb-settings-channel-default defaultSelect" hidden>').val('').text('-- Select a Channel --'),
 		...guildChannels.filter( guildChannel => {
-			return ( hasPerm(guildChannel.permissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') || settings.channel.includes( '|' + guildChannel.id + '|' ) );
+			return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') || settings.channel.includes( '|' + guildChannel.id + '|' ) );
 		} ).map( guildChannel => {
 			var optionChannel = $(`<option class="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id);
-			if ( !hasPerm(guildChannel.permissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
+			if ( !hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') ) {
 				optionChannel.addClass('wb-settings-error');
 			}
 			return optionChannel.text(`${guildChannel.id} – #${guildChannel.name}`);
@@ -119,6 +122,10 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 	}
 	fields.push(role);
 	let usergroup = $('<div>').append(fieldset.usergroup);
+	if ( settings.usergroup.startsWith( 'AND|' ) ) {
+		settings.usergroup = settings.usergroup.substring(4);
+		usergroup.find('#wb-settings-usergroup-and').attr('checked', '');
+	}
 	usergroup.find('#wb-settings-usergroup').val(settings.usergroup.split('|').join(', '));
 	fields.push(usergroup);
 	let editcount = $('<div>').append(fieldset.editcount);
@@ -154,7 +161,15 @@ function createForm($, header, settings, guildChannels, guildRoles) {
  * @param {String[]} args - The url parts
  */
 function dashboard_verification(res, $, guild, args) {
-	db.all( 'SELECT configid, channel, role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? ORDER BY configid ASC', [guild.id], function(dberror, rows) {
+	if ( !hasPerm(guild.botPermissions, 'MANAGE_ROLES') ) {
+		$('#text .description').text('Wiki-Bot is missing the "MANAGE_ROLES" permission!\n\n*Insert explanation about verification here*');
+		$('.channel#verification').addClass('selected');
+		let body = $.html();
+		res.writeHead(200, {'Content-Length': body.length});
+		res.write( body );
+		return res.end();
+	}
+	db.all( 'SELECT wiki, configid, verification.channel, role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
 			$('#text .description').text('Failed to load the verifications!');
@@ -164,6 +179,16 @@ function dashboard_verification(res, $, guild, args) {
 			res.write( body );
 			return res.end();
 		}
+		if ( rows.length === 0 ) {
+			$('#text .description').text(`You need to set up the server first: /guild/${guild.id}/settings`);
+			$('.channel#verification').addClass('selected');
+			let body = $.html();
+			res.writeHead(200, {'Content-Length': body.length});
+			res.write( body );
+			return res.end();
+		}
+		var wiki = rows[0].wiki;
+		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
 		$('#text .description').text(`These are the verifications for "${guild.name}":`);
 		$('#channellist #verification').after(
 			...rows.map( row => {
@@ -189,14 +214,14 @@ function dashboard_verification(res, $, guild, args) {
 				editcount: 0, accountage: 0, rename: false
 			}, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
 		}
-		else if ( rows.some( row => row.configid == args[4] ) ) {
-			let row = rows.find( row => row.configid == args[4] );
+		else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
+			let row = rows.find( row => row.configid.toString() === args[4] );
 			$(`.channel#channel-${row.configid}`).addClass('selected');
 			createForm($, `Verification #${row.configid}`, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
 		}
 		else {
 			$('.channel#verification').addClass('selected');
-			$('#text .description').text(`*Insert explanation about verification here*`);
+			$('#text .description').text('*Insert explanation about verification here*');
 		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});
@@ -210,21 +235,332 @@ function dashboard_verification(res, $, guild, args) {
  * @param {Function} res - The server response
  * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
- * @param {String} type - The setting to change
+ * @param {String|Number} type - The setting to change
  * @param {Object} settings - The new settings
- * @param {String|String[]} settings.channel
- * @param {String|String[]} settings.role
- * @param {String|String[]} settings.usergroup
- * @param {String} settings.editcount
- * @param {String} settings.accountage
+ * @param {String[]} settings.channel
+ * @param {String[]} settings.role
+ * @param {String[]} [settings.usergroup]
+ * @param {String} [settings.usergroup_and]
+ * @param {Number} settings.editcount
+ * @param {Number} settings.accountage
  * @param {String} [settings.rename]
  * @param {String} [settings.save_settings]
  * @param {String} [settings.delete_settings]
  */
 function update_verification(res, userSettings, guild, type, settings) {
-	
-	console.log( settings );
-	return res(`/guild/${guild}/verification/${type}?save=failed`);
+	if ( type === 'default' ) {
+		return res(`/guild/${guild}/verification?save=failed`);
+	}
+	if ( !settings.save_settings === !settings.delete_settings ) {
+		return res(`/guild/${guild}/verification/${type}?save=failed`);
+	}
+	if ( settings.save_settings ) {
+		if ( !/^[\d|]+ [\d|]+$/.test(`${settings.channel} ${settings.role}`) ) {
+			return res(`/guild/${guild}/verification/${type}?save=failed`);
+		}
+		if ( !/^\d+ \d+$/.test(`${settings.editcount} ${settings.accountage}`) ) {
+			return res(`/guild/${guild}/verification/${type}?save=failed`);
+		}
+		settings.channel = settings.channel.split('|').filter( (channel, i, self) => {
+			return ( channel.length && self.indexOf(channel) === i );
+		} );
+		if ( !settings.channel.length || settings.channel.length > 10 ) {
+			return res(`/guild/${guild}/verification/${type}?save=failed`);
+		}
+		settings.role = settings.role.split('|').filter( (role, i, self) => {
+			return ( role.length && self.indexOf(role) === i );
+		} );
+		if ( !settings.role.length || settings.role.length > 10 ) {
+			return res(`/guild/${guild}/verification/${type}?save=failed`);
+		}
+		if ( !settings.usergroup ) settings.usergroup = 'user';
+		settings.usergroup = settings.usergroup.replace( /_/g, ' ' ).trim().toLowerCase();
+		settings.usergroup = settings.usergroup.split(/\s*[,|]\s*/).map( usergroup => {
+			if ( usergroup === '*' ) return 'user';
+			return usergroup.replace( / /g, '_' );
+		} ).filter( (usergroup, i, self) => {
+			return ( usergroup.length && self.indexOf(usergroup) === i );
+		} );
+		if ( !settings.usergroup.length ) settings.usergroup.push('user');
+		if ( settings.usergroup.length > 10 || settings.usergroup.some( usergroup => {
+			return ( usergroup.length > 100 );
+		} ) ) return res(`/guild/${guild}/verification/${type}?save=failed`);
+		settings.editcount = parseInt(settings.editcount, 10);
+		settings.accountage = parseInt(settings.accountage, 10);
+		if ( type === 'new' ) {
+			let curGuild = userSettings.guilds.isMember.get(guild);
+			if ( settings.channel.some( channel => {
+				return !curGuild.channels.some( guildChannel => guildChannel.id === channel );
+			} ) || settings.role.some( role => {
+				return !curGuild.roles.some( guildRole => guildRole.id === role && guildRole.lower );
+			} ) ) return res(`/guild/${guild}/verification/new?save=failed`);
+		}
+	}
+	if ( settings.delete_settings && type === 'new' ) {
+		return res(`/guild/${guild}/verification/new?save=failed`);
+	}
+	if ( type !== 'new' ) type = parseInt(type, 10);
+	sendMsg( {
+		type: 'getMember',
+		member: userSettings.user.id,
+		guild: guild
+	} ).then( response => {
+		if ( !response ) {
+			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+			userSettings.guilds.isMember.delete(guild);
+			return res(`/guild/${guild}?save=failed`);
+		}
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+			userSettings.guilds.isMember.delete(guild);
+			return res('/?save=failed');
+		}
+		if ( settings.delete_settings ) return db.get( 'SELECT lang, verification.channel, role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(dberror, row) {
+			if ( !dberror && !row?.channel ) return res(`/guild/${guild}/verification?save=success`);
+			db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [guild, type], function (delerror) {
+				if ( delerror ) {
+					console.log( '- Dashboard: Error while removing the verification: ' + delerror );
+					return res(`/guild/${guild}/verification/${type}?save=failed`);
+				}
+				console.log( `- Dashboard: Verification successfully removed: ${guild}#${type}` );
+				res(`/guild/${guild}/verification?save=success`);
+				if ( dberror ) {
+					console.log( '- Dashboard: Error while notifying the guild: ' + dberror );
+					return;
+				}
+				var lang = new Lang(row.lang);
+				var text = lang.get('verification.dashboard.removed', `<@${userSettings.user.id}>`, type);
+				if ( row ) {
+					text += '\n' + lang.get('verification.channel') + ' <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>';
+					text += '\n' + lang.get('verification.role') + ' <@&' + row.role.split('|').join('>, <@&') + '>';
+					text += '\n' + lang.get('verification.editcount') + ' `' + row.editcount + '`';
+					text += '\n' + lang.get('verification.usergroup') + ' `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` ' + lang.get('verification.and') + ' `') : row.usergroup.split('|').join('` ' + lang.get('verification.or') + ' `') ) + '`';
+					text += '\n' + lang.get('verification.accountage') + ' `' + row.accountage + '` ' + lang.get('verification.indays');
+					text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( row.rename ? 'enabled' : 'disabled')) + '`*';
+				}
+				text += `\n<${new URL(`/guild/${guild}/verification`, process.env.dashboard).href}>`;
+				sendMsg( {
+					type: 'notifyGuild', guild, text
+				} ).catch( error => {
+					console.log( '- Dashboard: Error while notifying the guild: ' + error );
+				} );
+			} );
+		} );
+		if ( !hasPerm(response.botPermissions, 'MANAGE_ROLES') ) {
+			return res(`/guild/${guild}/verification?save=failed`);
+		}
+		if ( type === 'new' ) return db.get( 'SELECT wiki, lang, GROUP_CONCAT(configid) count FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL', [guild], function(curerror, row) {
+			if ( curerror ) {
+				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
+				return res(`/guild/${guild}/verification/new?save=failed`);
+			}
+			if ( !row ) return res(`/guild/${guild}/verification?save=failed`);
+			if ( row.count === null ) row.count = [];
+			else row.count = row.count.split(',').map( configid => parseInt(configid, 10) );
+			if ( row.count.length >= verificationLimit[( response.patreon ? 'patreon' : 'default' )] ) {
+				return res(`/guild/${guild}/verification?save=failed`);
+			}
+			return got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
+				var body = gresponse.body;
+				if ( gresponse.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
+					console.log( '- Dashboard: ' + gresponse.statusCode + ': Error while getting the usergroups: ' + body?.error?.info );
+					return;
+				}
+				var groups = body.query.allmessages.filter( group => {
+					if ( group.name === 'group-all' ) return false;
+					if ( group.name === 'group-membership-link-with-expiry' ) return false;
+					if ( group.name.endsWith( '.css' ) || group.name.endsWith( '.js' ) ) return false;
+					return true;
+				} ).map( group => {
+					return {
+						name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
+						content: group['*'].replace( / /g, '_' ).toLowerCase()
+					};
+				} );
+				settings.usergroup = settings.usergroup.map( usergroup => {
+					if ( groups.some( group => group.name === usergroup ) ) return usergroup;
+					if ( groups.some( group => group.content === usergroup ) ) {
+						return groups.find( group => group.content === usergroup ).name;
+					}
+					if ( /^admins?$/.test(usergroup) ) return 'sysop';
+					if ( usergroup === '*' ) return 'user';
+					return usergroup;
+				} );
+			}, error => {
+				console.log( '- Dashboard: Error while getting the usergroups: ' + error );
+			} ).finally( () => {
+				if ( settings.usergroup_and ) settings.usergroup.unshift('AND');
+				var configid = 1;
+				for ( let i of row.count ) {
+					if ( configid === i ) configid++;
+					else break;
+				}
+				db.run( 'INSERT INTO verification(guild, configid, channel, role, editcount, usergroup, accountage, rename) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [guild, configid, '|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )], function (dberror) {
+					if ( dberror ) {
+						console.log( '- Dashboard: Error while adding the verification: ' + dberror );
+						return res(`/guild/${guild}/verification/new?save=failed`);
+					}
+					console.log( `- Dashboard: Verification successfully added: ${guild}#${configid}` );
+					res(`/guild/${guild}/verification/${configid}?save=success`);
+					var lang = new Lang(row.lang);
+					var text = lang.get('verification.dashboard.added', `<@${userSettings.user.id}>`, configid);
+					text += '\n' + lang.get('verification.channel') + ' <#' + settings.channel.join('>, <#') + '>';
+					text += '\n' + lang.get('verification.role') + ' <@&' + settings.role.join('>, <@&') + '>';
+					text += '\n' + lang.get('verification.editcount') + ' `' + settings.editcount + '`';
+					text += '\n' + lang.get('verification.usergroup') + ' `' + ( settings.usergroup_and ? settings.usergroup.slice(1).join('` ' + lang.get('verification.and') + ' `') : settings.usergroup.join('` ' + lang.get('verification.or') + ' `') ) + '`';
+					text += '\n' + lang.get('verification.accountage') + ' `' + settings.accountage + '` ' + lang.get('verification.indays');
+					text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled')) + '`*';
+					text += `\n<${new URL(`/guild/${guild}/verification/${configid}`, process.env.dashboard).href}>`;
+					if ( settings.rename && !hasPerm(response.botPermissions, 'MANAGE_NICKNAMES') ) {
+						text += '\n\n' + lang.get('verification.rename_no_permission', `<@${process.env.bot}>`);
+					}
+					if ( settings.role.some( role => {
+						return !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
+							return ( guildRole.id === role && guildRole.lower );
+						} );
+					} ) ) {
+						text += '\n';
+						settings.role.forEach( role => {
+							if ( !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
+								return ( guildRole.id === role );
+							} ) ) {
+								text += '\n' + lang.get('verification.role_deleted', `<@&${role}>`);
+							}
+							else if ( userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
+								return ( guildRole.id === role && !guildRole.lower );
+							} ) ) {
+								text += '\n' + lang.get('verification.role_too_high', `<@&${role}>`, `<@${process.env.bot}>`);
+							}
+						} );
+					}
+					sendMsg( {
+						type: 'notifyGuild', guild, text
+					} ).catch( error => {
+						console.log( '- Dashboard: Error while notifying the guild: ' + error );
+					} );
+				} );
+			} );
+		} );
+		return db.get( 'SELECT wiki, lang, verification.channel, role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
+			if ( curerror ) {
+				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
+				return res(`/guild/${guild}/verification/${type}?save=failed`);
+			}
+			if ( !row?.channel ) return res(`/guild/${guild}/verification?save=failed`);
+			row.channel = row.channel.split('|').filter( channel => channel.length );
+			var newChannel = settings.channel.filter( channel => !row.channel.includes( channel ) );
+			row.role = row.role.split('|');
+			var newRole = settings.role.filter( role => !row.role.includes( role ) );
+			row.usergroup = row.usergroup.split('|');
+			var newUsergroup = settings.usergroup.filter( group => !row.usergroup.includes( group ) );
+			if ( newChannel.length || newRole.length ) {
+				let curGuild = userSettings.guilds.isMember.get(guild);
+				if ( newChannel.some( channel => {
+					return !curGuild.channels.some( guildChannel => guildChannel.id === channel );
+				} ) || newRole.some( role => {
+					return !curGuild.roles.some( guildRole => guildRole.id === role && guildRole.lower );
+				} ) ) return res(`/guild/${guild}/verification/${type}?save=failed`);
+			}
+			( newUsergroup.length ? got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
+				var body = gresponse.body;
+				if ( gresponse.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
+					console.log( '- Dashboard: ' + gresponse.statusCode + ': Error while getting the usergroups: ' + body?.error?.info );
+					return;
+				}
+				var groups = body.query.allmessages.filter( group => {
+					if ( group.name === 'group-all' ) return false;
+					if ( group.name === 'group-membership-link-with-expiry' ) return false;
+					if ( group.name.endsWith( '.css' ) || group.name.endsWith( '.js' ) ) return false;
+					return true;
+				} ).map( group => {
+					return {
+						name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
+						content: group['*'].replace( / /g, '_' ).toLowerCase()
+					};
+				} );
+				settings.usergroup = settings.usergroup.map( usergroup => {
+					if ( groups.some( group => group.name === usergroup ) ) return usergroup;
+					if ( groups.some( group => group.content === usergroup ) ) {
+						return groups.find( group => group.content === usergroup ).name;
+					}
+					if ( /^admins?$/.test(usergroup) ) return 'sysop';
+					if ( usergroup === '*' ) return 'user';
+					return usergroup;
+				} );
+			}, error => {
+				console.log( '- Dashboard: Error while getting the usergroups: ' + error );
+			} ) : Promise.resolve() ).finally( () => {
+				if ( settings.usergroup_and ) settings.usergroup.unshift('AND');
+				var lang = new Lang(row.lang);
+				var diff = [];
+				if ( newChannel.length || row.channel.some( channel => {
+					return !settings.channel.includes( channel );
+				} ) ) {
+					diff.push(lang.get('verification.channel') + ` ~~<#${row.channel.join('>, <#')}>~~ → <#${settings.channel.join('>, <#')}>`);
+				}
+				if ( newRole.length || row.role.some( role => {
+					return !settings.role.includes( role );
+				} ) ) {
+					diff.push(lang.get('verification.role') + ` ~~<@&${row.role.join('>, <@&')}>~~ → <@&${settings.role.join('>, <@&')}>`);
+				}
+				if ( row.editcount !== settings.editcount ) {
+					diff.push(lang.get('verification.editcount') + ` ~~\`${row.editcount}\`~~ → \`${settings.editcount}\``);
+				}
+				if ( newUsergroup.length || row.usergroup.some( usergroup => {
+					return !settings.usergroup.includes( usergroup );
+				} ) ) {
+					diff.push(lang.get('verification.usergroup') + ' ~~`' + ( row.usergroup[0] === 'AND' ? row.usergroup.slice(1).join('` ' + lang.get('verification.and') + ' `') : row.usergroup.join('` ' + lang.get('verification.or') + ' `') ) + '`~~ → `' + ( settings.usergroup_and ? settings.usergroup.slice(1).join('` ' + lang.get('verification.and') + ' `') : settings.usergroup.join('` ' + lang.get('verification.or') + ' `') ) + '`');
+				}
+				if ( row.accountage !== settings.accountage ) {
+					diff.push(lang.get('verification.accountage') + ` ~~\`${row.accountage}\`~~ → \`${settings.accountage}\``);
+				}
+				if ( row.rename !== ( settings.rename ? 1 : 0 ) ) {
+					diff.push(lang.get('verification.rename') + ` ~~*\`${lang.get('verification.' + ( row.rename ? 'enabled' : 'disabled'))}\`*~~ → *\`${lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled'))}\`*`);
+				}
+				if ( !diff.length ) return res(`/guild/${guild}/verification/${type}?save=success`);
+				db.run( 'UPDATE verification SET channel = ?, role = ?, editcount = ?, usergroup = ?, accountage = ?, rename = ? WHERE guild = ? AND configid = ?', ['|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type], function (dberror) {
+					if ( dberror ) {
+						console.log( '- Dashboard: Error while updating the verification: ' + dberror );
+						return res(`/guild/${guild}/verification/${type}?save=failed`);
+					}
+					console.log( `- Dashboard: Verification successfully unpdated: ${guild}#${type}` );
+					res(`/guild/${guild}/verification/${type}?save=success`);
+					var text = lang.get('verification.dashboard.updated', `<@${userSettings.user.id}>`, type);
+					text += '\n' + diff.join('\n');
+					text += `\n<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
+					if ( settings.rename && !hasPerm(response.botPermissions, 'MANAGE_NICKNAMES') ) {
+						text += '\n\n' + lang.get('verification.rename_no_permission', `<@${process.env.bot}>`);
+					}
+					if ( settings.role.some( role => {
+						return !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
+							return ( guildRole.id === role && guildRole.lower );
+						} );
+					} ) ) {
+						text += '\n';
+						settings.role.forEach( role => {
+							if ( !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
+								return ( guildRole.id === role );
+							} ) ) {
+								text += '\n' + lang.get('verification.role_deleted', `<@&${role}>`);
+							}
+							else if ( userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
+								return ( guildRole.id === role && !guildRole.lower );
+							} ) ) {
+								text += '\n' + lang.get('verification.role_too_high', `<@&${role}>`, `<@${process.env.bot}>`);
+							}
+						} );
+					}
+					sendMsg( {
+						type: 'notifyGuild', guild, text
+					} ).catch( error => {
+						console.log( '- Dashboard: Error while notifying the guild: ' + error );
+					} );
+				} );
+			} );
+		} );
+	}, error => {
+		console.log( '- Dashboard: Error while getting the member: ' + error );
+		return res(`/guild/${guild}/verification/${type}?save=failed`);
+	} );
 }
 
 module.exports = {
