@@ -541,6 +541,7 @@
         "currentinline": "Inline-Befehle:",
         "currentlang": "Sprache:",
         "currentprefix": "Präfix:",
+        "currentrole": "Minimale Rolle:",
         "currentwiki": "Standard-Wiki:",
         "dashboard": {
             "channel": "$1 hat die Einstellungen für $2 geändert.",
