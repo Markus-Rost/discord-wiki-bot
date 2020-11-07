@@ -1,3 +1,4 @@
+const help_setup = require('../functions/helpsetup.js');
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
@@ -15,6 +16,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		else msg.reactEmoji('❌');
 		return;
 	}
+	if ( msg.defaultSettings ) return help_setup(lang, msg);
 	if ( !msg.guild.me.permissions.has('MANAGE_ROLES') ) {
 		console.log( msg.guild.id + ': Missing permissions - MANAGE_ROLES' );
 		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );

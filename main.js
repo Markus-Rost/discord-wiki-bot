@@ -1,8 +1,12 @@
 require('dotenv').config();
-const child_process = require('child_process');
 
 const isDebug = ( process.argv[2] === 'debug' );
 if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
+
+require('./database.js').then( () => {
+
+const child_process = require('child_process');
+
 const got = require('got').extend( {
 	throwHttpErrors: false,
 	timeout: 30000,
@@ -241,3 +245,7 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 		if ( typeof server !== 'undefined' ) server.kill();
 	}, timeout * 1000 ).unref();
 }
+
+}, () => {
+	process.exit(1);
+} )

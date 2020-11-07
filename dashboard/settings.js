@@ -326,7 +326,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					settings.prefix = settings.prefix.trim().toLowerCase();
 					if ( settings.prefix_space ) settings.prefix += ' ';
 				}
-				if ( !row ) return db.run( 'INSERT INTO discord(wiki, lang, inline, prefix, guild) VALUES(?, ?, ?, ?, ?)', [wiki.href, settings.lang, ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild], function(dberror) {
+				if ( !row ) return db.run( 'INSERT INTO discord(wiki, lang, inline, prefix, guild, main) VALUES(?, ?, ?, ?, ?, ?)', [wiki.href, settings.lang, ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild, guild], function(dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
 						return res(`/guild/${guild}/settings?save=failed`);

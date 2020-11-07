@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
-const {limit: {rcgcdw: rcgcdwLimit}, defaultSettings, wikiProjects} = require('../util/default.json');
+const help_setup = require('../functions/helpsetup.js');
+const {limit: {rcgcdw: rcgcdwLimit}, defaultSettings} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs(true);
 const Wiki = require('../util/wiki.js');
@@ -26,6 +27,7 @@ const display_types = [
 function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( args[0] === 'block' && msg.isOwner() ) return blocklist(msg, args.slice(1));
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
+	if ( msg.defaultSettings ) return help_setup(lang, msg);
 	
 	db.all( 'SELECT configid, webhook, wiki, lang, display, wikiid, rcid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
 		if ( dberror || !rows ) {

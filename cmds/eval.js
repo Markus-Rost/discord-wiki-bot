@@ -289,29 +289,13 @@ function removeSettings(msg) {
 					return error;
 				}
 				if ( guilds.length ) {
-					db.run( 'DELETE FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
+					db.run( 'DELETE FROM discord WHERE main IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
 						if ( dberror ) {
 							console.log( '- Error while removing the guilds: ' + dberror );
 							msg.replyMsg( 'I got an error while removing the guilds!', {}, true );
 							return dberror;
 						}
 						console.log( '- Guilds successfully removed.' );
-					} );
-					db.run( 'DELETE FROM verification WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
-						if ( dberror ) {
-							console.log( '- Error while removing the verifications: ' + dberror );
-							msg.replyMsg( 'I got an error while removing the verifications!', {}, true );
-							return dberror;
-						}
-						console.log( '- Verifications successfully removed.' );
-					} );
-					db.run( 'DELETE FROM rcgcdw WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ')', guilds, function (dberror) {
-						if ( dberror ) {
-							console.log( '- Error while removing the RcGcDw: ' + dberror );
-							msg.replyMsg( 'I got an error while removing the RcGcDw!', {}, true );
-							return dberror;
-						}
-						console.log( '- Verifications successfully removed.' );
 					} );
 				}
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( channel => '?' ).join(', ') + ')', channels, function (dberror) {

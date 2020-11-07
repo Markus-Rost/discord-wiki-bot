@@ -39,7 +39,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
 					return error;
 				}
-				if ( !this.changes ) return db.run( 'INSERT INTO discord(guild, patreon) VALUES(?, ?)', [args[1], msg.author.id], function (inserror) {
+				if ( !this.changes ) return db.run( 'INSERT INTO discord(main, guild, patreon) VALUES(?, ?, ?)', [args[1], args[1], msg.author.id], function (inserror) {
 					if ( inserror ) {
 						console.log( '- Error while adding the guild: ' + inserror );
 						msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );

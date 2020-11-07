@@ -280,7 +280,7 @@ client.on( 'guildDelete', guild => {
 		return;
 	}
 	console.log( '- I\'ve been removed from a server.' );
-	db.run( 'DELETE FROM discord WHERE guild = ?', [guild.id], function (dberror) {
+	db.run( 'DELETE FROM discord WHERE main = ?', [guild.id], function (dberror) {
 		if ( dberror ) {
 			console.log( '- Error while removing the settings: ' + dberror );
 			return dberror;
@@ -288,20 +288,6 @@ client.on( 'guildDelete', guild => {
 		if ( guild.id in patreons ) client.shard.broadcastEval( `delete global.patreons['${guild.id}']` );
 		if ( guild.id in voice ) delete voice[guild.id];
 		if ( this.changes ) console.log( '- Settings successfully removed.' );
-	} );
-	db.run( 'DELETE FROM verification WHERE guild = ?', [guild.id], function (dberror) {
-		if ( dberror ) {
-			console.log( '- Error while removing the verifications: ' + dberror );
-			return dberror;
-		}
-		if ( this.changes ) console.log( '- Verifications successfully removed.' );
-	} );
-	db.run( 'DELETE FROM rcgcdw WHERE guild = ?', [guild.id], function (dberror) {
-		if ( dberror ) {
-			console.log( '- Error while removing the RcGcDw: ' + dberror );
-			return dberror;
-		}
-		if ( this.changes ) console.log( '- RcGcDw successfully removed.' );
 	} );
 } );
 

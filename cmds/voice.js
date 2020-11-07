@@ -26,7 +26,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 					msg.replyMsg( lang.get('settings.save_failed'), {}, true );
 					return dberror;
 				}
-				if ( !this.changes ) return db.run( 'INSERT INTO discord(guild, voice) VALUES(?, ?)', [msg.guild.id, value], function (error) {
+				if ( !this.changes ) return db.run( 'INSERT INTO discord(main, guild, voice) VALUES(?, ?, ?)', [msg.guild.id, msg.guild.id, value], function (error) {
 					if ( error ) {
 						console.log( '- Error while adding the voice settings: ' + error );
 						msg.replyMsg( lang.get('settings.save_failed'), {}, true );
