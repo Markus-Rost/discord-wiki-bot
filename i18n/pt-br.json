@@ -437,6 +437,7 @@
         "all_inactive": "você não pode ter mudanças da wiki e alterações baseadas em feeds desativadas ao mesmo tempo.",
         "audit_reason": "Mudanças recentes no webhook para \"$1\"",
         "audit_reason_delete": "Removido o webhook das mudanças recentes",
+        "audit_reason_move": "Movido o webhook das mudanças recentes",
         "blocked": "essa wiki foi impedido de ser adicionado como um webhook de mudanças recentes!",
         "blocked_reason": "essa wiki foi bloqueada de ser adicionado como um webhook de mudanças recentes para `$1`!",
         "channel": "Canal:",
@@ -445,6 +446,11 @@
         "current_lang": "o idioma para este webhook é:",
         "current_selected": "estas são as mudanças recentes no webhook para este servidor:",
         "current_wiki": "a wiki para este webhook é:",
+        "dashboard": {
+            "added": "$1 adicionou o webhook das mudanças recentes com id `$2`.",
+            "removed": "$1 removeu o webhook das mudanças recentes com id `$2`.",
+            "updated": "$1 atualizou o webhook das mudanças recentes com id `$2`."
+        },
         "delete": "Exclua as mudanças recentes no webhook:",
         "deleted": "o webhook das mudanças recentes foi excluído.",
         "disabled": "desativado",
@@ -480,6 +486,11 @@
             "blocked": "Este webhook de mudanças recentes será excluído porque a wiki foi bloqueado!",
             "blocked_reason": "Este webhook de mudanças recentes será excluído porque a wiki foi bloqueado por `$1`!",
             "created": "Um webhook de mudanças recentes para $1 foi adicionado a este canal.",
+            "dashboard": {
+                "channel": "• O webhook foi movido para esse canal.",
+                "disabled_feeds": "• As mudanças baseadas em feeds, como discussões, mural de mensagens e comentários de artigos, foram desabilitadas.",
+                "disabled_rc": "As mudanças da wiki foram desativadas."
+            },
             "deleted": "Este webhook de mudanças recentes será excluído.",
             "disabled_feeds": "As mudanças baseadas em feeds, como discussões, murais de mensagens e comentários de artigos, foram desativadas para este webhook de mudanças recentes.",
             "disabled_rc": "As mudanças da wiki foram desativadas para este webhook de mudanças recentes.",
