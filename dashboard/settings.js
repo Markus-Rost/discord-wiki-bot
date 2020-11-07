@@ -124,7 +124,7 @@ function dashboard_settings(res, $, guild, args) {
 			res.write( body );
 			return res.end();
 		}
-		$('#text .description').text(`These are the settings for "${guild.name}":`);
+		$('#text .description').text(`These are the general settings for "${guild.name}": server.`);
 		if ( !rows.length ) {
 			$('.channel#settings').addClass('selected');
 			createForm($, 'Server-wide Settings', Object.assign({
@@ -418,7 +418,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						console.log( '- Dashboard: Error while removing the settings: ' + delerror );
 						return res(`/guild/${guild}/settings/${type}?save=failed`);
 					}
-					console.log( `- Dashboard: Settings successfully removed: ${guild}#${type}` );
+					console.log( `- Dashboard: Changes to ${guild}#${type} were saved successfully.` );
 					res(`/guild/${guild}/settings?save=success`);
 					var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 					text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
@@ -460,7 +460,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
 						return res(`/guild/${guild}/settings/${type}?save=failed`);
 					}
-					console.log( `- Dashboard: Settings successfully saved: ${guild}#${settings.channel}` );
+					console.log( `- Dashboard: Changes to ${guild}#${settings.channel} were saved successfully.`);
 					res(`/guild/${guild}/settings/${settings.channel}?save=success`);
 					var text = lang.get('settings.dashboard.channel', `<@${userSettings.user.id}>`, `<#${settings.channel}>`);
 					text += '\n' + diff.join('\n');
