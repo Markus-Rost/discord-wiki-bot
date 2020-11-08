@@ -3,7 +3,7 @@ const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../util/default
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs(true);
 const Wiki = require('../util/wiki.js');
-const {got, db, sendMsg, hasPerm} = require('./util.js');
+const {got, db, sendMsg, createNotice, hasPerm} = require('./util.js');
 
 const display_types = [
 	'compact',
@@ -16,13 +16,13 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" name="wiki" required>',
+	+ '<input type="url" id="wb-settings-wiki" name="wiki" required autocomplete="url">',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
 	//+ '<fieldset style="display: none;">'
 	//+ '<legend>Wiki search</legend>'
 	//+ '</fieldset>',
 	lang: '<label for="wb-settings-lang">Language:</label>'
-	+ '<select id="wb-settings-lang" name="lang" required>'
+	+ '<select id="wb-settings-lang" name="lang" required autocomplete="language">'
 	+ Object.keys(allLangs.names).map( lang => {
 		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
 	} ).join('\n')
@@ -87,7 +87,7 @@ function createForm($, header, settings, guildChannels) {
 			} )
 		);
 		if ( !settings.channel ) channel.find('#wb-settings-channel').prepend(
-			$(`<option id="wb-settings-channel-default" selected>`).val('').text('-- Select a Channel --')
+			$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text('-- Select a Channel --')
 		);
 	}
 	else if ( curChannel ) channel.find('#wb-settings-channel').append(
@@ -195,7 +195,7 @@ function dashboard_rcscript(res, $, guild, args) {
 					$('<div>').text('New webhook')
 				).attr('href', `/guild/${guild.id}/rcscript/new`) )
 			);
-			if ( args[4] === 'new' ) {
+			if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= rcgcdwLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 				$('.channel#channel-new').addClass('selected');
 				createForm($, 'New Recent Changes Webhook', {
 					wiki, lang: ( lang in allLangs.names ? lang : defaultSettings.lang ),
@@ -239,25 +239,25 @@ function dashboard_rcscript(res, $, guild, args) {
  */
 function update_rcscript(res, userSettings, guild, type, settings) {
 	if ( type === 'default' ) {
-		return res(`/guild/${guild}/rcscript?save=failed`);
+		return res(`/guild/${guild}/rcscript`, 'savefail');
 	}
 	if ( !settings.save_settings === !settings.delete_settings ) {
-		return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+		return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 	}
 	if ( settings.save_settings ) {
 		if ( !settings.wiki || !( settings.lang in allLangs.names ) ) {
-			return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		}
 		if ( !['0', '1', '2', '3'].includes( settings.display ) ) {
-			return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		}
 		settings.display = parseInt(settings.display, 10);
 		if ( type === 'new' && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
 			return ( channel.id === settings.channel );
-		} ) ) return res(`/guild/${guild}/rcscript/new?save=failed`);
+		} ) ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	}
 	if ( settings.delete_settings && type === 'new' ) {
-		return res(`/guild/${guild}/rcscript/new?save=failed`);
+		return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	}
 	if ( type === 'new' ) return sendMsg( {
 		type: 'getMember',
@@ -268,14 +268,14 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		if ( !response ) {
 			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
 			userSettings.guilds.isMember.delete(guild);
-			return res(`/guild/${guild}?save=failed`);
+			return res(`/guild/${guild}`, 'savefail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
 			userSettings.guilds.isMember.delete(guild);
-			return res('/?save=failed');
+			return res('/', 'savefail');
 		}
 		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'MANAGE_WEBHOOKS') || !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) {
-			return res(`/guild/${guild}/rcscript/new?save=failed`);
+			return res(`/guild/${guild}/rcscript/new`, 'savefail');
 		}
 		if ( settings.display > rcgcdwLimit.display && !response.patreon ) {
 			settings.display = rcgcdwLimit.display;
@@ -283,13 +283,13 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		return db.get( 'SELECT discord.lang, GROUP_CONCAT(configid) count FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL', [guild], function(curerror, row) {
 			if ( curerror ) {
 				console.log( '- Dashboard: Error while checking for RcGcDw: ' + curerror );
-				return res(`/guild/${guild}/rcscript/new?save=failed`);
+				return res(`/guild/${guild}/rcscript/new`, 'savefail');
 			}
-			if ( !row ) return res(`/guild/${guild}/rcscript?save=failed`);
+			if ( !row ) return res(`/guild/${guild}/rcscript`, 'savefail');
 			if ( row.count === null ) row.count = [];
 			else row.count = row.count.split(',').map( configid => parseInt(configid, 10) );
 			if ( row.count.length >= rcgcdwLimit[( response.patreon ? 'patreon' : 'default' )] ) {
-				return res(`/guild/${guild}/rcscript?save=failed`);
+				return res(`/guild/${guild}/rcscript`, 'savefail');
 			}
 			var wiki = Wiki.fromInput(settings.wiki);
 			return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( fresponse => {
@@ -305,21 +305,24 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				var body = fresponse.body;
 				if ( fresponse.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 					console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
-					return res(`/guild/${guild}/rcscript/new?save=failed`);
+					return res(`/guild/${guild}/rcscript/new`, 'savefail');
 				}
 				wiki.updateWiki(body.query.general);
 				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
-					return res(`/guild/${guild}/rcscript/new?save=failed`);
+					return res(`/guild/${guild}/rcscript/new`, 'mwversion', body.query.general.generator, body.query.general.sitename);
 				}
 				if ( body.query.allmessages[0]['*'] !== guild ) {
-					return res(`/guild/${guild}/rcscript/new?save=failed`);
+					return res(`/guild/${guild}/rcscript/new`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 				}
 				return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki.href], (blerror, block) => {
 					if ( blerror ) {
 						console.log( '- Dashboard: Error while getting the blocklist: ' + blerror );
-						return res(`/guild/${guild}/rcscript/new?save=failed`);
+						return res(`/guild/${guild}/rcscript/new`, 'savefail');
 					}
-					if ( block ) return res(`/guild/${guild}/rcscript/new?save=failed`);
+					if ( block ) {
+						console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
+						return res(`/guild/${guild}/rcscript/new`, 'wikiblocked', body.query.general.sitename, block.reason);
+					}
 					if ( settings.feeds ) {
 						let wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
 						if ( wiki.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
@@ -355,7 +358,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							reason: lang.get('rcscript.audit_reason', wiki.href),
 							text: webhook_lang.get('created', body.query.general.sitename) + ( wikiid && settings.feeds_only ? '' : `\n<${wiki.toLink(body.query.pages['-1'].title)}>` ) + ( wikiid ? `\n<${wiki.href}f>` : '' )
 						} ).then( webhook => {
-							if ( !webhook ) return res(`/guild/${guild}/rcscript/new?save=failed`);
+							if ( !webhook ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 							var configid = 1;
 							for ( let i of row.count ) {
 								if ( configid === i ) configid++;
@@ -364,10 +367,10 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid, rcid) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, wikiid, ( wikiid && settings.feeds_only ? -1 : null )], function (dberror) {
 								if ( dberror ) {
 									console.log( '- Dashboard: Error while adding the RcGcDw: ' + dberror );
-									return res(`/guild/${guild}/rcscript/new?save=failed`);
+									return res(`/guild/${guild}/rcscript/new`, 'savefail');
 								}
 								console.log( `- Dashboard: RcGcDw successfully added: ${guild}#${configid}` );
-								res(`/guild/${guild}/rcscript/${configid}?save=success`);
+								res(`/guild/${guild}/rcscript/${configid}`, 'save');
 								var text = lang.get('rcscript.dashboard.added', `<@${userSettings.user.id}>`, configid);
 								text += `\n${lang.get('rcscript.channel')} <#${settings.channel}>`;
 								text += `\n${lang.get('rcscript.wiki')} <${wiki.href}>`;
@@ -384,37 +387,37 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							} );
 						}, error => {
 							console.log( '- Dashboard: Error while creating the webhook: ' + error );
-							return res(`/guild/${guild}/rcscript/new?save=failed`);
+							return res(`/guild/${guild}/rcscript/new`, 'savefail');
 						} );
 					}
 				} );
 			}, error => {
 				console.log( '- Dashboard: Error while testing the wiki: ' + error );
-				return res(`/guild/${guild}/rcscript/new?save=failed`);
+				return res(`/guild/${guild}/rcscript/new`, 'savefail');
 			} );
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
-		return res(`/guild/${guild}/rcscript/new?save=failed`);
+		return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	} );
 	type = parseInt(type, 10);
 	return db.get( 'SELECT discord.lang mainlang, webhook, rcgcdw.wiki, rcgcdw.lang, display, wikiid, rcid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
 		if ( curerror ) {
 			console.log( '- Dashboard: Error while checking for RcGcDw: ' + curerror );
-			return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		}
-		if ( !row?.webhook ) return res(`/guild/${guild}/rcscript?save=failed`);
+		if ( !row?.webhook ) return res(`/guild/${guild}/rcscript`, 'savefail');
 		return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( wresponse => {
 			if ( !wresponse.body?.channel_id ) {
 				console.log( '- Dashboard: ' + wresponse.statusCode + ': Error while getting the webhook: ' + wresponse.body?.message );
-				return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+				return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 			}
 			row.channel = wresponse.body.channel_id;
 			var newChannel = false;
 			if ( settings.save_settings && row.channel !== settings.channel ) {
 				if ( !userSettings.guilds.isMember.get(guild).channels.some( channel => {
 					return ( channel.id === settings.channel );
-				} ) ) return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+				} ) ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				newChannel = true;
 			}
 			return sendMsg( {
@@ -427,26 +430,26 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( !response ) {
 					userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
 					userSettings.guilds.isMember.delete(guild);
-					return res(`/guild/${guild}?save=failed`);
+					return res(`/guild/${guild}`, 'savefail');
 				}
 				if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
 					userSettings.guilds.isMember.delete(guild);
-					return res('/?save=failed');
+					return res('/', 'savefail');
 				}
 				if ( response.message === 'noChannel' ) {
-					return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				}
 				if ( settings.delete_settings ) {
 					if ( !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) {
-						return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					}
 					return db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [row.webhook], function (delerror) {
 						if ( delerror ) {
 							console.log( '- Dashboard: Error while removing the RcGcDw: ' + delerror );
-							return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+							return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 						}
 						console.log( `- Dashboard: RcGcDw successfully removed: ${guild}#${type}` );
-						res(`/guild/${guild}/rcscript?save=success`);
+						res(`/guild/${guild}/rcscript`, 'save');
 						var lang = new Lang(row.mainlang);
 						var webhook_lang = new Lang(row.lang, 'rcscript.webhook');
 						got.post( 'https://discord.com/api/webhooks/' + row.webhook, {
@@ -494,16 +497,16 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				|| !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') 
 				|| !hasPerm(response.userPermissionsNew, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') 
 				|| !hasPerm(response.botPermissionsNew, 'MANAGE_WEBHOOKS') ) ) {
-					return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				}
-				var diff = false;
-				if ( newChannel ) diff = true;
-				if ( row.wiki !== settings.wiki ) diff = true;
-				if ( row.lang !== settings.lang ) diff = true;
-				if ( row.display !== settings.display ) diff = true;
-				if ( ( row.rcid !== -1 ) !== !( settings.feeds && settings.feeds_only ) ) diff = true;
-				if ( !row.wikiid !== !settings.feeds ) diff = true;
-				if ( !diff ) return res(`/guild/${guild}/rcscript/${type}?save=success`);
+				var hasDiff = false;
+				if ( newChannel ) hasDiff = true;
+				if ( row.wiki !== settings.wiki ) hasDiff = true;
+				if ( row.lang !== settings.lang ) hasDiff = true;
+				if ( row.display !== settings.display ) hasDiff = true;
+				if ( ( row.rcid !== -1 ) !== !( settings.feeds && settings.feeds_only ) ) hasDiff = true;
+				if ( !row.wikiid !== !settings.feeds ) hasDiff = true;
+				if ( !hasDiff ) return res(`/guild/${guild}/rcscript/${type}`, 'save');
 				var wiki = Wiki.fromInput(settings.wiki);
 				return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&format=json' ).then( fresponse => {
 					if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
@@ -518,21 +521,24 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					var body = fresponse.body;
 					if ( fresponse.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general ) {
 						console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
-						return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					}
 					wiki.updateWiki(body.query.general);
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
-						return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+						return res(`/guild/${guild}/rcscript/${type}`, 'mwversion', body.query.general.generator, body.query.general.sitename);
 					}
 					if ( row.wiki !== wiki.href && body.query.allmessages[0]['*'] !== guild ) {
-						return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+						return res(`/guild/${guild}/rcscript/${type}`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 					}
 					return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki.href], (blerror, block) => {
 						if ( blerror ) {
 							console.log( '- Dashboard: Error while getting the blocklist: ' + blerror );
-							return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+							return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 						}
-						if ( block ) return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+						if ( block ) {
+							console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
+							return res(`/guild/${guild}/rcscript/${type}`, 'wikiblocked', body.query.general.sitename, block.reason);
+						}
 						if ( settings.feeds ) {
 							let wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
 							if ( wiki.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
@@ -561,7 +567,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							db.run( 'UPDATE rcgcdw SET wiki = ?, lang = ?, display = ?, wikiid = ?, rcid = ? WHERE webhook = ?', [wiki.href, settings.lang, settings.display, wikiid, ( wikiid && settings.feeds_only ? -1 : null ), row.webhook], function (dberror) {
 								if ( dberror ) {
 									console.log( '- Dashboard: Error while updating the RcGcDw: ' + dberror );
-									return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+									return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 								}
 								console.log( `- Dashboard: RcGcDw successfully updated: ${guild}#${type}` );
 								var lang = new Lang(row.mainlang);
@@ -601,7 +607,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									text: webhook_lang.get('dashboard.updated') + '\n' + webhook_diff.join('\n')
 								} ).then( webhook => {
 									if ( !webhook ) return Promise.reject();
-									res(`/guild/${guild}/rcscript/${type}?save=success`);
+									res(`/guild/${guild}/rcscript/${type}`, 'save');
 									var text = lang.get('rcscript.dashboard.updated', `<@${userSettings.user.id}>`, type);
 									text += '\n' + diff.join('\n');
 									text += `\n<${new URL(`/guild/${guild}/rcscript/${type}`, process.env.dashboard).href}>`;
@@ -614,7 +620,12 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									console.log( '- Dashboard: Error while moving the webhook: ' + error );
 									return Promise.reject();
 								} ).catch( () => {
-									res(`/guild/${guild}/rcscript/${type}?save=partial`);
+									diff.shift();
+									webhook_diff.shift();
+									if ( !diff.length ) {
+										return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
+									}
+									res(`/guild/${guild}/rcscript/${type}`, 'movefail');
 									diff.shift();
 									webhook_diff.shift();
 									got.post( 'https://discord.com/api/webhooks/' + row.webhook, {
@@ -637,7 +648,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 										console.log( '- Dashboard: Error while notifying the guild: ' + error );
 									} );
 								} );
-								res(`/guild/${guild}/rcscript/${type}?save=success`);
+								res(`/guild/${guild}/rcscript/${type}`, 'save');
 								got.post( 'https://discord.com/api/webhooks/' + row.webhook, {
 									json: {
 										content: webhook_lang.get('dashboard.updated') + '\n' + webhook_diff.join('\n')
@@ -662,15 +673,15 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					} );
 				}, error => {
 					console.log( '- Dashboard: Error while testing the wiki: ' + error );
-					return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				} );
 			}, error => {
 				console.log( '- Dashboard: Error while getting the member: ' + error );
-				return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+				return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 			} );
 		}, error => {
 			console.log( '- Dashboard: Error while getting the webhook: ' + error );
-			return res(`/guild/${guild}/rcscript/${type}?save=failed`);
+			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		} );
 	} );
 }

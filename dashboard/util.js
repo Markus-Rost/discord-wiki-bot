@@ -90,19 +90,100 @@ function sendMsg(message) {
 
 /**
  * Create a red notice
- * @param {CheerioStatic} $ - The cheerio static
- * @param {Object} notice - The notices to create
- * @param {String} notice.title - The title of the notice
- * @param {String} notice.text - The text of the notice
- * @param {String} [notice.type] - The type of the notice
- * @returns {Cheerio}
+ * @param {import('cheerio')} $ - The cheerio static
+ * @param {String} notice - The notice to create
+ * @param {String[]} [args] - The arguments for the notice
+ * @returns {import('cheerio')}
  */
-function createNotice($, notice) {
-	var type = ( notice.type ? `notice-${notice.type}` : '' );
-	return $('<div class="notice">').append(
-		$('<b>').text(notice.title),
-		$('<div>').text(notice.text)
-	).addClass(type);
+function createNotice($, notice, args) {
+	if ( !notice ) return;
+	var type = 'info';
+	var title = $('<b>');
+	var text = $('<div>');
+	var note;
+	switch (notice) {
+		case 'unauthorized':
+			type = 'info';
+			title.text('Not logged in!');
+			text.text('Please login before you can change any settings.');
+			break;
+		case 'save':
+			type = 'success';
+			title.text('Settings saved!');
+			text.text('The settings have been updated successfully.');
+			break;
+		case 'logout':
+			type = 'success';
+			title.text('Successfully logged out!');
+			text.text('You have been successfully logged out. To change any settings you need to login again.');
+			break;
+		case 'refresh':
+			type = 'success';
+			title.text('Refresh successful!');
+			text.text('Your server list has been successfully refeshed.');
+			break;
+		case 'loginfail':
+			type = 'error';
+			title.text('Login failed!');
+			text.text('An error occurred while logging you in, please try again.');
+			break;
+		case 'sysmessage':
+			type = 'info';
+			title.text('System message does not match!');
+			text.text(`The page "MediaWiki:Custom-RcGcDw" need to be the server id "${args[0]}".`);
+			note = $('<a target="_blank">').text(args[1]).attr('href', args[1]);
+			break;
+		case 'mwversion':
+			type = 'error';
+			title.text('Outdated MediaWiki version!');
+			text.text(`Requires at least MediaWiki 1.30, found ${args[0]} on ${args[1]}.`);
+			note = $('<a target="_blank">').text('https://www.mediawiki.org/wiki/MediaWiki_1.30').attr('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
+			break;
+		case 'nochange':
+			type = 'info';
+			title.text('Save failed!');
+			text.text('The settings matched the current default settings.');
+			break;
+		case 'invalidusergroup':
+			type = 'error';
+			title.text('Invalid user group!');
+			text.text('The user group name was too long or you provided too many.');
+			break;
+		case 'wikiblocked':
+			type = 'error';
+			title.text('Wiki is blocked!');
+			text.text(`${args[0]} has been blocked from being added as a recent changes webhook.`);
+			if ( args[1] ) note = $('<div>').text(`Reason: ${args[1]}`);
+			break;
+		case 'savefail':
+			type = 'error';
+			title.text('Save failed!');
+			text.text('The settings could not be saved, please try again.');
+			break;
+		case 'movefail':
+			type = 'info';
+			title.text('Settings partially saved!');
+			text.text('The settings have only been partially updated.');
+			note = $('<div>').text('The webhook channel could not be changed!');
+			break;
+		case 'refreshfail':
+			type = 'error';
+			title.text('Refresh failed!');
+			text.text('You server list could not be refreshed, please try again.');
+			break;
+		case 'readonly':
+			type = 'info';
+			title.text('Read-only database!');
+			text.text('You can currently only view your settings, but not change them.');
+			break;
+		default:
+			return;
+	}
+	return $(`<div class="notice notice-${type}">`).append(
+		title,
+		text,
+		note
+	).appendTo('#text #notices');
 }
 
 const permissions = {

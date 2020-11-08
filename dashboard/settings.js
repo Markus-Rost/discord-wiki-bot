@@ -9,13 +9,13 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Default Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" name="wiki" required>',
+	+ '<input type="url" id="wb-settings-wiki" name="wiki" required autocomplete="url">',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
 	//+ '<fieldset style="display: none;">'
 	//+ '<legend>Wiki search</legend>'
 	//+ '</fieldset>',
 	lang: '<label for="wb-settings-lang">Language:</label>'
-	+ '<select id="wb-settings-lang" name="lang" required>'
+	+ '<select id="wb-settings-lang" name="lang" required autocomplete="language">'
 	+ Object.keys(allLangs.names).map( lang => {
 		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
 	} ).join('\n')
@@ -23,7 +23,7 @@ const fieldset = {
 	role: '<label for="wb-settings-role">Minimal Role:</label>'
 	+ '<select id="wb-settings-role" name="role"></select>',
 	prefix: '<label for="wb-settings-prefix">Prefix:</label>'
-	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^\\s*[^\\s`\\\\]{1,100}\\s*$" required>'
+	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^\\s*[^\\s`\\\\]{1,100}\\s*$" minlength="1" maxlength="100" required autocomplete="on">'
 	+ '<br>'
 	+ '<label for="wb-settings-prefix-space">Prefix ends with space:</label>'
 	+ '<input type="checkbox" id="wb-settings-prefix-space" name="prefix_space">',
@@ -73,7 +73,7 @@ function createForm($, header, settings, guildRoles, guildChannels = []) {
 			}
 		}
 		else channel.find('#wb-settings-channel').prepend(
-			$(`<option id="wb-settings-channel-default" selected>`).val('').text('-- Select a Channel --')
+			$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text('-- Select a Channel --')
 		);
 		fields.push(channel);
 	}
@@ -86,10 +86,11 @@ function createForm($, header, settings, guildRoles, guildChannels = []) {
 		fields.push(lang);
 		let role = $('<div>').append(fieldset.role);
 		role.find('#wb-settings-role').append(
+			$(`<option id="wb-settings-role-default">`).val('').text(`@everyone`),
 			...guildRoles.map( guildRole => {
 				return $(`<option id="wb-settings-role-${guildRole.id}">`).val(guildRole.id).text(`${guildRole.id} – @${guildRole.name}`)
 			} ),
-			$(`<option id="wb-settings-role-everyone">`).val('').text(`@everyone`),
+			$(`<option id="wb-settings-role-everyone">`).val('').text(`@everyone`)
 		);
 		if ( settings.role ) role.find(`#wb-settings-role-${settings.role}`).attr('selected', '');
 		else role.find(`#wb-settings-role-everyone`).attr('selected', '');
@@ -173,7 +174,7 @@ function dashboard_settings(res, $, guild, args) {
 				$('<div>').text('New channel overwrite')
 			).attr('href', `/guild/${guild.id}/settings/new`) )
 		);
-		if ( args[4] === 'new' ) {
+		if ( args[4] === 'new' && !process.env.READONLY ) {
 			$('.channel#channel-new').addClass('selected');
 			createForm($, 'New Channel Overwrite', Object.assign({}, rows.find( row => !row.channel ), {
 				patreon: isPatreon,
@@ -221,24 +222,24 @@ function dashboard_settings(res, $, guild, args) {
  */
 function update_settings(res, userSettings, guild, type, settings) {
 	if ( type !== 'default' && type !== 'new' && type !== settings.channel ) {
-		return res(`/guild/${guild}/settings?save=failed`);
+		return res(`/guild/${guild}/settings`, 'savefail');
 	}
 	if ( !settings.save_settings === !settings.delete_settings ) {
-		return res(`/guild/${guild}/settings/${type}?save=failed`);
+		return res(`/guild/${guild}/settings/${type}`, 'savefail');
 	}
 	if ( settings.save_settings ) {
 		if ( !settings.wiki || ( settings.lang && !( settings.lang in allLangs.names ) ) ) {
-			return res(`/guild/${guild}/settings/${type}?save=failed`);
+			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.channel && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
 			return ( channel.id === settings.channel );
-		} ) ) return res(`/guild/${guild}/settings/${type}?save=failed`);
+		} ) ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		if ( settings.role && !userSettings.guilds.isMember.get(guild).roles.some( role => {
 			return ( role.id === settings.role );
-		} ) ) return res(`/guild/${guild}/settings/${type}?save=failed`);
+		} ) ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
 	}
 	if ( settings.delete_settings && ( type === 'default' || type === 'new' ) ) {
-		return res(`/guild/${guild}/settings/${type}?save=failed`);
+		return res(`/guild/${guild}/settings/${type}`, 'savefail');
 	}
 	sendMsg( {
 		type: 'getMember',
@@ -249,32 +250,32 @@ function update_settings(res, userSettings, guild, type, settings) {
 		if ( !response ) {
 			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
 			userSettings.guilds.isMember.delete(guild);
-			return res(`/guild/${guild}?save=failed`);
+			return res(`/guild/${guild}`, 'savefail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
 			userSettings.guilds.isMember.delete(guild);
-			return res('/?save=failed');
+			return res('/', 'savefail');
 		}
 		if ( response.message === 'noChannel' ) return db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
 			if ( delerror ) {
 				console.log( '- Dashboard: Error while removing the settings: ' + delerror );
-				return res(`/guild/${guild}/settings?save=failed`);
+				return res(`/guild/${guild}/settings`, 'savefail');
 			}
 			console.log( `- Dashboard: Settings successfully removed: ${guild}#${type}` );
-			if ( settings.delete_settings ) return res(`/guild/${guild}/settings?save=success`);
-			else return res(`/guild/${guild}/settings?save=failed`);
+			if ( settings.delete_settings ) return res(`/guild/${guild}/settings`, 'save');
+			else return res(`/guild/${guild}/settings`, 'savefail');
 		} );
 		if ( type === settings.channel && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
-			return res(`/guild/${guild}/settings/${type}?save=failed`);
+			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.patreon, main.lang mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND main.channel IS NULL', [type, guild], function(dberror, row) {
 			db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
 				if ( delerror ) {
 					console.log( '- Dashboard: Error while removing the settings: ' + delerror );
-					return res(`/guild/${guild}/settings/${type}?save=failed`);
+					return res(`/guild/${guild}/settings/${type}`, 'savefail');
 				}
 				console.log( `- Dashboard: Settings successfully removed: ${guild}#${type}` );
-				res(`/guild/${guild}/settings?save=success`);
+				res(`/guild/${guild}/settings`, 'save');
 				if ( dberror ) {
 					console.log( '- Dashboard: Error while notifying the guild: ' + dberror );
 					return;
@@ -361,12 +362,12 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 			}
 			if ( type === 'default' ) {
-				if ( settings.channel || !settings.lang || ( !response.patreon && settings.prefix ) ) {
-					return res(`/guild/${guild}/settings?save=failed`);
+				if ( settings.channel || !settings.lang || ( !response.patreon !== !settings.prefix ) ) {
+					return res(`/guild/${guild}/settings`, 'savefail');
 				}
 				if ( settings.prefix ) {
 					if ( !/^\s*[^\s`\\]{1,100}\s*$/.test(settings.prefix) ) {
-						return res(`/guild/${guild}/settings?save=failed`);
+						return res(`/guild/${guild}/settings`, 'savefail');
 					}
 					settings.prefix = settings.prefix.trim().toLowerCase();
 					if ( settings.prefix_space ) settings.prefix += ' ';
@@ -374,10 +375,10 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( !row ) return db.run( 'INSERT INTO discord(wiki, lang, role, inline, prefix, guild, main) VALUES(?, ?, ?, ?, ?, ?)', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild, guild], function(dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
-						return res(`/guild/${guild}/settings?save=failed`);
+						return res(`/guild/${guild}/settings`, 'savefail');
 					}
 					console.log( '- Dashboard: Settings successfully saved: ' + guild );
-					res(`/guild/${guild}/settings?save=success`);
+					res(`/guild/${guild}/settings`, 'save');
 					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
 					text += '\n' + lang.get('settings.currentwiki') + ` <${wiki.href}>`;
 					text += '\n' + lang.get('settings.currentlang') + ` \`${allLangs.names[settings.lang]}\``;
@@ -413,10 +414,10 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( diff.length ) return db.run( 'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ?, prefix = ? WHERE guild = ? AND channel IS NULL', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild], function(dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
-						return res(`/guild/${guild}/settings?save=failed`);
+						return res(`/guild/${guild}/settings`, 'savefail');
 					}
 					console.log( '- Dashboard: Settings successfully saved: ' + guild );
-					res(`/guild/${guild}/settings?save=success`);
+					res(`/guild/${guild}/settings`, 'save');
 					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
 					text += '\n' + diff.join('\n');
 					text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
@@ -427,24 +428,24 @@ function update_settings(res, userSettings, guild, type, settings) {
 						console.log( '- Dashboard: Error while notifying the guild: ' + error );
 					} );
 				} );
-				return res(`/guild/${guild}/settings?save=success`);
+				return res(`/guild/${guild}/settings`, 'save');
 			}
 			if ( !row || !settings.channel || settings.prefix || 
 			( !response.patreon && ( settings.lang || settings.role || settings.inline ) ) ) {
-				return res(`/guild/${guild}/settings?save=failed`);
+				return res(`/guild/${guild}/settings`, 'savefail');
 			}
 			if ( row.wiki === wiki.href && ( !response.patreon || 
 			( row.lang === settings.lang && row.inline === ( settings.inline ? null : 1 ) && row.role === ( settings.role || null ) ) ) ) {
 				if ( type === 'new' ) {
-					return res(`/guild/${guild}/settings/${type}?save=failed`);
+					return res(`/guild/${guild}/settings/${type}`, 'nochange');
 				}
 				return db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
 					if ( delerror ) {
 						console.log( '- Dashboard: Error while removing the settings: ' + delerror );
-						return res(`/guild/${guild}/settings/${type}?save=failed`);
+						return res(`/guild/${guild}/settings/${type}`, 'savefail');
 					}
 					console.log( `- Dashboard: Settings successfully removed: ${guild}#${type}` );
-					res(`/guild/${guild}/settings?save=success`);
+					res(`/guild/${guild}/settings`, 'save');
 					var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 					text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
 					sendMsg( {
@@ -457,7 +458,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return db.get( 'SELECT lang, wiki, role, inline FROM discord WHERE guild = ? AND channel = ?', [guild, settings.channel], function(curerror, channel) {
 				if ( curerror ) {
 					console.log( '- Dashboard: Error while getting the channel settings: ' + curerror );
-					return res(`/guild/${guild}/settings/${type}?save=failed`);
+					return res(`/guild/${guild}/settings/${type}`, 'savefail');
 				}
 				if ( !channel ) channel = row;
 				var diff = [];
@@ -475,7 +476,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					diff.push(lang.get('settings.currentinline') + ` ${( channel.inline ? '~~' : '' )}\`[[${inlinepage}]]\`${( channel.inline ? '~~' : '' )} → ${( settings.inline ? '' : '~~' )}\`[[${inlinepage}]]\`${( settings.inline ? '' : '~~' )}`);
 				}
 				if ( !diff.length ) {
-					return res(`/guild/${guild}/settings/${settings.channel}?save=success`);
+					return res(`/guild/${guild}/settings/${settings.channel}`, 'save');
 				}
 				let sql = 'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ? WHERE guild = ? AND channel = ?';
 				let sqlargs = [wiki.href, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, settings.channel];
@@ -486,10 +487,10 @@ function update_settings(res, userSettings, guild, type, settings) {
 				return db.run( sql, sqlargs, function(dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
-						return res(`/guild/${guild}/settings/${type}?save=failed`);
+						return res(`/guild/${guild}/settings/${type}`, 'savefail');
 					}
 					console.log( `- Dashboard: Settings successfully saved: ${guild}#${settings.channel}` );
-					res(`/guild/${guild}/settings/${settings.channel}?save=success`);
+					res(`/guild/${guild}/settings/${settings.channel}`, 'save');
 					var text = lang.get('settings.dashboard.channel', `<@${userSettings.user.id}>`, `<#${settings.channel}>`);
 					text += '\n' + diff.join('\n');
 					text += `\n<${new URL(`/guild/${guild}/settings/${settings.channel}`, process.env.dashboard).href}>`;
@@ -501,11 +502,11 @@ function update_settings(res, userSettings, guild, type, settings) {
 				} );
 			} );
 		}, () => {
-			return res(`/guild/${guild}/settings/${type}?save=failed`);
+			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
-		return res(`/guild/${guild}/settings/${type}?save=failed`);
+		return res(`/guild/${guild}/settings/${type}`, 'savefail');
 	} );
 }
 

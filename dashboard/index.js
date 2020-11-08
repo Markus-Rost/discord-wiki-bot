@@ -79,9 +79,11 @@ const server = http.createServer((req, res) => {
 
 			/**
 			 * @param {String} [resURL]
+			 * @param {String} [action]
+			 * @param {String[]} [actionArgs]
 			 */
-			function save_response(resURL = '/') {
-				return dashboard(res, state, new URL(resURL, process.env.dashboard));
+			function save_response(resURL = '/', action, ...actionArgs) {
+				return dashboard(res, state, new URL(resURL, process.env.dashboard), action, actionArgs);
 			}
 		}
 	}
@@ -122,7 +124,9 @@ const server = http.createServer((req, res) => {
 	} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
 
 	if ( reqURL.pathname === '/login' ) {
-		return pages.login(res, state, reqURL.searchParams.get('action'));
+		let action = '';
+		if ( reqURL.searchParams.get('action') === 'failed' ) action = 'loginfail';
+		return pages.login(res, state, action);
 	}
 
 	if ( reqURL.pathname === '/logout' ) {
@@ -166,11 +170,10 @@ const server = http.createServer((req, res) => {
 		return pages.refresh(res, state, returnLocation);
 	}
 
-	if ( reqURL.pathname === '/' || reqURL.pathname.startsWith( '/guild/' ) ) {
-		return dashboard(res, state, reqURL);
-	}
-
-	return dashboard(res, state, new URL('/', process.env.dashboard));
+	let action = '';
+	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
+	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
+	return dashboard(res, state, reqURL, action);
 });
 
 server.listen(8080, 'localhost', () => {

@@ -29,36 +29,13 @@ function dashboard_login(res, state, action) {
 	var $ = cheerio.load(file);
 	let responseCode = 200;
 	let prompt = 'none';
-	if ( action === 'unauthorized' ) {
-		createNotice($, {
-			type: 'info',
-			title: 'Not logged in!',
-			text: 'Please login before you can change any settings.'
-		}).prependTo('#text');
-	}
-	if ( action === 'failed' ) {
-		responseCode = 400;
-		createNotice($, {
-			type: 'error',
-			title: 'Login failed!',
-			text: 'An error occurred while logging you in, please try again.'
-		}).prependTo('#text');
-	}
-	if ( action === 'logout' ) {
-		prompt = 'consent';
-		createNotice($, {
-			type: 'success',
-			title: 'Successfully logged out!',
-			text: 'You have been successfully logged out. To change any settings you need to login again.'
-		}).prependTo('#text');
-	}
-	if ( process.env.READONLY ) {
-		createNotice($, {
-			type: 'info',
-			title: 'Read-only database!',
-			text: 'You can currently only view your settings but not change them.'
-		}).prependTo('#text');
-	}
+	if ( process.env.READONLY ) createNotice($, 'readonly');
+	if ( action ) createNotice($, action);
+	if ( action === 'unauthorized' ) $('head').append(
+		$('<script>').text('history.replaceState(null, null, "/login");')
+	);
+	if ( action === 'logout' ) prompt = 'consent';
+	if ( action === 'loginfail' ) responseCode = 400;
 	state = crypto.randomBytes(16).toString("hex");
 	while ( settingsData.has(state) ) {
 		state = crypto.randomBytes(16).toString("hex");

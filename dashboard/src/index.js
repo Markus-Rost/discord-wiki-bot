@@ -8,16 +8,6 @@ if ( wiki ) wiki.addEventListener( 'input', function (event) {
 	}
 } );
 
-const prefix = document.getElementById('wb-settings-prefix');
-if ( prefix ) prefix.addEventListener( 'input', function (event) {
-	if ( prefix.validity.patternMismatch ) {
-		prefix.setCustomValidity('The prefix may not include spaces or code markdown!');
-	}
-	else {
-		prefix.setCustomValidity();
-	}
-} );
-
 const form = document.getElementById('wb-settings');
 if ( form ) form.addEventListener( 'submit', function (event) {
 	if ( prefix && prefix.validity.patternMismatch ) {
@@ -140,7 +130,7 @@ function toggleOption() {
 		return option.value;
 	} );
 	options.forEach( function(option) {
-		if ( selected.includes(option.value) && !option.selected ) {
+		if ( selected.includes( option.value ) && !option.selected ) {
 			option.setAttribute('disabled', '');
 		}
 		else if ( option.disabled ) option.removeAttribute('disabled');
@@ -178,3 +168,33 @@ if ( wiki ) {
 		} );
 	}
 }
+
+const usergroup = document.getElementById('wb-settings-usergroup');
+const multigroup = document.getElementById('wb-settings-usergroup-multiple');
+if ( usergroup && multigroup ) usergroup.addEventListener( 'input', function () {
+	if ( usergroup.value.includes( ',' ) || usergroup.value.includes( '|' ) ) {
+		multigroup.removeAttribute('style');
+		multigroup.removeAttribute('disabled');
+	}
+	else if ( !multigroup.hasAttribute('style') ) {
+		multigroup.setAttribute('style', 'visibility: hidden;');
+		multigroup.setAttribute('disabled', '');
+	}
+} );
+
+const prefix = document.getElementById('wb-settings-prefix');
+if ( prefix ) prefix.addEventListener( 'input', function () {
+	if ( prefix.validity.patternMismatch ) {
+		if ( prefix.value.trim().includes( ' ' ) ) {
+			prefix.setCustomValidity('The prefix may not include spaces!');
+		}
+		else if ( prefix.value.includes( '`' ) ) {
+			prefix.setCustomValidity('The prefix may not include code markdown!');
+		}
+		else if ( prefix.value.includes( '\\' ) ) {
+			prefix.setCustomValidity('The prefix may not include backslashes!');
+		}
+		else prefix.setCustomValidity('');
+	}
+	else prefix.setCustomValidity('');
+} );

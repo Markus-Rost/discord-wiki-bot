@@ -26,11 +26,13 @@ a[alt]:hover:after {
 	padding: 8px;
 }
 .description a,
-a .description {
+a .description,
+.notice a {
 	color: #00b0f4;
 }
 .description a:hover,
-a:hover .description {
+a:hover .description,
+.notice a:hover {
 	text-decoration: underline;
 }
 #text {
@@ -297,6 +299,9 @@ fieldset span {
 fieldset input[type="url"] {
 	min-width: 30%;
 	margin-right: 5px;
+}
+fieldset input:invalid {
+	background: #FFAAAA;
 }
 .wb-settings-display:first-of-type {
 	display: inline-block;

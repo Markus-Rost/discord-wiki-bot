@@ -22,56 +22,20 @@ const file = require('fs').readFileSync('./dashboard/index.html');
  * @param {import('http').ServerResponse} res - The server response
  * @param {String} state - The user state
  * @param {URL} reqURL - The used url
+ * @param {String} [action] - The action the user made
+ * @param {String[]} [actionArgs] - The arguments for the action
  */
-function dashboard_guilds(res, state, reqURL) {
+function dashboard_guilds(res, state, reqURL, action, actionArgs) {
+	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
+	args = reqURL.pathname.split('/');
 	var settings = settingsData.get(state);
 	var $ = cheerio.load(file);
-	if ( reqURL.searchParams.get('refresh') === 'success' ) {
-		createNotice($, {
-			type: 'success',
-			title: 'Refresh successful!',
-			text: 'Your server list has been successfully refeshed.'
-		}).prependTo('#text');
-	}
-	if ( reqURL.searchParams.get('refresh') === 'failed' ) {
-		createNotice($, {
-			type: 'error',
-			title: 'Refresh failed!',
-			text: 'You server list could not be refreshed, please try again.'
-		}).prependTo('#text');
-	}
-	if ( reqURL.searchParams.get('save') === 'success' ) {
-		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`).insertBefore('script#indexjs');
-		createNotice($, {
-			type: 'success',
-			title: 'Settings saved!',
-			text: 'The settings have been updated successfully.'
-		}).prependTo('#text');
-	}
-	if ( reqURL.searchParams.get('save') === 'failed' ) {
-		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`).insertBefore('script#indexjs');
-		createNotice($, {
-			type: 'error',
-			title: 'Save failed!',
-			text: 'The settings could not be saved, please try again.'
-		}).prependTo('#text');
-	}
-	if ( reqURL.searchParams.get('save') === 'partial' ) {
-		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`).insertBefore('script#indexjs');
-		createNotice($, {
-			type: 'info',
-			title: 'Settings partially saved!',
-			text: 'The settings have only been partially updated.'
-		}).prependTo('#text');
-	}
-	if ( process.env.READONLY ) {
-		createNotice($, {
-			type: 'info',
-			title: 'Read-only database!',
-			text: 'You can currently only view your settings but not change them.'
-		}).prependTo('#text');
-	}
+	if ( process.env.READONLY ) createNotice($, 'readonly');
+	if ( action ) createNotice($, action, actionArgs);
+	$('head').append(
+		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`)
+	);
 	$('#logout img').attr('src', settings.user.avatar);
 	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {

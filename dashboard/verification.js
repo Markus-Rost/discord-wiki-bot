@@ -1,6 +1,6 @@
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
-const {got, db, sendMsg, hasPerm} = require('./util.js');
+const {got, db, sendMsg, createNotice, hasPerm} = require('./util.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -10,10 +10,11 @@ const fieldset = {
 	+ '<select id="wb-settings-role" name="role" required></select>'
 	+ '<button type="button" id="wb-settings-role-more" class="addmore">Add more</button>',
 	usergroup: '<label for="wb-settings-usergroup">Wiki user group:</label>'
-	+ '<input type="text" id="wb-settings-usergroup" name="usergroup">'
-	+ '<br>'
+	+ '<input type="text" id="wb-settings-usergroup" name="usergroup" autocomplete="on">'
+	+ '<div id="wb-settings-usergroup-multiple">'
 	+ '<label for="wb-settings-usergroup-and">Require all user groups:</label>'
-	+ '<input type="checkbox" id="wb-settings-usergroup-and" name="usergroup_and">',
+	+ '<input type="checkbox" id="wb-settings-usergroup-and" name="usergroup_and">'
+	+ '</div>',
 	editcount: '<label for="wb-settings-editcount">Minimal edit count:</label>'
 	+ '<input type="number" id="wb-settings-editcount" name="editcount" min="0" required>',
 	accountage: '<label for="wb-settings-accountage">Account age (in days):</label>'
@@ -131,6 +132,9 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 		usergroup.find('#wb-settings-usergroup-and').attr('checked', '');
 	}
 	usergroup.find('#wb-settings-usergroup').val(settings.usergroup.split('|').join(', '));
+	if ( !settings.usergroup.includes( '|' ) ) {
+		usergroup.find('#wb-settings-usergroup-multiple').attr('style', 'display: none;');
+	}
 	fields.push(usergroup);
 	let editcount = $('<div>').append(fieldset.editcount);
 	editcount.find('#wb-settings-editcount').val(settings.editcount);
@@ -212,7 +216,7 @@ function dashboard_verification(res, $, guild, args) {
 				$('<div>').text('New verification')
 			).attr('href', `/guild/${guild.id}/verification/new`) )
 		);
-		if ( args[4] === 'new' ) {
+		if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= verificationLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 			$('.channel#channel-new').addClass('selected');
 			createForm($, 'New Verification', {
 				channel: '', role: '', usergroup: 'user',
@@ -254,29 +258,29 @@ function dashboard_verification(res, $, guild, args) {
  */
 function update_verification(res, userSettings, guild, type, settings) {
 	if ( type === 'default' ) {
-		return res(`/guild/${guild}/verification?save=failed`);
+		return res(`/guild/${guild}/verification`, 'savefail');
 	}
 	if ( !settings.save_settings === !settings.delete_settings ) {
-		return res(`/guild/${guild}/verification/${type}?save=failed`);
+		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
 	if ( settings.save_settings ) {
 		if ( !/^[\d|]+ [\d|]+$/.test(`${settings.channel} ${settings.role}`) ) {
-			return res(`/guild/${guild}/verification/${type}?save=failed`);
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		if ( !/^\d+ \d+$/.test(`${settings.editcount} ${settings.accountage}`) ) {
-			return res(`/guild/${guild}/verification/${type}?save=failed`);
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		settings.channel = settings.channel.split('|').filter( (channel, i, self) => {
 			return ( channel.length && self.indexOf(channel) === i );
 		} );
 		if ( !settings.channel.length || settings.channel.length > 10 ) {
-			return res(`/guild/${guild}/verification/${type}?save=failed`);
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		settings.role = settings.role.split('|').filter( (role, i, self) => {
 			return ( role.length && self.indexOf(role) === i );
 		} );
 		if ( !settings.role.length || settings.role.length > 10 ) {
-			return res(`/guild/${guild}/verification/${type}?save=failed`);
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		if ( !settings.usergroup ) settings.usergroup = 'user';
 		settings.usergroup = settings.usergroup.replace( /_/g, ' ' ).trim().toLowerCase();
@@ -289,7 +293,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 		if ( !settings.usergroup.length ) settings.usergroup.push('user');
 		if ( settings.usergroup.length > 10 || settings.usergroup.some( usergroup => {
 			return ( usergroup.length > 100 );
-		} ) ) return res(`/guild/${guild}/verification/${type}?save=failed`);
+		} ) ) return res(`/guild/${guild}/verification/${type}`, 'invalidusergroup');
 		settings.editcount = parseInt(settings.editcount, 10);
 		settings.accountage = parseInt(settings.accountage, 10);
 		if ( type === 'new' ) {
@@ -298,11 +302,11 @@ function update_verification(res, userSettings, guild, type, settings) {
 				return !curGuild.channels.some( guildChannel => guildChannel.id === channel );
 			} ) || settings.role.some( role => {
 				return !curGuild.roles.some( guildRole => guildRole.id === role && guildRole.lower );
-			} ) ) return res(`/guild/${guild}/verification/new?save=failed`);
+			} ) ) return res(`/guild/${guild}/verification/new`, 'savefail');
 		}
 	}
 	if ( settings.delete_settings && type === 'new' ) {
-		return res(`/guild/${guild}/verification/new?save=failed`);
+		return res(`/guild/${guild}/verification/new`, 'savefail');
 	}
 	if ( type !== 'new' ) type = parseInt(type, 10);
 	sendMsg( {
@@ -313,21 +317,21 @@ function update_verification(res, userSettings, guild, type, settings) {
 		if ( !response ) {
 			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
 			userSettings.guilds.isMember.delete(guild);
-			return res(`/guild/${guild}?save=failed`);
+			return res(`/guild/${guild}`, 'savefail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
 			userSettings.guilds.isMember.delete(guild);
-			return res('/?save=failed');
+			return res('/', 'savefail');
 		}
 		if ( settings.delete_settings ) return db.get( 'SELECT lang, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(dberror, row) {
-			if ( !dberror && !row?.channel ) return res(`/guild/${guild}/verification?save=success`);
+			if ( !dberror && !row?.channel ) return res(`/guild/${guild}/verification`, 'save');
 			db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [guild, type], function (delerror) {
 				if ( delerror ) {
 					console.log( '- Dashboard: Error while removing the verification: ' + delerror );
-					return res(`/guild/${guild}/verification/${type}?save=failed`);
+					return res(`/guild/${guild}/verification/${type}`, 'savefail');
 				}
 				console.log( `- Dashboard: Verification successfully removed: ${guild}#${type}` );
-				res(`/guild/${guild}/verification?save=success`);
+				res(`/guild/${guild}/verification`, 'save');
 				if ( dberror ) {
 					console.log( '- Dashboard: Error while notifying the guild: ' + dberror );
 					return;
@@ -351,18 +355,18 @@ function update_verification(res, userSettings, guild, type, settings) {
 			} );
 		} );
 		if ( !hasPerm(response.botPermissions, 'MANAGE_ROLES') ) {
-			return res(`/guild/${guild}/verification?save=failed`);
+			return res(`/guild/${guild}/verification`, 'savefail');
 		}
 		if ( type === 'new' ) return db.get( 'SELECT wiki, lang, GROUP_CONCAT(configid) count FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL', [guild], function(curerror, row) {
 			if ( curerror ) {
 				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
-				return res(`/guild/${guild}/verification/new?save=failed`);
+				return res(`/guild/${guild}/verification/new`, 'savefail');
 			}
-			if ( !row ) return res(`/guild/${guild}/verification?save=failed`);
+			if ( !row ) return res(`/guild/${guild}/verification`, 'savefail');
 			if ( row.count === null ) row.count = [];
 			else row.count = row.count.split(',').map( configid => parseInt(configid, 10) );
 			if ( row.count.length >= verificationLimit[( response.patreon ? 'patreon' : 'default' )] ) {
-				return res(`/guild/${guild}/verification?save=failed`);
+				return res(`/guild/${guild}/verification`, 'savefail');
 			}
 			return got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
 				var body = gresponse.body;
@@ -402,10 +406,10 @@ function update_verification(res, userSettings, guild, type, settings) {
 				db.run( 'INSERT INTO verification(guild, configid, channel, role, editcount, usergroup, accountage, rename) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [guild, configid, '|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )], function (dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while adding the verification: ' + dberror );
-						return res(`/guild/${guild}/verification/new?save=failed`);
+						return res(`/guild/${guild}/verification/new`, 'savefail');
 					}
 					console.log( `- Dashboard: Verification successfully added: ${guild}#${configid}` );
-					res(`/guild/${guild}/verification/${configid}?save=success`);
+					res(`/guild/${guild}/verification/${configid}`, 'save');
 					var lang = new Lang(row.lang);
 					var text = lang.get('verification.dashboard.added', `<@${userSettings.user.id}>`, configid);
 					text += '\n' + lang.get('verification.channel') + ' <#' + settings.channel.join('>, <#') + '>';
@@ -448,9 +452,9 @@ function update_verification(res, userSettings, guild, type, settings) {
 		return db.get( 'SELECT wiki, lang, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
 			if ( curerror ) {
 				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
-				return res(`/guild/${guild}/verification/${type}?save=failed`);
+				return res(`/guild/${guild}/verification/${type}`, 'savefail');
 			}
-			if ( !row?.channel ) return res(`/guild/${guild}/verification?save=failed`);
+			if ( !row?.channel ) return res(`/guild/${guild}/verification`, 'savefail');
 			row.channel = row.channel.split('|').filter( channel => channel.length );
 			var newChannel = settings.channel.filter( channel => !row.channel.includes( channel ) );
 			row.role = row.role.split('|');
@@ -463,7 +467,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					return !curGuild.channels.some( guildChannel => guildChannel.id === channel );
 				} ) || newRole.some( role => {
 					return !curGuild.roles.some( guildRole => guildRole.id === role && guildRole.lower );
-				} ) ) return res(`/guild/${guild}/verification/${type}?save=failed`);
+				} ) ) return res(`/guild/${guild}/verification/${type}`, 'savefail');
 			}
 			( newUsergroup.length ? got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
 				var body = gresponse.body;
@@ -521,14 +525,14 @@ function update_verification(res, userSettings, guild, type, settings) {
 				if ( row.rename !== ( settings.rename ? 1 : 0 ) ) {
 					diff.push(lang.get('verification.rename') + ` ~~*\`${lang.get('verification.' + ( row.rename ? 'enabled' : 'disabled'))}\`*~~ → *\`${lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled'))}\`*`);
 				}
-				if ( !diff.length ) return res(`/guild/${guild}/verification/${type}?save=success`);
+				if ( !diff.length ) return res(`/guild/${guild}/verification/${type}`, 'save');
 				db.run( 'UPDATE verification SET channel = ?, role = ?, editcount = ?, usergroup = ?, accountage = ?, rename = ? WHERE guild = ? AND configid = ?', ['|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type], function (dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while updating the verification: ' + dberror );
-						return res(`/guild/${guild}/verification/${type}?save=failed`);
+						return res(`/guild/${guild}/verification/${type}`, 'savefail');
 					}
-					console.log( `- Dashboard: Verification successfully unpdated: ${guild}#${type}` );
-					res(`/guild/${guild}/verification/${type}?save=success`);
+					console.log( `- Dashboard: Verification successfully updated: ${guild}#${type}` );
+					res(`/guild/${guild}/verification/${type}`, 'save');
 					var text = lang.get('verification.dashboard.updated', `<@${userSettings.user.id}>`, type);
 					text += '\n' + diff.join('\n');
 					text += `\n<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
@@ -564,7 +568,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
-		return res(`/guild/${guild}/verification/${type}?save=failed`);
+		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	} );
 }
 
