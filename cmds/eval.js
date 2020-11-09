@@ -46,9 +46,9 @@ async function cmd_eval(lang, msg, args, line, wiki) {
  */
 function database(sql, sqlargs = []) {
 	return new Promise( function (resolve, reject) {
-		db.all( sql, sqlargs, (error, rows) => {
-			if (error) reject(error);
-			resolve(rows);
+		db.all( sql, sqlargs, function(error, rows) {
+			if (error) reject.call(this, error);
+			else resolve.call(this, rows);
 		} );
 	} );
 }

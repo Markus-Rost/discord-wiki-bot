@@ -372,7 +372,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					settings.prefix = settings.prefix.trim().toLowerCase();
 					if ( settings.prefix_space ) settings.prefix += ' ';
 				}
-				if ( !row ) return db.run( 'INSERT INTO discord(wiki, lang, role, inline, prefix, guild, main) VALUES(?, ?, ?, ?, ?, ?)', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild, guild], function(dberror) {
+				if ( !row ) return db.run( 'INSERT INTO discord(wiki, lang, role, inline, prefix, guild, main) VALUES(?, ?, ?, ?, ?, ?, ?)', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild, guild], function(dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
 						return res(`/guild/${guild}/settings`, 'savefail');
@@ -395,39 +395,77 @@ function update_settings(res, userSettings, guild, type, settings) {
 					} );
 				} );
 				var diff = [];
+				var updateGuild = false;
+				var updateChannel = false;
 				if ( row.wiki !== wiki.href ) {
+					updateGuild = true;
 					diff.push(lang.get('settings.currentwiki') + ` ~~<${row.wiki}>~~ → <${wiki.href}>`);
 				}
 				if ( row.lang !== settings.lang ) {
+					updateChannel = true;
 					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs.names[row.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
 				}
 				if ( response.patreon && row.prefix !== settings.prefix ) {
+					updateChannel = true;
 					diff.push(lang.get('settings.currentprefix') + ` ~~\`${row.prefix.replace( /\\/g, '\\$&' )}\`~~ → \`${settings.prefix.replace( /\\/g, '\\$&' )}\``);
 				}
 				if ( row.role !== ( settings.role || null ) ) {
+					updateChannel = true;
 					diff.push(lang.get('settings.currentrole') + ` ~~${( row.role ? `<@&${row.role}>` : '@everyone' )}~~ → ${( settings.role ? `<@&${settings.role}>` : '@everyone' )}`);
 				}
 				if ( row.inline !== ( settings.inline ? null : 1 ) ) {
+					updateChannel = true;
 					let inlinepage = ( lang.localNames.page || 'page' );
 					diff.push(lang.get('settings.currentinline') + ` ${( row.inline ? '~~' : '' )}\`[[${inlinepage}]]\`${( row.inline ? '~~' : '' )} → ${( settings.inline ? '' : '~~' )}\`[[${inlinepage}]]\`${( settings.inline ? '' : '~~' )}`);
 				}
-				if ( diff.length ) return db.run( 'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ?, prefix = ? WHERE guild = ? AND channel IS NULL', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild], function(dberror) {
-					if ( dberror ) {
-						console.log( '- Dashboard: Error while saving the settings: ' + dberror );
-						return res(`/guild/${guild}/settings`, 'savefail');
+				if ( diff.length ) {
+					var dbupdate = [];
+					if ( response.patreon ) {
+						dbupdate.push([
+							'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ?, prefix = ? WHERE guild = ? AND channel IS NULL',
+							[wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild]
+						]);
 					}
-					console.log( '- Dashboard: Settings successfully saved: ' + guild );
-					res(`/guild/${guild}/settings`, 'save');
-					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
-					text += '\n' + diff.join('\n');
-					text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
-					sendMsg( {
-						type: 'notifyGuild', guild, text, embed,
-						prefix: settings.prefix, voice: settings.lang
-					} ).catch( error => {
-						console.log( '- Dashboard: Error while notifying the guild: ' + error );
+					else {
+						if ( updateGuild ) {
+							dbupdate.push([
+								'UPDATE discord SET wiki = ? WHERE guild = ? AND channel IS NULL',
+								[wiki.href, guild]
+							]);
+						}
+						if ( updateChannel ) {
+							dbupdate.push([
+								'UPDATE discord SET lang = ?, role = ?, inline = ?, prefix = ? WHERE guild = ?',
+								[settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild]
+							]);
+						}
+					}
+					return Promise.all([
+						...dbupdate.map( ([sql, sqlargs]) => {
+							return new Promise( function (resolve, reject) {
+								db.run( sql, sqlargs, function(error) {
+									if (error) reject(error);
+									else resolve(this);
+								} );
+							} );
+						} )
+					]).then( () => {
+						console.log( '- Dashboard: Settings successfully saved: ' + guild );
+						res(`/guild/${guild}/settings`, 'save');
+						var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
+						text += '\n' + diff.join('\n');
+						text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
+						sendMsg( {
+							type: 'notifyGuild', guild, text, embed,
+							prefix: settings.prefix, voice: settings.lang
+						} ).catch( error => {
+							console.log( '- Dashboard: Error while notifying the guild: ' + error );
+						} );
+					}, error => {
+						console.log( '- Dashboard: Error while saving the settings: ' + error );
+						return res(`/guild/${guild}/settings`, 'savefail');
 					} );
-				} );
+				}
 				return res(`/guild/${guild}/settings`, 'save');
 			}
 			if ( !row || !settings.channel || settings.prefix || 
@@ -481,7 +519,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				let sql = 'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ? WHERE guild = ? AND channel = ?';
 				let sqlargs = [wiki.href, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, settings.channel];
 				if ( channel === row ) {
-					sql = 'INSERT INTO discord(wiki, lang, role, inline, guild, channel, prefix) VALUES(?, ?, ?, ?, ?, ?)';
+					sql = 'INSERT INTO discord(wiki, lang, role, inline, guild, channel, prefix) VALUES(?, ?, ?, ?, ?, ?, ?)';
 					sqlargs.push(row.prefix);
 				}
 				return db.run( sql, sqlargs, function(dberror) {
