@@ -336,7 +336,7 @@
                     "desc": "Vou alterar a idade mínima da conta (em dias) para a verificação da wiki."
                 },
                 "add": {
-                    "cmd": "verification add <função>",
+                    "cmd": "verification add <cargo>",
                     "desc": "Vou adicionar uma nova verificação da wiki. Aceita uma lista separada com `|`."
                 },
                 "channel": {
@@ -360,8 +360,8 @@
                     "desc": "Vou alterar se o apelido do Discord dos usuários deve ser alterado para o nome de usuário da wiki para a verificação da wiki."
                 },
                 "role": {
-                    "cmd": "verification <id> role <nova função>",
-                    "desc": "Vou mudar o papel da verificação do wiki. Aceita uma `|` lista separada."
+                    "cmd": "verification <id> role <novo cargo>",
+                    "desc": "Vou mudar o cargo para a verificação da wiki. Aceita uma `|` lista separada."
                 },
                 "usergroup": {
                     "cmd": "verification <id> usergroup <novo grupo de usuários>",
@@ -370,11 +370,11 @@
             },
             "verify": {
                 "cmd": "verify <nome de usuário da wiki>",
-                "desc": "Use este comando para verificar sua conta do Discord com a sua conta wiki e obter funções correspondentes à sua conta na wiki."
+                "desc": "Use este comando para verificar sua conta do Discord com a sua conta wiki e obter cargos correspondentes à sua conta na wiki."
             },
             "voice": {
                 "cmd": "voice",
-                "desc": "Eu tento dar a todos em um canal de voz um papel específico."
+                "desc": "Eu tento dar a todos em um canal de voz um cargo específico."
             },
             "wikia": {
                 "cmd": "??<wiki> <termo de pesquisa>",
@@ -541,7 +541,7 @@
         "currentinline": "Comandos em linha:",
         "currentlang": "Idioma:",
         "currentprefix": "Prefixo:",
-        "currentrole": "Função mínima:",
+        "currentrole": "Cargo mínimo:",
         "currentwiki": "Wiki padrão:",
         "dashboard": {
             "channel": "$1 atualizou as configurações para $2.",
@@ -706,18 +706,18 @@
         "new_accountage": "<nova idade da conta>",
         "new_channel": "<novo canal>",
         "new_editcount": "<nova contagem de edições>",
-        "new_role": "<nova função>",
+        "new_role": "<novo cargo>",
         "new_usergroup": "<novo grupo de usuários>",
         "no_role": "por favor forneça um cargo para a nova verificação.",
         "or": "ou",
         "rename": "Mudar apelido:",
         "rename_no_permission": "**$1 não tem a permissão de `Gerenciar apelidos` para substituir o apelido pelos nomes de usuário da wiki!**",
         "role": "Cargo:",
-        "role_deleted": "**A função $1 parece não existir mais! **",
+        "role_deleted": "**O cargo $1 parece não existir mais! **",
         "role_managed": "o cargo fornecido não pode ser atribuído.",
         "role_max": "muitos cargos fornecidos.",
         "role_missing": "o cargo fornecido não existe.",
-        "role_too_high": "**O cargo $1 é muito alto para o $2 atribuí-la!**",
+        "role_too_high": "**O cargo $1 é muito alto para o $2 atribuí-lo!**",
         "save_failed": "infelizmente a verificação não pôde ser salva, tente novamente mais tarde.",
         "toggle": "(alternar)",
         "updated": "a verificação foi atualizada:",
@@ -764,12 +764,12 @@
     "voice": {
         "channel": "Canal de voz",
         "disable": "Use `$1` desativar esta função.",
-        "disabled": "você desabilitou a função para adicionar funções aos canais de voz.",
+        "disabled": "você desabilitou a função para adicionar cargos aos canais de voz.",
         "enable": "Use `$1` para habilitar esta função.",
-        "enabled": "você ativou a função para adicionar funções aos canais de voz.",
+        "enabled": "você ativou a função para adicionar cargos aos canais de voz.",
         "join": "$1 juntou-se ao canal de voz \"$2\".",
         "left": "$1 deixou o canal de voz \"$2\".",
         "name": "nome do canal de voz",
-        "text": "Eu tento dar a todos em um canal de voz um papel específico:"
+        "text": "Eu tento dar a todos em um canal de voz um cargo específico:"
     }
 }
