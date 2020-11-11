@@ -233,6 +233,16 @@
 			"/help",
 			"/help <command>"
 		],
+		"item": [
+			"/item block <pos> <slot> copy block <pos> <slot> [<modifier>]",
+			"/item block <pos> <slot> copy entity <targets> <slot> [<modifier>]",
+			"/item block <pos> <slot> modify <modifier>",
+			"/item block <pos> <slot> replace <item> [<count>]",
+			"/item entity <targets> <slot> copy block <pos> <slot> [<modifier>]",
+			"/item entity <targets> <slot> copy entity <targets> <slot> [<modifier>]",
+			"/item entity <targets> <slot> modify <modifier>",
+			"/item entity <targets> <slot> replace <item> [<count>]"	
+		],
 		"kick": [
 			"/kick <targets>",
 			"/kick <targets> <reason>"
