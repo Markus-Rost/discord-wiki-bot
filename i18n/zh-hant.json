@@ -202,10 +202,6 @@
                 "default": {
                     "cmd": "help",
                     "desc": "我將提供所有指令的說明。"
-                },
-                "verification": {
-                    "cmd": "help verification",
-                    "desc": "我將解釋驗證指令如何運作。"
                 }
             },
             "info": {

@@ -201,10 +201,6 @@
                 "default": {
                     "cmd": "help",
                     "desc": "我将提供使用帮助。"
-                },
-                "verification": {
-                    "cmd": "help verification",
-                    "desc": "我将解释验证命令如何工作。"
                 }
             },
             "info": {

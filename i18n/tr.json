@@ -202,10 +202,6 @@
                 "default": {
                     "cmd": "help",
                     "desc": "Anladığım tüm komutları listeleyeceğim."
-                },
-                "verification": {
-                    "cmd": "help verification",
-                    "desc": "Bu komutun nasıl çalıştığını daha detaylı bir şekilde açıklayacağım."
                 }
             },
             "info": {
