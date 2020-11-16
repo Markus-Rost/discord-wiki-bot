@@ -200,9 +200,6 @@
                 "default": {
                     "cmd": "help",
                     "desc": "Ik zal alle opdrachten opsommen die ik begrijp."
-                },
-                "verification": {
-                    "desc": "Ik zal gedetailleerder uitleggen hoe de verificatieopdracht werkt."
                 }
             },
             "info": {

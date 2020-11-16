@@ -144,6 +144,7 @@
         " "
     ],
     "general": {
+        "default": "für diesen Server wurden noch keine Einstellungen vorgenommen. Nutze $1 oder die Webseite um die Einstellungen vorzunehmen.",
         "disclaimer": "Ich bin ein kleiner Bot mit der Aufgabe einfach auf MediaWiki Websites, wie Gamepedia- und Fandom-Wikis, zu verlinken und diese zu durchsuchen. Ich zeige kurze Beschreibungen und zusätzliche Informationen zu Seiten und kann Weiterleitungen auflösen sowie Interwiki-Links folgen. Geschrieben wurde ich von $1 in JavaScript.\n\nDu kannst mich auf Patreon unterstützen:",
         "experimental": "**Diese Funktion ist experimentell! Sie ist nicht garantiert richtig zu funktionieren und könnte in Zukunft eventuell entfernt werden.**",
         "helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
@@ -155,6 +156,7 @@
     },
     "help": {
         "admin": "Diese Befehle können nur Administratoren ausführen:",
+        "adminfooter": "Administratoren können auch die Webseite nutzen um die Bot-Einstellungen zu ändern:",
         "all": "Du willst also wissen, was ich so drauf habe? Hier ist eine Liste aller Befehle, die ich verstehe:",
         "footer": "Falls du ein ungewolltes Ergebnis bekommen hast, kannst du mit 🗑️ (`:wastebasket:`) auf meine Nachricht reagieren und ich werde sie löschen.",
         "list": {
@@ -202,10 +204,6 @@
                 "default": {
                     "cmd": "help",
                     "desc": "Ich liste alle Befehle auf."
-                },
-                "verification": {
-                    "cmd": "help verification",
-                    "desc": "Ich erkläre genauer wie der Verifizierungs-Befehl funktioniert."
                 }
             },
             "info": {
@@ -444,7 +442,7 @@
         "current": "dies sind die aktuellen Letzte Änderungen-Webhooks für diesen Server:",
         "current_display": "der Anzeigemodus für diesen Webhook ist:",
         "current_lang": "die Sprache für diesen Webhook ist:",
-        "current_selected": "dies ist der Letzte Änderungen-Webhook für diesen Server:",
+        "current_selected": "dies ist der Letzte Änderungen-Webhook `$1` für diesen Server:",
         "current_wiki": "das Wiki für diesen Webhook ist:",
         "dashboard": {
             "added": "$1 hat den Letzte Änderungen-Webhook mit der ID `$2` hinzugefügt.",

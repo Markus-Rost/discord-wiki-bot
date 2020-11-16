@@ -202,10 +202,6 @@
                 "default": {
                     "cmd": "help",
                     "desc": "Vou listar todos os comandos que entendo."
-                },
-                "verification": {
-                    "cmd": "help verification",
-                    "desc": "Vou explicar mais detalhadamente como o comando de verificação funciona."
                 }
             },
             "info": {
