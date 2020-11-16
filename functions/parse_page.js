@@ -44,7 +44,7 @@ function parse_page(msg, title, embed, wiki, thumbnail) {
 	if ( !msg || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox ) ) {
 		return;
 	}
-	got.get( wiki + 'api.php?action=parse&prop=text|images&section=0&disablelimitreport=true&disableeditsection=true&disabletoc=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=parse&prop=text|images&section=0&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 			console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
 			return;

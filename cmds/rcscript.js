@@ -63,12 +63,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				wikinew = Wiki.fromInput(input);
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
+			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
 				if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 					let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 					if ( api ) {
 						wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
+						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
 					}
 				}
 				return response;
@@ -221,12 +221,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = Wiki.fromInput(args[1]);
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
 						}
 					}
 					return response;

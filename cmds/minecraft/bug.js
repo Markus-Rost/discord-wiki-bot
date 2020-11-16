@@ -57,7 +57,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
 							else extrabugs.push({name,value,inline:false});
 						} );
-						if ( extrabugs.length ) embed.setFooter( lang.get('minecraft.more').replaceSave( '%s', extrabugs.length ) );
+						if ( extrabugs.length ) embed.setFooter( lang.get('minecraft.more', extrabugs.length) );
 					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
 					var fixed = '';
@@ -109,9 +109,11 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							var value = status + ': [' + bug.fields.summary.escapeFormatting() + '](https://bugs.mojang.com/browse/' + bug.key + ')';
 							embed.addField( bug.key, value );
 						} );
-						if ( body.total > 25 ) embed.setFooter( lang.get('minecraft.more').replaceSave( '%s', body.total - 25 ) );
+						if ( body.total > 25 ) {
+							embed.setFooter( lang.get('minecraft.more', body.total - 25) );
+						}
 					}
-					var total = '**' + args.join(' ') + ':** ' + lang.get('minecraft.total').replaceSave( '%s', body.total );
+					var total = '**' + args.join(' ') + ':** ' + lang.get('minecraft.total', body.total);
 					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, {embed} );
 				}
 			}

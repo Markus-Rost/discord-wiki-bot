@@ -89,7 +89,7 @@ See the [admin commands](#admin) or `!wiki help verification` on how to change t
 
 Requirements to add a recent changes webhook:
 * The wiki needs to run on [MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30) or higher.
-* The system message `MediaWiki:Custom-RcGcDw` need to be set to the Discord server id.
+* The system message `MediaWiki:Custom-RcGcDw` needs to be set to the Discord server id.
 
 ## Voice Channel
 **Wiki-Bot** is able to give everyone in a voice channel a specific role. This allows for the creation of channels only visible or writable when in a specific voice channel.
