@@ -541,6 +541,7 @@
         "currentinline": "इनलाइन कमांड:",
         "currentlang": "भाषा:",
         "currentprefix": "उपसर्ग:",
+        "currentrole": "न्यूनतम रोल:",
         "currentwiki": "डिफ़ॉल्ट विकी:",
         "dashboard": {
             "channel": "$1 ने $2 के लिए सेटिंग्स को अपडेट किया।",
