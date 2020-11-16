@@ -37,7 +37,9 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		var inlinepage = ( lang.localNames.page || 'page' );
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
 		if ( rows.length ) {
-			text = lang.get('settings.current') + '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
+			text = lang.get('settings.current');
+			text += `\n<${new URL(`/guild/${msg.guild.id}/settings`, process.env.dashboard).href}>`;
+			text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
 			if ( msg.guild.id in patreons ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
 			text += '\n' + lang.get('settings.currentinline') + ' ' + ( guild.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( guild.inline ? '~~' : '' ) + ' - `' + prefix + 'settings inline`';
 			text += '\n' + lang.get('settings.currentwiki') + ' ' + guild.wiki + ' - `' + prefix + 'settings wiki`';
@@ -59,6 +61,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var channel = rows.find( row => row.channel === msg.channel.id );
 			if ( !channel ) channel = Object.assign({channel:msg.channel.id}, guild);
 			text = lang.get('settings.' + prelang + 'current');
+			text += `\n<${new URL(`/guild/${msg.guild.id}/settings/${msg.channel.id}`, process.env.dashboard).href}>`;
 			if ( msg.guild.id in patreons ) {
 				text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[channel.lang] + '` - `' + prefix + 'settings channel lang`';
 				text += '\n' + lang.get('settings.currentinline') + ' ' + ( channel.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( channel.inline ? '~~' : '' ) + ' - `' + prefix + 'settings channel inline`';

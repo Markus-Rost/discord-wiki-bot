@@ -464,7 +464,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 				return;
 			} ).then( channel => {
-				var text = lang.get('rcscript.current_selected') + '\n';
+				var text = lang.get('rcscript.current_selected', selected_row.configid);
+				text += `\n<${new URL(`/guild/${msg.guild.id}/rcscript/${selected_row.configid}`, process.env.dashboard).href}>\n`;
 				text += '\n' + lang.get('rcscript.channel') + ' <#' + channel + '>\n';
 				text += '\n' + lang.get('rcscript.wiki') + ' <' + selected_row.wiki + '>';
 				text += '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n';
@@ -507,30 +508,37 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			rows = rows.filter( row => row.channel );
 			var only = ( rows.length === 1 );
 			var text = '';
-			if ( rows.length ) text += lang.get('rcscript.current') + rows.map( row => {
-				var cmd = prefix + 'rcscript' + ( only ? '' : ' ' + row.configid );
-				var row_text = '\n';
-				if ( !only ) row_text += '\n`' + cmd + '`';
-				row_text += '\n' + lang.get('rcscript.channel') + ' <#' + row.channel + '>';
-				if ( only ) row_text += '\n';
-				row_text += '\n' + lang.get('rcscript.wiki') + ' <' + row.wiki + '>';
-				if ( only ) row_text += '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n';
-				row_text += '\n' + lang.get('rcscript.lang') + ' `' + allLangs.names[row.lang] + '`';
-				if ( only ) row_text += '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n';
-				row_text += '\n' + lang.get('rcscript.display') + ' `' + display_types[row.display] + '`';
-				if ( only ) row_text += '\n`' + cmd + ' display (' + display.join('|') + ')`\n';
-				if ( row.rcid === -1 ) {
-					row_text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
-					if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
-				}
-				if ( new Wiki(row.wiki).isFandom(false) ) {
-					row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.wikiid ? 'enabled' : 'disabled' )) + '`*';
-					if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
-				}
-				if ( only ) row_text += '\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`\n';
-				return row_text;
-			} ).join('');
-			else text += lang.get('rcscript.missing');
+			if ( rows.length ) {
+				text += lang.get('rcscript.current');
+				text += `\n<${new URL(`/guild/${msg.guild.id}/rcscript`, process.env.dashboard).href}>`;
+				text += rows.map( row => {
+					var cmd = prefix + 'rcscript' + ( only ? '' : ' ' + row.configid );
+					var row_text = '\n';
+					if ( !only ) row_text += '\n`' + cmd + '`';
+					row_text += '\n' + lang.get('rcscript.channel') + ' <#' + row.channel + '>';
+					if ( only ) row_text += '\n';
+					row_text += '\n' + lang.get('rcscript.wiki') + ' <' + row.wiki + '>';
+					if ( only ) row_text += '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n';
+					row_text += '\n' + lang.get('rcscript.lang') + ' `' + allLangs.names[row.lang] + '`';
+					if ( only ) row_text += '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n';
+					row_text += '\n' + lang.get('rcscript.display') + ' `' + display_types[row.display] + '`';
+					if ( only ) row_text += '\n`' + cmd + ' display (' + display.join('|') + ')`\n';
+					if ( row.rcid === -1 ) {
+						row_text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
+						if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
+					}
+					if ( new Wiki(row.wiki).isFandom(false) ) {
+						row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.wikiid ? 'enabled' : 'disabled' )) + '`*';
+						if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
+					}
+					if ( only ) row_text += '\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`\n';
+					return row_text;
+				} ).join('');
+			}
+			else {
+				text += lang.get('rcscript.missing');
+				text += `\n<${new URL(`/guild/${msg.guild.id}/rcscript`, process.env.dashboard).href}>`;
+			}
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
 			msg.replyMsg( text, {split:true}, true );
 		} );

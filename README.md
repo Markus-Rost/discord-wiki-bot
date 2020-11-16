@@ -3,9 +3,11 @@
 
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Gamepedia](https://www.gamepedia.com/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
 
-**Wiki-Bot** has translations for English, German, French, Hindi, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
+**Wiki-Bot** has translations for English, Bengali, German, French, Hindi, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
 
 [Use this link to invite **Wiki-Bot** to your Discord server.](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot)
+
+[Change the server settings for **Wiki-Bot** using the dashboard.](https://settings.wikibot.de/)
 
 Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
 
@@ -56,20 +58,12 @@ For a full list with all administrator commands use `!wiki help admin`
 | ------- | ----------- |
 | `!wiki help admin` | **Wiki-Bot** will list all administrator commands. |
 | `!wiki settings` | **Wiki-Bot** will change the settings for the server. |
-| `!wiki settings lang <language>` | **Wiki-Bot** will change the language for the server. |
-| `!wiki settings wiki <wiki>` | **Wiki-Bot** will change the default wiki for the server. |
-| `!wiki settings channel` | **Wiki-Bot** will change the channel overwrites for the current channel. |
 | `!wiki verification` | **Wiki-Bot** will change the wiki verifications used by the `!wiki verify` command. |
-| `!wiki verification add <role>` | **Wiki-Bot** will add a new wiki verification. Accepts a `\|` separated list. |
-| `!wiki verification <id> channel <new channel>` | **Wiki-Bot** will change the channel for the wiki verification. Accepts a `\|` separated list. |
-| `!wiki verification <id> role <new role>` | **Wiki-Bot** will change the role for the wiki verification. Accepts a `\|` separated list. |
-| `!wiki verification <id> editcount <new edit count>` | **Wiki-Bot** will change the minimal edit count for the wiki verification. |
-| `!wiki verification <id> usergroup <new user group>` | **Wiki-Bot** will change the user group for the wiki verification. Accepts a `\|` separated list.<br>• Provide `AND` as the first list entry to make all provided user groups required. |
-| `!wiki verification <id> accountage <new account age>` | **Wiki-Bot** will change the minimal account age (in days) for the wiki verification. |
-| `!wiki verification <id> rename` | **Wiki-Bot** will change if the users Discord nickname should be changed to their wiki username for the wiki verification. |
 | `!wiki rcscript` | **Wiki-Bot** will change the recent changes webhook. |
 | `!wiki voice` | **Wiki-Bot** will try to give everyone in a voice channel a specific role. |
 | `!wiki pause @Wiki-Bot` | **Wiki-Bot** will ignore all commands on this server, except a few admin commands. |
+
+Administators can also use the [dashboard](https://settings.wikibot.de/) to change the bot settings.
 
 ## User Verification
 Using the `!wiki verify <wiki username>` command, users are able to verify themselves as a specific wiki user by using the Discord field on their wiki profile. If the user matches and user verifications are set up on the server, **Wiki-Bot** will give them the roles for all verification entries they matched.

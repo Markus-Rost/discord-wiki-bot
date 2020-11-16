@@ -5,7 +5,7 @@
  */
 function help_setup(lang, msg) {
 	msg.defaultSettings = false;
-	msg.replyMsg( lang.get('settings.missing', '`' + process.env.prefix + 'settings lang`', '`' + process.env.prefix + 'settings wiki`') );
+	msg.replyMsg( lang.get('general.default', '`' + process.env.prefix + 'settings`') + '\n' + new URL(`/guild/${msg.guild.id}/settings`, process.env.dashboard).href );
 }
 
 module.exports = help_setup;

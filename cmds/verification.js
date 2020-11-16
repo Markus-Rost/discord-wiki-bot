@@ -68,8 +68,15 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				return;
 			}
 			var text = '';
-			if ( rows.length ) text += lang.get('verification.current') + rows.map( row => formatVerification(false, true, row) ).join('');
-			else text += lang.get('verification.missing');
+			if ( rows.length ) {
+				text += lang.get('verification.current');
+				text += `\n<${new URL(`/guild/${msg.guild.id}/verification`, process.env.dashboard).href}>`;
+				text += rows.map( row => formatVerification(false, true, row) ).join('');
+			}
+			else {
+				text += lang.get('verification.missing');
+				text += `\n<${new URL(`/guild/${msg.guild.id}/verification`, process.env.dashboard).href}>`;
+			}
 			text += '\n\n' + lang.get('verification.add_more') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`';
 			return msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true}, true );
 		}
@@ -224,7 +231,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} ) );
 			}
 		}
-		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected', row.configid) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true}, true );
+		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected', row.configid) + `\n<${new URL(`/guild/${msg.guild.id}/verification/${row.configid}`, process.env.dashboard).href}>` + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true}, true );
 		
 		function formatVerification(showCommands, hideNotice, {
 			configid,
