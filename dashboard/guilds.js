@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
-const {settingsData, createNotice} = require('./util.js');
+const {settingsData, createNotice, escapeText} = require('./util.js');
 
 const forms = {
 	settings: require('./settings.js').get,
@@ -74,41 +74,53 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 		} );
 	}
 
-	if ( args[1] === 'guild' ) {
-		let id = args[2];
-		$(`.guild#${id}`).addClass('selected');
-		if ( settings.guilds.isMember.has(id) ) {
-			let guild = settings.guilds.isMember.get(id);
-			$('head title').text(`${guild.name} – ` + $('head title').text());
-			$('<script>').text(`const isPatreon = ${guild.patreon};`).insertBefore('script#indexjs');
-			$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
-			$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
-			$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
-			if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args);
-			if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args);
-			if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args);
-			return forms.settings(res, $, guild, args);
-		}
-		else if ( settings.guilds.notMember.has(id) ) {
-			let guild = settings.guilds.notMember.get(id);
-			$('head title').text(`${guild.name} – ` + $('head title').text());
-			res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; HttpOnly; Path=/`]);
-			let url = oauth.generateAuthUrl( {
-				scope: ['identify', 'guilds', 'bot'],
-				permissions: defaultPermissions,
-				guildId: guild.id, state
-			} );
-			$('<a>').attr('href', url).text(guild.name).appendTo('#text .description');
-		}
-		else {
-			$('head title').text('Unknown Server – ' + $('head title').text());
-			$('#text .description').text('You are missing the <code>MANAGE_GUILD</code> permission.');
-		}
+	let id = args[2];
+	$(`.guild#${id}`).addClass('selected');
+	if ( settings.guilds.isMember.has(id) ) {
+		let guild = settings.guilds.isMember.get(id);
+		$('head title').text(`${guild.name} – ` + $('head title').text());
+		$('<script>').text(`const isPatreon = ${guild.patreon};`).insertBefore('script#indexjs');
+		$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
+		$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
+		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
+		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args);
+		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args);
+		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args);
+		return forms.settings(res, $, guild, args);
+	}
+	else if ( settings.guilds.notMember.has(id) ) {
+		let guild = settings.guilds.notMember.get(id);
+		$('head title').text(`${guild.name} – ` + $('head title').text());
+		res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; HttpOnly; Path=/`]);
+		let url = oauth.generateAuthUrl( {
+			scope: ['identify', 'guilds', 'bot'],
+			permissions: defaultPermissions,
+			guildId: guild.id, state
+		} );
+		$('#channellist').empty();
+		$('<a class="channel channel-header">').attr('href', url).append(
+			$('<img>').attr('src', '/src/settings.svg'),
+			$('<div>').text('Invite Wiki-Bot')
+		).appendTo('#channellist');
+		$('#text .description').append(
+			$('<p>').append(
+				escapeText(`Wiki-Bot is not a member of "${guild.name}" yet, but you can `),
+				$('<a>').attr('href', url).text('invite Wiki-Bot'),
+				escapeText('.')
+			),
+			$('<a id="login-button">').attr('href', url).text('Invite Wiki-Bot').prepend(
+				$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
+			)
+		);
 	}
 	else {
 		$('head title').text('Server Selector – ' + $('head title').text());
 		$('#channellist').empty();
-		$('#text .description').text('This is a list of all servers you can change settings on. Please select a server:');
+		$('<p>').append(
+			escapeText('This is a list of all servers you can change settings on because you have the '),
+			$('<code>').text('Manage Server'),
+			escapeText(' permission. Please select a server:')
+		).appendTo('#text .description');
 		if ( settings.guilds.isMember.size ) {
 			$('<h2 id="with-wikibot">').text('Server with Wiki-Bot').appendTo('#text');
 			$('<a class="channel">').attr('href', '#with-wikibot').append(
@@ -142,14 +154,24 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 			} );
 		}
 		if ( !settings.guilds.count ) {
-			$('#text .description').text('You currently don\'t have the MANAGE_GUILD permission on any servers, are you logged into the correct account?');
-			$('<a class="channel">').attr('href', oauth.generateAuthUrl( {
+			let url = oauth.generateAuthUrl( {
 				scope: ['identify', 'guilds'],
 				prompt: 'consent', state
-			} )).append(
-				$('<img>').attr('src', '/src/channel.svg'),
-				$('<div>').text('Switch accounts')
+			} );
+			$('<a class="channel channel-header">').attr('href', url).append(
+				$('<img>').attr('src', '/src/settings.svg'),
+				$('<div>').text('Switch Accounts')
 			).appendTo('#channellist');
+			$('#text .description').append(
+				$('<p>').append(
+					escapeText('You currently don\'t have the '),
+					$('<code>').text('Manage Server'),
+					escapeText(' permission on any servers, are you logged into the correct account?')
+				),
+				$('<a id="login-button">').attr('href', url).text('Switch Accounts').prepend(
+					$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
+				)
+			);
 		}
 	}
 	let body = $.html();

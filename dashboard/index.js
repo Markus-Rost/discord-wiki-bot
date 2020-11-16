@@ -13,7 +13,17 @@ const posts = {
 
 const fs = require('fs');
 const path = require('path');
-const files = new Map(fs.readdirSync( './dashboard/src' ).map( file => {
+const files = new Map([
+	...fs.readdirSync( './dashboard/src' ).map( file => {
+		return [`/src/${file}`, `./dashboard/src/${file}`];
+	} ),
+	...fs.readdirSync( './i18n/widgets' ).map( file => {
+		return [`/src/widgets/${file}`, `./i18n/widgets/${file}`];
+	} ),
+	...fs.readdirSync( './RcGcDb/locale/widgets' ).map( file => {
+		return [`/src/widgets/RcGcDb/${file}`, `./RcGcDb/locale/widgets/${file}`];
+	} )
+].map( ([file, filepath]) => {
 	let contentType = 'text/html';
 	switch ( path.extname(file) ) {
 		case '.css':
@@ -35,10 +45,7 @@ const files = new Map(fs.readdirSync( './dashboard/src' ).map( file => {
 			contentType = 'image/jpg';
 			break;
 	}
-	return [`/src/${file}`, {
-		name: file, contentType,
-		path: `./dashboard/src/${file}`
-	}];
+	return [file, {path: filepath, contentType}];
 } ));
 
 const server = http.createServer((req, res) => {
@@ -168,6 +175,11 @@ const server = http.createServer((req, res) => {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, state, returnLocation);
+	}
+
+	if ( reqURL.pathname === '/api' ) {
+		let wiki = reqURL.searchParams.get('wiki');
+		if ( wiki ) return pages.api(res, wiki);
 	}
 
 	let action = '';

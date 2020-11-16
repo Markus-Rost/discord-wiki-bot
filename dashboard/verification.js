@@ -1,4 +1,4 @@
-const {limit: {verification: verificationLimit}} = require('../util/default.json');
+const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const {got, db, sendMsg, createNotice, hasPerm} = require('./util.js');
 
@@ -10,7 +10,15 @@ const fieldset = {
 	+ '<select id="wb-settings-role" name="role" required></select>'
 	+ '<button type="button" id="wb-settings-role-more" class="addmore">Add more</button>',
 	usergroup: '<label for="wb-settings-usergroup">Wiki user group:</label>'
-	+ '<input type="text" id="wb-settings-usergroup" name="usergroup" autocomplete="on">'
+	+ '<input type="text" id="wb-settings-usergroup" name="usergroup" list="wb-settings-usergroup-list" autocomplete="on">'
+	+ '<datalist id="wb-settings-usergroup-list">'
+	+ usergroups.sorted.filter( group => group !== '__CUSTOM__' ).map( group => {
+		return `<option value="${group}"></option>`
+	} ).join('')
+	+ usergroups.global.filter( group => group !== '__CUSTOM__' ).map( group => {
+		return `<option value="${group}"></option>`
+	} ).join('')
+	+ '</datalist>'
 	+ '<div id="wb-settings-usergroup-multiple">'
 	+ '<label for="wb-settings-usergroup-and">Require all user groups:</label>'
 	+ '<input type="checkbox" id="wb-settings-usergroup-and" name="usergroup_and">'
@@ -22,7 +30,7 @@ const fieldset = {
 	rename: '<label for="wb-settings-rename">Rename users:</label>'
 	+ '<input type="checkbox" id="wb-settings-rename" name="rename">',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
-	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings">'
+	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings" formnovalidate>'
 };
 
 /**
@@ -41,6 +49,7 @@ const fieldset = {
  * @param {String} guildChannels.id
  * @param {String} guildChannels.name
  * @param {Number} guildChannels.userPermissions
+ * @param {Number} guildChannels.botPermissions
  * @param {Object[]} guildRoles - The guild roles
  * @param {String} guildRoles.id
  * @param {String} guildRoles.name
@@ -142,9 +151,13 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 	let accountage = $('<div>').append(fieldset.accountage);
 	accountage.find('#wb-settings-accountage').val(settings.accountage);
 	fields.push(accountage);
-	let rename = $('<div>').append(fieldset.rename);
-	if ( settings.rename ) rename.find('#wb-settings-rename').attr('checked', '');
-	fields.push(rename);
+	if ( settings.rename || guildChannels.some( guildChannel => {
+		return hasPerm(guildChannel.botPermissions, 'MANAGE_NICKNAMES');
+	} ) ) {
+		let rename = $('<div>').append(fieldset.rename);
+		if ( settings.rename ) rename.find('#wb-settings-rename').attr('checked', '');
+		fields.push(rename);
+	}
 	fields.push($(fieldset.save).val('Save'));
 	if ( settings.channel ) {
 		fields.push($(fieldset.delete).val('Delete').attr('onclick', `return confirm('Are you sure?');`));
@@ -161,6 +174,20 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 	);
 }
 
+const explanation = `
+<h2>User Verification</h2>
+<p>Using the <code>!wiki verify &lt;wiki username&gt;</code> command, users are able to verify themselves as a specific wiki user by using the Discord field on their wiki profile. If the user matches and user verifications are set up on the server, Wiki-Bot will give them the roles for all verification entries they matched.</p>
+<p>Every verification entry allows for multiple restrictions on when a user should match the verification:</p>
+<ul>
+	<li>Channel to use the <code>!wiki verify</code> command in.</li>
+	<li>Role to get when matching the verification entry.</li>
+	<li>Required edit count on the wiki to match the verification entry.</li>
+	<li>Required user group to be a member of on the wiki to match the verification entry.</li>
+	<li>Required account age in days to match the verification entry.</li>
+	<li>Whether the Discord users nickname should be set to their wiki username when they match the verification entry.</li>
+</ul>
+`;
+
 /**
  * Let a user change verifications
  * @param {import('http').ServerResponse} res - The server response
@@ -170,7 +197,8 @@ function createForm($, header, settings, guildChannels, guildRoles) {
  */
 function dashboard_verification(res, $, guild, args) {
 	if ( !hasPerm(guild.botPermissions, 'MANAGE_ROLES') ) {
-		$('#text .description').text('Wiki-Bot is missing the "MANAGE_ROLES" permission!\n\n*Insert explanation about verification here*');
+		createNotice($, 'missingperm', ['Manage Roles']);
+		$('#text .description').html(explanation);
 		$('.channel#verification').addClass('selected');
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});
@@ -180,7 +208,8 @@ function dashboard_verification(res, $, guild, args) {
 	db.all( 'SELECT wiki, discord.role defaultrole, configid, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
-			$('#text .description').text('Failed to load the verifications!');
+			createNotice($, 'error');
+			$('#text .description').html(explanation);
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -188,7 +217,8 @@ function dashboard_verification(res, $, guild, args) {
 			return res.end();
 		}
 		if ( rows.length === 0 ) {
-			$('#text .description').text(`You need to set up the server first: /guild/${guild.id}/settings`);
+			createNotice($, 'nosettings', [guild.id]);
+			$('#text .description').html(explanation);
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -198,7 +228,7 @@ function dashboard_verification(res, $, guild, args) {
 		var wiki = rows[0].wiki;
 		var defaultrole = rows[0].defaultrole;
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
-		$('#text .description').text(`These are the verifications for "${guild.name}":`);
+		$('<p>').text(`These are the verifications for "${guild.name}":`).appendTo('#text .description');
 		$('#channellist #verification').after(
 			...rows.map( row => {
 				return $('<a class="channel">').attr('id', `channel-${row.configid}`).append(
@@ -230,7 +260,7 @@ function dashboard_verification(res, $, guild, args) {
 		}
 		else {
 			$('.channel#verification').addClass('selected');
-			$('#text .description').text('*Insert explanation about verification here*');
+			$('#text .description').html(explanation);
 		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});

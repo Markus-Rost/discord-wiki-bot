@@ -9,7 +9,9 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Default Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" name="wiki" required autocomplete="url">',
+	+ '<input type="url" id="wb-settings-wiki" name="wiki" required autocomplete="url">'
+	+ '<button type="button" id="wb-settings-wiki-check">Check wiki</button>'
+	+ '<div id="wb-settings-wiki-check-notice"></div>',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
 	//+ '<fieldset style="display: none;">'
 	//+ '<legend>Wiki search</legend>'
@@ -18,8 +20,9 @@ const fieldset = {
 	+ '<select id="wb-settings-lang" name="lang" required autocomplete="language">'
 	+ Object.keys(allLangs.names).map( lang => {
 		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
-	} ).join('\n')
-	+ '</select>',
+	} ).join('')
+	+ '</select>'
+	+ '<img id="wb-settings-lang-widget">',
 	role: '<label for="wb-settings-role">Minimal Role:</label>'
 	+ '<select id="wb-settings-role" name="role"></select>',
 	prefix: '<label for="wb-settings-prefix">Prefix:</label>'
@@ -30,7 +33,7 @@ const fieldset = {
 	inline: '<label for="wb-settings-inline">Inline commands:</label>'
 	+ '<input type="checkbox" id="wb-settings-inline" name="inline">',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
-	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings">'
+	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings" formnovalidate>'
 };
 
 /**
@@ -134,14 +137,15 @@ function dashboard_settings(res, $, guild, args) {
 	db.all( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the settings: ' + dberror );
-			$('#text .description').text('Failed to load the settings!');
+			createNotice($, 'error');
+			$('<p>').text('Failed to load the settings!').appendTo('#text .description');
 			$('.channel#settings').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
 			res.write( body );
 			return res.end();
 		}
-		$('#text .description').text(`These are the settings for "${guild.name}":`);
+		$('<p>').text(`These are the settings for "${guild.name}":`).appendTo('#text .description');
 		if ( !rows.length ) {
 			$('.channel#settings').addClass('selected');
 			createForm($, 'Server-wide Settings', Object.assign({
@@ -389,12 +393,14 @@ function update_settings(res, userSettings, guild, type, settings) {
 					text += '\n' + lang.get('settings.currentinline') + ` ${( settings.inline ? '' : '~~' )}\`[[${( lang.localNames.page || 'page' )}]]\`${( settings.inline ? '' : '~~' )}`;
 					text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
 					sendMsg( {
-						type: 'notifyGuild', guild, text, embed
+						type: 'notifyGuild', guild, text, embed,
+						file: [`./i18n/widgets/${settings.lang}.png`]
 					} ).catch( error => {
 						console.log( '- Dashboard: Error while notifying the guild: ' + error );
 					} );
 				} );
 				var diff = [];
+				var file = [];
 				var updateGuild = false;
 				var updateChannel = false;
 				if ( row.wiki !== wiki.href ) {
@@ -403,6 +409,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 				if ( row.lang !== settings.lang ) {
 					updateChannel = true;
+					file.push(`./i18n/widgets/${settings.lang}.png`);
 					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs.names[row.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
 				}
 				if ( response.patreon && row.prefix !== settings.prefix ) {
@@ -456,7 +463,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 						text += '\n' + diff.join('\n');
 						text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
 						sendMsg( {
-							type: 'notifyGuild', guild, text, embed,
+							type: 'notifyGuild', guild, text, file,
+							embed: ( updateGuild ? embed : undefined ),
 							prefix: settings.prefix, voice: settings.lang
 						} ).catch( error => {
 							console.log( '- Dashboard: Error while notifying the guild: ' + error );
@@ -500,10 +508,14 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 				if ( !channel ) channel = row;
 				var diff = [];
+				var file = [];
+				var useEmbed = false;
 				if ( channel.wiki !== wiki.href ) {
+					useEmbed = true;
 					diff.push(lang.get('settings.currentwiki') + ` ~~<${channel.wiki}>~~ → <${wiki.href}>`);
 				}
 				if ( response.patreon && channel.lang !== settings.lang ) {
+					file.push(`./i18n/widgets/${settings.lang}.png`);
 					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs.names[channel.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
 				}
 				if ( response.patreon && channel.role !== ( settings.role || null ) ) {
@@ -533,7 +545,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 					text += '\n' + diff.join('\n');
 					text += `\n<${new URL(`/guild/${guild}/settings/${settings.channel}`, process.env.dashboard).href}>`;
 					sendMsg( {
-						type: 'notifyGuild', guild, text, embed
+						type: 'notifyGuild', guild, text, file,
+						embed: ( useEmbed ? embed : undefined )
 					} ).catch( error => {
 						console.log( '- Dashboard: Error while notifying the guild: ' + error );
 					} );

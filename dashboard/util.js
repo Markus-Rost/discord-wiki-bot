@@ -95,7 +95,7 @@ function sendMsg(message) {
  * @param {String[]} [args] - The arguments for the notice
  * @returns {import('cheerio')}
  */
-function createNotice($, notice, args) {
+function createNotice($, notice, args = []) {
 	if ( !notice ) return;
 	var type = 'info';
 	var title = $('<b>');
@@ -112,6 +112,12 @@ function createNotice($, notice, args) {
 			title.text('Settings saved!');
 			text.text('The settings have been updated successfully.');
 			break;
+		case 'nosettings':
+			type = 'info';
+			title.text('Server not set up yet!');
+			text.text('Please define settings for the server first.');
+			note = $('<a>').text('Change settings.').attr('href', `/guild/${args[0]}/settings`);
+			break;
 		case 'logout':
 			type = 'success';
 			title.text('Successfully logged out!');
@@ -122,6 +128,15 @@ function createNotice($, notice, args) {
 			title.text('Refresh successful!');
 			text.text('Your server list has been successfully refeshed.');
 			break;
+		case 'missingperm':
+			type = 'error';
+			title.text('Missing permission!');
+			text.append(
+				escapeText('Either you or Wiki-Bot are missing the '),
+				$('<code>').text(args[0]),
+				escapeText(' permission for this function.')
+			);
+			break;
 		case 'loginfail':
 			type = 'error';
 			title.text('Login failed!');
@@ -130,7 +145,15 @@ function createNotice($, notice, args) {
 		case 'sysmessage':
 			type = 'info';
 			title.text('System message does not match!');
-			text.text(`The page "MediaWiki:Custom-RcGcDw" need to be the server id "${args[0]}".`);
+			text.append(
+				escapeText('The page '),
+				$('<a target="_blank">').append(
+					$('<code>').text('MediaWiki:Custom-RcGcDw')
+				).attr('href', args[1]),
+				escapeText(' needs to be the server id '),
+				$('<code class="user-select">').text(args[0]),
+				escapeText('.')
+			);
 			note = $('<a target="_blank">').text(args[1]).attr('href', args[1]);
 			break;
 		case 'mwversion':
@@ -171,6 +194,11 @@ function createNotice($, notice, args) {
 			title.text('Refresh failed!');
 			text.text('You server list could not be refreshed, please try again.');
 			break;
+		case 'error':
+			type = 'error';
+			title.text('Unknown error!');
+			text.text('An unknown error occured, please try again.');
+			break;
 		case 'readonly':
 			type = 'info';
 			title.text('Read-only database!');
@@ -184,6 +212,15 @@ function createNotice($, notice, args) {
 		text,
 		note
 	).appendTo('#text #notices');
+}
+
+/**
+ * HTML escape text
+ * @param {String} text - The text to escape
+ * @returns {String}
+ */
+function escapeText(text) {
+	return text.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
 }
 
 const permissions = {
@@ -217,4 +254,4 @@ function hasPerm(all = 0, ...permission) {
 	} ).every( perm => perm );
 }
 
-module.exports = {got, db, settingsData, sendMsg, createNotice, hasPerm};
+module.exports = {got, db, settingsData, sendMsg, createNotice, escapeText, hasPerm};

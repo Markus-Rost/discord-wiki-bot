@@ -1,7 +1,8 @@
 const crypto = require('crypto');
 const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
-const {db, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
+const Wiki = require('../util/wiki.js');
+const {got, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
 
 const DiscordOauth2 = require('discord-oauth2');
 const oauth = new DiscordOauth2( {
@@ -204,8 +205,71 @@ function dashboard_refresh(res, state, returnLocation = '/') {
 	} );
 }
 
+/**
+ * Check if a wiki is availabe
+ * @param {import('http').ServerResponse} res - The server response
+ * @param {String} input - The wiki to check
+ */
+function dashboard_api(res, input) {
+	var wiki = Wiki.fromInput('https://' + input + '/');
+	var result = {
+		api: true,
+		error: false,
+		wiki: wiki.href,
+		MediaWiki: false,
+		TextExtracts: false,
+		PageImages: false,
+		RcGcDw: '',
+		customRcGcDw: wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
+	};
+	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions' + ( wiki.isFandom() ? '|variables' : '' ) + '&format=json' ).then( response => {
+		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+			if ( api ) {
+				wiki = new Wiki(api.split('api.php?')[0], wiki);
+				return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions' + ( wiki.isFandom() ? '|variables' : '' ) + '&format=json' );
+			}
+		}
+		return response;
+	} ).then( response => {
+		var body = response.body;
+		if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
+			console.log( '- Dashboard: ' + response.statusCode + ': Error while checking the wiki: ' + body?.error?.info );
+			result.error = true;
+			return;
+		}
+		wiki.updateWiki(body.query.general);
+		result.wiki = wiki.href;
+		if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) >= 30 ) {
+			result.MediaWiki = true;
+		}
+		if ( body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
+			result.TextExtracts = true;
+		}
+		if ( body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
+			result.PageImages = true;
+		}
+		if ( body.query.allmessages[0]['*'] ) {
+			result.RcGcDw = body.query.allmessages[0]['*'];
+		}
+		result.customRcGcDw = wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit');
+	}, error => {
+		console.log( '- Dashboard: Error while checking the wiki: ' + error );
+		result.error = true;
+	} ).finally( () => {
+		let body = JSON.stringify(result);
+		res.writeHead(200, {
+			'Content-Length': body.length,
+			'Content-Type': 'application/json'
+		});
+		res.write( body );
+		return res.end();
+	} );
+}
+
 module.exports = {
 	login: dashboard_login,
 	oauth: dashboard_oauth,
-	refresh: dashboard_refresh
+	refresh: dashboard_refresh,
+	api: dashboard_api
 };

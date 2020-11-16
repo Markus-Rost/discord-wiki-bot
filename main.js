@@ -180,6 +180,7 @@ if ( process.env.dashboard ) {
 						let channel = this.guilds.cache.get('${message.data.guild}').publicUpdatesChannel;
 						if ( channel ) channel.send( \`${message.data.text.replace( /`/g, '\\`' )}\`, {
 							embed: ${JSON.stringify(message.data.embed)},
+							files: ${JSON.stringify(message.data.file)},
 							allowedMentions: {parse: []}, split: true
 						} ).catch( error => {} );
 					}`).catch( error => {

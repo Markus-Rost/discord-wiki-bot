@@ -16,7 +16,10 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" name="wiki" required autocomplete="url">',
+	+ '<input type="url" id="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required autocomplete="url">'
+	+ '<datalist id="wb-settings-wiki-list"></datalist>'
+	+ '<button type="button" id="wb-settings-wiki-check">Check wiki</button>'
+	+ '<div id="wb-settings-wiki-check-notice"></div>',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
 	//+ '<fieldset style="display: none;">'
 	//+ '<legend>Wiki search</legend>'
@@ -25,8 +28,9 @@ const fieldset = {
 	+ '<select id="wb-settings-lang" name="lang" required autocomplete="language">'
 	+ Object.keys(allLangs.names).map( lang => {
 		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
-	} ).join('\n')
-	+ '</select>',
+	} ).join('')
+	+ '</select>'
+	+ '<img id="wb-settings-lang-widget">',
 	display: '<span>Display mode:</span>'
 	+ '<div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-0" name="display" value="0" required>'
@@ -48,7 +52,7 @@ const fieldset = {
 	+ '<input type="checkbox" id="wb-settings-feeds-only" name="feeds_only">'
 	+ '</div>',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
-	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings">'
+	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings" formnovalidate>'
 };
 
 /**
@@ -68,8 +72,9 @@ const fieldset = {
  * @param {String} guildChannels.name
  * @param {Number} guildChannels.userPermissions
  * @param {Number} guildChannels.botPermissions
+ * @param {String[]} allWikis - The guild wikis
  */
-function createForm($, header, settings, guildChannels) {
+function createForm($, header, settings, guildChannels, allWikis) {
 	var readonly = ( process.env.READONLY ? true : false );
 	var curChannel = guildChannels.find( guildChannel => settings.channel === guildChannel.id );
 	var fields = [];
@@ -86,9 +91,14 @@ function createForm($, header, settings, guildChannels) {
 				return optionChannel.text(`${guildChannel.id} – #${guildChannel.name}`);
 			} )
 		);
-		if ( !settings.channel ) channel.find('#wb-settings-channel').prepend(
-			$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text('-- Select a Channel --')
-		);
+		if ( !settings.channel ) {
+			if ( !channel.find('#wb-settings-channel').children('option').length ) {
+				createNotice($, 'missingperm', ['Manage Webhooks']);
+			}
+			channel.find('#wb-settings-channel').prepend(
+				$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text('-- Select a Channel --')
+			);
+		}
 	}
 	else if ( curChannel ) channel.find('#wb-settings-channel').append(
 		$(`<option id="wb-settings-channel-${curChannel.id}">`).val(curChannel.id).attr('selected', '').text(`${curChannel.id} – #${curChannel.name}`)
@@ -99,6 +109,9 @@ function createForm($, header, settings, guildChannels) {
 	fields.push(channel);
 	let wiki = $('<div>').append(fieldset.wiki);
 	wiki.find('#wb-settings-wiki').val(settings.wiki);
+	wiki.find('#wb-settings-wiki-list').append(
+		...allWikis.map( listWiki => $(`<option>`).val(listWiki) )
+	);
 	fields.push(wiki);
 	let lang = $('<div>').append(fieldset.lang);
 	lang.find(`#wb-settings-lang-${settings.lang}`).attr('selected', '');
@@ -138,6 +151,16 @@ function createForm($, header, settings, guildChannels) {
 	);
 }
 
+const explanation = `
+<h2>Recent Changes Webhook</h2>
+<p>Wiki-Bot is able to run a recent changes webhook based on <a href="https://gitlab.com/piotrex43/RcGcDw" target="_blank">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>
+<p>Requirements to add a recent changes webhook:</p>
+<ul>
+	<li>The wiki needs to run on <a href="https://www.mediawiki.org/wiki/MediaWiki_1.30" target="_blank">MediaWiki 1.30</a> or higher.</li>
+	<li>The system message <code>MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code id="server-id" class="user-select"></code>.</li>
+</ul>
+`;
+
 /**
  * Let a user change recent changes scripts
  * @param {import('http').ServerResponse} res - The server response
@@ -146,10 +169,12 @@ function createForm($, header, settings, guildChannels) {
  * @param {String[]} args - The url parts
  */
 function dashboard_rcscript(res, $, guild, args) {
-	db.all( 'SELECT discord.wiki mainwiki, discord.lang mainlang, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, wikiid, rcid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
+	db.all( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT GROUP_CONCAT(DISTINCT wiki) FROM discord WHERE guild = ?) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, wikiid, rcid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id, guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the RcGcDw: ' + dberror );
-			$('#text .description').text('Failed to load the recent changes webhooks!');
+			createNotice($, 'error');
+			$('#text .description').html(explanation);
+			$('#text code#server-id').text(guild.id);
 			$('.channel#rcscript').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -157,7 +182,9 @@ function dashboard_rcscript(res, $, guild, args) {
 			return res.end();
 		}
 		if ( rows.length === 0 ) {
-			$('#text .description').text(`You need to set up the server first: /guild/${guild.id}/settings`);
+			createNotice($, 'nosettings', [guild.id]);
+			$('#text .description').html(explanation);
+			$('#text code#server-id').text(guild.id);
 			$('.channel#rcscript').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -166,8 +193,9 @@ function dashboard_rcscript(res, $, guild, args) {
 		}
 		var wiki = rows[0].mainwiki;
 		var lang = rows[0].mainlang;
+		var allwikis = rows[0].allwikis.split(',').sort();
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
-		$('#text .description').text(`These are the recent changes webhooks for "${guild.name}":`);
+		$('<p>').text(`These are the recent changes webhooks for "${guild.name}":`).appendTo('#text .description');
 		Promise.all(rows.map( row => {
 			return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( response => {
 				if ( !response.body?.channel_id ) {
@@ -200,18 +228,19 @@ function dashboard_rcscript(res, $, guild, args) {
 				createForm($, 'New Recent Changes Webhook', {
 					wiki, lang: ( lang in allLangs.names ? lang : defaultSettings.lang ),
 					display: 1, patreon: guild.patreon
-				}, guild.channels).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
+				}, guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
 			}
 			else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 				let row = rows.find( row => row.configid.toString() === args[4] );
 				$(`.channel#channel-${row.configid}`).addClass('selected');
 				createForm($, `Recent Changes Webhook #${row.configid}`, Object.assign({
 					patreon: guild.patreon
-				}, row), guild.channels).attr('action', `/guild/${guild.id}/rcscript/${row.configid}`).appendTo('#text');
+				}, row), guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/${row.configid}`).appendTo('#text');
 			}
 			else {
 				$('.channel#rcscript').addClass('selected');
-				$('#text .description').text(`*Insert explanation about recent changes webhooks here*`);
+				$('#text .description').html(explanation);
+				$('#text code#server-id').text(guild.id);
 			}
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -380,7 +409,8 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								if ( wiki.isFandom(false) ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( wikiid ? 'enabled' : 'disabled' ))}\`*`;
 								text += `\n<${new URL(`/guild/${guild}/rcscript/${configid}`, process.env.dashboard).href}>`;
 								sendMsg( {
-									type: 'notifyGuild', guild, text
+									type: 'notifyGuild', guild, text,
+									file: [`./RcGcDb/locale/widgets/${settings.lang}.png`]
 								} ).catch( error => {
 									console.log( '- Dashboard: Error while notifying the guild: ' + error );
 								} );
@@ -573,6 +603,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								var lang = new Lang(row.mainlang);
 								var webhook_lang = new Lang(settings.lang, 'rcscript.webhook');
 								var diff = [];
+								var file = [];
 								var webhook_diff = [];
 								if ( newChannel ) {
 									diff.push(lang.get('rcscript.channel') + ` ~~<#${row.channel}>~~ → <#${settings.channel}>`);
@@ -583,6 +614,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									webhook_diff.push(webhook_lang.get('dashboard.wiki', `[${body.query.general.sitename}](<${wiki.href}>)`));
 								}
 								if ( row.lang !== settings.lang ) {
+									file.push(`./RcGcDb/locale/widgets/${settings.lang}.png`);
 									diff.push(lang.get('rcscript.lang') + ` ~~\`${allLangs.names[row.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
 									webhook_diff.push(webhook_lang.get('dashboard.lang', allLangs.names[settings.lang]));
 								}
@@ -612,7 +644,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									text += '\n' + diff.join('\n');
 									text += `\n<${new URL(`/guild/${guild}/rcscript/${type}`, process.env.dashboard).href}>`;
 									sendMsg( {
-										type: 'notifyGuild', guild, text
+										type: 'notifyGuild', guild, text, file
 									} ).catch( error => {
 										console.log( '- Dashboard: Error while notifying the guild: ' + error );
 									} );
@@ -643,7 +675,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									text += '\n' + diff.join('\n');
 									text += `\n<${new URL(`/guild/${guild}/rcscript/${type}`, process.env.dashboard).href}>`;
 									sendMsg( {
-										type: 'notifyGuild', guild, text
+										type: 'notifyGuild', guild, text, file
 									} ).catch( error => {
 										console.log( '- Dashboard: Error while notifying the guild: ' + error );
 									} );
@@ -664,7 +696,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								text += '\n' + diff.join('\n');
 								text += `\n<${new URL(`/guild/${guild}/rcscript/${type}`, process.env.dashboard).href}>`;
 								sendMsg( {
-									type: 'notifyGuild', guild, text
+									type: 'notifyGuild', guild, text, file
 								} ).catch( error => {
 									console.log( '- Dashboard: Error while notifying the guild: ' + error );
 								} );

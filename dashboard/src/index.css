@@ -35,12 +35,27 @@ a:hover .description,
 .notice a:hover {
 	text-decoration: underline;
 }
+code {
+	background: #2f3136;
+	padding: 1px 3px;
+	margin: -2px 0;
+	border: 1px solid #202225;
+	border-radius: 3px;
+	white-space: pre-wrap;
+	font-size: 120%;
+}
 #text {
 	position: relative;
 	padding: 8px;
 	width: calc(100% - 328px);
 	top: 48px;
 	left: 312px;
+}
+.user-select {
+	-webkit-user-select: all;
+	-moz-user-select: all;
+	-ms-user-select: all;
+	user-select: all;
 }
 .notice {
 	padding: 5px 10px;
@@ -50,17 +65,17 @@ a:hover .description,
 	width: fit-content;
 	border: 2px solid;
 }
-.notice-error {
-	background-color: #200;
-	border-color: #500;
+.notice-success {
+	background-color: #020;
+	border-color: #050;
 }
 .notice-info {
 	background-color: #220;
 	border-color: #550;
 }
-.notice-success {
-	background-color: #020;
-	border-color: #050;
+.notice-error {
+	background-color: #200;
+	border-color: #500;
 }
 .server-selector {
 	display: flex;
@@ -308,6 +323,7 @@ fieldset input:invalid {
 }
 .wb-settings-display:not(:first-of-type),
 .wb-settings-additional-select,
+#wb-settings-wiki-check-notice,
 button.addmore:not([hidden]) {
 	display: block;
 	margin-left: 20%;
@@ -322,6 +338,9 @@ button.addmore:not([hidden]) {
 	float: right;
 	color: red;
 	font-weight: bold;
+}
+#wb-settings-lang-widget {
+	vertical-align: top;
 }
 #login-button {
 	display: flex;
