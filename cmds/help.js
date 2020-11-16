@@ -93,7 +93,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			if ( !msg.channel.isGuild() || msg.isAdmin() ) {
 				var cmdlist = lang.get('help.admin') + '\n';
 				cmdlist += formathelp(helplist.admin, msg, lang);
-				cmdlist += '\n🔸 ' + lang.get('help.adminfooter');
+				cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
 				cmdlist += '\n\t\t' + new URL(( msg.channel.isGuild() ? `/guild/${msg.guild.id}/settings` : '/' ), process.env.dashboard).href;
 				msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 			}
