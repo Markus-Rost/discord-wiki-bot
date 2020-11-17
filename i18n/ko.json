@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "",
+        "revi",
         "",
         "",
         "",
@@ -111,6 +111,29 @@
             ""
         ]
     },
+    "dateformat": "ko-KR",
+    "diff": {
+        "badrev": "최소 한 개의 판이 존재하지 않습니다!",
+        "hidden": "*숨겨짐*",
+        "info": {
+            "added": "추가됨:",
+            "bytes": "$1 바이트",
+            "comment": "코멘트:",
+            "editor": "편집자:",
+            "removed": "삭제됨:",
+            "size": "차이:",
+            "tags": "태그:",
+            "timestamp": "편집 날짜:",
+            "whitespace": "공백만 있음"
+        },
+        "nocomment": "*설명이 제공되지 않음*"
+    },
+    "discussion": {
+        "image": "사진 보기",
+        "main": "토론",
+        "tags": "태그:",
+        "votes": "$1 투표"
+    },
     "fallback": [
         "",
         "",
@@ -118,6 +141,198 @@
         "",
         ""
     ],
+    "general": {
+        "default": "이 서버는 아직 설정되지 않았습니다. $1 명령어를 사용하거나 대시보드로 가서 설정을 변경하세요.",
+        "disclaimer": "저는 게임피디아나 팬덤 위키 같은 미디어위키 사이트를 검색하고 링크를 제공해 주는 작은 봇이에요. 문서에 대한 짧은 설명과 추가 정보를 제공해 주고, 넘겨주기와 인터위키 링크를 따라가기도 해요. $1 님이 저를 자바스크립트로 만들었어요.\n\nPatreon에서 저를 지원해 주실 수 있어요:",
+        "experimental": "** 이 기능은 실험 중입니다! 정상 작동하지 않을 수도 있고 나중에 삭제될 수도 있습니다.**",
+        "helpserver": "질문이 있거나 문제가 있으면 지원을 위한 서버에 방문해 주세요:",
+        "limit": "🚨 ** 멈추세요. 한도를 넘었어요!** 🚨\n\n$1 님, 메시지에 너무 많은 명령어가 들어 있어요!",
+        "missingperm": "이 명령어를 사용하려면 다음 권한이 필요해요:",
+        "patreon": "이 기능은 Patreon 전용 기능이에요!\nPatreon에서 저를 도와주면 이 기능을 사용할 수 있어요.",
+        "prefix": "이 서버의 접두사는 `$1` 이에요. `$1settings 접두사` 명령어로 접두사를 바꿀 수 있어요. 모든 명령어의 목록은 `$1help`에서 볼 수 있어요.",
+        "readonly": "**데이터베이스가 현재 읽기 전용이라, 지금은 설정을 변경할 수 없어요!**"
+    },
+    "help": {
+        "admin": "이 명령어는 관리자만 수행할 수 있어요:",
+        "adminfooter": "관리자는 대시보드에서도 설정을 바꿀 수 있어요:",
+        "all": "아, 제가 할 수 있는 일에 대해서 알고 싶으신 거죠? 여기 제가 이해하는 모든 명령어의 목록이에요:",
+        "footer": "원치 않는 응답을 받았다면, 🗑️ (`:wastebasket:`) 반응을 추가하면 삭제할게요.",
+        "list": {
+            "default": {
+                "cmd": "<검색어>",
+                "desc": "검색 결과에 맞는 위키 문서의 링크를 답변해 드려요."
+            },
+            "diff": {
+                "id": {
+                    "cmd": "diff <diff> [<oldid>]",
+                    "desc": "위키의 차이 링크를 답변해 드려요."
+                },
+                "name": {
+                    "cmd": "diff <문서 제목>",
+                    "desc": "문서의 가장 최근 차이를 답변해 드려요."
+                }
+            },
+            "discussion": {
+                "post": {
+                    "cmd": "discussion post <검색어>",
+                    "desc": "팬덤 위키에서 검색되는 토론 게시글의 링크를 답변해 드려요."
+                },
+                "thread": {
+                    "cmd": "discussion <검색어>",
+                    "desc": "팬덤 위키에서 검색되는 토론 스레드의 링크를 답변해 드려요."
+                }
+            },
+            "fandom": {
+                "cmd": "?<위키> <검색어>",
+                "desc": "`https://<위키>.fandom.com/`에 맞는 팬덤 위키에서 검색되는 문서의 링크를 답변해 드려요"
+            },
+            "gamepedia": {
+                "cmd": "!<위키> <검색어>",
+                "desc": "`https://<위키>.gamepedia.com/` 에 맞는 게임피디아 위키에서 검색되는 문서의 링크를 답변해 드려요"
+            },
+            "help": {
+                "admin": {
+                    "cmd": "help admin",
+                    "desc": "모든 관리자 명령어를 답변해 드려요."
+                },
+                "command": {
+                    "cmd": "help <봇 명령어>",
+                    "desc": "명령어가 어떻게 작동하는지 궁금하신가요? 설명해 드릴게요!"
+                },
+                "default": {
+                    "cmd": "help",
+                    "desc": "제가 이해하는 모든 명령어를 목록으로 드릴게요."
+                }
+            },
+            "info": {
+                "cmd": "info",
+                "desc": "제 소개를 해 볼게요."
+            },
+            "inline": {
+                "link": {
+                    "cmd": "[[<문서 이름>]]",
+                    "desc": "위키 문서로 가는 직 링크를 답변해 드릴게요."
+                },
+                "template": {
+                    "cmd": "{{<문서 이름>}}",
+                    "desc": "위키 문서로 가는 링크를 답변해 드릴게요."
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "cmd": "bug <마인크래프트 버그>",
+                    "desc": "마인크래프트 버그 추적기의 해당 버그로 가는 링크를 답변해 드릴게요."
+                },
+                "command": {
+                    "cmd": "command <마인크래프트 명령어>",
+                    "desc": "마인크래프트 명령어의 구조와 해당 명령어에 대응하는 마인크래프트 위키의 문서 링크를 드릴게요."
+                },
+                "default": {
+                    "cmd": "/<마인크래프트 명령어>",
+                    "desc": "마인크래프트 명령어의 구조와 해당 명령어에 대응하는 마인크래프트 위키의 문서 링크를 드릴게요."
+                }
+            },
+            "mwprojects": {
+                "cmd": "!!<위키> <검색어>",
+                "desc": "해당하는 미디어위키 프로젝트에서 검색되는 문서의 링크를 드릴게요. 예시: `$1!!ko.wikipedia.org 쿠키`"
+            },
+            "overview": {
+                "cmd": "overview",
+                "desc": "위키의 몇몇 정보와 통계를 보여드릴게요."
+            },
+            "page": {
+                "cmd": "page <문서 이름>",
+                "desc": "해당 문서의 직 링크를 답변해 드릴게요."
+            },
+            "pause": {
+                "active": {
+                    "cmd": "pause $1",
+                    "desc": "이제 다시 이 서버의 명령에 응답할게요."
+                },
+                "inactive": {
+                    "cmd": "pause $1",
+                    "desc": "몇몇 관리자 명령어를 제외하고 이 서버의 모든 명령을 무시할게요."
+                }
+            },
+            "random": {
+                "cmd": "random",
+                "desc": "위키의 임의 문서 링크를 드릴게요."
+            },
+            "rcscript": {
+                "add": {
+                    "cmd": "rcscript add [<위키>]",
+                    "desc": "새 최근 바뀜 웹훅을 추가할게요."
+                },
+                "default": {
+                    "cmd": "rcscript",
+                    "desc": "최근 바뀜 웹훅을 변경할게요."
+                },
+                "delete": {
+                    "cmd": "rcscript delete",
+                    "desc": "최근 바뀜 웹훅을 삭제할게요."
+                },
+                "display": {
+                    "cmd": "rcscript display <새 표시 모드>",
+                    "desc": "최근 바뀜 웹훅의 표시 모드를 변경할게요."
+                },
+                "feeds": {
+                    "cmd": "rcscript feeds",
+                    "desc": "최근 바뀜 웹훅에서 팬덤 위키의 토론 편집 표시 여부를 변경할게요."
+                },
+                "lang": {
+                    "cmd": "rcscript lang <새 언어>",
+                    "desc": "최근 바뀜 웹훅의 언어 설정을 변경할게요."
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <새 위키>",
+                    "desc": "최근 바뀜 웹훅의 위키를 변경할게요."
+                }
+            },
+            "search": {
+                "cmd": "search <검색어>",
+                "desc": "위키에서 검색어를 검색하는 직링크를 드릴게요."
+            },
+            "settings": {
+                "channel": {
+                    "cmd": "settings channel",
+                    "desc": "이 채널에서 명령 덮어쓰기 값을 변경할게요."
+                },
+                "default": {
+                    "cmd": "settings",
+                    "desc": "이 서버의 설정을 변경할게요."
+                },
+                "inline": {
+                    "cmd": "settings inline toggle",
+                    "desc": "이 서버에서 인라인 명령어 설정을 변경할게요."
+                },
+                "lang": {
+                    "cmd": "settings lang <언어>",
+                    "desc": "이 서버의 언어 설정을 변경할게요."
+                },
+                "prefix": {
+                    "cmd": "settings prefix <접두사>",
+                    "desc": "이 서버의 접두사 설정을 변경할게요."
+                },
+                "wiki": {
+                    "cmd": "settings wiki <위키>",
+                    "desc": "이 서버의 기본 위키를 변경할게요."
+                }
+            },
+            "test": {
+                "cmd": "test",
+                "desc": "제가 일을 하고 있으면 답변해 드릴게요! 아님 말고요."
+            },
+            "user": {
+                "cmd": "User:<사용자이름>",
+                "desc": "사용자에 대한 몇몇 정보를 보여줄게요."
+            },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <계정 생성 후 시간>"
+                }
+            }
+        }
+    },
     "test": {
         "text": [
             "",
