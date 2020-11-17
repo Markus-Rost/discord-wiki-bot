@@ -86,7 +86,7 @@
             "pesquisar",
             "pesquisa",
             "procurar",
-            " ",
+            "busca",
             " "
         ],
         "test": [
@@ -117,21 +117,21 @@
         "hidden": "*oculto*",
         "info": {
             "added": "Adicionado:",
-            "bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
-            "comment": "Comentário:",
+            "bytes": "$1 {{PLURAL:$1|byte|bytes}}",
+            "comment": "Resumo:",
             "editor": "Editor:",
             "more": "E mais",
             "removed": "Removido:",
             "size": "Diferença:",
             "tags": "Etiquetas:",
-            "timestamp": "Editar data:",
+            "timestamp": "Data da edição:",
             "whitespace": "Apenas espaço em branco"
         },
-        "nocomment": "*Nenhuma descrição fornecida*"
+        "nocomment": "*Nenhum resumo fornecido*"
     },
     "discussion": {
-        "image": "Ver imagem",
-        "main": "Discussãos",
+        "image": "Abrir imagem",
+        "main": "Discussões",
         "post": "post",
         "tags": "Etiquetas:",
         "votes": "$1 {{PLURAL:$1|voto|votos}}"
@@ -144,6 +144,7 @@
         " "
     ],
     "general": {
+        "default": "este servidor ainda não está configurado. Use $1 ou o painel para alterar as configurações.",
         "disclaimer": "Eu sou um robô com a tarefa de vincular sites com Mediawiki como as wikis da Gamepedia e da Fandom. Mostro descrições curtas e informações adicionais sobre as páginas e sou capaz de resolver redirecionamentos e seguir os links de interwiki. $1 me escreveu em JavaScript.\n\nVocê pode me apoiar no Patreon:",
         "experimental": "**Este recurso é experimental! Não é garantido que funcione corretamente e pode ser removido no futuro.**",
         "helpserver": "Para dúvidas e problemas, visite o meu servidor de suporte:",
@@ -155,12 +156,13 @@
     },
     "help": {
         "admin": "Esses comandos só podem ser executados por administradores:",
+        "adminfooter": "Administradores também podem usar o dashboard para alterar as configurações do robô:",
         "all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os meus comandos:",
-        "footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ (`:wastebasket:`) para minha mensagem e eu a apagarei.",
+        "footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ (`:wastebasket:`) na minha mensagem e eu a apagarei.",
         "list": {
             "default": {
                 "cmd": "<termo de pesquisa>",
-                "desc": "Vou responder com um link para um artigo correspondente no wiki."
+                "desc": "Vou responder com um link para um artigo correspondente na wiki."
             },
             "diff": {
                 "id": {
@@ -184,11 +186,11 @@
             },
             "fandom": {
                 "cmd": "?<wiki> <termo de pesquisa>",
-                "desc": "Vou responder com um link para um artigo correspondente na wiki da Fandom: `https://<wiki>.fandom.com/`"
+                "desc": "Vou responder com um link para um artigo correspondente em uma wiki da Fandom: `https://<wiki>.fandom.com/`"
             },
             "gamepedia": {
                 "cmd": "!<wiki> <termo de pesquisa>",
-                "desc": "Vou responder com um link para um artigo correspondente na wiki da Gamepedia: `https://<wiki>.gamepedia.com/`"
+                "desc": "Vou responder com um link para um artigo correspondente em uma wiki da Gamepedia: `https://<wiki>.gamepedia.com/`"
             },
             "help": {
                 "admin": {
@@ -247,7 +249,7 @@
             "pause": {
                 "active": {
                     "cmd": "pause $1",
-                    "desc": "Vou responder a todos os comandos neste servidor mais uma vez."
+                    "desc": "Vou voltar a responder a todos os comandos neste servidor."
                 },
                 "inactive": {
                     "cmd": "pause $1",
@@ -440,7 +442,7 @@
         "current": "estas são as webhooks para as mudanças recentes para este servidor:",
         "current_display": "o modo de exibição para este webhook é:",
         "current_lang": "o idioma para este webhook é:",
-        "current_selected": "estas são as mudanças recentes no webhook para este servidor:",
+        "current_selected": "estas são as mudanças recentes no webhook `$1` para este servidor:",
         "current_wiki": "a wiki para este webhook é:",
         "dashboard": {
             "added": "$1 adicionou o webhook das mudanças recentes com id `$2`.",
