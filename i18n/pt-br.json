@@ -156,13 +156,13 @@
     },
     "help": {
         "admin": "Esses comandos só podem ser executados por administradores:",
-        "adminfooter": "Os administradores também podem usar o painel para alterar as configurações do robô:",
+        "adminfooter": "Administradores também podem usar o dashboard para alterar as configurações do robô:",
         "all": "Então, você quer saber o que eu posso fazer? Aqui está uma lista de todos os meus comandos:",
-        "footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ (`:wastebasket:`) para minha mensagem e eu a apagarei.",
+        "footer": "Se você recebeu uma resposta indesejada, pode reagir com 🗑️ (`:wastebasket:`) na minha mensagem e eu a apagarei.",
         "list": {
             "default": {
                 "cmd": "<termo de pesquisa>",
-                "desc": "Vou responder com um link para um artigo correspondente no wiki."
+                "desc": "Vou responder com um link para um artigo correspondente na wiki."
             },
             "diff": {
                 "id": {
@@ -186,11 +186,11 @@
             },
             "fandom": {
                 "cmd": "?<wiki> <termo de pesquisa>",
-                "desc": "Vou responder com um link para um artigo correspondente na wiki da Fandom: `https://<wiki>.fandom.com/`"
+                "desc": "Vou responder com um link para um artigo correspondente em uma wiki da Fandom: `https://<wiki>.fandom.com/`"
             },
             "gamepedia": {
                 "cmd": "!<wiki> <termo de pesquisa>",
-                "desc": "Vou responder com um link para um artigo correspondente na wiki da Gamepedia: `https://<wiki>.gamepedia.com/`"
+                "desc": "Vou responder com um link para um artigo correspondente em uma wiki da Gamepedia: `https://<wiki>.gamepedia.com/`"
             },
             "help": {
                 "admin": {
@@ -249,7 +249,7 @@
             "pause": {
                 "active": {
                     "cmd": "pause $1",
-                    "desc": "Vou responder a todos os comandos neste servidor mais uma vez."
+                    "desc": "Vou voltar a responder a todos os comandos neste servidor."
                 },
                 "inactive": {
                     "cmd": "pause $1",
