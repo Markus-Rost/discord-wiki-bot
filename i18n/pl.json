@@ -144,6 +144,7 @@
         " "
     ],
     "general": {
+        "default": "ten serwer nie został jeszcze skonfigurowany. Użyj $1 lub panelu sterowania aby zmienić ustawienia.",
         "disclaimer": "Jestem małym botem, którego zadaniem jest linkowanie do stron i wyszukiwanie na różnych wiki działających na MediaWiki, takich jak Gamepedia oraz Fandom. Wyświetlam krótkie opisy i dodatkowe informacje o stronach, a także jestem w stanie śledzić przekierowania. Zostałem napisany w języku JavaScript przez $1.\n\nMożesz wesprzeć mnie na Patreonie:",
         "experimental": "**Ta funkcja jest w fazie eksperymentalnej! Może nie działać poprawnie bądź zostać usunięta w przyszłości.**",
         "helpserver": "W przypadku pytań lub problemów odwiedź mój serwer:",
@@ -155,6 +156,7 @@
     },
     "help": {
         "admin": "Te komendy mogą być wykonane jedynie przez administrację:",
+        "adminfooter": "Administratorzy mogą również użyć panelu sterowania do zmiany ustawień bota:",
         "all": "A więc chcesz wiedzieć, co potrafię? Tutaj jest lista komend, które rozumiem:",
         "footer": "Jeżeli otrzymałeś niechcianą odpowiedź, możesz na nią zareagować używając emoji 🗑️ (`:wastebasket:`), a wiadomość zostanie usunięta.",
         "list": {
@@ -433,14 +435,18 @@
         "all_inactive": "śledzenie ostatnich zmian oraz dyskusji nie może być wyłączone jednocześnie.",
         "audit_reason": "Webhook ostatnich zmian dla „$1”",
         "audit_reason_delete": "Usunięto webhook ostatnich zmian",
+        "audit_reason_move": "Przeniesiono webhook ostatnich zmian",
         "blocked": "ta wiki nie może zostać dodana do webhooka ostatnich zmian gdyż została zablokowana!",
         "blocked_reason": "zablokowano możliwość dodawania tej wiki do webhooka ostatnich zmian z powodu `$1`!",
         "channel": "Kanał:",
         "current": "to są istniejące webhooki ostatnich zmian dla tego serwera:",
         "current_display": "tryb wyświetlania webhooka jest ustawiony na:",
         "current_lang": "językiem tego webhooka jest:",
-        "current_selected": "to jest webhook ostatnich zmian dla tego serwera:",
+        "current_selected": "to jest webhook ostatnich zmian `$1` dla tego serwera:",
         "current_wiki": "wiki dla tego webhooka to:",
+        "dashboard": {
+            "added": "$1 dodał webhook ostatnich zmian z identyfikatorem `$2`."
+        },
         "delete": "Usuń ten webhook ostatnich zmian:",
         "deleted": "webhook ostatnich zmian został usunięty.",
         "disabled": "wyłączone",
