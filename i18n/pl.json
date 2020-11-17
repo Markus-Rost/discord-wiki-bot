@@ -445,7 +445,9 @@
         "current_selected": "to jest webhook ostatnich zmian `$1` dla tego serwera:",
         "current_wiki": "wiki dla tego webhooka to:",
         "dashboard": {
-            "added": "$1 dodał webhook ostatnich zmian z identyfikatorem `$2`."
+            "added": "$1 dodał webhook ostatnich zmian z identyfikatorem `$2`.",
+            "removed": "$1 usunął webhook ostatnich zmian z identyfikatorem `$2`.",
+            "updated": "$1 zaktualizował webhook ostatnich zmian z identyfikatorem `$2`."
         },
         "delete": "Usuń ten webhook ostatnich zmian:",
         "deleted": "webhook ostatnich zmian został usunięty.",
@@ -482,6 +484,9 @@
             "blocked": "Webhook ostatnich zmian dla tej wiki zostanie usunięty gdyż wiki została zablokowana!",
             "blocked_reason": "Ten webhook ostatnich zmian zostanie usunięty gdyż wiki została zablokowana za `$1`!",
             "created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
+            "dashboard": {
+                "channel": "• Webhook został przeniesiony do tego kanału."
+            },
             "deleted": "Ten webhook ostatnich zmian zostanie usunięty.",
             "disabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały wyłączone dla tego webhooka ostatnich zmian.",
             "disabled_rc": "Śledzenie ostatnich zmian zostało wyłączone dla tego webhooka.",
