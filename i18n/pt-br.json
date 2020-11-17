@@ -86,7 +86,7 @@
             "pesquisar",
             "pesquisa",
             "procurar",
-            " ",
+            "busca",
             " "
         ],
         "test": [
@@ -117,21 +117,21 @@
         "hidden": "*oculto*",
         "info": {
             "added": "Adicionado:",
-            "bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
-            "comment": "Comentário:",
+            "bytes": "$1 {{PLURAL:$1|byte|bytes}}",
+            "comment": "Resumo:",
             "editor": "Editor:",
             "more": "E mais",
             "removed": "Removido:",
             "size": "Diferença:",
             "tags": "Etiquetas:",
-            "timestamp": "Editar data:",
+            "timestamp": "Data da edição:",
             "whitespace": "Apenas espaço em branco"
         },
-        "nocomment": "*Nenhuma descrição fornecida*"
+        "nocomment": "*Nenhum resumo fornecido*"
     },
     "discussion": {
-        "image": "Ver imagem",
-        "main": "Discussãos",
+        "image": "Abrir imagem",
+        "main": "Discussões",
         "post": "post",
         "tags": "Etiquetas:",
         "votes": "$1 {{PLURAL:$1|voto|votos}}"
