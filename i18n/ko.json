@@ -444,7 +444,21 @@
         },
         "delete": "이 최근 바뀜 웹훅을 삭제합니다.",
         "deleted": "최근 바뀜 웹훅이 삭제되었습니다.",
-        "disabled": "비활성화됨"
+        "disabled": "비활성화됨",
+        "disabled_feeds": "토론, 메시지 담벼락, 문서 댓글과 같은 기능을 위한 피드 기반 바뀜 기능이 비활성화되었습니다.",
+        "disabled_rc": "이 웹훅의 위키 최근 바뀜이 비활성화되었습니다.",
+        "display": "표시 모드:",
+        "enabled": "활성화됨",
+        "enabled_feeds": "토론, 메시지 담벼락, 문서 댓글과 같은 기능을 위한 피드 기반 바뀜 기능이 활성화되었습니다.",
+        "enabled_rc": "이 웹훅의 위키 최근 바뀜이 활성화되었습니다.",
+        "feeds": "피드 기반 변경:",
+        "help_display_compact": "인라인 링크가 포함된 글 메시지를 압축합니다.",
+        "help_display_diff": "사진 미리보기와 편집 차이가 포함된 메시지 임베드를 표시합니다.",
+        "help_display_embed": "편집 태그와 분류 변경이 포함된 메시지 임베드를 표시합니다.",
+        "help_display_image": "사진 미리보기가 포함된 메시지 임베드를 표시합니다.",
+        "help_lang": "현재 지원되는 언어는 다음과 같습니다.",
+        "help_wiki": "`https://<위키>.gamepedia.com/` 또는 `https://<위키>.fandom.com/`과 같은 미디어위키 사이트를 연결합니다",
+        "lang": "언어:"
     },
     "test": {
         "text": [
