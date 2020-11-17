@@ -76,7 +76,7 @@
             " "
         ],
         "random": [
-            "",
+            "aleatoria",
             " ",
             " ",
             " ",
@@ -112,6 +112,28 @@
         ]
     },
     "dateformat": "en-US",
+    "diff": {
+        "badrev": "¡al menos una edición no existe!",
+        "hidden": "*oculto*",
+        "info": {
+            "added": "Añadido:",
+            "comment": "Comentario:",
+            "editor": "Editor:",
+            "more": "Y más",
+            "removed": "Eliminado:",
+            "size": "Diferencia:",
+            "tags": "Etiquetas:",
+            "timestamp": "Fecha de edición:",
+            "whitespace": "Solo espacios en blanco"
+        },
+        "nocomment": "*No se genero descripción*"
+    },
+    "discussion": {
+        "image": "Ver Imagen",
+        "main": "Discusiones",
+        "post": "publicación",
+        "tags": "Etiquetas:"
+    },
     "fallback": [
         "en",
         " ",
@@ -119,6 +141,158 @@
         " ",
         " "
     ],
+    "general": {
+        "default": "este servidor aún no está configurado. Usa $1 o el panel de control para cambiar la configuración.",
+        "disclaimer": "Soy un pequeño bot creado con el propósito de vincular y buscar fácilmente sitios de MediaWiki como Gamepedia y wikis de Fandom. Muestro breves descripciones e información adicional sobre las páginas y puedo resolver redireccionamientos y seguir enlaces interwiki. $1 me escribió en JavaScript.\n\nPuedes apoyarme en Patreon:",
+        "experimental": "**¡Esta función es experimental! No se garantiza que funcione correctamente y puede eliminarse en el futuro.**",
+        "helpserver": "Si tienes preguntas o problemas, visita mi servidor de soporte:",
+        "limit": "🚨 ** ¡Detente, has llegado al límite! ** 🚨\n\n$ 1, ¡tu mensaje contenía demasiados comandos!",
+        "missingperm": "Me faltan algunos permisos para este comando:",
+        "patreon": "¡esta es una función exclusiva de Patreon!\nPuedes apoyarme en Patreon para acceder a esta función:",
+        "prefix": "el prefijo de este servidor es `$1`. Puedes cambiar el prefijo con `$1settings prefix`. Para obtener una lista de todos los comandos, consulta `$1help`.",
+        "readonly": "**la base de datos está actualmente en modo de solo lectura, ¡no puedes cambiar ninguna configuración en este momento!**"
+    },
+    "help": {
+        "admin": "Estos comandos solo pueden ser ejecutados por administradores:",
+        "adminfooter": "Los administradores también pueden usar el panel de control para cambiar la configuración del bot:",
+        "all": "Entonces, ¿quieres saber qué cosas puedo hacer? Aquí hay una lista de todos los comandos que entiendo:",
+        "footer": "Si recibiste una respuesta no deseada, puedes reaccionar con 🗑️ (`: wastebasket:`) a mi mensaje y lo eliminaré.",
+        "list": {
+            "default": {
+                "cmd": "<término de búsqueda>",
+                "desc": "Responderé con un enlace a un artículo que coincida en el wiki."
+            },
+            "diff": {
+                "id": {
+                    "cmd": "diff <diff> [<oldid>",
+                    "desc": "Responderé con un enlace al dif en el wiki."
+                },
+                "name": {
+                    "cmd": "dif <nombre de página>",
+                    "desc": "Responderé con un enlace al último dif del artículo en el wiki."
+                }
+            },
+            "discussion": {
+                "post": {
+                    "desc": "Responderé con un enlace a una publicación de la página discusiones que coincida en el wiki de Fandom."
+                },
+                "thread": {
+                    "desc": "Responderé con un enlace a un hilo de la página de discusiones que coincida en el wiki de Fandom."
+                }
+            },
+            "fandom": {
+                "desc": "Responderé con un enlace a un artículo que coincida en el wiki de Fandom llamado: `https://<wiki>.fandom.com/`"
+            },
+            "gamepedia": {
+                "desc": "Responderé con un enlace a un artículo que coincida en el wiki de Gamepedia llamado: `https://<wiki>.gamepedia.com/`"
+            },
+            "help": {
+                "admin": {
+                    "desc": "Haré una lista de todos los comandos de administrador."
+                },
+                "command": {
+                    "desc": "¿Te preguntas cómo funciona un comando? ¡Déjame explicarte!"
+                },
+                "default": {
+                    "desc": "Haré una lista de todos los comandos que entiendo."
+                }
+            },
+            "info": {
+                "desc": "Me presentaré."
+            },
+            "inline": {
+                "link": {
+                    "desc": "Responderé con un enlace directo al artículo en el wiki."
+                },
+                "template": {
+                    "desc": "Responderé con un enlace al artículo en el wiki."
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "desc": "Responderé con un enlace al error en el rastreador de errores de Minecraft."
+                },
+                "command": {
+                    "desc": "Responderé con la sintaxis del comando de Minecraft y un enlace al artículo del comando en Minecraft Wiki."
+                },
+                "default": {
+                    "desc": "Responderé con la sintaxis del comando de Minecraft y un enlace al artículo del comando en Minecraft Wiki."
+                }
+            },
+            "mwprojects": {
+                "desc": "Responderé con un enlace a un artículo que coincida en el proyecto MediaWiki. Ejemplo: `$1!!en.wikipedia.org Cookie`"
+            },
+            "overview": {
+                "desc": "Mostraré información y estadísticas sobre el wiki."
+            },
+            "page": {
+                "desc": "Responderé con un enlace directo al artículo en el wiki."
+            },
+            "pause": {
+                "active": {
+                    "desc": "Volveré a responder a todos los comandos de este servidor."
+                },
+                "inactive": {
+                    "desc": "Ignoraré todos los comandos en este servidor, excepto algunos comandos de administrador."
+                }
+            },
+            "random": {
+                "desc": "Responderé con un enlace a una página aleatoria en el wiki."
+            },
+            "rcscript": {
+                "add": {
+                    "desc": "Agregaré un nuevo webhook de cambios recientes."
+                },
+                "default": {
+                    "desc": "Cambiaré el webhook de cambios recientes."
+                },
+                "delete": {
+                    "desc": "Eliminaré el webhook de cambios recientes."
+                },
+                "display": {
+                    "desc": "Cambiaré el modo de visualización del webhook de cambios recientes."
+                },
+                "feeds": {
+                    "desc": "Enviaré los cambios de la página de discusiones de un wiki de Fandom al webhook de cambios recientes."
+                },
+                "lang": {
+                    "desc": "Cambiaré el idioma del webhook de cambios recientes."
+                },
+                "wiki": {
+                    "desc": "Cambiaré el wiki del webhook de cambios recientes."
+                }
+            },
+            "search": {
+                "desc": "Responderé con un enlace directo a la página de búsqueda del artículo en el wiki."
+            },
+            "settings": {
+                "channel": {
+                    "desc": "Cambiaré las sobrescrituras del canal actual."
+                },
+                "default": {
+                    "desc": "Cambiaré la configuración de este servidor."
+                },
+                "inline": {
+                    "desc": "Cambiaré los comandos inline de este servidor."
+                },
+                "lang": {
+                    "desc": "Cambiaré el idioma de este servidor."
+                },
+                "prefix": {
+                    "desc": "Cambiaré el prefijo de este servidor."
+                },
+                "wiki": {
+                    "desc": "Cambiaré el wiki predeterminado de este servidor."
+                }
+            },
+            "test": {
+                "desc": "¡Si estoy activo, responderé! De lo contrario no."
+            },
+            "user": {
+                "desc": "Mostraré información sobre el usuario."
+            }
+        }
+    },
     "test": {
         "text": [
             "",
