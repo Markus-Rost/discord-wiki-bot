@@ -13,63 +13,63 @@
     ],
     "aliases": {
         "bug": [
-            "",
+            "error",
             " ",
             " ",
             " ",
             " "
         ],
         "command": [
-            "",
+            "comando",
             " ",
             " ",
             " ",
             " "
         ],
         "diff": [
-            "",
+            "dif",
             " ",
             " ",
             " ",
             " "
         ],
         "discussion": [
-            "",
+            "discusiones",
             " ",
             " ",
             " ",
             " "
         ],
         "help": [
-            "",
+            "ayuda",
             " ",
             " ",
             " ",
             " "
         ],
         "info": [
-            "",
+            "info",
             " ",
             " ",
             " ",
             " "
         ],
         "invite": [
-            "",
+            "invita",
             " ",
             " ",
             " ",
             " "
         ],
         "overview": [
-            "",
+            "resumen",
             " ",
             " ",
             " ",
             " "
         ],
         "page": [
-            "",
+            "página",
             " ",
             " ",
             " ",
@@ -83,34 +83,35 @@
             " "
         ],
         "search": [
-            "",
+            "búsqueda",
             " ",
             " ",
             " ",
             " "
         ],
         "test": [
-            "",
+            "prueba",
             " ",
             " ",
             " ",
             " "
         ],
         "user": [
-            "",
+            "usuario",
             " ",
             " ",
             " ",
             " "
         ],
         "verify": [
-            "",
+            "verificar",
             " ",
             " ",
             " ",
             " "
         ]
     },
+    "dateformat": "en-US",
     "fallback": [
         "en",
         " ",
