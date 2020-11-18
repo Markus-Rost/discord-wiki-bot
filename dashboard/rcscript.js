@@ -594,7 +594,13 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						 * @param {Number} wikiid - The ID of the wiki.
 						 */
 						function updateWebhook(wikiid = null) {
-							db.run( 'UPDATE rcgcdw SET wiki = ?, lang = ?, display = ?, wikiid = ?, rcid = ? WHERE webhook = ?', [wiki.href, settings.lang, settings.display, wikiid, ( wikiid && settings.feeds_only ? -1 : null ), row.webhook], function (dberror) {
+							var sql = 'UPDATE rcgcdw SET wiki = ?, lang = ?, display = ?, wikiid = ? WHERE webhook = ?';
+							var sqlargs = [wiki.href, settings.lang, settings.display, wikiid];
+							if ( wikiid && settings.feeds_only ) {
+								sql = 'UPDATE rcgcdw SET wiki = ?, lang = ?, display = ?, wikiid = ?, rcid = ? WHERE webhook = ?';
+								sqlargs.push(-1);
+							}
+							db.run( sql, [...sqlargs, row.webhook], function (dberror) {
 								if ( dberror ) {
 									console.log( '- Dashboard: Error while updating the RcGcDw: ' + dberror );
 									return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
