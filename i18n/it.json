@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "",
+        "Raffox97",
         " ",
         " ",
         " ",
@@ -13,7 +13,7 @@
     ],
     "aliases": {
         "bug": [
-            "",
+            "bug",
             " ",
             " ",
             " ",
@@ -111,6 +111,31 @@
             " "
         ]
     },
+    "dateformat": "it-IT",
+    "diff": {
+        "badrev": "almeno una revisione non esiste!",
+        "hidden": "*nascosta*",
+        "info": {
+            "added": "Aggiunto:",
+            "bytes": "$1 Byte",
+            "comment": "Commento:",
+            "editor": "Editore:",
+            "more": "Ed altro ancora",
+            "removed": "Rimosso:",
+            "size": "Differenza:",
+            "tags": "Tag:",
+            "timestamp": "Data di modifica:",
+            "whitespace": "Solo spazi bianchi"
+        },
+        "nocomment": "*Nessuna descrizione fornita*"
+    },
+    "discussion": {
+        "image": "Vedi immagine",
+        "main": "Discussioni",
+        "post": "post",
+        "tags": "Tag:",
+        "votes": "$1 {{PLURAL:$1|voto|voti}}"
+    },
     "fallback": [
         "en",
         " ",
@@ -118,6 +143,154 @@
         " ",
         " "
     ],
+    "general": {
+        "default": "questo server non è ancora impostato. Usa $1 o la dashboard per cambiare le impostazioni.",
+        "disclaimer": "Sono un piccolo bot con lo scopo di facilitare i collegamenti e la ricerca in siti MediaWiki come i wiki Gamepedia e Fandom. Mostro delle piccole descrizioni ed informazioni aggiuntive riguardo le pagine ed inoltre sono capace di risolvere rinvii e seguire collegamenti interwiki. $1 mi ha scritto in JavaScript.\n\nPuoi supportarmi su Patreon:",
+        "experimental": "**Questa funzione è sperimentale! Non è garantito il suo corretto funzionamento e potrebbe essere rimossa in futuro.**",
+        "helpserver": "Per domande e problemi visita il mio server di supporto:",
+        "limit": "🚨 **Stop, hai raggiunto il limite!** 🚨\n\n$1, il tuo messaggio contiene troppi comandi!",
+        "missingperm": "Mi mancano alcuni permessi per questo comando:",
+        "patreon": "questa è una funzione esclusiva per i Patreon!\nPuoi supportarmi su Patreon per avere accesso a questa funzione:",
+        "prefix": "il prefisso per questo server è `$1`. Puoi cambiare il prefisso con `$1settings prefix`. Per un elenco di tutti i comandi vedi `$1help`.",
+        "readonly": "**il database è attualmente nella modalità di sola lettura, non puoi cambiare alcuna impostazione per adesso!**"
+    },
+    "help": {
+        "admin": "Questi comandi possono essere eseguiti solo dagli amministratori:",
+        "adminfooter": "Gli amministratori possono anche usare la dashboard per cambiare le impostazioni del bot:",
+        "all": "Quindi, vuoi sapere quali cose so fare? Ecco un elenco di tutti i comandi che capisco:",
+        "footer": "Se hai ricevuto una risposta non voluta, puoi reagire con 🗑️ (`:wastebasket:`) al mio messaggio e lo cancellerò.",
+        "list": {
+            "default": {
+                "cmd": "<termine di ricerca>",
+                "desc": "Ti risponderò con un collegamento all'articolo corrispondente nel wiki."
+            },
+            "diff": {
+                "id": {
+                    "cmd": "diff <diff> [<oldid>]",
+                    "desc": "Ti risponderò con un collegamento alla diff nel wiki."
+                },
+                "name": {
+                    "cmd": "diff <nome pagina>",
+                    "desc": "Ti risponderò con un collegamento all'ultima diff dell'articolo nel wiki."
+                }
+            },
+            "discussion": {
+                "post": {
+                    "cmd": "discussion post <termine di ricerca>",
+                    "desc": "Ti risponderò con un collegamento al post della discussione corrispondente nel wiki Fandom."
+                },
+                "thread": {
+                    "cmd": "discussion <termine di ricerca>",
+                    "desc": "Ti risponderò con un collegamento al thread della discussione corrispondente nel wiki Fandom."
+                }
+            },
+            "fandom": {
+                "cmd": "?<wiki> <termine di ricerca>",
+                "desc": "Ti risponderò con un collegamento all'articolo corrispondente nel wiki Fandom nominato: `https://<wiki>.fandom.com/`"
+            },
+            "gamepedia": {
+                "cmd": "!<wiki> <termine di ricerca>",
+                "desc": "Ti risponderò con un collegamento all'articolo corrispondente nel wiki Gamepedia nominato: `https://<wiki>.gamepedia.com/`"
+            },
+            "help": {
+                "admin": {
+                    "cmd": "help admin",
+                    "desc": "Elencherò tutti i comandi da amministratore."
+                },
+                "command": {
+                    "cmd": "help <comando bot>",
+                    "desc": "Vuoi sapere come funziona un comando? Lascia che te lo spieghi!"
+                },
+                "default": {
+                    "cmd": "help",
+                    "desc": "Elencherò tutti i comandi che capisco."
+                }
+            },
+            "info": {
+                "cmd": "info",
+                "desc": "Mi presento."
+            },
+            "inline": {
+                "link": {
+                    "cmd": "[[<nome pagina>]]",
+                    "desc": "Ti risponderò con un collegamento diretto all'articolo nel wiki."
+                },
+                "template": {
+                    "cmd": "{{<nome pagina>}}",
+                    "desc": "Ti risponderò con un collegamento all'articolo nel wiki."
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "cmd": "bug <bug di Minecraft>",
+                    "desc": "Ti risponderò con un collegamento al bug nel tracciatore dei bug di Minecraft."
+                },
+                "command": {
+                    "cmd": "command <comando di Minecraft>",
+                    "desc": "Ti risponderò con la sintassi del comando di Minecraft ed un collegamento all'articolo del comando in Minecraft Wiki."
+                },
+                "default": {
+                    "cmd": "/<comando di Minecraft>",
+                    "desc": "Ti risponderò con la sintassi del comando di Minecraft ed un collegamento all'articolo del comando in Minecraft Wiki."
+                }
+            },
+            "mwprojects": {
+                "cmd": "!!<wiki> <termine di ricerca>",
+                "desc": "Ti risponderò con un collegamento all'articolo corrispondente nel progetto MediaWiki nominato. Esempio: `$1!!it.wikipedia.org Cookie`"
+            },
+            "overview": {
+                "cmd": "overview",
+                "desc": "Ti mostrerò qualche informazione e statistica riguardo il wiki."
+            },
+            "page": {
+                "cmd": "page <nome pagina>",
+                "desc": "Ti risponderò con un collegamento diretto all'articolo nel wiki."
+            },
+            "pause": {
+                "active": {
+                    "cmd": "pause $1",
+                    "desc": "Risponderò di nuovo a tutti comandi sul server."
+                },
+                "inactive": {
+                    "cmd": "pause $1",
+                    "desc": "Ignorerò tutti i comandi su questo server, ad eccezione di alcuni comandi amministrativi."
+                }
+            },
+            "random": {
+                "cmd": "random",
+                "desc": "Ti risponderò con un collegamento ad una pagian casuale sul wiki."
+            },
+            "rcscript": {
+                "add": {
+                    "cmd": "rcscript add [<wiki>]",
+                    "desc": "Aggiungerò un nuovo webhook delle ultime modifiche."
+                },
+                "default": {
+                    "cmd": "rcscript",
+                    "desc": "Cambierò il webhook delle ultime modifiche."
+                },
+                "delete": {
+                    "cmd": "rcscript delete",
+                    "desc": "Cancellerò il webhook delle ultime modifiche."
+                },
+                "display": {
+                    "cmd": "rcscript display <nuova modalità di visualizzazione>",
+                    "desc": "Cambierò la modalità di visualizzazione del webhook delle ultime modifiche."
+                },
+                "feeds": {
+                    "cmd": "rcscript feeds"
+                },
+                "lang": {
+                    "cmd": "rcscript lang <nuova lingua>",
+                    "desc": "Cambierò la lingua del webhook delle ultime modifiche."
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <nuovo wiki>",
+                    "desc": "Cambierò il wiki del webhook delle ultime modifiche."
+                }
+            }
+        }
+    },
     "test": {
         "text": [
             "",
@@ -151,5 +324,27 @@
             " ",
             " "
         ]
+    },
+    "verify": {
+        "user_gblocked_reply": "il tuo utente wiki **\"$1\" collegato è bloccato globalmente!**",
+        "user_matches": "L'utente Discord $1 corrisponde all'utente wiki $2, ma non soddisfa i requisiti per alcun ruolo.",
+        "user_matches_reply": "il tuo tag Discord corrisponde all'utente wiki \"$1\", ma non soddisfi i requisiti per alcun ruolo.",
+        "user_missing": "L'utente wiki \"$1\" non esiste.",
+        "user_missing_reply": "il tuo utente wiki \"$1\" collegato non esiste.",
+        "user_renamed": "Il suo soprannome Discord è stato cambiato nel suo nome utente wiki.",
+        "user_verified": "L'utente Discord $1 è {{GENDER:$3|stato|stata|statə}} {{GENDER:$3|verificato|verificata|verificatə}} con successo come utente wiki $2.",
+        "user_verified_reply": "sei {{GENDER:$2|stato|stata|statə}} {{$GENDER:$2|verificato|verificata|verificatə}} con successo come utente wiki \"$1\".",
+        "wiki": "Utente wiki:"
+    },
+    "voice": {
+        "channel": "Canale vocale",
+        "disable": "Usa `$1` per disabilitare questa funzione.",
+        "disabled": "hai disabilitato la funzione per aggiungere ruoli per i canali vocali.",
+        "enable": "Usa `$1` per abilitare questa funzione.",
+        "enabled": "hai abilitato questa funzione per aggiungere ruoli ai canali vocali.",
+        "join": "$1 è entrato nel canale vocale \"$2\".",
+        "left": "$1 ha lasciato il canale vocale \"$2\".",
+        "name": "nome canale vocale",
+        "text": "Provo a dare a tutti in un canale vocale uno specifico ruolo:"
     }
 }
