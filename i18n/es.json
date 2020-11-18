@@ -290,7 +290,163 @@
             },
             "user": {
                 "desc": "Mostraré información sobre el usuario."
+            },
+            "verification": {
+                "accountage": {
+                    "desc": "Cambiaré la antigüedad mínima de la cuenta (en días) para la verificación wiki."
+                },
+                "add": {
+                    "desc": "Agregaré una nueva verificación wiki. Acepta una lista separada por `|`."
+                },
+                "channel": {
+                    "desc": "Cambiaré el canal para la verificación wiki. Acepta una lista separada por `|`."
+                },
+                "default": {
+                    "desc": "Cambiaré las verificaciones wiki utilizadas por el comando `$1verify`."
+                },
+                "delete": {
+                    "desc": "Eliminaré la verificación wiki."
+                },
+                "editcount": {
+                    "desc": "Cambiaré el número mínimo de ediciones para la verificación wiki."
+                },
+                "rename": {
+                    "desc": "Haré el cambio si el nombre de usuario de Discord debe cambiarse a su nombre de usuario wiki para la verificación wiki."
+                },
+                "role": {
+                    "desc": "Cambiaré el rol para la verificación wiki. Acepta una lista separada por `|`."
+                },
+                "usergroup": {
+                    "desc": "Cambiaré el grupo de usuarios para la verificación wiki. Acepta una lista separada por `|`.\n\t• Proporcione `AND` como la primera entrada de la lista para que todos los grupos de usuarios proporcionados sean obligatorios."
+                }
+            },
+            "verify": {
+                "desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
+            },
+            "voice": {
+                "desc": "Intento darles a todos en un canal de voz un rol específico."
+            },
+            "wikia": {
+                "desc": "Responderé con un enlace a un artículo que coincida en el wiki de Wikia llamado: `https://<wiki>.wikia.org/`"
             }
+        },
+        "noadmin": "¡necesitas el permiso `Manage Server` para estos comandos!",
+        "pause": "**¡Actualmente estoy en pausa en este servidor!**\nSolo se pueden ejecutar estos comandos:"
+    },
+    "invite": {
+        "bot": "Usa este enlace para invitarme a otro servidor:"
+    },
+    "minecraft": {
+        "cmdpage": "Comandos/",
+        "fixed": "Versión Corregida:",
+        "more": "Y $1 más.",
+        "private": "**Problema Privado**"
+    },
+    "overview": {
+        "articles": "Artículos:",
+        "comments": "Comentarios del artículo:",
+        "created": "Creado el:",
+        "crossover": "Fusionado con:",
+        "description": "Descripción:",
+        "edits": "Ediciones:",
+        "founder": "Fundador:",
+        "image": "Imagen:",
+        "inaccurate": "Las estadísticas pueden ser inexactas",
+        "lang": "Idioma:",
+        "license": "Licencia:",
+        "manager": "Wiki manager:",
+        "misermode": "Miser mode:",
+        "no": "No",
+        "none": "*ninguno*",
+        "official": "Wiki oficial:",
+        "pages": "Total de páginas:",
+        "posts": "Publicaciones de discusiones:",
+        "readonly": "¡Este wiki se encuentra actualmente en modo de solo lectura!",
+        "rtl": "De derecha a izquierda:",
+        "talk": "muro",
+        "topic": "Tema:",
+        "unknown": "*desconocido*",
+        "users": "Usuarios activos:",
+        "version": "Versión:",
+        "vertical": "Categoría:",
+        "walls": "Publicaciones en el muro de mensajes:",
+        "yes": "Si"
+    },
+    "pause": {
+        "off": "¡Ya no estoy en pausa en este servidor y responderé a todos los comandos nuevamente!",
+        "on": "¡Ahora estoy en pausa en este servidor e ignoraré la mayoría de los comandos!"
+    },
+    "rcscript": {
+        "ad": "¿Quieres cambios recientes directamente en Discord? ¡Usa `$1rcscript` para agregar un webhook de cambios recientes basado en **$2** a tu servidor de Discord!",
+        "add_more": "Agrega más webhooks de cambios recientes:",
+        "added": "Se ha agregado un webhook de cambios recientes a:",
+        "all_inactive": "no puedes deshabilitar los cambios al wiki y los cambios basados en feeds al mismo tiempo.",
+        "audit_reason": "Webhook de cambios recientes para \"$1\"",
+        "audit_reason_delete": "Webhook de cambios recientes eliminado",
+        "audit_reason_move": "Webhook de cambios recientes movido",
+        "blocked": "¡este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes!",
+        "blocked_reason": "¡este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes por `$1`!",
+        "channel": "Canal:",
+        "current": "estos son los webhooks de cambios recientes de este servidor:",
+        "current_display": "el modo de visualización de este webhook es:",
+        "current_lang": "el idioma de este webhook es:",
+        "current_selected": "este es el webhook de cambios recientes `$ 1` para este servidor:",
+        "current_wiki": "el wiki de este webhook es:",
+        "dashboard": {
+            "added": "$1 agregó el webhook de cambios recientes con el ID `$2`.",
+            "removed": "$1 eliminó el webhook de cambios recientes con el ID `$2`.",
+            "updated": "$1 actualizó el webhook de cambios recientes con el ID `$2`."
+        },
+        "delete": "Elimina este webhook de cambios recientes:",
+        "deleted": "se ha eliminado el webhook de cambios recientes.",
+        "disabled": "desactivado",
+        "disabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos para este webhook se han desactivado.",
+        "disabled_rc": "se han desactivado los cambios del wiki para este webhook.",
+        "display": "Modo de visualización:",
+        "enabled": "activado",
+        "enabled_feeds": "se han activado los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos para este webhook.",
+        "enabled_rc": "se han activado los cambios del wiki para este webhook.",
+        "feeds": "Cambios basados en feeds:",
+        "help_display_compact": "Mensajes de texto compactos con enlaces en la misma línea.",
+        "help_display_diff": "Mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones.",
+        "help_display_embed": "Mensajes adjuntos con etiquetas de edición y cambios de categoría.",
+        "help_display_image": "Mensajes adjuntos con vistas previas de imágenes.",
+        "help_feeds": "(discusiones, muros de mensajes, comentarios de artículos)",
+        "help_lang": "Los idiomas disponibles actualmente son:",
+        "help_wiki": "Enlace a un sitio de MediaWiki como `https://<wiki>.gamepedia.com/` o `https://<wiki>.fandom.com/`",
+        "lang": "Idioma:",
+        "max_entries": "ya alcanzaste la cantidad máxima de webhooks de cambios recientes.",
+        "missing": "todavía no hay webhooks de cambios recientes en este servidor.",
+        "new_lang": "<nuevo idioma>",
+        "no_feeds": "el wiki de este webhook no tiene funciones basadas en feeds, como discusiones, muros de mensajes o comentarios de artículos, habilitadas.",
+        "noadmin": "¡necesitas el permiso `Manage Webhooks` para ejecutar este comando!",
+        "rc": "Cambios del wiki:",
+        "sysmessage": "el mensaje del sistema `$1` tiene que ser el ID del servidor `$2` para agregar un webhook de cambios recientes.",
+        "title": "Webhook de cambios recientes",
+        "updated_display": "el modo de visualización de este webhook se ha cambiado a:",
+        "updated_lang": "el idioma de este webhook se ha cambiado a:",
+        "updated_wiki": "el wiki de este webhook se ha cambiado a:",
+        "webhook": {
+            "blocked": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado!",
+            "blocked_reason": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado por `$1`!",
+            "created": "Se ha agregado a este canal un webhook de cambios recientes para $1.",
+            "dashboard": {
+                "channel": "• El webhook se ha movido a este canal.",
+                "disabled_feeds": "• Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han desactivado.",
+                "disabled_rc": "• Los cambios del wiki se han desactivado.",
+                "display_compact": "• El modo de visualización se ha cambiado a mensajes de texto compactos con enlaces en la misma línea.",
+                "display_diff": "• El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones.",
+                "display_embed": "• El modo de visualización se ha cambiado a mensajes adjuntos con etiquetas de edición y cambios de categoría.",
+                "display_image": "• El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes.",
+                "enabled_feeds": "• Se han activado los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos.",
+                "enabled_rc": "• Se han activado los cambios del wiki.",
+                "lang": "• El idioma se ha cambiado a $1.",
+                "updated": "Este webhook de cambios recientes se ha actualizado:",
+                "wiki": "• El wiki se ha cambiado a $1."
+            },
+            "deleted": "Este webhook de cambios recientes se eliminará.",
+            "disabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han desactivado para este webhook de cambios recientes.",
+            "disabled_rc": "Los cambios del wiki se han desactivado en este webhook de cambios recientes."
         }
     },
     "test": {
