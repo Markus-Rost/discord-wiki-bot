@@ -288,6 +288,72 @@
                     "cmd": "rcscript wiki <nuovo wiki>",
                     "desc": "Cambierò il wiki del webhook delle ultime modifiche."
                 }
+            },
+            "search": {
+                "cmd": "search <termine di ricerca>",
+                "desc": "Ti risponderò con un collegamento diretto alla paigna di ricerca per l'articolo nel wiki."
+            },
+            "settings": {
+                "channel": {
+                    "cmd": "settings channel",
+                    "desc": "Modificherò le sovrascritture per il canale attuale."
+                },
+                "default": {
+                    "cmd": "settings",
+                    "desc": "Cambierò le impostazioni per questo server."
+                },
+                "inline": {
+                    "cmd": "settings inline toggle"
+                },
+                "lang": {
+                    "cmd": "settings lang <lingua>",
+                    "desc": "Cambierò la lingua per questo server."
+                },
+                "prefix": {
+                    "cmd": "settings prefix <prefisso>",
+                    "desc": "Cambierò il prefisso per questo server."
+                },
+                "wiki": {
+                    "cmd": "settings wiki <wiki>",
+                    "desc": "Cambierò il wiki predefinito per questo server."
+                }
+            },
+            "test": {
+                "cmd": "test",
+                "desc": "Se sono attivo rispondo! Altrimenti no."
+            },
+            "user": {
+                "cmd": "User:<nome utente>",
+                "desc": "Mostrerò qualche informazione sull'utente."
+            },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <nuova età account>",
+                    "desc": "Cambierò l'età dell'account minima per la verifica nel wiki (in giorni)."
+                },
+                "add": {
+                    "cmd": "verification add <ruolo>",
+                    "desc": "Aggiungerò una nuova verifica del wiki. Accetta una lista separata da `|`."
+                },
+                "channel": {
+                    "cmd": "verification <id> channel <nuovo canale>",
+                    "desc": "Cambierò il canale per la verifica del wiki. Accetta una lista separata da `|`."
+                },
+                "default": {
+                    "cmd": "verification",
+                    "desc": "Cambierò le verifiche del wiki usate dal comando `$1verify`."
+                },
+                "delete": {
+                    "cmd": "verification <id> delete",
+                    "desc": "Cancellerò la verifica del wiki."
+                },
+                "editcount": {
+                    "cmd": "verification <id> editcount <nuovo numero modifiche>",
+                    "desc": "Cambierò il numero di modifiche minime per la verifica del wiki."
+                },
+                "rename": {
+                    "cmd": "verification <id> rename"
+                }
             }
         }
     },
