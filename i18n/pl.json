@@ -485,7 +485,18 @@
             "blocked_reason": "Ten webhook ostatnich zmian zostanie usunięty gdyż wiki została zablokowana za `$1`!",
             "created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
             "dashboard": {
-                "channel": "• Webhook został przeniesiony do tego kanału."
+                "channel": "• Webhook został przeniesiony do tego kanału.",
+                "disabled_feeds": "• Zmiany bazowane na technologii Feedów takie jak dyskusje, tablice wiadomości oraz komentarze do artykułów zostały wyłączone.",
+                "disabled_rc": "• Ostatnie zmiany na wiki zostały wyłączone.",
+                "display_compact": "• Tryb wyświetlania został zmieniony na tryb kompaktowy.",
+                "display_diff": "• Tryb wyświetlania został zmieniony na szczegółowe wiadomości wraz z podglądem zdjęć oraz różnicą pomiędzy edycjami.",
+                "display_embed": "• Tryb wyświetlania został zmieniony na wiadomości szczegółowe z tagami oraz zmianami kategorii.",
+                "display_image": "• Tryb wyświetlania został zmieniony na wiadomości szczegółowe z podglądem obrazów.",
+                "enabled_feeds": "• Zmiany bazowane na technologii Feedów takie jak dyskusje, tablice wiadomości oraz komentarze do artykułów zostały włączone.",
+                "enabled_rc": "• Ostatnie zmiany na wiki zostały włączone.",
+                "lang": "• Język został zmieniony na $1.",
+                "updated": "Webhook ostatnich zmian został zaktualizowany:",
+                "wiki": "• Wiki została zmieniona na $1."
             },
             "deleted": "Ten webhook ostatnich zmian zostanie usunięty.",
             "disabled_feeds": "Zmiany bazowane na technologii Dyskusji zostały wyłączone dla tego webhooka ostatnich zmian.",
@@ -528,7 +539,13 @@
         "currentinline": "Linkowanie składnią wiki:",
         "currentlang": "Język:",
         "currentprefix": "Prefiks:",
+        "currentrole": "Minimalna rola:",
         "currentwiki": "Domyślna wiki:",
+        "dashboard": {
+            "channel": "$1 zaktualizował ustawienia dla $2.",
+            "removed": "$1 usunął ustawienia dla $2.",
+            "updated": "$1 zaktualizował ustawienia serwera."
+        },
         "foundwikis": "Czy chodziło Ci o jedną z tych wiki?",
         "inline disabled": {
             "channel inline": "linkowanie składnią wiki jest obecnie wyłączone dla tego kanału.",
@@ -671,6 +688,11 @@
         "channel_missing": "podany kanał nie istnieje.",
         "current": "lista obecnych weryfikacji na tym serwerze:",
         "current_selected": "to weryfikacja `$1` dla tego serwera:",
+        "dashboard": {
+            "added": "$1 dodał weryfikację z id `$2`.",
+            "removed": "$1 usunął weryfikację z id `$1`.",
+            "updated": "$1 zaktualizował weryfikację z id `$2`."
+        },
         "delete_current": "Usuń tę weryfikację:",
         "deleted": "weryfikacja została usunięta.",
         "disabled": "wyłączone",
@@ -689,6 +711,7 @@
         "rename": "Zmień nazwę użytkownika:",
         "rename_no_permission": "**$1 wymaga uprawnienia `Zarządzanie pseudonimami` do zmiany nazw użytkowników na wiki!**",
         "role": "Rola:",
+        "role_deleted": "**Nie wygląda na to aby rola $1 nadal istniała!**",
         "role_managed": "podana rola nie może zostać ustawiona.",
         "role_max": "podano zbyt dużo ról.",
         "role_missing": "podana rola nie istnieje.",
