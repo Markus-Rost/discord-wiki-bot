@@ -482,6 +482,7 @@
         "updated_wiki": "das Wiki für diesen Webhook wurde geändert zu:",
         "webhook": {
             "blocked": "Dieser Letzte Änderungen-Webhook wird gelöscht, da das Wiki gesperrt wurde!",
+            "blocked_help": "Du kannst auf dem [Support-Server]($1) nach mehr Details fragen.",
             "blocked_reason": "Dieser Letzte Änderungen-Webhook wird gelöscht, da das Wiki wegen `$1` gesperrt wurde!",
             "created": "Ein Letzte Änderungen-Webhook für $1 wurde zu diesem Kanal hinzugefügt.",
             "dashboard": {
