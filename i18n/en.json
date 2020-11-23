@@ -482,6 +482,7 @@
         "updated_wiki": "the wiki for this webhook has been changed to:",
         "webhook": {
             "blocked": "This recent changes webhook will be deleted because the wiki has been blocked!",
+            "blocked_help": "You can ask for more details on the [support server]($1).",
             "blocked_reason": "This recent changes webhook will be deleted because the wiki has been blocked for `$1`!",
             "created": "A recent changes webhook for $1 has been added to this channel.",
             "dashboard": {
@@ -711,11 +712,11 @@
         "rename": "Change nickname:",
         "rename_no_permission": "**$1 is missing the `Manage Nicknames` permission to force wiki usernames!**",
         "role": "Role:",
+        "role_deleted": "**The role $1 doesn't seem to exist anymore!**",
         "role_managed": "the provided role can't be assigned.",
         "role_max": "you provided too many roles.",
         "role_missing": "the provided role does not exist.",
         "role_too_high": "**The role $1 is too high for $2 to assign!**",
-        "role_deleted": "**The role $1 doesn't seem to exist anymore!**",
         "save_failed": "sadly the verification couldn't be saved, please try again later.",
         "toggle": "(toggle)",
         "updated": "the verification has been updated:",
