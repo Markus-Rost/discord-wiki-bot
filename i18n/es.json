@@ -166,11 +166,11 @@
             },
             "diff": {
                 "id": {
-                    "cmd": "diff <diff> [<oldid>",
+                    "cmd": "diff <diff> [<oldid>]",
                     "desc": "Responderé con un enlace al dif en el wiki."
                 },
                 "name": {
-                    "cmd": "dif <nombre de página>",
+                    "cmd": "diff<nombre de la página>",
                     "desc": "Responderé con un enlace al último dif del artículo en el wiki."
                 }
             },
@@ -279,7 +279,7 @@
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
-                    "desc": "Enviaré los cambios de la página de discusiones de un wiki de Fandom al webhook de cambios recientes."
+                    "desc": "Activaré/Desactivaré los cambios de la página de discusiones de un wiki de Fandom al webhook de cambios recientes."
                 },
                 "lang": {
                     "cmd": "rcscript lang <nuevo idioma>",
@@ -304,8 +304,8 @@
                     "desc": "Cambiaré la configuración de este servidor."
                 },
                 "inline": {
-                    "cmd": "settings inline toggle",
-                    "desc": "Cambiaré los comandos inline de este servidor."
+                    "cmd": "activar/desactivar configuración inline",
+                    "desc": "Activaré/Desactivaré los comandos inline en este servidor."
                 },
                 "lang": {
                     "cmd": "settings lang <idioma>",
@@ -355,7 +355,7 @@
                 },
                 "rename": {
                     "cmd": "verification <ID> rename",
-                    "desc": "Haré el cambio si el nombre de usuario de Discord debe cambiarse a su nombre de usuario wiki para la verificación wiki."
+                    "desc": "Haré el cambio si el alias de Discord debe cambiarse a su nombre de usuario wiki para la verificación wiki."
                 },
                 "role": {
                     "cmd": "verification <ID> role <nuevo rol>",
@@ -372,7 +372,7 @@
             },
             "voice": {
                 "cmd": "voice",
-                "desc": "Intento darles a todos en un canal de voz un rol específico."
+                "desc": "Intento darles a todos en un canal de chat de voz un rol específico."
             },
             "wikia": {
                 "cmd": "??<wiki> <término de búsqueda>",
@@ -476,12 +476,13 @@
         "rc": "Cambios del wiki:",
         "sysmessage": "el mensaje del sistema `$1` tiene que ser el ID del servidor `$2` para agregar un webhook de cambios recientes.",
         "title": "Webhook de cambios recientes",
-        "toggle": "(alternar)",
+        "toggle": "(activar/desactivar)",
         "updated_display": "el modo de visualización de este webhook se ha cambiado a:",
         "updated_lang": "el idioma de este webhook se ha cambiado a:",
         "updated_wiki": "el wiki de este webhook se ha cambiado a:",
         "webhook": {
             "blocked": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado!",
+            "blocked_help": "Puedes solicitar más detalles en el [servidor de soporte] ($1).",
             "blocked_reason": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado por `$1`!",
             "created": "Se ha agregado a este canal un webhook de cambios recientes para $1.",
             "dashboard": {
@@ -529,7 +530,7 @@
         "special": "Contenido de esta página especial:"
     },
     "settings": {
-        "channel current": "estas son las configuraciones actuales para este canal:",
+        "channel current": "estas son las configuraciones actuales en este canal:",
         "channel lang": "el idioma de este canal es:",
         "channel langchanged": "cambiaste el idioma de este canal a:",
         "channel wiki": "el wiki predeterminado en este canal es:",
@@ -649,6 +650,7 @@
             "editor": "Editor",
             "global-discussions-moderator": "Moderador global de Discusiones",
             "global_bot": "Bot global",
+            "grasp": "GRASP",
             "helper": "Helper de Fandom",
             "hydra_staff": "Personal de Gamepedia",
             "interface-admin": "Administrador de interfaz",
@@ -667,7 +669,106 @@
             "discord": "Discord:",
             "editcount": "Número de ediciones:",
             "favwiki": "Wiki favorito:",
-            "gender": "Sexo:"
+            "gender": "Sexo:",
+            "globaleditcount": "Número de ediciones globales:",
+            "globalgroup": "Global {{PLURAL:$1|grupo|grupos}}:",
+            "group": "{{PLURAL:$1|Grupo|Grupos}}:",
+            "loading": "Cargando estadísticas globales…",
+            "postcount": "Publicaciones de discusiones:",
+            "registration": "Fecha de registro:",
+            "wikisedited": "Wikis editados:"
         }
+    },
+    "verification": {
+        "accountage": "Antigüedad de la cuenta:",
+        "add_more": "Agregar más verificaciones:",
+        "added": "se ha agregado la verificación:",
+        "and": "y",
+        "channel": "Canal:",
+        "channel_max": "proporcionaste demasiados canales.",
+        "channel_missing": "el canal proporcionado no existe.",
+        "current": "estas son las verificaciones actuales en este servidor:",
+        "current_selected": "esta es la verificación `$1` en este servidor:",
+        "dashboard": {
+            "added": "$1 agregó la verificación con ID `$2`.",
+            "removed": "$1 eliminó la verificación con ID `$2`.",
+            "updated": "$1 actualizó la verificación con ID `$2`."
+        },
+        "delete_current": "Eliminar esta verificación:",
+        "deleted": "la verificación ha sido eliminada.",
+        "disabled": "desactivada",
+        "editcount": "Número de ediciones:",
+        "enabled": "activada",
+        "indays": "(en días)",
+        "max_entries": "ya alcanzaste la cantidad máxima de verificaciones.",
+        "missing": "todavía no hay verificaciones en este servidor.",
+        "new_accountage": "<nueva antigüedad de la cuenta>",
+        "new_channel": "<nuevo canal>",
+        "new_editcount": "<nuevo número de ediciones>",
+        "new_role": "<nuevo rol>",
+        "new_usergroup": "<nuevo grupo de usuarios>",
+        "no_role": "por favor proporciona un rol para la nueva verificación.",
+        "or": "o",
+        "rename": "Cambiar alias:",
+        "rename_no_permission": "**¡A $1 le falta el permiso `Manage Nicknames` para imponer nombres de usuario wiki!**",
+        "role": "Rol:",
+        "role_deleted": "**¡El rol $1 parece que ya no existe!**",
+        "role_managed": "no se puede asignar el rol proporcionado.",
+        "role_max": "proporcionaste demasiados roles.",
+        "role_missing": "el rol proporcionado no existe.",
+        "role_too_high": "**¡El rol $1 está en un rango muy alto como para asignarlo a $2!**",
+        "save_failed": "lamentablemente, no se pudo guardar la verificación. Vuelve a intentarlo más tarde.",
+        "toggle": "(activar/desactivar)",
+        "updated": "la verificación se ha actualizado:",
+        "usergroup": "Grupo de usuario:",
+        "usergroup_max": "proporcionaste demasiados grupos de usuarios.",
+        "usergroup_too_long": "el grupo de usuarios proporcionado es demasiado largo.",
+        "value_too_high": "el valor proporcionado es demasiado alto."
+    },
+    "verify": {
+        "audit_reason": "Verificado como \"$1\"",
+        "discord": "Usuario de Discord:",
+        "empty": "*vacío*",
+        "error": "La verificación falló debido a un error.",
+        "error_reply": "la verificación falló debido a un error, inténtalo de nuevo.",
+        "failed_gblock": "**¡La verificación de bloqueo global falló!**",
+        "failed_rename": "**¡Ha fallado el cambio de {{SEXO:$1|su|su|su}} alias de Discord!**",
+        "failed_roles": "**¡Error al agregar roles!**",
+        "footer": "Verificación de cuenta wiki",
+        "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
+        "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
+        "help_guide": "Sigue [esta guía]($1) para agregar tu etiqueta de Discord a tu perfil wiki:",
+        "help_subpage": "Por favor agrega tu etiqueta de Discord ($1) a tu subpágina de Discord en el wiki:",
+        "missing": "no hay verificaciones configuradas en este canal.",
+        "notice": "Aviso:",
+        "qualified": "Calificado para:",
+        "qualified_error": "Calificado para, pero no puede agregar:",
+        "user_blocked": "**El usuario wiki $1 está bloqueado!**",
+        "user_blocked_reply": "¡tu usuario wiki vinculado **\"$1\" está bloqueado!**",
+        "user_disabled": "**¡La cuenta wiki $1 está deshabilitada!**",
+        "user_disabled_reply": "¡tu cuenta wiki vinculada **\"$1\" está deshabilitada!**",
+        "user_failed": "El usuario de Discord $1 no coincide con el usuario wiki $2.",
+        "user_failed_reply": "tu etiqueta de Discord no coincide con el usuario wiki \"$1\".",
+        "user_gblocked": "**¡El usuario wiki $1 está bloqueado globalmente!**",
+        "user_gblocked_reply": "¡tu usuario wiki vinculado **\"$1\" está bloqueado globalmente!**",
+        "user_matches": "El usuario de Discord $1 coincide con el usuario wiki $2, pero no cumple con los requisitos para ningún rol.",
+        "user_matches_reply": "tu etiqueta de Discord coincide con el usuario wiki \"$1\", pero no cumples con los requisitos para ningún rol.",
+        "user_missing": "El usuario wiki \"$1\" no existe.",
+        "user_missing_reply": "tu usuario wiki vinculado \"$1\" no existe.",
+        "user_renamed": "{{SEXO:$1|Su|Su|Su}} alias de Discord ha sido cambiado a {{SEXO:$1|su|su|su}} nombre de usuario wiki.",
+        "user_verified": "El usuario de Discord $1 ha sido verificado con éxito como el usuario wiki $2.",
+        "user_verified_reply": "has sido verificado con éxito como el usuario wiki \"$1\".",
+        "wiki": "Usuario wiki:"
+    },
+    "voice": {
+        "channel": "Canal de chat de voz",
+        "disable": "Usa `$1` para desactivar esta función.",
+        "disabled": "desactivaste la función de agregar roles para canales de chat de voz.",
+        "enable": "Usa `$1` para activar esta función.",
+        "enabled": "activaste la función de agregar roles para canales de chat de voz.",
+        "join": "$1 se unió al canal de chat de voz \"$2\".",
+        "left": "$1 salió del canal de chat de voz \"$2\".",
+        "name": "nombre del canal de chat de voz",
+        "text": "Intento darles a todos en un canal de chat de voz un rol específico:"
     }
 }
