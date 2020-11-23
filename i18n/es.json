@@ -170,7 +170,7 @@
                     "desc": "Responderé con un enlace al dif en el wiki."
                 },
                 "name": {
-                    "cmd": "diff<nombre de la página>",
+                    "cmd": "diff <nombre de la página>",
                     "desc": "Responderé con un enlace al último dif del artículo en el wiki."
                 }
             },
@@ -304,7 +304,7 @@
                     "desc": "Cambiaré la configuración de este servidor."
                 },
                 "inline": {
-                    "cmd": "activar/desactivar configuración inline",
+                    "cmd": "settings inline toggle",
                     "desc": "Activaré/Desactivaré los comandos inline en este servidor."
                 },
                 "lang": {
