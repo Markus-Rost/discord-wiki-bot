@@ -2,8 +2,24 @@ const {defaultSettings} = require('../util/default.json');
 const {escapeText} = require('./util.js');
 const i18n = {
 	en: require('./i18n/en.json'),
+	bn: require('./i18n/bn.json'),
 	de: require('./i18n/de.json'),
-	pl: require('./i18n/pl.json')
+	es: require('./i18n/es.json'),
+	fr: require('./i18n/fr.json'),
+	hi: require('./i18n/hi.json'),
+	it: require('./i18n/it.json'),
+	ja: require('./i18n/ja.json'),
+	ko: require('./i18n/ko.json'),
+	nl: require('./i18n/nl.json'),
+	pl: require('./i18n/pl.json'),
+	pt: require('./i18n/pt-br.json'),
+	'pt-br': require('./i18n/pt-br.json'),
+	ru: require('./i18n/ru.json'),
+	th: require('./i18n/th.json'),
+	tr: require('./i18n/tr.json'),
+	zh: require('./i18n/zh-hans.json'),
+	'zh-hans': require('./i18n/zh-hans.json'),
+	'zh-hant': require('./i18n/zh-hant.json')
 };
 
 /**

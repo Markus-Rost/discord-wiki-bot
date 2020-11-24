@@ -129,12 +129,15 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 	else if ( args[0] === 'owner' ) {
 		let guild = {
 			id, name: 'OWNER ACCESS',
-			acronym: '', userPermissions: 0,
-			patreon: true, botPermissions: 0,
+			acronym: '', userPermissions: 1 << 3,
+			patreon: true, botPermissions: 1 << 3,
 			channels: [], roles: []
 		};
 		$('head title').text(`${guild.name} – ` + $('head title').text());
-		$('<script>').text(`const isPatreon = ${guild.patreon};`).insertBefore('script#indexjs');
+		$('<script>').text(`
+			const isPatreon = ${guild.patreon};
+			const i18n = ${JSON.stringify(dashboardLang.get('indexjs'))};
+		`).insertBefore('script#indexjs');
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings?owner=true`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification?owner=true`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript?owner=true`);
