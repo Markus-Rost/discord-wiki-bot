@@ -56,7 +56,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	channel.find('label').text(dashboardLang.get('verification.form.channel'));
 	let curCat = null;
 	channel.find('#wb-settings-channel').append(
-		$('<option class="wb-settings-channel-default defaultSelect" hidden>').val('').text('-- Select a Channel --'),
+		$('<option class="wb-settings-channel-default defaultSelect" hidden>').val('').text(dashboardLang.get('verification.form.select_channel')),
 		...guildChannels.filter( guildChannel => {
 			return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') || guildChannel.isCategory || settings.channel.includes( '|' + guildChannel.id + '|' ) );
 		} ).map( guildChannel => {
