@@ -1,10 +1,10 @@
 {
     "fallback": [
+        "en",
         " ",
         " ",
         " ",
-        " ",
-        "en"
+        " "
     ],
     "general": {
         "delete": "Cancella",
