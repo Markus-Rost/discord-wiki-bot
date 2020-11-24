@@ -573,7 +573,7 @@ function blocklist(msg, args) {
 				if ( dberror ) return dberror;
 				msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
 					var lang = new Lang(row.lang, 'rcscript.webhook');
-					webhook.send( '**' + ( reason ? lang.get('blocked_reason', reason) : lang.get('blocked') ) + '**' ).catch(log_error).finally( () => {
+					webhook.send( '**' + ( reason ? lang.get('blocked_reason', reason) : lang.get('blocked') ) + '**\n' + lang.get('blocked_help', `<${process.env.invite}>`) ).catch(log_error).finally( () => {
 						webhook.delete().catch(log_error);
 					} );
 				}, log_error );

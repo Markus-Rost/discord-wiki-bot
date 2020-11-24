@@ -8,15 +8,15 @@ const {limit: {discussion: discussionLimit}} = require('../util/default.json');
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {String} title - The title of the discussion post.
- * @param {Object} query - The siteinfo from the wiki.
+ * @param {String} sitename - The sitename of the wiki.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
-function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
+function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler) {
 	var limit = discussionLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
 	if ( !title ) {
 		var pagelink = wiki + 'f';
-		var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
+		var embed = new MessageEmbed().setAuthor( sitename ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
 		got.get( wiki + 'f', {
 			responseType: 'text'
 		} ).then( descresponse => {
@@ -49,16 +49,9 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}
-	else if ( !query.wikidesc?.id ) {
-		console.log( '- Error while getting the wiki id.' );
-		msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-		
-		if ( reaction ) reaction.removeEmoji();
-		return;
-	}
 	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.get('discussion.post') ) {
 		title = title.split(' ').slice(1).join(' ');
-		got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts?limit=' + limit + '&format=json&cache=' + Date.now(), {
+		got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=' + limit + '&format=json&cache=' + Date.now(), {
 			headers: {
 				Accept: 'application/hal+json'
 			}
@@ -72,7 +65,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 			}
 			else if ( body._embedded['doc:posts'].length ) {
 				var posts = body._embedded['doc:posts'];
-				var embed = new MessageEmbed().setAuthor( query.general.sitename );
+				var embed = new MessageEmbed().setAuthor( sitename );
 				
 				if ( posts.some( post => post.id === title ) ) {
 					discussion_send(lang, msg, wiki, posts.find( post => post.id === title ), embed, spoiler);
@@ -80,7 +73,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 					if ( reaction ) reaction.removeEmoji();
 				}
 				else if ( /^\d+$/.test(title) ) {
-					got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/posts/' + title + '?format=json&cache=' + Date.now(), {
+					got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPost&postId=' + title + '&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						}
@@ -105,7 +98,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 							
 							if ( reaction ) reaction.removeEmoji();
 						}
-						else got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads/' + pbody.threadId + '?format=json&cache=' + Date.now(), {
+						else got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + pbody.threadId + '&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
 							}
@@ -155,7 +148,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 		} );
 	}
 	else {
-		got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads?sortKey=trending&limit=' + limit + '&format=json&cache=' + Date.now(), {
+		got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThreads&sortKey=trending&limit=' + limit + '&format=json&cache=' + Date.now(), {
 			headers: {
 				Accept: 'application/hal+json'
 			}
@@ -169,7 +162,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 			}
 			else if ( body._embedded.threads.length ) {
 				var threads = body._embedded.threads;
-				var embed = new MessageEmbed().setAuthor( query.general.sitename );
+				var embed = new MessageEmbed().setAuthor( sitename );
 				
 				if ( threads.some( thread => thread.id === title ) ) {
 					discussion_send(lang, msg, wiki, threads.find( thread => thread.id === title ), embed, spoiler);
@@ -197,7 +190,7 @@ function fandom_discussion(lang, msg, wiki, title, query, reaction, spoiler) {
 					if ( reaction ) reaction.removeEmoji();
 				}
 				else if ( /^\d+$/.test(title) ) {
-					got.get( 'https://services.fandom.com/discussion/' + query.wikidesc.id + '/threads/' + title + '?format=json&cache=' + Date.now(), {
+					got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + title + '&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						}

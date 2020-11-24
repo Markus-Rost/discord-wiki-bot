@@ -1,3 +1,4 @@
+const {ShardClientUtil: {shardIDForGuildID}} = require('discord.js');
 const {defaultPermissions, limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
 
@@ -15,9 +16,8 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		return;
 	}
 	
-	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name` ).then( results => {
-		var guild = results.find( result => result !== null );
-		if ( guild === undefined ) return msg.client.generateInvite({
+	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name`, shardIDForGuildID(args[1], msg.client.shard.count) ).then( guild => {
+		if ( !guild ) return msg.client.generateInvite({
 			permissions: defaultPermissions,
 			guild: args[1]
 		}).then( invite => {
@@ -56,9 +56,8 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		} );
 	} );
 	
-	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name` ).then( results => {
-		var guild = results.find( result => result !== null );
-		if ( guild === undefined ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
+	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name`, shardIDForGuildID(args[1], msg.client.shard.count) ).then( guild => {
+		if ( !guild ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
 		if ( !( args[1] in patreons ) ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
 		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
 			if ( dberror ) {

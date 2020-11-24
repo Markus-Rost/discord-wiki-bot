@@ -170,7 +170,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 							console.log( '- Error while getting the wiki founder: ' + error );
 							founder[1] = 'ID: ' + founder[1];
 						} ) : founder[1] = ( wiki.isGamepedia() ? null : lang.get('overview.none') ) ),
-						got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
+						got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
 							}
@@ -178,16 +178,15 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 							var dsbody = dsresponse.body;
 							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
 								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while getting discussions stats: ' + dsbody?.title );
+								return;
 							}
-							else {
-								let counts = dsbody?._embedded?.count?.[0];
-								if ( counts?.FORUM || counts?.WALL || counts?.ARTICLE_COMMENT ) {
-									if ( counts?.FORUM ) posts.push(counts.FORUM);
-									if ( counts?.WALL ) walls.push(counts.WALL);
-									if ( counts?.ARTICLE_COMMENT ) comments.push(counts.ARTICLE_COMMENT);
-								}
-								else if ( counts?.total ) posts.push(counts.total);
+							let counts = dsbody?._embedded?.count?.[0];
+							if ( counts?.FORUM || counts?.WALL || counts?.ARTICLE_COMMENT ) {
+								if ( counts?.FORUM ) posts.push(counts.FORUM);
+								if ( counts?.WALL ) walls.push(counts.WALL);
+								if ( counts?.ARTICLE_COMMENT ) comments.push(counts.ARTICLE_COMMENT);
 							}
+							else if ( counts?.total ) posts.push(counts.total);
 						}, error => {
 							console.log( '- Error while getting discussions stats: ' + error );
 						} )

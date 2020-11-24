@@ -17,7 +17,7 @@ global.got = require('got').extend( {
 	responseType: 'json'
 } );
 
-const {defaultSettings, wikiProjects} = require('./util/default.json');
+const {defaultSettings} = require('./util/default.json');
 const Lang = require('./util/i18n.js');
 const newMessage = require('./util/newMessage.js');
 global.patreons = {};

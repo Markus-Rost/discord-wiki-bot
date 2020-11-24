@@ -1,4 +1,4 @@
-const {MessageEmbed, Util} = require('discord.js');
+const {MessageEmbed, Util, ShardClientUtil: {shardIDForGuildID}} = require('discord.js');
 const {defaultSettings, defaultPermissions} = require('../util/default.json');
 var db = require('../util/database.js');
 
@@ -24,7 +24,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				pause: guild.id in global.pause, voice: guild.id in global.voice,
 				shardId: global.shardId
 			} )
-		}` ).then( results => results.find( result => result !== null ) );
+		}`, shardIDForGuildID(id, msg.client.shard.count) );
 		if ( guild ) {
 			var guildname = ['Guild:', guild.name.escapeFormatting() + ' `' + guild.id + '`' + ( guild.pause ? '\\*' : '' )];
 			var guildowner = ['Owner:', ( guild.owner ? guild.owner.escapeFormatting() + ' ' : '' ) + '`' + guild.ownerID + '` <@' + guild.ownerID + '>'];
@@ -34,7 +34,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var guildchannel = ['Updates channel:', '`' + guild.channel + '`'];
 			var guildsettings = ['Settings:', '*unknown*'];
 			
-			return db.all( 'SELECT channel, prefix, lang, wiki, inline FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], (dberror, rows) => {
+			return db.all( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], (dberror, rows) => {
 				if ( dberror ) {
 					console.log( '- Error while getting the settings: ' + dberror );
 				}
@@ -74,37 +74,40 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				pause: guildID in global.pause,
 				shardId: global.shardId
 			} )
-		}` ).then( results => results.find( result => result !== null ) );
+		}` ).then( results => results.find( result => result ) );
 		if ( channel ) {
 			var channelguild = ['Guild:', channel.guild.escapeFormatting() + ' `' + channel.guildID + '`' + ( channel.pause ? '\\*' : '' )];
 			var channelname = ['Channel:', '#' + channel.name.escapeFormatting() + ' `' + channel.id + '` <#' + channel.id + '>'];
 			var channelpermissions = ['Missing permissions:', ( channel.permissions.length ? '`' + channel.permissions.join('`, `') + '`' : '*none*' )];
 			var channellang = ['Language:', '*unknown*'];
 			var channelwiki = ['Default Wiki:', '*unknown*'];
+			var channelrole = ['Minimal Role:', '*unknown*'];
 			var channelinline = ['Inline commands:', '*unknown*'];
 			
-			return db.get( 'SELECT lang, wiki, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [channel.guildID, channel.id], (dberror, row) => {
+			return db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [channel.guildID, channel.id], (dberror, row) => {
 				if ( dberror ) {
 					console.log( '- Error while getting the settings: ' + dberror );
 				}
 				else if ( row ) {
 					channellang[1] = row.lang;
 					channelwiki[1] = row.wiki;
+					channelrole[1] = row.role;
 					channelinline[1] = ( row.inline ? 'disabled' : 'enabled' );
 				}
 				else {
 					channellang[1] = defaultSettings.lang;
 					channelwiki[1] = defaultSettings.wiki;
+					channelrole[1] = null;
 					channelinline[1] = 'enabled';
 				}
 				
 				if ( msg.showEmbed() ) {
 					var text = '';
-					var embed = new MessageEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelinline[0], channelinline[1] );
+					var embed = new MessageEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelrole[0], channelrole[1] ).addField( channelinline[0], channelinline[1] );
 				}
 				else {
 					var embed = {};
-					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelinline.join(' ');
+					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelrole.join(' ') + '\n' + channelinline.join(' ');
 				}
 				msg.sendChannel( text, {embed}, true );
 			} );
@@ -122,9 +125,11 @@ async function cmd_get(lang, msg, args, line, wiki) {
 					isAdmin: member.permissions.has('MANAGE_GUILD'),
 					shardId: global.shardId
 				}
-			} )` ).then( results => results.reduce( (acc, val) => acc.concat(val), [] ).map( user_guild => {
-				return user_guild.name.escapeFormatting() + ' `' + user_guild.id + '`' + ( user_guild.isAdmin ? '\\*' : '' );
-			} ) );
+			} )` ).then( results => {
+				return results.reduce( (acc, val) => acc.concat(val), [] ).map( user_guild => {
+					return user_guild.name.escapeFormatting() + ' `' + user_guild.id + '`' + ( user_guild.isAdmin ? '\\*' : '' );
+				} );
+			} );
 			if ( guilds.length ) guildlist[1] = guilds.join('\n');
 			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length;
 			if ( msg.showEmbed() ) {

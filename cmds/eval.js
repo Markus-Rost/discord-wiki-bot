@@ -115,7 +115,7 @@ function checkWiki(wiki) {
 			}, error => {
 				result.rcgcdb = error.toString();
 			} ),
-			( result.wikiid ? got.get( 'https://services.fandom.com/discussion/' + result.wikiid + '/posts?limit=100&format=json&cache=' + Date.now(), {
+			( wiki.isFandom() ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'
 				}

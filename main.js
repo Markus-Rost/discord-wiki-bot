@@ -15,7 +15,7 @@ const got = require('got').extend( {
 	},
 	responseType: 'json'
 } );
-const {ShardingManager} = require('discord.js');
+const {ShardingManager, ShardClientUtil: {shardIDForGuildID}} = require('discord.js');
 const manager = new ShardingManager( './bot.js', {
 	execArgv: ['--icu-data-dir=node_modules/full-icu'],
 	shardArgs: ( isDebug ? ['debug'] : [] ),
@@ -94,13 +94,22 @@ if ( process.env.dashboard ) {
 										patreon: guild.id in global.patreons,
 										botPermissions: guild.me.permissions.bitfield,
 										channels: guild.channels.cache.filter( channel => {
-											return channel.isGuild();
+											return ( channel.isGuild() || channel.type === 'category' );
 										} ).sort( (a, b) => {
-											return a.rawPosition - b.rawPosition;
+											let aVal = a.rawPosition + 1;
+											if ( a.type === 'category' ) aVal *= 1000;
+											else if ( !a.parent ) aVal -= 1000;
+											else aVal += ( a.parent.rawPosition + 1 ) * 1000;
+											let bVal = b.rawPosition + 1;
+											if ( b.type === 'category' ) bVal *= 1000;
+											else if ( !b.parent ) bVal -= 1000;
+											else bVal += ( b.parent.rawPosition + 1 ) * 1000;
+											return aVal - bVal;
 										} ).map( channel => {
 											return {
 												id: channel.id,
 												name: channel.name,
+												isCategory: ( channel.type === 'category' ),
 												userPermissions: member.permissionsIn(channel).bitfield,
 												botPermissions: guild.me.permissionsIn(channel).bitfield
 											};
@@ -161,8 +170,8 @@ if ( process.env.dashboard ) {
 						}, error => {
 							return 'noMember';
 						} );
-					}`).then( results => {
-						data.response = results.find( result => result );
+					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
+						data.response = result;
 					}, error => {
 						data.error = error.toString();
 					} ).finally( () => {
@@ -202,8 +211,8 @@ if ( process.env.dashboard ) {
 						}, error => {
 							console.log( '- Dashboard: Error while creating the webhook: ' + error );
 						} );
-					}`).then( results => {
-						data.response = results.find( result => result );
+					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
+						data.response = result;
 					}, error => {
 						data.error = error.toString();
 					} ).finally( () => {
@@ -225,8 +234,8 @@ if ( process.env.dashboard ) {
 						}, error => {
 							console.log( '- Dashboard: Error while moving the webhook: ' + error );
 						} );
-					}`).then( results => {
-						data.response = results.find( result => result );
+					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
+						data.response = result;
 					}, error => {
 						data.error = error.toString();
 					} ).finally( () => {

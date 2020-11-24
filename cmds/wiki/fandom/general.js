@@ -69,7 +69,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 		return fn.diff(lang, msg, args, wiki, reaction, spoiler);
 	}
 	var noRedirect = ( querystring.getAll('redirect').pop() === 'no' || ( querystring.has('action') && querystring.getAll('action').pop() !== 'view' ) );
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&amenableparser=true&siprop=general|namespaces|specialpagealiases|wikidesc&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=imageinfo|categoryinfo&converttitles=true&titles=' + encodeURIComponent( title.replace( /\|/g, '\ufffd' ) ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=description&amenableparser=true&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=imageinfo|categoryinfo&converttitles=true&titles=' + encodeURIComponent( title.replace( /\|/g, '\ufffd' ) ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.query ) {
@@ -91,7 +91,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
 		}
 		if ( aliasInvoke === 'discussion' && !querystring.toString() && !fragment ) {
-			return fn.discussion(lang, msg, wiki, args.join(' '), body.query, reaction, spoiler);
+			return fn.discussion(lang, msg, wiki, args.join(' '), body.query.general.sitename, reaction, spoiler);
 		}
 		if ( body.query.pages ) {
 			var querypages = Object.values(body.query.pages);
