@@ -1,18 +1,25 @@
 {
-    "selector": {
-        "title": "Selettore server"
-    },
+    "fallback": [
+        " ",
+        " ",
+        " ",
+        " ",
+        "en"
+    ],
     "general": {
         "delete": "Cancella",
-        "save": "Salva",
-        "refresh": "Aggiorna lista dei server",
         "invite": "Invita Wiki-Bot",
         "logout": "Esci",
-        "support": "Server di supporto",
-        "selector": "Selettore server",
         "rcscript": "Ultime modifiche",
-        "verification": "Verifiche",
+        "refresh": "Aggiorna lista dei server",
+        "save": "Salva",
+        "selector": "Selettore server",
         "settings": "Impostazioni",
-        "title": "Impostazioni Wiki-Bot"
+        "support": "Server di supporto",
+        "title": "Impostazioni Wiki-Bot",
+        "verification": "Verifiche"
+    },
+    "selector": {
+        "title": "Selettore server"
     }
 }
