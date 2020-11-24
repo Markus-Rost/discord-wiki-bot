@@ -1,0 +1,190 @@
+{
+    "fallback": [
+        " ",
+        " ",
+        " ",
+        " ",
+        " "
+    ],
+    "general": {
+        "title": "Wiki-Bot Settings",
+        "settings": "Settings",
+        "verification": "Verifications",
+        "rcscript": "Recent Changes",
+        "selector": "Server Selector",
+        "support": "Support Server",
+        "logout": "Logout",
+        "invite": "Invite Wiki-Bot",
+        "refresh": "Refresh server list",
+        "save": "Save",
+        "delete": "Delete"
+    },
+    "selector": {
+        "title": "Server Selector",
+        "desc": "This is a list of all servers you can change settings on because you have the [Manage Server]($1) permission. Please select a server:",
+        "with": "Server with Wiki-Bot",
+        "without": "Server without Wiki-Bot",
+        "switch": "Switch Accounts",
+        "none": "You currently don't have the [Manage Server]($1) permission on any servers, are you logged into the correct account?",
+        "invite": "Wiki-Bot is not a member of $1 yet, but you can [invite Wiki-Bot]($2)."
+    },
+    "indexjs": {
+        "valid": {
+            "title": "The wiki is valid and can be used!",
+            "MediaWiki": "Warning: Requires at least $1 for full functionality.",
+            "TextExtracts": "Warning: Requires the extension $1 for page descriptions.",
+            "PageImages": "Warning: Requires the extension $1 for page thumbnails."
+        },
+        "invalid": {
+            "title": "Invalid wiki!",
+            "text": "The URL couldn't be resolved to a valid MediaWiki site!"
+        },
+        "outdated": {
+            "title": "Outdated MediaWiki version!",
+            "text": "The recent changes webhook requires at least MediaWiki 1.30!"
+        },
+        "sysmessage": {
+            "title": "System message doesn't match!",
+            "text": "The page $1 needs to match the server id $2."
+        },
+        "prefix": {
+            "space": "The prefix may not include spaces!",
+            "code": "The prefix may not include code markdown!",
+            "backslash": "The prefix may not include backslashes!"
+        }
+    },
+    "notice": {
+        "unauthorized": {
+            "title": "Not logged in!",
+            "text": "Please login before you can change any settings."
+        },
+        "save": {
+            "title": "Settings saved!",
+            "text": "The settings have been updated successfully."
+        },
+        "nosettings": {
+            "title": "Server not set up yet!",
+            "text": "Please define settings for the server first.",
+            "note": "Change settings."
+        },
+        "logout": {
+            "title": "Successfully logged out!",
+            "text": "You have been successfully logged out. To change any settings you need to login again."
+        },
+        "refresh": {
+            "title": "Refresh successful!",
+            "text": "Your server list has been successfully refeshed."
+        },
+        "missingperm": {
+            "title": "Missing permission!",
+            "text": "Either you or Wiki-Bot are missing the $1 permission for this function."
+        },
+        "loginfail": {
+            "title": "Login failed!",
+            "text": "An error occurred while logging you in, please try again."
+        },
+        "sysmessage": {
+            "title": "System message doesn't match!",
+            "text": "The page $1 needs to match the server id $2."
+        },
+        "mwversion": {
+            "title": "Outdated MediaWiki version!",
+            "text": "Requires at least MediaWiki 1.30, found $1 on $2."
+        },
+        "nochange": {
+            "title": "Save failed!",
+            "text": "The settings matched the current default settings."
+        },
+        "invalidusergroup": {
+            "title": "Invalid user group!",
+            "text": "The user group name was too long or you provided too many."
+        },
+        "wikiblocked": {
+            "title": "Wiki is blocked!",
+            "text": "$1 has been blocked from being added as a recent changes webhook.",
+            "note": "Reason:"
+        },
+        "savefail": {
+            "title": "Save failed!",
+            "text": "The settings could not be saved, please try again."
+        },
+        "movefail": {
+            "title": "Settings partially saved!",
+            "text": "The settings have only been partially updated.",
+            "note": "The webhook channel could not be changed!"
+        },
+        "refreshfail": {
+            "title": "Refresh failed!",
+            "text": "You server list could not be refreshed, please try again."
+        },
+        "error": {
+            "title": "Unknown error!",
+            "text": "An unknown error occured, please try again."
+        },
+        "readonly": {
+            "title": "Read-only database!",
+            "text": "You can currently only view your settings, but not change them."
+        }
+    },
+    "settings": {
+        "failed": "Failed to load the settings!",
+        "desc": "These are the settings for $1:",
+        "new": "New channel overwrite",
+        "form": {
+            "new": "New Channel Overwrite",
+            "overwrite": "$1 Settings",
+            "default": "Server-wide Settings",
+            "channel": "Channel:",
+            "wiki": "Default Wiki:",
+            "wiki_check": "Check wiki",
+            "lang": "Language:",
+            "role": "Minimal Role:",
+            "prefix": "Prefix:",
+            "prefix_space": "Prefix ends with space:",
+            "inline": "Inline commands:",
+            "select_channel": "-- Select a Channel --",
+            "confirm": "Do you really want to delete the channel overwrite?"
+        }
+    },
+    "verification": {
+        "desc": "These are the verifications for $1:",
+        "new": "New verification",
+        "form": {
+            "new": "New Verification",
+            "entry": "Verification #$1",
+            "channel": "Channel:",
+            "role": "Role:",
+            "usergroup": "Wiki user group:",
+            "usergroup_and": "Require all user groups:",
+            "editcount": "Minimal edit count:",
+            "accountage": "Account age (in days):",
+            "rename": "Rename users:",
+            "more": "Add more",
+            "select_role": "-- Select a Role --",
+            "confirm": "Do you really want to delete the verification?"
+        },
+        "explanation": "<h2>User Verification</h2>\n<p>Using the <code>!wiki verify &lt;wiki username&gt;</code> command, users are able to verify themselves as a specific wiki user by using the Discord field on their wiki profile. If the user matches and user verifications are set up on the server, Wiki-Bot will give them the roles for all verification entries they matched.</p>\n<p>Every verification entry allows for multiple restrictions on when a user should match the verification:</p>\n<ul>\n<li>Channel to use the <code>!wiki verify</code> command in.</li>\n<li>Role to get when matching the verification entry.</li>\n<li>Required edit count on the wiki to match the verification entry.</li>\n<li>Required user group to be a member of on the wiki to match the verification entry.</li>\n<li>Required account age in days to match the verification entry.</li>\n<li>Whether the Discord users nickname should be set to their wiki username when they match the verification entry.</li>\n</ul>"
+    },
+    "rcscript": {
+        "desc": "These are the recent changes webhooks for $1:",
+        "new": "New Webhook",
+        "form": {
+            "new": "New Recent Changes Webhook",
+            "entry": "Recent Changes Webhook #$1",
+            "channel": "Channel:",
+            "wiki": "Wiki:",
+            "wiki_check": "Check wiki",
+            "lang": "Language:",
+            "display": "Display mode:",
+            "display_compact": "Compact text messages with inline links.",
+            "display_embed": "Embed messages with edit tags and category changes.",
+            "display_image": "Embed messages with image previews.",
+            "display_diff": "Embed messages with image previews and edit differences.",
+            "feeds": "Feeds based changes:",
+            "feeds_only": "Only feeds based changes:",
+            "select_channel": "-- Select a Channel --",
+            "confirm": "Do you really want to delete the recent changes webhook?"
+        },
+        "explanation": "<h2>Recent Changes Webhook</h2>\n<p>Wiki-Bot is able to run a recent changes webhook based on <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>\n<p>Requirements to add a recent changes webhook:</p>\n<ul>\n<li>The wiki needs to run on <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> or higher.</li>\n<li>The system message <code>MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code id=\"server-id\" class=\"user-select\"></code>.</li>\n</ul>"
+    }
+}

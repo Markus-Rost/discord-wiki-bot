@@ -50,8 +50,24 @@ const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
  * @property {String} userPermissions
  * @property {Boolean} [patreon]
  * @property {String} [botPermissions]
- * @property {{id: String, name: String, userPermissions: Number, botPermissions: Number}[]} [channels]
- * @property {{id: String, name: String, lower: Boolean}[]} [roles]
+ * @property {Channel[]} [channels]
+ * @property {Role[]} [roles]
+ */
+
+/**
+ * @typedef Channel
+ * @property {String} id
+ * @property {String} name
+ * @property {Boolean} isCategory
+ * @property {Number} userPermissions
+ * @property {Number} botPermissions
+ */
+
+/**
+ * @typedef Role
+ * @property {String} id
+ * @property {String} name
+ * @property {Boolean} lower
  */
 
 /**
@@ -92,10 +108,11 @@ function sendMsg(message) {
  * Create a red notice
  * @param {import('cheerio')} $ - The cheerio static
  * @param {String} notice - The notice to create
+ * @param {import('./i18n.js')} dashboardLang - The user language
  * @param {String[]} [args] - The arguments for the notice
  * @returns {import('cheerio')}
  */
-function createNotice($, notice, args = []) {
+function createNotice($, notice, dashboardLang, args = []) {
 	if ( !notice ) return;
 	var type = 'info';
 	var title = $('<b>');
@@ -104,105 +121,98 @@ function createNotice($, notice, args = []) {
 	switch (notice) {
 		case 'unauthorized':
 			type = 'info';
-			title.text('Not logged in!');
-			text.text('Please login before you can change any settings.');
+			title.text(dashboardLang.get('notice.unauthorized.title'));
+			text.text(dashboardLang.get('notice.unauthorized.text'));
 			break;
 		case 'save':
 			type = 'success';
-			title.text('Settings saved!');
-			text.text('The settings have been updated successfully.');
+			title.text(dashboardLang.get('notice.save.title'));
+			text.text(dashboardLang.get('notice.save.text'));
 			break;
 		case 'nosettings':
 			type = 'info';
-			title.text('Server not set up yet!');
-			text.text('Please define settings for the server first.');
-			note = $('<a>').text('Change settings.').attr('href', `/guild/${args[0]}/settings`);
+			title.text(dashboardLang.get('notice.nosettings.title'));
+			text.text(dashboardLang.get('notice.nosettings.text'));
+			note = $('<a>').text(dashboardLang.get('notice.nosettings.note')).attr('href', `/guild/${args[0]}/settings`);
 			break;
 		case 'logout':
 			type = 'success';
-			title.text('Successfully logged out!');
-			text.text('You have been successfully logged out. To change any settings you need to login again.');
+			title.text(dashboardLang.get('notice.logout.title'));
+			text.text(dashboardLang.get('notice.logout.text'));
 			break;
 		case 'refresh':
 			type = 'success';
-			title.text('Refresh successful!');
-			text.text('Your server list has been successfully refeshed.');
+			title.text(dashboardLang.get('notice.refresh.title'));
+			text.text(dashboardLang.get('notice.refresh.text'));
 			break;
 		case 'missingperm':
 			type = 'error';
-			title.text('Missing permission!');
-			text.append(
-				escapeText('Either you or Wiki-Bot are missing the '),
-				$('<code>').text(args[0]),
-				escapeText(' permission for this function.')
-			);
+			title.text(dashboardLang.get('notice.missingperm.title'));
+			text.html(dashboardLang.get('notice.missingperm.text', true, $('<code>').text(args[0])));
 			break;
 		case 'loginfail':
 			type = 'error';
-			title.text('Login failed!');
-			text.text('An error occurred while logging you in, please try again.');
+			title.text(dashboardLang.get('notice.loginfail.title'));
+			text.text(dashboardLang.get('notice.loginfail.text'));
 			break;
 		case 'sysmessage':
 			type = 'info';
-			title.text('System message does not match!');
-			text.append(
-				escapeText('The page '),
-				$('<a target="_blank">').append(
-					$('<code>').text('MediaWiki:Custom-RcGcDw')
-				).attr('href', args[1]),
-				escapeText(' needs to be the server id '),
-				$('<code class="user-select">').text(args[0]),
-				escapeText('.')
-			);
+			title.text(dashboardLang.get('notice.sysmessage.title'));
+			text.text(dashboardLang.get('notice.sysmessage.text', true, $('<a target="_blank">').append(
+				$('<code>').text('MediaWiki:Custom-RcGcDw')
+			).attr('href', args[1]), $('<code class="user-select">').text(args[0])));
 			note = $('<a target="_blank">').text(args[1]).attr('href', args[1]);
 			break;
 		case 'mwversion':
 			type = 'error';
-			title.text('Outdated MediaWiki version!');
-			text.text(`Requires at least MediaWiki 1.30, found ${args[0]} on ${args[1]}.`);
+			title.text(dashboardLang.get('notice.mwversion.title'));
+			text.text(dashboardLang.get('notice.mwversion.text', false, args[0], args[1]));
 			note = $('<a target="_blank">').text('https://www.mediawiki.org/wiki/MediaWiki_1.30').attr('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
 			break;
 		case 'nochange':
 			type = 'info';
-			title.text('Save failed!');
-			text.text('The settings matched the current default settings.');
+			title.text(dashboardLang.get('notice.nochange.title'));
+			text.text(dashboardLang.get('notice.nochange.text'));
 			break;
 		case 'invalidusergroup':
 			type = 'error';
-			title.text('Invalid user group!');
-			text.text('The user group name was too long or you provided too many.');
+			title.text(dashboardLang.get('notice.invalidusergroup.title'));
+			text.text(dashboardLang.get('notice.invalidusergroup.text'));
 			break;
 		case 'wikiblocked':
 			type = 'error';
-			title.text('Wiki is blocked!');
-			text.text(`${args[0]} has been blocked from being added as a recent changes webhook.`);
-			if ( args[1] ) note = $('<div>').text(`Reason: ${args[1]}`);
+			title.text(dashboardLang.get('notice.wikiblocked.title'));
+			text.text(dashboardLang.get('notice.wikiblocked.text', false, args[0]));
+			if ( args[1] ) note = $('<div>').append(
+				dashboardLang.get('notice.wikiblocked.note', true) + ' ',
+				$('<code>').text(args[1])
+			);
 			break;
 		case 'savefail':
 			type = 'error';
-			title.text('Save failed!');
-			text.text('The settings could not be saved, please try again.');
+			title.text(dashboardLang.get('notice.savefail.title'));
+			text.text(dashboardLang.get('notice.savefail.text'));
 			break;
 		case 'movefail':
 			type = 'info';
-			title.text('Settings partially saved!');
-			text.text('The settings have only been partially updated.');
-			note = $('<div>').text('The webhook channel could not be changed!');
+			title.text(dashboardLang.get('notice.movefail.title'));
+			text.text(dashboardLang.get('notice.movefail.text'));
+			note = $('<div>').text(dashboardLang.get('notice.movefail.note'));
 			break;
 		case 'refreshfail':
 			type = 'error';
-			title.text('Refresh failed!');
-			text.text('You server list could not be refreshed, please try again.');
+			title.text(dashboardLang.get('notice.refreshfail.title'));
+			text.text(dashboardLang.get('notice.refreshfail.text'));
 			break;
 		case 'error':
 			type = 'error';
-			title.text('Unknown error!');
-			text.text('An unknown error occured, please try again.');
+			title.text(dashboardLang.get('notice.error.title'));
+			text.text(dashboardLang.get('notice.error.text'));
 			break;
 		case 'readonly':
 			type = 'info';
-			title.text('Read-only database!');
-			text.text('You can currently only view your settings, but not change them.');
+			title.text(dashboardLang.get('notice.readonly.title'));
+			text.text(dashboardLang.get('notice.readonly.text'));
 			break;
 		default:
 			return;

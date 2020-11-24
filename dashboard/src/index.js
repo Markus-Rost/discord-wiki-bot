@@ -113,24 +113,24 @@ if ( wiki ) {
 				wikichecknotice.className = 'notice';
 				wikichecknotice.innerHTML = '';
 				if ( response.error ) {
-					wiki.setCustomValidity('Invalid wiki!');
+					wiki.setCustomValidity(i18n.invalid.title);
 					wikichecknotice.classList.add('notice-error');
 					var noticeTitle = document.createElement('b');
-					noticeTitle.textContent = 'Invalid wiki!';
+					noticeTitle.textContent = i18n.invalid.title;
 					var noticeText = document.createElement('div');
-					noticeText.textContent = 'The URL could not be resolved to a valid MediaWiki site!';
+					noticeText.textContent = i18n.invalid.text;
 					wikichecknotice.append(noticeTitle, noticeText);
 					return;
 				}
 				wiki.value = response.wiki;
 				if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
 					if ( !response.MediaWiki ) {
-						wiki.setCustomValidity('Outdated MediaWiki version!');
+						wiki.setCustomValidity(i18n.outdated.title);
 						wikichecknotice.classList.add('notice-error');
 						var noticeTitle = document.createElement('b');
-						noticeTitle.textContent = 'Outdated MediaWiki version!';
+						noticeTitle.textContent = i18n.outdated.title;
 						var noticeText = document.createElement('div');
-						noticeText.textContent = 'The recent changes webhook requires at least MediaWiki 1.30!';
+						noticeText.textContent = i18n.outdated.text;
 						var noticeLink = document.createElement('a');
 						noticeLink.setAttribute('target', '_blank');
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
@@ -141,7 +141,7 @@ if ( wiki ) {
 					if ( response.RcGcDw !== document.location.pathname.split('/')[2] ) {
 						wikichecknotice.classList.add('notice-info');
 						var noticeTitle = document.createElement('b');
-						noticeTitle.textContent = 'System message does not match!';
+						noticeTitle.textContent = i18n.sysmessage.title;
 						var sysmessageLink = document.createElement('a');
 						sysmessageLink.setAttribute('target', '_blank');
 						sysmessageLink.setAttribute('href', response.customRcGcDw);
@@ -152,12 +152,13 @@ if ( wiki ) {
 						guildCode.className = 'user-select';
 						guildCode.textContent = document.location.pathname.split('/')[2];
 						var noticeText = document.createElement('div');
+						var textSnippets = i18n.sysmessage.text.split(/\$\d/);
 						noticeText.append(
-							document.createTextNode('The page '),
+							document.createTextNode(textSnippets[0]),
 							sysmessageLink,
-							document.createTextNode(' needs to be the server id '),
+							document.createTextNode(textSnippets[1]),
 							guildCode,
-							document.createTextNode('.')
+							document.createTextNode(textSnippets[2])
 						);
 						var noticeLink = sysmessageLink.cloneNode();
 						noticeLink.textContent = response.customRcGcDw;
@@ -166,13 +167,13 @@ if ( wiki ) {
 					}
 					wikichecknotice.classList.add('notice-success');
 					var noticeTitle = document.createElement('b');
-					noticeTitle.textContent = 'The wiki is valid and can be used!';
+					noticeTitle.textContent = i18n.valid.title;
 					wikichecknotice.append(noticeTitle);
 					return;
 				}
 				wikichecknotice.classList.add('notice-success');
 				var noticeTitle = document.createElement('b');
-				noticeTitle.textContent = 'The wiki is valid and can be used!';
+				noticeTitle.textContent = i18n.valid.title;
 				wikichecknotice.append(noticeTitle);
 				if ( !/\.(?:gamepedia\.com|fandom\.com|wikia\.org)$/.test(wiki.value.split('/')[2]) ) {
 					if ( !response.MediaWiki ) {
@@ -181,10 +182,11 @@ if ( wiki ) {
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
 						noticeLink.textContent = 'MediaWiki 1.30';
 						var noticeText = document.createElement('div');
+						var textSnippets = i18n.valid.MediaWiki.split(/\$\d/);
 						noticeText.append(
-							document.createTextNode('Warning: Requires at least '),
+							document.createTextNode(textSnippets[0]),
 							noticeLink,
-							document.createTextNode(' for full functionality.')
+							document.createTextNode(textSnippets[1])
 						);
 						wikichecknotice.append(noticeText);
 					}
@@ -194,10 +196,11 @@ if ( wiki ) {
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/Extension:TextExtracts');
 						noticeLink.textContent = 'TextExtracts';
 						var noticeText = document.createElement('div');
+						var textSnippets = i18n.valid.TextExtracts.split(/\$\d/);
 						noticeText.append(
-							document.createTextNode('Warning: Requires the extension '),
+							document.createTextNode(textSnippets[0]),
 							noticeLink,
-							document.createTextNode(' for page descriptions.')
+							document.createTextNode(textSnippets[1])
 						);
 						wikichecknotice.append(noticeText);
 					}
@@ -207,10 +210,11 @@ if ( wiki ) {
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/Extension:PageImages');
 						noticeLink.textContent = 'PageImages';
 						var noticeText = document.createElement('div');
+						var textSnippets = i18n.valid.PageImages.split(/\$\d/);
 						noticeText.append(
-							document.createTextNode('Warning: Requires the extension '),
+							document.createTextNode(textSnippets[0]),
 							noticeLink,
-							document.createTextNode(' for page thumbnails.')
+							document.createTextNode(textSnippets[1])
 						);
 						wikichecknotice.append(noticeText);
 					}
@@ -288,13 +292,13 @@ const prefix = document.getElementById('wb-settings-prefix');
 if ( prefix ) prefix.addEventListener( 'input', function() {
 	if ( prefix.validity.patternMismatch ) {
 		if ( prefix.value.trim().includes( ' ' ) ) {
-			prefix.setCustomValidity('The prefix may not include spaces!');
+			prefix.setCustomValidity(i18n.prefix.space);
 		}
 		else if ( prefix.value.includes( '`' ) ) {
-			prefix.setCustomValidity('The prefix may not include code markdown!');
+			prefix.setCustomValidity(i18n.prefix.code);
 		}
 		else if ( prefix.value.includes( '\\' ) ) {
-			prefix.setCustomValidity('The prefix may not include backslashes!');
+			prefix.setCustomValidity(i18n.prefix.backslash);
 		}
 		else prefix.setCustomValidity('');
 	}

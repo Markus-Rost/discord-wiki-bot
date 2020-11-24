@@ -59,6 +59,7 @@ const fieldset = {
  * Create a settings form
  * @param {import('cheerio')} $ - The response body
  * @param {String} header - The form header
+ * @param {import('./i18n.js')} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {Boolean} settings.patreon
  * @param {String} [settings.channel]
@@ -67,36 +68,43 @@ const fieldset = {
  * @param {Number} settings.display
  * @param {Number} [settings.wikiid]
  * @param {Number} [settings.rcid]
- * @param {Object[]} guildChannels - The guild channels
- * @param {String} guildChannels.id
- * @param {String} guildChannels.name
- * @param {Number} guildChannels.userPermissions
- * @param {Number} guildChannels.botPermissions
+ * @param {import('./util.js').Channel[]} guildChannels - The guild channels
  * @param {String[]} allWikis - The guild wikis
  */
-function createForm($, header, settings, guildChannels, allWikis) {
+function createForm($, header, dashboardLang, settings, guildChannels, allWikis) {
 	var readonly = ( process.env.READONLY ? true : false );
 	var curChannel = guildChannels.find( guildChannel => settings.channel === guildChannel.id );
 	var fields = [];
 	let channel = $('<div>').append(fieldset.channel);
+	channel.find('label').text(dashboardLang.get('rcscript.form.channel'));
+	let curCat = null;
 	if ( !settings.channel || ( curChannel && hasPerm(curChannel.botPermissions, 'MANAGE_WEBHOOKS') && hasPerm(curChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
 		channel.find('#wb-settings-channel').append(
 			...guildChannels.filter( guildChannel => {
-				return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && hasPerm(guildChannel.botPermissions, 'MANAGE_WEBHOOKS') );
+				return ( ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && hasPerm(guildChannel.botPermissions, 'MANAGE_WEBHOOKS') ) || guildChannel.isCategory );
 			} ).map( guildChannel => {
-				var optionChannel = $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id);
+				if ( guildChannel.isCategory ) {
+					curCat = $('<optgroup>').attr('label', guildChannel.name);
+					return curCat;
+				}
+				var optionChannel = $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`);
 				if ( settings.channel === guildChannel.id ) {
 					optionChannel.attr('selected', '');
 				}
-				return optionChannel.text(`${guildChannel.id} – #${guildChannel.name}`);
+				if ( !curCat ) return optionChannel;
+				optionChannel.appendTo(curCat);
+			} ).filter( catChannel => {
+				if ( !catChannel ) return false;
+				if ( catChannel.is('optgroup') && !catChannel.children('option').length ) return false;
+				return true;
 			} )
 		);
 		if ( !settings.channel ) {
 			if ( !channel.find('#wb-settings-channel').children('option').length ) {
-				createNotice($, 'missingperm', ['Manage Webhooks']);
+				createNotice($, 'missingperm', dashboardLang, ['Manage Webhooks']);
 			}
 			channel.find('#wb-settings-channel').prepend(
-				$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text('-- Select a Channel --')
+				$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text(dashboardLang.get('rcscript.form.select_channel'))
 			);
 		}
 	}
@@ -108,21 +116,31 @@ function createForm($, header, settings, guildChannels, allWikis) {
 	);
 	fields.push(channel);
 	let wiki = $('<div>').append(fieldset.wiki);
+	wiki.find('label').text(dashboardLang.get('rcscript.form.wiki'));
+	wiki.find('#wb-settings-wiki-check').text(dashboardLang.get('rcscript.form.wiki_check'));
 	wiki.find('#wb-settings-wiki').val(settings.wiki);
 	wiki.find('#wb-settings-wiki-list').append(
 		...allWikis.map( listWiki => $(`<option>`).val(listWiki) )
 	);
 	fields.push(wiki);
 	let lang = $('<div>').append(fieldset.lang);
+	lang.find('label').text(dashboardLang.get('rcscript.form.lang'));
 	lang.find(`#wb-settings-lang-${settings.lang}`).attr('selected', '');
 	fields.push(lang);
 	let display = $('<div>').append(fieldset.display);
+	display.find('span').text(dashboardLang.get('rcscript.form.display'));
+	display.find('label').eq(0).text(dashboardLang.get('rcscript.form.display_compact'));
+	display.find('label').eq(1).text(dashboardLang.get('rcscript.form.display_embed'));
+	display.find('label').eq(2).text(dashboardLang.get('rcscript.form.display_image'));
+	display.find('label').eq(3).text(dashboardLang.get('rcscript.form.display_diff'));
 	display.find(`#wb-settings-display-${settings.display}`).attr('checked', '');
 	if ( !settings.patreon ) display.find('.wb-settings-display').filter( (i, radioDisplay) => {
 		return ( i > rcgcdwLimit.display && !$(radioDisplay).has('input:checked').length );
 	} ).remove();
 	fields.push(display);
 	let feeds = $('<div id="wb-settings-feeds-hide">').append(fieldset.feeds);
+	feeds.find('label').eq(0).text(dashboardLang.get('rcscript.form.feeds'));
+	feeds.find('label').eq(1).text(dashboardLang.get('rcscript.form.feeds_only'));
 	if ( /\.(?:fandom\.com|wikia\.org)$/.test(new URL(settings.wiki).hostname) ) {
 		if ( settings.wikiid ) {
 			feeds.find('#wb-settings-feeds').attr('checked', '');
@@ -135,14 +153,14 @@ function createForm($, header, settings, guildChannels, allWikis) {
 		feeds.find('#wb-settings-feeds-only-hide').attr('style', 'visibility: hidden;');
 	}
 	fields.push(feeds);
-	fields.push($(fieldset.save).val('Save'));
+	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
 	if ( settings.channel && curChannel && hasPerm(curChannel.userPermissions, 'MANAGE_WEBHOOKS') ) {
-		fields.push($(fieldset.delete).val('Delete').attr('onclick', `return confirm('Are you sure?');`));
+		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('rcscript.form.confirm').replace( /'/g, '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
 		form.find('input').attr('readonly', '');
-		form.find('input[type="checkbox"], input[type="radio"]:not(:checked), option').attr('disabled', '');
+		form.find('input[type="checkbox"], input[type="radio"]:not(:checked), option, optgroup').attr('disabled', '');
 		form.find('input[type="submit"], button.addmore').remove();
 	}
 	return $('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
@@ -151,29 +169,20 @@ function createForm($, header, settings, guildChannels, allWikis) {
 	);
 }
 
-const explanation = `
-<h2>Recent Changes Webhook</h2>
-<p>Wiki-Bot is able to run a recent changes webhook based on <a href="https://gitlab.com/piotrex43/RcGcDw" target="_blank">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>
-<p>Requirements to add a recent changes webhook:</p>
-<ul>
-	<li>The wiki needs to run on <a href="https://www.mediawiki.org/wiki/MediaWiki_1.30" target="_blank">MediaWiki 1.30</a> or higher.</li>
-	<li>The system message <code>MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code id="server-id" class="user-select"></code>.</li>
-</ul>
-`;
-
 /**
  * Let a user change recent changes scripts
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('cheerio')} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
+ * @param {import('./i18n.js')} dashboardLang - The user language
  */
-function dashboard_rcscript(res, $, guild, args) {
 	db.all( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT GROUP_CONCAT(DISTINCT wiki) FROM discord WHERE guild = ?) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, wikiid, rcid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id, guild.id], function(dberror, rows) {
+function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the RcGcDw: ' + dberror );
-			createNotice($, 'error');
-			$('#text .description').html(explanation);
+			createNotice($, 'error', dashboardLang);
+			$('#text .description').html(dashboardLang.get('rcscript.explanation'));
 			$('#text code#server-id').text(guild.id);
 			$('.channel#rcscript').addClass('selected');
 			let body = $.html();
@@ -182,8 +191,8 @@ function dashboard_rcscript(res, $, guild, args) {
 			return res.end();
 		}
 		if ( rows.length === 0 ) {
-			createNotice($, 'nosettings', [guild.id]);
-			$('#text .description').html(explanation);
+			createNotice($, 'nosettings', dashboardLang, [guild.id]);
+			$('#text .description').html(dashboardLang.get('rcscript.explanation'));
 			$('#text code#server-id').text(guild.id);
 			$('.channel#rcscript').addClass('selected');
 			let body = $.html();
@@ -195,7 +204,7 @@ function dashboard_rcscript(res, $, guild, args) {
 		var lang = rows[0].mainlang;
 		var allwikis = rows[0].allwikis.split(',').sort();
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
-		$('<p>').text(`These are the recent changes webhooks for "${guild.name}":`).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('rcscript.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		Promise.all(rows.map( row => {
 			return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( response => {
 				if ( !response.body?.channel_id ) {
@@ -208,6 +217,7 @@ function dashboard_rcscript(res, $, guild, args) {
 				row.channel = 'UNKNOWN';
 			} );
 		} )).finally( () => {
+			let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 			$('#channellist #rcscript').after(
 				...rows.map( row => {
 					return $('<a class="channel">').attr('id', `channel-${row.configid}`).append(
@@ -215,17 +225,17 @@ function dashboard_rcscript(res, $, guild, args) {
 						$('<div>').text(`${row.configid} - ${( guild.channels.find( channel => {
 							return channel.id === row.channel;
 						} )?.name || row.channel )}`)
-					).attr('href', `/guild/${guild.id}/rcscript/${row.configid}`);
+					).attr('href', `/guild/${guild.id}/rcscript/${row.configid}${suffix}`);
 				} ),
 				( process.env.READONLY || rows.length >= rcgcdwLimit[( guild.patreon ? 'patreon' : 'default' )] ? '' :
 				$('<a class="channel" id="channel-new">').append(
 					$('<img>').attr('src', '/src/channel.svg'),
-					$('<div>').text('New webhook')
-				).attr('href', `/guild/${guild.id}/rcscript/new`) )
+					$('<div>').text(dashboardLang.get('rcscript.new'))
+				).attr('href', `/guild/${guild.id}/rcscript/new${suffix}`) )
 			);
 			if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= rcgcdwLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 				$('.channel#channel-new').addClass('selected');
-				createForm($, 'New Recent Changes Webhook', {
+				createForm($, dashboardLang.get('rcscript.form.new'), dashboardLang, {
 					wiki, lang: ( lang in allLangs.names ? lang : defaultSettings.lang ),
 					display: 1, patreon: guild.patreon
 				}, guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
@@ -233,13 +243,13 @@ function dashboard_rcscript(res, $, guild, args) {
 			else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 				let row = rows.find( row => row.configid.toString() === args[4] );
 				$(`.channel#channel-${row.configid}`).addClass('selected');
-				createForm($, `Recent Changes Webhook #${row.configid}`, Object.assign({
+				createForm($, dashboardLang.get('rcscript.form.entry', false, row.configid), dashboardLang, Object.assign({
 					patreon: guild.patreon
 				}, row), guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/${row.configid}`).appendTo('#text');
 			}
 			else {
 				$('.channel#rcscript').addClass('selected');
-				$('#text .description').html(explanation);
+				$('#text .description').html(dashboardLang.get('rcscript.explanation'));
 				$('#text code#server-id').text(guild.id);
 			}
 			let body = $.html();
@@ -282,7 +292,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		}
 		settings.display = parseInt(settings.display, 10);
 		if ( type === 'new' && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-			return ( channel.id === settings.channel );
+			return ( channel.id === settings.channel && !channel.isCategory );
 		} ) ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	}
 	if ( settings.delete_settings && type === 'new' ) {
@@ -446,7 +456,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			var newChannel = false;
 			if ( settings.save_settings && row.channel !== settings.channel ) {
 				if ( !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-					return ( channel.id === settings.channel );
+					return ( channel.id === settings.channel && !channel.isCategory );
 				} ) ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				newChannel = true;
 			}

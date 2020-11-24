@@ -40,6 +40,7 @@ const fieldset = {
  * Create a settings form
  * @param {import('cheerio')} $ - The response body
  * @param {String} header - The form header
+ * @param {import('./i18n.js')} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {Boolean} settings.patreon
  * @param {String} settings.channel
@@ -48,22 +49,18 @@ const fieldset = {
  * @param {String} settings.role
  * @param {Boolean} settings.inline
  * @param {String} settings.prefix
- * @param {Object[]} guildRoles - The guild roles
- * @param {String} guildRoles.id
- * @param {String} guildRoles.name
- * @param {Object[]} guildChannels - The guild channels
- * @param {String} guildChannels.id
- * @param {String} guildChannels.name
- * @param {Number} guildChannels.userPermissions
+ * @param {import('./util.js').Role[]} guildRoles - The guild roles
+ * @param {import('./util.js').Channel[]} guildChannels - The guild channels
  */
-function createForm($, header, settings, guildRoles, guildChannels = []) {
+function createForm($, header, dashboardLang, settings, guildRoles, guildChannels = []) {
 	var readonly = ( process.env.READONLY ? true : false );
-	if ( settings.channel && guildChannels.userPermissions === 0 && guildChannels.name === 'UNKNOWN' ) {
+	if ( settings.channel && guildChannels.length === 1 && guildChannels[0].userPermissions === 0 && guildChannels[0].name === 'UNKNOWN' ) {
 		readonly = true;
 	}
 	var fields = [];
 	if ( settings.channel ) {
 		let channel = $('<div>').append(fieldset.channel);
+		channel.find('label').text(dashboardLang.get('settings.form.channel'));
 		channel.find('#wb-settings-channel').append(
 			...guildChannels.map( guildChannel => {
 				return $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`)
@@ -76,20 +73,23 @@ function createForm($, header, settings, guildRoles, guildChannels = []) {
 			}
 		}
 		else channel.find('#wb-settings-channel').prepend(
-			$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text('-- Select a Channel --')
+			$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text(dashboardLang.get('settings.form.select_channel'))
 		);
 		fields.push(channel);
 	}
 	let wiki = $('<div>').append(fieldset.wiki);
+	wiki.find('label').text(dashboardLang.get('settings.form.wiki'));
+	wiki.find('#wb-settings-wiki-check').text(dashboardLang.get('settings.form.wiki_check'));
 	wiki.find('#wb-settings-wiki').val(settings.wiki);
 	fields.push(wiki);
 	if ( !settings.channel || settings.patreon ) {
 		let lang = $('<div>').append(fieldset.lang);
+		lang.find('label').text(dashboardLang.get('settings.form.lang'));
 		lang.find(`#wb-settings-lang-${settings.lang}`).attr('selected', '');
 		fields.push(lang);
 		let role = $('<div>').append(fieldset.role);
+		role.find('label').text(dashboardLang.get('settings.form.role'));
 		role.find('#wb-settings-role').append(
-			$(`<option id="wb-settings-role-default">`).val('').text(`@everyone`),
 			...guildRoles.map( guildRole => {
 				return $(`<option id="wb-settings-role-${guildRole.id}">`).val(guildRole.id).text(`${guildRole.id} – @${guildRole.name}`)
 			} ),
@@ -99,20 +99,23 @@ function createForm($, header, settings, guildRoles, guildChannels = []) {
 		else role.find(`#wb-settings-role-everyone`).attr('selected', '');
 		fields.push(role);
 		let inline = $('<div>').append(fieldset.inline);
+		inline.find('label').text(dashboardLang.get('settings.form.inline'));
 		if ( !settings.inline ) inline.find('#wb-settings-inline').attr('checked', '');
 		fields.push(inline);
 	}
 	if ( settings.patreon && !settings.channel ) {
 		let prefix = $('<div>').append(fieldset.prefix);
+		prefix.find('label').eq(0).text(dashboardLang.get('settings.form.prefix'));
+		prefix.find('label').eq(1).text(dashboardLang.get('settings.form.prefix_space'));
 		prefix.find('#wb-settings-prefix').val(settings.prefix.trim());
 		if ( settings.prefix.endsWith( ' ' ) ) {
 			prefix.find('#wb-settings-prefix-space').attr('checked', '');
 		}
 		fields.push(prefix);
 	}
-	fields.push($(fieldset.save).val('Save'));
+	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
 	if ( settings.channel && settings.channel !== 'new' ) {
-		fields.push($(fieldset.delete).val('Delete').attr('onclick', `return confirm('Are you sure?');`));
+		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('settings.form.confirm').replace( /'/g, '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
@@ -132,23 +135,24 @@ function createForm($, header, settings, guildRoles, guildChannels = []) {
  * @param {import('cheerio')} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
+ * @param {import('./i18n.js')} dashboardLang - The user language
  */
-function dashboard_settings(res, $, guild, args) {
+function dashboard_settings(res, $, guild, args, dashboardLang) {
 	db.all( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the settings: ' + dberror );
-			createNotice($, 'error');
-			$('<p>').text('Failed to load the settings!').appendTo('#text .description');
+			createNotice($, 'error', dashboardLang);
+			$('<p>').text(dashboardLang.get('settings.failed')).appendTo('#text .description');
 			$('.channel#settings').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
 			res.write( body );
 			return res.end();
 		}
-		$('<p>').text(`These are the settings for "${guild.name}":`).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		if ( !rows.length ) {
 			$('.channel#settings').addClass('selected');
-			createForm($, 'Server-wide Settings', Object.assign({
+			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, Object.assign({
 				prefix: process.env.prefix
 			}, defaultSettings), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 			let body = $.html();
@@ -163,34 +167,35 @@ function dashboard_settings(res, $, guild, args) {
 		} ).sort( (a, b) => {
 			return guild.channels.indexOf(a) - guild.channels.indexOf(b);
 		} );
+		let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 		$('#channellist #settings').after(
 			...channellist.map( channel => {
 				return $('<a class="channel">').attr('id', `channel-${channel.id}`).append(
 					$('<img>').attr('src', '/src/channel.svg'),
 					$('<div>').text(channel.name)
-				).attr('href', `/guild/${guild.id}/settings/${channel.id}`).attr('title', channel.id);
+				).attr('href', `/guild/${guild.id}/settings/${channel.id}${suffix}`).attr('title', channel.id);
 			} ),
 			( process.env.READONLY || !guild.channels.filter( channel => {
-				return ( hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
+				return ( !channel.isCategory && hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
 			} ).length ? '' :
 			$('<a class="channel" id="channel-new">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
-				$('<div>').text('New channel overwrite')
-			).attr('href', `/guild/${guild.id}/settings/new`) )
+				$('<div>').text(dashboardLang.get('settings.new'))
+			).attr('href', `/guild/${guild.id}/settings/new${suffix}`) )
 		);
 		if ( args[4] === 'new' && !process.env.READONLY ) {
 			$('.channel#channel-new').addClass('selected');
-			createForm($, 'New Channel Overwrite', Object.assign({}, rows.find( row => !row.channel ), {
+			createForm($, dashboardLang.get('settings.form.new'), dashboardLang, Object.assign({}, rows.find( row => !row.channel ), {
 				patreon: isPatreon,
 				channel: 'new'
 			}), guild.roles, guild.channels.filter( channel => {
-				return ( hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
+				return ( !channel.isCategory && hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
 			} )).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#text');
 		}
 		else if ( channellist.some( channel => channel.id === args[4] ) ) {
 			let channel = channellist.find( channel => channel.id === args[4] );
 			$(`.channel#channel-${channel.id}`).addClass('selected');
-			createForm($, `#${channel.name} Settings`, Object.assign({}, rows.find( row => {
+			createForm($, dashboardLang.get('settings.form.overwrite', false, `#${channel.name}`), dashboardLang, Object.assign({}, rows.find( row => {
 				return row.channel === channel.id;
 			} ), {
 				patreon: isPatreon
@@ -198,7 +203,7 @@ function dashboard_settings(res, $, guild, args) {
 		}
 		else {
 			$('.channel#settings').addClass('selected');
-			createForm($, 'Server-wide Settings', rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});
@@ -236,7 +241,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.channel && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-			return ( channel.id === settings.channel );
+			return ( channel.id === settings.channel && !channel.isCategory );
 		} ) ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		if ( settings.role && !userSettings.guilds.isMember.get(guild).roles.some( role => {
 			return ( role.id === settings.role );

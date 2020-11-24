@@ -1,7 +1,9 @@
 const crypto = require('crypto');
 const cheerio = require('cheerio');
-const {defaultPermissions} = require('../util/default.json');
+const {defaultPermissions, defaultSettings} = require('../util/default.json');
 const Wiki = require('../util/wiki.js');
+const Lang = require('./i18n.js');
+const dashboardLang = new Lang(defaultSettings.lang);
 const {got, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
 
 const DiscordOauth2 = require('discord-oauth2');
@@ -30,8 +32,8 @@ function dashboard_login(res, state, action) {
 	var $ = cheerio.load(file);
 	let responseCode = 200;
 	let prompt = 'none';
-	if ( process.env.READONLY ) createNotice($, 'readonly');
-	if ( action ) createNotice($, action);
+	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);
+	if ( action ) createNotice($, action, dashboardLang);
 	if ( action === 'unauthorized' ) $('head').append(
 		$('<script>').text('history.replaceState(null, null, "/login");')
 	);
@@ -222,12 +224,12 @@ function dashboard_api(res, input) {
 		RcGcDw: '',
 		customRcGcDw: wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
 	};
-	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions' + ( wiki.isFandom() ? '|variables' : '' ) + '&format=json' ).then( response => {
+	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
 		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 			if ( api ) {
 				wiki = new Wiki(api.split('api.php?')[0], wiki);
-				return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions' + ( wiki.isFandom() ? '|variables' : '' ) + '&format=json' );
+				return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json' );
 			}
 		}
 		return response;

@@ -37,6 +37,7 @@ const fieldset = {
  * Create a settings form
  * @param {import('cheerio')} $ - The response body
  * @param {String} header - The form header
+ * @param {import('./i18n.js')} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {String} settings.channel
  * @param {String} settings.role
@@ -45,30 +46,34 @@ const fieldset = {
  * @param {Number} settings.accountage
  * @param {Boolean} settings.rename
  * @param {String} [settings.defaultrole]
- * @param {Object[]} guildChannels - The guild channels
- * @param {String} guildChannels.id
- * @param {String} guildChannels.name
- * @param {Number} guildChannels.userPermissions
- * @param {Number} guildChannels.botPermissions
- * @param {Object[]} guildRoles - The guild roles
- * @param {String} guildRoles.id
- * @param {String} guildRoles.name
- * @param {Boolean} guildRoles.lower
+ * @param {import('./util.js').Channel[]} guildChannels - The guild channels
+ * @param {import('./util.js').Role[]} guildRoles - The guild roles
  */
-function createForm($, header, settings, guildChannels, guildRoles) {
+function createForm($, header, dashboardLang, settings, guildChannels, guildRoles) {
 	var readonly = ( process.env.READONLY ? true : false );
 	var fields = [];
 	let channel = $('<div>').append(fieldset.channel);
+	channel.find('label').text(dashboardLang.get('verification.form.channel'));
+	let curCat = null;
 	channel.find('#wb-settings-channel').append(
 		$('<option class="wb-settings-channel-default defaultSelect" hidden>').val('').text('-- Select a Channel --'),
 		...guildChannels.filter( guildChannel => {
-			return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') || settings.channel.includes( '|' + guildChannel.id + '|' ) );
+			return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') || guildChannel.isCategory || settings.channel.includes( '|' + guildChannel.id + '|' ) );
 		} ).map( guildChannel => {
-			var optionChannel = $(`<option class="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id);
+			if ( guildChannel.isCategory ) {
+				curCat = $('<optgroup>').attr('label', guildChannel.name);
+				return curCat;
+			}
+			var optionChannel = $(`<option class="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`);
 			if ( !hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') ) {
 				optionChannel.addClass('wb-settings-error');
 			}
-			return optionChannel.text(`${guildChannel.id} – #${guildChannel.name}`);
+			if ( !curCat ) return optionChannel;
+			optionChannel.appendTo(curCat);
+		} ).filter( catChannel => {
+			if ( !catChannel ) return false;
+			if ( catChannel.is('optgroup') && !catChannel.children('option').length ) return false;
+			return true;
 		} )
 	);
 	if ( settings.channel ) {
@@ -97,8 +102,9 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 	}
 	fields.push(channel);
 	let role = $('<div>').append(fieldset.role);
+	role.find('label').text(dashboardLang.get('verification.form.role'));
 	role.find('#wb-settings-role').append(
-		$('<option class="wb-settings-role-default defaultSelect" hidden>').val('').text('-- Select a Role --'),
+		$('<option class="wb-settings-role-default defaultSelect" hidden>').val('').text(dashboardLang.get('verification.form.select_role')),
 		...guildRoles.filter( guildRole => {
 			return guildRole.lower || settings.role.split('|').includes( guildRole.id );
 		} ).map( guildRole => {
@@ -136,6 +142,8 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 	}
 	fields.push(role);
 	let usergroup = $('<div>').append(fieldset.usergroup);
+	usergroup.find('label').eq(0).text(dashboardLang.get('verification.form.usergroup'));
+	usergroup.find('label').eq(1).text(dashboardLang.get('verification.form.usergroup_and'));
 	if ( settings.usergroup.startsWith( 'AND|' ) ) {
 		settings.usergroup = settings.usergroup.substring(4);
 		usergroup.find('#wb-settings-usergroup-and').attr('checked', '');
@@ -146,47 +154,37 @@ function createForm($, header, settings, guildChannels, guildRoles) {
 	}
 	fields.push(usergroup);
 	let editcount = $('<div>').append(fieldset.editcount);
+	editcount.find('label').text(dashboardLang.get('verification.form.editcount'));
 	editcount.find('#wb-settings-editcount').val(settings.editcount);
 	fields.push(editcount);
 	let accountage = $('<div>').append(fieldset.accountage);
+	accountage.find('label').text(dashboardLang.get('verification.form.accountage'));
 	accountage.find('#wb-settings-accountage').val(settings.accountage);
 	fields.push(accountage);
 	if ( settings.rename || guildChannels.some( guildChannel => {
 		return hasPerm(guildChannel.botPermissions, 'MANAGE_NICKNAMES');
 	} ) ) {
 		let rename = $('<div>').append(fieldset.rename);
+		rename.find('label').text(dashboardLang.get('verification.form.rename'));
 		if ( settings.rename ) rename.find('#wb-settings-rename').attr('checked', '');
 		fields.push(rename);
 	}
-	fields.push($(fieldset.save).val('Save'));
+	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
 	if ( settings.channel ) {
-		fields.push($(fieldset.delete).val('Delete').attr('onclick', `return confirm('Are you sure?');`));
+		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('verification.form.confirm').replace( /'/g, '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
 		form.find('input').attr('readonly', '');
-		form.find('input[type="checkbox"], option').attr('disabled', '');
+		form.find('input[type="checkbox"], option, optgroup').attr('disabled', '');
 		form.find('input[type="submit"], button.addmore').remove();
 	}
+	form.find('button.addmore').text(dashboardLang.get('verification.form.more'));
 	return $('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
 		$('<h2>').text(header),
 		form
 	);
 }
-
-const explanation = `
-<h2>User Verification</h2>
-<p>Using the <code>!wiki verify &lt;wiki username&gt;</code> command, users are able to verify themselves as a specific wiki user by using the Discord field on their wiki profile. If the user matches and user verifications are set up on the server, Wiki-Bot will give them the roles for all verification entries they matched.</p>
-<p>Every verification entry allows for multiple restrictions on when a user should match the verification:</p>
-<ul>
-	<li>Channel to use the <code>!wiki verify</code> command in.</li>
-	<li>Role to get when matching the verification entry.</li>
-	<li>Required edit count on the wiki to match the verification entry.</li>
-	<li>Required user group to be a member of on the wiki to match the verification entry.</li>
-	<li>Required account age in days to match the verification entry.</li>
-	<li>Whether the Discord users nickname should be set to their wiki username when they match the verification entry.</li>
-</ul>
-`;
 
 /**
  * Let a user change verifications
@@ -194,11 +192,12 @@ const explanation = `
  * @param {import('cheerio')} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
+ * @param {import('./i18n.js')} dashboardLang - The user language
  */
-function dashboard_verification(res, $, guild, args) {
+function dashboard_verification(res, $, guild, args, dashboardLang) {
 	if ( !hasPerm(guild.botPermissions, 'MANAGE_ROLES') ) {
-		createNotice($, 'missingperm', ['Manage Roles']);
-		$('#text .description').html(explanation);
+		createNotice($, 'missingperm', dashboardLang, ['Manage Roles']);
+		$('#text .description').html(dashboardLang.get('verification.explanation'));
 		$('.channel#verification').addClass('selected');
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});
@@ -208,8 +207,8 @@ function dashboard_verification(res, $, guild, args) {
 	db.all( 'SELECT wiki, discord.role defaultrole, configid, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
-			createNotice($, 'error');
-			$('#text .description').html(explanation);
+			createNotice($, 'error', dashboardLang);
+			$('#text .description').html(dashboardLang.get('verification.explanation'));
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -217,8 +216,8 @@ function dashboard_verification(res, $, guild, args) {
 			return res.end();
 		}
 		if ( rows.length === 0 ) {
-			createNotice($, 'nosettings', [guild.id]);
-			$('#text .description').html(explanation);
+			createNotice($, 'nosettings', dashboardLang, [guild.id]);
+			$('#text .description').html(dashboardLang.get('verification.explanation'));
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -228,7 +227,8 @@ function dashboard_verification(res, $, guild, args) {
 		var wiki = rows[0].wiki;
 		var defaultrole = rows[0].defaultrole;
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
-		$('<p>').text(`These are the verifications for "${guild.name}":`).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('verification.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+		let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 		$('#channellist #verification').after(
 			...rows.map( row => {
 				return $('<a class="channel">').attr('id', `channel-${row.configid}`).append(
@@ -237,18 +237,18 @@ function dashboard_verification(res, $, guild, args) {
 						return role.id === row.role.split('|')[0];
 					} )?.name || guild.channels.find( channel => {
 						return channel.id === row.channel.split('|')[1];
-					} )?.name || row.usergroup.split('|')[0] )}`)
-				).attr('href', `/guild/${guild.id}/verification/${row.configid}`);
+					} )?.name || row.usergroup.split('|')[( row.usergroup.startsWith('AND|') ? 1 : 0 )] )}`)
+				).attr('href', `/guild/${guild.id}/verification/${row.configid}${suffix}`);
 			} ),
 			( process.env.READONLY || rows.length >= verificationLimit[( guild.patreon ? 'patreon' : 'default' )] ? '' :
 			$('<a class="channel" id="channel-new">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
-				$('<div>').text('New verification')
-			).attr('href', `/guild/${guild.id}/verification/new`) )
+				$('<div>').text(dashboardLang.get('verification.new'))
+			).attr('href', `/guild/${guild.id}/verification/new${suffix}`) )
 		);
 		if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= verificationLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 			$('.channel#channel-new').addClass('selected');
-			createForm($, 'New Verification', {
+			createForm($, dashboardLang.get('verification.form.new'), dashboardLang, {
 				channel: '', role: '', usergroup: 'user',
 				editcount: 0, accountage: 0, rename: false, defaultrole
 			}, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
@@ -256,11 +256,11 @@ function dashboard_verification(res, $, guild, args) {
 		else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 			let row = rows.find( row => row.configid.toString() === args[4] );
 			$(`.channel#channel-${row.configid}`).addClass('selected');
-			createForm($, `Verification #${row.configid}`, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
+			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
 		}
 		else {
 			$('.channel#verification').addClass('selected');
-			$('#text .description').html(explanation);
+			$('#text .description').html(dashboardLang.get('verification.explanation'));
 		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});
@@ -329,9 +329,13 @@ function update_verification(res, userSettings, guild, type, settings) {
 		if ( type === 'new' ) {
 			let curGuild = userSettings.guilds.isMember.get(guild);
 			if ( settings.channel.some( channel => {
-				return !curGuild.channels.some( guildChannel => guildChannel.id === channel );
+				return !curGuild.channels.some( guildChannel => {
+					return ( guildChannel.id === channel && !guildChannel.isCategory );
+				} );
 			} ) || settings.role.some( role => {
-				return !curGuild.roles.some( guildRole => guildRole.id === role && guildRole.lower );
+				return !curGuild.roles.some( guildRole => {
+					return ( guildRole.id === role && guildRole.lower );
+				} );
 			} ) ) return res(`/guild/${guild}/verification/new`, 'savefail');
 		}
 	}
@@ -494,9 +498,13 @@ function update_verification(res, userSettings, guild, type, settings) {
 			if ( newChannel.length || newRole.length ) {
 				let curGuild = userSettings.guilds.isMember.get(guild);
 				if ( newChannel.some( channel => {
-					return !curGuild.channels.some( guildChannel => guildChannel.id === channel );
+					return !curGuild.channels.some( guildChannel => {
+						return ( guildChannel.id === channel && !guildChannel.isCategory );
+					} );
 				} ) || newRole.some( role => {
-					return !curGuild.roles.some( guildRole => guildRole.id === role && guildRole.lower );
+					return !curGuild.roles.some( guildRole => {
+						return ( guildRole.id === role && guildRole.lower );
+					} );
 				} ) ) return res(`/guild/${guild}/verification/${type}`, 'savefail');
 			}
 			( newUsergroup.length ? got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {

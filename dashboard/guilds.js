@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
-const {settingsData, createNotice, escapeText} = require('./util.js');
+const Lang = require('./i18n.js');
+const {settingsData, createNotice} = require('./util.js');
 
 const forms = {
 	settings: require('./settings.js').get,
@@ -30,9 +31,22 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 	var args = reqURL.pathname.split('/');
 	args = reqURL.pathname.split('/');
 	var settings = settingsData.get(state);
+	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(settings.user.id) ) {
+		args[0] = 'owner';
+	}
+	var dashboardLang = new Lang(settings.user.locale);
 	var $ = cheerio.load(file);
-	if ( process.env.READONLY ) createNotice($, 'readonly');
-	if ( action ) createNotice($, action, actionArgs);
+	$('head title').text(dashboardLang.get('general.title'));
+	$('.channel#settings div').text(dashboardLang.get('general.settings'));
+	$('.channel#verification div').text(dashboardLang.get('general.verification'));
+	$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
+	$('#selector span').text(dashboardLang.get('general.selector'));
+	$('#support span').text(dashboardLang.get('general.support'));
+	$('#logout').attr('alt', dashboardLang.get('general.logout'));
+	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
+	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
+	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);
+	if ( action ) createNotice($, action, dashboardLang, actionArgs);
 	$('head').append(
 		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`)
 	);
@@ -79,14 +93,17 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 	if ( settings.guilds.isMember.has(id) ) {
 		let guild = settings.guilds.isMember.get(id);
 		$('head title').text(`${guild.name} – ` + $('head title').text());
-		$('<script>').text(`const isPatreon = ${guild.patreon};`).insertBefore('script#indexjs');
+		$('<script>').text(`
+			const isPatreon = ${guild.patreon};
+			const i18n = ${JSON.stringify(dashboardLang.get('indexjs'))};
+		`).insertBefore('script#indexjs');
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
-		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args);
-		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args);
-		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args);
-		return forms.settings(res, $, guild, args);
+		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
+		return forms.settings(res, $, guild, args, dashboardLang);
 	}
 	else if ( settings.guilds.notMember.has(id) ) {
 		let guild = settings.guilds.notMember.get(id);
@@ -100,32 +117,41 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 		$('#channellist').empty();
 		$('<a class="channel channel-header">').attr('href', url).append(
 			$('<img>').attr('src', '/src/settings.svg'),
-			$('<div>').text('Invite Wiki-Bot')
+			$('<div>').text(dashboardLang.get('general.invite'))
 		).appendTo('#channellist');
 		$('#text .description').append(
-			$('<p>').append(
-				escapeText(`Wiki-Bot is not a member of "${guild.name}" yet, but you can `),
-				$('<a>').attr('href', url).text('invite Wiki-Bot'),
-				escapeText('.')
-			),
-			$('<a id="login-button">').attr('href', url).text('Invite Wiki-Bot').prepend(
+			$('<p>').html(dashboardLang.get('selector.invite', true, $('<code>').text(guild.name), $('<a>').attr('href', url))),
+			$('<a id="login-button">').attr('href', url).text(dashboardLang.get('general.invite')).prepend(
 				$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
 			)
 		);
 	}
+	else if ( args[0] === 'owner' ) {
+		let guild = {
+			id, name: 'OWNER ACCESS',
+			acronym: '', userPermissions: 0,
+			patreon: true, botPermissions: 0,
+			channels: [], roles: []
+		};
+		$('head title').text(`${guild.name} – ` + $('head title').text());
+		$('<script>').text(`const isPatreon = ${guild.patreon};`).insertBefore('script#indexjs');
+		$('.channel#settings').attr('href', `/guild/${guild.id}/settings?owner=true`);
+		$('.channel#verification').attr('href', `/guild/${guild.id}/verification?owner=true`);
+		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript?owner=true`);
+		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
+		return forms.settings(res, $, guild, args, dashboardLang);
+	}
 	else {
-		$('head title').text('Server Selector – ' + $('head title').text());
+		$('head title').text(dashboardLang.get('selector.title') + ' – ' + $('head title').text());
 		$('#channellist').empty();
-		$('<p>').append(
-			escapeText('This is a list of all servers you can change settings on because you have the '),
-			$('<code>').text('Manage Server'),
-			escapeText(' permission. Please select a server:')
-		).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('selector.desc', true, $('<code>'))).appendTo('#text .description');
 		if ( settings.guilds.isMember.size ) {
-			$('<h2 id="with-wikibot">').text('Server with Wiki-Bot').appendTo('#text');
+			$('<h2 id="with-wikibot">').text(dashboardLang.get('selector.with')).appendTo('#text');
 			$('<a class="channel">').attr('href', '#with-wikibot').append(
 				$('<img>').attr('src', '/src/channel.svg'),
-				$('<div>').text('Server with Wiki-Bot')
+				$('<div>').text(dashboardLang.get('selector.with'))
 			).appendTo('#channellist');
 			$('<div class="server-selector" id="isMember">').appendTo('#text');
 			settings.guilds.isMember.forEach( guild => {
@@ -138,10 +164,10 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 			} );
 		}
 		if ( settings.guilds.notMember.size ) {
-			$('<h2 id="without-wikibot">').text('Server without Wiki-Bot').appendTo('#text');
+			$('<h2 id="without-wikibot">').text(dashboardLang.get('selector.without')).appendTo('#text');
 			$('<a class="channel">').attr('href', '#without-wikibot').append(
 				$('<img>').attr('src', '/src/channel.svg'),
-				$('<div>').text('Server without Wiki-Bot')
+				$('<div>').text(dashboardLang.get('selector.without'))
 			).appendTo('#channellist');
 			$('<div class="server-selector" id="notMember">').appendTo('#text');
 			settings.guilds.notMember.forEach( guild => {
@@ -160,15 +186,11 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 			} );
 			$('<a class="channel channel-header">').attr('href', url).append(
 				$('<img>').attr('src', '/src/settings.svg'),
-				$('<div>').text('Switch Accounts')
+				$('<div>').text(dashboardLang.get('selector.switch'))
 			).appendTo('#channellist');
 			$('#text .description').append(
-				$('<p>').append(
-					escapeText('You currently don\'t have the '),
-					$('<code>').text('Manage Server'),
-					escapeText(' permission on any servers, are you logged into the correct account?')
-				),
-				$('<a id="login-button">').attr('href', url).text('Switch Accounts').prepend(
+				$('<p>').html(dashboardLang.get('selector.none', true, $('<code>'))),
+				$('<a id="login-button">').attr('href', url).text(dashboardLang.get('selector.switch')).prepend(
 					$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
 				)
 			);
