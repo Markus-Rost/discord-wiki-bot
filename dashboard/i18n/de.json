@@ -19,7 +19,170 @@
         "title": "Wiki-Bot Einstellungen",
         "verification": "Verifizierungen"
     },
+    "indexjs": {
+        "invalid": {
+            "text": "Die URL konnte nicht zu einer gültigen MediaWiki-Seite aufgelöst werden!",
+            "title": "Ungültiges Wiki!"
+        },
+        "outdated": {
+            "text": "Der Letzte Änderungen-Webhook benötigt mindestens MediaWiki 1.30!",
+            "title": "Veraltete MediaWiki-Version!"
+        },
+        "prefix": {
+            "backslash": "Das Präfix darf keine Backslashes beinhalten!",
+            "code": "Das Präfix darf kein Code-Markdown beinhalten!",
+            "space": "Das Präfix darf keine Leerzeichen beinhalten!"
+        },
+        "sysmessage": {
+            "text": "Die Systemnachricht $1 muss der Server-ID $2 entsprechen.",
+            "title": "Systemnachricht stimmt nicht überein!"
+        },
+        "valid": {
+            "MediaWiki": "Warnung: Benötigt mindestens $1 für vollständige Funktionalität.",
+            "PageImages": "Warnung: Benötigt die Erweiterung $1 für Seiten-Vorschaubilder.",
+            "TextExtracts": "Warnung: Benötigt die Erweiterung $1 für Seiten-Beschreibungen.",
+            "title": "Das Wiki kann benutzt werden!"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "Ein unbekannter Fehler ist aufgetreten, bitte versuche es erneut.",
+            "title": "Unbekannter Fehler!"
+        },
+        "invalidusergroup": {
+            "text": "Die Wiki-Benutzergruppe ist zu lang oder du hast zu viele angegeben.",
+            "title": "Ungültige Benutzergruppe!"
+        },
+        "loginfail": {
+            "text": "Es ist bei Fehler aufgetreten beim Versuch dich anzumelden, bitte versuche es erneut.",
+            "title": "Anmeldung fehlgeschlagen!"
+        },
+        "logout": {
+            "text": "Du wurdest erfolgreich abgemeldet. Um Einstellungen zu ändern musst du dich erneut anmelden.",
+            "title": "Erfolgreich abgemeldet!"
+        },
+        "missingperm": {
+            "text": "Entweder dir oder Wiki-Bot fehlt die $1-Berechtigung für diese Funktion.",
+            "title": "Fehlende Berechtigung!"
+        },
+        "movefail": {
+            "note": "Der Webhook-Kanal konnte nicht geändert werden!",
+            "text": "Die Einstellungen konnten nur teilweise aktualisiert werden.",
+            "title": "Einstellungen teilweise gespeichert!"
+        },
+        "mwversion": {
+            "text": "Es wird mindestens MediaWiki 1.30 benötigt, auf $2 wurde $1 gefunden.",
+            "title": "Veraltete MediaWiki version!"
+        },
+        "nochange": {
+            "text": "Die Einstellungen stimmen mit den aktuellen Standard-Einstellungen überein.",
+            "title": "Speichern fehlgeschlagen!"
+        },
+        "nosettings": {
+            "note": "Einstellungen ändern.",
+            "text": "Bitte nimm für diesen Server vorher noch Einstellungen vor.",
+            "title": "Server noch nicht aufgesetzt!"
+        },
+        "readonly": {
+            "text": "Du kannst die Einstellungen aktuell nur sehen, jedoch nicht ändern.",
+            "title": "Nur-Lese-Modus!"
+        },
+        "refresh": {
+            "text": "Deine Serverliste wurde erfolgreich aktualisiert.",
+            "title": "Aktualisierung erfolgreich!"
+        },
+        "refreshfail": {
+            "text": "Deine Serverliste konnte nicht aktualisiert werden, bitte versuche es erneut.",
+            "title": "Aktualisierung fehlgeschlagen!"
+        },
+        "save": {
+            "text": "Die Einstellungen wurden erfolgreich aktualisiert.",
+            "title": "Einstellungen gespeichert!"
+        },
+        "savefail": {
+            "text": "Die Einstellungen konnten nicht gespeichert werden, bitte versuche es erneut.",
+            "title": "Speichern fehlgeschlagen!"
+        },
+        "sysmessage": {
+            "text": "Die Systemnachricht $1 muss der Server-ID $2 entsprechen.",
+            "title": "Systemnachricht stimmt nicht überein!"
+        },
+        "unauthorized": {
+            "text": "Bitte melde dich an, bevor du Einstellungen ändern kannst.",
+            "title": "Nicht angemeldet!"
+        },
+        "wikiblocked": {
+            "note": "Grund:",
+            "text": "$1 wurde gesperrt und kann nicht als Letzte Änderungen-Webhook hinzugefügt werden.",
+            "title": "Wiki ist gesperrt!"
+        }
+    },
+    "rcscript": {
+        "desc": "Dies sind die Letzte Änderungen-Webhooks für $1:",
+        "form": {
+            "channel": "Kanal:",
+            "confirm": "Möchtest du wirklich den Letzte Änderungen-Webhook löschen?",
+            "display": "Anzeigemodus:",
+            "display_compact": "Kompakte Textnachrichten mit Inline-Links.",
+            "display_diff": "Einbettungen mit Bildvorschau und Bearbeitungsunterschieden.",
+            "display_embed": "Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen.",
+            "display_image": "Einbettungen mit Bildvorschau.",
+            "entry": "$1. Letzte Änderungen-Webhook",
+            "feeds": "Feeds-basierte Änderungen:",
+            "feeds_only": "Nur Feeds-basierte Änderungen:",
+            "lang": "Sprache:",
+            "new": "Neuer Letzte Änderungen-Webhook",
+            "select_channel": "-- Wähle einen Kanal --",
+            "wiki": "Wiki:",
+            "wiki_check": "Wiki testen"
+        },
+        "new": "Neuer Webhook"
+    },
     "selector": {
-        "title": "Serverauswahl"
+        "desc": "Dies ist eine Liste aller Server dessen Einstellungen du ändern kannst, da du die [Server verwalten]($1)-Berechtigung hast. Bitte wähle einen Server:",
+        "invite": "Wiki-Bot ist noch kein Mitglied von $1, aber du kannst [Wiki-Bot einladen]($2).",
+        "none": "Du hast derzeit die [Server verwalten]($1)-Berechtigung auf keinem Server, bist du mit dem richtigen Account angemeldet?",
+        "switch": "Accounts wechseln",
+        "title": "Serverauswahl",
+        "with": "Server mit Wiki-Bot",
+        "without": "Server ohne Wiki-Bot"
+    },
+    "settings": {
+        "desc": "Dies sind die Einstellungen für $1:",
+        "failed": "Die Einstellungen konnten nicht geladen werden!",
+        "form": {
+            "channel": "Kanal:",
+            "confirm": "Möchtest du wirklich die Kanal-Überschreibung löschen?",
+            "default": "Server-Einstellungen",
+            "inline": "Inline-Befehle:",
+            "lang": "Sprache:",
+            "new": "Neue Kanal-Überschreibung",
+            "overwrite": "Einstellungen für $1",
+            "prefix": "Präfix:",
+            "prefix_space": "Präfix endet mit einem Leerzeichen:",
+            "role": "Minimale Rolle:",
+            "select_channel": "-- Wähle einen Kanal --",
+            "wiki": "Standard-Wiki:",
+            "wiki_check": "Wiki testen"
+        },
+        "new": "Neue Kanal-Überschreibung"
+    },
+    "verification": {
+        "desc": "Dies sind die Verifizierungen für $1:",
+        "form": {
+            "accountage": "Account-Alter (in Tagen):",
+            "channel": "Kanal:",
+            "confirm": "Möchtest du wirklich die Verifizierung löschen?",
+            "editcount": "Bearbeitungen:",
+            "entry": "$1. Verifizierung",
+            "more": "Weitere hinzufügen",
+            "new": "Neue Verifizierung",
+            "rename": "Benutzer umbenennen:",
+            "role": "Rolle:",
+            "select_role": "-- Wähle eine Rolle --",
+            "usergroup": "Wiki-Benutzergruppe:",
+            "usergroup_and": "Benötige alle Benutzergruppen:"
+        },
+        "new": "Neue Verifizierung"
     }
 }
