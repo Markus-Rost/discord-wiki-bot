@@ -177,8 +177,8 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
  * @param {String[]} args - The url parts
  * @param {import('./i18n.js')} dashboardLang - The user language
  */
-	db.all( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT GROUP_CONCAT(DISTINCT wiki) FROM discord WHERE guild = ?) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, wikiid, rcid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id, guild.id], function(dberror, rows) {
 function dashboard_rcscript(res, $, guild, args, dashboardLang) {
+	db.all( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT GROUP_CONCAT(DISTINCT wiki) FROM discord WHERE guild = ?) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, wikiid, rcid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id, guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the RcGcDw: ' + dberror );
 			createNotice($, 'error', dashboardLang);
