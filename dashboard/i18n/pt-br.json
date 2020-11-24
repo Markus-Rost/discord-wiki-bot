@@ -12,6 +12,8 @@
         "logout": "Sair",
         "rcscript": "Mudanças recentes",
         "refresh": "Atualizar lista de servidores",
-        "save": "Salvar"
+        "save": "Salvar",
+        "selector": "Seletor de servidor",
+        "settings": "Configurações"
     }
 }
