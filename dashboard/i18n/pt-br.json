@@ -1,1 +1,17 @@
-{}
+{
+    "fallback": [
+        " ",
+        " ",
+        " ",
+        " ",
+        " "
+    ],
+    "general": {
+        "delete": "Excluir",
+        "invite": "Convidar Wiki-Bot",
+        "logout": "Sair",
+        "rcscript": "Mudanças recentes",
+        "refresh": "Atualizar lista de servidores",
+        "save": "Salvar"
+    }
+}
