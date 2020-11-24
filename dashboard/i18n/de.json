@@ -119,6 +119,7 @@
     },
     "rcscript": {
         "desc": "Dies sind die Letzte Änderungen-Webhooks für $1:",
+        "explanation": "<h2>Letzte Änderungen-Webhook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-Webhook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-Webhook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code>MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
         "form": {
             "channel": "Kanal:",
             "confirm": "Möchtest du wirklich den Letzte Änderungen-Webhook löschen?",
@@ -169,6 +170,7 @@
     },
     "verification": {
         "desc": "Dies sind die Verifizierungen für $1:",
+        "explanation": "<h2>Wiki-Benutzer Verifizierung</h2>\n<p>Mit dem <code>!wiki verify &lt;Wiki-Benutzername&gt;</code>-Befehl können Discord-Benutzer sich selbst als ein bestimmter Wiki-Benutzer verifizieren mithilfe des Discord-Feldes auf deren Wiki-Profil. Falls der Benutzer übereinstimmt und Verifizierungen auf dem Server vorhanden sind, wird Wiki-Bot dem Benutzer die Rollen für alle Verifizierungs-Einträge geben, die der Benutzer erfüllt.</p>\n<p>Jeder Verifizierungs-Eintrag erlaubt mehrere Bedingungen, die der Wiki-Benutzer erreicht haben muss um die Verifizierung zu erfüllen:</p>\n<ul>\n<li>Kanal in dem der <code>!wiki verify</code>-Befehl genutzt werden muss.</li>\n<li>Discord-Rolle die vergeben wird, wenn der Benutzer die Verifizierung erfüllt.</li>\n<li>Mindestens benötigte Bearbeitungsanzahl auf dem Wiki um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Benötigte Wiki-Benutzergruppe um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Mindestalter des Wiki-Accounts in Tagen um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Ob der Discord-Benutzername zu dem Wiki-Benutzernamen geändert werden soll, wenn der Benutzer die Verifizierung erfüllt.</li>\n</ul>",
         "form": {
             "accountage": "Account-Alter (in Tagen):",
             "channel": "Kanal:",
@@ -179,6 +181,7 @@
             "new": "Neue Verifizierung",
             "rename": "Benutzer umbenennen:",
             "role": "Rolle:",
+            "select_channel": "-- Wähle einen Kanal --",
             "select_role": "-- Wähle eine Rolle --",
             "usergroup": "Wiki-Benutzergruppe:",
             "usergroup_and": "Benötige alle Benutzergruppen:"
