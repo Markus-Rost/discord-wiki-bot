@@ -137,7 +137,7 @@
         "votes": "$1 {{PLURAL:$1|voto|votos}}"
     },
     "fallback": [
-        "en",
+        " ",
         " ",
         " ",
         " ",
@@ -482,6 +482,7 @@
         "updated_wiki": "a wiki para este webhook foi alterado para:",
         "webhook": {
             "blocked": "Este webhook de mudanças recentes será excluído porque a wiki foi bloqueado!",
+            "blocked_help": "Você pode pedir mais detalhes no [servidor de suporte]($1).",
             "blocked_reason": "Este webhook de mudanças recentes será excluído porque a wiki foi bloqueado por `$1`!",
             "created": "Um webhook de mudanças recentes para $1 foi adicionado a este canal.",
             "dashboard": {
