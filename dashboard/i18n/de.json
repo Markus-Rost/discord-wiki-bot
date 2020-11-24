@@ -5,5 +5,21 @@
         " ",
         " ",
         " "
-	]
+    ],
+    "general": {
+        "delete": "Löschen",
+        "invite": "Lade Wiki-Bot ein",
+        "logout": "Abmelden",
+        "rcscript": "Letzte Änderungen",
+        "refresh": "Serverliste aktualisieren",
+        "save": "Speichern",
+        "selector": "Serverauswahl",
+        "settings": "Einstellungen",
+        "support": "Support-Server",
+        "title": "Wiki-Bot Einstellungen",
+        "verification": "Verifizierungen"
+    },
+    "selector": {
+        "title": "Serverauswahl"
+    }
 }
