@@ -137,7 +137,7 @@
         "votes": "$1 {{PLURAL:$1|voto|votos}}"
     },
     "fallback": [
-        " ",
+        "en",
         " ",
         " ",
         " ",
