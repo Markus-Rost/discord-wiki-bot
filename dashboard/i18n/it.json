@@ -1,1 +1,18 @@
-{}
+{
+    "selector": {
+        "title": "Selettore server"
+    },
+    "general": {
+        "delete": "Cancella",
+        "save": "Salva",
+        "refresh": "Aggiorna lista dei server",
+        "invite": "Invita Wiki-Bot",
+        "logout": "Esci",
+        "support": "Server di supporto",
+        "selector": "Selettore server",
+        "rcscript": "Ultime modifiche",
+        "verification": "Verifiche",
+        "settings": "Impostazioni",
+        "title": "Impostazioni Wiki-Bot"
+    }
+}
