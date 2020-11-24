@@ -119,7 +119,7 @@
     },
     "rcscript": {
         "desc": "These are the recent changes webhooks for $1:",
-        "explanation": "<h2>Recent Changes Webhook</h2>\n<p>Wiki-Bot is able to run a recent changes webhook based on <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>\n<p>Requirements to add a recent changes webhook:</p>\n<ul>\n<li>The wiki needs to run on <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> or higher.</li>\n<li>The system message <code>MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code id=\"server-id\" class=\"user-select\"></code>.</li>\n</ul>",
+        "explanation": "<h2>Recent Changes Webhook</h2>\n<p>Wiki-Bot is able to run a recent changes webhook based on <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>\n<p>Requirements to add a recent changes webhook:</p>\n<ul>\n<li>The wiki needs to run on <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> or higher.</li>\n<li>The system message <code>MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
         "form": {
             "channel": "Channel:",
             "confirm": "Do you really want to delete the recent changes webhook?",
