@@ -690,7 +690,7 @@
         "current_selected": "to weryfikacja `$1` dla tego serwera:",
         "dashboard": {
             "added": "$1 dodał weryfikację z id `$2`.",
-            "removed": "$1 usunął weryfikację z id `$1`.",
+            "removed": "$1 usunął weryfikację z id `$2`.",
             "updated": "$1 zaktualizował weryfikację z id `$2`."
         },
         "delete_current": "Usuń tę weryfikację:",
