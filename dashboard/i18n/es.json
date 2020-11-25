@@ -5,5 +5,11 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "delete": "Eliminar",
+        "invite": "Invitar a Wiki-Bot",
+        "logout": "Cerrar sesión",
+        "rcscript": "Cambios Recientes"
+    }
 }
