@@ -14,6 +14,178 @@
         "refresh": "Atualizar lista de servidores",
         "save": "Salvar",
         "selector": "Seletor de servidor",
-        "settings": "Configurações"
+        "settings": "Configurações",
+        "support": "Servidor de suporte",
+        "title": "Configurações do Wiki-Bot",
+        "verification": "Verificações"
+    },
+    "indexjs": {
+        "invalid": {
+            "text": "O URL não pôde ser resolvido para um site MediaWiki válido!",
+            "title": "Wiki inválida!"
+        },
+        "outdated": {
+            "text": "O webhook de mudanças recentes requer pelo menos MediaWiki 1.30!",
+            "title": "Versão desatualizada do MediaWiki!"
+        },
+        "prefix": {
+            "backslash": "O prefixo não pode incluir barras invertidas!",
+            "code": "O prefixo pode não incluir marcação de código!",
+            "space": "O prefixo não pode incluir espaços!"
+        },
+        "sysmessage": {
+            "text": "A página $1 precisa corresponder ao ID do servidor $2.",
+            "title": "A mensagem do sistema não corresponde!"
+        },
+        "valid": {
+            "MediaWiki": "Aviso: requer pelo menos $1 para funcionalidade total.",
+            "PageImages": "Aviso: requer a extensão $1 para miniaturas de página.",
+            "TextExtracts": "Aviso: requer a extensão $1 para descrições de página.",
+            "title": "A wiki é válida e pode ser usada!"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "Ocorreu um erro desconhecido, tente novamente.",
+            "title": "Erro desconhecido!"
+        },
+        "invalidusergroup": {
+            "text": "O nome do grupo de usuários era muito longo ou você forneceu muitos.",
+            "title": "Grupo de usuários inválido!"
+        },
+        "loginfail": {
+            "text": "Ocorreu um erro ao entrar, tente novamente.",
+            "title": "Falha ao entrar!"
+        },
+        "logout": {
+            "text": "Você foi desconectado com sucesso. Para alterar qualquer configuração, você precisa entrar novamente.",
+            "title": "Entrada terminada com sucesso!"
+        },
+        "missingperm": {
+            "text": "Você ou o Wiki-Bot não têm a permissão $1 para esta função.",
+            "title": "Permissão ausente!"
+        },
+        "movefail": {
+            "note": "O canal do webhook não pode ser alterado!",
+            "text": "As configurações foram apenas parcialmente atualizadas.",
+            "title": "Configurações parcialmente salvas!"
+        },
+        "mwversion": {
+            "text": "Requer pelo menos MediaWiki 1,30, encontrado $1 em $2.",
+            "title": "Versão desatualizada do MediaWiki!"
+        },
+        "nochange": {
+            "text": "As configurações correspondem às configurações padrão atuais.",
+            "title": "Falha ao salvar!"
+        },
+        "nosettings": {
+            "note": "Mudar configurações.",
+            "text": "Defina as configurações para o servidor primeiro.",
+            "title": "Servidor ainda não configurado!"
+        },
+        "readonly": {
+            "text": "No momento, você só pode ver suas configurações, mas não pode alterá-las.",
+            "title": "Banco de dados somente leitura!"
+        },
+        "refresh": {
+            "text": "Sua lista de servidores foi atualizada com sucesso.",
+            "title": "Atualização bem-sucedida!"
+        },
+        "refreshfail": {
+            "text": "Não foi possível atualizar sua lista de servidores, tente novamente.",
+            "title": "A atualização falhou!"
+        },
+        "save": {
+            "text": "As configurações foram atualizadas com sucesso.",
+            "title": "Configurações salvas!"
+        },
+        "savefail": {
+            "text": "Não foi possível salvar as configurações, tente novamente.",
+            "title": "Falha ao salvar!"
+        },
+        "sysmessage": {
+            "text": "A página $1 precisa corresponder ao ID do servidor $2.",
+            "title": "A mensagem do sistema não corresponde!"
+        },
+        "unauthorized": {
+            "text": "Entrar antes de alterar quaisquer configurações.",
+            "title": "Não entrado!"
+        },
+        "wikiblocked": {
+            "note": "Motivo:",
+            "text": "$1 foi bloqueado de ser adicionado como um webhook de alterações recentes.",
+            "title": "Wiki está bloqueada!"
+        }
+    },
+    "rcscript": {
+        "desc": "Estes são os webhooks de mudanças recentes para $1:",
+        "explanation": "<h2>Webhook de mudanças recentes</h2>\n<p>O Wiki-Bot é capaz de executar um webhook de mudanças recentes baseado em <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links embutidos ou mensagens incorporadas com tags de edição e mudanças de categoria.</p>\n<p>Requisitos para adicionar um webhook de mudanças recentes:</p>\n<ul>\n<li>O wiki precisa ser executado no <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> ou superior.</li>\n<li>A mensagem do sistema <code>MediaWiki:Custom-RcGcDw</code> precisa ser definido para o ID do servidor do Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
+        "form": {
+            "channel": "Canal:",
+            "confirm": "Tem certeza de que deseja excluir o webhook de mudanças recentes?",
+            "display": "Modo de exibição:",
+            "display_compact": "Compactar mensagens de texto com links embutidos.",
+            "display_diff": "Incorpore mensagens com visualizações de imagens e diferenças de edição.",
+            "display_embed": "Incorpore mensagens com marcações de edição e mudanças de categoria.",
+            "display_image": "Incorpore mensagens com pré-visualizações de imagens.",
+            "entry": "Webhook de mudanças recentes #$1",
+            "feeds": "Mudanças baseadas em feeds:",
+            "feeds_only": "Apenas feeds de mudanças baseadas:",
+            "lang": "Idioma:",
+            "new": "Webhook de novas mudanças recentes",
+            "select_channel": "-- Selecionar canal --",
+            "wiki": "Wiki:",
+            "wiki_check": "Verificar wiki"
+        },
+        "new": "Novo webhook"
+    },
+    "selector": {
+        "desc": "Esta é uma lista de todos os servidores nos quais você pode alterar as configurações porque tem a permissão de [gerenciar servidor] ($1). Selecione um servidor:",
+        "invite": "O Wiki-Bot ainda não é membro do $1, mas você pode [convidar o Wiki-Bot] ($2).",
+        "none": "No momento, você não tem a permissão de [gerenciar servidor]($1) em nenhum servidor. Você está conectado à conta correta?",
+        "switch": "Mudar contas",
+        "title": "Seletor de servidor",
+        "with": "Servidor com Wiki-Bot",
+        "without": "Servidor sem Wiki-Bot"
+    },
+    "settings": {
+        "desc": "Estas são as configurações para $1:",
+        "failed": "Falha ao carregar as configurações!",
+        "form": {
+            "channel": "Canal:",
+            "confirm": "Tem certeza de que deseja excluir a substituição do canal?",
+            "default": "Configurações de todo o servidor",
+            "inline": "Comandos em linha:",
+            "lang": "Idioma:",
+            "new": "Substituição de novo canal",
+            "overwrite": "Configurações do $1",
+            "prefix": "Prefixo:",
+            "prefix_space": "Prefixo termina com espaço:",
+            "role": "Cargo mínimo:",
+            "select_channel": "-- Selecionar canal --",
+            "wiki": "Wiki padrão:",
+            "wiki_check": "Verificar wiki"
+        },
+        "new": "Novo canal sobrescrito"
+    },
+    "verification": {
+        "desc": "Estas são as verificações para $1:",
+        "explanation": "<h2>Verificação do usuário</h2>\n<p>Usando o comando <code>!wiki verify &lt;wiki username&gt;</code>, os usuários podem verificar a si mesmos como um usuário específico do wiki usando o campo Discord em seu perfil da wiki. Se o usuário corresponder e as verificações do usuário forem configuradas no servidor, o Wiki-Bot dará a ele as funções para todas as entradas de verificação que corresponderem.</p>\n<p>Cada entrada de verificação permite várias restrições sobre quando um usuário deve corresponder à verificação:</p>\n<ul>\n<li>Canal para usar o comando <code>!wiki verify</code> command in.</li>\n<li>Canal a ser obtida ao corresponder a entrada de verificação.</li>\n<li>Contagem de edição necessária na wiki para corresponder à entrada de verificação.</li>\n<li>Grupo de usuários obrigatório para ser um membro na wiki para corresponder à entrada de verificação.</li>\n<li>Idade necessária da conta em dias para corresponder à entrada de verificação.</li>\n<li>Se o apelido do usuário do Discord deve ser definido como o nome de usuário da wiki quando corresponder à entrada de verificação.</li>\n</ul>",
+        "form": {
+            "accountage": "Idade da conta (em dias):",
+            "channel": "Canal:",
+            "confirm": "Tem certeza de que deseja excluir a verificação?",
+            "editcount": "Contagem mínima de edições:",
+            "entry": "Verificação #$1",
+            "more": "Adicione mais",
+            "new": "Nova verificação",
+            "rename": "Renomear usuários:",
+            "role": "Cargo:",
+            "select_channel": "-- Selecionar canal --",
+            "select_role": "-- Selecionar cargo --",
+            "usergroup": "Grupo de usuários da Wiki:",
+            "usergroup_and": "Requer todos os grupos de usuários:"
+        },
+        "new": "Nova verificação"
     }
 }
