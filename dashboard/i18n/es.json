@@ -15,6 +15,7 @@
         "save": "Guardar",
         "settings": "Ajustes",
         "support": "Servidor de Soporte",
-        "title": "Configuración de Wiki-Bot"
+        "title": "Configuración de Wiki-Bot",
+        "verification": "Verificaciones"
     }
 }
