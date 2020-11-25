@@ -10,6 +10,8 @@
         "delete": "Eliminar",
         "invite": "Invitar a Wiki-Bot",
         "logout": "Cerrar sesión",
-        "rcscript": "Cambios Recientes"
+        "rcscript": "Cambios Recientes",
+        "refresh": "Actualizar lista de servidores",
+        "save": "Guardar"
     }
 }
