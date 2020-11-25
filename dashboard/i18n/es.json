@@ -12,6 +12,8 @@
         "logout": "Cerrar sesión",
         "rcscript": "Cambios Recientes",
         "refresh": "Actualizar lista de servidores",
-        "save": "Guardar"
+        "save": "Guardar",
+        "settings": "Ajustes",
+        "support": "Servidor de Soporte"
     }
 }
