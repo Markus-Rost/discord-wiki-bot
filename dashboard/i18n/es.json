@@ -17,5 +17,14 @@
         "support": "Servidor de Soporte",
         "title": "Configuración de Wiki-Bot",
         "verification": "Verificaciones"
+    },
+    "indexjs": {
+        "invalid": {
+            "title": "¡Wiki no válido!"
+        },
+        "outdated": {
+            "text": "¡El webhook de cambios recientes requiere al menos MediaWiki 1.30!",
+            "title": "¡Versión de MediaWiki desactualizada!"
+        }
     }
 }
