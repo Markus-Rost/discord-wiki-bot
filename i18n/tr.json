@@ -144,6 +144,7 @@
         " "
     ],
     "general": {
+        "default": "bu sunucu daha kurulmamış. $1 ile ya da kontrol panelini kullanarak ayarları değiştirin.",
         "disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. Sayfalar için kısa açıklamalar ve ek bilgiler verebilir ve interwiki bağlantıları ile yönlendirmeleri takip edebilirim. $1, beni JavaScript kullanarak yazdı.\n\nBeni Patreon'da da destekleyebilirsiniz:",
         "experimental": "**Bu özellik deneme aşamasında! Çalışması garanti değil ve gelecekte kaldırılabilir.**",
         "helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
@@ -155,6 +156,7 @@
     },
     "help": {
         "admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
+        "adminfooter": "Yöneticiler bot ayarlarını değiştirmek için kontrol panelini de kullanabilir:",
         "all": "Yapabileceklerimi öğrenmek mi istiyorsun? İşte anladığım tüm komutların bir listesi:",
         "footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑️ ile tepki verin, mesajı sileceğim.",
         "list": {
@@ -361,11 +363,12 @@
                 },
                 "usergroup": {
                     "cmd": "verification <id> usergroup <yeni kullanıcı grubu>",
-                    "desc": ""
+                    "desc": "Viki doğrulaması için kullanıcı grubunu değiştireceğim. `|` ile ayrılan listeler kabul edilir.\n\t•İlk liste girdisi olarak `AND` verildiğinde girilen bütün kullanıcı grupları gerekli yapılacaktır."
                 }
             },
             "verify": {
-                "cmd": "verify <viki kullanıcı adı>"
+                "cmd": "verify <viki kullanıcı adı>",
+                "desc": "Discord hesabını viki hesabın ile doğrulamak ve viki hesabınla eşleşen rolleri almak için bu komutu kullan."
             },
             "voice": {
                 "cmd": "voice",
@@ -403,19 +406,102 @@
         "lang": "Dil:",
         "license": "Lisans:",
         "manager": "Wiki yöneticisi:",
+        "misermode": "Cimri mod:",
         "no": "Hayır",
         "none": "*hiçbiri*",
         "official": "Resmi wiki:",
         "pages": "Toplam sayfalar:",
+        "posts": "Tartışma gönderileri:",
+        "readonly": "Bu viki şimdilik salt okunur modda!",
+        "rtl": "Sağdan sola:",
         "talk": "mesaj",
         "topic": "Kategori:",
+        "unknown": "*bilinmiyor*",
         "users": "Aktif kullanıcılar:",
+        "version": "Sürüm:",
         "vertical": "Konu:",
+        "walls": "Mesaj duvarı gönderileri:",
+        "wikiid": "Viki ID:",
         "yes": "Evet"
     },
     "pause": {
         "off": "Artık bu sunucuda duraklatılmış durumda değilim ve tüm komutlara tekrar cevap vereceğim!",
         "on": "Şimdi bu sunucuda duraklatıldım ve çoğu komutu görmezden geleceğim!"
+    },
+    "rcscript": {
+        "ad": "Son değişiklikleri Discord'unda görmek mi istiyorsun? `$1rcscript` kullanarak **$2** bazında son değişiklikler webhook'u ekleyebilirsin!",
+        "add_more": "Daha fazla son değişiklikler webhook'u ekle:",
+        "added": "yeni bir son değişiklikler webhook'u eklendi:",
+        "all_inactive": "viki değişiklikleri ve yayın bazlı değişiklikleri aynı anda devre dışı bırakamazsın.",
+        "audit_reason": "\"$1\" için son değişiklikler webhook'u",
+        "audit_reason_delete": "Son değişiklikler webhook'u kaldırıldı",
+        "audit_reason_move": "Son değişiklikler webhook'u taşındı",
+        "blocked": "bu vikinin son değişiklikler webhook'u olarak eklemesi yasaklanmış!",
+        "blocked_reason": "bu vikinin son değişiklikler webhook'u olarak eklemesi `$1` yüzünden yasaklanmış!",
+        "channel": "Kanal:",
+        "current": "bu sunucuda bulunan son değişiklikler webhook'ları:",
+        "current_display": "bu webhook'un görüntüleme modu:",
+        "current_lang": "bu webhook'un dili:",
+        "current_wiki": "webhook vikisi:",
+        "dashboard": {
+            "added": "$1, `$2` tanımlayıcısıyla son değişiklikler webhook'u ekledi.",
+            "removed": "$1, tanımlayıcısı `$2` olan son değişiklikler webhook'unu kaldırdı.",
+            "updated": "$1, tanımlayıcısı `$2` olan son değişiklikler webhook'unu güncelledi."
+        },
+        "delete": "Bu son değişiklikler webhook'unu sil:",
+        "deleted": "bu son değişiklikler webhook'u silindi.",
+        "disabled": "devre dışı",
+        "disabled_feeds": "tartışmalar, mesaj duvarları ve makale komutları gibi yayın bazlı düzenlemeler bu webhook için devre dışı bırakıldı.",
+        "disabled_rc": "viki düzenlemeleri bu webhook için devre dışı bırakıldı.",
+        "display": "Görüntüleme modu:",
+        "enabled": "etkin",
+        "enabled_feeds": "tartışmalar, mesaj duvarları ve makale komutları gibi yayın bazlı düzenlemeler bu webhook için etkinleştirildi.",
+        "enabled_rc": "viki düzenlemeleri bu webhook için etkinleştirildi.",
+        "feeds": "Yayın bazlı düzenlemeler:",
+        "help_display_compact": "Satır içi bağlantılar ile kompakt metin mesajları.",
+        "help_display_diff": "Görüntü ön izlemeleri ve düzenleme farklılıkları ile gömülü mesajlar.",
+        "help_display_embed": "Düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar.",
+        "help_display_image": "Görüntü ön izlemeleri ile gömülü mesajlar.",
+        "help_feeds": "(tartışmalar, mesaj duvarları, makale yorumları)",
+        "help_lang": "Halihazırda desteklenen diller:",
+        "help_wiki": "`https://<wiki>.gamepedia.com/` ya da `https://<wiki>.fandom.com` gibi bir MediaWiki sitesine bağlantı verin",
+        "lang": "Dil:",
+        "max_entries": "azami son değişiklikler webhook'u sayısına ulaştın.",
+        "missing": "bunu sunucuda halihazırda bir son değişiklikler webhook'u yok.",
+        "new_lang": "<yeni dil>",
+        "new_wiki": "<vikiye bağlantı>",
+        "no_feeds": "bu webhook'un vikide tartışmalar, mesaj duvarları ya da makale yorumları gibi yayın bazlı özellikler etkin değil.",
+        "noadmin": "bu komut için `Webhook'ları Yönet` iznine ihtiyacın var!",
+        "rc": "Viki düzenlemeleri:",
+        "sysmessage": "son değişiklikler webhook'u ekleyebilmek için sistem mesajı `$1`, sunucu ID'si `$2` olmalı.",
+        "title": "Son değişiklikler webhook'u",
+        "toggle": "(değiştir)",
+        "updated_display": "bu webhook'un görüntüleme modu değiştirildi:",
+        "updated_lang": "bu webhook'un dili değiştirildi:",
+        "updated_wiki": "bu webhook'un vikisi değiştirildi:",
+        "webhook": {
+            "blocked": "Bu son değişiklikler webhook'u silinecek çünkü viki engellendi!",
+            "blocked_help": "[Destek suncusunda]($1) daha fazla detay alabilirsin.",
+            "blocked_reason": "Bu son değişiklikler webhook'u silinecek çünkü viki `$1` nedeniyle engellendi!",
+            "created": "Bu kanala $1 için bir son değişiklikler webhook'u eklendi.",
+            "dashboard": {
+                "channel": "•Webhook bu kanala taşındı.",
+                "disabled_feeds": "•Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı değişiklikler devre dışı bırakıldı.",
+                "disabled_rc": "•Viki düzenlemeleri devre dışı bırakıldı.",
+                "display_compact": "•Görüntüleme modu satır içi bağlantılar ile kompakt metin mesajları ile değiştirildi.",
+                "display_diff": "•Görüntüleme modu görüntü ön izlemeleri ve düzenleme farklılıkları ile gömülü mesajlar ile değiştirildi.",
+                "display_embed": "•Görüntüleme modu düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar ile değiştirildi.",
+                "display_image": "•Görüntüleme modu görüntü ön izlemeli gömülü mesajlar ile değiştirildi.",
+                "enabled_feeds": "•Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı düzenlemeler etkinleştirildi.",
+                "enabled_rc": "•Viki düzenlemeleri etkinleştirildi.",
+                "lang": "•Dil $1 ile değiştirildi.",
+                "updated": "Bu son değişiklikler webhook'u güncellendi:",
+                "wiki": "•Viki $1 ile değiştirildi."
+            },
+            "deleted": "Son değişiklikler webhook'u silinecek.",
+            "disabled_feeds": "Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı düzenlemeler bu son değişiklikler webook'u için devre dışı bırakıldı.",
+            "disabled_rc": "Bu son değişiklikler webhook'u için viki düzenlemeleri devre dışı bırakıldı."
+        }
     },
     "search": {
         "category": {
