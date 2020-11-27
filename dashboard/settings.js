@@ -371,16 +371,16 @@ function update_settings(res, userSettings, guild, type, settings) {
 				db.get( 'SELECT lang, wiki, role, inline, prefix FROM discord WHERE guild = ? AND channel IS NULL', [guild], function(error, row) {
 					if ( error ) {
 						console.log( '- Dashboard: Error while getting the settings: ' + error );
-						reject();
+						return reject();
 					}
 					var body = fresponse.body;
 					if ( fresponse.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
-						if ( row?.wiki === wiki.href ) resolve(row);
-						reject();
+						if ( row?.wiki === wiki.href ) return resolve(row);
+						return reject();
 					}
 					wiki.updateWiki(body.query.general);
-					resolve(row, body.query);
+					return resolve(row, body.query);
 				} );
 			} );
 		}, error => {
