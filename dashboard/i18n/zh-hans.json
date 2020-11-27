@@ -5,5 +5,68 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "delete": "删除",
+        "invite": "邀请 Wiki-Bot",
+        "logout": "注销",
+        "rcscript": "最近更改",
+        "refresh": "刷新服务器列表",
+        "save": "保存",
+        "selector": "选择服务器",
+        "settings": "设置",
+        "support": "支持服务器",
+        "title": "Wiki-Bot 设置",
+        "verification": "验证"
+    },
+    "indexjs": {
+        "invalid": {
+            "text": "此 URL 没有链接到一个有效的 MediaWiki 网站！",
+            "title": "无效的 wiki！"
+        },
+        "outdated": {
+            "text": "最近更改 webhook 最少需要 MediaWiki 1.30！",
+            "title": "过时的 MediaWiki 版本！"
+        },
+        "prefix": {
+            "backslash": "前缀不得包含反斜线！",
+            "code": "前缀不得包含代码 markdown！",
+            "space": "前缀不得包含空格！"
+        },
+        "sysmessage": {
+            "text": "此页面 $1 需要与服务器 ID $2 对应。",
+            "title": "系统信息不对应！"
+        },
+        "valid": {
+            "MediaWiki": "警告：至少需要 $1 以获得完整的功能。",
+            "PageImages": "警告：至少需要 $1 以获得页面缩略图。",
+            "TextExtracts": "警告：至少需要 $1 以获得页面描述。",
+            "title": "此 wiki 有效并可以使用！"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "发生了未知错误，请再试一次。",
+            "title": "未知错误！"
+        },
+        "invalidusergroup": {
+            "text": "用户组名称过长或您提交了太多用户组。",
+            "title": "无效的用户组！"
+        },
+        "loginfail": {
+            "text": "在您登录时发生了错误，请再试一次。",
+            "title": "登录失败！"
+        },
+        "logout": {
+            "text": "您已成功注销。若您需要更改任何设置，您需要重新登录。",
+            "title": "成功注销！"
+        },
+        "missingperm": {
+            "text": "您或 Wiki-Bot 缺少 $1 的权限来使用此功能。",
+            "title": "缺少权限！"
+        },
+        "movefail": {
+            "note": "Webhook 频道无法更改！"
+        }
+    }
 }
