@@ -10,7 +10,7 @@
         "delete": "Löschen",
         "invite": "Lade Wiki-Bot ein",
         "logout": "Abmelden",
-        "rcscript": "Letzte Änderungen",
+        "rcscript": "Wiki-Änderungen",
         "refresh": "Serverliste aktualisieren",
         "save": "Speichern",
         "selector": "Serverauswahl",
@@ -166,7 +166,7 @@
             "wiki": "Standard-Wiki:",
             "wiki_check": "Wiki testen"
         },
-        "new": "Neue Kanal-Überschreibung"
+        "new": "Neue Überschreibung"
     },
     "verification": {
         "desc": "Dies sind die Verifizierungen für $1:",
