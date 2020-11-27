@@ -5,5 +5,187 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "delete": "Sil",
+        "invite": "Wiki-Bot'u davet et",
+        "logout": "Çıkış",
+        "rcscript": "Son Değişiklikler",
+        "refresh": "Sunucu listesini yenile",
+        "save": "Kaydet",
+        "selector": "Sunucu Seçici",
+        "settings": "Ayarlar",
+        "support": "Destek Sunucusu",
+        "title": "Wiki-Bot Ayarları",
+        "verification": "Doğrulamalar"
+    },
+    "indexjs": {
+        "invalid": {
+            "text": "URL geçerli bir MediaWiki sitesinin değil!",
+            "title": "Geçersiz viki!"
+        },
+        "outdated": {
+            "text": "Son değişiklikler webhook'u en az MediaWiki 1.30'a ihtiyaç duyuyor!",
+            "title": "Eski MediaWiki sürümü!"
+        },
+        "prefix": {
+            "backslash": "Önekte ters bölü çizgileri bulunamaz!",
+            "code": "Önekte kod biçimlendirmesi bulunamaz!",
+            "space": "Önekte boşluk bulunamaz!"
+        },
+        "sysmessage": {
+            "text": "Sayfa $1, sunucus ID'si $2 ile eşleşmeli.",
+            "title": "Sistem mesajları eşleşmiyor!"
+        },
+        "valid": {
+            "MediaWiki": "Uyarı: Tam işlevsellik için en az $1 ihtiyacı duyar.",
+            "PageImages": "Uyarı: Sayfa küçük resimleri için $1 uzantısına ihtiyaç duyar.",
+            "TextExtracts": "Uyarı: Sayfa açıklamaları için $1 uzantısına ihtiyaç duyar.",
+            "title": "Bu viki geçerli ve kullanılabilir!"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "Bilinmeyen bir hata oluştu, lütfen tekrar deneyin.",
+            "title": "Bilinmeyen hata!"
+        },
+        "invalidusergroup": {
+            "text": "Kullanıcı grubu ismi ya çok uzun ya da çok fazla grup belirtildi.",
+            "title": "Geçersiz kullanıcı grubu!"
+        },
+        "loginfail": {
+            "text": "Giriş yaparken bir hata oluştu, lütfen tekrar deneyin.",
+            "title": "Giriş başarısız oldu!"
+        },
+        "logout": {
+            "text": "Başarıyla çıkış yaptın. Herhangi bir ayarı değiştirmek için tekrar giriş yapmalısın.",
+            "title": "Başarıyla çıkış yapıldı!"
+        },
+        "missingperm": {
+            "text": "Ya sen ya da Wiki-Bot bu işlev için gereken $1 iznine sahip değil.",
+            "title": "Eksik izin!"
+        },
+        "movefail": {
+            "note": "Bu webhook kanalı değiştirilemedi!",
+            "text": "Ayarlar sadece kısmen güncellendi.",
+            "title": "Ayarlar kısmen kaydedildi!"
+        },
+        "mwversion": {
+            "text": "En az MediaWiki 1.30 gerekli. $2, $1 sürümüne sahip.",
+            "title": "Eski MediaWiki sürümü!"
+        },
+        "nochange": {
+            "text": "Ayarlar halihazırda bulunan ayarlar ile eşleşiyor.",
+            "title": "Kaydetme başarısız!"
+        },
+        "nosettings": {
+            "note": "Ayarları değiştir.",
+            "text": "Lütfen sunucu için ayarları belirtin.",
+            "title": "Sunucu kurulmamış!"
+        },
+        "readonly": {
+            "text": "Şu an ayarları okuyabilirsin ama değiştiremezsin.",
+            "title": "Salt okunur veritabanı!"
+        },
+        "refresh": {
+            "text": "Sunucu listesi başarıyla yenilendi.",
+            "title": "Yenileme başarılı!"
+        },
+        "refreshfail": {
+            "text": "Sunucu listesi yenilenemedi, lütfen tekrar deneyin.",
+            "title": "Yenileme başarısız!"
+        },
+        "save": {
+            "text": "Ayarlar başarıyla güncellendi.",
+            "title": "Ayarlar keydedildi!"
+        },
+        "savefail": {
+            "text": "Ayarlar kaydedilemedi, lütfen tekrar deneyin.",
+            "title": "Kaydetme başarılı!"
+        },
+        "sysmessage": {
+            "text": "$1 sayfası, sunucu ID'si $2 ile eşleşmeli.",
+            "title": "Sistem mesajları eşleşmiyor!"
+        },
+        "unauthorized": {
+            "text": "Lütfen herhangi bir ayar yapmadan önce giriş yapın.",
+            "title": "Giriş yapılmamış!"
+        },
+        "wikiblocked": {
+            "note": "Neden:",
+            "text": "$1 platformunun bir son değişiklikler webhook'u olarak eklenmesi yasaklanmış.",
+            "title": "Viki engellenmiş!"
+        }
+    },
+    "rcscript": {
+        "desc": "$1 için son değişiklikler webhook'ları:",
+        "explanation": "<h2>Son Değişiklikler Webhook'u</h2>\n<p>Wiki-Bot <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> bazlı olarak bir son değişiklikler webhook'u sağlayabilir. Son değişiklikler; satıriçi bağlantılar ile kompakt metin mesajları veya düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar olarak görüntülenebilir.</p>\n<p>Bir son değişiklikler webhook'u ekleme gereksinimleri:</p>\n<ul>\n<li>Viki <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> veya daha güncel bir versiyona sahip olmalı.</li>\n<li>Sistem mesajı <code>MediaWiki:Custom-RcGcDw</code>, Discord sunucu ID'si <code class=\"user-select\" id=\"server-id\"></code> ile eşleşmeli.</li>\n</ul>",
+        "form": {
+            "channel": "Kanal:",
+            "confirm": "Bu son değişiklikler webhook'unu silmek istediğine emin misin?",
+            "display": "Görüntüleme modu:",
+            "display_compact": "Satır içi bağlantılar ile kompakt metin mesajları.",
+            "display_diff": "Görüntü ön izlemeleri ve düzenleme farklılıkları ile gömülü mesajlar.",
+            "display_embed": "Düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar.",
+            "display_image": "Görüntü ön izlemeleri ile gömülü mesajlar.",
+            "entry": "Son değişiklikler Webhook'u #$1",
+            "feeds": "Yayın bazlı değişiklikler:",
+            "feeds_only": "Sadece yayın bazlı değişiklikler:",
+            "lang": "Dil:",
+            "new": "Yeni Son Değişiklikler Webhook'u",
+            "select_channel": "-- Bir Kanal Seç --",
+            "wiki": "Viki:",
+            "wiki_check": "Vikiyi kontrol et"
+        },
+        "new": "Yeni Webhook"
+    },
+    "selector": {
+        "desc": "[Sunucuyu Yönet]($1) iznine sahip olduğun için ayarlarını değiştirebileceğin sunucuların listesi. Lütfen bir sunucu seç:",
+        "invite": "Wiki-Bot bir $1 üyesi değil ancak [davet edebilirsin]($2).",
+        "none": "Halihazırda hiçbir sunucuda [Sunucuyu Yönet]($1) iznine sahip değilsin, doğru hesaba giriş yaptığına emin misin?",
+        "switch": "Hesap Değiştir",
+        "title": "Sunucu Seçici",
+        "with": "Wiki-Bot'un olduğu sunucu",
+        "without": "WikiBot'un olmadığı sunucu"
+    },
+    "settings": {
+        "desc": "$1 ayarları:",
+        "failed": "Ayarlar yüklenemedi!",
+        "form": {
+            "channel": "Kanal:",
+            "confirm": "Bu kanalın üzerine yazma ayarını silmek istediğine emin misin?",
+            "default": "Sunucu Çapında Ayarlar",
+            "inline": "Satıriçi komutlar:",
+            "lang": "Dil:",
+            "new": "Yeni Kanal Üzerine Yazması",
+            "overwrite": "$1 Ayarları",
+            "prefix": "Önek:",
+            "prefix_space": "Önek boşluk ile bitiyor:",
+            "role": "Minimal Rol:",
+            "select_channel": "-- Bir Kanal Seç --",
+            "wiki": "Varsayılan Viki:",
+            "wiki_check": "Vikiyi kontrol et"
+        },
+        "new": "Yeni kanal üzerine yazması"
+    },
+    "verification": {
+        "desc": "$1 doğrulamaları:",
+        "explanation": "<h2>Kullanıcı Doğrulaması</h2>\n<p>Kullanıcılar <code class=\"prefix\">verify &lt;viki kullanıcı adı&gt;</code> komutunu kullanarak kendilerini viki profillerindeki Discord bölümü sayesinde belirli spesifik bir viki kullanıcısı olarak doğrulayabilirler. Eğer kullanıcı eşleşirse ve sunucuda doğrulama sistemi kuruluysa Wiki-Bot eşleşen bütün doğrulama girdileri için ilgili rolleri verecektir.</p>\n<p>Her doğrulama girdisi, kullanıcının doğrulamayı nasıl tamamlayacağı konusunda bir kısıtlama getirir:</p>\n<ul>\n<li><code class=\"prefix\">verify</code> komutunun kullanılacağı kanal.</li>\n<li>Doğrulama girdisi eşleştiğinde verilecek rol.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için gerekli minimum düzenleme sayısı.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için üyenin vikide üyesi olması gereken kullanıcı grupları.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için hesabın gün bakımından yaşı.</li>\n<li>Doğrulama girdisi eşleştiğinde Discord kullanıcı adının viki kullanıcı adıyla değiştirilip değiştirilmeyeceği.</li>\n</ul>",
+        "form": {
+            "accountage": "Hesap yaşı (gün):",
+            "channel": "Kanal:",
+            "confirm": "Doğrulamayı silmek istediğine emin misin?",
+            "editcount": "Minimal düzenleme sayısı:",
+            "entry": "Doğrulama #$1",
+            "more": "Daha fazla ekle",
+            "new": "Yeni Doğrulama",
+            "rename": "Üyelerin kullanıcı isimlerini değiştir:",
+            "role": "Rol:",
+            "select_channel": "-- Bir Kanal Seç --",
+            "select_role": "-- Bir Rol Seç --",
+            "usergroup": "Viki kullanıcı grubu:",
+            "usergroup_and": "Bütün kullanıcı gruplarını iste:"
+        },
+        "new": "Yeni doğrulama"
+    }
 }
