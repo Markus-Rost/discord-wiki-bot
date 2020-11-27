@@ -1,6 +1,6 @@
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
-const {got, db, sendMsg, createNotice, hasPerm} = require('./util.js');
+const {got, db, sendMsg, createNotice, escapeText, hasPerm} = require('./util.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -195,20 +195,12 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
  * @param {import('./i18n.js')} dashboardLang - The user language
  */
 function dashboard_verification(res, $, guild, args, dashboardLang) {
-	if ( !hasPerm(guild.botPermissions, 'MANAGE_ROLES') ) {
-		createNotice($, 'missingperm', dashboardLang, ['Manage Roles']);
-		$('#text .description').html(dashboardLang.get('verification.explanation'));
-		$('.channel#verification').addClass('selected');
-		let body = $.html();
-		res.writeHead(200, {'Content-Length': body.length});
-		res.write( body );
-		return res.end();
-	}
-	db.all( 'SELECT wiki, discord.role defaultrole, configid, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
+	db.all( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
 			createNotice($, 'error', dashboardLang);
 			$('#text .description').html(dashboardLang.get('verification.explanation'));
+			$('#text code.prefix').prepend(escapeText(process.env.prefix));
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -218,6 +210,17 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
 			$('#text .description').html(dashboardLang.get('verification.explanation'));
+			$('#text code.prefix').prepend(escapeText(process.env.prefix));
+			$('.channel#verification').addClass('selected');
+			let body = $.html();
+			res.writeHead(200, {'Content-Length': body.length});
+			res.write( body );
+			return res.end();
+		}
+		if ( !hasPerm(guild.botPermissions, 'MANAGE_ROLES') ) {
+			createNotice($, 'missingperm', dashboardLang, ['Manage Roles']);
+			$('#text .description').html(dashboardLang.get('verification.explanation'));
+			$('#text code.prefix').prepend(escapeText(rows[0].prefix));
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': body.length});
@@ -226,6 +229,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		}
 		var wiki = rows[0].wiki;
 		var defaultrole = rows[0].defaultrole;
+		var prefix = rows[0].prefix;
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
 		$('<p>').html(dashboardLang.get('verification.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
@@ -261,6 +265,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		else {
 			$('.channel#verification').addClass('selected');
 			$('#text .description').html(dashboardLang.get('verification.explanation'));
+			$('#text code.prefix').prepend(escapeText(prefix));
 		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': body.length});

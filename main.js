@@ -152,9 +152,10 @@ if ( process.env.dashboard ) {
 							};
 							if ( '${( message.data.channel || '' )}' ) {
 								let channel = guild.channels.cache.get('${message.data.channel}');
-								if ( channel?.isText() ) {
+								if ( channel?.isText() || ( response.patreon && ${message.data.allowCategory} && channel?.type === 'category' ) ) {
 									response.userPermissions = channel.permissionsFor(member).bitfield;
 									response.botPermissions = channel.permissionsFor(guild.me).bitfield;
+									response.isCategory = ( channel.type === 'category' );
 								}
 								else response.message = 'noChannel';
 							}

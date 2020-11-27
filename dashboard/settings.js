@@ -61,20 +61,58 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 	if ( settings.channel ) {
 		let channel = $('<div>').append(fieldset.channel);
 		channel.find('label').text(dashboardLang.get('settings.form.channel'));
-		channel.find('#wb-settings-channel').append(
-			...guildChannels.map( guildChannel => {
-				return $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`)
-			} )
-		);
-		if ( guildChannels.length === 1 ) {
+		if ( settings.channel === 'new' ) {
+			let curCat = null;
+			channel.find('#wb-settings-channel').append(
+				$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text(dashboardLang.get('settings.form.select_channel')),
+				...guildChannels.filter( guildChannel => {
+					return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') || guildChannel.isCategory );
+				} ).map( guildChannel => {
+					if ( settings.patreon ) {
+						var optionChannel = $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – ` + ( guildChannel.isCategory ? '' : '#' ) + guildChannel.name);
+						if ( guildChannel.isCategory ) {
+							curCat = true;
+							optionChannel.addClass('wb-settings-optgroup');
+							if ( !guildChannel.allowedCat ) {
+								optionChannel.attr('disabled', '').val('');
+							}
+						}
+						else if ( curCat === true ) {
+							optionChannel.prepend('&nbsp; &nbsp; ');
+						}
+						return optionChannel;
+					}
+					if ( guildChannel.isCategory ) {
+						curCat = $('<optgroup>').attr('label', guildChannel.name);
+						return curCat;
+					}
+					var optionChannel = $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`);
+					if ( !curCat ) return optionChannel;
+					optionChannel.appendTo(curCat);
+				} ).filter( (catChannel, i, guildChannelList) => {
+					if ( !catChannel ) return false;
+					if ( catChannel.is('optgroup') && !catChannel.children('option').length ) return false;
+					if ( catChannel.hasClass('wb-settings-optgroup') && guildChannelList[i + 1].hasClass('wb-settings-optgroup') ) {
+						if ( catChannel.attr('disabled') ) return false;
+						return guildChannels.some( guildChannel => {
+							return ( guildChannel.id === catChannel.val() && hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') );
+						} );
+					}
+					return true;
+				} )
+			);
+		}
+		else {
+			channel.find('#wb-settings-channel').append(
+				...guildChannels.map( guildChannel => {
+					return $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – ` + ( guildChannel.isCategory ? '' : '#' ) + guildChannel.name);
+				} )
+			);
 			channel.find(`#wb-settings-channel-${settings.channel}`).attr('selected', '');
 			if ( !hasPerm(guildChannels[0].userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
 				readonly = true;
 			}
 		}
-		else channel.find('#wb-settings-channel').prepend(
-			$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text(dashboardLang.get('settings.form.select_channel'))
-		);
 		fields.push(channel);
 	}
 	let wiki = $('<div>').append(fieldset.wiki);
@@ -162,8 +200,8 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 		}
 		let isPatreon = rows.some( row => row.patreon );
 		let channellist = rows.filter( row => row.channel ).map( row => {
-			let channel = guild.channels.find( channel => channel.id === row.channel );
-			return ( channel || {id: row.channel, name: 'UNKNOWN', userPermissions: 0} );
+			let channel = guild.channels.find( channel => channel.id === row.channel.replace( /^#/, '' ) );
+			return ( channel || {id: row.channel.replace( /^#/, '' ), name: 'UNKNOWN', userPermissions: 0, isCategory: row.channel.startsWith( '#' )} );
 		} ).sort( (a, b) => {
 			return guild.channels.indexOf(a) - guild.channels.indexOf(b);
 		} );
@@ -171,12 +209,16 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 		$('#channellist #settings').after(
 			...channellist.map( channel => {
 				return $('<a class="channel">').attr('id', `channel-${channel.id}`).append(
-					$('<img>').attr('src', '/src/channel.svg'),
-					$('<div>').text(channel.name)
+					...( channel.isCategory ? [
+						$('<div class="category">').text(channel.name)
+					] : [
+						$('<img>').attr('src', '/src/channel.svg'),
+						$('<div>').text(channel.name)]
+					)
 				).attr('href', `/guild/${guild.id}/settings/${channel.id}${suffix}`).attr('title', channel.id);
 			} ),
 			( process.env.READONLY || !guild.channels.filter( channel => {
-				return ( !channel.isCategory && hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
+				return ( hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === ( channel.isCategory ? '#' : '' ) + channel.id ) );
 			} ).length ? '' :
 			$('<a class="channel" id="channel-new">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
@@ -189,14 +231,21 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				patreon: isPatreon,
 				channel: 'new'
 			}), guild.roles, guild.channels.filter( channel => {
-				return ( !channel.isCategory && hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === channel.id ) );
+				return ( channel.isCategory || !rows.some( row => row.channel === ( channel.isCategory ? '#' : '' ) + channel.id ) );
+			} ).map( channel => {
+				if ( !channel.isCategory ) return channel;
+				let {id, name, userPermissions, isCategory} = channel;
+				return {
+					id, name, userPermissions, isCategory,
+					allowedCat: !rows.some( row => row.channel === '#' + channel.id )
+				};
 			} )).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#text');
 		}
 		else if ( channellist.some( channel => channel.id === args[4] ) ) {
 			let channel = channellist.find( channel => channel.id === args[4] );
 			$(`.channel#channel-${channel.id}`).addClass('selected');
 			createForm($, dashboardLang.get('settings.form.overwrite', false, `#${channel.name}`), dashboardLang, Object.assign({}, rows.find( row => {
-				return row.channel === channel.id;
+				return row.channel === ( channel.isCategory ? '#' : '' ) + channel.id;
 			} ), {
 				patreon: isPatreon
 			}), guild.roles, [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
@@ -241,7 +290,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.channel && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-			return ( channel.id === settings.channel && !channel.isCategory );
+			return ( channel.id === settings.channel && ( !channel.isCategory || userSettings.guilds.isMember.get(guild).patreon ) );
 		} ) ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		if ( settings.role && !userSettings.guilds.isMember.get(guild).roles.some( role => {
 			return ( role.id === settings.role );
@@ -254,7 +303,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 		type: 'getMember',
 		member: userSettings.user.id,
 		guild: guild,
-		channel: ( type === settings.channel ? type : undefined )
+		channel: ( type !== 'default' ? settings.channel : undefined ),
+		allowCategory: true
 	} ).then( response => {
 		if ( !response ) {
 			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
@@ -265,7 +315,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
-		if ( response.message === 'noChannel' ) return db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
+		if ( response.message === 'noChannel' ) return db.run( 'DELETE FROM discord WHERE guild = ? AND ( channel = ? OR channel = ? )', [guild, type, `#${type}`], function (delerror) {
 			if ( delerror ) {
 				console.log( '- Dashboard: Error while removing the settings: ' + delerror );
 				return res(`/guild/${guild}/settings`, 'savefail');
@@ -274,11 +324,11 @@ function update_settings(res, userSettings, guild, type, settings) {
 			if ( settings.delete_settings ) return res(`/guild/${guild}/settings`, 'save');
 			else return res(`/guild/${guild}/settings`, 'savefail');
 		} );
-		if ( type === settings.channel && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
+		if ( type !== 'default' && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
-		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.patreon, main.lang mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND main.channel IS NULL', [type, guild], function(dberror, row) {
-			db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
+		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.patreon, main.wiki mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND main.channel IS NULL', [( response.isCategory ? '#' : '' ) + type, guild], function(dberror, row) {
+			db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, ( response.isCategory ? '#' : '' ) + type], function (delerror) {
 				if ( delerror ) {
 					console.log( '- Dashboard: Error while removing the settings: ' + delerror );
 					return res(`/guild/${guild}/settings/${type}`, 'savefail');
@@ -490,7 +540,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( type === 'new' ) {
 					return res(`/guild/${guild}/settings/${type}`, 'nochange');
 				}
-				return db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, type], function (delerror) {
+				return db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, ( response.isCategory ? '#' : '' ) + type], function (delerror) {
 					if ( delerror ) {
 						console.log( '- Dashboard: Error while removing the settings: ' + delerror );
 						return res(`/guild/${guild}/settings/${type}`, 'savefail');
@@ -506,7 +556,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					} );
 				} );
 			}
-			return db.get( 'SELECT lang, wiki, role, inline FROM discord WHERE guild = ? AND channel = ?', [guild, settings.channel], function(curerror, channel) {
+			return db.get( 'SELECT lang, wiki, role, inline FROM discord WHERE guild = ? AND channel = ?', [guild, ( response.isCategory ? '#' : '' ) + settings.channel], function(curerror, channel) {
 				if ( curerror ) {
 					console.log( '- Dashboard: Error while getting the channel settings: ' + curerror );
 					return res(`/guild/${guild}/settings/${type}`, 'savefail');
@@ -534,7 +584,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					return res(`/guild/${guild}/settings/${settings.channel}`, 'save');
 				}
 				let sql = 'UPDATE discord SET wiki = ?, lang = ?, role = ?, inline = ? WHERE guild = ? AND channel = ?';
-				let sqlargs = [wiki.href, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, settings.channel];
+				let sqlargs = [wiki.href, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, ( response.isCategory ? '#' : '' ) + settings.channel];
 				if ( channel === row ) {
 					sql = 'INSERT INTO discord(wiki, lang, role, inline, guild, channel, prefix) VALUES(?, ?, ?, ?, ?, ?, ?)';
 					sqlargs.push(row.prefix);

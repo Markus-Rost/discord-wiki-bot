@@ -205,7 +205,7 @@ client.on( 'message', msg => {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has('SEND_MESSAGES') ) {
 				console.log( msg.guild.name + ': ' + msg.content );
-				db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
+				db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
 					if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
 					msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('general.prefix', patreons[msg.guild.id]), {}, true );
 				} );
@@ -220,7 +220,7 @@ client.on( 'message', msg => {
 			if ( msg.isAdmin() || msg.isOwner() ) {
 				console.log( msg.guild.id + ': Missing permissions - ' + missing.join(', ') );
 				if ( !missing.includes( 'SEND_MESSAGES' ) ) {
-					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
+					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
 						if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
 						if ( msg.content.hasPrefix(( patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
 							msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('general.missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
@@ -230,7 +230,7 @@ client.on( 'message', msg => {
 			}
 			return;
 		}
-		db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id], (dberror, row) => {
+		db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the wiki: ' + dberror );
 				if ( permissions.has('SEND_MESSAGES') ) {

@@ -277,6 +277,9 @@ code {
 	white-space: nowrap;
 	overflow: hidden;
 }
+.channel div.category {
+	margin-left: 6px;
+}
 .channel:hover {
 	background: rgba(79,84,92,0.16);
 }
@@ -328,6 +331,9 @@ button.addmore:not([hidden]) {
 	display: block;
 	margin-left: 20%;
 }
+.wb-settings-optgroup {
+	font-weight: bold;
+}
 .wb-settings-error {
 	color: red;
 }
@@ -341,6 +347,7 @@ button.addmore:not([hidden]) {
 }
 #wb-settings-lang-widget {
 	vertical-align: top;
+	margin-left: 5px;
 }
 #login-button {
 	display: flex;

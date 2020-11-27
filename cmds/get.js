@@ -66,10 +66,10 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		var channel = await msg.client.shard.broadcastEval( `if ( this.channels.cache.filter( channel => channel.isGuild() ).has('${id}') ) {
-			var {name, id, guild: {name: guild, id: guildID, me}} = this.channels.cache.get('${id}');
+		var channel = await msg.client.shard.broadcastEval( `if ( this.channels.cache.filter( channel => channel.isGuild() || channel.type === 'category' ).has('${id}') ) {
+			var {name, id, type, parentID, guild: {name: guild, id: guildID, me}} = this.channels.cache.get('${id}');
 			( {
-				name, id, guild, guildID,
+				name, id, type, parentID, guild, guildID,
 				permissions: me.permissionsIn(id).missing(${defaultPermissions}),
 				pause: guildID in global.pause,
 				shardId: global.shardId
@@ -78,13 +78,14 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		if ( channel ) {
 			var channelguild = ['Guild:', channel.guild.escapeFormatting() + ' `' + channel.guildID + '`' + ( channel.pause ? '\\*' : '' )];
 			var channelname = ['Channel:', '#' + channel.name.escapeFormatting() + ' `' + channel.id + '` <#' + channel.id + '>'];
+			var channeldetails = ['Details:', '`' + channel.type + '`' + ( channel.parentID ? ' – `' + channel.parentID + '` <#' + channel.parentID + '>' : '' )];
 			var channelpermissions = ['Missing permissions:', ( channel.permissions.length ? '`' + channel.permissions.join('`, `') + '`' : '*none*' )];
 			var channellang = ['Language:', '*unknown*'];
 			var channelwiki = ['Default Wiki:', '*unknown*'];
 			var channelrole = ['Minimal Role:', '*unknown*'];
 			var channelinline = ['Inline commands:', '*unknown*'];
 			
-			return db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel IS NULL) ORDER BY channel DESC', [channel.guildID, channel.id], (dberror, row) => {
+			return db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [channel.guildID, channel.id, '#' + ( channel.type === 'category' ? channel.id : channel.parentID )], (dberror, row) => {
 				if ( dberror ) {
 					console.log( '- Error while getting the settings: ' + dberror );
 				}
@@ -103,11 +104,11 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				
 				if ( msg.showEmbed() ) {
 					var text = '';
-					var embed = new MessageEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelrole[0], channelrole[1] ).addField( channelinline[0], channelinline[1] );
+					var embed = new MessageEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channeldetails[0], channeldetails[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelrole[0], channelrole[1] ).addField( channelinline[0], channelinline[1] );
 				}
 				else {
 					var embed = {};
-					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelrole.join(' ') + '\n' + channelinline.join(' ');
+					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channeldetails.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelrole.join(' ') + '\n' + channelinline.join(' ');
 				}
 				msg.sendChannel( text, {embed}, true );
 			} );

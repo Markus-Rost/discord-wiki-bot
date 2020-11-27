@@ -77,6 +77,13 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				msg.client.shard.broadcastEval( `delete global.patreons['${args[1]}']` );
 				msg.replyMsg( 'the patreon features are now disabled on "' + guild + '".', {}, true );
 			} );
+			db.run( 'DELETE FROM discord WHERE guild = ? AND channel LIKE ?', [args[1], '#%'], function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while deleting the channel categories: ' + dberror );
+					return dberror;
+				}
+				if ( this.changes ) console.log( '- Channel categories successfully deleted.' );
+			} );
 			db.all( 'SELECT configid FROM verification WHERE guild = ? ORDER BY configid ASC', [args[1]], (dberror, rows) => {
 				if ( dberror ) {
 					console.log( '- Error while getting the verifications: ' + dberror );
@@ -205,6 +212,13 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					return eacherror;
 				}
 				msg.replyMsg( '<@' + args[1] + '> is no longer a patreon.', {}, true );
+			} );
+			db.run( 'DELETE FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND channel LIKE ?', [...guilds, '#%'], function (uperror) {
+				if ( uperror ) {
+					console.log( '- Error while deleting the channel categories: ' + uperror );
+					return uperror;
+				}
+				if ( this.changes ) console.log( '- Channel categories successfully deleted.' );
 			} );
 			db.each( 'SELECT a.guild, GROUP_CONCAT(DISTINCT a.configid) configids FROM verification a LEFT JOIN verification b ON a.guild = b.guild WHERE a.guild IN (' + guilds.map( guild => '?' ).join(', ') + ') GROUP BY a.guild', guilds, (eacherror, eachrow) => {
 				if ( eacherror ) {

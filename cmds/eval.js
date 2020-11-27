@@ -213,6 +213,13 @@ function removePatreons(guild, msg) {
 				console.log( '- Error while removing the patreon features: ' + tryerror );
 			}
 		} );
+		db.run( 'DELETE FROM discord WHERE guild = ? AND channel LIKE ?', [guild, '#%'], function (dberror) {
+			if ( dberror ) {
+				console.log( '- Error while deleting the channel categories: ' + dberror );
+				return dberror;
+			}
+			if ( this.changes ) console.log( '- Channel categories successfully deleted.' );
+		} );
 		db.all( 'SELECT configid FROM verification WHERE guild = ? ORDER BY configid ASC', [guild], (dberror, rows) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the verifications: ' + dberror );

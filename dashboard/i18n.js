@@ -134,6 +134,7 @@ function plural(lang, number, args) {
 		case 'th':
 		case 'tr':
 		case 'ja':
+		case 'ko':
 		case 'zh-hans':
 		case 'zh-hant':
 		default:

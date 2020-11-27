@@ -315,6 +315,10 @@
                     "cmd": "settings prefix <prefix>",
                     "desc": "I will change the prefix for this server."
                 },
+                "role": {
+                    "cmd": "settings role <role>",
+                    "desc": "I will change the minimal required role to use commands for this server."
+                },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
                     "desc": "I will change the default wiki for this server."
@@ -533,6 +537,8 @@
         "channel current": "these are the current settings for this channel:",
         "channel lang": "the language for this channel is:",
         "channel langchanged": "you changed the language for this channel to:",
+        "channel role": "the minimal required role for this channel is:",
+        "channel rolechanged": "you changed the minimal required role for this channel to:",
         "channel wiki": "the default wiki for this channel is:",
         "channel wikichanged": "you changed the default wiki for this channel to:",
         "current": "these are the current settings for this server:",
@@ -572,6 +578,10 @@
         "prefixchanged": "you changed the prefix for this server to:",
         "prefixhelp": "Use `$1 <prefix>` to change the prefix.\nUse `_` at the end to indicate a space at the end of the prefix.\nThe prefix may not include mentions!",
         "prefixinvalid": "the specified prefix is not supported!",
+        "role": "the minimal required role for this server is:",
+        "rolechanged": "you changed the minimal required role for this server to:",
+        "rolehelp": "Use `$1 <role>` to change the minimal required role.",
+        "roleinvalid": "the specified role does not exist!",
         "save_failed": "sadly the settings couldn't be saved, please try again later.",
         "wiki": "the default wiki for this server is:",
         "wikichanged": "you changed the default wiki for this server to:",

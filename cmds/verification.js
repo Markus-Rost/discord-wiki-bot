@@ -141,14 +141,14 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				var roles = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).split('|').filter( role => role.length );
 				if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {}, true );
 				roles = roles.map( role => {
-					var new_role = '';
+					var new_role = null;
 					if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
 					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
 					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
 					return new_role;
 				} );
 				if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {}, true );
-				if ( roles.some( role => role.managed ) ) return msg.replyMsg( lang.get('verification.role_managed'), {}, true );
+				if ( roles.some( role => role.managed || role.id === msg.guild.id ) ) return msg.replyMsg( lang.get('verification.role_managed'), {}, true );
 				roles = roles.map( role => role.id ).join('|');
 				if ( roles.length ) return db.run( 'UPDATE verification SET role = ? WHERE guild = ? AND configid = ?', [roles, msg.guild.id, row.configid], function (dberror) {
 					if ( dberror ) {
