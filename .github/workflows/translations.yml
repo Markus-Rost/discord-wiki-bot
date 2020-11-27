@@ -15,6 +15,7 @@ jobs:
         token: ${{ secrets.WIKIBOT_TOKEN }}
     - name: Update Widgets
       run: |
+        sudo apt update
         sudo apt-get install inkscape
         for language in i18n/*.json
         do
