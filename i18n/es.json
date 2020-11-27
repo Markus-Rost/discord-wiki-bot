@@ -315,6 +315,10 @@
                     "cmd": "settings prefix <prefijo>",
                     "desc": "Cambiaré el prefijo de este servidor."
                 },
+                "role": {
+                    "cmd": "settings role <rol>",
+                    "desc": "Cambiaré el rol mínimo requerido para usar comandos en este servidor."
+                },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
                     "desc": "Cambiaré el wiki predeterminado de este servidor."
@@ -533,6 +537,8 @@
         "channel current": "estas son las configuraciones actuales en este canal:",
         "channel lang": "el idioma de este canal es:",
         "channel langchanged": "cambiaste el idioma de este canal a:",
+        "channel role": "el rol mínimo requerido para este canal es:",
+        "channel rolechanged": "cambiaste el rol mínimo requerido en este canal a:",
         "channel wiki": "el wiki predeterminado en este canal es:",
         "channel wikichanged": "cambiaste el wiki predeterminado en este canal a:",
         "current": "estas son las configuraciones actuales en este servidor:",
@@ -572,6 +578,10 @@
         "prefixchanged": "cambiaste el prefijo de este servidor a:",
         "prefixhelp": "Usa `$1 <prefix>` para cambiar el prefijo.\nUsa `_` al final para indicar un espacio al final del prefijo.\n¡El prefijo no puede incluir menciones!",
         "prefixinvalid": "¡el prefijo especificado no es compatible!",
+        "role": "el rol mínimo requerido para este servidor es:",
+        "rolechanged": "el rol mínimo requerido en este servidor es:",
+        "rolehelp": "Usa `$1 <rol>` para cambiar el rol mínimo requerido.",
+        "roleinvalid": "¡el rol especificado no existe!",
         "save_failed": "lamentablemente, la configuración no se pudo guardar, intenta nuevamente más tarde.",
         "wiki": "el wiki predeterminado de este servidor es:",
         "wikichanged": "cambiaste el wiki predeterminado de este servidor a:",
