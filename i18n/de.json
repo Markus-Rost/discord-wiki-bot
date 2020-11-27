@@ -315,6 +315,10 @@
                     "cmd": "settings prefix <Präfix>",
                     "desc": "Ich ändere das Präfix für diesen Server."
                 },
+                "role": {
+                    "cmd": "settings role <Rolle>",
+                    "desc": "Ich ändere die mindestens benötigte Rolle um Befehle nutzen zu können für diesen Server."
+                },
                 "wiki": {
                     "cmd": "settings wiki <Wiki>",
                     "desc": "Ich ändere das Standard-Wiki für diesen Server."
@@ -533,6 +537,8 @@
         "channel current": "dies sind die aktuellen Einstellungen für diesen Kanal:",
         "channel lang": "die Sprache für diesen Kanal ist:",
         "channel langchanged": "du hast die Sprache für diesen Kanal geändert zu:",
+        "channel role": "die mindestens benötigte Rolle für diesen Kanal ist:",
+        "channel rolechanged": "du hast die mindestens benötigte Rolle für diesen Kanal geändert zu:",
         "channel wiki": "das Standard-Wiki für diesen Kanal ist:",
         "channel wikichanged": "du hast das Standard-Wiki für diesen Kanal geändert zu:",
         "current": "dies sind die aktuellen Einstellungen für diesen Server:",
@@ -572,6 +578,10 @@
         "prefixchanged": "du hast das Präfix für diesen Server geändert zu:",
         "prefixhelp": "Nutze `$1 <Präfix>` um das Präfix zu ändern.\nNutze `_` am Ende um ein Leerzeichen am Ende des Präfixes anzugeben.\nDas Präfix darf keine Erwähnungen enthalten!",
         "prefixinvalid": "das angegebende Präfix wird nicht unterstützt!",
+        "role": "die mindestens benötigte Rolle für diesen Server ist:",
+        "rolechanged": "du hast die mindestens benötigte Rolle für diesen Server geändert zu:",
+        "rolehelp": "Nutze `$1 <Rolle>` um die mindestens benötigte Rolle zu ändern.",
+        "roleinvalid": "die angegebene Rolle existiert nicht!",
         "save_failed": "die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
         "wiki": "das Standard-Wiki für diesen Server ist:",
         "wikichanged": "du hast das Standard-Wiki für diesen Server geändert zu:",
