@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "Doğukan Karakaş",
+        "east",
         " ",
         " ",
         " ",
@@ -118,7 +118,7 @@
         "info": {
             "added": "Eklendi:",
             "bytes": "$1 Bayt",
-            "comment": "açıklama:",
+            "comment": "Yorum:",
             "editor": "Editör:",
             "more": "Daha fazlası",
             "removed": "Kaldırıldı:",
@@ -132,7 +132,7 @@
     "discussion": {
         "image": "Resmi gör",
         "main": "Tartışmalar",
-        "post": "gönderisi",
+        "post": "gönderi",
         "tags": "Etiketler:",
         "votes": "$1 oy"
     },
@@ -158,7 +158,7 @@
         "admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
         "adminfooter": "Yöneticiler bot ayarlarını değiştirmek için kontrol panelini de kullanabilir:",
         "all": "Yapabileceklerimi öğrenmek mi istiyorsun? İşte anladığım tüm komutların bir listesi:",
-        "footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑️ ile tepki verin, mesajı sileceğim.",
+        "footer": "Eğer istenmeyen bir cevap verdiysem mesajıma 🗑️ (`:wastebasket:`) ile tepki verin, mesajı sileceğim.",
         "list": {
             "default": {
                 "cmd": "<arama terimi>",
@@ -315,6 +315,10 @@
                     "cmd": "settings prefix <önek>",
                     "desc": "Sunucudaki öneki değiştireceğim."
                 },
+                "role": {
+                    "cmd": "settings role <rol>",
+                    "desc": "Sunucuda komut kullanmak için gerekli minimal rolü değiştireceğim."
+                },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
                     "desc": "Bu sunucunun varsayılan wikisini değiştireceğim."
@@ -442,6 +446,7 @@
         "current": "bu sunucuda bulunan son değişiklikler webhook'ları:",
         "current_display": "bu webhook'un görüntüleme modu:",
         "current_lang": "bu webhook'un dili:",
+        "current_selected": "bu, sunucu için değişiklikler webhook'u `$1`:",
         "current_wiki": "webhook vikisi:",
         "dashboard": {
             "added": "$1, `$2` tanımlayıcısıyla son değişiklikler webhook'u ekledi.",
@@ -500,8 +505,18 @@
             },
             "deleted": "Son değişiklikler webhook'u silinecek.",
             "disabled_feeds": "Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı düzenlemeler bu son değişiklikler webook'u için devre dışı bırakıldı.",
-            "disabled_rc": "Bu son değişiklikler webhook'u için viki düzenlemeleri devre dışı bırakıldı."
-        }
+            "disabled_rc": "Bu son değişiklikler webhook'u için viki düzenlemeleri devre dışı bırakıldı.",
+            "enabled_feeds": "Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı değişiklikler bu son değişiklikler webhook'u için etkin.",
+            "enabled_rc": "Viki değişiklikleri bu webhook için etkin.",
+            "updated_display_compact": "Görüntüleme modu satır içi bağlantılar ile kompakt metin mesajları ile değiştirildi.",
+            "updated_display_diff": "•Görüntüleme modu görüntü ön izlemeleri ve düzenleme farklılıkları ile gömülü mesajlar ile değiştirildi.",
+            "updated_display_embed": "Görüntüleme modu düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar ile değiştirildi.",
+            "updated_display_image": "Görüntüleme modu görüntü ön izlemeleri ile gömülü mesajlar ile değiştirildi.",
+            "updated_lang": "Bu son değişiklikler webhook'unun dili `$1` ile değiştirildi.",
+            "updated_wiki": "Bu son değişiklikler webhook'unun vikisi $1 ile değiştirildi."
+        },
+        "webhook_failed": "ne yazık ki webhook oluşturulamadı, lütfen daha sonra tekrar deneyin.",
+        "wiki": "Viki:"
     },
     "search": {
         "category": {
@@ -514,20 +529,45 @@
         "empty": "*Bu özel sayfa boş*",
         "infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1 kullan.",
         "infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1, tüm isabetlerin listesi için $2 kullan.",
+        "media": "Dosya açıklama sayfasına",
+        "results": "Toplam $1 sonuç",
         "special": "Bu özel sayfanın içeriği:"
     },
     "settings": {
         "channel current": "kanalın mevcut ayarları:",
         "channel lang": "bu kanalın dili:",
         "channel langchanged": "kanalın dilini şuna değiştirdin:",
+        "channel role": "bu kanal için gerekli minimal rol:",
+        "channel rolechanged": "bu kanal için gerekli minimal rol değiştirildi:",
         "channel wiki": "bu kanalın varsayılan wikisi:",
         "channel wikichanged": "bu kanalın varsayılan wikisini şuna değiştirdiniz:",
         "current": "sunucunun mevcut ayarları:",
         "currentchannel": "Kanal özel ayarları:",
+        "currentinline": "Satır içi komutlar:",
         "currentlang": "Dil:",
         "currentprefix": "Önek:",
+        "currentrole": "Minimal rol:",
         "currentwiki": "Varsayılan wiki:",
+        "dashboard": {
+            "channel": "$1, $2 ayarlarını değiştirdi.",
+            "removed": "$1, $2 ayarlarını kaldırdı.",
+            "updated": "$1 sunucu ayarlarını güncelledi."
+        },
         "foundwikis": "Bu wikilerden herhangi birini mi kastediyorsun?",
+        "inline disabled": {
+            "channel inline": "bu kanalda satır içi komutlar devre dışı.",
+            "channel inlinechanged": "bu kanal için satır içi komutları devre dışı bıraktın.",
+            "help": "`[[$2]]` ve`{{$2}} gibi satır içi komutları etkinleştirmek için `$1` kullan.",
+            "inline": "bu sunucuda satır içi komutlar devre dışı.",
+            "inlinechanged": "bu sunucu için satır içi komutları devre dışı bıraktın."
+        },
+        "inline enabled": {
+            "channel inline": "bu kanal için satır içi komutlar etkin.",
+            "channel inlinechanged": "bu kanal için satır içi komutları etkinleştirdin.",
+            "help": "`[[$2]]` ve `{{$2}}` gibi satır içi komutları devre dışı bırakmak için `$1` kullan.",
+            "inline": "bu sunucu için satır içi komutlar etkin.",
+            "inlinechanged": "bu sunucu için satır içi komutları etkinleştirdin."
+        },
         "lang": "bu sunucunun dili:",
         "langchanged": "sunucunun dilini şuna değiştirdin:",
         "langhelp": "`$1 <dil>` kullanarak dili değiştirebilirsin.\nŞimdilik desteklenmeyen diller:",
@@ -536,7 +576,12 @@
         "nochannels": "*Şimdilik bir kanala özel ayar yok*",
         "prefix": "sunucudaki önekim:",
         "prefixchanged": "sunucunun öneki şuna değiştirildi:",
+        "prefixhelp": "Öneki değiştirmek için `$1 <önek>` kullan.\nÖnekin sonunda bir boşluk belirtmek için `_` kullan.\nÖnekte bahsetme kullanamazsın!",
         "prefixinvalid": "belirtilen önek desteklenmiyor!",
+        "role": "bu sunucu için gerekli minimal rol:",
+        "rolechanged": "bu sunucu için gerekli minimal rolü değiştirdin:",
+        "rolehelp": "Gerekli minimal rolü değiştirmek için `$1 <rol>` kullan.",
+        "roleinvalid": "belirtilen rol mevcut değil!",
         "save_failed": "ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
         "wiki": "bu sunucunun varsayılan wikisi:",
         "wikichanged": "bu sunucunun varsayılan wikisini şuna değiştirdiniz:",
@@ -545,6 +590,10 @@
         "wikimissing": "bu sunucu için varsayılan bir wiki belirlenmemiş!"
     },
     "test": {
+        "MediaWiki": "Tam işlevsellik için $1 gerekli, bulunan `$2`.",
+        "PageImages": "Sayfa küçük resimleri için $1 uzantısı gerekli.",
+        "TextExtracts": "Sayfa açıklamaları için $1 uzantısı gerekli.",
+        "notice": "Sınırlı işlevsellik",
         "pause": "Şu anda bu sunucuda duraklatılmış durumdayım.",
         "text": [
             "Tamamen işlevselim!",
@@ -605,6 +654,7 @@
             "bot": "Bot",
             "bot-global": "Fandom bot",
             "bureaucrat": "Bürokrat",
+            "checkuser": "Kullanıcıyı kontrol et",
             "content-moderator": "İçerik moderatörü",
             "content-team-member": "İçerik Takımı Üyesi",
             "editor": "Editor",
@@ -615,11 +665,13 @@
             "hydra_staff": "Gamepedia personeli",
             "interface-admin": "Arayüz yöneticisi",
             "rollback": "geri alma",
+            "soap": "SOAP",
             "staff": "Fandom personeli",
             "sysop": "Yönetici",
             "threadmoderator": "Tartışma moderatörü",
             "user": "Kullanıcı",
             "vanguard": "Vanguard",
+            "widgeteditor": "Widget editörü",
             "wiki-manager": "Wiki yöneticisi",
             "wiki_manager": "Wiki yöneticisi"
         },
@@ -629,11 +681,94 @@
             "favwiki": "Favori viki:",
             "gender": "Cinsiyet:",
             "globaleditcount": "Global düzenleme sayısı:",
+            "globalgroup": "$1 global grup:",
             "group": "{{PLURAL:$1|Grup|Grup}}:",
             "loading": "Global istatistikler yükleniyor…",
+            "postcount": "Tartışma gönderileri:",
             "registration": "Kayıt tarihi:",
             "wikisedited": "Düzenlenen wikiler:"
         }
+    },
+    "verification": {
+        "accountage": "Hesap yaşı:",
+        "add_more": "Daha fazla doğrulama ekle:",
+        "added": "doğrulama eklendi:",
+        "and": "ve",
+        "channel": "Kanal:",
+        "channel_max": "çok fazla kanal belirttin.",
+        "channel_missing": "belirtilen kanal mevcut değil.",
+        "current": "sunucuda halihazırda bulunan doğrulamalar:",
+        "current_selected": "sunucu doğrulaması `$1`:",
+        "dashboard": {
+            "added": "$1, `$2` ID'si ile doğrulama ekledi.",
+            "removed": "$1, `$2` ID'li doğrulamayı kaldırdı.",
+            "updated": "$1, `$2` ID'li doğrulamayı güncelledi."
+        },
+        "delete_current": "Bu doğrulamayı sil:",
+        "deleted": "doğrulama silindi.",
+        "disabled": "devre dışı",
+        "editcount": "Düzenleme sayısı:",
+        "enabled": "etkin",
+        "indays": "(gün)",
+        "max_entries": "halihazırda azami doğrulama sayısına sahipsin.",
+        "missing": "bu sunucuda halihazırda bir doğrulama yok.",
+        "new_accountage": "<yeni hesap yaşı>",
+        "new_channel": "<yeni kanal>",
+        "new_editcount": "<yeni düzenleme sayısı>",
+        "new_role": "<yeni rol>",
+        "new_usergroup": "<yeni kullanıcı grubu>",
+        "no_role": "lütfen yeni doğrulama için bir rol belirtin.",
+        "or": "ya da",
+        "rename": "Kullanıcı adı değiştir:",
+        "rename_no_permission": "**$1, viki kullanıcı isimlerini zorlamak için `Kullanıcı Adlarını Yönet`iznine sahip olmalı!**",
+        "role": "Rol:",
+        "role_deleted": "**$1 rolü artık yok gibi duruyor!**",
+        "role_managed": "belirtilen rol atanamıyor.",
+        "role_max": "çok fazla rol belirttin.",
+        "role_missing": "belirtilen rol mevcut değil.",
+        "role_too_high": "**$1 rolü $2 tarafından atanmak için çok yüksekte!**",
+        "save_failed": "ne yazık ki doğrulama kaydedilemedi, lütfen daha sonra tekrar deneyin.",
+        "toggle": "(değiştir)",
+        "updated": "doğrulama güncellendi:",
+        "usergroup": "Kullanıcı grubu:",
+        "usergroup_max": "çok fazla kullanıcı grubu belirttin.",
+        "usergroup_too_long": "belirtilen kullanıcı grubu çok uzun.",
+        "value_too_high": "belirtilen değer çok yüksek."
+    },
+    "verify": {
+        "audit_reason": "\"$1\" olarak doğrulandı",
+        "discord": "Discord kullanıcısı:",
+        "empty": "*boş*",
+        "error": "Doğrulama bir hata sonucu başarısız oldu.",
+        "error_reply": "doğrulama bir hata sonucu başarısız oldu, lütfen tekrar deneyin.",
+        "failed_gblock": "**Global engel kontrolü başarısız oldu!**",
+        "failed_rename": "**Discord kullanıcı adı değiştirme başarısız oldu!**",
+        "failed_roles": "**Rol eklenemedi!**",
+        "footer": "Viki Hesabı Doğrulaması",
+        "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
+        "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
+        "help_guide": "Viki profiline Discord etiketi eklemek için [bu rehberi]($1) oku:",
+        "help_subpage": "Lütfen vikideki Discord alt sayfana Discord etiketini ($1) ekle:",
+        "missing": "kanalda halihazırda bir doğrulama yok.",
+        "notice": "Uyarı:",
+        "qualified": "Nitelikli:",
+        "qualified_error": "Nitelikli ancak eklenemedi:",
+        "user_blocked": "**Viki kullanıcısı $1 engellendi!**",
+        "user_blocked_reply": "bağlı olduğun viki kullanıcısı **\"$1\" engellendi!**",
+        "user_disabled": "**Viki hesabı $1 devre dışı!**",
+        "user_disabled_reply": "bağlı olduğun viki kullanıcısı **\"$1\" devre dışı!**",
+        "user_failed": "Discord kullanıcısı $1, viki kullanıcısı $2 ile eşleşmiyor.",
+        "user_failed_reply": "Discord etiketin viki kullanıcısı \"$1\" ile eşleşmiyor.",
+        "user_gblocked": "**Viki kullanıcısı $1 global olarak engellendi!**",
+        "user_gblocked_reply": "bağlı olduğun viki kullanıcısı **\"$1\" global olarak engellendi!**",
+        "user_matches": "Discord kullanıcısı $1, viki kullanıcısı $2 ile eşleşiyor ancak herhangi bir rol için gereksinimleri karşılamıyor.",
+        "user_matches_reply": "Discord etiketin viki kullanıcısı \"$1\" ile eşleşiyor ancak herhangi bir rol için gereksinimleri karşılamıyorsun.",
+        "user_missing": "Viki kullanıcısı \"$1\" mevcut değil.",
+        "user_missing_reply": "bağlı olduğun viki kullanıcısı \"$1\" mevcut değil.",
+        "user_renamed": "Discord kullanıcısı ismi viki kullanıcı ismiyle değiştirildi.",
+        "user_verified": "Discord kullanıcısı $1 başarıyla viki kullanıcısı $2 olarak doğrulandı.",
+        "user_verified_reply": "başarıyla viki kullanıcısı \"$1\" olarak doğrulandın.",
+        "wiki": "Viki kullanıcısı:"
     },
     "voice": {
         "channel": "Ses kanalı",
