@@ -16,7 +16,7 @@ const helpmap = {
 	discussion: ['discussion.thread', 'discussion.post'],
 	info: ['info'],
 	help: ['help.default', 'help.command', 'help.admin'],
-	settings: ['settings.default', 'settings.wiki', 'settings.lang', 'settings.inline', 'settings.prefix', 'settings.channel'],
+	settings: ['settings.default', 'settings.wiki', 'settings.lang', 'settings.role', 'settings.inline', 'settings.prefix', 'settings.channel'],
 	verify: ['verify'],
 	verification: ['verification.default', 'verification.add', 'verification.channel', 'verification.role', 'verification.editcount', 'verification.usergroup', 'verification.accountage', 'verification.rename', 'verification.delete'],
 	rcscript: ['rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete'],

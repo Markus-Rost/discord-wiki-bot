@@ -41,11 +41,12 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			text += `\n<${new URL(`/guild/${msg.guild.id}/settings`, process.env.dashboard).href}>`;
 			text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
 			if ( msg.guild.id in patreons ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
+			text += '\n' + lang.get('settings.currentrole') + ' ' + ( guild.role ? `<@&${guild.role}>` : '@everyone' ) + ' - `' + prefix + 'settings role`';
 			text += '\n' + lang.get('settings.currentinline') + ' ' + ( guild.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( guild.inline ? '~~' : '' ) + ' - `' + prefix + 'settings inline`';
 			text += '\n' + lang.get('settings.currentwiki') + ' ' + guild.wiki + ' - `' + prefix + 'settings wiki`';
 			text += '\n' + lang.get('settings.currentchannel') + ' `' + prefix + 'settings channel`\n';
 			if ( rows.length === 1 ) text += lang.get('settings.nochannels');
-			else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel + '>: ' + ( msg.guild.id in patreons ? '`' + allLangs.names[row.lang] + '` - ' : '' ) + '<' + row.wiki + '>' + ( msg.guild.id in patreons ? ' - ' + ( row.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( row.inline ? '~~' : '' ) : '' ) ).join('\n');
+			else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel.replace( /^#/, '' ) + '>: ' + ( msg.guild.id in patreons ? '`' + allLangs.names[row.lang] + '` - ' : '' ) + '<' + row.wiki + '>' + ( msg.guild.id in patreons ? ' - ' + ( row.role ? `<@&${row.role}>` : '@everyone' ) + ' - ' + ( row.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( row.inline ? '~~' : '' ) : '' ) ).join('\n');
 		}
 		
 		if ( !args.length ) {
@@ -64,6 +65,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			text += `\n<${new URL(`/guild/${msg.guild.id}/settings/${msg.channel.id}`, process.env.dashboard).href}>`;
 			if ( msg.guild.id in patreons ) {
 				text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[channel.lang] + '` - `' + prefix + 'settings channel lang`';
+				text += '\n' + lang.get('settings.currentrole') + ' ' + ( channel.role ? `<@&${channel.role}>` : '@everyone' ) + ' - `' + prefix + 'settings channel role`';
 				text += '\n' + lang.get('settings.currentinline') + ' ' + ( channel.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( channel.inline ? '~~' : '' ) + ' - `' + prefix + 'settings channel inline`';
 			}
 			text += '\n' + lang.get('settings.currentwiki') + ' ' + channel.wiki + ' - `' + prefix + 'settings channel wiki`';
@@ -264,6 +266,72 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				if ( channel || !( msg.guild.id in patreons ) || !rows.some( row => row.channel === msg.channel.id ) ) lang = new Lang(allLangs.map[args[1]]);
 				msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./i18n/widgets/${allLangs.map[args[1]]}.png`] : [] )}, true );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
+				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join(', ') + ')', channels, function (delerror) {
+					if ( delerror ) {
+						console.log( '- Error while removing the settings: ' + delerror );
+						return delerror;
+					}
+					console.log( '- Settings successfully removed.' );
+				} );
+			} );
+		}
+		
+		if ( args[0] === 'role' ) {
+			if ( channel && !( msg.guild.id in patreons ) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
+			prelang += 'role';
+			var rolehelp = '\n' + lang.get('settings.rolehelp', prefix + 'settings ' + prelang);
+			if ( !args[1] ) {
+				return msg.replyMsg( lang.get('settings.' + prelang) + ' ' + ( ( channel || guild ).role ? `<@&${( channel || guild ).role}>` : '@everyone' ) + rolehelp, {}, true );
+			}
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
+			var role = null;
+			if ( /^\d+$/.test(args[1]) ) role = msg.guild.roles.cache.get(args[1]);
+			if ( !role ) role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === args[1].replace( /^@/, '' ) );
+			if ( !role && ['everyone', 'here', 'none', 'all'].includes( args[1].replace( /^@/, '' ) ) ) {
+				role = msg.guild.roles.cache.get(msg.guild.id);
+			}
+			if ( !role ) {
+				return msg.replyMsg( lang.get('settings.roleinvalid') + rolehelp, {}, true );
+			}
+			role = ( role.id === msg.guild.id ? null : role.id );
+			var sql = 'UPDATE discord SET role = ? WHERE guild = ?';
+			var sqlargs = [role, msg.guild.id];
+			if ( !rows.length ) {
+				sql = 'INSERT INTO discord(role, guild, main) VALUES(?, ?, ?)';
+				sqlargs.push(msg.guild.id);
+			}
+			else if ( channel ) {
+				sql = 'UPDATE discord SET role = ? WHERE guild = ? AND channel = ?';
+				sqlargs.push(msg.channel.id);
+				if ( !rows.includes( channel ) ) {
+					if ( channel.role === role ) {
+						return msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + ( channel.role ? `<@&${channel.role}>` : '@everyone' ) + rolehelp, {}, true );
+					}
+					sql = 'INSERT INTO discord(role, guild, channel, wiki, lang, inline, prefix) VALUES(?, ?, ?, ?, ?, ?, ?)';
+					sqlargs.push(guild.wiki, guild.lang, guild.inline, guild.prefix);
+				}
+			}
+			else if ( guild.role ) {
+				sql += ' AND role = ?';
+				sqlargs.push(guild.role);
+			}
+			else sql += ' AND role IS NULL';
+			return db.run( sql, sqlargs, function (dberror) {
+				if ( dberror ) {
+					console.log( '- Error while editing the settings: ' + dberror );
+					msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+					return dberror;
+				}
+				console.log( '- Settings successfully updated.' );
+				if ( channel ) channel.role = role;
+				else {
+					rows.forEach( row => {
+						if ( row.channel && row.role === guild.role ) row.role = role;
+					} );
+					guild.role = role;
+				}
+				msg.replyMsg( lang.get('settings.' + prelang + 'changed') + ' ' + ( role ? `<@&${role}>` : '@everyone' ) + rolehelp, {}, true );
 				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( row => '?' ).join(', ') + ')', channels, function (delerror) {
 					if ( delerror ) {
