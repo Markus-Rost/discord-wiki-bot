@@ -315,6 +315,10 @@
                     "cmd": "settings prefix <prefixo>",
                     "desc": "Vou alterar o prefixo para este servidor."
                 },
+                "role": {
+                    "cmd": "settings role <role>",
+                    "desc": "Vou mudar o cargo mínimo necessário para usar comandos para este servidor."
+                },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
                     "desc": "Vou alterar a wiki padrão para esse servidor."
@@ -533,6 +537,8 @@
         "channel current": "estas são as configurações atuais deste canal:",
         "channel lang": "o idioma para este canal é:",
         "channel langchanged": "você alterou o idioma deste canal para:",
+        "channel role": "o cargo mínimo necessário para este canal é:",
+        "channel rolechanged": "você alterou o cargo mínimo necessário para este canal para:",
         "channel wiki": "a wiki padrão para este canal é:",
         "channel wikichanged": "você mudou a wiki padrão para este canal para:",
         "current": "estas são as configurações atuais para este servidor:",
@@ -572,6 +578,10 @@
         "prefixchanged": "você mudou o prefixo deste servidor para:",
         "prefixhelp": "Use `$1 <prefix>` para alterar o prefixo.\nUse `_` no final para indicar um espaço no final do prefixo.\nO prefixo não pode incluir menções!",
         "prefixinvalid": "o prefixo especificado não é suportado!",
+        "role": "o cargo mínimo necessário para este servidor é:",
+        "rolechanged": "você alterou o cargo mínimo necessário para este servidor para:",
+        "rolehelp": "Use `$1 <role>` para alterar o cargo mínimo necessário.",
+        "roleinvalid": "o cargo especificado não existe!",
         "save_failed": "infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
         "wiki": "a wiki padrão para este servidor é:",
         "wikichanged": "você mudou a wiki padrão para este servidor para:",
