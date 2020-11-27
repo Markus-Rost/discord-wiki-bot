@@ -148,7 +148,7 @@
         "disclaimer": "Soy un pequeño bot creado con el propósito de vincular y buscar fácilmente sitios de MediaWiki como Gamepedia y wikis de Fandom. Muestro breves descripciones e información adicional sobre las páginas y puedo resolver redireccionamientos y seguir enlaces interwiki. $1 me escribió en JavaScript.\n\nPuedes apoyarme en Patreon:",
         "experimental": "**¡Esta función es experimental! No se garantiza que funcione correctamente y puede eliminarse en el futuro.**",
         "helpserver": "Si tienes preguntas o problemas, visita mi servidor de soporte:",
-        "limit": "🚨 ** ¡Detente, has llegado al límite! ** 🚨\n\n$ 1, ¡tu mensaje contenía demasiados comandos!",
+        "limit": "🚨 ** ¡Detente, has llegado al límite! ** 🚨\n\n$1, ¡tu mensaje contenía demasiados comandos!",
         "missingperm": "Me faltan algunos permisos para este comando:",
         "patreon": "¡esta es una función exclusiva de Patreon!\nPuedes apoyarme en Patreon para acceder a esta función:",
         "prefix": "el prefijo de este servidor es `$1`. Puedes cambiar el prefijo con `$1settings prefix`. Para obtener una lista de todos los comandos, consulta `$1help`.",
@@ -446,7 +446,7 @@
         "current": "estos son los webhooks de cambios recientes de este servidor:",
         "current_display": "el modo de visualización de este webhook es:",
         "current_lang": "el idioma de este webhook es:",
-        "current_selected": "este es el webhook de cambios recientes `$ 1` para este servidor:",
+        "current_selected": "este es el webhook de cambios recientes `$1` para este servidor:",
         "current_wiki": "el wiki de este webhook es:",
         "dashboard": {
             "added": "$1 agregó el webhook de cambios recientes con el ID `$2`.",
@@ -486,7 +486,7 @@
         "updated_wiki": "el wiki de este webhook se ha cambiado a:",
         "webhook": {
             "blocked": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado!",
-            "blocked_help": "Puedes solicitar más detalles en el [servidor de soporte] ($1).",
+            "blocked_help": "Puedes solicitar más detalles en el [servidor de soporte]($1).",
             "blocked_reason": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado por `$1`!",
             "created": "Se ha agregado a este canal un webhook de cambios recientes para $1.",
             "dashboard": {
@@ -640,7 +640,7 @@
         },
         "gblock": {
             "disabled": "¡Esta cuenta está actualmente deshabilitada!",
-            "header": "¡$ 1 está bloqueado globalmente en estos momentos!"
+            "header": "¡$1 está bloqueado globalmente en estos momentos!"
         },
         "gender": {
             "female": "Femenino",
