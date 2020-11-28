@@ -63,7 +63,30 @@
             "title": "¡Falta el permiso!"
         },
         "movefail": {
-            "note": "¡No se pudo cambiar el canal del webhook!"
+            "note": "¡No se pudo cambiar el canal del webhook!",
+            "text": "La configuración se ha actualizado parcialmente.",
+            "title": "¡Configuración parcialmente guardada!"
+        },
+        "mwversion": {
+            "text": "Requiere al menos MediaWiki 1.30, se encontró $1 en $2.",
+            "title": "¡Versión de MediaWiki desactualizada!"
+        },
+        "nochange": {
+            "text": "La configuración coincide con la configuración predeterminada actual.",
+            "title": "¡Error al guardar!"
+        },
+        "nosettings": {
+            "note": "Cambiar la configuración.",
+            "text": "Primero, define la configuración del servidor.",
+            "title": "¡El servidor aún no está configurado!"
+        },
+        "readonly": {
+            "text": "Actualmente solo puedes ver tu configuración, pero no cambiarla.",
+            "title": "¡Base de datos de solo lectura!"
+        },
+        "refresh": {
+            "text": "Tu lista de servidores se ha actualizado correctamente.",
+            "title": "¡Actualización exitosa!"
         }
     }
 }
