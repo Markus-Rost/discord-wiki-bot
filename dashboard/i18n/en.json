@@ -88,7 +88,7 @@
             "title": "Read-only database!"
         },
         "refresh": {
-            "text": "Your server list has been successfully refeshed.",
+            "text": "Your server list has been successfully refreshed.",
             "title": "Refresh successful!"
         },
         "refreshfail": {
