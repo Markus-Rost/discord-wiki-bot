@@ -156,6 +156,7 @@ if ( process.env.dashboard ) {
 									response.userPermissions = channel.permissionsFor(member).bitfield;
 									response.botPermissions = channel.permissionsFor(guild.me).bitfield;
 									response.isCategory = ( channel.type === 'category' );
+									response.parentID = channel.parentID;
 								}
 								else response.message = 'noChannel';
 							}

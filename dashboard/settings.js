@@ -73,7 +73,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 						if ( guildChannel.isCategory ) {
 							curCat = true;
 							optionChannel.addClass('wb-settings-optgroup');
-							if ( !guildChannel.allowedCat ) {
+							if ( !( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && guildChannel.allowedCat ) ) {
 								optionChannel.attr('disabled', '').val('');
 							}
 						}
@@ -92,12 +92,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 				} ).filter( (catChannel, i, guildChannelList) => {
 					if ( !catChannel ) return false;
 					if ( catChannel.is('optgroup') && !catChannel.children('option').length ) return false;
-					if ( catChannel.hasClass('wb-settings-optgroup') && guildChannelList[i + 1].hasClass('wb-settings-optgroup') ) {
-						if ( catChannel.attr('disabled') ) return false;
-						return guildChannels.some( guildChannel => {
-							return ( guildChannel.id === catChannel.val() && hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') );
-						} );
-					}
+					if ( catChannel.hasClass('wb-settings-optgroup') && guildChannelList[i + 1]?.hasClass?.('wb-settings-optgroup') ) return !catChannel.attr('disabled');
 					return true;
 				} )
 			);
@@ -327,7 +322,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 		if ( type !== 'default' && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
-		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.patreon, main.wiki mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND main.channel IS NULL', [( response.isCategory ? '#' : '' ) + type, guild], function(dberror, row) {
+		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.wiki mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND ( main.channel = ? OR main.channel IS NULL ) ORDER BY main.channel DESC', [( response.isCategory ? '#' : '' ) + type, guild, '#' + response.parentID], function(dberror, row) {
 			db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, ( response.isCategory ? '#' : '' ) + type], function (delerror) {
 				if ( delerror ) {
 					console.log( '- Dashboard: Error while removing the settings: ' + delerror );
@@ -343,7 +338,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				var lang = new Lang(row.mainlang);
 				var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 				if ( row.wiki !== row.mainwiki ) text += `\n${lang.get('settings.currentwiki')} <${row.wiki}>`;
-				if ( row.patreon ) {
+				if ( response.patreon ) {
 					if ( row.lang !== row.mainlang ) text += `\n${lang.get('settings.currentlang')} \`${allLangs.names[row.lang]}\``;
 					if ( row.role !== row.mainrole ) text += `\n${lang.get('settings.currentrole')} ` + ( row.role ? `<@&${row.role}>` : '@everyone' );
 					if ( row.inline !== row.maininline ) text += `\n${lang.get('settings.currentinline')} ${( row.inline ? '~~' : '' )}\`[[${inlinepage}]]\`${( row.inline ? '~~' : '' )}`;
@@ -368,7 +363,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return fresponse;
 		} ).then( fresponse => {
 			return new Promise( function (resolve, reject) {
-				db.get( 'SELECT lang, wiki, role, inline, prefix FROM discord WHERE guild = ? AND channel IS NULL', [guild], function(error, row) {
+				db.get( 'SELECT lang, wiki, role, inline, prefix FROM discord WHERE guild = ? AND ( channel = ? OR channel IS NULL ) ORDER BY channel DESC', [guild, '#' + response.parentID], function(error, row) {
 					if ( error ) {
 						console.log( '- Dashboard: Error while getting the settings: ' + error );
 						return reject();
