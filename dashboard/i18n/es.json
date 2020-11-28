@@ -87,6 +87,55 @@
         "refresh": {
             "text": "Tu lista de servidores se ha actualizado correctamente.",
             "title": "¡Actualización exitosa!"
+        },
+        "refreshfail": {
+            "text": "No se pudo actualizar la lista de servidores, inténtalo de nuevo.",
+            "title": "¡Error al actualizar!"
+        },
+        "save": {
+            "text": "La configuración se ha actualizado correctamente.",
+            "title": "¡Se guardó la configuración!"
+        },
+        "savefail": {
+            "text": "No se pudo guardar la configuración, por favor vuelve a intentarlo.",
+            "title": "¡Error al guardar!"
+        },
+        "sysmessage": {
+            "text": "La página $1 debe coincidir con el ID del servidor $2.",
+            "title": "¡El mensaje del sistema no coincide!"
+        },
+        "unauthorized": {
+            "text": "Inicia sesión para cambiar cualquier configuración.",
+            "title": "¡No has iniciado sesión!"
+        },
+        "wikiblocked": {
+            "note": "Motivo:",
+            "text": "Se ha bloqueado la adición de $1 como webhook de cambios recientes.",
+            "title": "¡Wiki bloqueado!"
         }
+    },
+    "rcscript": {
+        "desc": "Estos son los webhooks de cambios recientes para $1:",
+        "form": {
+            "channel": "Canal:",
+            "confirm": "¿Realmente deseas eliminar el webhook de cambios recientes?",
+            "display": "Modo de visualización:",
+            "display_compact": "Mensajes de texto compactos con enlaces en la misma línea.",
+            "display_diff": "Mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones.",
+            "display_embed": "Mensajes adjuntos con etiquetas de edición y cambios de categoría.",
+            "display_image": "Mensajes adjuntos con vistas previas de imágenes.",
+            "entry": "Webhook de Cambios Recientes #$1",
+            "feeds": "Cambios basados en feeds:",
+            "feeds_only": "Solo cambios basados en feeds:",
+            "lang": "Idioma:",
+            "new": "Nuevo Webhook de Cambios Recientes",
+            "select_channel": "-- Selecciona un Canal --",
+            "wiki": "Wiki:",
+            "wiki_check": "Comprobar wiki"
+        },
+        "new": "Nuevo Webhook"
+    },
+    "selector": {
+        "desc": "Esta es una lista de todos los servidores en los que puedes cambiar la configuración porque tienes el permiso [Manage Server]($1). Por favor, selecciona un servidor:"
     }
 }
