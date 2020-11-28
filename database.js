@@ -90,9 +90,8 @@ CREATE TABLE rcgcdw (
                      DEFAULT [${defaultSettings.lang}],
     display  INTEGER NOT NULL
                      DEFAULT [1],
-    wikiid   INTEGER,
     rcid     INTEGER,
-    postid   TEXT,
+    postid   TEXT    DEFAULT [-1],
     UNIQUE (
         guild,
         configid
@@ -124,6 +123,73 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
 
 COMMIT TRANSACTION;
 PRAGMA user_version = 1;
+`, `
+BEGIN TRANSACTION;
+
+PRAGMA foreign_keys = OFF;
+
+UPDATE rcgcdw SET postid = '-1' WHERE wikiid IS NULL;
+
+CREATE TABLE rcgcdw_temp_table AS SELECT * FROM rcgcdw;
+
+DROP TABLE rcgcdw;
+
+CREATE TABLE rcgcdw (
+    guild    TEXT    NOT NULL
+                     REFERENCES discord (main) ON DELETE CASCADE,
+    configid INTEGER NOT NULL,
+    webhook  TEXT    NOT NULL
+                     UNIQUE,
+    wiki     TEXT    NOT NULL,
+    lang     TEXT    NOT NULL
+                     DEFAULT [${defaultSettings.lang}],
+    display  INTEGER NOT NULL
+                     DEFAULT [1],
+    rcid     INTEGER,
+    postid   TEXT    DEFAULT [-1],
+    UNIQUE (
+        guild,
+        configid
+    )
+);
+
+INSERT INTO rcgcdw (
+    guild,
+    configid,
+    webhook,
+    wiki,
+    lang,
+    display,
+    rcid,
+    postid
+)
+SELECT guild,
+       configid,
+       webhook,
+       wiki,
+       lang,
+       display,
+       rcid,
+       postid
+FROM rcgcdw_temp_table;
+
+DROP TABLE rcgcdw_temp_table;
+
+CREATE INDEX idx_rcgcdw_wiki ON rcgcdw (
+    wiki
+);
+
+CREATE INDEX idx_rcgcdw_webhook ON rcgcdw (
+    webhook
+);
+
+CREATE INDEX idx_rcgcdw_config ON rcgcdw (
+    guild,
+    configid ASC
+);
+
+COMMIT TRANSACTION;
+PRAGMA user_version = 2;
 `];
 
 module.exports = new Promise( (resolve, reject) => {
@@ -138,11 +204,11 @@ module.exports = new Promise( (resolve, reject) => {
 				return reject();
 			}
 			if ( row.user_version > schema.length ) {
-				console.log( '- Invalid database version: ' + row.user_version );
+				console.log( '- Invalid database version: v' + row.user_version );
 				return reject();
 			}
 			if ( row.user_version === schema.length ) {
-				console.log( '- The database is up to date: ' + row.user_version );
+				console.log( '- The database is up to date: v' + row.user_version );
 				db.close( cerror => {
 					if ( cerror ) {
 						console.log( '- Error while closing the database connection: ' + cerror );
@@ -151,16 +217,17 @@ module.exports = new Promise( (resolve, reject) => {
 				} );
 				return resolve();
 			}
-			console.log( '- The database outdated: ' + row.user_version );
+			console.log( '- The database outdated: v' + row.user_version );
 			if ( process.env.READONLY ) return reject();
 			db.exec( schema.filter( (sql, version) => {
-				return ( row.user_version > version );
+				if ( row.user_version === 0 ) return ( version === 0 );
+				return ( row.user_version <= version );
 			} ).join('\n'), exerror => {
 				if ( exerror ) {
 					console.log( '- Error while updating the database: ' + exerror );
 					return reject();
 				}
-				console.log( '- The database has been updated to: ' + schema.length );
+				console.log( '- The database has been updated to: v' + schema.length );
 				db.close( cerror => {
 					if ( cerror ) {
 						console.log( '- Error while closing the database connection: ' + cerror );

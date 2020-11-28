@@ -29,7 +29,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	if ( msg.defaultSettings ) return help_setup(lang, msg);
 	
-	db.all( 'SELECT configid, webhook, wiki, lang, display, wikiid, rcid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
+	db.all( 'SELECT configid, webhook, wiki, lang, display, rcid, postid FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (dberror, rows) => {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the RcGcDw: ' + dberror );
 			msg.reactEmoji('error', true);
@@ -63,12 +63,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				wikinew = Wiki.fromInput(input);
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
+			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
 				if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 					let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 					if ( api ) {
 						wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
+						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
 					}
 				}
 				return response;
@@ -101,8 +101,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {}, true );
 					}
-					var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
-					if ( wikinew.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
+					if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						}
@@ -112,7 +111,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 							return createWebhook();
 						}
-						return createWebhook(parseInt(wikiid, 10));
+						return createWebhook(true);
 					}, error => {
 						console.log( '- Error while checking for discussions: ' + error );
 						return createWebhook();
@@ -121,22 +120,22 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 
 					/**
 					 * Creates the webhook.
-					 * @param {Number} wikiid - The ID of the wiki.
+					 * @param {Boolean} enableFeeds - If feeds based changes should be enabled.
 					 */
-					function createWebhook(wikiid = null) {
+					function createWebhook(enableFeeds = false) {
 						msg.channel.createWebhook( ( body.query.allmessages[1]['*'] || 'Recent changes' ), {
 							avatar: msg.client.user.displayAvatarURL({format:'png',size:4096}),
 							reason: lang.get('rcscript.audit_reason', wikinew.href)
 						} ).then( webhook => {
 							console.log( '- Webhook successfully created.' );
 							var webhook_lang = new Lang(( allLangs.map[lang.lang] || allLangs.map[body.query.general.lang] || defaultSettings.lang ), 'rcscript.webhook');
-							webhook.send( webhook_lang.get('created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
+							webhook.send( webhook_lang.get('created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( enableFeeds ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
 							var new_configid = 1;
 							for ( let i of rows.map( row => row.configid ) ) {
 								if ( new_configid === i ) new_configid++;
 								else break;
 							}
-							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, wikiid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), wikiid], function (error) {
+							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES(?, ?, ?, ?, ?, ?, ?)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), ( enableFeeds ? null : '-1' )], function (error) {
 								if ( error ) {
 									console.log( '- Error while adding the RcGcDw: ' + error );
 									if ( reaction ) reaction.removeEmoji();
@@ -221,12 +220,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = Wiki.fromInput(args[1]);
 				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' ).then( response => {
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general' + ( wikinew.isFandom() ? '|variables' : '' ) + '&titles=Special:RecentChanges&format=json' );
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
 						}
 					}
 					return response;
@@ -260,8 +259,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							if ( reaction ) reaction.removeEmoji();
 							return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {}, true );
 						}
-						var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
-						if ( wikinew.isFandom(false) && wikiid ) return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
+						if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
 							}
@@ -271,7 +269,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 								return updateWiki();
 							}
-							return updateWiki(parseInt(wikiid, 10));
+							return updateWiki(true);
 						}, error => {
 							console.log( '- Error while checking for discussions: ' + error );
 							return updateWiki();
@@ -280,13 +278,13 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 
 						/**
 						 * Changes the wiki.
-						 * @param {Number} wikiid - The ID of the wiki.
+						 * @param {Boolean} enableFeeds - If feeds based changes should be enabled.
 						 */
-						function updateWiki(wikiid = null) {
+						function updateWiki(enableFeeds = false) {
 							msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-								webhook.send( webhook_lang.get('updated_wiki', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( wikiid ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
+								webhook.send( webhook_lang.get('updated_wiki', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( enableFeeds ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
 							}, log_error );
-							db.run( 'UPDATE rcgcdw SET wiki = ?, wikiid = ?, rcid = ?, postid = ? WHERE webhook = ?', [wikinew.href, wikiid, null, null, selected_row.webhook], function (error) {
+							db.run( 'UPDATE rcgcdw SET wiki = ?, rcid = ?, postid = ? WHERE webhook = ?', [wikinew.href, null, ( enableFeeds ? null : '-1' ), selected_row.webhook], function (error) {
 								if ( error ) {
 									console.log( '- Error while updating the RcGcDw: ' + error );
 									if ( reaction ) reaction.removeEmoji();
@@ -368,7 +366,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						} );
 					}
 
-					if ( !selected_row.wikiid ) {
+					if ( selected_row.postid === '-1' ) {
 						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
@@ -385,14 +383,14 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}
 
-				if ( selected_row.wikiid ) {
+				if ( selected_row.postid !== '-1' ) {
 					if ( selected_row.rcid === -1 ) {
 						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 						webhook.send( webhook_lang.get('disabled_feeds') ).catch(log_error);
 					}, log_error );
-					return db.run( 'UPDATE rcgcdw SET wikiid = ?, postid = ? WHERE webhook = ?', [null, null, selected_row.webhook], function (error) {
+					return db.run( 'UPDATE rcgcdw SET postid = ? WHERE webhook = ?', ['-1', selected_row.webhook], function (error) {
 						if ( error ) {
 							console.log( '- Error while updating the RcGcDw: ' + error );
 							msg.replyMsg( lang.get('settings.save_failed'), {}, true );
@@ -403,46 +401,33 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}
 
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( selected_row.wiki + 'api.php?action=query&meta=siteinfo&siprop=general|variables&format=json' ).then( wiresponse => {
-					var wibody = wiresponse.body;
-					if ( wiresponse.statusCode !== 200 || !wibody?.query?.variables?.some?.( variable => variable?.id === 'wgCityId' )?.['*'] ) {
-						console.log( '- ' + wiresponse.statusCode + ': Error while getting the wiki id: ' + wibody?.error?.info );
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( selected_row.wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=1&format=json&cache=' + Date.now(), {
+					headers: {
+						Accept: 'application/hal+json'
+					}
+				} ).then( dsresponse => {
+					var dsbody = dsresponse.body;
+					if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
+						if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 					}
-					var wikiid = wibody.query.variables.find( variable => variable.id === 'wgCityId' )['*'];
-					return got.get( 'https://services.fandom.com/discussion/' + wikiid + '/posts?limit=1&format=json&cache=' + Date.now(), {
-						headers: {
-							Accept: 'application/hal+json'
-						}
-					} ).then( dsresponse => {
-						var dsbody = dsresponse.body;
-						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-							if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
+						webhook.send( webhook_lang.get('enabled_feeds', body.query.general.sitename) + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
+					}, log_error );
+					db.run( 'UPDATE rcgcdw SET postid = ? WHERE webhook = ?', [null, selected_row.webhook], function (error) {
+						if ( error ) {
+							console.log( '- Error while updating the RcGcDw: ' + error );
 							if ( reaction ) reaction.removeEmoji();
-							return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
+							msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+							return error;
 						}
-						msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-							webhook.send( webhook_lang.get('enabled_feeds', body.query.general.sitename) + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
-						}, log_error );
-						db.run( 'UPDATE rcgcdw SET wikiid = ?, postid = ? WHERE webhook = ?', [parseInt(wikiid, 10), null, selected_row.webhook], function (error) {
-							if ( error ) {
-								console.log( '- Error while updating the RcGcDw: ' + error );
-								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('settings.save_failed'), {}, true );
-								return error;
-							}
-							console.log( '- RcGcDw successfully updated.' );
-							if ( reaction ) reaction.removeEmoji();
-							msg.replyMsg( lang.get('rcscript.enabled_feeds') + '\n`' + cmd + '`', {}, true );
-						} );
-					}, error => {
-						console.log( '- Error while checking for discussions: ' + error );
+						console.log( '- RcGcDw successfully updated.' );
 						if ( reaction ) reaction.removeEmoji();
-						return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
+						msg.replyMsg( lang.get('rcscript.enabled_feeds') + '\n`' + cmd + '`', {}, true );
 					} );
 				}, error => {
-					console.log( '- Error while getting the wiki id: ' + error );
+					console.log( '- Error while checking for discussions: ' + error );
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 				} ) );
@@ -478,7 +463,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
 				if ( new Wiki(selected_row.wiki).isFandom(false) ) {
-					text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( selected_row.wikiid ? 'enabled' : 'disabled' )) + '`*';
+					text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( selected_row.postid === '-1' ? 'disabled' : 'enabled' )) + '`*';
 					text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}
 				text += '\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`\n';
@@ -528,7 +513,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 					}
 					if ( new Wiki(row.wiki).isFandom(false) ) {
-						row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.wikiid ? 'enabled' : 'disabled' )) + '`*';
+						row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' )) + '`*';
 						if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 					}
 					if ( only ) row_text += '\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`\n';

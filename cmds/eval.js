@@ -59,12 +59,12 @@ function database(sql, sqlargs = []) {
  */
 function checkWiki(wiki) {
 	wiki = Wiki.fromInput(wiki);
-	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' ).then( response => {
+	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' ).then( response => {
 		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 			if ( api ) {
 				wiki = new Wiki(api.split('api.php?')[0], wiki);
-				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '|variables' : '' ) + '&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' );
+				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' );
 			}
 		}
 		return response;
@@ -78,7 +78,6 @@ function checkWiki(wiki) {
 			wiki: wiki.href,
 			activity: [],
 			rcid: 0,
-			wikiid: ( body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'] || null ),
 			postid: null
 		}
 		var rc = body.query.recentchanges;
@@ -110,7 +109,7 @@ function checkWiki(wiki) {
 			result.activity.push(`${rc.length} edits in${text}`);
 		}
 		return Promise.all([
-			database('SELECT guild, lang, display, rcid, wikiid, postid FROM rcgcdw WHERE wiki = ?', [result.wiki]).then( rows => {
+			database('SELECT guild, lang, display, rcid, postid FROM rcgcdw WHERE wiki = ?', [result.wiki]).then( rows => {
 				result.rcgcdb = rows;
 			}, error => {
 				result.rcgcdb = error.toString();

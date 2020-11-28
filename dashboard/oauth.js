@@ -255,6 +255,7 @@ function dashboard_api(res, input) {
 			result.RcGcDw = body.query.allmessages[0]['*'];
 		}
 		result.customRcGcDw = wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit');
+		if ( wiki.isFandom() ) return;
 	}, error => {
 		console.log( '- Dashboard: Error while checking the wiki: ' + error );
 		result.error = true;
