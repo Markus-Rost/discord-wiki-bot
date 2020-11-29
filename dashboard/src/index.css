@@ -62,6 +62,7 @@ code {
 	line-height: 1.6;
 	text-align: center;
 	margin: 0 auto 1em;
+	width: -moz-fit-content;
 	width: fit-content;
 	border: 2px solid;
 }
@@ -353,6 +354,7 @@ button.addmore:not([hidden]) {
 	display: flex;
 	margin: 20px auto;
 	padding: 20px 50px;
+	width: -moz-fit-content;
 	width: fit-content;
 	justify-content: center;
 	align-items: center;

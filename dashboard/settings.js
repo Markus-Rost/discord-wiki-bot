@@ -322,7 +322,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 		if ( type !== 'default' && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
-		if ( settings.delete_settings ) return db.get( 'SELECT main.lang mainlang, main.wiki mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND ( main.channel = ? OR main.channel IS NULL ) ORDER BY main.channel DESC', [( response.isCategory ? '#' : '' ) + type, guild, '#' + response.parentID], function(dberror, row) {
+		if ( settings.delete_settings ) return db.get( 'SELECT GROUP_CONCAT(DISTINCT main.lang) guildlang, main.lang mainlang, main.wiki mainwiki, main.role mainrole, main.inline maininline, old.wiki, old.lang, old.role, old.inline FROM discord main LEFT JOIN discord old ON main.guild = old.guild AND old.channel = ? WHERE main.guild = ? AND ( main.channel = ? OR main.channel IS NULL ) ORDER BY main.channel DESC', [( response.isCategory ? '#' : '' ) + type, guild, '#' + response.parentID], function(dberror, row) {
 			db.run( 'DELETE FROM discord WHERE guild = ? AND channel = ?', [guild, ( response.isCategory ? '#' : '' ) + type], function (delerror) {
 				if ( delerror ) {
 					console.log( '- Dashboard: Error while removing the settings: ' + delerror );
@@ -335,7 +335,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 					return;
 				}
 				if ( !row || row.wiki === null ) return;
-				var lang = new Lang(row.mainlang);
+				var lang = new Lang(( row.guildlang.split(',').find( guildlang => {
+					return ( guildlang !== row.mainlang );
+				} ) || row.mainlang ));
 				var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 				if ( row.wiki !== row.mainwiki ) text += `\n${lang.get('settings.currentwiki')} <${row.wiki}>`;
 				if ( response.patreon ) {
@@ -363,7 +365,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return fresponse;
 		} ).then( fresponse => {
 			return new Promise( function (resolve, reject) {
-				db.get( 'SELECT lang, wiki, role, inline, prefix FROM discord WHERE guild = ? AND ( channel = ? OR channel IS NULL ) ORDER BY channel DESC', [guild, '#' + response.parentID], function(error, row) {
+				db.get( 'SELECT guild.lang guildlang, main.lang, main.wiki, main.role, main.inline, main.prefix FROM discord main LEFT JOIN discord guild ON main.guild = guild.guild AND guild.channel IS NULL WHERE main.guild = ? AND ( main.channel = ? OR main.channel IS NULL ) ORDER BY main.channel DESC', [guild, '#' + response.parentID], function(error, row) {
 					if ( error ) {
 						console.log( '- Dashboard: Error while getting the settings: ' + error );
 						return reject();
@@ -382,7 +384,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			console.log( '- Dashboard: Error while testing the wiki: ' + error );
 			return Promise.reject();
 		} ).then( (row, query) => {
-			var lang = new Lang(( type === 'default' && settings.lang || row.lang ));
+			var lang = new Lang(( type === 'default' && settings.lang || row.guildlang ));
 			var embed;
 			if ( !wiki.isFandom() && query ) {
 				let notice = [];
