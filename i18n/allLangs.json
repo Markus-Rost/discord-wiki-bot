@@ -90,8 +90,10 @@
 		"names": {
 			"en": "English (en)",
 			"de": "Deutsch (de)",
+			"hi": "हिन्दी (hi)",
 			"pl": "Polski (pl)",
-			"pt-br": "Português do Brasil (pt-br)"
+			"pt-br": "Português do Brasil (pt-br)",
+			"ru": "Русский (ru)"
 		},
 		"map": {
 			"en": "en",
@@ -102,6 +104,10 @@
 			"german": "de",
 			"deutsch": "de",
 			"deutsch (de)": "de",
+			"hi": "hi",
+			"hindi": "hi",
+			"हिन्दी": "hi",
+			"हिन्दी (hi)": "hi",
 			"pl": "pl",
 			"polish": "pl",
 			"polski": "pl",
@@ -113,7 +119,11 @@
 			"pt-br": "pt-br",
 			"brazilian portuguese": "pt-br",
 			"português do brasil": "pt-br",
-			"português do brasil (pt-br)": "pt-br"
+			"português do brasil (pt-br)": "pt-br",
+			"ru": "ru",
+			"russian": "ru",
+			"русский": "ru",
+			"русский (ru)": "ru"
 		}
 	}
 }
