@@ -51,7 +51,7 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler) 
 	}
 	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.get('discussion.post') ) {
 		title = title.split(' ').slice(1).join(' ');
-		got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=' + limit + '&format=json&cache=' + Date.now(), {
+		got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=' + limit + '&format=json&cache=' + Date.now(), {
 			headers: {
 				Accept: 'application/hal+json'
 			}

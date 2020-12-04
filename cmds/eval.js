@@ -78,7 +78,7 @@ function checkWiki(wiki) {
 			wiki: wiki.href,
 			activity: [],
 			rcid: 0,
-			postid: null
+			postid: '-1'
 		}
 		var rc = body.query.recentchanges;
 		if ( rc.length ) {
@@ -114,7 +114,7 @@ function checkWiki(wiki) {
 			}, error => {
 				result.rcgcdb = error.toString();
 			} ),
-			( wiki.isFandom() ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=100&format=json&cache=' + Date.now(), {
+			( wiki.isFandom() ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'
 				}
