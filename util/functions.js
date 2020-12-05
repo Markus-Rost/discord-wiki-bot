@@ -153,18 +153,27 @@ function htmlToPlain(html) {
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 				text += '• ';
 			}
+			if ( tagname === 'h1' ) text += '***__';
+			if ( tagname === 'h2' ) text += '**__';
+			if ( tagname === 'h3' ) text += '**';
+			if ( tagname === 'h4' ) text += '__';
+			if ( tagname === 'h5' ) text += '*';
+			if ( tagname === 'h6' ) text += '';
 		},
 		ontext: (htmltext) => {
 			if ( !reference ) {
-				if ( listlevel > -1 ) {
-					htmltext = htmltext.replace( /\n/g, '\n' + '\u200b '.repeat(4 * listlevel + 3) );
-				}
 				text += escapeFormatting(htmltext);
 			}
 		},
 		onclosetag: (tagname) => {
 			if ( tagname === 'sup' ) reference = false;
 			if ( tagname === 'ul' ) listlevel--;
+			if ( tagname === 'h1' ) text += '__***';
+			if ( tagname === 'h2' ) text += '__**';
+			if ( tagname === 'h3' ) text += '**';
+			if ( tagname === 'h4' ) text += '__';
+			if ( tagname === 'h5' ) text += '*';
+			if ( tagname === 'h6' ) text += '';
 		},
 		oncomment: (commenttext) => {
 			if ( /^LINK'" \d+:\d+$/.test(commenttext) ) text += '*UNKNOWN LINK*';

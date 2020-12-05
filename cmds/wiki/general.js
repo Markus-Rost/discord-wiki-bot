@@ -268,7 +268,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 								}
 							}
 				
-							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href )) );
+							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment) );
 						}
 					}
 				}, error => {
@@ -358,7 +358,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 				}
 				
-				msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href )) );
+				msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' )) );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
@@ -446,7 +446,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			}, error => {
 				console.log( '- Error while getting the main page: ' + error );
 			} ).finally( () => {
-				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, body.query.general.mainpage, embed, wiki, '') );
+				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, body.query.general.mainpage, embed, wiki, '', fragment) );
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );

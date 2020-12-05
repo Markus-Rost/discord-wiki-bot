@@ -39,12 +39,13 @@ const keepMainPageTag = [
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
  * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {String} thumbnail - The default thumbnail for the wiki.
+ * @param {String} [fragment] - The section title to embed.
  */
-function parse_page(msg, title, embed, wiki, thumbnail) {
-	if ( !msg || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox ) ) {
+function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
+	if ( !msg || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox && !fragment ) ) {
 		return;
 	}
-	got.get( wiki + 'api.php?action=parse&prop=text|images&section=0&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=parse&prop=text|images' + ( fragment ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 			console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
 			return;
@@ -89,6 +90,27 @@ function parse_page(msg, title, embed, wiki, thumbnail) {
 			if ( thumbnail ) {
 				embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
 				change = true;
+			}
+		}
+		if ( fragment && embed.length < 4750 && embed.fields.length < 25
+		&& embed.fields[0]?.name.replace( / /g, '_' ) !== fragment.replace( / /g, '_' ) ) {
+			var section = $('h1, h2, h3, h4, h5, h6').children('span#' + fragment).parent();
+			if ( section.length ) {
+				var sectionLevel = section[0].tagName.replace('h', '');
+				var sectionContent = $('<div>').append(
+					section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
+				);
+				section.find(removeClasses.join(', ')).remove();
+				sectionContent.find(infoboxList.join(', ')).remove();
+				sectionContent.find(removeClasses.join(', ')).remove();
+				var name = htmlToPlain(section).trim();
+				if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
+				var value = htmlToPlain(sectionContent).trim();
+				if ( value.length > 1000 ) value = value.substring(0, 1000) + '\u2026';
+				if ( name.length && value.length ) {
+					embed.spliceFields( 0, 0, {name, value} );
+					change = true;
+				}
 			}
 		}
 		if ( !embed.description && embed.length < 5000 ) {
