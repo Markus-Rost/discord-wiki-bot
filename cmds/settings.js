@@ -60,7 +60,9 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !rows.length ) return msg.replyMsg( text, {split:true}, true );
 			
 			var channel = rows.find( row => row.channel === msg.channel.id );
-			if ( !channel ) channel = Object.assign({channel:msg.channel.id}, guild);
+			if ( !channel ) channel = Object.assign({}, rows.find( row => {
+				return ( row.channel === '#' + msg.channel.parentID );
+			} ) || guild, {channel: msg.channel.id});
 			text = lang.get('settings.' + prelang + 'current');
 			text += `\n<${new URL(`/guild/${msg.guild.id}/settings/${msg.channel.id}`, process.env.dashboard).href}>`;
 			if ( msg.guild.id in patreons ) {
