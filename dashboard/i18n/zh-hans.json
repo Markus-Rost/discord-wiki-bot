@@ -66,7 +66,126 @@
             "title": "缺少权限！"
         },
         "movefail": {
-            "note": "Webhook 频道无法更改！"
+            "note": "Webhook 频道无法更改！",
+            "text": "设置仅被部分更新。",
+            "title": "设置已部分保存！"
+        },
+        "mwversion": {
+            "text": "至少需要 MediaWiki 1.30，但找到 $1 于 $2。",
+            "title": "过时的 MediaWiki 版本！"
+        },
+        "nochange": {
+            "text": "设置与当前的默认设置一致。",
+            "title": "保存失败！"
+        },
+        "nosettings": {
+            "note": "更改设置。",
+            "text": "请先定义服务器的设置。",
+            "title": "服务器尚未配置！"
+        },
+        "readonly": {
+            "text": "你现在只能查看你的设置，而不能更改。",
+            "title": "只读的数据库！"
+        },
+        "refresh": {
+            "text": "你的服务器列表已成功刷新。",
+            "title": "刷新成功！"
+        },
+        "refreshfail": {
+            "text": "你的服务器列表无法刷新，请再试一次。",
+            "title": "刷新失败！"
+        },
+        "save": {
+            "text": "设置已被成功更新。",
+            "title": "设置已保存！"
+        },
+        "savefail": {
+            "text": "设置无法保存，请再试一次。",
+            "title": "保存失败！"
+        },
+        "sysmessage": {
+            "text": "页面 $1 应与服务器 ID $2 相匹配。",
+            "title": "系统消息不匹配！"
+        },
+        "unauthorized": {
+            "text": "在更改设置前，请先登录。",
+            "title": "未登录！"
+        },
+        "wikiblocked": {
+            "note": "原因：",
+            "text": "$1 已被阻止添加为最近更改 webhook。",
+            "title": "Wiki 已被屏蔽！"
         }
+    },
+    "rcscript": {
+        "desc": "这些是 $1 的最近更改 webhook：",
+        "explanation": "<h2>最近更改 Webhook</h2>\n<p>Wiki-Bot可以基于<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>运行一个最近更改 webhook。最近更改可以以多种显示方式显示：有行内链接的紧凑型文字信息或有编辑标签和分类更改的嵌入式消息。</p>\n<p>添加最近更改 webhook 的必须要求：</p>\n<ul>\n<li>Wiki软件需要运行于<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本。</li>\n<li>系统消息<code>MediaWiki:Custom-RcGcDw</code>需要设置为 Discord 服务器的服务器 ID <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
+        "form": {
+            "channel": "频道：",
+            "confirm": "你真的想删除最近更改 webhook 吗？",
+            "display": "显示模式：",
+            "display_compact": "有行内链接的紧凑文字型信息。",
+            "display_diff": "带有图像预览和编辑差异的嵌入式消息。",
+            "display_embed": "带有编辑标签和分类更改的嵌入式消息。",
+            "display_image": "带有图像预览的嵌入式消息。",
+            "entry": "最近更改 webhook #$1",
+            "feeds": "讨论式更改：",
+            "feeds_only": "仅讨论式更改：",
+            "lang": "语言：",
+            "new": "新的最近更改 webhook",
+            "select_channel": "--选择一个频道--",
+            "wiki": "Wiki：",
+            "wiki_check": "检查 Wiki"
+        },
+        "new": "新的 Webhook"
+    },
+    "selector": {
+        "desc": "此为所有你可以更改设置的服务器列表，因为你拥有[管理服务器]($1)权限。请选择一个服务器：",
+        "invite": "Wiki-Bot 尚不是 $1 的成员，但是你可以[邀请 Wiki-Bot]($2)。",
+        "none": "你现在在任何服务器上都不拥有[管理服务器]($1)权限，你是否正在使用正确的账号登录？",
+        "switch": "切换账号",
+        "title": "服务器选择器",
+        "with": "有 Wiki-Bot 的服务器",
+        "without": "没有 Wiki-Bot 的服务器"
+    },
+    "settings": {
+        "desc": "这些是 $1 的设置：",
+        "failed": "加载设置失败！",
+        "form": {
+            "channel": "频道：",
+            "confirm": "你真的想删除该频道的覆写设置吗？",
+            "default": "服务器范围的设置",
+            "inline": "行内命令：",
+            "lang": "语言：",
+            "new": "新的频道覆写设置",
+            "overwrite": "$1 设置",
+            "prefix": "前缀：",
+            "prefix_space": "以空格结尾的前缀：",
+            "role": "最小身份组：",
+            "select_channel": "--选择一个频道--",
+            "wiki": "默认 Wiki：",
+            "wiki_check": "检查 Wiki"
+        },
+        "new": "新的频道覆写设置"
+    },
+    "verification": {
+        "desc": "这些是 $1 的验证方式：",
+        "explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 Wiki 用户，只需要他们在 Wiki 档案的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时得到的身份组。</li>\n<li>匹配该验证项所需的编辑数。</li>\n<li>匹配该验证项所需的 Wiki 用户组。</li>\n<li>匹配该验证项所需的账号使用时间（单位为天）。</li>\n<li>匹配该验证项时 Discord 用户的昵称是否应该被设置为他们的 Wiki 用户名。</li>\n</ul>",
+        "form": {
+            "accountage": "账号使用时间（单位为天）：",
+            "channel": "频道：",
+            "confirm": "你真的想删除此验证方式吗？",
+            "editcount": "最小编辑数：",
+            "entry": "验证方式 #$1",
+            "more": "添加更多",
+            "new": "新的验证方式",
+            "rename": "重命名用户：",
+            "role": "身份组：",
+            "select_channel": "--选择一个频道--",
+            "select_role": "--选择一个身份组--",
+            "usergroup": "Wiki 用户组：",
+            "usergroup_and": "所需的所有用户组："
+        },
+        "new": "新的验证方式"
     }
 }
