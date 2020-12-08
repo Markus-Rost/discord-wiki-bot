@@ -258,7 +258,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 								else text += '\n\n' + category.join('\n');
 							}
 
-							if ( !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
+							if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 								try {
 									var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
 									parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href);
@@ -348,7 +348,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					else text += '\n\n' + category.join('\n');
 				}
 
-				if ( !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
+				if ( !( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ) && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 					try {
 						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
 						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href);
@@ -434,7 +434,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 				}
 				
-				if ( !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
+				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 					try {
 						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
 						parse_infobox(infobox, embed, '');

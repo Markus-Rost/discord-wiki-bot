@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const {toSection} = require('../util/wiki.js');
 const {htmlToPlain} = require('../util/functions.js');
 
 const infoboxList = [
@@ -92,13 +93,22 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 				change = true;
 			}
 		}
-		if ( fragment && embed.length < 4750 && embed.fields.length < 25
-		&& embed.fields[0]?.name.replace( / /g, '_' ) !== fragment.replace( / /g, '_' ) ) {
-			var section = $('h1, h2, h3, h4, h5, h6').children('span#' + fragment).parent();
+		if ( fragment && embed.length < 4750 && embed.fields.length < 25 &&
+		toSection(embed.fields[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' )) !== toSection(fragment) ) {
+			var section = $('h1, h2, h3, h4, h5, h6').children('span').filter( (i, span) => {
+				return ( '#' + span.attribs.id === toSection(fragment) );
+			} ).parent();
 			if ( section.length ) {
 				var sectionLevel = section[0].tagName.replace('h', '');
 				var sectionContent = $('<div>').append(
-					section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
+					section.nextUntil([
+						'h1 span.mw-headline',
+						'h2 span.mw-headline',
+						'h3 span.mw-headline',
+						'h4 span.mw-headline',
+						'h5 span.mw-headline',
+						'h6 span.mw-headline'
+					].slice(0, sectionLevel).join(', '))
 				);
 				section.find(removeClasses.join(', ')).remove();
 				sectionContent.find(infoboxList.join(', ')).remove();

@@ -61,6 +61,16 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
 					}
 					
+					if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
+						try {
+							var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
+							parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href);
+						}
+						catch ( error ) {
+							console.log( '- Failed to parse the infobox: ' + error );
+						}
+					}
+					
 					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, '', fragment) );
 				}
 			}
@@ -215,6 +225,16 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
 				}
 				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+				
+				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
+					try {
+						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
+						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href);
+					}
+					catch ( error ) {
+						console.log( '- Failed to parse the infobox: ' + error );
+					}
+				}
 				
 				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, new URL(body.query.general.logo, wiki).href, fragment) );
 			}
