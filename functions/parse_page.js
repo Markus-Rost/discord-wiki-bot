@@ -101,14 +101,7 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 			if ( section.length ) {
 				var sectionLevel = section[0].tagName.replace('h', '');
 				var sectionContent = $('<div>').append(
-					section.nextUntil([
-						'h1 span.mw-headline',
-						'h2 span.mw-headline',
-						'h3 span.mw-headline',
-						'h4 span.mw-headline',
-						'h5 span.mw-headline',
-						'h6 span.mw-headline'
-					].slice(0, sectionLevel).join(', '))
+					section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
 				);
 				section.find(removeClasses.join(', ')).remove();
 				sectionContent.find(infoboxList.join(', ')).remove();
