@@ -107,11 +107,7 @@ const server = http.createServer((req, res) => {
 
 	var reqURL = new URL(req.url, process.env.dashboard);
 
-	if ( reqURL.pathname === '/favicon.ico' ) {
-		res.writeHead(302, {Location: 'https://cdn.discordapp.com/avatars/461189216198590464/f69cdc197791aed829882b64f9760dbb.png?size=64'});
-		return res.end();
-	}
-
+	if ( reqURL.pathname === '/favicon.ico' ) reqURL.pathname = '/src/icon.png';
 	if ( files.has(reqURL.pathname) ) {
 		let file = files.get(reqURL.pathname);
 		res.writeHead(200, {'Content-Type': file.contentType});
