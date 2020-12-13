@@ -5,5 +5,119 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "delete": "刪除",
+        "invite": "邀請Wiki-Bot",
+        "logout": "登出",
+        "rcscript": "近期變更",
+        "refresh": "重新整理伺服器清單",
+        "save": "儲存",
+        "selector": "選取伺服器",
+        "settings": "設定",
+        "support": "支援伺服器",
+        "title": "Wiki-Bot設定",
+        "verification": "驗證"
+    },
+    "indexjs": {
+        "invalid": {
+            "text": "此URL無法解析至有效的MediaWiki網站！",
+            "title": "無效的wiki！"
+        },
+        "outdated": {
+            "text": "近期變更webhook最少需要MediaWiki 1.30！",
+            "title": "過時的MediaWiki版本！"
+        },
+        "prefix": {
+            "backslash": "前綴不得包含反斜線！",
+            "code": "前綴不得包含代碼markdown！",
+            "space": "前綴不得包含空格！"
+        },
+        "sysmessage": {
+            "text": "此頁面 $1 需要與伺服器id $2 相符。",
+            "title": "系統訊息不相符！"
+        },
+        "valid": {
+            "MediaWiki": "警告：至少需要 $1 以使用所有功能。",
+            "PageImages": "警告：需要擴充功能 $1 以產生頁面縮圖。",
+            "TextExtracts": "警告：需要擴充功能 $1 以取得頁面描述。",
+            "title": "此wiki有效且可使用！"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "發生未知錯誤，請再試一次。",
+            "title": "未知錯誤！"
+        },
+        "invalidusergroup": {
+            "text": "使用者群組名稱過長或您提交過多使用者群組。",
+            "title": "無效的使用者群組！"
+        },
+        "loginfail": {
+            "text": "在您登入時發生錯誤，請再試一次。",
+            "title": "登入失敗！"
+        },
+        "logout": {
+            "text": "您已成功登出。若要變更任何設定，您需要重新登入。",
+            "title": "已成功登出！"
+        },
+        "missingperm": {
+            "text": "您或Wiki-Bot缺少此功能需要的 $1 權限。",
+            "title": "缺少權限！"
+        },
+        "movefail": {
+            "note": "無法變更webhook頻道！",
+            "text": "僅成功更新部分設定。",
+            "title": "已儲存部分設定！"
+        },
+        "mwversion": {
+            "text": "至少需要MediaWiki 1.30，但 $2 為 $1。",
+            "title": "過時的MediaWiki版本！"
+        },
+        "nochange": {
+            "text": "設定與目前的預設設定相同。",
+            "title": "儲存失敗！"
+        },
+        "nosettings": {
+            "note": "變更設定。",
+            "text": "請先定義伺服器設定。",
+            "title": "尚未設定伺服器！"
+        },
+        "readonly": {
+            "text": "您目前只能查看您的設定，但您無法變更。",
+            "title": "唯讀的資料庫！"
+        },
+        "refresh": {
+            "text": "已成功重新整理您的伺服器清單。",
+            "title": "重新整理成功！"
+        },
+        "refreshfail": {
+            "text": "無法重新整理您的伺服器清單，請再試一次。",
+            "title": "重新整理失敗！"
+        },
+        "save": {
+            "text": "已成功更新設定。",
+            "title": "已儲存設定！"
+        },
+        "savefail": {
+            "text": "無法儲存設定，請再試一次。",
+            "title": "儲存失敗！"
+        },
+        "sysmessage": {
+            "text": "頁面 $1 應與伺服器id $2 相符。",
+            "title": "系統訊息不相符！"
+        },
+        "unauthorized": {
+            "text": "請登入以變更設定。",
+            "title": "未登入！"
+        },
+        "wikiblocked": {
+            "note": "原因：",
+            "text": "$1 已被阻止加入近期變更webhook。",
+            "title": "wiki已被屏蔽！"
+        }
+    },
+    "rcscript": {
+        "desc": "以下為 $1 的近期變更webhook："
+    }
 }

@@ -297,7 +297,7 @@
             "settings": {
                 "channel": {
                     "cmd": "settings channel",
-                    "desc": "我将更改本服务器的当前频道的复写设置。"
+                    "desc": "我将更改本服务器的当前频道的覆写设置。"
                 },
                 "default": {
                     "cmd": "settings",
@@ -512,7 +512,7 @@
             "updated_display_diff": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含图像预览和编辑差异。",
             "updated_display_embed": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含编辑标签和分类更改。",
             "updated_display_image": "此最近更改 webhook 的显示模式已改为嵌入式消息，包含图像预览。",
-            "updated_lang": "此最近更改 webhook 的语言已被改为 $1。",
+            "updated_lang": "此最近更改 webhook 的语言已被改为 `$1`。",
             "updated_wiki": "此最近更改 webhook 的 wiki 已改为 $1。"
         },
         "webhook_failed": "抱歉，此 Webhook 不可被创建，请稍后再试。",
@@ -573,7 +573,7 @@
         "langhelp": "使用 `$1 <language>` 修改语言。\n目前支持的语言：",
         "langinvalid": "暂不支持这个语言！",
         "missing": "这个服务器尚未完成设置，使用 $1 以及 $2 来完成设置。",
-        "nochannels": "*还没有频道复写设置*",
+        "nochannels": "*还没有频道覆写设置*",
         "prefix": "本服务器的前缀是：",
         "prefixchanged": "您将本服务器命令前缀更改为：",
         "prefixhelp": "使用 `$1 <前缀>` 来更改前缀。\n在前缀的末尾使用 `_` 来表示一个空格。\n前缀不能含有提及！",
@@ -633,9 +633,9 @@
         "block": {
             "header": "$1 目前正被封禁！",
             "nofromnoreason": "被 $3 封禁，直到 $2。",
-            "nofromtext": "被 $3 封禁，直到 $2，理由：“$4”",
+            "nofromtext": "被 $3 封禁，直到 $2，理由：“$4”。",
             "noreason": "被 $3 封禁，时间从 $1 到 $2。",
-            "text": "被 $3 封禁，时间从 $1 到 $2，理由：“$4”",
+            "text": "被 $3 封禁，时间从 $1 到 $2，理由：“$4”。",
             "until_infinity": "天荒地老"
         },
         "gblock": {
