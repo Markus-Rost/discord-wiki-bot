@@ -92,13 +92,13 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				else if ( row ) {
 					channellang[1] = row.lang;
 					channelwiki[1] = row.wiki;
-					channelrole[1] = row.role;
+					channelrole[1] = ( row.role ? '`' + row.role + '` <@&' + row.role + '>' : '@everyone' );
 					channelinline[1] = ( row.inline ? 'disabled' : 'enabled' );
 				}
 				else {
 					channellang[1] = defaultSettings.lang;
 					channelwiki[1] = defaultSettings.wiki;
-					channelrole[1] = null;
+					channelrole[1] = '@everyone';
 					channelinline[1] = 'enabled';
 				}
 				

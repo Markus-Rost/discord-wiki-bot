@@ -158,9 +158,9 @@ class Wiki extends URL {
 		querystring.forEach( (value, name) => {
 			link.searchParams.append(name, value);
 		} );
-		let output = decodeURI( link ).replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' );
-		if ( isMarkdown ) output = output.replace( /[()]/g, '\\$&' );
-		return output + Wiki.toSection(fragment);
+		let output = decodeURI( link ).replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment);
+		if ( isMarkdown ) return output.replace( /[()]/g, '\\$&' );
+		else return output;
 	}
 
 	/**
