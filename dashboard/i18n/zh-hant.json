@@ -13,7 +13,7 @@
         "rcscript": "近期變更",
         "refresh": "重新整理伺服器清單",
         "save": "儲存",
-        "selector": "選取伺服器",
+        "selector": "選擇伺服器",
         "settings": "設定",
         "support": "支援伺服器",
         "title": "Wiki-Bot設定",
@@ -118,6 +118,74 @@
         }
     },
     "rcscript": {
-        "desc": "以下為 $1 的近期變更webhook："
+        "desc": "以下為 $1 的近期變更webhook：",
+        "explanation": "<h2>近期變更webhook</h2>\n<p>Wiki-Bot能運行基於<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的近期變更webhook。近期變更可以以多種顯示模式顯示：包含行內連結的精簡文字訊息或包含圖片預覽及編輯差異的嵌入式訊息。</p>\n<p>加入近期變更webhook的基本需求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本運行的wiki。</li>\n<li>系統訊息<code>MediaWiki:Custom-RcGcDw</code>需要設為Discord伺服器的伺服器id <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
+        "form": {
+            "channel": "頻道：",
+            "confirm": "您確定要刪除近期變更webhook嗎？",
+            "display": "顯示模式：",
+            "display_compact": "包含行內連結的精簡文字訊息。",
+            "display_diff": "包含圖片預覽及編輯差異的嵌入式訊息。",
+            "display_embed": "包含編輯標籤及分類變更的嵌入式訊息。",
+            "display_image": "包含圖片預覽的嵌入式訊息。",
+            "entry": "近期變更webhook #$1",
+            "feeds": "基於推送頁的變更：",
+            "feeds_only": "僅啟用基於推送頁的變更：",
+            "lang": "語言：",
+            "new": "新的近期變更webhook",
+            "select_channel": "-- 選擇頻道 --",
+            "wiki": "wiki：",
+            "wiki_check": "檢查wiki"
+        },
+        "new": "新webhook"
+    },
+    "selector": {
+        "desc": "此為所有您可以變更設定的伺服器清單，因為您擁有[管理伺服器]($1)權限。請選擇一個伺服器：",
+        "invite": "Wiki-Bot尚未加入 $1，但您可以[邀請Wiki-Bot]($2)。",
+        "none": "您目前並沒有任何伺服器的[管理伺服器]($1)權限，您是否已使用正確的帳號登入？",
+        "switch": "切換帳號",
+        "title": "選擇伺服器",
+        "with": "有Wiki-Bot的伺服器",
+        "without": "沒有Wiki-Bot的伺服器"
+    },
+    "settings": {
+        "desc": "以下為 $1 的設定：",
+        "failed": "載入設定失敗！",
+        "form": {
+            "channel": "頻道：",
+            "confirm": "您確定要刪除此頻道覆寫設定嗎？",
+            "default": "伺服器範圍的設定",
+            "inline": "行內指令：",
+            "lang": "語言：",
+            "new": "新的頻道覆寫設定",
+            "overwrite": "$1 設定",
+            "prefix": "前綴：",
+            "prefix_space": "以空格結尾的前綴：",
+            "role": "最小身分組：",
+            "select_channel": "-- 選擇頻道 --",
+            "wiki": "預設wiki：",
+            "wiki_check": "檢查wiki"
+        },
+        "new": "新的頻道覆寫設定"
+    },
+    "verification": {
+        "desc": "以下為 $1 的驗證方式：",
+        "explanation": "<h2>使用者驗證功能</h2>\n<p>使用 <code class=\"prefix\">verify &lt;wiki使用者名稱&gt;</code> 指令時，使用者可以透過填寫wiki個人檔案的Discord欄位將自己的帳號驗證為特定的wiki使用者。若該伺服器有設定驗證功能且驗證條件相符，則Wiki-Bot會根據符合的驗證規則授與相對應的身分組。</p>\n<p>每項驗證規則都允許填入多個條件：</p>\n<ul>\n<li>允許使用 <code class=\"prefix\">verify</code> 指令的頻道。</li>\n<li>符合該驗證規則時需授予的身分組。</li>\n<li>符合該驗證規則所需的編輯次數。</li>\n<li>符合該驗證規則所需的wiki使用者群組。</li>\n<li>符合該驗證規則所需的帳號註冊時長（以天為單位）。</li>\n<li>符合該驗證規則時是否要將Discord使用者的暱稱變更為其wiki使用者名稱。</li>\n</ul>",
+        "form": {
+            "accountage": "帳號註冊時長（日）：",
+            "channel": "頻道：",
+            "confirm": "您確定要刪除此驗證方式嗎？",
+            "editcount": "最少編輯次數：",
+            "entry": "驗證方式 #$1",
+            "more": "加入更多",
+            "new": "新的驗證方式",
+            "rename": "重新命名使用者：",
+            "role": "身分組：",
+            "select_channel": "-- 選擇頻道 --",
+            "select_role": "-- 選擇身分組 --",
+            "usergroup": "wiki使用者群組：",
+            "usergroup_and": "所有所需的使用者群組："
+        },
+        "new": "新的驗證方式"
     }
 }
