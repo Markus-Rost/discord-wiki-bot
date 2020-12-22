@@ -135,7 +135,7 @@
             "new": "新的最近更改 webhook",
             "select_channel": "--选择一个频道--",
             "wiki": "Wiki：",
-            "wiki_check": "检查 Wiki"
+            "wiki_check": "检查 wiki"
         },
         "new": "新的 Webhook"
     },
@@ -172,10 +172,10 @@
         "desc": "这些是 $1 的验证方式：",
         "explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 Wiki 用户，只需要他们在 Wiki 档案的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时得到的身份组。</li>\n<li>匹配该验证项所需的编辑数。</li>\n<li>匹配该验证项所需的 Wiki 用户组。</li>\n<li>匹配该验证项所需的账号使用时间（单位为天）。</li>\n<li>匹配该验证项时 Discord 用户的昵称是否应该被设置为他们的 Wiki 用户名。</li>\n</ul>",
         "form": {
-            "accountage": "账号使用时间（单位为天）：",
+            "accountage": "账号注册时间（天）：",
             "channel": "频道：",
             "confirm": "你真的想删除此验证方式吗？",
-            "editcount": "最小编辑数：",
+            "editcount": "最小编辑次数：",
             "entry": "验证方式 #$1",
             "more": "添加更多",
             "new": "新的验证方式",

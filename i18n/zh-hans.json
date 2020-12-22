@@ -98,15 +98,15 @@
         ],
         "user": [
             " ",
-            " ",
-            " ",
-            " ",
+            "用户",
+            "用戶",
+            "使用者",
             " "
         ],
         "verify": [
+            " ",
             "验证",
-            " ",
-            " ",
+            "驗證",
             " ",
             " "
         ]
@@ -125,7 +125,7 @@
             "size": "差异：",
             "tags": "标签：",
             "timestamp": "时间：",
-            "whitespace": "仅有空白"
+            "whitespace": "仅有空格"
         },
         "nocomment": "*未提供描述*"
     },
@@ -516,13 +516,13 @@
             "updated_wiki": "此最近更改 webhook 的 wiki 已改为 $1。"
         },
         "webhook_failed": "抱歉，此 Webhook 不可被创建，请稍后再试。",
-        "wiki": "Wiki："
+        "wiki": "wiki："
     },
     "search": {
         "category": {
             "content": "分类下的内容：",
             "empty": "*空白分类*",
-            "files": "$1 个文档",
+            "files": "$1 个文件",
             "pages": "$1 个页面",
             "subcats": "$1 个分类"
         },

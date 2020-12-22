@@ -118,6 +118,71 @@
         }
     },
     "rcscript": {
-        "desc": "以下為 $1 的近期變更webhook："
+        "desc": "以下為 $1 的近期變更webhook：",
+        "form": {
+            "channel": "頻道：",
+            "confirm": "您確定要刪除近期變更webhook嗎？",
+            "display": "顯示模式：",
+            "display_compact": "包含行內連結的精簡文字訊息。",
+            "display_diff": "包含圖片預覽及編輯差異的嵌入式訊息。",
+            "display_embed": "包含編輯標籤及分類變更的嵌入式訊息。",
+            "display_image": "包含圖片預覽的嵌入式訊息。",
+            "entry": "近期變更webhook #$1",
+            "feeds": "基於推送頁的變更：",
+            "feeds_only": "僅啟用基於推送頁的變更：",
+            "lang": "語言：",
+            "new": "新的近期變更webhook",
+            "select_channel": "-- 選取頻道 --",
+            "wiki": "wiki：",
+            "wiki_check": "檢查wiki"
+        },
+        "new": "新webhook"
+    },
+    "selector": {
+        "invite": "Wiki-Bot尚未加入 $1，但您可以[邀請Wiki-Bot]($2)。",
+        "none": "您目前並沒有任何伺服器的[管理伺服器]($1)權限，您是否已使用正確的帳號登入？",
+        "switch": "切換帳號",
+        "title": "選取伺服器",
+        "with": "有Wiki-Bot的伺服器",
+        "without": "沒有Wiki-Bot的伺服器"
+    },
+    "settings": {
+        "desc": "以下為 $1 的設定：",
+        "failed": "載入設定失敗！",
+        "form": {
+            "channel": "頻道：",
+            "confirm": "您確定要刪除此頻道覆寫設定嗎？",
+            "default": "伺服器範圍的設定",
+            "inline": "行內指令：",
+            "lang": "語言：",
+            "new": "新的頻道覆寫設定",
+            "overwrite": "$1 設定",
+            "prefix": "前綴：",
+            "prefix_space": "以空格結尾的前綴：",
+            "role": "最小身分組：",
+            "select_channel": "-- 選取頻道 --",
+            "wiki": "預設wiki：",
+            "wiki_check": "檢查wiki"
+        },
+        "new": "新的頻道覆寫設定"
+    },
+    "verification": {
+        "desc": "以下為 $1 的驗證方式：",
+        "form": {
+            "accountage": "帳號註冊時長（日）：",
+            "channel": "頻道：",
+            "confirm": "您確定要刪除此驗證方式嗎？",
+            "editcount": "最少編輯次數：",
+            "entry": "驗證方式 #$1",
+            "more": "加入更多",
+            "new": "新的驗證方式",
+            "rename": "重新命名使用者：",
+            "role": "身分組：",
+            "select_channel": "-- 選取頻道 --",
+            "select_role": "-- 選取身分組 --",
+            "usergroup": "wiki使用者群組：",
+            "usergroup_and": "所有所需的使用者群組："
+        },
+        "new": "新的驗證方式"
     }
 }
