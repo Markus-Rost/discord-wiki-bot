@@ -122,7 +122,7 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
 );
 
 COMMIT TRANSACTION;
-PRAGMA user_version = 1;
+PRAGMA user_version = 2;
 `, `
 BEGIN TRANSACTION;
 
