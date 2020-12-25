@@ -297,7 +297,7 @@
             "settings": {
                 "channel": {
                     "cmd": "settings channel",
-                    "desc": "मैं वर्तमान चैनल को ओवर्राइड को बदल दूँगा।"
+                    "desc": "मैं वर्तमान चैनल के ओवर्राइड को बदल दूँगा।"
                 },
                 "default": {
                     "cmd": "settings",
