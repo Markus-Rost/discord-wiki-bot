@@ -359,7 +359,7 @@
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
-                    "desc": "在驗證時，若需要，我將會將使用者的 Discord 暱稱改爲 wiki 使用者名稱。"
+                    "desc": "在驗證時，若需要，我將會將使用者的 Discord 暱稱改為 wiki 使用者名稱。"
                 },
                 "role": {
                     "cmd": "verification <id> role <新身份組>",
@@ -570,7 +570,7 @@
         },
         "lang": "本伺服器的語言為：",
         "langchanged": "您已將本伺服器的語言變更為：",
-        "langhelp": "使用 `$1 <language>` 修改語言。\n目前支援的語言：",
+        "langhelp": "使用 `$1 <language>` 變更語言。\n目前支援的語言：",
         "langinvalid": "暫不支援這個語言！",
         "missing": "這個伺服器尚未完成設定，使用 $1 以及 $2 來完成設定。",
         "nochannels": "*還沒有頻道複寫設定*",
