@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const {toSection} = require('../util/wiki.js');
-const {htmlToPlain} = require('../util/functions.js');
+const {htmlToPlain, htmlToDiscord} = require('../util/functions.js');
 
 const infoboxList = [
 	'.infobox',
@@ -46,12 +46,20 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 	if ( !msg || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox && !fragment ) ) {
 		return;
 	}
+	var change = false;
 	got.get( wiki + 'api.php?action=parse&prop=text|images' + ( fragment ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 			console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
+			if ( embed.backupDescription && embed.length < 5000 ) {
+				embed.setDescription( embed.backupDescription );
+				change = true;
+			}
+			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+				embed.spliceFields( 0, 0, embed.backupField );
+				change = true;
+			}
 			return;
 		}
-		var change = false;
 		var $ = cheerio.load(response.body.parse.text['*'].replace( /<br\/?>/g, '\n' ));
 		if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
 			var infobox = $('aside.portable-infobox');
@@ -59,15 +67,21 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 				if ( embed.length > 5500 ) return;
 				if ( /^`.+`$/.test(field.name) ) {
 					let label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-label, .pi-data-label[data-source="$1"]' )).html();
-					label = htmlToPlain(label).trim();
-					if ( label.length > 50 ) label = label.substring(0, 50) + '\u2026';
-					if ( label ) field.name = label;
+					if ( !label ) label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-label, .pi-data-label[data-item-name="$1"]' )).html();
+					if ( label ) {
+						label = htmlToPlain(label).trim();
+						if ( label.length > 50 ) label = label.substring(0, 50) + '\u2026';
+						if ( label ) field.name = label;
+					}
 				}
 				if ( /^`.+`$/.test(field.value) ) {
 					let value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-value, .pi-data-value[data-source="$1"]' )).html();
-					value = htmlToPlain(value).trim();
-					if ( value.length > 250 ) value = value.substring(0, 250) + '\u2026';
-					if ( value ) field.value = value;
+					if ( !value ) value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-value, .pi-data-value[data-item-name="$1"]' )).html();
+					if ( value ) {
+						value = htmlToDiscord(value, wiki.articleURL.href, true).trim();
+						if ( value.length > 250 ) value = value.substring(0, 250) + '\u2026';
+						if ( value ) field.value = value;
+					}
 				}
 			} );
 			change = true;
@@ -108,12 +122,20 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 				sectionContent.find(removeClasses.join(', ')).remove();
 				var name = htmlToPlain(section).trim();
 				if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
-				var value = htmlToPlain(sectionContent).trim();
+				var value = htmlToDiscord(sectionContent, wiki.articleURL.href, true).trim();
 				if ( value.length > 1000 ) value = value.substring(0, 1000) + '\u2026';
 				if ( name.length && value.length ) {
 					embed.spliceFields( 0, 0, {name, value} );
 					change = true;
 				}
+				else if ( embed.backupField ) {
+					embed.spliceFields( 0, 0, embed.backupField );
+					change = true;
+				}
+			}
+			else if ( embed.backupField ) {
+				embed.spliceFields( 0, 0, embed.backupField );
+				change = true;
 			}
 		}
 		if ( !embed.description && embed.length < 5000 ) {
@@ -121,17 +143,29 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 			$('h1, h2, h3, h4, h5, h6').remove();
 			$(infoboxList.join(', ')).remove();
 			$(removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
-			var description = $.text().trim().replace( /\n{3,}/g, '\n\n' ).escapeFormatting();
+			var description = htmlToDiscord($.html(), wiki.articleURL.href, true).trim();
 			if ( description ) {
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.setDescription( description );
 				change = true;
 			}
+			else if ( embed.backupDescription ) {
+				embed.setDescription( embed.backupDescription );
+				change = true;
+			}
 		}
-		
-		if ( change ) msg.edit( msg.content, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
 	}, error => {
 		console.log( '- Error while parsing the page: ' + error );
+		if ( embed.backupDescription && embed.length < 5000 ) {
+			embed.setDescription( embed.backupDescription );
+			change = true;
+		}
+		if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+			embed.spliceFields( 0, 0, embed.backupField );
+			change = true;
+		}
+	} ).finally( () => {
+		if ( change ) msg.edit( msg.content, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
 	} );
 }
 

@@ -41,11 +41,11 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			if ( querypage.pageprops && querypage.pageprops.description ) {
 				var description = htmlToPlain( querypage.pageprops.description );
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-				embed.setDescription( description );
+				embed.backupDescription = description;
 			}
 			else if ( querypage.extract ) {
 				var extract = extract_desc(querypage.extract);
-				embed.setDescription( extract[0] );
+				embed.backupDescription = extract[0];
 			}
 			if ( querypage.title === body.query.general.mainpage ) {
 				embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
@@ -61,7 +61,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			if ( !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 				try {
 					var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-					parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href);
+					parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
 				}
 				catch ( error ) {
 					console.log( '- Failed to parse the infobox: ' + error );

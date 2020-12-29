@@ -13,40 +13,61 @@ const got = require('got').extend( {
  * @param {Object} infobox - The content of the infobox.
  * @param {import('discord.js').MessageEmbed} embed - The message embed.
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
+ * @param {String} [serverpath] - The article path for relative links.
  * @returns {import('discord.js').MessageEmbed?}
  */
-function parse_infobox(infobox, embed, thumbnail) {
+function parse_infobox(infobox, embed, thumbnail, serverpath = '') {
 	if ( !infobox || embed.fields.length >= 25 || embed.length > 5500 ) return;
 	if ( infobox.parser_tag_version === 2 ) {
 		infobox.data.forEach( group => {
-			parse_infobox(group, embed, thumbnail);
+			parse_infobox(group, embed, thumbnail, serverpath);
 		} );
 		embed.fields = embed.fields.filter( (field, i, fields) => {
-			if ( field.name !== '\u200b' ) return true;
-			return ( fields[i + 1]?.name && fields[i + 1].name !== '\u200b' );
+			if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
+			return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
 		} );
 		return embed;
 	}
 	switch ( infobox.type ) {
 		case 'data':
-			var {label = '', value = '', source = ''} = infobox.data;
+			var {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
 			label = htmlToPlain(label).trim();
-			value = htmlToPlain(value).trim();
+			value = htmlToDiscord(value, serverpath, true).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
-				label = '`' + source + '`';
+				label = '`' + ( source || name )  + '`';
 				embed.brokenInfobox = true;
 			}
 			if ( value.includes( '*UNKNOWN LINK*' ) ) {
-				value = '`' + source + '`';
+				value = '`' + ( source || name ) + '`';
 				embed.brokenInfobox = true;
 			}
 			if ( label.length > 50 ) label = label.substring(0, 50) + '\u2026';
 			if ( value.length > 250 ) value = value.substring(0, 250) + '\u2026';
 			if ( label && value ) embed.addField( label, value, true );
 			break;
+		case 'panel':
+			var embedLength = embed.fields.length;
+			infobox.data.value.forEach( group => {
+				parse_infobox(group, embed, thumbnail, serverpath);
+			} );
+			embed.fields = embed.fields.filter( (field, i, fields) => {
+				if ( i < embedLength || field.name !== '\u200b' ) return true;
+				if ( !field.value.startsWith( '__**' ) ) return true;
+				return ( fields[i + 1]?.name && fields[i + 1].name !== '\u200b' );
+			} ).filter( (field, i, fields) => {
+				if ( i < embedLength || field.name !== '\u200b' ) return true;
+				if ( field.value.startsWith( '__**' ) ) return true;
+				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
+			} );
+			break;
+		case 'section':
+			var {label = ''} = infobox.data;
+			label = htmlToPlain(label).trim();
+			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
+			if ( label ) embed.addField( '\u200b', '**' + label + '**', false );
 		case 'group':
 			infobox.data.value.forEach( group => {
-				parse_infobox(group, embed, thumbnail);
+				parse_infobox(group, embed, thumbnail, serverpath);
 			} );
 			break;
 		case 'header':
@@ -107,7 +128,7 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 		while ( ( link = regex.exec(text) ) !== null ) {
 			text = text.replaceSave( link[0], '[' + link[2] + '](https://' + link[1] + ')' );
 		}
-		return htmlToDiscord( text, true, true ).replaceSave( /'''/g, '**' ).replaceSave( /''/g, '*' );
+		return htmlToDiscord( text, '', true, true ).replaceSave( /'''/g, '**' ).replaceSave( /''/g, '*' );
 	}
 	return escapeFormatting(text, true);
 };
@@ -187,45 +208,78 @@ function htmlToPlain(html) {
 /**
  * Change HTML text to markdown text.
  * @param {String} html - The text in HTML.
+ * @param {String} [serverpath] - The article path for relative links.
  * @param {Boolean[]} [escapeArgs] - Arguments for the escaping of text formatting.
  * @returns {String}
  */
-function htmlToDiscord(html, ...escapeArgs) {
+function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 	var text = '';
+	var href = '';
+	var reference = false;
+	var listlevel = -1;
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
-			switch (tagname) {
-				case 'b':
-					text += '**';
-					break;
-				case 'i':
-					text += '*';
-					break;
-				case 's':
-					text += '~~';
-					break;
-				case 'u':
-					text += '__';
-					break;
+			if ( tagname === 'b' ) text += '**';
+			if ( tagname === 'i' ) text += '*';
+			if ( tagname === 's' ) text += '~~';
+			if ( tagname === 'u' ) text += '__';
+			if ( !serverpath ) return;
+			if ( tagname === 'sup' && attribs.class === 'reference' ) reference = true;
+			if ( tagname === 'br' ) {
+				text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel + 3);
+			}
+			if ( tagname === 'hr' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '─'.repeat(10) + '\n';
+			}
+			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
+			if ( tagname === 'ul' ) listlevel++;
+			if ( tagname === 'li' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				text += '• ';
+			}
+			if ( tagname === 'h1' ) text += '***__';
+			if ( tagname === 'h2' ) text += '**__';
+			if ( tagname === 'h3' ) text += '**';
+			if ( tagname === 'h4' ) text += '__';
+			if ( tagname === 'h5' ) text += '*';
+			if ( tagname === 'h6' ) text += '';
+			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/)?\//.test(attribs.href) ) {
+				href = new URL(attribs.href, serverpath).href;
+				text += '[';
 			}
 		},
 		ontext: (htmltext) => {
-			text += escapeFormatting(htmltext, ...escapeArgs);
+			if ( !reference ) {
+				if ( href ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
+				text += escapeFormatting(htmltext, ...escapeArgs);
+			}
 		},
 		onclosetag: (tagname) => {
-			switch (tagname) {
-				case 'b':
-					text += '**';
-					break;
-				case 'i':
-					text += '*';
-					break;
-				case 's':
-					text += '~~';
-					break;
-				case 'u':
-					text += '__';
-					break;
+			if ( tagname === 'b' ) text += '**';
+			if ( tagname === 'i' ) text += '*';
+			if ( tagname === 's' ) text += '~~';
+			if ( tagname === 'u' ) text += '__';
+			if ( !serverpath ) return;
+			if ( tagname === 'sup' ) reference = false;
+			if ( tagname === 'ul' ) listlevel--;
+			if ( tagname === 'h1' ) text += '__***';
+			if ( tagname === 'h2' ) text += '__**';
+			if ( tagname === 'h3' ) text += '**';
+			if ( tagname === 'h4' ) text += '__';
+			if ( tagname === 'h5' ) text += '*';
+			if ( tagname === 'h6' ) text += '';
+			if ( tagname === 'a' && href ) {
+				if ( text.endsWith( '[' ) ) text = text.substring(0, text.length - 1);
+				else text += '](' + href.replace( /[()]/g, '\\$&' ) + ')';
+				href = '';
+			}
+		},
+		oncomment: (commenttext) => {
+			if ( serverpath && /^LINK'" \d+:\d+$/.test(commenttext) ) {
+				text += '*UNKNOWN LINK*';
 			}
 		}
 	} );

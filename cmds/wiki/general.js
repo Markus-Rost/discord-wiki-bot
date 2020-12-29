@@ -204,13 +204,15 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							}
 							if ( querypage.extract ) {
 								var extract = extract_desc(querypage.extract, fragment);
-								embed.setDescription( extract[0] );
-								if ( extract[2].length ) embed.addField( extract[1], extract[2] );
+								embed.backupDescription = extract[0];
+								if ( extract[1].length && extract[2].length ) {
+									embed.backupField = {name: extract[1], value: extract[2]};
+								}
 							}
 							if ( querypage.pageprops && querypage.pageprops.description ) {
 								var description = htmlToPlain( querypage.pageprops.description );
 								if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-								embed.setDescription( description );
+								embed.backupDescription = description;
 							}
 							if ( querypage.ns === 6 ) {
 								var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
@@ -261,7 +263,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 							if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 								try {
 									var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-									parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href);
+									parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
 								}
 								catch ( error ) {
 									console.log( '- Failed to parse the infobox: ' + error );
@@ -307,13 +309,15 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				}
 				if ( querypage.extract ) {
 					var extract = extract_desc(querypage.extract, ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ));
-					embed.setDescription( extract[0] );
-					if ( extract[2].length ) embed.addField( extract[1], extract[2] );
+					embed.backupDescription = extract[0];
+					if ( extract[1].length && extract[2].length ) {
+						embed.backupField = {name: extract[1], value: extract[2]};
+					}
 				}
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToPlain( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-					embed.setDescription( description );
+					embed.backupDescription = description;
 				}
 				if ( querypage.ns === 6 ) {
 					var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
@@ -351,7 +355,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( !( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ) && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 					try {
 						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href);
+						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
 					}
 					catch ( error ) {
 						console.log( '- Failed to parse the infobox: ' + error );
@@ -424,20 +428,22 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 					if ( querypage.extract ) {
 						var extract = extract_desc(querypage.extract, fragment);
-						embed.setDescription( extract[0] );
-						if ( extract[2].length ) embed.addField( extract[1], extract[2] );
+						embed.backupDescription = extract[0];
+						if ( extract[1].length && extract[2].length ) {
+							embed.backupField = {name: extract[1], value: extract[2]};
+						}
 					}
 					if ( querypage.pageprops && querypage.pageprops.description ) {
 						var description = htmlToPlain( querypage.pageprops.description );
 						if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-						embed.setDescription( description );
+						embed.backupDescription = description;
 					}
 				}
 				
 				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 					try {
 						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-						parse_infobox(infobox, embed, '');
+						parse_infobox(infobox, embed, '', wiki.articleURL.href);
 					}
 					catch ( error ) {
 						console.log( '- Failed to parse the infobox: ' + error );
