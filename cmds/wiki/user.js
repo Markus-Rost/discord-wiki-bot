@@ -3,7 +3,7 @@ const global_block = require('../../functions/global_block.js');
 const parse_page = require('../../functions/parse_page.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {timeoptions, usergroups} = require('../../util/default.json');
-const {toMarkdown, toPlaintext, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
+const {parse_infobox, toMarkdown, toPlaintext, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
 
 var allSites = [];
 const getAllSites = require('../../util/allSites.js');

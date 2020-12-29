@@ -17,6 +17,7 @@ const i18n = {
 	ru: require('./i18n/ru.json'),
 	th: require('./i18n/th.json'),
 	tr: require('./i18n/tr.json'),
+	vi: require('./i18n/vi.json'),
 	zh: require('./i18n/zh-hans.json'),
 	'zh-hans': require('./i18n/zh-hans.json'),
 	'zh-hant': require('./i18n/zh-hant.json')
@@ -53,7 +54,7 @@ class Lang {
 		let lang = this.lang;
 		let text = i18n?.[lang];
 		let fallback = 0;
-		for (let n = 0; n < keys.length; n++) {
+		for ( let n = 0; n < keys.length; n++ ) {
 			if ( text ) {
 				text = text?.[keys[n]];
 				if ( typeof text === 'string' ) text = text.trim()
@@ -128,13 +129,14 @@ function plural(lang, number, args) {
 		case 'de':
 		case 'en':
 		case 'es':
+		case 'it':
 		case 'ja':
+		case 'ko':
 		case 'nl':
 		case 'pt-br':
 		case 'th':
 		case 'tr':
-		case 'ja':
-		case 'ko':
+		case 'vi':
 		case 'zh-hans':
 		case 'zh-hant':
 		default:
