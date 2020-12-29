@@ -93,7 +93,8 @@
 			"hi": "हिन्दी (hi)",
 			"pl": "Polski (pl)",
 			"pt-br": "Português do Brasil (pt-br)",
-			"ru": "Русский (ru)"
+			"ru": "Русский (ru)",
+			"zh-hans": "简体中文 (zh-hans)"
 		},
 		"map": {
 			"en": "en",
@@ -123,7 +124,16 @@
 			"ru": "ru",
 			"russian": "ru",
 			"русский": "ru",
-			"русский (ru)": "ru"
+			"русский (ru)": "ru",
+			"zh": "zh-hans",
+			"chinese": "zh-hans",
+			"中文": "zh-hans",
+			"汉语": "zh-hans",
+			"zh-hans": "zh-hans",
+			"chinese (simplified)": "zh-hans",
+			"simplified chinese": "zh-hans",
+			"简体中文": "zh-hans",
+			"简体中文 (zh-hans)": "zh-hans"
 		}
 	}
 }
