@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const {toSection} = require('../util/wiki.js');
-const {htmlToPlain, htmlToDiscord} = require('../util/functions.js');
+const {htmlToPlain, htmlToDiscord, limitLength} = require('../util/functions.js');
 
 const infoboxList = [
 	'.infobox',
@@ -64,13 +64,13 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 		if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
 			var infobox = $('aside.portable-infobox');
 			embed.fields.forEach( field => {
-				if ( embed.length > 5500 ) return;
+				if ( embed.length > 5400 ) return;
 				if ( /^`.+`$/.test(field.name) ) {
 					let label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-label, .pi-data-label[data-source="$1"]' )).html();
 					if ( !label ) label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-label, .pi-data-label[data-item-name="$1"]' )).html();
 					if ( label ) {
 						label = htmlToPlain(label).trim();
-						if ( label.length > 50 ) label = label.substring(0, 50) + '\u2026';
+						if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 						if ( label ) field.name = label;
 					}
 				}
@@ -78,8 +78,8 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 					let value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-value, .pi-data-value[data-source="$1"]' )).html();
 					if ( !value ) value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-value, .pi-data-value[data-item-name="$1"]' )).html();
 					if ( value ) {
-						value = htmlToDiscord(value, wiki.articleURL.href, true).trim();
-						if ( value.length > 250 ) value = value.substring(0, 250) + '\u2026';
+						value = htmlToDiscord(value, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
+						if ( value.length > 500 ) value = limitLength(value, 500, 250);
 						if ( value ) field.value = value;
 					}
 				}
@@ -122,8 +122,8 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 				sectionContent.find(removeClasses.join(', ')).remove();
 				var name = htmlToPlain(section).trim();
 				if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
-				var value = htmlToDiscord(sectionContent, wiki.articleURL.href, true).trim();
-				if ( value.length > 1000 ) value = value.substring(0, 1000) + '\u2026';
+				var value = htmlToDiscord(sectionContent, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
+				if ( value.length > 1000 ) value = limitLength(value, 1000, 20);
 				if ( name.length && value.length ) {
 					embed.spliceFields( 0, 0, {name, value} );
 					change = true;
@@ -143,9 +143,9 @@ function parse_page(msg, title, embed, wiki, thumbnail, fragment = '') {
 			$('h1, h2, h3, h4, h5, h6').remove();
 			$(infoboxList.join(', ')).remove();
 			$(removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
-			var description = htmlToDiscord($.html(), wiki.articleURL.href, true).trim();
+			var description = htmlToDiscord($.html(), wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
 			if ( description ) {
-				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+				if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
 				embed.setDescription( description );
 				change = true;
 			}

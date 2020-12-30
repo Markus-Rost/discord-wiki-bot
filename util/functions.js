@@ -17,7 +17,7 @@ const got = require('got').extend( {
  * @returns {import('discord.js').MessageEmbed?}
  */
 function parse_infobox(infobox, embed, thumbnail, serverpath = '') {
-	if ( !infobox || embed.fields.length >= 25 || embed.length > 5500 ) return;
+	if ( !infobox || embed.fields.length >= 25 || embed.length > 5400 ) return;
 	if ( infobox.parser_tag_version === 2 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, thumbnail, serverpath);
@@ -41,8 +41,8 @@ function parse_infobox(infobox, embed, thumbnail, serverpath = '') {
 				value = '`' + ( source || name ) + '`';
 				embed.brokenInfobox = true;
 			}
-			if ( label.length > 50 ) label = label.substring(0, 50) + '\u2026';
-			if ( value.length > 250 ) value = value.substring(0, 250) + '\u2026';
+			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
+			if ( value.length > 500 ) value = limitLength(value, 500, 250);
 			if ( label && value ) embed.addField( label, value, true );
 			break;
 		case 'panel':
@@ -214,11 +214,17 @@ function htmlToPlain(html) {
  */
 function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 	var text = '';
+	var code = false;
 	var href = '';
 	var reference = false;
 	var listlevel = -1;
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
+			if ( code ) return;
+			if ( tagname === 'code' ) {
+				code = true;
+				text += '`';
+			}
 			if ( tagname === 'b' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
@@ -253,11 +259,18 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 		},
 		ontext: (htmltext) => {
 			if ( !reference ) {
-				if ( href ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
+				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
 				text += escapeFormatting(htmltext, ...escapeArgs);
 			}
 		},
 		onclosetag: (tagname) => {
+			if ( code ) {
+				if ( tagname === 'code' ) {
+					code = false;
+					text += '`';
+				}
+				return;
+			}
 			if ( tagname === 'b' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
@@ -301,6 +314,30 @@ function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 	return text.replace( /[`_*~:<>{}@|]/g, '\\$&' );
 };
 
+/**
+ * Limit text length without breaking link formatting.
+ * @param {String} [text] - The text to modify.
+ * @param {Number} [limit] - The character limit.
+ * @param {Number} [maxExtra] - The maximal allowed character limit if needed.
+ * @returns {String}
+ */
+function limitLength(text = '', limit = 1000, maxExtra = 20) {
+	var suffix = '\u2026';
+	var link = null;
+	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])+?[^\\])\]\((?:[^()]|\\[()])+?[^\\]\)/g;
+	while ( ( link = regex.exec(text) ) !== null ) {
+		if ( link.index < limit && link.index + link[0].length > limit ) {
+			limit = link.index;
+			if ( link.index + link[0].length < limit + maxExtra ) suffix = link[0];
+			else if ( link.index + link[1].length < limit + maxExtra ) suffix = link[1];
+			if ( link.index + link[0].length < text.length ) suffix += '\u2026';
+			break;
+		}
+		else if ( link.index >= limit ) break;
+	}
+	return text.substring(0, limit) + suffix;
+};
+
 module.exports = {
 	got,
 	parse_infobox,
@@ -309,5 +346,6 @@ module.exports = {
 	toPlaintext,
 	htmlToPlain,
 	htmlToDiscord,
-	escapeFormatting
+	escapeFormatting,
+	limitLength
 };
