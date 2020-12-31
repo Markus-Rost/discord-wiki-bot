@@ -174,6 +174,11 @@ function htmlToPlain(html) {
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 				text += '• ';
 			}
+			if ( tagname === 'dl' ) listlevel++;
+			if ( tagname === 'dd' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
+			}
 			if ( tagname === 'h1' ) text += '***__';
 			if ( tagname === 'h2' ) text += '**__';
 			if ( tagname === 'h3' ) text += '**';
@@ -189,6 +194,7 @@ function htmlToPlain(html) {
 		onclosetag: (tagname) => {
 			if ( tagname === 'sup' ) reference = false;
 			if ( tagname === 'ul' ) listlevel--;
+			if ( tagname === 'dl' ) listlevel--;
 			if ( tagname === 'h1' ) text += '__***';
 			if ( tagname === 'h2' ) text += '__**';
 			if ( tagname === 'h3' ) text += '**';
@@ -246,6 +252,11 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 				text += '• ';
 			}
+			if ( tagname === 'dl' ) listlevel++;
+			if ( tagname === 'dd' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
+			}
 			if ( tagname === 'h1' ) text += '***__';
 			if ( tagname === 'h2' ) text += '**__';
 			if ( tagname === 'h3' ) text += '**';
@@ -278,6 +289,7 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 			if ( !serverpath ) return;
 			if ( tagname === 'sup' ) reference = false;
 			if ( tagname === 'ul' ) listlevel--;
+			if ( tagname === 'dl' ) listlevel--;
 			if ( tagname === 'h1' ) text += '__***';
 			if ( tagname === 'h2' ) text += '__**';
 			if ( tagname === 'h3' ) text += '**';
