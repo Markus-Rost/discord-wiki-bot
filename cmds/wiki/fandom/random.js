@@ -1,5 +1,6 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
+const logging = require('../../../util/logging.js');
 
 /**
  * Sends a random Fandom page.
@@ -26,8 +27,10 @@ function fandom_random(lang, msg, wiki, reaction, spoiler) {
 			if ( reaction ) reaction.removeEmoji();
 		}
 		else {
+			wiki.updateWiki(body.query.general);
+			logging(wiki, 'random', 'legacy');
 			var querypage = Object.values(body.query.pages)[0];
-			var pagelink = wiki.updateWiki(body.query.general).toLink(querypage.title);
+			var pagelink = wiki.toLink(querypage.title);
 			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
 			if ( querypage.title === body.query.general.mainpage && body.query.allmessages[0]['*'] ) {
 				embed.setDescription( body.query.allmessages[0]['*'] );

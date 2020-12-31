@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const help_setup = require('../functions/helpsetup.js');
+const logging = require('../util/logging.js');
 
 const wsStatus = [
 	'READY',
@@ -82,6 +83,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 				}
 				embed.addField( wiki, ping );
 			} ).finally( () => {
+				logging(wiki, 'test');
 				if ( msg.isOwner() ) return msg.client.shard.fetchClientValues('ws.status').then( values => {
 					return '```css\n' + values.map( (status, id) => '[' + id + ']: ' + ( wsStatus[status] || status ) ).join('\n') + '\n```';
 				}, error => {

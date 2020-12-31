@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js');
+const logging = require('../../../util/logging.js');
 const {timeoptions} = require('../../../util/default.json');
 
 var allSites = [];
@@ -32,6 +33,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 		}
 		else got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + body.query.wikidesc.id + '&format=json&cache=' + Date.now() ).then( ovresponse => {
 			wiki.updateWiki(body.query.general);
+			logging(wiki, 'overview', 'legacy');
 			var ovbody = ovresponse.body;
 			if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[body.query.wikidesc.id] ) {
 				console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );

@@ -1,4 +1,5 @@
 const {Util} = require('discord.js');
+const logging = require('./logging.js');
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const Wiki = require('./wiki.js');
 const check_wiki = {
@@ -164,6 +165,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				return;
 			}
 			wiki.updateWiki(body.query.general);
+			logging(wiki, 'inline');
 			if ( body.query.normalized ) {
 				body.query.normalized.forEach( title => links.filter( link => link.title === title.from ).forEach( link => link.title = title.to ) );
 			}
@@ -231,6 +233,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 				} ) );
 				if ( missing.length ) {
+					logging(wiki, 'inline', 'template');
 					msg.sendChannel( missing.map( embed => embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler ).join('\n'), {split:true} );
 				}
 			}

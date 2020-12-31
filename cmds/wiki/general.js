@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
+const logging = require('../../util/logging.js');
 const {parse_infobox, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
@@ -60,6 +61,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 	var args = title.split(' ').slice(1);
 	
 	if ( !msg.notMinecraft && wiki.href === lang.get('minecraft.link') && ( aliasInvoke in minecraft || invoke.startsWith( '/' ) ) ) {
+		logging(wiki, 'minecraft');
 		minecraft.WIKI = this;
 		if ( aliasInvoke in minecraft ) minecraft[aliasInvoke](lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
 		else minecraft.SYNTAX(lang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
@@ -107,15 +109,18 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		}
 		wiki.updateWiki(body.query.general);
 		if ( aliasInvoke === 'search' ) {
+			logging(wiki, 'search');
 			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
 		}
 		if ( aliasInvoke === 'diff' && args.join('') && !querystring.toString() && !fragment ) {
 			return fn.diff(lang, msg, args, wiki, reaction, spoiler);
 		}
 		if ( aliasInvoke === 'discussion' && wiki.isFandom(false) && !querystring.toString() && !fragment ) {
+			logging(wiki, 'discussion');
 			return fn.discussion(lang, msg, wiki, args.join(' '), body.query.general.sitename, reaction, spoiler);
 		}
 		if ( body.query.pages ) {
+			logging(wiki, 'general');
 			var querypages = Object.values(body.query.pages);
 			var querypage = querypages[0];
 			if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ) ) {
@@ -373,6 +378,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				console.log( '- Aborted, paused.' );
 				return;
 			}
+			logging(wiki, 'interwiki');
 			var iw = new URL(body.query.interwiki[0].url.replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
 			querystring.forEach( (value, name) => {
 				iw.searchParams.append(name, value);
@@ -412,6 +418,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			if ( reaction ) reaction.removeEmoji();
 		}
 		else {
+			logging(wiki, 'general');
 			var pagelink = wiki.toLink(body.query.general.mainpage, querystring, fragment);
 			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 			got.get( wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageprops|extracts&ppprop=description|displaytitle|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json' ).then( mpresponse => {

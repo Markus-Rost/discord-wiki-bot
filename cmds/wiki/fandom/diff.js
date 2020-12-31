@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js');
+const logging = require('../../../util/logging.js');
 const {timeoptions} = require('../../../util/default.json');
 const {toFormatting, htmlToPlain} = require('../../../util/functions.js');
 const diffParser = require('../../../util/edit_diff.js');
@@ -155,6 +156,7 @@ function fandom_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) {
 		}
 		else if ( body.query.pages && !body.query.pages['-1'] ) {
 			wiki.updateWiki(body.query.general);
+			logging(wiki, 'diff', 'legacy');
 			var pages = Object.values(body.query.pages);
 			if ( pages.length !== 1 ) {
 				msg.sendChannel( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );

@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
+const logging = require('../util/logging.js');
 const toTitle = require('../util/wiki.js').toTitle;
 var db = require('../util/database.js');
 
@@ -56,6 +57,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					msg.reactEmoji('nowiki');
 				}
 				else if ( body?.error?.code === 'us400' ) { // special catch for Fandom
+					if ( !old_username ) logging(wiki, 'verification');
 					embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
 					msg.replyMsg( lang.get('verify.user_missing_reply', ( old_username || username ).escapeFormatting()), {embed}, false, false );
 				}
@@ -69,6 +71,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				return;
 			}
 			wiki.updateWiki(body.query.general);
+			if ( !old_username ) logging(wiki, 'verification');
 			var queryuser = body.query.users[0];
 			embed.setAuthor( body.query.general.sitename );
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
