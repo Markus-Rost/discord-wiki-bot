@@ -542,7 +542,7 @@
         "channel wiki": "本频道的默认 wiki 是：",
         "channel wikichanged": "你已将频道 wiki 更改为：",
         "current": "这是本服务器的当前设置：",
-        "currentchannel": "频道复写：",
+        "currentchannel": "频道覆写：",
         "currentinline": "行内命令：",
         "currentlang": "语言：",
         "currentprefix": "前缀：",
