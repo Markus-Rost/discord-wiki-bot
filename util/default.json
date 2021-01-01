@@ -197,6 +197,24 @@
 			"regex": "((?:[a-z\\d-]{1,50}\\.)brickimedia\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
+		},
+		{
+			"name": "librewiki.net",
+			"regex": "(librewiki\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "femiwiki.com",
+			"regex": "((?:(?:www)\\.)?femiwiki\\.com)",
+			"articlePath": "/w/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "revi.wiki",
+			"regex": "((?:(?:private)\\.)?revi\\.wiki)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
 		}
 	]
 }
