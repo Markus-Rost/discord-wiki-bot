@@ -6,6 +6,10 @@ if ( !process.env.usagelog ) {
 const fs = require('fs');
 const usageLog = fs.createWriteStream(process.env.usagelog, {flags:'a'});
 
+usageLog.on( 'error', (error) => {
+	console.log( '- ' + shardId + ': Error while logging the usage: ' + error );
+} );
+
 /**
  * Log wikis by usage.
  * @param {import('./wiki.js')} wiki - The wiki.
@@ -13,7 +17,7 @@ const usageLog = fs.createWriteStream(process.env.usagelog, {flags:'a'});
  * @returns {Boolean}
  */
 function logging(wiki, ...notes) {
-	return usageLog.write( `${new Date().toISOString()} ${wiki.href} ${notes.join(' ')}\n`, 'utf8' );
+	return usageLog.write( `${new Date().toISOString()}\t${wiki.href}\t${notes.join('\t')}\n`, 'utf8' );
 }
 
 module.exports = logging;

@@ -1,5 +1,6 @@
 const {Util} = require('discord.js');
 const logging = require('./logging.js');
+const {partialURIdecode} = require('./functions.js');
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const Wiki = require('./wiki.js');
 const check_wiki = {
@@ -52,7 +53,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	var count = 0;
 	var maxcount = commandLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
 	var breakLines = false;
-	cleanCont.replace( /\u200b/g, '' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
+	cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
 		if ( !line.hasPrefix(prefix) || breakLines || count > maxcount ) return;
 		count++;
@@ -108,7 +109,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		var linkcount = 0;
 		var linkmaxcount = maxcount + 5;
 		var breakInline = false;
-		cleanCont.replace( /\u200b/g, '' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
+		cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
 			if ( line.startsWith( '>>> ' ) ) breakInline = true;
 			if ( line.startsWith( '> ' ) || breakInline ) return;
 			if ( line.hasPrefix(prefix) || !( line.includes( '[[' ) || line.includes( '{{' ) ) ) return;
@@ -119,8 +120,8 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					if ( linkcount < linkmaxcount ) {
 						linkcount++;
 						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
-						let title = entry[2].split('#')[0];
-						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
+						let title = entry[2].split('#')[0].replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
+						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ) : '' );
 						links.push({title,section,spoiler:entry[1]});
 					}
 					else if ( linkcount === linkmaxcount ) {
@@ -139,8 +140,8 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					if ( count < maxcount ) {
 						count++;
 						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
-						let title = entry[2].split('#')[0];
-						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#') : '' )
+						let title = entry[2].split('#')[0].replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
+						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ) : '' );
 						embeds.push({title,section,spoiler:entry[1]});
 					}
 					else if ( count === maxcount ) {

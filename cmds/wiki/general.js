@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
-const {parse_infobox, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
+const {parse_infobox, htmlToPlain, htmlToDiscord, partialURIdecode} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 const Wiki = require('../../util/wiki.js');
@@ -44,7 +44,7 @@ fs.readdir( './cmds/minecraft', (error, files) => {
 function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', querystring = new URLSearchParams(), fragment = '', interwiki = '', selfcall = 0) {
 	var full_title = title;
 	if ( title.includes( '#' ) ) {
-		fragment = title.split('#').slice(1).join('#');
+		fragment = title.split('#').slice(1).join('#').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
 		title = title.split('#')[0];
 	}
 	if ( /\?\w+=/.test(title) ) {
@@ -52,6 +52,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		querystring = new URLSearchParams(querystring + '&' + title.substring(querystart + 1));
 		title = title.substring(0, querystart);
 	}
+	title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
 	if ( title.length > 250 ) {
 		title = title.substring(0, 250);
 		msg.reactEmoji('⚠️');

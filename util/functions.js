@@ -350,6 +350,23 @@ function limitLength(text = '', limit = 1000, maxExtra = 20) {
 	return text.substring(0, limit) + suffix;
 };
 
+/**
+ * Try to URI decode.
+ * @param {String} m - The character to decode.
+ * @returns {String}
+ */
+function partialURIdecode(m) {
+	var text = '';
+	try {
+		text = decodeURIComponent( m );
+	}
+	catch ( replaceError ) {
+		if ( isDebug ) console.log( '- Failed to decode ' + m + ':' + replaceError );
+		text = m;
+	}
+	return text;
+};
+
 module.exports = {
 	got,
 	parse_infobox,
@@ -359,5 +376,6 @@ module.exports = {
 	htmlToPlain,
 	htmlToDiscord,
 	escapeFormatting,
-	limitLength
+	limitLength,
+	partialURIdecode
 };
