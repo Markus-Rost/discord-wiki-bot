@@ -182,7 +182,7 @@
 		},
 		{
 			"name": "wiki.biligame.com",
-			"regex": "(wiki\\.biligame\\.com/(?:[a-z\\d]{1,50}))",
+			"regex": "(wiki\\.biligame\\.com(?:/[a-z\\d]{1,50}))",
 			"articlePath": "/",
 			"scriptPath": "/"
 		},
@@ -206,13 +206,13 @@
 		},
 		{
 			"name": "femiwiki.com",
-			"regex": "((?:(?:www)\\.)?femiwiki\\.com)",
+			"regex": "((?:www\\.)?femiwiki\\.com)",
 			"articlePath": "/w/",
 			"scriptPath": "/"
 		},
 		{
 			"name": "revi.wiki",
-			"regex": "((?:(?:private)\\.)?revi\\.wiki)",
+			"regex": "(revi\\.wiki)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		}
