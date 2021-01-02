@@ -524,7 +524,7 @@
             "empty": "*Bu kategori boş*",
             "files": "$1 dosya",
             "pages": "$1 sayfa",
-            "subcats": "$1 {{PLURAL:$1|kategori|kategoriler}}"
+            "subcats": "$1 {{PLURAL:$2|kategori|kategoriler}}"
         },
         "empty": "*Bu özel sayfa boş*",
         "infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1 kullan.",
