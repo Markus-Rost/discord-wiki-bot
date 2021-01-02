@@ -117,7 +117,7 @@
         "hidden": "*oculto*",
         "info": {
             "added": "Adicionado:",
-            "bytes": "$1 {{PLURAL:$1|byte|bytes}}",
+            "bytes": "$1 {{PLURAL:$2|byte|bytes}}",
             "comment": "Resumo:",
             "editor": "Editor:",
             "more": "E mais",
@@ -134,7 +134,7 @@
         "main": "Discussões",
         "post": "post",
         "tags": "Etiquetas:",
-        "votes": "$1 {{PLURAL:$1|voto|votos}}"
+        "votes": "$1 {{PLURAL:$2|voto|votos}}"
     },
     "fallback": [
         "en",
@@ -395,7 +395,7 @@
         "link": "https://minecraft-pt.gamepedia.com/",
         "more": "E $1 mais.",
         "private": "**Problema privado**",
-        "total": "$1 {{PLURAL:$1|problema|problemas}} corrigidos"
+        "total": "$1 {{PLURAL:$2|problema|problemas}} corrigidos"
     },
     "overview": {
         "articles": "Artigos:",
@@ -522,15 +522,15 @@
         "category": {
             "content": "Conteúdo nessa categoria:",
             "empty": "*Esta categoria está vazia*",
-            "files": "$1 {{PLURAL:$1|arquivo|arquivos}}",
-            "pages": "$1 {{PLURAL:$1|página|páginas}}",
-            "subcats": "$1 {{PLURAL:$1|categoria|categorias}}"
+            "files": "$1 {{PLURAL:$2|arquivo|arquivos}}",
+            "pages": "$1 {{PLURAL:$2|página|páginas}}",
+            "subcats": "$1 {{PLURAL:$2|categoria|categorias}}"
         },
         "empty": "*Esta página especial está vazia*",
         "infopage": "Não é o resultado correto? Use $1 para um link direto.",
         "infosearch": "Não é o resultado correto? Use $1 para um link direto ou $2 para uma lista de todos os acessos.",
         "media": "Para a página de descrição do arquivo",
-        "results": "$1 total {{PLURAL:$1|resultado|resultados}}",
+        "results": "$1 total {{PLURAL:$2|resultado|resultados}}",
         "special": "Conteúdo desta página especial:"
     },
     "settings": {
