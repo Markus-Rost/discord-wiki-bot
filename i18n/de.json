@@ -117,7 +117,7 @@
         "hidden": "*versteckt*",
         "info": {
             "added": "Hinzugefügt:",
-            "bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
+            "bytes": "$1 {{PLURAL:$2|Byte|Bytes}}",
             "comment": "Zusammenfassung:",
             "editor": "Autor:",
             "more": "Und mehr",
@@ -134,7 +134,7 @@
         "main": "Diskussionen",
         "post": "post",
         "tags": "Tags:",
-        "votes": "{{PLURAL:$1|Eine Stimme|$1 Stimmen}}"
+        "votes": "{{PLURAL:$2|Eine Stimme|$1 Stimmen}}"
     },
     "fallback": [
         "en",
@@ -522,15 +522,15 @@
         "category": {
             "content": "Inhalt der Kategorie:",
             "empty": "*Diese Kategorie ist leer*",
-            "files": "{{PLURAL:$1|Eine Datei|$1 Dateien}}",
-            "pages": "{{PLURAL:$1|Eine Seite|$1 Seiten}}",
-            "subcats": "{{PLURAL:$1|Eine Kategorie|$1 Kategorien}}"
+            "files": "{{PLURAL:$2|Eine Datei|$1 Dateien}}",
+            "pages": "{{PLURAL:$2|Eine Seite|$1 Seiten}}",
+            "subcats": "{{PLURAL:$2|Eine Kategorie|$1 Kategorien}}"
         },
         "empty": "*Diese Spezialseite ist leer*",
         "infopage": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link.",
         "infosearch": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link oder $2 für eine Liste mit allen Treffern.",
         "media": "Zur Dateibeschreibungsseite",
-        "results": "$1 {{PLURAL:$1|Ergebnis|Ergebnisse}} insgesamt",
+        "results": "$1 {{PLURAL:$2|Ergebnis|Ergebnisse}} insgesamt",
         "special": "Inhalt der Spezialseite:"
     },
     "settings": {
