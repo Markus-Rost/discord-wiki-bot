@@ -18,11 +18,11 @@ const queryfunctions = {
 	title: (query, wiki) => query.querypage.results.map( result => {
 		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
-	times: (query, wiki) => query.querypage.results.map( result => {
-		return result.value + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
+	times: (query, wiki, lang) => query.querypage.results.map( result => {
+		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
-	size: (query, wiki) => query.querypage.results.map( result => {
-		return result.value + ' bytes: [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
+	size: (query, wiki, lang) => query.querypage.results.map( result => {
+		return lang.get('diff.info.bytes', parseInt(result.value, 10).toLocaleString(lang.get('dateformat')), result.value) + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	redirect: (query, wiki) => query.querypage.results.map( result => {
 		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + result.databaseResult.rd_title.escapeFormatting() : '' );
@@ -30,19 +30,19 @@ const queryfunctions = {
 	doubleredirect: (query, wiki) => query.querypage.results.map( result => {
 		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + result.databaseResult.b_title.escapeFormatting() + ' → ' + result.databaseResult.c_title.escapeFormatting() : '' );
 	} ).join('\n'),
-	timestamp: (query, wiki) => query.querypage.results.map( result => {
+	timestamp: (query, wiki, lang) => query.querypage.results.map( result => {
 		return new Date(result.timestamp).toLocaleString(lang.get('dateformat'), timeoptions).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
-	media: (query) => query.querypage.results.map( result => {
+	media: (query, wiki, lang) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');
-		return '**' + ms[1] + '**: ' + ms[2] + ' files (' + ms[3] + ' bytes)';
+		return '**' + ms[1] + '**: ' + lang.get('search.category.files', parseInt(ms[2], 10).toLocaleString(lang.get('dateformat')), parseInt(ms[2], 10)) + ' (' + lang.get('diff.info.bytes', parseInt(ms[3], 10).toLocaleString(lang.get('dateformat')), parseInt(ms[3], 10)) + ')';
 	} ).join('\n'),
-	category: (query, wiki) => query.querypage.results.map( result => {
-		return result.value + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink('Category:' + result.title, '', '', true) + ')';
+	category: (query, wiki, lang) => query.querypage.results.map( result => {
+		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink('Category:' + result.title, '', '', true) + ')';
 	} ).join('\n'),
-	gadget: (query) => query.querypage.results.map( result => {
+	gadget: (query, wiki, lang) => query.querypage.results.map( result => {
 		result.title = result.title.replace( /^(?:.*:)?gadget-/, '' );
-		return '**' + result.title.escapeFormatting() + '**: ' + result.value + ' users (' + result.ns + ' active)';
+		return '**' + result.title.escapeFormatting() + '**: ' + parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + ' users (' + result.ns.toLocaleString(lang.get('dateformat')) + ' active)';
 	} ).join('\n'),
 	recentchanges: (query, wiki) => query.recentchanges.map( result => {
 		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, ( result.type === 'edit' ? {diff:result.revid,oldid:result.old_revid} : '' ), '', true) + ')';
@@ -143,7 +143,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 				embed.setDescription( description );
 			}
 			if ( msg.channel.isGuild() && msg.guild.id in patreons && specialpage in querypages ) {
-				var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki), {maxLength:1000} )[0];
+				var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 				embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			}
 		}

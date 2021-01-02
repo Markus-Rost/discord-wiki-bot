@@ -50,10 +50,10 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			return language.code === body.query.general.lang;
 		} )['*']];
 		var rtl = [lang.get('overview.rtl'), ( body.query.general.rtl !== undefined ? lang.get('overview.yes') : undefined )];
-		var articles = [lang.get('overview.articles'), body.query.statistics.articles];
-		var pages = [lang.get('overview.pages'), body.query.statistics.pages];
-		var edits = [lang.get('overview.edits'), body.query.statistics.edits];
-		var users = [lang.get('overview.users'), body.query.statistics.activeusers];
+		var articles = [lang.get('overview.articles'), body.query.statistics.articles.toLocaleString(lang.get('dateformat'))];
+		var pages = [lang.get('overview.pages'), body.query.statistics.pages.toLocaleString(lang.get('dateformat'))];
+		var edits = [lang.get('overview.edits'), body.query.statistics.edits.toLocaleString(lang.get('dateformat'))];
+		var users = [lang.get('overview.users'), body.query.statistics.activeusers.toLocaleString(lang.get('dateformat'))];
 		var license = [lang.get('overview.license'), lang.get('overview.unknown')];
 		if ( body.query.rightsinfo.url ) {
 			let licenseurl = body.query.rightsinfo.url
@@ -184,11 +184,11 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 						}
 						let counts = dsbody?._embedded?.count?.[0];
 						if ( counts?.FORUM || counts?.WALL || counts?.ARTICLE_COMMENT ) {
-							if ( counts?.FORUM ) posts.push(counts.FORUM);
-							if ( counts?.WALL ) walls.push(counts.WALL);
-							if ( counts?.ARTICLE_COMMENT ) comments.push(counts.ARTICLE_COMMENT);
+							if ( counts?.FORUM ) posts.push(counts.FORUM.toLocaleString(lang.get('dateformat')));
+							if ( counts?.WALL ) walls.push(counts.WALL.toLocaleString(lang.get('dateformat')));
+							if ( counts?.ARTICLE_COMMENT ) comments.push(counts.ARTICLE_COMMENT.toLocaleString(lang.get('dateformat')));
 						}
-						else if ( counts?.total ) posts.push(counts.total);
+						else if ( counts?.total ) posts.push(counts.total.toLocaleString(lang.get('dateformat')));
 					}, error => {
 						console.log( '- Error while getting discussions stats: ' + error );
 					} )

@@ -62,6 +62,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				let $ = cheerio.load(gbody);
 				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
 				if ( wikisedited ) {
+					wikisedited = parseInt(wikisedited, 10).toLocaleString(lang.get('dateformat'));
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.wikisedited'),
 						value: wikisedited,
@@ -75,6 +76,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				}
 				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
 				if ( globaledits ) {
+					globaledits = parseInt(globaledits, 10).toLocaleString(lang.get('dateformat'));
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
 						value: globaledits,
@@ -106,6 +108,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				let $ = cheerio.load(gbody);
 				var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
 				if ( globaledits ) {
+					globaledits = parseInt(globaledits, 10).toLocaleString(lang.get('dateformat'));
 					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
 						value: globaledits,

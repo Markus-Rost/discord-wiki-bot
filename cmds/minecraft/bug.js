@@ -57,7 +57,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
 							else extrabugs.push({name,value,inline:false});
 						} );
-						if ( extrabugs.length ) embed.setFooter( lang.get('minecraft.more', extrabugs.length) );
+						if ( extrabugs.length ) embed.setFooter( lang.get('minecraft.more', extrabugs.length.toLocaleString(lang.get('dateformat')), extrabugs.length) );
 					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
 					var fixed = '';
@@ -110,10 +110,11 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							embed.addField( bug.key, value );
 						} );
 						if ( body.total > 25 ) {
-							embed.setFooter( lang.get('minecraft.more', body.total - 25) );
+							var extrabugs = body.total - 25;
+							embed.setFooter( lang.get('minecraft.more', extrabugs.toLocaleString(lang.get('dateformat')), extrabugs) );
 						}
 					}
-					var total = '**' + args.join(' ') + ':** ' + lang.get('minecraft.total', body.total);
+					var total = '**' + args.join(' ') + ':** ' + lang.get('minecraft.total', body.total.toLocaleString(lang.get('dateformat')), body.total);
 					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, {embed} );
 				}
 			}

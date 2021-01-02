@@ -254,13 +254,13 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 									category.push(lang.get('search.category.empty'));
 								}
 								if ( querypage.categoryinfo.pages > 0 ) {
-									category.push(lang.get('search.category.pages', querypage.categoryinfo.pages));
+									category.push(lang.get('search.category.pages', querypage.categoryinfo.pages.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.pages));
 								}
 								if ( querypage.categoryinfo.files > 0 ) {
-									category.push(lang.get('search.category.files', querypage.categoryinfo.files));
+									category.push(lang.get('search.category.files', querypage.categoryinfo.files.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.files));
 								}
 								if ( querypage.categoryinfo.subcats > 0 ) {
-									category.push(lang.get('search.category.subcats', querypage.categoryinfo.subcats));
+									category.push(lang.get('search.category.subcats', querypage.categoryinfo.subcats.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.subcats));
 								}
 								if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
 								else text += '\n\n' + category.join('\n');
@@ -346,13 +346,13 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 						category.push(lang.get('search.category.empty'));
 					}
 					if ( querypage.categoryinfo.pages > 0 ) {
-						category.push(lang.get('search.category.pages', querypage.categoryinfo.pages));
+						category.push(lang.get('search.category.pages', querypage.categoryinfo.pages.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.pages));
 					}
 					if ( querypage.categoryinfo.files > 0 ) {
-						category.push(lang.get('search.category.files', querypage.categoryinfo.files));
+						category.push(lang.get('search.category.files', querypage.categoryinfo.files.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.files));
 					}
 					if ( querypage.categoryinfo.subcats > 0 ) {
-						category.push(lang.get('search.category.subcats', querypage.categoryinfo.subcats));
+						category.push(lang.get('search.category.subcats', querypage.categoryinfo.subcats.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.subcats));
 					}
 					if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
 					else text += '\n\n' + category.join('\n');

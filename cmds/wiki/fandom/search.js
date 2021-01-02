@@ -37,7 +37,7 @@ function fandom_search(lang, msg, searchterm, wiki, query, reaction, spoiler) {
 		body.items.forEach( result => {
 			description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', true) + ')' );
 		} );
-		embed.setFooter( lang.get('search.results', body.total) );
+		embed.setFooter( lang.get('search.results', body.total.toLocaleString(lang.get('dateformat')), body.total) );
 	}, error => {
 		console.log( '- Error while getting the search results.' + error );
 	} ).finally( () => {

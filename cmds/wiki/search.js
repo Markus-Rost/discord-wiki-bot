@@ -43,7 +43,7 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 				description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', true) + ')' + ( result.sectiontitle ? ' § [' + result.sectiontitle + '](' + wiki.toLink(result.title, '', result.sectiontitle, true) + ')' : '' ) + ( result.redirecttitle ? ' (⤷ [' + result.redirecttitle + '](' + wiki.toLink(result.redirecttitle, 'redirect=no', '', true) + '))' : '' ) );
 			} );
 			if ( body.query.searchinfo ) {
-				embed.setFooter( lang.get('search.results', body.query.searchinfo.totalhits) );
+				embed.setFooter( lang.get('search.results', body.query.searchinfo.totalhits.toLocaleString(lang.get('dateformat')), body.query.searchinfo.totalhits) );
 			}
 		}
 	}, error => {

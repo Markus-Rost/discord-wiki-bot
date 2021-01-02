@@ -137,7 +137,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				return;
 			}
-			var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) && ( ( username.includes( ':' ) && range % 16 ) || range % 8 ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
+			var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) && ( ( username.includes( ':' ) && range % 16 ) || range % 8 ) ? '~' : '' ) + ucbody.query.usercontribs.length.toLocaleString(lang.get('dateformat')) + ( ucbody.continue ? '+' : '' )];
 			
 			var pagelink = wiki.toLink(namespace + username, querystring, fragment);
 			if ( msg.showEmbed() ) {
@@ -260,7 +260,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				gender.push(lang.get('user.gender.unknown'));
 		}
 		var registration = [lang.get('user.info.registration'), new Date(queryuser.registration).toLocaleString(lang.get('dateformat'), timeoptions)];
-		var editcount = [lang.get('user.info.editcount'), queryuser.editcount];
+		var editcount = [lang.get('user.info.editcount'), queryuser.editcount.toLocaleString(lang.get('dateformat'))];
 		var groups = queryuser.groups.filter( group => !usergroups.ignored.includes( group ) );
 		var globalgroups = [];
 		if ( wiki.isFandom() ) {
@@ -352,7 +352,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				var text = '<' + pagelink + '>';
 				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true );
 				if ( wiki.hasCentralAuth() ) {
-					embed.addField( lang.get('user.info.globaleditcount'), '[' + body.query.globaluserinfo.editcount + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true ).addField( lang.get('user.info.wikisedited'), '[' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true );
+					embed.addField( lang.get('user.info.globaleditcount'), '[' + body.query.globaluserinfo.editcount.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true ).addField( lang.get('user.info.wikisedited'), '[' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true );
 				}
 				embed.addField( group[0], group.slice(1).join(',\n'), true );
 				if ( globalgroup.length > 1 ) {
@@ -374,7 +374,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				var embed = {};
 				var text = '<' + pagelink + '>\n\n' + gender.join(' ') + '\n' + registration.join(' ') + '\n' + editcount.join(' ');
 				if ( wiki.hasCentralAuth() ) {
-					text += '\n' + lang.get('user.info.globaleditcount') + ' ' + body.query.globaluserinfo.editcount + '\n' + lang.get('user.info.wikisedited') + ' ' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length;
+					text += '\n' + lang.get('user.info.globaleditcount') + ' ' + body.query.globaluserinfo.editcount.toLocaleString(lang.get('dateformat')) + '\n' + lang.get('user.info.wikisedited') + ' ' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length.toLocaleString(lang.get('dateformat'));
 				}
 				text += '\n' + group[0] + ' ' + group.slice(1).join(', ');
 				if ( globalgroup.length > 1 ) {
@@ -390,12 +390,12 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( msg.showEmbed() ) {
 					embed.spliceFields(0, 1, {
 						name: editcount[0],
-						value: '[' + pbody.userData.localEdits + '](' + wiki.toLink(contribs + username, '', '', true) + ')',
+						value: '[' + pbody.userData.localEdits.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink(contribs + username, '', '', true) + ')',
 						inline: true
 					});
 					if ( pbody.userData.posts ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.postcount'),
-						value: '[' + pbody.userData.posts + '](' + wiki + 'f/u/' + queryuser.userid + ')',
+						value: '[' + pbody.userData.posts.toLocaleString(lang.get('dateformat')) + '](' + wiki + 'f/u/' + queryuser.userid + ')',
 						inline: true
 					});
 					if ( pbody.userData.avatar && pbody.userData.avatar !== 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400' ) {
@@ -409,8 +409,8 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				else {
 					let splittext = text.split('\n');
-					splittext.splice(4, 1, editcount[0] + ' ' + pbody.userData.localEdits);
-					if ( pbody.userData.posts ) splittext.splice(5, 0, lang.get('user.info.postcount') + ' ' + pbody.userData.posts);
+					splittext.splice(4, 1, editcount[0] + ' ' + pbody.userData.localEdits.toLocaleString(lang.get('dateformat')));
+					if ( pbody.userData.posts ) splittext.splice(5, 0, lang.get('user.info.postcount') + ' ' + pbody.userData.posts.toLocaleString(lang.get('dateformat')));
 					text = splittext.join('\n');
 				}
 				var discord = '';

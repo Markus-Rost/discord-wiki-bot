@@ -127,7 +127,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						}
 					}
 					else {
-						var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) ? '~' : '' ) + ucbody.query.usercontribs.length + ( ucbody.continue ? '+' : '' )];
+						var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) ? '~' : '' ) + ucbody.query.usercontribs.length.toLocaleString(lang.get('dateformat')) + ( ucbody.continue ? '+' : '' )];
 						
 						var pagelink = wiki.toLink(namespace + username, querystring, fragment);
 						if ( msg.showEmbed() ) {
@@ -240,7 +240,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							gender.push(lang.get('user.gender.unknown'));
 					}
 					var registration = [lang.get('user.info.registration'), new Date(queryuser.registration).toLocaleString(lang.get('dateformat'), timeoptions)];
-					var editcount = [lang.get('user.info.editcount'), queryuser.editcount];
+					var editcount = [lang.get('user.info.editcount'), queryuser.editcount.toLocaleString(lang.get('dateformat'))];
 					var groups = queryuser.groups;
 					var group = [lang.get('user.info.group', groups.length)];
 					for ( var i = 0; i < usergroups.sorted.length; i++ ) {
