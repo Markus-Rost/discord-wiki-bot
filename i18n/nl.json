@@ -117,7 +117,7 @@
         "hidden": "*verborgen*",
         "info": {
             "added": "Toegevoegd:",
-            "bytes": "$1 {{PLURAL:$1|Byte|Bytes}}",
+            "bytes": "$1 {{PLURAL:$2|Byte|Bytes}}",
             "comment": "Beschrijving:",
             "editor": "Bewerker:",
             "more": "En meer",
@@ -133,7 +133,7 @@
         "image": "Bekijk afbeelding",
         "main": "Discussies",
         "post": "bericht",
-        "votes": "$1 {{PLURAL:$1|stem|stemmen}}"
+        "votes": "$1 {{PLURAL:$2|stem|stemmen}}"
     },
     "fallback": [
         "en",
@@ -297,7 +297,7 @@
         "link": "https://minecraft-nl.gamepedia.com/",
         "more": "En $1 meer.",
         "private": "**Privé issue**",
-        "total": "$1 {{PLURAL:$1|bug|bugs}} opgelost"
+        "total": "$1 {{PLURAL:$2|bug|bugs}} opgelost"
     },
     "overview": {
         "articles": "Artikelen:",
@@ -326,9 +326,9 @@
         "category": {
             "content": "Inhoud van deze categorie:",
             "empty": "*Deze categorie is leeg*",
-            "files": "$1 {{PLURAL:$1|bestand|bestanden}}",
-            "pages": "$1 {{PLURAL:$1|pagina|pagina's}}",
-            "subcats": "$1 {{PLURAL:$1|categorie|categorieën}}"
+            "files": "$1 {{PLURAL:$2|bestand|bestanden}}",
+            "pages": "$1 {{PLURAL:$2|pagina|pagina's}}",
+            "subcats": "$1 {{PLURAL:$2|categorie|categorieën}}"
         },
         "empty": "*Deze speciale pagina is leeg*",
         "infopage": "Niet het gewenste resultaat? Gebruik $1 voor een rechtstreekse link.",

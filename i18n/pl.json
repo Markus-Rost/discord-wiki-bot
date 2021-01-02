@@ -117,7 +117,7 @@
         "hidden": "*ukryte*",
         "info": {
             "added": "Dodano:",
-            "bytes": "$1 {{PLURAL:$1|bajt|bajty|bajtów}}",
+            "bytes": "$1 {{PLURAL:$2|bajt|bajty|bajtów}}",
             "comment": "Komentarz:",
             "editor": "Autor:",
             "more": "Oraz więcej",
@@ -134,7 +134,7 @@
         "main": "Dyskusje",
         "post": "post",
         "tags": "Tagi:",
-        "votes": "$1 {{PLURAL:$1|głos|głosy|głosów}}"
+        "votes": "$1 {{PLURAL:$2|głos|głosy|głosów}}"
     },
     "fallback": [
         "en",
@@ -389,9 +389,9 @@
         "cmdpage": "Komendy#",
         "fixed": "Naprawione w wersji:",
         "link": "https://minecraft-pl.gamepedia.com/",
-        "more": "Oraz $1 {{PLURAL:$1|inny|inne|innych}}.",
+        "more": "Oraz $1 {{PLURAL:$2|inny|inne|innych}}.",
         "private": "**Private Issue**",
-        "total": "naprawiono $1 {{PLURAL:$1|błąd|błędy|błędów}}"
+        "total": "naprawiono $1 {{PLURAL:$2|błąd|błędy|błędów}}"
     },
     "overview": {
         "articles": "Artykułów:",
@@ -517,15 +517,15 @@
         "category": {
             "content": "Zawartość tej kategorii:",
             "empty": "*Ta kategoria jest pusta*",
-            "files": "$1 {{PLURAL:$1|plik|pliki|plików}}",
-            "pages": "$1 {{PLURAL:$1|strona|strony|stron}}",
-            "subcats": "$1 {{PLURAL:$1|kategoria|katerorie|kategorii}}"
+            "files": "$1 {{PLURAL:$2|plik|pliki|plików}}",
+            "pages": "$1 {{PLURAL:$2|strona|strony|stron}}",
+            "subcats": "$1 {{PLURAL:$2|kategoria|katerorie|kategorii}}"
         },
         "empty": "*Ta strona specjalna jest pusta*",
         "infopage": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku.",
         "infosearch": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku lub $2 dla listy wszystkich wyników.",
         "media": "Do strony opisu pliku",
-        "results": "$1 {{PLURAL:$1|wynik|wyniki|wszystkich wyników}}",
+        "results": "$1 {{PLURAL:$2|wynik|wyniki|wszystkich wyników}}",
         "special": "Zawartość tej strony specjalnej:"
     },
     "settings": {

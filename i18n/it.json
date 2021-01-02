@@ -134,7 +134,7 @@
         "main": "Discussioni",
         "post": "post",
         "tags": "Tag:",
-        "votes": "$1 {{PLURAL:$1|voto|voti}}"
+        "votes": "$1 {{PLURAL:$2|voto|voti}}"
     },
     "fallback": [
         "en",
