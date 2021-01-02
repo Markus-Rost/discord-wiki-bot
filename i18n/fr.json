@@ -117,7 +117,7 @@
         "hidden": "*masqué*",
         "info": {
             "added": "Ajoutés :",
-            "bytes": "$1 {{PLURAL:$1|octet|octets}}",
+            "bytes": "$1 {{PLURAL:$2|octet|octets}}",
             "comment": "Commentaire :",
             "editor": "Éditeur :",
             "more": "Et plus",
@@ -133,7 +133,7 @@
         "image": "Afficher l'image",
         "main": "Discussions",
         "post": "post",
-        "votes": "$1 {{PLURAL:$1|vote|votes}}"
+        "votes": "$1 {{PLURAL:$2|vote|votes}}"
     },
     "fallback": [
         "en",
@@ -296,7 +296,7 @@
         "link": "https://minecraft-fr.gamepedia.com/",
         "more": "Et $1 autres.",
         "private": "**Problème privé**",
-        "total": "$1 {{PLURAL:$1|bug|bugs}} corrigés"
+        "total": "$1 {{PLURAL:$2|bug|bugs}} corrigés"
     },
     "overview": {
         "articles": "Articles :",
@@ -325,9 +325,9 @@
         "category": {
             "content": "Contenu de cette catégorie :",
             "empty": "*Cette catégorie est vide*",
-            "files": "$1 {{PLURAL:$1|fichier|fichiers}}",
-            "pages": "$1 {{PLURAL:$1|page|pages}}",
-            "subcats": "$1 {{PLURAL:$1|catégorie|catégories}}"
+            "files": "$1 {{PLURAL:$2|fichier|fichiers}}",
+            "pages": "$1 {{PLURAL:$2|page|pages}}",
+            "subcats": "$1 {{PLURAL:$2|catégorie|catégories}}"
         },
         "empty": "*Cette page spéciale est vide*",
         "infopage": "Pas le bon résultat ? Utilisez $1 pour un lien direct.",
