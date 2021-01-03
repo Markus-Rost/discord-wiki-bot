@@ -88,7 +88,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		return fn.diff(lang, msg, args, wiki, reaction, spoiler);
 	}
 	var noRedirect = ( querystring.getAll('redirect').pop() === 'no' || ( querystring.has('action') && querystring.getAll('action').pop() !== 'view' ) );
-	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1F' + encodeURIComponent( title.replace( /\x1F/g, '\ufffd' ) ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1F' + encodeURIComponent( ( aliasInvoke === 'search' ? full_title.split(' ').slice(1).join(' ') : title ).replace( /\x1F/g, '\ufffd' ) ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
@@ -187,7 +187,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( reaction ) reaction.removeEmoji();
 			}
 			else if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) {
-				got.get( wiki + 'api.php?action=query&prop=pageimages|categoryinfo|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + querypage.ns + '|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
+				got.get( wiki + 'api.php?action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + querypage.ns + '|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
 					var srbody = srresponse.body;
 					if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
 					if ( srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
@@ -276,7 +276,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 								}
 							}
 				
-							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment) );
+							msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment) );
 						}
 					}
 				}, error => {
@@ -368,7 +368,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 				}
 				
-				msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' )) );
+				msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' )) );
 				
 				if ( reaction ) reaction.removeEmoji();
 			}
@@ -422,7 +422,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			logging(wiki, 'general');
 			var pagelink = wiki.toLink(body.query.general.mainpage, querystring, fragment);
 			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
-			got.get( wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=pageprops|extracts&ppprop=description|displaytitle|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json' ).then( mpresponse => {
+			got.get( wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=info|pageprops|extracts&ppprop=description|displaytitle|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json' ).then( mpresponse => {
 				var mpbody = mpresponse.body;
 				if ( mpbody && mpbody.warnings ) log_warn(body.warnings);
 				if ( mpresponse.statusCode !== 200 || !mpbody || mpbody.batchcomplete === undefined || !mpbody.query ) {
@@ -460,7 +460,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			}, error => {
 				console.log( '- Error while getting the main page: ' + error );
 			} ).finally( () => {
-				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, body.query.general.mainpage, embed, wiki, '', fragment) );
+				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, '', fragment) );
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );

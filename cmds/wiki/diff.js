@@ -247,8 +247,8 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 						if ( compare[0].length ) embed.addField( lang.get('diff.info.removed'), compare[0], true );
 						if ( compare[1].length ) embed.addField( lang.get('diff.info.added'), compare[1], true );
 					}
-					else if ( revisions[0]['*'] ) {
-						var content = revisions[0]['*'].escapeFormatting();
+					else if ( ( revisions[0]?.slots?.main || revisions[0] )['*'] ) {
+						var content = ( revisions[0]?.slots?.main || revisions[0] )['*'].escapeFormatting();
 						if ( content.trim().length ) {
 							if ( content.length <= 1000 ) content = '**' + content + '**';
 							else {

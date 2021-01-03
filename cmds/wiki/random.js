@@ -14,7 +14,7 @@ const extract_desc = require('../../util/extract_desc.js');
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
-	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=pageimages|pageprops|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=random&grnnamespace=0&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&prop=info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=random&grnnamespace=0&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -71,7 +71,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			}
 		}
 		
-		msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage.title, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href )) );
+		msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href )) );
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );
