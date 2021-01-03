@@ -1,4 +1,5 @@
 const {MessageEmbed, Util} = require('discord.js');
+const {limit: {search: searchLimit}} = require('../../util/default.json');
 
 /**
  * Searches a Gamepedia wiki.
@@ -21,8 +22,10 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 		pagelink = wiki.toLink('Special:Search');
 		embed.setTitle( 'Special:Search' ).setURL( pagelink );
 	}
+	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
 	var description = [];
-	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( Object.values(( query?.pages || {ns:0} ))?.[0]?.ns || '0' ) + '|' + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=10&srsearch=' + encodeURIComponent( ( searchterm || ' ' ) ) + '&format=json' ).then( response => {
+	var limit = searchLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + querypage.ns + '|' + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( ( searchterm || ' ' ) ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.query || !body.query.search || body.batchcomplete === undefined ) {
@@ -39,9 +42,54 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 			}
 		}
 		if ( searchterm.trim() ) {
+			var hasExactMatch = false;
 			body.query.search.forEach( result => {
-				description.push( '• [' + result.title + '](' + wiki.toLink(result.title, '', '', true) + ')' + ( result.sectiontitle ? ' § [' + result.sectiontitle + '](' + wiki.toLink(result.title, '', result.sectiontitle, true) + ')' : '' ) + ( result.redirecttitle ? ' (⤷ [' + result.redirecttitle + '](' + wiki.toLink(result.redirecttitle, 'redirect=no', '', true) + '))' : '' ) );
+				let text = '• ';
+				let bold = '';
+				if ( result.title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
+					bold = '**';
+					hasExactMatch = true;
+					if ( query.redirects?.[0] ) {
+						if ( query.redirects[0].tofragment && !result.sectiontitle ) {
+							result.sectiontitle = query.redirects[0].tofragment;
+						}
+						if ( !result.redirecttitle ) result.redirecttitle = query.redirects[0].from;
+					}
+				}
+				text += bold;
+				text += '[' + result.title + '](' + wiki.toLink(result.title, '', '', true) + ')';
+				if ( result.sectiontitle ) {
+					text += ' § [' + result.sectiontitle + '](' + wiki.toLink(result.title, '', result.sectiontitle, true) + ')';
+				}
+				if ( result.redirecttitle ) {
+					text += ' (⤷ [' + result.redirecttitle + '](' + wiki.toLink(result.redirecttitle, 'redirect=no', '', true) + '))';
+				}
+				text += bold;
+				description.push( text );
 			} );
+			if ( !hasExactMatch ) {
+				if ( query.interwiki?.[0] ) {
+					let text = '• **⤷ ';
+					text += '__[' + query.interwiki[0].title + '](' + query.interwiki[0].url.replace( /[()]/g, '\\$&' ) + ')__';
+					if ( query.redirects?.[0] ) {
+						text += ' (⤷ [' + query.redirects[0].from + '](' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '))';
+					}
+					text += '**';
+					description.unshift( text );
+				}
+				else if ( querypage.invalid === undefined && ( querypage.missing === undefined || querypage.known !== undefined ) ) {
+					let text = '• **';
+					text += '[' + querypage.title + '](' + wiki.toLink(querypage.title, '', '', true) + ')';
+					if ( query.redirects?.[0] ) {
+						if ( query.redirects[0].tofragment ) {
+							text += ' § [' + query.redirects[0].tofragment + '](' + wiki.toLink(querypage.title, '', query.redirects[0].tofragment, true) + ')';
+						}
+						text += ' (⤷ [' + query.redirects[0].from + '](' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '))';
+					}
+					text += '**';
+					description.unshift( text );
+				}
+			}
 			if ( body.query.searchinfo ) {
 				embed.setFooter( lang.get('search.results', body.query.searchinfo.totalhits.toLocaleString(lang.get('dateformat')), body.query.searchinfo.totalhits) );
 			}

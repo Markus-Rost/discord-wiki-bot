@@ -8,6 +8,10 @@
 			"default": 5,
 			"patreon": 10
 		},
+		"search": {
+			"default": 10,
+			"patreon": 25
+		},
 		"discussion": {
 			"default": 50,
 			"patreon": 100
