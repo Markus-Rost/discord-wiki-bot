@@ -91,20 +91,22 @@ function cmd_help(lang, msg, args, line, wiki) {
 		var cmd = ( lang.aliases[invoke] || invoke );
 		if ( cmd === 'admin' ) {
 			if ( !msg.channel.isGuild() || msg.isAdmin() ) {
-				var cmdlist = lang.get('help.admin') + '\n';
-				cmdlist += formathelp(helplist.admin, msg, lang);
+				var embed = new MessageEmbed().setTitle( lang.get('help.admin') ).setFooter( 'Admin Help' ).setTimestamp();
+				var cmdlist = formathelp(helplist.admin, msg, lang);
 				cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
 				cmdlist += '\n\t\t' + new URL(( msg.channel.isGuild() ? `/guild/${msg.guild.id}/settings` : '/' ), process.env.dashboard).href;
-				msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
+				embed.setDescription( cmdlist );
+				msg.replyMsg( '', {embed}, false, false )
 			}
 			else {
 				msg.replyMsg( lang.get('help.noadmin') );
 			}
 		}
 		else if ( cmd === 'minecraft' ) {
-			var cmdlist = '<' + lang.get('minecraft.link') + '>\n';
-			cmdlist += formathelp(helplist.minecraft, msg, lang);
-			msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
+			var embed = new MessageEmbed().setTitle( '[Minecraft wiki](' + lang.get('minecraft.link') + ')' ).setFooter( 'Minecraft Help' ).setTimestamp();
+			var cmdlist = formathelp(helplist.minecraft, msg, lang);
+			embed.setDescription( cmdlist );
+			msg.replyMsg( '<' + lang.get('minecraft.link') + '>', {embed}, false, false )
 		}
 		else if ( cmd in helpmap && 
 		( !restrictions.fandom.includes( cmd ) || wiki.isFandom(false) ) && 
@@ -117,12 +119,14 @@ function cmd_help(lang, msg, args, line, wiki) {
 		else msg.reactEmoji('❓');
 	}
 	else if ( msg.isAdmin() && pause[msg.guild.id] ) {
+		var embed = new MessageEmbed().setFooter( 'Help' ).setTimestamp();
 		var cmdlist = lang.get('help.pause') + '\n';
 		cmdlist += formathelp(helplist.pause, msg, lang);
-		msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}}, true );
+		embed.setDescription( cmdlist );
+		msg.replyMsg( '', {embed}, false, false )
 	}
 	else {
-		var cmdlist = lang.get('help.all') + '\n';
+		var embed = new MessageEmbed().setTitle( lang.get('help.all') ).setFooter( 'Help' ).setTimestamp();
 		helplist.default.forEach( cmd => {
 			if ( ( !restrictions.fandom.includes( cmd ) || wiki.isFandom(false) ) && 
 			( !restrictions.minecraft.includes( cmd ) || isMinecraft ) ) {
@@ -130,7 +134,8 @@ function cmd_help(lang, msg, args, line, wiki) {
 			}
 		} );
 		cmdlist += '\n🔸 ' + lang.get('help.footer');
-		msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
+		embed.setDescription( cmdlist );
+		msg.replyMsg( '', {embed}, false, false )
 	}
 }
 
@@ -150,7 +155,7 @@ function formathelp(messages, msg, lang) {
 	} ).map( message => {
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );
-		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '`\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc', prefix)
+		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '` — ' + lang.get('help.list.' + message + '.desc', prefix) + ( restrictions.experimental.includes( message ) ? '\n\t' + lang.get('general.experimental') : '' ) 
 	} ).join('\n');
 }
 
