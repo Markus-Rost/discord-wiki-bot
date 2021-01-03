@@ -2,6 +2,7 @@ const cheerio = require('cheerio');
 const {toSection} = require('../util/wiki.js');
 const {htmlToPlain, htmlToDiscord, limitLength} = require('../util/functions.js');
 
+// Max length of 10 characters
 const contentModels = {
 	Scribunto: 'lua',
 	javascript: 'js',
@@ -14,6 +15,7 @@ const contentFormats = {
 	'text/javascript': 'js',
 	'text/css': 'css'
 };
+// Max length of 10 characters
 
 const infoboxList = [
 	'.infobox',
@@ -80,7 +82,7 @@ function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment
 				}
 				return;
 			}
-			if ( !embed.description && embed.length < 5000 ) {
+			if ( !embed.description && embed.length < 4000 ) {
 				var description = revision['*'];
 				var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
 				if ( regex ) {
@@ -88,7 +90,7 @@ function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment
 					if ( descArray.length ) {
 						description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
 						if ( description ) {
-							if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+							if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 							description = '```' + ( contentModels[revision.contentmodel] || contentFormats[revision.contentformat] || '' ) + '\n' + description + '\n```';
 							embed.setDescription( description );
 							change = true;
