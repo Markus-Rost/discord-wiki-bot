@@ -420,34 +420,34 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		}
 		else {
 			logging(wiki, 'general');
-			var pagelink = wiki.toLink(body.query.general.mainpage, querystring, fragment);
-			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
-			got.get( wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=info|pageprops|extracts&ppprop=description|displaytitle|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( body.query.general.mainpage ) + '&format=json' ).then( mpresponse => {
+			var querypage = {title: body.query.general.mainpage, contentmodel: 'wikitext'};
+			var pagelink = wiki.toLink(querypage.title, querystring, fragment);
+			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			got.get( wiki + 'api.php?action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=info|pageprops|extracts&ppprop=description|displaytitle|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( querypage.title ) + '&format=json' ).then( mpresponse => {
 				var mpbody = mpresponse.body;
 				if ( mpbody && mpbody.warnings ) log_warn(body.warnings);
 				if ( mpresponse.statusCode !== 200 || !mpbody || mpbody.batchcomplete === undefined || !mpbody.query ) {
 					console.log( '- ' + mpresponse.statusCode + ': Error while getting the main page: ' + ( mpbody && mpbody.error && mpbody.error.info ) );
-				} else {
-					var querypage = Object.values(mpbody.query.pages)[0];
-					if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
-						var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
-						if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-						embed.setTitle( displaytitle );
-					}
-					if ( querypage.extract ) {
-						var extract = extract_desc(querypage.extract, fragment);
-						embed.backupDescription = extract[0];
-						if ( extract[1].length && extract[2].length ) {
-							embed.backupField = {name: extract[1], value: extract[2]};
-						}
-					}
-					if ( querypage.pageprops && querypage.pageprops.description ) {
-						var description = htmlToPlain( querypage.pageprops.description );
-						if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-						embed.backupDescription = description;
+					return;
+				}
+				querypage = Object.values(mpbody.query.pages)[0];
+				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
+					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
+					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
+					embed.setTitle( displaytitle );
+				}
+				if ( querypage.extract ) {
+					var extract = extract_desc(querypage.extract, fragment);
+					embed.backupDescription = extract[0];
+					if ( extract[1].length && extract[2].length ) {
+						embed.backupField = {name: extract[1], value: extract[2]};
 					}
 				}
-				
+				if ( querypage.pageprops && querypage.pageprops.description ) {
+					var description = htmlToPlain( querypage.pageprops.description );
+					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+					embed.backupDescription = description;
+				}
 				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 					try {
 						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
