@@ -125,7 +125,7 @@ function checkWiki(wiki) {
 					return;
 				}
 				var posts = dsbody._embedded?.['doc:posts'];
-				result.postid = ( posts[0]?.id || 0 );
+				result.postid = ( posts[0]?.id || '0' );
 				if ( posts?.length ) {
 					let text = '';
 					let len = ( posts[0].creationDate.epochSecond - posts[posts.length - 1].creationDate.epochSecond ) / 60;

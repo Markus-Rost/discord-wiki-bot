@@ -175,6 +175,10 @@ function htmlToPlain(html) {
 				text += '• ';
 			}
 			if ( tagname === 'dl' ) listlevel++;
+			if ( tagname === 'dt' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+			}
 			if ( tagname === 'dd' ) {
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
@@ -253,6 +257,11 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 				text += '• ';
 			}
 			if ( tagname === 'dl' ) listlevel++;
+			if ( tagname === 'dt' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				text += '**';
+			}
 			if ( tagname === 'dd' ) {
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
@@ -290,6 +299,7 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 			if ( tagname === 'sup' ) reference = false;
 			if ( tagname === 'ul' ) listlevel--;
 			if ( tagname === 'dl' ) listlevel--;
+			if ( tagname === 'dt' ) text += '**';
 			if ( tagname === 'h1' ) text += '__***';
 			if ( tagname === 'h2' ) text += '__**';
 			if ( tagname === 'h3' ) text += '**';

@@ -60,7 +60,7 @@ const keepMainPageTag = [
  * @param {String} [fragment] - The section title to embed.
  */
 function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment = '') {
-	if ( !msg || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox && !fragment ) ) {
+	if ( !msg?.showEmbed?.() || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox && !fragment ) ) {
 		return;
 	}
 	var change = false;
