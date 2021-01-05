@@ -99,7 +99,7 @@ const server = http.createServer((req, res) => {
 		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
 		res.writeHead(418, {
 			'Content-Type': 'text/html',
-			'Content-Length': body.length
+			'Content-Length': Buffer.byteLength(body)
 		});
 		res.write( body );
 		return res.end();

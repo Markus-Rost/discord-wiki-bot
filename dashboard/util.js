@@ -158,7 +158,7 @@ function createNotice($, notice, dashboardLang, args = []) {
 		case 'sysmessage':
 			type = 'info';
 			title.text(dashboardLang.get('notice.sysmessage.title'));
-			text.text(dashboardLang.get('notice.sysmessage.text', true, $('<a target="_blank">').append(
+			text.html(dashboardLang.get('notice.sysmessage.text', true, $('<a target="_blank">').append(
 				$('<code>').text('MediaWiki:Custom-RcGcDw')
 			).attr('href', args[1]), $('<code class="user-select">').text(args[0])));
 			note = $('<a target="_blank">').text(args[1]).attr('href', args[1]);

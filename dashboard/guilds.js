@@ -200,7 +200,7 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 		}
 	}
 	let body = $.html();
-	res.writeHead(200, {'Content-Length': body.length});
+	res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 	res.write( body );
 	return res.end();
 }

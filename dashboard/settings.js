@@ -178,7 +178,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 			$('<p>').text(dashboardLang.get('settings.failed')).appendTo('#text .description');
 			$('.channel#settings').addClass('selected');
 			let body = $.html();
-			res.writeHead(200, {'Content-Length': body.length});
+			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 			res.write( body );
 			return res.end();
 		}
@@ -189,7 +189,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				prefix: process.env.prefix
 			}, defaultSettings), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 			let body = $.html();
-			res.writeHead(200, {'Content-Length': body.length});
+			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 			res.write( body );
 			return res.end();
 		}
@@ -250,7 +250,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 		}
 		let body = $.html();
-		res.writeHead(200, {'Content-Length': body.length});
+		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 		res.write( body );
 		return res.end();
 	} );

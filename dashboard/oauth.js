@@ -59,7 +59,7 @@ function dashboard_login(res, state, action) {
 			...( res.getHeader('Set-Cookie') || [] ),
 			`wikibot="${state}"; HttpOnly; Path=/`
 		],
-		'Content-Length': body.length
+		'Content-Length': Buffer.byteLength(body)
 	});
 	res.write( body );
 	return res.end();
@@ -262,7 +262,7 @@ function dashboard_api(res, input) {
 	} ).finally( () => {
 		let body = JSON.stringify(result);
 		res.writeHead(200, {
-			'Content-Length': body.length,
+			'Content-Length': Buffer.byteLength(body),
 			'Content-Type': 'application/json'
 		});
 		res.write( body );
