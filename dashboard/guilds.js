@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Lang = require('./i18n.js');
+const allLangs = Lang.allLangs().names;
 const {settingsData, createNotice} = require('./util.js');
 
 const forms = {
@@ -21,12 +22,13 @@ const file = require('fs').readFileSync('./dashboard/index.html');
 /**
  * Let a user view settings
  * @param {import('http').ServerResponse} res - The server response
+ * @param {import('./i18n.js')} dashboardLang - The user language.
  * @param {String} state - The user state
  * @param {URL} reqURL - The used url
  * @param {String} [action] - The action the user made
  * @param {String[]} [actionArgs] - The arguments for the action
  */
-function dashboard_guilds(res, state, reqURL, action, actionArgs) {
+function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs) {
 	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	args = reqURL.pathname.split('/');
@@ -34,8 +36,14 @@ function dashboard_guilds(res, state, reqURL, action, actionArgs) {
 	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(settings.user.id) ) {
 		args[0] = 'owner';
 	}
-	var dashboardLang = new Lang(settings.user.locale);
+	dashboardLang = new Lang(...dashboardLang.fromCookie, settings.user.locale, dashboardLang.lang);
+	res.setHeader('Content-Language', [dashboardLang.lang]);
 	var $ = cheerio.load(file);
+	$('html').attr('lang', dashboardLang.lang);
+	$('<script>').text(`
+		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
+		const allLangs = ${JSON.stringify(allLangs)};
+	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.title'));
 	$('.channel#settings div').text(dashboardLang.get('general.settings'));
 	$('.channel#verification div').text(dashboardLang.get('general.verification'));

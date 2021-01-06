@@ -1,9 +1,8 @@
 const crypto = require('crypto');
 const cheerio = require('cheerio');
-const {defaultPermissions, defaultSettings} = require('../util/default.json');
+const {defaultPermissions} = require('../util/default.json');
 const Wiki = require('../util/wiki.js');
-const Lang = require('./i18n.js');
-const dashboardLang = new Lang(defaultSettings.lang);
+const allLangs = require('./i18n.js').allLangs().names;
 const {got, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
 
 const DiscordOauth2 = require('discord-oauth2');
@@ -18,10 +17,11 @@ const file = require('fs').readFileSync('./dashboard/login.html');
 /**
  * Let a user login
  * @param {import('http').ServerResponse} res - The server response
+ * @param {import('./i18n.js')} dashboardLang - The user language.
  * @param {String} [state] - The user state
  * @param {String} [action] - The action the user made
  */
-function dashboard_login(res, state, action) {
+function dashboard_login(res, dashboardLang, state, action) {
 	if ( state && settingsData.has(state) ) {
 		if ( !action ) {
 			res.writeHead(302, {Location: '/'});
@@ -30,6 +30,17 @@ function dashboard_login(res, state, action) {
 		settingsData.delete(state);
 	}
 	var $ = cheerio.load(file);
+	$('html').attr('lang', dashboardLang.lang);
+	$('<script>').text(`
+		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
+		const allLangs = ${JSON.stringify(allLangs)};
+	`).insertBefore('script#langjs');
+	$('head title').text(dashboardLang.get('general.login') + ' – ' + dashboardLang.get('general.title'));
+	$('#login-botton span, .channel#login div').text(dashboardLang.get('general.login'));
+	$('.channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
+	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
+	$('#support span').text(dashboardLang.get('general.support'));
+	$('#text .description #welcome').html(dashboardLang.get('general.welcome'));
 	let responseCode = 200;
 	let prompt = 'none';
 	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);

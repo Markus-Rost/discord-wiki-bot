@@ -2,6 +2,8 @@ const http = require('http');
 const pages = require('./oauth.js');
 const dashboard = require('./guilds.js');
 const {db, settingsData} = require('./util.js');
+const Lang = require('./i18n.js');
+const allLangs = Lang.allLangs();
 
 global.isDebug = ( process.argv[2] === 'debug' );
 
@@ -90,7 +92,20 @@ const server = http.createServer((req, res) => {
 			 * @param {String[]} [actionArgs]
 			 */
 			function save_response(resURL = '/', action, ...actionArgs) {
-				return dashboard(res, state, new URL(resURL, process.env.dashboard), action, actionArgs);
+				var langCookie = ( req.headers?.cookie?.split('; ')?.filter( cookie => {
+					return cookie.split('=')[0] === 'language' && /^"[a-z\-]+"$/.test(( cookie.split('=')[1] || '' ));
+				} )?.map( cookie => cookie.replace( /^language="([a-z\-]+)"$/, '$1' ) ) || [] );
+				var dashboardLang = new Lang(...langCookie, ...( req.headers?.['accept-language']?.split(',')?.map( lang => {
+					lang = lang.split(';')[0].toLowerCase();
+					if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+					lang = lang.replace( /-\w+$/, '' );
+					if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+					lang = lang.replace( /-\w+$/, '' );
+					if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+					return '';
+				} ) || [] ));
+				dashboardLang.fromCookie = langCookie;
+				return dashboard(res, dashboardLang, state, new URL(resURL, process.env.dashboard), action, actionArgs);
 			}
 		}
 	}
@@ -115,7 +130,21 @@ const server = http.createServer((req, res) => {
 	}
 
 	res.setHeader('Content-Type', 'text/html');
-	res.setHeader('Content-Language', ['en']);
+
+	var langCookie = ( req.headers?.cookie?.split('; ')?.filter( cookie => {
+		return cookie.split('=')[0] === 'language' && /^"[a-z\-]+"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^language="([a-z\-]+)"$/, '$1' ) ) || [] );
+	var dashboardLang = new Lang(...langCookie, ...( req.headers?.['accept-language']?.split(',')?.map( lang => {
+		lang = lang.split(';')[0].toLowerCase();
+		if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+		lang = lang.replace( /-\w+$/, '' );
+		if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+		lang = lang.replace( /-\w+$/, '' );
+		if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+		return '';
+	} ) || [] ));
+	dashboardLang.fromCookie = langCookie;
+	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
 		return cookie.split('=')[0] === 'guild' && /^"\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?"$/.test(( cookie.split('=')[1] || '' ));
@@ -129,7 +158,7 @@ const server = http.createServer((req, res) => {
 	if ( reqURL.pathname === '/login' ) {
 		let action = '';
 		if ( reqURL.searchParams.get('action') === 'failed' ) action = 'loginfail';
-		return pages.login(res, state, action);
+		return pages.login(res, dashboardLang, state, action);
 	}
 
 	if ( reqURL.pathname === '/logout' ) {
@@ -138,7 +167,7 @@ const server = http.createServer((req, res) => {
 			...( res.getHeader('Set-Cookie') || [] ),
 			'wikibot=""; HttpOnly; Path=/; Max-Age=0'
 		]);
-		return pages.login(res, state, 'logout');
+		return pages.login(res, dashboardLang, state, 'logout');
 	}
 
 	if ( !state ) {
@@ -148,7 +177,7 @@ const server = http.createServer((req, res) => {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
 			}
 		}
-		return pages.login(res, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
+		return pages.login(res, dashboardLang, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
 	}
 
 	if ( reqURL.pathname === '/oauth' ) {
@@ -162,7 +191,7 @@ const server = http.createServer((req, res) => {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
 			}
 		}
-		return pages.login(res, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
+		return pages.login(res, dashboardLang, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
 	}
 
 	if ( reqURL.pathname === '/refresh' ) {
@@ -181,7 +210,7 @@ const server = http.createServer((req, res) => {
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
-	return dashboard(res, state, reqURL, action);
+	return dashboard(res, dashboardLang, state, reqURL, action);
 });
 
 server.listen(8080, 'localhost', () => {

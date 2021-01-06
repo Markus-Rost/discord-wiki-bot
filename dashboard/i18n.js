@@ -1,27 +1,7 @@
 const {defaultSettings} = require('../util/default.json');
 const {escapeText} = require('./util.js');
-const i18n = {
-	en: require('./i18n/en.json'),
-	bn: require('./i18n/bn.json'),
-	de: require('./i18n/de.json'),
-	es: require('./i18n/es.json'),
-	fr: require('./i18n/fr.json'),
-	hi: require('./i18n/hi.json'),
-	it: require('./i18n/it.json'),
-	ja: require('./i18n/ja.json'),
-	ko: require('./i18n/ko.json'),
-	nl: require('./i18n/nl.json'),
-	pl: require('./i18n/pl.json'),
-	pt: require('./i18n/pt-br.json'),
-	'pt-br': require('./i18n/pt-br.json'),
-	ru: require('./i18n/ru.json'),
-	th: require('./i18n/th.json'),
-	tr: require('./i18n/tr.json'),
-	vi: require('./i18n/vi.json'),
-	zh: require('./i18n/zh-hans.json'),
-	'zh-hans': require('./i18n/zh-hans.json'),
-	'zh-hant': require('./i18n/zh-hant.json')
-};
+var i18n = require('./i18n/allLangs.json');
+Object.keys(i18n.allLangs.names).forEach( lang => i18n[lang] = require('./i18n/' + lang + '.json') );
 
 /**
  * A language.
@@ -30,15 +10,16 @@ const i18n = {
 class Lang {
 	/**
 	 * Creates a new language.
-	 * @param {String} [lang] - The language code.
-	 * @param {String} [namespace] - The namespace for the language.
+	 * @param {String[]} [langs] - The language code.
 	 * @constructs Lang
 	 */
-	constructor(lang = defaultSettings.lang, namespace = '') {
-		if ( !( typeof lang === 'string' && lang in i18n ) ) lang = defaultSettings.lang;
-		this.lang = lang;
-		this.namespace = namespace;
-		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb.trim() );
+	constructor(...langs) {
+		this.lang = ( langs.find( lang => {
+			if ( typeof lang !== 'string' ) lang = '';
+			return i18n.allLangs.map[lang.toLowerCase()]
+		} ) || defaultSettings.lang );
+		this.fallback = ( i18n?.[this.lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb.trim() );
+		this.fromCookie = [];
 	}
 
 	/**
@@ -49,7 +30,6 @@ class Lang {
 	 * @returns {String}
 	 */
 	get(message = '', escaped = false, ...args) {
-		if ( this.namespace.length ) message = this.namespace + '.' + message;
 		let keys = ( message.length ? message.split('.') : [] );
 		let lang = this.lang;
 		let text = i18n?.[lang];
@@ -86,6 +66,14 @@ class Lang {
 			} );
 		}
 		return ( text || '⧼' + message + ( isDebug && args.length ? ': ' + args.join(', ') : '' ) + '⧽' );
+	}
+
+	/**
+	 * Get names for all languages.
+	 * @static
+	 */
+	static allLangs() {
+		return i18n.allLangs;
 	}
 }
 

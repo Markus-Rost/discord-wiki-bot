@@ -34,7 +34,7 @@ for ( var j = 0; j < addmore.length; j++ ) {
 		clone.addEventListener( 'input', toggleOption );
 		this.before(clone);
 		toggleOption.call(clone);
-	}
+	};
 }
 
 /**
