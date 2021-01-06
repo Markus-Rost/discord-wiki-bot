@@ -21,7 +21,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				ownerID: guild.ownerID, owner: guild.owner?.user?.tag,
 				channel: guild.publicUpdatesChannelID, icon: guild.iconURL({dynamic:true}),
 				permissions: guild.me.permissions.missing(${defaultPermissions}),
-				pause: guild.id in global.pause, voice: guild.id in global.voice,
+				pause: global.pause.hasOwnProperty(guild.id), voice: global.voice.hasOwnProperty(guild.id),
 				shardId: global.shardId
 			} )
 		}`, shardIDForGuildID(id, msg.client.shard.count) );
@@ -40,7 +40,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				}
 				else if ( rows.length ) {
 					row = rows.find( row => !row.channel );
-					row.patreon = guild.id in patreons;
+					row.patreon = patreons.hasOwnProperty(guild.id);
 					row.voice = guild.voice;
 					guildsettings[1] = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 				}
@@ -71,7 +71,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			( {
 				name, id, type, parentID, guild, guildID,
 				permissions: me.permissionsIn(id).missing(${defaultPermissions}),
-				pause: guildID in global.pause,
+				pause: global.pause.hasOwnProperty(guildID),
 				shardId: global.shardId
 			} )
 		}` ).then( results => results.find( result => result ) );

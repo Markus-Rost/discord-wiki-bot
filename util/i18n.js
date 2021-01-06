@@ -25,19 +25,19 @@ class Lang {
 		this.aliases = {};
 		let aliases = ( i18n?.[lang]?.aliases || {} );
 		Object.keys(aliases).forEach( cmd => {
-			if ( aliases[cmd][0].trim() && !( cmd in this.localNames ) ) {
+			if ( aliases[cmd][0].trim() && !this.localNames.hasOwnProperty(cmd) ) {
 				this.localNames[cmd] = aliases[cmd][0];
 			}
 			aliases[cmd].forEach( alias => {
-				if ( alias.trim() && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias.trim() && !this.aliases.hasOwnProperty(alias) ) this.aliases[alias] = cmd;
 			} );
 		} );
 		Object.keys(defaultAliases).forEach( cmd => {
-			if ( defaultAliases[cmd][0].trim() && !( cmd in this.localNames ) ) {
+			if ( defaultAliases[cmd][0].trim() && !this.localNames.hasOwnProperty(cmd) ) {
 				this.localNames[cmd] = defaultAliases[cmd][0];
 			}
 			defaultAliases[cmd].forEach( alias => {
-				if ( alias.trim() && !( alias in this.aliases ) ) this.aliases[alias] = cmd;
+				if ( alias.trim() && !this.aliases.hasOwnProperty(alias) ) this.aliases[alias] = cmd;
 			} );
 		} );
 	}
@@ -121,7 +121,6 @@ class Lang {
 	/**
 	 * Get names for all languages.
 	 * @param {Boolean} isRcGcDw - Get the languages for RcGcDw?
-	 * @returns {{names: {en: 'English'}, map: {english: 'en'}}}
 	 * @static
 	 */
 	static allLangs(isRcGcDw = false) {

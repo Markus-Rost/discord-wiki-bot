@@ -106,7 +106,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			cmdlist += formathelp(helplist.minecraft, msg, lang);
 			msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 		}
-		else if ( cmd in helpmap && 
+		else if ( helpmap.hasOwnProperty(cmd) && 
 		( !restrictions.fandom.includes( cmd ) || wiki.isFandom(false) ) && 
 		( !restrictions.minecraft.includes( cmd ) || isMinecraft ) && 
 		( !restrictions.admin.includes( cmd ) || msg.isAdmin() ) ) {
@@ -146,7 +146,7 @@ function formathelp(messages, msg, lang) {
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
 		if ( !restrictions.patreon.includes( message ) ) return true;
-		return ( msg.channel.isGuild() && msg.guild.id in patreons );
+		return ( msg.channel.isGuild() && patreons[msg.guild.id] );
 	} ).map( message => {
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );

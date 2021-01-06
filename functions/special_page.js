@@ -122,7 +122,7 @@ const descriptions = {
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoiler) {
-	if ( specialpage in overwrites ) {
+	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
 		overwrites[specialpage](this, lang, msg, wiki, reaction, spoiler, args, embed);
 		return;
@@ -130,7 +130,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
 		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
-	got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( specialpage in descriptions ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( specialpage in querypages ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body ) {
@@ -142,7 +142,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.setDescription( description );
 			}
-			if ( msg.channel.isGuild() && msg.guild.id in patreons && specialpage in querypages ) {
+			if ( msg.channel.isGuild() && patreons[msg.guild?.id] && querypages.hasOwnProperty(specialpage) ) {
 				var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 				embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			}

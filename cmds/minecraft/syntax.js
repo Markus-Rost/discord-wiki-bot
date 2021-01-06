@@ -18,7 +18,7 @@ function minecraft_syntax(lang, msg, mccmd, args, title, cmd, querystring, fragm
 	mccmd = mccmd.toLowerCase();
 	var aliasCmd = ( commands.aliases[mccmd] || mccmd );
 	
-	if ( aliasCmd in commands.list ) {
+	if ( commands.list.hasOwnProperty(aliasCmd) ) {
 		var cmdSyntaxMap = commands.list[aliasCmd].map( command => {
 			var cmdargs = command.split(' ');
 			if ( cmdargs[0].startsWith( '/' ) ) cmdargs = cmdargs.slice(1);

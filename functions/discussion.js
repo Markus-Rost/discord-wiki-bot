@@ -13,7 +13,7 @@ const {limit: {discussion: discussionLimit}} = require('../util/default.json');
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler) {
-	var limit = discussionLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+	var limit = discussionLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
 	if ( !title ) {
 		var pagelink = wiki + 'f';
 		var embed = new MessageEmbed().setAuthor( sitename ).setTitle( lang.get('discussion.main') ).setURL( pagelink );

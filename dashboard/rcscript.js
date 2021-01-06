@@ -236,7 +236,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 			if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= rcgcdwLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 				$('.channel#channel-new').addClass('selected');
 				createForm($, dashboardLang.get('rcscript.form.new'), dashboardLang, {
-					wiki, lang: ( lang in allLangs.names ? lang : defaultSettings.lang ),
+					wiki, lang: ( allLangs.names.hasOwnProperty(lang) ? lang : defaultSettings.lang ),
 					display: 1, patreon: guild.patreon
 				}, guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
 			}
@@ -284,7 +284,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 	}
 	if ( settings.save_settings ) {
-		if ( !settings.wiki || !( settings.lang in allLangs.names ) ) {
+		if ( !settings.wiki || !allLangs.names.hasOwnProperty(settings.lang) ) {
 			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		}
 		if ( !['0', '1', '2', '3'].includes( settings.display ) ) {

@@ -61,10 +61,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 	var aliasInvoke = ( lang.aliases[invoke] || invoke );
 	var args = title.split(' ').slice(1);
 	
-	if ( !msg.notMinecraft && wiki.href === lang.get('minecraft.link') && ( aliasInvoke in minecraft || invoke.startsWith( '/' ) ) ) {
+	if ( !msg.notMinecraft && wiki.href === lang.get('minecraft.link') && ( minecraft.hasOwnProperty(aliasInvoke) || invoke.startsWith( '/' ) ) ) {
 		logging(wiki, 'minecraft');
 		minecraft.WIKI = this;
-		if ( aliasInvoke in minecraft ) minecraft[aliasInvoke](lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
+		if ( minecraft.hasOwnProperty(aliasInvoke) ) minecraft[aliasInvoke](lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
 		else minecraft.SYNTAX(lang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
 		return;
 	}
@@ -176,7 +176,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				var iw_parts = querypage.title.split(':');
 				var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
 				var iw_link = iw.toLink(iw_parts.slice(2).join(':'), querystring, fragment);
-				var maxselfcall = interwikiLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+				var maxselfcall = interwikiLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
 				if ( selfcall < maxselfcall ) {
 					selfcall++;
 					return this.general(lang, msg, iw_parts.slice(2).join(':'), iw, '!!' + iw.hostname + ' ', reaction, spoiler, querystring, fragment, iw_link, selfcall);
@@ -386,7 +386,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			} );
 			if ( fragment ) iw.hash = Wiki.toSection(fragment);
 			else fragment = iw.hash.substring(1);
-			var maxselfcall = interwikiLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+			var maxselfcall = interwikiLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
 			if ( selfcall < maxselfcall && ['http:','https:'].includes( iw.protocol ) ) {
 				selfcall++;
 				if ( iw.hostname.endsWith( '.gamepedia.com' ) ) {

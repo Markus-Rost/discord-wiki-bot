@@ -282,7 +282,7 @@ function removeSettings(msg) {
 					return dberror;
 				}
 				if ( !row.channel && !all_guilds.includes(row.guild) ) {
-					if ( row.guild in patreons || row.guild in voice ) {
+					if ( patreons.hasOwnProperty(row.guild) || voice.hasOwnProperty(row.guild) ) {
 						msg.client.shard.broadcastEval( `delete global.patreons['${row.guild}'];
 						delete global.voice['${row.guild}'];` );
 					}

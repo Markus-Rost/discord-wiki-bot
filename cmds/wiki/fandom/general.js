@@ -418,7 +418,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 			} );
 			if ( fragment ) iw.hash = Wiki.toSection(fragment);
 			else fragment = iw.hash.substring(1);
-			var maxselfcall = interwikiLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+			var maxselfcall = interwikiLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
 			if ( selfcall < maxselfcall && ['http:','https:'].includes( iw.protocol ) ) {
 				selfcall++;
 				if ( iw.hostname.endsWith( '.fandom.com' ) || iw.hostname.endsWith( '.wikia.org' ) ) {

@@ -281,7 +281,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/settings/${type}`, 'savefail');
 	}
 	if ( settings.save_settings ) {
-		if ( !settings.wiki || ( settings.lang && !( settings.lang in allLangs.names ) ) ) {
+		if ( !settings.wiki || ( settings.lang && !allLangs.names.hasOwnProperty(settings.lang) ) ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.channel && !userSettings.guilds.isMember.get(guild).channels.some( channel => {

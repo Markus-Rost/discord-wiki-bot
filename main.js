@@ -91,7 +91,7 @@ if ( process.env.dashboard ) {
 								let guild = this.guilds.cache.get(id);
 								return guild.members.fetch('${message.data.member}').then( member => {
 									return {
-										patreon: guild.id in global.patreons,
+										patreon: global.patreons.hasOwnProperty(guild.id),
 										botPermissions: guild.me.permissions.bitfield,
 										channels: guild.channels.cache.filter( channel => {
 											return ( channel.isGuild() || channel.type === 'category' );
@@ -146,7 +146,7 @@ if ( process.env.dashboard ) {
 						let guild = this.guilds.cache.get('${message.data.guild}');
 						guild.members.fetch('${message.data.member}').then( member => {
 							var response = {
-								patreon: guild.id in global.patreons,
+								patreon: global.patreons.hasOwnProperty(guild.id),
 								userPermissions: member.permissions.bitfield,
 								botPermissions: guild.me.permissions.bitfield
 							};
@@ -184,7 +184,7 @@ if ( process.env.dashboard ) {
 					return manager.broadcastEval(`if ( '${( message.data.prefix || '' )}' ) {
 						global.patreons['${message.data.guild}'] = '${message.data.prefix}';
 					}
-					if ( '${( message.data.voice || '' )}' && '${message.data.guild}' in global.voice ) {
+					if ( '${( message.data.voice || '' )}' && global.voice.hasOwnProperty('${message.data.guild}') ) {
 						global.voice['${message.data.guild}'] = '${message.data.voice}';
 					}
 					if ( this.guilds.cache.has('${message.data.guild}') ) {

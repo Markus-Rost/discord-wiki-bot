@@ -149,7 +149,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							}
 						}
 						
-						if ( msg.channel.isGuild() && msg.guild.id in patreons ) {
+						if ( msg.channel.isGuild() && patreons[msg.guild?.id] ) {
 							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 							
@@ -342,7 +342,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							}
 						}
 						
-						if ( msg.channel.isGuild() && msg.guild.id in patreons ) {
+						if ( msg.channel.isGuild() && patreons[msg.guild?.id] ) {
 							if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 							else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 							

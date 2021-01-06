@@ -31,7 +31,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		
 		var prefix = ( patreons[msg.guild.id] || process.env.prefix );
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
-			var limit = verificationLimit[( msg.guild.id in patreons ? 'patreon' : 'default' )];
+			var limit = verificationLimit[( patreons[msg.guild.id] ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), {}, true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );

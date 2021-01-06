@@ -13,13 +13,13 @@ function cmd_voice(lang, msg, args, line, wiki) {
 	if ( msg.isAdmin() ) {
 		if ( !args.join('') ) {
 			var text = lang.get('voice.text') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`\n';
-			text += lang.get('voice.' + ( msg.guild.id in voice ? 'disable' : 'enable' ), ( patreons[msg.guild.id] || process.env.prefix ) + 'voice toggle');
+			text += lang.get('voice.' + ( voice[msg.guild.id] ? 'disable' : 'enable' ), ( patreons[msg.guild.id] || process.env.prefix ) + 'voice toggle');
 			return msg.replyMsg( text, {}, true );
 		}
 		args[1] = args.slice(1).join(' ').trim()
 		if ( args[0].toLowerCase() === 'toggle' && !args[1] ) {
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			var value = ( msg.guild.id in voice ? null : 1 );
+			var value = ( voice[msg.guild.id] ? null : 1 );
 			return db.run( 'UPDATE discord SET voice = ? WHERE guild = ? AND channel IS NULL', [value, msg.guild.id], function (dberror) {
 				if ( dberror ) {
 					console.log( '- Error while editing the voice settings: ' + dberror );

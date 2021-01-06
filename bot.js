@@ -256,7 +256,7 @@ client.on( 'message', msg => {
 
 
 client.on( 'voiceStateUpdate', (olds, news) => {
-	if ( isStop || !( olds.guild.id in voice ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelID === news.channelID ) return;
+	if ( isStop || !( voice.hasOwnProperty(olds.guild.id) ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelID === news.channelID ) return;
 	var lang = new Lang(voice[olds.guild.id], 'voice');
 	if ( olds.member && olds.channel ) {
 		var oldrole = olds.member.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + olds.channel.name );
@@ -290,8 +290,8 @@ client.on( 'guildDelete', guild => {
 			console.log( '- Error while removing the settings: ' + dberror );
 			return dberror;
 		}
-		if ( guild.id in patreons ) client.shard.broadcastEval( `delete global.patreons['${guild.id}']` );
-		if ( guild.id in voice ) delete voice[guild.id];
+		if ( patreons.hasOwnProperty(guild.id) ) client.shard.broadcastEval( `delete global.patreons['${guild.id}']` );
+		if ( voice.hasOwnProperty(guild.id) ) delete voice[guild.id];
 		if ( this.changes ) console.log( '- Settings successfully removed.' );
 	} );
 } );

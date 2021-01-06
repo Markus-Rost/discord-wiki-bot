@@ -23,7 +23,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		}).then( invite => {
 			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '>', {}, true )
 		}, log_error );
-		if ( args[1] in patreons ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
+		if ( patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
 		db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the patreon: ' + dberror );
@@ -58,7 +58,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	
 	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name`, shardIDForGuildID(args[1], msg.client.shard.count) ).then( guild => {
 		if ( !guild ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
-		if ( !( args[1] in patreons ) ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
+		if ( !patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
 		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
 			if ( dberror ) {
 				console.log( '- Error while getting the guild: ' + dberror );

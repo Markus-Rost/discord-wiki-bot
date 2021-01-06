@@ -24,7 +24,7 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 	}
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
 	var description = [];
-	var limit = searchLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+	var limit = searchLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
 	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + querypage.ns + '|' + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( ( searchterm || ' ' ) ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);

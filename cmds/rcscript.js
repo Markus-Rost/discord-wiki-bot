@@ -39,7 +39,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		var prefix = process.env.prefix;
 		var limit = rcgcdwLimit.default;
 		var display = display_types.slice(0, rcgcdwLimit.display + 1);
-		if ( msg.guild.id in patreons ) {
+		if ( patreons[msg.guild.id] ) {
 			prefix = patreons[msg.guild.id];
 			limit = rcgcdwLimit.patreon;
 			display = display_types.slice();
@@ -309,7 +309,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${selected_row.lang}.png`] : [] )}, true );
 				}
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-				if ( !( args[1] in allLangs.map ) ) {
+				if ( !allLangs.map.hasOwnProperty(args[1]) ) {
 					return msg.replyMsg( lang.get('settings.langinvalid') + '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {}, true );
 				}
 

@@ -42,7 +42,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
 		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
 		let aliasInvoke = ( lang.aliases[invoke] || invoke );
-		if ( aliasInvoke in ownercmdmap ) {
+		if ( ownercmdmap.hasOwnProperty(aliasInvoke) ) {
 			cont = cont.substring(prefix.length);
 			let args = cont.split(' ').slice(1);
 			if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
@@ -51,7 +51,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		}
 	}
 	var count = 0;
-	var maxcount = commandLimit[( msg?.guild?.id in patreons ? 'patreon' : 'default' )];
+	var maxcount = commandLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
 	var breakLines = false;
 	cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
@@ -67,8 +67,8 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		var invoke = line.split(' ')[0].toLowerCase();
 		var args = line.split(' ').slice(1);
 		var aliasInvoke = ( lang.aliases[invoke] || invoke );
-		var ownercmd = ( msg.isOwner() && aliasInvoke in ownercmdmap );
-		var pausecmd = ( msg.isAdmin() && pause[msg.guild.id] && aliasInvoke in pausecmdmap );
+		var ownercmd = ( msg.isOwner() && ownercmdmap.hasOwnProperty(aliasInvoke) );
+		var pausecmd = ( msg.isAdmin() && pause[msg.guild.id] && pausecmdmap.hasOwnProperty(aliasInvoke) );
 		if ( msg.onlyVerifyCommand && !( aliasInvoke === 'verify' || pausecmd || ownercmd ) ) return;
 		if ( channel.isGuild() && pause[msg.guild.id] && !( pausecmd || ownercmd ) ) {
 			return console.log( msg.guild.id + ': Paused' );
@@ -76,7 +76,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + prefix + line );
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
-		if ( aliasInvoke in cmdmap ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
+		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( /^![a-z\d-]{1,50}$/.test(invoke) ) {
 			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + invoke.substring(1) + '.gamepedia.com/'), invoke + ' ');
 		}
