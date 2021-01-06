@@ -9,6 +9,8 @@
     "general": {
         "delete": "Excluir",
         "invite": "Convidar Wiki-Bot",
+        "language": "Mudar idioma",
+        "login": "Entrar",
         "logout": "Sair",
         "rcscript": "Mudanças recentes",
         "refresh": "Atualizar lista de servidores",
@@ -17,7 +19,8 @@
         "settings": "Configurações",
         "support": "Servidor de suporte",
         "title": "Configurações do Wiki-Bot",
-        "verification": "Verificações"
+        "verification": "Verificações",
+        "welcome": "<h2>Bem-vindo ao painel de controle do Wiki-Bot.</h2>\n<p>Wiki-Bot é um robô no Discord feito para reunir os servidores no Discord e as wikis do MediaWiki. Isso ajuda a vincular páginas da wiki, verificar usuários da wiki, informar sobre as últimas mudanças no a wiki e muito mais. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mais Informações]</a></p>\n<p>Aqui você pode alterar diferentes configurações de bot para servidores nos quais você tem permissão para gerenciar servidor. Para começar, você terá que autenticar sua conta do Discord, o que pode ser feito com este botão:</p>"
     },
     "indexjs": {
         "invalid": {
