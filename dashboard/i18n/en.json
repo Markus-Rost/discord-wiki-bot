@@ -9,7 +9,7 @@
     "general": {
         "delete": "Delete",
         "invite": "Invite Wiki-Bot",
-        "language": "Select Language",
+        "language": "Change Language",
         "login": "Login",
         "logout": "Logout",
         "rcscript": "Recent Changes",
