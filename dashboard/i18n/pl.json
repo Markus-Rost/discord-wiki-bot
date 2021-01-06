@@ -5,5 +5,33 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "delete": "Usuń",
+        "invite": "Zaproś Wiki-Bota",
+        "language": "Zmień język",
+        "login": "Zaloguj się",
+        "logout": "Wyloguj się",
+        "rcscript": "Ostatnie zmiany",
+        "refresh": "Odśwież listę serwerów",
+        "save": "Zapisz",
+        "selector": "Selektor serwera",
+        "settings": "Ustawienia",
+        "support": "Serwer wsparcia",
+        "title": "Ustawienia Wiki-Bota",
+        "verification": "Weryfikacje"
+    },
+    "indexjs": {
+        "invalid": {
+            "text": "Ten adres URL nie może zostać rozpoznany jako poprawna strona MediaWiki!",
+            "title": "Niepoprawna wiki!"
+        },
+        "outdated": {
+            "text": "Webhook ostatnich zmian wymaga przynajmniej MediaWiki 1.30!",
+            "title": "Stara wersja MediaWiki!"
+        },
+        "prefix": {
+            "backslash": "Prefix nie może zawierać lewych ukośników (\\)!"
+        }
+    }
 }
