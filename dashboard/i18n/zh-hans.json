@@ -9,6 +9,8 @@
     "general": {
         "delete": "删除",
         "invite": "邀请 Wiki-Bot",
+        "language": "更改语言",
+        "login": "登录",
         "logout": "注销",
         "rcscript": "最近更改",
         "refresh": "刷新服务器列表",
@@ -17,7 +19,8 @@
         "settings": "设置",
         "support": "支持服务器",
         "title": "Wiki-Bot 设置",
-        "verification": "验证"
+        "verification": "验证",
+        "welcome": "<h2>欢迎来到 Wiki-Bot 控制面板。</h2>\n<p>Wiki-Bot 是一个 Discord 机器人，旨在将 MediaWiki 驱动的 wiki 站点与 Discord 服务器整合在一起。它可以帮忙链接到 wiki 页面，验证 wiki 用户，通知 wiki 上最近的更改，等等。 <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多信息]</a></p>\n<p>在此，你可以为每个你拥有“管理服务器”权限的服务器管理并使用不同的机器人设置。但首先，你需要通过这个按钮验证你的 Discord 账号：</p>"
     },
     "indexjs": {
         "invalid": {
@@ -119,7 +122,7 @@
     },
     "rcscript": {
         "desc": "这些是 $1 的最近更改 webhook：",
-        "explanation": "<h2>最近更改 webhook</h2>\n<p>Wiki-Bot可以基于<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>运行一个最近更改 webhook。最近更改可以以多种显示方式显示：有行内链接的紧凑型文字信息或有编辑标签和分类更改的嵌入式消息。</p>\n<p>添加最近更改 webhook 的必须要求：</p>\n<ul>\n<li>Wiki软件需要运行于<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本。</li>\n<li>系统消息<code>MediaWiki:Custom-RcGcDw</code>需要设置为 Discord 服务器的服务器 ID <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
+        "explanation": "<h2>最近更改 webhook</h2>\n<p>Wiki-Bot可以运行基于<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的最近更改 webhook。最近更改可以以多种显示模式显示：有行内链接的紧凑型文字信息或有编辑标签和分类更改的嵌入式消息。</p>\n<p>添加最近更改 webhook 的基本要求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本运行的 wiki。</li>\n<li>系统消息<code>MediaWiki:Custom-RcGcDw</code>需要设置为 Discord 服务器的服务器 ID <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
         "form": {
             "channel": "频道：",
             "confirm": "你真的想删除最近更改 webhook 吗？",
@@ -170,21 +173,21 @@
     },
     "verification": {
         "desc": "这些是 $1 的验证方式：",
-        "explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 wiki 用户，只需要他们在 wki 个人资料的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时得到的身份组。</li>\n<li>匹配该验证项所需的编辑数。</li>\n<li>匹配该验证项所需的 wiki 用户组。</li>\n<li>匹配该验证项所需的账号使用时间（单位为天）。</li>\n<li>匹配该验证项时 Discord 用户的昵称是否应该被设置为他们的 wiki 用户名。</li>\n</ul>",
+        "explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 wiki 用户，只需要他们在 wiki 个人资料的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时授予的身份组。</li>\n<li>匹配该验证项所需的编辑次数。</li>\n<li>匹配该验证项所需的 wiki 用户组。</li>\n<li>匹配该验证项所需的账号注册时长（单位为天）。</li>\n<li>匹配该验证项时是否将 Discord 用户的昵称设置为他们的 wiki 用户名。</li>\n</ul>",
         "form": {
-            "accountage": "账号注册时间（天）：",
+            "accountage": "账号注册时长（天）：",
             "channel": "频道：",
             "confirm": "你真的想删除此验证方式吗？",
-            "editcount": "最小编辑次数：",
+            "editcount": "最少编辑次数：",
             "entry": "验证方式 #$1",
             "more": "添加更多",
             "new": "新的验证方式",
             "rename": "重命名用户：",
             "role": "身份组：",
-            "select_channel": "--选择一个频道--",
-            "select_role": "--选择一个身份组--",
+            "select_channel": "-- 选择频道 --",
+            "select_role": "-- 选择身份组 --",
             "usergroup": "wiki 用户组：",
-            "usergroup_and": "所需的所有用户组："
+            "usergroup_and": "所有所需的用户组："
         },
         "new": "新的验证方式"
     }
