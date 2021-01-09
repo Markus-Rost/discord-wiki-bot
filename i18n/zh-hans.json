@@ -491,14 +491,14 @@
             "created": "$1 的最近更改 webhook 已被添加到此频道。",
             "dashboard": {
                 "channel": "• Webhook 已被移动到此频道。",
-                "disabled_feeds": "• 讨论版、留言墙和条目评论等讨论式的更改推送已禁用。",
-                "disabled_rc": "• wiki式更改已被禁用。",
+                "disabled_feeds": "• 已禁用讨论版、留言墙和条目评论等讨论式的更改推送。",
+                "disabled_rc": "• 已禁用wiki式更改。",
                 "display_compact": "• 显示模式已被更改为包含行内链接的紧凑文本式消息。",
                 "display_diff": "• 显示模式已被更改为包含图像预览和编辑差异的嵌入式消息。",
                 "display_embed": "• 显示模式已被更改为包含编辑标签和分类更改的嵌入式消息。",
                 "display_image": "• 显示模式已被更改为包含图像预览的嵌入式消息。",
-                "enabled_feeds": "• 讨论版、留言墙和条目评论等讨论式的更改推送已启用。",
-                "enabled_rc": "• wiki式更改已被启用。",
+                "enabled_feeds": "• 已启用讨论版、留言墙和条目评论等讨论式的更改推送。",
+                "enabled_rc": "• 已启用wiki式更改。",
                 "lang": "• 语言已被更改为 $1。",
                 "updated": "此最近更改 webhook 已被更新：",
                 "wiki": "• wiki 已被更改为 $1。"
