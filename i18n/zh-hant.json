@@ -144,7 +144,7 @@
         " "
     ],
     "general": {
-        "default": "此伺服器尚未設定。使用 $1 或控制面板以變更設定。",
+        "default": "此伺服器尚未設定。使用 $1 或控制台以變更設定。",
         "disclaimer": "我是一個可以提供連結並檢索如 Gamepedia 和 Fandom 等 MediaWiki 站點的小機器人。我會展示頁面的簡介和其他資訊，並可以處理重新導向和跨 wiki 連結。$1用 JavaScript 編寫了我。\n\n你可以在 Patreon 支持我：",
         "experimental": "**這是實驗性功能！它不一定能夠正常運作且將來可能會被移除。**",
         "helpserver": "有問題嗎？你可以造訪我的專屬支援伺服器：",
