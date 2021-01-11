@@ -9,6 +9,8 @@
     "general": {
         "delete": "刪除",
         "invite": "邀請Wiki-Bot",
+        "language": "變更語言",
+        "login": "登入",
         "logout": "登出",
         "rcscript": "近期變更",
         "refresh": "重新整理伺服器清單",
@@ -17,7 +19,8 @@
         "settings": "設定",
         "support": "支援伺服器",
         "title": "Wiki-Bot設定",
-        "verification": "驗證"
+        "verification": "驗證",
+        "welcome": "<h2>歡迎使用Wiki-Bot控制台。</h2>\n<p>Wiki-Bot是一個Discord機器人，旨在將使用MediaWiki的wiki與Discord伺服器整合在一起。它可以幫忙連結到wiki頁面，驗證wiki使用者，傳送近期變更等。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多資訊]</a></p>\n<p>您可以在此為您擁有「管理伺服器」權限的伺服器變更機器人設定。在開始之前，您需要透過這個按鈕驗證您的Discord帳號：</p>"
     },
     "indexjs": {
         "invalid": {
