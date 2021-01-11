@@ -280,7 +280,8 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 		ontext: (htmltext) => {
 			if ( !reference ) {
 				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
-				text += escapeFormatting(htmltext, ...escapeArgs);
+				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
+				else text += escapeFormatting(htmltext, ...escapeArgs);
 			}
 		},
 		onclosetag: (tagname) => {
