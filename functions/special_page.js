@@ -127,6 +127,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		overwrites[specialpage](this, lang, msg, wiki, reaction, spoiler, args, embed);
 		return;
 	}
+	logging(wiki, msg.guild?.id, 'general', 'special');
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
 		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}

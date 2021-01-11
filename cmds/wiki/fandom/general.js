@@ -89,15 +89,15 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 		}
 		wiki.updateWiki(body.query.general);
 		if ( aliasInvoke === 'search' ) {
-			logging(wiki, 'search', 'legacy');
+			logging(wiki, msg.guild?.id, 'search', 'legacy');
 			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler);
 		}
 		if ( aliasInvoke === 'discussion' && !querystring.toString() && !fragment ) {
-			logging(wiki, 'discussion', 'legacy');
+			logging(wiki, msg.guild?.id, 'discussion', 'legacy');
 			return fn.discussion(lang, msg, wiki, args.join(' '), body.query.general.sitename, reaction, spoiler);
 		}
 		if ( body.query.pages ) {
-			logging(wiki, 'general', 'legacy');
+			logging(wiki, msg.guild?.id, 'general', 'legacy');
 			var querypages = Object.values(body.query.pages);
 			var querypage = querypages[0];
 			if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ) ) {
@@ -411,7 +411,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 				console.log( '- Aborted, paused.' );
 				return;
 			}
-			logging(wiki, 'interwiki', 'legacy');
+			logging(wiki, msg.guild?.id, 'interwiki', 'legacy');
 			var iw = new URL(body.query.interwiki[0].url.replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
 			querystring.forEach( (value, name) => {
 				iw.searchParams.append(name, value);
@@ -451,7 +451,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 			if ( reaction ) reaction.removeEmoji();
 		}
 		else if ( body.query.redirects ) {
-			logging(wiki, 'general', 'legacy');
+			logging(wiki, msg.guild?.id, 'general', 'legacy');
 			var pagelink = wiki.toLink(body.query.redirects[0].to, querystring, ( fragment || body.query.redirects[0].tofragment || '' ));
 			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.redirects[0].to.escapeFormatting() ).setURL( pagelink ).setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png') );
 			
@@ -460,7 +460,7 @@ function fandom_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', 
 			if ( reaction ) reaction.removeEmoji();;
 		}
 		else {
-			logging(wiki, 'general', 'legacy');
+			logging(wiki, msg.guild?.id, 'general', 'legacy');
 			var pagelink = wiki.toLink(body.query.general.mainpage, querystring, fragment);
 			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( body.query.general.mainpage.escapeFormatting() ).setURL( pagelink ).setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png') );
 			

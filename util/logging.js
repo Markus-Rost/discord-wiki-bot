@@ -13,11 +13,11 @@ usageLog.on( 'error', (error) => {
 /**
  * Log wikis by usage.
  * @param {import('./wiki.js')} wiki - The wiki.
- * @param {String[]} notes - The notes about the usage.
- * @returns {Boolean}
+ * @param {String} [guild] - The guild.
+ * @param {String[]} [notes] - The notes about the usage.
  */
-function logging(wiki, ...notes) {
-	return usageLog.write( `${new Date().toISOString()}\t${wiki.href}\t${notes.join('\t')}\n`, 'utf8' );
+function logging(wiki, guild = 'DM', ...notes) {
+	usageLog.write( [new Date().toISOString(), wiki.href, guild, ...notes].join('\t') + '\n', 'utf8' );
 }
 
 module.exports = logging;

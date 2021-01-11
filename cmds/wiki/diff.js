@@ -169,7 +169,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 		}
 		else if ( body.query.pages && !body.query.pages['-1'] ) {
 			wiki.updateWiki(body.query.general);
-			logging(wiki, 'diff');
+			logging(wiki, msg.guild?.id, 'diff');
 			var pages = Object.values(body.query.pages);
 			if ( pages.length !== 1 ) {
 				msg.sendChannel( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );

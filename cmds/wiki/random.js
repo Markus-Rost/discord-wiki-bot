@@ -32,7 +32,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		logging(wiki, 'random');
+		logging(wiki, msg.guild?.id, 'random');
 		var querypage = Object.values(body.query.pages)[0];
 		var pagelink = wiki.toLink(querypage.title);
 		var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );

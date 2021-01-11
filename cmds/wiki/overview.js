@@ -38,7 +38,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		logging(wiki, 'overview');
+		logging(wiki, msg.guild?.id, 'overview');
 		var version = [lang.get('overview.version'), body.query.general.generator];
 		var creation_date = null;
 		var created = [lang.get('overview.created'), lang.get('overview.unknown')];

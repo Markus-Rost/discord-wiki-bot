@@ -55,6 +55,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 					}
 				}
 				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() ) {
+					logging(wiki, msg.guild?.id, 'test');
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						notice.push(lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator));
@@ -68,6 +69,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 						notice.push(lang.get('test.PageImages', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)'));
 					}
 				}
+				else logging(wiki, msg.guild?.id, 'test');
 				embed.addField( wiki, ping );
 				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
 			}, error => {
@@ -83,7 +85,6 @@ function cmd_test(lang, msg, args, line, wiki) {
 				}
 				embed.addField( wiki, ping );
 			} ).finally( () => {
-				logging(wiki, 'test');
 				if ( msg.isOwner() ) return msg.client.shard.fetchClientValues('ws.status').then( values => {
 					return '```css\n' + values.map( (status, id) => '[' + id + ']: ' + ( wsStatus[status] || status ) ).join('\n') + '\n```';
 				}, error => {

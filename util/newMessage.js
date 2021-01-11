@@ -166,12 +166,13 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				return;
 			}
 			wiki.updateWiki(body.query.general);
-			logging(wiki, 'inline');
+			logging(wiki, msg.guild?.id, 'inline');
 			if ( body.query.normalized ) {
 				body.query.normalized.forEach( title => links.filter( link => link.title === title.from ).forEach( link => link.title = title.to ) );
 			}
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
+					logging(wiki, msg.guild?.id, 'inline', 'interwiki');
 					link.url = ( link.section ? interwiki.url.split('#')[0] + Wiki.toSection(link.section) : interwiki.url );
 				} ) );
 			}
@@ -183,15 +184,20 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
 					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
 					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
+						logging(wiki, msg.guild?.id, 'inline', 'interwiki');
 						var iw_parts = page.title.split(':');
 						var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
 						link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section);
 						return;
 					}
+					logging(wiki, msg.guild?.id, 'inline', 'redlink');
 					link.url = wiki.toLink(link.title, 'action=edit&redlink=1');
 				} ) );
 			}
-			if ( links.length ) msg.sendChannel( links.map( link => link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section) ) + '>' + link.spoiler ).join('\n'), {split:true} );
+			if ( links.length ) msg.sendChannel( links.map( link => {
+				if ( !link.url ) logging(wiki, msg.guild?.id, 'inline');
+				return link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section) ) + '>' + link.spoiler;
+			} ).join('\n'), {split:true} );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -234,11 +240,15 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 				} ) );
 				if ( missing.length ) {
-					logging(wiki, 'inline', 'template');
-					msg.sendChannel( missing.map( embed => embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler ).join('\n'), {split:true} );
+					msg.sendChannel( missing.map( embed => {
+						if ( embed.template ) logging(wiki, msg.guild?.id, 'inline', 'template');
+						else logging(wiki, msg.guild?.id, 'inline', 'redlink');
+						return embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler;
+					} ).join('\n'), {split:true} );
 				}
 			}
 			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
+				logging(wiki, msg.guild?.id, 'inline', 'embed');
 				check_wiki.general(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, new URLSearchParams(), embed.section);
 			} ) );
 		}, error => {
