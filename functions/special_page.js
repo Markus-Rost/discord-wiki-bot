@@ -1,4 +1,5 @@
 const {Util} = require('discord.js');
+const logging = require('../util/logging.js');
 const {timeoptions} = require('../util/default.json');
 const {toPlaintext} = require('../util/functions.js');
 

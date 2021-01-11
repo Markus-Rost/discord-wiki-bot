@@ -1,6 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const global_block = require('../../functions/global_block.js');
 const parse_page = require('../../functions/parse_page.js');
+const logging = require('../../util/logging.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {timeoptions, usergroups} = require('../../util/default.json');
 const {parse_infobox, toMarkdown, toPlaintext, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
