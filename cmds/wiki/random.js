@@ -29,6 +29,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
 			}
+			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
 		wiki.updateWiki(body.query.general);
@@ -71,7 +72,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			}
 		}
 		
-		msg.sendChannel( '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href )) );
+		parse_page(msg, '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ));
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );
@@ -81,7 +82,6 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			console.log( '- Error while getting the search results: ' + error );
 			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Random') + '>' + spoiler );
 		}
-	} ).finally( () => {
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }

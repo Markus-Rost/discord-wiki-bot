@@ -75,7 +75,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						}
 					}
 					
-					msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, '', fragment) );
+					return parse_page(msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment);
 				}
 			}
 			else {
@@ -244,7 +244,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					}
 				}
 				
-				msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, new URL(body.query.general.logo, wiki).href, fragment) );
+				return parse_page(msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment);
 			}
 			
 			if ( reaction ) reaction.removeEmoji();

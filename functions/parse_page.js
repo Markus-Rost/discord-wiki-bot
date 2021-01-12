@@ -51,88 +51,83 @@ const keepMainPageTag = [
 /**
  * Parses a wiki page to get it's description.
  * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {String} content - The content for the message.
+ * @param {import('discord.js').MessageEmbed} embed - The embed for the message.
+ * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {Object} querypage - The details of the page.
  * @param {String} querypage.title - The title of the page.
  * @param {String} querypage.contentmodel - The content model of the page.
- * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {String} thumbnail - The default thumbnail for the wiki.
  * @param {String} [fragment] - The section title to embed.
  */
-function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment = '') {
+function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, thumbnail, fragment = '') {
 	if ( !msg?.showEmbed?.() || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox && !fragment ) ) {
+		msg.sendChannel( content, {embed} );
+
+		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
-	var change = false;
-	if ( contentmodel !== 'wikitext' ) {
-		return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
-			var body = response.body;
-			if ( body && body.warnings ) log_warn(body.warnings);
-			var revision = Object.values(( body?.query?.pages || {} ))?.[0]?.revisions?.[0];
-			revision = ( revision?.slots?.main || revision );
-			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
-				console.log( '- ' + response.statusCode + ': Error while getting the page content: ' + ( body && body.error && body.error.info ) );
-				if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
-					embed.spliceFields( 0, 0, embed.backupField );
-					change = true;
-				}
-				if ( embed.backupDescription && embed.length < 5000 ) {
-					embed.setDescription( embed.backupDescription );
-					change = true;
-				}
-				return;
-			}
-			if ( !embed.description && embed.length < 4000 ) {
-				var description = revision['*'];
-				var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
-				if ( regex ) {
-					let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || regex[1] ));
-					if ( descArray.length ) {
-						description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
-						if ( description ) {
-							if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
-							description = '```' + ( contentModels[revision.contentmodel] || contentFormats[revision.contentformat] || '' ) + '\n' + description + '\n```';
-							embed.setDescription( description );
-							change = true;
-						}
-					}
-				}
-				else if ( description.trim() ) {
-					description = description.replace( /^\n+/, '' ).replace( /\n+$/, '' );
-					if ( description.length > 500 ) description = description.substring(0, 500) + '\u2026';
-					description = '```' + ( contentModels[revision.contentmodel] || contentFormats[revision.contentformat] || '' ) + '\n' + description + '\n```';
-					embed.setDescription( description );
-					change = true;
-				}
-				else if ( embed.backupDescription ) {
-					embed.setDescription( embed.backupDescription );
-					change = true;
-				}
-			}
-		}, error => {
-			console.log( '- Error while getting the page content: ' + error );
+	if ( contentmodel !== 'wikitext' ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
+		var body = response.body;
+		if ( body && body.warnings ) log_warn(body.warnings);
+		var revision = Object.values(( body?.query?.pages || {} ))?.[0]?.revisions?.[0];
+		revision = ( revision?.slots?.main || revision );
+		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
+			console.log( '- ' + response.statusCode + ': Error while getting the page content: ' + ( body && body.error && body.error.info ) );
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
-				change = true;
 			}
 			if ( embed.backupDescription && embed.length < 5000 ) {
 				embed.setDescription( embed.backupDescription );
-				change = true;
 			}
-		} ).finally( () => {
-			if ( change ) msg.edit( msg.content, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
-		} );
-	}
+			return;
+		}
+		if ( !embed.description && embed.length < 4000 ) {
+			var description = revision['*'];
+			var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
+			if ( regex ) {
+				let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || regex[1] ));
+				if ( descArray.length ) {
+					description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
+					if ( description ) {
+						if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+						description = '```' + ( contentModels[revision.contentmodel] || contentFormats[revision.contentformat] || '' ) + '\n' + description + '\n```';
+						embed.setDescription( description );
+					}
+				}
+			}
+			else if ( description.trim() ) {
+				description = description.replace( /^\n+/, '' ).replace( /\n+$/, '' );
+				if ( description.length > 500 ) description = description.substring(0, 500) + '\u2026';
+				description = '```' + ( contentModels[revision.contentmodel] || contentFormats[revision.contentformat] || '' ) + '\n' + description + '\n```';
+				embed.setDescription( description );
+			}
+			else if ( embed.backupDescription ) {
+				embed.setDescription( embed.backupDescription );
+			}
+		}
+	}, error => {
+		console.log( '- Error while getting the page content: ' + error );
+		if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+			embed.spliceFields( 0, 0, embed.backupField );
+		}
+		if ( embed.backupDescription && embed.length < 5000 ) {
+			embed.setDescription( embed.backupDescription );
+		}
+	} ).finally( () => {
+		msg.sendChannel( content, {embed} );
+		
+		if ( reaction ) reaction.removeEmoji();
+	} );
 	got.get( wiki + 'api.php?action=parse&prop=text|images' + ( fragment ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 			console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
 			if ( embed.backupDescription && embed.length < 5000 ) {
 				embed.setDescription( embed.backupDescription );
-				change = true;
 			}
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
-				change = true;
 			}
 			return;
 		}
@@ -160,7 +155,6 @@ function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment
 					}
 				}
 			} );
-			change = true;
 		}
 		if ( embed.thumbnail?.url === thumbnail ) {
 			var image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
@@ -178,10 +172,7 @@ function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment
 				} );
 			}
 			if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
-			if ( thumbnail ) {
-				embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
-				change = true;
-			}
+			if ( thumbnail ) embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
 		}
 		if ( fragment && embed.length < 4750 && embed.fields.length < 25 &&
 		toSection(embed.fields[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' )) !== toSection(fragment) ) {
@@ -202,16 +193,13 @@ function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment
 				if ( value.length > 1000 ) value = limitLength(value, 1000, 20);
 				if ( name.length && value.length ) {
 					embed.spliceFields( 0, 0, {name, value} );
-					change = true;
 				}
 				else if ( embed.backupField ) {
 					embed.spliceFields( 0, 0, embed.backupField );
-					change = true;
 				}
 			}
 			else if ( embed.backupField ) {
 				embed.spliceFields( 0, 0, embed.backupField );
-				change = true;
 			}
 		}
 		if ( !embed.description && embed.length < 5000 ) {
@@ -223,25 +211,23 @@ function parse_page(msg, {title, contentmodel}, embed, wiki, thumbnail, fragment
 			if ( description ) {
 				if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
 				embed.setDescription( description );
-				change = true;
 			}
 			else if ( embed.backupDescription ) {
 				embed.setDescription( embed.backupDescription );
-				change = true;
 			}
 		}
 	}, error => {
 		console.log( '- Error while parsing the page: ' + error );
 		if ( embed.backupDescription && embed.length < 5000 ) {
 			embed.setDescription( embed.backupDescription );
-			change = true;
 		}
 		if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 			embed.spliceFields( 0, 0, embed.backupField );
-			change = true;
 		}
 	} ).finally( () => {
-		if ( change ) msg.edit( msg.content, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
+		msg.sendChannel( content, {embed} );
+
+		if ( reaction ) reaction.removeEmoji();
 	} );
 }
 

@@ -188,101 +188,105 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				return;
 			}
 			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + querypage.ns + '|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
+				logging(wiki, msg.guild?.id, 'general', 'search');
 				var srbody = srresponse.body;
 				if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
 				if ( srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
 					console.log( '- ' + srresponse.statusCode + ': Error while getting the search results: ' + ( srbody && srbody.error && srbody.error.info ) );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Search', {search:title}) + '>' + spoiler );
+				
+					if ( reaction ) reaction.removeEmoji();
 					return;
 				}
 				if ( !srbody.query ) {
 					msg.reactEmoji('🤷');
+				
+					if ( reaction ) reaction.removeEmoji();
+					return;
+				}
+				querypage = Object.values(srbody.query.pages)[0];
+				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
+				var text = '';
+				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
+					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
+					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
+					embed.setTitle( displaytitle );
+				}
+				if ( querypage.extract ) {
+					var extract = extract_desc(querypage.extract, fragment);
+					embed.backupDescription = extract[0];
+					if ( extract[1].length && extract[2].length ) {
+						embed.backupField = {name: extract[1], value: extract[2]};
+					}
+				}
+				if ( querypage.pageprops && querypage.pageprops.description ) {
+					var description = htmlToPlain( querypage.pageprops.description );
+					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+					embed.backupDescription = description;
+				}
+				if ( querypage.ns === 6 ) {
+					var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
+					if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
+					else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
+				}
+				else if ( querypage.title === body.query.general.mainpage ) {
+					embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+				}
+				else if ( querypage.pageimage && querypage.original ) {
+					embed.setThumbnail( querypage.original.source );
+				}
+				else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
+					embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
+				}
+				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+				
+				var prefix = ( msg.channel.isGuild() && patreons[msg.guild.id] || process.env.prefix );
+				var linksuffix = ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' );
+				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
+					text = '';
+				}
+				else if ( !srbody.continue ) {
+					text = '\n' + lang.get('search.infopage', '`' + prefix + cmd + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`');
 				}
 				else {
-					querypage = Object.values(srbody.query.pages)[0];
-					var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-					var text = '';
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
-					if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
-						var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
-						if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-						embed.setTitle( displaytitle );
-					}
-					if ( querypage.extract ) {
-						var extract = extract_desc(querypage.extract, fragment);
-						embed.backupDescription = extract[0];
-						if ( extract[1].length && extract[2].length ) {
-							embed.backupField = {name: extract[1], value: extract[2]};
-						}
-					}
-					if ( querypage.pageprops && querypage.pageprops.description ) {
-						var description = htmlToPlain( querypage.pageprops.description );
-						if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-						embed.backupDescription = description;
-					}
-					if ( querypage.ns === 6 ) {
-						var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
-						if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
-						else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
-					}
-					else if ( querypage.title === body.query.general.mainpage ) {
-						embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
-					}
-					else if ( querypage.pageimage && querypage.original ) {
-						embed.setThumbnail( querypage.original.source );
-					}
-					else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
-						embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
-					}
-					else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
-					
-					var prefix = ( msg.channel.isGuild() && patreons[msg.guild.id] || process.env.prefix );
-					var linksuffix = ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' );
-					if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
-						text = '';
-					}
-					else if ( !srbody.continue ) {
-						text = '\n' + lang.get('search.infopage', '`' + prefix + cmd + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`');
-					}
-					else {
-						text = '\n' + lang.get('search.infosearch', '`' + prefix + cmd + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`', '`' + prefix + cmd + ( lang.localNames.search || 'search' ) + ' ' + title + linksuffix + '`');
-					}
-					
-					if ( querypage.categoryinfo ) {
-						var category = [lang.get('search.category.content')];
-						if ( querypage.categoryinfo.size === 0 ) {
-							category.push(lang.get('search.category.empty'));
-						}
-						if ( querypage.categoryinfo.pages > 0 ) {
-							category.push(lang.get('search.category.pages', querypage.categoryinfo.pages.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.pages));
-						}
-						if ( querypage.categoryinfo.files > 0 ) {
-							category.push(lang.get('search.category.files', querypage.categoryinfo.files.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.files));
-						}
-						if ( querypage.categoryinfo.subcats > 0 ) {
-							category.push(lang.get('search.category.subcats', querypage.categoryinfo.subcats.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.subcats));
-						}
-						if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
-						else text += '\n\n' + category.join('\n');
-					}
-
-					if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
-						try {
-							var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-							parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
-						}
-						catch ( error ) {
-							console.log( '- Failed to parse the infobox: ' + error );
-						}
-					}
-		
-					msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment) );
+					text = '\n' + lang.get('search.infosearch', '`' + prefix + cmd + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`', '`' + prefix + cmd + ( lang.localNames.search || 'search' ) + ' ' + title + linksuffix + '`');
 				}
+				
+				if ( querypage.categoryinfo ) {
+					var category = [lang.get('search.category.content')];
+					if ( querypage.categoryinfo.size === 0 ) {
+						category.push(lang.get('search.category.empty'));
+					}
+					if ( querypage.categoryinfo.pages > 0 ) {
+						category.push(lang.get('search.category.pages', querypage.categoryinfo.pages.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.pages));
+					}
+					if ( querypage.categoryinfo.files > 0 ) {
+						category.push(lang.get('search.category.files', querypage.categoryinfo.files.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.files));
+					}
+					if ( querypage.categoryinfo.subcats > 0 ) {
+						category.push(lang.get('search.category.subcats', querypage.categoryinfo.subcats.toLocaleString(lang.get('dateformat')), querypage.categoryinfo.subcats));
+					}
+					if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
+					else text += '\n\n' + category.join('\n');
+				}
+
+				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
+					try {
+						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
+						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
+					}
+					catch ( error ) {
+						console.log( '- Failed to parse the infobox: ' + error );
+					}
+				}
+
+				return parse_page(msg, spoiler + '<' + pagelink + '>' + text + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment);
 			}, error => {
+				logging(wiki, msg.guild?.id, 'general', 'search');
 				console.log( '- Error while getting the search results: ' + error );
 				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Search', {search:title}) + '>' + spoiler );
-			} ).finally( () => {
-				logging(wiki, msg.guild?.id, 'general', 'search');
+				
 				if ( reaction ) reaction.removeEmoji();
 			} );
 			if ( querypage.ns === -1 ) {
@@ -369,10 +373,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				}
 			}
 			
-			msg.sendChannel( spoiler + '<' + pagelink + '>' + text + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' )) );
-			
-			if ( reaction ) reaction.removeEmoji();
-			return;
+			return parse_page(msg, spoiler + '<' + pagelink + '>' + text + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ));
 		}
 		if ( body.query.interwiki ) {
 			if ( msg.channel.isGuild() && pause[msg.guild.id] ) {
@@ -461,9 +462,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		}, error => {
 			console.log( '- Error while getting the main page: ' + error );
 		} ).finally( () => {
-			msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} ).then( message => parse_page(message, querypage, embed, wiki, '', fragment) );
-			
-			if ( reaction ) reaction.removeEmoji();
+			parse_page(msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, '', fragment);
 		} );
 	}, error => {
 		if ( interwiki ) msg.sendChannel( spoiler + ' ' + interwiki + ' ' + spoiler );
