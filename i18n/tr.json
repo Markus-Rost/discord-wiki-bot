@@ -557,7 +557,7 @@
         "inline disabled": {
             "channel inline": "bu kanalda satır içi komutlar devre dışı.",
             "channel inlinechanged": "bu kanal için satır içi komutları devre dışı bıraktın.",
-            "help": "`[[$2]]` ve`{{$2}} gibi satır içi komutları etkinleştirmek için `$1` kullan.",
+            "help": "`[[$2]]` ve`{{$2}}` gibi satır içi komutları etkinleştirmek için `$1` kullan.",
             "inline": "bu sunucuda satır içi komutlar devre dışı.",
             "inlinechanged": "bu sunucu için satır içi komutları devre dışı bıraktın."
         },
