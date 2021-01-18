@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
+const phabricator = require('../../functions/phabricator.js');
 const logging = require('../../util/logging.js');
 const {parse_infobox, htmlToPlain, htmlToDiscord, partialURIdecode} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
@@ -187,7 +188,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
-			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + querypage.ns + '|' + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
+			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
 				logging(wiki, msg.guild?.id, 'general', 'search');
 				var srbody = srresponse.body;
 				if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
@@ -381,13 +382,16 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				console.log( '- Aborted, paused.' );
 				return;
 			}
-			logging(wiki, msg.guild?.id, 'interwiki');
 			var iw = new URL(body.query.interwiki[0].url.replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
 			querystring.forEach( (value, name) => {
 				iw.searchParams.append(name, value);
 			} );
 			if ( fragment ) iw.hash = Wiki.toSection(fragment);
 			else fragment = iw.hash.substring(1);
+			if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(iw.hostname) ) {
+				return phabricator(lang, msg, wiki, iw, reaction, spoiler);
+			}
+			logging(wiki, msg.guild?.id, 'interwiki');
 			var maxselfcall = interwikiLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
 			if ( selfcall < maxselfcall && ['http:','https:'].includes( iw.protocol ) ) {
 				selfcall++;

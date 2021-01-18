@@ -4,6 +4,7 @@ const check_wiki = {
 	test: require('./test.js').run
 };
 const help_setup = require('../functions/helpsetup.js');
+const phabricator = require('../functions/phabricator.js');
 
 /**
  * Processes the wiki linking command.
@@ -20,7 +21,10 @@ function cmd_link(lang, msg, title, wiki, cmd = '') {
 		var spoiler = '||';
 	}
 	msg.reactEmoji('⏳').then( reaction => {
-		check_wiki.general(lang, msg, title, wiki, cmd, reaction, spoiler);
+		if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname) ) {
+			return phabricator(lang, msg, wiki, new URL('/' + title, wiki), reaction, spoiler);
+		}
+		else check_wiki.general(lang, msg, title, wiki, cmd, reaction, spoiler);
 	} );
 }
 

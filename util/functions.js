@@ -183,12 +183,30 @@ function htmlToPlain(html) {
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
-			if ( tagname === 'h1' ) text += '***__';
-			if ( tagname === 'h2' ) text += '**__';
-			if ( tagname === 'h3' ) text += '**';
-			if ( tagname === 'h4' ) text += '__';
-			if ( tagname === 'h5' ) text += '*';
-			if ( tagname === 'h6' ) text += '';
+			if ( tagname === 'h1' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '***__';
+			}
+			if ( tagname === 'h2' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '**__';
+			}
+			if ( tagname === 'h3' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '**';
+			}
+			if ( tagname === 'h4' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '__';
+			}
+			if ( tagname === 'h5' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '*';
+			}
+			if ( tagname === 'h6' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '';
+			}
 		},
 		ontext: (htmltext) => {
 			if ( !reference ) {
@@ -266,12 +284,30 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
-			if ( tagname === 'h1' ) text += '***__';
-			if ( tagname === 'h2' ) text += '**__';
-			if ( tagname === 'h3' ) text += '**';
-			if ( tagname === 'h4' ) text += '__';
-			if ( tagname === 'h5' ) text += '*';
-			if ( tagname === 'h6' ) text += '';
+			if ( tagname === 'h1' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '***__';
+			}
+			if ( tagname === 'h2' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '**__';
+			}
+			if ( tagname === 'h3' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '**';
+			}
+			if ( tagname === 'h4' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '__';
+			}
+			if ( tagname === 'h5' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '*';
+			}
+			if ( tagname === 'h6' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				text += '';
+			}
 			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/)?\//.test(attribs.href) ) {
 				href = new URL(attribs.href, serverpath).href;
 				text += '[';
