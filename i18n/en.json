@@ -391,38 +391,49 @@
     },
     "minecraft": {
         "cmdpage": "Commands/",
-        "fixed": "Fixed Version:",
+        "fixed": "Fixed {{PLURAL:$2|Version|Versions}}:",
         "link": "https://minecraft.gamepedia.com/",
         "more": "And $1 more.",
         "private": "**Private Issue**",
         "total": "$1 {{PLURAL:$2|issue|issues}} fixed",
         "issue_link": {
-            "duplicates": "duplicates $1",
-            "relates_to": "relates to $1",
-            "blocks": "blocks $1",
-            "is_blocked_by": "is blocked by $1",
-            "testing_discovered": "testing discovered $1",
-            "discovered_while_testing": "discovered while testing $1",
-            "clones": "clones $1",
-            "is_cloned_by": "is cloned by $1",
-            "is_duplicated_by": "is duplicated by $1"
+            "Blocks": {
+                "inward": "is blocked by $1",
+                "outward": "blocks $1"
+            },
+            "Bonfire Testing": {
+                "inward": "discovered while testing $1",
+                "outward": "testing discovered $1"
+            },
+            "Cloners": {
+                "inward": "is cloned by $1",
+                "outward": "clones $1"
+            },
+            "Duplicate": {
+                "inward": "is duplicated by $1",
+                "outward": "duplicates $1"
+            },
+            "Relates": {
+                "inward": "relates to $1",
+                "outward": "relates to $1"
+            }
         },
         "status": {
-            "open": "Open",
-            "in_progress": "In Progress",
-            "resolved": "Resolved",
-            "reopned": "Reopened",
-            "closed": "Closed",
-            "postponed": "Postponed",
-            "fixed": "Fixed",
-            "wont_fix": "Won't Fix",
-            "duplicate": "Duplicate",
-            "incomplete": "Incomplete",
-            "works_as_intended": "Works As Intended",
-            "cannot_reproduce": "Cannot Reproduce",
-            "invalid": "Invalid",
-            "awaiting_response": "Awaiting Response",
-            "done": "Done"
+            "Awaiting Response": "Awaiting Response",
+            "Cannot Reproduce": "Cannot Reproduce",
+            "Closed": "Closed",
+            "Done": "Done",
+            "Duplicate": "Duplicate",
+            "Fixed": "Fixed",
+            "In Progress": "In Progress",
+            "Incomplete": "Incomplete",
+            "Invalid": "Invalid",
+            "Open": "Open",
+            "Postponed": "Postponed",
+            "Reopened": "Reopened",
+            "Resolved": "Resolved",
+            "Won't Fix": "Won't Fix",
+            "Works As Intended": "Works As Intended"
         }
     },
     "overview": {
