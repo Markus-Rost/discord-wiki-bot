@@ -53,16 +53,16 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							var ward = ( link.outwardIssue ? 'outward' : 'inward' );
 							var issue = link[ward + 'Issue']; // looks for property (in|out)wardIssue
 							var linkType = link.type[ward];
-							var name = lang.get('minecraft.issue_link.' + linkType.toLowerCase().replace(' ', '_') | linkType) + ' ' + issue.key;
+							var name = lang.get('minecraft.issue_link.' + linkType.toLowerCase().replace(' ', '_'), issue.key) | linkType + ' ' + issue.key;
 							var status = issue.fields.status.name;
-							var value = lang.get('minecraft.status.' + status.toLowerCase().replace(' ', '_') | status) + ': [' + issue.fields.summary.escapeFormatting() + '](' + baseBrowseUrl + issue.key + ')';
+							var value = lang.get('minecraft.status.' + status.toLowerCase().replace(' ', '_')) | status + ': [' + issue.fields.summary.escapeFormatting() + '](' + baseBrowseUrl + issue.key + ')';
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
 							else extralinks.push({name,value,inline:false});
 						} );
 						if ( extralinks.length ) embed.setFooter( lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length) );
 					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
-					var translatedStatus = lang.get('minecraft.status.' + status.toLowerCase().replace(' ', '_') | status);
+					var translatedStatus = lang.get('minecraft.status.' + status.toLowerCase().replace(' ', '_')) | status;
 					var fixed = '';
 					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
 						fixed = '\n' + lang.get('minecraft.fixed') + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
