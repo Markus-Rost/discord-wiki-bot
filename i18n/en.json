@@ -391,11 +391,50 @@
     },
     "minecraft": {
         "cmdpage": "Commands/",
-        "fixed": "Fixed Version:",
+        "fixed": "Fixed {{PLURAL:$2|Version|Versions}}:",
         "link": "https://minecraft.gamepedia.com/",
         "more": "And $1 more.",
         "private": "**Private Issue**",
-        "total": "$1 {{PLURAL:$2|issue|issues}} fixed"
+        "total": "$1 {{PLURAL:$2|issue|issues}} fixed",
+        "issue_link": {
+            "Blocks": {
+                "inward": "is blocked by $1",
+                "outward": "blocks $1"
+            },
+            "Bonfire Testing": {
+                "inward": "discovered while testing $1",
+                "outward": "testing discovered $1"
+            },
+            "Cloners": {
+                "inward": "is cloned by $1",
+                "outward": "clones $1"
+            },
+            "Duplicate": {
+                "inward": "is duplicated by $1",
+                "outward": "duplicates $1"
+            },
+            "Relates": {
+                "inward": "relates to $1",
+                "outward": "relates to $1"
+            }
+        },
+        "status": {
+            "Awaiting Response": "Awaiting Response",
+            "Cannot Reproduce": "Cannot Reproduce",
+            "Closed": "Closed",
+            "Done": "Done",
+            "Duplicate": "Duplicate",
+            "Fixed": "Fixed",
+            "In Progress": "In Progress",
+            "Incomplete": "Incomplete",
+            "Invalid": "Invalid",
+            "Open": "Open",
+            "Postponed": "Postponed",
+            "Reopened": "Reopened",
+            "Resolved": "Resolved",
+            "Won't Fix": "Won't Fix",
+            "Works As Intended": "Works As Intended"
+        }
     },
     "overview": {
         "articles": "Articles:",
