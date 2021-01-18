@@ -413,7 +413,16 @@
             "resolved": "Resolved",
             "reopned": "Reopened",
             "closed": "closed",
-            "postponed": "postponed"
+            "postponed": "postponed",
+            "fixed": "Fixed",
+            "wont_fix": "Won't Fix",
+            "duplicate": "Duplicate",
+            "incomplete": "Incomplete",
+            "works_as_intended": "Works As Intended",
+            "cannot_reproduce": "Cannot Reproduce",
+            "invalid": "Invalid",
+            "awaiting_response", "Awaiting Response",
+            "done": "Done"
         }
     },
     "overview": {
