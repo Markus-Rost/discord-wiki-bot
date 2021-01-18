@@ -421,7 +421,7 @@
             "works_as_intended": "Works As Intended",
             "cannot_reproduce": "Cannot Reproduce",
             "invalid": "Invalid",
-            "awaiting_response", "Awaiting Response",
+            "awaiting_response": "Awaiting Response",
             "done": "Done"
         }
     },
