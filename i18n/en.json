@@ -391,11 +391,7 @@
     },
     "minecraft": {
         "cmdpage": "Commands/",
-        "fixed": "Fixed {{PLURAL:$2|Version|Versions}}:",
-        "link": "https://minecraft.gamepedia.com/",
-        "more": "And $1 more.",
-        "private": "**Private Issue**",
-        "total": "$1 {{PLURAL:$2|issue|issues}} fixed",
+        "fixed": "Fixed {{PLURAL:$1|Version|Versions}}:",
         "issue_link": {
             "Blocks": {
                 "inward": "is blocked by $1",
@@ -418,6 +414,9 @@
                 "outward": "relates to $1"
             }
         },
+        "link": "https://minecraft.gamepedia.com/",
+        "more": "And $1 more.",
+        "private": "**Private Issue**",
         "status": {
             "Awaiting Response": "Awaiting Response",
             "Cannot Reproduce": "Cannot Reproduce",
@@ -434,7 +433,8 @@
             "Resolved": "Resolved",
             "Won't Fix": "Won't Fix",
             "Works As Intended": "Works As Intended"
-        }
+        },
+        "total": "$1 {{PLURAL:$2|issue|issues}} fixed"
     },
     "overview": {
         "articles": "Articles:",
