@@ -45,30 +45,29 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 					msg.reactEmoji('error');
 				}
 				else {
-					var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name != 'Duplicate' ) );
+					var statusList = lang.get('minecraft.status');
+					var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 					if ( links.length ) {
 						var embed = new MessageEmbed();
+						var linkList = lang.get('minecraft.issue_link');
 						var extralinks = [];
 						links.forEach( link => {
 							var ward = ( link.outwardIssue ? 'outward' : 'inward' );
 							var issue = link[ward + 'Issue']; // looks for property (in|out)wardIssue
-							var linkType = link.type[ward];
-							var linkTypeLanguageKey = linkType.toLowerCase().replace(' ', '_').replace(/[^a-z]/g, '');
-							var name = lang.get('minecraft.issue_link')[linkTypeLanguageKey] ? lang.get('minecraft.issue_link.' + linkTypeLanguageKey, issue.key) : linkType + ' ' + issue.key;
+							var name = ( linkList?.[link.type.name]?.[ward]?.replaceSave( /\$1/g, issue.key ) || link.type[ward] + ' ' + issue.key );
 							var status = issue.fields.status.name;
-							var value = lang.get('minecraft.status')[status.toLowerCase().replace(' ', '_').replace(/[^a-z]/g, '')] || status + ': [' + issue.fields.summary.escapeFormatting() + '](' + baseBrowseUrl + issue.key + ')';
+							var value = ( statusList?.[status] || status ) + ': [' + issue.fields.summary.escapeFormatting() + '](' + baseBrowseUrl + issue.key + ')';
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
 							else extralinks.push({name,value,inline:false});
 						} );
 						if ( extralinks.length ) embed.setFooter( lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length) );
 					}
-					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
-					var translatedStatus = lang.get('minecraft.status')[status.toLowerCase().replace(' ', '_').replace(/[^a-z]/g, '')] || status;
+					var status = ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name );
 					var fixed = '';
 					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
-						fixed = '\n' + lang.get('minecraft.fixed') + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
+						fixed = '\n' + lang.get('minecraft.fixed', body.fields.fixVersions.length) + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
 					}
-					msg.sendChannel( spoiler + translatedStatus + body.fields.summary.escapeFormatting() + '\n<' + baseBrowseUrl + body.key + '>' + fixed + spoiler, {embed} );
+					msg.sendChannel( spoiler + '**' + ( statusList?.[status] || status ) + '**: ' + body.fields.summary.escapeFormatting() + '\n<' + baseBrowseUrl + body.key + '>' + fixed + spoiler, {embed} );
 				}
 			}
 		}, error => {
@@ -108,9 +107,10 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 				else {
 					if ( body.total > 0 ) {
 						var embed = new MessageEmbed();
+						var statusList = lang.get('minecraft.status');
 						body.issues.forEach( bug => {
 							var status = ( bug.fields.resolution ? bug.fields.resolution.name : bug.fields.status.name );
-							var value = status + ': [' + bug.fields.summary.escapeFormatting() + '](https://bugs.mojang.com/browse/' + bug.key + ')';
+							var value = ( statusList?.[status] || status ) + ': [' + bug.fields.summary.escapeFormatting() + '](https://bugs.mojang.com/browse/' + bug.key + ')';
 							embed.addField( bug.key, value );
 						} );
 						if ( body.total > 25 ) {
