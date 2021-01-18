@@ -18,7 +18,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	args = args.slice(1);
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
 		if ( /^\d+$/.test(invoke) ) invoke = 'MC-' + invoke;
-		var link = 'https://bugs.mojang.com/browse/';
+		var baseBrowseUrl = 'https://bugs.mojang.com/browse/';
 		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,issuelinks,fixVersions,resolution,status' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
@@ -27,7 +27,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 						msg.reactEmoji('🤷');
 					}
 					else if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
-						msg.sendChannel( spoiler + lang.get('minecraft.private') + '\n<' + link + invoke + '>' + spoiler );
+						msg.sendChannel( spoiler + lang.get('minecraft.private') + '\n<' + baseBrowseUrl + invoke + '>' + spoiler );
 					}
 					else {
 						console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issue: ' + body.errorMessages.join(' - ') );
@@ -37,7 +37,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the issue: ' + ( body && body.message ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-					else msg.sendChannelError( spoiler + '<' + link + invoke + '>' + spoiler );
+					else msg.sendChannelError( spoiler + '<' + baseBrowseUrl + invoke + '>' + spoiler );
 				}
 			}
 			else {
@@ -45,31 +45,34 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 					msg.reactEmoji('error');
 				}
 				else {
-					var bugs = body.fields.issuelinks.filter( bug => bug.outwardIssue || ( bug.inwardIssue && bug.type.name != 'Duplicate' ) );
-					if ( bugs.length ) {
+					var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name != 'Duplicate' ) );
+					if ( links.length ) {
 						var embed = new MessageEmbed();
-						var extrabugs = [];
-						bugs.forEach( bug => {
-							var ward = ( bug.outwardIssue ? 'outward' : 'inward' );
-							var issue = bug[ward + 'Issue'];
-							var name = bug.type[ward] + ' ' + issue.key;
-							var value = issue.fields.status.name + ': [' + issue.fields.summary.escapeFormatting() + '](' + link + issue.key + ')';
+						var extralinks = [];
+						links.forEach( link => {
+							var ward = ( link.outwardIssue ? 'outward' : 'inward' );
+							var issue = link[ward + 'Issue']; // looks for property (in|out)wardIssue
+							var linkType = link.type[ward];
+							var name = lang.get('minecraft.issue_link.' + linkType.toLowerCase().replace(' ', '_') | linkType) + ' ' + issue.key;
+							var status = issue.fields.status.name;
+							var value = lang.get('minecraft.status.' + status.toLowerCase().replace(' ', '_') | status) + ': [' + issue.fields.summary.escapeFormatting() + '](' + baseBrowseUrl + issue.key + ')';
 							if ( embed.fields.length < 25 ) embed.addField( name, value );
-							else extrabugs.push({name,value,inline:false});
+							else extralinks.push({name,value,inline:false});
 						} );
-						if ( extrabugs.length ) embed.setFooter( lang.get('minecraft.more', extrabugs.length.toLocaleString(lang.get('dateformat')), extrabugs.length) );
+						if ( extralinks.length ) embed.setFooter( lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length) );
 					}
 					var status = '**' + ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name ) + ':** ';
+					var translatedStatus = lang.get('minecraft.status.' + status.toLowerCase().replace(' ', '_') | status);
 					var fixed = '';
 					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
 						fixed = '\n' + lang.get('minecraft.fixed') + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
 					}
-					msg.sendChannel( spoiler + status + body.fields.summary.escapeFormatting() + '\n<' + link + body.key + '>' + fixed + spoiler, {embed} );
+					msg.sendChannel( spoiler + translatedStatus + body.fields.summary.escapeFormatting() + '\n<' + baseBrowseUrl + body.key + '>' + fixed + spoiler, {embed} );
 				}
 			}
 		}, error => {
 			console.log( '- Error while getting the issue: ' + error );
-			msg.sendChannelError( spoiler + '<' + link + invoke + '>' + spoiler );
+			msg.sendChannelError( spoiler + '<' + baseBrowseUrl + invoke + '>' + spoiler );
 		} ).finally( () => {
 			if ( reaction ) reaction.removeEmoji();
 		} );
@@ -78,7 +81,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 		var jql = new URLSearchParams({
 			jql: 'fixVersion="' + args.join(' ').replace( /["\\]/g, '\\$&' ) + '" order by key'
 		});
-		var link = 'https://bugs.mojang.com/issues/?' + jql;
+		var uri = 'https://bugs.mojang.com/issues/?' + jql;
 		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&' + jql + '&maxResults=25' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
@@ -94,7 +97,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the issues: ' + ( body && body.message ) );
 					if ( body && body['status-code'] === 404 ) msg.reactEmoji('error');
-					else msg.sendChannelError( spoiler + '<' + link + '>' + spoiler );
+					else msg.sendChannelError( spoiler + '<' + uri + '>' + spoiler );
 				}
 			}
 			else {
