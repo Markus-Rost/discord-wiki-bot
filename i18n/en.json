@@ -396,7 +396,7 @@
         "more": "And $1 more.",
         "private": "**Private Issue**",
         "total": "$1 {{PLURAL:$2|issue|issues}} fixed",
-        "issueLink": {
+        "issue_link": {
             "duplicates": "duplicates $1",
             "relates_to": "relates to $1",
             "blocks": "blocks $1",
@@ -412,8 +412,8 @@
             "in_progress": "In Progress",
             "resolved": "Resolved",
             "reopned": "Reopened",
-            "closed": "closed",
-            "postponed": "postponed",
+            "closed": "Closed",
+            "postponed": "Postponed",
             "fixed": "Fixed",
             "wont_fix": "Won't Fix",
             "duplicate": "Duplicate",
