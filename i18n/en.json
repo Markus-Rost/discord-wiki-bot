@@ -395,7 +395,26 @@
         "link": "https://minecraft.gamepedia.com/",
         "more": "And $1 more.",
         "private": "**Private Issue**",
-        "total": "$1 {{PLURAL:$2|issue|issues}} fixed"
+        "total": "$1 {{PLURAL:$2|issue|issues}} fixed",
+        "issueLink": {
+            "duplicates": "duplicates $1"
+            "relates_to": "relates to $1"
+            "blocks": "blocks $1"
+            "is_blocked_by": "is blocked by $1"
+            "testing_discovered": "testing discovered $1"
+            "discovered_while_testing": "discovered while testing $1"
+            "clones": "clones $1"
+            "is_cloned_by": "is cloned by $1"
+            "is_duplicated_by": "is duplicated by $1"
+        },
+        "status": {
+            "open": "Open",
+            "in_progress": "In Progress",
+            "resolved": "Resolved",
+            "reopned": "Reopened",
+            "closed": "closed",
+            "postponed": "postponed"
+        }
     },
     "overview": {
         "articles": "Articles:",
