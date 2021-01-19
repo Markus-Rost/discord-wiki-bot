@@ -391,10 +391,49 @@
     },
     "minecraft": {
         "cmdpage": "Commands/",
-        "fixed": "ठीक किया गया संस्करण:",
+        "fixed": "ठीक {{PLURAL:$1|किया गया संस्करण|किए गए संस्करण}}:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "$1 द्वारा ब्लॉक्ड है",
+                "outward": "$1 को ब्लॉक करता है"
+            },
+            "Bonfire Testing": {
+                "inward": "$1 को टेस्ट करते वक्त पाया गया",
+                "outward": "टेस्ट में $1 पाया गया"
+            },
+            "Cloners": {
+                "inward": "$1 द्वारा क्लोन किया गया है",
+                "outward": "$1 को क्लोन करता है"
+            },
+            "Duplicate": {
+                "inward": "$1 द्वारा डुप्लीकेट किया गया है",
+                "outward": "$1 को डुप्लीकेट करता है"
+            },
+            "Relates": {
+                "inward": "$1 से सम्बंधित है",
+                "outward": "$1 से सम्बंधित है"
+            }
+        },
         "link": "https://minecraft.gamepedia.com/",
         "more": "और $1 ज़्यादा।",
         "private": "**व्यक्तिगत समस्या**",
+        "status": {
+            "Awaiting Response": "जवाब की अपेक्षा की जा रही है",
+            "Cannot Reproduce": "दोबारा बनाया नहीं जा सका",
+            "Closed": "बंद कर दिया गया है",
+            "Done": "हो गया",
+            "Duplicate": "नकली",
+            "Fixed": "ठीक हो चुका है",
+            "In Progress": "काम हो रहा है",
+            "Incomplete": "अधूरा",
+            "Invalid": "अस्वीकृत",
+            "Open": "खुला",
+            "Postponed": "टाल दिया गया",
+            "Reopened": "फिर से खोला गया",
+            "Resolved": "ठीक कर दिया गया",
+            "Won't Fix": "ठीक नहीं होगा",
+            "Works As Intended": "अपेक्षा के हिसाब से ही काम करता है"
+        },
         "total": "$1 {{PLURAL:$2|समस्या|समस्याएँ}} ठीक हो चुके हैं"
     },
     "overview": {
