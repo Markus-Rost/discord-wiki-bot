@@ -392,9 +392,48 @@
     "minecraft": {
         "cmdpage": "Commands/",
         "fixed": "ফিক্স করা সংস্করণ:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "$1 দ্বারা ব্লকড",
+                "outward": "$1কে ব্লক করে"
+            },
+            "Bonfire Testing": {
+                "inward": "$1কে পরীক্ষণিত করার সময় পাওয়া গেছে",
+                "outward": "টেস্টে $1 পাওয়া গেলো"
+            },
+            "Cloners": {
+                "inward": "$1 দ্বারা ক্লোন করা",
+                "outward": "$1কে ক্লোন করে"
+            },
+            "Duplicate": {
+                "inward": "$1 দ্বারা ডুপ্লিকেট করা",
+                "outward": "$1কে ডুপ্লিকেট করে"
+            },
+            "Relates": {
+                "inward": "$1 থেকে সম্বন্ধিত",
+                "outward": "$1 থেকে সম্বন্ধিত"
+            }
+        },
         "link": "https://minecraft.gamepedia.com/",
         "more": "আর $1টি।",
         "private": "**ব্যক্তিগত সমস্যা**",
+        "status": {
+            "Awaiting Response": "উত্তরের অপেক্ষা করা হচ্ছে",
+            "Cannot Reproduce": "আবার বানানো যায়নি",
+            "Closed": "বন্ধ করে দেওয়া হয়েছে",
+            "Done": "হয়ে গেছে",
+            "Duplicate": "নকল",
+            "Fixed": "ঠিক হয়ে গেছে",
+            "In Progress": "কাজ চলছে",
+            "Incomplete": "অসমাপ্ত",
+            "Invalid": "অস্বীকৃত",
+            "Open": "খুলা",
+            "Postponed": "রেখে দেওয়া হয়েছে",
+            "Reopened": "আবার খোলা হয়েছে",
+            "Resolved": "ঠিক করে দেওয়া হয়েছে",
+            "Won't Fix": "ঠিক হবেনা",
+            "Works As Intended": "প্রত্যাশার হিসাবেই কাজ করে"
+        },
         "total": "$1 {{PLURAL:$2|ইসু|টি ইসু}} ঠিক হয়েছে"
     },
     "overview": {
