@@ -166,7 +166,6 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				return;
 			}
 			wiki.updateWiki(body.query.general);
-			logging(wiki, msg.guild?.id, 'inline');
 			if ( body.query.normalized ) {
 				body.query.normalized.forEach( title => links.filter( link => link.title === title.from ).forEach( link => link.title = title.to ) );
 			}
