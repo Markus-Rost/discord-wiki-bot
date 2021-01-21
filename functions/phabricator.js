@@ -35,14 +35,16 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 			return;
 		}
 		var task = body.result.data[0];
+		var status = '**' + task.fields.status.name + ':** ' + task.fields.name.escapeFormatting() + '\n';
 		if ( !msg.showEmbed() ) {
-			var status = '**' + task.fields.status.name + ':** ' + task.fields.name.escapeFormatting();
-			msg.sendChannel( spoiler + status + '\n<' + link + '>' + spoiler );
+			msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler );
 			
 			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
-		var embed = new MessageEmbed().setAuthor( 'Phabricator' ).setTitle( task.fields.name.escapeFormatting() ).setURL( link ).addField( 'Status', task.fields.status.name, true ).addField( 'Priority', task.fields.priority.name, true );
+		var summary = task.fields.name.escapeFormatting();
+		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
+		var embed = new MessageEmbed().setAuthor( 'Phabricator' ).setTitle( summary ).setURL( link ).addField( 'Status', task.fields.status.name, true ).addField( 'Priority', task.fields.priority.name, true );
 		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', task.fields.subtype, true );;
 		var description = task.fields.description.raw.replace( /```lang=/g, '```' );
 		if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
@@ -63,12 +65,12 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 		}, error => {
 			console.log( '- Error while getting the task transactions: ' + error );
 		} ).finally( () => {
-			msg.sendChannel( spoiler + '<' + link + '>' + spoiler, {embed} );
+			msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler, {embed} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
 
-		msg.sendChannel( spoiler + '<' + link + '>' + spoiler, {embed} );
+		msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler, {embed} );
 		
 		if ( reaction ) reaction.removeEmoji();
 	}, error => {
