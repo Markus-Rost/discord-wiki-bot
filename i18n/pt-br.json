@@ -391,10 +391,46 @@
     },
     "minecraft": {
         "cmdpage": "Comandos/",
-        "fixed": "Versão corrigida:",
+        "fixed": "{{PLURAL:$1|Versão corrigida|Versões corrigidas}}:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "está bloqueado por $1"
+            },
+            "Bonfire Testing": {
+                "inward": "descoberto durante o teste de $1",
+                "outward": "teste descoberto por $1"
+            },
+            "Cloners": {
+                "inward": "é clonado por $1"
+            },
+            "Duplicate": {
+                "inward": "é duplicado por $1"
+            },
+            "Relates": {
+                "inward": "refere-se a $1",
+                "outward": "refere-se a $1"
+            }
+        },
         "link": "https://minecraft-pt.gamepedia.com/",
         "more": "E $1 mais.",
         "private": "**Problema privado**",
+        "status": {
+            "Awaiting Response": "Esperando resposta",
+            "Cannot Reproduce": "Não pode se reproduzir",
+            "Closed": "Fechado",
+            "Done": "Feito",
+            "Duplicate": "Duplicado",
+            "Fixed": "Corrigido",
+            "In Progress": "Em progresso",
+            "Incomplete": "Incompleto",
+            "Invalid": "Invalido",
+            "Open": "Aberto",
+            "Postponed": "Adiado",
+            "Reopened": "Reaberto",
+            "Resolved": "Resolvido",
+            "Won't Fix": "Não vai corrigir",
+            "Works As Intended": "Funciona conforme previsto"
+        },
         "total": "$1 {{PLURAL:$2|problema|problemas}} corrigidos"
     },
     "overview": {

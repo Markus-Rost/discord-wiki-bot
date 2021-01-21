@@ -391,7 +391,7 @@
     },
     "minecraft": {
         "cmdpage": "Befehl/",
-        "fixed": "Lösungsversion:",
+        "fixed": "{{PLURAL:$1|Lösungsversion|Lösungsversionen}}:",
         "link": "https://minecraft-de.gamepedia.com/",
         "more": "Und $1 mehr.",
         "private": "**Privater Fehler**",
