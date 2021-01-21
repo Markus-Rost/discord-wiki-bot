@@ -315,6 +315,10 @@
                     "cmd": "settings prefix <prefiks>",
                     "desc": "Zmienię prefiks komend używany na tym serwerze."
                 },
+                "role": {
+                    "cmd": "settings role <rola>",
+                    "desc": "Zmienię rolę, od której możliwe jest używanie komend na tym serwerze."
+                },
                 "wiki": {
                     "cmd": "settings wiki <wiki>",
                     "desc": "Zmienię domyślną wiki tego serwera."
@@ -387,10 +391,39 @@
     },
     "minecraft": {
         "cmdpage": "Komendy#",
-        "fixed": "Naprawione w wersji:",
+        "fixed": "Naprawione w {{PLURAL:$1|wersji|wersjach}}:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "jest zablokowane przez $1",
+                "outward": "blokuje $1"
+            },
+            "Bonfire Testing": {
+                "inward": "odkryte podczas testowania $1",
+                "outward": "testowanie odkryło $1"
+            },
+            "Cloners": {
+                "inward": "jest zduplikowane przez $1",
+                "outward": "duplikuje $1"
+            },
+            "Duplicate": {
+                "inward": "jest zduplikowane przez $1",
+                "outward": "duplikuje $1"
+            },
+            "Relates": {
+                "inward": "jest powiązane z $1",
+                "outward": "jest powiązane z $1"
+            }
+        },
         "link": "https://minecraft-pl.gamepedia.com/",
         "more": "Oraz $1 {{PLURAL:$2|inny|inne|innych}}.",
         "private": "**Private Issue**",
+        "status": {
+            "Awaiting Response": "Oczekiwanie na odpowiedź",
+            "Cannot Reproduce": "Nie udało się zreprodukować",
+            "Done": "Zrobione",
+            "Fixed": "Naprawione",
+            "Works As Intended": "Działa jak należy"
+        },
         "total": "naprawiono $1 {{PLURAL:$2|błąd|błędy|błędów}}"
     },
     "overview": {
@@ -482,6 +515,7 @@
         "updated_wiki": "wiki dla tego webhooka została zmieniona na:",
         "webhook": {
             "blocked": "Webhook ostatnich zmian dla tej wiki zostanie usunięty gdyż wiki została zablokowana!",
+            "blocked_help": "Możesz zapytać się o szczegóły na [serwerze wsparcia]($1).",
             "blocked_reason": "Ten webhook ostatnich zmian zostanie usunięty gdyż wiki została zablokowana za `$1`!",
             "created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
             "dashboard": {
@@ -532,6 +566,8 @@
         "channel current": "obecne ustawienia dla tego kanału:",
         "channel lang": "językiem tego kanału jest:",
         "channel langchanged": "zmieniono język kanału na:",
+        "channel role": "Minimalną rolą dla tego kanału jest:",
+        "channel rolechanged": "zmieniono rolę wymaganą dla tego kanału do:",
         "channel wiki": "domyślną wiki tego kanału jest:",
         "channel wikichanged": "zmieniono domyślną wiki dla tego kanału na:",
         "current": "obecne ustawienia dla tego serwera:",
@@ -571,6 +607,10 @@
         "prefixchanged": "zmieniono prefiks dla tego serwera na:",
         "prefixhelp": "Użyj `$1 <prefiks>` aby zmienić prefiks.\nUżyj `_` na końcu jako zamiennik spacji na końcu prefiksu.\nPrefiks nie może zawierać wzmianek!",
         "prefixinvalid": "podany prefiks nie jest wspierany!",
+        "role": "minimalną rolą wymaganą dla tego serwera jest:",
+        "rolechanged": "zmieniono rolę wymaganą dla tego serwera na:",
+        "rolehelp": "Użyj `$1 <rola>` aby zmienić wymaganą rolę.",
+        "roleinvalid": "podana rola nie istnieje!",
         "save_failed": "niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
         "wiki": "domyślną wiki tego serwera jest:",
         "wikichanged": "zmieniono domyślną wiki dla tego serwera na:",
