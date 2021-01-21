@@ -19,7 +19,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
 		if ( /^\d+$/.test(invoke) ) invoke = 'MC-' + invoke;
 		var baseBrowseUrl = 'https://bugs.mojang.com/browse/';
-		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,issuelinks,fixVersions,resolution,status' ).then( response => {
+		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,description,issuelinks,fixVersions,resolution,status' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {
@@ -46,9 +46,13 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 				}
 				else {
 					var statusList = lang.get('minecraft.status');
+					var summary = body.fields.summary.escapeFormatting();
+					if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
+					var description = ( body.fields.description || '' ).replace( /\{code\}/g, '```' );
+					if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+					var embed = new MessageEmbed().setAuthor( 'Mojira' ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( parse_links( description ) );
 					var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 					if ( links.length ) {
-						var embed = new MessageEmbed();
 						var linkList = lang.get('minecraft.issue_link');
 						var extralinks = [];
 						links.forEach( link => {
@@ -57,7 +61,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 							var name = ( linkList?.[link.type.name]?.[ward]?.replaceSave( /\$1/g, issue.key ) || link.type[ward] + ' ' + issue.key );
 							var status = issue.fields.status.name;
 							var value = ( statusList?.[status] || status ) + ': [' + issue.fields.summary.escapeFormatting() + '](' + baseBrowseUrl + issue.key + ')';
-							if ( embed.fields.length < 25 ) embed.addField( name, value );
+							if ( embed.fields.length < 25 && ( embed.length + name.length + value.length ) < 6000 ) embed.addField( name, value );
 							else extralinks.push({name,value,inline:false});
 						} );
 						if ( extralinks.length ) embed.setFooter( lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length) );
@@ -105,8 +109,8 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 					msg.reactEmoji('error');
 				}
 				else {
+					var embed = new MessageEmbed().setAuthor( 'Mojira' ).setTitle( args.join(' ') ).setURL( uri );
 					if ( body.total > 0 ) {
-						var embed = new MessageEmbed();
 						var statusList = lang.get('minecraft.status');
 						body.issues.forEach( bug => {
 							var status = ( bug.fields.resolution ? bug.fields.resolution.name : bug.fields.status.name );
@@ -119,12 +123,12 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 						}
 					}
 					var total = '**' + args.join(' ') + ':** ' + lang.get('minecraft.total', body.total.toLocaleString(lang.get('dateformat')), body.total);
-					msg.sendChannel( spoiler + total + '\n<' + link + '>' + spoiler, {embed} );
+					msg.sendChannel( spoiler + total + '\n<' + uri + '>' + spoiler, {embed} );
 				}
 			}
 		}, error => {
 			console.log( '- Error while getting the issues: ' + error );
-			msg.sendChannelError( spoiler + '<' + link + '>' + spoiler );
+			msg.sendChannelError( spoiler + '<' + uri + '>' + spoiler );
 		} ).finally( () => {
 			if ( reaction ) reaction.removeEmoji();
 		} );
@@ -133,6 +137,17 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 		msg.notMinecraft = true;
 		this.WIKI.general(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
 	}
+}
+
+/**
+ * Parse Mojira links.
+ * @param {String} text - The text to parse.
+ * @returns {String}
+ */
+function parse_links(text) {
+	text = text.replace( /\[~([^\]]+)\]/g, '[$1](https://bugs.mojang.com/secure/ViewProfile.jspa?name=$1)' );
+	text = text.replace( /\[([^\|]+)\|([^\]]+)\]/g, '[$1]($2)' );
+	return text;
 }
 
 module.exports = {
