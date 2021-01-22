@@ -368,8 +368,8 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
-						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-							if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- Dashboard: ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
+							if ( dsbody?.status !== 404 ) console.log( '- Dashboard: ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 							return createWebhook();
 						}
 						return createWebhook(true);
@@ -582,8 +582,8 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							}
 						} ).then( dsresponse => {
 							var dsbody = dsresponse.body;
-							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- Dashboard: ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
+								if ( dsbody?.status !== 404 ) console.log( '- Dashboard: ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 								return updateWebhook();
 							}
 							return updateWebhook(true);
