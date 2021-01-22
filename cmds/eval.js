@@ -120,8 +120,8 @@ function checkWiki(wiki) {
 				}
 			} ).then( dsresponse => {
 				var dsbody = dsresponse.body;
-				if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-					if ( dsbody?.title !== 'site doesn\'t exists' ) result.postid = dsresponse.statusCode + ': Error while getting the discussions: ' + dsbody?.title;
+				if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
+					if ( dsbody?.status !== 404 ) result.postid = dsresponse.statusCode + ': Error while getting the discussions: ' + dsbody?.title;
 					return;
 				}
 				var posts = dsbody._embedded?.['doc:posts'];
