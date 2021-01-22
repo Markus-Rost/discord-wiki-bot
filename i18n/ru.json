@@ -395,6 +395,17 @@
         "link": "https://minecraft-ru.gamepedia.com/",
         "more": "И ещё $1 {{PLURAL:$2|ошибка|ошибки|ошибок}}.",
         "private": "**Конфиденциальный отчёт об ошибке**",
+        "status": {
+            "Awaiting Response": "Ожидается Ответ",
+            "Closed": "Закрыто",
+            "Duplicate": "Дубликат",
+            "Fixed": "Исправлено",
+            "Open": "Открыто",
+            "Postponed": "Отложено",
+            "Resolved": "Решено",
+            "Won't Fix": "Не Будет Исправлено",
+            "Works As Intended": "Работает Как Задумано"
+        },
         "total": "$1 {{PLURAL:$2|проблема исправлена|проблемы исправлено|проблем исправлено}}"
     },
     "overview": {
