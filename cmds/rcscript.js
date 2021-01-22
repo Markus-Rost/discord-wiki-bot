@@ -107,8 +107,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
-						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-							if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
+							if ( dsbody?.status !== 404 ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 							return createWebhook();
 						}
 						return createWebhook(true);
@@ -265,8 +265,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							}
 						} ).then( dsresponse => {
 							var dsbody = dsresponse.body;
-							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-								if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+							if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
+								if ( dsbody?.status !== 404 ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 								return updateWiki();
 							}
 							return updateWiki(true);
@@ -407,13 +407,13 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					}
 				} ).then( dsresponse => {
 					var dsbody = dsresponse.body;
-					if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-						if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
+					if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
+						if ( dsbody?.status !== 404 ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
-						webhook.send( webhook_lang.get('enabled_feeds', body.query.general.sitename) + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
+						webhook.send( webhook_lang.get('enabled_feeds') + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
 					}, log_error );
 					db.run( 'UPDATE rcgcdw SET postid = ? WHERE webhook = ?', [null, selected_row.webhook], function (error) {
 						if ( error ) {
