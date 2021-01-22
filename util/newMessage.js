@@ -56,13 +56,14 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
 		if ( !line.hasPrefix(prefix) || breakLines || count > maxcount ) return;
-		count++;
 		if ( count === maxcount ) {
+			count++;
 			console.log( '- Message contains too many commands!' );
 			msg.reactEmoji('⚠️');
 			msg.sendChannelError( lang.get('general.limit', '<@' + author.id + '>'), {allowedMentions:{users:[author.id]}} );
 			return;
 		}
+		count++;
 		line = line.substring(prefix.length);
 		var invoke = line.split(' ')[0].toLowerCase();
 		var args = line.split(' ').slice(1);
