@@ -22,9 +22,9 @@ const files = new Map([
 	...fs.readdirSync( './i18n/widgets' ).map( file => {
 		return [`/src/widgets/${file}`, `./i18n/widgets/${file}`];
 	} ),
-	...fs.readdirSync( './RcGcDb/locale/widgets' ).map( file => {
+	...( fs.existsSync('./RcGcDb/start.py') ? fs.readdirSync( './RcGcDb/locale/widgets' ).map( file => {
 		return [`/src/widgets/RcGcDb/${file}`, `./RcGcDb/locale/widgets/${file}`];
-	} )
+	} ) : [] )
 ].map( ([file, filepath]) => {
 	let contentType = 'text/html';
 	switch ( path.extname(file) ) {
