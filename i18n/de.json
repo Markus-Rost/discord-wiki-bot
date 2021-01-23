@@ -391,6 +391,11 @@
     },
     "minecraft": {
         "fixed": "{{PLURAL:$1|Lösungsversion|Lösungsversionen}}:",
+        "issue_link": {
+            "Blocks": {
+                "outward": "blockiert $1"
+            }
+        },
         "more": "Und $1 mehr.",
         "private": "**Privater Fehler**",
         "total": "$1 Fehler korrigiert"
