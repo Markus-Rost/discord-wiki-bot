@@ -1,6 +1,4 @@
 const cheerio = require('cheerio');
-const {timeoptions} = require('../util/default.json');
-const toTitle = require('../util/wiki.js').toTitle;
 
 /**
  * Add global blocks to user messages.

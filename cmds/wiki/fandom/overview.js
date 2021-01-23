@@ -56,7 +56,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					let merge = body.query.allmessages[2]['*'].split('/');
 					crossover.push('<https://' + merge[0] + '.fandom.com/' + ( merge[1] ? merge[1] + '/' : '' ) + '>');
 				}
-				var created = [lang.get('overview.created'), new Date(site.creation_date).toLocaleString(lang.get('dateformat'), timeoptions)];
+				var created = [lang.get('overview.created'), new Date(site.creation_date).toLocaleString(lang.get('dateformat'), Object.assign({timeZone: body.query.general.timezone}, timeoptions))];
 				var articles = [lang.get('overview.articles'), body.query.statistics.articles.toLocaleString(lang.get('dateformat'))];
 				var pages = [lang.get('overview.pages'), body.query.statistics.pages.toLocaleString(lang.get('dateformat'))];
 				var edits = [lang.get('overview.edits'), body.query.statistics.edits.toLocaleString(lang.get('dateformat'))];

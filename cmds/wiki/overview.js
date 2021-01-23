@@ -42,9 +42,10 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		var version = [lang.get('overview.version'), body.query.general.generator];
 		var creation_date = null;
 		var created = [lang.get('overview.created'), lang.get('overview.unknown')];
+		var localtimeoptions = Object.assign({timeZone: body.query.general.timezone}, timeoptions);
 		if ( body.query.logevents?.[0]?.timestamp ) {
 			creation_date = new Date(body.query.logevents[0].timestamp);
-			created[1] = creation_date.toLocaleString(lang.get('dateformat'), timeoptions);
+			created[1] = creation_date.toLocaleString(lang.get('dateformat'), localtimeoptions);
 		}
 		var language = [lang.get('overview.lang'), body.query.languages.find( language => {
 			return language.code === body.query.general.lang;
@@ -121,7 +122,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				official[1] = lang.get('overview.' + ( site.official_wiki ? 'yes' : 'no' ));
 				if ( site.created && creation_date > new Date(parseInt(site.created + '000', 10)) ) {
 					creation_date = new Date(parseInt(site.created + '000', 10));
-					created[1] = creation_date.toLocaleString(lang.get('dateformat'), timeoptions);
+					created[1] = creation_date.toLocaleString(lang.get('dateformat'), localtimeoptions);
 				}
 				if ( site.wiki_crossover ) crossover[1] = '<https://' + site.wiki_crossover + '/>';
 				if ( site.wiki_description ) {
@@ -145,7 +146,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				founder[1] = site.founding_user_id;
 				if ( site.creation_date && creation_date > new Date(site.creation_date) ) {
 					creation_date = new Date(site.creation_date);
-					created[1] = creation_date.toLocaleString(lang.get('dateformat'), timeoptions);
+					created[1] = creation_date.toLocaleString(lang.get('dateformat'), localtimeoptions);
 				}
 				if ( site.desc ) {
 					description[1] = site.desc.escapeFormatting();
