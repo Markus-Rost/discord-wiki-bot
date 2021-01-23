@@ -1,4 +1,5 @@
 const help_server = require('../functions/helpserver.js');
+const {wikis: mcw} = require('./minecraft/commands.json');
 
 const helpmap = {
 	linkHelp: ['default', 'inline.link', 'inline.template', 'gamepedia', 'fandom', 'wikia'],
@@ -80,7 +81,7 @@ const restrictions = {
 function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.channel.isGuild() && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
-	var isMinecraft = ( wiki.href === lang.get('minecraft.link') );
+	var isMinecraft = mcw.hasOwnProperty(wiki.href);
 	var maxLength = ( ['hi', 'bn'].includes( lang.lang ) ? 480 : 2000 );
 	if ( args.join('') ) {
 		if ( args.join(' ').isMention(msg.guild) ) {
@@ -102,7 +103,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			}
 		}
 		else if ( cmd === 'minecraft' ) {
-			var cmdlist = '<' + lang.get('minecraft.link') + '>\n';
+			var cmdlist = '<' + ( isMinecraft ? wiki : 'https://minecraft.gamepedia.com/' ) + '>\n';
 			cmdlist += formathelp(helplist.minecraft, msg, lang);
 			msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 		}

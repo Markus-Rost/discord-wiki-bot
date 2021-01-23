@@ -1,19 +1,17 @@
 const {MessageEmbed} = require('discord.js');
-const Wiki = require('../../util/wiki.js');
 
 /**
  * Sends a Minecraft issue.
  * @param {import('../../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('../../util/wiki.js')} wiki - The wiki.
  * @param {String[]} args - The command arguments.
  * @param {String} title - The page title.
  * @param {String} cmd - The command at this point.
- * @param {URLSearchParams} querystring - The querystring for the link.
- * @param {String} fragment - The section for the link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
-function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler) {
+function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler) {
 	var invoke = args[0];
 	args = args.slice(1);
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
@@ -135,7 +133,7 @@ function minecraft_bug(lang, msg, args, title, cmd, querystring, fragment, react
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.general(lang, msg, title, new Wiki(lang.get('minecraft.link')), cmd, reaction, spoiler, querystring, fragment);
+		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler);
 	}
 }
 

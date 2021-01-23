@@ -390,7 +390,6 @@
         "bot": "Use this link to invite me to another server:"
     },
     "minecraft": {
-        "cmdpage": "Commands/",
         "fixed": "Fixed {{PLURAL:$1|Version|Versions}}:",
         "issue_link": {
             "Blocks": {
@@ -414,7 +413,6 @@
                 "outward": "relates to $1"
             }
         },
-        "link": "https://minecraft.gamepedia.com/",
         "more": "And $1 more.",
         "private": "**Private Issue**",
         "status": {

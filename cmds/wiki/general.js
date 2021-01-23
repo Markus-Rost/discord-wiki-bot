@@ -6,6 +6,7 @@ const {parse_infobox, htmlToPlain, htmlToDiscord, partialURIdecode} = require('.
 const extract_desc = require('../../util/extract_desc.js');
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 const Wiki = require('../../util/wiki.js');
+const {wikis: mcw} = require('../minecraft/commands.json');
 
 const fs = require('fs');
 var fn = {
@@ -45,7 +46,7 @@ fs.readdir( './cmds/minecraft', (error, files) => {
 function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', querystring = new URLSearchParams(), fragment = '', interwiki = '', selfcall = 0) {
 	var full_title = title;
 	if ( title.includes( '#' ) ) {
-		fragment = title.split('#').slice(1).join('#').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
+		fragment = title.split('#').slice(1).join('#').trim().replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
 		title = title.split('#')[0];
 	}
 	if ( /\?\w+=/.test(title) ) {
@@ -62,13 +63,6 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 	var aliasInvoke = ( lang.aliases[invoke] || invoke );
 	var args = title.split(' ').slice(1);
 	
-	if ( !msg.notMinecraft && wiki.href === lang.get('minecraft.link') && ( minecraft.hasOwnProperty(aliasInvoke) || invoke.startsWith( '/' ) ) ) {
-		logging(wiki, msg.guild?.id, 'minecraft', ( minecraft.hasOwnProperty(aliasInvoke) ? aliasInvoke : 'command' ));
-		minecraft.WIKI = this;
-		if ( minecraft.hasOwnProperty(aliasInvoke) ) minecraft[aliasInvoke](lang, msg, args, title, cmd, querystring, fragment, reaction, spoiler);
-		else minecraft.SYNTAX(lang, msg, invoke.substring(1), args, title, cmd, querystring, fragment, reaction, spoiler);
-		return;
-	}
 	if ( aliasInvoke === 'random' && !args.join('') && !querystring.toString() && !fragment ) {
 		return fn.random(lang, msg, wiki, reaction, spoiler);
 	}
@@ -120,6 +114,13 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		if ( aliasInvoke === 'discussion' && wiki.isFandom(false) && !querystring.toString() && !fragment ) {
 			logging(wiki, msg.guild?.id, 'discussion');
 			return fn.discussion(lang, msg, wiki, args.join(' '), body.query.general.sitename, reaction, spoiler);
+		}
+		if ( !msg.notMinecraft && mcw.hasOwnProperty(wiki.href) && ( minecraft.hasOwnProperty(aliasInvoke) || invoke.startsWith( '/' ) ) && !querystring.toString() && !fragment ) {
+			logging(wiki, msg.guild?.id, 'minecraft', ( minecraft.hasOwnProperty(aliasInvoke) ? aliasInvoke : 'command' ));
+			minecraft.WIKI = this;
+			if ( minecraft.hasOwnProperty(aliasInvoke) ) minecraft[aliasInvoke](lang, msg, wiki, args, title, cmd, reaction, spoiler);
+			else minecraft.SYNTAX(lang, msg, wiki, invoke.substring(1), args, title, cmd, reaction, spoiler);
+			return;
 		}
 		if ( body.query.pages ) {
 			var querypages = Object.values(body.query.pages);
@@ -292,7 +293,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			} );
 			if ( querypage.ns === -1 ) {
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-				var embed =  new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 				var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replace( /\_/g, ' ' ) === querypage.title.split('/')[0] );
 				specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( body.query.namespaces['-1']['*'] + ':', '' ).split('/')[0] ).toLowerCase();
 				return fn.special_page(lang, msg, querypage.title, specialpage, embed, wiki, reaction, spoiler);
@@ -301,7 +302,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				logging(wiki, msg.guild?.id, 'general', 'media');
 				var filepath = body.query.specialpagealiases.find( sp => sp.realname === 'Filepath' );
 				var pagelink = wiki.toLink(body.query.namespaces['-1']['*'] + ':' + ( filepath?.aliases?.[0] || 'FilePath' ) + querypage.title.replace( body.query.namespaces['-2']['*'] + ':', '/' ), querystring, fragment);
-				var embed =  new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](' + wiki.toLink(querypage.title, '', '', true) + ')' );
+				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](' + wiki.toLink(querypage.title, '', '', true) + ')' );
 				if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pagelink );
 				else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pagelink,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
 				
