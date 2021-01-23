@@ -390,7 +390,6 @@
         "bot": "Use este link para me convidar para outro servidor:"
     },
     "minecraft": {
-        "cmdpage": "Comandos/",
         "fixed": "{{PLURAL:$1|Versão corrigida|Versões corrigidas}}:",
         "issue_link": {
             "Blocks": {
@@ -411,7 +410,6 @@
                 "outward": "refere-se a $1"
             }
         },
-        "link": "https://minecraft-pt.gamepedia.com/",
         "more": "E $1 mais.",
         "private": "**Problema privado**",
         "status": {

@@ -390,9 +390,7 @@
         "bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
     },
     "minecraft": {
-        "cmdpage": "Befehl/",
         "fixed": "{{PLURAL:$1|Lösungsversion|Lösungsversionen}}:",
-        "link": "https://minecraft-de.gamepedia.com/",
         "more": "Und $1 mehr.",
         "private": "**Privater Fehler**",
         "total": "$1 Fehler korrigiert"

@@ -390,9 +390,7 @@
         "bot": "저를 다른 서버에 초대하려면 이 링크를 사용하세요."
     },
     "minecraft": {
-        "cmdpage": "명령어#",
         "fixed": "수정된 버전:",
-        "link": "https://minecraft-ko.gamepedia.com/",
         "more": "그 외 $1개.",
         "private": "**비공개 이슈**",
         "total": "$1개의 문제 해결됨"

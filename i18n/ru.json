@@ -2,7 +2,7 @@
     "__translator": [
         "Hosh",
         "AttemptToCallNil",
-        "Philo04 ",
+        "Philo04",
         " ",
         " ",
         " ",
@@ -390,9 +390,7 @@
         "bot": "Используйте эту ссылку, чтобы пригласить меня на другой сервер:"
     },
     "minecraft": {
-        "cmdpage": "Команды_консоли/",
         "fixed": "Исправлено в {{PLURAL:$1|версии|версиях}}:",
-        "link": "https://minecraft-ru.gamepedia.com/",
         "more": "И ещё $1 {{PLURAL:$2|ошибка|ошибки|ошибок}}.",
         "private": "**Конфиденциальный отчёт об ошибке**",
         "status": {

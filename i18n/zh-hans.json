@@ -390,9 +390,7 @@
         "bot": "使用这个链接把我添加到其他服务器："
     },
     "minecraft": {
-        "cmdpage": "命令/",
         "fixed": "修复版本：",
-        "link": "https://minecraft-zh.gamepedia.com/",
         "more": "还有 $1 个。",
         "private": "**私密问题**",
         "total": "$1 个问题已被修复"
