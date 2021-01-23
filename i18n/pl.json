@@ -390,7 +390,6 @@
         "bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
     },
     "minecraft": {
-        "cmdpage": "Komendy#",
         "fixed": "Naprawione w {{PLURAL:$1|wersji|wersjach}}:",
         "issue_link": {
             "Blocks": {
@@ -414,7 +413,6 @@
                 "outward": "jest powiązane z $1"
             }
         },
-        "link": "https://minecraft-pl.gamepedia.com/",
         "more": "Oraz $1 {{PLURAL:$2|inny|inne|innych}}.",
         "private": "**Private Issue**",
         "status": {

@@ -390,7 +390,6 @@
         "bot": "আমাকে অন্য সার্ভারে ইনভাইট করার জন্যে এই লিংকের ব্যাবহার করেন:"
     },
     "minecraft": {
-        "cmdpage": "Commands/",
         "fixed": "ফিক্স করা সংস্করণ:",
         "issue_link": {
             "Blocks": {
@@ -414,7 +413,6 @@
                 "outward": "$1 থেকে সম্বন্ধিত"
             }
         },
-        "link": "https://minecraft.gamepedia.com/",
         "more": "আর $1টি।",
         "private": "**ব্যক্তিগত সমস্যা**",
         "status": {

@@ -292,9 +292,7 @@
         "bot": "Gebruik deze link om mij aan een andere server uit te nodigen:"
     },
     "minecraft": {
-        "cmdpage": "Opdrachten#",
         "fixed": "Fixed versie:",
-        "link": "https://minecraft-nl.gamepedia.com/",
         "more": "En $1 meer.",
         "private": "**Privé issue**",
         "total": "$1 {{PLURAL:$2|bug|bugs}} opgelost"

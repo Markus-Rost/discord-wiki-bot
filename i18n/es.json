@@ -390,9 +390,7 @@
         "bot": "Usa este enlace para invitarme a otro servidor:"
     },
     "minecraft": {
-        "cmdpage": "Comandos/",
         "fixed": "Versión Corregida:",
-        "link": "https://minecraft-es.gamepedia.com/",
         "more": "Y $1 más.",
         "private": "**Problema Privado**",
         "total": "$1 {{PLURAL:$2|problema|problemas}} resueltos"

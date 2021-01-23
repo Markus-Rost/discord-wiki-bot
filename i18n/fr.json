@@ -291,9 +291,7 @@
         "bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
     },
     "minecraft": {
-        "cmdpage": "Commandes#",
         "fixed": "Corrigé lors de la version",
-        "link": "https://minecraft-fr.gamepedia.com/",
         "more": "Et $1 autres.",
         "private": "**Problème privé**",
         "total": "$1 {{PLURAL:$2|bug|bugs}} corrigés"

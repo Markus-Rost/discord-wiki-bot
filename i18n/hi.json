@@ -390,7 +390,6 @@
         "bot": "मुझे दूसरे सर्वर पर इनवाइट करने के लिए इस लिंक का इस्तेमाल करें:"
     },
     "minecraft": {
-        "cmdpage": "Commands/",
         "fixed": "ठीक {{PLURAL:$1|किया गया संस्करण|किए गए संस्करण}}:",
         "issue_link": {
             "Blocks": {
@@ -414,7 +413,6 @@
                 "outward": "$1 से सम्बंधित है"
             }
         },
-        "link": "https://minecraft.gamepedia.com/",
         "more": "और $1 ज़्यादा।",
         "private": "**व्यक्तिगत समस्या**",
         "status": {

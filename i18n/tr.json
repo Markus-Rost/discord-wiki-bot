@@ -390,9 +390,7 @@
         "bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
     },
     "minecraft": {
-        "cmdpage": "en:Commands/",
         "fixed": "Düzeltilmiş Sürüm:",
-        "link": "https://minecraft-tr.gamepedia.com/",
         "more": "Ve $1 tane daha.",
         "private": "**Özel Sorun**",
         "total": "$1 hata düzeltildi"
