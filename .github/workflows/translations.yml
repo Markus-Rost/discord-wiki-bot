@@ -1,10 +1,11 @@
-name: Update translations
+name: Update translation widgets
 on:
-  push:
-    branches:
-      - translations
-    paths:
-      - 'i18n/*.json'
+  workflow_dispatch:
+    inputs:
+      languages:
+        description: 'Languages to update translation widgets for.'
+        required: true
+        default: 'i18n/*.json'
 jobs:
   translations:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt-get install inkscape
-        for language in i18n/*.json
+        for language in ${{ github.event.inputs.languages }}
         do
           language=$(basename $language .json)
           if [[ "$language" =~ [^[:lower:]-] ]]
@@ -36,10 +37,3 @@ jobs:
         author_email: 69196528+WikiBot-bot@users.noreply.github.com
         message: "Update translation widgets"
         add: "i18n/widgets/*.png"
-    - name: Create Pull Request
-      uses: repo-sync/pull-request@v2
-      with:
-        pr_title: "Update translations"
-        pr_body: "Update translations from https://translate.wikibot.de/engage/wiki-bot/"
-        pr_label: "translation"
-        github_token: ${{ secrets.WIKIBOT_TOKEN }}
