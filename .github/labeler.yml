@@ -1,3 +1,4 @@
 # Add 'translation' label to any change to i18n files
 translation:
-- any: ['i18n/*.json', 'dashboard/i18n/*.json']
+  - 'i18n/*.json'
+  - 'dashboard/i18n/*.json'
