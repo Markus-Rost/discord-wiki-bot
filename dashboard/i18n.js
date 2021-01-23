@@ -101,6 +101,7 @@ function plural(lang, number, args) {
 			else text = getArg(args, 2);
 			break;
 		case 'ru':
+		case 'uk':
 			if ( args.length > 2 ) {
 				if ( number % 10 === 1 && number % 100 !== 11 ) text = getArg(args, 0);
 				else if ( [2,3,4].includes( number % 10 ) && ![12,13,14].includes( number % 100 ) ) {
