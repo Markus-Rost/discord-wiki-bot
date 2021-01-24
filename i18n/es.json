@@ -390,9 +390,48 @@
         "bot": "Usa este enlace para invitarme a otro servidor:"
     },
     "minecraft": {
-        "fixed": "Versión Corregida:",
+        "fixed": "Se arregló {{PLURAL:$1|Versión| Versiones}}:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "está bloqueado por $1",
+                "outward": "bloquea a $1"
+            },
+            "Bonfire Testing": {
+                "inward": "descubrió mientras probaba $1",
+                "outward": "probando descubrió $1"
+            },
+            "Cloners": {
+                "inward": "es clonado por $1",
+                "outward": "clona $1"
+            },
+            "Duplicate": {
+                "inward": "está duplicado por $1",
+                "outward": "duplica $1"
+            },
+            "Relates": {
+                "inward": "se relaciona con $1",
+                "outward": "se relaciona con $1"
+            }
+        },
         "more": "Y $1 más.",
         "private": "**Problema Privado**",
+        "status": {
+            "Awaiting Response": "Esperando respuesta",
+            "Cannot Reproduce": "No puede reproducir",
+            "Closed": "Cerrado",
+            "Done": "Hecho",
+            "Duplicate": "Duplicado",
+            "Fixed": "Se arregló",
+            "In Progress": "En progreso",
+            "Incomplete": "Incompleto",
+            "Invalid": "Inválido",
+            "Open": "Abierto",
+            "Postponed": "Aplazado",
+            "Reopened": "Reabierto",
+            "Resolved": "Resuelto",
+            "Won't Fix": "No se arreglará",
+            "Works As Intended": "Funciona según lo previsto"
+        },
         "total": "$1 {{PLURAL:$2|problema|problemas}} resueltos"
     },
     "overview": {
