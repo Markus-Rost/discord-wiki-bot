@@ -179,8 +179,8 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
-						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.title ) {
-							if ( dsbody?.title !== 'site doesn\'t exists' ) console.log( '- ' + dsresponse.statusCode + ': Error while getting discussions stats: ' + dsbody?.title );
+						if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
+							if ( dsbody?.status !== 404 ) console.log( '- ' + dsresponse.statusCode + ': Error while getting discussions stats: ' + dsbody?.title );
 							return;
 						}
 						let counts = dsbody?._embedded?.count?.[0];
