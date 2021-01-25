@@ -170,40 +170,52 @@ function htmlToPlain(html) {
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
 			if ( tagname === 'ul' ) listlevel++;
 			if ( tagname === 'li' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 				text += '• ';
 			}
 			if ( tagname === 'dl' ) listlevel++;
 			if ( tagname === 'dt' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 			}
 			if ( tagname === 'dd' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
+			if ( tagname === 'img' ) {
+				if ( attribs.alt && !reference ) text += escapeFormatting(attribs.alt);
+			}
 			if ( tagname === 'h1' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '***__';
 			}
 			if ( tagname === 'h2' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '**__';
 			}
 			if ( tagname === 'h3' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '**';
 			}
 			if ( tagname === 'h4' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '__';
 			}
 			if ( tagname === 'h5' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '*';
 			}
 			if ( tagname === 'h6' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '';
 			}
@@ -264,47 +276,64 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel + 3);
 			}
 			if ( tagname === 'hr' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '─'.repeat(10) + '\n';
 			}
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
 			if ( tagname === 'ul' ) listlevel++;
 			if ( tagname === 'li' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 				text += '• ';
 			}
 			if ( tagname === 'dl' ) listlevel++;
 			if ( tagname === 'dt' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 				text += '**';
 			}
 			if ( tagname === 'dd' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
+			if ( tagname === 'img' ) {
+				if ( attribs.alt && !reference ) {
+					if ( href && !code ) attribs.alt = attribs.alt.replace( /[\[\]]/g, '\\$&' );
+					if ( code ) text += attribs.alt.replace( /`/g, 'ˋ' );
+					else text += escapeFormatting(attribs.alt, ...escapeArgs);
+				}
+			}
 			if ( tagname === 'h1' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '***__';
 			}
 			if ( tagname === 'h2' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '**__';
 			}
 			if ( tagname === 'h3' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '**';
 			}
 			if ( tagname === 'h4' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '__';
 			}
 			if ( tagname === 'h5' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '*';
 			}
 			if ( tagname === 'h6' ) {
+				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '';
 			}

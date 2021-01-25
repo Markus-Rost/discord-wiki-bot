@@ -38,7 +38,8 @@
     "wikibot",
     "voice-channel",
     "wiki",
-    "discord-bot"
+    "discord-bot",
+    "wikipedia"
   ],
   "bugs": {
     "url": "https://github.com/Markus-Rost/discord-wiki-bot/issues"

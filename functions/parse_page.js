@@ -26,7 +26,6 @@ const infoboxList = [
 
 const removeClasses = [
 	'table',
-	'div',
 	'script',
 	'input',
 	'style',
@@ -133,7 +132,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 		}
 		var $ = cheerio.load(response.body.parse.text['*'].replace( /<br\/?>/g, '\n' ));
 		if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
-			var infobox = $('aside.portable-infobox');
+			let infobox = $('aside.portable-infobox');
 			embed.fields.forEach( field => {
 				if ( embed.length > 5400 ) return;
 				if ( /^`.+`$/.test(field.name) ) {
@@ -156,8 +155,61 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 				}
 			} );
 		}
+		if ( !fragment && !embed.fields.length && $(infoboxList.join(', ')).length ) {
+			let infobox = $(infoboxList.join(', ')).first();
+			if ( embed.thumbnail?.url === thumbnail ) {
+				let image = infobox.find([
+					'div.images img',
+					'figure.pi-image img',
+					'div.infobox-imagearea img'
+				].join(', ')).toArray().find( img => {
+					let imgURL = img.attribs.src;
+					if ( !imgURL ) return false;
+					return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+				} )?.attribs.src?.replace( /^(?:https?:)?\/\//, 'https://' );
+				if ( image ) embed.setThumbnail( new URL(image, wiki).href );
+			}
+			let rows = infobox.find([
+				'> tbody > tr',
+				'div.section > div.title',
+				'div.section > table > tbody > tr',
+				'h2.pi-header',
+				'div.pi-data',
+				'table.infobox-rows > tbody > tr'
+			].join(', '));
+			for ( let i = 0; i < rows.length; i++ ) {
+				if ( embed.fields.length >= 25 || embed.length > 5400 ) break;
+				let row = rows.eq(i);
+				if ( row.is('tr, div.pi-data') ) {
+					let label = row.children('th, td, h3.pi-data-label').eq(0);
+					label.find(removeClasses.join(', ')).remove();
+					let value = row.children('td, div.pi-data-value').eq(( label.is('td') ? 1 : 0 ));
+					value.find(removeClasses.join(', ')).remove();
+					label = htmlToPlain(label).trim().split('\n')[0];
+					value = htmlToDiscord(value, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
+					if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
+					if ( value.length > 500 ) value = limitLength(value, 500, 250);
+					if ( label && value ) embed.addField( label, value );
+				}
+				else if ( row.is('div.title, h2.pi-header') ) {
+					row.find(removeClasses.join(', ')).remove();
+					let label = htmlToPlain(row).trim();
+					if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
+					if ( label ) {
+						if ( embed.fields.length && embed.fields[embed.fields.length - 1].name === '\u200b' ) {
+							embed.spliceFields( embed.fields.length - 1, 1, {
+								name: '\u200b',
+								value: '**' + label + '**',
+								inline: false
+							} );
+						}
+						else embed.addField( '\u200b', '**' + label + '**', false );
+					}
+				}
+			}
+		}
 		if ( embed.thumbnail?.url === thumbnail ) {
-			var image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
+			let image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
 			if ( !image ) {
 				thumbnail = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
 					img = $(img).prop('src')?.toLowerCase();
@@ -184,9 +236,9 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 				var sectionContent = $('<div>').append(
 					section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
 				);
-				section.find(removeClasses.join(', ')).remove();
+				section.find('div, ' + removeClasses.join(', ')).remove();
 				sectionContent.find(infoboxList.join(', ')).remove();
-				sectionContent.find(removeClasses.join(', ')).remove();
+				sectionContent.find('div, ' + removeClasses.join(', ')).remove();
 				var name = htmlToPlain(section).trim();
 				if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
 				var value = htmlToDiscord(sectionContent, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
@@ -206,7 +258,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 			$('h1, h2, h3, h4, h5, h6').nextAll().remove();
 			$('h1, h2, h3, h4, h5, h6').remove();
 			$(infoboxList.join(', ')).remove();
-			$(removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
+			$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
 			var description = htmlToDiscord($.html(), wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
 			if ( description ) {
 				if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
