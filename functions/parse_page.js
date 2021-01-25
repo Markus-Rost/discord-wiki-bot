@@ -21,7 +21,8 @@ const infoboxList = [
 	'.infobox',
 	'.portable-infobox',
 	'.infoboxtable',
-	'.notaninfobox'
+	'.notaninfobox',
+	'.tpl-infobox'
 ];
 
 const removeClasses = [
@@ -159,6 +160,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 			let infobox = $(infoboxList.join(', ')).first();
 			if ( embed.thumbnail?.url === thumbnail ) {
 				let image = infobox.find([
+					'tr:eq(1) img',
 					'div.images img',
 					'figure.pi-image img',
 					'div.infobox-imagearea img'
@@ -171,25 +173,28 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 			}
 			let rows = infobox.find([
 				'> tbody > tr',
+				'> table > tbody > tr',
 				'div.section > div.title',
 				'div.section > table > tbody > tr',
 				'h2.pi-header',
 				'div.pi-data',
 				'table.infobox-rows > tbody > tr'
 			].join(', '));
+			let tdLabel = true;
 			for ( let i = 0; i < rows.length; i++ ) {
 				if ( embed.fields.length >= 25 || embed.length > 5400 ) break;
 				let row = rows.eq(i);
 				if ( row.is('tr, div.pi-data') ) {
-					let label = row.children('th, td, h3.pi-data-label').eq(0);
+					let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label').eq(0);
 					label.find(removeClasses.join(', ')).remove();
 					let value = row.children('td, div.pi-data-value').eq(( label.is('td') ? 1 : 0 ));
 					value.find(removeClasses.join(', ')).remove();
+					if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
 					label = htmlToPlain(label).trim().split('\n')[0];
 					value = htmlToDiscord(value, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 					if ( value.length > 500 ) value = limitLength(value, 500, 250);
-					if ( label && value ) embed.addField( label, value );
+					if ( label && value ) embed.addField( label, value, true );
 				}
 				else if ( row.is('div.title, h2.pi-header') ) {
 					row.find(removeClasses.join(', ')).remove();
@@ -206,6 +211,9 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 						else embed.addField( '\u200b', '**' + label + '**', false );
 					}
 				}
+			}
+			if ( embed.fields.length && embed.fields[embed.fields.length - 1].name === '\u200b' ) {
+				embed.spliceFields( embed.fields.length - 1, 1 );
 			}
 		}
 		if ( embed.thumbnail?.url === thumbnail ) {

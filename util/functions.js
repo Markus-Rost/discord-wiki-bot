@@ -374,7 +374,7 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 			if ( tagname === 'h6' ) text += '';
 			if ( tagname === 'a' && href ) {
 				if ( text.endsWith( '[' ) ) text = text.substring(0, text.length - 1);
-				else text += '](' + href.replace( /[()]/g, '\\$&' ) + ')';
+				else text += '](<' + href.replace( /[()]/g, '\\$&' ) + '>)';
 				href = '';
 			}
 		},
