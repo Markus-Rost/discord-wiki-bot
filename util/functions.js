@@ -187,7 +187,10 @@ function htmlToPlain(html) {
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
-				if ( attribs.alt && !reference ) text += escapeFormatting(attribs.alt);
+				if ( attribs.alt && attribs.src && !reference ) {
+					let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
+					if ( !regex.test(partialURIdecode(attribs.src)) ) text += escapeFormatting(attribs.alt);
+				}
 			}
 			if ( tagname === 'h1' ) {
 				text = text.replace( / +$/, '' );
@@ -301,10 +304,13 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
-				if ( attribs.alt && !reference ) {
-					if ( href && !code ) attribs.alt = attribs.alt.replace( /[\[\]]/g, '\\$&' );
-					if ( code ) text += attribs.alt.replace( /`/g, 'ˋ' );
-					else text += escapeFormatting(attribs.alt, ...escapeArgs);
+				if ( attribs.alt && attribs.src && !reference ) {
+					let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
+					if ( !regex.test(partialURIdecode(attribs.src)) ) {
+						if ( href && !code ) attribs.alt = attribs.alt.replace( /[\[\]]/g, '\\$&' );
+						if ( code ) text += attribs.alt.replace( /`/g, 'ˋ' );
+						else text += escapeFormatting(attribs.alt, ...escapeArgs);
+					}
 				}
 			}
 			if ( tagname === 'h1' ) {
