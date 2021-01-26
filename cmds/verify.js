@@ -77,7 +77,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 				username = ( body.query.users.length === 1 ? queryuser.name : username );
 				embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
-				if ( wiki.isFandom() && !old_username ) return got.get( 'https://community.fandom.com/api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
+				if ( wiki.isFandom() && !old_username ) return got.get( wiki + 'api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
 					var wsbody = wsresponse.body;
 					if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
 						if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + wsbody?.exception?.details );
@@ -110,7 +110,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			}
 			
 			var comment = [];
-			if ( wiki.isFandom() ) return got.get( 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
+			if ( wiki.isFandom() ) return got.get( 'https://ucp.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
 				responseType: 'text'
 			} ).then( gbresponse => {
 				if ( gbresponse.statusCode !== 200 || !gbresponse.body ) {
@@ -125,7 +125,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 							reply: lang.get('verify.user_disabled_reply', username.escapeFormatting())
 						});
 					}
-					if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
+					else if ( $('script').eq(1).html().includes( '"isBlockedInPhalanx":true' ) ) {
 						return Promise.reject({
 							desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender),
 							reply: lang.get('verify.user_gblocked_reply', username.escapeFormatting(), queryuser.gender)

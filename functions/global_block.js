@@ -28,7 +28,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 	}
 	
 	Promise.all([
-		got.get( 'https://community.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1', {
+		got.get( 'https://ucp.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1', {
 			responseType: 'text'
 		} ).then( response => {
 			var body = response.body;
@@ -41,7 +41,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.disabled') + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 				}
-				else if ( $('.mw-warning-with-logexcerpt').length && !$(".mw-warning-with-logexcerpt .mw-logline-block").length ) {
+				else if ( $('head script').eq(1).html().includes( '"isBlockedInPhalanx":true' ) ) {
 					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**';
 				}
@@ -49,7 +49,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 		}, error => {
 			console.log( '- Error while getting the global block: ' + error );
 		} ),
-		( isUser ? ( wiki.isGamepedia() ? got.get( 'https://help.gamepedia.com/UserProfile:' + encodeURIComponent( username ) + '?cache=' + Date.now(), {
+		( isUser && wiki.isGamepedia() ? got.get( 'https://help.gamepedia.com/UserProfile:' + encodeURIComponent( username ) + '?cache=' + Date.now(), {
 			responseType: 'text'
 		} ).then( gresponse => {
 			var gbody = gresponse.body;
@@ -95,33 +95,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 			}
 		}, error => {
 			console.log( '- Error while getting the global edit count: ' + error );
-		} ) : got.get( 'https://community.fandom.com/wiki/Special:Editcount/' + encodeURIComponent( username ), {
-			responseType: 'text'
-		} ).then( gresponse => {
-			var gbody = gresponse.body;
-			if ( gresponse.statusCode !== 200 || !gbody ) {
-				console.log( '- ' + gresponse.statusCode + ': Error while getting the global edit count.' );
-			}
-			else {
-				let $ = cheerio.load(gbody);
-				var globaledits = $('#editcount .TablePager th').eq(7).text().replace( /[,\.]/g, '' );
-				if ( globaledits ) {
-					globaledits = parseInt(globaledits, 10).toLocaleString(lang.get('dateformat'));
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
-						name: lang.get('user.info.globaleditcount'),
-						value: globaledits,
-						inline: true
-					});
-					else {
-						let splittext = text.split('\n');
-						splittext.splice(5, 0, lang.get('user.info.globaleditcount') + ' ' + globaledits);
-						text = splittext.join('\n');
-					}
-				}
-			}
-		}, error => {
-			console.log( '- Error while getting the global edit count: ' + error );
-		} ) ) : undefined )
+		} ) : undefined )
 	]).finally( () => {
 		msg.edit( spoiler + text + spoiler, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
 	} );
