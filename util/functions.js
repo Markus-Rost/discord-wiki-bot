@@ -172,24 +172,32 @@ function htmlToPlain(html) {
 			if ( tagname === 'li' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
-				text += '• ';
+				if ( attribs.class !== 'mw-empty-elt' ) {
+					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+					text += '• ';
+				}
 			}
 			if ( tagname === 'dl' ) listlevel++;
 			if ( tagname === 'dt' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				if ( listlevel > -1 && attribs.class !== 'mw-empty-elt' ) text += '\u200b '.repeat(4 * listlevel);
 			}
 			if ( tagname === 'dd' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
+				if ( listlevel > -1 && attribs.class !== 'mw-empty-elt' ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
 				if ( attribs.alt && attribs.src && !reference ) {
-					let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
-					if ( !regex.test(partialURIdecode(attribs.src)) ) text += escapeFormatting(attribs.alt);
+					let showAlt = true;
+					if ( attribs['data-image-name'] === attribs.alt ) showAlt = false;
+					else {
+						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
+						if ( attribs.src.startsWith( 'data:' ) && attribs['data-src'] ) attribs.src = attribs['data-src'];
+						if ( regex.test(attribs.src.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode )) ) showAlt = false;
+					}
+					if ( showAlt ) text += escapeFormatting(attribs.alt);
 				}
 			}
 			if ( tagname === 'h1' ) {
@@ -288,25 +296,35 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 			if ( tagname === 'li' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
-				text += '• ';
+				if ( attribs.class !== 'mw-empty-elt' ) {
+					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+					text += '• ';
+				}
 			}
 			if ( tagname === 'dl' ) listlevel++;
 			if ( tagname === 'dt' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
-				text += '**';
+				if ( attribs.class !== 'mw-empty-elt' ) {
+					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+					text += '**';
+				}
 			}
 			if ( tagname === 'dd' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
+				if ( listlevel > -1 && attribs.class !== 'mw-empty-elt' ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
 				if ( attribs.alt && attribs.src && !reference ) {
-					let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
-					if ( !regex.test(partialURIdecode(attribs.src)) ) {
+					let showAlt = true;
+					if ( attribs['data-image-name'] === attribs.alt ) showAlt = false;
+					else {
+						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
+						if ( attribs.src.startsWith( 'data:' ) && attribs['data-src'] ) attribs.src = attribs['data-src'];
+						if ( regex.test(attribs.src.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode )) ) showAlt = false;
+					}
+					if ( showAlt ) {
 						if ( href && !code ) attribs.alt = attribs.alt.replace( /[\[\]]/g, '\\$&' );
 						if ( code ) text += attribs.alt.replace( /`/g, 'ˋ' );
 						else text += escapeFormatting(attribs.alt, ...escapeArgs);
