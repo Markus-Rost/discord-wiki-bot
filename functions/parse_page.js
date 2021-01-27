@@ -149,7 +149,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 					let value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-value, .pi-data-value[data-source="$1"]' )).html();
 					if ( !value ) value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-value, .pi-data-value[data-item-name="$1"]' )).html();
 					if ( value ) {
-						value = htmlToDiscord(value, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
+						value = htmlToDiscord(value, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 						if ( value.length > 500 ) value = limitLength(value, 500, 250);
 						if ( value ) field.value = value;
 					}
@@ -191,7 +191,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 					value.find(removeClasses.join(', ')).remove();
 					if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
 					label = htmlToPlain(label).trim().split('\n')[0];
-					value = htmlToDiscord(value, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
+					value = htmlToDiscord(value, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 					if ( value.length > 500 ) value = limitLength(value, 500, 250);
 					if ( label && value ) embed.addField( label, value, true );
@@ -249,7 +249,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 				sectionContent.find('div, ' + removeClasses.join(', ')).remove();
 				var name = htmlToPlain(section).trim();
 				if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
-				var value = htmlToDiscord(sectionContent, wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
+				var value = htmlToDiscord(sectionContent, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 				if ( value.length > 1000 ) value = limitLength(value, 1000, 20);
 				if ( name.length && value.length ) {
 					embed.spliceFields( 0, 0, {name, value} );
@@ -267,7 +267,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 			$('h1, h2, h3, h4, h5, h6').remove();
 			$(infoboxList.join(', ')).remove();
 			$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
-			var description = htmlToDiscord($.html(), wiki.articleURL.href, true).trim().replace( /\n{3,}/g, '\n\n' );
+			var description = htmlToDiscord($.html(), embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 			if ( description ) {
 				if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
 				embed.setDescription( description );

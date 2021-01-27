@@ -197,7 +197,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 				}
 				if ( editor[1] === lang.get('diff.hidden') ) editorlink = editor[1];
 				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( ( title + '?diff=' + diff + '&oldid=' + oldid ).escapeFormatting() ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
-				if ( tags ) embed.addField( tags[0], htmlToDiscord(tags[1]) );
+				if ( tags ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink, true) );
 				
 				var more = '\n__' + lang.get('diff.info.more') + '__';
 				var whitespace = '__' + lang.get('diff.info.whitespace') + '__';

@@ -68,7 +68,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 						try {
 							var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-							parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
+							parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
 						}
 						catch ( error ) {
 							console.log( '- Failed to parse the infobox: ' + error );
@@ -238,7 +238,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 					try {
 						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
+						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
 					}
 					catch ( error ) {
 						console.log( '- Failed to parse the infobox: ' + error );
@@ -366,6 +366,11 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				embed.addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
 				
+				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
+					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
+					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
+					embed.setTitle( displaytitle );
+				}
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';

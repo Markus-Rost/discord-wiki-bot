@@ -13,14 +13,14 @@ const got = require('got').extend( {
  * @param {Object} infobox - The content of the infobox.
  * @param {import('discord.js').MessageEmbed} embed - The message embed.
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
- * @param {String} [serverpath] - The article path for relative links.
+ * @param {String} [pagelink] - The article path for relative links.
  * @returns {import('discord.js').MessageEmbed?}
  */
-function parse_infobox(infobox, embed, thumbnail, serverpath = '') {
+function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 	if ( !infobox || embed.fields.length >= 25 || embed.length > 5400 ) return;
 	if ( infobox.parser_tag_version === 2 ) {
 		infobox.data.forEach( group => {
-			parse_infobox(group, embed, thumbnail, serverpath);
+			parse_infobox(group, embed, thumbnail, pagelink);
 		} );
 		embed.fields = embed.fields.filter( (field, i, fields) => {
 			if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
@@ -32,7 +32,7 @@ function parse_infobox(infobox, embed, thumbnail, serverpath = '') {
 		case 'data':
 			var {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
 			label = htmlToPlain(label).trim();
-			value = htmlToDiscord(value, serverpath, true).trim();
+			value = htmlToDiscord(value, pagelink, true).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
 				label = '`' + ( source || name )  + '`';
 				embed.brokenInfobox = true;
@@ -48,7 +48,7 @@ function parse_infobox(infobox, embed, thumbnail, serverpath = '') {
 		case 'panel':
 			var embedLength = embed.fields.length;
 			infobox.data.value.forEach( group => {
-				parse_infobox(group, embed, thumbnail, serverpath);
+				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
 			embed.fields = embed.fields.filter( (field, i, fields) => {
 				if ( i < embedLength || field.name !== '\u200b' ) return true;
@@ -67,7 +67,7 @@ function parse_infobox(infobox, embed, thumbnail, serverpath = '') {
 			if ( label ) embed.addField( '\u200b', '**' + label + '**', false );
 		case 'group':
 			infobox.data.value.forEach( group => {
-				parse_infobox(group, embed, thumbnail, serverpath);
+				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
 			break;
 		case 'header':
@@ -174,11 +174,11 @@ function htmlToPlain(html) {
 /**
  * Change HTML text to markdown text.
  * @param {String} html - The text in HTML.
- * @param {String} [serverpath] - The article path for relative links.
+ * @param {String} [pagelink] - The article path for relative links.
  * @param {Boolean[]} [escapeArgs] - Arguments for the escaping of text formatting.
  * @returns {String}
  */
-function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
+function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var text = '';
 	var code = false;
 	var href = '';
@@ -279,9 +279,9 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '';
 			}
-			if ( !serverpath ) return;
-			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/)?\//.test(attribs.href) ) {
-				href = new URL(attribs.href, serverpath).href;
+			if ( !pagelink ) return;
+			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
+				href = new URL(attribs.href, pagelink).href;
 				text += '[';
 			}
 		},
@@ -318,7 +318,7 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 			if ( tagname === 'h4' ) text += '__';
 			if ( tagname === 'h5' ) text += '*';
 			if ( tagname === 'h6' ) text += '';
-			if ( !serverpath ) return;
+			if ( !pagelink ) return;
 			if ( tagname === 'a' && href ) {
 				if ( text.endsWith( '[' ) ) text = text.substring(0, text.length - 1);
 				else text += '](<' + href.replace( /[()]/g, '\\$&' ) + '>)';
@@ -326,7 +326,7 @@ function htmlToDiscord(html, serverpath = '', ...escapeArgs) {
 			}
 		},
 		oncomment: (commenttext) => {
-			if ( serverpath && /^LINK'" \d+:\d+$/.test(commenttext) ) {
+			if ( pagelink && /^LINK'" \d+:\d+$/.test(commenttext) ) {
 				text += '*UNKNOWN LINK*';
 			}
 		}

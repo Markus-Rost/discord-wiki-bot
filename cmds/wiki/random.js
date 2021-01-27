@@ -65,7 +65,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 		if ( !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
 			try {
 				var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-				parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, wiki.articleURL.href);
+				parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
 			}
 			catch ( error ) {
 				console.log( '- Failed to parse the infobox: ' + error );
