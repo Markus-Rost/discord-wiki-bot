@@ -2,7 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const fandom_random = require('./fandom/random.js').run;
 const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
-const {parse_infobox, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
+const {parse_infobox, htmlToDiscord} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 
 /**
@@ -43,7 +43,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 			embed.setTitle( displaytitle );
 		}
 		if ( querypage.pageprops && querypage.pageprops.description ) {
-			var description = htmlToPlain( querypage.pageprops.description );
+			var description = htmlToDiscord( querypage.pageprops.description );
 			if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 			embed.backupDescription = description;
 		}

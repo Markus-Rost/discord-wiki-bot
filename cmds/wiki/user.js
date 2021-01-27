@@ -4,7 +4,7 @@ const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {timeoptions, usergroups} = require('../../util/default.json');
-const {parse_infobox, toMarkdown, toPlaintext, htmlToPlain, htmlToDiscord} = require('../../util/functions.js');
+const {parse_infobox, toMarkdown, toPlaintext, htmlToDiscord} = require('../../util/functions.js');
 
 var allSites = [];
 const getAllSites = require('../../util/allSites.js');
@@ -54,7 +54,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						}
 					}
 					if ( querypage.pageprops && querypage.pageprops.description ) {
-						var description = htmlToPlain( querypage.pageprops.description );
+						var description = htmlToDiscord( querypage.pageprops.description );
 						if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 						embed.backupDescription = description;
 					}
@@ -147,7 +147,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				var text = '<' + pagelink + '>';
 				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
 				if ( querypage.pageprops && querypage.pageprops.description ) {
-					var description = htmlToPlain( querypage.pageprops.description );
+					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 					embed.setDescription( description );
 				}
@@ -223,7 +223,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					}
 				}
 				if ( querypage.pageprops && querypage.pageprops.description ) {
-					var description = htmlToPlain( querypage.pageprops.description );
+					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 					embed.backupDescription = description;
 				}
@@ -367,7 +367,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				embed.addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
 				
 				if ( querypage.pageprops && querypage.pageprops.description ) {
-					var description = htmlToPlain( querypage.pageprops.description );
+					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 					embed.setDescription( description );
 				}

@@ -1,7 +1,7 @@
 const {Util} = require('discord.js');
 const logging = require('../util/logging.js');
 const {timeoptions} = require('../util/default.json');
-const {toPlaintext} = require('../util/functions.js');
+const {toMarkdown} = require('../util/functions.js');
 
 const overwrites = {
 	randompage: (fn, lang, msg, wiki, reaction, spoiler) => {
@@ -140,7 +140,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 		}
 		else {
 			if ( body.query.allmessages[0]['*'] ) {
-				var description = toPlaintext(body.query.allmessages[0]['*'], true);
+				var description = toMarkdown(body.query.allmessages[0]['*'], wiki, title, true);
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.setDescription( description );
 			}

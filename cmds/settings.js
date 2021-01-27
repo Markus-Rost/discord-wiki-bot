@@ -6,10 +6,6 @@ const allLangs = Lang.allLangs();
 const Wiki = require('../util/wiki.js');
 var db = require('../util/database.js');
 
-var allSites = [];
-const getAllSites = require('../util/allSites.js');
-getAllSites.then( sites => allSites = sites );
-
 /**
  * Processes the "settings" command.
  * @param {Lang} lang - The user language.
@@ -19,7 +15,6 @@ getAllSites.then( sites => allSites = sites );
  * @param {Wiki} wiki - The wiki for the message.
  */
 function cmd_settings(lang, msg, args, line, wiki) {
-	if ( !allSites.length ) getAllSites.update();
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	
 	db.all( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = ? ORDER BY channel DESC', [msg.guild.id], (error, rows) => {
@@ -97,15 +92,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var wikinew = Wiki.fromInput(args[1]);
 			if ( !wikinew ) {
 				var text = lang.get('settings.wikiinvalid') + wikihelp;
-				var sites = allSites.filter( site => site.wiki_display_name.toLowerCase().includes( args[1] ) );
-				if ( 0 < sites.length && sites.length < 21 ) {
-					text += '\n\n' + lang.get('settings.foundwikis') + '\n' + sites.map( site => site.wiki_display_name + ': `' + site.wiki_domain + '`' ).join('\n');
-				}
+				//text += '\n\n' + lang.get('settings.foundwikis') + '\n' + sites.map( site => site.wiki_display_name + ': `' + site.wiki_domain + '`' ).join('\n');
 				return msg.replyMsg( text, {split:true}, true );
-			}
-			if ( wikinew.isGamepedia() && !isForced ) {
-				let site = allSites.find( site => site.wiki_domain === wikinew.hostname );
-				if ( site ) wikinew = new Wiki('https://' + ( site.wiki_crossover || site.wiki_domain ) + '/');
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
 				got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
@@ -126,11 +114,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 					}
 					if ( !isForced ) wikinew.updateWiki(body.query.general);
-					if ( wikinew.isGamepedia() && !isForced ) {
-						let site = allSites.find( site => site.wiki_domain === wikinew.hostname );
-						if ( site ) wikinew = new Wiki('https://' + ( site.wiki_crossover || site.wiki_domain ) + '/');
-					}
-					else if ( wikinew.isFandom(false) && !isForced ) {
+					if ( wikinew.isFandom(false) && !isForced ) {
 						let crossover = '';
 						if ( body.query.allmessages[0]['*'] ) {
 							crossover = 'https://' + body.query.allmessages[0]['*'] + '.gamepedia.com/';

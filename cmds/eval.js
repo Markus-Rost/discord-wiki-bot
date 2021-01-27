@@ -164,14 +164,6 @@ function checkWiki(wiki) {
 }
 
 /**
- * Update the list of all sites.
- * @returns {Promise<Object[]>}
- */
-function updateAllSites() {
-	return require('../util/allSites.js').update();
-}
-
-/**
  * Removes the patreon features for a guild.
  * @param {String} guild - The guild ID.
  * @param {Discord.Message} msg - The Discord message.

@@ -2,7 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
 const phabricator = require('../../functions/phabricator.js');
 const logging = require('../../util/logging.js');
-const {parse_infobox, htmlToPlain, htmlToDiscord, partialURIdecode} = require('../../util/functions.js');
+const {parse_infobox, htmlToDiscord, partialURIdecode} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 const Wiki = require('../../util/wiki.js');
@@ -223,7 +223,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					}
 				}
 				if ( querypage.pageprops && querypage.pageprops.description ) {
-					var description = htmlToPlain( querypage.pageprops.description );
+					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 					embed.backupDescription = description;
 				}
@@ -328,7 +328,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				}
 			}
 			if ( querypage.pageprops && querypage.pageprops.description ) {
-				var description = htmlToPlain( querypage.pageprops.description );
+				var description = htmlToDiscord( querypage.pageprops.description );
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.backupDescription = description;
 			}
@@ -451,7 +451,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				}
 			}
 			if ( querypage.pageprops && querypage.pageprops.description ) {
-				var description = htmlToPlain( querypage.pageprops.description );
+				var description = htmlToDiscord( querypage.pageprops.description );
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.backupDescription = description;
 			}

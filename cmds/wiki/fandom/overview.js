@@ -2,10 +2,6 @@ const {MessageEmbed} = require('discord.js');
 const logging = require('../../../util/logging.js');
 const {timeoptions} = require('../../../util/default.json');
 
-var allSites = [];
-const getAllSites = require('../../../util/allSites.js');
-getAllSites.then( sites => allSites = sites );
-
 /**
  * Sends a Fandom wiki overview.
  * @param {import('../../../util/i18n.js')} lang - The user language.
@@ -15,7 +11,6 @@ getAllSites.then( sites => allSites = sites );
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function fandom_overview(lang, msg, wiki, reaction, spoiler) {
-	if ( !allSites.length ) getAllSites.update();
 	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|wikidesc&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -74,7 +69,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 				var pagelink = wiki.toLink(title);
 				if ( msg.showEmbed() ) {
 					var text = '<' + pagelink + '>';
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( site.wordmark.startsWith( 'data:' ) ? wiki.toLink('Special:FilePath/Wiki-wordmark.png') : site.wordmark ) ).addField( vertical[0], vertical[1], true );
+					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( ( site.wordmark?.startsWith( 'data:' ) ? wiki.toLink('Special:FilePath/Wiki-wordmark.png') : site.wordmark ) ).addField( vertical[0], vertical[1], true );
 					if ( topic[1] ) embed.addField( topic[0], topic[1], true );
 				}
 				else {
@@ -102,11 +97,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 						embed.addField( founder[0], founder[1], true );
 						if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
 						embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
-						if ( crossover[1] ) {
-							var crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
-							if ( crossoverSite ) embed.addField( crossover[0], '[' + crossoverSite.wiki_display_name + '](' + crossover[1] + ')', true );
-							else embed.addField( crossover[0], crossover[1], true );
-						}
+						if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
 						if ( description[1] ) embed.addField( description[0], description[1] );
 						if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
 					}
@@ -129,11 +120,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 					founder[1] = lang.get('overview.none');
 					if ( msg.showEmbed() ) {
 						embed.addField( founder[0], founder[1], true ).addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).setFooter( lang.get('overview.inaccurate') );
-						if ( crossover[1] ) {
-							var crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
-							if ( crossoverSite ) embed.addField( crossover[0], '[' + crossoverSite.wiki_display_name + '](' + crossover[1] + ')', true );
-							else embed.addField( crossover[0], crossover[1], true );
-						}
+						if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
 						if ( description[1] ) embed.addField( description[0], description[1] );
 						if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
 					}

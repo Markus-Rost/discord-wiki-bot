@@ -2,7 +2,7 @@ const htmlparser = require('htmlparser2');
 const {MessageEmbed} = require('discord.js');
 const global_block = require('../../../functions/global_block.js');
 const {timeoptions, usergroups} = require('../../../util/default.json');
-const {toMarkdown, toPlaintext, htmlToPlain} = require('../../../util/functions.js');
+const {toMarkdown, toPlaintext} = require('../../../util/functions.js');
 
 /**
  * Processes a Fandom user.
@@ -306,7 +306,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 							var avatarfield = profile.find( field => field.name === 'avatar' );
 							var biofield = profile.find( field => field.name === 'bio' );
 							if ( discordfield && discordfield.value ) {
-								discordfield.value = htmlToPlain( discordfield.value ).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+								discordfield.value = discordfield.value.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 								if ( discordfield.value.length > 100 ) discordfield.value = discordfield.value.substring(0, 100) + '\u2026';
 								if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
 									return member.user.tag.escapeFormatting() === discordfield.value;
