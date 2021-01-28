@@ -58,10 +58,12 @@ const keepMainPageTag = [
  * @param {Object} querypage - The details of the page.
  * @param {String} querypage.title - The title of the page.
  * @param {String} querypage.contentmodel - The content model of the page.
+ * @param {Object} [querypage.pageprops] - The properties of the page.
+ * @param {String} [querypage.pageprops.disambiguation] - The disambiguation property of the page.
  * @param {String} thumbnail - The default thumbnail for the wiki.
  * @param {String} [fragment] - The section title to embed.
  */
-function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, thumbnail, fragment = '') {
+function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, pageprops: {disambiguation} = {}}, thumbnail, fragment = '') {
 	if ( !msg?.showEmbed?.() || ( embed.description && embed.thumbnail?.url !== thumbnail && !embed.brokenInfobox && !fragment ) ) {
 		msg.sendChannel( content, {embed} );
 
@@ -120,7 +122,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
-	got.get( wiki + 'api.php?action=parse&prop=text|images' + ( fragment ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=parse&prop=text|images' + ( fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 			console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
 			if ( embed.backupDescription && embed.length < 5000 ) {
@@ -263,13 +265,18 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel}, 
 			}
 		}
 		if ( !embed.description && embed.length < 5000 ) {
-			$('h1, h2, h3, h4, h5, h6').nextAll().remove();
-			$('h1, h2, h3, h4, h5, h6').remove();
+			if ( disambiguation === undefined || fragment ) {
+				$('h1, h2, h3, h4, h5, h6').nextAll().remove();
+				$('h1, h2, h3, h4, h5, h6').remove();
+			}
 			$(infoboxList.join(', ')).remove();
 			$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
 			var description = htmlToDiscord($.html(), embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 			if ( description ) {
-				if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
+				if ( disambiguation !== undefined && !fragment && embed.length < 4250 ) {
+					if ( description.length > 1500 ) description = limitLength(description, 1500, 250);
+				}
+				else if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
 				embed.setDescription( description );
 			}
 			else if ( embed.backupDescription ) {
