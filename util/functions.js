@@ -34,10 +34,12 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			label = htmlToPlain(label).trim();
 			value = htmlToDiscord(value, pagelink, true).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
+				if ( !( source || name ) ) break;
 				label = '`' + ( source || name )  + '`';
 				embed.brokenInfobox = true;
 			}
 			if ( value.includes( '*UNKNOWN LINK*' ) ) {
+				if ( !( source || name ) ) break;
 				value = '`' + ( source || name ) + '`';
 				embed.brokenInfobox = true;
 			}
@@ -359,7 +361,7 @@ function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 function limitLength(text = '', limit = 1000, maxExtra = 20) {
 	var suffix = '\u2026';
 	var link = null;
-	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])+?[^\\])\]\((?:[^()]|\\[()])+?[^\\]\)/g;
+	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])+?[^\\])\]\(<?(?:[^()]|\\[()])+?>?[^\\]\)/g;
 	while ( ( link = regex.exec(text) ) !== null ) {
 		if ( link.index < limit && link.index + link[0].length > limit ) {
 			limit = link.index;
