@@ -391,11 +391,51 @@
     },
     "minecraft": {
         "fixed": "修复版本：",
+        "issue_link": {
+            "Blocks": {
+                "inward": "由于$1而无法修复",
+                "outward": "阻断修复$1"
+            },
+            "Bonfire Testing": {
+                "inward": "于测试$1时发现",
+                "outward": "测试时发现$1"
+            },
+            "Cloners": {
+                "inward": "被$1再次报告",
+                "outward": "再次报告$1"
+            },
+            "Duplicate": {
+                "inward": "被$1重复报告",
+                "outward": "与$1重复"
+            },
+            "Relates": {
+                "inward": "与$1相关",
+                "outward": "与$1相关"
+            }
+        },
         "more": "还有 $1 个。",
         "private": "**私密问题**",
+        "status": {
+            "Awaiting Response": "等待回复",
+            "Cannot Reproduce": "无法复现",
+            "Closed": "已关闭",
+            "Done": "已完成",
+            "Duplicate": "重复",
+            "Fixed": "已修复",
+            "In Progress": "正在处理",
+            "Incomplete": "未完成",
+            "Invalid": "无效",
+            "Open": "开放",
+            "Postponed": "推迟",
+            "Reopened": "重新开放",
+            "Resolved": "已解决",
+            "Won't Fix": "不会修复",
+            "Works As Intended": "刻意为之（这是特性）"
+        },
         "total": "$1 个问题已被修复"
     },
     "overview": {
+        "admins": "管理员：",
         "articles": "文章总数：",
         "comments": "条目评论：",
         "created": "创建日期：",
