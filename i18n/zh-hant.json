@@ -391,11 +391,51 @@
     },
     "minecraft": {
         "fixed": "修復版本：",
+        "issue_link": {
+            "Blocks": {
+                "inward": "由於$1而無法修復",
+                "outward": "阻斷修復$1"
+            },
+            "Bonfire Testing": {
+                "inward": "在測試$1時發現",
+                "outward": "測試時發現$1"
+            },
+            "Cloners": {
+                "inward": "被$1再次報告",
+                "outward": "再次報告$1"
+            },
+            "Duplicate": {
+                "inward": "被$1重複報告",
+                "outward": "與$1重複"
+            },
+            "Relates": {
+                "inward": "與$1相關",
+                "outward": "與$1相關"
+            }
+        },
         "more": "還有 $1 個。",
         "private": "**私密問題**",
+        "status": {
+            "Awaiting Response": "等待回覆",
+            "Cannot Reproduce": "無法復現",
+            "Closed": "已關閉",
+            "Done": "已完成",
+            "Duplicate": "重複",
+            "Fixed": "已修復",
+            "In Progress": "處理中",
+            "Incomplete": "未完成",
+            "Invalid": "無效",
+            "Open": "開放",
+            "Postponed": "推遲",
+            "Reopened": "再次開放",
+            "Resolved": "已解決",
+            "Won't Fix": "不會修復",
+            "Works As Intended": "刻意為之"
+        },
         "total": "$1 個問題已被修復"
     },
     "overview": {
+        "admins": "管理員：",
         "articles": "文章總數：",
         "comments": "條目評論：",
         "created": "建立日期：",

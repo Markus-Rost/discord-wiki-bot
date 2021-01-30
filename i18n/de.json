@@ -401,6 +401,7 @@
         "total": "$1 Fehler korrigiert"
     },
     "overview": {
+        "admins": "Administratoren:",
         "articles": "Artikel:",
         "comments": "Artikelkommentare:",
         "created": "Erstellt:",

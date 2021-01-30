@@ -432,6 +432,7 @@
         "total": "$1 {{PLURAL:$2|problema|problemas}} corrigidos"
     },
     "overview": {
+        "admins": "Administradores:",
         "articles": "Artigos:",
         "comments": "Comentários do artigo:",
         "created": "Criado:",
