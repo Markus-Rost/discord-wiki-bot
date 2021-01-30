@@ -82,13 +82,6 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				else return msg.replyMsg( lang.get('settings.' + prelang) + ' ' + ( channel || guild ).wiki + wikihelp, {}, true );
 			}
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			var isForced = false;
-			if ( /^<?(?:https?:)?\/\//.test(args[1]) ) {
-				args[1] = args[1].replace( /^<?(?:https?:)?\/\//, 'https://' );
-				let value = [];
-				[args[1], ...value] = args[1].split(/>? /);
-				if ( value.join(' ') === '--force' ) isForced = true;
-			}
 			var wikinew = Wiki.fromInput(args[1]);
 			if ( !wikinew ) {
 				var text = lang.get('settings.wikiinvalid') + wikihelp;
@@ -97,7 +90,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
 				got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
-					if ( !isForced && response.statusCode === 404 && typeof response.body === 'string' ) {
+					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
@@ -113,18 +106,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						msg.reactEmoji('nowiki', true);
 						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 					}
-					if ( !isForced ) wikinew.updateWiki(body.query.general);
-					if ( wikinew.isFandom(false) && !isForced ) {
-						let crossover = '';
-						if ( body.query.allmessages[0]['*'] ) {
-							crossover = 'https://' + body.query.allmessages[0]['*'] + '.gamepedia.com/';
-						}
-						else if ( body.query.allmessages[1]['*'] ) {
-							let merge = body.query.allmessages[1]['*'].split('/');
-							crossover = 'https://' + merge[0] + '.fandom.com/' + ( merge[1] ? merge[1] + '/' : '' );
-						}
-						if ( crossover ) wikinew = new Wiki(crossover);
-					}
+					wikinew.updateWiki(body.query.general);
 					var embed;
 					if ( !wikinew.isFandom() ) {
 						var notice = [];
