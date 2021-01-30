@@ -435,7 +435,7 @@
         "total": "$1 {{PLURAL:$2|issue|issues}} fixed"
     },
     "overview": {
-        "admins": "Administrators",
+        "admins": "Administrators:",
         "articles": "Articles:",
         "comments": "Article comments:",
         "created": "Created:",
