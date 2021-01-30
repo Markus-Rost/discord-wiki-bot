@@ -75,17 +75,26 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 			}
 			else {
 				if ( !querypage.noRedirect || ( querypage.missing === undefined && querypage.ns !== -1 ) ) namespace = contribs;
-				var localtimeoptions = Object.assign({timeZone: body.query.general.timezone}, timeoptions);
+				try {
+					var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+						timeZone: body.query.general.timezone
+					}, timeoptions));
+				}
+				catch ( error ) {
+					var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+						timeZone: 'UTC'
+					}, timeoptions));
+				}
 				var blocks = body.query.blocks.map( block => {
 					var isBlocked = false;
-					var blockedtimestamp = new Date(block.timestamp).toLocaleString(lang.get('dateformat'), localtimeoptions);
+					var blockedtimestamp = dateformat.format(new Date(block.timestamp));
 					var blockexpiry = block.expiry;
 					if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
 						blockexpiry = lang.get('user.block.until_infinity');
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
-						blockexpiry = new Date(blockexpiry).toLocaleString(lang.get('dateformat'), localtimeoptions);
+						blockexpiry = dateformat.format(new Date(blockexpiry));
 					}
 					if ( isBlocked ) return {
 						header: lang.get('user.block.header', block.user, 'unknown').escapeFormatting(),
@@ -240,8 +249,17 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						default: 
 							gender.push(lang.get('user.gender.unknown'));
 					}
-					var localtimeoptions = Object.assign({timeZone: body.query.general.timezone}, timeoptions);
-					var registration = [lang.get('user.info.registration'), new Date(queryuser.registration).toLocaleString(lang.get('dateformat'), localtimeoptions)];
+					try {
+						var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+							timeZone: body.query.general.timezone
+						}, timeoptions));
+					}
+					catch ( error ) {
+						var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+							timeZone: 'UTC'
+						}, timeoptions));
+					}
+					var registration = [lang.get('user.info.registration'), dateformat.format(new Date(queryuser.registration))];
 					var editcount = [lang.get('user.info.editcount'), queryuser.editcount.toLocaleString(lang.get('dateformat'))];
 					var groups = queryuser.groups;
 					var group = [lang.get('user.info.group', groups.length)];
@@ -267,7 +285,7 @@ function fandom_user(lang, msg, namespace, username, wiki, querystring, fragment
 						isBlocked = true;
 					} else if ( blockexpiry ) {
 						var blockexpirydate = blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' );
-						blockexpiry = new Date(blockexpirydate).toLocaleString(lang.get('dateformat'), localtimeoptions);
+						blockexpiry = dateformat.format(new Date(blockexpirydate));
 						if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 					}
 					var blockedby = queryuser.blockedby;

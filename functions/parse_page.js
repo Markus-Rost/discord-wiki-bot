@@ -180,16 +180,17 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 				'div.section > table > tbody > tr',
 				'h2.pi-header',
 				'div.pi-data',
-				'table.infobox-rows > tbody > tr'
+				'table.infobox-rows > tbody > tr',
+				'div.infobox-rows:not(.subinfobox) > div.infobox-row'
 			].join(', '));
 			let tdLabel = true;
 			for ( let i = 0; i < rows.length; i++ ) {
 				if ( embed.fields.length >= 25 || embed.length > 5400 ) break;
 				let row = rows.eq(i);
-				if ( row.is('tr, div.pi-data') ) {
-					let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label').eq(0);
+				if ( row.is('tr, div.pi-data, div.infobox-row') ) {
+					let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.infobox-cell-header').eq(0);
 					label.find(removeClasses.join(', ')).remove();
-					let value = row.children('td, div.pi-data-value').eq(( label.is('td') ? 1 : 0 ));
+					let value = row.children('td, div.pi-data-value, div.infobox-cell-data').eq(( label.is('td') ? 1 : 0 ));
 					value.find(removeClasses.join(', ')).remove();
 					if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
 					label = htmlToPlain(label).trim().split('\n')[0];

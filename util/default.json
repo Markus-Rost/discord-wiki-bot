@@ -202,6 +202,18 @@
 			"scriptPath": "/w/"
 		},
 		{
+			"name": "wiki.openstreetmap.org",
+			"regex": "(wiki\\.openstreetmap\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "pluralpedia.org",
+			"regex": "((?:www\\.)?pluralpedia\\.org)",
+			"articlePath": "/w/",
+			"scriptPath": "/"
+		},
+		{
 			"name": "librewiki.net",
 			"regex": "(librewiki\\.net)",
 			"articlePath": "/wiki/",

@@ -42,10 +42,19 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		var version = [lang.get('overview.version'), body.query.general.generator];
 		var creation_date = null;
 		var created = [lang.get('overview.created'), lang.get('overview.unknown')];
-		var localtimeoptions = Object.assign({timeZone: body.query.general.timezone}, timeoptions);
+		try {
+			var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+				timeZone: body.query.general.timezone
+			}, timeoptions));
+		}
+		catch ( error ) {
+			var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+				timeZone: 'UTC'
+			}, timeoptions));
+		}
 		if ( body.query.logevents?.[0]?.timestamp ) {
 			creation_date = new Date(body.query.logevents[0].timestamp);
-			created[1] = creation_date.toLocaleString(lang.get('dateformat'), localtimeoptions);
+			created[1] = dateformat.format(creation_date);
 		}
 		var language = [lang.get('overview.lang'), body.query.languages.find( language => {
 			return language.code === body.query.general.lang;
@@ -55,6 +64,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		var pages = [lang.get('overview.pages'), body.query.statistics.pages.toLocaleString(lang.get('dateformat'))];
 		var edits = [lang.get('overview.edits'), body.query.statistics.edits.toLocaleString(lang.get('dateformat'))];
 		var users = [lang.get('overview.users'), body.query.statistics.activeusers.toLocaleString(lang.get('dateformat'))];
+		var admins = [lang.get('overview.admins'), body.query.statistics.admins.toLocaleString(lang.get('dateformat'))];
 		var license = [lang.get('overview.license'), lang.get('overview.unknown')];
 		if ( body.query.rightsinfo.url ) {
 			let licenseurl = body.query.rightsinfo.url
@@ -122,7 +132,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				official[1] = lang.get('overview.' + ( site.official_wiki ? 'yes' : 'no' ));
 				if ( site.created && creation_date > new Date(parseInt(site.created + '000', 10)) ) {
 					creation_date = new Date(parseInt(site.created + '000', 10));
-					created[1] = creation_date.toLocaleString(lang.get('dateformat'), localtimeoptions);
+					created[1] = dateformat.format(creation_date);
 				}
 				if ( site.wiki_crossover ) crossover[1] = '<https://' + site.wiki_crossover + '/>';
 				if ( site.wiki_description ) {
@@ -146,7 +156,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				founder[1] = site.founding_user_id;
 				if ( site.creation_date && creation_date > new Date(site.creation_date) ) {
 					creation_date = new Date(site.creation_date);
-					created[1] = creation_date.toLocaleString(lang.get('dateformat'), localtimeoptions);
+					created[1] = dateformat.format(creation_date);
 				}
 				if ( site.desc ) {
 					description[1] = site.desc.escapeFormatting();
@@ -172,7 +182,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					}, error => {
 						console.log( '- Error while getting the wiki founder: ' + error );
 						founder[1] = 'ID: ' + founder[1];
-					} ) : founder[1] = ( wiki.isGamepedia() ? null : lang.get('overview.none') ) ),
+					} ) : founder[1] = ( founder[1] === undefined || wiki.isGamepedia() ? null : lang.get('overview.none') ) ),
 					got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
@@ -208,7 +218,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					if ( posts[1] ) embed.addField( posts[0], posts[1], true );
 					if ( walls[1] ) embed.addField( walls[0], walls[1], true );
 					if ( comments[1] ) embed.addField( comments[0], comments[1], true );
-					embed.addField( users[0], users[1], true );
+					embed.addField( users[0], users[1], true ).addField( admins[0], admins[1], true );
 					if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
 					if ( founder[1] ) embed.addField( founder[0], founder[1], true );
 					if ( crossover[1] ) {
@@ -231,7 +241,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					if ( posts[1] ) text += '\n' + posts.join(' ');
 					if ( walls[1] ) text += '\n' + walls.join(' ');
 					if ( comments[1] ) text += '\n' + comments.join(' ');
-					text += '\n' + users.join(' ');
+					text += '\n' + users.join(' ') + '\n' + admins.join(' ');
 					if ( manager[1] ) text += '\n' + manager.join(' ');
 					if ( founder[1] ) text += '\n' + founder.join(' ');
 					if ( crossover[1] ) text += '\n' + crossover.join(' ');
@@ -253,13 +263,13 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		if ( msg.showEmbed() ) {
 			embed.addField( version[0], version[1], true ).addField( language[0], language[1], true );
 			if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
-			embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
+			embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
 			if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 		}
 		else {
 			text += '\n' + version.join(' ') + '\n' + language.join(' ');
 			if ( rtl[1] ) text += '\n' + rtl.join(' ');
-			text += '\n' + created.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
+			text += '\n' + created.join(' ') + '\n' + articles.join(' ') + '\n' + pages.join(' ') + '\n' + edits.join(' ') + '\n' + users.join(' ') + '\n' + admins.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
 			if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );
 			text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 		}

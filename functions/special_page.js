@@ -32,7 +32,17 @@ const queryfunctions = {
 		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + result.databaseResult.b_title.escapeFormatting() + ' → ' + result.databaseResult.c_title.escapeFormatting() : '' );
 	} ).join('\n'),
 	timestamp: (query, wiki, lang) => query.querypage.results.map( result => {
-		return new Date(result.timestamp).toLocaleString(lang.get('dateformat'), Object.assign({timeZone: query.general.timezone}, timeoptions)).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		try {
+			var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+				timeZone: body.query.general.timezone
+			}, timeoptions));
+		}
+		catch ( error ) {
+			var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
+				timeZone: 'UTC'
+			}, timeoptions));
+		}
+		return dateformat.format(new Date(result.timestamp)).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	media: (query, wiki, lang) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');

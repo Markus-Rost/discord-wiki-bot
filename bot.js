@@ -329,10 +329,12 @@ global.log_error = function(error, isBig = false, type = '') {
 const common_warnings = {
 	main: [
 		'Unrecognized parameters: piprop, explaintext, exsectionformat, exlimit.',
+		'Unrecognized parameters: explaintext, exsectionformat, exlimit.',
 		'Unrecognized parameter: piprop.'
 	],
 	query: [
 		'Unrecognized values for parameter "prop": pageimages, extracts.',
+		'Unrecognized value for parameter "prop": extracts.',
 		'Unrecognized value for parameter "prop": pageimages.'
 	]
 }
