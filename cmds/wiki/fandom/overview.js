@@ -61,7 +61,7 @@ function fandom_overview(lang, msg, wiki, reaction, spoiler) {
 						timeZone: 'UTC'
 					}, timeoptions));
 				}
-				var created = [lang.get('overview.created'), dateformat.format(new Date(site.creation_date))];
+				var created = [lang.get('overview.created'), ( site.creation_date ? dateformat.format(new Date(site.creation_date)) : 'Invalid Date' )];
 				var articles = [lang.get('overview.articles'), body.query.statistics.articles.toLocaleString(lang.get('dateformat'))];
 				var pages = [lang.get('overview.pages'), body.query.statistics.pages.toLocaleString(lang.get('dateformat'))];
 				var edits = [lang.get('overview.edits'), body.query.statistics.edits.toLocaleString(lang.get('dateformat'))];

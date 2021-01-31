@@ -352,7 +352,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 			}
 			var isBlocked = false;
-			var blockedtimestamp = dateformat.format(new Date(queryuser.blockedtimestamp));
+			var blockedtimestamp = ( queryuser.blockedtimestamp ? dateformat.format(new Date(queryuser.blockedtimestamp)) : 'Invalid Date' );
 			var blockexpiry = queryuser.blockexpiry;
 			if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
 				blockexpiry = lang.get('user.block.until_infinity');

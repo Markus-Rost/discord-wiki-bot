@@ -48,7 +48,7 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', task.fields.subtype, true );;
 		var description = task.fields.description.raw.replace( /```lang=/g, '```' );
 		if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
-		embed.setDescription( parse_links( description ) );
+		embed.setDescription( parse_links( description, regex[1] ) );
 
 		if ( /^#\d+$/.test( link.hash ) ) return got.get( 'https://phabricator.' + regex[1] + '.org/api/transaction.search?api.token=' + process.env['phabricator-' + regex[1]] + '&objectIdentifier=' + task.phid ).then( response => {
 			var body = response.body;
@@ -60,7 +60,7 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 			if ( comment.type === 'comment' ) {
 				var content = comment.comments[0].content.raw;
 				if ( content.length > 1000 ) content = content.substring(0, 1000) + '\u2026';
-				embed.spliceFields( 0, 0, {name: 'Comment', value: parse_links( content )} );
+				embed.spliceFields( 0, 0, {name: 'Comment', value: parse_links( content, regex[1] )} );
 			}
 		}, error => {
 			console.log( '- Error while getting the task transactions: ' + error );
@@ -84,10 +84,12 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 /**
  * Parse Phabricator links.
  * @param {String} text - The text to parse.
+ * @param {String} site - The site the Phabricator is for.
  * @returns {String}
  */
-function parse_links(text) {
+function parse_links(text, site) {
 	text = text.replace( /\[\[ *(.+?) *\| *(.+?) *\]\]/g, '[$2]($1)' );
+	text = text.replace( /\{(T\d+)\}/g, '[$1](https://phabricator.' + site + '.org/$1)' );
 	return text;
 }
 
