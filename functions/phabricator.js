@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const logging = require('../util/logging.js');
+const {limitLength} = require('../util/functions.js');
 
 /**
  * Sends a Phabricator task.
@@ -19,7 +20,8 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 		return;
 	}
 	logging(link.origin, msg.guild?.id, 'phabricator', regex[1]);
-	got.get( 'https://phabricator.' + regex[1] + '.org/api/maniphest.search?api.token=' + process.env['phabricator-' + regex[1]] + '&constraints[ids][0]=' + regex[2] ).then( response => {
+	var site = 'https://phabricator.' + regex[1] + '.org/'
+	got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator-' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2] ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the Phabricator task: ' + body?.error_info );
@@ -46,33 +48,47 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
 		var embed = new MessageEmbed().setAuthor( 'Phabricator' ).setTitle( summary ).setURL( link ).addField( 'Status', task.fields.status.name, true ).addField( 'Priority', task.fields.priority.name, true );
 		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', task.fields.subtype, true );;
-		var description = task.fields.description.raw.replace( /```lang=/g, '```' );
-		if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
-		embed.setDescription( parse_links( description, regex[1] ) );
+		var description = parse_text( task.fields.description.raw, site );
+		if ( description.length > 2000 ) description = limitLength(description, 2000, 40);
+		embed.setDescription( description );
 
-		if ( /^#\d+$/.test( link.hash ) ) return got.get( 'https://phabricator.' + regex[1] + '.org/api/transaction.search?api.token=' + process.env['phabricator-' + regex[1]] + '&objectIdentifier=' + task.phid ).then( response => {
-			var body = response.body;
-			if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
-				console.log( '- ' + response.statusCode + ': Error while getting the task transactions: ' + body?.error_info );
-				return;
-			}
-			var comment = body.result.data.find( transaction => '#' + transaction.id === link.hash );
-			if ( comment.type === 'comment' ) {
-				var content = comment.comments[0].content.raw;
-				if ( content.length > 1000 ) content = content.substring(0, 1000) + '\u2026';
-				embed.spliceFields( 0, 0, {name: 'Comment', value: parse_links( content, regex[1] )} );
-			}
-		}, error => {
-			console.log( '- Error while getting the task transactions: ' + error );
-		} ).finally( () => {
+		Promise.all([
+			( task.attachments.projects.projectPHIDs.length ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator-' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&') ).then( presponse => {
+				var pbody = presponse.body;
+				if ( presponse.statusCode !== 200 || !pbody?.result || pbody.error_code ) {
+					console.log( '- ' + presponse.statusCode + ': Error while getting the projects: ' + pbody?.error_info );
+					return;
+				}
+				var projects = Object.values(pbody.result);
+				var tags = projects.map( project => {
+					return '[' + project.fullName + '](' + project.uri + ')';
+				} ).join(',\n');
+				if ( tags.length > 1000 ) tags = projects.map( project => project.fullName ).join(',\n');
+				if ( tags.length > 1000 ) tags = tags.substring(0, 1000) + '\u2026';
+				embed.addField( 'Tags', tags );
+			}, error => {
+				console.log( '- Error while getting the projects: ' + error );
+			} ) : undefined ),
+			( /^#\d+$/.test( link.hash ) ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator-' + regex[1]] + '&objectIdentifier=' + task.phid ).then( tresponse => {
+				var tbody = tresponse.body;
+				if ( tresponse.statusCode !== 200 || !tbody?.result?.data || tbody.error_code ) {
+					console.log( '- ' + tresponse.statusCode + ': Error while getting the task transactions: ' + tbody?.error_info );
+					return;
+				}
+				var comment = tbody.result.data.find( transaction => '#' + transaction.id === link.hash );
+				if ( comment.type === 'comment' ) {
+					var content = parse_text( comment.comments[0].content.raw, site );
+					if ( content.length > 1000 ) content = limitLength(content, 1000, 20);
+					embed.spliceFields( 0, 0, {name: 'Comment', value: content} );
+				}
+			}, error => {
+				console.log( '- Error while getting the task transactions: ' + error );
+			} ) : undefined )
+		]).finally( () => {
 			msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler, {embed} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
-
-		msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler, {embed} );
-		
-		if ( reaction ) reaction.removeEmoji();
 	}, error => {
 		console.log( '- Error while getting the Phabricator task: ' + error );
 		msg.sendChannelError( spoiler + ' ' + link + ' ' + spoiler );
@@ -82,14 +98,26 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 }
 
 /**
- * Parse Phabricator links.
+ * Parse Phabricator text.
  * @param {String} text - The text to parse.
  * @param {String} site - The site the Phabricator is for.
  * @returns {String}
  */
-function parse_links(text, site) {
-	text = text.replace( /\[\[ *(.+?) *\| *(.+?) *\]\]/g, '[$2]($1)' );
-	text = text.replace( /\{(T\d+)\}/g, '[$1](https://phabricator.' + site + '.org/$1)' );
+function parse_text(text, site) {
+	text = text.replace( /```lang=/g, '```' );
+	text = text.replace( /##(.+?)##/g, '`$1`' );
+	text = text.replace( /!!(.+?)!!/g, '`$1`' );
+	text = text.replace( /\/\/(.+?)\/\//g, '*$1*' );
+	text = text.replace( /\[\[ ?(.+?) ?(?:\| ?(.+?) ?)?\]\]/g, (match, target, display) => {
+		var link = target;
+		if ( /^(?:(?:https?:)?\/\/|\/|#)/.test(target) ) link = new URL(target, site).href;
+		else link = site + 'w/' + target;
+		return '[' + ( display || target ) + '](' + link + ')';
+	} );
+	text = text.replace( /@([\w-]+)\b/g, '[@$1](' + site + 'p/$1)' );
+	text = text.replace( /\b\{?(r[A-Z]+[a-f\d]+)\}?\b/g, '[$1](' + site + '$1)' );
+	text = text.replace( /\b\{?([CDFHLMPQTV]\d+(?:#\d+)?)\}?\b/g, '[$1](' + site + '$1)' );
+	text = text.replace( /(?<!https?:\/\/[^\s]+)#([a-z0-9_-]+)\b/g, '[#$1](' + site + 'tag/$1)' );
 	return text;
 }
 

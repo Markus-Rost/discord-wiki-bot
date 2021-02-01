@@ -361,13 +361,13 @@ function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 function limitLength(text = '', limit = 1000, maxExtra = 20) {
 	var suffix = '\u2026';
 	var link = null;
-	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])+?[^\\])\]\(<?(?:[^()]|\\[()])+?>?[^\\]\)/g;
+	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])+?[^\\])\]\(<?(?:[^()]|\\[()])+?[^\\]>?\)/g;
 	while ( ( link = regex.exec(text) ) !== null ) {
 		if ( link.index < limit && link.index + link[0].length > limit ) {
-			limit = link.index;
 			if ( link.index + link[0].length < limit + maxExtra ) suffix = link[0];
 			else if ( link.index + link[1].length < limit + maxExtra ) suffix = link[1];
 			if ( link.index + link[0].length < text.length ) suffix += '\u2026';
+			limit = link.index;
 			break;
 		}
 		else if ( link.index >= limit ) break;
