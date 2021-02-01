@@ -70,9 +70,9 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !args[1] ) return msg.replyMsg( text, {}, true );
 			
 			args[0] = args[1].toLowerCase();
-			args[1] = args.slice(2).join(' ').toLowerCase().trim().replace( /^<\s*(.*)>$/, '$1' );
+			args[1] = args.slice(2).join(' ').toLowerCase().trim().replace( /^<\s*(.*)\s*>$/, '$1' );
 		}
-		else args[1] = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*)>$/, '$1' );
+		else args[1] = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*)\s*>$/, '$1' );
 		
 		if ( args[0] === 'wiki' ) {
 			prelang += 'wiki';
@@ -89,18 +89,18 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				return msg.replyMsg( text, {split:true}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
-				got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
+				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general|extensions&format=json' ).then( response => {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|extensions&format=json' );
+							return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
 						}
 					}
 					return response;
 				} ).then( response => {
 					var body = response.body;
-					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
+					if ( response.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						msg.reactEmoji('nowiki', true);

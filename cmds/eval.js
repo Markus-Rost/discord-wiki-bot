@@ -263,7 +263,12 @@ function removePatreons(guild, msg) {
 function removeSettings(msg) {
 	if ( !msg ) return 'removeSettings(msg) – No message provided!';
 	try {
-		msg.client.shard.broadcastEval( `[[...this.guilds.cache.keys()], [...this.channels.cache.filter( channel => channel.isGuild() ).keys()]]` ).then( results => {
+		msg.client.shard.broadcastEval( `[
+			[...this.guilds.cache.keys()],
+			this.channels.cache.filter( channel => {
+				return ( channel.isGuild() || ( channel.type === 'category' && global.patreons.hasOwnProperty(channel.guild.id) ) );
+			} ).map( channel => ( channel.type === 'category' ? '#' : '' ) + channel.id )
+		]` ).then( results => {
 			var all_guilds = results.map( result => result[0] ).reduce( (acc, val) => acc.concat(val), [] );
 			var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
 			var guilds = [];
@@ -294,7 +299,7 @@ function removeSettings(msg) {
 							msg.replyMsg( 'I got an error while removing the guilds!', {}, true );
 							return dberror;
 						}
-						console.log( '- Guilds successfully removed.' );
+						console.log( '- Guilds successfully removed: ' + this.changes );
 					} );
 				}
 				if ( channels.length ) db.run( 'DELETE FROM discord WHERE channel IN (' + channels.map( channel => '?' ).join(', ') + ')', channels, function (dberror) {
@@ -303,7 +308,7 @@ function removeSettings(msg) {
 						msg.replyMsg( 'I got an error while removing the channels!', {}, true );
 						return dberror;
 					}
-					console.log( '- Channels successfully removed.' );
+					console.log( '- Channels successfully removed: ' + this.changes );
 				} );
 				if ( !guilds.length && !channels.length ) console.log( '- Settings successfully removed.' );
 			} );
