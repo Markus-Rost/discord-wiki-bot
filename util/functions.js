@@ -156,16 +156,17 @@ function toPlaintext(text = '', fullWikitext = false) {
  */
 function htmlToPlain(html) {
 	var text = '';
-	var reference = false;
+	var ignoredTag = '';
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
-			if ( tagname === 'sup' && attribs.class === 'reference' ) reference = true;
+			if ( tagname === 'sup' && attribs.class === 'reference' ) ignoredTag = 'sup';
+			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
 		},
 		ontext: (htmltext) => {
-			if ( !reference ) text += escapeFormatting(htmltext);
+			if ( !ignoredTag ) text += escapeFormatting(htmltext);
 		},
 		onclosetag: (tagname) => {
-			if ( tagname === 'sup' ) reference = false;
+			if ( tagname === ignoredTag ) ignoredTag = '';
 		}
 	} );
 	parser.write( html );
@@ -184,11 +185,13 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var text = '';
 	var code = false;
 	var href = '';
-	var reference = false;
+	var ignoredTag = '';
 	var listlevel = -1;
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
-			if ( code ) return;
+			if ( ignoredTag || code ) return;
+			if ( tagname === 'sup' && attribs.class === 'reference' ) ignoredTag = 'sup';
+			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
 			if ( tagname === 'code' ) {
 				code = true;
 				text += '`';
@@ -201,7 +204,6 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';
-			if ( tagname === 'sup' && attribs.class === 'reference' ) reference = true;
 			if ( tagname === 'br' ) {
 				text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel + 3);
@@ -236,7 +238,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				if ( listlevel > -1 && attribs.class !== 'mw-empty-elt' ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
-				if ( attribs.alt && attribs.src && !reference ) {
+				if ( attribs.alt && attribs.src ) {
 					let showAlt = true;
 					if ( attribs['data-image-name'] === attribs.alt ) showAlt = false;
 					else {
@@ -284,17 +286,24 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
 				href = new URL(attribs.href, pagelink).href;
-				text += '[';
+				if ( text.endsWith( '](<' + href.replace( /[()]/g, '\\$&' ) + '>)' ) ) {
+					text = text.substring(0, text.length - ( href.replace( /[()]/g, '\\$&' ).length + 5 ));
+				}
+				else text += '[';
 			}
 		},
 		ontext: (htmltext) => {
-			if ( !reference ) {
+			if ( !ignoredTag ) {
 				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
 				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
 				else text += escapeFormatting(htmltext, ...escapeArgs);
 			}
 		},
 		onclosetag: (tagname) => {
+			if ( tagname === ignoredTag ) {
+				ignoredTag = '';
+				return;
+			}
 			if ( code ) {
 				if ( tagname === 'code' ) {
 					code = false;
@@ -310,7 +319,6 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';
-			if ( tagname === 'sup' ) reference = false;
 			if ( tagname === 'ul' ) listlevel--;
 			if ( tagname === 'dl' ) listlevel--;
 			if ( tagname === 'dt' ) text += '**';
@@ -361,7 +369,7 @@ function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 function limitLength(text = '', limit = 1000, maxExtra = 20) {
 	var suffix = '\u2026';
 	var link = null;
-	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])+?[^\\])\]\(<?(?:[^()]|\\[()])+?[^\\]>?\)/g;
+	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])*?[^\\])\]\(<?(?:[^()]|\\[()])+?[^\\]>?\)/g;
 	while ( ( link = regex.exec(text) ) !== null ) {
 		if ( link.index < limit && link.index + link[0].length > limit ) {
 			if ( link.index + link[0].length < limit + maxExtra ) suffix = link[0];

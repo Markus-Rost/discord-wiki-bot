@@ -2,6 +2,13 @@ const cheerio = require('cheerio');
 const {toSection} = require('../util/wiki.js');
 const {htmlToPlain, htmlToDiscord, limitLength} = require('../util/functions.js');
 
+const parsedContentModels = [
+	'wikitext',
+	'wikibase-item',
+	'wikibase-lexeme',
+	'wikibase-property'
+];
+
 // Max length of 10 characters
 const contentModels = {
 	Scribunto: 'lua',
@@ -40,12 +47,21 @@ const removeClasses = [
 	'.nomobile',
 	'.noprint',
 	'.noexcerpt',
-	'.sortkey'
+	'.sortkey',
+	'wb\\:sectionedit'
 ];
 
-const keepMainPageTag = [
+const removeClassExceptions = [
 	'div.main-page-tag-lcs',
-	'div.lcs-container'
+	'div.lcs-container',
+	'div.wikibase-entityview',
+	'div.wikibase-entityview-main',
+	'div.wikibase-entitytermsview',
+	'div.wikibase-entitytermsview-heading',
+	'div.wikibase-entitytermsview-heading-description',
+	'div#wb-lexeme-header',
+	'div#wb-lexeme-header div:not([class]):not([id])',
+	'div.language-lexical-category-widget'
 ];
 
 /**
@@ -70,7 +86,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
-	if ( contentmodel !== 'wikitext' ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
+	if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		var revision = Object.values(( body?.query?.pages || {} ))?.[0]?.revisions?.[0];
@@ -122,7 +138,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
-	got.get( wiki + 'api.php?action=parse&prop=text|images' + ( fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=parse&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 			console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
 			if ( embed.backupDescription && embed.length < 5000 ) {
@@ -133,7 +149,10 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 			}
 			return;
 		}
-		var $ = cheerio.load(response.body.parse.text['*'].replace( /<br\/?>/g, '\n' ));
+		var displaytitle = htmlToDiscord( response.body.parse.displaytitle );
+		if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
+		embed.setTitle( displaytitle );
+		var $ = cheerio.load(response.body.parse.text['*'].replace( /\n?<br(?: ?\/)?>\n?/g, '<br>' ));
 		if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
 			let infobox = $('aside.portable-infobox');
 			embed.fields.forEach( field => {
@@ -175,6 +194,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 			}
 			let rows = infobox.find([
 				'> tbody > tr',
+				'> tbody > tr > th.mainheader',
 				'> table > tbody > tr',
 				'div.section > div.title',
 				'div.section > table > tbody > tr',
@@ -187,19 +207,7 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 			for ( let i = 0; i < rows.length; i++ ) {
 				if ( embed.fields.length >= 25 || embed.length > 5400 ) break;
 				let row = rows.eq(i);
-				if ( row.is('tr, div.pi-data, div.infobox-row') ) {
-					let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.infobox-cell-header').eq(0);
-					label.find(removeClasses.join(', ')).remove();
-					let value = row.children('td, div.pi-data-value, div.infobox-cell-data').eq(( label.is('td') ? 1 : 0 ));
-					value.find(removeClasses.join(', ')).remove();
-					if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
-					label = htmlToPlain(label).trim().split('\n')[0];
-					value = htmlToDiscord(value, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
-					if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
-					if ( value.length > 500 ) value = limitLength(value, 500, 250);
-					if ( label && value ) embed.addField( label, value, true );
-				}
-				else if ( row.is('div.title, h2.pi-header') ) {
+				if ( row.is('th.mainheader, div.title, h2.pi-header') ) {
 					row.find(removeClasses.join(', ')).remove();
 					let label = htmlToPlain(row).trim();
 					if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
@@ -213,6 +221,18 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 						}
 						else embed.addField( '\u200b', '**' + label + '**', false );
 					}
+				}
+				else if ( row.is('tr, div.pi-data, div.infobox-row') ) {
+					let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.infobox-cell-header').eq(0);
+					label.find(removeClasses.join(', ')).remove();
+					let value = row.children('td, div.pi-data-value, div.infobox-cell-data').eq(( label.is('td') ? 1 : 0 ));
+					value.find(removeClasses.join(', ')).remove();
+					if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
+					label = htmlToPlain(label).trim().split('\n')[0];
+					value = htmlToDiscord(value, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
+					if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
+					if ( value.length > 500 ) value = limitLength(value, 500, 250);
+					if ( label && value ) embed.addField( label, value, true );
 				}
 			}
 			if ( embed.fields.length && embed.fields[embed.fields.length - 1].name === '\u200b' ) {
@@ -266,12 +286,12 @@ function parse_page(msg, content, embed, wiki, reaction, {title, contentmodel, p
 			}
 		}
 		if ( !embed.description && embed.length < 5000 ) {
-			if ( disambiguation === undefined || fragment ) {
+			if ( contentmodel !== 'wikitext' || disambiguation === undefined || fragment ) {
 				$('h1, h2, h3, h4, h5, h6').nextAll().remove();
 				$('h1, h2, h3, h4, h5, h6').remove();
 			}
 			$(infoboxList.join(', ')).remove();
-			$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(keepMainPageTag.join(', ')).remove();
+			$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassExceptions.join(', ')).remove();
 			var description = htmlToDiscord($.html(), embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 			if ( description ) {
 				if ( disambiguation !== undefined && !fragment && embed.length < 4250 ) {

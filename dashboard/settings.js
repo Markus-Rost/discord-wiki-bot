@@ -343,7 +343,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( response.patreon ) {
 					if ( row.lang !== row.mainlang ) text += `\n${lang.get('settings.currentlang')} \`${allLangs.names[row.lang]}\``;
 					if ( row.role !== row.mainrole ) text += `\n${lang.get('settings.currentrole')} ` + ( row.role ? `<@&${row.role}>` : '@everyone' );
-					if ( row.inline !== row.maininline ) text += `\n${lang.get('settings.currentinline')} ${( row.inline ? '~~' : '' )}\`[[${inlinepage}]]\`${( row.inline ? '~~' : '' )}`;
+					if ( row.inline !== row.maininline ) text += `\n${lang.get('settings.currentinline')} ${( row.inline ? '~~' : '' )}\`[[${( lang.localNames.page || 'page' )}]]\`${( row.inline ? '~~' : '' )}`;
 				}
 				text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
 				sendMsg( {
