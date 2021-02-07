@@ -29,7 +29,8 @@ function cmd_test(lang, msg, args, line, wiki) {
 	else if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 		let textList = lang.get('test.text').filter( text => text.trim() );
-		var text = textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0');
+		var text = ( textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0') );
+		if ( process.env.READONLY ) text = lang.get('general.readonly') + '\n' + process.env.invite;
 		console.log( '- Test: Fully functioning!' );
 		var now = Date.now();
 		msg.replyMsg( text ).then( message => {

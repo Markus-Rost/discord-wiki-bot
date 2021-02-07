@@ -31,14 +31,20 @@ const client = new Discord.Client( {
 	allowedMentions: {
 		parse: []
 	},
-	presence: {
+	presence: ( process.env.READONLY ? {
+		status: 'dnd',
+		activity: {
+			type: 'PLAYING',
+			name: 'READONLY: ' + process.env.prefix + 'test'
+		}
+	} : {
 		status: 'online',
 		activity: {
 			type: 'STREAMING',
 			name: process.env.prefix + 'help',
 			url: 'https://www.twitch.tv/wikibot'
 		}
-	},
+	} ),
 	ws: {
 		large_threshold: 1000,
 		intents: [
