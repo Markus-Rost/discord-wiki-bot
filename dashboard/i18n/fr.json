@@ -5,5 +5,13 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "delete": "Supprimer",
+        "invite": "Inviter Wiki-Bot",
+        "language": "Changer la langue",
+        "login": "Connexion",
+        "logout": "Déconnexion",
+        "rcscript": "Modifications récentes"
+    }
 }
