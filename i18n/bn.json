@@ -688,9 +688,6 @@
             "male": "পুরুষ",
             "unknown": "অজানা"
         },
-        "groups": {
-            "interface-admin": "ইন্টারফেস প্রবন্ধক"
-        },
         "info": {
             "discord": "ডিসকর্ড:",
             "editcount": "সম্পাদনার মাত্রা:",

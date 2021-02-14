@@ -688,9 +688,6 @@
             "male": "男",
             "unknown": "未知"
         },
-        "groups": {
-            "interface-admin": "界面管理员"
-        },
         "info": {
             "discord": "Discord：",
             "editcount": "编辑数：",

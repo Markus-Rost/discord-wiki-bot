@@ -688,9 +688,6 @@
             "male": "Mężczyzna",
             "unknown": "Nieznane"
         },
-        "groups": {
-            "interface-admin": "{{GENDER:$1|administrator interfejsu|administratorka interfejsu|administrator(-ka) interfejsu}}"
-        },
         "info": {
             "discord": "Discord:",
             "editcount": "Ilość edycji:",

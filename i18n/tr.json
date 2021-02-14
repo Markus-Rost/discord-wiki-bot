@@ -644,9 +644,7 @@
             "unknown": "meçhul"
         },
         "groups": {
-            "content-moderator": "İçerik moderatörü",
-            "interface-admin": "Arayüz yöneticisi",
-            "widgeteditor": "Widget editörü"
+            "interface-admin": "Arayüz yöneticisi"
         },
         "info": {
             "discord": "Discord:",

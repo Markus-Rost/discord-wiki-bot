@@ -654,9 +654,6 @@
             "male": "Männlich",
             "unknown": "Unbekannt"
         },
-        "groups": {
-            "interface-admin": "{{GENDER:$1|Oberflächen-Administrator|Oberflächen-Administratorin}}"
-        },
         "info": {
             "discord": "Discord:",
             "editcount": "Bearbeitungen:",

@@ -685,9 +685,7 @@
             "unknown": "Desconocido"
         },
         "groups": {
-            "content-moderator": "Moderador de contenido",
-            "interface-admin": "Administrador de interfaz",
-            "widgeteditor": "Editor de widgets"
+            "interface-admin": "Administrador de interfaz"
         },
         "info": {
             "discord": "Discord:",

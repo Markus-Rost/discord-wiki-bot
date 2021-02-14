@@ -687,9 +687,6 @@
             "male": "Мужской",
             "unknown": "Неизвестно"
         },
-        "groups": {
-            "interface-admin": "Администратор интерфейса"
-        },
         "info": {
             "discord": "Discord:",
             "editcount": "Количество правок:",
