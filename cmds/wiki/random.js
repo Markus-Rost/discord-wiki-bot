@@ -2,7 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const fandom_random = require('./fandom/random.js').run;
 const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
-const {parse_infobox, htmlToDiscord} = require('../../util/functions.js');
+const {htmlToDiscord} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 
 /**
@@ -62,17 +62,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 		}
 		else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 		
-		if ( !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
-			try {
-				var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-				parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
-			}
-			catch ( error ) {
-				console.log( '- Failed to parse the infobox: ' + error );
-			}
-		}
-		
-		parse_page(msg, '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ));
+		parse_page(lang, msg, '🎲 ' + spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ));
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );

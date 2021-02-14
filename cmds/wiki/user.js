@@ -4,7 +4,7 @@ const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {timeoptions, usergroups} = require('../../util/default.json');
-const {parse_infobox, toMarkdown, toPlaintext, htmlToDiscord} = require('../../util/functions.js');
+const {toMarkdown, toPlaintext, htmlToDiscord} = require('../../util/functions.js');
 
 var allSites = [];
 const getAllSites = require('../../util/allSites.js');
@@ -65,17 +65,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
 					}
 					
-					if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
-						try {
-							var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-							parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
-						}
-						catch ( error ) {
-							console.log( '- Failed to parse the infobox: ' + error );
-						}
-					}
-					
-					return parse_page(msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment);
+					return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment, pagelink);
 				}
 			}
 			else {
@@ -244,17 +234,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 				
-				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
-					try {
-						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
-					}
-					catch ( error ) {
-						console.log( '- Failed to parse the infobox: ' + error );
-					}
-				}
-				
-				return parse_page(msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment);
+				return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment, pagelink);
 			}
 			
 			if ( reaction ) reaction.removeEmoji();

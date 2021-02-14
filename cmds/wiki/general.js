@@ -2,7 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
 const phabricator = require('../../functions/phabricator.js');
 const logging = require('../../util/logging.js');
-const {parse_infobox, htmlToDiscord, partialURIdecode} = require('../../util/functions.js');
+const {htmlToDiscord, partialURIdecode} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 const Wiki = require('../../util/wiki.js');
@@ -230,6 +230,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( querypage.ns === 6 ) {
 					var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
 					if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
+					else if ( querypage.title.toLowerCase().endsWith( '.svg' ) && querypage?.original?.width && msg.showEmbed() ) {
+						embed.setImage( wiki.toLink('Special:FilePath/' + querypage.title, {width:querypage.original.width,version:Date.now()}) );
+						if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
+					}
 					else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
 				}
 				else if ( querypage.title === body.query.general.mainpage ) {
@@ -273,17 +277,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					else text += '\n\n' + category.join('\n');
 				}
 
-				if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
-					try {
-						var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-						parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
-					}
-					catch ( error ) {
-						console.log( '- Failed to parse the infobox: ' + error );
-					}
-				}
-
-				return parse_page(msg, spoiler + '<' + pagelink + '>' + text + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment);
+				return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + text + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment, pagelink);
 			}, error => {
 				logging(wiki, msg.guild?.id, 'general', 'search');
 				console.log( '- Error while getting the search results: ' + error );
@@ -364,18 +358,8 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( msg.showEmbed() ) embed.addField( category[0], category.slice(1).join('\n') );
 				else text += '\n\n' + category.join('\n');
 			}
-
-			if ( !( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ) && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
-				try {
-					var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-					parse_infobox(infobox, embed, new URL(body.query.general.logo, wiki).href, pagelink);
-				}
-				catch ( error ) {
-					console.log( '- Failed to parse the infobox: ' + error );
-				}
-			}
 			
-			return parse_page(msg, spoiler + '<' + pagelink + '>' + text + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ));
+			return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + text + spoiler, embed, wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ), pagelink);
 		}
 		if ( body.query.interwiki ) {
 			if ( msg.channel.isGuild() && pause[msg.guild.id] ) {
@@ -455,19 +439,10 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.backupDescription = description;
 			}
-			if ( !fragment && !embed.fields.length && querypage.pageprops && querypage.pageprops.infoboxes ) {
-				try {
-					var infobox = JSON.parse(querypage.pageprops.infoboxes)?.[0];
-					parse_infobox(infobox, embed, '', pagelink);
-				}
-				catch ( error ) {
-					console.log( '- Failed to parse the infobox: ' + error );
-				}
-			}
 		}, error => {
 			console.log( '- Error while getting the main page: ' + error );
 		} ).finally( () => {
-			parse_page(msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, '', fragment);
+			parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, embed, wiki, reaction, querypage, '', fragment, pagelink);
 		} );
 	}, error => {
 		if ( interwiki ) msg.sendChannel( spoiler + ' ' + interwiki + ' ' + spoiler );

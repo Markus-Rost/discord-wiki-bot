@@ -178,13 +178,14 @@ class Wiki extends URL {
 	/**
 	 * Encode a link section.
 	 * @param {String} [fragment] - Fragment of the page.
+	 * @param {Boolean} [simpleEncoding] - Don't fully encode the anchor.
 	 * @returns {String}
 	 * @static
 	 */
-	static toSection(fragment = '') {
+	static toSection(fragment = '', simpleEncoding = true) {
 		if ( !fragment ) return '';
 		fragment = fragment.replace( / /g, '_' );
-		if ( !/['"`^{}<>|\\]|@(everyone|here)/.test(fragment) ) return '#' + fragment;
+		if ( simpleEncoding && !/['"`^{}<>|\\]|@(everyone|here)/.test(fragment) ) return '#' + fragment;
 		return '#' + encodeURIComponent( fragment ).replace( /[!'()*~]/g, (match) => {
 			return '%' + match.charCodeAt().toString(16).toUpperCase();
 		} ).replace( /%3A/g, ':' ).replace( /%/g, '.' );
