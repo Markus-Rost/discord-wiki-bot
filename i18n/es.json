@@ -357,6 +357,10 @@
                     "cmd": "verification <ID> editcount <número de ediciones>",
                     "desc": "Cambiaré el número mínimo de ediciones para la verificación wiki."
                 },
+                "postcount": {
+                    "cmd": "verification <ID> postcount <nuevo número de publicaciones>",
+                    "desc": "Cambiaré el número mínimo de publicaciones de discusiones para la verificación wiki.\n• Proporciona un número negativo para requerir el número de ediciones o el número de publicaciones.\n• Proporciona `null` para comprobar el número de publicaciones y ediciones combinadas."
+                },
                 "rename": {
                     "cmd": "verification <ID> rename",
                     "desc": "Haré el cambio si el alias de Discord debe cambiarse a su nombre de usuario wiki para la verificación wiki."
@@ -724,10 +728,14 @@
         "new_accountage": "<nueva antigüedad de la cuenta>",
         "new_channel": "<nuevo canal>",
         "new_editcount": "<nuevo número de ediciones>",
+        "new_postcount": "<nuevo número de publicaciones>",
         "new_role": "<nuevo rol>",
         "new_usergroup": "<nuevo grupo de usuarios>",
         "no_role": "por favor proporciona un rol para la nueva verificación.",
         "or": "o",
+        "postcount": "Número de publicaciones (solo wikis de Fandom):",
+        "postcount_or": "(alternativa al número de ediciones)",
+        "posteditcount": "Número de ediciones y publicaciones combinadas:",
         "rename": "Cambiar alias:",
         "rename_no_permission": "**¡A $1 le falta el permiso `Manage Nicknames` para imponer nombres de usuario wiki!**",
         "role": "Rol:",
