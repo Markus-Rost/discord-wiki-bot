@@ -1,5 +1,4 @@
 const {MessageEmbed} = require('discord.js');
-const fandom_overview = require('./fandom/overview.js').run;
 const logging = require('../../util/logging.js');
 const {timeoptions} = require('../../util/default.json');
 const {toFormatting, toPlaintext} = require('../../util/functions.js');
@@ -25,9 +24,6 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');
-			}
-			else if ( body?.query?.general?.generator === 'MediaWiki 1.19.24' && wiki.isFandom(false) ) {
-				return fandom_overview(lang, msg, wiki, reaction, spoiler);
 			}
 			else {
 				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );

@@ -1,5 +1,4 @@
 const check_wiki = {
-	fandom: require('./wiki/fandom/general.js'),
 	general: require('./wiki/general.js'),
 	test: require('./test.js').run
 };

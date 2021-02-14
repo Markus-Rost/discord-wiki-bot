@@ -87,10 +87,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
-			if ( body?.query?.general?.generator === 'MediaWiki 1.19.24' && wiki.isFandom(false) ) {
-				return this.fandom(lang, msg, title, wiki, cmd, reaction, spoiler, querystring, fragment, selfcall);
-			}
-			else if ( interwiki ) msg.sendChannel( spoiler + ' ' + interwiki + ' ' + spoiler );
+			if ( interwiki ) msg.sendChannel( spoiler + ' ' + interwiki + ' ' + spoiler );
 			else if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				msg.reactEmoji('nowiki');

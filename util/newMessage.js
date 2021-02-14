@@ -4,7 +4,6 @@ const {partialURIdecode} = require('./functions.js');
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const Wiki = require('./wiki.js');
 const check_wiki = {
-	fandom: require('../cmds/wiki/fandom/general.js'),
 	general: require('../cmds/wiki/general.js'),
 	test: require('../cmds/test.js').run
 };

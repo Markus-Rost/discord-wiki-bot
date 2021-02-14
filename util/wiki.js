@@ -56,7 +56,6 @@ class Wiki extends URL {
 	/**
 	 * Updates the wiki url.
 	 * @param {Object} siteinfo - Siteinfo from the wiki API.
-	 * @param {String} siteinfo.server - Server of the wiki with protocol. (For legacy Fandom wikis)
 	 * @param {String} siteinfo.servername - Hostname of the wiki.
 	 * @param {String} siteinfo.scriptpath - Scriptpath of the wiki.
 	 * @param {String} siteinfo.articlepath - Articlepath of the wiki.
@@ -65,9 +64,8 @@ class Wiki extends URL {
 	 * @param {String} siteinfo.logo - Logo of the wiki.
 	 * @returns {Wiki}
 	 */
-	updateWiki({server, servername, scriptpath, articlepath, mainpage, centralidlookupprovider, logo}) {
-		if ( servername ) this.hostname = servername;
-		else this.hostname = server.replace( /^(?:https?:)?\/\//, '' );
+	updateWiki({servername, scriptpath, articlepath, mainpage, centralidlookupprovider, logo}) {
+		this.hostname = servername;
 		this.pathname = scriptpath + '/';
 		this.articlepath = articlepath;
 		this.mainpage = mainpage;
