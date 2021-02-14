@@ -644,11 +644,8 @@
             "unknown": "알 수 없음"
         },
         "groups": {
-            "bot": "봇",
             "content-moderator": "Content moderator",
-            "global_bot": "전역 봇",
             "interface-admin": "인터페이스 관리자",
-            "sysop": "관리자",
             "widgeteditor": "위젯 편집자"
         },
         "info": {

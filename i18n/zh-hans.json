@@ -689,9 +689,7 @@
             "unknown": "未知"
         },
         "groups": {
-            "content-moderator": "内容版主",
-            "interface-admin": "界面管理员",
-            "widgeteditor": "小工具编辑者"
+            "interface-admin": "界面管理员"
         },
         "info": {
             "discord": "Discord：",

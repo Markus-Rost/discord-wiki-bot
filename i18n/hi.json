@@ -689,9 +689,7 @@
             "unknown": "अनजान"
         },
         "groups": {
-            "content-moderator": "कंटेंट मॉडरेटर",
-            "interface-admin": "इंटरफ़ेस एडमिनिस्ट्रेटर",
-            "widgeteditor": "विजेट संपादक"
+            "interface-admin": "इंटरफ़ेस एडमिनिस्ट्रेटर"
         },
         "info": {
             "discord": "डिस्कॉर्ड:",

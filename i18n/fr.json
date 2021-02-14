@@ -684,11 +684,8 @@
             "unknown": "Inconnu"
         },
         "groups": {
-            "bot": "Robot",
             "content-moderator": "Modérateur de contenu",
-            "global_bot": "Robot de Gamepedia",
             "interface-admin": "Administrateur d’interface",
-            "sysop": "Administrateur",
             "widgeteditor": "Éditeur de widgets"
         },
         "info": {

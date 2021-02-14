@@ -689,9 +689,7 @@
             "unknown": "অজানা"
         },
         "groups": {
-            "content-moderator": "কনটেন্ট মডারেটর",
-            "interface-admin": "ইন্টারফেস প্রবন্ধক",
-            "widgeteditor": "উইজেট সম্পাদক"
+            "interface-admin": "ইন্টারফেস প্রবন্ধক"
         },
         "info": {
             "discord": "ডিসকর্ড:",

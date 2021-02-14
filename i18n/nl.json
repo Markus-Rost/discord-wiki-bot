@@ -414,11 +414,8 @@
             "unknown": "Onbekend"
         },
         "groups": {
-            "bot": "Bot",
             "content-team-member": "Content Team Member",
-            "grasp": "GRASP",
-            "rollback": "rollback",
-            "user": "Gebruiker"
+            "rollback": "rollback"
         },
         "info": {
             "discord": "Discord:",

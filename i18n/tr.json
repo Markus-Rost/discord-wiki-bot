@@ -644,11 +644,8 @@
             "unknown": "meçhul"
         },
         "groups": {
-            "bot": "Bot",
             "content-moderator": "İçerik moderatörü",
-            "global_bot": "Gamepedia bot",
             "interface-admin": "Arayüz yöneticisi",
-            "sysop": "Yönetici",
             "widgeteditor": "Widget editörü"
         },
         "info": {

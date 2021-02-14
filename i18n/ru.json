@@ -688,9 +688,7 @@
             "unknown": "Неизвестно"
         },
         "groups": {
-            "content-moderator": "Модератор контента",
-            "interface-admin": "Администратор интерфейса",
-            "widgeteditor": "Редактор виджетов"
+            "interface-admin": "Администратор интерфейса"
         },
         "info": {
             "discord": "Discord:",

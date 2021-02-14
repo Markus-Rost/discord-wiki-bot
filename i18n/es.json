@@ -685,11 +685,8 @@
             "unknown": "Desconocido"
         },
         "groups": {
-            "bot": "Bot",
             "content-moderator": "Moderador de contenido",
-            "global_bot": "Bot global",
             "interface-admin": "Administrador de interfaz",
-            "sysop": "Administrador",
             "widgeteditor": "Editor de widgets"
         },
         "info": {

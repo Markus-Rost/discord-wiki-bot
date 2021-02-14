@@ -655,9 +655,7 @@
             "unknown": "Unbekannt"
         },
         "groups": {
-            "content-moderator": "{{GENDER:$1|Inhalts-Moderator|Inhalts-Moderatorin}}",
-            "interface-admin": "{{GENDER:$1|Oberflächen-Administrator|Oberflächen-Administratorin}}",
-            "widgeteditor": "{{GENDER:$1|Widget-Bearbeiter|Widget-Bearbeiterin}}"
+            "interface-admin": "{{GENDER:$1|Oberflächen-Administrator|Oberflächen-Administratorin}}"
         },
         "info": {
             "discord": "Discord:",

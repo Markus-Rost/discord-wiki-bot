@@ -689,9 +689,7 @@
             "unknown": "未知"
         },
         "groups": {
-            "content-moderator": "內容版主",
-            "interface-admin": "介面管理員",
-            "widgeteditor": "小工具編輯者"
+            "interface-admin": "介面管理員"
         },
         "info": {
             "discord": "Discord：",
