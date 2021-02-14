@@ -435,6 +435,7 @@
         "total": "$1 {{PLURAL:$2|problema|problemas}} resueltos"
     },
     "overview": {
+        "admins": "Administradores:",
         "articles": "Artículos:",
         "comments": "Comentarios del artículo:",
         "created": "Creado el:",
@@ -566,6 +567,7 @@
         "empty": "*Esta página especial está vacía*",
         "infopage": "¿No es el resultado correcto? Utiliza $1 para obtener un enlace directo.",
         "infosearch": "¿No es el resultado correcto? Usa $1 para obtener un enlace directo o $2 para obtener una lista de todos los resultados.",
+        "loading": "Cargando descripción de la página…",
         "media": "A la página de descripción del archivo",
         "results": "$1 total {{PLURAL:$2|resultado|resultados}}",
         "special": "Contenido de esta página especial:"
