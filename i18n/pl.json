@@ -418,13 +418,24 @@
         "status": {
             "Awaiting Response": "Oczekiwanie na odpowiedź",
             "Cannot Reproduce": "Nie udało się zreprodukować",
+            "Closed": "Zamknięty",
             "Done": "Zrobione",
+            "Duplicate": "Zduplikowany",
             "Fixed": "Naprawione",
+            "In Progress": "W trakcie",
+            "Incomplete": "Niepełny",
+            "Invalid": "Niepoprawny",
+            "Open": "Otwarty",
+            "Postponed": "Przełożony",
+            "Reopened": "Otworzony ponownie",
+            "Resolved": "Rozwiązany",
+            "Won't Fix": "Nie zostanie naprawione",
             "Works As Intended": "Działa jak należy"
         },
         "total": "naprawiono $1 {{PLURAL:$2|błąd|błędy|błędów}}"
     },
     "overview": {
+        "admins": "Administratorzy:",
         "articles": "Artykułów:",
         "comments": "Komentarze artykułów:",
         "created": "Stworzona:",

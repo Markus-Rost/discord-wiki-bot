@@ -12,6 +12,136 @@
         "language": "Changer la langue",
         "login": "Connexion",
         "logout": "Déconnexion",
-        "rcscript": "Modifications récentes"
+        "rcscript": "Modifications récentes",
+        "refresh": "Mettre à jour la liste de serveurs",
+        "save": "Enregistrer",
+        "selector": "Sélection de serveur",
+        "settings": "Paramètres",
+        "support": "Server d'assistance",
+        "title": "Paramètres du bot",
+        "verification": "Vérifications"
+    },
+    "indexjs": {
+        "invalid": {
+            "text": "Le lien ne mène pas à un site MediaWiki !",
+            "title": "Wiki invalide !"
+        },
+        "outdated": {
+            "text": "L'intégration des modifications récentes requiert au moins la version 1.30 de MediaWiki !",
+            "title": "Version obsolète de MediaWiki !"
+        },
+        "prefix": {
+            "backslash": "Le préfixe ne peut pas inclure de barre oblique inversée !",
+            "code": "Le préfixe ne peut pas inclure du code !",
+            "space": "Le préfixe ne peut pas inclure d'espace !"
+        },
+        "sysmessage": {
+            "text": "La page $1 doit correspondre à l'id du serveur $2.",
+            "title": "Le message système ne correspond pas !"
+        },
+        "valid": {
+            "MediaWiki": "Avertissement : Requiert au moins $1 pour fonctionner complètement.",
+            "PageImages": "Avertissement : Requiert l'extension $1 pour les miniatures de pages.",
+            "TextExtracts": "Avertissement : Requiert l'extension $1 pour les descriptions de pages.",
+            "title": "Ce wiki est valide et utilisable !"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "Une erreur inconnue est arrivée, veuillez réessayer.",
+            "title": "Erreur inconnue !"
+        },
+        "invalidusergroup": {
+            "text": "Le groupe d'utilisateur était trop long ou vous en avez fourni trop.",
+            "title": "Groupe d'utilisateur invalide !"
+        },
+        "loginfail": {
+            "text": "Une erreur s'est produite lors de votre connexion, veuillez réessayer.",
+            "title": "Connexion échouée !"
+        },
+        "logout": {
+            "text": "Vous avez bien été déconnecté. Pour changer un paramètre, vous devez vous reconnecter.",
+            "title": "Déconnexion réussie !"
+        },
+        "missingperm": {
+            "text": "Soit vous, soit le bot manque la permission $1 pour effectuer cette action.",
+            "title": "Permission manquante !"
+        },
+        "movefail": {
+            "note": "Le salon de l'intégration n'a pas pu être changé !",
+            "text": "Les paramètres n'ont été que partiellement mis à jour.",
+            "title": "Paramètres partiellement sauvegardés !"
+        },
+        "mwversion": {
+            "text": "Requiert au moins la version 1.30 de MediaWiki, trouvé $1 dans $2.",
+            "title": "Version obsolète de MediaWiki !"
+        },
+        "nochange": {
+            "text": "Les paramètres correspondent aux paramètres actuels par défaut.",
+            "title": "Sauvegardé échouée !"
+        },
+        "nosettings": {
+            "note": "Changer les paramètres.",
+            "text": "Veuillez d'abord définir les paramètres du serveur.",
+            "title": "Le serveur n'est pas encore configuré !"
+        },
+        "readonly": {
+            "text": "Actuellement, vous ne pouvez que visualiser vos paramètres, mais pas les modifier.",
+            "title": "Base de données en lecture seule !"
+        },
+        "refresh": {
+            "text": "Votre liste de serveurs a été actualisée avec succès.",
+            "title": "Actualisation réussie !"
+        },
+        "refreshfail": {
+            "text": "Votre liste de serveurs n'a pas pu être actualisée, veuillez réessayer.",
+            "title": "Actualisation échouée !"
+        },
+        "save": {
+            "text": "Les paramètres ont bien été mis à jour.",
+            "title": "Paramètres sauvegardés !"
+        },
+        "savefail": {
+            "text": "Les paramètres n'ont pas pu être sauvegardés, veuillez réessayer.",
+            "title": "Sauvegarde échouée !"
+        },
+        "sysmessage": {
+            "text": "La page $1 a besoin de correspondre à l'id du serveur $2.",
+            "title": "Le message système ne correspond pas !"
+        },
+        "unauthorized": {
+            "text": "Veuillez vous connecter avant de pouvoir modifier les paramètres.",
+            "title": "Pas connecté !"
+        },
+        "wikiblocked": {
+            "note": "Raison :",
+            "text": "$1 a été bloqué de l'intégration des modifications récentes.",
+            "title": "Le wiki est bloqué !"
+        }
+    },
+    "rcscript": {
+        "desc": "Voici les intégrations de modifications récentes pour $1 :",
+        "form": {
+            "channel": "Salon :",
+            "confirm": "Voulez-vous vraiment supprimer l'intégration de modifications récentes ?",
+            "display": "Mode d'affichage :",
+            "display_compact": "Messages textuels compactés avec liens.",
+            "display_diff": "Messages intégrés avec aperçus d'images et modifications.",
+            "display_embed": "Messages intégrés avec les balises de modifications et changements de catégories.",
+            "display_image": "Messages intégrés avec aperçus d'images.",
+            "entry": "Intégration des modifications récentes #$1",
+            "feeds": "Changements de fils de discussion :",
+            "feeds_only": "Uniquement les changements de fils de discussion :",
+            "lang": "Langue :",
+            "new": "Nouvelle intégration des modifications récentes",
+            "select_channel": "-- Sélectionnez un salon --",
+            "wiki": "Wiki :",
+            "wiki_check": "Vérifier le wiki"
+        },
+        "new": "Nouvelle intégration"
+    },
+    "selector": {
+        "desc": "Voici une liste de tous les serveurs sur lesquels vous pouvez modifier les paramètres parce que vous avez la permission [Gérer le serveur]($1). Veuillez sélectionner un serveur :",
+        "invite": "Wiki-bot n'est pas encore un membre de $1, mais vous pouvez [inviter Wiki-bot]($2)."
     }
 }
