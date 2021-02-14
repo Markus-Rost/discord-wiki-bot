@@ -31,7 +31,9 @@
             "title": "Stara wersja MediaWiki!"
         },
         "prefix": {
-            "backslash": "Prefix nie może zawierać lewych ukośników (\\)!"
+            "backslash": "Prefix nie może zawierać lewych ukośników (\\)!",
+            "code": "Prefiks nie może zawierać znaków stylu (Markdown)!",
+            "space": "Prefiks nie może zawierać spacji!"
         }
     }
 }
