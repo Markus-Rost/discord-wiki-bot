@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}}!",
-            "nofromnoreason": "Bloqueado até $2 por $3.",
             "nofromtext": "Bloqueado até $2 por $3 com motivo \"$4\".",
             "noreason": "Bloqueado em $1 até $2 por $3.",
             "text": "Bloqueado em $1 até $2 por $3 com motivo \"$4\".",
@@ -687,31 +686,18 @@
             "unknown": "Desconhecido"
         },
         "groups": {
-            "autoconfirmed": "{{GENDER:$1|Usuário autoconfirmado|Usuária autoconfirmada}}",
             "autopatrol": "{{GENDER:$1|Patrulheiro automático|Patrulheira automática}}",
-            "autoreview": "{{GENDER:$1|Revisor automático|Revisora automático}}",
             "bot": "Robô",
-            "bot-global": "Robô global",
             "bureaucrat": "Burocrata",
-            "checkuser": "{{GENDER:$1|Verificador de usuários|Verificadora de usuários}}",
             "content-moderator": "{{GENDER:$1|Moderador de conteúdo|Moderadora de conteúdo}}",
-            "content-team-member": "Membro da equipe de conteúdo",
             "editor": "{{GENDER:$1|Editor|Editora}}",
-            "global-discussions-moderator": "{{GENDER:$1|Moderador global de discussões|Moderadora global de discussões}}",
             "global_bot": "Robô da Gamepedia",
-            "grasp": "GRASP",
             "helper": "Ajudante do Fandom",
-            "hydra_staff": "Equipe da Gamepedia",
             "interface-admin": "{{GENDER:$1|Administrador da interface|Administradora da interface}}",
-            "rollback": "reversão",
             "soap": "SOAP",
-            "staff": "Equipe da Fandom",
             "sysop": "{{GENDER:$1|Administrador|Administradora}}",
-            "threadmoderator": "{{GENDER:$1|Moderador de discussões|Moderadora de discussões}}",
             "user": "{{GENDER:$1|Usuário|Usuária}}",
-            "vanguard": "Vanguarda",
             "widgeteditor": "{{GENDER:$1|Editor de widget|Editora de widget}}",
-            "wiki-manager": "Gerente de wiki",
             "wiki_manager": "Gerente de wiki"
         },
         "info": {

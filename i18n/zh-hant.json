@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "$1 目前正被封鎖！",
-            "nofromnoreason": "被 $3 封鎖，直到 $2。",
             "nofromtext": "被 $3 封鎖，直到 $2，理由：「$4」。",
             "noreason": "被 $3 封鎖，時間從 $1 到 $2。",
             "text": "被 $3 封鎖，時間從 $1 到 $2，理由：「$4」。",
@@ -687,31 +686,18 @@
             "unknown": "未知"
         },
         "groups": {
-            "autoconfirmed": "自動確認使用者",
             "autopatrol": "自動巡查 / 巡查豁免者",
-            "autoreview": "自動複覈使用者",
             "bot": "機器人",
-            "bot-global": "全域機器人",
             "bureaucrat": "行政員",
-            "checkuser": "使用者查覈員",
             "content-moderator": "內容版主",
-            "content-team-member": "內容團隊",
             "editor": "編輯者",
-            "global-discussions-moderator": "全域討論版主",
             "global_bot": "全域機器人",
-            "grasp": "GRASP",
             "helper": "Fandom 助手",
-            "hydra_staff": "Gamepedia 員工",
             "interface-admin": "介面管理員",
-            "rollback": "回退員",
             "soap": "SOAP",
-            "staff": "Fandom 員工",
             "sysop": "管理員",
-            "threadmoderator": "討論版主",
             "user": "使用者",
-            "vanguard": "Vanguard",
             "widgeteditor": "小工具編輯者",
-            "wiki-manager": "Wiki 主管",
             "wiki_manager": "Wiki 主管"
         },
         "info": {

@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "¡$1 está bloqueado actualmente!",
-            "nofromnoreason": "Bloqueado hasta $2 por $3.",
             "nofromtext": "Bloqueado hasta $2 por $3 con motivo \"$4\".",
             "noreason": "Bloqueado el $1 hasta $2 por $3.",
             "text": "Bloqueado el $1 hasta $2 por $3 con motivo \"$4\".",
@@ -687,31 +686,18 @@
             "unknown": "Desconocido"
         },
         "groups": {
-            "autoconfirmed": "Usuario autoconfirmado",
             "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
             "bot": "Bot",
-            "bot-global": "Bot global",
             "bureaucrat": "Burócrata",
-            "checkuser": "Ver usuario",
             "content-moderator": "Moderador de contenido",
-            "content-team-member": "Desarrolladores voluntarios",
             "editor": "Editor",
-            "global-discussions-moderator": "Moderador global de Discusiones",
             "global_bot": "Bot global",
-            "grasp": "GRASP",
             "helper": "Helper de Fandom",
-            "hydra_staff": "Personal de Gamepedia",
             "interface-admin": "Administrador de interfaz",
-            "rollback": "reversor",
             "soap": "SOAP",
-            "staff": "Staff de Fandom",
             "sysop": "Administrador",
-            "threadmoderator": "Moderador de discusiones",
             "user": "Usuario",
-            "vanguard": "Vanguard",
             "widgeteditor": "Editor de widgets",
-            "wiki-manager": "Wiki Manager",
             "wiki_manager": "Wiki Manager"
         },
         "info": {

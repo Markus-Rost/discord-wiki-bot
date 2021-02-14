@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "$1 इस समय ब्लॉक्ड है!",
-            "nofromnoreason": "$2 द्वारा $3 तक ब्लॉक किया गया है।",
             "nofromtext": "$2 द्वारा $3 तक \"$4\" कारण के साथ ब्लॉक किया गया है।",
             "noreason": "$3 द्वारा $1 को $2 तक ब्लॉक किया गया है।",
             "text": "$3 द्वारा $1 को $2 तक \"$4\" कारण के साथ ब्लॉक किया गया है।",
@@ -687,31 +686,18 @@
             "unknown": "अनजान"
         },
         "groups": {
-            "autoconfirmed": "ऑटोकनफर्म्ड सदस्य",
             "autopatrol": "ऑटोपैट्रॉल",
-            "autoreview": "ऑटो रिव्यु",
             "bot": "बॉट",
-            "bot-global": "ग्लोबल बॉट",
             "bureaucrat": "ब्यूरोक्रैट",
-            "checkuser": "चेक सदस्य",
             "content-moderator": "कंटेंट मॉडरेटर",
-            "content-team-member": "कंटेंट टीम सदस्य",
             "editor": "संपादक",
-            "global-discussions-moderator": "ग्लोबल डिसकशंस मॉडरेटर",
             "global_bot": "ग्लोबल बॉट",
-            "grasp": "GRASP",
             "helper": "फैनडम हेल्पर",
-            "hydra_staff": "गेमपीडिया स्टाफ",
             "interface-admin": "इंटरफ़ेस एडमिनिस्ट्रेटर",
-            "rollback": "रोलबैक",
             "soap": "SOAP",
-            "staff": "फैनडम स्टाफ",
             "sysop": "एडमिनिस्ट्रेटर",
-            "threadmoderator": "डिसकशंस मॉडरेटर",
             "user": "सदस्य",
-            "vanguard": "वैनगार्ड",
             "widgeteditor": "विजेट संपादक",
-            "wiki-manager": "विकी मैनेजर",
             "wiki_manager": "विकी मैनेजर"
         },
         "info": {

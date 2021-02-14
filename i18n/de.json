@@ -637,7 +637,6 @@
     "user": {
         "block": {
             "header": "$1 ist derzeit gesperrt!",
-            "nofromnoreason": "Gesperrt bis zum $2 von $3.",
             "nofromtext": "Gesperrt bis zum $2 von $3 mit der Begründung „$4“.",
             "noreason": "Gesperrt am $1 bis zum $2 von $3.",
             "text": "Gesperrt am $1 bis zum $2 von $3 mit der Begründung „$4“.",
@@ -653,31 +652,18 @@
             "unknown": "Unbekannt"
         },
         "groups": {
-            "autoconfirmed": "{{GENDER:$1|Automatisch bestätigter Benutzer|Automatisch bestätigte Benutzerin}}",
             "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
             "bot": "Bot",
-            "bot-global": "Globaler Bot",
             "bureaucrat": "{{GENDER:$1|Bürokrat|Bürokratin}}",
-            "checkuser": "{{GENDER:$1|Checkuser-Berechtigter|Checkuser-Berechtigte}}",
             "content-moderator": "{{GENDER:$1|Inhalts-Moderator|Inhalts-Moderatorin}}",
-            "content-team-member": "Content-Team-Mitglied",
             "editor": "{{GENDER:$1|Autor|Autorin}}",
-            "global-discussions-moderator": "{{GENDER:$1|Globaler Diskussions-Moderator|Globale Diskussions-Moderatorin}}",
             "global_bot": "Globaler Bot",
-            "grasp": "GRASP",
             "helper": "{{GENDER:$1|Fandom-Helfer|Fandom-Helferin}}",
-            "hydra_staff": "{{GENDER:$1|Gamepedia-Mitarbeiter|Gamepedia-Mitarbeiterin}}",
             "interface-admin": "{{GENDER:$1|Oberflächen-Administrator|Oberflächen-Administratorin}}",
-            "rollback": "zurücksetzen",
             "soap": "SOAP",
-            "staff": "{{GENDER:$1|Fandom-Mitarbeiter|Fandom-Mitarbeiterin}}",
             "sysop": "{{GENDER:$1|Administrator|Administratorin}}",
-            "threadmoderator": "{{GENDER:$1|Diskussions-Moderator|Diskussions-Moderatorin}}",
             "user": "{{GENDER:$1|Benutzer|Benutzerin}}",
-            "vanguard": "{{GENDER:$1|Portabilitäts-Pionier|Portabilitäts-Pionierin}}",
             "widgeteditor": "{{GENDER:$1|Widget-Bearbeiter|Widget-Bearbeiterin}}",
-            "wiki-manager": "{{GENDER:$1|Wiki-Manager|Wiki-Managerin}}",
             "wiki_manager": "{{GENDER:$1|Wiki-Manager|Wiki-Managerin}}"
         },
         "info": {

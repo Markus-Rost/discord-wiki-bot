@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "$1 目前正被封禁！",
-            "nofromnoreason": "被 $3 封禁，直到 $2。",
             "nofromtext": "被 $3 封禁，直到 $2，理由：“$4”。",
             "noreason": "被 $3 封禁，时间从 $1 到 $2。",
             "text": "被 $3 封禁，时间从 $1 到 $2，理由：“$4”。",
@@ -687,31 +686,18 @@
             "unknown": "未知"
         },
         "groups": {
-            "autoconfirmed": "自动确认用户",
             "autopatrol": "自动巡查 / 巡查豁免者",
-            "autoreview": "自动复核用户",
             "bot": "机器人",
-            "bot-global": "全域机器人",
             "bureaucrat": "行政员",
-            "checkuser": "用户查核员",
             "content-moderator": "内容版主",
-            "content-team-member": "内容团队成员",
             "editor": "编辑者",
-            "global-discussions-moderator": "全域讨论版主",
             "global_bot": "全域机器人",
-            "grasp": "GRASP",
             "helper": "Fandom 助手",
-            "hydra_staff": "Gamepedia 员工",
             "interface-admin": "界面管理员",
-            "rollback": "回退员",
             "soap": "SOAP",
-            "staff": "Fandom 员工",
             "sysop": "管理员",
-            "threadmoderator": "讨论版主",
             "user": "用户",
-            "vanguard": "Vanguard",
             "widgeteditor": "小工具编辑者",
-            "wiki-manager": "Wiki 主管",
             "wiki_manager": "Wiki 主管"
         },
         "info": {

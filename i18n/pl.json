@@ -670,7 +670,6 @@
     "user": {
         "block": {
             "header": "$1 jest obecnie {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}}!",
-            "nofromnoreason": "Zablokowano do $2 przez $3.",
             "nofromtext": "Zablokowano do $2 przez $3 z powodem „$4”.",
             "noreason": "Zablokowano $1 do $2 przez $3.",
             "text": "Zablokowano $1 do $2 przez $3 z powodem „$4”.",
@@ -686,31 +685,18 @@
             "unknown": "Nieznane"
         },
         "groups": {
-            "autoconfirmed": "{{GENDER:$1|Automatycznie zatwierdzony użytkownik|Automatycznie zatwierdzona użytkowniczka|Automatycznie zatwierdzony(-a) użytkownik(-czka)}}",
             "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
             "bot": "Bot",
-            "bot-global": "bot globalny",
             "bureaucrat": "{{GENDER:$1|biurokrata|biurokratka|biorokrata/biurokratka}}",
-            "checkuser": "Check user",
             "content-moderator": "{{GENDER:$1|moderator treści|moderatorka treści|moderator(-ka) treści}}",
-            "content-team-member": "Członek Zespołu Treści",
             "editor": "{{GENDER:$1|redaktor|redaktorka|redaktor(-ka)}}",
-            "global-discussions-moderator": "{{GENDER:$1|globalny moderator dyskusji|globalna moderatorka dyskusji|globalny(-a) moderator(-ka) dyskusji}}",
             "global_bot": "globalny bot",
-            "grasp": "GRASP",
             "helper": "Helper",
-            "hydra_staff": "personel Gamepedii",
             "interface-admin": "{{GENDER:$1|administrator interfejsu|administratorka interfejsu|administrator(-ka) interfejsu}}",
-            "rollback": "rollback",
             "soap": "SOAP",
-            "staff": "Fandom Staff",
             "sysop": "{{GENDER:$1|administrator|administratorka|administrator(-ka)}}",
-            "threadmoderator": "{{GENDER:$1|moderator dyskusji|moderatorka dyskusji|moderator(-ka) dyskusji}}",
             "user": "{{GENDER:$1|użytkownik|użytkowniczka|użytkownik/użytkowniczka}}",
-            "vanguard": "Vanguard",
             "widgeteditor": "{{GENDER:$1|edytor widżetów|edytorka widżetów|edytor(-ka) widżetów}}",
-            "wiki-manager": "{{GENDER:$1|menadżer wiki|menadżerka wiki|menadżer(-ka) wiki}}",
             "wiki_manager": "{{GENDER:$1|menadżer wiki|menadżerka wiki|menadżer(-ka) wiki}}"
         },
         "info": {

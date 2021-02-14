@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "$1 এই সময় ব্ল'ক্ড!",
-            "nofromnoreason": "$2 দ্বারা $3 পর্যন্ত ব্ল'ক করা হয়েছে।",
             "nofromtext": "$2 দ্বারা $3 পর্যন্ত কারণ \"$4\" দিয়ে ব্ল'ক করা হয়েছে।",
             "noreason": "$1এ $3 দ্বারা $2 পর্যন্ত ব্ল'ক করা হয়েছে।",
             "text": "কারণ \"$4\" দিয়ে $1এ $3 দ্বারা $2 পর্যন্ত ব্ল'ক করা হয়েছে।",
@@ -687,31 +686,18 @@
             "unknown": "অজানা"
         },
         "groups": {
-            "autoconfirmed": "অটোকনফারম্ড সদস্য",
             "autopatrol": "অটোপ্যাট্রোল",
-            "autoreview": "অটোরিভিউ",
             "bot": "ব'ট",
-            "bot-global": "গ্লোবাল ব'ট",
             "bureaucrat": "ব্যুরোক্রেট",
-            "checkuser": "চেক সদস্য",
             "content-moderator": "কনটেন্ট মডারেটর",
-            "content-team-member": "কনটেন্ট টীম সদস্য",
             "editor": "সম্পাদক",
-            "global-discussions-moderator": "গ্লোবাল ডিসকাশন মডারেটর",
             "global_bot": "গ্লোবাল ব'ট",
-            "grasp": "GRASP",
             "helper": "ফ্যানডম হেল্পার",
-            "hydra_staff": "গেমপেডিয়া স্টাফ",
             "interface-admin": "ইন্টারফেস প্রবন্ধক",
-            "rollback": "রোলব্যাক",
             "soap": "SOAP",
-            "staff": "ফ্যানডম স্টাফ",
             "sysop": "প্রবন্ধক",
-            "threadmoderator": "ডিসকাশন মডারেটর",
             "user": "ব্যবহারকারী",
-            "vanguard": "ভ্যানগার্ড",
             "widgeteditor": "উইজেট সম্পাদক",
-            "wiki-manager": "উইকি ম্যানেজার",
             "wiki_manager": "উইকি ম্যানেজার"
         },
         "info": {

@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "$1 сейчас {{GENDER:$2|заблокирован|заблокирована}}!",
-            "nofromnoreason": "Заблокирован до $2 пользователем $3.",
             "nofromtext": "Заблокирован до $2 пользователем $3 с причиной \"$4\".",
             "noreason": "Заблокирован с $1 до $2 пользователем $3.",
             "text": "Заблокирован с $1 до $2 пользователем $3 с причиной \"$4\".",
@@ -687,31 +686,18 @@
             "unknown": "Неизвестно"
         },
         "groups": {
-            "autoconfirmed": "{{GENDER:$1|Автоподтверждённый участник|Автоподтверждённая участница}}",
             "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
             "bot": "Бот",
-            "bot-global": "Глобальный бот",
             "bureaucrat": "Бюрократ",
-            "checkuser": "Чекюзер",
             "content-moderator": "Модератор контента",
-            "content-team-member": "{{GENDER:$1|Участник|Участница}} контент-команды",
             "editor": "Редактор",
-            "global-discussions-moderator": "Глобальный модератор дискуссий",
             "global_bot": "Глобальный бот",
-            "grasp": "GRASP",
             "helper": "{{GENDER:$1|Помощник|Помощница}} Fandom",
-            "hydra_staff": "{{GENDER:$1|Сотрудник|Сотрудница}} Gamepedia",
             "interface-admin": "Администратор интерфейса",
-            "rollback": "откатчик",
             "soap": "SOAP",
-            "staff": "{{GENDER:$1|Сотрудник|Сотрудница}} Fandom",
             "sysop": "Администратор",
-            "threadmoderator": "Модератор дискуссий",
             "user": "{{GENDER:$1|Пользователь|Пользовательница}}",
-            "vanguard": "Vanguard",
             "widgeteditor": "Редактор виджетов",
-            "wiki-manager": "Руководитель вики",
             "wiki_manager": "Руководитель вики"
         },
         "info": {
