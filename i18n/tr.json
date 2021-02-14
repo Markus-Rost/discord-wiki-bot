@@ -630,8 +630,6 @@
     "user": {
         "block": {
             "header": "$1 şu anda engelli!",
-            "nofromnoreason": "$3 tarafından $2 tarihine kadar engellendiniz.",
-            "nofromtext": "\"$4\" nedeniyle $3 tarafından $2 tarihine kadar engellendiniz.",
             "noreason": "$1 platformundan $3 tarafından $2 tarihine kadar engellendiniz.",
             "text": "$1 platformundan $3 tarafından \"$4\" nedeniyle $2 süresinde engellendiniz.",
             "until_infinity": "bütün günlerin sonu"
@@ -644,34 +642,6 @@
             "female": "kadın",
             "male": "erkek",
             "unknown": "meçhul"
-        },
-        "groups": {
-            "autoconfirmed": "Otomatik onaylanmış kullanıcı",
-            "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
-            "bot": "Bot",
-            "bot-global": "Fandom bot",
-            "bureaucrat": "Bürokrat",
-            "checkuser": "Kullanıcıyı kontrol et",
-            "content-moderator": "İçerik moderatörü",
-            "content-team-member": "İçerik Takımı Üyesi",
-            "editor": "Editor",
-            "global-discussions-moderator": "Global tartışma moderatörü",
-            "global_bot": "Gamepedia bot",
-            "grasp": "GRASP",
-            "helper": "Fandom yardımcısı",
-            "hydra_staff": "Gamepedia personeli",
-            "interface-admin": "Arayüz yöneticisi",
-            "rollback": "geri alma",
-            "soap": "SOAP",
-            "staff": "Fandom personeli",
-            "sysop": "Yönetici",
-            "threadmoderator": "Tartışma moderatörü",
-            "user": "Kullanıcı",
-            "vanguard": "Vanguard",
-            "widgeteditor": "Widget editörü",
-            "wiki-manager": "Wiki yöneticisi",
-            "wiki_manager": "Wiki yöneticisi"
         },
         "info": {
             "discord": "Discord:",

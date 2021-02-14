@@ -400,8 +400,6 @@
     "user": {
         "block": {
             "header": "$1 is momenteel geblokkeerd!",
-            "nofromnoreason": "Geblokkeerd tot $2 door $3.",
-            "nofromtext": "Geblokkeerd tot $2 door $3 met reden \"$4\".",
             "noreason": "Geblokkeerd van $1 tot $2 door $3.",
             "text": "Geblokkeerd van $1 tot $2 door $3 met reden \"$4\".",
             "until_infinity": "het einde van de wereld"
@@ -414,31 +412,6 @@
             "female": "Vrouw",
             "male": "Man",
             "unknown": "Onbekend"
-        },
-        "groups": {
-            "autoconfirmed": "Autobevestigde gebruiker",
-            "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
-            "bot": "Bot",
-            "bot-global": "Fandom bot",
-            "bureaucrat": "Bureaucraat",
-            "content-moderator": "Inhoudmoderator",
-            "content-team-member": "Content Team Member",
-            "editor": "Editor",
-            "global-discussions-moderator": "Globaal discussiemoderator",
-            "global_bot": "Gamepedia bot",
-            "grasp": "GRASP",
-            "helper": "Fandom helper",
-            "hydra_staff": "Gamepedia staff",
-            "interface-admin": "Interfacemoderator",
-            "rollback": "rollback",
-            "staff": "Fandom staff",
-            "sysop": "Beheerder",
-            "threadmoderator": "Discussiemoderator",
-            "user": "Gebruiker",
-            "vanguard": "Vanguard",
-            "wiki-manager": "Wiki manager",
-            "wiki_manager": "Wiki manager"
         },
         "info": {
             "discord": "Discord:",

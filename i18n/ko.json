@@ -630,8 +630,6 @@
     "user": {
         "block": {
             "header": "$1 사용자는 현재 차단되어 있어요!",
-            "nofromnoreason": "$3 님이 $2 까지 차단했어요.",
-            "nofromtext": "$3 님이 \"$4\" 이유로 $2까지 차단했어요.",
             "noreason": "$3님이 $1에 $2까지 차단했어요.",
             "text": "$3 님이 $1에 \"$4\" 이유로 $2까지 차단했어요.",
             "until_infinity": "시간이 끝날 때까지"
@@ -644,34 +642,6 @@
             "female": "여성",
             "male": "남성",
             "unknown": "알 수 없음"
-        },
-        "groups": {
-            "autoconfirmed": "자동 인증된 사용자",
-            "autopatrol": "점검 면제자",
-            "autoreview": "자동 검사자",
-            "bot": "봇",
-            "bot-global": "전역 봇",
-            "bureaucrat": "사무관",
-            "checkuser": "검사관",
-            "content-moderator": "Content moderator",
-            "content-team-member": "Content Team Member",
-            "editor": "편집자",
-            "global-discussions-moderator": "Global discussions moderator",
-            "global_bot": "전역 봇",
-            "grasp": "GRASP",
-            "helper": "Fandom 헬퍼",
-            "hydra_staff": "Gamepedia 스태프",
-            "interface-admin": "인터페이스 관리자",
-            "rollback": "일괄 되돌리기 사용자",
-            "soap": "SOAP",
-            "staff": "Fandom STAFF",
-            "sysop": "관리자",
-            "threadmoderator": "토론 관리자",
-            "user": "사용자",
-            "vanguard": "Vanguard",
-            "widgeteditor": "위젯 편집자",
-            "wiki-manager": "위키 매니저",
-            "wiki_manager": "위키 매니저"
         },
         "info": {
             "discord": "디스코드:",

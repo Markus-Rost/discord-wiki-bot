@@ -670,8 +670,6 @@
     "user": {
         "block": {
             "header": "$1 est actuellement bloqué !",
-            "nofromnoreason": "Bloqué jusqu'au $2 par $3.",
-            "nofromtext": "Bloqué jusqu'au $2 par $3 avec la raison « $4 ».",
             "noreason": "Bloqué le $1 jusqu'au $2 par $3.",
             "text": "Bloqué le $1 jusqu'au $2 par $3 avec la raison « $4 ».",
             "until_infinity": "moment de la fin des jours"
@@ -684,34 +682,6 @@
             "female": "Femme",
             "male": "Homme",
             "unknown": "Inconnu"
-        },
-        "groups": {
-            "autoconfirmed": "Utilisateur autoconfirmé",
-            "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
-            "bot": "Robot",
-            "bot-global": "Robot de Fandom",
-            "bureaucrat": "Bureaucrate",
-            "checkuser": "Vérifier l'utilisateur",
-            "content-moderator": "Modérateur de contenu",
-            "content-team-member": "Membre de l'équipe Contenu",
-            "editor": "Éditeur",
-            "global-discussions-moderator": "Modérateur global de discussions",
-            "global_bot": "Robot de Gamepedia",
-            "grasp": "GRASP",
-            "helper": "Assistant de Fandom",
-            "hydra_staff": "Staff de Gamepedia",
-            "interface-admin": "Administrateur d’interface",
-            "rollback": "rollback",
-            "soap": "SOAP",
-            "staff": "Staff de Fandom",
-            "sysop": "Administrateur",
-            "threadmoderator": "Modérateur de discussions",
-            "user": "Utilisateur",
-            "vanguard": "Vanguard",
-            "widgeteditor": "Éditeur de widgets",
-            "wiki-manager": "Gestionnaire du wiki",
-            "wiki_manager": "Gestionnaire du wiki"
         },
         "info": {
             "discord": "Discord :",

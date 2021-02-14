@@ -357,6 +357,10 @@
                     "cmd": "verification <id> editcount <新编辑数>",
                     "desc": "我将更改验证方式的最小编辑数。"
                 },
+                "postcount": {
+                    "cmd": "verification <id> postcount <新帖子数>",
+                    "desc": "我将更改验证方式的最小讨论版帖子数。\n\t• 填写负数以要求编辑数或帖子数中的一个。\n\t• 填写 `null` 以检查编辑数和帖子数的总和。"
+                },
                 "rename": {
                     "cmd": "verification <id> rename",
                     "desc": "在验证时，若需要，我将会将用户的 Discord 昵称改为 wiki 用户名。"
@@ -367,7 +371,7 @@
                 },
                 "usergroup": {
                     "cmd": "verification <id> usergroup <新 wiki 用户组>",
-                    "desc": "我将更改验证方式的 wiki 用户组。可用 `|` 来分割多个用户组。\n以 `AND` 关键词作为开头可限制必须拥有下列全部用户组。"
+                    "desc": "我将更改验证方式的 wiki 用户组。可用 `|` 来分割多个用户组。\n\t• 以 `AND` 关键词作为开头可限制必须拥有下列全部用户组。"
                 }
             },
             "verify": {
@@ -567,6 +571,7 @@
         "empty": "*此特殊页面内容为空*",
         "infopage": "结果不正确？使用 $1 来指定连接。",
         "infosearch": "结果不正确？使用 $1 来指定链接或使用 $2 列出所有结果。",
+        "loading": "正在加载页面描述……",
         "media": "到文件描述页",
         "results": "共 $1 个结果",
         "special": "此特殊页面的内容："
@@ -670,8 +675,6 @@
     "user": {
         "block": {
             "header": "$1 目前正被封禁！",
-            "nofromnoreason": "被 $3 封禁，直到 $2。",
-            "nofromtext": "被 $3 封禁，直到 $2，理由：“$4”。",
             "noreason": "被 $3 封禁，时间从 $1 到 $2。",
             "text": "被 $3 封禁，时间从 $1 到 $2，理由：“$4”。",
             "until_infinity": "天荒地老"
@@ -684,34 +687,6 @@
             "female": "女",
             "male": "男",
             "unknown": "未知"
-        },
-        "groups": {
-            "autoconfirmed": "自动确认用户",
-            "autopatrol": "自动巡查 / 巡查豁免者",
-            "autoreview": "自动复核用户",
-            "bot": "机器人",
-            "bot-global": "全域机器人",
-            "bureaucrat": "行政员",
-            "checkuser": "用户查核员",
-            "content-moderator": "内容版主",
-            "content-team-member": "内容团队成员",
-            "editor": "编辑者",
-            "global-discussions-moderator": "全域讨论版主",
-            "global_bot": "全域机器人",
-            "grasp": "GRASP",
-            "helper": "Fandom 助手",
-            "hydra_staff": "Gamepedia 员工",
-            "interface-admin": "界面管理员",
-            "rollback": "回退员",
-            "soap": "SOAP",
-            "staff": "Fandom 员工",
-            "sysop": "管理员",
-            "threadmoderator": "讨论版主",
-            "user": "用户",
-            "vanguard": "Vanguard",
-            "widgeteditor": "小工具编辑者",
-            "wiki-manager": "Wiki 主管",
-            "wiki_manager": "Wiki 主管"
         },
         "info": {
             "discord": "Discord：",
@@ -753,10 +728,14 @@
         "new_accountage": "<新注册时长>",
         "new_channel": "<新频道>",
         "new_editcount": "<新编辑数>",
+        "new_postcount": "<新帖子数>",
         "new_role": "<新身份组>",
         "new_usergroup": "<新用户组>",
         "no_role": "请为新的验证方式提供身份组。",
         "or": "或",
+        "postcount": "帖子数（仅Fandom wiki）：",
+        "postcount_or": "（替代编辑数）",
+        "posteditcount": "编辑数和帖子数的总和：",
         "rename": "修改昵称：",
         "rename_no_permission": "**$1 缺少 `管理昵称` 权限来强制将暱称改为 wiki 用户名！**",
         "role": "身份组：",
