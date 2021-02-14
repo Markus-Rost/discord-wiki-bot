@@ -688,11 +688,8 @@
             "unknown": "Неизвестно"
         },
         "groups": {
-            "bot": "Бот",
             "content-moderator": "Модератор контента",
-            "global_bot": "Глобальный бот",
             "interface-admin": "Администратор интерфейса",
-            "sysop": "Администратор",
             "widgeteditor": "Редактор виджетов"
         },
         "info": {

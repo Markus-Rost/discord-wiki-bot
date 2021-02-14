@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}}!",
-            "nofromtext": "Bloqueado até $2 por $3 com motivo \"$4\".",
             "noreason": "Bloqueado em $1 até $2 por $3.",
             "text": "Bloqueado em $1 até $2 por $3 com motivo \"$4\".",
             "until_infinity": "o fim de todos os dias"
@@ -686,19 +685,12 @@
             "unknown": "Desconhecido"
         },
         "groups": {
-            "autopatrol": "{{GENDER:$1|Patrulheiro automático|Patrulheira automática}}",
             "bot": "Robô",
-            "bureaucrat": "Burocrata",
             "content-moderator": "{{GENDER:$1|Moderador de conteúdo|Moderadora de conteúdo}}",
-            "editor": "{{GENDER:$1|Editor|Editora}}",
             "global_bot": "Robô da Gamepedia",
-            "helper": "Ajudante do Fandom",
             "interface-admin": "{{GENDER:$1|Administrador da interface|Administradora da interface}}",
-            "soap": "SOAP",
             "sysop": "{{GENDER:$1|Administrador|Administradora}}",
-            "user": "{{GENDER:$1|Usuário|Usuária}}",
-            "widgeteditor": "{{GENDER:$1|Editor de widget|Editora de widget}}",
-            "wiki_manager": "Gerente de wiki"
+            "widgeteditor": "{{GENDER:$1|Editor de widget|Editora de widget}}"
         },
         "info": {
             "discord": "Discord:",

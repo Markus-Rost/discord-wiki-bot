@@ -689,11 +689,8 @@
             "unknown": "অজানা"
         },
         "groups": {
-            "bot": "ব'ট",
             "content-moderator": "কনটেন্ট মডারেটর",
-            "global_bot": "গ্লোবাল ব'ট",
             "interface-admin": "ইন্টারফেস প্রবন্ধক",
-            "sysop": "প্রবন্ধক",
             "widgeteditor": "উইজেট সম্পাদক"
         },
         "info": {

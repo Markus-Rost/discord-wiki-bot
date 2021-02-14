@@ -689,11 +689,8 @@
             "unknown": "Nieznane"
         },
         "groups": {
-            "bot": "Bot",
             "content-moderator": "{{GENDER:$1|moderator treści|moderatorka treści|moderator(-ka) treści}}",
-            "global_bot": "globalny bot",
             "interface-admin": "{{GENDER:$1|administrator interfejsu|administratorka interfejsu|administrator(-ka) interfejsu}}",
-            "sysop": "{{GENDER:$1|administrator|administratorka|administrator(-ka)}}",
             "widgeteditor": "{{GENDER:$1|edytor widżetów|edytorka widżetów|edytor(-ka) widżetów}}"
         },
         "info": {

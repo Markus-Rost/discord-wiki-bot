@@ -400,7 +400,6 @@
     "user": {
         "block": {
             "header": "$1 is momenteel geblokkeerd!",
-            "nofromtext": "Geblokkeerd tot $2 door $3 met reden \"$4\".",
             "noreason": "Geblokkeerd van $1 tot $2 door $3.",
             "text": "Geblokkeerd van $1 tot $2 door $3 met reden \"$4\".",
             "until_infinity": "het einde van de wereld"
@@ -415,17 +414,11 @@
             "unknown": "Onbekend"
         },
         "groups": {
-            "autopatrol": "autopatrol",
             "bot": "Bot",
-            "bureaucrat": "Bureaucraat",
             "content-team-member": "Content Team Member",
-            "global-discussions-moderator": "Globaal discussiemoderator",
             "grasp": "GRASP",
-            "hydra_staff": "Gamepedia staff",
             "rollback": "rollback",
-            "sysop": "Beheerder",
-            "user": "Gebruiker",
-            "wiki-manager": "Wiki manager"
+            "user": "Gebruiker"
         },
         "info": {
             "discord": "Discord:",

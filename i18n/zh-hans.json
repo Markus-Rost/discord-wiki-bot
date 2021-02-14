@@ -689,11 +689,8 @@
             "unknown": "未知"
         },
         "groups": {
-            "bot": "机器人",
             "content-moderator": "内容版主",
-            "global_bot": "全域机器人",
             "interface-admin": "界面管理员",
-            "sysop": "管理员",
             "widgeteditor": "小工具编辑者"
         },
         "info": {

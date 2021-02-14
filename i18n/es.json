@@ -671,7 +671,6 @@
     "user": {
         "block": {
             "header": "¡$1 está bloqueado actualmente!",
-            "nofromtext": "Bloqueado hasta $2 por $3 con motivo \"$4\".",
             "noreason": "Bloqueado el $1 hasta $2 por $3.",
             "text": "Bloqueado el $1 hasta $2 por $3 con motivo \"$4\".",
             "until_infinity": "el fin de nuestros días"
@@ -686,19 +685,12 @@
             "unknown": "Desconocido"
         },
         "groups": {
-            "autopatrol": "autopatrol",
             "bot": "Bot",
-            "bureaucrat": "Burócrata",
             "content-moderator": "Moderador de contenido",
-            "editor": "Editor",
             "global_bot": "Bot global",
-            "helper": "Helper de Fandom",
             "interface-admin": "Administrador de interfaz",
-            "soap": "SOAP",
             "sysop": "Administrador",
-            "user": "Usuario",
-            "widgeteditor": "Editor de widgets",
-            "wiki_manager": "Wiki Manager"
+            "widgeteditor": "Editor de widgets"
         },
         "info": {
             "discord": "Discord:",

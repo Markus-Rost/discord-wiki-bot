@@ -630,7 +630,6 @@
     "user": {
         "block": {
             "header": "$1 şu anda engelli!",
-            "nofromtext": "\"$4\" nedeniyle $3 tarafından $2 tarihine kadar engellendiniz.",
             "noreason": "$1 platformundan $3 tarafından $2 tarihine kadar engellendiniz.",
             "text": "$1 platformundan $3 tarafından \"$4\" nedeniyle $2 süresinde engellendiniz.",
             "until_infinity": "bütün günlerin sonu"
@@ -645,19 +644,12 @@
             "unknown": "meçhul"
         },
         "groups": {
-            "autopatrol": "autopatrol",
             "bot": "Bot",
-            "bureaucrat": "Bürokrat",
             "content-moderator": "İçerik moderatörü",
-            "editor": "Editor",
             "global_bot": "Gamepedia bot",
-            "helper": "Fandom yardımcısı",
             "interface-admin": "Arayüz yöneticisi",
-            "soap": "SOAP",
             "sysop": "Yönetici",
-            "user": "Kullanıcı",
-            "widgeteditor": "Widget editörü",
-            "wiki_manager": "Wiki yöneticisi"
+            "widgeteditor": "Widget editörü"
         },
         "info": {
             "discord": "Discord:",

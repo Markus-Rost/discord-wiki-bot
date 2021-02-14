@@ -689,11 +689,8 @@
             "unknown": "未知"
         },
         "groups": {
-            "bot": "機器人",
             "content-moderator": "內容版主",
-            "global_bot": "全域機器人",
             "interface-admin": "介面管理員",
-            "sysop": "管理員",
             "widgeteditor": "小工具編輯者"
         },
         "info": {

@@ -670,7 +670,6 @@
     "user": {
         "block": {
             "header": "$1 est actuellement bloqué !",
-            "nofromtext": "Bloqué jusqu'au $2 par $3 avec la raison « $4 ».",
             "noreason": "Bloqué le $1 jusqu'au $2 par $3.",
             "text": "Bloqué le $1 jusqu'au $2 par $3 avec la raison « $4 ».",
             "until_infinity": "moment de la fin des jours"
@@ -685,19 +684,12 @@
             "unknown": "Inconnu"
         },
         "groups": {
-            "autopatrol": "autopatrol",
             "bot": "Robot",
-            "bureaucrat": "Bureaucrate",
             "content-moderator": "Modérateur de contenu",
-            "editor": "Éditeur",
             "global_bot": "Robot de Gamepedia",
-            "helper": "Assistant de Fandom",
             "interface-admin": "Administrateur d’interface",
-            "soap": "SOAP",
             "sysop": "Administrateur",
-            "user": "Utilisateur",
-            "widgeteditor": "Éditeur de widgets",
-            "wiki_manager": "Gestionnaire du wiki"
+            "widgeteditor": "Éditeur de widgets"
         },
         "info": {
             "discord": "Discord :",
