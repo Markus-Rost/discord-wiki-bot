@@ -357,6 +357,10 @@
                     "cmd": "verification <id> editcount <new edit count>",
                     "desc": "I will change the minimal edit count for the wiki verification."
                 },
+                "postcount": {
+                    "cmd": "verification <id> postcount <new post count>",
+                    "desc": "I will change the minimal discussions post count for the wiki verification.\n\t• Provide a negative number to require either the edit or the post count.\n\t• Provide `null` to check for the combined edit and post count."
+                },
                 "rename": {
                     "cmd": "verification <id> rename",
                     "desc": "I will change if the user's Discord nickname should be changed to their wiki username for the wiki verification."
@@ -671,8 +675,6 @@
     "user": {
         "block": {
             "header": "$1 is currently blocked!",
-            "nofromnoreason": "Blocked until $2 by $3.",
-            "nofromtext": "Blocked until $2 by $3 with reason \"$4\".",
             "noreason": "Blocked on $1 until $2 by $3.",
             "text": "Blocked on $1 until $2 by $3 with reason \"$4\".",
             "until_infinity": "the end of all days"
@@ -685,34 +687,6 @@
             "female": "Female",
             "male": "Male",
             "unknown": "Unknown"
-        },
-        "groups": {
-            "autoconfirmed": "Autoconfirmed user",
-            "autopatrol": "autopatrol",
-            "autoreview": "autoreview",
-            "bot": "Bot",
-            "bot-global": "Global bot",
-            "bureaucrat": "Bureaucrat",
-            "checkuser": "Check user",
-            "content-moderator": "Content moderator",
-            "content-team-member": "Content Team Member",
-            "editor": "Editor",
-            "global-discussions-moderator": "Global discussions moderator",
-            "global_bot": "Global bot",
-            "grasp": "GRASP",
-            "helper": "Fandom helper",
-            "hydra_staff": "Gamepedia staff",
-            "interface-admin": "Interface administrator",
-            "rollback": "rollback",
-            "soap": "SOAP",
-            "staff": "Fandom staff",
-            "sysop": "Administrator",
-            "threadmoderator": "Discussions moderator",
-            "user": "User",
-            "vanguard": "Vanguard",
-            "widgeteditor": "Widget editor",
-            "wiki-manager": "Wiki manager",
-            "wiki_manager": "Wiki manager"
         },
         "info": {
             "discord": "Discord:",
