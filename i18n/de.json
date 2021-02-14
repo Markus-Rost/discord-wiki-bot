@@ -355,7 +355,11 @@
                 },
                 "editcount": {
                     "cmd": "verification <ID> editcount <neues Bearbeitungslimit>",
-                    "desc": "Ich ändere das Bearbeitunglimit für die Wiki-Verifizierung."
+                    "desc": "Ich ändere das Bearbeitungslimit für die Wiki-Verifizierung."
+                },
+                "postcount": {
+                    "cmd": "verification <ID> postcount <neues Diskussionsbeitragslimit>",
+                    "desc": "Ich ändere das Diskussionsbeitragslimit für die Wiki-Verifizierung.\n\t• Gebe eine negative Zahl an damit entweder das Bearbeitungs- oder das Diskussionsbetragslimit erreicht sein müssen.\n\t• Gebe `null` an um das zusammengezählte Bearbeitungs- und Diskussionsbeitragslimit zu benötigen."
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
@@ -637,7 +641,6 @@
     "user": {
         "block": {
             "header": "$1 ist derzeit gesperrt!",
-            "nofromtext": "Gesperrt bis zum $2 von $3 mit der Begründung „$4“.",
             "noreason": "Gesperrt am $1 bis zum $2 von $3.",
             "text": "Gesperrt am $1 bis zum $2 von $3 mit der Begründung „$4“.",
             "until_infinity": "Ende aller Tage"
@@ -652,19 +655,12 @@
             "unknown": "Unbekannt"
         },
         "groups": {
-            "autopatrol": "autopatrol",
             "bot": "Bot",
-            "bureaucrat": "{{GENDER:$1|Bürokrat|Bürokratin}}",
             "content-moderator": "{{GENDER:$1|Inhalts-Moderator|Inhalts-Moderatorin}}",
-            "editor": "{{GENDER:$1|Autor|Autorin}}",
             "global_bot": "Globaler Bot",
-            "helper": "{{GENDER:$1|Fandom-Helfer|Fandom-Helferin}}",
             "interface-admin": "{{GENDER:$1|Oberflächen-Administrator|Oberflächen-Administratorin}}",
-            "soap": "SOAP",
             "sysop": "{{GENDER:$1|Administrator|Administratorin}}",
-            "user": "{{GENDER:$1|Benutzer|Benutzerin}}",
-            "widgeteditor": "{{GENDER:$1|Widget-Bearbeiter|Widget-Bearbeiterin}}",
-            "wiki_manager": "{{GENDER:$1|Wiki-Manager|Wiki-Managerin}}"
+            "widgeteditor": "{{GENDER:$1|Widget-Bearbeiter|Widget-Bearbeiterin}}"
         },
         "info": {
             "discord": "Discord:",
