@@ -357,6 +357,10 @@
                     "cmd": "verification <id> editcount <nowa ilość edycji>",
                     "desc": "Zmienię minimalną wymaganą ilość edycji dla weryfikacji."
                 },
+                "postcount": {
+                    "cmd": "verification <id> postcount <nowa ilość postów>",
+                    "desc": "Zmienię minimalną ilość wymaganych do weryfikacji postów w dyskusjach. \n\t• Użyj ujemnej liczby aby weryfikacja następowała na podstawie ilości edycji LUB ilości postów.\n\t• Użyj `null` aby sprawdzać ilość łączoną edycji oraz ilości postów."
+                },
                 "rename": {
                     "cmd": "verification <id> rename",
                     "desc": "Dopasuję nazwę użytkownika na Discordzie do nazwy użytkownika na wiki."
@@ -567,6 +571,7 @@
         "empty": "*Ta strona specjalna jest pusta*",
         "infopage": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku.",
         "infosearch": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku lub $2 dla listy wszystkich wyników.",
+        "loading": "Ładowanie opisu strony…",
         "media": "Do strony opisu pliku",
         "results": "$1 {{PLURAL:$2|wynik|wyniki|wszystkich wyników}}",
         "special": "Zawartość tej strony specjalnej:"
@@ -670,7 +675,6 @@
     "user": {
         "block": {
             "header": "$1 jest obecnie {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}}!",
-            "nofromtext": "Zablokowano do $2 przez $3 z powodem „$4”.",
             "noreason": "Zablokowano $1 do $2 przez $3.",
             "text": "Zablokowano $1 do $2 przez $3 z powodem „$4”.",
             "until_infinity": "do końca wszechświata"
@@ -685,19 +689,12 @@
             "unknown": "Nieznane"
         },
         "groups": {
-            "autopatrol": "autopatrol",
             "bot": "Bot",
-            "bureaucrat": "{{GENDER:$1|biurokrata|biurokratka|biorokrata/biurokratka}}",
             "content-moderator": "{{GENDER:$1|moderator treści|moderatorka treści|moderator(-ka) treści}}",
-            "editor": "{{GENDER:$1|redaktor|redaktorka|redaktor(-ka)}}",
             "global_bot": "globalny bot",
-            "helper": "Helper",
             "interface-admin": "{{GENDER:$1|administrator interfejsu|administratorka interfejsu|administrator(-ka) interfejsu}}",
-            "soap": "SOAP",
             "sysop": "{{GENDER:$1|administrator|administratorka|administrator(-ka)}}",
-            "user": "{{GENDER:$1|użytkownik|użytkowniczka|użytkownik/użytkowniczka}}",
-            "widgeteditor": "{{GENDER:$1|edytor widżetów|edytorka widżetów|edytor(-ka) widżetów}}",
-            "wiki_manager": "{{GENDER:$1|menadżer wiki|menadżerka wiki|menadżer(-ka) wiki}}"
+            "widgeteditor": "{{GENDER:$1|edytor widżetów|edytorka widżetów|edytor(-ka) widżetów}}"
         },
         "info": {
             "discord": "Discord:",
@@ -739,10 +736,14 @@
         "new_accountage": "<nowy wiek konta>",
         "new_channel": "<nowy kanał>",
         "new_editcount": "<nowa ilość edycji>",
+        "new_postcount": "<nowa ilość postów>",
         "new_role": "<nowa rola>",
         "new_usergroup": "<nowa grupa użytkowników>",
         "no_role": "podaj rolę dla nowej weryfikacji.",
         "or": "lub",
+        "postcount": "Ilość postów (tylko na wiki Fandomu):",
+        "postcount_or": "(alternatywa do zliczania edycji)",
+        "posteditcount": "Łączona ilość edycji oraz postów w dyskusjach:",
         "rename": "Zmień nazwę użytkownika:",
         "rename_no_permission": "**$1 wymaga uprawnienia `Zarządzanie pseudonimami` do zmiany nazw użytkowników na wiki!**",
         "role": "Rola:",
