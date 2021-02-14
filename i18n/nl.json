@@ -413,9 +413,6 @@
             "male": "Man",
             "unknown": "Onbekend"
         },
-        "groups": {
-            "rollback": "rollback"
-        },
         "info": {
             "discord": "Discord:",
             "editcount": "Aantal bewerkingen:",

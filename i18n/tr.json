@@ -643,9 +643,6 @@
             "male": "erkek",
             "unknown": "meçhul"
         },
-        "groups": {
-            "interface-admin": "Arayüz yöneticisi"
-        },
         "info": {
             "discord": "Discord:",
             "editcount": "Düzenleme sayısı:",

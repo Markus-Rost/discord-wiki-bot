@@ -643,9 +643,6 @@
             "male": "남성",
             "unknown": "알 수 없음"
         },
-        "groups": {
-            "interface-admin": "인터페이스 관리자"
-        },
         "info": {
             "discord": "디스코드:",
             "editcount": "편집 수:",

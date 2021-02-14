@@ -684,9 +684,6 @@
             "male": "Masculino",
             "unknown": "Desconocido"
         },
-        "groups": {
-            "interface-admin": "Administrador de interfaz"
-        },
         "info": {
             "discord": "Discord:",
             "editcount": "Número de ediciones:",
