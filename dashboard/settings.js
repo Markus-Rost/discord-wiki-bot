@@ -371,7 +371,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						return reject();
 					}
 					var body = fresponse.body;
-					if ( fresponse.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
+					if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( row?.wiki === wiki.href ) return resolve(row);
 						return reject();

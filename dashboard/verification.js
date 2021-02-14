@@ -24,9 +24,23 @@ const fieldset = {
 	+ '<input type="checkbox" id="wb-settings-usergroup-and" name="usergroup_and">'
 	+ '</div>',
 	editcount: '<label for="wb-settings-editcount">Minimal edit count:</label>'
-	+ '<input type="number" id="wb-settings-editcount" name="editcount" min="0" required>',
+	+ '<input type="number" id="wb-settings-editcount" name="editcount" min="0" max="1000000" required>',
+	postcount: '<div id="wb-settings-postcount-input">'
+	+ '<label for="wb-settings-postcount">Minimal post count:</label>'
+	+ '<input type="number" id="wb-settings-postcount" name="postcount" min="0" max="1000000" required>'
+	+ '</div><div class="wb-settings-postcount">'
+	+ '<span>Only Fandom wikis:</span>'
+	+ '<input type="radio" id="wb-settings-postcount-and" name="posteditcount" value="and" required>'
+	+ '<label for="wb-settings-postcount-and">Require both edit and post count.</label>'
+	+ '</div><div class="wb-settings-postcount">'
+	+ '<input type="radio" id="wb-settings-postcount-or" name="posteditcount" value="or" required>'
+	+ '<label for="wb-settings-postcount-or">Require either edit or post count.</label>'
+	+ '</div><div class="wb-settings-postcount">'
+	+ '<input type="radio" id="wb-settings-postcount-both" name="posteditcount" value="both" required>'
+	+ '<label for="wb-settings-postcount-both">Require combined edit and post count.</label>'
+	+ '</div>',
 	accountage: '<label for="wb-settings-accountage">Account age (in days):</label>'
-	+ '<input type="number" id="wb-settings-accountage" name="accountage" min="0" required>',
+	+ '<input type="number" id="wb-settings-accountage" name="accountage" min="0" max="1000000" required>',
 	rename: '<label for="wb-settings-rename">Rename users:</label>'
 	+ '<input type="checkbox" id="wb-settings-rename" name="rename">',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
@@ -43,6 +57,7 @@ const fieldset = {
  * @param {String} settings.role
  * @param {String} settings.usergroup
  * @param {Number} settings.editcount
+ * @param {Number} settings.postcount
  * @param {Number} settings.accountage
  * @param {Boolean} settings.rename
  * @param {String} [settings.defaultrole]
@@ -157,6 +172,20 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	editcount.find('label').text(dashboardLang.get('verification.form.editcount'));
 	editcount.find('#wb-settings-editcount').val(settings.editcount);
 	fields.push(editcount);
+	let postcount = $('<div>').append(fieldset.postcount);
+	postcount.find('label').eq(0).text(dashboardLang.get('verification.form.postcount'));
+	postcount.find('span').text(dashboardLang.get('verification.form.postcount_fandom'));
+	postcount.find('label').eq(1).text(dashboardLang.get('verification.form.postcount_and'));
+	postcount.find('label').eq(2).text(dashboardLang.get('verification.form.postcount_or'));
+	postcount.find('label').eq(3).text(dashboardLang.get('verification.form.postcount_both'));
+	postcount.find('#wb-settings-postcount').val(Math.abs(settings.postcount));
+	if ( settings.postcount === null ) {
+		postcount.find('#wb-settings-postcount-both').attr('checked', '');
+		postcount.find('#wb-settings-postcount-input').attr('style', 'display: none;');
+	}
+	else if ( settings.postcount < 0 ) postcount.find('#wb-settings-postcount-or').attr('checked', '');
+	else postcount.find('#wb-settings-postcount-and').attr('checked', '');
+	fields.push(postcount);
 	let accountage = $('<div>').append(fieldset.accountage);
 	accountage.find('label').text(dashboardLang.get('verification.form.accountage'));
 	accountage.find('#wb-settings-accountage').val(settings.accountage);
@@ -195,7 +224,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
  * @param {import('./i18n.js')} dashboardLang - The user language
  */
 function dashboard_verification(res, $, guild, args, dashboardLang) {
-	db.all( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
+	db.all( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
 		if ( dberror ) {
 			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
 			createNotice($, 'error', dashboardLang);
@@ -254,7 +283,8 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 			$('.channel#channel-new').addClass('selected');
 			createForm($, dashboardLang.get('verification.form.new'), dashboardLang, {
 				channel: '', role: '', usergroup: 'user',
-				editcount: 0, accountage: 0, rename: false, defaultrole
+				editcount: 0, postcount: 0, accountage: 0,
+				rename: false, defaultrole
 			}, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
 		}
 		else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
@@ -286,6 +316,8 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
  * @param {String[]} [settings.usergroup]
  * @param {String} [settings.usergroup_and]
  * @param {Number} settings.editcount
+ * @param {Number} [settings.postcount]
+ * @param {String} settings.posteditcount
  * @param {Number} settings.accountage
  * @param {String} [settings.rename]
  * @param {String} [settings.save_settings]
@@ -303,6 +335,9 @@ function update_verification(res, userSettings, guild, type, settings) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		if ( !/^\d+ \d+$/.test(`${settings.editcount} ${settings.accountage}`) ) {
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
+		}
+		if ( !( ['and','or','both'].includes( settings.posteditcount ) && ( /^\d+$/.test(settings.postcount) || settings.posteditcount === 'both' ) ) ) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		settings.channel = settings.channel.split('|').filter( (channel, i, self) => {
@@ -331,6 +366,15 @@ function update_verification(res, userSettings, guild, type, settings) {
 		} ) ) return res(`/guild/${guild}/verification/${type}`, 'invalidusergroup');
 		settings.editcount = parseInt(settings.editcount, 10);
 		settings.accountage = parseInt(settings.accountage, 10);
+		if ( settings.editcount > 1000000 || settings.accountage > 1000000 ) {
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
+		}
+		if ( settings.posteditcount === 'both' ) settings.postcount = null;
+		else settings.postcount = parseInt(settings.postcount, 10);
+		if ( settings.posteditcount === 'or' ) settings.postcount = settings.postcount * -1;
+		if ( settings.postcount > 1000000 || settings.postcount < -1000000 ) {
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
+		}
 		if ( type === 'new' ) {
 			let curGuild = userSettings.guilds.isMember.get(guild);
 			if ( settings.channel.some( channel => {
@@ -362,7 +406,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
-		if ( settings.delete_settings ) return db.get( 'SELECT lang, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(dberror, row) {
+		if ( settings.delete_settings ) return db.get( 'SELECT lang, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(dberror, row) {
 			if ( !dberror && !row?.channel ) return res(`/guild/${guild}/verification`, 'save');
 			db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [guild, type], function (delerror) {
 				if ( delerror ) {
@@ -380,7 +424,14 @@ function update_verification(res, userSettings, guild, type, settings) {
 				if ( row ) {
 					text += '\n' + lang.get('verification.channel') + ' <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>';
 					text += '\n' + lang.get('verification.role') + ' <@&' + row.role.split('|').join('>, <@&') + '>';
-					text += '\n' + lang.get('verification.editcount') + ' `' + row.editcount + '`';
+					if ( row.postcount === null ) {
+						text += '\n' + lang.get('verification.posteditcount') + ' `' + row.editcount + '`';
+					}
+					else {
+						text += '\n' + lang.get('verification.editcount') + ' `' + row.editcount + '`';
+						text += '\n' + lang.get('verification.postcount') + ' `' + Math.abs(row.postcount) + '`';
+						if ( row.postcount < 0 ) text += ' ' + lang.get('verification.postcount_or');
+					}
 					text += '\n' + lang.get('verification.usergroup') + ' `' + ( row.usergroup.startsWith( 'AND|' ) ? row.usergroup.split('|').slice(1).join('` ' + lang.get('verification.and') + ' `') : row.usergroup.split('|').join('` ' + lang.get('verification.or') + ' `') ) + '`';
 					text += '\n' + lang.get('verification.accountage') + ' `' + row.accountage + '` ' + lang.get('verification.indays');
 					text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( row.rename ? 'enabled' : 'disabled')) + '`*';
@@ -409,7 +460,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 			}
 			return got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
 				var body = gresponse.body;
-				if ( gresponse.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
+				if ( gresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {
 					console.log( '- Dashboard: ' + gresponse.statusCode + ': Error while getting the usergroups: ' + body?.error?.info );
 					return;
 				}
@@ -442,7 +493,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					if ( configid === i ) configid++;
 					else break;
 				}
-				db.run( 'INSERT INTO verification(guild, configid, channel, role, editcount, usergroup, accountage, rename) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [guild, configid, '|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )], function (dberror) {
+				db.run( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [guild, configid, '|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )], function (dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while adding the verification: ' + dberror );
 						return res(`/guild/${guild}/verification/new`, 'savefail');
@@ -453,7 +504,14 @@ function update_verification(res, userSettings, guild, type, settings) {
 					var text = lang.get('verification.dashboard.added', `<@${userSettings.user.id}>`, configid);
 					text += '\n' + lang.get('verification.channel') + ' <#' + settings.channel.join('>, <#') + '>';
 					text += '\n' + lang.get('verification.role') + ' <@&' + settings.role.join('>, <@&') + '>';
-					text += '\n' + lang.get('verification.editcount') + ' `' + settings.editcount + '`';
+					if ( settings.postcount === null ) {
+						text += '\n' + lang.get('verification.posteditcount') + ' `' + settings.editcount + '`';
+					}
+					else {
+						text += '\n' + lang.get('verification.editcount') + ' `' + settings.editcount + '`';
+						text += '\n' + lang.get('verification.postcount') + ' `' + Math.abs(settings.postcount) + '`';
+						if ( settings.postcount < 0 ) text += ' ' + lang.get('verification.postcount_or');
+					}
 					text += '\n' + lang.get('verification.usergroup') + ' `' + ( settings.usergroup_and ? settings.usergroup.slice(1).join('` ' + lang.get('verification.and') + ' `') : settings.usergroup.join('` ' + lang.get('verification.or') + ' `') ) + '`';
 					text += '\n' + lang.get('verification.accountage') + ' `' + settings.accountage + '` ' + lang.get('verification.indays');
 					text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled')) + '`*';
@@ -488,7 +546,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 				} );
 			} );
 		} );
-		return db.get( 'SELECT wiki, lang, verification.channel, verification.role, editcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
+		return db.get( 'SELECT wiki, lang, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
 			if ( curerror ) {
 				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
 				return res(`/guild/${guild}/verification/${type}`, 'savefail');
@@ -514,7 +572,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 			}
 			( newUsergroup.length ? got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
 				var body = gresponse.body;
-				if ( gresponse.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
+				if ( gresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {
 					console.log( '- Dashboard: ' + gresponse.statusCode + ': Error while getting the usergroups: ' + body?.error?.info );
 					return;
 				}
@@ -554,8 +612,29 @@ function update_verification(res, userSettings, guild, type, settings) {
 				} ) ) {
 					diff.push(lang.get('verification.role') + ` ~~<@&${row.role.join('>, <@&')}>~~ → <@&${settings.role.join('>, <@&')}>`);
 				}
-				if ( row.editcount !== settings.editcount ) {
-					diff.push(lang.get('verification.editcount') + ` ~~\`${row.editcount}\`~~ → \`${settings.editcount}\``);
+				if ( row.postcount !== settings.postcount && ( row.postcount === null || settings.postcount === null ) ) {
+					if ( row.postcount === null ) {
+						diff.push('~~' + lang.get('verification.posteditcount') + ` \`${row.editcount}\`~~`);
+						diff.push('→ ' + lang.get('verification.editcount') + ` \`${settings.editcount}\``);
+						diff.push('→ ' + lang.get('verification.postcount') + ` \`${Math.abs(settings.postcount)}\`` + ( settings.postcount < 0 ? ' ' + lang.get('verification.postcount_or') : '' ));
+					}
+					if ( settings.postcount === null ) {
+						diff.push('~~' + lang.get('verification.editcount') + ` \`${row.editcount}\`~~`);
+						diff.push('~~' + lang.get('verification.postcount') + ` \`${Math.abs(row.postcount)}\`` + ( row.postcount < 0 ? ' ' + lang.get('verification.postcount_or') : '' ) + '~~');
+						diff.push('→ ' + lang.get('verification.posteditcount') + ` \`${settings.editcount}\``);
+					}
+				}
+				else {
+					if ( row.editcount !== settings.editcount ) {
+						diff.push(lang.get('verification.editcount') + ` ~~\`${row.editcount}\`~~ → \`${settings.editcount}\``);
+					}
+					if ( row.postcount !== settings.postcount ) {
+						if ( ( row.postcount >= 0 && settings.postcount < 0 ) || ( row.postcount < 0 && settings.postcount >= 0 ) ) {
+							diff.push('~~' + lang.get('verification.postcount') + ` \`${Math.abs(row.postcount)}\`` + ( row.postcount < 0 ? ' ' + lang.get('verification.postcount_or') : '' ) + '~~');
+							diff.push('→ ' + lang.get('verification.postcount') + ` \`${Math.abs(settings.postcount)}\`` + ( settings.postcount < 0 ? ' ' + lang.get('verification.postcount_or') : '' ));
+						}
+						else diff.push(lang.get('verification.postcount') + ` ~~\`${Math.abs(row.postcount)}\`~~ → \`${Math.abs(settings.postcount)}\`` + ( settings.postcount < 0 ? ' ' + lang.get('verification.postcount_or') : '' ));
+					}
 				}
 				if ( newUsergroup.length || row.usergroup.some( usergroup => {
 					return !settings.usergroup.includes( usergroup );
@@ -569,7 +648,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					diff.push(lang.get('verification.rename') + ` ~~*\`${lang.get('verification.' + ( row.rename ? 'enabled' : 'disabled'))}\`*~~ → *\`${lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled'))}\`*`);
 				}
 				if ( !diff.length ) return res(`/guild/${guild}/verification/${type}`, 'save');
-				db.run( 'UPDATE verification SET channel = ?, role = ?, editcount = ?, usergroup = ?, accountage = ?, rename = ? WHERE guild = ? AND configid = ?', ['|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type], function (dberror) {
+				db.run( 'UPDATE verification SET channel = ?, role = ?, editcount = ?, postcount = ?, usergroup = ?, accountage = ?, rename = ? WHERE guild = ? AND configid = ?', ['|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type], function (dberror) {
 					if ( dberror ) {
 						console.log( '- Dashboard: Error while updating the verification: ' + dberror );
 						return res(`/guild/${guild}/verification/${type}`, 'savefail');

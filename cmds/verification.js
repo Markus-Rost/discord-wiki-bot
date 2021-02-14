@@ -22,7 +22,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
 	}
 	
-	db.all( 'SELECT configid, channel, role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
+	db.all( 'SELECT configid, channel, role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
 		if ( error || !rows ) {
 			console.log( '- Error while getting the verifications: ' + error );
 			msg.reactEmoji('error', true);
@@ -161,9 +161,12 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
 				} );
 			}
-			if ( ( args[1] === 'editcount' || args[1] === 'accountage' ) && /^\d+$/.test(args[2]) ) {
+			if ( ( ( args[1] === 'editcount' || args[1] === 'accountage' ) && /^\d+$/.test(args[2]) ) || ( args[1] === 'postcount' && /^(?:-?\d+|null)$/.test(args[2]) ) ) {
 				args[2] = parseInt(args[2], 10);
-				if ( args[2] > 1000000 ) return msg.replyMsg( lang.get('verification.value_too_high'), {}, true );
+				if ( isNaN(args[2]) ) args[2] = null;
+				if ( args[2] > 1000000 || args[2] < -1000000 ) {
+					return msg.replyMsg( lang.get('verification.value_too_high'), {}, true );
+				}
 				return db.run( 'UPDATE verification SET ' + args[1] + ' = ? WHERE guild = ? AND configid = ?', [args[2], msg.guild.id, row.configid], function (dberror) {
 					if ( dberror ) {
 						console.log( '- Error while updating the verification: ' + dberror );
@@ -187,7 +190,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( response => {
 					var body = response.body;
 					if ( body && body.warnings ) log_warn(body.warnings);
-					if ( response.statusCode !== 200 || !body || !body.query || !body.query.allmessages ) {
+					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {
 						if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
 						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
 						return;
@@ -238,6 +241,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			channel = '|' + msg.channel.id + '|',
 			role,
 			editcount = 0,
+			postcount = 0,
 			usergroup = 'user',
 			accountage = 0,
 			rename = 0
@@ -247,8 +251,14 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' channel ' + lang.get('verification.new_channel') + '`\n';
 			verification_text += '\n' + lang.get('verification.role') + ' <@&' + role.split('|').join('>, <@&') + '>';
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' role ' + lang.get('verification.new_role') + '`\n';
-			verification_text += '\n' + lang.get('verification.editcount') + ' `' + editcount + '`';
+			if ( postcount === null ) verification_text += '\n' + lang.get('verification.posteditcount') + ' `' + editcount + '`';
+			else verification_text += '\n' + lang.get('verification.editcount') + ' `' + editcount + '`';
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' editcount ' + lang.get('verification.new_editcount') + '`\n';
+			if ( postcount !== null ) {
+				verification_text += '\n' + lang.get('verification.postcount') + ' `' + Math.abs(postcount) + '`';
+				if ( postcount < 0 ) verification_text += ' ' + lang.get('verification.postcount_or');
+				if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' postcount ' + ( postcount < 0 ? '-' : '' ) + lang.get('verification.new_postcount') + '`\n';
+			}
 			verification_text += '\n' + lang.get('verification.usergroup') + ' `' + ( usergroup.startsWith( 'AND|' ) ? usergroup.split('|').slice(1).join('` ' + lang.get('verification.and') + ' `') : usergroup.split('|').join('` ' + lang.get('verification.or') + ' `') ) + '`';
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' usergroup ' + lang.get('verification.new_usergroup') + '`\n';
 			verification_text += '\n' + lang.get('verification.accountage') + ' `' + accountage + '` ' + lang.get('verification.indays');

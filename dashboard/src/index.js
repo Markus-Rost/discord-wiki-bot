@@ -288,6 +288,21 @@ if ( usergroup ) {
 	} );
 }
 
+const postcount = document.querySelectorAll('.wb-settings-postcount input');
+if ( postcount.length ) {
+	const postcountinput = document.getElementById('wb-settings-postcount-input');
+	postcount.forEach( function(radio) {
+		radio.addEventListener( 'change', function() {
+			if ( radio.id === 'wb-settings-postcount-both' ) {
+				postcountinput.setAttribute('style', 'display: none;');
+			}
+			else {
+				postcountinput.removeAttribute('style');
+			}
+		} );
+	} );
+}
+
 const prefix = document.getElementById('wb-settings-prefix');
 if ( prefix ) prefix.addEventListener( 'input', function() {
 	if ( prefix.validity.patternMismatch ) {

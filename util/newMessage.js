@@ -156,7 +156,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	
 		if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json' ).then( response => {
 			var body = response.body;
-			if ( response.statusCode !== 200 || !body || !body.query ) {
+			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
@@ -209,7 +209,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		
 		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json' ).then( response => {
 			var body = response.body;
-			if ( response.statusCode !== 200 || !body || !body.query ) {
+			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');

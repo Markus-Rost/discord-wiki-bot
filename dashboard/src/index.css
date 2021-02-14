@@ -365,6 +365,7 @@ fieldset input:invalid {
 }
 .wb-settings-display:not(:first-of-type),
 .wb-settings-additional-select,
+.wb-settings-postcount:not(:nth-of-type(2)),
 #wb-settings-wiki-check-notice,
 button.addmore:not([hidden]) {
 	display: block;

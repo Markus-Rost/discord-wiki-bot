@@ -342,7 +342,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				return fresponse;
 			} ).then( fresponse => {
 				var body = fresponse.body;
-				if ( fresponse.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
+				if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 					console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 					return res(`/guild/${guild}/rcscript/new`, 'savefail');
 				}
@@ -556,7 +556,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					return fresponse;
 				} ).then( fresponse => {
 					var body = fresponse.body;
-					if ( fresponse.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general ) {
+					if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general ) {
 						console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					}

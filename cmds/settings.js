@@ -100,7 +100,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					return response;
 				} ).then( response => {
 					var body = response.body;
-					if ( response.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
+					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						msg.reactEmoji('nowiki', true);

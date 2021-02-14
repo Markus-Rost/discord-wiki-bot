@@ -70,7 +70,7 @@ function checkWiki(wiki) {
 		return response;
 	} ).then( response => {
 		var body = response.body;
-		if ( response.statusCode !== 200 || !body?.query?.recentchanges ) {
+		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.recentchanges ) {
 			return response.statusCode + ': Error while getting the recent changes: ' + body?.error?.info;
 		}
 		wiki.updateWiki(body.query.general);

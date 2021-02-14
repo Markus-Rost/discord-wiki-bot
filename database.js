@@ -61,6 +61,7 @@ CREATE TABLE verification (
     role       TEXT    NOT NULL,
     editcount  INTEGER NOT NULL
                        DEFAULT [0],
+    postcount  INTEGER DEFAULT [0],
     usergroup  TEXT    NOT NULL
                        DEFAULT [user],
     accountage INTEGER NOT NULL
@@ -122,8 +123,9 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
 );
 
 COMMIT TRANSACTION;
-PRAGMA user_version = 2;
-`, `
+PRAGMA user_version = 3;
+`,
+`
 BEGIN TRANSACTION;
 
 PRAGMA foreign_keys = OFF;
@@ -190,6 +192,67 @@ CREATE INDEX idx_rcgcdw_config ON rcgcdw (
 
 COMMIT TRANSACTION;
 PRAGMA user_version = 2;
+`,
+`
+BEGIN TRANSACTION;
+
+PRAGMA foreign_keys = OFF;
+
+CREATE TABLE verification_temp_table AS SELECT * FROM verification;
+
+DROP TABLE verification;
+
+CREATE TABLE verification (
+    guild      TEXT    NOT NULL
+                       REFERENCES discord (main) ON DELETE CASCADE,
+    configid   INTEGER NOT NULL,
+    channel    TEXT    NOT NULL,
+    role       TEXT    NOT NULL,
+    editcount  INTEGER NOT NULL
+                       DEFAULT [0],
+    postcount  INTEGER DEFAULT [0],
+    usergroup  TEXT    NOT NULL
+                       DEFAULT [user],
+    accountage INTEGER NOT NULL
+                       DEFAULT [0],
+    rename     INTEGER NOT NULL
+                       DEFAULT [0],
+    UNIQUE (
+        guild,
+        configid
+    )
+);
+
+INSERT INTO verification (
+    guild,
+    configid,
+    channel,
+    role,
+    editcount,
+    usergroup,
+    accountage,
+    rename
+)
+SELECT guild,
+       configid,
+       channel,
+       role,
+       editcount,
+       usergroup,
+       accountage,
+       rename
+FROM verification_temp_table;
+
+DROP TABLE verification_temp_table;
+
+CREATE INDEX idx_verification_config ON verification (
+    guild,
+    configid ASC,
+    channel
+);
+
+COMMIT TRANSACTION;
+PRAGMA user_version = 3;
 `];
 
 module.exports = new Promise( (resolve, reject) => {

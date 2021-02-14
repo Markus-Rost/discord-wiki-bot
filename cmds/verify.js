@@ -31,7 +31,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:/i, '' );
 	
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
-	db.all( 'SELECT role, editcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
+	db.all( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the verifications: ' + dberror );
 			embed.setColor('#000000').setDescription( lang.get('verify.error') );
@@ -51,7 +51,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 		msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
-			if ( response.statusCode !== 200 || !body || !body.query || !body.query.users ) {
+			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 					msg.reactEmoji('nowiki');
@@ -137,15 +137,14 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				comment.push(lang.get('verify.failed_gblock'));
 			} ).then( () => {
 				var discordname = '';
-				got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now(), {
-					throwHttpErrors: true
-				} ).then( ucresponse => {
+				got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now() ).then( ucresponse => {
 					var ucbody = ucresponse.body;
 					if ( ucresponse.statusCode !== 200 || !ucbody?.userData?.id ) {
-						console.log( '- ' + ucresponse.statusCode + ': Error while working around the edit count.' );
+						console.log( '- ' + ucresponse.statusCode + ': Error while getting the user profile.' );
 						return Promise.reject();
 					}
 					queryuser.editcount = ucbody.userData.localEdits;
+					queryuser.postcount = ucbody.userData.posts;
 					if ( ucbody.userData.discordHandle ) discordname = ucbody.userData.discordHandle.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					
 					if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
@@ -160,34 +159,8 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 						return Promise.reject();
 					} );
 				}, ucerror => {
-					if ( body.query.general.generator.startsWith( 'MediaWiki 1.3' ) ) {
-						console.log( '- Error while working around the edit count: ' + ucerror );
-					}
-
-					var url = '';
-					var options = {};
-					if ( wiki.isGamepedia() ) {
-						url = wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now();
-					}
-					else if ( wiki.isFandom() ) {
-						url = 'https://services.fandom.com/user-attribute/user/' + queryuser.userid + '/attr/discordHandle?format=json&cache=' + Date.now();
-						options.headers = {Accept: 'application/hal+json'};
-					}
-					return got.get( url, options ).then( presponse => {
-						var pbody = presponse.body;
-						if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || pbody.title || !( pbody?.userData?.id || pbody.profile || pbody.value !== undefined ) ) {
-							if ( !( pbody && pbody.status === 404 ) ) {
-								console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody && ( pbody.error && pbody.error.info || pbody.errormsg || pbody.title ) ) );
-								return Promise.reject();
-							}
-							return;
-						}
-						if ( pbody.profile ) discordname = pbody.profile['link-discord'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
-						else if ( pbody.value ) discordname = pbody.value.escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
-					}, error => {
-						console.log( '- Error while getting the Discord tag: ' + error );
-						return Promise.reject();
-					} );
+					console.log( '- Error while getting the user profile: ' + ucerror );
+					return Promise.reject();
 				} ).then( () => {
 					if ( discordname.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 					embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
@@ -209,12 +182,16 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 					var rename = false;
 					var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
 					rows.forEach( row => {
-						var and_or = 'some';
+						let and_or = 'some';
 						if ( row.usergroup.startsWith( 'AND|' ) ) {
 							row.usergroup = row.usergroup.replace( 'AND|', '' );
 							and_or = 'every';
 						}
-						if ( queryuser.editcount >= row.editcount && row.usergroup.split('|')[and_or]( usergroup => queryuser.groups.includes( usergroup ) ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
+						let matchEditcount = false;
+						if ( row.postcount === null ) matchEditcount = ( ( queryuser.editcount + queryuser.postcount ) >= row.editcount );
+						else if ( row.postcount < 0 ) matchEditcount = ( queryuser.editcount >= row.editcount || queryuser.postcount >= Math.abs(row.postcount) );
+						else matchEditcount = ( queryuser.editcount >= row.editcount && queryuser.postcount >= row.postcount );
+						if ( matchEditcount && row.usergroup.split('|')[and_or]( usergroup => queryuser.groups.includes( usergroup ) ) && accountage >= row.accountage && row.role.split('|').some( role => !roles.includes( role ) ) ) {
 							verified = true;
 							if ( row.rename ) rename = true;
 							row.role.split('|').forEach( role => {
@@ -280,7 +257,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json' ).then( mwresponse => {
 				var mwbody = mwresponse.body;
 				if ( mwbody && mwbody.warnings ) log_warn(mwbody.warnings);
-				if ( mwresponse.statusCode !== 200 || !mwbody || mwbody.batchcomplete === undefined || !mwbody.query || !mwbody.query.pages ) {
+				if ( mwresponse.statusCode !== 200 || mwbody?.batchcomplete === undefined || !mwbody?.query?.pages ) {
 					console.log( '- ' + mwresponse.statusCode + ': Error while getting the Discord tag: ' + ( mwbody && mwbody.error && mwbody.error.info ) );
 					embed.setColor('#000000').setDescription( lang.get('verify.error') );
 					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );

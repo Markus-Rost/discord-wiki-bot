@@ -145,7 +145,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( response.statusCode !== 200 || !body ) {
+		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + ( body && body.error && body.error.info ) );
 		}
 		else {

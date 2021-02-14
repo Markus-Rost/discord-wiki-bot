@@ -74,7 +74,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return response;
 			} ).then( response => {
 				var body = response.body;
-				if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
+				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 					console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 					if ( reaction ) reaction.removeEmoji();
 					msg.reactEmoji('nowiki', true);
@@ -231,7 +231,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					return response;
 				} ).then( response => {
 					var body = response.body;
-					if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
+					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						msg.reactEmoji('nowiki', true);

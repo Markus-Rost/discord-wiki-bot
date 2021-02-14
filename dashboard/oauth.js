@@ -246,7 +246,7 @@ function dashboard_api(res, input) {
 		return response;
 	} ).then( response => {
 		var body = response.body;
-		if ( response.statusCode !== 200 || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
+		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
 			console.log( '- Dashboard: ' + response.statusCode + ': Error while checking the wiki: ' + body?.error?.info );
 			result.error = true;
 			return;
