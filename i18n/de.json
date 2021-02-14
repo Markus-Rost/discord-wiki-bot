@@ -533,6 +533,7 @@
         "empty": "*Diese Spezialseite ist leer*",
         "infopage": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link.",
         "infosearch": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link oder $2 für eine Liste mit allen Treffern.",
+        "loading": "Lade Seitenbeschreibung…",
         "media": "Zur Dateibeschreibungsseite",
         "results": "$1 {{PLURAL:$2|Ergebnis|Ergebnisse}} insgesamt",
         "special": "Inhalt der Spezialseite:"
