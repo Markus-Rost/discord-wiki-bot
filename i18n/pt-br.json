@@ -393,17 +393,20 @@
         "fixed": "{{PLURAL:$1|Versão corrigida|Versões corrigidas}}:",
         "issue_link": {
             "Blocks": {
-                "inward": "está bloqueado por $1"
+                "inward": "está bloqueado por $1",
+                "outward": "bloqueia $1"
             },
             "Bonfire Testing": {
                 "inward": "descoberto durante o teste de $1",
                 "outward": "teste descoberto por $1"
             },
             "Cloners": {
-                "inward": "é clonado por $1"
+                "inward": "é clonado por $1",
+                "outward": "clona $1"
             },
             "Duplicate": {
-                "inward": "é duplicado por $1"
+                "inward": "é duplicado por $1",
+                "outward": "duplica $1"
             },
             "Relates": {
                 "inward": "refere-se a $1",
@@ -564,6 +567,7 @@
         "empty": "*Esta página especial está vazia*",
         "infopage": "Não é o resultado correto? Use $1 para um link direto.",
         "infosearch": "Não é o resultado correto? Use $1 para um link direto ou $2 para uma lista de todos os acessos.",
+        "loading": "Carregando descrição da página…",
         "media": "Para a página de descrição do arquivo",
         "results": "$1 total {{PLURAL:$2|resultado|resultados}}",
         "special": "Conteúdo desta página especial:"
