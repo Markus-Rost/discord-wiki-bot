@@ -182,6 +182,7 @@
             "entry": "Verificação #$1",
             "more": "Adicionar mais",
             "new": "Nova verificação",
+            "postcount": "Contagem mínima de posts:",
             "rename": "Renomear usuários:",
             "role": "Cargo:",
             "select_channel": "-- Selecionar canal --",
