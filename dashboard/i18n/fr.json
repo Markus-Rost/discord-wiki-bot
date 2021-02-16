@@ -19,7 +19,8 @@
         "settings": "Paramètres",
         "support": "Server d'assistance",
         "title": "Paramètres du bot",
-        "verification": "Vérifications"
+        "verification": "Vérifications",
+        "welcome": "<h2>Bienvenue au tableau de bord de Wiki-Bot</h2>\n<p>Wiki-Bot est un bot discord fait pour lier les serveurs Discord aux MediaWikis. Il permet de lier les pages wiki, vérifier les utilisateurs wiki, vous informe des modifications récentes et plus.<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Plus d'informations]</a></p>\n<p>Ici, vous pouvez modifier les différents paramètres du bot pour les serveurs dans lesquels vous avez la permission \"Gérer le serveur.\" Tout d'abord, vous devez vous connecter avec votre compte Discord via ce bouton:</p>"
     },
     "indexjs": {
         "invalid": {
@@ -121,11 +122,12 @@
     },
     "rcscript": {
         "desc": "Voici les intégrations de modifications récentes pour $1 :",
+        "explanation": "<h2>Intégration des modifications récentes</h2>\n<p>Wiki-Bot peut ajouter une intégration des modifications récentes basée sur <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Les modifications récentes peuvent être affichées en paragraphes de texte, avec des liens inter-textes ou avec les changements de balises et de catégories intégrés.</p>\n<p>Prérequis pour rajouter une intégration de modifications récentes :</p>\n<ul>\n<li>Le wiki doit utiliser la version <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">1.30 de MediaWiki</a> ou plus haut.</li>\n<li>Le message système <code>MediaWiki:Custom-RcGcDw</code> doit correspondre à l'id du serveur Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
         "form": {
             "channel": "Salon :",
             "confirm": "Voulez-vous vraiment supprimer l'intégration de modifications récentes ?",
             "display": "Mode d'affichage :",
-            "display_compact": "Messages textuels compactés avec liens.",
+            "display_compact": "Messages textuels avec des liens inter-textes.",
             "display_diff": "Messages intégrés avec aperçus d'images et modifications.",
             "display_embed": "Messages intégrés avec les balises de modifications et changements de catégories.",
             "display_image": "Messages intégrés avec aperçus d'images.",
@@ -142,6 +144,56 @@
     },
     "selector": {
         "desc": "Voici une liste de tous les serveurs sur lesquels vous pouvez modifier les paramètres parce que vous avez la permission [Gérer le serveur]($1). Veuillez sélectionner un serveur :",
-        "invite": "Wiki-bot n'est pas encore un membre de $1, mais vous pouvez [inviter Wiki-bot]($2)."
+        "invite": "Wiki-bot n'est pas encore un membre de $1, mais vous pouvez [inviter Wiki-bot]($2).",
+        "none": "Vous n'avez actuellement pas l'autorisation [Gérer le serveur]($1) sur aucun serveur, êtes-vous connecté au bon compte ?",
+        "switch": "Changer de compte",
+        "title": "Sélecteur de serveur",
+        "with": "Serveur avec Wiki-Bot",
+        "without": "Serveur sans Wiki-Bot"
+    },
+    "settings": {
+        "desc": "Voici les paramètres pour $1 :",
+        "failed": "Impossible de charger les paramètres !",
+        "form": {
+            "channel": "Salon :",
+            "confirm": "Voulez-vous vraiment supprimer les paramètres spécifiques à ce salon ?",
+            "default": "Paramètres du serveur",
+            "inline": "Commandes inter-texte :",
+            "lang": "Langue :",
+            "new": "Rajouter des paramètres spécifiques à un salon",
+            "overwrite": "$1 Paramètres",
+            "prefix": "Préfixe :",
+            "prefix_space": "Espace après le préfixe :",
+            "role": "Rôle minimal :",
+            "select_channel": "-- Sélectionnez un salon --",
+            "wiki": "Wiki par défaut :",
+            "wiki_check": "Vérifier le wiki"
+        },
+        "new": "Nouveaux paramètres spécifiques à un salon"
+    },
+    "verification": {
+        "desc": "Voici les vérifications pour $1 :",
+        "explanation": "<h2>Vérification d'utilisateur</h2>\n<p>En utilisant la commande <code class=\"prefix\">verify &lt;pseudo wiki&gt;</code>, les utilisateurs peuvent se vérifier en tant que tel utilisateur wiki après avoir ajouté leurs informations Discord sur leur profil Wiki. Si l'utilisateur correspond et la vérification est activée sur ce serveur, Wiki-Bot va donner les rôles correspondants pour toutes les vérifications passées.</p>\n<p>Chaque vérification peut contenir plusieurs restrictions que l'utilisateur doit atteindre.</p>\n<ul>\n<li>Salon dans lequel utiliser la commande <code class=\"prefix\">verify</code>.</li>\n<li>Rôle obtenu lorsque la vérification est passée.</li>\n<li>Nombre de modifications sur le wiki requis pour passer la vérification.</li>\n<li>Groupe d'utilisateur requis pour passer la vérification.</li>\n<li>Âge du compte (en jours) requis pour passer la vérification.</li>\n<li>Si le surnom Discord doit être défini par leur pseudo wiki lorsqu'ils passent la vérification.</li>\n</ul>",
+        "form": {
+            "accountage": "Âge du compte (en jours) :",
+            "channel": "Salon :",
+            "confirm": "Voulez-vous vraiment supprimer la vérification ?",
+            "editcount": "Nombre minimal de modifications :",
+            "entry": "Vérification #$1",
+            "more": "Ajouter plus",
+            "new": "Nouvelle vérification",
+            "postcount": "Nombre de posts minimal :",
+            "postcount_and": "Requiert nombre de modification et nombre de post.",
+            "postcount_both": "Requiert nombre de modification combiné au nombre de post.",
+            "postcount_fandom": "Uniquement des wiki Fandom :",
+            "postcount_or": "Requiert soit un nombre de modifications soit un nombre de posts.",
+            "rename": "Renommer les utilisateurs :",
+            "role": "Rôle :",
+            "select_channel": "-- Sélectionnez un salon --",
+            "select_role": "-- Sélectionnez un rôle --",
+            "usergroup": "Groupe d'utilisateur wiki :",
+            "usergroup_and": "Requiert tous les groupes d'utilisateur :"
+        },
+        "new": "Nouvelle vérification"
     }
 }

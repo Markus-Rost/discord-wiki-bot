@@ -357,6 +357,10 @@
                     "cmd": "verification <id> editcount <nouveau nombre de modifications>",
                     "desc": "Je vais changer le nombre minimal de modifications pour la vérification."
                 },
+                "postcount": {
+                    "cmd": "verification <id> postcount <nouveau nombre de post>",
+                    "desc": "Je vais changer le nombre minimal de posts de discussion pour la vérification.\n\t• Fournissez un nombre négatif pour nécessiter soit le nombre de modifications soit le nombre de posts\n\t• Fournisser `null` pour vérifier les modifications et posts combinés"
+                },
                 "rename": {
                     "cmd": "verification <id> rename",
                     "desc": "Je vais changer si le surnom Discord de l'utilisateur devrait être changé à leur pseudo wiki lors de la vérification."
@@ -567,6 +571,7 @@
         "empty": "*Cette page spéciale est vide*",
         "infopage": "Pas le bon résultat ? Utilisez $1 pour un lien direct.",
         "infosearch": "Pas le bon résultat ? Utilisez $1 pour un lien direct ou $2 pour une liste de toutes les correspondances.",
+        "loading": "Chargement de la description de la page…",
         "media": "Vers la page du fichier",
         "results": "$1 {{PLURAL:$2|résultat|résultats}} en tout",
         "special": "Contenu de cette page spéciale :"
@@ -723,10 +728,14 @@
         "new_accountage": "<nouvel âge de compte>",
         "new_channel": "<nouveau salon>",
         "new_editcount": "<nouveau nombre de modifications>",
+        "new_postcount": "<nouveau nombre de post>",
         "new_role": "<nouveau rôle>",
         "new_usergroup": "<nouveau groupe d'utilisateur>",
         "no_role": "veuillez fournir un rôle pour la nouvelle vérification.",
         "or": "ou",
+        "postcount": "Nombre de posts (uniquement wiki Fandoms) :",
+        "postcount_or": "(alternative au nombre de modifications)",
+        "posteditcount": "Nombre de modification et post combinés :",
         "rename": "Changer le surnom :",
         "rename_no_permission": "**$1 a besoin de la permission `Gérer les pseudos` pour mettre les pseudos wiki !**",
         "role": "Rôle :",
