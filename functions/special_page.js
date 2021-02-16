@@ -125,14 +125,16 @@ const descriptions = {
  * Processes special pages.
  * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {String} title - The title of the special page.
+ * @param {Object} querypage - The details of the special page.
+ * @param {String} querypage.title - The title of the special page.
+ * @param {String} querypage.uselang - The language of the special page.
  * @param {String} specialpage - The canonical name of the special page.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
  * @param {import('../util/wiki.js')} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
-function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoiler) {
+function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, embed, wiki, reaction, spoiler) {
 	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
 		overwrites[specialpage](this, lang, msg, wiki, reaction, spoiler, args, embed);
@@ -142,7 +144,7 @@ function special_page(lang, msg, title, specialpage, embed, wiki, reaction, spoi
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
 		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {

@@ -299,7 +299,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( !['mylanguage'].includes( specialpage ) ) {
 					var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
-					return fn.special_page(lang, msg, querypage.title, specialpage, embed, wiki, reaction, spoiler);
+					return fn.special_page(lang, msg, querypage, specialpage, embed, wiki, reaction, spoiler);
 				}
 			}
 			if ( querypage.ns === -2 ) {
