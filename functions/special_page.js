@@ -5,13 +5,13 @@ const {toMarkdown} = require('../util/functions.js');
 
 const overwrites = {
 	randompage: (fn, lang, msg, wiki, reaction, spoiler) => {
-		fn.random(lang, msg, wiki, reaction, spoiler)
-	},
-	diff: (fn, lang, msg, wiki, reaction, spoiler, args, embed) => {
-		fn.diff(lang, msg, args, wiki, reaction, spoiler, embed)
+		fn.random(lang, msg, wiki, reaction, spoiler);
 	},
 	statistics: (fn, lang, msg, wiki, reaction, spoiler) => {
-		fn.overview(lang, msg, wiki, reaction, spoiler)
+		fn.overview(lang, msg, wiki, reaction, spoiler);
+	},
+	diff: (fn, lang, msg, wiki, reaction, spoiler, args, embed) => {
+		fn.diff(lang, msg, args, wiki, reaction, spoiler, embed);
 	}
 }
 

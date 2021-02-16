@@ -81,11 +81,13 @@ const removeClassesExceptions = [
  * @param {Object} [querypage.pageprops] - The properties of the page.
  * @param {String} [querypage.pageprops.infoboxes] - The JSON data for portable infoboxes on the page.
  * @param {String} [querypage.pageprops.disambiguation] - The disambiguation property of the page.
+ * @param {String} [querypage.pageprops.uselang] - The language of the page description.
+ * @param {Boolean} [querypage.pageprops.noRedirect] - If the page is allowed to be redirected.
  * @param {String} thumbnail - The default thumbnail for the wiki.
  * @param {String} [fragment] - The section title to embed.
  * @param {String} [pagelink] - The link to the page.
  */
-function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, pageprops: {infoboxes, disambiguation} = {}}, thumbnail, fragment = '', pagelink = '') {
+function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail, fragment = '', pagelink = '') {
 	if ( !msg?.showEmbed?.() ) {
 		msg.sendChannel( content, {embed} );
 
@@ -157,7 +159,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				console.log( '- Failed to parse the infobox: ' + error );
 			}
 		}
-		return got.get( wiki + 'api.php?action=parse&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
+		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: 10000
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
