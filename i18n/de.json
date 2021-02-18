@@ -390,6 +390,10 @@
         "noadmin": "du benötigst die `Server verwalten`-Berechtigung für diese Befehle!",
         "pause": "**Ich bin auf diesem Server derzeit pausiert!**\nNur diese Befehle können ausgeführt werden:"
     },
+    "interaction": {
+        "inline": "Bitte gebe einen Text mit [[Wikitext]]-Links an um diesen Befehl zu nutzen.",
+        "missingrole": "Du benötigst die $1-Rolle oder eine höhere Rolle um diesen Befehl zu nutzen."
+    },
     "invite": {
         "bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
     },
@@ -630,6 +634,9 @@
         "wikichanged": "du hast das Standard-Wiki für diesen Server geändert zu:",
         "wikihelp": "Nutze `$1 <Link>` um das Standard-Wiki zu ändern.\nLink zu einer MediaWiki Website, wie `https://<Wiki>.gamepedia.com/` oder `https://<Wiki>.fandom.com/`",
         "wikiinvalid": "bitte gib einen gültigen Link zu einer MediaWiki Website, wie ein Gamepedia- oder Fandom-Wiki, an!",
+        "wikiinvalid_http": "der angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.\nFalls du ein Website-Administrator bist kannst du ein Zertifikat von einer Zertifizierungsstelle wie *Let’s Encrypt* erhalten:\n<https://letsencrypt.org/de/getting-started/>",
+        "wikiinvalid_private": "das angegebene Wiki ist privat! Nur öffentliche Wikis, die von jedem gelesen werden können, sind unterstützt.",
+        "wikiinvalid_timeout": "der angegebene Link hat zu lange gebraucht um zu antworten!",
         "wikimissing": "für diesen Server wurde noch kein Wiki festgelegt!"
     },
     "test": {
