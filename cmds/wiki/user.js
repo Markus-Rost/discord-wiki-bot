@@ -6,10 +6,6 @@ const extract_desc = require('../../util/extract_desc.js');
 const {timeoptions, usergroups} = require('../../util/default.json');
 const {toMarkdown, toPlaintext, htmlToDiscord} = require('../../util/functions.js');
 
-var allSites = [];
-const getAllSites = require('../../util/allSites.js');
-getAllSites.then( sites => allSites = sites );
-
 /**
  * Processes a Gamepedia user.
  * @param {import('../../util/i18n.js')} lang - The user language.
@@ -25,7 +21,6 @@ getAllSites.then( sites => allSites = sites );
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler) {
-	if ( !allSites.length ) getAllSites.update();
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		logging(wiki, msg.guild?.id, 'user', 'ip');
 		var body = response.body;
@@ -193,7 +188,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 	} );
 
 	logging(wiki, msg.guild?.id, 'user');
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&ammessages=custom-Wiki_Manager&amenableparser=true&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users || !body.query.users[0] ) {
@@ -318,16 +313,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						} ));
 					}
 					else if ( globalgroups.includes( usergroup ) ) {
-						let thisSite = allSites.find( site => site.wiki_domain === wiki.hostname );
-						if ( usergroup === 'wiki_manager' && thisSite && thisSite.wiki_managers.includes( username ) ) {
-							globalgroup.push('**' + groupnames[globalgroups.indexOf(usergroup) + groups.length] + '**');
-						}
-						else if ( usergroup === 'wiki-manager' && ( body.query.allmessages[0]['*'] === username || thisSite && thisSite.wiki_managers.includes( username ) ) ) {
-							globalgroup.push('**' + groupnames[globalgroups.indexOf(usergroup) + groups.length] + '**');
-						}
-						else {
-							globalgroup.push(groupnames[globalgroups.indexOf(usergroup) + groups.length]);
-						}
+						globalgroup.push(groupnames[globalgroups.indexOf(usergroup) + groups.length]);
 					}
 				}
 			}
@@ -450,11 +436,17 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						else text += '\n' + discordname.join(' ');
 					}
 					if ( cpbody.profile['favwiki'] ) {
-						var favwiki = [lang.get('user.info.favwiki'),allSites.find( site => site.md5_key === cpbody.profile['favwiki'] )];
-						if ( favwiki[1] ) {
-							if ( msg.showEmbed() ) embed.addField( favwiki[0], '[' + favwiki[1].wiki_display_name + '](<https://' + favwiki[1].wiki_domain + '/>)', true );
-							else text += '\n' + favwiki[0] + ' <https://' + favwiki[1].wiki_domain + '/>';
-						}
+						return got.get( wiki + 'api.php?action=profile&do=getWiki&hash=' + encodeURIComponent( cpbody.profile['favwiki'] ) + '&format=json' ).then( favresponse => {
+							var favbody = favresponse.body;
+							if ( favresponse.statusCode !== 200 || !favbody?.result === 'success' || !favbody.data ) {
+								console.log( '- ' + favresponse.statusCode + ': Error while getting the favorite wiki: ' + ( favbody && ( favbody.error && favbody.error.info || favbody.errormsg ) ) );
+								return;
+							}
+							if ( msg.showEmbed() ) embed.addField( lang.get('user.info.favwiki'), '[' + favbody.data.wiki_name_display + '](<' + favbody.data.wiki_url + '>)', true );
+							else text += '\n' + lang.get('user.info.favwiki') + ' <' + favbody.data.wiki_url + '>';
+						}, error => {
+							console.log( '- Error while getting the favorite wiki: ' + error );
+						} );
 					}
 				}, error => {
 					console.log( '- Error while getting the curse profile: ' + error );

@@ -3,10 +3,6 @@ const logging = require('../../util/logging.js');
 const {timeoptions} = require('../../util/default.json');
 const {toFormatting, toPlaintext} = require('../../util/functions.js');
 
-var allSites = [];
-const getAllSites = require('../../util/allSites.js');
-getAllSites.then( sites => allSites = sites );
-
 /**
  * Sends a Gamepedia wiki overview.
  * @param {import('../../util/i18n.js')} lang - The user language.
@@ -16,8 +12,7 @@ getAllSites.then( sites => allSites = sites );
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
-	if ( !allSites.length ) getAllSites.update();
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-Wiki_Manager|custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice&amenableparser=true&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -109,36 +104,14 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			var posts = [lang.get('overview.posts')];
 			var walls = [lang.get('overview.walls')];
 			var comments = [lang.get('overview.comments')];
-			var manager = [lang.get('overview.manager'), body.query.allmessages[0]['*']];
+			var manager = [lang.get('overview.manager'), ''];
 			var founder = [lang.get('overview.founder')];
 			var crossover = [lang.get('overview.crossover')];
-			if ( body.query.allmessages[1]['*'] ) {
-				crossover[1] = '<https://' + body.query.allmessages[1]['*'] + '.gamepedia.com/>';
-			}
-			else if ( body.query.allmessages[2]['*'] ) {
-				let merge = body.query.allmessages[2]['*'].split('/');
-				crossover[1] = '<https://' + merge[0] + '.fandom.com/' + ( merge[1] ? merge[1] + '/' : '' ) + '>';
+			if ( body.query.allmessages[0]['*'] ) {
+				crossover[1] = '<https://' + body.query.allmessages[0]['*'] + '.gamepedia.com/>';
 			}
 			var description = [lang.get('overview.description')];
 			var image = [lang.get('overview.image')];
-			if ( allSites.some( site => site.wiki_domain === wiki.hostname ) ) {
-				let site = allSites.find( site => site.wiki_domain === wiki.hostname );
-				
-				manager[1] = ( site.wiki_managers[0] || lang.get('overview.none') );
-				official[1] = lang.get('overview.' + ( site.official_wiki ? 'yes' : 'no' ));
-				if ( site.created && creation_date > new Date(parseInt(site.created + '000', 10)) ) {
-					creation_date = new Date(parseInt(site.created + '000', 10));
-					created[1] = dateformat.format(creation_date);
-				}
-				if ( site.wiki_crossover ) crossover[1] = '<https://' + site.wiki_crossover + '/>';
-				if ( site.wiki_description ) {
-					description[1] = site.wiki_description.escapeFormatting();
-					if ( description[1].length > 1000 ) {
-						description[1] = description[1].substring(0, 1000) + '\u2026';
-					}
-				}
-				if ( site.wiki_image ) image[1] = new URL(site.wiki_image, wiki).href;
-			}
 			return got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + wikiid + '&format=json&cache=' + Date.now() ).then( ovresponse => {
 				var ovbody = ovresponse.body;
 				if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[wikiid] ) {
@@ -217,11 +190,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					embed.addField( users[0], users[1], true ).addField( admins[0], admins[1], true );
 					if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
 					if ( founder[1] ) embed.addField( founder[0], founder[1], true );
-					if ( crossover[1] ) {
-						let crossoverSite = allSites.find( site => '<https://' + site.wiki_domain + '/>' === crossover[1] );
-						if ( crossoverSite ) embed.addField( crossover[0], '[' + crossoverSite.wiki_display_name + '](' + crossover[1] + ')', true );
-						else embed.addField( crossover[0], crossover[1], true );
-					}
+					if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
 					embed.addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') + ( wikiid ? ' • ' + lang.get('overview.wikiid') + ' ' + wikiid : '' ) );
 					if ( description[1] ) embed.addField( description[0], description[1] );
 					if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );

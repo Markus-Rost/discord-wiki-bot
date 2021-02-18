@@ -1,10 +1,6 @@
 const util = require('util');
 const {defaultSettings, wikiProjects} = require('./default.json');
 
-var allSites = [];
-const getAllSites = require('../util/allSites.js');
-getAllSites.then( sites => allSites = sites );
-
 /**
  * A wiki.
  * @class Wiki
@@ -21,6 +17,7 @@ class Wiki extends URL {
 		this.protocol = 'https';
 		let articlepath = '/index.php?title=$1';
 		if ( this.isFandom() ) articlepath = this.pathname + 'wiki/$1';
+		this.gamepedia = this.hostname.endsWith( '.gamepedia.com' );
 		if ( this.isGamepedia() ) articlepath = '/$1';
 		let project = wikiProjects.find( project => this.hostname.endsWith( project.name ) );
 		if ( project ) {
@@ -62,15 +59,17 @@ class Wiki extends URL {
 	 * @param {String} siteinfo.mainpage - Main page of the wiki.
 	 * @param {String} siteinfo.centralidlookupprovider - Central auth of the wiki.
 	 * @param {String} siteinfo.logo - Logo of the wiki.
+	 * @param {String} [siteinfo.gamepedia] - If the wiki is a Gamepedia wiki.
 	 * @returns {Wiki}
 	 */
-	updateWiki({servername, scriptpath, articlepath, mainpage, centralidlookupprovider, logo}) {
+	updateWiki({servername, scriptpath, articlepath, mainpage, centralidlookupprovider, logo, gamepedia = 'false'}) {
 		this.hostname = servername;
 		this.pathname = scriptpath + '/';
 		this.articlepath = articlepath;
 		this.mainpage = mainpage;
 		this.centralauth = centralidlookupprovider;
 		this.miraheze = /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo);
+		this.gamepedia = ( gamepedia === 'true' ? true : this.hostname.endsWith( '.gamepedia.com' ) );
 		return this;
 	}
 
@@ -81,7 +80,7 @@ class Wiki extends URL {
 	 */
 	isFandom(includeGP = true) {
 		return ( this.hostname.endsWith( '.fandom.com' ) || this.hostname.endsWith( '.wikia.org' )
-		|| ( includeGP && this.hostname.endsWith( '.gamepedia.com' ) ) );
+		|| ( includeGP && this.isGamepedia() ) );
 	}
 
 	/**
@@ -89,7 +88,7 @@ class Wiki extends URL {
 	 * @returns {Boolean}
 	 */
 	isGamepedia() {
-		return this.hostname.endsWith( '.gamepedia.com' );
+		return this.gamepedia;
 	}
 
 	/**
@@ -214,9 +213,6 @@ class Wiki extends URL {
 		if ( project ) {
 			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
 			if ( regex ) return new this('https://' + regex[1] + project.scriptPath);
-		}
-		if ( allSites.some( site => site.wiki_domain === input + '.gamepedia.com' ) ) {
-			return new this('https://' + input + '.gamepedia.com/');
 		}
 		if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
 			if ( !input.includes( '.' ) ) return new this('https://' + input + '.fandom.com/');
