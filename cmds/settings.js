@@ -89,12 +89,19 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				return msg.replyMsg( text, {split:true}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
-				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general|extensions&format=json' ).then( response => {
-					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
-						if ( api ) {
-							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
+				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general|extensions&format=json', {
+					responseType: 'text'
+				} ).then( response => {
+					try {
+						response.body = JSON.parse(response.body);
+					}
+					catch (error) {
+						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+							let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+							if ( api ) {
+								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
+								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
+							}
 						}
 					}
 					return response;
@@ -103,6 +110,9 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
+						if ( body?.error?.info === 'You need read permission to use this module.' ) {
+							return msg.replyMsg( lang.get('settings.wikiinvalid_private') + wikihelp, {}, true );
+						}
 						msg.reactEmoji('nowiki', true);
 						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 					}
@@ -181,8 +191,15 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						} );
 					} );
 				}, ferror => {
-					console.log( '- Error while testing the wiki: ' + ferror );
 					if ( reaction ) reaction.removeEmoji();
+					if ( ferror.message?.startsWith( 'connect ECONNREFUSED ' ) || ferror.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || ferror.message === 'certificate has expired' ) {
+						console.log( '- Error while testing the wiki: No HTTPS' );
+						return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
+					}
+					console.log( '- Error while testing the wiki: ' + ferror );
+					if ( ferror.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+						return msg.replyMsg( lang.get('settings.wikiinvalid_timeout') + wikihelp, {}, true );
+					}
 					msg.reactEmoji('nowiki', true);
 					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 				} );

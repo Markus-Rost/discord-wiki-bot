@@ -113,6 +113,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			if ( line.startsWith( '>>> ' ) ) breakInline = true;
 			if ( line.startsWith( '> ' ) || breakInline ) return;
 			if ( line.hasPrefix(prefix) || !( line.includes( '[[' ) || line.includes( '{{' ) ) ) return;
+			line = line.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
 			if ( line.includes( '[[' ) && line.includes( ']]' ) && linkcount <= linkmaxcount ) {
 				let regex = new RegExp( '(?<!\\\\)(|\\|\\|)\\[\\[([^' + "<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\]\\]\\1', 'g' );
 				let entry = null;
@@ -120,8 +121,8 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					if ( linkcount < linkmaxcount ) {
 						linkcount++;
 						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
-						let title = entry[2].split('#')[0].replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
-						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ) : '' );
+						let title = entry[2].split('#')[0];
+						let section = entry[2].split('#').slice(1).join('#');
 						links.push({title,section,spoiler:entry[1]});
 					}
 					else if ( linkcount === linkmaxcount ) {
@@ -140,8 +141,8 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					if ( count < maxcount ) {
 						count++;
 						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
-						let title = entry[2].split('#')[0].replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
-						let section = ( entry[2].includes( '#' ) ? entry[2].split('#').slice(1).join('#').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ) : '' );
+						let title = entry[2].split('#')[0];
+						let section = entry[2].split('#').slice(1).join('#');
 						embeds.push({title,section,spoiler:entry[1]});
 					}
 					else if ( count === maxcount ) {

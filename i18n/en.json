@@ -630,6 +630,9 @@
         "wikichanged": "you changed the default wiki for this server to:",
         "wikihelp": "Use `$1 <link>` to change the default wiki.\nLink to a MediaWiki site like `https://<wiki>.gamepedia.com/` or `https://<wiki>.fandom.com/`",
         "wikiinvalid": "please provide a valid link to a MediaWiki site, like a Gamepedia or Fandom wiki!",
+        "wikiinvalid_http": "the provided link doesn't have a valid HTTPS certificate! For security reasons only wikis using HTTPS are supported.\nIf you are a site administrator, you can get a certificate from a certificate authority like *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_private": "the provided wiki is private! Only public wikis that can be read by everyone are supported.",
+        "wikiinvalid_timeout": "the provided link took too long to respond!",
         "wikimissing": "no default wiki is set for this server yet!"
     },
     "test": {
