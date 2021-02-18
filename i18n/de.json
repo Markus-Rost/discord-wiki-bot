@@ -397,11 +397,45 @@
         "fixed": "{{PLURAL:$1|Lösungsversion|Lösungsversionen}}:",
         "issue_link": {
             "Blocks": {
+                "inward": "wurde durch $1 blockiert",
                 "outward": "blockiert $1"
+            },
+            "Bonfire Testing": {
+                "inward": "gefunden beim testen von $1",
+                "outward": "Tests fanden $1"
+            },
+            "Cloners": {
+                "inward": "wird geklont von $1",
+                "outward": "klont $1"
+            },
+            "Duplicate": {
+                "inward": "ist dupliziert von $1",
+                "outward": "dupliziert $1"
+            },
+            "Relates": {
+                "inward": "bezieht sich auf $1",
+                "outward": "bezieht sich auf $1"
             }
         },
         "more": "Und $1 mehr.",
         "private": "**Privater Fehler**",
+        "status": {
+            "Awaiting Response": "Ausstehende Antwort",
+            "Cannot Reproduce": "Kann nicht reproduziert werden",
+            "Closed": "Geschlossen",
+            "Done": "Erledigt",
+            "Duplicate": "Duplikat",
+            "Fixed": "Behoben",
+            "In Progress": "In Arbeit",
+            "Incomplete": "Unvollständig",
+            "Invalid": "Ungültig",
+            "Open": "Offen",
+            "Postponed": "Aufgeschoben",
+            "Reopened": "Erneut geöffnet",
+            "Resolved": "Erledigt",
+            "Won't Fix": "Wird nicht korrigiert",
+            "Works As Intended": "Funktioniert wie vorgesehen"
+        },
         "total": "$1 Fehler korrigiert"
     },
     "overview": {
