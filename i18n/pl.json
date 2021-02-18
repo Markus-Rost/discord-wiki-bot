@@ -390,6 +390,10 @@
         "noadmin": "potrzebujesz uprawnienia `Zarządzanie serwerem` aby używać tych komend!",
         "pause": "**Moja praca na tym serwerze została wstrzymana!**\nTylko następujące komendy mogą być używane:"
     },
+    "interaction": {
+        "inline": "Wyślij wiadomość z linkami [[wikitekstu]] aby użyć tej komendy.",
+        "missingrole": "Aby użyć tej komendy wymagane jest posiadanie roli $1 lub wyższej."
+    },
     "invite": {
         "bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
     },
@@ -630,6 +634,9 @@
         "wikichanged": "zmieniono domyślną wiki dla tego serwera na:",
         "wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki na bazie MediaWiki: `https://<wiki>.gamepedia.com/` lub `https://<wiki>.fandom.com/`",
         "wikiinvalid": "podaj poprawny link do strony wiki, np. na Gamepedii lub Fandomie!",
+        "wikiinvalid_http": "Strona internetowa pod podanym linkiem nie posiada poprawnego certyfikatu TLS/SSL! Z powodów bezpieczeństwa tylko strony używające HTTPS są wspierane.\nJeżeli jesteś administratorem strony, możesz uzyskać certyfikat od centrum certyfikacji takiego jak na przykład *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_private": "podana wiki jest prywatna! Tylko publiczne wiki, które mogą być czytane przez wszystkich są wspierane.",
+        "wikiinvalid_timeout": "wczytywanie podanego linku zajęło zbyt długo!",
         "wikimissing": "domyślna wiki nie została ustawiona dla tego serwera!"
     },
     "test": {
