@@ -21,7 +21,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			permissions: defaultPermissions,
 			guild: args[1]
 		}).then( invite => {
-			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '>', {}, true )
+			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '%20applications.commands' + '>', {}, true )
 		}, log_error );
 		if ( patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
 		db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {

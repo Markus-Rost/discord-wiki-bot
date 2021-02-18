@@ -69,7 +69,7 @@ const removeClassesExceptions = [
 
 /**
  * Parses a wiki page to get it's description.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} content - The content for the message.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the message.

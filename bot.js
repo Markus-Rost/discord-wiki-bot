@@ -205,6 +205,96 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 	return regex.test(this.replace( /\u200b/g, '' ).toLowerCase());
 };
 
+const Wiki = require('./util/wiki.js');
+const slash_inline = require('./interactions/inline.js');
+const fs = require('fs');
+var slash = {};
+fs.readdir( './interactions', (error, files) => {
+	if ( error ) return error;
+	files.filter( file => file.endsWith('.js') ).forEach( file => {
+		var command = require('./interactions/' + file);
+		slash[command.name] = command.run;
+	} );
+} );
+/*
+!test eval got.post(`https://discord.com/api/v8/applications/${msg.client.user.id}/commands`, {
+	headers:{Authorization: `Bot ${process.env.token}`},
+	json: require('../interactions/commands.json')[0]
+}).then(response=>console.log(response.statusCode,response.body))
+*/
+client.on( 'raw', rawEvent => {
+	if ( rawEvent.t !== 'INTERACTION_CREATE' ) return;
+	var interaction = rawEvent.d;
+	if ( interaction.version !== 1 || interaction.type !== 2 ) return;
+	interaction.application_id = client.user.id;
+	if ( !slash.hasOwnProperty(interaction.data.name) ) {
+		consol.log( '- Slash: Unknown command: ' + interaction.data.name );
+		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
+			json: {
+				//type: 4,
+				type: 3,
+				data: {
+					content: '[<:error:440871715938238494> Unknown Command! <:error:440871715938238494>](<' + process.env.invite + '>)',
+					allowed_mentions: {
+						parse: []
+					},
+					flags: 64
+				}
+			}
+		} ).then( response => {
+			if ( response.statusCode !== 204 ) {
+				console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
+			}
+		}, log_error );
+	}
+	if ( !interaction.guild_id ) return slash[interaction.data.name](interaction, new Lang(), new Wiki());
+	var guild = client.guilds.cache.get(interaction.guild_id);
+	db.get( 'SELECT wiki, lang, role FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [interaction.guild_id, interaction.channel_id, '#' + guild?.channels.cache.get(interaction.channel_id)?.parentID], (dberror, row) => {
+		if ( dberror ) {
+			console.log( '- Error while getting the wiki: ' + dberror );
+			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
+				json: {
+					//type: 4,
+					type: 3,
+					data: {
+						content: '[<:error:440871715938238494> Error! <:error:440871715938238494>](<' + process.env.invite + '>)',
+						allowed_mentions: {
+							parse: []
+						},
+						flags: 64
+					}
+				}
+			} ).then( response => {
+				if ( response.statusCode !== 204 ) {
+					console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
+				}
+			}, log_error );
+		}
+		var lang = new Lang(row.lang || defaultSettings.lang);
+		if ( row.role && !interaction.member.roles.includes( row.role ) && guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
+			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
+				json: {
+					//type: 4,
+					type: 3,
+					data: {
+						content: lang.get('interaction.missingrole', '<@&' + row.role + '>'),
+						allowed_mentions: {
+							parse: []
+						},
+						flags: 64
+					}
+				}
+			} ).then( response => {
+				if ( response.statusCode !== 204 ) {
+					console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
+				}
+			}, log_error );
+		}
+		var wiki = new Wiki(row.wiki || defaultSettings.wiki);
+		return slash[interaction.data.name](interaction, lang, wiki, guild);
+	} );
+} );
+
 client.on( 'message', msg => {
 	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.author.bot || msg.author.id === msg.client.user.id ) return;
 	if ( !msg.content.hasPrefix(( msg.channel.isGuild() && patreons[msg.guild.id] || process.env.prefix ), 'm') ) {

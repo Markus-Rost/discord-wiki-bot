@@ -61,7 +61,7 @@ function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs)
 	$('#logout img').attr('src', settings.user.avatar);
 	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds', 'bot'],
+		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
 		permissions: defaultPermissions, state
 	} ));
 	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
@@ -118,7 +118,7 @@ function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs)
 		$('head title').text(`${guild.name} – ` + $('head title').text());
 		res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; HttpOnly; Path=/`]);
 		let url = oauth.generateAuthUrl( {
-			scope: ['identify', 'guilds', 'bot'],
+			scope: ['identify', 'guilds', 'bot', 'applications.commands'],
 			permissions: defaultPermissions,
 			guildId: guild.id, state
 		} );

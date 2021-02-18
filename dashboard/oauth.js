@@ -55,7 +55,7 @@ function dashboard_login(res, dashboardLang, state, action) {
 		state = crypto.randomBytes(16).toString("hex");
 	}
 	let invite = oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds', 'bot'],
+		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
 		permissions: defaultPermissions, state
 	} );
 	$('.guild#invite a, .channel#invite-wikibot').attr('href', invite);

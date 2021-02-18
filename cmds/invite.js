@@ -15,7 +15,7 @@ function cmd_invite(lang, msg, args, line, wiki) {
 		msg.client.generateInvite({
 			permissions: defaultPermissions
 		}).then( invite => {
-			msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '>' );
+			msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '%20applications.commands' + '>' );
 		}, log_error );
 	}
 }

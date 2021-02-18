@@ -390,6 +390,10 @@
         "noadmin": "you need the `Manage Server` permission for these commands!",
         "pause": "**I'm currently paused on this server!**\nOnly these commands can be performed:"
     },
+    "interaction": {
+        "inline": "Please provide some text with [[wikitext]] links to use this command.",
+        "missingrole": "You need to have the $1 role or any higher one to use this command."
+    },
     "invite": {
         "bot": "Use this link to invite me to another server:"
     },
