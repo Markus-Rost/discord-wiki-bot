@@ -390,6 +390,10 @@
         "noadmin": "¡necesitas el permiso `Manage Server` para estos comandos!",
         "pause": "**¡Actualmente estoy en pausa en este servidor!**\nSolo se pueden ejecutar estos comandos:"
     },
+    "interaction": {
+        "inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
+        "missingrole": "Debes tener el rol de $1 o uno superior para usar este comando."
+    },
     "invite": {
         "bot": "Usa este enlace para invitarme a otro servidor:"
     },
@@ -630,6 +634,9 @@
         "wikichanged": "cambiaste el wiki predeterminado de este servidor a:",
         "wikihelp": "Usa `$1 <link> para cambiar el wiki predeterminado.\nY el enlace un sitio de MediaWiki como `https://<wiki>.gamepedia.com/` o `https://<wiki>.fandom.com/`",
         "wikiinvalid": "¡proporciona un enlace válido a un sitio de MediaWiki, como Gamepedia o Fandom wiki!",
+        "wikiinvalid_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.\nSi eres el administrador del sitio, puedes obtener un certificado de una autoridad de certificación como *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_private": "¡El wiki proporcionado es privado! Solo se admiten wikis públicos que todos puedan leer.",
+        "wikiinvalid_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
         "wikimissing": "¡todavía no hay un wiki predeterminado en este servidor!"
     },
     "test": {
