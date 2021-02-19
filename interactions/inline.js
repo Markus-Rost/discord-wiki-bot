@@ -7,10 +7,11 @@ const {limitLength, partialURIdecode, allowDelete} = require('../util/functions.
  * @param {Object} interaction - The interaction.
  * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('../util/wiki.js')} wiki - The wiki for the interaction.
- * @param {import('discord.js').TextChannel} [channel] - The guild for the interaction.
+ * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
  */
 function slash_inline(interaction, lang, wiki, channel) {
-	var text = ( interaction.data.options?.[0]?.value || '' ).replace( /\]\(/g, ']\\(' ).trim();
+	var text = ( interaction.data.options?.[0]?.value || '' ).replace( /\]\(/g, ']\\(' );
+	text = text.replace( /\x1F/g, '' ).trim();
 	if ( !text ) {
 		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 			json: {
@@ -44,6 +45,15 @@ function slash_inline(interaction, lang, wiki, channel) {
 				allowed_mentions.roles = allowed_mentions.roles.slice(0, 100);
 			}
 		}
+		if ( channel?.guild && ( (interaction.member.permissions & 1 << 3) !== 1 << 3 ) // ADMINISTRATOR
+		&& ( (interaction.member.permissions & 1 << 17) !== 1 << 18 ) ) { // USE_EXTERNAL_EMOJIS
+			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
+				if ( channel.guild.emojis.cache.has(id) ) {
+					return replacement;
+				}
+				return emoji;
+			} );
+		}
 	}
 	if ( text.length > 1800 ) text = text.substring(0, 1800) + '\u2026';
 	return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
@@ -72,14 +82,34 @@ function slash_inline(interaction, lang, wiki, channel) {
 			}, () => {} );
 		}
 		var textReplacement = [];
-		var replacedText = text.replace( /\u200b/g, '' ).replace( /(?<!\\)(?:<a?(:\w+:)\d+>|```.+?```|`.+?`)/gs, (replacement, arg) => {
+		var replacedText = text.replace( /(?<!\\)(?:<a?(:\w+:)\d+>|<#(\d+)>|<@!?(\d+)>|<@&(\d+)>|```.+?```|``.+?``|`.+?`)/gs, (replacement, emoji, textchannel, user, role) => {
 			textReplacement.push(replacement);
-			return '\u200b<replacement' + ( arg ? '\u200b' + textReplacement.length + '\u200b' + arg : '' ) + '>\u200b';
+			var arg = '';
+			if ( emoji ) arg = emoji;
+			if ( channel ) {
+				if ( textchannel ) {
+					let tempchannel = channel.client.channels.cache.get(textchannel);
+					if ( tempchannel ) arg = '#' + tempchannel.name;
+				}
+				if ( user ) {
+					let tempuser = channel.guild?.members.cache.get(user);
+					if ( tempuser ) arg = '@' + tempuser.displayName;
+					else {
+						tempuser = channel.client.users.cache.get(user);
+						if ( tempuser ) arg = '@' + tempuser.username;
+					}
+				}
+				if ( role ) {
+					let temprole = channel.guild?.roles.cache.get(role);
+					if ( temprole ) arg = '@' + temprole.name;
+				}
+			}
+			return '\x1F<replacement' + ( arg ? '\x1F' + textReplacement.length + '\x1F' + arg : '' ) + '>\x1F';
 		} );
 		var templates = [];
 		var links = [];
 		var breakInline = false;
-		replacedText.replace( /\u200b<replacement\u200b\d+\u200b(.+?)>\u200b/g, '$1' ).replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).split('\n').forEach( line => {
+		replacedText.replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).split('\n').forEach( line => {
 			if ( line.startsWith( '>>> ' ) ) breakInline = true;
 			if ( line.startsWith( '> ' ) || breakInline ) return;
 			var inlineLink = null;
@@ -195,17 +225,17 @@ function slash_inline(interaction, lang, wiki, channel) {
 				replacedText = replacedText.split('\n').map( line => {
 					if ( line.startsWith( '>>> ' ) ) breakInline = true;
 					if ( line.startsWith( '> ' ) || breakInline ) return line;
-					let emojiReplacements = 1;
-					let regex = /(?<!\\|\{)(\{\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?\s*)((?:[^<>\[\]\|\{\}\x01-\x1F\x7F#]|\u200b<replacement\u200b\d+\u200b.+?>\u200b)+?)(\s*(?<!\\)\||\}\})/g;
+					let linkReplacements = 1;
+					let regex = /(?<!\\|\{)(\{\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?\s*)((?:[^<>\[\]\|\{\}\x01-\x1F\x7F#]|\x1F<replacement\x1F\d+\x1F.+?>\x1F)+?)(\s*(?<!\\)\||\}\})/g;
 					line = line.replace( regex, (fullLink, linkprefix, title, linktrail) => {
 						title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
-						let rawTitle = title.replace( /\u200b<replacement\u200b\d+\u200b(.+?)>\u200b/g, '$1' ).trim();
+						let rawTitle = title.replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).trim();
 						let link = templates.find( link => link.raw === rawTitle );
 						if ( !link ) return fullLink;
 						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
-						title = title.replace( /\u200b<replacement\u200b(\d+)\u200b(.+?)>\u200b/g, (replacement, id, arg) => {
-							links.splice(id - emojiReplacements, 1);
-							emojiReplacements++;
+						title = title.replace( /\x1F<replacement\x1F(\d+)\x1F(.+?)>\x1F/g, (replacement, id, arg) => {
+							links.splice(id - linkReplacements, 1);
+							linkReplacements++;
 							return arg;
 						} );
 						if ( title.startsWith( 'int:' ) ) {
@@ -216,16 +246,16 @@ function slash_inline(interaction, lang, wiki, channel) {
 						}
 						return linkprefix + '[' + title + '](<' + ( link.url || wiki.toLink(link.title || link.template, '', '', true) ) + '>)' + linktrail;
 					} );
-					regex = new RegExp( '([' + body.query.general.linkprefixcharset.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ) + ']+)?' + '(?<!\\\\)\\[\\[' + '((?:[^' + "<>\\[\\]\\|\{\}\\x01-\\x1F\\x7F" + ']|' + '\\u200b<replacement\\u200b\\d+\\u200b.+?>\\u200b' + ')+)' + '(?:\\|((?:(?!\\[\\[|\\]\\(|\\]\\\\\\]).)*?))?' + '(?<!\\\\)\\]\\]' + body.query.general.linktrail.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ).replace( /^\/\^(\(\[.+?\]\+\))\(\.\*\)\$\/sDu?$/, '$1?' ), 'gu' );
+					regex = new RegExp( '([' + body.query.general.linkprefixcharset.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ) + ']+)?' + '(?<!\\\\)\\[\\[' + '((?:[^' + "<>\\[\\]\\|\{\}\\x01-\\x1F\\x7F" + ']|' + '\\x1F<replacement\\x1F\\d+\\x1F.+?>\\x1F' + ')+)' + '(?:\\|((?:(?!\\[\\[|\\]\\(|\\]\\\\\\]).)*?))?' + '(?<!\\\\)\\]\\]' + body.query.general.linktrail.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ).replace( /^\/\^(\(\[.+?\]\+\))\(\.\*\)\$\/sDu?$/, '$1?' ), 'gu' );
 					line = line.replace( regex, (fullLink, linkprefix = '', title, display, linktrail = '') => {
 						title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
-						let rawTitle = title.replace( /\u200b<replacement\u200b\d+\u200b(.+?)>\u200b/g, '$1' ).split('#')[0].trim();
+						let rawTitle = title.replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).split('#')[0].trim();
 						let link = links.find( link => link.raw === rawTitle );
 						if ( !link ) return fullLink;
 						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
-						title = title.replace( /\u200b<replacement\u200b(\d+)\u200b(.+?)>\u200b/g, (replacement, id, arg) => {
-							links.splice(id - emojiReplacements, 1);
-							emojiReplacements++;
+						title = title.replace( /\x1F<replacement\x1F(\d+)\x1F(.+?)>\x1F/g, (replacement, id, arg) => {
+							links.splice(id - linkReplacements, 1);
+							linkReplacements++;
 							return arg;
 						} );
 						if ( display === undefined ) display = title.replace( /^\s*:?/, '' );
@@ -243,7 +273,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 					} );
 					return line;
 				} ).join('\n');
-				text = replacedText.replace( /\u200b<replacement(?:\u200b\d+\u200b.+?)?>\u200b/g, replacement => {
+				text = replacedText.replace( /\x1F<replacement(?:\x1F\d+\x1F.+?)?>\x1F/g, replacement => {
 					return textReplacement.shift();
 				} );
 				if ( text.length > 1900 ) text = limitLength(text, 1900, 100);
