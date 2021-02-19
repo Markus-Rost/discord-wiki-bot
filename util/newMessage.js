@@ -173,7 +173,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
 					logging(wiki, msg.guild?.id, 'inline', 'interwiki');
-					link.url = ( link.section ? interwiki.url.split('#')[0] + Wiki.toSection(link.section) : interwiki.url );
+					link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section) : decodeURI(interwiki.url) );
 				} ) );
 			}
 			if ( body.query.pages ) {

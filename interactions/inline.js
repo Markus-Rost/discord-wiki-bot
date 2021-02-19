@@ -11,8 +11,6 @@ const {limitLength, partialURIdecode} = require('../util/functions.js');
  */
 function slash_inline(interaction, lang, wiki, guild) {
 	var text = ( interaction.data.options?.[0]?.value || '' ).replace( /\]\(/g, ']\\(' ).trim();
-	console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + text );
-	logging(wiki, interaction.guild_id, 'slash', 'inline');
 	if ( !text ) {
 		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 			json: {
@@ -111,6 +109,7 @@ function slash_inline(interaction, lang, wiki, guild) {
 				}
 				return;
 			}
+			logging(wiki, interaction.guild_id, 'slash', 'inline');
 			wiki.updateWiki(body.query.general);
 			if ( body.query.normalized ) {
 				body.query.normalized.forEach( title => {
@@ -122,10 +121,10 @@ function slash_inline(interaction, lang, wiki, guild) {
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => {
 					templates.filter( link => link.title === interwiki.title ).forEach( link => {
-						link.url = interwiki.url;
+						link.url = decodeURI(interwiki.url)
 					} );
 					links.filter( link => link.title === interwiki.title ).forEach( link => {
-						link.url = ( link.section ? interwiki.url.split('#')[0] + Wiki.toSection(link.section) : interwiki.url );
+						link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section) : decodeURI(interwiki.url) );
 					} );
 				} );
 			}
@@ -175,6 +174,7 @@ function slash_inline(interaction, lang, wiki, guild) {
 						let rawTitle = title.replace( /\u200b<replacement\u200b\d+\u200b(.+?)>\u200b/g, '$1' ).trim();
 						let link = templates.find( link => link.raw === rawTitle );
 						if ( !link ) return fullLink;
+						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
 						title = title.replace( /\u200b<replacement\u200b(\d+)\u200b(.+?)>\u200b/g, (replacement, id, arg) => {
 							links.splice(id - emojiReplacements, 1);
 							emojiReplacements++;
@@ -194,6 +194,7 @@ function slash_inline(interaction, lang, wiki, guild) {
 						let rawTitle = title.replace( /\u200b<replacement\u200b\d+\u200b(.+?)>\u200b/g, '$1' ).split('#')[0].trim();
 						let link = links.find( link => link.raw === rawTitle );
 						if ( !link ) return fullLink;
+						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
 						title = title.replace( /\u200b<replacement\u200b(\d+)\u200b(.+?)>\u200b/g, (replacement, id, arg) => {
 							links.splice(id - emojiReplacements, 1);
 							emojiReplacements++;
