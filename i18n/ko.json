@@ -357,6 +357,10 @@
                     "cmd": "verification <id> editcount <새 편집 횟수>",
                     "desc": "위키 인증을 위해 필요한 최소 편집 횟수를 변경할게요."
                 },
+                "postcount": {
+                    "cmd": "verification <id> postcount <새 게시글 횟수>",
+                    "desc": "위키 인증에 필요한 최소 토론 게시글 게시 횟수를 변경할게요.\n • 음수 값을 넣으면 편집 횟수 또는 게시글 횟수 중 하나만 필요로 합니다.\n • `null` 값을 입력하면 편집 횟수와 게시글 횟수를 합쳐서 계산합니다."
+                },
                 "rename": {
                     "cmd": "verification <id> rename",
                     "desc": "위키인증을 할 때 디스코드 닉네임을 위키 계정 이름으로 변경할 지 여부에 관한 설정을 변경할게요."
@@ -386,16 +390,56 @@
         "noadmin": "이 명령어를 사용하려면 `서버 관리하기` 권한이 필요해요!",
         "pause": "**저는 이 서버에서 일시중지되어 있어요!**\n지금은 이 명령어만 사용할 수 있어요."
     },
+    "interaction": {
+        "inline": "이 명령어를 사용하려면 [[위키텍스트]]와 다른 텍스트를 같이 제공해야 합니다.",
+        "missingrole": "이 명령어를 사용하려면 $1 또는 이 역할보다 위에 있는 역할을 가지고 있어야 합니다."
+    },
     "invite": {
         "bot": "저를 다른 서버에 초대하려면 이 링크를 사용하세요."
     },
     "minecraft": {
         "fixed": "수정된 버전:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "$1에 의해 가로막힘",
+                "outward": "$1 을(를) 가로막고 있음"
+            },
+            "Bonfire Testing": {
+                "inward": "$1 을(를) 테스트하던 중 발견됨",
+                "outward": "테스트 중 $1 을(를) 발견함"
+            },
+            "Cloners": {
+                "inward": "$1 (으)로 복제됨",
+                "outward": "$1에서 복제됨"
+            },
+            "Relates": {
+                "inward": "$1 와(과) 연관됨",
+                "outward": "$1 와(과) 연관됨"
+            }
+        },
         "more": "그 외 $1개.",
         "private": "**비공개 이슈**",
+        "status": {
+            "Awaiting Response": "응답을 기다리는 중",
+            "Cannot Reproduce": "재현할 수 없음",
+            "Closed": "종료됨",
+            "Done": "완료됨",
+            "Duplicate": "중복",
+            "Fixed": "고쳐짐",
+            "In Progress": "진행 중",
+            "Incomplete": "미완성",
+            "Invalid": "무효",
+            "Open": "열림",
+            "Postponed": "중단됨",
+            "Reopened": "다시 열림",
+            "Resolved": "해결됨",
+            "Won't Fix": "고칠 예정 없음",
+            "Works As Intended": "의도된 대로 동작함"
+        },
         "total": "$1개의 문제 해결됨"
     },
     "overview": {
+        "admins": "관리자:",
         "articles": "문서:",
         "comments": "문서 댓글:",
         "created": "생성 시간:",
@@ -527,6 +571,7 @@
         "empty": "*이 특수 문서는 비어 있습니다*",
         "infopage": "올바른 결과가 아닌가요? $1 을(를) 이용해 직링크를 받으세요.",
         "infosearch": "올바른 결과가 아닌가요? $1 을(를) 이용해 직링크를 받거나 $2 을(를) 이용해 모든 결과를 받으세요.",
+        "loading": "문서 설명을 불러오는 중…",
         "media": "파일 설명 문서로",
         "results": "총 결과 $1개",
         "special": "이 특수 문서의 내용:"
@@ -585,6 +630,9 @@
         "wikichanged": "이 서버의 기본 위키를 다음 위키로 변경했습니다:",
         "wikihelp": "`$1 <링크>` 명령어로 기본 위키를 변경하세요.\n`https://<위키>.gamepedia.com/`이나 `https://<위키>.fandom.com` 과 같은 미디어위키 사이트 링크를 입력하세요",
         "wikiinvalid": "게임피디아나 팬덤 위키와 같은 유효한 미디어위키 사이트로 가는 링크를 제공해 주세요!",
+        "wikiinvalid_http": "제공된 웹사이트에 TLS/SSL 연결을 할 수 없습니다! 보안 문제로, HTTPS를 사용하는 위키만 지원됩니다.\n사이트 관리자라면, *Let's Encrypt*와 같은 인증 기관에서 인증서를 받을 수 있습니다.\n<https://letsencrypt.org/ko/getting-started/>",
+        "wikiinvalid_private": "제공된 위키는 비공개 위키입니다! 모두가 읽을 수 있는 공개 위키만 지원하고 있습니다.",
+        "wikiinvalid_timeout": "이 링크는 응답하기에는 너무 깁니다!",
         "wikimissing": "이 서버의 기본 위키가 설정되지 않았습니다!"
     },
     "test": {
@@ -683,10 +731,14 @@
         "new_accountage": "<새 계정 나이>",
         "new_channel": "<새 채널>",
         "new_editcount": "<새 편집 수>",
+        "new_postcount": "<새 게시글 횟수>",
         "new_role": "<새 역할>",
         "new_usergroup": "<새 사용자 권한>",
         "no_role": "새 인증을 위한 역할을 지정해 주세요.",
         "or": "또는",
+        "postcount": "게시글 횟수 (팬덤 위키 한정):",
+        "postcount_or": "(편집 횟수 대신에)",
+        "posteditcount": "편집 횟수와 게시글 횟수 통합:",
         "rename": "닉네임 변경하기:",
         "rename_no_permission": "**$1 봇은 위키 계정 이름을 강제하기 위해 `닉네임 관리하기` 권한이 필요해요!**",
         "role": "역할:",
