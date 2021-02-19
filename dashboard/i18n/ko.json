@@ -24,6 +24,9 @@
     },
     "indexjs": {
         "invalid": {
+            "note_http": "제공된 웹사이트는 HTTPS를 사용하지 않습니다!",
+            "note_private": "제공된 위키는 비공개입니다!",
+            "note_timeout": "제공된 링크가 너무 오래 응답하지 않습니다!",
             "text": "URL에서 유효한 미디어위키 사이트로 연결할 수 없었습니다!",
             "title": "무효한 위키입니다!"
         },
@@ -103,6 +106,9 @@
             "title": "설정 저장됨!"
         },
         "savefail": {
+            "note_http": "제공된 웹사이트는 HTTPS를 사용하지 않습니다!",
+            "note_private": "제공된 위키는 비공개입니다!",
+            "note_timeout": "제공된 링크가 너무 오래 응답하지 않습니다!",
             "text": "설정을 저장할 수 없었습니다, 다시 시도해 주세요.",
             "title": "저장 실패!"
         },
@@ -181,6 +187,11 @@
             "entry": "인증 #$1",
             "more": "더 추가",
             "new": "새 인증",
+            "postcount": "최소 게시글 갯수:",
+            "postcount_and": "편집 횟수와 게시글 횟수를 모두 확인합니다.",
+            "postcount_both": "편집 횟수와 게시글 횟수를 통합하여 확인합니다.",
+            "postcount_fandom": "팬덤 위키에서만:",
+            "postcount_or": "편집 횟수 또는 게시글 횟수 중 하나만 확인합니다.",
             "rename": "이름 변경:",
             "role": "역할:",
             "select_channel": "-- 채널을 선택하세요 --",
