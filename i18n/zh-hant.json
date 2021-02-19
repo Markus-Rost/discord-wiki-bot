@@ -390,6 +390,10 @@
         "noadmin": "這個指令僅限擁有 `管理員` 權限的使用者使用！",
         "pause": "**我目前處於暫停狀態！**\n僅能使用以下指令："
     },
+    "interaction": {
+        "inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
+        "missingrole": "您需要擁有 $1 身分組或更高的身分組以使用此指令。"
+    },
     "invite": {
         "bot": "使用這個連結把我加入到其他伺服器："
     },
@@ -630,6 +634,9 @@
         "wikichanged": "你已將本伺服器的預設wiki變更為：",
         "wikihelp": "使用 `$1 <link>` 以變更預設wiki。\nMediaWiki網站的連結，如 `https://<wiki>.gamepedia.com/` 或 `https://<wiki>.fandom.com/`",
         "wikiinvalid": "請提供連到 MediaWiki 網站的有效連結（如 Gamepedia 或 Fandom wiki）！",
+        "wikiinvalid_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。\n如果您是站點管理員，您可以從像 *Let’s Encrypt* 這樣的憑證頒發機構獲取憑證：\n<https://letsencrypt.org/zh-tw/getting-started/>",
+        "wikiinvalid_private": "您提供的 wiki 是私人 wiki！僅支援可被所有人讀取的公開 wiki。",
+        "wikiinvalid_timeout": "所提供的連結的應答時間過長！",
         "wikimissing": "此伺服器尚未設定預設wiki！"
     },
     "test": {
