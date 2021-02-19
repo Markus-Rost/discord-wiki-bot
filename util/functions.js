@@ -400,6 +400,19 @@ function partialURIdecode(m) {
 	return text;
 };
 
+/**
+ * Allow users to delete their command responses.
+ * @param {import('discord.js').Message} msg - The response.
+ * @param {String} author - The user id.
+ */
+function allowDelete(msg, author) {
+	msg.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑️' && user.id === author, {max:1,time:300000} ).then( reaction => {
+		if ( reaction.size ) {
+			msg.delete().catch(log_error);
+		}
+	} );
+};
+
 module.exports = {
 	got,
 	parse_infobox,
@@ -410,5 +423,6 @@ module.exports = {
 	htmlToDiscord,
 	escapeFormatting,
 	limitLength,
-	partialURIdecode
+	partialURIdecode,
+	allowDelete
 };

@@ -21,12 +21,14 @@ const {defaultSettings} = require('./util/default.json');
 const Lang = require('./util/i18n.js');
 const Wiki = require('./util/wiki.js');
 const newMessage = require('./util/newMessage.js');
+const {allowDelete} = require('./util/functions.js');
 global.patreons = {};
 global.voice = {};
 const db = require('./util/database.js');
 
 const Discord = require('discord.js');
 const client = new Discord.Client( {
+	messageEditHistoryMaxSize: 1,
 	messageCacheLifetime: 300,
 	messageSweepInterval: 300,
 	allowedMentions: {
@@ -183,19 +185,6 @@ Discord.Message.prototype.replyMsg = function(content, options = {}, ignorePause
 	}
 };
 
-/**
- * All users to delete their command responses.
- * @param {Discord.Message} msg - The response.
- * @param {String} author - The user.
- */
-function allowDelete(msg, author) {
-	msg.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑️' && user.id === author, {max:1,time:120000} ).then( reaction => {
-		if ( reaction.size ) {
-			msg.delete().catch(log_error);
-		}
-	} );
-};
-
 String.prototype.hasPrefix = function(prefix, flags = '') {
 	var suffix = '';
 	if ( prefix.endsWith( ' ' ) ) {
@@ -246,9 +235,11 @@ client.on( 'raw', rawEvent => {
 			}
 		}, log_error );
 	}
-	if ( !interaction.guild_id ) return slash[interaction.data.name](interaction, new Lang(), new Wiki());
-	var guild = client.guilds.cache.get(interaction.guild_id);
-	db.get( 'SELECT wiki, lang, role FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [interaction.guild_id, interaction.channel_id, '#' + guild?.channels.cache.get(interaction.channel_id)?.parentID], (dberror, row) => {
+	var channel = client.channels.cache.get(interaction.channel_id);
+	if ( !interaction.guild_id ) {
+		return slash[interaction.data.name](interaction, new Lang(), new Wiki(), channel);
+	}
+	db.get( 'SELECT wiki, lang, role FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID], (dberror, row) => {
 		if ( dberror ) {
 			console.log( '- Error while getting the wiki: ' + dberror );
 			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
@@ -270,7 +261,7 @@ client.on( 'raw', rawEvent => {
 			}, log_error );
 		}
 		var lang = new Lang(row.lang || defaultSettings.lang);
-		if ( row.role && !interaction.member.roles.includes( row.role ) && guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
+		if ( row.role && !interaction.member.roles.includes( row.role ) && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
 			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 				json: {
 					//type: 4,
@@ -290,7 +281,7 @@ client.on( 'raw', rawEvent => {
 			}, log_error );
 		}
 		var wiki = new Wiki(row.wiki || defaultSettings.wiki);
-		return slash[interaction.data.name](interaction, lang, wiki, guild);
+		return slash[interaction.data.name](interaction, lang, wiki, channel);
 	} );
 } );
 
