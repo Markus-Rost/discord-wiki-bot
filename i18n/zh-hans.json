@@ -390,6 +390,10 @@
         "noadmin": "这个命令仅限拥有 `管理员` 权限的用户使用！",
         "pause": "**我目前处于暂停状态！**\n仅能使用以下命令："
     },
+    "interaction": {
+        "inline": "请提供一些有 [[wiki 文本]]的文字来使用此命令。",
+        "missingrole": "你需要拥有 $1 身份组或更高的身份组以使用此命令。"
+    },
     "invite": {
         "bot": "使用这个链接把我添加到其他服务器："
     },
@@ -630,6 +634,9 @@
         "wikichanged": "你已将服务器 wiki 更改为：",
         "wikihelp": "使用 `$1 <link>` 来更改默认 wiki。\nMediaWiki 网站的链接，如 `https://<wiki>.gamepedia.com/` 或 `https://<wiki>.fandom.com/`",
         "wikiinvalid": "请提供到 MediaWiki 网站的有效链接（如 Gamepedia 或 Fandom wiki）！",
+        "wikiinvalid_http": "您提供的网站没有有效的 TLS/SSL 证书！处于安全原因，只有使用 HTTPS 的 wiki 是受支持的。\n如果您是一位站点管理员，您可以从像 *Let’s Encrypt* 这样的证书权威获取证书：\n<https://letsencrypt.org/zh-cn/getting-started/>",
+        "wikiinvalid_private": "您提供的 wiki 是私人的！只有可以被所有人读取的公开 wiki 是支持的。",
+        "wikiinvalid_timeout": "提供的链接使用了太多时间来响应！",
         "wikimissing": "暂未绑定 wiki！"
     },
     "test": {
