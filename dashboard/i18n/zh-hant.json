@@ -24,6 +24,9 @@
     },
     "indexjs": {
         "invalid": {
+            "note_http": "所提供的網站不使用 HTTPS！",
+            "note_private": "所提供的 wiki 是私人 wiki！",
+            "note_timeout": "所提供的連結使用了過長時間來應答！",
             "text": "此URL無法解析至有效的MediaWiki網站！",
             "title": "無效的wiki！"
         },
@@ -103,6 +106,9 @@
             "title": "已儲存設定！"
         },
         "savefail": {
+            "note_http": "所提供的網站不使用 HTTPS！",
+            "note_private": "所提供的 wiki 是私人 wiki！",
+            "note_timeout": "所提供的連結使用了過長的時間來應答！",
             "text": "無法儲存設定，請再試一次。",
             "title": "儲存失敗！"
         },

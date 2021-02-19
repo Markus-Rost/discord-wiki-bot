@@ -24,6 +24,9 @@
     },
     "indexjs": {
         "invalid": {
+            "note_http": "Die angegebene Website nutzt kein HTTPS!",
+            "note_private": "Das angegebene Wiki ist privat!",
+            "note_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
             "text": "Die URL konnte nicht zu einer gültigen MediaWiki-Seite aufgelöst werden!",
             "title": "Ungültiges Wiki!"
         },
@@ -103,6 +106,9 @@
             "title": "Einstellungen gespeichert!"
         },
         "savefail": {
+            "note_http": "Die angegebene Website nutzt kein HTTPS!",
+            "note_private": "Das angegebene Wiki ist privat!",
+            "note_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
             "text": "Die Einstellungen konnten nicht gespeichert werden, bitte versuche es erneut.",
             "title": "Speichern fehlgeschlagen!"
         },
