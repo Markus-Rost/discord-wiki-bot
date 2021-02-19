@@ -357,6 +357,9 @@
                     "cmd": "verification <id> editcount <nova contagem de edições>",
                     "desc": "Vou alterar a contagem mínima de edições para a verificação da wiki."
                 },
+                "postcount": {
+                    "cmd": "verification <id> postcount <nova contagem de posts>"
+                },
                 "rename": {
                     "cmd": "verification <id> rename",
                     "desc": "Vou alterar se o apelido do Discord dos usuários deve ser alterado para o nome de usuário da wiki para a verificação da wiki."
