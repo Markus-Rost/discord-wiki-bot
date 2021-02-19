@@ -57,7 +57,7 @@ class Lang {
 		for ( let n = 0; n < keys.length; n++ ) {
 			if ( text ) {
 				text = text?.[keys[n]];
-				if ( typeof text === 'string' ) text = text.trim()
+				if ( typeof text === 'string' ) text = text.trim();
 			}
 			if ( !text ) {
 				if ( fallback < this.fallback.length ) {

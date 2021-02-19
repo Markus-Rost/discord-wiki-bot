@@ -1,3 +1,26 @@
+function lang(message = '') {
+	var keys = ( message.length ? message.split('.') : [] );
+	var text = i18n[0];
+	var fallback = 1;
+	for ( var n = 0; n < keys.length; n++ ) {
+		if ( text ) {
+			text = text[keys[n]];
+			if ( typeof text === 'string' ) text = text.trim();
+		}
+		if ( !text ) {
+			if ( fallback < i18n.length ) {
+				text = i18n[fallback];
+				fallback++;
+				n = -1;
+			}
+			else {
+				n = keys.length;
+			}
+		}
+	}
+	return ( text || '⧼' + message + '⧽' );
+}
+
 var baseSelect = document.getElementsByTagName('select');
 for ( var b = 0; b < baseSelect.length; b++ ) {
 	if ( baseSelect[b].id === 'wb-settings-lang' ) {
@@ -113,24 +136,29 @@ if ( wiki ) {
 				wikichecknotice.className = 'notice';
 				wikichecknotice.innerHTML = '';
 				if ( response.error ) {
-					wiki.setCustomValidity(i18n.invalid.title);
+					wiki.setCustomValidity(lang('invalid.title'));
 					wikichecknotice.classList.add('notice-error');
 					var noticeTitle = document.createElement('b');
-					noticeTitle.textContent = i18n.invalid.title;
+					noticeTitle.textContent = lang('invalid.title');
 					var noticeText = document.createElement('div');
-					noticeText.textContent = i18n.invalid.text;
-					wikichecknotice.append(noticeTitle, noticeText);
+					noticeText.textContent = lang('invalid.text');
+					var noticeNote = '';
+					if ( response.error_code ) {
+						noticeNote = document.createElement('div');
+						noticeNote.textContent = lang('invalid.note_' + response.error_code);
+					}
+					wikichecknotice.append(noticeTitle, noticeText, noticeNote);
 					return;
 				}
 				wiki.value = response.wiki;
 				if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
 					if ( !response.MediaWiki ) {
-						wiki.setCustomValidity(i18n.outdated.title);
+						wiki.setCustomValidity(lang('outdated.title'));
 						wikichecknotice.classList.add('notice-error');
 						var noticeTitle = document.createElement('b');
-						noticeTitle.textContent = i18n.outdated.title;
+						noticeTitle.textContent = lang('outdated.title');
 						var noticeText = document.createElement('div');
-						noticeText.textContent = i18n.outdated.text;
+						noticeText.textContent = lang('outdated.text');
 						var noticeLink = document.createElement('a');
 						noticeLink.setAttribute('target', '_blank');
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
@@ -141,7 +169,7 @@ if ( wiki ) {
 					if ( response.RcGcDw !== document.location.pathname.split('/')[2] ) {
 						wikichecknotice.classList.add('notice-info');
 						var noticeTitle = document.createElement('b');
-						noticeTitle.textContent = i18n.sysmessage.title;
+						noticeTitle.textContent = lang('sysmessage.title');
 						var sysmessageLink = document.createElement('a');
 						sysmessageLink.setAttribute('target', '_blank');
 						sysmessageLink.setAttribute('href', response.customRcGcDw);
@@ -152,7 +180,7 @@ if ( wiki ) {
 						guildCode.className = 'user-select';
 						guildCode.textContent = document.location.pathname.split('/')[2];
 						var noticeText = document.createElement('div');
-						var textSnippets = i18n.sysmessage.text.split(/\$\d/);
+						var textSnippets = lang('sysmessage.text').split(/\$\d/);
 						noticeText.append(
 							document.createTextNode(textSnippets[0]),
 							sysmessageLink,
@@ -167,13 +195,13 @@ if ( wiki ) {
 					}
 					wikichecknotice.classList.add('notice-success');
 					var noticeTitle = document.createElement('b');
-					noticeTitle.textContent = i18n.valid.title;
+					noticeTitle.textContent = lang('valid.title');
 					wikichecknotice.append(noticeTitle);
 					return;
 				}
 				wikichecknotice.classList.add('notice-success');
 				var noticeTitle = document.createElement('b');
-				noticeTitle.textContent = i18n.valid.title;
+				noticeTitle.textContent = lang('valid.title');
 				wikichecknotice.append(noticeTitle);
 				if ( !/\.(?:gamepedia\.com|fandom\.com|wikia\.org)$/.test(wiki.value.split('/')[2]) ) {
 					if ( !response.MediaWiki ) {
@@ -182,7 +210,7 @@ if ( wiki ) {
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
 						noticeLink.textContent = 'MediaWiki 1.30';
 						var noticeText = document.createElement('div');
-						var textSnippets = i18n.valid.MediaWiki.split(/\$\d/);
+						var textSnippets = lang('valid.MediaWiki').split(/\$\d/);
 						noticeText.append(
 							document.createTextNode(textSnippets[0]),
 							noticeLink,
@@ -196,7 +224,7 @@ if ( wiki ) {
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/Extension:TextExtracts');
 						noticeLink.textContent = 'TextExtracts';
 						var noticeText = document.createElement('div');
-						var textSnippets = i18n.valid.TextExtracts.split(/\$\d/);
+						var textSnippets = lang('valid.TextExtracts').split(/\$\d/);
 						noticeText.append(
 							document.createTextNode(textSnippets[0]),
 							noticeLink,
@@ -210,7 +238,7 @@ if ( wiki ) {
 						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/Extension:PageImages');
 						noticeLink.textContent = 'PageImages';
 						var noticeText = document.createElement('div');
-						var textSnippets = i18n.valid.PageImages.split(/\$\d/);
+						var textSnippets = lang('valid.PageImages').split(/\$\d/);
 						noticeText.append(
 							document.createTextNode(textSnippets[0]),
 							noticeLink,
@@ -307,13 +335,13 @@ const prefix = document.getElementById('wb-settings-prefix');
 if ( prefix ) prefix.addEventListener( 'input', function() {
 	if ( prefix.validity.patternMismatch ) {
 		if ( prefix.value.trim().includes( ' ' ) ) {
-			prefix.setCustomValidity(i18n.prefix.space);
+			prefix.setCustomValidity(lang('prefix.space'));
 		}
 		else if ( prefix.value.includes( '`' ) ) {
-			prefix.setCustomValidity(i18n.prefix.code);
+			prefix.setCustomValidity(lang('prefix.code'));
 		}
 		else if ( prefix.value.includes( '\\' ) ) {
-			prefix.setCustomValidity(i18n.prefix.backslash);
+			prefix.setCustomValidity(lang('prefix.backslash'));
 		}
 		else prefix.setCustomValidity('');
 	}

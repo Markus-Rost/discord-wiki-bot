@@ -37,7 +37,7 @@ class Lang {
 		for ( let n = 0; n < keys.length; n++ ) {
 			if ( text ) {
 				text = text?.[keys[n]];
-				if ( typeof text === 'string' ) text = text.trim()
+				if ( typeof text === 'string' ) text = text.trim();
 			}
 			if ( !text ) {
 				if ( fallback < this.fallback.length ) {
@@ -66,6 +66,23 @@ class Lang {
 			} );
 		}
 		return ( text || '⧼' + message + ( isDebug && args.length ? ': ' + args.join(', ') : '' ) + '⧽' );
+	}
+
+	/**
+	 * Get a localized message with all fallback languages.
+	 * @param {String} message - Name of the message.
+	 * @returns {Object[]}
+	 */
+	getWithFallback(message = '') {
+		return [this.lang, ...this.fallback].map( lang => {
+			let keys = ( message.length ? message.split('.') : [] );
+			let text = i18n?.[lang];
+			for ( let n = 0; n < keys.length; n++ ) {
+				if ( text ) text = text?.[keys[n]];
+				if ( !text ) n = keys.length;
+			}
+			return text;
+		} );
 	}
 
 	/**

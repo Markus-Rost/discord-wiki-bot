@@ -228,6 +228,7 @@ function dashboard_api(res, input) {
 	var result = {
 		api: true,
 		error: false,
+		error_code: '',
 		wiki: wiki.href,
 		MediaWiki: false,
 		TextExtracts: false,
@@ -235,12 +236,19 @@ function dashboard_api(res, input) {
 		RcGcDw: '',
 		customRcGcDw: wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
 	};
-	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json' ).then( response => {
-		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
-			if ( api ) {
-				wiki = new Wiki(api.split('api.php?')[0], wiki);
-				return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json' );
+	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json', {
+		responseType: 'text'
+	} ).then( response => {
+		try {
+			response.body = JSON.parse(response.body);
+		}
+		catch (error) {
+			if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+				let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+				if ( api ) {
+					wiki = new Wiki(api.split('api.php?')[0], wiki);
+					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json' );
+				}
 			}
 		}
 		return response;
@@ -248,6 +256,9 @@ function dashboard_api(res, input) {
 		var body = response.body;
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
 			console.log( '- Dashboard: ' + response.statusCode + ': Error while checking the wiki: ' + body?.error?.info );
+			if ( body?.error?.info === 'You need read permission to use this module.' ) {
+				result.error_code = 'private';
+			}
 			result.error = true;
 			return;
 		}
@@ -268,7 +279,16 @@ function dashboard_api(res, input) {
 		result.customRcGcDw = wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit');
 		if ( wiki.isFandom() ) return;
 	}, error => {
+		if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+			console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
+			result.error_code = 'http';
+			result.error = true;
+			return;
+		}
 		console.log( '- Dashboard: Error while checking the wiki: ' + error );
+		if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+			result.error_code = 'timeout';
+		}
 		result.error = true;
 	} ).finally( () => {
 		let body = JSON.stringify(result);

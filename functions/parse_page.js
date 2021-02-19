@@ -88,19 +88,16 @@ const removeClassesExceptions = [
  * @param {String} [pagelink] - The link to the page.
  */
 function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail, fragment = '', pagelink = '') {
+	if ( reaction ) reaction.removeEmoji();
 	if ( !msg?.showEmbed?.() ) {
 		msg.sendChannel( content, {embed} );
-
-		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
-
-	if ( reaction ) reaction.removeEmoji();
-	Promise.all([
-		msg.sendChannel( content, {
-			embed: new MessageEmbed(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )
-		} ),
-		( !parsedContentModels.includes( contentmodel ) ? got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
+	msg.sendChannel( content, {
+		embed: new MessageEmbed(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )
+	} ).then( message => {
+		if ( !message ) return;
+		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
 			timeout: 10000
 		} ).then( response => {
 			var body = response.body;
@@ -149,7 +146,9 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 			if ( embed.backupDescription && embed.length < 5000 ) {
 				embed.setDescription( embed.backupDescription );
 			}
-		} ) : function() {
+		} ).finally( () => {
+			message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+		} );
 		if ( !fragment && !embed.fields.length && infoboxes ) {
 			try {
 				var infobox = JSON.parse(infoboxes)?.[0];
@@ -367,12 +366,9 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
-		} ) }() )
-	]).then( ([message]) => {
-		if ( !message ) return;
-		message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} );
-	}, error => {
-		console.log( '- Error while fetching the page description: ' + error );
+		} ).finally( () => {
+			message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+		} );
 	} );
 }
 

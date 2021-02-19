@@ -354,12 +354,19 @@ function update_settings(res, userSettings, guild, type, settings) {
 			} );
 		} );
 		var wiki = Wiki.fromInput(settings.wiki);
-		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general|extensions&format=json' ).then( fresponse => {
-			if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-				let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
-				if ( api ) {
-					wiki = new Wiki(api.split('api.php?')[0], wiki);
-					return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
+		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general|extensions&format=json', {
+			responseType: 'text'
+		} ).then( fresponse => {
+			try {
+				fresponse.body = JSON.parse(fresponse.body);
+			}
+			catch (error) {
+				if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
+					let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
+					if ( api ) {
+						wikinew = new Wiki(api.split('api.php?')[0], wikinew);
+						return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
+					}
 				}
 			}
 			return fresponse;
@@ -374,6 +381,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 					if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general || !body?.query?.extensions ) {
 						console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( row?.wiki === wiki.href ) return resolve(row);
+						if ( body?.error?.info === 'You need read permission to use this module.' ) {
+							return reject('private');
+						}
 						return reject();
 					}
 					wiki.updateWiki(body.query.general);
@@ -381,7 +391,14 @@ function update_settings(res, userSettings, guild, type, settings) {
 				} );
 			} );
 		}, error => {
+			if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+				console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
+				return Promise.reject('http');
+			}
 			console.log( '- Dashboard: Error while testing the wiki: ' + error );
+			if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+				return Promise.reject('timeout');
+			}
 			return Promise.reject();
 		} ).then( (row, query) => {
 			var lang = new Lang(( type === 'default' && settings.lang || row.guildlang ));
@@ -604,8 +621,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 					} );
 				} );
 			} );
-		}, () => {
-			return res(`/guild/${guild}/settings/${type}`, 'savefail');
+		}, error => {
+			return res(`/guild/${guild}/settings/${type}`, 'savefail', error);
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );

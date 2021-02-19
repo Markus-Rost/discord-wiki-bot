@@ -103,7 +103,7 @@ function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs)
 		$('head title').text(`${guild.name} – ` + $('head title').text());
 		$('<script>').text(`
 			const isPatreon = ${guild.patreon};
-			const i18n = ${JSON.stringify(dashboardLang.get('indexjs'))};
+			const i18n = ${JSON.stringify(dashboardLang.getWithFallback('indexjs'))};
 		`).insertBefore('script#indexjs');
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
@@ -144,7 +144,7 @@ function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs)
 		$('head title').text(`${guild.name} – ` + $('head title').text());
 		$('<script>').text(`
 			const isPatreon = ${guild.patreon};
-			const i18n = ${JSON.stringify(dashboardLang.get('indexjs'))};
+			const i18n = ${JSON.stringify(dashboardLang.getWithFallback('indexjs'))};
 		`).insertBefore('script#indexjs');
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings?owner=true`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification?owner=true`);

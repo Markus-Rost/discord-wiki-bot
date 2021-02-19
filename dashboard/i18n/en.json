@@ -24,6 +24,9 @@
     },
     "indexjs": {
         "invalid": {
+            "note_http": "The provided website doesn't use HTTPS!",
+            "note_private": "The provided wiki is private!",
+            "note_timeout": "The provided link took too long to respond!",
             "text": "The URL couldn't be resolved to a valid MediaWiki site!",
             "title": "Invalid wiki!"
         },
@@ -103,6 +106,9 @@
             "title": "Settings saved!"
         },
         "savefail": {
+            "note_http": "The provided website doesn't use HTTPS!",
+            "note_private": "The provided wiki is private!",
+            "note_timeout": "The provided link took too long to respond!",
             "text": "The settings could not be saved, please try again.",
             "title": "Save failed!"
         },

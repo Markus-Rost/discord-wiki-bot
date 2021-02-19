@@ -19,6 +19,7 @@ global.got = require('got').extend( {
 
 const {defaultSettings} = require('./util/default.json');
 const Lang = require('./util/i18n.js');
+const Wiki = require('./util/wiki.js');
 const newMessage = require('./util/newMessage.js');
 global.patreons = {};
 global.voice = {};
@@ -205,8 +206,6 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 	return regex.test(this.replace( /\u200b/g, '' ).toLowerCase());
 };
 
-const Wiki = require('./util/wiki.js');
-const slash_inline = require('./interactions/inline.js');
 const fs = require('fs');
 var slash = {};
 fs.readdir( './interactions', (error, files) => {

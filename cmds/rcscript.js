@@ -56,19 +56,26 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), {}, true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 
-			var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
+			var wikihelp = '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 			var input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
 			var wikinew = new Wiki(wiki);
 			if ( input ) {
 				wikinew = Wiki.fromInput(input);
-				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
+				if ( !wikinew ) return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
-				if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-					let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
-					if ( api ) {
-						wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-						return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+				responseType: 'text'
+			} ).then( response => {
+				try {
+					response.body = JSON.parse(response.body);
+				}
+				catch (error) {
+					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+						if ( api ) {
+							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+						}
 					}
 				}
 				return response;
@@ -77,8 +84,11 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 					console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 					if ( reaction ) reaction.removeEmoji();
+					if ( body?.error?.info === 'You need read permission to use this module.' ) {
+						return msg.replyMsg( lang.get('settings.wikiinvalid_private') + wikihelp, {}, true );
+					}
 					msg.reactEmoji('nowiki', true);
-					return msg.replyMsg( wikiinvalid, {}, true );
+					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 				}
 				wikinew.updateWiki(body.query.general);
 				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
@@ -154,10 +164,17 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					}
 				} );
 			}, error => {
-				console.log( '- Error while testing the wiki: ' + error );
 				if ( reaction ) reaction.removeEmoji();
+				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+					console.log( '- Error while testing the wiki: No HTTPS' );
+					return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
+				}
+				console.log( '- Error while testing the wiki: ' + error );
+				if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+					return msg.replyMsg( lang.get('settings.wikiinvalid_timeout') + wikihelp, {}, true );
+				}
 				msg.reactEmoji('nowiki', true);
-				return msg.replyMsg( wikiinvalid, {}, true );
+				return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 			} ) );
 		}
 
@@ -217,15 +234,22 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 
-				var wikiinvalid = lang.get('settings.wikiinvalid') + '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
+				var wikihelp = '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = Wiki.fromInput(args[1]);
-				if ( !wikinew ) return msg.replyMsg( wikiinvalid, {}, true );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( response => {
-					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
-						if ( api ) {
-							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+				if ( !wikinew ) return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+					responseType: 'text'
+				} ).then( response => {
+					try {
+						response.body = JSON.parse(response.body);
+					}
+					catch (error) {
+						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+							let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+							if ( api ) {
+								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
+								return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+							}
 						}
 					}
 					return response;
@@ -234,8 +258,11 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
+						if ( body?.error?.info === 'You need read permission to use this module.' ) {
+							return msg.replyMsg( lang.get('settings.wikiinvalid_private') + wikihelp, {}, true );
+						}
 						msg.reactEmoji('nowiki', true);
-						return msg.replyMsg( wikiinvalid, {}, true );
+						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 					}
 					wikinew.updateWiki(body.query.general);
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
@@ -298,10 +325,17 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						}
 					} );
 				}, error => {
-					console.log( '- Error while testing the wiki: ' + error );
 					if ( reaction ) reaction.removeEmoji();
+					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+						console.log( '- Error while testing the wiki: No HTTPS' );
+						return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
+					}
+					console.log( '- Error while testing the wiki: ' + error );
+					if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+						return msg.replyMsg( lang.get('settings.wikiinvalid_timeout') + wikihelp, {}, true );
+					}
 					msg.reactEmoji('nowiki', true);
-					return msg.replyMsg( wikiinvalid, {}, true );
+					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 				} ) );
 			}
 			if ( args[0] === 'lang' ) {

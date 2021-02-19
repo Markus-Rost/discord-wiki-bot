@@ -192,6 +192,9 @@ function createNotice($, notice, dashboardLang, args = []) {
 			type = 'error';
 			title.text(dashboardLang.get('notice.savefail.title'));
 			text.text(dashboardLang.get('notice.savefail.text'));
+			if ( typeof args[0] === 'string' ) {
+				note = $('<div>').text(dashboardLang.get('notice.savefail.note_' + args[0]));
+			}
 			break;
 		case 'movefail':
 			type = 'info';

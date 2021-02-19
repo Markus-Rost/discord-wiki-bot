@@ -331,12 +331,19 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				return res(`/guild/${guild}/rcscript`, 'savefail');
 			}
 			var wiki = Wiki.fromInput(settings.wiki);
-			return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' ).then( fresponse => {
-				if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-					let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
-					if ( api ) {
-						wiki = new Wiki(api.split('api.php?')[0], wiki);
-						return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+			return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+				responseType: 'text'
+			} ).then( fresponse => {
+				try {
+					fresponse.body = JSON.parse(fresponse.body);
+				}
+				catch (error) {
+					if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
+						let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
+						if ( api ) {
+							wiki = new Wiki(api.split('api.php?')[0], wiki);
+							return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+						}
 					}
 				}
 				return fresponse;
@@ -344,6 +351,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				var body = fresponse.body;
 				if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.pages?.['-1'] ) {
 					console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
+					if ( body?.error?.info === 'You need read permission to use this module.' ) {
+						return res(`/guild/${guild}/rcscript/new`, 'savefail', 'private');
+					}
 					return res(`/guild/${guild}/rcscript/new`, 'savefail');
 				}
 				wiki.updateWiki(body.query.general);
@@ -429,7 +439,14 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					}
 				} );
 			}, error => {
+				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+					console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
+					return res(`/guild/${guild}/rcscript/new`, 'savefail', 'http');
+				}
 				console.log( '- Dashboard: Error while testing the wiki: ' + error );
+				if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+					return res(`/guild/${guild}/rcscript/new`, 'savefail', 'timeout');
+				}
 				return res(`/guild/${guild}/rcscript/new`, 'savefail');
 			} );
 		} );
@@ -545,12 +562,19 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( ( row.postid === '-1' ) !== !settings.feeds ) hasDiff = true;
 				if ( !hasDiff ) return res(`/guild/${guild}/rcscript/${type}`, 'save');
 				var wiki = Wiki.fromInput(settings.wiki);
-				return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' ).then( fresponse => {
-					if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-						let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
-						if ( api ) {
-							wiki = new Wiki(api.split('api.php?')[0], wiki);
-							return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
+				return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
+					responseType: 'text'
+				} ).then( fresponse => {
+					try {
+						fresponse.body = JSON.parse(fresponse.body);
+					}
+					catch (error) {
+						if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
+							let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
+							if ( api ) {
+								wiki = new Wiki(api.split('api.php?')[0], wiki);
+								return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
+							}
 						}
 					}
 					return fresponse;
@@ -558,6 +582,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					var body = fresponse.body;
 					if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general ) {
 						console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
+						if ( body?.error?.info === 'You need read permission to use this module.' ) {
+							return res(`/guild/${guild}/rcscript/${type}`, 'savefail', 'private');
+						}
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					}
 					wiki.updateWiki(body.query.general);
@@ -732,7 +759,14 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						}
 					} );
 				}, error => {
+					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+						console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
+						return res(`/guild/${guild}/rcscript/${type}`, 'savefail', 'http');
+					}
 					console.log( '- Dashboard: Error while testing the wiki: ' + error );
+					if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+						return res(`/guild/${guild}/rcscript/${type}`, 'savefail', 'timeout');
+					}
 					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				} );
 			}, error => {
