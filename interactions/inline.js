@@ -40,13 +40,10 @@ function slash_inline(interaction, lang, wiki, channel) {
 			allowed_mentions.parse = ['users', 'roles', 'everyone'];
 		}
 		else if ( channel?.guild ) {
-			allowed_mentions.roles = channel.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id );
-			if ( allowed_mentions.roles.length > 100 ) {
-				allowed_mentions.roles = allowed_mentions.roles.slice(0, 100);
-			}
+			allowed_mentions.roles = channel.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		}
 		if ( channel?.guild && ( (interaction.member.permissions & 1 << 3) !== 1 << 3 ) // ADMINISTRATOR
-		&& ( (interaction.member.permissions & 1 << 17) !== 1 << 18 ) ) { // USE_EXTERNAL_EMOJIS
+		&& ( (interaction.member.permissions & 1 << 18) !== 1 << 18 ) ) { // USE_EXTERNAL_EMOJIS
 			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
 				if ( channel.guild.emojis.cache.has(id) ) {
 					return replacement;
@@ -60,7 +57,12 @@ function slash_inline(interaction, lang, wiki, channel) {
 		json: {
 			type: 4,
 			data: {
-				content: text,
+				content: text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
+					if ( channel?.guild?.emojis.cache.has(id) ) {
+						return replacement;
+					}
+					return emoji;
+				} ),
 				allowed_mentions,
 				flags: 0
 			}
