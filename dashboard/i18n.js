@@ -14,10 +14,12 @@ class Lang {
 	 * @constructs Lang
 	 */
 	constructor(...langs) {
-		this.lang = ( langs.find( lang => {
-			if ( typeof lang !== 'string' ) lang = '';
-			return i18n.allLangs.map[lang.toLowerCase()]
-		} ) || defaultSettings.lang );
+		this.lang = ( langs.filter( lang => {
+			if ( typeof lang !== 'string' ) return false;
+			return i18n.allLangs.map.hasOwnProperty(lang.toLowerCase());
+		} ).map( lang => {
+			return i18n.allLangs.map[lang.toLowerCase()];
+		} )[0] || defaultSettings.lang );
 		this.fallback = ( i18n?.[this.lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb.trim() );
 		this.fromCookie = [];
 	}

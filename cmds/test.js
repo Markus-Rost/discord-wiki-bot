@@ -87,7 +87,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 				embed.addField( wiki, ping );
 			} ).finally( () => {
 				if ( msg.isOwner() ) return msg.client.shard.fetchClientValues('ws.status').then( values => {
-					return '```css\n' + values.map( (status, id) => '[' + id + ']: ' + ( wsStatus[status] || status ) ).join('\n') + '\n```';
+					return '```less\n' + values.map( (status, id) => '[' + id + ']: ' + ( wsStatus[status] || status ) ).join('\n') + '\n```';
 				}, error => {
 					return '```js\n' + error + '\n```';
 				} ).then( shards => {

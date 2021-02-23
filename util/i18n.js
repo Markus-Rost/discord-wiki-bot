@@ -17,6 +17,12 @@ class Lang {
 	 */
 	constructor(lang = defaultSettings.lang, namespace = '') {
 		if ( typeof lang !== 'string' ) lang = defaultSettings.lang;
+		else if ( lang === 'allLangs' || !i18n.hasOwnProperty(lang) ) {
+			if ( i18n.allLangs.map.hasOwnProperty(lang.toLowerCase()) ) {
+				lang = i18n.allLangs.map[lang.toLowerCase()];
+			}
+			else lang = defaultSettings.lang;
+		}
 		this.lang = lang;
 		this.namespace = namespace;
 		this.fallback = ( i18n?.[lang]?.fallback.slice() || [defaultSettings.lang] ).filter( fb => fb.trim() );

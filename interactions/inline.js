@@ -11,7 +11,7 @@ const {limitLength, partialURIdecode, allowDelete} = require('../util/functions.
  */
 function slash_inline(interaction, lang, wiki, channel) {
 	var text = ( interaction.data.options?.[0]?.value || '' ).replace( /\]\(/g, ']\\(' );
-	text = text.replace( /\x1F/g, '' ).trim();
+	text = text.replace( /\x1F/g, '' ).replace( /(?<!@)\u200b/g, '' ).trim();
 	if ( !text ) {
 		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 			json: {

@@ -52,6 +52,7 @@ const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
  * @property {String} [botPermissions]
  * @property {Channel[]} [channels]
  * @property {Role[]} [roles]
+ * @property {String} [locale]
  */
 
 /**

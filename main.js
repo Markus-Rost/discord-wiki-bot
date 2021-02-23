@@ -124,7 +124,8 @@ if ( process.env.dashboard ) {
 												name: role.name,
 												lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
 											};
-										} )
+										} ),
+										locale: guild.preferredLocale
 									};
 								}, error => {
 									return 'noMember';

@@ -18,6 +18,8 @@
 		},
 		"map": {
 			"en": "en",
+			"en-gb": "en",
+			"en-us": "en",
 			"eng": "en",
 			"english": "en",
 			"english (en)": "en",
@@ -30,6 +32,7 @@
 			"deutsch": "de",
 			"deutsch (de)": "de",
 			"es": "es",
+			"es-es": "es",
 			"spanish": "es",
 			"español": "es",
 			"español (es)": "es",

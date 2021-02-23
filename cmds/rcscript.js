@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const help_setup = require('../functions/helpsetup.js');
-const {limit: {rcgcdw: rcgcdwLimit}, defaultSettings} = require('../util/default.json');
+const {limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs(true);
 const Wiki = require('../util/wiki.js');
@@ -138,7 +138,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							reason: lang.get('rcscript.audit_reason', wikinew.href)
 						} ).then( webhook => {
 							console.log( '- Webhook successfully created.' );
-							var webhook_lang = new Lang(( allLangs.map[lang.lang] || allLangs.map[body.query.general.lang] || defaultSettings.lang ), 'rcscript.webhook');
+							var webhook_lang = new Lang(( allLangs.map[lang.lang] || allLangs.map[body.query.general.lang] ), 'rcscript.webhook');
 							webhook.send( webhook_lang.get('created', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( enableFeeds ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
 							var new_configid = 1;
 							for ( let i of rows.map( row => row.configid ) ) {

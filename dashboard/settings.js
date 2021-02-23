@@ -185,9 +185,11 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		if ( !rows.length ) {
 			$('.channel#settings').addClass('selected');
-			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, Object.assign({
-				prefix: process.env.prefix
-			}, defaultSettings), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, {
+				prefix: process.env.prefix,
+				wiki: defaultSettings.wiki,
+				lang: ( guild.locale || defaultSettings.lang )
+			}, guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 			res.write( body );

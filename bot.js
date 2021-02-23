@@ -17,7 +17,6 @@ global.got = require('got').extend( {
 	responseType: 'json'
 } );
 
-const {defaultSettings} = require('./util/default.json');
 const Lang = require('./util/i18n.js');
 const Wiki = require('./util/wiki.js');
 const newMessage = require('./util/newMessage.js');
@@ -260,8 +259,8 @@ client.on( 'raw', rawEvent => {
 				}
 			}, log_error );
 		}
-		var lang = new Lang(row.lang || defaultSettings.lang);
-		if ( row.role && !interaction.member.roles.includes( row.role ) && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
+		var lang = new Lang(( row?.lang || channel?.guild?.preferredLocale ));
+		if ( row?.role && !interaction.member.roles.includes( row.role ) && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
 			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 				json: {
 					//type: 4,
@@ -280,7 +279,7 @@ client.on( 'raw', rawEvent => {
 				}
 			}, log_error );
 		}
-		var wiki = new Wiki(row.wiki || defaultSettings.wiki);
+		var wiki = new Wiki(row?.wiki);
 		return slash[interaction.data.name](interaction, lang, wiki, channel);
 	} );
 } );
@@ -293,7 +292,7 @@ client.on( 'message', msg => {
 				console.log( msg.guild.name + ': ' + msg.content );
 				db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
 					if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
-					msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('general.prefix', patreons[msg.guild.id]), {}, true );
+					msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('prefix', patreons[msg.guild.id]), {}, true );
 				} );
 			}
 		}
@@ -309,7 +308,7 @@ client.on( 'message', msg => {
 					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
 						if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
 						if ( msg.content.hasPrefix(( patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
-							msg.replyMsg( new Lang(( row || defaultSettings ).lang).get('general.missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
+							msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
 						}
 					} );
 				}
@@ -321,7 +320,7 @@ client.on( 'message', msg => {
 				console.log( '- Error while getting the wiki: ' + dberror );
 				if ( permissions.has('SEND_MESSAGES') ) {
 					msg.sendChannel( '⚠️ **Limited Functionality** ⚠️\nNo settings found, please contact the bot owner!\n' + process.env.invite, {}, true );
-					newMessage(msg, new Lang());
+					newMessage(msg, new Lang(msg.guild.preferredLocale));
 				}
 				return dberror;
 			}
@@ -333,7 +332,7 @@ client.on( 'message', msg => {
 			}
 			else {
 				msg.defaultSettings = true;
-				newMessage(msg, new Lang());
+				newMessage(msg, new Lang(msg.guild.preferredLocale));
 			}
 		} );
 	}
