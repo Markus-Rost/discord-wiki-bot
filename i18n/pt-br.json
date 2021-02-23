@@ -389,6 +389,10 @@
         "noadmin": "você precisa da permissão de `Gerenciar servidor` para esses comandos!",
         "pause": "**Estou atualmente em pausa neste servidor!**\nSom estes comandos podem ser executados:"
     },
+    "interaction": {
+        "inline": "Forneça algum texto com links de [[wikitexto]] para usar este comando.",
+        "missingrole": "Você precisa ter o cargo $1 ou qualquer superior para usar este comando."
+    },
     "invite": {
         "bot": "Use este link para me convidar para outro servidor:"
     },
@@ -629,6 +633,9 @@
         "wikichanged": "você mudou a wiki padrão para este servidor para:",
         "wikihelp": "Use `$1 <link>` para alterar a wiki padrão.\nLink para um site MediaWiki como: `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
         "wikiinvalid": "por favor, forneça um link válido para um site MediaWiki , como wiki da Gamepedia ou Fandom!",
+        "wikiinvalid_http": "o site fornecido não tem um certificado TLS/SSL válido! Por razões de segurança, apenas wikis que usam HTTPS são suportados.\nSe você for um administrador de site, você pode obter um certificado de uma autoridade de certificação como *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_private": "a wiki fornecida é privada! Apenas wikis públicas que podem ser lidos por todos são suportados.",
+        "wikiinvalid_timeout": "o link fornecido demorou muito para responder!",
         "wikimissing": "nenhuma wiki padrão está configurado para este servidor ainda!"
     },
     "test": {
@@ -727,10 +734,14 @@
         "new_accountage": "<nova idade da conta>",
         "new_channel": "<novo canal>",
         "new_editcount": "<nova contagem de edições>",
+        "new_postcount": "<nova contagem de postagens>",
         "new_role": "<novo cargo>",
         "new_usergroup": "<novo grupo de usuários>",
         "no_role": "por favor forneça um cargo para a nova verificação.",
         "or": "ou",
+        "postcount": "Contagem de postagens (apenas wikis no Fandom):",
+        "postcount_or": "(alternativa para editar contagem)",
+        "posteditcount": "Edição e contagem de postagens combinadas:",
         "rename": "Mudar apelido:",
         "rename_no_permission": "**$1 não tem a permissão de `Gerenciar apelidos` para substituir o apelido pelos nomes de usuário da wiki!**",
         "role": "Cargo:",
