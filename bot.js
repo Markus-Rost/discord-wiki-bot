@@ -236,6 +236,7 @@ client.on( 'raw', rawEvent => {
 	}
 	var channel = client.channels.cache.get(interaction.channel_id);
 	if ( !interaction.guild_id ) {
+		if ( global.shardId !== 0 ) return;
 		return slash[interaction.data.name](interaction, new Lang(), new Wiki(), channel);
 	}
 	db.get( 'SELECT wiki, lang, role FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID], (dberror, row) => {

@@ -1,4 +1,4 @@
-const {defaultSettings} = require('../util/default.json');
+const help_setup = require('../functions/helpsetup.js');
 var db = require('../util/database.js');
 
 /**
@@ -18,6 +18,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 		}
 		args[1] = args.slice(1).join(' ').trim()
 		if ( args[0].toLowerCase() === 'toggle' && !args[1] ) {
+			if ( msg.defaultSettings ) return help_setup(lang, msg);
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var value = ( voice[msg.guild.id] ? null : 1 );
 			return db.run( 'UPDATE discord SET voice = ? WHERE guild = ? AND channel IS NULL', [value, msg.guild.id], function (dberror) {
@@ -26,16 +27,6 @@ function cmd_voice(lang, msg, args, line, wiki) {
 					msg.replyMsg( lang.get('settings.save_failed'), {}, true );
 					return dberror;
 				}
-				if ( !this.changes ) return db.run( 'INSERT INTO discord(main, guild, voice) VALUES(?, ?, ?)', [msg.guild.id, msg.guild.id, value], function (error) {
-					if ( error ) {
-						console.log( '- Error while adding the voice settings: ' + error );
-						msg.replyMsg( lang.get('settings.save_failed'), {}, true );
-						return error;
-					}
-					console.log( '- Voice settings successfully added.' );
-					voice[msg.guild.id] = defaultSettings.lang;
-					msg.replyMsg( lang.get('voice.enabled') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`', {}, true );
-				} );
 				console.log( '- Voice settings successfully updated.' );
 				if ( value ) {
 					voice[msg.guild.id] = lang.lang;

@@ -266,7 +266,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 							if ( display.includes( ',' ) && !/ ([^\(\)]+)$/.test(display) ) {
 								display = display.replace( /^([^,]+), .*$/, '$1' );
 							}
-							display = display.replace( / ([^\(\)]+)$/, '' );
+							display = display.replace( / \([^\(\)]+\)$/, '' );
 							if ( link.url || link.ns  !== 0 ) {
 								display = display.split(':').slice(1).join(':');
 							}

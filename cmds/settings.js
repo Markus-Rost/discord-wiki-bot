@@ -148,8 +148,9 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					var sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND wiki = ?';
 					var sqlargs = [wikinew.href, msg.guild.id, guild.wiki];
 					if ( !rows.length ) {
-						sql = 'INSERT INTO discord(wiki, guild, main) VALUES(?, ?, ?)';
-						sqlargs[2] = msg.guild.id;
+						sqlargs.pop();
+						sql = 'INSERT INTO discord(wiki, guild, main, lang) VALUES(?, ?, ?, ?)';
+						sqlargs.push(msg.guild.id, lang.lang);
 					}
 					else if ( channel ) {
 						sql = 'UPDATE discord SET wiki = ? WHERE guild = ? AND channel = ?';
@@ -283,8 +284,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET role = ? WHERE guild = ?';
 			var sqlargs = [role, msg.guild.id];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(role, guild, main) VALUES(?, ?, ?)';
-				sqlargs.push(msg.guild.id);
+				sql = 'INSERT INTO discord(role, guild, main, lang) VALUES(?, ?, ?, ?)';
+				sqlargs.push(msg.guild.id, lang.lang);
 			}
 			else if ( channel ) {
 				sql = 'UPDATE discord SET role = ? WHERE guild = ? AND channel = ?';
@@ -345,8 +346,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET prefix = ? WHERE guild = ?';
 			var sqlargs = [args[1], msg.guild.id];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(prefix, guild, main) VALUES(?, ?, ?)';
-				sqlargs.push(msg.guild.id);
+				sql = 'INSERT INTO discord(prefix, guild, main, lang) VALUES(?, ?, ?, ?)';
+				sqlargs.push(msg.guild.id, lang.lang);
 			}
 			return db.run( sql, sqlargs, function (dberror) {
 				if ( dberror ) {
@@ -374,8 +375,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET inline = ? WHERE guild = ?';
 			var sqlargs = [value, msg.guild.id];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(inline, guild, main) VALUES(?, ?, ?)';
-				sqlargs.push(msg.guild.id);
+				sql = 'INSERT INTO discord(inline, guild, main, lang) VALUES(?, ?, ?, ?)';
+				sqlargs.push(msg.guild.id, lang.lang);
 			}
 			else if ( channel ) {
 				sql = 'UPDATE discord SET inline = ? WHERE guild = ? AND channel = ?';
