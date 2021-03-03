@@ -36,7 +36,7 @@ function dashboard_login(res, dashboardLang, state, action) {
 		const allLangs = ${JSON.stringify(allLangs)};
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.login') + ' – ' + dashboardLang.get('general.title'));
-	$('#login-botton span, .channel#login div').text(dashboardLang.get('general.login'));
+	$('#login-button span, .channel#login div').text(dashboardLang.get('general.login'));
 	$('.channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('#support span').text(dashboardLang.get('general.support'));

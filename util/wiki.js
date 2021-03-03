@@ -124,15 +124,6 @@ class Wiki extends URL {
 	}
 
 	/**
-	 * Get an URI encoded link.
-	 * @param {String} [title] - Name of the page.
-	 * @returns {String}
-	 */
-	toDescLink(title = this.mainpage) {
-		return this.articleURL.href.replace( '$1', encodeURIComponent( title.replace( / /g, '_' ) ) );
-	}
-
-	/**
 	 * Get a page link.
 	 * @param {String} [title] - Name of the page.
 	 * @param {URLSearchParams} [querystring] - Query arguments of the page.
@@ -156,7 +147,7 @@ class Wiki extends URL {
 			link.searchParams.append(name, value);
 		} );
 		let output = decodeURI( link ).replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment);
-		if ( isMarkdown ) return output.replace( /[()]/g, '\\$&' );
+		if ( isMarkdown ) return output.replace( /\(/g, '%28' ).replace( /\)/g, '%29' );
 		else return output;
 	}
 
