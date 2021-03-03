@@ -132,6 +132,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					console.log( '- ' + ucresponse.statusCode + ': Error while getting the search results: ' + ( ucbody && ucbody.error && ucbody.error.info ) );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler );
 				}
+				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
 			var editcount = [lang.get('user.info.editcount'), ( username.includes( '/' ) && ( ( username.includes( ':' ) && range % 16 ) || range % 8 ) ? '~' : '' ) + ucbody.query.usercontribs.length.toLocaleString(lang.get('dateformat')) + ( ucbody.continue ? '+' : '' )];
@@ -140,14 +141,15 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			if ( msg.showEmbed() ) {
 				var text = '<' + pagelink + '>';
 				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
+				embed.forceTitle = true;
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-					embed.setDescription( description );
+					embed.backupDescription = description;
 				}
 				else if ( querypage.extract ) {
 					var extract = extract_desc(querypage.extract);
-					embed.setDescription( extract[0] );
+					embed.backupDescription = extract[0];
 				}
 				if ( blocks.length ) blocks.forEach( block => {
 					block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')' );
@@ -169,14 +171,13 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 				else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 
-				msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
+				parse_page(lang, msg, spoiler + text + spoiler, embed, wiki, reaction, querypage).then( message => global_block(lang, message, username, text, embed, wiki, spoiler) );
 			}
-			else msg.sendChannel( spoiler + text + spoiler, {embed} );
+			else parse_page(lang, msg, spoiler + text + spoiler, embed, wiki, reaction, querypage);
 		}, error => {
 			if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 			console.log( '- Error while getting the search results: ' + error );
 			msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler );
-		} ).finally( () => {
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}, error => {
@@ -272,7 +273,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 		var groupnames = [];
 		groupnames.push(...groups);
 		groupnames.push(...globalgroups);
-		got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amincludelocal=true&amargs=' + encodeURIComponent( username ) + '&amlang=' + lang.lang + '&ammessages=' + groupnames.map( group => `group-${group}|group-${group}-member` ).join('|') + '&format=json' ).then( gresponse => {
+		got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amincludelocal=true&amargs=' + encodeURIComponent( username ) + '&amlang=' + querypage.uselang + '&ammessages=' + groupnames.map( group => `group-${group}|group-${group}-member` ).join('|') + '&format=json' ).then( gresponse => {
 			var gbody = gresponse.body;
 			if ( gbody && gbody.warnings ) log_warn(gbody.warnings);
 			if ( gresponse.statusCode !== 200 || !gbody || gbody.batchcomplete === undefined || !gbody?.query?.allmessages?.length ) {
@@ -341,6 +342,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			if ( msg.showEmbed() ) {
 				var text = '<' + pagelink + '>';
 				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username.escapeFormatting() ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true );
+				embed.forceTitle = true;
 				if ( wiki.hasCentralAuth() ) {
 					embed.addField( lang.get('user.info.globaleditcount'), '[' + body.query.globaluserinfo.editcount.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true ).addField( lang.get('user.info.wikisedited'), '[' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true );
 				}
@@ -358,11 +360,11 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-					embed.setDescription( description );
+					embed.backupDescription = description;
 				}
 				else if ( querypage.extract ) {
 					var extract = extract_desc(querypage.extract);
-					embed.setDescription( extract[0] );
+					embed.backupDescription = extract[0];
 				}
 			}
 			else {
@@ -399,7 +401,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					if ( pbody.userData.bio && !embed.description ) {
 						let bio = pbody.userData.bio.escapeFormatting();
 						if ( bio.length > 1000 ) bio = bio.substring(0, 1000) + '\u2026';
-						embed.setDescription( bio );
+						embed.backupDescription = bio;
 					}
 				}
 				else {
@@ -485,11 +487,9 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					if ( msg.showEmbed() ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 					else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 					
-					msg.sendChannel( spoiler + text + spoiler, {embed} ).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
+					parse_page(lang, msg, spoiler + text + spoiler, embed, wiki, reaction, querypage).then( message => global_block(lang, message, username, text, embed, wiki, spoiler, queryuser.gender) );
 				}
-				else msg.sendChannel( spoiler + text + spoiler, {embed} );
-				
-				if ( reaction ) reaction.removeEmoji();
+				else parse_page(lang, msg, spoiler + text + spoiler, embed, wiki, reaction, querypage);
 			} );
 			if ( body.query.pages ) {
 				let revision = Object.values(body.query.pages)[0]?.revisions?.[0];
@@ -523,9 +523,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				else text += '\n\n**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**';
 			}
 			
-			msg.sendChannel( spoiler + text + spoiler, {embed} );
-			
-			if ( reaction ) reaction.removeEmoji();
+			parse_page(lang, msg, spoiler + text + spoiler, embed, wiki, reaction, querypage);
 		} );
 	}, error => {
 		console.log( '- Error while getting the search results: ' + error );
