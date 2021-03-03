@@ -97,7 +97,7 @@ function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs)
 	}
 
 	let id = args[2];
-	$(`.guild#${id}`).addClass('selected');
+	if ( id ) $(`.guild#${id}`).addClass('selected');
 	if ( settings.guilds.isMember.has(id) ) {
 		let guild = settings.guilds.isMember.get(id);
 		$('head title').text(`${guild.name} – ` + $('head title').text());
