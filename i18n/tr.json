@@ -357,6 +357,10 @@
                     "cmd": "verification <id> editcount <yeni düzenleme sayısı>",
                     "desc": "Viki doğrulaması için minimum düzenleme sayısını değiştireceğim."
                 },
+                "postcount": {
+                    "cmd": "verification <id> postcount <yeni gönderi sayısı>",
+                    "desc": "Viki doğrulaması için gereken asgari tartışma paylaşımı sayısını değiştireceğim.\n\t• Düzenleme ya da paylaşım sayısını sağlamak için negatif bir sayı girin.\n\t• Hem düzenleme hem de paylaşım sayısını kontrol etmek için `null` girin."
+                },
                 "rename": {
                     "cmd": "verification <id> rename",
                     "desc": "Viki doğrulaması için kullanıcının Discord kullanıcı adı ile viki kullanıcı adının aynı olması gerekiyorsa değiştireceğim."
@@ -386,16 +390,60 @@
         "noadmin": "Bu komutlar için `Sunucuyu Yönetme` iznine ihtiyacınız var!",
         "pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:"
     },
+    "interaction": {
+        "inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin.",
+        "missingrole": "Bu komutu kullanmak için $1 ya da daha yüksek bir role sahip olman lazım."
+    },
     "invite": {
         "bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
     },
     "minecraft": {
         "fixed": "Düzeltilmiş Sürüm:",
+        "issue_link": {
+            "Blocks": {
+                "inward": ", $1 tarafından engellendi",
+                "outward": "engelledi: $1"
+            },
+            "Bonfire Testing": {
+                "inward": "$1 test edilirken keşfedildi",
+                "outward": "test keşfetti: $1"
+            },
+            "Cloners": {
+                "inward": ", $1 tarafından klonlandı",
+                "outward": "klonladı: $1"
+            },
+            "Duplicate": {
+                "inward": "$1 tarafından çoğaltıldı",
+                "outward": "çoğalttı: $1"
+            },
+            "Relates": {
+                "inward": "$1 ile ilgili",
+                "outward": "$1 ile ilgili"
+            }
+        },
         "more": "Ve $1 tane daha.",
         "private": "**Özel Sorun**",
+        "status": {
+            "Awaiting Response": "Cevap Bekleniyor",
+            "Cannot Reproduce": "Çoğaltılamadı",
+            "Closed": "Kapalı",
+            "Done": "Bitti",
+            "Duplicate": "Kopya",
+            "Fixed": "Düzenlendi",
+            "In Progress": "Devam Etmekte",
+            "Incomplete": "Eksik",
+            "Invalid": "Geçersiz",
+            "Open": "Açık",
+            "Postponed": "Ertelenmiş",
+            "Reopened": "Yeniden Açılmış",
+            "Resolved": "Çözülmüş",
+            "Won't Fix": "Düzenlenemiyor",
+            "Works As Intended": "Gerektiği Gibi Çalışıyor"
+        },
         "total": "$1 hata düzeltildi"
     },
     "overview": {
+        "admins": "Yöneticiler:",
         "articles": "Makaleler:",
         "comments": "Makale yorumları:",
         "created": "Oluşturuldu:",
@@ -527,6 +575,7 @@
         "empty": "*Bu özel sayfa boş*",
         "infopage": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1 kullan.",
         "infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1, tüm isabetlerin listesi için $2 kullan.",
+        "loading": "Sayfa açıklaması yükleniyor…",
         "media": "Dosya açıklama sayfasına",
         "results": "Toplam $1 sonuç",
         "special": "Bu özel sayfanın içeriği:"
@@ -585,6 +634,9 @@
         "wikichanged": "bu sunucunun varsayılan wikisini şuna değiştirdiniz:",
         "wikihelp": "`$1 <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/` veya `https://<wiki>.fandom.com/`",
         "wikiinvalid": "lütfen Gamepedia veya Fandom wikiye geçerli bir bağlantı saylağın!",
+        "wikiinvalid_http": "belirtilen site geçerli bir TLS/SSL sertifikasına sahip değil! Güvenlik amacıyla sadece HTTPS kullanan vikiler desteklenmektedir.\nEğer bir site yöneticisiysen *Let’s Encrypt* gibi bir sertifika yetkilisinden sertifika alabilirsin:\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_private": "belirtilen viki gizli! Sadece herkes tarafından okunabilen halka açık vikiler desteklenmektedir.",
+        "wikiinvalid_timeout": "belirtilen bağlantının cevap vermesi çok uzun sürdü!",
         "wikimissing": "bu sunucu için varsayılan bir wiki belirlenmemiş!"
     },
     "test": {
@@ -683,10 +735,14 @@
         "new_accountage": "<yeni hesap yaşı>",
         "new_channel": "<yeni kanal>",
         "new_editcount": "<yeni düzenleme sayısı>",
+        "new_postcount": "<yeni gönderi sayısı>",
         "new_role": "<yeni rol>",
         "new_usergroup": "<yeni kullanıcı grubu>",
         "no_role": "lütfen yeni doğrulama için bir rol belirtin.",
         "or": "ya da",
+        "postcount": "Gönderi sayısı (sadece Fandom vikileri):",
+        "postcount_or": "(düzenleme sayısına alternatif)",
+        "posteditcount": "Düzenleme ve paylaşım sayısı toplamı:",
         "rename": "Kullanıcı adı değiştir:",
         "rename_no_permission": "**$1, viki kullanıcı isimlerini zorlamak için `Kullanıcı Adlarını Yönet`iznine sahip olmalı!**",
         "role": "Rol:",
