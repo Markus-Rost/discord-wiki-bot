@@ -24,6 +24,9 @@
     },
     "indexjs": {
         "invalid": {
+            "note_http": "¡El sitio web proporcionado no utiliza HTTPS!",
+            "note_private": "¡El wiki proporcionado es privado!",
+            "note_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
             "text": "¡La URL no se pudo convertir a un sitio válido de MediaWiki!",
             "title": "¡Wiki no válido!"
         },
@@ -103,6 +106,9 @@
             "title": "¡Se guardó la configuración!"
         },
         "savefail": {
+            "note_http": "¡El sitio web proporcionado no utiliza HTTPS!",
+            "note_private": "¡El wiki proporcionado es privado!",
+            "note_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
             "text": "No se pudo guardar la configuración, por favor vuelve a intentarlo.",
             "title": "¡Error al guardar!"
         },
