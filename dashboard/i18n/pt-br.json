@@ -24,6 +24,9 @@
     },
     "indexjs": {
         "invalid": {
+            "note_http": "O site fornecido não usa HTTPS!",
+            "note_private": "A wiki fornecida é privada!",
+            "note_timeout": "O link fornecido demorou muito para responder!",
             "text": "A URL informada não é um site MediaWiki válido!",
             "title": "Wiki inválida!"
         },
@@ -103,6 +106,9 @@
             "title": "Configurações salvas!"
         },
         "savefail": {
+            "note_http": "O site fornecido não usa HTTPS!",
+            "note_private": "A wiki fornecida é privada!",
+            "note_timeout": "O link fornecido demorou muito para responder!",
             "text": "Não foi possível salvar as configurações, tente novamente.",
             "title": "Falha ao salvar!"
         },
@@ -183,6 +189,10 @@
             "more": "Adicionar mais",
             "new": "Nova verificação",
             "postcount": "Contagem mínima de posts:",
+            "postcount_and": "Requer edição e contagem de postagens.",
+            "postcount_both": "Requer edição e contagem de postagens combinadas.",
+            "postcount_fandom": "Apenas wikis no Fandom:",
+            "postcount_or": "Requer edição ou contagem de postagens.",
             "rename": "Renomear usuários:",
             "role": "Cargo:",
             "select_channel": "-- Selecionar canal --",

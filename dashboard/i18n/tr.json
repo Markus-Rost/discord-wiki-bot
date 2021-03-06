@@ -9,6 +9,8 @@
     "general": {
         "delete": "Sil",
         "invite": "Wiki-Bot'u davet et",
+        "language": "Dili Değiştir",
+        "login": "Giriş",
         "logout": "Çıkış",
         "rcscript": "Son Değişiklikler",
         "refresh": "Sunucu listesini yenile",
@@ -17,10 +19,14 @@
         "settings": "Ayarlar",
         "support": "Destek Sunucusu",
         "title": "Wiki-Bot Ayarları",
-        "verification": "Doğrulamalar"
+        "verification": "Doğrulamalar",
+        "welcome": "<h2>Wiki-Bot Kontrol Paneli'ne hoş geldin.</h2>\n<p>Wiki-Bot, Discord sunucularını ve MediaWiki vikilerini bir araya getirmek için yapılmış bir Discord botudur. Viki sayfalarına bağlantı vermek, viki kullanıcılarını doğrulamak, vikideki son değişiklikleri bildirmek ve benzeri özellikleri ile kullanıcılara yardım eder. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Daha fazla bilgi]</a></p>\n<p>Burada Sunucuyu Yönet yetkisine sahip olduğun sunucular için bot ayarı yapabilirsin. Başlamak için Discord hesabını bu buton ile doğrulaman gerekiyor:</p>"
     },
     "indexjs": {
         "invalid": {
+            "note_http": "Belirtilen site HTTPS kullanmıyor!",
+            "note_private": "Belirtilen viki gizli!",
+            "note_timeout": "Belirtilen vikinin karşılık vermesi çok uzun sürdü!",
             "text": "URL geçerli bir MediaWiki sitesinin değil!",
             "title": "Geçersiz viki!"
         },
@@ -100,6 +106,9 @@
             "title": "Ayarlar keydedildi!"
         },
         "savefail": {
+            "note_http": "Belirtilen site HTTPS kullanmıyor!",
+            "note_private": "Belirtilen viki gizli!",
+            "note_timeout": "Belirtilen bağlantının karşılık vermesi çok uzun sürdü!",
             "text": "Ayarlar kaydedilemedi, lütfen tekrar deneyin.",
             "title": "Kaydetme başarılı!"
         },
@@ -179,6 +188,11 @@
             "entry": "Doğrulama #$1",
             "more": "Daha fazla ekle",
             "new": "Yeni Doğrulama",
+            "postcount": "Asgari paylaşım sayısı:",
+            "postcount_and": "Hem düzenleme hem de paylaşım gerektir.",
+            "postcount_both": "Düzenleme ve paylaşım sayısı toplamı gerektir.",
+            "postcount_fandom": "Sadece Fandom vikileri:",
+            "postcount_or": "Ya düzenleme ya da paylaşım sayısı gerektir.",
             "rename": "Üyelerin kullanıcı isimlerini değiştir:",
             "role": "Rol:",
             "select_channel": "-- Bir Kanal Seç --",
