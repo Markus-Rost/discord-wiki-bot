@@ -35,6 +35,7 @@ const infoboxList = [
 
 const removeClasses = [
 	'table',
+	'figure',
 	'script',
 	'input',
 	'style',
@@ -44,6 +45,7 @@ const removeClasses = [
 	'.mw-editsection',
 	'sup.reference',
 	'ol.references',
+	'.thumb',
 	'.error',
 	'.nomobile',
 	'.noprint',
@@ -78,6 +80,7 @@ const removeClassesExceptions = [
  * @param {Object} querypage - The details of the page.
  * @param {String} querypage.title - The title of the page.
  * @param {String} querypage.contentmodel - The content model of the page.
+ * @param {String} [querypage.missing] - If the page doesn't exist.
  * @param {Object} [querypage.pageprops] - The properties of the page.
  * @param {String} [querypage.pageprops.infoboxes] - The JSON data for portable infoboxes on the page.
  * @param {String} [querypage.pageprops.disambiguation] - The disambiguation property of the page.
@@ -88,9 +91,17 @@ const removeClassesExceptions = [
  * @param {String} [pagelink] - The link to the page.
  * @returns {Promise<import('discord.js').Message>} The edited message.
  */
-function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
+function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, missing, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
-	if ( !msg?.showEmbed?.() || embed.description ) {
+	if ( !msg?.showEmbed?.() || missing !== undefined || embed.description ) {
+		if ( missing !== undefined ) {
+			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+				embed.spliceFields( 0, 0, embed.backupField );
+			}
+			if ( embed.backupDescription && embed.length < 5000 ) {
+				embed.setDescription( embed.backupDescription );
+			}
+		}
 		return msg.sendChannel( content, {embed} );
 	}
 	return msg.sendChannel( content, {
@@ -112,7 +123,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				if ( embed.backupDescription && embed.length < 5000 ) {
 					embed.setDescription( embed.backupDescription );
 				}
-				return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+				return;
 			}
 			if ( !embed.description && embed.length < 4000 ) {
 				var description = revision['*'];
@@ -138,7 +149,6 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 					embed.setDescription( embed.backupDescription );
 				}
 			}
-			return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
 		}, error => {
 			console.log( '- Error while getting the page content: ' + error );
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
@@ -147,6 +157,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 			if ( embed.backupDescription && embed.length < 5000 ) {
 				embed.setDescription( embed.backupDescription );
 			}
+		} ).then( () => {
 			return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
 		} );
 		if ( !fragment && !embed.fields.length && infoboxes ) {
@@ -169,7 +180,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 					embed.spliceFields( 0, 0, embed.backupField );
 				}
-				return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+				return;
 			}
 			if ( !embed.forceTitle ) {
 				var displaytitle = htmlToDiscord( response.body.parse.displaytitle );
@@ -360,7 +371,6 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 					embed.setDescription( embed.backupDescription );
 				}
 			}
-			return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
 		}, error => {
 			console.log( '- Error while parsing the page: ' + error );
 			if ( embed.backupDescription && embed.length < 5000 ) {
@@ -369,6 +379,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
+		} ).then( () => {
 			return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
 		} );
 	} );

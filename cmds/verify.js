@@ -35,7 +35,9 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 		if ( dberror || !rows ) {
 			console.log( '- Error while getting the verifications: ' + dberror );
 			embed.setColor('#000000').setDescription( lang.get('verify.error') );
-			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
+			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
+				if ( message ) message.reactEmoji('error');
+			} );
 			return dberror;
 		}
 		if ( !rows.length ) {
@@ -64,7 +66,9 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
 					embed.setColor('#000000').setDescription( lang.get('verify.error') );
-					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
+					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
+						if ( message ) message.reactEmoji('error');
+					} );
 				}
 				
 				if ( reaction ) reaction.removeEmoji();
@@ -243,7 +247,9 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				}, error => {
 					if ( error ) console.log( '- Error while getting the Discord tag: ' + error );
 					embed.setColor('#000000').setDescription( lang.get('verify.error') );
-					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
+					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
+						if ( message ) message.reactEmoji('error');
+					} );
 					
 					if ( reaction ) reaction.removeEmoji();
 				} );
@@ -260,7 +266,9 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 				if ( mwresponse.statusCode !== 200 || mwbody?.batchcomplete === undefined || !mwbody?.query?.pages ) {
 					console.log( '- ' + mwresponse.statusCode + ': Error while getting the Discord tag: ' + ( mwbody && mwbody.error && mwbody.error.info ) );
 					embed.setColor('#000000').setDescription( lang.get('verify.error') );
-					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
+					msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
+						if ( message ) message.reactEmoji('error');
+					} );
 					
 					if ( reaction ) reaction.removeEmoji();
 					return;
@@ -355,14 +363,18 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			}, error => {
 				console.log( '- Error while getting the Discord tag: ' + error );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
-				msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
+				msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
+					if ( message ) message.reactEmoji('error');
+				} );
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
 		}, error => {
 			console.log( '- Error while getting the user: ' + error );
 			embed.setColor('#000000').setDescription( lang.get('verify.error') );
-			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => message.reactEmoji('error') );
+			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
+				if ( message ) message.reactEmoji('error');
+			} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} ) );
