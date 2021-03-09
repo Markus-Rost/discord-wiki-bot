@@ -134,7 +134,7 @@
         "main": "Discussões",
         "post": "post",
         "tags": "Etiquetas:",
-        "votes": "$1 {{PLURAL:$2|voto|votos}}"
+        "votes": "$1 {{PLURAL:$2|voto|votos}} ($3%)"
     },
     "fallback": [
         "en",
