@@ -218,8 +218,7 @@ client.on( 'raw', rawEvent => {
 		consol.log( '- Slash: Unknown command: ' + interaction.data.name );
 		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 			json: {
-				//type: 4,
-				type: 3,
+				type: 4,
 				data: {
 					content: '[<:error:440871715938238494> Unknown Command! <:error:440871715938238494>](<' + process.env.invite + '>)',
 					allowed_mentions: {
@@ -243,8 +242,7 @@ client.on( 'raw', rawEvent => {
 			console.log( '- Error while getting the wiki: ' + dberror );
 			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 				json: {
-					//type: 4,
-					type: 3,
+					type: 4,
 					data: {
 						content: '[<:error:440871715938238494> Error! <:error:440871715938238494>](<' + process.env.invite + '>)',
 						allowed_mentions: {
@@ -263,8 +261,7 @@ client.on( 'raw', rawEvent => {
 		if ( row?.role && !interaction.member.roles.includes( row.role ) && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
 			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 				json: {
-					//type: 4,
-					type: 3,
+					type: 4,
 					data: {
 						content: lang.get('interaction.missingrole', '<@&' + row.role + '>'),
 						allowed_mentions: {

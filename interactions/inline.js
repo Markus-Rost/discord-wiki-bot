@@ -15,8 +15,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 	if ( !text ) {
 		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 			json: {
-				//type: 4,
-				type: 3,
+				type: 4,
 				data: {
 					content: lang.get('interaction.inline'),
 					allowed_mentions: {
@@ -53,6 +52,15 @@ function slash_inline(interaction, lang, wiki, channel) {
 		}
 	}
 	if ( text.length > 1800 ) text = text.substring(0, 1800) + '\u2026';
+	var message = {
+		content: text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
+			if ( channel?.guild?.emojis.cache.has(id) ) {
+				return replacement;
+			}
+			return emoji;
+		} ),
+		allowed_mentions
+	};
 	return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 		json: {
 			type: 4,
@@ -72,18 +80,11 @@ function slash_inline(interaction, lang, wiki, channel) {
 			console.log( '- Slash: ' + aresponse.statusCode + ': Error while sending the response: ' + aresponse.body?.message );
 			return;
 		}
-		if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) ) {
-			return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
-				json: {}
-			} ).then( presponse => {
-				if ( presponse.statusCode === 200 && presponse.body?.id ) {
-					channel?.messages.fetch(presponse.body.id).then( msg => {
-						allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
-					}, () => {} );
-				}
-			}, () => {} );
+		if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
+			return sendMessage(interaction, message, channel);
 		}
 		var textReplacement = [];
+		var magiclinks = [];
 		var replacedText = text.replace( /(?<!\\)(?:<a?(:\w+:)\d+>|<#(\d+)>|<@!?(\d+)>|<@&(\d+)>|```.+?```|``.+?``|`.+?`)/gs, (replacement, emoji, textchannel, user, role) => {
 			textReplacement.push(replacement);
 			var arg = '';
@@ -106,7 +107,16 @@ function slash_inline(interaction, lang, wiki, channel) {
 					if ( temprole ) arg = '@' + temprole.name;
 				}
 			}
-			return '\x1F<replacement' + ( arg ? '\x1F' + textReplacement.length + '\x1F' + arg : '' ) + '>\x1F';
+			return '\x1F<replacement\x1F' + textReplacement.length + ( arg ? '\x1F' + arg : '' ) + '>\x1F';
+		} ).replace( /\b(PMID|RFC) +([0-9]+)\b/g, (replacement, type, id) => {
+			magiclinks.push({type, id, replacementId: textReplacement.length});
+			textReplacement.push(replacement);
+			return '\x1F<replacement\x1F' + textReplacement.length + '\x1F' + replacement + '>\x1F';
+		} ).replace( /\bISBN +((?:97[89][- ]?)?(?:[0-9][- ]?){9}[0-9Xx])\b/g, (replacement, id) => {
+			let isbn = id.replace( /[- ]/g, '' ).replace( /x/g, 'X' );
+			magiclinks.push({type: 'ISBN', id, isbn, replacementId: textReplacement.length});
+			textReplacement.push(replacement);
+			return '\x1F<replacement\x1F' + textReplacement.length + '\x1F' + replacement + '>\x1F';
 		} );
 		var templates = [];
 		var links = [];
@@ -136,20 +146,13 @@ function slash_inline(interaction, lang, wiki, channel) {
 				links.push({raw: title, title, section});
 			}
 		} );
-		if ( !templates.length && !links.length ) {
-			return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
-				json: {}
-			} ).then( presponse => {
-				if ( presponse.statusCode === 200 && presponse.body?.id ) {
-					channel?.messages.fetch(presponse.body.id).then( msg => {
-						allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
-					}, () => {} );
-				}
-			}, () => {} );
+		if ( !templates.length && !links.length && !magiclinks.length ) {
+			return sendMessage(interaction, message, channel);
 		}
-		return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( [
+		return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( magiclinks.length ? '|allmessages&ammessages=pubmedurl|rfcurl&amenableparser=true' : '' ) + '&siprop=general&iwurl=true&titles=' + encodeURIComponent( [
 			...templates.map( link => link.title + '|' + link.template ),
-			...links.map( link => link.title )
+			...links.map( link => link.title ),
+			...( magiclinks.length ? ['Special:BookSources'] : [] )
 		].join('|') ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
@@ -159,15 +162,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 				else {
 					console.log( '- ' + response.statusCode + ': Error while following the links: ' + body?.error?.info );
 				}
-				return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
-					json: {}
-				} ).then( presponse => {
-					if ( presponse.statusCode === 200 && presponse.body?.id ) {
-						channel?.messages.fetch(presponse.body.id).then( msg => {
-							allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
-						}, () => {} );
-					}
-				}, () => {} );
+				return sendMessage(interaction, message, channel);
 			}
 			logging(wiki, interaction.guild_id, 'slash', 'inline');
 			wiki.updateWiki(body.query.general);
@@ -221,87 +216,80 @@ function slash_inline(interaction, lang, wiki, channel) {
 					} );
 				} );
 			}
+			if ( magiclinks.length && body.query?.allmessages?.length === 2 ) {
+				magiclinks = magiclinks.filter( link => body.query.general.magiclinks.hasOwnProperty(link.type) );
+				if ( magiclinks.length ) magiclinks.forEach( link => {
+					if ( link.type === 'PMID' && body.query.allmessages[0]?.['*']?.includes( '$1' ) ) {
+						link.url = new URL(body.query.allmessages[0]['*'].replace( /\$1/g, link.id ), wiki).href;
+					}
+					if ( link.type === 'RFC' && body.query.allmessages[1]?.['*']?.includes( '$1' ) ) {
+						link.url = new URL(body.query.allmessages[1]['*'].replace( /\$1/g, link.id ), wiki).href;
+					}
+					if ( link.type === 'ISBN' ) {
+						let title = 'Special:BookSources';
+						title = ( body.query.normalized?.find( title => title.from === title )?.to || title );
+						link.url = wiki.toLink(title + '/' + link.isbn, '', '', true);
+					}
+					if ( link.url ) {
+						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + link.type + ' ' + link.id );
+						textReplacement[link.replacementId] = '[' + link.type + ' ' + link.id + '](<' + link.url + '>)';
+					}
+				} );
+			}
 			templates = templates.filter( link => link.title || link.template );
-			if ( templates.length || links.length ) {
+			if ( templates.length || links.length || magiclinks.length ) {
 				breakInline = false;
-				replacedText = replacedText.split('\n').map( line => {
+				if ( templates.length || links.length ) replacedText = replacedText.split('\n').map( line => {
 					if ( line.startsWith( '>>> ' ) ) breakInline = true;
 					if ( line.startsWith( '> ' ) || breakInline ) return line;
-					let linkReplacements = 1;
-					let regex = /(?<!\\|\{)(\{\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?\s*)((?:[^<>\[\]\|\{\}\x01-\x1F\x7F#]|\x1F<replacement\x1F\d+\x1F.+?>\x1F)+?)(\s*(?<!\\)\||\}\})/g;
-					line = line.replace( regex, (fullLink, linkprefix, title, linktrail) => {
-						title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
-						let rawTitle = title.replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).trim();
-						let link = templates.find( link => link.raw === rawTitle );
-						if ( !link ) return fullLink;
-						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
-						title = title.replace( /\x1F<replacement\x1F(\d+)\x1F(.+?)>\x1F/g, (replacement, id, arg) => {
-							links.splice(id - linkReplacements, 1);
-							linkReplacements++;
-							return arg;
-						} );
-						if ( title.startsWith( 'int:' ) ) {
-							title = title.replace( /^int:\s*/, replacement => {
-								linkprefix += replacement;
-								return '';
-							} );
-						}
-						return linkprefix + '[' + title + '](<' + ( link.url || wiki.toLink(link.title || link.template, '', '', true) ) + '>)' + linktrail;
-					} );
-					regex = new RegExp( '([' + body.query.general.linkprefixcharset.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ) + ']+)?' + '(?<!\\\\)\\[\\[' + '((?:[^' + "<>\\[\\]\\|\{\}\\x01-\\x1F\\x7F" + ']|' + '\\x1F<replacement\\x1F\\d+\\x1F.+?>\\x1F' + ')+)' + '(?:\\|((?:(?!\\[\\[|\\]\\(|\\]\\\\\\]).)*?))?' + '(?<!\\\\)\\]\\]' + body.query.general.linktrail.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ).replace( /^\/\^(\(\[.+?\]\+\))\(\.\*\)\$\/sDu?$/, '$1?' ), 'gu' );
-					line = line.replace( regex, (fullLink, linkprefix = '', title, display, linktrail = '') => {
-						title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
-						let rawTitle = title.replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).split('#')[0].trim();
-						let link = links.find( link => link.raw === rawTitle );
-						if ( !link ) return fullLink;
-						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
-						title = title.replace( /\x1F<replacement\x1F(\d+)\x1F(.+?)>\x1F/g, (replacement, id, arg) => {
-							links.splice(id - linkReplacements, 1);
-							linkReplacements++;
-							return arg;
-						} );
-						if ( display === undefined ) display = title.replace( /^\s*:?/, '' );
-						if ( !display.trim() ) {
-							display = title.replace( /^\s*:/, '' );
-							if ( display.includes( ',' ) && !/ ([^\(\)]+)$/.test(display) ) {
-								display = display.replace( /^([^,]+), .*$/, '$1' );
+					let regex = null;
+					if ( line.includes( '{{' ) ) {
+						regex = /(?<!\\|\{)(\{\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?\s*)((?:[^<>\[\]\|\{\}\x01-\x1F\x7F#]|\x1F<replacement\x1F\d+\x1F.+?>\x1F)+?)(\s*(?<!\\)\||\}\})/g;
+						line = line.replace( regex, (fullLink, linkprefix, title, linktrail) => {
+							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).trim();
+							let link = templates.find( link => link.raw === title );
+							if ( !link ) return fullLink;
+							console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
+							if ( title.startsWith( 'int:' ) ) {
+								title = title.replace( /^int:\s*/, replacement => {
+									linkprefix += replacement;
+									return '';
+								} );
 							}
-							display = display.replace( / \([^\(\)]+\)$/, '' );
-							if ( link.url || link.ns  !== 0 ) {
-								display = display.split(':').slice(1).join(':');
+							return linkprefix + '[' + title + '](<' + ( link.url || wiki.toLink(link.title || link.template, '', '', true) ) + '>)' + linktrail;
+						} );
+					}
+					if ( line.includes( '[[' ) && line.includes( ']]' ) ) {
+						regex = new RegExp( '([' + body.query.general.linkprefixcharset.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ) + ']+)?' + '(?<!\\\\)\\[\\[' + '((?:[^' + "<>\\[\\]\\|\{\}\\x01-\\x1F\\x7F" + ']|' + '\\x1F<replacement\\x1F\\d+\\x1F.+?>\\x1F' + ')+)' + '(?:\\|((?:(?!\\[\\[|\\]\\(|\\]\\\\\\]).)*?))?' + '(?<!\\\\)\\]\\]' + body.query.general.linktrail.replace( /\\x([a-fA-f0-9]{4,6}|\{[a-fA-f0-9]{4,6}\})/g, '\\u$1' ).replace( /^\/\^(\(\[.+?\]\+\))\(\.\*\)\$\/sDu?$/, '$1?' ), 'gu' );
+						line = line.replace( regex, (fullLink, linkprefix = '', title, display, linktrail = '') => {
+							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).split('#')[0].trim();
+							let link = links.find( link => link.raw === title );
+							if ( !link ) return fullLink;
+							console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
+							if ( display === undefined ) display = title.replace( /^\s*:?/, '' );
+							if ( !display.trim() ) {
+								display = title.replace( /^\s*:/, '' );
+								if ( display.includes( ',' ) && !/ ([^\(\)]+)$/.test(display) ) {
+									display = display.replace( /^([^,]+), .*$/, '$1' );
+								}
+								display = display.replace( / \([^\(\)]+\)$/, '' );
+								if ( link.url || link.ns  !== 0 ) {
+									display = display.split(':').slice(1).join(':');
+								}
 							}
-						}
-						return '[' + ( linkprefix + display + linktrail ).replace( /\[\]\(\)/g, '\\$&' ) + '](<' + ( link.url || wiki.toLink(link.title, '', link.section, true) ) + '>)';
-					} );
+							return '[' + ( linkprefix + display + linktrail ).replace( /\x1F<replacement\x1F\d+\x1F((?:PMID|RFC|ISBN) .+?)>\x1F/g, '$1' ).replace( /[\[\]\(\)]/g, '\\$&' ) + '](<' + ( link.url || wiki.toLink(link.title, '', link.section, true) ) + '>)';
+						} );
+					}
 					return line;
 				} ).join('\n');
-				text = replacedText.replace( /\x1F<replacement(?:\x1F\d+\x1F.+?)?>\x1F/g, replacement => {
-					return textReplacement.shift();
+				text = replacedText.replace( /\x1F<replacement\x1F(\d+)(?:\x1F.+?)?>\x1F/g, (replacement, id) => {
+					return textReplacement[id - 1];
 				} );
 				if ( text.length > 1900 ) text = limitLength(text, 1900, 100);
-				return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
-					json: {
-						content: text,
-						allowed_mentions
-					}
-				} ).then( presponse => {
-					if ( presponse.statusCode !== 200 ) {
-						console.log( '- Slash: ' + presponse.statusCode + ': Error while sending the response: ' + presponse.body?.message );
-					}
-					channel?.messages.fetch(presponse.body.id).then( msg => {
-						allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
-					}, () => {} );
-				}, log_error );
+				message.content = text;
+				return sendMessage(interaction, message, channel);
 			}
-			else return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
-				json: {}
-			} ).then( presponse => {
-				if ( presponse.statusCode === 200 && presponse.body?.id ) {
-					channel?.messages.fetch(presponse.body.id).then( msg => {
-						allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
-					}, () => {} );
-				}
-			}, () => {} );
+			else return sendMessage(interaction, message, channel);
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -309,16 +297,32 @@ function slash_inline(interaction, lang, wiki, channel) {
 			else {
 				console.log( '- Error while following the links: ' + error );
 			}
-			return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
-				json: {}
-			} ).then( presponse => {
-				if ( presponse.statusCode === 200 && presponse.body?.id ) {
-					channel?.messages.fetch(presponse.body.id).then( msg => {
-						allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
-					}, () => {} );
-				}
-			}, () => {} );
+			return sendMessage(interaction, message, channel);
 		} );
+	}, log_error );
+}
+
+/**
+ * Sends an interaction response.
+ * @param {Object} interaction - The interaction.
+ * @param {Object} message - The message.
+ * @param {String} message.content - The message content.
+ * @param {{parse: String[], roles?: String[]}} message.allowed_mentions - The allowed mentions.
+ * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
+ * @returns {Promise<import('discord.js').Message?>}
+ */
+function sendMessage(interaction, message, channel) {
+	return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
+		json: message
+	} ).then( response => {
+		if ( response.statusCode !== 200 ) {
+			console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
+			return;
+		}
+		return channel?.messages.fetch(response.body.id).then( msg => {
+			if ( msg ) allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
+			return msg;
+		}, () => {} );
 	}, log_error );
 }
 
