@@ -357,8 +357,14 @@ client.on( 'voiceStateUpdate', (olds, news) => {
 } );
 
 
+const leftGuilds = new Map();
+
 client.on( 'guildCreate', guild => {
-	console.log( '- I\'ve been added to a server.' );
+	console.log( '- ' + guild.id + ': I\'ve been added to a server.' );
+	if ( leftGuilds.has(guild.id) ) {
+		client.clearTimeout(leftGuilds.get(guild.id));
+		leftGuilds.delete(guild.id);
+	}
 } );
 
 client.on( 'guildDelete', guild => {
@@ -366,17 +372,23 @@ client.on( 'guildDelete', guild => {
 		console.log( '- ' + guild.id + ': This server isn\'t responding.' );
 		return;
 	}
-	console.log( '- I\'ve been removed from a server.' );
-	db.run( 'DELETE FROM discord WHERE main = ?', [guild.id], function (dberror) {
+	console.log( '- ' + guild.id + ': I\'ve been removed from a server.' );
+	leftGuilds.set(guild.id, client.setTimeout(removeSettings, 300000, guild.id));
+} );
+
+function removeSettings(guild) {
+	leftGuilds.delete(guild);
+	if ( client.guilds.cache.has(guild) ) return;
+	db.run( 'DELETE FROM discord WHERE main = ?', [guild], function (dberror) {
 		if ( dberror ) {
-			console.log( '- Error while removing the settings: ' + dberror );
+			console.log( '- ' + guild.id + ': Error while removing the settings: ' + dberror );
 			return dberror;
 		}
-		if ( patreons.hasOwnProperty(guild.id) ) client.shard.broadcastEval( `delete global.patreons['${guild.id}']` );
-		if ( voice.hasOwnProperty(guild.id) ) delete voice[guild.id];
-		if ( this.changes ) console.log( '- Settings successfully removed.' );
+		if ( patreons.hasOwnProperty(guild) ) client.shard.broadcastEval( `delete global.patreons['${guild}']` );
+		if ( voice.hasOwnProperty(guild) ) delete voice[guild];
+		if ( this.changes ) console.log( '- ' + guild.id + ': Settings successfully removed.' );
 	} );
-} );
+}
 
 
 client.on( 'error', error => log_error(error, true) );
