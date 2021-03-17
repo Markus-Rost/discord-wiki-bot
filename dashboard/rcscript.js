@@ -100,7 +100,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 			} )
 		);
 		if ( !settings.channel ) {
-			if ( !channel.find('#wb-settings-channel').children('option').length ) {
+			if ( !channel.find('#wb-settings-channel').children().length ) {
 				createNotice($, 'missingperm', dashboardLang, ['Manage Webhooks']);
 			}
 			channel.find('#wb-settings-channel').prepend(

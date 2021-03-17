@@ -381,12 +381,12 @@ function removeSettings(guild) {
 	if ( client.guilds.cache.has(guild) ) return;
 	db.run( 'DELETE FROM discord WHERE main = ?', [guild], function (dberror) {
 		if ( dberror ) {
-			console.log( '- ' + guild.id + ': Error while removing the settings: ' + dberror );
+			console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );
 			return dberror;
 		}
 		if ( patreons.hasOwnProperty(guild) ) client.shard.broadcastEval( `delete global.patreons['${guild}']` );
 		if ( voice.hasOwnProperty(guild) ) delete voice[guild];
-		if ( this.changes ) console.log( '- ' + guild.id + ': Settings successfully removed.' );
+		if ( this.changes ) console.log( '- ' + guild + ': Settings successfully removed.' );
 	} );
 }
 
