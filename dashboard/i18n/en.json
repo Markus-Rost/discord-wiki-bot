@@ -154,8 +154,8 @@
         "none": "You currently don't have the [Manage Server]($1) permission on any servers, are you logged into the correct account?",
         "switch": "Switch Accounts",
         "title": "Server Selector",
-        "with": "Server with Wiki-Bot",
-        "without": "Server without Wiki-Bot"
+        "with": "Servers with Wiki-Bot",
+        "without": "Servers without Wiki-Bot"
     },
     "settings": {
         "desc": "These are the settings for $1:",
