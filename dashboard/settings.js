@@ -3,7 +3,7 @@ const {defaultSettings} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs();
 const Wiki = require('../util/wiki.js');
-const {got, db, sendMsg, hasPerm} = require('./util.js');
+const {got, db, sendMsg, createNotice, hasPerm} = require('./util.js');
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'

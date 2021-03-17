@@ -316,8 +316,7 @@ client.on( 'message', msg => {
 			if ( dberror ) {
 				console.log( '- Error while getting the wiki: ' + dberror );
 				if ( permissions.has('SEND_MESSAGES') ) {
-					msg.sendChannel( '⚠️ **Limited Functionality** ⚠️\nNo settings found, please contact the bot owner!\n' + process.env.invite, {}, true );
-					newMessage(msg, new Lang(msg.guild.preferredLocale));
+					msg.sendChannel( new Lang(msg.guild.preferredLocale, 'general').get('database') + '\n' + process.env.invite, {}, true );
 				}
 				return dberror;
 			}
