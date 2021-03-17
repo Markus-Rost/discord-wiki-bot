@@ -5,7 +5,7 @@ const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
 		console.log( '- ' + shardId + ': Error while connecting to the database: ' + dberror );
 		return dberror;
 	}
-	db.exec( 'PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 100;', function (error) {
+	db.exec( 'PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 1000;', function (error) {
 		if ( error ) {
 			console.log( '- ' + shardId + ': Error while enabling the foreign key constraint: ' + error );
 		}
