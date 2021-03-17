@@ -144,6 +144,7 @@
         " "
     ],
     "general": {
+        "database": "⚠️ **Limited Functionality** ⚠️\nNo settings found, please contact the bot owner!",
         "default": "this server isn't set up yet. Use $1 or the dashboard to change the settings.",
         "disclaimer": "I am a small bot with the purpose to easily link and search MediaWiki sites like Gamepedia and Fandom wikis. I show short descriptions and additional info about pages and am able to resolve redirects and follow interwiki links. $1 wrote me in JavaScript.\n\nYou can support me on Patreon:",
         "experimental": "**This feature is experimental! It is not guaranteed to work correctly and may be removed in the future.**",
