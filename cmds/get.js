@@ -34,18 +34,17 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var guildchannel = ['Updates channel:', '`' + guild.channel + '`'];
 			var guildsettings = ['Settings:', '*unknown*'];
 			
-			return db.all( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], (dberror, rows) => {
-				if ( dberror ) {
-					console.log( '- Error while getting the settings: ' + dberror );
-				}
-				else if ( rows.length ) {
-					row = rows.find( row => !row.channel );
+			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel ASC', [guild.id] ).then( ({rows}) => {
+				if ( rows.length ) {
+					let row = rows.find( row => !row.channel );
 					row.patreon = patreons.hasOwnProperty(guild.id);
 					row.voice = guild.voice;
 					guildsettings[1] = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 				}
 				else guildsettings[1] = '*default*';
-				
+			}, dberror => {
+				console.log( '- Error while getting the settings: ' + dberror );
+			} ).then( () => {
 				if ( msg.showEmbed() ) {
 					var embed = new MessageEmbed().setThumbnail( guild.icon ).addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildsize[0], guildsize[1], true ).addField( guildshard[0], guildshard[1], true ).addField( guildpermissions[0], guildpermissions[1] );
 					if ( guild.channel ) embed.addField( guildchannel[0], guildchannel[1] );
@@ -85,11 +84,8 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var channelrole = ['Minimal Role:', '*unknown*'];
 			var channelinline = ['Inline commands:', '*unknown*'];
 			
-			return db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [channel.guildID, channel.id, '#' + ( channel.type === 'category' ? channel.id : channel.parentID )], (dberror, row) => {
-				if ( dberror ) {
-					console.log( '- Error while getting the settings: ' + dberror );
-				}
-				else if ( row ) {
+			return db.query( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [channel.guildID, channel.id, '#' + ( channel.type === 'category' ? channel.id : channel.parentID )] ).then( ({rows:[row]}) => {
+				if ( row ) {
 					channellang[1] = row.lang;
 					channelwiki[1] = row.wiki;
 					channelrole[1] = ( row.role ? '`' + row.role + '` <@&' + row.role + '>' : '@everyone' );
@@ -101,7 +97,9 @@ async function cmd_get(lang, msg, args, line, wiki) {
 					channelrole[1] = '@everyone';
 					channelinline[1] = 'enabled';
 				}
-				
+			}, dberror => {
+				console.log( '- Error while getting the settings: ' + dberror );
+			} ).then( () => {
 				if ( msg.showEmbed() ) {
 					var text = '';
 					var embed = new MessageEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channeldetails[0], channeldetails[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelrole[0], channelrole[1] ).addField( channelinline[0], channelinline[1] );

@@ -31,15 +31,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 	if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:/i, '' );
 	
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
-	db.all( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = ? AND channel LIKE ? ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'], (dberror, rows) => {
-		if ( dberror || !rows ) {
-			console.log( '- Error while getting the verifications: ' + dberror );
-			embed.setColor('#000000').setDescription( lang.get('verify.error') );
-			msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
-				if ( message ) message.reactEmoji('error');
-			} );
-			return dberror;
-		}
+	db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'] ).then( ({rows}) => {
 		if ( !rows.length ) {
 			if ( msg.onlyVerifyCommand ) return;
 			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + 'verification`' : '' ) );
@@ -378,6 +370,12 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			
 			if ( reaction ) reaction.removeEmoji();
 		} ) );
+	}, dberror => {
+		console.log( '- Error while getting the verifications: ' + dberror );
+		embed.setColor('#000000').setDescription( lang.get('verify.error') );
+		msg.replyMsg( lang.get('verify.error_reply'), {embed}, false, false ).then( message => {
+			if ( message ) message.reactEmoji('error');
+		} );
 	} );
 }
 

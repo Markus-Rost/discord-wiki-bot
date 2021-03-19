@@ -231,13 +231,10 @@ function graceful(signal) {
 	server.close( () => {
 		console.log( '- Dashboard: ' + signal + ': Closed the dashboard server.' );
 	} );
-	db.close( dberror => {
-		if ( dberror ) {
-			console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
-			return dberror;
-		}
+	db.end().then( () => {
 		console.log( '- Dashboard: ' + signal + ': Closed the database connection.' );
-		process.exit(0);
+	}, dberror => {
+		console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
 	} );
 }
 

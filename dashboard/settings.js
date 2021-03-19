@@ -171,17 +171,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
  * @param {import('./i18n.js')} dashboardLang - The user language
  */
 function dashboard_settings(res, $, guild, args, dashboardLang) {
-	db.all( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = ? ORDER BY channel ASC', [guild.id], function(dberror, rows) {
-		if ( dberror ) {
-			console.log( '- Dashboard: Error while getting the settings: ' + dberror );
-			createNotice($, 'error', dashboardLang);
-			$('<p>').text(dashboardLang.get('settings.failed')).appendTo('#text .description');
-			$('.channel#settings').addClass('selected');
-			let body = $.html();
-			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
-			res.write( body );
-			return res.end();
-		}
+	db.query( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 ORDER BY channel ASC', [guild.id] ).then( ({rows}) => {
 		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		if ( !rows.length ) {
 			$('.channel#settings').addClass('selected');
@@ -190,10 +180,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				wiki: defaultSettings.wiki,
 				lang: ( guild.locale || defaultSettings.lang )
 			}, guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
-			let body = $.html();
-			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
-			res.write( body );
-			return res.end();
+			return;
 		}
 		let isPatreon = rows.some( row => row.patreon );
 		let channellist = rows.filter( row => row.channel ).map( row => {
@@ -251,6 +238,12 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 			$('.channel#settings').addClass('selected');
 			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 		}
+	}, dberror => {
+		console.log( '- Dashboard: Error while getting the settings: ' + dberror );
+		createNotice($, 'error', dashboardLang);
+		$('<p>').text(dashboardLang.get('settings.failed')).appendTo('#text .description');
+		$('.channel#settings').addClass('selected');
+	} ).then( () => {
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 		res.write( body );
@@ -312,14 +305,13 @@ function update_settings(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
-		if ( response.message === 'noChannel' ) return db.run( 'DELETE FROM discord WHERE guild = ? AND ( channel = ? OR channel = ? )', [guild, type, `#${type}`], function (delerror) {
-			if ( delerror ) {
-				console.log( '- Dashboard: Error while removing the settings: ' + delerror );
-				return res(`/guild/${guild}/settings`, 'savefail');
-			}
+		if ( response.message === 'noChannel' ) return db.query( 'DELETE FROM discord WHERE guild = $1 AND ( channel = $2 OR channel = $3 )', [guild, type, `#${type}`] ).then( () => {
 			console.log( `- Dashboard: Settings successfully removed: ${guild}#${type}` );
 			if ( settings.delete_settings ) return res(`/guild/${guild}/settings`, 'save');
 			else return res(`/guild/${guild}/settings`, 'savefail');
+		}, delerror =>{
+			console.log( '- Dashboard: Error while removing the settings: ' + delerror );
+			return res(`/guild/${guild}/settings`, 'savefail');
 		} );
 		if ( type !== 'default' && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
