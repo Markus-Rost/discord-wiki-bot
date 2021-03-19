@@ -11,6 +11,10 @@ jobs:
       matrix:
         node-version: [14.x]
     steps:
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql db: 'postgres'
+        postgresql user: 'postgres'
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
