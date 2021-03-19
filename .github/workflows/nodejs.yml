@@ -10,11 +10,19 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ''
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
-    - uses: harmon758/postgresql-action@v1
-      with:
-        postgresql db: 'postgres'
-        postgresql user: 'postgres'
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
