@@ -169,14 +169,14 @@ function removePatreons(guild, msg) {
 	if ( !( typeof guild === 'string' || msg instanceof Discord.Message ) ) {
 		return 'removePatreons(guild, msg) – No guild or message provided!';
 	}
-	var messages = [];
-	db.connect().then( client => {
-		client.query( 'SELECT lang, inline FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {
+	return db.connect().then( client => {
+		var messages = [];
+		return client.query( 'SELECT lang, role, inline FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {
 			if ( !row ) {
 				messages.push('The guild doesn\'t exist!');
 				return Promise.reject();
 			}
-			return client.query( 'UPDATE discord SET lang = $1, inline = $2, prefix = $3, patreon = NULL WHERE guild = $4', [row.lang, row.inline, process.env.prefix, guild] ).then( ({rowCount}) => {
+			return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, guild] ).then( ({rowCount}) => {
 				if ( rowCount ) {
 					console.log( '- Guild successfully updated.' );
 					messages.push('Guild successfully updated.');
@@ -243,18 +243,21 @@ function removePatreons(guild, msg) {
 				messages.push('Error while updating the RcGcDw: ' + dberror);
 			} );
 		} ).then( () => {
+			if ( !messages.length ) messages.push('No settings found that had to be removed.');
 			return messages;
 		}, error => {
 			if ( error ) {
 				console.log( '- Error while removing the patreon features: ' + error );
 				messages.push('Error while removing the patreon features: ' + error);
 			}
+			if ( !messages.length ) messages.push('No settings found that had to be removed.');
 			return messages;
 		} ).finally( () => {
 			client.release();
 		} );
 	}, dberror => {
 		console.log( '- Error while connecting to the database client: ' + dberror );
+		return 'Error while connecting to the database client: ' + dberror;
 	} );
 }
 
@@ -264,8 +267,9 @@ function removePatreons(guild, msg) {
  */
 function removeSettings(msg) {
 	if ( !( msg instanceof Discord.Message ) ) return 'removeSettings(msg) – No message provided!';
-	try {
-		msg.client.shard.broadcastEval( `[
+	return db.connect().then( client => {
+		var messages = [];
+		return msg.client.shard.broadcastEval( `[
 			[...this.guilds.cache.keys()],
 			this.channels.cache.filter( channel => {
 				return ( channel.isGuild() || ( channel.type === 'category' && global.patreons.hasOwnProperty(channel.guild.id) ) );
@@ -275,8 +279,8 @@ function removeSettings(msg) {
 			var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
 			var guilds = [];
 			var channels = [];
-			db.query( 'SELECT guild, channel FROM discord' ).then( ({rows}) => {
-				rows.forEach( row => {
+			return client.query( 'SELECT guild, channel FROM discord' ).then( ({rows}) => {
+				return rows.forEach( row => {
 					if ( !all_guilds.includes(row.guild) ) {
 						if ( !row.channel ) {
 							if ( patreons.hasOwnProperty(row.guild) || voice.hasOwnProperty(row.guild) ) {
@@ -290,33 +294,47 @@ function removeSettings(msg) {
 						return channels.push(row.channel);
 					}
 				} );
-				if ( guilds.length ) {
-					db.query( 'DELETE FROM discord WHERE main IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ')', guilds ).then( ({rowCount}) => {
-						console.log( '- Guilds successfully removed: ' + rowCount );
-					}, dberror => {
-						console.log( '- Error while removing the guilds: ' + dberror );
-						msg.replyMsg( 'I got an error while removing the guilds!', {}, true );
-					} );
-				}
-				if ( channels.length ) {
-					db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (channel, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( ({rowCount}) => {
-						console.log( '- Channels successfully removed: ' + rowCount );
-					}, dberror => {
-						console.log( '- Error while removing the channels: ' + dberror );
-						msg.replyMsg( 'I got an error while removing the channels!', {}, true );
-					} );
-				}
-				if ( !guilds.length && !channels.length ) console.log( '- Settings successfully removed.' );
 			}, dberror => {
 				console.log( '- Error while getting the settings: ' + dberror );
-				msg.replyMsg( 'I got an error while getting the settings!', {}, true );
+				messages.push('Error while getting the settings: ' + dberror);
+			} ).then( () => {
+				if ( guilds.length ) {
+					return client.query( 'DELETE FROM discord WHERE main IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ')', guilds ).then( ({rowCount}) => {
+						console.log( '- Guilds successfully removed: ' + rowCount );
+						messages.push('Guilds successfully removed: ' + rowCount);
+					}, dberror => {
+						console.log( '- Error while removing the guilds: ' + dberror );
+						messages.push('Error while removing the guilds: ' + dberror);
+					} );
+				}
+			} ).then( () => {
+				if ( channels.length ) {
+					return client.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (channel, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( ({rowCount}) => {
+						console.log( '- Channels successfully removed: ' + rowCount );
+						messages.push('Channels successfully removed: ' + rowCount);
+					}, dberror => {
+						console.log( '- Error while removing the channels: ' + dberror );
+						messages.push('Error while removing the channels: ' + dberror);
+					} );
+				}
 			} );
+		} ).then( () => {
+			if ( !messages.length ) messages.push('No settings found that had to be removed.');
+			return messages;
+		}, error => {
+			if ( error ) {
+				console.log( '- Error while removing the settings: ' + error );
+				messages.push('Error while removing the settings: ' + error);
+			}
+			if ( !messages.length ) messages.push('No settings found that had to be removed.');
+			return messages;
+		} ).finally( () => {
+			client.release();
 		} );
-	}
-	catch ( tryerror ) {
-		console.log( '- Error while removing the settings: ' + tryerror );
-		return 'removeSettings(msg) – Error while removing the settings: ' + tryerror;
-	}
+	}, dberror => {
+		console.log( '- Error while connecting to the database client: ' + dberror );
+		return 'Error while connecting to the database client: ' + dberror;
+	} );
 }
 
 module.exports = {

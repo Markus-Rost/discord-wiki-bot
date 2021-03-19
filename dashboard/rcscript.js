@@ -178,18 +178,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
  * @param {import('./i18n.js')} dashboardLang - The user language
  */
 function dashboard_rcscript(res, $, guild, args, dashboardLang) {
-	db.all( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT GROUP_CONCAT(DISTINCT wiki) FROM discord WHERE guild = ?) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id, guild.id], function(dberror, rows) {
-		if ( dberror ) {
-			console.log( '- Dashboard: Error while getting the RcGcDw: ' + dberror );
-			createNotice($, 'error', dashboardLang);
-			$('#text .description').html(dashboardLang.get('rcscript.explanation'));
-			$('#text code#server-id').text(guild.id);
-			$('.channel#rcscript').addClass('selected');
-			let body = $.html();
-			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
-			res.write( body );
-			return res.end();
-		}
+	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
 			$('#text .description').html(dashboardLang.get('rcscript.explanation'));
@@ -202,7 +191,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 		}
 		var wiki = rows[0].mainwiki;
 		var lang = rows[0].mainlang;
-		var allwikis = rows[0].allwikis.split(',').sort();
+		var allwikis = rows[0].allwikis;
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
 		$('<p>').html(dashboardLang.get('rcscript.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		Promise.all(rows.map( row => {
@@ -257,6 +246,16 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 			res.write( body );
 			return res.end();
 		} );
+	}, dberror => {
+		console.log( '- Dashboard: Error while getting the RcGcDw: ' + dberror );
+		createNotice($, 'error', dashboardLang);
+		$('#text .description').html(dashboardLang.get('rcscript.explanation'));
+		$('#text code#server-id').text(guild.id);
+		$('.channel#rcscript').addClass('selected');
+		let body = $.html();
+		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
+		res.write( body );
+		return res.end();
 	} );
 }
 
@@ -319,14 +318,8 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		if ( settings.display > rcgcdwLimit.display && !response.patreon ) {
 			settings.display = rcgcdwLimit.display;
 		}
-		return db.get( 'SELECT discord.lang, GROUP_CONCAT(configid) count FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = ? AND discord.channel IS NULL', [guild], function(curerror, row) {
-			if ( curerror ) {
-				console.log( '- Dashboard: Error while checking for RcGcDw: ' + curerror );
-				return res(`/guild/${guild}/rcscript/new`, 'savefail');
-			}
+		return db.query( 'SELECT discord.lang, ARRAY_REMOVE(ARRAY_AGG(configid ORDER BY configid), NULL) count FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL GROUP BY discord.lang', [guild] ).then( ({rows:[row]}) => {
 			if ( !row ) return res(`/guild/${guild}/rcscript`, 'savefail');
-			if ( row.count === null ) row.count = [];
-			else row.count = row.count.split(',').map( configid => parseInt(configid, 10) );
 			if ( row.count.length >= rcgcdwLimit[( response.patreon ? 'patreon' : 'default' )] ) {
 				return res(`/guild/${guild}/rcscript`, 'savefail');
 			}
@@ -363,11 +356,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( body.query.allmessages[0]['*'] !== guild ) {
 					return res(`/guild/${guild}/rcscript/new`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 				}
-				return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki.href], (blerror, block) => {
-					if ( blerror ) {
-						console.log( '- Dashboard: Error while getting the blocklist: ' + blerror );
-						return res(`/guild/${guild}/rcscript/new`, 'savefail');
-					}
+				return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {
 					if ( block ) {
 						console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 						return res(`/guild/${guild}/rcscript/new`, 'wikiblocked', body.query.general.sitename, block.reason);
@@ -410,11 +399,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								if ( configid === i ) configid++;
 								else break;
 							}
-							db.run( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, rcid, postid) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )], function (dberror) {
-								if ( dberror ) {
-									console.log( '- Dashboard: Error while adding the RcGcDw: ' + dberror );
-									return res(`/guild/${guild}/rcscript/new`, 'savefail');
-								}
+							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, rcid, postid) VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( `- Dashboard: RcGcDw successfully added: ${guild}#${configid}` );
 								res(`/guild/${guild}/rcscript/${configid}`, 'save');
 								var text = lang.get('rcscript.dashboard.added', `<@${userSettings.user.id}>`, configid);
@@ -431,12 +416,18 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								} ).catch( error => {
 									console.log( '- Dashboard: Error while notifying the guild: ' + error );
 								} );
+							}, dberror => {
+								console.log( '- Dashboard: Error while adding the RcGcDw: ' + dberror );
+								return res(`/guild/${guild}/rcscript/new`, 'savefail');
 							} );
 						}, error => {
 							console.log( '- Dashboard: Error while creating the webhook: ' + error );
 							return res(`/guild/${guild}/rcscript/new`, 'savefail');
 						} );
 					}
+				}, dberror => {
+					console.log( '- Dashboard: Error while getting the blocklist: ' + dberror );
+					return res(`/guild/${guild}/rcscript/new`, 'savefail');
 				} );
 			}, error => {
 				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
@@ -449,17 +440,16 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				}
 				return res(`/guild/${guild}/rcscript/new`, 'savefail');
 			} );
+		}, dberror => {
+			console.log( '- Dashboard: Error while checking for RcGcDw: ' + dberror );
+			return res(`/guild/${guild}/rcscript/new`, 'savefail');
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
 		return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	} );
 	type = parseInt(type, 10);
-	return db.get( 'SELECT discord.lang mainlang, webhook, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
-		if ( curerror ) {
-			console.log( '- Dashboard: Error while checking for RcGcDw: ' + curerror );
-			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
-		}
+	return db.query( 'SELECT discord.lang mainlang, webhook, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild AND configid = $1 WHERE discord.guild = $2 AND discord.channel IS NULL', [type, guild] ).then( ({rows:[row]}) => {
 		if ( !row?.webhook ) return res(`/guild/${guild}/rcscript`, 'savefail');
 		return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( wresponse => {
 			if ( !wresponse.body?.channel_id ) {
@@ -497,11 +487,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					if ( !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					}
-					return db.run( 'DELETE FROM rcgcdw WHERE webhook = ?', [row.webhook], function (delerror) {
-						if ( delerror ) {
-							console.log( '- Dashboard: Error while removing the RcGcDw: ' + delerror );
-							return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
-						}
+					return db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [row.webhook] ).then( () => {
 						console.log( `- Dashboard: RcGcDw successfully removed: ${guild}#${type}` );
 						res(`/guild/${guild}/rcscript`, 'save');
 						var lang = new Lang(row.mainlang);
@@ -545,6 +531,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						} ).catch( error => {
 							console.log( '- Dashboard: Error while notifying the guild: ' + error );
 						} );
+					}, dberror => {
+						console.log( '- Dashboard: Error while removing the RcGcDw: ' + dberror );
+						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					} );
 				}
 				if ( newChannel && ( !hasPerm(response.botPermissions, 'MANAGE_WEBHOOKS') 
@@ -594,11 +583,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					if ( row.wiki !== wiki.href && body.query.allmessages[0]['*'] !== guild ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 					}
-					return db.get( 'SELECT reason FROM blocklist WHERE wiki = ?', [wiki.href], (blerror, block) => {
-						if ( blerror ) {
-							console.log( '- Dashboard: Error while getting the blocklist: ' + blerror );
-							return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
-						}
+					return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {
 						if ( block ) {
 							console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 							return res(`/guild/${guild}/rcscript/${type}`, 'wikiblocked', body.query.general.sitename, block.reason);
@@ -625,35 +610,31 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						 * @param {Boolean} enableFeeds - If feeds based changes should be enabled.
 						 */
 						function updateWebhook(enableFeeds = null) {
-							var sql = 'UPDATE rcgcdw SET wiki = ?, lang = ?, display = ?';
-							var sqlargs = [wiki.href, settings.lang, settings.display];
+							var sqlargs = [row.webhook, wiki.href, settings.lang, settings.display];
+							var sql = 'UPDATE rcgcdw SET wiki = $2, lang = $3, display = $4';
 							if ( row.wiki !== wiki.href ) {
-								sql += ', rcid = ?, postid = ?';
 								sqlargs.push(( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' ));
+								sql += ', rcid = $5, postid = $6';
 							}
 							else {
 								if ( enableFeeds && settings.feeds_only ) {
-									sql += ', rcid = ?';
 									sqlargs.push(-1);
+									sql += ', rcid = $' + sqlargs.length;
 								}
 								else if ( row.rcid === -1 ) {
-									sql += ', rcid = ?';
 									sqlargs.push(null);
+									sql += ', rcid = $' + sqlargs.length;
 								}
 								if ( !enableFeeds ) {
-									sql += ', postid = ?';
 									sqlargs.push('-1');
+									sql += ', postid = $' + sqlargs.length;
 								}
 								else if ( row.postid === '-1' ) {
-									sql += ', postid = ?';
 									sqlargs.push(null);
+									sql += ', postid = $' + sqlargs.length;
 								}
 							}
-							db.run( sql + ' WHERE webhook = ?', [...sqlargs, row.webhook], function (dberror) {
-								if ( dberror ) {
-									console.log( '- Dashboard: Error while updating the RcGcDw: ' + dberror );
-									return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
-								}
+							db.query( sql + ' WHERE webhook = $1', sqlargs ).then( () => {
 								console.log( `- Dashboard: RcGcDw successfully updated: ${guild}#${type}` );
 								var lang = new Lang(row.mainlang);
 								var webhook_lang = new Lang(settings.lang, 'rcscript.webhook');
@@ -755,8 +736,14 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								} ).catch( error => {
 									console.log( '- Dashboard: Error while notifying the guild: ' + error );
 								} );
+							}, dberror => {
+								console.log( '- Dashboard: Error while updating the RcGcDw: ' + dberror );
+								return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 							} );
 						}
+					}, dberror => {
+						console.log( '- Dashboard: Error while getting the blocklist: ' + dberror );
+						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					} );
 				}, error => {
 					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
@@ -777,6 +764,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			console.log( '- Dashboard: Error while getting the webhook: ' + error );
 			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		} );
+	}, dberror => {
+		console.log( '- Dashboard: Error while checking for RcGcDw: ' + dberror );
+		return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 	} );
 }
 

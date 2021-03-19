@@ -133,7 +133,7 @@ ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 1;
 module.exports = db.connect().then( () => {
 	return db.query( 'SELECT CURRENT_SETTING($1) AS version', ['my.version'] ).then( ({rows:[row]}) => {
 		row.version = parseInt(row.version, 10);
-		if ( row.version > schema.length ) {
+		if ( isNaN(row.version) || row.version > schema.length ) {
 			console.log( '- Invalid database version: v' + row.version );
 			return Promise.reject();
 		}

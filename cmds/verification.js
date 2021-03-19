@@ -22,13 +22,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
 	}
 	
-	db.all( 'SELECT configid, channel, role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = ? ORDER BY configid ASC', [msg.guild.id], (error, rows) => {
-		if ( error || !rows ) {
-			console.log( '- Error while getting the verifications: ' + error );
-			msg.reactEmoji('error', true);
-			return error;
-		}
-		
+	db.query( 'SELECT configid, channel, role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 ORDER BY configid ASC', [msg.guild.id] ).then( ({rows}) => {
 		var prefix = ( patreons[msg.guild.id] || process.env.prefix );
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
 			var limit = verificationLimit[( patreons[msg.guild.id] ? 'patreon' : 'default' )];
@@ -52,14 +46,12 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( new_configid === i ) new_configid++;
 				else break;
 			}
-			return db.run( 'INSERT INTO verification(guild, configid, channel, role) VALUES(?, ?, ?, ?)', [msg.guild.id, new_configid, '|' + msg.channel.id + '|', roles], function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while adding the verification: ' + dberror );
-					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
-					return dberror;
-				}
+			return db.query( 'INSERT INTO verification(guild, configid, channel, role) VALUES($1, $2, $3, $4)', [msg.guild.id, new_configid, '|' + msg.channel.id + '|', roles] ).then( () => {
 				console.log( '- Verification successfully added.' );
 				msg.replyMsg( lang.get('verification.added') + formatVerification(false, false, {configid: new_configid, role: roles}), {}, true );
+			}, dberror => {
+				console.log( '- Error while adding the verification: ' + dberror );
+				msg.replyMsg( lang.get('verification.save_failed'), {}, true );
 			} );
 		}
 		if ( !rows.some( row => row.configid.toString() === args[0] ) ) {
@@ -84,14 +76,12 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		if ( args[1] ) args[1] = args[1].toLowerCase();
 		if ( args[1] === 'delete' && !args.slice(2).join('') ) {
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			return db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [msg.guild.id, row.configid], function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while removing the verification: ' + dberror );
-					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
-					return dberror;
-				}
+			return db.query( 'DELETE FROM verification WHERE guild = $1 AND configid = $2', [msg.guild.id, row.configid] ).then( () => {
 				console.log( '- Verification successfully removed.' );
 				msg.replyMsg( lang.get('verification.deleted'), {}, true );
+			}, dberror => {
+				console.log( '- Error while removing the verification: ' + dberror );
+				msg.replyMsg( lang.get('verification.save_failed'), {}, true );
 			} );
 		}
 		if ( args[1] === 'rename' && !args.slice(2).join('') ) {
@@ -100,15 +90,13 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_NICKNAMES`' );
 			}
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			return db.run( 'UPDATE verification SET rename = ? WHERE guild = ? AND configid = ?', [( row.rename ? 0 : 1 ), msg.guild.id, row.configid], function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while updating the verification: ' + dberror );
-					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
-					return dberror;
-				}
+			return db.query( 'UPDATE verification SET rename = $1 WHERE guild = $2 AND configid = $3', [( row.rename ? 0 : 1 ), msg.guild.id, row.configid] ).then( () => {
 				console.log( '- Verification successfully updated.' );
 				row.rename = ( row.rename ? 0 : 1 );
 				msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+			}, dberror => {
+				console.log( '- Error while updating the verification: ' + dberror );
+				msg.replyMsg( lang.get('verification.save_failed'), {}, true );
 			} );
 		}
 		if ( args[2] ) {
@@ -126,15 +114,13 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} );
 				if ( channels.some( channel => !channel ) ) return msg.replyMsg( lang.get('verification.channel_missing'), {}, true );
 				channels = channels.map( channel => channel.id ).join('|');
-				if ( channels.length ) return db.run( 'UPDATE verification SET channel = ? WHERE guild = ? AND configid = ?', ['|' + channels + '|', msg.guild.id, row.configid], function (dberror) {
-					if ( dberror ) {
-						console.log( '- Error while updating the verification: ' + dberror );
-						msg.replyMsg( lang.get('verification.save_failed'), {}, true );
-						return dberror;
-					}
+				if ( channels.length ) return db.query( 'UPDATE verification SET channel = $1 WHERE guild = $2 AND configid = $3', ['|' + channels + '|', msg.guild.id, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row.channel = '|' + channels + '|';
 					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+				}, dberror => {
+					console.log( '- Error while updating the verification: ' + dberror );
+					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
 				} );
 			}
 			if ( args[1] === 'role' ) {
@@ -150,15 +136,13 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {}, true );
 				if ( roles.some( role => role.managed || role.id === msg.guild.id ) ) return msg.replyMsg( lang.get('verification.role_managed'), {}, true );
 				roles = roles.map( role => role.id ).join('|');
-				if ( roles.length ) return db.run( 'UPDATE verification SET role = ? WHERE guild = ? AND configid = ?', [roles, msg.guild.id, row.configid], function (dberror) {
-					if ( dberror ) {
-						console.log( '- Error while updating the verification: ' + dberror );
-						msg.replyMsg( lang.get('verification.save_failed'), {}, true );
-						return dberror;
-					}
+				if ( roles.length ) return db.query( 'UPDATE verification SET role = $1 WHERE guild = $2 AND configid = $3', [roles, msg.guild.id, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row.role = roles;
 					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+				}, dberror => {
+					console.log( '- Error while updating the verification: ' + dberror );
+					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
 				} );
 			}
 			if ( ( ( args[1] === 'editcount' || args[1] === 'accountage' ) && /^\d+$/.test(args[2]) ) || ( args[1] === 'postcount' && /^(?:-?\d+|null)$/.test(args[2]) ) ) {
@@ -167,15 +151,13 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( args[2] > 1000000 || args[2] < -1000000 ) {
 					return msg.replyMsg( lang.get('verification.value_too_high'), {}, true );
 				}
-				return db.run( 'UPDATE verification SET ' + args[1] + ' = ? WHERE guild = ? AND configid = ?', [args[2], msg.guild.id, row.configid], function (dberror) {
-					if ( dberror ) {
-						console.log( '- Error while updating the verification: ' + dberror );
-						msg.replyMsg( lang.get('verification.save_failed'), {}, true );
-						return dberror;
-					}
+				return db.query( 'UPDATE verification SET ' + args[1] + ' = $1 WHERE guild = $2 AND configid = $3', [args[2], msg.guild.id, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row[args[1]] = args[2];
 					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+				}, dberror => {
+					console.log( '- Error while updating the verification: ' + dberror );
+					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
 				} );
 			}
 			if ( args[1] === 'usergroup' ) {
@@ -219,15 +201,15 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the usergroups: ' + error );
 				} ).finally( () => {
 					usergroups = usergroups.join('|');
-					db.run( 'UPDATE verification SET usergroup = ? WHERE guild = ? AND configid = ?', [and_or + usergroups, msg.guild.id, row.configid], function (dberror) {
-						if ( dberror ) {
-							console.log( '- Error while updating the verification: ' + dberror );
-							msg.replyMsg( lang.get('verification.save_failed'), {}, true );
-							return dberror;
-						}
+					db.query( 'UPDATE verification SET usergroup = $1 WHERE guild = $2 AND configid = $3', [and_or + usergroups, msg.guild.id, row.configid] ).then( () => {
 						console.log( '- Verification successfully updated.' );
 						row.usergroup = and_or + usergroups;
 						msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+						
+						if ( reaction ) reaction.removeEmoji();
+					}, dberror => {
+						console.log( '- Error while updating the verification: ' + dberror );
+						msg.replyMsg( lang.get('verification.save_failed'), {}, true );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
@@ -283,6 +265,9 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			}
 			return verification_text;
 		}
+	}, dberror => {
+		console.log( '- Error while getting the verifications: ' + dberror );
+		msg.reactEmoji('error', true);
 	} );
 }
 

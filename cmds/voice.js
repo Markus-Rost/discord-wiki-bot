@@ -25,7 +25,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 				console.log( '- Voice settings successfully updated.' );
 				if ( value ) {
 					voice[msg.guild.id] = lang.lang;
-					db.query( 'SELECT lang FROM discord WHERE guild = ? AND channel IS NULL', [msg.guild.id] ).then( ({rows:[row]}) => {
+					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [msg.guild.id] ).then( ({rows:[row]}) => {
 						console.log( '- Voice language successfully updated.' );
 						voice[msg.guild.id] = row.lang;
 					}, dberror => {
