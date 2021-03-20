@@ -516,7 +516,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								console.log( '- Dashboard: Error while removing the webhook: ' + error );
 							} )
 						} );
-						var text = lang.get('rcscript.dashboard.deleted', `<@${userSettings.user.id}>`, type);
+						var text = lang.get('rcscript.dashboard.removed', `<@${userSettings.user.id}>`, type);
 						text += `\n${lang.get('rcscript.channel')} <#${row.channel}>`;
 						text += `\n${lang.get('rcscript.wiki')} <${row.wiki}>`;
 						text += `\n${lang.get('rcscript.lang')} \`${allLangs.names[row.lang]}\``;
