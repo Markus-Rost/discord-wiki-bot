@@ -454,6 +454,7 @@ function graceful(signal) {
 		client.destroy();
 		db.end().then( () => {
 			console.log( '- ' + shardId + ': ' + signal + ': Closed the database connection.' );
+			process.exit(0);
 		}, dberror => {
 			console.log( '- ' + shardId + ': ' + signal + ': Error while closing the database connection: ' + dberror );
 		} );

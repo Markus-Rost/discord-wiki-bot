@@ -230,11 +230,12 @@ function graceful(signal) {
 	console.log( '- Dashboard: ' + signal + ': Closing the dashboard...' );
 	server.close( () => {
 		console.log( '- Dashboard: ' + signal + ': Closed the dashboard server.' );
-	} );
-	db.end().then( () => {
-		console.log( '- Dashboard: ' + signal + ': Closed the database connection.' );
-	}, dberror => {
-		console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
+		db.end().then( () => {
+			console.log( '- Dashboard: ' + signal + ': Closed the database connection.' );
+			process.exit(0);
+		}, dberror => {
+			console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
+		} );
 	} );
 }
 
