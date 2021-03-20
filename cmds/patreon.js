@@ -24,271 +24,243 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '%20applications.commands' + '>', {}, true )
 		}, log_error );
 		if ( patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
-		db.get( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {
-			if ( dberror ) {
-				console.log( '- Error while getting the patreon: ' + dberror );
-				msg.replyMsg( 'I got an error while searching for you, please try again later.', {}, true );
-				return dberror;
-			}
-			if ( !row ) return msg.replyMsg( 'you can\'t have any server.', {}, true );
+		db.query( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [msg.author.id] ).then( ({rows:[row]}) => {
+			if ( !row ) return msg.replyMsg( 'you can\'t have any servers.', {}, true );
 			if ( row.count <= row.guilds ) return msg.replyMsg( 'you already reached your maximal server count.', {}, true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			db.run( 'UPDATE discord SET patreon = ? WHERE guild = ? AND channel IS NULL', [msg.author.id, args[1]], function (error) {
-				if ( error ) {
-					console.log( '- Error while updating the guild: ' + error );
-					msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
-					return error;
-				}
-				if ( !this.changes ) return db.run( 'INSERT INTO discord(main, guild, patreon) VALUES(?, ?, ?)', [args[1], args[1], msg.author.id], function (inserror) {
-					if ( inserror ) {
-						console.log( '- Error while adding the guild: ' + inserror );
-						msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
-						return inserror;
-					}
+			db.query( 'UPDATE discord SET patreon = $1 WHERE guild = $2 AND channel IS NULL', [msg.author.id, args[1]] ).then( ({rowCount}) => {
+				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES($1, $1, $2)', [args[1], msg.author.id] ).then( () => {
 					console.log( '- Guild successfully added.' );
 					msg.client.shard.broadcastEval( `global.patreons['${args[1]}'] = '${process.env.prefix}'` );
 					msg.replyMsg( 'the patreon features are now enabled on "' + guild + '".', {}, true );
+				}, dberror => {
+					console.log( '- Error while adding the guild: ' + dberror );
+					msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
 				} );
 				console.log( '- Guild successfully updated.' );
 				msg.client.shard.broadcastEval( `global.patreons['${args[1]}'] = '${process.env.prefix}'` );
 				msg.replyMsg( 'the patreon features are now enabled on "' + guild + '".', {}, true );
+			}, dberror => {
+				console.log( '- Error while updating the guild: ' + dberror );
+				msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
 			} );
+		}, dberror => {
+			console.log( '- Error while getting the patreon: ' + dberror );
+			msg.replyMsg( 'I got an error while searching for you, please try again later.', {}, true );
 		} );
 	} );
 	
 	if ( args[0] === 'disable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name`, shardIDForGuildID(args[1], msg.client.shard.count) ).then( guild => {
 		if ( !guild ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', {}, true );
 		if ( !patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
-		db.get( 'SELECT lang, inline FROM discord WHERE guild = ? AND patreon = ?', [args[1], msg.author.id], (dberror, row) => {
-			if ( dberror ) {
+		return db.connect().then( client => {
+			return client.query( 'SELECT lang, role, inline FROM discord WHERE guild = $1 AND patreon = $2', [args[1], msg.author.id] ).then( ({rows:[row]}) => {
+				if ( !row ) return msg.replyMsg( 'you didn\'t enable the patreon features for "' + guild + '"!', {}, true );
+				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
+				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, args[1]] ).then( () => {
+					console.log( '- Guild successfully updated.' );
+					msg.client.shard.broadcastEval( `delete global.patreons['${args[1]}']` );
+					msg.replyMsg( 'the patreon features are now disabled on "' + guild + '".', {}, true );
+				} ).then( () => {
+					return client.query( 'DELETE FROM discord WHERE guild = $1 AND channel LIKE $2', [args[1], '#%'] ).then( ({rowCount}) => {
+						if ( dberror ) {
+							console.log( '- Error while deleting the channel categories: ' + dberror );
+							return dberror;
+						}
+						if ( rowCount ) console.log( '- Channel categories successfully deleted.' );
+					} );
+				} ).then( () => {
+					return client.query( 'SELECT configid FROM verification WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], verificationLimit.default] ).then( ({rows}) => {
+						if ( rows.length ) {
+							return client.query( 'DELETE FROM verification WHERE guild = $1 AND configid IN (' + rows.map( (row, i) => '$' + ( i + 2 ) ).join(', ') + ')', [args[1], ...rows.map( row => row.configid )] ).then( () => {
+								console.log( '- Verifications successfully deleted.' );
+							}, dberror => {
+								console.log( '- Error while deleting the verifications: ' + dberror );
+							} );
+						}
+					}, dberror => {
+						console.log( '- Error while getting the verifications: ' + dberror );
+					} );
+				} ).then( () => {
+					return client.query( 'SELECT webhook FROM rcgcdw WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], rcgcdwLimit.default] ).then( ({rows}) => {
+						if ( rows.length ) {
+							return client.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + rows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', rows.map( row => row.webhook ) ).then( () => {
+								console.log( '- RcGcDw successfully deleted.' );
+								rows.forEach( row => msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
+									webhook.delete('Removed extra recent changes webhook').catch(log_error);
+								}, log_error ) );
+							}, dberror => {
+								console.log( '- Error while deleting the RcGcDw: ' + dberror );
+							} );
+						}
+					}, dberror => {
+						console.log( '- Error while getting the RcGcDw: ' + dberror );
+					} );
+				} ).then( () => {
+					return client.query( 'UPDATE rcgcdw SET display = $1 WHERE guild = $2 AND display > $1', [rcgcdwLimit.display, args[1]] ).then( () => {
+						console.log( '- RcGcDw successfully updated.' );
+					}, dberror => {
+						console.log( '- Error while updating the RcGcDw: ' + dberror );
+					} );
+				}, dberror => {
+					console.log( '- Error while updating the guild: ' + dberror );
+					msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
+				} );
+			}, dberror => {
 				console.log( '- Error while getting the guild: ' + dberror );
 				msg.replyMsg( 'I got an error while searching for the server, please try again later.', {}, true );
-				return dberror;
-			}
-			if ( !row ) return msg.replyMsg( 'you didn\'t enable the patreon features for "' + guild + '"!', {}, true );
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ?, patreon = NULL WHERE guild = ?', [row.lang, row.inline, process.env.prefix, args[1]], function (error) {
-				if ( error ) {
-					console.log( '- Error while updating the guild: ' + error );
-					msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
-					return error;
-				}
-				console.log( '- Guild successfully updated.' );
-				msg.client.shard.broadcastEval( `delete global.patreons['${args[1]}']` );
-				msg.replyMsg( 'the patreon features are now disabled on "' + guild + '".', {}, true );
+			} ).finally( () => {
+				client.release();
 			} );
-			db.run( 'DELETE FROM discord WHERE guild = ? AND channel LIKE ?', [args[1], '#%'], function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while deleting the channel categories: ' + dberror );
-					return dberror;
-				}
-				if ( this.changes ) console.log( '- Channel categories successfully deleted.' );
-			} );
-			db.all( 'SELECT configid FROM verification WHERE guild = ? ORDER BY configid ASC', [args[1]], (dberror, rows) => {
-				if ( dberror ) {
-					console.log( '- Error while getting the verifications: ' + dberror );
-					return dberror;
-				}
-				var ids = rows.slice(verificationLimit.default).map( row => row.configid );
-				if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [args[1], ...ids], function (error) {
-					if ( error ) {
-						console.log( '- Error while deleting the verifications: ' + error );
-						return error;
-					}
-					console.log( '- Verifications successfully deleted.' );
-				} );
-			} );
-			db.all( 'SELECT webhook FROM rcgcdw WHERE guild = ? ORDER BY configid ASC', [args[1]], (dberror, rows) => {
-				if ( dberror ) {
-					console.log( '- Error while getting the RcGcDw: ' + dberror );
-					return dberror;
-				}
-				var webhooks = rows.slice(rcgcdwLimit.default).map( row => row.webhook );
-				if ( webhooks.length ) db.run( 'DELETE FROM rcgcdw WHERE webhook IN (' + webhooks.map( webhook => '?' ).join(', ') + ')', webhooks, function (error) {
-					if ( error ) {
-						console.log( '- Error while deleting the RcGcDw: ' + error );
-						return error;
-					}
-					console.log( '- RcGcDw successfully deleted.' );
-					webhooks.forEach( hook => msg.client.fetchWebhook(...hook.split('/')).then( webhook => {
-						webhook.delete('Removed extra recent changes webhook').catch(log_error);
-					}, log_error ) );
-				} );
-			} );
-			db.run( 'UPDATE rcgcdw SET display = ? WHERE guild = ? AND display > ?', [rcgcdwLimit.display, args[1], rcgcdwLimit.display], function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while updating the RcGcDw: ' + dberror );
-					return dberror;
-				}
-				console.log( '- RcGcDw successfully updated.' );
-			} );
+		}, dberror => {
+			console.log( '- Error while connecting to the database client: ' + dberror );
+			msg.replyMsg( 'I got an error while searching for the server, please try again later.', {}, true );
 		} );
 	} );
 	
 	if ( args[1] ) args[1] = args[1].replace( /^\\?<@!?(\d+)>$/, '$1' );
 	
 	if ( args[0] === 'check' ) {
-		if ( !args.slice(1).join('') ) return db.get( 'SELECT count, GROUP_CONCAT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [msg.author.id], (dberror, row) => {
-			if ( dberror ) {
-				console.log( '- Error while getting the patreon: ' + dberror );
-				msg.replyMsg( 'I got an error while searching for you, please try again later.', {}, true );
-				return dberror;
-			}
-			if ( !row ) return msg.replyMsg( 'you can\'t have any server.', {}, true );
-			var text = 'you can have up to ' + row.count + ' server.\n\n';
-			if ( row.guilds ) {
-				msg.client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
-					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== null )?.[i] || '' ) );
-					text += 'Currently you have ' + guilds.length + ' server:\n' + guilds.join('\n');
+		if ( !args.slice(1).join('') ) return db.query( 'SELECT count, ARRAY_REMOVE(ARRAY_AGG(guild), NULL) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [msg.author.id] ).then( ({rows:[row]}) => {
+			if ( !row ) return msg.replyMsg( 'you can\'t have any servers.', {}, true );
+			var text = 'you can have up to ' + row.count + ' servers.\n\n';
+			if ( row.guilds.length ) {
+				msg.client.shard.broadcastEval( `${JSON.stringify(row.guilds)}.map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
+					var guilds = row.guilds.map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== null )?.[i] || '' ) );
+					text += 'Currently you have ' + guilds.length + ' servers:\n' + guilds.join('\n');
+					if ( row.count < guilds.length ) text += '\n\n**You are above your server limit!**';
 					msg.replyMsg( text, {}, true );
 				} );
 			}
 			else {
-				text += '*You don\'t have any server yet.*';
+				text += '*You don\'t have any servers yet.*';
 				msg.replyMsg( text, {}, true );
 			}
+		}, dberror => {
+			console.log( '- Error while getting the patreon: ' + dberror );
+			msg.replyMsg( 'I got an error while searching for you, please try again later.', {}, true );
 		} );
-		if ( msg.isOwner() && /^\d+$/.test(args.slice(1).join(' ')) ) return db.get( 'SELECT count, GROUP_CONCAT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [args[1]], (dberror, row) => {
-			if ( dberror ) {
-				console.log( '- Error while getting the patreon: ' + dberror );
-				msg.replyMsg( 'I got an error while searching for <@' + args[1] + '>, please try again later.', {}, true );
-				return dberror;
-			}
-			if ( !row ) return msg.replyMsg( '<@' + args[1] + '> can\'t have any server.', {}, true );
-			var text = '<@' + args[1] + '> can have up to ' + row.count + ' server.\n\n';
-			if ( row.guilds ) {
-				msg.client.shard.broadcastEval( `'${row.guilds}'.split(',').map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
-					var guilds = row.guilds.split(',').map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== null )?.[i] || '' ) );
-					text += 'Currently they have ' + guilds.length + ' server:\n' + guilds.join('\n');
+		if ( msg.isOwner() && /^\d+$/.test(args.slice(1).join(' ')) ) return db.query( 'SELECT count, ARRAY_REMOVE(ARRAY_AGG(guild), NULL) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [args[1]] ).then( ({rows:[row]}) => {
+			if ( !row ) return msg.replyMsg( '<@' + args[1] + '> can\'t have any servers.', {}, true );
+			var text = '<@' + args[1] + '> can have up to ' + row.count + ' servers.\n\n';
+			if ( row.guilds.length ) {
+				msg.client.shard.broadcastEval( `${JSON.stringify(row.guilds)}.map( guild => this.guilds.cache.get(guild)?.name )` ).then( results => {
+					var guilds = row.guilds.map( (guild, i) => '`' + guild + '` ' + ( results.find( result => result[i] !== null )?.[i] || '' ) );
+					text += 'Currently they have ' + guilds.length + ' servers:\n' + guilds.join('\n');
+					if ( row.count < guilds.length ) text += '\n\n**They are above their server limit!**';
 					msg.replyMsg( text, {}, true );
 				} );
 			}
 			else {
-				text += '*They don\'t have any server yet.*';
+				text += '*They don\'t have any servers yet.*';
 				msg.replyMsg( text, {}, true );
 			}
+		}, dberror => {
+			console.log( '- Error while getting the patreon: ' + dberror );
+			msg.replyMsg( 'I got an error while searching for <@' + args[1] + '>, please try again later.', {}, true );
 		} );
 	}
 	
-	if ( args[0] === 'edit' && msg.isOwner() && /^\d+ [\+\-]?\d+$/.test(args.slice(1).join(' ')) ) return db.get( 'SELECT count, GROUP_CONCAT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = ? GROUP BY patreons.patreon', [args[1]], (dberror, row) => {
-		if ( dberror ) {
-			console.log( '- Error while getting the patreon: ' + dberror );
-			msg.replyMsg( 'I got an error while searching for <@' + args[1] + '>, please try again later.', {}, true );
-			return dberror;
-		}
+	if ( args[0] === 'edit' && msg.isOwner() && /^\d+ [\+\-]?\d+$/.test(args.slice(1).join(' ')) ) return db.query( 'SELECT count, ARRAY_REMOVE(ARRAY_AGG(guild), NULL) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [args[1]] ).then( ({rows:[row]}) => {
 		var value = parseInt(args[2], 10);
 		var count = ( row ? row.count : 0 );
-		var guilds = ( row && row.guilds ? row.guilds.split(',') : [] );
+		var guilds = ( row ? row.guilds : [] );
 		if ( args[2].startsWith( '+' ) || args[2].startsWith( '-' ) ) count += value;
 		else count = value;
 		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-		if ( count <= 0 ) return db.run( 'DELETE FROM patreons WHERE patreon = ?', [args[1]], function (error) {
-			if ( error ) {
-				console.log( '- Error while deleting the patreon: ' + error );
-				msg.replyMsg( 'I got an error while deleting <@' + args[1] + '>, please try again later.', {}, true );
-				return error;
-			}
-			console.log( '- Patreon successfully deleted.' );
-			if ( !guilds.length ) return msg.replyMsg( '<@' + args[1] + '> is no longer a patreon.', {}, true );
-			db.each( 'SELECT guild, lang, inline FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND channel IS NULL', guilds, (eacherror, eachrow) => {
-				if ( eacherror ) {
-					console.log( '- Error while getting the guild: ' + eacherror );
-					msg.replyMsg( 'I couldn\'t disable the patreon features.', {}, true );
-					return eacherror;
-				}
-				db.run( 'UPDATE discord SET lang = ?, inline = ?, prefix = ?, patreon = NULL WHERE guild = ?', [eachrow.lang, eachrow.inline, process.env.prefix, eachrow.guild], function (uperror) {
-					if ( uperror ) {
-						console.log( '- Error while updating the guild: ' + uperror );
-						msg.replyMsg( 'I couldn\'t disable the patreon features for `' + eachrow.guild + '`.', {}, true );
-						return uperror;
-					}
-					console.log( '- Guild successfully updated.' );
-					msg.client.shard.broadcastEval( `delete global.patreons['${eachrow.guild}']` );
-				} );
-			}, (eacherror) => {
-				if ( eacherror ) {
-					console.log( '- Error while getting the guilds: ' + eacherror );
-					msg.replyMsg( 'I couldn\'t disable the patreon features for `' + guilds.join('`, `') + '`.', {}, true );
-					return eacherror;
-				}
+		if ( count <= 0 ) return db.connect().then( client => {
+			return client.query( 'DELETE FROM patreons WHERE patreon = $1', [args[1]] ).then( () => {
+				console.log( '- Patreon successfully deleted.' );
 				msg.replyMsg( '<@' + args[1] + '> is no longer a patreon.', {}, true );
-			} );
-			db.run( 'DELETE FROM discord WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND channel LIKE ?', [...guilds, '#%'], function (uperror) {
-				if ( uperror ) {
-					console.log( '- Error while deleting the channel categories: ' + uperror );
-					return uperror;
-				}
-				if ( this.changes ) console.log( '- Channel categories successfully deleted.' );
-			} );
-			db.each( 'SELECT a.guild, GROUP_CONCAT(DISTINCT a.configid) configids FROM verification a LEFT JOIN verification b ON a.guild = b.guild WHERE a.guild IN (' + guilds.map( guild => '?' ).join(', ') + ') GROUP BY a.guild', guilds, (eacherror, eachrow) => {
-				if ( eacherror ) {
-					console.log( '- Error while getting the verifications: ' + eacherror );
-					return eacherror;
-				}
-				var ids = eachrow.configids.split(',').slice(verificationLimit.default);
-				if ( ids.length ) db.run( 'DELETE FROM verification WHERE guild = ? AND configid IN (' + ids.map( configid => '?' ).join(', ') + ')', [eachrow.guild, ...ids], function (uperror) {
-					if ( uperror ) {
-						console.log( '- Error while deleting the verifications: ' + uperror );
-						return uperror;
-					}
-					console.log( '- Verifications successfully deleted.' );
+				if ( !guilds.length ) return Promise.reject();
+				msg.client.shard.broadcastEval( `${JSON.stringify(row.guilds)}.forEach( guild => delete global.patreons[guild] )` );
+			}, dberror => {
+				console.log( '- Error while deleting the patreon: ' + dberror );
+				msg.replyMsg( 'I got an error while deleting <@' + args[1] + '>, please try again later.', {}, true );
+				return Promise.reject();
+			} ).then( () => {
+				return client.query( 'SELECT guild, lang, role, inline FROM discord WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ') AND channel IS NULL', guilds ).then( ({rows}) => {
+					return Promise.all(rows.map( row => {
+						return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, row.guild] ).then( () => {
+							console.log( '- Guild successfully updated.' );
+						}, dberror => {
+							console.log( '- Error while updating the guild: ' + dberror );
+						} );
+					} ));
+				}, dberror => {
+					console.log( '- Error while getting the guilds: ' + dberror );
 				} );
-			}, (eacherror) => {
-				if ( eacherror ) {
-					console.log( '- Error while getting the verifications: ' + eacherror );
-					return eacherror;
-				}
-			} );
-			db.each( 'SELECT GROUP_CONCAT(DISTINCT a.webhook) webhooks FROM rcgcdw a LEFT JOIN verification b ON a.guild = b.guild WHERE a.guild IN (' + guilds.map( guild => '?' ).join(', ') + ') GROUP BY a.guild', guilds, (eacherror, eachrow) => {
-				if ( eacherror ) {
-					console.log( '- Error while getting the RcGcDw: ' + eacherror );
-					return eacherror;
-				}
-				var webhooks = eachrow.webhooks.split(',').slice(rcgcdwLimit.default);
-				if ( webhooks.length ) db.run( 'DELETE FROM rcgcdw WHERE webhook IN (' + webhooks.map( webhook => '?' ).join(', ') + ')', webhooks, function (uperror) {
-					if ( uperror ) {
-						console.log( '- Error while deleting the RcGcDw: ' + uperror );
-						return uperror;
-					}
-					console.log( '- RcGcDw successfully deleted.' );
-					webhooks.forEach( hook => msg.client.fetchWebhook(...hook.split('/')).then( webhook => {
-						webhook.delete('Removed extra recent changes webhook').catch(log_error);
-					}, log_error ) );
+			} ).then( () => {
+				return client.query( 'DELETE FROM discord WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 2 ) ).join(', ') + ') AND channel LIKE $1', ['#%', ...guilds] ).then( ({rowCount}) => {
+					if ( rowCount ) console.log( '- Channel categories successfully deleted.' );
+				}, dberror => {
+					console.log( '- Error while deleting the channel categories: ' + dberror );
 				} );
-			}, (eacherror) => {
-				if ( eacherror ) {
-					console.log( '- Error while getting the RcGcDw: ' + eacherror );
-					return eacherror;
-				}
+			} ).then( () => {
+				return client.query( 'SELECT guild, (ARRAY_AGG(configid ORDER BY configid))[' + ( verificationLimit.default + 1 ) + ':] configids FROM verification WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ') GROUP BY guild', guilds ).then( ({rows}) => {
+					if ( !rows.length ) return;
+					rows = rows.filter( row => row.configids.length );
+					if ( rows.length ) return Promise.all(rows.map( row => {
+						return client.query( 'DELETE FROM verification WHERE guild = $1 AND configid IN (' + row.configids.map( (configid, i) => '$' + ( i + 2 ) ).join(', ') + ')', [row.guild, ...row.configids] ).then( () => {
+							console.log( '- Verifications successfully deleted.' );
+						}, dberror => {
+							console.log( '- Error while deleting the verifications: ' + dberror );
+						} );
+					} ));
+				}, dberror => {
+					console.log( '- Error while getting the verifications: ' + dberror );
+				} );
+			} ).then( () => {
+				return client.query( 'SELECT (ARRAY_AGG(webhook ORDER BY configid))[' + ( rcgcdwLimit.default + 1 ) + ':] webhooks FROM rcgcdw WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ') GROUP BY guild', guilds ).then( ({rows}) => {
+					if ( !rows.length ) return;
+					var webhooks = [].concat(...rows.map( row => row.webhooks ));
+					if ( webhooks.length ) {
+						return client.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + webhooks.map( (webhook, i) => '$' + ( i + 1 ) ).join(', ') + ')', webhooks ).then( () => {
+							console.log( '- RcGcDw successfully deleted.' );
+							webhooks.forEach( hook => msg.client.fetchWebhook(...hook.split('/')).then( webhook => {
+								webhook.delete('Removed extra recent changes webhook').catch(log_error);
+							}, log_error ) );
+						}, dberror => {
+							console.log( '- Error while deleting the RcGcDw: ' + dberror );
+						} );
+					}
+				}, dberror => {
+					console.log( '- Error while getting the RcGcDw: ' + dberror );
+				} );
+			} ).then( () => {
+				return client.query( 'UPDATE rcgcdw SET display = $1 WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 2 ) ).join(', ') + ') AND display > $1', [rcgcdwLimit.display, ...guilds] ).then( () => {
+					console.log( '- RcGcDw successfully updated.' );
+				}, dberror => {
+					console.log( '- Error while updating the RcGcDw: ' + dberror );
+				} );
+			} ).catch( error => {
+				if ( error ) console.log( '- Error while removing the patreon features: ' + error );
+			} ).finally( () => {
+				client.release();
 			} );
-			db.run( 'UPDATE rcgcdw SET display = ? WHERE guild IN (' + guilds.map( guild => '?' ).join(', ') + ') AND display > ?', [rcgcdwLimit.display, ...guilds, rcgcdwLimit.display], function (uperror) {
-				if ( uperror ) {
-					console.log( '- Error while updating the RcGcDw: ' + uperror );
-					return uperror;
-				}
-				console.log( '- RcGcDw successfully updated.' );
-			} );
+		}, dberror => {
+			console.log( '- Error while connecting to the database client: ' + dberror );
+			msg.replyMsg( 'I got an error while updating <@' + args[1] + '>, please try again later.', {}, true );
 		} );
-		if ( !row ) return db.run( 'INSERT INTO patreons(patreon, count) VALUES(?, ?)', [args[1], count], function (error) {
-			if ( error ) {
-				console.log( '- Error while adding the patreon: ' + error );
-				msg.replyMsg( 'I got an error while adding <@' + args[1] + '>, please try again later.', {}, true );
-				return error;
-			}
+		if ( !row ) return db.query( 'INSERT INTO patreons(patreon, count) VALUES($1, $2)', [args[1], count] ).then( () => {
 			console.log( '- Patreon successfully added.' );
-			msg.replyMsg( '<@' + args[1] + '> can now have up to ' + count + ' server.', {}, true );
+			msg.replyMsg( '<@' + args[1] + '> can now have up to ' + count + ' servers.', {}, true );
+		}, dberror => {
+			console.log( '- Error while adding the patreon: ' + dberror );
+			msg.replyMsg( 'I got an error while adding <@' + args[1] + '>, please try again later.', {}, true );
 		} );
-		db.run( 'UPDATE patreons SET count = ? WHERE patreon = ?', [count, args[1]], function (error) {
-			if ( error ) {
-				console.log( '- Error while updating the patreon: ' + error );
-				msg.replyMsg( 'I got an error while updating <@' + args[1] + '>, please try again later.', {}, true );
-				return error;
-			}
+		db.query( 'UPDATE patreons SET count = $1 WHERE patreon = $2', [count, args[1]] ).then( () => {
 			console.log( '- Patreon successfully updated.' );
-			var text = '<@' + args[1] + '> can now have up to ' + count + ' server.';
+			var text = '<@' + args[1] + '> can now have up to ' + count + ' servers.';
 			if ( count < guilds.length ) text += '\n\n**They are now above their server limit!**';
 			msg.replyMsg( text, {}, true );
+		}, dberror => {
+			console.log( '- Error while updating the patreon: ' + dberror );
+			msg.replyMsg( 'I got an error while updating <@' + args[1] + '>, please try again later.', {}, true );
 		} );
+	}, dberror => {
+		console.log( '- Error while getting the patreon: ' + dberror );
+		msg.replyMsg( 'I got an error while searching for <@' + args[1] + '>, please try again later.', {}, true );
 	} );
 	
 	if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);

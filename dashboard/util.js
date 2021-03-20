@@ -6,19 +6,10 @@ const got = require('got').extend( {
 	},
 	responseType: 'json'
 } );
-const sqlite3 = require('sqlite3').verbose();
-const mode = ( process.env.READONLY ? sqlite3.OPEN_READONLY : sqlite3.OPEN_READWRITE );
-const db = new sqlite3.Database( './wikibot.db', mode, dberror => {
-	if ( dberror ) {
-		console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
-		return dberror;
-	}
-	db.exec( 'PRAGMA foreign_keys = ON;', function (error) {
-		if ( error ) {
-			console.log( '- Dashboard: Error while enabling the foreign key constraint: ' + error );
-		}
-		console.log( '- Dashboard: Connected to the database.' );
-	} );
+const {Pool} = require('pg');
+const db = new Pool();
+db.on( 'error', dberror => {
+	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
 
 /**

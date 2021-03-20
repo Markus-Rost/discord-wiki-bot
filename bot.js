@@ -237,26 +237,7 @@ client.on( 'raw', rawEvent => {
 	if ( !interaction.guild_id ) {
 		return slash[interaction.data.name](interaction, new Lang(), new Wiki(), channel);
 	}
-	db.get( 'SELECT wiki, lang, role FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID], (dberror, row) => {
-		if ( dberror ) {
-			console.log( '- Error while getting the wiki: ' + dberror );
-			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
-				json: {
-					type: 4,
-					data: {
-						content: '[<:error:440871715938238494> Error! <:error:440871715938238494>](<' + process.env.invite + '>)',
-						allowed_mentions: {
-							parse: []
-						},
-						flags: 64
-					}
-				}
-			} ).then( response => {
-				if ( response.statusCode !== 204 ) {
-					console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
-				}
-			}, log_error );
-		}
+	db.query( 'SELECT wiki, lang, role FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
 		var lang = new Lang(( row?.lang || channel?.guild?.preferredLocale ));
 		if ( row?.role && !interaction.member.roles.includes( row.role ) && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
 			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
@@ -278,6 +259,24 @@ client.on( 'raw', rawEvent => {
 		}
 		var wiki = new Wiki(row?.wiki);
 		return slash[interaction.data.name](interaction, lang, wiki, channel);
+	}, dberror => {
+		console.log( '- Slash: Error while getting the wiki: ' + dberror );
+		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
+			json: {
+				type: 4,
+				data: {
+					content: '[<:error:440871715938238494> Error! <:error:440871715938238494>](<' + process.env.invite + '>)',
+					allowed_mentions: {
+						parse: []
+					},
+					flags: 64
+				}
+			}
+		} ).then( response => {
+			if ( response.statusCode !== 204 ) {
+				console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
+			}
+		}, log_error );
 	} );
 } );
 
@@ -287,11 +286,14 @@ client.on( 'message', msg => {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has('SEND_MESSAGES') ) {
 				console.log( msg.guild.name + ': ' + msg.content );
-				db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
-					if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
+				db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID] ).then( ({rows:[row]}) => {
 					msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('prefix', patreons[msg.guild.id]), {}, true );
+				}, dberror => {
+					console.log( '- Error while getting the lang: ' + dberror );
+					msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('prefix', patreons[msg.guild.id]), {}, true );
 				} );
 			}
+			return;
 		}
 		if ( !( msg.content.includes( '[[' ) && msg.content.includes( ']]' ) ) && !( msg.content.includes( '{{' ) && msg.content.includes( '}}' ) ) ) return;
 	}
@@ -299,27 +301,20 @@ client.on( 'message', msg => {
 		var permissions = msg.channel.permissionsFor(msg.client.user);
 		var missing = permissions.missing(['SEND_MESSAGES','ADD_REACTIONS','USE_EXTERNAL_EMOJIS','READ_MESSAGE_HISTORY']);
 		if ( missing.length ) {
-			if ( msg.isAdmin() || msg.isOwner() ) {
+			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
 				console.log( msg.guild.id + ': Missing permissions - ' + missing.join(', ') );
 				if ( !missing.includes( 'SEND_MESSAGES' ) ) {
-					db.get( 'SELECT lang FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
-						if ( dberror ) console.log( '- Error while getting the lang: ' + dberror );
-						if ( msg.content.hasPrefix(( patreons[msg.guild.id] || process.env.prefix ), 'm') ) {
-							msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
-						}
+					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID] ).then( ({rows:[row]}) => {
+						msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
+					}, dberror => {
+						console.log( '- Error while getting the lang: ' + dberror );
+						msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', {}, true );
 					} );
 				}
 			}
 			return;
 		}
-		db.get( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = ? AND (channel = ? OR channel = ? OR channel IS NULL) ORDER BY channel DESC', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID], (dberror, row) => {
-			if ( dberror ) {
-				console.log( '- Error while getting the wiki: ' + dberror );
-				if ( permissions.has('SEND_MESSAGES') ) {
-					msg.sendChannel( new Lang(msg.guild.preferredLocale, 'general').get('database') + '\n' + process.env.invite, {}, true );
-				}
-				return dberror;
-			}
+		db.query( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [msg.guild.id, msg.channel.id, '#' + msg.channel.parentID] ).then( ({rows:[row]}) => {
 			if ( row ) {
 				if ( msg.guild.roles.cache.has(row.role) && msg.guild.roles.cache.get(row.role).comparePositionTo(msg.member.roles.highest) > 0 && !msg.isAdmin() ) {
 					msg.onlyVerifyCommand = true;
@@ -330,6 +325,9 @@ client.on( 'message', msg => {
 				msg.defaultSettings = true;
 				newMessage(msg, new Lang(msg.guild.preferredLocale));
 			}
+		}, dberror => {
+			console.log( '- Error while getting the wiki: ' + dberror );
+			msg.sendChannel( new Lang(msg.guild.preferredLocale, 'general').get('database') + '\n' + process.env.invite, {}, true );
 		} );
 	}
 	else newMessage(msg, new Lang());
@@ -378,14 +376,12 @@ client.on( 'guildDelete', guild => {
 function removeSettings(guild) {
 	leftGuilds.delete(guild);
 	if ( client.guilds.cache.has(guild) ) return;
-	db.run( 'DELETE FROM discord WHERE main = ?', [guild], function (dberror) {
-		if ( dberror ) {
-			console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );
-			return dberror;
-		}
+	db.query( 'DELETE FROM discord WHERE main = $1', [guild] ).then( ({rowCount}) => {
 		if ( patreons.hasOwnProperty(guild) ) client.shard.broadcastEval( `delete global.patreons['${guild}']` );
 		if ( voice.hasOwnProperty(guild) ) delete voice[guild];
-		if ( this.changes ) console.log( '- ' + guild + ': Settings successfully removed.' );
+		if ( rowCount ) console.log( '- ' + guild + ': Settings successfully removed.' );
+	}, dberror => {
+		console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );
 	} );
 }
 
@@ -456,13 +452,11 @@ function graceful(signal) {
 	setTimeout( () => {
 		console.log( '- ' + shardId + ': ' + signal + ': Destroying client...' );
 		client.destroy();
-		db.close( dberror => {
-			if ( dberror ) {
-				console.log( '- ' + shardId + ': ' + signal + ': Error while closing the database connection: ' + dberror );
-				return dberror;
-			}
+		db.end().then( () => {
 			console.log( '- ' + shardId + ': ' + signal + ': Closed the database connection.' );
 			process.exit(0);
+		}, dberror => {
+			console.log( '- ' + shardId + ': ' + signal + ': Error while closing the database connection: ' + dberror );
 		} );
 	}, 1000 ).unref();
 }

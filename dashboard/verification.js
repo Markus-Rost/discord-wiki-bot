@@ -224,18 +224,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
  * @param {import('./i18n.js')} dashboardLang - The user language
  */
 function dashboard_verification(res, $, guild, args, dashboardLang) {
-	db.all( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL ORDER BY configid ASC', [guild.id], function(dberror, rows) {
-		if ( dberror ) {
-			console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
-			createNotice($, 'error', dashboardLang);
-			$('#text .description').html(dashboardLang.get('verification.explanation'));
-			$('#text code.prefix').prepend(escapeText(process.env.prefix));
-			$('.channel#verification').addClass('selected');
-			let body = $.html();
-			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
-			res.write( body );
-			return res.end();
-		}
+	db.query( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
 			$('#text .description').html(dashboardLang.get('verification.explanation'));
@@ -297,6 +286,16 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 			$('#text .description').html(dashboardLang.get('verification.explanation'));
 			$('#text code.prefix').prepend(escapeText(prefix));
 		}
+		let body = $.html();
+		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
+		res.write( body );
+		return res.end();
+	}, dberror => {
+		console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
+		createNotice($, 'error', dashboardLang);
+		$('#text .description').html(dashboardLang.get('verification.explanation'));
+		$('#text code.prefix').prepend(escapeText(process.env.prefix));
+		$('.channel#verification').addClass('selected');
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 		res.write( body );
@@ -406,20 +405,11 @@ function update_verification(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
-		if ( settings.delete_settings ) return db.get( 'SELECT lang, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(dberror, row) {
-			if ( !dberror && !row?.channel ) return res(`/guild/${guild}/verification`, 'save');
-			db.run( 'DELETE FROM verification WHERE guild = ? AND configid = ?', [guild, type], function (delerror) {
-				if ( delerror ) {
-					console.log( '- Dashboard: Error while removing the verification: ' + delerror );
-					return res(`/guild/${guild}/verification/${type}`, 'savefail');
-				}
-				console.log( `- Dashboard: Verification successfully removed: ${guild}#${type}` );
-				res(`/guild/${guild}/verification`, 'save');
-				if ( dberror ) {
-					console.log( '- Dashboard: Error while notifying the guild: ' + dberror );
-					return;
-				}
-				var lang = new Lang(row.lang);
+		if ( settings.delete_settings ) return db.query( 'DELETE FROM verification WHERE guild = $1 AND configid = $2 RETURNING channel, role, editcount, postcount, usergroup, accountage, rename', [guild, type] ).then( ({rows:[row]}) => {
+			console.log( `- Dashboard: Verification successfully removed: ${guild}#${type}` );
+			res(`/guild/${guild}/verification`, 'save');
+			if ( row ) db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {
+				var lang = new Lang(channel.lang);
 				var text = lang.get('verification.dashboard.removed', `<@${userSettings.user.id}>`, type);
 				if ( row ) {
 					text += '\n' + lang.get('verification.channel') + ' <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>';
@@ -442,19 +432,18 @@ function update_verification(res, userSettings, guild, type, settings) {
 				} ).catch( error => {
 					console.log( '- Dashboard: Error while notifying the guild: ' + error );
 				} );
+			}, dberror => {
+				console.log( '- Dashboard: Error while notifying the guild: ' + dberror );
 			} );
+		}, dberror => {
+			console.log( '- Dashboard: Error while removing the verification: ' + dberror );
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		} );
 		if ( !hasPerm(response.botPermissions, 'MANAGE_ROLES') ) {
 			return res(`/guild/${guild}/verification`, 'savefail');
 		}
-		if ( type === 'new' ) return db.get( 'SELECT wiki, lang, GROUP_CONCAT(configid) count FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = ? AND discord.channel IS NULL', [guild], function(curerror, row) {
-			if ( curerror ) {
-				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
-				return res(`/guild/${guild}/verification/new`, 'savefail');
-			}
+		if ( type === 'new' ) return db.query( 'SELECT wiki, lang, ARRAY_REMOVE(ARRAY_AGG(configid ORDER BY configid), NULL) count FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = $1 AND discord.channel IS NULL GROUP BY wiki, lang', [guild] ).then( ({rows:[row]}) => {
 			if ( !row ) return res(`/guild/${guild}/verification`, 'savefail');
-			if ( row.count === null ) row.count = [];
-			else row.count = row.count.split(',').map( configid => parseInt(configid, 10) );
 			if ( row.count.length >= verificationLimit[( response.patreon ? 'patreon' : 'default' )] ) {
 				return res(`/guild/${guild}/verification`, 'savefail');
 			}
@@ -493,11 +482,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					if ( configid === i ) configid++;
 					else break;
 				}
-				db.run( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [guild, configid, '|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )], function (dberror) {
-					if ( dberror ) {
-						console.log( '- Dashboard: Error while adding the verification: ' + dberror );
-						return res(`/guild/${guild}/verification/new`, 'savefail');
-					}
+				db.query( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, '|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )] ).then( () => {
 					console.log( `- Dashboard: Verification successfully added: ${guild}#${configid}` );
 					res(`/guild/${guild}/verification/${configid}`, 'save');
 					var lang = new Lang(row.lang);
@@ -543,14 +528,16 @@ function update_verification(res, userSettings, guild, type, settings) {
 					} ).catch( error => {
 						console.log( '- Dashboard: Error while notifying the guild: ' + error );
 					} );
+				}, dberror => {
+					console.log( '- Dashboard: Error while adding the verification: ' + dberror );
+					return res(`/guild/${guild}/verification/new`, 'savefail');
 				} );
 			} );
+		}, dberror => {
+			console.log( '- Dashboard: Error while checking for verifications: ' + dberror );
+			return res(`/guild/${guild}/verification/new`, 'savefail');
 		} );
-		return db.get( 'SELECT wiki, lang, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = ? WHERE discord.guild = ? AND discord.channel IS NULL', [type, guild], function(curerror, row) {
-			if ( curerror ) {
-				console.log( '- Dashboard: Error while checking for verifications: ' + curerror );
-				return res(`/guild/${guild}/verification/${type}`, 'savefail');
-			}
+		return db.query( 'SELECT wiki, lang, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = $1 WHERE discord.guild = $2 AND discord.channel IS NULL', [type, guild] ).then( ({rows:[row]}) => {
 			if ( !row?.channel ) return res(`/guild/${guild}/verification`, 'savefail');
 			row.channel = row.channel.split('|').filter( channel => channel.length );
 			var newChannel = settings.channel.filter( channel => !row.channel.includes( channel ) );
@@ -648,11 +635,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					diff.push(lang.get('verification.rename') + ` ~~*\`${lang.get('verification.' + ( row.rename ? 'enabled' : 'disabled'))}\`*~~ → *\`${lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled'))}\`*`);
 				}
 				if ( !diff.length ) return res(`/guild/${guild}/verification/${type}`, 'save');
-				db.run( 'UPDATE verification SET channel = ?, role = ?, editcount = ?, postcount = ?, usergroup = ?, accountage = ?, rename = ? WHERE guild = ? AND configid = ?', ['|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type], function (dberror) {
-					if ( dberror ) {
-						console.log( '- Dashboard: Error while updating the verification: ' + dberror );
-						return res(`/guild/${guild}/verification/${type}`, 'savefail');
-					}
+				db.query( 'UPDATE verification SET channel = $1, role = $2, editcount = $3, postcount = $4, usergroup = $5, accountage = $6, rename = $7 WHERE guild = $8 AND configid = $9', ['|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type] ).then( () => {
 					console.log( `- Dashboard: Verification successfully updated: ${guild}#${type}` );
 					res(`/guild/${guild}/verification/${type}`, 'save');
 					var text = lang.get('verification.dashboard.updated', `<@${userSettings.user.id}>`, type);
@@ -685,8 +668,14 @@ function update_verification(res, userSettings, guild, type, settings) {
 					} ).catch( error => {
 						console.log( '- Dashboard: Error while notifying the guild: ' + error );
 					} );
+				}, dberror => {
+					console.log( '- Dashboard: Error while updating the verification: ' + dberror );
+					return res(`/guild/${guild}/verification/${type}`, 'savefail');
 				} );
 			} );
+		}, dberror => {
+			console.log( '- Dashboard: Error while checking for verifications: ' + dberror );
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );

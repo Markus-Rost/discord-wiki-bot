@@ -1,6 +1,6 @@
 {
   "name": "discord-wiki-bot",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Wiki-Bot is a bot with the purpose to easily search for and link to wiki pages. Wiki-Bot shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.",
   "main": "main.js",
   "scripts": {
@@ -23,7 +23,7 @@
     "got": "^11.8.1",
     "htmlparser2": "^6.0.0",
     "npm": "^7.5.3",
-    "sqlite3": "^5.0.0"
+    "pg": "^8.5.1"
   },
   "repository": {
     "type": "git",

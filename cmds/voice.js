@@ -21,22 +21,15 @@ function cmd_voice(lang, msg, args, line, wiki) {
 			if ( msg.defaultSettings ) return help_setup(lang, msg);
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			var value = ( voice[msg.guild.id] ? null : 1 );
-			return db.run( 'UPDATE discord SET voice = ? WHERE guild = ? AND channel IS NULL', [value, msg.guild.id], function (dberror) {
-				if ( dberror ) {
-					console.log( '- Error while editing the voice settings: ' + dberror );
-					msg.replyMsg( lang.get('settings.save_failed'), {}, true );
-					return dberror;
-				}
+			return db.query( 'UPDATE discord SET voice = $1 WHERE guild = $2 AND channel IS NULL', [value, msg.guild.id] ).then( () => {
 				console.log( '- Voice settings successfully updated.' );
 				if ( value ) {
 					voice[msg.guild.id] = lang.lang;
-					db.get( 'SELECT lang FROM discord WHERE guild = ? AND channel IS NULL', [msg.guild.id], (error, row) => {
-						if ( error ) {
-							console.log( '- Error while getting the voice language: ' + error );
-							return error;
-						}
+					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [msg.guild.id] ).then( ({rows:[row]}) => {
 						console.log( '- Voice language successfully updated.' );
 						voice[msg.guild.id] = row.lang;
+					}, dberror => {
+						console.log( '- Error while getting the voice language: ' + dberror );
 					} );
 					msg.replyMsg( lang.get('voice.enabled') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`', {}, true );
 				}
@@ -44,6 +37,9 @@ function cmd_voice(lang, msg, args, line, wiki) {
 					delete voice[msg.guild.id];
 					msg.replyMsg( lang.get('voice.disabled'), {}, true );
 				}
+			}, dberror => {
+				console.log( '- Error while editing the voice settings: ' + dberror );
+				msg.replyMsg( lang.get('settings.save_failed'), {}, true );
 			} );
 		}
 	}
