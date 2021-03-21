@@ -155,7 +155,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				} );
 			}, error => {
 				if ( reaction ) reaction.removeEmoji();
-				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 					console.log( '- Error while testing the wiki: No HTTPS' );
 					return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
 				}
@@ -308,7 +308,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}, error => {
 					if ( reaction ) reaction.removeEmoji();
-					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 						console.log( '- Error while testing the wiki: No HTTPS' );
 						return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
 					}

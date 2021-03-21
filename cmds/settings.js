@@ -183,7 +183,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					} );
 				}, ferror => {
 					if ( reaction ) reaction.removeEmoji();
-					if ( ferror.message?.startsWith( 'connect ECONNREFUSED ' ) || ferror.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || ferror.message === 'certificate has expired' ) {
+					if ( ferror.message?.startsWith( 'connect ECONNREFUSED ' ) || ferror.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || ferror.message === 'certificate has expired' || ferror.message === 'self signed certificate' ) {
 						console.log( '- Error while testing the wiki: No HTTPS' );
 						return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
 					}

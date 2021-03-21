@@ -430,7 +430,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					return res(`/guild/${guild}/rcscript/new`, 'savefail');
 				} );
 			}, error => {
-				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 					console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
 					return res(`/guild/${guild}/rcscript/new`, 'savefail', 'http');
 				}
@@ -746,7 +746,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					} );
 				}, error => {
-					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 						console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail', 'http');
 					}

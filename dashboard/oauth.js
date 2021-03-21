@@ -279,7 +279,7 @@ function dashboard_api(res, input) {
 		result.customRcGcDw = wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit');
 		if ( wiki.isFandom() ) return;
 	}, error => {
-		if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' ) {
+		if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 			console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
 			result.error_code = 'http';
 			result.error = true;
