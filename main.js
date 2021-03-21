@@ -41,6 +41,11 @@ manager.on( 'shardCreate', shard => {
 			manager.shards.forEach( shard => shard.kill() );
 			if ( typeof server !== 'undefined' ) server.kill();
 		}
+		if ( message === 'toggleDebug' ) {
+			console.log( '\n- Toggle debug logging for all shards!\n' );
+			manager.broadcastEval( `global.isDebug = !global.isDebug` );
+			if ( typeof server !== 'undefined' ) server.send( 'toggleDebug' );
+		}
 		if ( message === 'postStats' && process.env.botlist ) postStats();
 	} );
 	

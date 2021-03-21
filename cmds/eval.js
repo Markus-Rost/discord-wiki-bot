@@ -68,7 +68,7 @@ function checkWiki(wiki) {
 	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.recentchanges ) {
-			return response.statusCode + ': Error while getting the recent changes: ' + body?.error?.info;
+			return response.statusCode + ': Error while checking the wiki: ' + body?.error?.info;
 		}
 		wiki.updateWiki(body.query.general);
 		var result = {
@@ -118,7 +118,7 @@ function checkWiki(wiki) {
 			} ).then( dsresponse => {
 				var dsbody = dsresponse.body;
 				if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
-					if ( dsbody?.status !== 404 ) result.postid = dsresponse.statusCode + ': Error while getting the discussions: ' + dsbody?.title;
+					if ( dsbody?.status !== 404 ) result.postid = dsresponse.statusCode + ': Error while checking discussions: ' + dsbody?.title;
 					return;
 				}
 				var posts = dsbody._embedded?.['doc:posts'];
@@ -150,13 +150,13 @@ function checkWiki(wiki) {
 					result.activity.push(`${posts.length} posts in${text}`);
 				}
 			}, error => {
-				result.postid = 'Error while getting the discussions: ' + error;
+				result.postid = 'Error while checking discussions: ' + error;
 			} ) : null )
 		]).then( () => {
 			return result;
 		} );
 	}, error => {
-		return 'Error while getting the recent changes: ' + error;
+		return 'Error while checking the wiki: ' + error;
 	} );
 }
 
@@ -181,7 +181,7 @@ function removePatreons(guild, msg) {
 					console.log( '- Guild successfully updated.' );
 					messages.push('Guild successfully updated.');
 				}
-				msg.client.shard.broadcastEval( `delete global.patreons['${guild}']`);
+				msg.client.shard.broadcastEval( `delete global.patreons['${guild}']` );
 			}, dberror => {
 				console.log( '- Error while updating the guild: ' + dberror );
 				messages.push('Error while updating the guild: ' + dberror);

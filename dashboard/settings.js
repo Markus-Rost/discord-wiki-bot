@@ -362,11 +362,11 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return fresponse;
 		} ).then( fresponse => {
 			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentID] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
-				row.guildlang = ( guildlang || row.lang );
+				if ( row ) row.guildlang = ( guildlang || row.lang );
 				var body = fresponse.body;
 				if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general || !body?.query?.extensions ) {
 					console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
-					if ( row.wiki === wiki.href ) return row;
+					if ( row?.wiki === wiki.href ) return row;
 					if ( body?.error?.info === 'You need read permission to use this module.' ) {
 						return Promise.reject('private');
 					}
@@ -420,7 +420,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			}
 			return Promise.reject();
 		} ).then( row => {
-			var lang = new Lang(( type === 'default' && settings.lang || row.guildlang ));
+			var lang = new Lang(( type === 'default' && settings.lang || row?.guildlang ));
 			if ( type === 'default' ) {
 				if ( settings.channel || !settings.lang || ( !response.patreon !== !settings.prefix ) ) {
 					return res(`/guild/${guild}/settings`, 'savefail');

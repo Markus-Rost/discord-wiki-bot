@@ -79,6 +79,7 @@ process.on( 'message', message => {
 		else messages.get(message.id).resolve(message.data.response);
 		return messages.delete(message.id);
 	}
+	if ( message === 'toggleDebug' ) global.isDebug = !global.isDebug;
 	console.log( '- [Dashboard]: Message received!', message );
 } );
 
