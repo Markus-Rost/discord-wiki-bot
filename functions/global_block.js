@@ -49,7 +49,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 		}, error => {
 			console.log( '- Error while getting the global block: ' + error );
 		} ),
-		( isUser && wiki.isGamepedia() ? got.get( 'https://help.gamepedia.com/UserProfile:' + encodeURIComponent( username ) + '?cache=' + Date.now(), {
+		( isUser && wiki.isGamepedia() ? got.get( 'https://help.fandom.com/wiki/UserProfile:' + encodeURIComponent( username ) + '?cache=' + Date.now(), {
 			responseType: 'text'
 		} ).then( gresponse => {
 			var gbody = gresponse.body;

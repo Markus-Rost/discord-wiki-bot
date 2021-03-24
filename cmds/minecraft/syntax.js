@@ -42,7 +42,7 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 			}
 			else if ( cmdpage.endsWith( '/' ) ) {
 				if ( body.query.pages['-1'] ) {
-					wiki = new Wiki('https://minecraft.gamepedia.com/');
+					wiki = new Wiki('https://minecraft.fandom.com/');
 					cmdpage = 'Commands/';
 				}
 				else {
@@ -57,7 +57,7 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 						aliasCmd = mccmd;
 					}
 					else {
-						wiki = new Wiki('https://minecraft.gamepedia.com/');
+						wiki = new Wiki('https://minecraft.fandom.com/');
 						cmdpage = 'Commands/';
 					}
 				}

@@ -12,7 +12,7 @@ const {limitLength, partialURIdecode, allowDelete} = require('../util/functions.
 function slash_inline(interaction, lang, wiki, channel) {
 	var text = ( interaction.data.options?.[0]?.value || '' ).replace( /\]\(/g, ']\\(' );
 	text = text.replace( /\x1F/g, '' ).replace( /(?<!@)\u200b/g, '' ).trim();
-	if ( !text ) {
+	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
 		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 			json: {
 				type: 4,
@@ -63,15 +63,8 @@ function slash_inline(interaction, lang, wiki, channel) {
 	};
 	return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
 		json: {
-			type: 4,
+			type: 5,
 			data: {
-				content: text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
-					if ( channel?.guild?.emojis.cache.has(id) ) {
-						return replacement;
-					}
-					return emoji;
-				} ),
-				allowed_mentions,
 				flags: 0
 			}
 		}
@@ -79,9 +72,6 @@ function slash_inline(interaction, lang, wiki, channel) {
 		if ( aresponse.statusCode !== 204 ) {
 			console.log( '- Slash: ' + aresponse.statusCode + ': Error while sending the response: ' + aresponse.body?.message );
 			return;
-		}
-		if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
-			return sendMessage(interaction, message, channel);
 		}
 		var textReplacement = [];
 		var magiclinks = [];

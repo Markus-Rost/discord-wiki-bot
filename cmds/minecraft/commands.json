@@ -1,18 +1,18 @@
 {
 	"wikis": {
-		"https://minecraft.gamepedia.com/": "Commands/",
-		"https://minecraft-de.gamepedia.com/": "Befehl/",
-		"https://minecraft-es.gamepedia.com/": "Comandos/",
-		"https://minecraft-fr.gamepedia.com/": "Commandes",
-		"https://minecraft-it.gamepedia.com/": "Comandi/",
-		"https://minecraft-ja.gamepedia.com/": "コマンド/",
-		"https://minecraft-ko.gamepedia.com/": "명령어",
-		"https://minecraft-nl.gamepedia.com/": "Opdrachten/",
-		"https://minecraft-pl.gamepedia.com/": "Komendy/",
-		"https://minecraft-pt.gamepedia.com/": "Comandos/",
-		"https://minecraft-ru.gamepedia.com/": "Команды консоли/",
-		"https://minecraft-uk.gamepedia.com/": "Команди консолі/",
-		"https://minecraft-zh.gamepedia.com/": "命令/"
+		"https://minecraft.fandom.com/": "Commands/",
+		"https://minecraft.fandom.com/de/": "Befehl/",
+		"https://minecraft.fandom.com/es/": "Comandos/",
+		"https://minecraft.fandom.com/fr/": "Commandes",
+		"https://minecraft.fandom.com/it/": "Comandi/",
+		"https://minecraft.fandom.com/ja/": "コマンド/",
+		"https://minecraft.fandom.com/ko/": "명령어",
+		"https://minecraft.fandom.com/nl/": "Opdrachten/",
+		"https://minecraft.fandom.com/pl/": "Komendy/",
+		"https://minecraft.fandom.com/pt/": "Comandos/",
+		"https://minecraft.fandom.com/ru/": "Команды консоли/",
+		"https://minecraft.fandom.com/uk/": "Команди консолі/",
+		"https://minecraft.fandom.com/zh/": "命令/"
 	},
 	"aliases": {
 		"connect": "wsserver",

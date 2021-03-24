@@ -55,60 +55,95 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		if ( !patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', {}, true );
 		return db.connect().then( client => {
 			return client.query( 'SELECT lang, role, inline FROM discord WHERE guild = $1 AND patreon = $2', [args[1], msg.author.id] ).then( ({rows:[row]}) => {
-				if ( !row ) return msg.replyMsg( 'you didn\'t enable the patreon features for "' + guild + '"!', {}, true );
-				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
+				if ( !row ) {
+					msg.replyMsg( 'you didn\'t enable the patreon features for "' + guild + '"!', {}, true );
+					return Promise.reject();
+				}
+				if ( process.env.READONLY ) {
+					msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
+					return Promise.reject();
+				}
 				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, args[1]] ).then( () => {
 					console.log( '- Guild successfully updated.' );
 					msg.client.shard.broadcastEval( `delete global.patreons['${args[1]}']` );
 					msg.replyMsg( 'the patreon features are now disabled on "' + guild + '".', {}, true );
-				} ).then( () => {
-					return client.query( 'DELETE FROM discord WHERE guild = $1 AND channel LIKE $2', [args[1], '#%'] ).then( ({rowCount}) => {
-						if ( dberror ) {
-							console.log( '- Error while deleting the channel categories: ' + dberror );
-							return dberror;
-						}
-						if ( rowCount ) console.log( '- Channel categories successfully deleted.' );
-					} );
-				} ).then( () => {
-					return client.query( 'SELECT configid FROM verification WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], verificationLimit.default] ).then( ({rows}) => {
-						if ( rows.length ) {
-							return client.query( 'DELETE FROM verification WHERE guild = $1 AND configid IN (' + rows.map( (row, i) => '$' + ( i + 2 ) ).join(', ') + ')', [args[1], ...rows.map( row => row.configid )] ).then( () => {
-								console.log( '- Verifications successfully deleted.' );
-							}, dberror => {
-								console.log( '- Error while deleting the verifications: ' + dberror );
-							} );
-						}
-					}, dberror => {
-						console.log( '- Error while getting the verifications: ' + dberror );
-					} );
-				} ).then( () => {
-					return client.query( 'SELECT webhook FROM rcgcdw WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], rcgcdwLimit.default] ).then( ({rows}) => {
-						if ( rows.length ) {
-							return client.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + rows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', rows.map( row => row.webhook ) ).then( () => {
-								console.log( '- RcGcDw successfully deleted.' );
-								rows.forEach( row => msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
-									webhook.delete('Removed extra recent changes webhook').catch(log_error);
-								}, log_error ) );
-							}, dberror => {
-								console.log( '- Error while deleting the RcGcDw: ' + dberror );
-							} );
-						}
-					}, dberror => {
-						console.log( '- Error while getting the RcGcDw: ' + dberror );
-					} );
-				} ).then( () => {
-					return client.query( 'UPDATE rcgcdw SET display = $1 WHERE guild = $2 AND display > $1', [rcgcdwLimit.display, args[1]] ).then( () => {
-						console.log( '- RcGcDw successfully updated.' );
-					}, dberror => {
-						console.log( '- Error while updating the RcGcDw: ' + dberror );
-					} );
 				}, dberror => {
 					console.log( '- Error while updating the guild: ' + dberror );
-					msg.replyMsg( 'I got an error while updating the server, please try again later.', {}, true );
+					msg.replyMsg( 'I got an error while searching for the server, please try again later.', {}, true );
+					return Promise.reject();
+				} ).then( () => {
+					return client.query( 'DELETE FROM discord WHERE guild = $1 AND channel LIKE $2 RETURNING channel, wiki', [args[1], '#%'] ).then( ({rows}) => {
+						if ( rows.length ) {
+							console.log( '- Channel categories successfully deleted.' );
+							return msg.client.shard.broadcastEval( `if ( this.guilds.cache.has('${args[1]}') ) {
+								let rows = ${JSON.stringify(rows)};
+								this.guilds.cache.get('${args[1]}').channels.cache.filter( channel => {
+									return ( channel.isGuild() && rows.some( row => {
+										return ( row.channel === '#' + channel.parentID );
+									} ) );
+								} ).map( channel => {
+									return {
+										id: channel.id,
+										wiki: rows.find( row => {
+											return ( row.channel === '#' + channel.parentID );
+										} ).wiki
+									};
+								} )
+							}`, shardIDForGuildID(args[1], msg.client.shard.count) ).then( channels => {
+								if ( channels.length ) return Promise.all(channels.map( channel => {
+									return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, args[1], channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
+										if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
+											console.log( '- Error while adding category settings to channels: ' + dberror );
+										}
+									} );
+								} ));
+							}, error => {
+								console.log( '- Error while getting the channels in categories: ' + error );
+							} );
+						}
+					}, dberror => {
+						console.log( '- Error while deleting the channel categories: ' + dberror );
+					} );
 				} );
 			}, dberror => {
 				console.log( '- Error while getting the guild: ' + dberror );
 				msg.replyMsg( 'I got an error while searching for the server, please try again later.', {}, true );
+				return Promise.reject();
+			} ).then( () => {
+				return client.query( 'SELECT configid FROM verification WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], verificationLimit.default] ).then( ({rows}) => {
+					if ( rows.length ) {
+						return client.query( 'DELETE FROM verification WHERE guild = $1 AND configid IN (' + rows.map( (row, i) => '$' + ( i + 2 ) ).join(', ') + ')', [args[1], ...rows.map( row => row.configid )] ).then( () => {
+							console.log( '- Verifications successfully deleted.' );
+						}, dberror => {
+							console.log( '- Error while deleting the verifications: ' + dberror );
+						} );
+					}
+				}, dberror => {
+					console.log( '- Error while getting the verifications: ' + dberror );
+				} );
+			} ).then( () => {
+				return client.query( 'SELECT webhook FROM rcgcdw WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], rcgcdwLimit.default] ).then( ({rows}) => {
+					if ( rows.length ) {
+						return client.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + rows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', rows.map( row => row.webhook ) ).then( () => {
+							console.log( '- RcGcDw successfully deleted.' );
+							rows.forEach( row => msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
+								webhook.delete('Removed extra recent changes webhook').catch(log_error);
+							}, log_error ) );
+						}, dberror => {
+							console.log( '- Error while deleting the RcGcDw: ' + dberror );
+						} );
+					}
+				}, dberror => {
+					console.log( '- Error while getting the RcGcDw: ' + dberror );
+				} );
+			} ).then( () => {
+				return client.query( 'UPDATE rcgcdw SET display = $1 WHERE guild = $2 AND display > $1', [rcgcdwLimit.display, args[1]] ).then( () => {
+					console.log( '- RcGcDw successfully updated.' );
+				}, dberror => {
+					console.log( '- Error while updating the RcGcDw: ' + dberror );
+				} );
+			} ).catch( error => {
+				if ( error ) console.log( '- Error while removing the patreon features: ' + error );
 			} ).finally( () => {
 				client.release();
 			} );
@@ -191,8 +226,39 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the guilds: ' + dberror );
 				} );
 			} ).then( () => {
-				return client.query( 'DELETE FROM discord WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 2 ) ).join(', ') + ') AND channel LIKE $1', ['#%', ...guilds] ).then( ({rowCount}) => {
-					if ( rowCount ) console.log( '- Channel categories successfully deleted.' );
+				return client.query( 'DELETE FROM discord WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 2 ) ).join(', ') + ') AND channel LIKE $1 RETURNING wiki, guild, channel, lang, role, inline', ['#%', ...guilds] ).then( ({rows}) => {
+					if ( rows.length ) {
+						console.log( '- Channel categories successfully deleted.' );
+						return msg.client.shard.broadcastEval( `let rows = ${JSON.stringify(rows)};
+						[].concat(...${JSON.stringify(guilds)}.filter( guild => {
+							return this.guilds.cache.has(guild);
+						} ).map( guild => {
+							return this.guilds.cache.get(guild).channels.cache.filter( channel => {
+								return ( channel.isGuild() && rows.some( row => {
+									return ( row.channel === '#' + channel.parentID );
+								} ) );
+							} ).map( channel => {
+								let row = rows.find( row => {
+									return ( row.channel === '#' + channel.parentID );
+								} );
+								return {
+									id: channel.id, guild: row.guild, wiki: row.wiki,
+									lang: row.lang, role: row.role, inline: row.inline
+								};
+							} );
+						} ))` ).then( response => {
+							var channels = [].concat(...response);
+							if ( channels.length ) return Promise.all(channels.map( channel => {
+								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, channel.guild, channel.id, channel.lang, channel.role, channel.inline, process.env.prefix] ).catch( dberror => {
+									if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
+										console.log( '- Error while adding category settings to channels: ' + dberror );
+									}
+								} );
+							} ));
+						}, error => {
+							console.log( '- Error while getting the channels in categories: ' + error );
+						} );
+					}
 				}, dberror => {
 					console.log( '- Error while deleting the channel categories: ' + dberror );
 				} );

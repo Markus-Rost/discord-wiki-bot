@@ -336,7 +336,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 		},
 		oncomment: (commenttext) => {
-			if ( pagelink && /^LINK'" \d+:\d+$/.test(commenttext) ) {
+			if ( pagelink && /^(?:IW)?LINK'" \d+:\d+$/.test(commenttext) ) {
 				text += '*UNKNOWN LINK*';
 			}
 		}
