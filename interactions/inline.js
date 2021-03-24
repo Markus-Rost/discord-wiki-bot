@@ -28,7 +28,9 @@ function slash_inline(interaction, lang, wiki, channel) {
 			if ( response.statusCode !== 204 ) {
 				console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
 			}
-		}, log_error );
+		}, error => {
+			console.log( '- Slash: Error while sending the response: ' + error );
+		} );
 	}
 	var allowed_mentions = {
 		parse: ['users']
@@ -289,7 +291,9 @@ function slash_inline(interaction, lang, wiki, channel) {
 			}
 			return sendMessage(interaction, message, channel);
 		} );
-	}, log_error );
+	}, error => {
+		console.log( '- Slash: Error while sending the response: ' + error );
+	} );
 }
 
 /**
@@ -313,7 +317,9 @@ function sendMessage(interaction, message, channel) {
 			if ( msg ) allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
 			return msg;
 		}, () => {} );
-	}, log_error );
+	}, error => {
+		console.log( '- Slash: Error while sending the response: ' + error );
+	} );
 }
 
 module.exports = {

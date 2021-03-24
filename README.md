@@ -22,7 +22,7 @@ Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
 ## Setup
 After [inviting](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot%20applications.commands) **Wiki-Bot** to your server you need to set the wiki you want to search by default. You do this with the `!wiki settings` command.
 * Change the wiki with `!wiki settings wiki <url>`
-  * Example: `!wiki settings wiki https://minecraft.fandom.com/Minecraft_Wiki`
+  * Example: `!wiki settings wiki https://minecraft.fandom.com/wiki/Minecraft_Wiki`
 * Change the language with `!wiki settings lang <language>`
   * Example: `!wiki settings lang German`
 
