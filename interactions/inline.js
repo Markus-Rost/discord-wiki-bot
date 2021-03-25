@@ -5,6 +5,7 @@ const {limitLength, partialURIdecode, allowDelete} = require('../util/functions.
 /**
  * Post a message with inline wiki links.
  * @param {Object} interaction - The interaction.
+ * @param {import('discord.js').Client} interaction.client - The client of the interaction.
  * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('../util/wiki.js')} wiki - The wiki for the interaction.
  * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
@@ -13,8 +14,8 @@ function slash_inline(interaction, lang, wiki, channel) {
 	var text = ( interaction.data.options?.[0]?.value || '' ).replace( /\]\(/g, ']\\(' );
 	text = text.replace( /\x1F/g, '' ).replace( /(?<!@)\u200b/g, '' ).trim();
 	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
-		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
-			json: {
+		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {
 				type: 4,
 				data: {
 					content: lang.get('interaction.inline'),
@@ -24,13 +25,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 					flags: 64
 				}
 			}
-		} ).then( response => {
-			if ( response.statusCode !== 204 ) {
-				console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
-			}
-		}, error => {
-			console.log( '- Slash: Error while sending the response: ' + error );
-		} );
+		} ).catch(log_error);
 	}
 	var allowed_mentions = {
 		parse: ['users']
@@ -63,41 +58,35 @@ function slash_inline(interaction, lang, wiki, channel) {
 		} ),
 		allowed_mentions
 	};
-	return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
-		json: {
+	return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+		data: {
 			type: 5,
 			data: {
 				flags: 0
 			}
 		}
-	} ).then( aresponse => {
-		if ( aresponse.statusCode !== 204 ) {
-			console.log( '- Slash: ' + aresponse.statusCode + ': Error while sending the response: ' + aresponse.body?.message );
-			return;
-		}
+	} ).then( () => {
 		var textReplacement = [];
 		var magiclinks = [];
 		var replacedText = text.replace( /(?<!\\)(?:<a?(:\w+:)\d+>|<#(\d+)>|<@!?(\d+)>|<@&(\d+)>|```.+?```|``.+?``|`.+?`)/gs, (replacement, emoji, textchannel, user, role) => {
 			textReplacement.push(replacement);
 			var arg = '';
 			if ( emoji ) arg = emoji;
-			if ( channel ) {
-				if ( textchannel ) {
-					let tempchannel = channel.client.channels.cache.get(textchannel);
-					if ( tempchannel ) arg = '#' + tempchannel.name;
+			if ( textchannel ) {
+				let tempchannel = interaction.client.channels.cache.get(textchannel);
+				if ( tempchannel ) arg = '#' + tempchannel.name;
+			}
+			if ( user ) {
+				let tempuser = channel?.guild?.members.cache.get(user);
+				if ( tempuser ) arg = '@' + tempuser.displayName;
+				else {
+					tempuser = interaction.client.users.cache.get(user);
+					if ( tempuser ) arg = '@' + tempuser.username;
 				}
-				if ( user ) {
-					let tempuser = channel.guild?.members.cache.get(user);
-					if ( tempuser ) arg = '@' + tempuser.displayName;
-					else {
-						tempuser = channel.client.users.cache.get(user);
-						if ( tempuser ) arg = '@' + tempuser.username;
-					}
-				}
-				if ( role ) {
-					let temprole = channel.guild?.roles.cache.get(role);
-					if ( temprole ) arg = '@' + temprole.name;
-				}
+			}
+			if ( role ) {
+				let temprole = channel?.guild?.roles.cache.get(role);
+				if ( temprole ) arg = '@' + temprole.name;
 			}
 			return '\x1F<replacement\x1F' + textReplacement.length + ( arg ? '\x1F' + arg : '' ) + '>\x1F';
 		} ).replace( /\b(PMID|RFC) +([0-9]+)\b/g, (replacement, type, id) => {
@@ -291,9 +280,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 			}
 			return sendMessage(interaction, message, channel);
 		} );
-	}, error => {
-		console.log( '- Slash: Error while sending the response: ' + error );
-	} );
+	}, log_error );
 }
 
 /**
@@ -303,23 +290,13 @@ function slash_inline(interaction, lang, wiki, channel) {
  * @param {String} message.content - The message content.
  * @param {{parse: String[], roles?: String[]}} message.allowed_mentions - The allowed mentions.
  * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
- * @returns {Promise<import('discord.js').Message?>}
  */
 function sendMessage(interaction, message, channel) {
-	return got.patch( `https://discord.com/api/v8/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
-		json: message
-	} ).then( response => {
-		if ( response.statusCode !== 200 ) {
-			console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
-			return;
-		}
-		return channel?.messages.fetch(response.body.id).then( msg => {
-			if ( msg ) allowDelete(msg, ( interaction.member?.user.id || interaction.user.id ));
-			return msg;
-		}, () => {} );
-	}, error => {
-		console.log( '- Slash: Error while sending the response: ' + error );
-	} );
+	return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').patch( {
+		data: message
+	} ).then( msg => {
+		if ( channel ) allowDelete(channel.messages.add(msg), ( interaction.member?.user.id || interaction.user.id ));
+	}, log_error );
 }
 
 module.exports = {

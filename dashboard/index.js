@@ -54,8 +54,8 @@ const server = http.createServer((req, res) => {
 	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) ) {
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
-			return cookie.split('=')[0] === 'wikibot';
-		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
+			return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
+		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)*)"$/, '$1' ) )?.join();
 
 		if ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] )
 		&& /^(?:default|new|\d+)$/.test(args[4]) && settingsData.has(state)
@@ -152,8 +152,8 @@ const server = http.createServer((req, res) => {
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; HttpOnly; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)?)"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)*)"$/, '$1' ) )?.join();
 
 	if ( reqURL.pathname === '/login' ) {
 		let action = '';

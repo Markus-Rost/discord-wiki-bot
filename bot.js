@@ -204,35 +204,28 @@ fs.readdir( './interactions', (error, files) => {
 	} );
 } );
 /*
-!test eval got.post(`https://discord.com/api/v8/applications/${msg.client.user.id}/commands`, {
-	headers:{Authorization: `Bot ${process.env.token}`},
-	json: require('../interactions/commands.json')[0]
-}).then(response=>console.log(response.statusCode,response.body))
+!test eval client.api.applications(client.user.id).commands.post( {
+	data: require('../interactions/commands.json')[0]
+} )
 */
-client.on( 'raw', rawEvent => {
-	if ( rawEvent.t !== 'INTERACTION_CREATE' ) return;
-	var interaction = rawEvent.d;
+client.ws.on( 'INTERACTION_CREATE', interaction => {
 	if ( interaction.version !== 1 || interaction.type !== 2 ) return;
-	interaction.application_id = client.user.id;
 	if ( !slash.hasOwnProperty(interaction.data.name) ) {
-		consol.log( '- Slash: Unknown command: ' + interaction.data.name );
-		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
-			json: {
+		console.log( '- Slash: Unknown command: ' + interaction.data.name );
+		return client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {
 				type: 4,
 				data: {
-					content: '[<:error:440871715938238494> Unknown Command! <:error:440871715938238494>](<' + process.env.invite + '>)',
+					content: '<:error:440871715938238494> [Unknown Command!](<' + process.env.invite + '>) <:error:440871715938238494>',
 					allowed_mentions: {
 						parse: []
 					},
 					flags: 64
 				}
 			}
-		} ).then( response => {
-			if ( response.statusCode !== 204 ) {
-				console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
-			}
-		}, log_error );
+		} ).catch(log_error);
 	}
+	interaction.client = client;
 	var channel = client.channels.cache.get(interaction.channel_id);
 	if ( !interaction.guild_id ) {
 		return slash[interaction.data.name](interaction, new Lang(), new Wiki(), channel);
@@ -240,8 +233,8 @@ client.on( 'raw', rawEvent => {
 	db.query( 'SELECT wiki, lang, role FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
 		var lang = new Lang(( row?.lang || channel?.guild?.preferredLocale ));
 		if ( row?.role && !interaction.member.roles.includes( row.role ) && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
-			return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
-				json: {
+			return client.api.interactions(interaction.id, interaction.token).callback.post( {
+				data: {
 					type: 4,
 					data: {
 						content: lang.get('interaction.missingrole', '<@&' + row.role + '>'),
@@ -251,32 +244,24 @@ client.on( 'raw', rawEvent => {
 						flags: 64
 					}
 				}
-			} ).then( response => {
-				if ( response.statusCode !== 204 ) {
-					console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
-				}
-			}, log_error );
+			} ).catch(log_error);
 		}
 		var wiki = new Wiki(row?.wiki);
 		return slash[interaction.data.name](interaction, lang, wiki, channel);
 	}, dberror => {
 		console.log( '- Slash: Error while getting the wiki: ' + dberror );
-		return got.post( `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
-			json: {
+		return client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {
 				type: 4,
 				data: {
-					content: '[<:error:440871715938238494> Error! <:error:440871715938238494>](<' + process.env.invite + '>)',
+					content: '<:error:440871715938238494> [Error!](<' + process.env.invite + '>) <:error:440871715938238494>',
 					allowed_mentions: {
 						parse: []
 					},
 					flags: 64
 				}
 			}
-		} ).then( response => {
-			if ( response.statusCode !== 204 ) {
-				console.log( '- Slash: ' + response.statusCode + ': Error while sending the response: ' + response.body?.message );
-			}
-		}, log_error );
+		} ).catch(log_error);
 	} );
 } );
 
