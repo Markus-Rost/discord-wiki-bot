@@ -134,7 +134,7 @@
         "main": "討論版",
         "post": "貼文",
         "tags": "標籤：",
-        "votes": "$1 個投票"
+        "votes": "$1 個投票（$3%）"
     },
     "fallback": [
         "zh-hans",
@@ -144,8 +144,9 @@
         " "
     ],
     "general": {
+        "database": "⚠️ **功能受限** ⚠️\n找不到設定，請聯絡機器人所有者！",
         "default": "此伺服器尚未設定。使用 $1 或控制台以變更設定。",
-        "disclaimer": "我是一個可以提供連結並檢索如 Gamepedia 和 Fandom 等 MediaWiki 站點的小機器人。我會展示頁面的簡介和其他資訊，並可以處理重新導向和跨 wiki 連結。$1用 JavaScript 編寫了我。\n\n你可以在 Patreon 支持我：",
+        "disclaimer": "我是一個可以提供連結並檢索如 Wikipedia 和 Fandom 等 MediaWiki 站點的小機器人。我會展示頁面的簡介和其他資訊，並可以處理重新導向和跨 wiki 連結。$1用 JavaScript 編寫了我。\n\n您可以在 Patreon 支援我：",
         "experimental": "**這是實驗性功能！它不一定能夠正常運作且將來可能會被移除。**",
         "helpserver": "有問題嗎？你可以造訪我的專屬支援伺服器：",
         "limit": "🚨 **停一下，你太快了！** 🚨\n\n$1，你發出的指令過多了！",
@@ -515,7 +516,7 @@
         "help_display_image": "包含圖片預覽的嵌入式訊息。",
         "help_feeds": "（討論版、留言牆、條目評論）",
         "help_lang": "目前支援的語言：",
-        "help_wiki": "MediaWiki網站的連結，如 `https://<wiki>.gamepedia.com/`或`https://<wiki>.fandom.com/`",
+        "help_wiki": "MediaWiki網站的連結，如 `https://<wiki>.fandom.com/`",
         "lang": "語言：",
         "max_entries": "已到達近期變更webhook的最大數量。",
         "missing": "本伺服器內暫無近期變更webhook。",
@@ -632,8 +633,8 @@
         "save_failed": "啊喔，設定儲存失敗了，請稍後再試。",
         "wiki": "本伺服器的預設wiki為：",
         "wikichanged": "你已將本伺服器的預設wiki變更為：",
-        "wikihelp": "使用 `$1 <link>` 以變更預設wiki。\nMediaWiki網站的連結，如 `https://<wiki>.gamepedia.com/` 或 `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "請提供連到 MediaWiki 網站的有效連結（如 Gamepedia 或 Fandom wiki）！",
+        "wikihelp": "使用 `$1 <link>` 以變更預設wiki。\nMediaWiki網站的連結，如`https://<wiki>.fandom.com/`",
+        "wikiinvalid": "請提供連到 MediaWiki 網站的有效連結（如 Wikipedia 或 Fandom wiki）！",
         "wikiinvalid_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。\n如果您是站點管理員，您可以從像 *Let’s Encrypt* 這樣的憑證頒發機構獲取憑證：\n<https://letsencrypt.org/zh-tw/getting-started/>",
         "wikiinvalid_private": "您提供的 wiki 是私人 wiki！僅支援可被所有人讀取的公開 wiki。",
         "wikiinvalid_timeout": "所提供的連結的應答時間過長！",
@@ -770,7 +771,7 @@
         "failed_roles": "** 添加身分組失敗！**",
         "footer": "Wiki 賬戶驗證",
         "help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help-zh.gamepedia.com/Gamepedia帮助Wiki:Discord验证",
+        "help_gamepedia": "https://help.fandom.com/zh/wiki/Gamepedia帮助Wiki:Discord验证",
         "help_guide": "請根據[此指導]($1)來添加您的 Discord 使用者名至您的 wiki 資料頁：",
         "help_subpage": "請將您的Discord tag（$1）加至wiki上您的Discord子頁面：",
         "missing": "本頻道無可用的驗證方式。",
