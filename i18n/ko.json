@@ -134,7 +134,7 @@
         "main": "토론",
         "post": "포스트",
         "tags": "태그:",
-        "votes": "$1 투표"
+        "votes": "$1 투표 ($3%)"
     },
     "fallback": [
         "en",
@@ -144,8 +144,9 @@
         " "
     ],
     "general": {
+        "database": "⚠️ **제한된 기능** ⚠️\n설정을 찾을 수 없습니다. 봇 운영자에게 연락해 주세요!",
         "default": "이 서버는 아직 설정되지 않았습니다. $1 명령어를 사용하거나 대시보드로 가서 설정을 변경하세요.",
-        "disclaimer": "저는 게임피디아나 팬덤 위키 같은 미디어위키 사이트를 검색하고 링크를 제공해 주는 작은 봇이에요. 문서에 대한 짧은 설명과 추가 정보를 제공해 주고, 넘겨주기와 인터위키 링크를 따라가기도 해요. $1 님이 저를 자바스크립트로 만들었어요.\n\nPatreon에서 저를 지원해 주실 수 있어요:",
+        "disclaimer": "저는 위키백과나 팬덤 위키 같은 미디어위키 사이트를 검색하고 링크를 제공해 주는 작은 봇이에요. 문서에 대한 짧은 설명과 추가 정보를 제공해 주고, 넘겨주기와 인터위키 링크를 따라가기도 해요. $1 님이 저를 자바스크립트로 만들었어요.\n\nPatreon에서 저를 지원해 주실 수 있어요:",
         "experimental": "** 이 기능은 실험 중입니다! 정상 작동하지 않을 수도 있고 나중에 삭제될 수도 있습니다.**",
         "helpserver": "질문이 있거나 문제가 있으면 지원을 위한 서버에 방문해 주세요:",
         "limit": "🚨 ** 멈추세요. 한도를 넘었어요!** 🚨\n\n$1 님, 메시지에 너무 많은 명령어가 들어 있어요!",
@@ -412,6 +413,10 @@
                 "inward": "$1 (으)로 복제됨",
                 "outward": "$1에서 복제됨"
             },
+            "Duplicate": {
+                "inward": "$1 (으)로 복제됨",
+                "outward": "$1에서 복제됨"
+            },
             "Relates": {
                 "inward": "$1 와(과) 연관됨",
                 "outward": "$1 와(과) 연관됨"
@@ -511,7 +516,7 @@
         "help_display_image": "사진 미리보기가 포함된 메시지 임베드를 표시합니다.",
         "help_feeds": "(토론, 메시지 담벼락, 문서 댓글)",
         "help_lang": "현재 지원되는 언어는 다음과 같습니다.",
-        "help_wiki": "`https://<위키>.gamepedia.com/` 또는 `https://<위키>.fandom.com/`과 같은 미디어위키 사이트를 연결합니다",
+        "help_wiki": "`https://<위키>.fandom.com/`과 같은 미디어위키 사이트를 연결합니다",
         "lang": "언어:",
         "max_entries": "최근 바뀜 웹훅 최대치에 도달했습니다.",
         "missing": "이 서버에 아직 최근 바뀜 웹훅이 없습니다.",
@@ -628,9 +633,9 @@
         "save_failed": "슬프지만 설정을 저장할 수 없었어요. 나중에 다시 시도해 주세요.",
         "wiki": "이 서버의 기본 위키는 다음과 같습니다:",
         "wikichanged": "이 서버의 기본 위키를 다음 위키로 변경했습니다:",
-        "wikihelp": "`$1 <링크>` 명령어로 기본 위키를 변경하세요.\n`https://<위키>.gamepedia.com/`이나 `https://<위키>.fandom.com` 과 같은 미디어위키 사이트 링크를 입력하세요",
-        "wikiinvalid": "게임피디아나 팬덤 위키와 같은 유효한 미디어위키 사이트로 가는 링크를 제공해 주세요!",
-        "wikiinvalid_http": "제공된 웹사이트에 TLS/SSL 연결을 할 수 없습니다! 보안 문제로, HTTPS를 사용하는 위키만 지원됩니다.\n사이트 관리자라면, *Let's Encrypt*와 같은 인증 기관에서 인증서를 받을 수 있습니다.\n<https://letsencrypt.org/ko/getting-started/>",
+        "wikihelp": "`$1 <링크>` 명령어로 기본 위키를 변경하세요.\n`https://<위키>.fandom.com` 과 같은 미디어위키 사이트 링크를 입력하세요",
+        "wikiinvalid": "위키백과나 팬덤 위키와 같은 유효한 미디어위키 사이트로 가는 링크를 제공해 주세요!",
+        "wikiinvalid_http": "제공된 웹사이트에 TLS/SSL 연결을 할 수 없습니다! 보안 문제로 HTTPS를 사용하는 위키만 지원됩니다.\n사이트 관리자라면 *Let's Encrypt*와 같은 인증 기관에서 인증서를 받을 수 있습니다.\n<https://letsencrypt.org/ko/getting-started/>",
         "wikiinvalid_private": "제공된 위키는 비공개 위키입니다! 모두가 읽을 수 있는 공개 위키만 지원하고 있습니다.",
         "wikiinvalid_timeout": "이 링크는 응답하기에는 너무 깁니다!",
         "wikimissing": "이 서버의 기본 위키가 설정되지 않았습니다!"
@@ -766,7 +771,7 @@
         "failed_roles": "**역할을 추가하지 못했어요!**",
         "footer": "위키 계정 인증",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
+        "help_gamepedia": "https://help.fandom.com/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "이 [도움말]($1)을 참조해 디스코드 태그를 위키 프로필에 추가하세요:",
         "help_subpage": "디스코드 태그($1)를 사용자 문서의 Discord 하위문서에 생성해 주세요:",
         "missing": "이 채널에 인증이 설정되어 있지 않아요.",
