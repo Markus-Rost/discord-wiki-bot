@@ -134,7 +134,7 @@
         "main": "Discusiones",
         "post": "publicación",
         "tags": "Etiquetas:",
-        "votes": "$1 {{PLURAL:$2|voto|votos}}"
+        "votes": "$1 {{PLURAL:$2|voto|votos}} ($3%)"
     },
     "fallback": [
         "en",
@@ -144,8 +144,9 @@
         " "
     ],
     "general": {
+        "database": "⚠️ **Funcionalidad limitada** ⚠️\n¡No se encontraron configuraciones, por favor contacta al propietario del bot!",
         "default": "este servidor aún no está configurado. Usa $1 o el panel de control para cambiar la configuración.",
-        "disclaimer": "Soy un pequeño bot creado con el propósito de vincular y buscar fácilmente sitios de MediaWiki como Gamepedia y wikis de Fandom. Muestro breves descripciones e información adicional sobre las páginas y puedo resolver redireccionamientos y seguir enlaces interwiki. $1 me escribió en JavaScript.\n\nPuedes apoyarme en Patreon:",
+        "disclaimer": "Soy un pequeño bot creado con el propósito de vincular y buscar fácilmente sitios de MediaWiki como Wikipedia y wikis de Fandom. Muestro breves descripciones e información adicional sobre las páginas y puedo resolver redireccionamientos y seguir enlaces interwiki. $1 me escribió en JavaScript.\n\nPuedes apoyarme en Patreon:",
         "experimental": "**¡Esta función es experimental! No se garantiza que funcione correctamente y puede eliminarse en el futuro.**",
         "helpserver": "Si tienes preguntas o problemas, visita mi servidor de soporte:",
         "limit": "🚨 ** ¡Detente, has llegado al límite! ** 🚨\n\n$1, ¡tu mensaje contenía demasiados comandos!",
@@ -515,7 +516,7 @@
         "help_display_image": "Mensajes adjuntos con vistas previas de imágenes.",
         "help_feeds": "(discusiones, muros de mensajes, comentarios de artículos)",
         "help_lang": "Los idiomas disponibles actualmente son:",
-        "help_wiki": "Enlace a un sitio de MediaWiki como `https://<wiki>.gamepedia.com/` o `https://<wiki>.fandom.com/`",
+        "help_wiki": "Enlace a un sitio de MediaWiki como `https://<wiki>.fandom.com/`",
         "lang": "Idioma:",
         "max_entries": "ya alcanzaste la cantidad máxima de webhooks de cambios recientes.",
         "missing": "todavía no hay webhooks de cambios recientes en este servidor.",
@@ -632,8 +633,8 @@
         "save_failed": "lamentablemente, la configuración no se pudo guardar, intenta nuevamente más tarde.",
         "wiki": "el wiki predeterminado de este servidor es:",
         "wikichanged": "cambiaste el wiki predeterminado de este servidor a:",
-        "wikihelp": "Usa `$1 <link> para cambiar el wiki predeterminado.\nY el enlace un sitio de MediaWiki como `https://<wiki>.gamepedia.com/` o `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "¡proporciona un enlace válido a un sitio de MediaWiki, como Gamepedia o Fandom wiki!",
+        "wikihelp": "Usa `$1 <link> para cambiar el wiki predeterminado.\nY el enlace un sitio de MediaWiki como `https://<wiki>.fandom.com/`",
+        "wikiinvalid": "¡Proporciona un enlace válido a un sitio de MediaWiki, como Wikipedia o un wiki de Fandom!",
         "wikiinvalid_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.\nSi eres el administrador del sitio, puedes obtener un certificado de una autoridad de certificación como *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
         "wikiinvalid_private": "¡El wiki proporcionado es privado! Solo se admiten wikis públicos que todos puedan leer.",
         "wikiinvalid_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
@@ -770,7 +771,7 @@
         "failed_roles": "**¡Error al agregar roles!**",
         "footer": "Verificación de cuenta wiki",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
+        "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Sigue [esta guía]($1) para agregar tu etiqueta de Discord a tu perfil wiki:",
         "help_subpage": "Por favor agrega tu etiqueta de Discord ($1) a tu subpágina de Discord en el wiki:",
         "missing": "no hay verificaciones configuradas en este canal.",
