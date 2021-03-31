@@ -154,8 +154,8 @@
         "none": "No momento, você não tem a permissão de [gerenciar servidor]($1) em nenhum servidor. Você está conectado à conta correta?",
         "switch": "Trocar conta",
         "title": "Seletor de servidor",
-        "with": "Servidor com Wiki-Bot",
-        "without": "Servidor sem Wiki-Bot"
+        "with": "Servidores com Wiki-Bot",
+        "without": "Servidores sem Wiki-Bot"
     },
     "settings": {
         "desc": "Estas são as configurações para $1:",

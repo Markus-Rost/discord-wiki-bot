@@ -154,8 +154,8 @@
         "none": "Actualmente no tienes el permiso [Administrar Servidor]($1) en ningún servidor, ¿has iniciado sesión en la cuenta correcta?",
         "switch": "Cambiar Cuenta",
         "title": "Selector de Servidor",
-        "with": "Servidor con Wiki-Bot",
-        "without": "Servidor sin Wiki-Bot"
+        "with": "Servidores con Wiki-Bot",
+        "without": "Servidores sin Wiki-Bot"
     },
     "settings": {
         "desc": "Estas son las configuraciones de $1:",
