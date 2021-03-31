@@ -116,6 +116,7 @@ if ( wiki ) {
 			else {
 				wikinew = wikinew.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '' ).replace( /\/$/, '' );
 			}
+			var readonly = wiki.hasAttribute('readonly');
 			wiki.setAttribute('readonly', '');
 			wikicheck.setAttribute('disabled', '');
 			fetch( '/api?wiki=' + encodeURIComponent( wikinew ), {
@@ -150,7 +151,7 @@ if ( wiki ) {
 					wikichecknotice.append(noticeTitle, noticeText, noticeNote);
 					return;
 				}
-				wiki.value = response.wiki;
+				if ( !readonly ) wiki.value = response.wiki;
 				if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
 					if ( !response.MediaWiki ) {
 						wiki.setCustomValidity(lang('outdated.title'));
@@ -250,7 +251,7 @@ if ( wiki ) {
 			}, function(error) {
 				console.log(error)
 			} ).finally( function() {
-				wiki.removeAttribute('readonly');
+				if ( !readonly ) wiki.removeAttribute('readonly');
 				wikicheck.removeAttribute('disabled');
 			} );
 		}

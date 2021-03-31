@@ -50,8 +50,8 @@ const files = new Map([
 	return [file, {path: filepath, contentType}];
 } ));
 
-const server = http.createServer((req, res) => {
-	if ( req.method === 'POST' && req.url.startsWith( '/guild/' ) ) {
+const server = http.createServer( (req, res) => {
+	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && req.url.startsWith( '/guild/' ) ) {
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
@@ -61,17 +61,17 @@ const server = http.createServer((req, res) => {
 		&& /^(?:default|new|\d+)$/.test(args[4]) && settingsData.has(state)
 		&& settingsData.get(state).guilds.isMember.has(args[2]) ) {
 			if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
-			let body = '';
+			let body = [];
 			req.on( 'data', chunk => {
-				body += chunk.toString();
+				body.push(chunk);
 			} );
 			req.on( 'error', () => {
-				console.log( error );
+				console.log( '- Dashboard: ' + error );
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
 				var settings = {};
-				body.split('&').forEach( arg => {
+				Buffer.concat(body).toString().split('&').forEach( arg => {
 					if ( arg ) {
 						let setting = decodeURIComponent(arg.replace( /\+/g, ' ' )).split('=');
 						if ( setting[0] && setting.slice(1).join('=').trim() ) {
@@ -211,11 +211,11 @@ const server = http.createServer((req, res) => {
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
 	return dashboard(res, dashboardLang, state, reqURL, action);
-});
+} );
 
-server.listen(8080, 'localhost', () => {
+server.listen( 8080, 'localhost', () => {
 	console.log( '- Dashboard: Server running at http://localhost:8080/' );
-});
+} );
 
 
 String.prototype.replaceSave = function(pattern, replacement) {

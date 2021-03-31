@@ -354,8 +354,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
 					let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
 					if ( api ) {
-						wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-						return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
+						wiki = new Wiki(api.split('api.php?')[0], wiki);
+						return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
 					}
 				}
 			}

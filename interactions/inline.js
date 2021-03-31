@@ -62,6 +62,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 		data: {
 			type: 5,
 			data: {
+				allowed_mentions,
 				flags: 0
 			}
 		}
