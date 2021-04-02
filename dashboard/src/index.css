@@ -120,6 +120,9 @@ a[alt]:hover:after {
 	display: flex;
 	justify-content: center;
 }
+.guild .theme-toggle {
+	cursor: pointer;
+}
 .avatar {
 	border-radius: 50%;
 	width: 48px;
