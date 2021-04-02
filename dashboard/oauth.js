@@ -18,10 +18,11 @@ const file = require('fs').readFileSync('./dashboard/login.html');
  * Let a user login
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('./i18n.js')} dashboardLang - The user language.
+ * @param {String} theme - The display theme
  * @param {String} [state] - The user state
  * @param {String} [action] - The action the user made
  */
-function dashboard_login(res, dashboardLang, state, action) {
+function dashboard_login(res, dashboardLang, theme, state, action) {
 	if ( state && settingsData.has(state) ) {
 		if ( !action ) {
 			res.writeHead(302, {Location: '/'});
@@ -31,6 +32,7 @@ function dashboard_login(res, dashboardLang, state, action) {
 	}
 	var $ = cheerio.load(file);
 	$('html').attr('lang', dashboardLang.lang);
+	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
 		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
 		const allLangs = ${JSON.stringify(allLangs)};
@@ -39,6 +41,8 @@ function dashboard_login(res, dashboardLang, state, action) {
 	$('#login-button span, .channel#login div').text(dashboardLang.get('general.login'));
 	$('.channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
+	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
+	$('.guild#theme-light a').attr('alt', dashboardLang.get('general.theme-light'));
 	$('#support span').text(dashboardLang.get('general.support'));
 	$('#text .description #welcome').html(dashboardLang.get('general.welcome'));
 	let responseCode = 200;

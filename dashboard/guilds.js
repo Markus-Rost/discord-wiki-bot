@@ -23,12 +23,13 @@ const file = require('fs').readFileSync('./dashboard/index.html');
  * Let a user view settings
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('./i18n.js')} dashboardLang - The user language.
+ * @param {String} theme - The display theme
  * @param {String} state - The user state
  * @param {URL} reqURL - The used url
  * @param {String} [action] - The action the user made
  * @param {String[]} [actionArgs] - The arguments for the action
  */
-function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs) {
+function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, actionArgs) {
 	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	args = reqURL.pathname.split('/');
@@ -40,6 +41,7 @@ function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs)
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 	var $ = cheerio.load(file);
 	$('html').attr('lang', dashboardLang.lang);
+	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
 		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
 		const allLangs = ${JSON.stringify(allLangs)};
@@ -48,11 +50,13 @@ function dashboard_guilds(res, dashboardLang, state, reqURL, action, actionArgs)
 	$('.channel#settings div').text(dashboardLang.get('general.settings'));
 	$('.channel#verification div').text(dashboardLang.get('general.verification'));
 	$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
+	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
+	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
+	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
+	$('.guild#theme-light a').attr('alt', dashboardLang.get('general.theme-light'));
 	$('#selector span').text(dashboardLang.get('general.selector'));
 	$('#support span').text(dashboardLang.get('general.support'));
 	$('#logout').attr('alt', dashboardLang.get('general.logout'));
-	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
-	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
 	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);
 	if ( action ) createNotice($, action, dashboardLang, actionArgs);
 	$('head').append(

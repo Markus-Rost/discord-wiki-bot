@@ -18,6 +18,8 @@
         "selector": "Server Selector",
         "settings": "Settings",
         "support": "Support Server",
+        "theme-dark": "Use dark theme",
+        "theme-light": "Use light theme",
         "title": "Wiki-Bot Settings",
         "verification": "Verifications",
         "welcome": "<h2>Welcome to the Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot is a Discord bot made to bring Discord servers and MediaWiki wikis together. It helps with linking wiki pages, verifying wiki users, informing about latest changes on the wiki and more. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[More information]</a></p>\n<p>Here you can change different bot settings for servers you have Manage Server permission on. To begin, you will have to authenticate your Discord account which you can do with this button:</p>"
