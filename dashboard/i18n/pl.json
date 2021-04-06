@@ -18,6 +18,8 @@
         "selector": "Selektor serwera",
         "settings": "Ustawienia",
         "support": "Serwer wsparcia",
+        "theme-dark": "Używaj ciemnego stylu",
+        "theme-light": "Używaj jasnego stylu",
         "title": "Ustawienia Wiki-Bota",
         "verification": "Weryfikacje",
         "welcome": "<h2>Witaj na panelu sterowania Wiki-Bota</h2>\n<p>Wiki-Bot to bot działający na Discordzie ułatwiający integrację wiki bazujących na MediaWiki wraz z czatem Discorda. Pomaga w linkowaniu stron, weryfikowaniu użytkowników wiki, informowania o ostatnich zmianach z wiki oraz więcej. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Więcej informacji]</a></p>\n<p>Możesz tutaj zmienić ustawienia bota dla serwerów na których posiadasz zezwolenie „Zarządzaj serwerem”. Aby zacząć, uwierzytelnij swoje konto Discord z panelem tym przyciskiem:</p>"

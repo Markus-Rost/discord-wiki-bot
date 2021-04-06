@@ -18,6 +18,8 @@
         "selector": "Selector de Servidor",
         "settings": "Ajustes",
         "support": "Servidor de Soporte",
+        "theme-dark": "Usar tema oscuro",
+        "theme-light": "Usar tema claro",
         "title": "Configuración de Wiki-Bot",
         "verification": "Verificaciones",
         "welcome": "<h2> Bienvenido al Panel de Control de Wiki-Bot. </h2> \n<p> Wiki-Bot es un bot de Discord creado para unir servidores de Discord y wikis de MediaWiki. Ayuda a vincular páginas wiki, verificar usuarios wiki, informar sobre los últimos cambios en el wiki y más. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\"> [Más información] </a> </p>\n<p> Aquí puedes cambiar diferentes configuraciones de bot para los servidores en los que tienes el permiso de administrar el servidor. Para comenzar, debes autenticar tu cuenta de Discord, lo puedes hacer con este botón: </p>"

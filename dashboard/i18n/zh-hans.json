@@ -18,6 +18,8 @@
         "selector": "选择服务器",
         "settings": "设置",
         "support": "支持服务器",
+        "theme-dark": "使用酷黑主题",
+        "theme-light": "使用明亮主题",
         "title": "Wiki-Bot 设置",
         "verification": "验证",
         "welcome": "<h2>欢迎来到 Wiki-Bot 控制面板。</h2>\n<p>Wiki-Bot 是一个 Discord 机器人，旨在将 MediaWiki 驱动的 wiki 站点与 Discord 服务器整合在一起。它可以帮忙链接到 wiki 页面，验证 wiki 用户，通知 wiki 上最近的更改，等等。 <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多信息]</a></p>\n<p>在此，你可以为每个你拥有“管理服务器”权限的服务器管理并使用不同的机器人设置。但首先，你需要通过这个按钮验证你的 Discord 账号：</p>"
