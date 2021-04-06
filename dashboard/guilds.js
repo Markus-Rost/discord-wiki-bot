@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Lang = require('./i18n.js');
 const allLangs = Lang.allLangs().names;
-const {settingsData, createNotice} = require('./util.js');
+const {settingsData, addWidgets, createNotice} = require('./util.js');
 
 const forms = {
 	settings: require('./settings.js').get,
@@ -137,6 +137,7 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 				$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
 			)
 		);
+		addWidgets($, dashboardLang);
 	}
 	else if ( args[0] === 'owner' ) {
 		let guild = {
@@ -210,6 +211,7 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 				)
 			);
 		}
+		addWidgets($, dashboardLang);
 	}
 	let body = $.html();
 	res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});

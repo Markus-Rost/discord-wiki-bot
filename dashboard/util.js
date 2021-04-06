@@ -96,6 +96,66 @@ function sendMsg(message) {
 	} );
 	return promise;
 }
+var botLists = [];
+if ( process.env.botlist ) {
+	let supportedLists = {
+		'blist.xyz': {
+			link: 'https://blist.xyz/bot/' + process.env.bot,
+			widget: 'https://blist.xyz/api/v2/bot/' + process.env.bot + '/widget'
+		},
+		'botlists.com': {
+			link: 'https://botlists.com/bot/' + process.env.bot,
+			widget: 'https://botlists.com/bot/' + process.env.bot + '/widget'
+		},
+		'bots.ondiscord.xyz': {
+			link: 'https://bots.ondiscord.xyz/bots/' + process.env.bot,
+			widget: 'https://bots.ondiscord.xyz/bots/' + process.env.bot + '/embed?theme=dark&showGuilds=true'
+		},
+		'botsfordiscord.com': {
+			link: 'https://botsfordiscord.com/bots/' + process.env.bot,
+			widget: 'https://botsfordiscord.com/api/bot/' + process.env.bot + '/widget?theme=dark'
+		},
+		'discord.boats': {
+			link: 'https://discord.boats/bot/' + process.env.bot,
+			widget: 'https://discord.boats/api/widget/' + process.env.bot
+		},
+		'infinitybotlist.com': {
+			link: 'https://infinitybotlist.com/bots/' + process.env.bot,
+			widget: 'https://infinitybotlist.com/bots/' + process.env.bot + '/widget?size=medium'
+		},
+		'top.gg': {
+			link: 'https://top.gg/bot/' + process.env.bot,
+			widget: 'https://top.gg/api/widget/' + process.env.bot + '.svg'
+		},
+		'voidbots.net': {
+			link: 'https://voidbots.net/bot/' + process.env.bot,
+			widget: 'https://voidbots.net/api/embed/' + process.env.bot + '?theme=dark'
+		}
+	};
+
+	botLists = Object.keys(JSON.parse(process.env.botlist)).filter( botList => {
+		return supportedLists.hasOwnProperty(botList);
+	} ).map( botList => {
+		return `<a href="${supportedLists[botList].link}" target="_blank">
+			<img src="${supportedLists[botList].widget}" alt="${botList}" height="150px" loading="lazy" />
+		</a>`;
+	} );
+}
+
+/**
+ * Add bot list widgets.
+ * @param {import('cheerio')} $ - The cheerio static
+ * @param {import('./i18n.js')} dashboardLang - The user language
+ * @returns {import('cheerio')}
+*/
+function addWidgets($, dashboardLang) {
+	if ( !botLists.length ) return;
+	return $('<div class="widgets">').append(
+		$('<h3 id="bot-lists">').text(dashboardLang.get('general.botlist.title')),
+		$('<p>').text(dashboardLang.get('general.botlist.text')),
+		...botLists
+	).appendTo('#text');
+}
 
 /**
  * Create a red notice
@@ -261,4 +321,4 @@ function hasPerm(all = 0, ...permission) {
 	} ).every( perm => perm );
 }
 
-module.exports = {got, db, settingsData, sendMsg, createNotice, escapeText, hasPerm};
+module.exports = {got, db, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};

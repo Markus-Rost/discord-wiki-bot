@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Wiki = require('../util/wiki.js');
 const allLangs = require('./i18n.js').allLangs().names;
-const {got, settingsData, sendMsg, createNotice, hasPerm} = require('./util.js');
+const {got, settingsData, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
 
 const DiscordOauth2 = require('discord-oauth2');
 const oauth = new DiscordOauth2( {
@@ -68,6 +68,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		prompt, state
 	} );
 	$('.channel#login, #login-button').attr('href', url);
+	addWidgets($, dashboardLang);
 	let body = $.html();
 	res.writeHead(responseCode, {
 		'Set-Cookie': [

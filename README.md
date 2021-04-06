@@ -3,7 +3,7 @@
 
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Wikipedia](https://www.wikipedia.org/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
 
-**Wiki-Bot** has translations for English, Bengali, German, French, Hindi, Dutch, Polish, Portuguese, Russian, Turkish and Chinese.
+**Wiki-Bot** has translations for Bengali, German, English, Spanish, French, Hindi, Korean, Dutch, Polish, Brazilian Portuguese, Russian, Turkish, Simplified Chinese and Traditional Chinese.
 
 [Use this link to invite **Wiki-Bot** to your Discord server.](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot%20applications.commands)
 
@@ -94,10 +94,16 @@ Use `!wiki voice` to get the format for the role name.
 [<img src="https://translate.wikibot.de/widgets/wiki-bot/-/multi-auto.svg" alt="Translation status" width="100%" />](https://translate.wikibot.de/engage/wiki-bot/?utm_source=widget)
 
 ## Bot Lists
-[![Wiki-Bot](https://bots.ondiscord.xyz/bots/461189216198590464/embed?theme=dark&showGuilds=true)](https://bots.ondiscord.xyz/bots/461189216198590464)
-[![Wiki-Bot](https://botsfordiscord.com/api/bot/461189216198590464/widget?theme=dark)](https://botsfordiscord.com/bot/461189216198590464)
-[![Wiki-Bot](https://discord.boats/api/widget/461189216198590464)](https://discord.boats/bot/461189216198590464)
-[![Wiki-Bot](https://top.gg/api/widget/461189216198590464.svg)](https://top.gg/bot/461189216198590464)
+Help other users find Wiki-Bot by voting on bot lists:
+
+[<img src="https://blist.xyz/api/v2/bot/461189216198590464/widget" alt="blist.xyz" height="150px" />](https://blist.xyz/bot/461189216198590464)
+[<img src="https://botlists.com/bot/461189216198590464/widget" alt="botlists.com" height="150px" />](https://botlists.com/bot/461189216198590464)
+[<img src="https://bots.ondiscord.xyz/bots/461189216198590464/embed?theme=dark&showGuilds=true" alt="bots.ondiscord.xyz" height="150px" />](https://bots.ondiscord.xyz/bots/461189216198590464)
+[<img src="https://botsfordiscord.com/api/bot/461189216198590464/widget?theme=dark" alt="botsfordiscord.com" height="150px" />](https://botsfordiscord.com/bots/461189216198590464)
+[<img src="https://discord.boats/api/widget/461189216198590464" alt="discord.boats" height="150px" />](https://discord.boats/bot/461189216198590464)
+[<img src="https://infinitybotlist.com/bots/461189216198590464/widget?size=medium" alt="infinitybotlist.com" height="150px" />](https://infinitybotlist.com/bots/461189216198590464)
+[<img src="https://top.gg/api/widget/461189216198590464.svg" alt="top.gg" height="150px" />](https://top.gg/bot/461189216198590464)
+[<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)
 
 ## Other
 Credits to [Encredechine](https://community.fandom.com/wiki/User:Encredechine) for the **Wiki-Bot** logo.

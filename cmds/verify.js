@@ -106,7 +106,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 			}
 			
 			var comment = [];
-			if ( wiki.isFandom() ) return got.get( 'https://ucp.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
+			if ( wiki.isFandom() ) return got.get( 'https://community.fandom.com/wiki/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
 				responseType: 'text'
 			} ).then( gbresponse => {
 				if ( gbresponse.statusCode !== 200 || !gbresponse.body ) {
@@ -121,7 +121,7 @@ function cmd_verify(lang, msg, args, line, wiki, old_username = '') {
 							reply: lang.get('verify.user_disabled_reply', username.escapeFormatting())
 						});
 					}
-					else if ( $('script').eq(1).html().includes( '"isBlockedInPhalanx":true' ) ) {
+					else if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
 						return Promise.reject({
 							desc: lang.get('verify.user_gblocked', '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender),
 							reply: lang.get('verify.user_gblocked_reply', username.escapeFormatting(), queryuser.gender)

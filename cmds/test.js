@@ -38,7 +38,9 @@ function cmd_test(lang, msg, args, line, wiki) {
 			var then = Date.now();
 			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + global.shardId ).addField( 'Discord', ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms' );
 			now = Date.now();
-			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' ).then( response => {
+			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json', {
+				timeout: 10000
+			} ).then( response => {
 				then = Date.now();
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);

@@ -28,7 +28,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 	}
 	
 	Promise.all([
-		got.get( 'https://ucp.fandom.com/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1', {
+		got.get( 'https://community.fandom.com/wiki/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1', {
 			responseType: 'text'
 		} ).then( response => {
 			var body = response.body;
@@ -41,7 +41,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.disabled') + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 				}
-				else if ( $('head script').eq(1).html().includes( '"isBlockedInPhalanx":true' ) ) {
+				else if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
 					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**';
 				}
