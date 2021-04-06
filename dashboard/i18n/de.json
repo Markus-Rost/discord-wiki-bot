@@ -7,6 +7,10 @@
         " "
     ],
     "general": {
+        "botlist": {
+            "text": "Hilf anderen Nutzern Wiki-Bot zu finden durch abstimmen auf Bot-Listen:",
+            "title": "Bot-Listen"
+        },
         "delete": "Löschen",
         "invite": "Lade Wiki-Bot ein",
         "language": "Sprache ändern",
