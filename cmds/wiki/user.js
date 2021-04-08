@@ -333,7 +333,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			var blockreason = queryuser.blockreason;
 			var block = {
 				header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(),
-				text: lang.get('user.block.' + ( blockreason ? 'text' : 'noreason' ), blockedtimestamp, blockexpiry),
+				text: lang.get('user.block.' + ( blockreason ? 'text' : 'noreason' ), until_expiry, blockedtimestamp, blockexpiry),
 				by: blockedby,
 				reason: blockreason
 			};
