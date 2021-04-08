@@ -321,11 +321,13 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			var isBlocked = false;
 			var blockedtimestamp = ( queryuser.blockedtimestamp ? dateformat.format(new Date(queryuser.blockedtimestamp)) : 'Invalid Date' );
 			var blockexpiry = queryuser.blockexpiry;
+			var ispermabanned = queryuser.ispermabanned;
 			if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
-				blockexpiry = lang.get('user.block.until_infinity');
+				ispermabanned = true;
 				isBlocked = true;
 			} else if ( blockexpiry ) {
 				var blockexpirydate = blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' );
+				ispermabanned = false;
 				blockexpiry = dateformat.format(new Date(blockexpirydate));
 				if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 			}
@@ -333,9 +335,10 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			var blockreason = queryuser.blockreason;
 			var block = {
 				header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(),
-				text: lang.get('user.block.' + ( blockreason ? 'text' : 'noreason' ), until_expiry, blockedtimestamp, blockexpiry),
+				text: lang.get('user.block.' + ( ispermabanned ? 'blocked_without_expiry' : 'blocked_expiry' ), ( blockreason ? 'text' : 'noreason' ), ( ispermabanned ? 'until_without_expiry' : 'blockedtimestamp' ), ( ispermabanned ? 'until_without_expiry' : 'blockexpiry' )),
 				by: blockedby,
-				reason: blockreason
+				reason: blockreason,
+				ispermabanned: blockinfinite
 			};
 			
 			var pagelink = wiki.toLink(namespace + username, querystring, fragment);
