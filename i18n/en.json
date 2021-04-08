@@ -685,6 +685,7 @@
             "header": "$1 is currently blocked!",
             "noreason": "Blocked on $1 $2 by $3.",
             "text": "Blocked on $1 $2 by $3 with reason \"$4\".",
+            "until_expiry": "until"
             "until_infinity": "permanently"
         },
         "gblock": {
