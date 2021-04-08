@@ -686,7 +686,8 @@
             "noreason": "$1 $2 by $3.",
             "text": "$1 $2 by $3 with reason \"$4\".",
             "until_expiry": "until"
-            "until_infinity": "Permanently blocked on"
+            "until_without_expiry": ""
+            "blocked_without_expiry": "Permanently blocked on"
             "blocked_expiry": "Blocked on"
         },
         "gblock": {
