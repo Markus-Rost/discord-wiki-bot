@@ -683,8 +683,8 @@
     "user": {
         "block": {
             "header": "$1 is currently blocked!",
-            "noreason": "$5 $1 $2 by $3.",
-            "text": "$5 $1 $2 by $3 with reason \"$4\".",
+            "noreason": "$1 $2 $3 by $4.",
+            "text": "$1 $2 $3 by $4 with reason \"$5\".",
             "until_expiry": "until"
             "until_expiry_infinite": ""
             "blocked_expiry": "Blocked on"
