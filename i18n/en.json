@@ -683,7 +683,7 @@
     "user": {
         "block": {
             "header": "$1 is currently blocked!",
-            "noreason": "Blocked $5 $1 $2 by $3.",
+            "noreason": "$5 $1 $2 by $3.",
             "text": "$5 $1 $2 by $3 with reason \"$4\".",
             "until_expiry": "until"
             "until_expiry_infinite": ""
