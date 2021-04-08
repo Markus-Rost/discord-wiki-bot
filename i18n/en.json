@@ -683,10 +683,12 @@
     "user": {
         "block": {
             "header": "$1 is currently blocked!",
-            "noreason": "Blocked on $1 $2 by $3.",
-            "text": "Blocked on $1 $2 by $3 with reason \"$4\".",
+            "noreason": "Blocked $5 $1 $2 by $3.",
+            "text": "$5 $1 $2 by $3 with reason \"$4\".",
             "until_expiry": "until"
-            "until_infinity": "permanently"
+            "until_expiry_infinite": ""
+            "blocked_expiry": "Blocked on"
+            "until_infinity": "Permanently blocked on"
         },
         "gblock": {
             "disabled": "This account is currently disabled!",
