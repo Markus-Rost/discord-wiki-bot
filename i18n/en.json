@@ -686,9 +686,8 @@
             "noreason": "$1 $2 $3 by $4.",
             "text": "$1 $2 $3 by $4 with reason \"$5\".",
             "until_expiry": "until"
-            "until_expiry_infinite": ""
-            "blocked_expiry": "Blocked on"
             "until_infinity": "Permanently blocked on"
+            "blocked_expiry": "Blocked on"
         },
         "gblock": {
             "disabled": "This account is currently disabled!",
