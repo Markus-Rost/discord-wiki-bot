@@ -685,8 +685,8 @@
             "header": "$1 is currently blocked!",
             "noreason": "Blocked on $1 until $2 by $3.",
             "text": "Blocked on $1 until $2 by $3 with reason \"$4\".",
-            "permabannednoreason": "Permanently blocked on $1 by $3."
-            "permabannedtext": "Permanently blocked on $1 by $3 with reason \"$4\".",
+            "permabannednoreason": "Permanently blocked on $1 by $3.",
+            "permabannedtext": "Permanently blocked on $1 by $3 with reason \"$4\"."
         },
         "gblock": {
             "disabled": "This account is currently disabled!",
