@@ -336,7 +336,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			var blockreason = queryuser.blockreason;
 			var block = {
 				header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(),
-				text: lang.get('user.block.' + ( blockreason ? ( isPermabanned ? 'permabannedtext' : 'text') : ( isPermabanned ? 'permabannednoreason' : 'noreason') ), blockedtimestamp, blockexpiry),
+				text: lang.get('user.block.' + ( isPermabanned ? 'permabanned' : '' ) + ( blockreason ? 'text' : 'noreason' ), blockedtimestamp, blockexpiry),
 				by: blockedby,
 				reason: blockreason
 			};
