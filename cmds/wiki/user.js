@@ -321,14 +321,13 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			var isBlocked = false;
 			var blockedtimestamp = ( queryuser.blockedtimestamp ? dateformat.format(new Date(queryuser.blockedtimestamp)) : 'Invalid Date' );
 			var blockexpiry = queryuser.blockexpiry;
-			var isPermabanned = queryuser.isPermabanned;
+			var isPermabanned = false;
 			if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
 				blockexpiry = '';
 				isPermabanned = true;
 				isBlocked = true;
 			} else if ( blockexpiry ) {
 				var blockexpirydate = blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' );
-				isPermabanned = false;
 				blockexpiry = dateformat.format(new Date(blockexpirydate));
 				if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
 			}
