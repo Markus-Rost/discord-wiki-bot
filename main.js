@@ -73,7 +73,11 @@ manager.spawn().then( shards => {
 	}
 }, error => {
 	console.error( '- Error while spawning the shards: ' + error );
-	manager.respawnAll();
+	if ( isDebug ) {
+		if ( typeof server !== 'undefined' ) server.kill();
+		process.exit(1);
+	}
+	else manager.respawnAll();
 } );
 
 var server;
@@ -265,6 +269,10 @@ if ( process.env.dashboard ) {
 
 	dashboard.on( 'exit', (code) => {
 		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
+		if ( isDebug ) {
+			manager.shards.forEach( shard => shard.kill() );
+			process.exit(1);
+		}
 	} );
 }
 
@@ -293,7 +301,7 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 				return;
 			}
 			for ( let [key, value] of Object.entries(body.failure) ) {
-				console.log( '- ' + value[0] + ': Error while posting statistics to ' + key + ': ' + value[1] );
+				console.log( '- ' + value[0] + ': Error while posting statistics to ' + key + ': ' + value[1]?.substring?.(0, 500) );
 			}
 		}, error => {
 			console.log( '- Error while posting statistics to BotBlock.org: ' + error );

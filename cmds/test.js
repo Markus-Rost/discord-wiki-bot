@@ -44,8 +44,12 @@ function cmd_test(lang, msg, args, line, wiki) {
 				then = Date.now();
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
-				if ( body?.query?.general ) wiki.updateWiki(body.query.general);
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
+				if ( body?.query?.general ) {
+					wiki.updateWiki(body.query.general);
+					embed.addField( wiki.toLink(), ping );
+				}
+				else embed.addField( wiki, ping );
 				var notice = [];
 				if ( response.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
 					if ( wiki.noWiki(response.url, response.statusCode) ) {
@@ -73,7 +77,6 @@ function cmd_test(lang, msg, args, line, wiki) {
 					}
 				}
 				else logging(wiki, msg.guild?.id, 'test');
-				embed.addField( wiki, ping );
 				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
 			}, error => {
 				then = Date.now();
