@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const isDebug = ( process.argv[2] === 'debug' );
+var isDebug = ( process.argv[2] === 'debug' );
 if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
 
 require('./database.js').then( () => {
@@ -331,6 +331,7 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	console.log( `\n- Close process in ${timeout} seconds!\n` );
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
+		isDebug = false;
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 	}, timeout * 1000 ).unref();
