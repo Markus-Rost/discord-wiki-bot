@@ -38,7 +38,7 @@ manager.on( 'shardCreate', shard => {
 	shard.on( 'message', message => {
 		if ( message === 'SIGKILL' ) {
 			console.log( '\n- Killing all shards!\n\n' );
-			manager.shards.filter( shard => !shard.process?.killed ).forEach( shard => shard.kill() );
+			manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 			if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		}
 		if ( message === 'toggleDebug' ) {
@@ -270,7 +270,7 @@ if ( process.env.dashboard ) {
 	dashboard.on( 'exit', (code) => {
 		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
 		if ( isDebug ) {
-			manager.shards.filter( shard => !shard.process?.killed ).forEach( shard => shard.kill() );
+			manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 			process.exit(1);
 		}
 	} );
@@ -331,7 +331,7 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	console.log( `\n- Close process in ${timeout} seconds!\n` );
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
-		manager.shards.filter( shard => !shard.process?.killed ).forEach( shard => shard.kill() );
+		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 	}, timeout * 1000 ).unref();
 }
