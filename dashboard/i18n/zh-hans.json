@@ -7,6 +7,10 @@
         " "
     ],
     "general": {
+        "botlist": {
+            "text": "让其他用户也知道 Wiki-Bot，就在这些机器人列表上投票吧：",
+            "title": "机器人列表"
+        },
         "delete": "删除",
         "invite": "邀请 Wiki-Bot",
         "language": "更改语言",
