@@ -43,6 +43,7 @@ manager.on( 'shardCreate', shard => {
 		}
 		if ( message === 'toggleDebug' ) {
 			console.log( '\n- Toggle debug logging for all shards!\n' );
+			isDebug = !isDebug;
 			manager.broadcastEval( `global.isDebug = !global.isDebug` );
 			if ( typeof server !== 'undefined' ) server.send( 'toggleDebug' );
 		}
