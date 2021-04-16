@@ -38,8 +38,8 @@ manager.on( 'shardCreate', shard => {
 	shard.on( 'message', message => {
 		if ( message === 'SIGKILL' ) {
 			console.log( '\n- Killing all shards!\n\n' );
-			manager.shards.forEach( shard => shard.kill() );
-			if ( typeof server !== 'undefined' ) server.kill();
+			manager.shards.filter( shard => !shard.process?.killed ).forEach( shard => shard.kill() );
+			if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		}
 		if ( message === 'toggleDebug' ) {
 			console.log( '\n- Toggle debug logging for all shards!\n' );
@@ -74,7 +74,7 @@ manager.spawn().then( shards => {
 }, error => {
 	console.error( '- Error while spawning the shards: ' + error );
 	if ( isDebug ) {
-		if ( typeof server !== 'undefined' ) server.kill();
+		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		process.exit(1);
 	}
 	else manager.respawnAll();
@@ -270,7 +270,7 @@ if ( process.env.dashboard ) {
 	dashboard.on( 'exit', (code) => {
 		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
 		if ( isDebug ) {
-			manager.shards.forEach( shard => shard.kill() );
+			manager.shards.filter( shard => !shard.process?.killed ).forEach( shard => shard.kill() );
 			process.exit(1);
 		}
 	} );
@@ -331,8 +331,8 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	console.log( `\n- Close process in ${timeout} seconds!\n` );
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
-		manager.shards.forEach( shard => shard.kill() );
-		if ( typeof server !== 'undefined' ) server.kill();
+		manager.shards.filter( shard => !shard.process?.killed ).forEach( shard => shard.kill() );
+		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 	}, timeout * 1000 ).unref();
 }
 
