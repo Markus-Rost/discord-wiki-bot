@@ -186,6 +186,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var code = false;
 	var href = '';
 	var ignoredTag = '';
+	var syntaxhighlight = '';
 	var listlevel = -1;
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
@@ -198,7 +199,13 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( tagname === 'pre' ) {
 				code = true;
-				text += '```\n';
+				text += '```' + syntaxhighlight + '\n';
+			}
+			if ( tagname === 'div' && attribs.class ) {
+				let classes = attribs.class.split(' ');
+				if ( classes.includes( 'mw-highlight' ) ) {
+					syntaxhighlight = ( classes.find( syntax => syntax.startsWith( 'mw-highlight-lang-' ) )?.replace( 'mw-highlight-lang-', '' ) || '' );
+				}
 			}
 			if ( tagname === 'b' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
@@ -315,6 +322,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				}
 				return;
 			}
+			if ( syntaxhighlight && tagname === 'div' ) syntaxhighlight = '';
 			if ( tagname === 'b' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
