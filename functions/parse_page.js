@@ -57,6 +57,7 @@ const removeClasses = [
 const removeClassesExceptions = [
 	'div.main-page-tag-lcs',
 	'div.lcs-container',
+	'div.mw-highlight',
 	'div.poem',
 	'div.treeview',
 	'div.wikibase-entityview',
