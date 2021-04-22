@@ -770,7 +770,7 @@
         "failed_roles": "**A adição de cargos falhou!**",
         "footer": "Verificação de conta da wiki",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.fandom.com/pt/wiki/Ajuda para Wikis da Gamepedia:Verificação do Discord",
+        "help_gamepedia": "https://help.fandom.com/pt/wiki/Ajuda_para_Wikis_da_Gamepedia:Verificação_do_Discord",
         "help_guide": "Siga [esse guia]($1) para associar seu nome de usuário do Discord ao seu usuário na wiki:",
         "help_subpage": "Adicione seu nome de usuário do Discord ($1) para sua subpágina do Discord na wiki:",
         "missing": "não há verificações configuradas para este canal.",
