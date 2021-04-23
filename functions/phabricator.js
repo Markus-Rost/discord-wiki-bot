@@ -19,8 +19,8 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
-	logging(link.origin, msg.guild?.id, 'phabricator', regex[1]);
-	var site = 'https://phabricator.' + regex[1] + '.org/'
+	var site = 'https://phabricator.' + regex[1] + '.org/';
+	logging(site, msg.guild?.id, 'phabricator', regex[1]);
 	got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator-' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2] ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
