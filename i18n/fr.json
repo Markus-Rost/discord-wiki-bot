@@ -134,7 +134,7 @@
         "main": "Discussions",
         "post": "post",
         "tags": "Marqueurs :",
-        "votes": "$1 {{PLURAL:$2|vote|votes}}"
+        "votes": "$1 {{PLURAL:$2|vote|votes}} ($3%)"
     },
     "fallback": [
         "en",
@@ -359,7 +359,7 @@
                 },
                 "postcount": {
                     "cmd": "verification <id> postcount <nouveau nombre de post>",
-                    "desc": "Je vais changer le nombre minimal de posts de discussion pour la vérification.\n\t• Fournissez un nombre négatif pour nécessiter soit le nombre de modifications soit le nombre de posts\n\t• Fournisser `null` pour vérifier les modifications et posts combinés"
+                    "desc": "Je vais changer le nombre minimal de posts de discussion pour la vérification.\n\t• Fournissez un nombre négatif pour nécessiter soit le nombre de modifications soit le nombre de posts.\n\t• Fournisser `null` pour vérifier les modifications et posts combinés."
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
@@ -763,7 +763,7 @@
         "failed_roles": "**L'ajout de rôle a échoué !**",
         "footer": "Vérification du compte Wiki",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
+        "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Suivez [ce guide]($1) pour rajouter votre tag Discord à votre profil wiki :",
         "help_subpage": "Veuillez rajouter votre tag Discord ($1) à votre sous-page Discord sur le wiki :",
         "missing": "il n'y a aucune vérification mise en place pour ce salon.",

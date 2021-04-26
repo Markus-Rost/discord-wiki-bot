@@ -134,7 +134,7 @@
         "main": "Dyskusje",
         "post": "post",
         "tags": "Tagi:",
-        "votes": "$1 {{PLURAL:$2|głos|głosy|głosów}}"
+        "votes": "$1 {{PLURAL:$2|głos|głosy|głosów}} ($3%)"
     },
     "fallback": [
         "en",
@@ -770,7 +770,7 @@
         "failed_roles": "**Dodawanie ról nie powiodło się!**",
         "footer": "Weryfikacja konta wiki",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
+        "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Podążaj za [tym poradnikiem]($1) w celu dodania nazwy użytkownika Discord na profil wiki:",
         "help_subpage": "Dodaj swoją nazwę użytkownika Discord ($1) do podstrony Discord na wiki:",
         "missing": "nie ustawiono weryfikacji dla tego kanału.",

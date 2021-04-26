@@ -134,7 +134,7 @@
         "main": "Tartışmalar",
         "post": "gönderi",
         "tags": "Etiketler:",
-        "votes": "$1 oy"
+        "votes": "$1 oy ($3%)"
     },
     "fallback": [
         "en",
@@ -770,7 +770,7 @@
         "failed_roles": "**Rol eklenemedi!**",
         "footer": "Viki Hesabı Doğrulaması",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.gamepedia.com/Gamepedia_Help_Wiki:Discord_verification",
+        "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Viki profiline Discord etiketi eklemek için [bu rehberi]($1) oku:",
         "help_subpage": "Lütfen vikideki Discord alt sayfana Discord etiketini ($1) ekle:",
         "missing": "kanalda halihazırda bir doğrulama yok.",

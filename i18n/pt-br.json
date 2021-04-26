@@ -359,7 +359,8 @@
                     "desc": "Vou alterar a contagem mínima de edições para a verificação da wiki."
                 },
                 "postcount": {
-                    "cmd": "verification <id> postcount <nova contagem de posts>"
+                    "cmd": "verification <id> postcount <nova contagem de posts>",
+                    "desc": "Vou mudar a contagem mínima de postagens de discussões para a verificação da wiki.\n\t• Forneça um número negativo para exigir a edição ou a contagem de postagens.\n\t• Forneça `null` para verificar a combinação de edição e contagem de postagens."
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
@@ -770,7 +771,7 @@
         "failed_roles": "**A adição de cargos falhou!**",
         "footer": "Verificação de conta da wiki",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.fandom.com/pt/wiki/Ajuda para Wikis da Gamepedia:Verificação do Discord",
+        "help_gamepedia": "https://help.fandom.com/pt/wiki/Ajuda_para_Wikis_da_Gamepedia:Verificação_do_Discord",
         "help_guide": "Siga [esse guia]($1) para associar seu nome de usuário do Discord ao seu usuário na wiki:",
         "help_subpage": "Adicione seu nome de usuário do Discord ($1) para sua subpágina do Discord na wiki:",
         "missing": "não há verificações configuradas para este canal.",

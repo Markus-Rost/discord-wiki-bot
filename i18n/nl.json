@@ -133,7 +133,7 @@
         "image": "Bekijk afbeelding",
         "main": "Discussies",
         "post": "bericht",
-        "votes": "$1 {{PLURAL:$2|stem|stemmen}}"
+        "votes": "$1 {{PLURAL:$2|stem|stemmen}} ($3%)"
     },
     "fallback": [
         "en",
