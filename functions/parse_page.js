@@ -94,8 +94,8 @@ const removeClassesExceptions = [
  */
 function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, missing, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
-	if ( !msg?.showEmbed?.() || missing !== undefined || embed.description ) {
-		if ( missing !== undefined ) {
+	if ( !msg?.showEmbed?.() || missing !== undefined || !embed || embed.description ) {
+		if ( missing !== undefined && embed ) {
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
