@@ -100,13 +100,13 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			}, dberror => {
 				console.log( '- Error while getting the settings: ' + dberror );
 			} ).then( () => {
+				var text = '';
+				var embed = null;
 				if ( msg.showEmbed() ) {
-					var text = '';
-					var embed = new MessageEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channeldetails[0], channeldetails[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelrole[0], channelrole[1] ).addField( channelinline[0], channelinline[1] );
+					embed = new MessageEmbed().addField( channelguild[0], channelguild[1] ).addField( channelname[0], channelname[1] ).addField( channeldetails[0], channeldetails[1] ).addField( channelpermissions[0], channelpermissions[1] ).addField( channellang[0], channellang[1] ).addField( channelwiki[0], channelwiki[1] ).addField( channelrole[0], channelrole[1] ).addField( channelinline[0], channelinline[1] );
 				}
 				else {
-					var embed = {};
-					var text = channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channeldetails.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelrole.join(' ') + '\n' + channelinline.join(' ');
+					text += channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channeldetails.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelrole.join(' ') + '\n' + channelinline.join(' ');
 				}
 				msg.sendChannel( text, {embed}, true );
 			} );
@@ -131,14 +131,10 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			} );
 			if ( guilds.length ) guildlist[1] = guilds.join('\n');
 			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length;
-			if ( msg.showEmbed() ) {
-				var text = '';
-				var embed = new MessageEmbed().setThumbnail( user.displayAvatarURL({dynamic:true}) ).addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
-			}
-			else {
-				var embed = {};
-				var text = username.join(' ') + '\n' + guildlist.join('\n');
-			}
+			var text = '';
+			var embed = null;
+			if ( msg.showEmbed() ) embed = new MessageEmbed().setThumbnail( user.displayAvatarURL({dynamic:true}) ).addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
+			else text += username.join(' ') + '\n' + guildlist.join('\n');
 			return msg.sendChannel( text, {embed}, true );
 		}
 		

@@ -16,8 +16,14 @@ darkTheme.onclick = function() {
 	lightTheme.removeAttribute('style');
 };
 document.getElementById('theme-separator').removeAttribute('style');
-if ( currentTheme === 'light' ) darkTheme.removeAttribute('style');
-else lightTheme.removeAttribute('style');
+if ( currentTheme === 'light' ) {
+	darkTheme.removeAttribute('style');
+	document.documentElement.classList.add('theme-light');
+}
+else {
+	lightTheme.removeAttribute('style');
+	document.documentElement.classList.remove('theme-light');
+}
 
 var currentLang = ( document.cookie.split('; ').find( cookie => {
 	return cookie.split('=')[0] === 'language' && /^"[a-z\-]+"$/.test(( cookie.split('=')[1] || '' ));

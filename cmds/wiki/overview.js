@@ -86,14 +86,13 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		
 		var title = body.query.pages['-1'].title;
 		var pagelink = wiki.toLink(title);
-		
+		var text = '<' + pagelink + '>';
+		var embed = null;
 		if ( msg.showEmbed() ) {
-			var text = '<' + pagelink + '>';
-			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 		}
 		else {
-			var embed = {};
-			var text = '<' + pagelink + '>\n';
+			text += '\n';
 		}
 		
 		var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
