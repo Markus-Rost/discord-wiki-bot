@@ -303,7 +303,11 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( !ignoredTag ) {
 				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
 				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
-				else text += escapeFormatting(htmltext, ...escapeArgs);
+				else {
+					htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
+					if ( text.endsWith( ' ' ) && htmltext.startsWith( ' ' ) ) text = text.replace( / +$/, '' );
+					text += escapeFormatting(htmltext, ...escapeArgs);
+				}
 			}
 		},
 		onclosetag: (tagname) => {
