@@ -296,9 +296,9 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
-				href = new URL(attribs.href, pagelink).href;
-				if ( text.endsWith( '](<' + href.replace( /[()]/g, '\\$&' ) + '>)' ) ) {
-					text = text.substring(0, text.length - ( href.replace( /[()]/g, '\\$&' ).length + 5 ));
+				href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
+				if ( text.endsWith( '](<' + href + '>)' ) ) {
+					text = text.substring(0, text.length - ( href.length + 5 ));
 				}
 				else text += '[';
 			}
@@ -347,7 +347,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && href ) {
 				if ( text.endsWith( '[' ) ) text = text.substring(0, text.length - 1);
-				else text += '](<' + href.replace( /[()]/g, '\\$&' ) + '>)';
+				else text += '](<' + href + '>)';
 				href = '';
 			}
 		},
