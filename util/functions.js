@@ -163,7 +163,11 @@ function htmlToPlain(html) {
 			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
 		},
 		ontext: (htmltext) => {
-			if ( !ignoredTag ) text += escapeFormatting(htmltext);
+			if ( !ignoredTag ) {
+				htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
+				if ( text.endsWith( ' ' ) && htmltext.startsWith( ' ' ) ) htmltext = htmltext.replace( /^ +/, '' );
+				text += escapeFormatting(htmltext);
+			}
 		},
 		onclosetag: (tagname) => {
 			if ( tagname === ignoredTag ) ignoredTag = '';
@@ -305,7 +309,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
 				else {
 					htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
-					if ( text.endsWith( ' ' ) && htmltext.startsWith( ' ' ) ) text = text.replace( / +$/, '' );
+					if ( text.endsWith( ' ' ) && htmltext.startsWith( ' ' ) ) htmltext = htmltext.replace( /^ +/, '' );
 					text += escapeFormatting(htmltext, ...escapeArgs);
 				}
 			}
