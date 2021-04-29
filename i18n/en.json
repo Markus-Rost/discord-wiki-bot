@@ -393,7 +393,9 @@
     },
     "interaction": {
         "inline": "Please provide some text with [[wikitext]] links to use this command.",
-        "missingrole": "You need to have the $1 role or any higher one to use this command."
+        "missingrole": "You need to have the $1 role or any higher one to use this command.",
+        "nowiki": "The used wiki doesn't exist!",
+        "verify": "Please provide your wiki username to use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
     },
     "invite": {
         "bot": "Use this link to invite me to another server:"

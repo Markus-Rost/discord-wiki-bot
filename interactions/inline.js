@@ -1,6 +1,6 @@
 const logging = require('../util/logging.js');
 const Wiki = require('../util/wiki.js');
-const {limitLength, partialURIdecode, allowDelete} = require('../util/functions.js');
+const {limitLength, partialURIdecode, sendMessage} = require('../util/functions.js');
 
 /**
  * Post a message with inline wiki links.
@@ -281,22 +281,6 @@ function slash_inline(interaction, lang, wiki, channel) {
 			}
 			return sendMessage(interaction, message, channel);
 		} );
-	}, log_error );
-}
-
-/**
- * Sends an interaction response.
- * @param {Object} interaction - The interaction.
- * @param {Object} message - The message.
- * @param {String} message.content - The message content.
- * @param {{parse: String[], roles?: String[]}} message.allowed_mentions - The allowed mentions.
- * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
- */
-function sendMessage(interaction, message, channel) {
-	return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').patch( {
-		data: message
-	} ).then( msg => {
-		if ( channel ) allowDelete(channel.messages.add(msg), ( interaction.member?.user.id || interaction.user.id ));
 	}, log_error );
 }
 

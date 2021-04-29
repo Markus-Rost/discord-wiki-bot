@@ -20,17 +20,17 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		return;
 	}
 	
-	var username = args.join(' ').replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0].substring(0, 250).trim();
-	if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/.test(username) ) {
-		username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?wiki\/)/, '' ) );
-	}
-	if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:/i, '' );
-	
 	db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'] ).then( ({rows}) => {
 		if ( !rows.length ) {
 			if ( msg.onlyVerifyCommand ) return;
 			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + 'verification`' : '' ) );
 		}
+	
+		var username = args.join(' ').replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0].substring(0, 250).trim();
+		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
+			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
+		}
+		if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:\s*/i, '' );
 		
 		if ( !username.trim() ) {
 			args[0] = line.split(' ')[0];
@@ -38,14 +38,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			return this.help(lang, msg, args, line, wiki);
 		}
 		msg.reactEmoji('⏳').then( reaction => {
-			verify(lang, msg, username, wiki, rows).then( result => {
-				if ( result.reaction ) {
-					if ( result.content ) msg.replyMsg( result.content, result.options, false, false ).then( message => {
-						if ( message ) message.reactEmoji(result.reaction);
-					} );
-					else msg.reactEmoji(result.reaction);
-				}
-				else msg.replyMsg( result.content, result.options, false, false );
+			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
+				if ( result.reaction ) msg.reactEmoji(result.reaction);
+				else msg.replyMsg( result.content, {embed: result.embed}, false, false );
 				if ( reaction ) reaction.removeEmoji();
 			}, error => {
 				console.log( '- Error during the verifications: ' + error );

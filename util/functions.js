@@ -165,7 +165,7 @@ function htmlToPlain(html) {
 		ontext: (htmltext) => {
 			if ( !ignoredTag ) {
 				htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
-				if ( text.endsWith( ' ' ) && htmltext.startsWith( ' ' ) ) htmltext = htmltext.replace( /^ +/, '' );
+				if ( /[\n ]$/.test(text) && htmltext.startsWith( ' ' ) ) htmltext = htmltext.replace( /^ +/, '' );
 				text += escapeFormatting(htmltext);
 			}
 		},
@@ -309,7 +309,9 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
 				else {
 					htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
-					if ( text.endsWith( ' ' ) && htmltext.startsWith( ' ' ) ) htmltext = htmltext.replace( /^ +/, '' );
+					if ( /[\n ]$/.test(text) && htmltext.startsWith( ' ' ) ) {
+						htmltext = htmltext.replace( /^ +/, '' );
+					}
 					text += escapeFormatting(htmltext, ...escapeArgs);
 				}
 			}
@@ -429,6 +431,22 @@ function allowDelete(msg, author) {
 	} );
 };
 
+/**
+ * Sends an interaction response.
+ * @param {Object} interaction - The interaction.
+ * @param {Object} message - The message.
+ * @param {String} message.content - The message content.
+ * @param {{parse: String[], roles?: String[]}} message.allowed_mentions - The allowed mentions.
+ * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
+ */
+function sendMessage(interaction, message, channel) {
+	return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').patch( {
+		data: message
+	} ).then( msg => {
+		if ( channel ) allowDelete(channel.messages.add(msg), ( interaction.member?.user.id || interaction.user.id ));
+	}, log_error );
+};
+
 module.exports = {
 	got,
 	parse_infobox,
@@ -440,5 +458,6 @@ module.exports = {
 	escapeFormatting,
 	limitLength,
 	partialURIdecode,
-	allowDelete
+	allowDelete,
+	sendMessage
 };

@@ -6,18 +6,18 @@ const toTitle = require('../util/wiki.js').toTitle;
 /**
  * Processes the "verify" command.
  * @param {import('../util/i18n.js')} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').TextChannel} channel - The Discord channel.
+ * @param {import('discord.js').GuildMember} member - The Discord guild member.
  * @param {String} username - The username.
  * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  * @param {Object[]} rows - The verification settings.
  * @param {String} [old_username] - The username before the search.
- * @returns {Promise<{content:String,options:Object,reaction:String}>}
+ * @returns {Promise<{content:String,embed:MessageEmbed,reaction:String}>}
  */
-function verify(lang, msg, username, wiki, rows, old_username = '') {
+function verify(lang, channel, member, username, wiki, rows, old_username = '') {
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	var result = {
-		content: '',
-		options: {embed},
+		content: '', embed,
 		reaction: ''
 	};
 	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
@@ -29,7 +29,7 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 				result.reaction = 'nowiki';
 			}
 			else if ( body?.error?.code === 'us400' ) { // special catch for Fandom
-				if ( !old_username ) logging(wiki, msg.guild?.id, 'verification');
+				if ( !old_username ) logging(wiki, channel.guild.id, 'verification');
 				embed.setTitle( ( old_username || username ).escapeFormatting() ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', ( old_username || username ).escapeFormatting()) );
 				result.content = lang.get('verify.user_missing_reply', ( old_username || username ).escapeFormatting());
 			}
@@ -37,12 +37,11 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 				console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
-				result.reaction = 'error';
 			}
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		if ( !old_username ) logging(wiki, msg.guild?.id, 'verification');
+		if ( !old_username ) logging(wiki, channel.guild.id, 'verification');
 		var queryuser = body.query.users[0];
 		embed.setAuthor( body.query.general.sitename );
 		if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
@@ -55,7 +54,7 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 					result.content = lang.get('verify.user_missing_reply', username.escapeFormatting());
 					return;
 				}
-				return verify(lang, msg, wsbody.users[0].name.split(' '), wiki, rows, username);
+				return verify(lang, channel, member, wsbody.users[0].name.split(' '), wiki, rows, username);
 			}, error => {
 				console.log( '- Error while searching the user: ' + error );
 				result.content = lang.get('verify.user_missing_reply', username.escapeFormatting());
@@ -126,12 +125,13 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 				return Promise.reject();
 			} ).then( () => {
 				if ( discordname.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
-				embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
-				if ( msg.author.tag.escapeFormatting() !== discordname ) {
-					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
+				var authortag = member.user.tag.escapeFormatting();
+				embed.addField( lang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), authortag, true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
+				if ( authortag !== discordname ) {
+					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
 					var help_link = '';
-					if ( wiki.isGamepedia() ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( patreons[msg.guild.id] && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + toTitle(username) + '&discord=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator;
-					else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + toTitle(username) + '?c=' + ( patreons[msg.guild.id] && patreons[msg.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[msg.guild.id] + ' verify' ) : 'wb' ) + ( msg.channel.name !== 'verification' ? '&ch=' + encodeURIComponent( msg.channel.name ) : '' ) + '&user=' + encodeURIComponent( msg.author.username ) + '&tag=' + msg.author.discriminator + '&useskin=oasis';
+					if ( wiki.isGamepedia() ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( patreons[channel.guild.id] && patreons[channel.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[channel.guild.id] + ' verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + toTitle(username) + '&discord=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator;
+					else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + toTitle(username) + '?c=' + ( patreons[channel.guild.id] && patreons[channel.guild.id] !== process.env.prefix ? encodeURIComponent( patreons[channel.guild.id] + ' verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=oasis';
 					if ( help_link.length ) embed.addField( lang.get('verify.notice'), lang.get('verify.help_guide', help_link, queryuser.gender) + '\n' + help_link );
 					result.content = lang.get('verify.user_failed_reply', username.escapeFormatting(), queryuser.gender);
 					return;
@@ -157,31 +157,31 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 						if ( row.rename ) rename = true;
 						row.role.split('|').forEach( role => {
 							if ( !roles.includes( role ) ) {
-								if ( msg.guild.roles.cache.has(role) && msg.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
+								if ( channel.guild.roles.cache.has(role) && channel.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
 								else if ( !missing.includes( role ) ) missing.push(role);
 							}
 						} );
 					}
 				} );
 				if ( verified ) {
-					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
+					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 					var text = lang.get('verify.user_verified_reply', username.escapeFormatting(), queryuser.gender);
 					var verify_promise = [
-						msg.member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
+						member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
 							log_error(error);
 							embed.setColor('#008800');
 							comment.push(lang.get('verify.failed_roles'));
 						} )
 					];
 					if ( rename ) {
-						verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
+						verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
 							log_error(error);
 							embed.setColor('#008800');
 							comment.push(lang.get('verify.failed_rename', queryuser.gender));
 						} ));
 					}
 					return Promise.all(verify_promise).finally( () => {
-						if ( msg.showEmbed() ) {
+						if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) {
 							if ( roles.length ) embed.addField( lang.get('verify.qualified'), roles.map( role => '<@&' + role + '>' ).join('\n') );
 							if ( missing.length ) embed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
 							if ( comment.length ) embed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
@@ -192,17 +192,15 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 							if ( comment.length ) text += '\n\n' + comment.join('\n');
 						}
 						result.content = text;
-						result.options.split = true;
 					} );
 				}
 				
-				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
+				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
 				result.content = lang.get('verify.user_matches_reply', username.escapeFormatting(), queryuser.gender);
 			}, error => {
 				if ( error ) console.log( '- Error while getting the Discord tag: ' + error );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
-				result.reaction = 'error';
 			} );
 		}, error => {
 			embed.setColor('#FF0000').setDescription( error.desc );
@@ -216,7 +214,6 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 				console.log( '- ' + mwresponse.statusCode + ': Error while getting the Discord tag: ' + ( mwbody && mwbody.error && mwbody.error.info ) );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
-				result.reaction = 'error';
 				return;
 			}
 			if ( wiki.hasCentralAuth() ) {
@@ -234,10 +231,11 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 				discordname = ( revision?.slots?.main || revision )['*'].escapeFormatting().replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 			}
 			if ( discordname.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
-			embed.addField( lang.get('verify.discord', ( msg.author.tag.escapeFormatting() === discordname ? queryuser.gender : 'unknown' )), msg.author.tag.escapeFormatting(), true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
-			if ( msg.author.tag.escapeFormatting() !== discordname ) {
-				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
-				embed.addField( lang.get('verify.notice'), lang.get('verify.help_subpage', '**`' + msg.author.tag + '`**', queryuser.gender) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit') );
+			var authortag = member.user.tag.escapeFormatting();
+			embed.addField( lang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), authortag, true ).addField( lang.get('verify.wiki', queryuser.gender), ( discordname || lang.get('verify.empty') ), true );
+			if ( authortag !== discordname ) {
+				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
+				embed.addField( lang.get('verify.notice'), lang.get('verify.help_subpage', '**`' + member.user.tag + '`**', queryuser.gender) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit') );
 				result.content = lang.get('verify.user_failed_reply', username.escapeFormatting(), queryuser.gender);
 				return;
 			}
@@ -258,31 +256,31 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 					if ( row.rename ) rename = true;
 					row.role.split('|').forEach( role => {
 						if ( !roles.includes( role ) ) {
-							if ( msg.guild.roles.cache.has(role) && msg.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
+							if ( channel.guild.roles.cache.has(role) && channel.guild.me.roles.highest.comparePositionTo(role) > 0 ) roles.push(role);
 							else if ( !missing.includes( role ) ) missing.push(role);
 						}
 					} );
 				}
 			} );
 			if ( verified ) {
-				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
+				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', username.escapeFormatting(), queryuser.gender);
 				var verify_promise = [
-					msg.member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
+					member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
 						log_error(error);
 						embed.setColor('#008800');
 						comment.push(lang.get('verify.failed_roles'));
 					} )
 				];
 				if ( rename ) {
-					verify_promise.push(msg.member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
+					verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
 						log_error(error);
 						embed.setColor('#008800');
 						comment.push(lang.get('verify.failed_rename', queryuser.gender));
 					} ));
 				}
 				return Promise.all(verify_promise).finally( () => {
-					if ( msg.showEmbed() ) {
+					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) {
 						if ( roles.length ) embed.addField( lang.get('verify.qualified'), roles.map( role => '<@&' + role + '>' ).join('\n') );
 						if ( missing.length ) embed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
 						if ( comment.length ) embed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
@@ -293,23 +291,20 @@ function verify(lang, msg, username, wiki, rows, old_username = '') {
 						if ( comment.length ) text += '\n\n' + comment.join('\n');
 					}
 					result.content = text;
-					result.options.split = true;
 				} );
 			}
 			
-			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', msg.member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
+			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + username.escapeFormatting() + '](' + pagelink + ')', queryuser.gender) );
 			result.content = lang.get('verify.user_matches_reply', username.escapeFormatting(), queryuser.gender);
 		}, error => {
 			console.log( '- Error while getting the Discord tag: ' + error );
 			embed.setColor('#000000').setDescription( lang.get('verify.error') );
 			result.content = lang.get('verify.error_reply');
-			result.reaction = 'error';
 		} );
 	}, error => {
 		console.log( '- Error while getting the user: ' + error );
 		embed.setColor('#000000').setDescription( lang.get('verify.error') );
 		result.content = lang.get('verify.error_reply');
-		result.reaction = 'error';
 	} ).then( () => {
 		return result;
 	} );

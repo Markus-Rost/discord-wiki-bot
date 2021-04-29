@@ -204,7 +204,7 @@ fs.readdir( './interactions', (error, files) => {
 	} );
 } );
 /*
-!test eval client.api.applications(client.user.id).commands.post( {
+!test eval msg.client.api.applications(msg.client.user.id).commands.post( {
 	data: require('../interactions/commands.json')[0]
 } )
 */
@@ -230,6 +230,7 @@ client.ws.on( 'INTERACTION_CREATE', interaction => {
 	if ( !interaction.guild_id ) {
 		return slash[interaction.data.name](interaction, new Lang(), new Wiki(), channel);
 	}
+	else interaction.user = interaction.member.user;
 	db.query( 'SELECT wiki, lang, role FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
 		var lang = new Lang(( row?.lang || channel?.guild?.preferredLocale ));
 		if ( row?.role && !interaction.member.roles.includes( row.role ) && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
