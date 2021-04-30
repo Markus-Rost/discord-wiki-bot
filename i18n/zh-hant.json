@@ -394,7 +394,8 @@
     },
     "interaction": {
         "inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
-        "missingrole": "您需要擁有 $1 身分組或更高的身分組以使用此指令。"
+        "missingrole": "您需要擁有 $1 身分組或更高的身分組以使用此指令。",
+        "verify": "為了驗證您的Discord與您的wiki帳號的關聯，並授予與您wiki帳號相符的身分組，請提供您的wiki使用者名稱。"
     },
     "invite": {
         "bot": "使用這個連結把我加入到其他伺服器："
@@ -683,6 +684,10 @@
     },
     "user": {
         "block": {
+            "duration": {
+                "days": "$1 天",
+                "hours": "$1 小時"
+            },
             "header": "$1 目前正被封鎖！"
         },
         "gblock": {
@@ -779,7 +784,7 @@
         "user_blocked": "**Wiki 使用者 $1 已被封鎖！**",
         "user_blocked_reply": "您連接的 wiki 使用者**“$1”已被封鎖！**",
         "user_disabled": "**Wiki 使用者 $1 已被停用！**",
-        "user_disabled_reply": "您連接的 wiki 使用者**“$1”已被禁用！**",
+        "user_disabled_reply": "您連接的 wiki 使用者**“$1”已被停用！**",
         "user_failed": "Discord 使用者 $1 不和 wiki 使用者 $2 對應。",
         "user_failed_reply": "您的 Discord 使用者名不和“$1”的對應。",
         "user_gblocked": "**Wiki 使用者 $1 已被全域封鎖！**",
