@@ -1,6 +1,7 @@
 const help_setup = require('../functions/helpsetup.js');
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
+const slashCommand = require('../interactions/commands.json').find( slashCommand => slashCommand.name === 'verify' );
 
 /**
  * Processes the "verification" command.
@@ -48,6 +49,21 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			}
 			return db.query( 'INSERT INTO verification(guild, configid, channel, role) VALUES($1, $2, $3, $4)', [msg.guild.id, new_configid, '|' + msg.channel.id + '|', roles] ).then( () => {
 				console.log( '- Verification successfully added.' );
+				if ( !rows.length && slashCommand?.id ) msg.client.api.applications(msg.client.user.id).guilds(msg.guild.id).commands(slashCommand.id).permissions.put( {
+					data: {
+						permissions: [
+							{
+								id: msg.guild.id,
+								type: 1,
+								permission: true
+							}
+						]
+					}
+				} ).then( () => {
+					console.log( '- Slash command successfully enabled.' );
+				}, error => {
+					console.log( '- Error while enabling the slash command: ' + error );
+				} );
 				msg.replyMsg( lang.get('verification.added') + formatVerification(false, false, {configid: new_configid, role: roles}), {}, true );
 			}, dberror => {
 				console.log( '- Error while adding the verification: ' + dberror );
@@ -78,6 +94,15 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 			return db.query( 'DELETE FROM verification WHERE guild = $1 AND configid = $2', [msg.guild.id, row.configid] ).then( () => {
 				console.log( '- Verification successfully removed.' );
+				if ( rows.length === 1 && slashCommand?.id ) msg.client.api.applications(msg.client.user.id).guilds(msg.guild.id).commands(slashCommand.id).permissions.put( {
+					data: {
+						permissions: []
+					}
+				} ).then( () => {
+					console.log( '- Slash command successfully disabled.' );
+				}, error => {
+					console.log( '- Error while disabling the slash command: ' + error );
+				} );
 				msg.replyMsg( lang.get('verification.deleted'), {}, true );
 			}, dberror => {
 				console.log( '- Error while removing the verification: ' + dberror );

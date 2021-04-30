@@ -1,5 +1,7 @@
 [
 	{
+		"id": "",
+		"application_id": "",
 		"name": "inline",
 		"description": "Post a message with inline wiki links.",
 		"default_permission": true,
@@ -13,6 +15,8 @@
 		]
 	},
 	{
+		"id": "",
+		"application_id": "",
 		"name": "verify",
 		"description": "Verify your Discord account with your wiki account.",
 		"default_permission": false,

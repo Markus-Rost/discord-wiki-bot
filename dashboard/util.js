@@ -12,6 +12,30 @@ db.on( 'error', dberror => {
 	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
 
+got.get( 'https://discord.com/api/v8/applications/' + process.env.bot + '/commands', {
+	headers:{
+		Authorization: 'Bot ' + process.env.token
+	},
+	timeout: 10000
+} ).then( response=> {
+	if ( response.statusCode !== 200 || !response.body ) {
+		console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the global slash commands: ' + response.body?.message );
+		return;
+	}
+	console.log( '- Dashboard: Slash commands successfully loaded.' );
+	const slashCommands = require('../interactions/commands.json');
+	response.body.forEach( command => {
+		var slashCommand = slashCommands.find( slashCommand => slashCommand.name === command.name );
+		if ( slashCommand ) {
+			slashCommand.id = command.id;
+			slashCommand.application_id = command.application_id;
+		}
+		else slashCommands.push(slashCommand);
+	} );
+}, error => {
+	console.log( '- Dashboard: Error while getting the global slash commands: ' + error );
+} );
+
 /**
  * @typedef Settings
  * @property {String} state

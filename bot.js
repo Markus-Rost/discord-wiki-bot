@@ -61,6 +61,21 @@ const client = new Discord.Client( {
 	}
 } );
 
+client.api.applications(process.env.bot).commands.get().then( response => {
+	console.log( '- ' + shardId + ': Slash commands successfully loaded.' );
+	const slashCommands = require('./interactions/commands.json');
+	response.forEach( command => {
+		var slashCommand = slashCommands.find( slashCommand => slashCommand.name === command.name );
+		if ( slashCommand ) {
+			slashCommand.id = command.id;
+			slashCommand.application_id = command.application_id;
+		}
+		else slashCommands.push(slashCommand);
+	} );
+}, error => {
+	console.log( '- ' + shardId + ': Error while getting the global slash commands: ' + error );
+} );
+
 global.pause = {};
 var isStop = false;
 client.on( 'ready', () => {
@@ -377,9 +392,9 @@ client.on( 'warn', warning => log_warn(warning, false) );
 
 client.login(process.env.token).catch( error => {
 	log_error(error, true, 'LOGIN-');
-	client.login(process.env.token).catch( error => {
+	return client.login(process.env.token).catch( error => {
 		log_error(error, true, 'LOGIN-');
-		client.login(process.env.token).catch( error => {
+		return client.login(process.env.token).catch( error => {
 			log_error(error, true, 'LOGIN-');
 			process.exit(1);
 		} );
