@@ -4,7 +4,7 @@
         "Dianliang233",
         "Leo_768",
         "Winston_Sung",
-        " ",
+        "lakejason0",
         " ",
         " ",
         " ",
@@ -117,9 +117,10 @@
         "hidden": "*隱藏*",
         "info": {
             "added": "增加：",
-            "bytes": "$1 b",
+            "bytes": "$1位元$3",
             "comment": "摘要：",
             "editor": "編輯者：",
+            "minor": "（小）",
             "more": "更多",
             "removed": "移除：",
             "size": "差異：",
@@ -388,12 +389,14 @@
                 "desc": "我將返回特定的 org 域名下的 wiki 的指定頁面的連結：`https://<wiki>.wikia.org/`"
             }
         },
-        "noadmin": "這個指令僅限擁有 `管理員` 權限的使用者使用！",
+        "noadmin": "這個指令僅限擁有`管理伺服器`權限的使用者使用！",
         "pause": "**我目前處於暫停狀態！**\n僅能使用以下指令："
     },
     "interaction": {
         "inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
-        "missingrole": "您需要擁有 $1 身分組或更高的身分組以使用此指令。"
+        "missingrole": "您需要擁有 $1 身分組或更高的身分組以使用此指令。",
+        "nowiki": "所使用的wiki不存在！",
+        "verify": "為了能透過您的wiki帳號驗證您的Discord帳號與並授予與您wiki帳號相符的身分組，請提供您的wiki使用者名稱以使用此指令。"
     },
     "invite": {
         "bot": "使用這個連結把我加入到其他伺服器："
@@ -682,10 +685,24 @@
     },
     "user": {
         "block": {
-            "header": "$1 目前正被封鎖！"
+            "duration": {
+                "days": "$1 天",
+                "hours": "$1 小時",
+                "minutes": "$1 分鐘",
+                "months": "$1 個月",
+                "separator": "_",
+                "separator_last": "_",
+                "weeks": "$1 週",
+                "years": "$1 年"
+            },
+            "header": "$1 目前正被封鎖！",
+            "indef_noreason": "於 $1 由 $4 無限期封鎖。",
+            "indef_text": "於 $1 被 $4 因「$5」無限期封鎖。",
+            "noreason": "於 $1 被 $4 封鎖 $2 至 $3。",
+            "text": "因「$5」於 $1 被 $4 封鎖 $2 至 $3。"
         },
         "gblock": {
-            "disabled": "此賬戶目前正被禁用！",
+            "disabled": "此帳號目前正被停用！",
             "header": "$1 目前正被全域封鎖！"
         },
         "gender": {
@@ -766,7 +783,7 @@
         "failed_gblock": "** 全域封鎖檢查失敗！**",
         "failed_rename": "** 變更暱稱失敗！**",
         "failed_roles": "** 添加身分組失敗！**",
-        "footer": "Wiki 賬戶驗證",
+        "footer": "Wiki 帳號驗證",
         "help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/zh/wiki/Gamepedia帮助Wiki:Discord验证",
         "help_guide": "請根據[此指導]($1)來添加您的 Discord 使用者名至您的 wiki 資料頁：",
@@ -777,8 +794,8 @@
         "qualified_error": "符合，但無法添加：",
         "user_blocked": "**Wiki 使用者 $1 已被封鎖！**",
         "user_blocked_reply": "您連接的 wiki 使用者**“$1”已被封鎖！**",
-        "user_disabled": "**Wiki 使用者 $1 已被禁用！**",
-        "user_disabled_reply": "您連接的 wiki 使用者**“$1”已被禁用！**",
+        "user_disabled": "**Wiki 使用者 $1 已被停用！**",
+        "user_disabled_reply": "您連接的 wiki 使用者**“$1”已被停用！**",
         "user_failed": "Discord 使用者 $1 不和 wiki 使用者 $2 對應。",
         "user_failed_reply": "您的 Discord 使用者名不和“$1”的對應。",
         "user_gblocked": "**Wiki 使用者 $1 已被全域封鎖！**",

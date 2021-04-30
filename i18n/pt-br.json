@@ -117,9 +117,10 @@
         "hidden": "*oculto*",
         "info": {
             "added": "Adicionado:",
-            "bytes": "$1 {{PLURAL:$2|byte|bytes}}",
+            "bytes": "$1 {{PLURAL:$2|byte|bytes}} $3",
             "comment": "Resumo:",
             "editor": "Editor:",
+            "minor": "(m)",
             "more": "E mais",
             "removed": "Removido:",
             "size": "Diferença:",
@@ -393,7 +394,9 @@
     },
     "interaction": {
         "inline": "Forneça algum texto com links de [[wikitexto]] para usar este comando.",
-        "missingrole": "Você precisa ter o cargo $1 ou qualquer superior para usar este comando."
+        "missingrole": "Você precisa ter o cargo $1 ou qualquer superior para usar este comando.",
+        "nowiki": "A wiki utilizada não existe!",
+        "verify": "Por favor, forneça o seu nome de usuário na wiki para usar este comando e verificar a sua conta do Discord com a sua conta da wiki e obter cargos correspondentes à sua conta da wiki."
     },
     "invite": {
         "bot": "Use este link para me convidar para outro servidor:"
@@ -682,7 +685,21 @@
     },
     "user": {
         "block": {
-            "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}}!"
+            "duration": {
+                "days": "$1 {{PLURAL:$2|dia|dias}}",
+                "hours": "$1 {{PLURAL:$2|hora|horas}}",
+                "minutes": "$1 {{PLURAL:$2|minuto|minutos}}",
+                "months": "$1 {{PLURAL:$2|mês|meses}}",
+                "separator": ",_",
+                "separator_last": "_e_",
+                "weeks": "$1 {{PLURAL:$2|semana|semanas}}",
+                "years": "$1 {{PLURAL:$2|ano|anos}}"
+            },
+            "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}}!",
+            "indef_noreason": "Bloqueado indefinidamente por $4, em $1.",
+            "indef_text": "Bloqueado indefinidamente por $4, em $1, com motivo \"$5\".",
+            "noreason": "Bloqueado por $4 em $1 por $2, até $3.",
+            "text": "Bloqueado por $4 em $1 por $2, até $3, com motivo \"$5\"."
         },
         "gblock": {
             "disabled": "Esta conta está desativada no momento!",
@@ -772,7 +789,7 @@
         "help_guide": "Siga [esse guia]($1) para associar seu nome de usuário do Discord ao seu usuário na wiki:",
         "help_subpage": "Adicione seu nome de usuário do Discord ($1) para sua subpágina do Discord na wiki:",
         "missing": "não há verificações configuradas para este canal.",
-        "notice": "Aviso:",
+        "notice": "Atenção:",
         "qualified": "Qualificado para o cargo:",
         "qualified_error": "Não foi possível adicionar, mas está qualificado para o cargo:",
         "user_blocked": "**{{GENDER:$2|O usuário|A usuária}} $1 está {{GENDER:$2|bloqueado|bloqueada}} na wiki!**",
