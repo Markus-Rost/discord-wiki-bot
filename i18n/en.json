@@ -686,14 +686,14 @@
     "user": {
         "block": {
             "duration": {
-                "days": "$1 {{PLURAL:$1|day|days}}",
-                "hours": "$1 {{PLURAL:$1|hour|hours}}",
-                "minutes": "$1 {{PLURAL:$1|minute|minutes}}",
-                "months": "$1 {{PLURAL:$1|month|months}}",
+                "days": "$1 {{PLURAL:$2|day|days}}",
+                "hours": "$1 {{PLURAL:$2|hour|hours}}",
+                "minutes": "$1 {{PLURAL:$2|minute|minutes}}",
+                "months": "$1 {{PLURAL:$2|month|months}}",
                 "seperator": ",_",
                 "seperator_last": "_and_",
-                "weeks": "$1 {{PLURAL:$1|week|weeks}}",
-                "years": "$1 {{PLURAL:$1|year|years}}"
+                "weeks": "$1 {{PLURAL:$2|week|weeks}}",
+                "years": "$1 {{PLURAL:$2|year|years}}"
             },
             "header": "$1 is currently blocked!",
             "indef_noreason": "Blocked indefinitely on $1 by $4.",

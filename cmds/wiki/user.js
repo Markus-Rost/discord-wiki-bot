@@ -98,9 +98,9 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				let datediff = datetimeDifference(blockedtimestamp, expiry);
 				let seperator = lang.get('user.block.duration.seperator_last').replace( /_/g, ' ' );
 				let last_seperator = true;
-				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes);
+				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes.toLocaleString(lang.get('dateformat')), datediff.minutes);
 				if ( datediff.hours ) {
-					blockduration = lang.get('user.block.duration.hours', datediff.hours) + ( blockduration.length ? seperator + blockduration : '' );
+					blockduration = lang.get('user.block.duration.hours', datediff.hours.toLocaleString(lang.get('dateformat')), datediff.hours) + ( blockduration.length ? seperator + blockduration : '' );
 					if ( last_seperator ) {
 						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
 						last_seperator = false;
@@ -108,14 +108,14 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				if ( datediff.days ) {
 					if ( datediff.days % 7 ) {
-						blockduration = lang.get('user.block.duration.days', datediff.days % 7) + ( blockduration.length ? seperator + blockduration : '' );
+						blockduration = lang.get('user.block.duration.days', ( datediff.days % 7 ).toLocaleString(lang.get('dateformat')), datediff.days % 7) + ( blockduration.length ? seperator + blockduration : '' );
 						if ( last_seperator ) {
 							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
 							last_seperator = false;
 						}
 					}
 					if ( ( datediff.days / 7 ) >> 0 ) {
-						blockduration = lang.get('user.block.duration.weeks', ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? seperator + blockduration : '' );
+						blockduration = lang.get('user.block.duration.weeks', ( ( datediff.days / 7 ) >> 0 ).toLocaleString(lang.get('dateformat')), ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? seperator + blockduration : '' );
 						if ( last_seperator ) {
 							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
 							last_seperator = false;
@@ -123,14 +123,14 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					}
 				}
 				if ( datediff.months ) {
-					blockduration = lang.get('user.block.duration.months', datediff.months) + ( blockduration.length ? seperator + blockduration : '' );
+					blockduration = lang.get('user.block.duration.months', datediff.months.toLocaleString(lang.get('dateformat')), datediff.months) + ( blockduration.length ? seperator + blockduration : '' );
 					if ( last_seperator ) {
 						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
 						last_seperator = false;
 					}
 				}
 				if ( datediff.years ) {
-					blockduration = lang.get('user.block.duration.years', datediff.years) + ( blockduration.length ? seperator + blockduration : '' );
+					blockduration = lang.get('user.block.duration.years', datediff.years.toLocaleString(lang.get('dateformat')), datediff.years) + ( blockduration.length ? seperator + blockduration : '' );
 					if ( last_seperator ) {
 						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
 						last_seperator = false;
