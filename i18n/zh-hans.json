@@ -2,7 +2,7 @@
     "__translator": [
         "机智的小鱼君",
         "Dianliang233",
-        " Lakejason0",
+        "lakejason0",
         " ",
         " ",
         " ",
@@ -689,7 +689,7 @@
                 "days": "$1 天",
                 "hours": "$1 小时",
                 "minutes": "$1 分钟",
-                "months": "$1 月",
+                "months": "$1 个月",
                 "separator": "_",
                 "separator_last": "_",
                 "weeks": "$1 周",
