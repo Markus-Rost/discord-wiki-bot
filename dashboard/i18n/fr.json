@@ -9,7 +9,7 @@
     "general": {
         "botlist": {
             "text": "Aidez d'autres utilisateurs à trouver Wiki-Bot en votant sur des listes de bots :",
-            "title": "Listes de bots :"
+            "title": "Listes de bots"
         },
         "delete": "Supprimer",
         "invite": "Inviter Wiki-Bot",
