@@ -96,44 +96,44 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( Date.parse(block.expiry) > Date.now() ) isBlocked = true;
 				let expiry = new Date(block.expiry);
 				let datediff = datetimeDifference(blockedtimestamp, expiry);
-				let seperator = lang.get('user.block.duration.seperator_last').replace( /_/g, ' ' );
-				let last_seperator = true;
+				let separator = lang.get('user.block.duration.separator_last').replace( /_/g, ' ' );
+				let last_separator = true;
 				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes.toLocaleString(lang.get('dateformat')), datediff.minutes);
 				if ( datediff.hours ) {
-					blockduration = lang.get('user.block.duration.hours', datediff.hours.toLocaleString(lang.get('dateformat')), datediff.hours) + ( blockduration.length ? seperator + blockduration : '' );
-					if ( last_seperator ) {
-						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-						last_seperator = false;
+					blockduration = lang.get('user.block.duration.hours', datediff.hours.toLocaleString(lang.get('dateformat')), datediff.hours) + ( blockduration.length ? separator + blockduration : '' );
+					if ( last_separator ) {
+						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						last_separator = false;
 					}
 				}
 				if ( datediff.days ) {
 					if ( datediff.days % 7 ) {
-						blockduration = lang.get('user.block.duration.days', ( datediff.days % 7 ).toLocaleString(lang.get('dateformat')), datediff.days % 7) + ( blockduration.length ? seperator + blockduration : '' );
-						if ( last_seperator ) {
-							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-							last_seperator = false;
+						blockduration = lang.get('user.block.duration.days', ( datediff.days % 7 ).toLocaleString(lang.get('dateformat')), datediff.days % 7) + ( blockduration.length ? separator + blockduration : '' );
+						if ( last_separator ) {
+							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							last_separator = false;
 						}
 					}
 					if ( ( datediff.days / 7 ) >> 0 ) {
-						blockduration = lang.get('user.block.duration.weeks', ( ( datediff.days / 7 ) >> 0 ).toLocaleString(lang.get('dateformat')), ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? seperator + blockduration : '' );
-						if ( last_seperator ) {
-							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-							last_seperator = false;
+						blockduration = lang.get('user.block.duration.weeks', ( ( datediff.days / 7 ) >> 0 ).toLocaleString(lang.get('dateformat')), ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? separator + blockduration : '' );
+						if ( last_separator ) {
+							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							last_separator = false;
 						}
 					}
 				}
 				if ( datediff.months ) {
-					blockduration = lang.get('user.block.duration.months', datediff.months.toLocaleString(lang.get('dateformat')), datediff.months) + ( blockduration.length ? seperator + blockduration : '' );
-					if ( last_seperator ) {
-						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-						last_seperator = false;
+					blockduration = lang.get('user.block.duration.months', datediff.months.toLocaleString(lang.get('dateformat')), datediff.months) + ( blockduration.length ? separator + blockduration : '' );
+					if ( last_separator ) {
+						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						last_separator = false;
 					}
 				}
 				if ( datediff.years ) {
-					blockduration = lang.get('user.block.duration.years', datediff.years.toLocaleString(lang.get('dateformat')), datediff.years) + ( blockduration.length ? seperator + blockduration : '' );
-					if ( last_seperator ) {
-						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-						last_seperator = false;
+					blockduration = lang.get('user.block.duration.years', datediff.years.toLocaleString(lang.get('dateformat')), datediff.years) + ( blockduration.length ? separator + blockduration : '' );
+					if ( last_separator ) {
+						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						last_separator = false;
 					}
 				}
 				blockexpiry = dateformat.format(expiry);
@@ -377,44 +377,44 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				let expiry = new Date(queryuser.blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' ));
 				if ( expiry > Date.now() ) isBlocked = true;
 				let datediff = datetimeDifference(blockedtimestamp, expiry);
-				let seperator = lang.get('user.block.duration.seperator_last').replace( /_/g, ' ' );
-				let last_seperator = true;
-				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes);
+				let separator = lang.get('user.block.duration.separator_last').replace( /_/g, ' ' );
+				let last_separator = true;
+				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes.toLocaleString(lang.get('dateformat')), datediff.minutes);
 				if ( datediff.hours ) {
-					blockduration = lang.get('user.block.duration.hours', datediff.hours) + ( blockduration.length ? seperator + blockduration : '' );
-					if ( last_seperator ) {
-						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-						last_seperator = false;
+					blockduration = lang.get('user.block.duration.hours', datediff.hours.toLocaleString(lang.get('dateformat')), datediff.hours) + ( blockduration.length ? separator + blockduration : '' );
+					if ( last_separator ) {
+						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						last_separator = false;
 					}
 				}
 				if ( datediff.days ) {
 					if ( datediff.days % 7 ) {
-						blockduration = lang.get('user.block.duration.days', datediff.days % 7) + ( blockduration.length ? seperator + blockduration : '' );
-						if ( last_seperator ) {
-							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-							last_seperator = false;
+						blockduration = lang.get('user.block.duration.days', ( datediff.days % 7 ).toLocaleString(lang.get('dateformat')), datediff.days % 7) + ( blockduration.length ? separator + blockduration : '' );
+						if ( last_separator ) {
+							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							last_separator = false;
 						}
 					}
-					else {
-						blockduration = lang.get('user.block.duration.weeks', ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? seperator + blockduration : '' );
-						if ( last_seperator ) {
-							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-							last_seperator = false;
+					if ( ( datediff.days / 7 ) >> 0 ) {
+						blockduration = lang.get('user.block.duration.weeks', ( ( datediff.days / 7 ) >> 0 ).toLocaleString(lang.get('dateformat')), ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? separator + blockduration : '' );
+						if ( last_separator ) {
+							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							last_separator = false;
 						}
 					}
 				}
 				if ( datediff.months ) {
-					blockduration = lang.get('user.block.duration.months', datediff.months) + ( blockduration.length ? seperator + blockduration : '' );
-					if ( last_seperator ) {
-						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-						last_seperator = false;
+					blockduration = lang.get('user.block.duration.months', datediff.months.toLocaleString(lang.get('dateformat')), datediff.months) + ( blockduration.length ? separator + blockduration : '' );
+					if ( last_separator ) {
+						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						last_separator = false;
 					}
 				}
 				if ( datediff.years ) {
-					blockduration = lang.get('user.block.duration.years', datediff.years) + ( blockduration.length ? seperator + blockduration : '' );
-					if ( last_seperator ) {
-						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
-						last_seperator = false;
+					blockduration = lang.get('user.block.duration.years', datediff.years.toLocaleString(lang.get('dateformat')), datediff.years) + ( blockduration.length ? separator + blockduration : '' );
+					if ( last_separator ) {
+						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						last_separator = false;
 					}
 				}
 				blockexpiry = dateformat.format(expiry);

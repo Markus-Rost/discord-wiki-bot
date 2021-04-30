@@ -690,8 +690,8 @@
                 "hours": "$1 {{PLURAL:$2|hour|hours}}",
                 "minutes": "$1 {{PLURAL:$2|minute|minutes}}",
                 "months": "$1 {{PLURAL:$2|month|months}}",
-                "seperator": ",_",
-                "seperator_last": "_and_",
+                "separator": ",_",
+                "separator_last": "_and_",
                 "weeks": "$1 {{PLURAL:$2|week|weeks}}",
                 "years": "$1 {{PLURAL:$2|year|years}}"
             },
