@@ -394,7 +394,8 @@
     },
     "interaction": {
         "inline": "请提供一些有 [[wiki 文本]] 的文字来使用此命令。",
-        "missingrole": "你需要拥有 $1 身份组或更高的身份组以使用此命令。"
+        "missingrole": "你需要拥有 $1 身份组或更高的身份组以使用此命令。",
+        "verify": "为了验证您的 Discord 与您的 wiki 账户相匹配并授予与您 wiki 账户相符合的身份组，请提供您的 wiki 用户名。"
     },
     "invite": {
         "bot": "使用这个链接把我添加到其他服务器："
@@ -683,7 +684,20 @@
     },
     "user": {
         "block": {
-            "header": "$1 目前正被封禁！"
+            "duration": {
+                "days": "$1 天",
+                "hours": "$1 小时",
+                "minutes": "$1 分钟",
+                "months": "$1 月",
+                "separator": "_",
+                "separator_last": "_",
+                "weeks": "$1 周",
+                "years": "$1 年"
+            },
+            "header": "$1 目前正被封禁！",
+            "indef_noreason": "于 $1 由 $4 永久封禁。",
+            "indef_text": "于 $1 被 $4 因“$5”永久封禁。",
+            "noreason": "于 $1 被 $4 封禁 $2 至 $3。"
         },
         "gblock": {
             "disabled": "此账户目前正被禁用！",
