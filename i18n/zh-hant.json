@@ -689,7 +689,7 @@
                 "days": "$1 天",
                 "hours": "$1 小時",
                 "minutes": "$1 分鐘",
-                "months": "$1 月",
+                "months": "$1 個月",
                 "separator": "_",
                 "separator_last": "_",
                 "weeks": "$1 週",
