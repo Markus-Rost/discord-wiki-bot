@@ -684,10 +684,7 @@
     },
     "user": {
         "block": {
-            "header": "$1 ist derzeit gesperrt!",
-            "noreason": "Gesperrt am $1 bis zum $2 von $3.",
-            "text": "Gesperrt am $1 bis zum $2 von $3 mit der Begründung „$4“.",
-            "until_infinity": "Ende aller Tage"
+            "header": "$1 ist derzeit gesperrt!"
         },
         "gblock": {
             "disabled": "Dieses Konto ist derzeit deaktiviert!",

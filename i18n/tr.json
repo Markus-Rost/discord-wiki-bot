@@ -681,10 +681,7 @@
     },
     "user": {
         "block": {
-            "header": "$1 şu anda engelli!",
-            "noreason": "$1 platformundan $3 tarafından $2 tarihine kadar engellendiniz.",
-            "text": "$1 platformundan $3 tarafından \"$4\" nedeniyle $2 süresinde engellendiniz.",
-            "until_infinity": "bütün günlerin sonu"
+            "header": "$1 şu anda engelli!"
         },
         "gblock": {
             "disabled": "Bu hesap şu anda devre dışı!",

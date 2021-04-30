@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js');
+const datetimeDifference = require('datetime-difference');
 const global_block = require('../../functions/global_block.js');
 const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
@@ -83,22 +84,72 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			}, timeoptions));
 		}
 		var blocks = body.query.blocks.map( block => {
+			var isIndef = false;
 			var isBlocked = false;
-			var blockedtimestamp = dateformat.format(new Date(block.timestamp));
-			var blockexpiry = block.expiry;
-			if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
-				blockexpiry = lang.get('user.block.until_infinity');
+			var blockedtimestamp = new Date(block.timestamp);
+			var blockduration = '';
+			var blockexpiry = '';
+			if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(block.expiry) ) {
+				isIndef = true;
 				isBlocked = true;
-			} else if ( blockexpiry ) {
-				if ( Date.parse(blockexpiry) > Date.now() ) isBlocked = true;
-				blockexpiry = dateformat.format(new Date(blockexpiry));
+			} else if ( block.expiry ) {
+				if ( Date.parse(block.expiry) > Date.now() ) isBlocked = true;
+				let expiry = new Date(block.expiry);
+				let datediff = datetimeDifference(blockedtimestamp, expiry);
+				let seperator = lang.get('user.block.duration.seperator_last').replace( /_/g, ' ' );
+				let last_seperator = true;
+				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes);
+				if ( datediff.hours ) {
+					blockduration = lang.get('user.block.duration.hours', datediff.hours) + ( blockduration.length ? seperator + blockduration : '' );
+					if ( last_seperator ) {
+						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+						last_seperator = false;
+					}
+				}
+				if ( datediff.days ) {
+					if ( datediff.days % 7 ) {
+						blockduration = lang.get('user.block.duration.days', datediff.days % 7) + ( blockduration.length ? seperator + blockduration : '' );
+						if ( last_seperator ) {
+							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+							last_seperator = false;
+						}
+					}
+					if ( ( datediff.days / 7 ) >> 0 ) {
+						blockduration = lang.get('user.block.duration.weeks', ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? seperator + blockduration : '' );
+						if ( last_seperator ) {
+							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+							last_seperator = false;
+						}
+					}
+				}
+				if ( datediff.months ) {
+					blockduration = lang.get('user.block.duration.months', datediff.months) + ( blockduration.length ? seperator + blockduration : '' );
+					if ( last_seperator ) {
+						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+						last_seperator = false;
+					}
+				}
+				if ( datediff.years ) {
+					blockduration = lang.get('user.block.duration.years', datediff.years) + ( blockduration.length ? seperator + blockduration : '' );
+					if ( last_seperator ) {
+						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+						last_seperator = false;
+					}
+				}
+				blockexpiry = dateformat.format(expiry);
 			}
-			if ( isBlocked ) return {
-				header: lang.get('user.block.header', block.user, 'unknown').escapeFormatting(),
-				text: lang.get('user.block.' + ( block.reason ? 'text' : 'noreason' ), blockedtimestamp, blockexpiry),
-				by: block.by,
-				reason: block.reason
-			};
+			if ( isBlocked ) {
+				var text = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( block.reason ? 'text' : 'noreason' );
+				if ( msg.showEmbed() ) {
+					text = lang.get(text, dateformat.format(blockedtimestamp), blockduration, blockexpiry, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')', toMarkdown(block.reason, wiki));
+				}
+				else {
+					text = lang.get(text, dateformat.format(blockedtimestamp), blockduration, blockexpiry, block.by.escapeFormatting(), toPlaintext(block.reason));
+				}
+				return {
+					header: lang.get('user.block.header', block.user, 'unknown').escapeFormatting(), text
+				};
+			}
 		} ).filter( block => block !== undefined );
 		if ( username.includes( '/' ) ) {
 			var rangeprefix = username;
@@ -153,16 +204,12 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					embed.backupDescription = extract[0];
 				}
 				if ( blocks.length ) blocks.forEach( block => {
-					block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')' );
-					if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toMarkdown(block.reason, wiki) );
 					embed.addField( block.header, block.text );
 				} );
 			}
 			else {
 				text += '\n\n' + editcount.join(' ');
 				if ( blocks.length ) blocks.forEach( block => {
-					block.text = block.text.replaceSave( /\$3/g, block.by.escapeFormatting() );
-					if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toPlaintext(block.reason) );
 					text += '\n\n**' + block.header + '**\n' + block.text;
 				} );
 			}
@@ -318,24 +365,69 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					}
 				}
 			}
+			var isIndef = false;
 			var isBlocked = false;
-			var blockedtimestamp = ( queryuser.blockedtimestamp ? dateformat.format(new Date(queryuser.blockedtimestamp)) : 'Invalid Date' );
-			var blockexpiry = queryuser.blockexpiry;
-			if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(blockexpiry) ) {
-				blockexpiry = lang.get('user.block.until_infinity');
+			var blockedtimestamp = ( queryuser.blockedtimestamp ? new Date(queryuser.blockedtimestamp) : '' );
+			var blockduration = '';
+			var blockexpiry = '';
+			if ( ['infinite', 'indefinite', 'infinity', 'never'].includes(queryuser.blockexpiry) ) {
+				isIndef = true;
 				isBlocked = true;
-			} else if ( blockexpiry ) {
-				var blockexpirydate = blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' );
-				blockexpiry = dateformat.format(new Date(blockexpirydate));
-				if ( Date.parse(blockexpirydate) > Date.now() ) isBlocked = true;
+			} else if ( queryuser.blockexpiry && queryuser.blockedtimestamp ) {
+				let expiry = new Date(queryuser.blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' ));
+				if ( expiry > Date.now() ) isBlocked = true;
+				let datediff = datetimeDifference(blockedtimestamp, expiry);
+				let seperator = lang.get('user.block.duration.seperator_last').replace( /_/g, ' ' );
+				let last_seperator = true;
+				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes);
+				if ( datediff.hours ) {
+					blockduration = lang.get('user.block.duration.hours', datediff.hours) + ( blockduration.length ? seperator + blockduration : '' );
+					if ( last_seperator ) {
+						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+						last_seperator = false;
+					}
+				}
+				if ( datediff.days ) {
+					if ( datediff.days % 7 ) {
+						blockduration = lang.get('user.block.duration.days', datediff.days % 7) + ( blockduration.length ? seperator + blockduration : '' );
+						if ( last_seperator ) {
+							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+							last_seperator = false;
+						}
+					}
+					else {
+						blockduration = lang.get('user.block.duration.weeks', ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? seperator + blockduration : '' );
+						if ( last_seperator ) {
+							seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+							last_seperator = false;
+						}
+					}
+				}
+				if ( datediff.months ) {
+					blockduration = lang.get('user.block.duration.months', datediff.months) + ( blockduration.length ? seperator + blockduration : '' );
+					if ( last_seperator ) {
+						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+						last_seperator = false;
+					}
+				}
+				if ( datediff.years ) {
+					blockduration = lang.get('user.block.duration.years', datediff.years) + ( blockduration.length ? seperator + blockduration : '' );
+					if ( last_seperator ) {
+						seperator = lang.get('user.block.duration.seperator').replace( /_/g, ' ' );
+						last_seperator = false;
+					}
+				}
+				blockexpiry = dateformat.format(expiry);
 			}
-			var blockedby = queryuser.blockedby;
-			var blockreason = queryuser.blockreason;
+			var blockedtext = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( queryuser.blockreason ? 'text' : 'noreason' );
+			if ( msg.showEmbed() ) {
+				blockedtext = lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, '[' + queryuser.blockedby.escapeFormatting() + '](' + wiki.toLink('User:' + queryuser.blockedby, '', '', true) + ')', toMarkdown(queryuser.blockreason, wiki));
+			}
+			else {
+				blockedtext = lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, queryuser.blockedby.escapeFormatting(), toPlaintext(queryuser.blockreason));
+			}
 			var block = {
-				header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(),
-				text: lang.get('user.block.' + ( blockreason ? 'text' : 'noreason' ), blockedtimestamp, blockexpiry),
-				by: blockedby,
-				reason: blockreason
+				header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(), text: blockedtext
 			};
 			
 			var pagelink = wiki.toLink(namespace + username, querystring, fragment);
@@ -468,19 +560,9 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			}, error => {
 				console.log( '- Error while getting the user profile: ' + error );
 			} ).finally( () => {
-				if ( msg.showEmbed() ) {
-					if ( isBlocked ) {
-						block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')' );
-						if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toMarkdown(block.reason, wiki) );
-						embed.addField( block.header, block.text );
-					}
-				}
-				else {
-					if ( isBlocked ) {
-						block.text = block.text.replaceSave( /\$3/g, block.by.escapeFormatting() );
-						if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toPlaintext(block.reason) );
-						text += '\n\n**' + block.header + '**\n' + block.text;
-					}
+				if ( isBlocked ) {
+					if ( msg.showEmbed() ) embed.addField( block.header, block.text );
+					else text += '\n\n**' + block.header + '**\n' + block.text;
 				}
 				
 				if ( msg.channel.isGuild() && patreons[msg.guild?.id] ) {
@@ -507,16 +589,8 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 			}
 			if ( isBlocked ) {
-				if ( msg.showEmbed() ) {
-					block.text = block.text.replaceSave( /\$3/g, '[' + block.by.escapeFormatting() + '](' + wiki.toLink('User:' + block.by, '', '', true) + ')' );
-					if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toMarkdown(block.reason, wiki) );
-					embed.addField( block.header, block.text );
-				}
-				else {
-					block.text = block.text.replaceSave( /\$3/g, block.by.escapeFormatting() );
-					if ( block.reason ) block.text = block.text.replaceSave( /\$4/g, toPlaintext(block.reason) );
-					text += '\n\n**' + block.header + '**\n' + block.text;
-				}
+				if ( msg.showEmbed() ) embed.addField( block.header, block.text );
+				else text += '\n\n**' + block.header + '**\n' + block.text;
 			}
 			if ( wiki.hasCentralAuth() && body.query.globaluserinfo.locked !== undefined ) {
 				if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**' );

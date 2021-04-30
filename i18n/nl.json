@@ -399,10 +399,7 @@
     },
     "user": {
         "block": {
-            "header": "$1 is momenteel geblokkeerd!",
-            "noreason": "Geblokkeerd van $1 tot $2 door $3.",
-            "text": "Geblokkeerd van $1 tot $2 door $3 met reden \"$4\".",
-            "until_infinity": "het einde van de wereld"
+            "header": "$1 is momenteel geblokkeerd!"
         },
         "gblock": {
             "disabled": "Dit account is momenteel uitgeschakeld!",

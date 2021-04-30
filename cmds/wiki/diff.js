@@ -147,7 +147,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, embed) {
  * @param {String[]} [compare] - The edit difference.
  */
 function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) {
-	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|comment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
@@ -194,8 +194,8 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 			}
 			var timestamp = [lang.get('diff.info.timestamp'), dateformat.format(new Date(revisions[0].timestamp))];
 			var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
-			var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes', ( difference > 0 ? '+' : '' ) + difference.toLocaleString(lang.get('dateformat')), difference)];
-			var comment = [lang.get('diff.info.comment'), ( revisions[0].commenthidden !== undefined ? lang.get('diff.hidden') : ( revisions[0].comment ? toFormatting(revisions[0].comment, msg.showEmbed(), wiki, title) : lang.get('diff.nocomment') ) )];
+			var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes', ( difference > 0 ? '+' : '' ) + difference.toLocaleString(lang.get('dateformat')), difference, ( revisions[0].minor !== undefined ? lang.get('diff.info.minor') : '' ))];
+			var comment = [lang.get('diff.info.comment'), ( revisions[0].commenthidden !== undefined ? lang.get('diff.hidden') : ( revisions[0].parsedcomment ? ( msg.showEmbed() ? htmlToDiscord(revisions[0].parsedcomment, wiki.toLink(title), true) : htmlToPlain(revisions[0].parsedcomment) ) : lang.get('diff.nocomment') ) )];
 			if ( revisions[0].tags.length ) var tags = [lang.get('diff.info.tags'), body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
 			
 			var pagelink = wiki.toLink(title, {diff,oldid});

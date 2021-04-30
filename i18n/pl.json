@@ -681,10 +681,7 @@
     },
     "user": {
         "block": {
-            "header": "$1 jest obecnie {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}}!",
-            "noreason": "Zablokowano $1 do $2 przez $3.",
-            "text": "Zablokowano $1 do $2 przez $3 z powodem „$4”.",
-            "until_infinity": "do końca wszechświata"
+            "header": "$1 jest obecnie {{GENDER:$2|zablokowany|zablokowana|zablokowany(-na)}}!"
         },
         "gblock": {
             "disabled": "To konto jest obecnie wyłączone!",

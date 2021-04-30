@@ -117,9 +117,10 @@
         "hidden": "*hidden*",
         "info": {
             "added": "Added:",
-            "bytes": "$1 {{PLURAL:$2|byte|bytes}}",
+            "bytes": "$1 {{PLURAL:$2|byte|bytes}} $3",
             "comment": "Comment:",
             "editor": "Editor:",
+            "minor": "(m)",
             "more": "And more",
             "removed": "Removed:",
             "size": "Difference:",
@@ -684,10 +685,21 @@
     },
     "user": {
         "block": {
+            "duration": {
+                "days": "$1 {{PLURAL:$1|day|days}}",
+                "hours": "$1 {{PLURAL:$1|hour|hours}}",
+                "minutes": "$1 {{PLURAL:$1|minute|minutes}}",
+                "months": "$1 {{PLURAL:$1|month|months}}",
+                "seperator": ",_",
+                "seperator_last": "_and_",
+                "weeks": "$1 {{PLURAL:$1|week|weeks}}",
+                "years": "$1 {{PLURAL:$1|year|years}}"
+            },
             "header": "$1 is currently blocked!",
-            "noreason": "Blocked on $1 until $2 by $3.",
-            "text": "Blocked on $1 until $2 by $3 with reason \"$4\".",
-            "until_infinity": "the end of all days"
+            "indef_noreason": "Blocked indefinitely on $1 by $4.",
+            "indef_text": "Blocked indefinitely on $1 by $4 with reason \"$5\".",
+            "noreason": "Blocked on $1 for $2 until $3 by $4.",
+            "text": "Blocked on $1 for $2 until $3 by $4 with reason \"$5\"."
         },
         "gblock": {
             "disabled": "This account is currently disabled!",

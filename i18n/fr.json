@@ -674,10 +674,7 @@
     },
     "user": {
         "block": {
-            "header": "$1 est actuellement bloqué !",
-            "noreason": "Bloqué le $1 jusqu'au $2 par $3.",
-            "text": "Bloqué le $1 jusqu'au $2 par $3 avec la raison « $4 ».",
-            "until_infinity": "moment de la fin des jours"
+            "header": "$1 est actuellement bloqué !"
         },
         "gblock": {
             "disabled": "Ce compte est actuellement désactivé !",

@@ -682,10 +682,7 @@
     },
     "user": {
         "block": {
-            "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}}!",
-            "noreason": "Bloqueado em $1 até $2 por $3.",
-            "text": "Bloqueado em $1 até $2 por $3 com motivo \"$4\".",
-            "until_infinity": "o fim de todos os dias"
+            "header": "$1 está atualmente {{GENDER:$2|bloqueado|bloqueada}}!"
         },
         "gblock": {
             "disabled": "Esta conta está desativada no momento!",
