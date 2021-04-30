@@ -686,7 +686,7 @@
             "header": "$1 目前正被封鎖！"
         },
         "gblock": {
-            "disabled": "此賬戶目前正被禁用！",
+            "disabled": "此帳號目前正被停用！",
             "header": "$1 目前正被全域封鎖！"
         },
         "gender": {
@@ -767,7 +767,7 @@
         "failed_gblock": "** 全域封鎖檢查失敗！**",
         "failed_rename": "** 變更暱稱失敗！**",
         "failed_roles": "** 添加身分組失敗！**",
-        "footer": "Wiki 賬戶驗證",
+        "footer": "Wiki 帳號驗證",
         "help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/zh/wiki/Gamepedia帮助Wiki:Discord验证",
         "help_guide": "請根據[此指導]($1)來添加您的 Discord 使用者名至您的 wiki 資料頁：",
@@ -778,7 +778,7 @@
         "qualified_error": "符合，但無法添加：",
         "user_blocked": "**Wiki 使用者 $1 已被封鎖！**",
         "user_blocked_reply": "您連接的 wiki 使用者**“$1”已被封鎖！**",
-        "user_disabled": "**Wiki 使用者 $1 已被禁用！**",
+        "user_disabled": "**Wiki 使用者 $1 已被停用！**",
         "user_disabled_reply": "您連接的 wiki 使用者**“$1”已被禁用！**",
         "user_failed": "Discord 使用者 $1 不和 wiki 使用者 $2 對應。",
         "user_failed_reply": "您的 Discord 使用者名不和“$1”的對應。",
