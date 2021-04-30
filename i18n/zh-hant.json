@@ -687,7 +687,13 @@
         "block": {
             "duration": {
                 "days": "$1 天",
-                "hours": "$1 小時"
+                "hours": "$1 小時",
+                "minutes": "$1 分鐘",
+                "months": "$1 月",
+                "separator": "_",
+                "separator_last": "_",
+                "weeks": "$1 週",
+                "years": "$1 年"
             },
             "header": "$1 目前正被封鎖！"
         },
