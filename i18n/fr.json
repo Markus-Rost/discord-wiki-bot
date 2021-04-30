@@ -117,9 +117,10 @@
         "hidden": "*masqué*",
         "info": {
             "added": "Ajoutés :",
-            "bytes": "$1 {{PLURAL:$2|octet|octets}}",
+            "bytes": "$1 {{PLURAL:$2|octet|octets}} $3",
             "comment": "Commentaire :",
             "editor": "Éditeur :",
+            "minor": "(m)",
             "more": "Et plus",
             "removed": "Retirés :",
             "size": "Différence :",
@@ -144,8 +145,9 @@
         " "
     ],
     "general": {
+        "database": "⚠️ **Fonctionnalité limitée** ⚠️\nAucun paramètre trouvé, veuillez contacter le propriétaire du bot !",
         "default": "Ce serveur n'est pas encore configuré. Utilisez $1 ou le site pour modifier les paramètres.",
-        "disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Gamepedia et Fandom. $1 m'a écrit en JavaScript.\n\nVous pouvez également me soutenir sur Patreon :",
+        "disclaimer": "Je suis un petit bot avec la tâche de créer un lien vers les wikis Fandom et MediaWiki. $1 m'a écrit en JavaScript.\n\nVous pouvez également me soutenir sur Patreon :",
         "experimental": "**Cette option est expérimentale ! Il n'est pas garanti qu'elle fonctionne correctement et peut être retirée dans le futur.**",
         "helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
         "limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",
@@ -390,6 +392,12 @@
         "noadmin": "vous devez avoir la permission `Gérer le serveur` pour utiliser ces commandes !",
         "pause": "**Je suis actuellement en pause sur ce serveur !**\n Seuls ces commandes sont disponibles :"
     },
+    "interaction": {
+        "inline": "Veuillez fournir un texte avec des liens [[wikitext]] pour utiliser cette commande.",
+        "missingrole": "Vous devez avoir le rôle $1 ou un rôle supérieur pour utiliser cette commande.",
+        "nowiki": "Le wiki utilisé n'existe pas !",
+        "verify": "Veuillez fournir votre nom d'utilisateur wiki pour utiliser cette commande afin de vérifier votre compte Discord avec votre compte wiki et obtenir les rôles correspondant à votre compte wiki."
+    },
     "invite": {
         "bot": "Utilisez ce lien pour m'inviter sur un autre serveur :"
     },
@@ -511,7 +519,7 @@
         "help_display_image": "Messages intégrés avec aperçus d'images.",
         "help_feeds": "(discussions, murs de discussions, commentaires)",
         "help_lang": "Les langues actuellement disponibles sont :",
-        "help_wiki": "Lien d'un site MediaWiki comme `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
+        "help_wiki": "Lien d'un site MediaWiki comme `https://<wiki>.fandom.com/`",
         "lang": "Langue :",
         "max_entries": "vous avez déjà atteint le nombre maximal d'intégrations de modifications récentes.",
         "missing": "il n'y a pas encore d'intégration de modifications récentes pour ce serveur.",
@@ -628,8 +636,11 @@
         "save_failed": "malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer plus tard.",
         "wiki": "le wiki associé à ce serveur est :",
         "wikichanged": "le wiki par défaut a été changé pour :",
-        "wikihelp": "Utilisez `$1 <lien>` pour changer le wiki par défaut.\nLien du wiki : `https://<wiki>.gamepedia.com/` ou `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "veuillez fournir un lien valide vers un wiki de Gamepedia ou Fandom !",
+        "wikihelp": "Utilisez `$1 <lien>` pour changer le wiki par défaut.\nLien du wiki : `https://<wiki>.fandom.com/`",
+        "wikiinvalid": "veuillez fournir un lien valide vers un wiki de Fandom ou Wikipedia !",
+        "wikiinvalid_http": "le site web fourni ne dispose pas d'un certificat TLS/SSL valide ! Pour des raisons de sécurité, seuls les wikis utilisant le protocole HTTPS sont pris en charge.\nSi vous êtes un administrateur de site, vous pouvez obtenir un certificat auprès d'une autorité de certification comme *Let's Encrypt* :\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_private": "le wiki fourni est privé ! Seuls les wikis publics qui peuvent être lus par tout le monde sont pris en charge.",
+        "wikiinvalid_timeout": "le lien fourni a mis trop de temps à répondre !",
         "wikimissing": "aucun wiki n'est encore défini pour ce serveur !"
     },
     "test": {
@@ -674,7 +685,21 @@
     },
     "user": {
         "block": {
-            "header": "$1 est actuellement bloqué !"
+            "duration": {
+                "days": "$1 {{PLURAL:$2|jour|jours}}",
+                "hours": "$1 {{PLURAL:$2|heure|heures}}",
+                "minutes": "$1 {{PLURAL:$2|minute|minutes}}",
+                "months": "$1 {{PLURAL:$2|mois|mois}}",
+                "separator": ",_",
+                "separator_last": "_et_",
+                "weeks": "$1 {{PLURAL:$2|semaine|semaines}}",
+                "years": "$1 {{PLURAL:$2|année|années}}"
+            },
+            "header": "$1 est actuellement bloqué !",
+            "indef_noreason": "Bloqué indéfiniment le $1 par $4.",
+            "indef_text": "Bloqué indéfiniment le $1 par $4 pour \"$5\".",
+            "noreason": "Bloqué indéfiniment du $1 pour $2 jusqu'au $3 par $4.",
+            "text": "Bloqué indéfiniment du $1 pour $2 jusqu'au $3 par $4 pour raison \"$5\"."
         },
         "gblock": {
             "disabled": "Ce compte est actuellement désactivé !",
