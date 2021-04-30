@@ -7,6 +7,10 @@
         " "
     ],
     "general": {
+        "botlist": {
+            "text": "Aidez d'autres utilisateurs à trouver Wiki-Bot en votant sur des listes de bots :",
+            "title": "Listes de bots :"
+        },
         "delete": "Supprimer",
         "invite": "Inviter Wiki-Bot",
         "language": "Changer la langue",
@@ -18,12 +22,17 @@
         "selector": "Sélection de serveur",
         "settings": "Paramètres",
         "support": "Server d'assistance",
+        "theme-dark": "Utiliser le thème sombre",
+        "theme-light": "Utiliser le thème clair",
         "title": "Paramètres du bot",
         "verification": "Vérifications",
         "welcome": "<h2>Bienvenue au tableau de bord de Wiki-Bot</h2>\n<p>Wiki-Bot est un bot discord fait pour lier les serveurs Discord aux MediaWikis. Il permet de lier les pages wiki, vérifier les utilisateurs wiki, vous informe des modifications récentes et plus.<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Plus d'informations]</a></p>\n<p>Ici, vous pouvez modifier les différents paramètres du bot pour les serveurs dans lesquels vous avez la permission \"Gérer le serveur.\" Tout d'abord, vous devez vous connecter avec votre compte Discord via ce bouton:</p>"
     },
     "indexjs": {
         "invalid": {
+            "note_http": "Le site fourni n'utilise pas HTTPS !",
+            "note_private": "Le wiki fourni est privé !",
+            "note_timeout": "Le lien fournit a pris trop de temps à répondre !",
             "text": "Le lien ne mène pas à un site MediaWiki !",
             "title": "Wiki invalide !"
         },
@@ -103,6 +112,9 @@
             "title": "Paramètres sauvegardés !"
         },
         "savefail": {
+            "note_http": "Le wiki fournit n'utilise pas HTTPS !",
+            "note_private": "Le wiki fournit est privé !",
+            "note_timeout": "Le lien fournit a pris trop de temps à répondre !",
             "text": "Les paramètres n'ont pas pu être sauvegardés, veuillez réessayer.",
             "title": "Sauvegarde échouée !"
         },
@@ -148,8 +160,8 @@
         "none": "Vous n'avez actuellement pas l'autorisation [Gérer le serveur]($1) sur aucun serveur, êtes-vous connecté au bon compte ?",
         "switch": "Changer de compte",
         "title": "Sélecteur de serveur",
-        "with": "Serveur avec Wiki-Bot",
-        "without": "Serveur sans Wiki-Bot"
+        "with": "Serveurs avec Wiki-Bot",
+        "without": "Serveurs sans Wiki-Bot"
     },
     "settings": {
         "desc": "Voici les paramètres pour $1 :",
