@@ -4,7 +4,7 @@
         "Dianliang233",
         "Leo_768",
         "Winston_Sung",
-        " ",
+        "lakejason0",
         " ",
         " ",
         " ",
@@ -695,7 +695,11 @@
                 "weeks": "$1 週",
                 "years": "$1 年"
             },
-            "header": "$1 目前正被封鎖！"
+            "header": "$1 目前正被封鎖！",
+            "indef_noreason": "於 $1 由 $4 無限期封鎖。",
+            "indef_text": "於 $1 被 $4 因「$5」無限期封鎖。",
+            "noreason": "於 $1 被 $4 封鎖 $2 至 $3。",
+            "text": "因「$5」於 $1 被 $4 封鎖 $2 至 $3。"
         },
         "gblock": {
             "disabled": "此帳號目前正被停用！",
