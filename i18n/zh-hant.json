@@ -396,7 +396,7 @@
         "inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
         "missingrole": "您需要擁有 $1 身分組或更高的身分組以使用此指令。",
         "nowiki": "所使用的wiki不存在！",
-        "verify": "為了驗證您的Discord與您的wiki帳號的關聯，並授予與您wiki帳號相符的身分組，請提供您的wiki使用者名稱。"
+        "verify": "為了能透過您的wiki帳號驗證您的Discord帳號與並授予與您wiki帳號相符的身分組，請提供您的wiki使用者名稱以使用此指令。"
     },
     "invite": {
         "bot": "使用這個連結把我加入到其他伺服器："
