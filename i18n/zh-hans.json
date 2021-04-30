@@ -117,9 +117,10 @@
         "hidden": "*隐藏*",
         "info": {
             "added": "添加：",
-            "bytes": "$1 b",
+            "bytes": "$1 b$3",
             "comment": "摘要：",
             "editor": "编辑者：",
+            "minor": "（小）",
             "more": "更多",
             "removed": "删除：",
             "size": "差异：",
