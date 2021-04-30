@@ -419,16 +419,18 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				blockexpiry = dateformat.format(expiry);
 			}
-			var blockedtext = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( queryuser.blockreason ? 'text' : 'noreason' );
-			if ( msg.showEmbed() ) {
-				blockedtext = lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, '[' + queryuser.blockedby.escapeFormatting() + '](' + wiki.toLink('User:' + queryuser.blockedby, '', '', true) + ')', toMarkdown(queryuser.blockreason, wiki));
+			if ( isBlocked ) {
+				var blockedtext = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( queryuser.blockreason ? 'text' : 'noreason' );
+				if ( msg.showEmbed() ) {
+					blockedtext = lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, '[' + queryuser.blockedby.escapeFormatting() + '](' + wiki.toLink('User:' + queryuser.blockedby, '', '', true) + ')', toMarkdown(queryuser.blockreason, wiki));
+				}
+				else {
+					blockedtext = lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, queryuser.blockedby.escapeFormatting(), toPlaintext(queryuser.blockreason));
+				}
+				var block = {
+					header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(), text: blockedtext
+				};
 			}
-			else {
-				blockedtext = lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, queryuser.blockedby.escapeFormatting(), toPlaintext(queryuser.blockreason));
-			}
-			var block = {
-				header: lang.get('user.block.header', username, queryuser.gender).escapeFormatting(), text: blockedtext
-			};
 			
 			var pagelink = wiki.toLink(namespace + username, querystring, fragment);
 			var text = '<' + pagelink + '>';
