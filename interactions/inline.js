@@ -31,15 +31,13 @@ function slash_inline(interaction, lang, wiki, channel) {
 		parse: ['users']
 	};
 	if ( interaction.guild_id ) {
-		if ( ( (interaction.member.permissions & 1 << 3) === 1 << 3 ) // ADMINISTRATOR
-		|| ( (interaction.member.permissions & 1 << 17) === 1 << 17 ) ) { // MENTION_EVERYONE
+		if ( interaction.member.permissions.has('MENTION_EVERYONE') ) {
 			allowed_mentions.parse = ['users', 'roles', 'everyone'];
 		}
 		else if ( channel?.guild ) {
 			allowed_mentions.roles = channel.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		}
-		if ( channel?.guild && ( (interaction.member.permissions & 1 << 3) !== 1 << 3 ) // ADMINISTRATOR
-		&& ( (interaction.member.permissions & 1 << 18) !== 1 << 18 ) ) { // USE_EXTERNAL_EMOJIS
+		if ( channel?.guild && !interaction.member.permissions.has('USE_EXTERNAL_EMOJIS') ) {
 			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
 				if ( channel.guild.emojis.cache.has(id) ) {
 					return replacement;

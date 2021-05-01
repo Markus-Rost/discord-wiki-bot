@@ -166,6 +166,12 @@
 			"scriptPath": "/w/"
 		},
 		{
+			"name": "translatewiki.net",
+			"regex": "(translatewiki\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "miraheze.org",
 			"regex": "((?:[a-z\\d-]{1,50}\\.)miraheze\\.org)",
 			"articlePath": "/wiki/",

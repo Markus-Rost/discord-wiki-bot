@@ -50,7 +50,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 	} ).then( () => {
 		return db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
 			if ( !rows.length ) return sendMessage(interaction, {
-				content: reply + lang.get('verify.missing') + ( (interaction.member.permissions & 1 << 5) === 1 << 5 ? '\n' + new URL(`/guild/${interaction.guild_id}/verification`, process.env.dashboard).href : '' ), // MANAGE_GUILD
+				content: reply + lang.get('verify.missing') + ( interaction.member.permissions.has('MANAGE_GUILD') ? '\n' + new URL(`/guild/${interaction.guild_id}/verification`, process.env.dashboard).href : '' ),
 				allowed_mentions
 			}, channel);
 			
