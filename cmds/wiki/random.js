@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
-const {htmlToDiscord} = require('../../util/functions.js');
+const {htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 
 /**
@@ -32,7 +32,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler) {
 		logging(wiki, msg.guild?.id, 'random');
 		var querypage = Object.values(body.query.pages)[0];
 		var pagelink = wiki.toLink(querypage.title);
-		var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+		var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 		if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 			var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 			if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';

@@ -1,5 +1,6 @@
 const {MessageEmbed, Util, ShardClientUtil: {shardIDForGuildID}} = require('discord.js');
 const {defaultSettings, defaultPermissions} = require('../util/default.json');
+const {escapeFormatting} = require('../util/functions.js');
 var db = require('../util/database.js');
 
 /**
@@ -26,8 +27,8 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			} )
 		}`, shardIDForGuildID(id, msg.client.shard.count) );
 		if ( guild ) {
-			var guildname = ['Guild:', guild.name.escapeFormatting() + ' `' + guild.id + '`' + ( guild.pause ? '\\*' : '' )];
-			var guildowner = ['Owner:', ( guild.owner ? guild.owner.escapeFormatting() + ' ' : '' ) + '`' + guild.ownerID + '` <@' + guild.ownerID + '>'];
+			var guildname = ['Guild:', escapeFormatting(guild.name) + ' `' + guild.id + '`' + ( guild.pause ? '\\*' : '' )];
+			var guildowner = ['Owner:', ( guild.owner ? escapeFormatting(guild.owner) + ' ' : '' ) + '`' + guild.ownerID + '` <@' + guild.ownerID + '>'];
 			var guildsize = ['Size:', guild.memberCount + ' members'];
 			var guildshard = ['Shard:', guild.shardId];
 			var guildpermissions = ['Missing permissions:', ( guild.permissions.length ? '`' + guild.permissions.join('`, `') + '`' : '*none*' )];
@@ -75,8 +76,8 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			} )
 		}` ).then( results => results.find( result => result ) );
 		if ( channel ) {
-			var channelguild = ['Guild:', channel.guild.escapeFormatting() + ' `' + channel.guildID + '`' + ( channel.pause ? '\\*' : '' )];
-			var channelname = ['Channel:', '#' + channel.name.escapeFormatting() + ' `' + channel.id + '` <#' + channel.id + '>'];
+			var channelguild = ['Guild:', escapeFormatting(channel.guild) + ' `' + channel.guildID + '`' + ( channel.pause ? '\\*' : '' )];
+			var channelname = ['Channel:', '#' + escapeFormatting(channel.name) + ' `' + channel.id + '` <#' + channel.id + '>'];
 			var channeldetails = ['Details:', '`' + channel.type + '`' + ( channel.parentID ? ' – `' + channel.parentID + '` <#' + channel.parentID + '>' : '' )];
 			var channelpermissions = ['Missing permissions:', ( channel.permissions.length ? '`' + channel.permissions.join('`, `') + '`' : '*none*' )];
 			var channellang = ['Language:', '*unknown*'];
@@ -114,7 +115,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		
 		var user = await msg.client.users.fetch(id, false).catch( () => {} );
 		if ( user ) {
-			var username = ['User:', user.tag.escapeFormatting() + ' `' + user.id + '` <@' + user.id + '>'];
+			var username = ['User:', escapeFormatting(user.tag) + ' `' + user.id + '` <@' + user.id + '>'];
 			var guildlist = ['Guilds:', '*none*'];
 			var guilds = await msg.client.shard.broadcastEval( `this.guilds.cache.filter( guild => guild.members.cache.has('${user.id}') ).map( guild => {
 				var member = guild.members.cache.get('${user.id}');
@@ -126,7 +127,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				}
 			} )` ).then( results => {
 				return results.reduce( (acc, val) => acc.concat(val), [] ).map( user_guild => {
-					return user_guild.name.escapeFormatting() + ' `' + user_guild.id + '`' + ( user_guild.isAdmin ? '\\*' : '' );
+					return escapeFormatting(user_guild.name) + ' `' + user_guild.id + '`' + ( user_guild.isAdmin ? '\\*' : '' );
 				} );
 			} );
 			if ( guilds.length ) guildlist[1] = guilds.join('\n');

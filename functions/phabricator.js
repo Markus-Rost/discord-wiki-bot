@@ -37,17 +37,17 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 			return;
 		}
 		var task = body.result.data[0];
-		var status = '**' + task.fields.status.name + ':** ' + task.fields.name.escapeFormatting() + '\n';
+		var status = '**' + task.fields.status.name + ':** ' + escapeFormatting(task.fields.name) + '\n';
 		if ( !msg.showEmbed() ) {
 			msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler );
 			
 			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
-		var summary = task.fields.name.escapeFormatting();
+		var summary = escapeFormatting(task.fields.name);
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-		var embed = new MessageEmbed().setAuthor( 'Phabricator' ).setTitle( summary ).setURL( link ).addField( 'Status', task.fields.status.name, true ).addField( 'Priority', task.fields.priority.name, true );
-		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', task.fields.subtype, true );;
+		var embed = new MessageEmbed().setAuthor( 'Phabricator' ).setTitle( summary ).setURL( link ).addField( 'Status', escapeFormatting(task.fields.status.name), true ).addField( 'Priority', escapeFormatting(task.fields.priority.name), true );
+		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', escapeFormatting(task.fields.subtype), true );
 		var description = parse_text( task.fields.description.raw, site );
 		if ( description.length > 2000 ) description = limitLength(description, 2000, 40);
 		embed.setDescription( description );
@@ -61,7 +61,7 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 				}
 				var projects = Object.values(pbody.result);
 				var tags = projects.map( project => {
-					return '[' + project.fullName + '](' + project.uri + ')';
+					return '[' + escapeFormatting(project.fullName) + '](' + project.uri + ')';
 				} ).join(',\n');
 				if ( tags.length > 1000 ) tags = projects.map( project => project.fullName ).join(',\n');
 				if ( tags.length > 1000 ) tags = tags.substring(0, 1000) + '\u2026';

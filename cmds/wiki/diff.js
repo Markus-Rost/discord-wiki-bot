@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const logging = require('../../util/logging.js');
 const {timeoptions} = require('../../util/default.json');
-const {toFormatting, htmlToDiscord} = require('../../util/functions.js');
+const {htmlToPlain, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
 const diffParser = require('../../util/edit_diff.js');
 
 /**
@@ -181,7 +181,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 			var revisions = pages[0].revisions.sort( (first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp) );
 			var diff = revisions[0].revid;
 			var oldid = ( revisions[1] ? revisions[1].revid : 0 );
-			var editor = [lang.get('diff.info.editor'), ( revisions[0].userhidden !== undefined ? lang.get('diff.hidden') : revisions[0].user )];
+			var editor = [lang.get('diff.info.editor'), ( revisions[0].userhidden !== undefined ? lang.get('diff.hidden') : ( msg.showEmbed() ? '[' + escapeFormatting(revisions[0].user) + '](' + wiki.toLink(( revisions[0].anon !== undefined ? 'Special:Contributions/' : 'User:' ) + revisions[0].user, '', '', true) + ')' : escapeFormatting(revisions[0].user) ) )];
 			try {
 				var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
 					timeZone: body.query.general.timezone
@@ -202,13 +202,8 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() ) {
-				var editorlink = '[' + editor[1] + '](' + wiki.toLink('User:' + editor[1], '', '', true) + ')';
-				if ( revisions[0].anon !== undefined ) {
-					editorlink = '[' + editor[1] + '](' + wiki.toLink('Special:Contributions/' + editor[1], '', '', true) + ')';
-				}
-				if ( editor[1] === lang.get('diff.hidden') ) editorlink = editor[1];
-				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( ( title + '?diff=' + diff + '&oldid=' + oldid ).escapeFormatting() ).setURL( pagelink ).addField( editor[0], editorlink, true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
-				if ( tags ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink, true) );
+				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting( title + '?diff=' + diff + '&oldid=' + oldid ) ).setURL( pagelink ).addField( editor[0], editor[1], true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
+				if ( tags ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink) );
 				
 				var more = '\n__' + lang.get('diff.info.more') + '__';
 				var whitespace = '__' + lang.get('diff.info.whitespace') + '__';
@@ -259,7 +254,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 						if ( compare[1].length ) embed.addField( lang.get('diff.info.added'), compare[1], true );
 					}
 					else if ( ( revisions[0]?.slots?.main || revisions[0] )['*'] ) {
-						var content = ( revisions[0]?.slots?.main || revisions[0] )['*'].escapeFormatting();
+						var content = escapeFormatting( ( revisions[0]?.slots?.main || revisions[0] )['*'] );
 						if ( content.trim().length ) {
 							if ( content.length <= 1000 ) content = '**' + content + '**';
 							else {

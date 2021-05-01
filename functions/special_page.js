@@ -1,7 +1,7 @@
 const {Util} = require('discord.js');
 const logging = require('../util/logging.js');
 const {timeoptions} = require('../util/default.json');
-const {toMarkdown} = require('../util/functions.js');
+const {toMarkdown, escapeFormatting} = require('../util/functions.js');
 
 const overwrites = {
 	randompage: (fn, lang, msg, wiki, reaction, spoiler) => {
@@ -17,19 +17,19 @@ const overwrites = {
 
 const queryfunctions = {
 	title: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	times: (query, wiki, lang) => query.querypage.results.map( result => {
-		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	size: (query, wiki, lang) => query.querypage.results.map( result => {
-		return lang.get('diff.info.bytes', parseInt(result.value, 10).toLocaleString(lang.get('dateformat')), result.value) + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return lang.get('diff.info.bytes', parseInt(result.value, 10).toLocaleString(lang.get('dateformat')), result.value) + ': [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	redirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + result.databaseResult.rd_title.escapeFormatting() : '' );
+		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + escapeFormatting(result.databaseResult.rd_title) : '' );
 	} ).join('\n'),
 	doubleredirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + result.title.replace( / /g, '_' ).escapeFormatting() + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + result.databaseResult.b_title.escapeFormatting() + ' → ' + result.databaseResult.c_title.escapeFormatting() : '' );
+		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + escapeFormatting(result.databaseResult.b_title) + ' → ' + escapeFormatting(result.databaseResult.c_title) : '' );
 	} ).join('\n'),
 	timestamp: (query, wiki, lang) => query.querypage.results.map( result => {
 		try {
@@ -42,21 +42,21 @@ const queryfunctions = {
 				timeZone: 'UTC'
 			}, timeoptions));
 		}
-		return dateformat.format(new Date(result.timestamp)).escapeFormatting() + ': [' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return dateformat.format(new Date(result.timestamp)) + ': [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	media: (query, wiki, lang) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');
 		return '**' + ms[1] + '**: ' + lang.get('search.category.files', parseInt(ms[2], 10).toLocaleString(lang.get('dateformat')), parseInt(ms[2], 10)) + ' (' + lang.get('diff.info.bytes', parseInt(ms[3], 10).toLocaleString(lang.get('dateformat')), parseInt(ms[3], 10)) + ')';
 	} ).join('\n'),
 	category: (query, wiki, lang) => query.querypage.results.map( result => {
-		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + result.title.escapeFormatting() + '](' + wiki.toLink('Category:' + result.title, '', '', true) + ')';
+		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + escapeFormatting(result.title) + '](' + wiki.toLink('Category:' + result.title, '', '', true) + ')';
 	} ).join('\n'),
 	gadget: (query, wiki, lang) => query.querypage.results.map( result => {
 		result.title = result.title.replace( /^(?:.*:)?gadget-/, '' );
-		return '**' + result.title.escapeFormatting() + '**: ' + parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + ' users (' + result.ns.toLocaleString(lang.get('dateformat')) + ' active)';
+		return '**' + escapeFormatting(result.title) + '**: ' + parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + ' users (' + result.ns.toLocaleString(lang.get('dateformat')) + ' active)';
 	} ).join('\n'),
 	recentchanges: (query, wiki) => query.recentchanges.map( result => {
-		return '[' + result.title.escapeFormatting() + '](' + wiki.toLink(result.title, ( result.type === 'edit' ? {diff:result.revid,oldid:result.old_revid} : '' ), '', true) + ')';
+		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, ( result.type === 'edit' ? {diff:result.revid,oldid:result.old_revid} : '' ), '', true) + ')';
 	} ).join('\n')
 }
 

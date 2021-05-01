@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
 const {toSection} = require('../util/wiki.js');
-const {parse_infobox, htmlToPlain, htmlToDiscord, limitLength} = require('../util/functions.js');
+const {parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength} = require('../util/functions.js');
 
 const parsedContentModels = [
 	'wikitext',
@@ -206,7 +206,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						let value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-value, .pi-data-value[data-source="$1"]' )).html();
 						if ( !value ) value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-value, .pi-data-value[data-item-name="$1"]' )).html();
 						if ( value ) {
-							value = htmlToDiscord(value, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
+							value = htmlToDiscord(value, embed.url).trim().replace( /\n{3,}/g, '\n\n' );
 							if ( value.length > 500 ) value = limitLength(value, 500, 250);
 							if ( value ) field.value = value;
 						}
@@ -265,7 +265,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						value.find(removeClasses.join(', ')).remove();
 						if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
 						label = htmlToPlain(label).trim().split('\n')[0];
-						value = htmlToDiscord(value, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
+						value = htmlToDiscord(value, embed.url).trim().replace( /\n{3,}/g, '\n\n' );
 						if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 						if ( value.length > 500 ) value = limitLength(value, 500, 250);
 						if ( label && value ) embed.addField( label, value, true );
@@ -334,9 +334,9 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 					sectionContent.find(infoboxList.join(', ')).remove();
 					sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
 					var name = htmlToPlain(section).trim();
-					if ( !name.length ) name = fragment.escapeFormatting();
+					if ( !name.length ) name = escapeFormatting(fragment);
 					if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
-					var value = htmlToDiscord(sectionContent, embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
+					var value = htmlToDiscord(sectionContent, embed.url).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( value.length > 1000 ) value = limitLength(value, 1000, 20);
 					if ( name.length && value.length ) {
 						embed.spliceFields( 0, 0, {name, value} );

@@ -1,3 +1,5 @@
+const {escapeFormatting} = require('./functions.js');
+
 /**
  * Get the description for a page.
  * @param {String} [text] - The full page extract.
@@ -6,7 +8,7 @@
  */
 function extract_desc(text = '', fragment = '') {
 	var sectionIndex = text.indexOf('\ufffd\ufffd');
-	var extract = ( sectionIndex !== -1 ? text.substring(0, sectionIndex) : text ).trim().escapeFormatting();
+	var extract = escapeFormatting(( sectionIndex !== -1 ? text.substring(0, sectionIndex) : text ).trim());
 	if ( extract.length > 1000 ) extract = extract.substring(0, 1000) + '\u2026';
 	var section = null;
 	var regex = /\ufffd{2}(\d)\ufffd{2}([^\n]+)/g;
@@ -14,7 +16,7 @@ function extract_desc(text = '', fragment = '') {
 	var sectionText = '';
 	while ( fragment && ( section = regex.exec(text) ) !== null ) {
 		if ( section[2].replace( / /g, '_' ) !== fragment.replace( / /g, '_' ) ) continue;
-		sectionHeader = section[2].escapeFormatting();
+		sectionHeader = escapeFormatting(section[2]);
 		if ( sectionHeader.length > 240 ) sectionHeader = sectionHeader.substring(0, 240) + '\u2026';
 		sectionHeader = section_formatting(sectionHeader, section[1]);
 		sectionText = text.substring(regex.lastIndex);
@@ -38,7 +40,7 @@ function extract_desc(text = '', fragment = '') {
 				sectionIndex = sectionText.indexOf('\ufffd\ufffd1\ufffd\ufffd');
 				if ( sectionIndex !== -1 ) sectionText = sectionText.substring(0, sectionIndex);
 		}
-		sectionText = sectionText.trim().escapeFormatting().replace( /\ufffd{2}(\d)\ufffd{2}([^\n]+)/g, (match, n, sectionTitle) => {
+		sectionText = escapeFormatting(sectionText.trim()).replace( /\ufffd{2}(\d)\ufffd{2}([^\n]+)/g, (match, n, sectionTitle) => {
 			return section_formatting(sectionTitle, n);
 		} );
 		if ( sectionText.length > 1000 ) sectionText = sectionText.substring(0, 1000) + '\u2026';

@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const {escapeFormatting} = require('../util/functions.js');
 
 /**
  * Add global blocks to user messages.
@@ -42,8 +43,8 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 				}
 				else if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
-					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**' );
-					else text += '\n\n**' + lang.get('user.gblock.header', username, gender).escapeFormatting() + '**';
+					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**' );
+					else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
 				}
 			}
 		}, error => {

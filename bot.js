@@ -111,12 +111,6 @@ Discord.Message.prototype.uploadFiles = function() {
 	return !this.channel.isGuild() || this.channel.permissionsFor(client.user).has('ATTACH_FILES');
 };
 
-String.prototype.escapeFormatting = function(isMarkdown) {
-	var text = this;
-	if ( !isMarkdown ) text = text.replace( /[\(\)\\]/g, '\\$&' );
-	return text.replace( /[`_\*~:<>{}@\|]|\/\//g, '\\$&' );
-};
-
 String.prototype.replaceSave = function(pattern, replacement) {
 	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( /\$/g, '$$$$' ) : replacement ) );
 };

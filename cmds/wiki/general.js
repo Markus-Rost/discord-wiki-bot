@@ -2,7 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
 const phabricator = require('../../functions/phabricator.js');
 const logging = require('../../util/logging.js');
-const {htmlToDiscord, partialURIdecode} = require('../../util/functions.js');
+const {htmlToDiscord, escapeFormatting, partialURIdecode} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 const Wiki = require('../../util/wiki.js');
@@ -217,7 +217,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				querypage.uselang = uselang;
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 				var text = '';
-				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -298,7 +298,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( body.query.namespaces['-1']['*'] + ':', '' ).split('/')[0] ).toLowerCase();
 				if ( !['mylanguage'].includes( specialpage ) ) {
 					var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+					var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 					return fn.special_page(lang, msg, querypage, specialpage, embed, wiki, reaction, spoiler);
 				}
 			}
@@ -306,7 +306,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				logging(wiki, msg.guild?.id, 'general', 'media');
 				var filepath = body.query.specialpagealiases.find( sp => sp.realname === 'Filepath' );
 				var pagelink = wiki.toLink(body.query.namespaces['-1']['*'] + ':' + ( filepath?.aliases?.[0] || 'FilePath' ) + querypage.title.replace( body.query.namespaces['-2']['*'] + ':', '/' ), querystring, fragment);
-				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](' + wiki.toLink(querypage.title, '', '', true) + ')' );
+				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](' + wiki.toLink(querypage.title, '', '', true) + ')' );
 				if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pagelink );
 				else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pagelink,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
 				
@@ -318,7 +318,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			logging(wiki, msg.guild?.id, 'general');
 			var pagelink = wiki.toLink(querypage.title, querystring, ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ));
 			var text = '';
-			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink );
+			var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 			if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 				var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -427,7 +427,7 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 			uselang, noRedirect
 		};
 		var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-		var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( querypage.title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+		var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 		got.get( wiki + 'api.php?uselang=' + uselang + '&action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=info|pageprops|extracts&ppprop=description|displaytitle|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( querypage.title ) + '&format=json' ).then( mpresponse => {
 			var mpbody = mpresponse.body;
 			if ( mpbody && mpbody.warnings ) log_warn(body.warnings);

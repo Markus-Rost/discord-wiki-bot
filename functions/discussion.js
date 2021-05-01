@@ -1,6 +1,7 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed, Util} = require('discord.js');
 const {limit: {discussion: discussionLimit}} = require('../util/default.json');
+const {htmlToDiscord, escapeFormatting} = require('../util/functions.js');
 
 /**
  * Processes discussion commands.
@@ -28,7 +29,7 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler) 
 				var parser = new htmlparser.Parser( {
 					onopentag: (tagname, attribs) => {
 						if ( tagname === 'meta' && attribs.property === 'og:description' ) {
-							var description = attribs.content.escapeFormatting();
+							var description = escapeFormatting(attribs.content);
 							if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 							embed.setDescription( description );
 						}
@@ -108,7 +109,7 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler) 
 								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
 								embed.setTitle( '~~' + pbody.threadId + '~~' );
 							}
-							else embed.setTitle( thbody.title.escapeFormatting() );
+							else embed.setTitle( escapeFormatting(thbody.title) );
 						}, error => {
 							console.log( '- Error while getting the thread: ' + error );
 							embed.setTitle( '~~' + pbody.threadId + '~~' );
@@ -252,11 +253,11 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler) 
  */
 function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 	if ( discussion.title ) {
-		embed.setTitle( discussion.title.escapeFormatting() );
+		embed.setTitle( escapeFormatting(discussion.title) );
 		var pagelink = wiki + 'f/p/' + ( discussion.threadId || discussion.id );
 	}
 	else {
-		if ( discussion._embedded.thread ) embed.setTitle( discussion._embedded.thread[0].title.escapeFormatting() );
+		if ( discussion._embedded.thread ) embed.setTitle( escapeFormatting(discussion._embedded.thread[0].title) );
 		var pagelink = wiki + 'f/p/' + discussion.threadId + '/r/' + discussion.id;
 	}
 	var text = '<' + pagelink + '>';
@@ -267,10 +268,10 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 			embed.setImage( discussion._embedded.contentImages[0].url );
 			break;
 		case 'POLL':
-			discussion.poll.answers.forEach( answer => embed.addField( answer.text.escapeFormatting(), ( answer.image ? '[__' + lang.get('discussion.image').escapeFormatting() + '__](' + answer.image.url + ')\n' : '' ) + lang.get('discussion.votes', answer.votes.toLocaleString(lang.get('dateformat')), answer.votes, ( ( answer.votes / discussion.poll.totalVotes ) * 100 ).toFixed(1).toLocaleString(lang.get('dateformat'))), true ) );
+			discussion.poll.answers.forEach( answer => embed.addField( escapeFormatting(answer.text), ( answer.image ? '[__' + lang.get('discussion.image') + '__](' + answer.image.url + ')\n' : '' ) + lang.get('discussion.votes', answer.votes.toLocaleString(lang.get('dateformat')), answer.votes, ( ( answer.votes / discussion.poll.totalVotes ) * 100 ).toFixed(1).toLocaleString(lang.get('dateformat'))), true ) );
 			break;
 		case 'QUIZ':
-			description = discussion._embedded.quizzes[0].title.escapeFormatting();
+			description = escapeFormatting(discussion._embedded.quizzes[0].title);
 			embed.setThumbnail( discussion._embedded.quizzes[0].image );
 			break;
 		default:
@@ -285,7 +286,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 						else {
 							description = description.replace( /\{\@(\d+)\}/g, (match, n) => {
 								if ( n >= discussion._embedded.contentImages.length ) return '';
-								else return '[__' + lang.get('discussion.image').escapeFormatting() + '__](' + discussion._embedded.contentImages[n].url + ')';
+								else return '[__' + lang.get('discussion.image') + '__](' + discussion._embedded.contentImages[n].url + ')';
 							} );
 							embed.setThumbnail( discussion._embedded.contentImages[0].url );
 						}
@@ -294,43 +295,23 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler) {
 				}
 				catch ( jsonerror ) {
 					console.log( '- Error while getting the formatting: ' + jsonerror );
-					description = discussion.rawContent.escapeFormatting();
+					description = escapeFormatting(discussion.rawContent);
 					if ( discussion._embedded.contentImages.length ) embed.setThumbnail( discussion._embedded.contentImages[0].url );
 				}
 			}
 			else if ( discussion.renderedContent ) {
-				var current_tag = '';
-				var parser = new htmlparser.Parser( {
-					onopentag: (tagname, attribs) => {
-						if ( tagname === 'a' ) {
-							current_tag = attribs.href;
-							description += '[';
-						}
-					},
-					ontext: (htmltext) => {
-						description += htmltext.escapeFormatting();
-					},
-					onclosetag: (tagname) => {
-						if ( tagname === 'a' ) {
-							description += '](' + current_tag + ')';
-							current_tag = '';
-						}
-						if ( tagname === 'p' ) description += '\n';
-					}
-				} );
-				parser.write( discussion.renderedContent );
-				parser.end();
+				description = htmlToDiscord(discussion.renderedContent, pagelink);
 				if ( discussion._embedded.contentImages.length ) embed.setThumbnail( discussion._embedded.contentImages[0].url );
 			}
 			else {
-				description = discussion.rawContent.escapeFormatting();
+				description = escapeFormatting(discussion.rawContent);
 				if ( discussion._embedded.contentImages.length ) embed.setThumbnail( discussion._embedded.contentImages[0].url );
 			}
 	}
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 	embed.setDescription( description );
 	if ( discussion.tags?.length ) {
-		embed.addField( lang.get('discussion.tags'), Util.splitMessage( discussion.tags.map( tag => '[' + tag.articleTitle.escapeFormatting() + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
+		embed.addField( lang.get('discussion.tags'), Util.splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
 	}
 	
 	msg.sendChannel( spoiler + text + spoiler, {embed} );
@@ -379,7 +360,7 @@ function discussion_formatting(jsonModel) {
 					}
 				} );
 			}
-			description += prepend + jsonModel.text.escapeFormatting() + append;
+			description += prepend + escapeFormatting(jsonModel.text) + append;
 			break;
 		case 'image':
 			if ( jsonModel.attrs.id !== null ) description += '{@' + jsonModel.attrs.id + '}\n';

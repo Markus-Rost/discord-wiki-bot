@@ -32,7 +32,7 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 		case 'data':
 			var {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
 			label = htmlToPlain(label).trim();
-			value = htmlToDiscord(value, pagelink, true).trim();
+			value = htmlToDiscord(value, pagelink).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
 				if ( !( source || name ) ) break;
 				label = '`' + ( source || name )  + '`';
@@ -130,7 +130,7 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 		while ( ( link = regex.exec(text) ) !== null ) {
 			text = text.replaceSave( link[0], '[' + link[2] + '](https://' + link[1] + ')' );
 		}
-		return htmlToDiscord( text, '', true, true ).replaceSave( /'''/g, '**' ).replaceSave( /''/g, '*' );
+		return htmlToDiscord(text, '', true, true).replaceSave( /'''/g, '**' ).replaceSave( /''/g, '*' );
 	}
 	return escapeFormatting(text, true);
 };
@@ -372,8 +372,8 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
  * @returns {String}
  */
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
-	if ( !isMarkdown ) text = text.replace( /[()\\]/g, '\\$&' );
-	if ( !keepLinks ) text = text.replace( /\/\//g, '\\$&' );
+	if ( !isMarkdown ) text = text.replace( /\\/g, '\\\\' ).replace( /\]\(/g, ']\\(' );
+	if ( !keepLinks ) text = text.replace( /\/\//g, '/\\/' );
 	return text.replace( /[`_*~:<>{}@|]/g, '\\$&' );
 };
 

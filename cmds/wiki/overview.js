@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const logging = require('../../util/logging.js');
 const {timeoptions} = require('../../util/default.json');
-const {toFormatting, toPlaintext} = require('../../util/functions.js');
+const {toFormatting, toPlaintext, escapeFormatting} = require('../../util/functions.js');
 
 /**
  * Sends a Gamepedia wiki overview.
@@ -89,7 +89,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		var text = '<' + pagelink + '>';
 		var embed = null;
 		if ( msg.showEmbed() ) {
-			embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( title.escapeFormatting() ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 		}
 		else {
 			text += '\n';
@@ -127,7 +127,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					created[1] = dateformat.format(creation_date);
 				}
 				if ( site.desc ) {
-					description[1] = site.desc.escapeFormatting();
+					description[1] = escapeFormatting(site.desc);
 					if ( description[1].length > 1000 ) {
 						description[1] = description[1].substring(0, 1000) + '\u2026';
 					}
