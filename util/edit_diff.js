@@ -20,15 +20,18 @@ function diffParser(html, more, whitespace) {
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
 			if ( tagname === 'ins' || tagname == 'del' ) current_tag = tagname;
-			if ( tagname === 'td' && attribs.class === 'diff-addedline' && ins_length <= 1000 ) {
-				current_tag = 'tda';
-				last_ins = '';
+			if ( tagname === 'td' ) {
+				let classes = ( attribs.class?.split(' ') || [] );
+				if ( classes.includes( 'diff-addedline' ) && ins_length <= 1000 ) {
+					current_tag = 'tda';
+					last_ins = '';
+				}
+				if ( classes.includes( 'diff-deletedline' ) && del_length <= 1000 ) {
+					current_tag = 'tdd';
+					last_del = '';
+				}
+				if ( classes.includes( 'diff-empty' ) ) empty = true;
 			}
-			if ( tagname === 'td' && attribs.class === 'diff-deletedline' && del_length <= 1000 ) {
-				current_tag = 'tdd';
-				last_del = '';
-			}
-			if ( tagname === 'td' && attribs.class === 'diff-empty' ) empty = true;
 		},
 		ontext: (htmltext) => {
 			if ( current_tag === 'ins' && ins_length <= 1000 ) {
