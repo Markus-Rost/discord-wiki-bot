@@ -117,9 +117,10 @@
         "hidden": "*oculto*",
         "info": {
             "added": "Añadido:",
-            "bytes": "$1 {{PLURAL:$2|Byte|Bytes}}",
+            "bytes": "$1 {{PLURAL:$2|Byte|Bytes}} $3",
             "comment": "Comentario:",
             "editor": "Editor:",
+            "minor": "(m)",
             "more": "Y más",
             "removed": "Eliminado:",
             "size": "Diferencia:",
@@ -393,7 +394,9 @@
     },
     "interaction": {
         "inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
-        "missingrole": "Debes tener el rol de $1 o uno superior para usar este comando."
+        "missingrole": "Debes tener el rol de $1 o uno superior para usar este comando.",
+        "nowiki": "¡El wiki usado no existe!",
+        "verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
     },
     "invite": {
         "bot": "Usa este enlace para invitarme a otro servidor:"
@@ -682,7 +685,21 @@
     },
     "user": {
         "block": {
-            "header": "¡$1 está bloqueado actualmente!"
+            "duration": {
+                "days": "$1 {{PLURAL:$2|día|dias}}",
+                "hours": "$1 {{PLURAL:$2|hora|horas}}",
+                "minutes": "$1 {{PLURAL:$2|minuto|minutos}}",
+                "months": "$1 {{PLURAL:$2|mes|meses}}",
+                "separator": ",_",
+                "separator_last": "_y_",
+                "weeks": "$1 {{PLURAL:$2|semana|semanas}}",
+                "years": "$1 {{PLURAL:$2|año|años}}"
+            },
+            "header": "¡$1 está bloqueado actualmente!",
+            "indef_noreason": "Bloqueado indefinidamente el $1 por $4.",
+            "indef_text": "Bloqueado indefinidamente el $1 por $4 con motivo \"$5\".",
+            "noreason": "Bloqueado el $1 por $2 hasta $3 por $4.",
+            "text": "Bloqueado el $1 por $2 hasta $3 por $4 con motivo \"$5\"."
         },
         "gblock": {
             "disabled": "¡Esta cuenta está actualmente deshabilitada!",
