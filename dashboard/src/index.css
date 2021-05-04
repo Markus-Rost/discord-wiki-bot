@@ -482,6 +482,22 @@ code {
 	font-weight: bold;
 	font-size: 90%;
 }
+fieldset {
+	border-color: #dcddde;
+}
+.theme-light fieldset {
+	border-color: #2e3338;
+}
+legend {
+	background: #dcddde;
+	color: #36393f;
+	padding: 3px 6px;
+	font-weight: bold;
+}
+.theme-light legend {
+	background-color: #2e3338;
+	color: #ffffff;
+}
 fieldset > div {
 	margin: 10px 0;
 }
@@ -497,10 +513,12 @@ fieldset input[type="url"] {
 fieldset input:invalid {
 	background: #FFAAAA;
 }
-.wb-settings-display:first-of-type {
+.wb-settings-display:first-of-type,
+.wb-settings-permission:first-of-type {
 	display: inline-block;
 }
 .wb-settings-display:not(:first-of-type),
+.wb-settings-permission:not(:first-of-type),
 .wb-settings-additional-select,
 .wb-settings-postcount:not(:nth-of-type(2)),
 #wb-settings-wiki-check-notice,

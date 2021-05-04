@@ -394,7 +394,6 @@
     },
     "interaction": {
         "inline": "请提供一些有 [[wiki 文本]] 的文字来使用此命令。",
-        "missingrole": "你需要拥有 $1 身份组或更高的身份组以使用此命令。",
         "nowiki": "所使用的 wiki 不存在！",
         "verify": "为了验证您的 Discord 与您的 wiki 账户相匹配并授予与您 wiki 账户相符合的身份组，请提供您的 wiki 用户名。"
     },

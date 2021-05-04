@@ -7,7 +7,8 @@ const {settingsData, addWidgets, createNotice} = require('./util.js');
 const forms = {
 	settings: require('./settings.js').get,
 	verification: require('./verification.js').get,
-	rcscript: require('./rcscript.js').get
+	rcscript: require('./rcscript.js').get,
+	slash: require('./slash.js').get
 };
 
 const DiscordOauth2 = require('discord-oauth2');
@@ -30,7 +31,7 @@ const file = require('fs').readFileSync('./dashboard/index.html');
  * @param {String[]} [actionArgs] - The arguments for the action
  */
 function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, actionArgs) {
-	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?)?)?)(?:\/.*)?$/, '$1' );
+	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	args = reqURL.pathname.split('/');
 	var settings = settingsData.get(state);
@@ -50,6 +51,7 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 	$('.channel#settings div').text(dashboardLang.get('general.settings'));
 	$('.channel#verification div').text(dashboardLang.get('general.verification'));
 	$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
+	$('.channel#slash div').text(dashboardLang.get('general.slash'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
@@ -112,9 +114,11 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
+		$('.channel#slash').attr('href', `/guild/${guild.id}/slash`);
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'slash' ) return forms.slash(res, $, guild, args, dashboardLang);
 		return forms.settings(res, $, guild, args, dashboardLang);
 	}
 	else if ( settings.guilds.notMember.has(id) ) {
@@ -154,9 +158,11 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings?owner=true`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification?owner=true`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript?owner=true`);
+		$('.channel#slash').attr('href', `/guild/${guild.id}/slash?owner=true`);
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'slash' ) return forms.slash(res, $, guild, args, dashboardLang);
 		return forms.settings(res, $, guild, args, dashboardLang);
 	}
 	else {

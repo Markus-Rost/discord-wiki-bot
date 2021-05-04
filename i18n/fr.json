@@ -394,7 +394,6 @@
     },
     "interaction": {
         "inline": "Veuillez fournir un texte avec des liens [[wikitext]] pour utiliser cette commande.",
-        "missingrole": "Vous devez avoir le rôle $1 ou un rôle supérieur pour utiliser cette commande.",
         "nowiki": "Le wiki utilisé n'existe pas !",
         "verify": "Veuillez fournir votre nom d'utilisateur wiki pour utiliser cette commande afin de vérifier votre compte Discord avec votre compte wiki et obtenir les rôles correspondant à votre compte wiki."
     },

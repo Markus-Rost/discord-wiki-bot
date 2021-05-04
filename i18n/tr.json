@@ -391,8 +391,7 @@
         "pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:"
     },
     "interaction": {
-        "inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin.",
-        "missingrole": "Bu komutu kullanmak için $1 ya da daha yüksek bir role sahip olman lazım."
+        "inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin."
     },
     "invite": {
         "bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"

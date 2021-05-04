@@ -20,7 +20,7 @@ global.got = require('got').extend( {
 const Lang = require('./util/i18n.js');
 const Wiki = require('./util/wiki.js');
 const newMessage = require('./util/newMessage.js');
-const {allowDelete} = require('./util/functions.js');
+const {slashCommands, allowDelete} = require('./util/functions.js');
 global.patreons = {};
 global.voice = {};
 const db = require('./util/database.js');
@@ -63,7 +63,6 @@ const client = new Discord.Client( {
 
 client.api.applications(process.env.bot).commands.get().then( response => {
 	console.log( '- ' + shardId + ': Slash commands successfully loaded.' );
-	const slashCommands = require('./interactions/commands.json');
 	response.forEach( command => {
 		var slashCommand = slashCommands.find( slashCommand => slashCommand.name === command.name );
 		if ( slashCommand ) {
@@ -241,24 +240,8 @@ client.ws.on( 'INTERACTION_CREATE', interaction => {
 	}
 	interaction.user = interaction.member.user;
 	interaction.member.permissions = new Discord.Permissions(+interaction.member.permissions);
-	db.query( 'SELECT wiki, lang, role FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
-		var lang = new Lang(( row?.lang || channel?.guild?.preferredLocale ));
-		if ( row?.role && !interaction.member.roles.includes( row.role ) && !interaction.member.permissions.has('MANAGE_GUILD') && channel?.guild?.roles.cache.has(row.role) && ( !interaction.member.roles.length || !interaction.member.roles.some( role => channel.guild.roles.cache.get(role)?.comparePositionTo(row.role) >= 0 ) ) ) {
-			return client.api.interactions(interaction.id, interaction.token).callback.post( {
-				data: {
-					type: 4,
-					data: {
-						content: lang.get('interaction.missingrole', '<@&' + row.role + '>'),
-						allowed_mentions: {
-							parse: []
-						},
-						flags: 64
-					}
-				}
-			} ).catch(log_error);
-		}
-		var wiki = new Wiki(row?.wiki);
-		return slash[interaction.data.name](interaction, lang, wiki, channel);
+	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
+		return slash[interaction.data.name](interaction, new Lang(( row?.lang || channel?.guild?.preferredLocale )), new Wiki(row?.wiki), channel);
 	}, dberror => {
 		console.log( '- Slash: Error while getting the wiki: ' + dberror );
 		return client.api.interactions(interaction.id, interaction.token).callback.post( {

@@ -8,6 +8,8 @@ const got = require('got').extend( {
 	responseType: 'json'
 } );
 
+const slashCommands = require('../interactions/commands.json');
+
 /**
  * Parse infobox content
  * @param {Object} infobox - The content of the infobox.
@@ -449,6 +451,7 @@ function sendMessage(interaction, message, channel) {
 
 module.exports = {
 	got,
+	slashCommands,
 	parse_infobox,
 	toFormatting,
 	toMarkdown,

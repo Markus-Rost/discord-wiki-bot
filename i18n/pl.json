@@ -394,7 +394,6 @@
     },
     "interaction": {
         "inline": "Wyślij wiadomość z linkami [[wikitekstu]] aby użyć tej komendy.",
-        "missingrole": "Aby użyć tej komendy wymagane jest posiadanie roli $1 lub wyższej.",
         "nowiki": "Używana wiki nie istnieje!",
         "verify": "Podaj swoją nazwę użytkownika na wiki aby użyć komendy do zweryfikowania swojego konta na Discordzie kontem na wiki oraz otrzymać role odpowiadające Twojemu koncie na wiki."
     },

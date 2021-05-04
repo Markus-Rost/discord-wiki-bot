@@ -21,6 +21,7 @@
         "save": "Save",
         "selector": "Server Selector",
         "settings": "Settings",
+        "slash": "Slash Commands",
         "support": "Support Server",
         "theme-dark": "Use dark theme",
         "theme-light": "Use light theme",
@@ -134,7 +135,7 @@
     },
     "rcscript": {
         "desc": "These are the recent changes webhooks for $1:",
-        "explanation": "<h2>Recent Changes Webhook</h2>\n<p>Wiki-Bot is able to run a recent changes webhook based on <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>\n<p>Requirements to add a recent changes webhook:</p>\n<ul>\n<li>The wiki needs to run on <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> or higher.</li>\n<li>The system message <code>MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
+        "explanation": "<h2>Recent Changes Webhook</h2>\n<p>Wiki-Bot is able to run a recent changes webhook based on <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>\n<p>Requirements to add a recent changes webhook:</p>\n<ul>\n<li>The wiki needs to run on <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> or higher.</li>\n<li>The system message <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
         "form": {
             "channel": "Channel:",
             "confirm": "Do you really want to delete the recent changes webhook?",
@@ -182,6 +183,21 @@
             "wiki_check": "Check wiki"
         },
         "new": "New channel overwrite"
+    },
+    "slash": {
+        "desc": "These are the slash commands for $1:",
+        "explanation": "<h2>Slash Commands</h2>\n<p>The usage of specific slash commands can be restricted per role or user. You can do that for the slash commands of Wiki-Bot here.</p>",
+        "form": {
+            "add": "Add",
+            "allow": "Allow",
+            "default_allow": "By default this command is allowed to be used by everyone.",
+            "default_deny": "By default this command is not allowed to be used by anyone.",
+            "deny": "Deny",
+            "entry": "Command $1",
+            "default": "Default",
+            "role": "Role:",
+            "select_role": "-- Select a Role --"
+        }
     },
     "verification": {
         "desc": "These are the verifications for $1:",

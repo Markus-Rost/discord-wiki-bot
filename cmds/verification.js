@@ -1,7 +1,7 @@
 const help_setup = require('../functions/helpsetup.js');
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
 var db = require('../util/database.js');
-const slashCommand = require('../interactions/commands.json').find( slashCommand => slashCommand.name === 'verify' );
+const slashCommand = require('../util/functions.js').slashCommands.find( slashCommand => slashCommand.name === 'verify' );
 
 /**
  * Processes the "verification" command.

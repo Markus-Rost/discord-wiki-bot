@@ -12,9 +12,11 @@ db.on( 'error', dberror => {
 	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
 
-got.get( 'https://discord.com/api/v8/applications/' + process.env.bot + '/commands', {
-	headers:{
-		Authorization: 'Bot ' + process.env.token
+const slashCommands = require('../interactions/commands.json');
+
+got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, {
+	headers: {
+		Authorization: `Bot ${process.env.token}`
 	},
 	timeout: 10000
 } ).then( response=> {
@@ -23,7 +25,6 @@ got.get( 'https://discord.com/api/v8/applications/' + process.env.bot + '/comman
 		return;
 	}
 	console.log( '- Dashboard: Slash commands successfully loaded.' );
-	const slashCommands = require('../interactions/commands.json');
 	response.body.forEach( command => {
 		var slashCommand = slashCommands.find( slashCommand => slashCommand.name === command.name );
 		if ( slashCommand ) {
@@ -120,6 +121,7 @@ function sendMsg(message) {
 	} );
 	return promise;
 }
+
 var botLists = [];
 if ( process.env.botlist ) {
 	let supportedLists = {
@@ -210,7 +212,7 @@ function createNotice($, notice, dashboardLang, args = []) {
 			type = 'info';
 			title.text(dashboardLang.get('notice.nosettings.title'));
 			text.text(dashboardLang.get('notice.nosettings.text'));
-			note = $('<a>').text(dashboardLang.get('notice.nosettings.note')).attr('href', `/guild/${args[0]}/settings`);
+			if ( args[0] ) note = $('<a>').text(dashboardLang.get('notice.nosettings.note')).attr('href', `/guild/${args[0]}/settings`);
 			break;
 		case 'logout':
 			type = 'success';
@@ -345,4 +347,4 @@ function hasPerm(all = 0, ...permission) {
 	} ).every( perm => perm );
 }
 
-module.exports = {got, db, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};
+module.exports = {got, db, slashCommands, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};

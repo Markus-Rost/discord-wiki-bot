@@ -10,7 +10,8 @@ global.isDebug = ( process.argv[2] === 'debug' );
 const posts = {
 	settings: require('./settings.js').post,
 	verification: require('./verification.js').post,
-	rcscript: require('./rcscript.js').post
+	rcscript: require('./rcscript.js').post,
+	slash: require('./slash.js').post
 };
 
 const fs = require('fs');
@@ -57,7 +58,7 @@ const server = http.createServer( (req, res) => {
 			return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
 		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)*)"$/, '$1' ) )?.join();
 
-		if ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] )
+		if ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] )
 		&& /^(?:default|new|\d+)$/.test(args[4]) && settingsData.has(state)
 		&& settingsData.get(state).guilds.isMember.has(args[2]) ) {
 			if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
@@ -154,8 +155,8 @@ const server = http.createServer( (req, res) => {
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^"\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^guild="(\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^"\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; HttpOnly; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -180,7 +181,7 @@ const server = http.createServer( (req, res) => {
 	if ( !state ) {
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
 			}
 		}
@@ -194,7 +195,7 @@ const server = http.createServer( (req, res) => {
 	if ( !settingsData.has(state) ) {
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
 			}
 		}
@@ -203,7 +204,7 @@ const server = http.createServer( (req, res) => {
 
 	if ( reqURL.pathname === '/refresh' ) {
 		let returnLocation = reqURL.searchParams.get('return');
-		if ( !/^\/guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new))?$/.test(returnLocation) ) {
+		if ( !/^\/guild\/\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, state, returnLocation);

@@ -1,7 +1,7 @@
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
 const Lang = require('../util/i18n.js');
-const {got, db, sendMsg, createNotice, escapeText, hasPerm} = require('./util.js');
-const slashCommand = require('../interactions/commands.json').find( slashCommand => slashCommand.name === 'verify' );
+const {got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm} = require('./util.js');
+const slashCommand = slashCommands.find( slashCommand => slashCommand.name === 'verify' );
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'

@@ -394,7 +394,6 @@
     },
     "interaction": {
         "inline": "Bitte gebe einen Text mit [[Wikitext]]-Links an um diesen Befehl zu nutzen.",
-        "missingrole": "Du benötigst die $1-Rolle oder eine höhere Rolle um diesen Befehl zu nutzen.",
         "nowiki": "Das genutzte Wiki existiert nicht!",
         "verify": "Bitte gebe deinen Wiki-Benutzernamen an um diesen Befehl dazu zu nutzen, deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
     },

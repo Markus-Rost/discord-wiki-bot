@@ -349,6 +349,48 @@ if ( prefix ) prefix.addEventListener( 'input', function() {
 	else prefix.setCustomValidity('');
 } );
 
+/** @type {HTMLSelectElement} */
+const addRole = document.getElementById('wb-settings-addrole');
+const addRoleButton = document.getElementById('wb-settings-addrole-add');
+if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
+	if ( addRole.value ) {
+		var selectedRole = addRole.children.item(addRole.selectedIndex);
+		var newPermission = document.createElement('div');
+		var selectedRoleInfo = selectedRole.textContent.split(' – ');
+		var newPermissionSpan = document.createElement('span');
+		newPermissionSpan.textContent = ( selectedRoleInfo[1] || selectedRoleInfo[0] );
+		newPermissionSpan.setAttribute('title', selectedRoleInfo[0]);
+		var newPermissionDiv0 = document.createElement('div');
+		newPermissionDiv0.classList.add('wb-settings-permission');
+		var newPermissionInput = document.createElement('input');
+		newPermissionInput.setAttribute('type', 'radio');
+		newPermissionInput.setAttribute('name', 'permission-' +  addRole.value);
+		newPermissionInput.setAttribute('required', '');
+		newPermissionDiv0.append(newPermissionInput, document.createElement('label'));
+		/** @type {HTMLDivElement} */
+		var newPermissionDiv1 = newPermissionDiv0.cloneNode(true);
+		/** @type {HTMLDivElement} */
+		var newPermissionDiv2 = newPermissionDiv0.cloneNode(true);
+		newPermissionDiv0.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-0';
+		newPermissionDiv1.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-1';
+		newPermissionDiv2.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-default';
+		newPermissionDiv0.firstElementChild.setAttribute('value', '0');
+		newPermissionDiv1.firstElementChild.setAttribute('value', '1');
+		newPermissionDiv2.firstElementChild.setAttribute('value', '');
+		newPermissionDiv0.lastElementChild.setAttribute('for', 'wb-settings-permission-' + addRole.value + '-0');
+		newPermissionDiv1.lastElementChild.setAttribute('for', 'wb-settings-permission-' + addRole.value + '-1');
+		newPermissionDiv2.lastElementChild.setAttribute('for', 'wb-settings-permission-' + addRole.value + '-default');
+		newPermissionDiv0.lastElementChild.textContent = i18nSlashPermission.deny;
+		newPermissionDiv1.lastElementChild.textContent = i18nSlashPermission.allow;
+		newPermissionDiv2.lastElementChild.textContent = i18nSlashPermission.default;
+		newPermissionDiv2.firstElementChild.setAttribute('checked', '');
+		newPermission.append(newPermissionSpan, newPermissionDiv0, newPermissionDiv1, newPermissionDiv2);
+		addRole.parentElement.after(newPermission);
+		selectedRole.remove();
+		addRole.firstElementChild.setAttribute('selected', '');
+	}
+};
+
 /*
 var collapsible = document.getElementsByClassName('collapsible');
 for ( var i = 0; i < collapsible.length; i++ ) {

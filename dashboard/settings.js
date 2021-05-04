@@ -126,7 +126,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 			...guildRoles.map( guildRole => {
 				return $(`<option id="wb-settings-role-${guildRole.id}">`).val(guildRole.id).text(`${guildRole.id} – @${guildRole.name}`)
 			} ),
-			$(`<option id="wb-settings-role-everyone">`).val('').text(`@everyone`)
+			$(`<option id="wb-settings-role-everyone">`).val('').text('@everyone')
 		);
 		if ( settings.role ) role.find(`#wb-settings-role-${settings.role}`).attr('selected', '');
 		else role.find(`#wb-settings-role-everyone`).attr('selected', '');
@@ -174,6 +174,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [guild.id] ).then( ({rows}) => {
 		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		if ( !rows.length ) {
+			createNotice($, 'nosettings', dashboardLang);
 			$('.channel#settings').addClass('selected');
 			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, {
 				prefix: process.env.prefix,
