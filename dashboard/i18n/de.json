@@ -21,6 +21,7 @@
         "save": "Speichern",
         "selector": "Serverauswahl",
         "settings": "Einstellungen",
+        "slash": "Slash-Befehle",
         "support": "Support-Server",
         "theme-dark": "Nutze das dunkle Design",
         "theme-light": "Nutze das helle Design",
@@ -134,7 +135,7 @@
     },
     "rcscript": {
         "desc": "Dies sind die Letzte Änderungen-Webhooks für $1:",
-        "explanation": "<h2>Letzte Änderungen-Webhook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-Webhook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-Webhook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code>MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
+        "explanation": "<h2>Letzte Änderungen-Webhook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-Webhook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-Webhook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
         "form": {
             "channel": "Kanal:",
             "confirm": "Möchtest du wirklich den Letzte Änderungen-Webhook löschen?",
@@ -182,6 +183,21 @@
             "wiki_check": "Wiki testen"
         },
         "new": "Neue Überschreibung"
+    },
+    "slash": {
+        "desc": "Dies sind die Slash-Befehle für $1:",
+        "explanation": "<h2>Slash-Befehle</h2>\n<p>Die Nutzung von Slash-Befehlen kann pro Rolle beschränkt werden. Dies kannst du hier für die Slash-Befehle von Wiki-Bot tun.</p>",
+        "form": {
+            "add": "Hinzufügen",
+            "allow": "Erlaubt",
+            "default": "Standard",
+            "default_allow": "Standardmäßig kann dieser Befehl von allen genutzt werden.",
+            "default_deny": "Standardmäßig kann dieser Befehl von niemandem genutzt werden.",
+            "deny": "Verboten",
+            "entry": "Befehl $1",
+            "role": "Rolle:",
+            "select_role": "-- Wähle eine Rolle --"
+        }
     },
     "verification": {
         "desc": "Dies sind die Verifizierungen für $1:",
