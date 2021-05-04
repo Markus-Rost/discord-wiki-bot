@@ -39,21 +39,27 @@ function slash_verify(interaction, lang, wiki, channel) {
 		} ).catch(log_error);
 	}
 	
-	return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
-		data: {
-			type: 5,
+	return db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
+		if ( !rows.length ) return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 			data: {
-				allowed_mentions,
-				flags: 0
+				type: 4,
+				data: {
+					content: reply + lang.get('verify.missing') + ( interaction.member.permissions.has('MANAGE_GUILD') ? '\n' + new URL(`/guild/${interaction.guild_id}/verification`, process.env.dashboard).href : '' ),
+					allowed_mentions,
+					flags: 64
+				}
 			}
-		}
-	} ).then( () => {
-		return db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
-			if ( !rows.length ) return sendMessage(interaction, {
-				content: reply + lang.get('verify.missing') + ( interaction.member.permissions.has('MANAGE_GUILD') ? '\n' + new URL(`/guild/${interaction.guild_id}/verification`, process.env.dashboard).href : '' ),
-				allowed_mentions
-			}, channel);
-			
+		} ).catch(log_error);
+		
+		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {
+				type: 5,
+				data: {
+					allowed_mentions,
+					flags: 0
+				}
+			}
+		} ).then( () => {
 			return channel.guild.members.fetch(interaction.user.id).then( member => {
 				var username = ( interaction.data.options?.[0]?.value || '' ).replace( /^\s*<@!?(\d+)>\s*$/, (mention, id) => {
 					if ( id === interaction.user.id ) {
@@ -102,14 +108,20 @@ function slash_verify(interaction, lang, wiki, channel) {
 					allowed_mentions
 				}, channel);
 			} );
-		}, dberror => {
-			console.log( '- Error while getting the verifications: ' + dberror );
-			return sendMessage(interaction, {
-				content: reply + lang.get('verify.error_reply'),
-				allowed_mentions
-			}, channel);
-		} );
-	}, log_error );
+		}, log_error );
+	}, dberror => {
+		console.log( '- Error while getting the verifications: ' + dberror );
+		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {
+				type: 4,
+				data: {
+					content: reply + lang.get('verify.error_reply'),
+					allowed_mentions,
+					flags: 64
+				}
+			}
+		} ).catch(log_error);
+	} );
 }
 
 module.exports = {
