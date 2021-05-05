@@ -186,15 +186,15 @@
     },
     "slash": {
         "desc": "These are the slash commands for $1:",
-        "explanation": "<h2>Slash Commands</h2>\n<p>The usage of specific slash commands can be restricted per role or user. You can do that for the slash commands of Wiki-Bot here.</p>",
+        "explanation": "<h2>Slash Commands</h2>\n<p>The usage of specific slash commands can be restricted per role. You can do that for the slash commands of Wiki-Bot here.</p>",
         "form": {
             "add": "Add",
             "allow": "Allow",
+            "default": "Default",
             "default_allow": "By default this command is allowed to be used by everyone.",
             "default_deny": "By default this command is not allowed to be used by anyone.",
             "deny": "Deny",
             "entry": "Command $1",
-            "default": "Default",
             "role": "Role:",
             "select_role": "-- Select a Role --"
         }

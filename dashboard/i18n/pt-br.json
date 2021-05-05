@@ -21,6 +21,7 @@
         "save": "Salvar",
         "selector": "Seletor de servidor",
         "settings": "Configurações",
+        "slash": "Comandos de slash",
         "support": "Servidor de suporte",
         "theme-dark": "Usar tema escuro",
         "theme-light": "Usar tema claro",
@@ -134,7 +135,7 @@
     },
     "rcscript": {
         "desc": "Estes são os webhooks de mudanças recentes para $1:",
-        "explanation": "<h2>Webhook de mudanças recentes</h2>\n<p>O Wiki-Bot é capaz de executar um webhook de mudanças recentes baseado no <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links embutidos ou mensagens incorporadas com etiquetas de edição e mudanças de categoria.</p>\n<p>Requisitos para adicionar um webhook de mudanças recentes:</p>\n<ul>\n<li>A wiki precisa estar no <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> ou superior.</li>\n<li>A mensagem de sistema <code>MediaWiki:Custom-RcGcDw</code> precisa ser definida com o ID do servidor do Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
+        "explanation": "<h2>Webhook de mudanças recentes</h2>\n<p>O Wiki-Bot é capaz de executar um webhook de mudanças recentes baseado no <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links embutidos ou mensagens incorporadas com etiquetas de edição e mudanças de categoria.</p>\n<p>Requisitos para adicionar um webhook de mudanças recentes:</p>\n<ul>\n<li>A wiki precisa estar no <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> ou superior.</li>\n<li>A mensagem de sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> precisa ser definida com o ID do servidor do Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
         "form": {
             "channel": "Canal:",
             "confirm": "Tem certeza de que deseja excluir o webhook de mudanças recentes?",
@@ -182,6 +183,21 @@
             "wiki_check": "Verificar wiki"
         },
         "new": "Nova sobreposição de canal"
+    },
+    "slash": {
+        "desc": "Estes são os comandos de slash para $1:",
+        "explanation": "<h2>Comandos slash</h2>\n<p>O uso de comandos de slash específicos pode ser restrito por função ou usuário. Você pode fazer isso para os comandos de slash do Wiki-Bot aqui.</p>",
+        "form": {
+            "add": "Adicionar",
+            "allow": "Permitir",
+            "default": "Padrão",
+            "default_allow": "Por padrão, este comando pode ser usado por todos.",
+            "default_deny": "Por padrão, este comando não pode ser usado por ninguém.",
+            "deny": "Negar",
+            "entry": "Comando $1",
+            "role": "Cargo:",
+            "select_role": "-- Selecionar cargo --"
+        }
     },
     "verification": {
         "desc": "Estas são as verificações para $1:",

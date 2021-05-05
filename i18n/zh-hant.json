@@ -393,6 +393,12 @@
         "pause": "**我目前處於暫停狀態！**\n僅能使用以下指令："
     },
     "interaction": {
+        "dashboard": {
+            "perm_allow": "允許",
+            "perm_default": "預設",
+            "perm_deny": "拒絕",
+            "updated": "$1更新了`$2`的斜槓指令權限覆寫。"
+        },
         "inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
         "nowiki": "所使用的wiki不存在！",
         "verify": "為了能透過您的wiki帳號驗證您的Discord帳號與並授予與您wiki帳號相符的身分組，請提供您的wiki使用者名稱以使用此指令。"
