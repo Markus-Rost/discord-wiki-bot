@@ -197,7 +197,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		if ( args[0] === 'lang' ) {
+		if ( args[0] === 'lang' || args[0] === 'language' ) {
 			if ( channel && !patreons[msg.guild.id] ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', {}, true );
 			prelang += 'lang';
 			var langhelp = '\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`';

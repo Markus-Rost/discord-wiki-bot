@@ -219,7 +219,7 @@ fs.readdir( './interactions', (error, files) => {
 client.ws.on( 'INTERACTION_CREATE', interaction => {
 	if ( interaction.version !== 1 || interaction.type !== 2 ) return;
 	if ( !slash.hasOwnProperty(interaction.data.name) ) {
-		console.log( '- Slash: Unknown command: ' + interaction.data.name );
+		console.log( '- Slash: Unknown command: ' + ( isDebug ? JSON.stringify(interaction, null, '\t') : interaction.data.name ) );
 		return client.api.interactions(interaction.id, interaction.token).callback.post( {
 			data: {
 				type: 4,

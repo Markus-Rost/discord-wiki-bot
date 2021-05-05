@@ -320,7 +320,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
 				} ) );
 			}
-			if ( args[0] === 'lang' ) {
+			if ( args[0] === 'lang' || args[0] === 'language' ) {
 				if ( !args[1] ) {
 					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${selected_row.lang}.png`] : [] )}, true );
 				}
