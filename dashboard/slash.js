@@ -1,5 +1,5 @@
 const Lang = require('../util/i18n.js');
-const {got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm} = require('./util.js');
+const {got, db, slashCommands, sendMsg, createNotice, hasPerm} = require('./util.js');
 
 const fieldset = {
 	role: '<label for="wb-settings-addrole">Role:</label>'
@@ -126,11 +126,22 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 					$('.channel#slash').addClass('selected');
 					return;
 				}
-				else if ( slashCommand.name === 'verify' ) {
+				else if ( slashCommand.name === 'verify' ) return db.query( 'SELECT 1 FROM verification WHERE guild = $1 LIMIT 1', [guild] ).then( ({rows}) => {
+					if ( rows.length ) {
+						$('<p>').html(dashboardLang.get('slash.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+						$(`.channel#channel-${slashCommand.id}`).addClass('selected');
+						createForm($, slashCommand, dashboardLang, permissions, guild.id, guild.roles).attr('action', `/guild/${guild.id}/slash/${slashCommand.id}`).appendTo('#text');
+						return;
+					}
 					res.writeHead(302, {Location: `/guild/${guild.id}/verification/new${suffix}`});
 					res.end();
 					return true;
-				}
+				}, dberror => {
+					console.log( '- Dashboard: Error while checking for verifications: ' + dberror );
+					res.writeHead(302, {Location: `/guild/${guild.id}/verification/new${suffix}`});
+					res.end();
+					return true;
+				} );
 			}
 			else permissions = response.body.permissions;
 			$('<p>').html(dashboardLang.get('slash.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
@@ -204,9 +215,13 @@ function update_slash(res, userSettings, guild, type, settings) {
 				if ( response.statusCode !== 404 || response.body?.message !== 'Unknown application command permissions' ) {
 					console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the old slash command permissions: ' + response.body?.message );
 				}
-				else if ( commandName === 'verify' ) {
+				else if ( commandName === 'verify' ) return db.query( 'SELECT 1 FROM verification WHERE guild = $1 LIMIT 1', [guild] ).then( ({rows}) => {
+					if ( rows.length ) return [];
 					return Promise.reject();
-				}
+				}, dberror => {
+					console.log( '- Dashboard: Error while checking for verifications: ' + dberror );
+					return Promise.reject();
+				} );
 				return [];
 			}
 			return response.body.permissions;
