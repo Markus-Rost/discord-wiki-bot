@@ -218,6 +218,7 @@ const server = http.createServer( (req, res) => {
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
+	if ( reqURL.searchParams.get('slash') === 'noverify' ) action = 'noverify';
 	return dashboard(res, dashboardLang, themeCookie, state, reqURL, action);
 } );
 

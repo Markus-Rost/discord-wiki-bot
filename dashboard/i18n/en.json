@@ -96,6 +96,15 @@
             "text": "Please define settings for the server first.",
             "title": "Server not set up yet!"
         },
+        "noslash": {
+            "note": "Enable slash commands.",
+            "text": "The slash commands of Wiki-Bot are not enabled on this server.",
+            "title": "Slash commands are not enabled!"
+        },
+        "noverify": {
+            "text": "The restrictions for the $1 command can't be changed without verifications being set up.",
+            "title": "Verifications are not set up!"
+        },
         "readonly": {
             "text": "You can currently only view your settings, but not change them.",
             "title": "Read-only database!"

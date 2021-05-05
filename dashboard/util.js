@@ -11,6 +11,12 @@ const db = new Pool();
 db.on( 'error', dberror => {
 	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
+const DiscordOauth2 = require('discord-oauth2');
+const oauth = new DiscordOauth2( {
+	clientId: process.env.bot,
+	clientSecret: process.env.secret,
+	redirectUri: process.env.dashboard
+} );
 
 const slashCommands = require('../interactions/commands.json');
 
@@ -258,6 +264,17 @@ function createNotice($, notice, dashboardLang, args = []) {
 			title.text(dashboardLang.get('notice.invalidusergroup.title'));
 			text.text(dashboardLang.get('notice.invalidusergroup.text'));
 			break;
+		case 'noverify':
+			type = 'info';
+			title.text(dashboardLang.get('notice.noverify.title'));
+			text.html(dashboardLang.get('notice.noverify.text', true, $('<code>').text('/verify')));
+			break;
+		case 'noslash':
+			type = 'error';
+			title.text(dashboardLang.get('notice.noslash.title'));
+			text.text(dashboardLang.get('notice.noslash.text'));
+			note = $('<a target="_blank">').text(dashboardLang.get('notice.noslash.note')).attr('href', `https://discord.com/api/oauth2/authorize?client_id=${process.env.bot}&scope=applications.commands&guild_id=${args[0]}`);
+			break;
 		case 'wikiblocked':
 			type = 'error';
 			title.text(dashboardLang.get('notice.wikiblocked.title'));
@@ -347,4 +364,4 @@ function hasPerm(all = 0, ...permission) {
 	} ).every( perm => perm );
 }
 
-module.exports = {got, db, slashCommands, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};
+module.exports = {got, db, oauth, slashCommands, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};

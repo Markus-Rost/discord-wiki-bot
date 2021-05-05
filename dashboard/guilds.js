@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Lang = require('./i18n.js');
 const allLangs = Lang.allLangs().names;
-const {settingsData, addWidgets, createNotice} = require('./util.js');
+const {oauth, settingsData, addWidgets, createNotice} = require('./util.js');
 
 const forms = {
 	settings: require('./settings.js').get,
@@ -10,13 +10,6 @@ const forms = {
 	rcscript: require('./rcscript.js').get,
 	slash: require('./slash.js').get
 };
-
-const DiscordOauth2 = require('discord-oauth2');
-const oauth = new DiscordOauth2( {
-	clientId: process.env.bot,
-	clientSecret: process.env.secret,
-	redirectUri: process.env.dashboard
-} );
 
 const file = require('fs').readFileSync('./dashboard/index.html');
 

@@ -120,8 +120,13 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 			var permissions = [];
 			if ( response.statusCode !== 200 || !response.body ) {
 				if ( response.statusCode !== 404 || response.body?.message !== 'Unknown application command permissions' ) {
-					console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the slash command permissions: ' + response.body?.message );
-					createNotice($, 'error', dashboardLang);
+					if ( response.statusCode === 403 && response.body?.message === 'Missing Access' ) {
+						createNotice($, 'noslash', dashboardLang, [guild.id]);
+					}
+					else {
+						console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the slash command permissions: ' + response.body?.message );
+						createNotice($, 'error', dashboardLang);
+					}
 					$('#text .description').html(dashboardLang.get('slash.explanation'));
 					$('.channel#slash').addClass('selected');
 					return;
@@ -133,12 +138,12 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 						createForm($, slashCommand, dashboardLang, permissions, guild.id, guild.roles).attr('action', `/guild/${guild.id}/slash/${slashCommand.id}`).appendTo('#text');
 						return;
 					}
-					res.writeHead(302, {Location: `/guild/${guild.id}/verification/new${suffix}`});
+					res.writeHead(302, {Location: `/guild/${guild.id}/verification/new${suffix}` + ( suffix ? '&' : '?' ) + 'slash=noverify'});
 					res.end();
 					return true;
 				}, dberror => {
 					console.log( '- Dashboard: Error while checking for verifications: ' + dberror );
-					res.writeHead(302, {Location: `/guild/${guild.id}/verification/new${suffix}`});
+					res.writeHead(302, {Location: `/guild/${guild.id}/verification/new${suffix}` + ( suffix ? '&' : '?' ) + 'slash=noverify'});
 					res.end();
 					return true;
 				} );
@@ -212,14 +217,20 @@ function update_slash(res, userSettings, guild, type, settings) {
 			timeout: 10000
 		} ).then( response=> {
 			if ( response.statusCode !== 200 || !response.body ) {
-				if ( response.statusCode !== 404 || response.body?.message !== 'Unknown application command permissions' ) {
+				if ( response.statusCode === 403 && response.body?.message === 'Missing Access' ) {
+					res(`/guild/${guild}/slash/${type}`, 'noslash', guild);
+					return Promise.reject();
+				}
+				else if ( response.statusCode !== 404 || response.body?.message !== 'Unknown application command permissions' ) {
 					console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the old slash command permissions: ' + response.body?.message );
 				}
 				else if ( commandName === 'verify' ) return db.query( 'SELECT 1 FROM verification WHERE guild = $1 LIMIT 1', [guild] ).then( ({rows}) => {
 					if ( rows.length ) return [];
+					res(`/guild/${guild}/verification/new`, 'noverify');
 					return Promise.reject();
 				}, dberror => {
 					console.log( '- Dashboard: Error while checking for verifications: ' + dberror );
+					res(`/guild/${guild}/verification/new`, 'noverify');
 					return Promise.reject();
 				} );
 				return [];
@@ -273,7 +284,6 @@ function update_slash(res, userSettings, guild, type, settings) {
 				console.log( '- Dashboard: Error while getting the old slash command permissions: ' + error );
 				return res(`/guild/${guild}/slash/${type}`, 'savefail');
 			}
-			return res(`/guild/${guild}/verification/new`, 'savefail');
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
