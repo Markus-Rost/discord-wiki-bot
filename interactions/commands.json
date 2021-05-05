@@ -316,7 +316,7 @@
 		"application_id": "",
 		"name": "help",
 		"description": "Gives you a list of commands",
-		"default_permission": true,
+		"default_permission": false,
 		"options": [
 		]
 	}
