@@ -55,7 +55,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					result.content = lang.get('verify.user_missing_reply', escapeFormatting(username));
 					return;
 				}
-				return verify(lang, channel, member, wsbody.users[0].name.split(' '), wiki, rows, username);
+				return verify(lang, channel, member, wsbody.users[0].name, wiki, rows, username);
 			}, error => {
 				console.log( '- Error while searching the user: ' + error );
 				result.content = lang.get('verify.user_missing_reply', escapeFormatting(username));
