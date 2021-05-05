@@ -126,7 +126,7 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 					$('.channel#slash').addClass('selected');
 					return;
 				}
-				else if ( slashCommand.name === 'verify' ) return db.query( 'SELECT 1 FROM verification WHERE guild = $1 LIMIT 1', [guild] ).then( ({rows}) => {
+				else if ( slashCommand.name === 'verify' ) return db.query( 'SELECT 1 FROM verification WHERE guild = $1 LIMIT 1', [guild.id] ).then( ({rows}) => {
 					if ( rows.length ) {
 						$('<p>').html(dashboardLang.get('slash.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 						$(`.channel#channel-${slashCommand.id}`).addClass('selected');
