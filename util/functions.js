@@ -438,7 +438,7 @@ function allowDelete(msg, author) {
  * @param {Object} interaction - The interaction.
  * @param {Object} message - The message.
  * @param {String} message.content - The message content.
- * @param {{parse: String[], roles?: String[]}} message.allowed_mentions - The allowed mentions.
+ * @param {{parse: String[], roles?: String[], users?: String[]}} message.allowed_mentions - The allowed mentions.
  * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
  */
 function sendMessage(interaction, message, channel) {

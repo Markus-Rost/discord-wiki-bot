@@ -94,7 +94,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 						else message.content = reply + lang.get('verify.error_reply');
 						message.embeds = [];
 					}
-					return sendMessage(interaction, message, channel);
+					return sendMessage(interaction, message);
 				}, error => {
 					console.log( '- Error during the verifications: ' + error );
 					return sendMessage(interaction, {
