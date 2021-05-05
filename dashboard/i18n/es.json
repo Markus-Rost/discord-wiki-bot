@@ -21,6 +21,7 @@
         "save": "Guardar",
         "selector": "Selector de Servidor",
         "settings": "Ajustes",
+        "slash": "Comandos de barra inclinada",
         "support": "Servidor de Soporte",
         "theme-dark": "Usar tema oscuro",
         "theme-light": "Usar tema claro",
@@ -94,6 +95,10 @@
             "note": "Cambiar la configuración.",
             "text": "Primero, define la configuración del servidor.",
             "title": "¡El servidor aún no está configurado!"
+        },
+        "noslash": {
+            "note": "Habilitar comandos de barra inclinada.",
+            "text": "Los comandos de barra inclinada de Wiki-Bot no están habilitados en este servidor."
         },
         "readonly": {
             "text": "Actualmente solo puedes ver tu configuración, pero no cambiarla.",
