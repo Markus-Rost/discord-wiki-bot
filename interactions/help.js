@@ -11,7 +11,4 @@ const {sendMessage} = require('../util/functions.js');
  */
 
 function slash_inline(interaction, lang, channel) {
-  var text = "";
-  message.content = text;
-  return sendMessage();
 }
