@@ -21,6 +21,7 @@
         "save": "儲存",
         "selector": "選擇伺服器",
         "settings": "設定",
+        "slash": "斜槓指令",
         "support": "支援伺服器",
         "theme-dark": "使用灰暗主題",
         "theme-light": "使用明亮主題",
@@ -134,7 +135,7 @@
     },
     "rcscript": {
         "desc": "以下為 $1 的近期變更webhook：",
-        "explanation": "<h2>近期變更webhook</h2>\n<p>Wiki-Bot能運行基於<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的近期變更webhook。近期變更可以以多種顯示模式顯示：包含行內連結的精簡文字訊息或包含圖片預覽及編輯差異的嵌入式訊息。</p>\n<p>加入近期變更webhook的基本需求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本運行的wiki。</li>\n<li>系統訊息<code>MediaWiki:Custom-RcGcDw</code>需要設為Discord伺服器的伺服器id <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
+        "explanation": "<h2>近期變更webhook</h2>\n<p>Wiki-Bot能運行基於<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的近期變更webhook。近期變更可以以多種顯示模式顯示：包含行內連結的精簡文字訊息或包含圖片預覽及編輯差異的嵌入式訊息。</p>\n<p>加入近期變更webhook的基本需求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本運行的wiki。</li>\n<li>系統訊息<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>需要設為Discord伺服器的伺服器id <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
         "form": {
             "channel": "頻道：",
             "confirm": "您確定要刪除近期變更webhook嗎？",
@@ -182,6 +183,21 @@
             "wiki_check": "檢查wiki"
         },
         "new": "新的頻道覆寫設定"
+    },
+    "slash": {
+        "desc": "以下是$1的斜槓指令：",
+        "explanation": "<h2>斜槓指令</h2>\n<p>可以為每個身分組設定特定斜槓指令的使用限制。在此你可以設定Wiki-Bot斜槓指令的使用限制。</p>",
+        "form": {
+            "add": "新增",
+            "allow": "允許",
+            "default": "預設",
+            "default_allow": "預設情況下，此指令可被任何人使用。",
+            "default_deny": "預設情況下，此指令不允許被任何人使用。",
+            "deny": "拒絕",
+            "entry": "指令$1",
+            "role": "身分組：",
+            "select_role": "-- 選擇身分組 --"
+        }
     },
     "verification": {
         "desc": "以下為 $1 的驗證方式：",
