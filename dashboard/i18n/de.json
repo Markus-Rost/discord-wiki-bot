@@ -102,8 +102,8 @@
             "title": "Slash-Befehle sind nicht aktiviert!"
         },
         "noverify": {
-            "text": "Die Einschränkungen für den Befehl $1 können nicht geändert werden, ohne dass Überprüfungen eingerichtet wurden.",
-            "title": "Überprüfungen wurden nicht eingerichtet!"
+            "text": "Die Beschränkungen für den Befehl $1 können nicht geändert werden, ohne dass Verifizierungen eingerichtet wurden.",
+            "title": "Verifizierungen wurden nicht eingerichtet!"
         },
         "readonly": {
             "text": "Du kannst die Einstellungen aktuell nur sehen, jedoch nicht ändern.",
