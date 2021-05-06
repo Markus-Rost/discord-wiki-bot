@@ -289,7 +289,7 @@ a[alt]:hover:after {
 	background: #2f3136;
 	position: fixed;
 	border-top: 2px solid #202225;
-	height: 30px;
+	height: 60px;
 	width: 224px;
 	left: 72px;
 	bottom: 0;
@@ -297,6 +297,7 @@ a[alt]:hover:after {
 	display: flex;
 	align-items: center;
 	color: #8e9297;
+	font-size: 120%;
 }
 .theme-light #lang-selector {
 	background-color: #f2f3f5;
@@ -315,7 +316,7 @@ a[alt]:hover:after {
 	position: absolute;
 	width: 240px;
 	left: 0;
-	bottom: 32px;
+	bottom: 62px;
 	overflow: overlay;
 }
 .theme-light #lang-dropdown {
