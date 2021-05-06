@@ -70,7 +70,6 @@ got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, 
 
 /**
  * @typedef Guild
- * @extends PartialGuild
  * @property {String} id
  * @property {String} name
  * @property {String} acronym
