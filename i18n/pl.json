@@ -393,6 +393,12 @@
         "pause": "**Moja praca na tym serwerze została wstrzymana!**\nTylko następujące komendy mogą być używane:"
     },
     "interaction": {
+        "dashboard": {
+            "perm_allow": "Zezwalaj",
+            "perm_default": "Domyślne",
+            "perm_deny": "Zabraniaj",
+            "updated": "$1 zaktualizował zezwolenia specjalne komendy po ukośniku dla `$2`."
+        },
         "inline": "Wyślij wiadomość z linkami [[wikitekstu]] aby użyć tej komendy.",
         "nowiki": "Używana wiki nie istnieje!",
         "verify": "Podaj swoją nazwę użytkownika na wiki aby użyć komendy do zweryfikowania swojego konta na Discordzie kontem na wiki oraz otrzymać role odpowiadające Twojemu koncie na wiki."
@@ -775,7 +781,7 @@
     },
     "verify": {
         "audit_reason": "Zweryfikowano jako „$1”",
-        "discord": "{{GENDER:$1|użytkownik Discord|użytkowniczka Discord|użytkownik/użytkowniczka Discord}}:",
+        "discord": "{{GENDER:$1|Użytkownik Discord|Użytkowniczka Discord|Użytkownik/Użytkowniczka Discord}}:",
         "empty": "*puste*",
         "error": "Weryfikacja nie powiodła się z powodu błędu.",
         "error_reply": "weryfikacja nie powiodła się z powodu błędu, spróbuj ponownie.",
