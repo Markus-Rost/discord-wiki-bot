@@ -395,8 +395,8 @@
     "interaction": {
         "dashboard": {
             "perm_allow": "Allow",
-            "perm_deny": "Deny",
             "perm_default": "Default",
+            "perm_deny": "Deny",
             "updated": "$1 updated the slash command permission overwrites for `$2`."
         },
         "inline": "Please provide some text with [[wikitext]] links to use this command.",

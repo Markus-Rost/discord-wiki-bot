@@ -3,14 +3,7 @@ const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Wiki = require('../util/wiki.js');
 const allLangs = require('./i18n.js').allLangs().names;
-const {got, sessionData, settingsData, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
-
-const DiscordOauth2 = require('discord-oauth2');
-const oauth = new DiscordOauth2( {
-	clientId: process.env.bot,
-	clientSecret: process.env.secret,
-	redirectUri: process.env.dashboard
-} );
+const {got, oauth, sessionData, settingsData, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
 
 const file = require('fs').readFileSync('./dashboard/login.html');
 
@@ -151,7 +144,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 					else settings.guilds.notMember.set(guilds[i].id, guilds[i]);
 				} );
 				settingsData.set(user.id, settings);
-				if ( searchParams.has('guild_id') ) {
+				if ( searchParams.has('guild_id') && !lastGuild.startsWith( searchParams.get('guild_id') + '/' ) ) {
 					lastGuild = searchParams.get('guild_id') + '/settings';
 				}
 				res.writeHead(302, {
