@@ -546,3 +546,18 @@ button.addmore:not([hidden]) {
 	vertical-align: top;
 	margin-left: 5px;
 }
+
+.widgets, .description {
+	width: 100%;
+}
+
+@media (min-width: 1600px) {
+	.widgets {
+		width: 33%;
+		float: right;
+	}
+	.description {
+		width: 66%;
+		float: left;
+	}
+}
