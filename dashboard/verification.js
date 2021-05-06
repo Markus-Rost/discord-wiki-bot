@@ -254,14 +254,15 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 		$('#channellist #verification').after(
 			...rows.map( row => {
+				let text = `${row.configid} - ${( guild.roles.find( role => {
+					return role.id === row.role.split('|')[0];
+				} )?.name || guild.channels.find( channel => {
+					return channel.id === row.channel.split('|')[1];
+				} )?.name || row.usergroup.split('|')[( row.usergroup.startsWith('AND|') ? 1 : 0 )] )}`;
 				return $('<a class="channel">').attr('id', `channel-${row.configid}`).append(
 					$('<img>').attr('src', '/src/channel.svg'),
-					$('<div>').text(`${row.configid} - ${( guild.roles.find( role => {
-						return role.id === row.role.split('|')[0];
-					} )?.name || guild.channels.find( channel => {
-						return channel.id === row.channel.split('|')[1];
-					} )?.name || row.usergroup.split('|')[( row.usergroup.startsWith('AND|') ? 1 : 0 )] )}`)
-				).attr('href', `/guild/${guild.id}/verification/${row.configid}${suffix}`);
+					$('<div>').text(text)
+				).attr('title', text).attr('href', `/guild/${guild.id}/verification/${row.configid}${suffix}`);
 			} ),
 			( process.env.READONLY || rows.length >= verificationLimit[( guild.patreon ? 'patreon' : 'default' )] ? '' :
 			$('<a class="channel" id="channel-new">').append(

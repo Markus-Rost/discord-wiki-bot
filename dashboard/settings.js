@@ -200,7 +200,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 						$('<img>').attr('src', '/src/channel.svg'),
 						$('<div>').text(channel.name)]
 					)
-				).attr('href', `/guild/${guild.id}/settings/${channel.id}${suffix}`).attr('title', channel.id);
+				).attr('title', `${channel.id} - ${channel.name}`).attr('href', `/guild/${guild.id}/settings/${channel.id}${suffix}`);
 			} ),
 			( process.env.READONLY || !guild.channels.filter( channel => {
 				return ( hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === ( channel.isCategory ? '#' : '' ) + channel.id ) );
@@ -208,7 +208,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 			$('<a class="channel" id="channel-new">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('settings.new'))
-			).attr('href', `/guild/${guild.id}/settings/new${suffix}`) )
+			).attr('title', dashboardLang.get('settings.new')).attr('href', `/guild/${guild.id}/settings/new${suffix}`) )
 		);
 		if ( args[4] === 'new' && !process.env.READONLY ) {
 			$('.channel#channel-new').addClass('selected');

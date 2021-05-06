@@ -209,12 +209,13 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 			let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 			$('#channellist #rcscript').after(
 				...rows.map( row => {
+					let text = `${row.configid} - ${( guild.channels.find( channel => {
+						return channel.id === row.channel;
+					} )?.name || row.channel )}`;
 					return $('<a class="channel">').attr('id', `channel-${row.configid}`).append(
 						$('<img>').attr('src', '/src/channel.svg'),
-						$('<div>').text(`${row.configid} - ${( guild.channels.find( channel => {
-							return channel.id === row.channel;
-						} )?.name || row.channel )}`)
-					).attr('href', `/guild/${guild.id}/rcscript/${row.configid}${suffix}`);
+						$('<div>').text(text)
+					).attr('title', text).attr('href', `/guild/${guild.id}/rcscript/${row.configid}${suffix}`);
 				} ),
 				( process.env.READONLY || rows.length >= rcgcdwLimit[( guild.patreon ? 'patreon' : 'default' )] ? '' :
 				$('<a class="channel" id="channel-new">').append(

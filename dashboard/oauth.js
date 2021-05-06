@@ -32,7 +32,9 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.login') + ' – ' + dashboardLang.get('general.title'));
 	$('#login-button span, .channel#login div').text(dashboardLang.get('general.login'));
+	$('.channel#login').attr('title', dashboardLang.get('general.login'));
 	$('.channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
+	$('.channel#invite-wikibot').attr('title', dashboardLang.get('general.invite'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
 	$('.guild#theme-light a').attr('alt', dashboardLang.get('general.theme-light'));

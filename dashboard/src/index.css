@@ -25,7 +25,7 @@ a[alt]:hover:after {
 	color: #dcddde;
 	font-weight: bold;
 	font-size: 90%;
-	word-break: break-word;
+	overflow-wrap: break-word;
 	border-radius: 4px;
 	padding: 8px;
 	box-shadow: 0 8px 16px rgba(0,0,0,0.24);
@@ -220,9 +220,9 @@ a[alt]:hover:after {
 	background-color: #f2f3f5;
 }
 .channel {
-	padding: 0 8px;
+	padding: 3px 8px;
 	margin: 0 8px 2px 12px;
-	height: 32px;
+	min-height: 26px;
 	border-radius: 4px;
 	display: flex;
 	align-items: center;
@@ -240,7 +240,7 @@ a[alt]:hover:after {
 	font-size: 16px;
 	line-height: 20px;
 	text-shadow: 0 0 1px;
-	white-space: nowrap;
+	overflow-wrap: break-word;
 	overflow: hidden;
 }
 .channel div.category {
@@ -271,8 +271,9 @@ a[alt]:hover:after {
 	color: #060607;
 }
 .channel-header {
+	padding: 5px 8px;
 	margin-left: 8px;
-	height: 44px;
+	min-height: 34px;
 }
 .channel-header img {
 	width: 24px;
@@ -478,7 +479,7 @@ code {
 }
 .server .server-name {
 	padding: 8px 12px;
-	word-break: break-word;
+	overflow-wrap: break-word;
 	font-weight: bold;
 	font-size: 90%;
 }

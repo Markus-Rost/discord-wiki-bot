@@ -106,7 +106,7 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 			return $('<a class="channel">').attr('id', `channel-${slashCommand.id}`).append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(slashCommand.name)
-			).attr('href', `/guild/${guild.id}/slash/${slashCommand.id}${suffix}`);
+			).attr('title', slashCommand.name).attr('href', `/guild/${guild.id}/slash/${slashCommand.id}${suffix}`);
 		} )
 	);
 	if ( args[4] ) {

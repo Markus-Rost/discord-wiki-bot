@@ -42,9 +42,13 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.title'));
 	$('.channel#settings div').text(dashboardLang.get('general.settings'));
+	$('.channel#settings').attr('title', dashboardLang.get('general.settings'));
 	$('.channel#verification div').text(dashboardLang.get('general.verification'));
+	$('.channel#verification').attr('title', dashboardLang.get('general.verification'));
 	$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
+	$('.channel#rcscript').attr('title', dashboardLang.get('general.rcscript'));
 	$('.channel#slash div').text(dashboardLang.get('general.slash'));
+	$('.channel#slash').attr('title', dashboardLang.get('general.slash'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
@@ -127,7 +131,7 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 		$('<a class="channel channel-header">').attr('href', url).append(
 			$('<img>').attr('src', '/src/settings.svg'),
 			$('<div>').text(dashboardLang.get('general.invite'))
-		).appendTo('#channellist');
+		).attr('title', dashboardLang.get('general.invite')).appendTo('#channellist');
 		$('#text .description').append(
 			$('<p>').html(dashboardLang.get('selector.invite', true, $('<code>').text(guild.name), $('<a>').attr('href', url))),
 			$('<a id="login-button">').attr('href', url).text(dashboardLang.get('general.invite')).prepend(
@@ -167,7 +171,7 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 			$('<a class="channel">').attr('href', '#with-wikibot').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('selector.with'))
-			).appendTo('#channellist');
+			).attr('title', dashboardLang.get('selector.with')).appendTo('#channellist');
 			$('<div class="server-selector" id="isMember">').appendTo('#text');
 			settings.guilds.isMember.forEach( guild => {
 				$('<a class="server">').attr('href', `/guild/${guild.id}/settings`).append(
@@ -183,7 +187,7 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 			$('<a class="channel">').attr('href', '#without-wikibot').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('selector.without'))
-			).appendTo('#channellist');
+			).attr('title', dashboardLang.get('selector.without')).appendTo('#channellist');
 			$('<div class="server-selector" id="notMember">').appendTo('#text');
 			settings.guilds.notMember.forEach( guild => {
 				$('<a class="server">').attr('href', `/guild/${guild.id}`).append(
@@ -202,7 +206,7 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 			$('<a class="channel channel-header">').attr('href', url).append(
 				$('<img>').attr('src', '/src/settings.svg'),
 				$('<div>').text(dashboardLang.get('selector.switch'))
-			).appendTo('#channellist');
+			).attr('title', dashboardLang.get('selector.switch')).appendTo('#channellist');
 			$('#text .description').append(
 				$('<p>').html(dashboardLang.get('selector.none', true, $('<code>'))),
 				$('<a id="login-button">').attr('href', url).text(dashboardLang.get('selector.switch')).prepend(
