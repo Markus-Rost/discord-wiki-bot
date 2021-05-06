@@ -66,7 +66,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	res.writeHead(responseCode, {
 		'Set-Cookie': [
 			...( res.getHeader('Set-Cookie') || [] ),
-			`wikibot="${state}"; HttpOnly; Path=/`
+			`wikibot="${state}"; HttpOnly; SameSite=Lax; Path=/; Max-Age=31536000`
 		],
 		'Content-Length': Buffer.byteLength(body)
 	});
@@ -149,7 +149,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				}
 				res.writeHead(302, {
 					Location: ( lastGuild && /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(lastGuild) ? `/guild/${lastGuild}` : '/' ),
-					'Set-Cookie': [`wikibot="${userSession.state}"; HttpOnly; Path=/`]
+					'Set-Cookie': [`wikibot="${userSession.state}"; HttpOnly; SameSite=Lax; Path=/; Max-Age=31536000`]
 				});
 				return res.end();
 			}, error => {

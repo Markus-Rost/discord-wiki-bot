@@ -117,7 +117,7 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 	else if ( settings.guilds.notMember.has(id) ) {
 		let guild = settings.guilds.notMember.get(id);
 		$('head title').text(`${guild.name} – ` + $('head title').text());
-		res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; HttpOnly; Path=/`]);
+		res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; SameSite=Lax; Path=/`]);
 		let url = oauth.generateAuthUrl( {
 			scope: ['identify', 'guilds', 'bot', 'applications.commands'],
 			permissions: defaultPermissions,

@@ -55,8 +55,8 @@ const server = http.createServer( (req, res) => {
 	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && req.url.startsWith( '/guild/' ) ) {
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
-			return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
-		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)*)"$/, '$1' ) )?.join();
+			return cookie.split('=')[0] === 'wikibot' && /^"([\da-f]+(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
+		} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
 		if ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] )
 		&& /^(?:default|new|\d+)$/.test(args[4]) && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id)
@@ -157,11 +157,11 @@ const server = http.createServer( (req, res) => {
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
 		return cookie.split('=')[0] === 'guild' && /^"\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?"$/.test(( cookie.split('=')[1] || '' ));
 	} )?.map( cookie => cookie.replace( /^guild="(\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?)"$/, '$1' ) )?.join();
-	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; HttpOnly; Path=/; Max-Age=0']);
+	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; SameSite=Lax; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'wikibot' && /^"(\w*(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)*)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'wikibot' && /^"([\da-f]+(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
 	if ( reqURL.pathname === '/login' ) {
 		let action = '';
@@ -173,7 +173,7 @@ const server = http.createServer( (req, res) => {
 		sessionData.delete(state);
 		res.setHeader('Set-Cookie', [
 			...( res.getHeader('Set-Cookie') || [] ),
-			'wikibot=""; HttpOnly; Path=/; Max-Age=0'
+			'wikibot=""; HttpOnly; SameSite=Lax; Path=/; Max-Age=0'
 		]);
 		return pages.login(res, dashboardLang, themeCookie, state, 'logout');
 	}
@@ -182,7 +182,7 @@ const server = http.createServer( (req, res) => {
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
 			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
-				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
+				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
 		return pages.login(res, dashboardLang, themeCookie, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
@@ -196,7 +196,7 @@ const server = http.createServer( (req, res) => {
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
 			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
-				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; HttpOnly; Path=/`]);
+				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
 		return pages.login(res, dashboardLang, themeCookie, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
