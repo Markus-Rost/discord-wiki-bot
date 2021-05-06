@@ -1,7 +1,7 @@
 const http = require('http');
 const pages = require('./oauth.js');
 const dashboard = require('./guilds.js');
-const {db, settingsData} = require('./util.js');
+const {db, sessionData, settingsData} = require('./util.js');
 const Lang = require('./i18n.js');
 const allLangs = Lang.allLangs();
 
@@ -59,8 +59,8 @@ const server = http.createServer( (req, res) => {
 		} )?.map( cookie => cookie.replace( /^wikibot="(\w*(?:-\d+)*)"$/, '$1' ) )?.join();
 
 		if ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] )
-		&& /^(?:default|new|\d+)$/.test(args[4]) && settingsData.has(state)
-		&& settingsData.get(state).guilds.isMember.has(args[2]) ) {
+		&& /^(?:default|new|\d+)$/.test(args[4]) && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id)
+		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) {
 			if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
 			let body = [];
 			req.on( 'data', chunk => {
@@ -83,8 +83,8 @@ const server = http.createServer( (req, res) => {
 						}
 					}
 				} );
-				if ( isDebug ) console.log( '- Dashboard:', req.url, settings, settingsData.get(state).user.id );
-				return posts[args[3]](save_response, settingsData.get(state), args[2], args[4], settings);
+				if ( isDebug ) console.log( '- Dashboard:', req.url, settings, sessionData.get(state).user_id );
+				return posts[args[3]](save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
 			} );
 
 			/**
@@ -109,7 +109,7 @@ const server = http.createServer( (req, res) => {
 					return '';
 				} ) || [] ));
 				dashboardLang.fromCookie = langCookie;
-				return dashboard(res, dashboardLang, themeCookie, state, new URL(resURL, process.env.dashboard), action, actionArgs);
+				return dashboard(res, dashboardLang, themeCookie, sessionData.get(state), new URL(resURL, process.env.dashboard), action, actionArgs);
 			}
 		}
 	}
@@ -170,7 +170,7 @@ const server = http.createServer( (req, res) => {
 	}
 
 	if ( reqURL.pathname === '/logout' ) {
-		settingsData.delete(state);
+		sessionData.delete(state);
 		res.setHeader('Set-Cookie', [
 			...( res.getHeader('Set-Cookie') || [] ),
 			'wikibot=""; HttpOnly; Path=/; Max-Age=0'
@@ -192,7 +192,7 @@ const server = http.createServer( (req, res) => {
 		return pages.oauth(res, state, reqURL.searchParams, lastGuild);
 	}
 
-	if ( !settingsData.has(state) ) {
+	if ( !sessionData.has(state) || !settingsData.has(sessionData.get(state).user_id) ) {
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
 			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(pathGuild) ) {
@@ -207,7 +207,7 @@ const server = http.createServer( (req, res) => {
 		if ( !/^\/guild\/\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
-		return pages.refresh(res, state, returnLocation);
+		return pages.refresh(res, sessionData.get(state), returnLocation);
 	}
 
 	if ( reqURL.pathname === '/api' ) {
@@ -218,7 +218,7 @@ const server = http.createServer( (req, res) => {
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
-	return dashboard(res, dashboardLang, themeCookie, state, reqURL, action);
+	return dashboard(res, dashboardLang, themeCookie, sessionData.get(state), reqURL, action);
 } );
 
 server.listen( 8080, 'localhost', () => {

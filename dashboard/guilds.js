@@ -25,17 +25,17 @@ const file = require('fs').readFileSync('./dashboard/index.html');
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('./i18n.js')} dashboardLang - The user language.
  * @param {String} theme - The display theme
- * @param {String} state - The user state
+ * @param {import('./util.js').UserSession} userSession - The user session
  * @param {URL} reqURL - The used url
  * @param {String} [action] - The action the user made
  * @param {String[]} [actionArgs] - The arguments for the action
  */
-function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, actionArgs) {
+function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
 	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	args = reqURL.pathname.split('/');
-	var settings = settingsData.get(state);
-	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(settings.user.id) ) {
+	var settings = settingsData.get(userSession.user_id);
+	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(userSession.user_id) ) {
 		args[0] = 'owner';
 	}
 	dashboardLang = new Lang(...dashboardLang.fromCookie, settings.user.locale, dashboardLang.lang);
@@ -68,7 +68,7 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
-		permissions: defaultPermissions, state
+		permissions: defaultPermissions, state: userSession.state
 	} ));
 	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
 	if ( settings.guilds.isMember.size ) {
@@ -128,7 +128,7 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 		let url = oauth.generateAuthUrl( {
 			scope: ['identify', 'guilds', 'bot', 'applications.commands'],
 			permissions: defaultPermissions,
-			guildId: guild.id, state
+			guildId: guild.id, state: userSession.state
 		} );
 		$('#channellist').empty();
 		$('<a class="channel channel-header">').attr('href', url).append(
@@ -204,7 +204,7 @@ function dashboard_guilds(res, dashboardLang, theme, state, reqURL, action, acti
 		if ( !settings.guilds.count ) {
 			let url = oauth.generateAuthUrl( {
 				scope: ['identify', 'guilds'],
-				prompt: 'consent', state
+				prompt: 'consent', state: userSession.state
 			} );
 			$('<a class="channel channel-header">').attr('href', url).append(
 				$('<img>').attr('src', '/src/settings.svg'),

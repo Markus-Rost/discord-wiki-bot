@@ -38,9 +38,14 @@ got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, 
 } );
 
 /**
- * @typedef Settings
+ * @typedef UserSession
  * @property {String} state
  * @property {String} access_token
+ * @property {String} user_id
+ */
+
+/**
+ * @typedef Settings
  * @property {User} user
  * @property {Object} guilds
  * @property {Number} guilds.count
@@ -59,6 +64,7 @@ got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, 
 
 /**
  * @typedef Guild
+ * @extends PartialGuild
  * @property {String} id
  * @property {String} name
  * @property {String} acronym
@@ -86,6 +92,11 @@ got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, 
  * @property {String} name
  * @property {Boolean} lower
  */
+
+/**
+ * @type {Map<String, UserSession>}
+ */
+const sessionData = new Map();
 
 /**
  * @type {Map<String, Settings>}
@@ -347,4 +358,4 @@ function hasPerm(all = 0, ...permission) {
 	} ).every( perm => perm );
 }
 
-module.exports = {got, db, slashCommands, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};
+module.exports = {got, db, slashCommands, sessionData, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};

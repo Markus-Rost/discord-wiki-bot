@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Wiki = require('../util/wiki.js');
 const allLangs = require('./i18n.js').allLangs().names;
-const {got, settingsData, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
+const {got, sessionData, settingsData, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
 
 const DiscordOauth2 = require('discord-oauth2');
 const oauth = new DiscordOauth2( {
@@ -23,12 +23,12 @@ const file = require('fs').readFileSync('./dashboard/login.html');
  * @param {String} [action] - The action the user made
  */
 function dashboard_login(res, dashboardLang, theme, state, action) {
-	if ( state && settingsData.has(state) ) {
+	if ( state && sessionData.has(state) ) {
 		if ( !action ) {
 			res.writeHead(302, {Location: '/'});
 			return res.end();
 		}
-		settingsData.delete(state);
+		sessionData.delete(state);
 	}
 	var $ = cheerio.load(file);
 	$('html').attr('lang', dashboardLang.lang);
@@ -54,9 +54,9 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	);
 	if ( action === 'logout' ) prompt = 'consent';
 	if ( action === 'loginfail' ) responseCode = 400;
-	state = crypto.randomBytes(16).toString("hex");
-	while ( settingsData.has(state) ) {
-		state = crypto.randomBytes(16).toString("hex");
+	state = Date.now().toString(16) + crypto.randomBytes(16).toString("hex");
+	while ( sessionData.has(state) ) {
+		state = Date.now().toString(16) + crypto.randomBytes(16).toString("hex");
 	}
 	let invite = oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
@@ -89,7 +89,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
  * @param {String} [lastGuild] - The guild to return to
  */
 function dashboard_oauth(res, state, searchParams, lastGuild) {
-	if ( searchParams.get('error') === 'access_denied' && state === searchParams.get('state') && settingsData.has(state) ) {
+	if ( searchParams.get('error') === 'access_denied' && state === searchParams.get('state') && sessionData.has(state) ) {
 		res.writeHead(302, {Location: '/'});
 		return res.end();
 	}
@@ -97,7 +97,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 		res.writeHead(302, {Location: '/login?action=failed'});
 		return res.end();
 	}
-	settingsData.delete(state);
+	sessionData.delete(state);
 	return oauth.tokenRequest( {
 		scope: ['identify', 'guilds'],
 		code: searchParams.get('code'),
@@ -124,25 +124,25 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				member: user.id,
 				guilds: guilds.map( guild => guild.id )
 			} ).then( response => {
-				var settings = {
+				var userSession = {
 					state: `${state}-${user.id}`,
 					access_token,
-					user: {
-						id: user.id,
-						username: user.username,
-						discriminator: user.discriminator,
-						avatar: 'https://cdn.discordapp.com/' + ( user.avatar ? 
-							`avatars/${user.id}/${user.avatar}.` + 
-							( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : 
-							`embed/avatars/${user.discriminator % 5}.png` ) + '?size=64',
-						locale: user.locale
-					},
-					guilds: {
-						count: guilds.length,
-						isMember: new Map(),
-						notMember: new Map()
-					}
+					user_id: user.id
 				};
+				sessionData.set(userSession.state, userSession);
+				/** @type {import('./util.js').Settings} */
+				var settings = ( settingsData.has(user.id) ? settingsData.get(user.id) : {
+					user: {},
+					guilds: {}
+				} );
+				settings.user.id = user.id;
+				settings.user.username = user.username;
+				settings.user.discriminator = user.discriminator;
+				settings.user.avatar = 'https://cdn.discordapp.com/' + ( user.avatar ? `avatars/${user.id}/${user.avatar}.` + ( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : `embed/avatars/${user.discriminator % 5}.png` ) + '?size=64';
+				settings.user.locale = user.locale;
+				settings.guilds.count = guilds.length;
+				settings.guilds.isMember = new Map();
+				settings.guilds.notMember = new Map();
 				response.forEach( (guild, i) => {
 					if ( guild ) {
 						if ( guild === 'noMember' ) return;
@@ -150,13 +150,13 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 					}
 					else settings.guilds.notMember.set(guilds[i].id, guilds[i]);
 				} );
-				settingsData.set(settings.state, settings);
+				settingsData.set(user.id, settings);
 				if ( searchParams.has('guild_id') ) {
 					lastGuild = searchParams.get('guild_id') + '/settings';
 				}
 				res.writeHead(302, {
 					Location: ( lastGuild && /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(lastGuild) ? `/guild/${lastGuild}` : '/' ),
-					'Set-Cookie': [`wikibot="${settings.state}"; HttpOnly; Path=/`]
+					'Set-Cookie': [`wikibot="${userSession.state}"; HttpOnly; Path=/`]
 				});
 				return res.end();
 			}, error => {
@@ -179,12 +179,11 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 /**
  * Reload the guild of a user
  * @param {import('http').ServerResponse} res - The server response
- * @param {String} state - The user state
+ * @param {import('./util.js').UserSession} userSession - The user session
  * @param {String} [returnLocation] - The return location
  */
-function dashboard_refresh(res, state, returnLocation = '/') {
-	var settings = settingsData.get(state);
-	return oauth.getUserGuilds(settings.access_token).then( guilds => {
+function dashboard_refresh(res, userSession, returnLocation = '/') {
+	return oauth.getUserGuilds(userSession.access_token).then( guilds => {
 		guilds = guilds.filter( guild => {
 			return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
 		} ).map( guild => {
@@ -197,6 +196,7 @@ function dashboard_refresh(res, state, returnLocation = '/') {
 				userPermissions: guild.permissions
 			};
 		} );
+		var settings = settingsData.get(userSession.user_id);
 		sendMsg( {
 			type: 'getGuilds',
 			member: settings.user.id,
