@@ -9,6 +9,7 @@ body {
 	position: relative;
 	min-height: 100%;
 	margin: 0;
+	min-width: 925px; /* Fix its width to 925px */
 }
 .theme-light body {
 	background-color: #ffffff;
