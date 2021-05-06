@@ -97,9 +97,9 @@
             "title": "Server noch nicht aufgesetzt!"
         },
         "noslash": {
-            "note": "Aktiviere Schrägstrichbefehle.",
-            "text": "Die Schrägstrichbefehle vom Wiki-Bot sind bei diesem Server deaktiviert.",
-            "title": "Schrägstrichbefehle sind deaktiviert!"
+            "note": "Aktiviere Slash-Befehle.",
+            "text": "Die Slash-Befehle von Wiki-Bot sind auf diesem Server nicht aktiviert.",
+            "title": "Slash-Befehle sind nicht aktiviert!"
         },
         "noverify": {
             "text": "Die Einschränkungen für den Befehl $1 können nicht geändert werden, ohne dass Überprüfungen eingerichtet wurden.",
