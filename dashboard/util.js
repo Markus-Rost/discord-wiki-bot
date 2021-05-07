@@ -76,6 +76,7 @@ got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, 
  * @property {String} [icon]
  * @property {String} userPermissions
  * @property {Boolean} [patreon]
+ * @property {Number} [memberCount]
  * @property {String} [botPermissions]
  * @property {Channel[]} [channels]
  * @property {Role[]} [roles]

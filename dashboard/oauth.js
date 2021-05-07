@@ -136,15 +136,21 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				settings.user.avatar = 'https://cdn.discordapp.com/' + ( user.avatar ? `avatars/${user.id}/${user.avatar}.` + ( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : `embed/avatars/${user.discriminator % 5}.png` ) + '?size=64';
 				settings.user.locale = user.locale;
 				settings.guilds.count = guilds.length;
-				settings.guilds.isMember = new Map();
+				/** @type {import('./util.js').Guild[]} */
+				var isMemberGuilds = [];
 				settings.guilds.notMember = new Map();
 				response.forEach( (guild, i) => {
 					if ( guild ) {
 						if ( guild === 'noMember' ) return;
-						settings.guilds.isMember.set(guilds[i].id, Object.assign(guilds[i], guild));
+						isMemberGuilds.push(Object.assign(guilds[i], guild));
 					}
 					else settings.guilds.notMember.set(guilds[i].id, guilds[i]);
 				} );
+				settings.guilds.isMember = new Map(isMemberGuilds.sort( (a, b) => {
+					return ( b.patreon - a.patreon || b.memberCount - a.memberCount );
+				} ).map( guild => {
+					return [guild.id, guild];
+				} ));
 				settingsData.set(user.id, settings);
 				if ( searchParams.has('guild_id') && !lastGuild.startsWith( searchParams.get('guild_id') + '/' ) ) {
 					lastGuild = searchParams.get('guild_id') + '/settings';
@@ -197,16 +203,22 @@ function dashboard_refresh(res, userSession, returnLocation = '/') {
 			member: settings.user.id,
 			guilds: guilds.map( guild => guild.id )
 		} ).then( response => {
-			let isMember = new Map();
-			let notMember = new Map();
+			settings.guilds.count = guilds.length;
+			/** @type {import('./util.js').Guild[]} */
+			var isMemberGuilds = [];
+			settings.guilds.notMember = new Map();
 			response.forEach( (guild, i) => {
 				if ( guild ) {
 					if ( guild === 'noMember' ) return;
-					isMember.set(guilds[i].id, Object.assign(guilds[i], guild));
+					isMemberGuilds.push(Object.assign(guilds[i], guild));
 				}
-				else notMember.set(guilds[i].id, guilds[i]);
+				else settings.guilds.notMember.set(guilds[i].id, guilds[i]);
 			} );
-			settings.guilds = {count: guilds.length, isMember, notMember};
+			settings.guilds.isMember = new Map(isMemberGuilds.sort( (a, b) => {
+				return ( b.patreon - a.patreon || b.memberCount - a.memberCount );
+			} ).map( guild => {
+				return [guild.id, guild];
+			} ));
 			res.writeHead(302, {Location: returnLocation + '?refresh=success'});
 			return res.end();
 		}, error => {
