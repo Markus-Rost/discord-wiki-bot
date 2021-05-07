@@ -228,8 +228,8 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
-			$('#text .description').html(dashboardLang.get('verification.explanation'));
-			$('#text code.prefix').prepend(escapeText(process.env.prefix));
+			$('#main .description').html(dashboardLang.get('verification.explanation'));
+			$('#main code.prefix').prepend(escapeText(process.env.prefix));
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
@@ -238,8 +238,8 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		}
 		if ( !hasPerm(guild.botPermissions, 'MANAGE_ROLES') ) {
 			createNotice($, 'missingperm', dashboardLang, ['Manage Roles']);
-			$('#text .description').html(dashboardLang.get('verification.explanation'));
-			$('#text code.prefix').prepend(escapeText(rows[0].prefix));
+			$('#main .description').html(dashboardLang.get('verification.explanation'));
+			$('#main code.prefix').prepend(escapeText(rows[0].prefix));
 			$('.channel#verification').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
@@ -250,7 +250,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		var defaultrole = rows[0].defaultrole;
 		var prefix = rows[0].prefix;
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
-		$('<p>').html(dashboardLang.get('verification.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('verification.desc', true, $('<code>').text(guild.name))).appendTo('#main .description');
 		let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 		$('#channellist #verification').after(
 			...rows.map( row => {
@@ -276,17 +276,17 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 				channel: '', role: '', usergroup: 'user',
 				editcount: 0, postcount: 0, accountage: 0,
 				rename: false, defaultrole
-			}, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
+			}, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#main');
 		}
 		else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 			let row = rows.find( row => row.configid.toString() === args[4] );
 			$(`.channel#channel-${row.configid}`).addClass('selected');
-			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
+			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#main');
 		}
 		else {
 			$('.channel#verification').addClass('selected');
-			$('#text .description').html(dashboardLang.get('verification.explanation'));
-			$('#text code.prefix').prepend(escapeText(prefix));
+			$('#main .description').html(dashboardLang.get('verification.explanation'));
+			$('#main code.prefix').prepend(escapeText(prefix));
 		}
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
@@ -295,8 +295,8 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 	}, dberror => {
 		console.log( '- Dashboard: Error while getting the verifications: ' + dberror );
 		createNotice($, 'error', dashboardLang);
-		$('#text .description').html(dashboardLang.get('verification.explanation'));
-		$('#text code.prefix').prepend(escapeText(process.env.prefix));
+		$('#main .description').html(dashboardLang.get('verification.explanation'));
+		$('#main code.prefix').prepend(escapeText(process.env.prefix));
 		$('.channel#verification').addClass('selected');
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
