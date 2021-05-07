@@ -45,8 +45,6 @@
         },
         "valid": {
             "MediaWiki": "Uyarı: Tam işlevsellik için en az $1 ihtiyacı duyar.",
-            "PageImages": "Uyarı: Sayfa küçük resimleri için $1 uzantısına ihtiyaç duyar.",
-            "TextExtracts": "Uyarı: Sayfa açıklamaları için $1 uzantısına ihtiyaç duyar.",
             "title": "Bu viki geçerli ve kullanılabilir!"
         }
     },

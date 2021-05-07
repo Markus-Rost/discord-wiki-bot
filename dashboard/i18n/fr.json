@@ -51,8 +51,6 @@
         },
         "valid": {
             "MediaWiki": "Avertissement : Requiert au moins $1 pour fonctionner complètement.",
-            "PageImages": "Avertissement : Requiert l'extension $1 pour les miniatures de pages.",
-            "TextExtracts": "Avertissement : Requiert l'extension $1 pour les descriptions de pages.",
             "title": "Ce wiki est valide et utilisable !"
         }
     },

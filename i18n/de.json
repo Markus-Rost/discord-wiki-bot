@@ -650,8 +650,6 @@
     },
     "test": {
         "MediaWiki": "Benötigt mindestens $1 für vollständige Funktionalität, fand `$2`.",
-        "PageImages": "Benötigt die Erweiterung $1 für Seiten-Vorschaubilder.",
-        "TextExtracts": "Benötigt die Erweiterung $1 für Seiten-Beschreibungen.",
         "notice": "Eingeschränkte Funktionalität",
         "pause": "ich bin auf diesem Server derzeit pausiert.",
         "text": [

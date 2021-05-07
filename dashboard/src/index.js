@@ -219,34 +219,6 @@ if ( wiki ) {
 						);
 						wikichecknotice.append(noticeText);
 					}
-					if ( !response.TextExtracts ) {
-						var noticeLink = document.createElement('a');
-						noticeLink.setAttribute('target', '_blank');
-						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/Extension:TextExtracts');
-						noticeLink.textContent = 'TextExtracts';
-						var noticeText = document.createElement('div');
-						var textSnippets = lang('valid.TextExtracts').split(/\$\d/);
-						noticeText.append(
-							document.createTextNode(textSnippets[0]),
-							noticeLink,
-							document.createTextNode(textSnippets[1])
-						);
-						wikichecknotice.append(noticeText);
-					}
-					if ( !response.PageImages ) {
-						var noticeLink = document.createElement('a');
-						noticeLink.setAttribute('target', '_blank');
-						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/Extension:PageImages');
-						noticeLink.textContent = 'PageImages';
-						var noticeText = document.createElement('div');
-						var textSnippets = lang('valid.PageImages').split(/\$\d/);
-						noticeText.append(
-							document.createTextNode(textSnippets[0]),
-							noticeLink,
-							document.createTextNode(textSnippets[1])
-						);
-						wikichecknotice.append(noticeText);
-					}
 				}
 			}, function(error) {
 				console.log(error)

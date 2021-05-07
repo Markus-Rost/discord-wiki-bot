@@ -52,8 +52,6 @@
         },
         "valid": {
             "MediaWiki": "Ostrzeżenie: Wymaga przynajmniej $1 dla pełnej funkcjonalności.",
-            "PageImages": "Ostrzeżenie: Wymagane rozszerzenie $1 dla miniaturek stron.",
-            "TextExtracts": "Ostrzeżenie: Wymagane rozszerzenie $1 dla opisów stron.",
             "title": "Ta wiki jest poprawna i może być użyta!"
         }
     },

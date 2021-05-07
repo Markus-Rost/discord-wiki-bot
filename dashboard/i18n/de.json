@@ -52,8 +52,6 @@
         },
         "valid": {
             "MediaWiki": "Warnung: Benötigt mindestens $1 für vollständige Funktionalität.",
-            "PageImages": "Warnung: Benötigt die Erweiterung $1 für Seiten-Vorschaubilder.",
-            "TextExtracts": "Warnung: Benötigt die Erweiterung $1 für Seiten-Beschreibungen.",
             "title": "Das Wiki kann benutzt werden!"
         }
     },

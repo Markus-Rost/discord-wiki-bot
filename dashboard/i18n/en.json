@@ -52,8 +52,6 @@
         },
         "valid": {
             "MediaWiki": "Warning: Requires at least $1 for full functionality.",
-            "PageImages": "Warning: Requires the extension $1 for page thumbnails.",
-            "TextExtracts": "Warning: Requires the extension $1 for page descriptions.",
             "title": "The wiki is valid and can be used!"
         }
     },

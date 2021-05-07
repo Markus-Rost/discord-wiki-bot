@@ -246,12 +246,10 @@ function dashboard_api(res, input) {
 		error_code: '',
 		wiki: wiki.href,
 		MediaWiki: false,
-		TextExtracts: false,
-		PageImages: false,
 		RcGcDw: '',
 		customRcGcDw: wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
 	};
-	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json', {
+	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
 		responseType: 'text'
 	} ).then( response => {
 		try {
@@ -262,14 +260,14 @@ function dashboard_api(res, input) {
 				let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 				if ( api ) {
 					wiki = new Wiki(api.split('api.php?')[0], wiki);
-					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general|extensions&format=json' );
+					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
 				}
 			}
 		}
 		return response;
 	} ).then( response => {
 		var body = response.body;
-		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general || !body?.query?.extensions ) {
+		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general ) {
 			console.log( '- Dashboard: ' + response.statusCode + ': Error while checking the wiki: ' + body?.error?.info );
 			if ( body?.error?.info === 'You need read permission to use this module.' ) {
 				result.error_code = 'private';
@@ -281,12 +279,6 @@ function dashboard_api(res, input) {
 		result.wiki = wiki.href;
 		if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) >= 30 ) {
 			result.MediaWiki = true;
-		}
-		if ( body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
-			result.TextExtracts = true;
-		}
-		if ( body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
-			result.PageImages = true;
 		}
 		if ( body.query.allmessages[0]['*'] ) {
 			result.RcGcDw = body.query.allmessages[0]['*'];

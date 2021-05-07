@@ -84,7 +84,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				return msg.replyMsg( text, {split:true}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
-				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general|extensions&format=json', {
+				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
 					responseType: 'text'
 				} ).then( response => {
 					try {
@@ -95,14 +95,14 @@ function cmd_settings(lang, msg, args, line, wiki) {
 							let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
+								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general&format=json' );
 							}
 						}
 					}
 					return response;
 				} ).then( response => {
 					var body = response.body;
-					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general || !body?.query?.extensions ) {
+					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						if ( body?.error?.info === 'You need read permission to use this module.' ) {
@@ -120,20 +120,6 @@ function cmd_settings(lang, msg, args, line, wiki) {
 							notice.push({
 								name: 'MediaWiki',
 								value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator)
-							});
-						}
-						if ( !body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
-							console.log( '- This wiki is missing Extension:TextExtracts.' );
-							notice.push({
-								name: 'TextExtracts',
-								value: lang.get('test.TextExtracts', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)')
-							});
-						}
-						if ( !body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
-							console.log( '- This wiki is missing Extension:PageImages.' );
-							notice.push({
-								name: 'PageImages',
-								value: lang.get('test.PageImages', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)')
 							});
 						}
 						if ( notice.length ) {
