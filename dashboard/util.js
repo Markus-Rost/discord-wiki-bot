@@ -196,7 +196,7 @@ function addWidgets($, dashboardLang) {
 		$('<h3 id="bot-lists">').text(dashboardLang.get('general.botlist.title')),
 		$('<p>').text(dashboardLang.get('general.botlist.text')),
 		...botLists
-	).appendTo('#text');
+	).appendTo('#main');
 }
 
 /**
@@ -330,7 +330,7 @@ function createNotice($, notice, dashboardLang, args = []) {
 		title,
 		text,
 		note
-	).appendTo('#text #notices');
+	).appendTo('#main #notices');
 }
 
 /**
