@@ -127,15 +127,15 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 						console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the slash command permissions: ' + response.body?.message );
 						createNotice($, 'error', dashboardLang);
 					}
-					$('#text .description').html(dashboardLang.get('slash.explanation'));
+					$('#main .description').html(dashboardLang.get('slash.explanation'));
 					$('.channel#slash').addClass('selected');
 					return;
 				}
 				else if ( slashCommand.name === 'verify' ) return db.query( 'SELECT 1 FROM verification WHERE guild = $1 LIMIT 1', [guild.id] ).then( ({rows}) => {
 					if ( rows.length ) {
-						$('<p>').html(dashboardLang.get('slash.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+						$('<p>').html(dashboardLang.get('slash.desc', true, $('<code>').text(guild.name))).appendTo('#main .description');
 						$(`.channel#channel-${slashCommand.id}`).addClass('selected');
-						createForm($, slashCommand, dashboardLang, permissions, guild.id, guild.roles).attr('action', `/guild/${guild.id}/slash/${slashCommand.id}`).appendTo('#text');
+						createForm($, slashCommand, dashboardLang, permissions, guild.id, guild.roles).attr('action', `/guild/${guild.id}/slash/${slashCommand.id}`).appendTo('#main');
 						return;
 					}
 					res.writeHead(302, {Location: `/guild/${guild.id}/verification/new${suffix}` + ( suffix ? '&' : '?' ) + 'slash=noverify'});
@@ -149,13 +149,13 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 				} );
 			}
 			else permissions = response.body.permissions;
-			$('<p>').html(dashboardLang.get('slash.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+			$('<p>').html(dashboardLang.get('slash.desc', true, $('<code>').text(guild.name))).appendTo('#main .description');
 			$(`.channel#channel-${slashCommand.id}`).addClass('selected');
-			createForm($, slashCommand, dashboardLang, permissions, guild.id, guild.roles).attr('action', `/guild/${guild.id}/slash/${slashCommand.id}`).appendTo('#text');
+			createForm($, slashCommand, dashboardLang, permissions, guild.id, guild.roles).attr('action', `/guild/${guild.id}/slash/${slashCommand.id}`).appendTo('#main');
 		}, error => {
 			console.log( '- Dashboard: Error while getting the slash command permissions: ' + error );
 			createNotice($, 'error', dashboardLang);
-			$('#text .description').html(dashboardLang.get('slash.explanation'));
+			$('#main .description').html(dashboardLang.get('slash.explanation'));
 			$('.channel#slash').addClass('selected');
 		} ).then( isRedirected => {
 			if ( isRedirected ) return;
@@ -165,7 +165,7 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 			return res.end();
 		} );
 	}
-	$('#text .description').html(dashboardLang.get('slash.explanation'));
+	$('#main .description').html(dashboardLang.get('slash.explanation'));
 	$('.channel#slash').addClass('selected');
 	let body = $.html();
 	res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
