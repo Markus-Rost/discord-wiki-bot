@@ -366,7 +366,7 @@ code {
 	background-color: #f2f3f5;
 	border-color: #e3e5e8;
 }
-#text {
+#main {
 	position: relative;
 	padding: 8px;
 	width: calc(100% - 328px);
@@ -379,12 +379,10 @@ code {
 	-ms-user-select: all;
 	user-select: all;
 }
-.widgets {
-	margin-top: 250px;
-}
+
 .widgets img {
 	height: 150px;
-	max-width: 100%;
+	width: 100%;
 }
 .notice {
 	padding: 5px 10px;
