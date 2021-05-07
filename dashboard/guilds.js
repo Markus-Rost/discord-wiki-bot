@@ -132,7 +132,7 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 			$('<img>').attr('src', '/src/settings.svg'),
 			$('<div>').text(dashboardLang.get('general.invite'))
 		).attr('title', dashboardLang.get('general.invite')).appendTo('#channellist');
-		$('#text .description').append(
+		$('#main .description').append(
 			$('<p>').html(dashboardLang.get('selector.invite', true, $('<code>').text(guild.name), $('<a>').attr('href', url))),
 			$('<a id="login-button">').attr('href', url).text(dashboardLang.get('general.invite')).prepend(
 				$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
@@ -165,14 +165,14 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 	else {
 		$('head title').text(dashboardLang.get('selector.title') + ' – ' + $('head title').text());
 		$('#channellist').empty();
-		$('<p>').html(dashboardLang.get('selector.desc', true, $('<code>'))).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('selector.desc', true, $('<code>'))).appendTo('#main .description');
 		if ( settings.guilds.isMember.size ) {
-			$('<h2 id="with-wikibot">').text(dashboardLang.get('selector.with')).appendTo('#text');
+			$('<h2 id="with-wikibot">').text(dashboardLang.get('selector.with')).appendTo('#main');
 			$('<a class="channel">').attr('href', '#with-wikibot').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('selector.with'))
 			).attr('title', dashboardLang.get('selector.with')).appendTo('#channellist');
-			$('<div class="server-selector" id="isMember">').appendTo('#text');
+			$('<div class="server-selector" id="isMember">').appendTo('#main');
 			settings.guilds.isMember.forEach( guild => {
 				$('<a class="server">').attr('href', `/guild/${guild.id}/settings`).append(
 					( guild.icon ? 
@@ -183,12 +183,12 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 			} );
 		}
 		if ( settings.guilds.notMember.size ) {
-			$('<h2 id="without-wikibot">').text(dashboardLang.get('selector.without')).appendTo('#text');
+			$('<h2 id="without-wikibot">').text(dashboardLang.get('selector.without')).appendTo('#main');
 			$('<a class="channel">').attr('href', '#without-wikibot').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('selector.without'))
 			).attr('title', dashboardLang.get('selector.without')).appendTo('#channellist');
-			$('<div class="server-selector" id="notMember">').appendTo('#text');
+			$('<div class="server-selector" id="notMember">').appendTo('#main');
 			settings.guilds.notMember.forEach( guild => {
 				$('<a class="server">').attr('href', `/guild/${guild.id}`).append(
 					( guild.icon ? 
@@ -207,7 +207,7 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 				$('<img>').attr('src', '/src/settings.svg'),
 				$('<div>').text(dashboardLang.get('selector.switch'))
 			).attr('title', dashboardLang.get('selector.switch')).appendTo('#channellist');
-			$('#text .description').append(
+			$('#main .description').append(
 				$('<p>').html(dashboardLang.get('selector.none', true, $('<code>'))),
 				$('<a id="login-button">').attr('href', url).text(dashboardLang.get('selector.switch')).prepend(
 					$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
