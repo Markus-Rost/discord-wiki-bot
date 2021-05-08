@@ -61,8 +61,8 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 	$('head').append(
 		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`)
 	);
-	$('#logout img').attr('src', settings.user.avatar);
-	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
+	$('#profile .avatar').attr('src', settings.user.avatar);
+	$('#profile .user').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
 		permissions: defaultPermissions, state: userSession.state
