@@ -52,8 +52,6 @@
         },
         "valid": {
             "MediaWiki": "Warnung: Benötigt mindestens $1 für vollständige Funktionalität.",
-            "PageImages": "Warnung: Benötigt die Erweiterung $1 für Seiten-Vorschaubilder.",
-            "TextExtracts": "Warnung: Benötigt die Erweiterung $1 für Seiten-Beschreibungen.",
             "title": "Das Wiki kann benutzt werden!"
         }
     },
@@ -103,7 +101,7 @@
         },
         "noverify": {
             "text": "Die Beschränkungen für den Befehl $1 können nicht geändert werden, ohne dass Verifizierungen eingerichtet wurden.",
-            "title": "Verifizierungen wurden nicht eingerichtet!"
+            "title": "Verifizierungen nicht eingerichtet!"
         },
         "readonly": {
             "text": "Du kannst die Einstellungen aktuell nur sehen, jedoch nicht ändern.",

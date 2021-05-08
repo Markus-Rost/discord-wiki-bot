@@ -640,8 +640,6 @@
     },
     "test": {
         "MediaWiki": "Tam işlevsellik için $1 gerekli, bulunan `$2`.",
-        "PageImages": "Sayfa küçük resimleri için $1 uzantısı gerekli.",
-        "TextExtracts": "Sayfa açıklamaları için $1 uzantısı gerekli.",
         "notice": "Sınırlı işlevsellik",
         "pause": "Şu anda bu sunucuda duraklatılmış durumdayım.",
         "text": [

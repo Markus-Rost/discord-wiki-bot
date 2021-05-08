@@ -644,8 +644,6 @@
     },
     "test": {
         "MediaWiki": "Requiert au moins $1 pour un fonctionnement complet, `$2` trouvée.",
-        "PageImages": "Requiert l'extension $1 pour les miniatures de pages.",
-        "TextExtracts": "Requiert l'extension $1 pour les descriptions de page.",
         "notice": "Fonctionnalité restreinte",
         "pause": "je suis présentement en pause sur ce serveur.",
         "text": [

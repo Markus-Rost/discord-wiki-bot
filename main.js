@@ -102,6 +102,7 @@ if ( process.env.dashboard ) {
 								return guild.members.fetch('${message.data.member}').then( member => {
 									return {
 										patreon: global.patreons.hasOwnProperty(guild.id),
+										memberCount: guild.memberCount,
 										botPermissions: guild.me.permissions.bitfield,
 										channels: guild.channels.cache.filter( channel => {
 											return ( channel.isGuild() || channel.type === 'category' );

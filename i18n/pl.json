@@ -650,8 +650,6 @@
     },
     "test": {
         "MediaWiki": "Wymaga przynajmniej $1 dla pełnej funkcjonalności, znaleziono `$2`.",
-        "PageImages": "Wymaga rozszerzenia $1 dla miniaturek stron.",
-        "TextExtracts": "Wymaga rozszerzenia $1 dla opisów stron.",
         "notice": "Niepełna funkcjonalność",
         "pause": "Moje działanie jest obecnie wstrzymane na tym serwerze.",
         "text": [

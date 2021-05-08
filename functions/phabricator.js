@@ -1,6 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const logging = require('../util/logging.js');
-const {limitLength} = require('../util/functions.js');
+const {escapeFormatting, limitLength} = require('../util/functions.js');
 
 /**
  * Sends a Phabricator task.

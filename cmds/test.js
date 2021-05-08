@@ -38,7 +38,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 			var then = Date.now();
 			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + global.shardId ).addField( 'Discord', ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms' );
 			now = Date.now();
-			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json', {
+			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: 10000
 			} ).then( response => {
 				then = Date.now();
@@ -51,7 +51,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 				}
 				else embed.addField( wiki, ping );
 				var notice = [];
-				if ( response.statusCode !== 200 || !body?.query?.general || !body?.query?.extensions ) {
+				if ( response.statusCode !== 200 || !body?.query?.general ) {
 					if ( wiki.noWiki(response.url, response.statusCode) ) {
 						console.log( '- This wiki doesn\'t exist!' );
 						ping += ' <:unknown_wiki:505887262077353984>';
@@ -66,14 +66,6 @@ function cmd_test(lang, msg, args, line, wiki) {
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						notice.push(lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator));
-					}
-					if ( !body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
-						console.log( '- This wiki is missing Extension:TextExtracts.' );
-						notice.push(lang.get('test.TextExtracts', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)'));
-					}
-					if ( !body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
-						console.log( '- This wiki is missing Extension:PageImages.' );
-						notice.push(lang.get('test.PageImages', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)'));
 					}
 				}
 				else logging(wiki, msg.guild?.id, 'test');

@@ -345,7 +345,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 		} );
 		var wiki = Wiki.fromInput(settings.wiki);
 		var embed;
-		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general|extensions&format=json', {
+		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
 			responseType: 'text'
 		} ).then( fresponse => {
 			try {
@@ -356,7 +356,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					let api = cheerio.load(fresponse.body)('head link[rel="EditURI"]').prop('href');
 					if ( api ) {
 						wiki = new Wiki(api.split('api.php?')[0], wiki);
-						return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|extensions&format=json' );
+						return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json' );
 					}
 				}
 			}
@@ -365,7 +365,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentID] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
 				if ( row ) row.guildlang = ( guildlang || row.lang );
 				var body = fresponse.body;
-				if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general || !body?.query?.extensions ) {
+				if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {
 					console.log( '- Dashboard: ' + fresponse.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 					if ( row?.wiki === wiki.href ) return row;
 					if ( body?.error?.info === 'You need read permission to use this module.' ) {
@@ -381,20 +381,6 @@ function update_settings(res, userSettings, guild, type, settings) {
 						notice.push({
 							name: 'MediaWiki',
 							value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator)
-						});
-					}
-					if ( !body.query.extensions.some( extension => extension.name === 'TextExtracts' ) ) {
-						console.log( '- Dashboard: This wiki is missing Extension:TextExtracts.' );
-						notice.push({
-							name: 'TextExtracts',
-							value: lang.get('test.TextExtracts', '[TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts)')
-						});
-					}
-					if ( !body.query.extensions.some( extension => extension.name === 'PageImages' ) ) {
-						console.log( '- Dashboard: This wiki is missing Extension:PageImages.' );
-						notice.push({
-							name: 'PageImages',
-							value: lang.get('test.PageImages', '[PageImages](https://www.mediawiki.org/wiki/Extension:PageImages)')
 						});
 					}
 					if ( notice.length ) {
