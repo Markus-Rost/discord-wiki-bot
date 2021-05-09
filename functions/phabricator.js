@@ -114,9 +114,9 @@ function parse_text(text, site) {
 		else link = site + 'w/' + target;
 		return '[' + ( display || target ) + '](' + link + ')';
 	} );
-	text = text.replace( /@([\w-]+)\b/g, '[@$1](' + site + 'p/$1)' );
-	text = text.replace( /\b\{?(r[A-Z]+[a-f\d]+)\}?\b/g, '[$1](' + site + '$1)' );
-	text = text.replace( /\b\{?([CDFHLMPQTV]\d+(?:#\d+)?)\}?\b/g, '[$1](' + site + '$1)' );
+	text = text.replace( /(?<!\w)@([\w-]+)\b/g, '[@$1](' + site + 'p/$1)' );
+	text = text.replace( /(?<!https?:\/\/[^\s]+)\b\{?(r[A-Z]+[a-f\d]+)\}?\b/g, '[$1](' + site + '$1)' );
+	text = text.replace( /(?<!https?:\/\/[^\s]+)\b\{?([CDFHLMPQTV]\d+(?:#\d+)?)\}?\b/g, '[$1](' + site + '$1)' );
 	text = text.replace( /(?<!https?:\/\/[^\s]+)#([a-z0-9_-]+)\b/g, '[#$1](' + site + 'tag/$1)' );
 	return text;
 }

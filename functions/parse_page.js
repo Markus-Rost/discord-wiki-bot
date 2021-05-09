@@ -305,10 +305,13 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 					section = $('[id="' + toSection(fragment, false).replace( '#', '' ) + '"]');
 					newFragment = section.attr('id');
 					if ( section.is(':empty') ) section = section.parent();
+					if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
+						section = section.prev();
+					}
 				}
 				if ( !section.length ) exactMatch = false;
 				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( '#' + span.attribs.id.toLowerCase() === toSection(fragment).toLowerCase() );
+					return ( '#' + span.attribs.id?.toLowerCase() === toSection(fragment).toLowerCase() );
 				} );
 				if ( !section.length ) section = allSections.filter( (i, span) => {
 					return ( $(span).parent().text().trim() === fragment );

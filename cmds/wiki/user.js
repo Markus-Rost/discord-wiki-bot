@@ -447,11 +447,6 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				}
 				embed.addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
 				
-				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
-					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
-					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-					embed.setTitle( displaytitle );
-				}
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
