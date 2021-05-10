@@ -178,7 +178,7 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
  * @param {Function} res - The server response
  * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
- * @param {String|Number} type - The setting to change
+ * @param {String} type - The setting to change
  * @param {Object} settings - The new settings
  */
 function update_slash(res, userSettings, guild, type, settings) {
@@ -252,20 +252,36 @@ function update_slash(res, userSettings, guild, type, settings) {
 					return res(`/guild/${guild}/slash/${type}`, 'savefail');
 				}
 				res(`/guild/${guild}/slash/${type}`, 'save');
+				var changes = [
+					...permissions.map( perm => {
+						var oldPerm = oldPermissions.find( oldPerm => oldPerm.id === perm.id );
+						if ( !oldPerm ) return {
+							role: ( perm.id === guild ? '@everyone' : `<@&${perm.id}>` ),
+							old: 'default',
+							new: ( perm.permission ? 'allow' : 'deny' )
+						};
+						if ( perm.permission === oldPerm.permission ) return null;
+						return {
+							role: ( perm.id === guild ? '@everyone' : `<@&${perm.id}>` ),
+							old: ( oldPerm.permission ? 'allow' : 'deny' ),
+							new: ( perm.permission ? 'allow' : 'deny' )
+						};
+					} ).filter( change => change ),
+					...oldPermissions.filter( oldPerm => !permissions.some( perm => perm.id === oldPerm.id ) ).map( oldPerm => {
+						return {
+							role: ( oldPerm.id === guild ? '@everyone' : `<@&${oldPerm.id}>` ),
+							old: ( oldPerm.permission ? 'allow' : 'deny' ),
+							new: 'default'
+						};
+					} )
+				];
+				if ( !changes.length ) return;
 				return db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {
 					var lang = new Lang(channel?.lang);
 					var text = lang.get('interaction.dashboard.updated', `<@${userSettings.user.id}>`, '/' + commandName);
-					text += permissions.map( perm => {
-						var oldPerm = oldPermissions.find( oldPerm => oldPerm.id === perm.id );
-						if ( !oldPerm ) {
-							return '\n' + ( perm.id === guild ? '@everyone' : `<@&${perm.id}>` ) + ': ~~`' + lang.get('interaction.dashboard.perm_default') + '`~~ → `' + lang.get('interaction.dashboard.perm_' + ( perm.permission ? 'allow' : 'deny' )) + '`';
-						}
-						if ( perm.permission === oldPerm.permission ) return '';
-						return '\n' + ( perm.id === guild ? '@everyone' : `<@&${perm.id}>` ) + ': ~~`' + lang.get('interaction.dashboard.perm_' + ( oldPerm.permission ? 'allow' : 'deny' )) + '`~~ → `' + lang.get('interaction.dashboard.perm_' + ( perm.permission ? 'allow' : 'deny' )) + '`';
-					} ).join('');
-					text += oldPermissions.filter( oldPerm => !permissions.some( perm => perm.id === oldPerm.id ) ).map( oldPerm => {
-						return '\n' + ( oldPerm.id === guild ? '@everyone' : `<@&${oldPerm.id}>` ) + ': ~~`' + lang.get('interaction.dashboard.perm_' + ( oldPerm.permission ? 'allow' : 'deny' )) + '`~~ → `' + lang.get('interaction.dashboard.perm_default') + '`';
-					} ).join('');
+					text += '\n' + changes.map( change => {
+						return change.role + ': ~~`' + lang.get('interaction.dashboard.perm_' + change.old) + '`~~ → `' + lang.get('interaction.dashboard.perm_' + change.new) + '`';
+					} ).join('\n');
 					text += `\n<${new URL(`/guild/${guild}/slash/${type}`, process.env.dashboard).href}>`;
 					sendMsg( {
 						type: 'notifyGuild', guild, text
