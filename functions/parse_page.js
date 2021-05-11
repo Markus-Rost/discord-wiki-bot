@@ -231,6 +231,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				let rows = infobox.find([
 					'> tbody > tr',
 					'> tbody > tr > th.mainheader',
+					'> tbody > tr > th.infobox-header',
 					'> table > tbody > tr',
 					'div.section > div.title',
 					'div.section > table > tbody > tr',
@@ -243,19 +244,20 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				for ( let i = 0; i < rows.length; i++ ) {
 					if ( embed.fields.length >= 25 || embed.length > 5400 ) break;
 					let row = rows.eq(i);
-					if ( row.is('th.mainheader, div.title, h2.pi-header') ) {
+					if ( row.is('th.mainheader, th.infobox-header, div.title, h2.pi-header') ) {
 						row.find(removeClasses.join(', ')).remove();
-						let label = htmlToPlain(row).trim();
+						let label = htmlToDiscord(row, embed.url).trim();
 						if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 						if ( label ) {
+							if ( !label.includes( '**' ) ) label = '**' + label + '**';
 							if ( embed.fields.length && embed.fields[embed.fields.length - 1].name === '\u200b' ) {
 								embed.spliceFields( embed.fields.length - 1, 1, {
 									name: '\u200b',
-									value: '**' + label + '**',
+									value: label,
 									inline: false
 								} );
 							}
-							else embed.addField( '\u200b', '**' + label + '**', false );
+							else embed.addField( '\u200b', label, false );
 						}
 					}
 					else if ( row.is('tr, div.pi-data, div.infobox-row') ) {
@@ -305,10 +307,13 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 					section = $('[id="' + toSection(fragment, false).replace( '#', '' ) + '"]');
 					newFragment = section.attr('id');
 					if ( section.is(':empty') ) section = section.parent();
+					if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
+						section = section.prev();
+					}
 				}
 				if ( !section.length ) exactMatch = false;
 				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( '#' + span.attribs.id.toLowerCase() === toSection(fragment).toLowerCase() );
+					return ( '#' + span.attribs.id?.toLowerCase() === toSection(fragment).toLowerCase() );
 				} );
 				if ( !section.length ) section = allSections.filter( (i, span) => {
 					return ( $(span).parent().text().trim() === fragment );
