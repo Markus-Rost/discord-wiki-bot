@@ -739,8 +739,10 @@
         "current_selected": "dies ist die Verifizierung `$1` für diesen Server:",
         "dashboard": {
             "added": "$1 hat die Verifizierung mit der ID `$2` hinzugefügt.",
+            "added_notice": "$1 hat einige Verifizierungshinweise hinzugefügt.",
             "removed": "$1 hat die Verifizierung mit der ID `$2` gelöscht.",
-            "updated": "$1 hat die Verifizierung mit der ID `$2` bearbeitet."
+            "updated": "$1 hat die Verifizierung mit der ID `$2` bearbeitet.",
+            "updated_notice": "$1 hat einige Verifizierungshinweise aktualisiert."
         },
         "delete_current": "Lösche diese Verifizierung:",
         "deleted": "die Verifizierung wurde gelöscht.",
@@ -748,6 +750,8 @@
         "editcount": "Bearbeitungen:",
         "enabled": "aktiviert",
         "indays": "(in Tagen)",
+        "logging": "Protokollierungskanal:",
+        "match": "Hinweis zu fehlenden Voraussetzungen:",
         "max_entries": "du hast bereits die maximale Anzahl an Verifizierungen erreicht.",
         "missing": "es sind noch keine Verifizierungen für diesen Server vorhanden.",
         "new_accountage": "<neues Account-Alter>",
@@ -757,6 +761,7 @@
         "new_role": "<neue Rolle>",
         "new_usergroup": "<neue Benutzergruppe>",
         "no_role": "bitte gib eine Rolle für die neue Verifizierung an.",
+        "notice_embed": "Einige Hinweise enthalten maskierte Markdown-Links. Stelle sicher das der Bot die `Links einbetten` Berechtigung in allen Verifizierungskanälen besitst zum funktionieren.",
         "or": "oder",
         "postcount": "Diskussionsbeitragslimit (nur für Fandom Wikis):",
         "postcount_or": "(Alternative zum Bearbeitungslimit)",
@@ -770,6 +775,7 @@
         "role_missing": "die angegebe Rolle existiert nicht.",
         "role_too_high": "**Die Rolle $1 ist zu hoch für $2 um sie zu vergeben!**",
         "save_failed": "die Verifizierungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
+        "success": "Hinweis erfolgreich:",
         "toggle": "(umschalten)",
         "updated": "die Verifizierung wurde aktualisiert:",
         "usergroup": "Benutzergruppe:",
