@@ -39,7 +39,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
 	$('.guild#theme-light a').attr('alt', dashboardLang.get('general.theme-light'));
 	$('#support span').text(dashboardLang.get('general.support'));
-	$('#text .description #welcome').html(dashboardLang.get('general.welcome'));
+	$('#main .description #welcome').html(dashboardLang.get('general.welcome'));
 	let responseCode = 200;
 	let prompt = 'none';
 	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);

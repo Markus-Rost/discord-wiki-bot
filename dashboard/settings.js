@@ -172,7 +172,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
  */
 function dashboard_settings(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [guild.id] ).then( ({rows}) => {
-		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#main .description');
 		if ( !rows.length ) {
 			createNotice($, 'nosettings', dashboardLang);
 			$('.channel#settings').addClass('selected');
@@ -180,7 +180,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				prefix: process.env.prefix,
 				wiki: defaultSettings.wiki,
 				lang: ( guild.locale || defaultSettings.lang )
-			}, guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			}, guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#main');
 			return;
 		}
 		let isPatreon = rows.some( row => row.patreon );
@@ -224,7 +224,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 					id, name, userPermissions, isCategory,
 					allowedCat: !rows.some( row => row.channel === '#' + channel.id )
 				};
-			} )).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#text');
+			} )).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#main');
 		}
 		else if ( channellist.some( channel => channel.id === args[4] ) ) {
 			let channel = channellist.find( channel => channel.id === args[4] );
@@ -233,16 +233,16 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				return row.channel === ( channel.isCategory ? '#' : '' ) + channel.id;
 			} ), {
 				patreon: isPatreon
-			}), guild.roles, [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
+			}), guild.roles, [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#main');
 		}
 		else {
 			$('.channel#settings').addClass('selected');
-			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#main');
 		}
 	}, dberror => {
 		console.log( '- Dashboard: Error while getting the settings: ' + dberror );
 		createNotice($, 'error', dashboardLang);
-		$('<p>').text(dashboardLang.get('settings.failed')).appendTo('#text .description');
+		$('<p>').text(dashboardLang.get('settings.failed')).appendTo('#main .description');
 		$('.channel#settings').addClass('selected');
 	} ).then( () => {
 		let body = $.html();

@@ -9,6 +9,7 @@ body {
 	position: relative;
 	min-height: 100%;
 	margin: 0;
+	min-width: 925px; /* Fix its width to 925px */
 }
 .theme-light body {
 	background-color: #ffffff;
@@ -289,7 +290,7 @@ a[alt]:hover:after {
 	background: #2f3136;
 	position: fixed;
 	border-top: 2px solid #202225;
-	height: 30px;
+	height: 60px;
 	width: 224px;
 	left: 72px;
 	bottom: 0;
@@ -297,6 +298,7 @@ a[alt]:hover:after {
 	display: flex;
 	align-items: center;
 	color: #8e9297;
+	font-size: 120%;
 }
 .theme-light #lang-selector {
 	background-color: #f2f3f5;
@@ -315,7 +317,7 @@ a[alt]:hover:after {
 	position: absolute;
 	width: 240px;
 	left: 0;
-	bottom: 32px;
+	bottom: 62px;
 	overflow: overlay;
 }
 .theme-light #lang-dropdown {
@@ -368,7 +370,7 @@ code {
 	background-color: #f2f3f5;
 	border-color: #e3e5e8;
 }
-#text {
+#main {
 	position: relative;
 	padding: 8px;
 	width: calc(100% - 328px);
@@ -381,12 +383,10 @@ code {
 	-ms-user-select: all;
 	user-select: all;
 }
-.widgets {
-	margin-top: 250px;
-}
+
 .widgets img {
 	height: 150px;
-	max-width: 100%;
+	width: 100%;
 }
 .notice {
 	padding: 5px 10px;
@@ -559,4 +559,23 @@ button.addmore:not([hidden]) {
 #wb-settings-lang-widget {
 	vertical-align: top;
 	margin-left: 5px;
+}
+
+.widgets, .description {
+	width: 100%;
+}
+
+@media (min-width: 1600px) {
+	.widgets {
+		width: 33%;
+		float: right;
+	}
+	.description {
+		width: 66%;
+		float: left;
+	}
+}
+
+body, .scrollbar, #navbar, #lang-selector, #guildlist {
+	transition: 100ms;
 }

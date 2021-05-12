@@ -15,7 +15,7 @@
 	<script id="indexjs" src="/src/index.js" defer></script>
 </head>
 <body>
-	<div id="text">
+	<div id="main">
 		<div id="notices"></div>
 		<div class="description"></div>
 	</div>
@@ -47,11 +47,15 @@
 				<img class="avatar" src="/src/icon.png" alt="Wiki-Bot">
 				<span>Support Server</span>
 			</a>
-			<a id="logout" href="/logout" alt="Logout">
+			
+			<span id="profile">
 				<img class="avatar" src="/src/icon.png" alt="Logout">
-				<span>Wiki-Bot #2998</span>
-			</a>
+				<span class="user">Wiki-Bot #2998</span></span>
+			<div class="profile-menu" style="display: none;">
+				<a id="logout" href="/logout" alt="Signs you out">Log out</a>
+			</div>
 		</div>
+	</div>
 		<div id="guildlist">
 			<div class="guild" id="invite">
 				<div class="bar"></div>
@@ -108,6 +112,7 @@
 				</a>
 			</div>
 		</div>
+			<div id="guildsCollapseButton">‹</div>
 	</div>
 </body>
 </html>

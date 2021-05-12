@@ -181,8 +181,8 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
-			$('#text .description').html(dashboardLang.get('rcscript.explanation'));
-			$('#text code#server-id').text(guild.id);
+			$('#main .description').html(dashboardLang.get('rcscript.explanation'));
+			$('#main code#server-id').text(guild.id);
 			$('.channel#rcscript').addClass('selected');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
@@ -193,7 +193,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 		var lang = rows[0].mainlang;
 		var allwikis = rows[0].allwikis;
 		if ( rows.length === 1 && rows[0].configid === null ) rows.pop();
-		$('<p>').html(dashboardLang.get('rcscript.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+		$('<p>').html(dashboardLang.get('rcscript.desc', true, $('<code>').text(guild.name))).appendTo('#main .description');
 		Promise.all(rows.map( row => {
 			return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( response => {
 				if ( !response.body?.channel_id ) {
@@ -228,19 +228,19 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 				createForm($, dashboardLang.get('rcscript.form.new'), dashboardLang, {
 					wiki, lang: ( allLangs.names.hasOwnProperty(lang) ? lang : defaultSettings.lang ),
 					display: 1, patreon: guild.patreon
-				}, guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
+				}, guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#main');
 			}
 			else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 				let row = rows.find( row => row.configid.toString() === args[4] );
 				$(`.channel#channel-${row.configid}`).addClass('selected');
 				createForm($, dashboardLang.get('rcscript.form.entry', false, row.configid), dashboardLang, Object.assign({
 					patreon: guild.patreon
-				}, row), guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/${row.configid}`).appendTo('#text');
+				}, row), guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/${row.configid}`).appendTo('#main');
 			}
 			else {
 				$('.channel#rcscript').addClass('selected');
-				$('#text .description').html(dashboardLang.get('rcscript.explanation'));
-				$('#text code#server-id').text(guild.id);
+				$('#main .description').html(dashboardLang.get('rcscript.explanation'));
+				$('#main code#server-id').text(guild.id);
 			}
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
@@ -250,8 +250,8 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 	}, dberror => {
 		console.log( '- Dashboard: Error while getting the RcGcDw: ' + dberror );
 		createNotice($, 'error', dashboardLang);
-		$('#text .description').html(dashboardLang.get('rcscript.explanation'));
-		$('#text code#server-id').text(guild.id);
+		$('#main .description').html(dashboardLang.get('rcscript.explanation'));
+		$('#main code#server-id').text(guild.id);
 		$('.channel#rcscript').addClass('selected');
 		let body = $.html();
 		res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
