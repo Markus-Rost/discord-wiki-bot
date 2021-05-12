@@ -306,9 +306,14 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				if ( !section.length ) {
 					section = $('[id="' + toSection(fragment, false).replace( '#', '' ) + '"]');
 					newFragment = section.attr('id');
-					if ( section.is(':empty') ) section = section.parent();
-					if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
-						section = section.prev();
+					if ( section.is(':empty') ) {
+						section = section.parent();
+						if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
+							section = section.prev();
+							if ( section.children('span').first().attr('id') ) {
+								newFragment = section.children('span').first().attr('id');
+							}
+						}
 					}
 				}
 				if ( !section.length ) exactMatch = false;
@@ -346,7 +351,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 					if ( name.length && value.length ) {
 						embed.spliceFields( 0, 0, {name, value} );
 						if ( newFragment ) {
-							embed.setURL( pagelink.replace( toSection(fragment), '#' + newFragment ) );
+							embed.setURL( pagelink.replace( toSection(fragment), toSection(newFragment) ) );
 							content = content.replace( '<' + pagelink + '>', '<' + embed.url + '>' );
 						}
 					}
