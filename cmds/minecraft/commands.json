@@ -249,14 +249,14 @@
 			"/help <command>"
 		],
 		"item": [
-			"/item block <pos> <slot> copy block <pos> <slot> [<modifier>]",
-			"/item block <pos> <slot> copy entity <targets> <slot> [<modifier>]",
-			"/item block <pos> <slot> modify <modifier>",
-			"/item block <pos> <slot> replace <item> [<count>]",
-			"/item entity <targets> <slot> copy block <pos> <slot> [<modifier>]",
-			"/item entity <targets> <slot> copy entity <targets> <slot> [<modifier>]",
-			"/item entity <targets> <slot> modify <modifier>",
-			"/item entity <targets> <slot> replace <item> [<count>]"	
+			"/item replace block <pos> <slot> with <item> [<count>]",
+			"/item replace block <pos> <slot> from block <pos> <slot> [<modifier>]",
+			"/item replace block <pos> <slot> from entity <targets> <slot> [<modifier>]",
+			"/item modify block <pos> <slot> <modifier>",
+			"/item replace entity <targets> <slot> with <item> [<count>]",
+			"/item replace entity <targets> <slot> from block <pos> <slot> [<modifier>]",
+			"/item replace entity <targets> <slot> from entity <targets> <slot> [<modifier>]",
+			"/item modify entity <targets> <slot> <modifier>"	
 		],
 		"kick": [
 			"/kick <targets>",
