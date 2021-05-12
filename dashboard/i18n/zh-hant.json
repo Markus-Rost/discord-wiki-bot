@@ -216,8 +216,11 @@
             "editcount": "最少編輯次數：",
             "entry": "驗證方式 #$1",
             "logging": "日誌記錄頻道：",
+            "match": "缺失驗證條件提示：",
+            "match_placeholder": "在Discord ID相符但不符合任何身分組驗證條件時顯示的Markdown文字。",
             "more": "加入更多",
             "new": "新的驗證方式",
+            "notice": "驗證提示",
             "postcount": "最少貼文數：",
             "postcount_and": "同時需要編輯次數與貼文數。",
             "postcount_both": "需要編輯次數與貼文數的總和。",
@@ -227,9 +230,12 @@
             "role": "身分組：",
             "select_channel": "-- 選擇頻道 --",
             "select_role": "-- 選擇身分組 --",
+            "success": "成功提示：",
+            "success_placeholder": "驗證成功時顯示的Markdown文字。",
             "usergroup": "wiki使用者群組：",
             "usergroup_and": "所有所需的使用者群組："
         },
-        "new": "新的驗證方式"
+        "new": "新的驗證方式",
+        "notice": "驗證提示"
     }
 }
