@@ -277,7 +277,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
  * @param {String} [settings.delete_settings]
  */
 function update_rcscript(res, userSettings, guild, type, settings) {
-	if ( type === 'default' ) {
+	if ( type === 'default' || type === 'notice' ) {
 		return res(`/guild/${guild}/rcscript`, 'savefail');
 	}
 	if ( !settings.save_settings === !settings.delete_settings ) {

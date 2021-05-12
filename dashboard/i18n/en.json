@@ -215,8 +215,12 @@
             "confirm": "Do you really want to delete the verification?",
             "editcount": "Minimal edit count:",
             "entry": "Verification #$1",
+            "logging": "Logging channel:",
+            "match": "Missing requirements notice:",
+            "match_placeholder": "Markdown text on matching Discord tags but not fulfilling any requirements for roles.",
             "more": "Add more",
             "new": "New Verification",
+            "notice": "Verification Notices",
             "postcount": "Minimal post count:",
             "postcount_and": "Require both edit and post count.",
             "postcount_both": "Require combined edit and post count.",
@@ -226,9 +230,12 @@
             "role": "Role:",
             "select_channel": "-- Select a Channel --",
             "select_role": "-- Select a Role --",
+            "success": "Success notice:",
+            "success_placeholder": "Markdown text on successful verification.",
             "usergroup": "Wiki user group:",
             "usergroup_and": "Require all user groups:"
         },
-        "new": "New verification"
+        "new": "New verification",
+        "notice": "Verification notices"
     }
 }

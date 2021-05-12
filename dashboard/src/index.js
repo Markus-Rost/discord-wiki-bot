@@ -363,6 +363,28 @@ if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
 	}
 };
 
+var textAreas = document.getElementsByTagName('textarea');
+for ( var ta = 0; ta < textAreas.length; ta++ ) {
+	textAreas[ta].addEventListener('keydown', allowTabs);
+}
+
+/**
+ * @this HTMLTextAreaElement
+ * @param {KeyboardEvent} e
+ */
+function allowTabs(e) {
+	if ( e.key === 'Tab' ) {
+		if ( this.value.includes( '`ˋ`' ) ) this.value = this.value.replace( /`ˋ`/g, '```' );
+		var start = this.selectionStart;
+		var end = this.selectionEnd;
+		if ( this.value.substring(0, start).includes( '```' ) && this.value.substring(end).includes( '```' ) ) {
+			e.preventDefault();
+			this.value = this.value.substring(0, start) + '\t' + this.value.substring(end);
+			this.selectionStart = this.selectionEnd = start + 1;
+		}
+	}
+}
+
 /*
 var collapsible = document.getElementsByClassName('collapsible');
 for ( var i = 0; i < collapsible.length; i++ ) {

@@ -439,13 +439,18 @@ function allowDelete(msg, author) {
  * @param {Object} message - The message.
  * @param {String} message.content - The message content.
  * @param {{parse: String[], roles?: String[], users?: String[]}} message.allowed_mentions - The allowed mentions.
- * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
+ * @param {import('discord.js').TextChannel} channel - The channel for the interaction.
+ * @param {Boolean} [letDelete] - Let the interaction user delete the message.
+ * @returns {Promise<import('discord.js').Message?>}
  */
-function sendMessage(interaction, message, channel) {
+function sendMessage(interaction, message, channel, letDelete = true) {
 	return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').patch( {
 		data: message
 	} ).then( msg => {
-		if ( channel ) allowDelete(channel.messages.add(msg), ( interaction.member?.user.id || interaction.user.id ));
+		if ( !channel ) return;
+		var responseMessage = channel.messages.add(msg);
+		if ( letDelete ) allowDelete(responseMessage, ( interaction.member?.user.id || interaction.user.id ));
+		return responseMessage;
 	}, log_error );
 };
 

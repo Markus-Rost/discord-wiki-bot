@@ -40,7 +40,17 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		msg.reactEmoji('⏳').then( reaction => {
 			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
 				if ( result.reaction ) msg.reactEmoji(result.reaction);
-				else msg.replyMsg( result.content, {embed: result.embed}, false, false );
+				else msg.replyMsg( result.content, {embed: result.embed}, false, false ).then( message => {
+					if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
+					if ( message ) {
+						if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channel.id + '>');
+						else result.logging.content += '\n<#' + msg.channel.id + '> – <' + message.url + '>';
+					}
+					msg.guild.channels.cache.get(result.logging.channel).send(result.logging.content, {
+						embed: result.logging.embed,
+						allowedMentions: {parse: []}
+					}).catch(log_error);
+				} );
 				if ( reaction ) reaction.removeEmoji();
 			}, error => {
 				console.log( '- Error during the verifications: ' + error );

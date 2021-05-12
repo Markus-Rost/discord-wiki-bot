@@ -268,7 +268,12 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 			$('<a class="channel" id="channel-new">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('verification.new'))
-			).attr('href', `/guild/${guild.id}/verification/new${suffix}`) )
+			).attr('href', `/guild/${guild.id}/verification/new${suffix}`) ),
+			( !guild.patreon || !rows.length ? '' :
+			$('<a class="channel" id="channel-notice">').append(
+				$('<img>').attr('src', '/src/channel.svg'),
+				$('<div>').text(dashboardLang.get('verification.notice'))
+			).attr('href', `/guild/${guild.id}/verification/notice${suffix}`) )
 		);
 		if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= verificationLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 			$('.channel#channel-new').addClass('selected');
@@ -282,6 +287,67 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 			let row = rows.find( row => row.configid.toString() === args[4] );
 			$(`.channel#channel-${row.configid}`).addClass('selected');
 			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
+		}
+		else if ( args[4] === 'notice' && guild.patreon && rows.length ) {
+			$(`.channel#channel-notice`).addClass('selected');
+			return db.query( 'SELECT logchannel, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild.id] ).then( ({rows:[row]}) => {
+				let curCat = null;
+				$('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
+					$('<h2>').text(dashboardLang.get('verification.form.notice')),
+					$('<fieldset>').append(
+						$('<div>').append(
+							$('<label for="wb-settings-channel">').text(dashboardLang.get('verification.form.logging')),
+							$('<select id="wb-settings-channel" name="channel">').append(
+								$('<option class="wb-settings-channel-default defaultSelect">').val('').text(dashboardLang.get('verification.form.select_channel')),
+								...guild.channels.filter( guildChannel => {
+									return ( ( hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') ) || guildChannel.isCategory );
+								} ).map( guildChannel => {
+									if ( guildChannel.isCategory ) {
+										curCat = $('<optgroup>').attr('label', guildChannel.name);
+										return curCat;
+									}
+									var optionChannel = $(`<option class="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`);
+									if ( guildChannel.id === row?.logchannel ) optionChannel.attr('selected', '');
+									if ( !curCat ) return optionChannel;
+									optionChannel.appendTo(curCat);
+								} ).filter( catChannel => {
+									if ( !catChannel ) return false;
+									if ( catChannel.is('optgroup') && !catChannel.children('option').length ) return false;
+									return true;
+								} )
+							)
+						),
+						$('<div>').append(
+							$('<label for="wb-settings-success">').text(dashboardLang.get('verification.form.success')),
+							$('<textarea id="wb-settings-success" name="success" spellcheck="true" maxlength="500" cols="65">').attr('rows', ( row?.onsuccess || '' ).split('\n').length).attr('placeholder', dashboardLang.get('verification.form.success_placeholder')).text(row?.onsuccess || '')
+						),
+						$('<div>').append(
+							$('<label for="wb-settings-match">').text(dashboardLang.get('verification.form.match')),
+							$('<textarea id="wb-settings-match" name="match" spellcheck="true" maxlength="500" cols="65">').attr('rows', ( row?.onmatch || '' ).split('\n').length).attr('placeholder', dashboardLang.get('verification.form.match_placeholder')).text(row?.onmatch || '')
+						),
+						$('<input type="submit" id="wb-settings-save" name="save_settings">').val(dashboardLang.get('general.save'))
+					)
+				).attr('action', `/guild/${guild.id}/verification/notice`).appendTo('#text');
+				if ( process.env.READONLY ) {
+					$('input, textarea').attr('readonly', '');
+					$('textarea, option, optgroup').attr('disabled', '');
+					$('input[type="submit"]').remove();
+				}
+				let body = $.html();
+				res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
+				res.write( body );
+				return res.end();
+			}, dberror => {
+				console.log( '- Dashboard: Error while getting the verification notices: ' + dberror );
+				createNotice($, 'error', dashboardLang);
+				$('#text .description').html(dashboardLang.get('verification.explanation'));
+				$('#text code.prefix').prepend(escapeText(process.env.prefix));
+				$('.channel#verification').addClass('selected');
+				let body = $.html();
+				res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
+				res.write( body );
+				return res.end();
+			} );
 		}
 		else {
 			$('.channel#verification').addClass('selected');
@@ -328,6 +394,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 	if ( type === 'default' ) {
 		return res(`/guild/${guild}/verification`, 'savefail');
 	}
+	if ( type === 'notice' ) return update_notices(res, userSettings, guild, type, settings);
 	if ( !settings.save_settings === !settings.delete_settings ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
@@ -722,6 +789,134 @@ function update_verification(res, userSettings, guild, type, settings) {
 			} );
 		}, dberror => {
 			console.log( '- Dashboard: Error while checking for verifications: ' + dberror );
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
+		} );
+	}, error => {
+		console.log( '- Dashboard: Error while getting the member: ' + error );
+		return res(`/guild/${guild}/verification/${type}`, 'savefail');
+	} );
+}
+
+/**
+ * Change verification notices
+ * @param {Function} res - The server response
+ * @param {import('./util.js').Settings} userSettings - The settings of the user
+ * @param {String} guild - The id of the guild
+ * @param {String} type - The setting to change
+ * @param {Object} settings - The new settings
+ * @param {String} [settings.channel]
+ * @param {String} [settings.success]
+ * @param {String} [settings.match]
+ * @param {String} settings.save_settings
+ */
+function update_notices(res, userSettings, guild, type, settings) {
+	if ( !settings.save_settings ) {
+		return res(`/guild/${guild}/verification/${type}`, 'savefail');
+	}
+	if ( settings.channel && !/^\d+$/.test(settings.channel) ) {
+		return res(`/guild/${guild}/verification/${type}`, 'savefail');
+	}
+	if ( settings.success && settings.success.trim().length > 500 ) {
+		return res(`/guild/${guild}/verification/${type}`, 'savefail');
+	}
+	if ( settings.match && settings.match.trim().length > 500 ) {
+		return res(`/guild/${guild}/verification/${type}`, 'savefail');
+	}
+	settings.channel = ( settings.channel || null );
+	settings.success = ( settings.success?.trim().replace( /`ˋ`/g, '```' ) || null );
+	settings.match = ( settings.match?.trim().replace( /`ˋ`/g, '```' ) || null );
+	sendMsg( {
+		type: 'getMember',
+		member: userSettings.user.id,
+		guild: guild,
+		newchannel: settings.channel
+	} ).then( response => {
+		if ( !response ) {
+			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+			userSettings.guilds.isMember.delete(guild);
+			return res(`/guild/${guild}`, 'savefail');
+		}
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+			userSettings.guilds.isMember.delete(guild);
+			return res('/', 'savefail');
+		}
+		if ( settings.channel && ( response.message === 'noChannel' || !( hasPerm(response.botPermissionsNew, 'VIEW_CHANNEL', 'SEND_MESSAGES') && hasPerm(response.userPermissions, 'VIEW_CHANNEL') ) ) ) {
+			return res(`/guild/${guild}/verification/${type}`, 'savefail');
+		}
+		return db.connect().then( client => {
+			return client.query( 'SELECT logchannel, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild] ).then( ({rows:[row]}) => {
+				if ( !row ) {
+					if ( !( settings.channel || settings.success || settings.match ) ) {
+						return res(`/guild/${guild}/verification/${type}`, 'save');
+					}
+					return client.query( 'INSERT INTO verifynotice(guild, logchannel, onsuccess, onmatch) VALUES($1, $2, $3, $4)', [guild, settings.channel, settings.success, settings.match] ).then( () => {
+						console.log( `- Dashboard: Verification notices successfully added: ${guild}` );
+						res(`/guild/${guild}/verification/${type}`, 'save');
+						return client.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {
+							var lang = new Lang(channel?.lang);
+							var text = lang.get('verification.dashboard.added_notice', `<@${userSettings.user.id}>`) + '\n';
+							if ( settings.channel ) text += `${lang.get('verification.logging')} <#${settings.channel}>\n`;
+							if ( settings.success ) text += `${lang.get('verification.success')} \`\`\`md\n${settings.success.replace( /```/g, '`ˋ`' )}\n\`\`\``;
+							if ( settings.match ) text += `${lang.get('verification.match')} \`\`\`md\n${settings.match.replace( /```/g, '`ˋ`' )}\n\`\`\``;
+							text += `<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
+							if ( settings.success?.includes( '](' ) || settings.match?.includes( '](' ) ) {
+								text += '\n\n' + lang.get('verification.notice_embed');
+							}
+							sendMsg( {
+								type: 'notifyGuild', guild, text
+							} ).catch( error => {
+								console.log( '- Dashboard: Error while notifying the guild: ' + error );
+							} );
+						}, dberror => {
+							console.log( '- Dashboard: Error while notifying the guild: ' + dberror );
+						} );
+					}, dberror => {
+						console.log( '- Dashboard: Error while adding the verification notices: ' + dberror );
+						return res(`/guild/${guild}/verification/${type}`, 'savefail');
+					} );
+				}
+				if ( settings.channel === row.logchannel && settings.success === row.onsuccess && settings.match === row.onmatch ) {
+					return res(`/guild/${guild}/verification/${type}`, 'save');
+				}
+				return client.query( 'UPDATE verifynotice SET logchannel = $1, onsuccess = $2, onmatch = $3 WHERE guild = $4', [settings.channel, settings.success, settings.match, guild] ).then( () => {
+					console.log( `- Dashboard: Verification notices successfully updated: ${guild}` );
+					res(`/guild/${guild}/verification/${type}`, 'save');
+					return client.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {
+						var lang = new Lang(channel?.lang);
+						var text = lang.get('verification.dashboard.updated_notice', `<@${userSettings.user.id}>`) + '\n';
+						if ( settings.channel !== row.logchannel ) {
+							text += lang.get('verification.logging') + ' ~~' + ( row.logchannel ? `<#${row.logchannel}>` : `*\`${lang.get('verification.disabled')}\`*` ) + '~~ → ' + ( settings.channel ? `<#${settings.channel}>` : `*\`${lang.get('verification.disabled')}\`*` ) + '\n';
+						}
+						if ( settings.success !== row.onsuccess ) {
+							text += lang.get('verification.success') + ' ' + ( row.onsuccess ? '~~```md\n' + row.onsuccess.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```~~' : `~~*\`${lang.get('verification.disabled')}\`*~~ → ` ) + ( settings.success ? '```md\n' + settings.success.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```' : ` → *\`${lang.get('verification.disabled')}\`*\n` );
+						}
+						if ( settings.match !== row.onmatch ) {
+							text += lang.get('verification.match') + ' ' + ( row.onmatch ? '~~```md\n' + row.onmatch.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```~~' : `~~*\`${lang.get('verification.disabled')}\`*~~ → ` ) + ( settings.match ? '```md\n' + settings.match.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```' : ` → *\`${lang.get('verification.disabled')}\`*\n` );
+						}
+						text += `<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
+						if ( settings.success?.includes( '](' ) || settings.match?.includes( '](' ) ) {
+							text += '\n\n' + lang.get('verification.notice_embed');
+						}
+						sendMsg( {
+							type: 'notifyGuild', guild, text
+						} ).catch( error => {
+							console.log( '- Dashboard: Error while notifying the guild: ' + error );
+						} );
+					}, dberror => {
+						console.log( '- Dashboard: Error while notifying the guild: ' + dberror );
+					} );
+				}, dberror => {
+					console.log( '- Dashboard: Error while updating the verification notices: ' + dberror );
+					return res(`/guild/${guild}/verification/${type}`, 'savefail');
+				} );
+			}, dberror => {
+				console.log( '- Dashboard: Error while getting the current verification notices: ' + dberror );
+				return res(`/guild/${guild}/verification/${type}`, 'savefail');
+			} ).finally( () => {
+				client.release();
+			} );
+		}, dberror => {
+			console.log( '- Error while connecting to the database client: ' + dberror );
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		} );
 	}, error => {

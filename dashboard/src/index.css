@@ -159,16 +159,16 @@ a[alt]:hover:after {
 	background-color: #7289da;
 }
 .svg-avatar {
-	color: #43b581;
+	color: #3ba55c;
 	background: #36393f;
 }
 .theme-light .svg-avatar {
-	color: #43b581;
+	color: #3ba55c;
 	background-color: #ffffff;
 }
 .guild:hover .svg-avatar {
 	color: #ffffff;
-	background-color: #43b581;
+	background-color: #3ba55c;
 }
 .separator {
 	height: 2px;
@@ -351,6 +351,11 @@ a:hover .description,
 .notice a:hover {
 	text-decoration: underline;
 }
+textarea,
+code,
+pre {
+	font-family: Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace;
+}
 code {
 	background: #2f3136;
 	padding: 1px 3px;
@@ -358,7 +363,6 @@ code {
 	border: 1px solid #202225;
 	border-radius: 3px;
 	white-space: pre-wrap;
-	font-size: 120%;
 }
 .theme-light code {
 	background-color: #f2f3f5;
@@ -513,6 +517,17 @@ fieldset input[type="url"] {
 }
 fieldset input:invalid {
 	background: #FFAAAA;
+}
+fieldset textarea {
+	-moz-tab-size : 4;
+	-o-tab-size : 4;
+	tab-size : 4;
+	color: #dcddde;
+	background: #40444b;
+}
+.theme-light fieldset textarea {
+	color: #2e3338;
+	background-color: #ebedef;
 }
 .wb-settings-display:first-of-type,
 .wb-settings-permission:first-of-type {

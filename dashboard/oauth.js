@@ -156,7 +156,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 					lastGuild = searchParams.get('guild_id') + '/settings';
 				}
 				res.writeHead(302, {
-					Location: ( lastGuild && /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?$/.test(lastGuild) ? `/guild/${lastGuild}` : '/' ),
+					Location: ( lastGuild && /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(lastGuild) ? `/guild/${lastGuild}` : '/' ),
 					'Set-Cookie': [`wikibot="${userSession.state}"; HttpOnly; SameSite=Lax; Path=/; Max-Age=31536000`]
 				});
 				return res.end();

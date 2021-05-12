@@ -739,8 +739,10 @@
         "current_selected": "this is the verification `$1` for this server:",
         "dashboard": {
             "added": "$1 added the verification with id `$2`.",
+            "added_notice": "$1 added some verification notices.",
             "removed": "$1 removed the verification with id `$2`.",
-            "updated": "$1 updated the verification with id `$2`."
+            "updated": "$1 updated the verification with id `$2`.",
+            "updated_notice": "$1 updated some verification notices."
         },
         "delete_current": "Delete this verification:",
         "deleted": "the verification has been deleted.",
@@ -748,6 +750,8 @@
         "editcount": "Edit count:",
         "enabled": "enabled",
         "indays": "(in days)",
+        "logging": "Logging channel:",
+        "match": "Missing requirements notice:",
         "max_entries": "you already reached the maximal amount of verifications.",
         "missing": "there are no verifications for this server yet.",
         "new_accountage": "<new account age>",
@@ -757,6 +761,7 @@
         "new_role": "<new role>",
         "new_usergroup": "<new user group>",
         "no_role": "please provide a role for the new verification.",
+        "notice_embed": "Some notices include masked markdown links. Make sure the bot has the `Embed Links` permissions in all verification channels for them to work properly.",
         "or": "or",
         "postcount": "Post count (only Fandom wikis):",
         "postcount_or": "(alternative to edit count)",
@@ -770,6 +775,7 @@
         "role_missing": "the provided role does not exist.",
         "role_too_high": "**The role $1 is too high for $2 to assign!**",
         "save_failed": "sadly the verification couldn't be saved, please try again later.",
+        "success": "Success notice:",
         "toggle": "(toggle)",
         "updated": "the verification has been updated:",
         "usergroup": "User group:",

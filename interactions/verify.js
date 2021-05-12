@@ -52,6 +52,34 @@ function slash_verify(interaction, lang, wiki, channel) {
 			}
 		} ).catch(log_error);
 		
+		var username = ( interaction.data.options?.[0]?.value || '' ).replace( /^\s*<@!?(\d+)>\s*$/, (mention, id) => {
+			if ( id === interaction.user.id ) {
+				return ( interaction.member?.nick || interaction.user.username );
+			}
+			let user = channel.guild.members.cache.get(id);
+			if ( user ) return user.displayName;
+			else {
+				user = interaction.client.users.cache.get(user);
+				if ( user ) return user.username;
+			}
+			return mention;
+		} ).replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).split('#')[0].substring(0, 250).trim();
+		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
+			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
+		}
+		if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:\s*/i, '' );
+		
+		if ( !username.trim() ) return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {
+				type: 4,
+				data: {
+					content: lang.get('interaction.verify'),
+					allowed_mentions,
+					flags: 64
+				}
+			}
+		} ).catch(log_error);
+
 		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 			data: {
 				type: 5,
@@ -62,27 +90,6 @@ function slash_verify(interaction, lang, wiki, channel) {
 			}
 		} ).then( () => {
 			return channel.guild.members.fetch(interaction.user.id).then( member => {
-				var username = ( interaction.data.options?.[0]?.value || '' ).replace( /^\s*<@!?(\d+)>\s*$/, (mention, id) => {
-					if ( id === interaction.user.id ) {
-						return ( interaction.member?.nick || interaction.user.username );
-					}
-					let user = channel.guild.members.cache.get(id);
-					if ( user ) return user.displayName;
-					else {
-						user = interaction.client.users.cache.get(user);
-						if ( user ) return user.username;
-					}
-				} ).replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).split('#')[0].substring(0, 250).trim();
-				if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
-					username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
-				}
-				if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:\s*/i, '' );
-				
-				if ( !username.trim() ) return sendMessage(interaction, {
-					content: lang.get('interaction.verify'),
-					allowed_mentions
-				}, channel);
-
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
 					var message = {
 						content: reply + result.content,
@@ -94,7 +101,17 @@ function slash_verify(interaction, lang, wiki, channel) {
 						else message.content = reply + lang.get('verify.error_reply');
 						message.embeds = [];
 					}
-					return sendMessage(interaction, message);
+					return sendMessage(interaction, message, channel, false).then( msg => {
+						if ( !result.logging.channel || !channel.guild.channels.cache.has(result.logging.channel) ) return;
+						if ( msg ) {
+							if ( result.logging.embed ) result.logging.embed.addField(msg.url, '<#' + channel.id + '>');
+							else result.logging.content += '\n<#' + channel.id + '> – <' + msg.url + '>';
+						}
+						channel.guild.channels.cache.get(result.logging.channel).send(result.logging.content, {
+							embed: result.logging.embed,
+							allowedMentions: {parse: []}
+						}).catch(log_error);
+					} );
 				}, error => {
 					console.log( '- Error during the verifications: ' + error );
 					return sendMessage(interaction, {

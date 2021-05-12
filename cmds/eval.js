@@ -270,6 +270,14 @@ function removePatreons(guild, msg) {
 				messages.push('Error while updating the RcGcDw: ' + dberror);
 			} );
 		} ).then( () => {
+			return client.query( 'DELETE FROM verifynotice WHERE guild = $1', [guild] ).then( () => {
+				console.log( '- Verification notices successfully deleted.' );
+				messages.push('Verification notices successfully deleted.');
+			}, dberror => {
+				console.log( '- Error while deleting the verification notices: ' + dberror );
+				messages.push('Error while deleting the verification notices: ' + dberror);
+			} );
+		} ).then( () => {
 			if ( !messages.length ) messages.push('No settings found that had to be removed.');
 			return messages;
 		}, error => {

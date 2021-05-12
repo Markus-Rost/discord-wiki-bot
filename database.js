@@ -84,6 +84,18 @@ CREATE INDEX idx_verification_config ON verification (
     channel
 );
 
+CREATE TABLE verifynotice (
+    guild      TEXT    NOT NULL
+                       REFERENCES discord (main) ON DELETE CASCADE,
+    logchannel TEXT,
+    onsuccess  TEXT,
+    onmatch    TEXT
+);
+
+CREATE INDEX idx_verifynotice_guild ON verifynotice (
+    guild
+);
+
 CREATE TABLE rcgcdw (
     guild    TEXT    NOT NULL
                      REFERENCES discord (main) ON DELETE CASCADE,
@@ -128,6 +140,23 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
 
 COMMIT TRANSACTION;
 ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 1;
+`,`
+BEGIN TRANSACTION;
+
+CREATE TABLE verifynotice (
+    guild      TEXT    NOT NULL
+                       REFERENCES discord (main) ON DELETE CASCADE,
+    logchannel TEXT,
+    onsuccess  TEXT,
+    onmatch    TEXT
+);
+
+CREATE INDEX idx_verifynotice_guild ON verifynotice (
+    guild
+);
+
+COMMIT TRANSACTION;
+ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 2;
 `];
 
 module.exports = db.connect().then( () => {

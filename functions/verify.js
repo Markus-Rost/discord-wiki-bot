@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
+var db = require('../util/database.js');
 const logging = require('../util/logging.js');
 const {escapeFormatting} = require('../util/functions.js');
 const toTitle = require('../util/wiki.js').toTitle;
@@ -13,13 +14,18 @@ const toTitle = require('../util/wiki.js').toTitle;
  * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  * @param {Object[]} rows - The verification settings.
  * @param {String} [old_username] - The username before the search.
- * @returns {Promise<{content:String,embed:MessageEmbed,reaction:String}>}
+ * @returns {Promise<{content:String,embed:MessageEmbed,reaction:String,logging:{channel:String,content:String,embed?:MessageEmbed}}>}
  */
 function verify(lang, channel, member, username, wiki, rows, old_username = '') {
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	var result = {
 		content: '', embed,
-		reaction: ''
+		reaction: '',
+		logging: {
+			channel: '',
+			content: '',
+			embed: null
+		}
 	};
 	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		var body = response.body;
@@ -110,16 +116,18 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				queryuser.postcount = ucbody.userData.posts;
 				if ( ucbody.userData.discordHandle ) discordname = escapeFormatting(ucbody.userData.discordHandle).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 				
-				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
+				if ( wiki.isGamepedia() || !discordname ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
 					var pbody = presponse.body;
 					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
 						console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody?.error?.info || pbody?.errormsg ) );
-						return Promise.reject();
+						if ( wiki.isGamepedia() ) return Promise.reject();
 					}
-					if ( pbody.profile['link-discord'] ) discordname = escapeFormatting(pbody.profile['link-discord']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+					else if ( pbody.profile['link-discord'] ) {
+						discordname = escapeFormatting(pbody.profile['link-discord']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+					}
 				}, error => {
 					console.log( '- Error while getting the Discord tag: ' + error );
-					return Promise.reject();
+					if ( wiki.isGamepedia() ) return Promise.reject();
 				} );
 			}, ucerror => {
 				console.log( '- Error while getting the user profile: ' + ucerror );
@@ -174,23 +182,64 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 							comment.push(lang.get('verify.failed_roles'));
 						} )
 					];
-					if ( rename ) {
-						verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
-							log_error(error);
-							embed.setColor('#008800');
-							comment.push(lang.get('verify.failed_rename', queryuser.gender));
+					var verifynotice = {
+						logchannel: '',
+						onsuccess: ''
+					};
+					if ( patreons.hasOwnProperty(channel.guild.id) ) {
+						verify_promise.push(db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+							if ( row ) verifynotice = row;
+						}, dberror => {
+							console.log( '- Error while getting the notices: ' + dberror );
 						} ));
 					}
+					if ( rename && member.displayName !== username ) {
+						if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) {
+							verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
+								log_error(error);
+								embed.setColor('#008800');
+								comment.push(lang.get('verify.failed_rename', queryuser.gender));
+							} ));
+						}
+						else {
+							embed.setColor('#008800');
+							comment.push(lang.get('verify.failed_rename', queryuser.gender));
+						}
+					}
 					return Promise.all(verify_promise).then( () => {
+						var logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.get(verifynotice.logchannel) : null );
+						var useLogging = false;
+						if ( logchannel && logchannel.isGuild() && logchannel.permissionsFor(channel.guild.me).has(['VIEW_CHANNEL', 'SEND_MESSAGES']) ) {
+							useLogging = true;
+							result.logging.channel = logchannel.id;
+							if ( logchannel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) {
+								var logembed = new MessageEmbed(embed);
+								if ( roles.length ) logembed.addField( lang.get('verify.qualified'), roles.map( role => '<@&' + role + '>' ).join('\n') );
+								if ( missing.length ) logembed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
+								if ( comment.length ) logembed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
+								result.logging.embed = logembed;
+							}
+							else {
+								var logtext = '🔸 ' + lang.get('verify.user_verified', member.toString(), escapeFormatting(username), queryuser.gender);
+								if ( rename ) logtext += '\n' + lang.get('verify.user_renamed', queryuser.gender);
+								logtext += '\n<' + pagelink + '>';
+								if ( roles.length ) logtext += '\n**' + lang.get('verify.qualified') + '** ' + roles.map( role => '<@&' + role + '>' ).join(', ');
+								if ( missing.length ) logtext += '\n**' + lang.get('verify.qualified_error') + '** ' + missing.map( role => '<@&' + role + '>' ).join(', ');
+								if ( comment.length ) logtext += '\n**' + lang.get('verify.notice') + '** ' + comment.join('\n**' + lang.get('verify.notice') + '** ');
+								result.logging.content = logtext;
+							}
+						}
 						if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) {
 							if ( roles.length ) embed.addField( lang.get('verify.qualified'), roles.map( role => '<@&' + role + '>' ).join('\n') );
-							if ( missing.length ) embed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
-							if ( comment.length ) embed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
+							if ( missing.length && !useLogging ) embed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
+							if ( comment.length && !useLogging ) embed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
+							if ( verifynotice.onsuccess ) embed.addField( lang.get('verify.notice'), verifynotice.onsuccess );
 						}
 						else {
 							if ( roles.length ) text += '\n\n' + lang.get('verify.qualified') + ' ' + roles.map( role => '<@&' + role + '>' ).join(', ');
-							if ( missing.length ) text += '\n\n' + lang.get('verify.qualified_error') + ' ' + missing.map( role => '<@&' + role + '>' ).join(', ');
-							if ( comment.length ) text += '\n\n' + comment.join('\n');
+							if ( missing.length && !useLogging ) text += '\n\n' + lang.get('verify.qualified_error') + ' ' + missing.map( role => '<@&' + role + '>' ).join(', ');
+							if ( comment.length && !useLogging ) text += '\n\n' + comment.join('\n');
+							if ( verifynotice.onsuccess ) text += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onsuccess;
 						}
 						result.content = text;
 					}, log_error );
@@ -198,6 +247,16 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				
 				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 				result.content = lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender);
+				
+				if ( patreons.hasOwnProperty(channel.guild.id) ) {
+					return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+						if ( !row?.onmatch ) return;
+						if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), row.onmatch );
+						else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onmatch;
+					}, dberror => {
+						console.log( '- Error while getting the notices: ' + dberror );
+					} );
+				}
 			}, error => {
 				if ( error ) console.log( '- Error while getting the Discord tag: ' + error );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
@@ -273,23 +332,64 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 						comment.push(lang.get('verify.failed_roles'));
 					} )
 				];
-				if ( rename ) {
-					verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
-						log_error(error);
-						embed.setColor('#008800');
-						comment.push(lang.get('verify.failed_rename', queryuser.gender));
+				var verifynotice = {
+					logchannel: '',
+					onsuccess: ''
+				};
+				if ( patreons.hasOwnProperty(channel.guild.id) ) {
+					verify_promise.push(db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+						if ( row ) verifynotice = row;
+					}, dberror => {
+						console.log( '- Error while getting the notices: ' + dberror );
 					} ));
 				}
+				if ( rename && member.displayName !== username ) {
+					if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) {
+						verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
+							log_error(error);
+							embed.setColor('#008800');
+							comment.push(lang.get('verify.failed_rename', queryuser.gender));
+						} ));
+					}
+					else {
+						embed.setColor('#008800');
+						comment.push(lang.get('verify.failed_rename', queryuser.gender));
+					}
+				}
 				return Promise.all(verify_promise).then( () => {
+					var logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.get(verifynotice.logchannel) : null );
+					var useLogging = false;
+					if ( logchannel && logchannel.isGuild() && logchannel.permissionsFor(channel.guild.me).has(['VIEW_CHANNEL', 'SEND_MESSAGES']) ) {
+						useLogging = true;
+						result.logging.channel = logchannel.id;
+						if ( logchannel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) {
+							var logembed = new MessageEmbed(embed);
+							if ( roles.length ) logembed.addField( lang.get('verify.qualified'), roles.map( role => '<@&' + role + '>' ).join('\n') );
+							if ( missing.length ) logembed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
+							if ( comment.length ) logembed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
+							result.logging.embed = logembed;
+						}
+						else {
+							var logtext = '🔸 ' + lang.get('verify.user_verified', member.toString(), escapeFormatting(username), queryuser.gender);
+							if ( rename ) logtext += '\n' + lang.get('verify.user_renamed', queryuser.gender);
+							logtext += '\n<' + pagelink + '>';
+							if ( roles.length ) logtext += '\n**' + lang.get('verify.qualified') + '** ' + roles.map( role => '<@&' + role + '>' ).join(', ');
+							if ( missing.length ) logtext += '\n**' + lang.get('verify.qualified_error') + '** ' + missing.map( role => '<@&' + role + '>' ).join(', ');
+							if ( comment.length ) logtext += '\n**' + lang.get('verify.notice') + '** ' + comment.join('\n**' + lang.get('verify.notice') + '** ');
+							result.logging.content = logtext;
+						}
+					}
 					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) {
 						if ( roles.length ) embed.addField( lang.get('verify.qualified'), roles.map( role => '<@&' + role + '>' ).join('\n') );
-						if ( missing.length ) embed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
-						if ( comment.length ) embed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
+						if ( missing.length && !useLogging ) embed.setColor('#008800').addField( lang.get('verify.qualified_error'), missing.map( role => '<@&' + role + '>' ).join('\n') );
+						if ( comment.length && !useLogging ) embed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
+						if ( verifynotice.onsuccess ) embed.addField( lang.get('verify.notice'), verifynotice.onsuccess );
 					}
 					else {
 						if ( roles.length ) text += '\n\n' + lang.get('verify.qualified') + ' ' + roles.map( role => '<@&' + role + '>' ).join(', ');
-						if ( missing.length ) text += '\n\n' + lang.get('verify.qualified_error') + ' ' + missing.map( role => '<@&' + role + '>' ).join(', ');
-						if ( comment.length ) text += '\n\n' + comment.join('\n');
+						if ( missing.length && !useLogging ) text += '\n\n' + lang.get('verify.qualified_error') + ' ' + missing.map( role => '<@&' + role + '>' ).join(', ');
+						if ( comment.length && !useLogging ) text += '\n\n' + comment.join('\n');
+						if ( verifynotice.onsuccess ) text += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onsuccess;
 					}
 					result.content = text;
 				}, log_error );
@@ -297,6 +397,16 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			
 			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 			result.content = lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender);
+				
+			if ( patreons.hasOwnProperty(channel.guild.id) ) {
+				return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+					if ( !row?.onmatch ) return;
+					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), row.onmatch );
+					else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onmatch;
+				}, dberror => {
+					console.log( '- Error while getting the notices: ' + dberror );
+				} );
+			}
 		}, error => {
 			console.log( '- Error while getting the Discord tag: ' + error );
 			embed.setColor('#000000').setDescription( lang.get('verify.error') );

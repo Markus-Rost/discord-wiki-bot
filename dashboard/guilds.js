@@ -24,9 +24,8 @@ const file = require('fs').readFileSync('./dashboard/index.html');
  * @param {String[]} [actionArgs] - The arguments for the action
  */
 function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
-	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new))?)?)?)(?:\/.*)?$/, '$1' );
+	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
-	args = reqURL.pathname.split('/');
 	var settings = settingsData.get(userSession.user_id);
 	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(userSession.user_id) ) {
 		args[0] = 'owner';
