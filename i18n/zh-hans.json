@@ -739,8 +739,10 @@
         "current_selected": "这是本服务器的验证方式 `$1`：",
         "dashboard": {
             "added": "$1 添加了 ID 为`$2` 的验证方式。",
+            "added_notice": "$1添加了一些验证提示。",
             "removed": "$1 移除了 ID 为`$2` 的验证方式。",
-            "updated": "$1 更新了 ID 为`$2` 的验证方式。"
+            "updated": "$1 更新了 ID 为`$2` 的验证方式。",
+            "updated_notice": "$1更新了一些验证提示。"
         },
         "delete_current": "删除此验证方式：",
         "deleted": "验证方式已删除。",
@@ -748,6 +750,8 @@
         "editcount": "编辑数：",
         "enabled": "已启用",
         "indays": "（以日计算）",
+        "logging": "日志记录频道：",
+        "match": "缺少验证条件提示：",
         "max_entries": "您已触发验证方式数量上限。",
         "missing": "本服务器尚未有验证方式。",
         "new_accountage": "<新注册时长>",
@@ -757,6 +761,7 @@
         "new_role": "<新身份组>",
         "new_usergroup": "<新用户组>",
         "no_role": "请为新的验证方式提供身份组。",
+        "notice_embed": "部分提示信息含有 Markdown 格式的链接。请确保机器人拥有`嵌入链接`权限以使其正常工作。",
         "or": "或",
         "postcount": "帖子数（仅Fandom wiki）：",
         "postcount_or": "（替代编辑数）",
@@ -770,6 +775,7 @@
         "role_missing": "提供的身份组不存在。",
         "role_too_high": "**$1 身份组的权重过高，$2 无法添加！**",
         "save_failed": "抱歉，无法保存验证方式，请稍后再试。",
+        "success": "成功提示：",
         "toggle": "（开/关）",
         "updated": "验证方式已更新：",
         "usergroup": "用户组：",

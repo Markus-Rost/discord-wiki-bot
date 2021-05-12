@@ -215,8 +215,12 @@
             "confirm": "你真的想删除此验证方式吗？",
             "editcount": "最少编辑次数：",
             "entry": "验证方式 #$1",
+            "logging": "日志记录频道：",
+            "match": "缺少验证条件提示：",
+            "match_placeholder": "在匹配到 Discord ID 但不符合任何身份组验证条件时显示的 Markdown 文本。",
             "more": "添加更多",
             "new": "新的验证方式",
+            "notice": "验证提示",
             "postcount": "最小帖子数：",
             "postcount_and": "同时要求编辑数和帖子数。",
             "postcount_both": "要求编辑数和帖子数的总和。",
@@ -226,9 +230,12 @@
             "role": "身份组：",
             "select_channel": "-- 选择频道 --",
             "select_role": "-- 选择身份组 --",
+            "success": "成功提示：",
+            "success_placeholder": "验证成功时显示的 Markdown 文本。",
             "usergroup": "wiki 用户组：",
             "usergroup_and": "所有所需的用户组："
         },
-        "new": "新的验证方式"
+        "new": "新的验证方式",
+        "notice": "验证提示"
     }
 }

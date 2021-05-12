@@ -739,8 +739,10 @@
         "current_selected": "這是本伺服器的驗證方式 `$1`：",
         "dashboard": {
             "added": "$1 新增了ID為`$2`的驗證方式。",
+            "added_notice": "$1新增了一些驗證提示。",
             "removed": "$1 移除了ID為`$2`的驗證方式。",
-            "updated": "$1 變更了ID為`$2`的驗證方式。"
+            "updated": "$1 變更了ID為`$2`的驗證方式。",
+            "updated_notice": "$1更新了一些驗證提示。"
         },
         "delete_current": "刪除此驗證方式：",
         "deleted": "驗證方式已刪除。",
@@ -748,6 +750,8 @@
         "editcount": "編輯次數：",
         "enabled": "已啓用",
         "indays": "（以日計算）",
+        "logging": "日誌記錄頻道：",
+        "match": "缺失驗證條件提示：",
         "max_entries": "您已觸發驗證方式數量上限。",
         "missing": "本伺服器尚未有驗證方式。",
         "new_accountage": "<新註冊時長>",
@@ -757,6 +761,7 @@
         "new_role": "<新身分組>",
         "new_usergroup": "<新使用者組>",
         "no_role": "請為新的驗證方式提供身分組。",
+        "notice_embed": "一些提示訊息內有 Markdown 連結。請確保機器人擁有`嵌入連結`權限以使其正常運作。",
         "or": "或",
         "postcount": "貼文數（僅 Fandom wiki）：",
         "postcount_or": "（代替編輯次數）",
@@ -770,6 +775,7 @@
         "role_missing": "提供的身分組不存在。",
         "role_too_high": "**$1 身分組的權重過高，$2 無法添加！**",
         "save_failed": "抱歉，無法保存驗證方式，請稍後再試。",
+        "success": "成功提示：",
         "toggle": "（開/關）",
         "updated": "驗證方式已更新：",
         "usergroup": "使用者組：",

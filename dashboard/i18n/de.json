@@ -215,8 +215,12 @@
             "confirm": "Möchtest du wirklich die Verifizierung löschen?",
             "editcount": "Bearbeitungen:",
             "entry": "$1. Verifizierung",
+            "logging": "Protokollierungskanal:",
+            "match": "Hinweis bei fehlenden Voraussetzungen:",
+            "match_placeholder": "Markdown-Text bei passendem Discord-Tag, aber keinen Kriterien für Rollen erfüllt.",
             "more": "Weitere hinzufügen",
             "new": "Neue Verifizierung",
+            "notice": "Verifizierungshinweise",
             "postcount": "Diskussionsbeitragslimit:",
             "postcount_and": "Benötige sowohl das Bearbeitungs- als auch das Diskussionsbeitragslimit.",
             "postcount_both": "Benötige das zusammengezählte Bearbeitungs- und Diskussionsbeitragslimit.",
@@ -226,9 +230,12 @@
             "role": "Rolle:",
             "select_channel": "-- Wähle einen Kanal --",
             "select_role": "-- Wähle eine Rolle --",
+            "success": "Hinweis bei Erfolg:",
+            "success_placeholder": "Markdown-Text bei erfolgreicher Verifizierung.",
             "usergroup": "Wiki-Benutzergruppe:",
             "usergroup_and": "Benötige alle Benutzergruppen:"
         },
-        "new": "Neue Verifizierung"
+        "new": "Neue Verifizierung",
+        "notice": "Verifizierungshinweise"
     }
 }
