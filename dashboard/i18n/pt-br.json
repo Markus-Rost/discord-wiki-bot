@@ -215,8 +215,12 @@
             "confirm": "Tem certeza de que deseja excluir a verificação?",
             "editcount": "Contagem mínima de edições:",
             "entry": "Verificação #$1",
+            "logging": "Canal de registro:",
+            "match": "Aviso de requisitos ausentes:",
+            "match_placeholder": "Texto de marcação nas etiquetas do Discord correspondentes, mas não cumprindo os requisitos para os cargos.",
             "more": "Adicionar mais",
             "new": "Nova verificação",
+            "notice": "Avisos de verificação",
             "postcount": "Contagem mínima de posts:",
             "postcount_and": "Requer edição e contagem de postagens.",
             "postcount_both": "Requer edição e contagem de postagens combinadas.",
@@ -226,9 +230,12 @@
             "role": "Cargo:",
             "select_channel": "-- Selecionar canal --",
             "select_role": "-- Selecionar cargo --",
+            "success": "Aviso de sucesso:",
+            "success_placeholder": "Texto de marcação na verificação bem-sucedida.",
             "usergroup": "Grupo de usuários da Wiki:",
             "usergroup_and": "Requer todos os grupos de usuários:"
         },
-        "new": "Nova verificação"
+        "new": "Nova verificação",
+        "notice": "Avisos de verificação"
     }
 }

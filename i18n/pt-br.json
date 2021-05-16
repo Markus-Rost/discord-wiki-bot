@@ -318,7 +318,7 @@
                     "desc": "Vou alterar o prefixo para este servidor."
                 },
                 "role": {
-                    "cmd": "settings role <role>",
+                    "cmd": "settings role <cargo>",
                     "desc": "Vou mudar o cargo mínimo necessário para usar comandos para este servidor."
                 },
                 "wiki": {
@@ -739,8 +739,10 @@
         "current_selected": "esta é a verificação `$1` para este servidor:",
         "dashboard": {
             "added": "$1 adicionou a verificação com id `$2`.",
+            "added_notice": "$1 adicionou alguns avisos de verificação.",
             "removed": "$1 removeu a verificação com id `$2`.",
-            "updated": "$1 atualizou a verificação com id `$2`."
+            "updated": "$1 atualizou a verificação com id `$2`.",
+            "updated_notice": "$1 atualizou alguns avisos de verificação."
         },
         "delete_current": "Para excluir esta verificação:",
         "deleted": "a verificação foi excluída.",
@@ -748,6 +750,8 @@
         "editcount": "Contagem de edições:",
         "enabled": "ativado",
         "indays": "(em dias)",
+        "logging": "Canal de registro:",
+        "match": "Aviso de requisitos ausentes:",
         "max_entries": "você já atingiu a quantidade máxima de verificações.",
         "missing": "ainda não há verificações para este servidor.",
         "new_accountage": "<nova idade da conta>",
@@ -757,6 +761,7 @@
         "new_role": "<novo cargo>",
         "new_usergroup": "<novo grupo de usuários>",
         "no_role": "por favor forneça um cargo para a nova verificação.",
+        "notice_embed": "Alguns avisos incluem links de marcação mascarados. Certifique-se de que o bot tenha as permissões `Embed Links` em todos os canais de verificação para que funcionem corretamente.",
         "or": "ou",
         "postcount": "Contagem de postagens (apenas wikis no Fandom):",
         "postcount_or": "(alternativa para editar contagem)",
@@ -770,6 +775,7 @@
         "role_missing": "o cargo fornecido não existe.",
         "role_too_high": "**O cargo $1 é muito alto para o $2 atribuí-lo!**",
         "save_failed": "infelizmente a verificação não pôde ser salva, tente novamente mais tarde.",
+        "success": "Aviso de sucesso:",
         "toggle": "(alternar)",
         "updated": "a verificação foi atualizada:",
         "usergroup": "Grupo de usuários:",
