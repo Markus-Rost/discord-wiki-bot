@@ -119,8 +119,9 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				if ( wiki.isGamepedia() || !discordname ) return got.get( ( wiki.isGamepedia() ? wiki : 'https://help.fandom.com/' ) + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
 					var pbody = presponse.body;
 					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
+						if ( !wiki.isGamepedia() ) return;
 						console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody?.error?.info || pbody?.errormsg ) );
-						if ( wiki.isGamepedia() ) return Promise.reject();
+						return Promise.reject();
 					}
 					else if ( pbody.profile['link-discord'] ) {
 						discordname = escapeFormatting(pbody.profile['link-discord']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
@@ -188,7 +189,13 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					};
 					if ( patreons.hasOwnProperty(channel.guild.id) ) {
 						verify_promise.push(db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
-							if ( row ) verifynotice = row;
+							if ( !row ) return;
+							verifynotice.logchannel = row.logchannel;
+							if ( row.onsuccess ) verifynotice.onsuccess = parseNotice(row.onsuccess, {
+								editcount: queryuser.editcount,
+								postcount: queryuser.postcount,
+								accountage: Math.trunc(accountage)
+							}).trim();
 						}, dberror => {
 							console.log( '- Error while getting the notices: ' + dberror );
 						} ));
@@ -251,8 +258,14 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				if ( patreons.hasOwnProperty(channel.guild.id) ) {
 					return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
 						if ( !row?.onmatch ) return;
-						if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), row.onmatch );
-						else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onmatch;
+						var onmatch = parseNotice(row.onmatch, {
+							editcount: queryuser.editcount,
+							postcount: queryuser.postcount,
+							accountage: Math.trunc(accountage)
+						});
+						if ( !onmatch.trim() ) return;
+						if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
+						else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
 					}, dberror => {
 						console.log( '- Error while getting the notices: ' + dberror );
 					} );
@@ -338,7 +351,12 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				};
 				if ( patreons.hasOwnProperty(channel.guild.id) ) {
 					verify_promise.push(db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
-						if ( row ) verifynotice = row;
+						if ( !row ) return;
+						verifynotice.logchannel = row.logchannel;
+						if ( row.onsuccess ) verifynotice.onsuccess = parseNotice(row.onsuccess, {
+							editcount: queryuser.editcount,
+							accountage: Math.trunc(accountage)
+						}).trim();
 					}, dberror => {
 						console.log( '- Error while getting the notices: ' + dberror );
 					} ));
@@ -401,8 +419,13 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			if ( patreons.hasOwnProperty(channel.guild.id) ) {
 				return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
 					if ( !row?.onmatch ) return;
-					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), row.onmatch );
-					else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onmatch;
+					var onmatch = parseNotice(row.onmatch, {
+						editcount: queryuser.editcount,
+						accountage: Math.trunc(accountage)
+					});
+					if ( !onmatch.trim() ) return;
+					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
+					else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
 				}, dberror => {
 					console.log( '- Error while getting the notices: ' + dberror );
 				} );
@@ -420,6 +443,82 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 		if ( !new_username ) return result;
 		return verify(lang, channel, member, new_username, wiki, rows, username);
 	} );
+}
+
+/**
+ * Parse variables in a verification notice.
+ * @param {String} [text] The notice to parse.
+ * @param {Object} [variables] The variables to replace.
+ * @param {Number} [variables.editcount]
+ * @param {Number} [variables.postcount]
+ * @param {Number} [variables.accountage]
+ * @returns {String}
+ */
+function parseNotice(text = '', variables = {editcount: 0, postcount: 0, accountage: 0}) {
+	if ( !text.includes( '$' ) ) return text;
+	text = text.replace( /\$(editcount|postcount|accountage)/g, (variable, key) => {
+		var value = variables[key];
+		return ( value > 1000000 ? 1000000 : value );
+	} );
+	if ( text.includes( '#expr:' ) ) text = text.replace( /{{\s*#expr:\s*(-?\d{1,10})\s*([+-])\s*(-?\d{1,10})(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?\s*}}/g, (expr, n0, o1, n1, o2, n2, o3, n3, o4, n4) => {
+		var result = +n0;
+		if ( o1 === '+' ) result += +n1;
+		else result -= +n1;
+		if ( !o2 ) return result;
+		if ( o2 === '+' ) result += +n2;
+		else result -= +n2;
+		if ( !o3 ) return result;
+		if ( o3 === '+' ) result += +n3;
+		else result -= +n3;
+		if ( !o4 ) return result;
+		if ( o4 === '+' ) result += +n4;
+		else result -= +n4;
+		return result;
+	} );
+	if ( text.includes( '#ifexpr:' ) ) text = text.replace( /{{\s*#ifexpr:\s*(-?\d{1,10})\s*([=<>]|!=|<>|<=|>=)\s*(-?\d{1,10})(?:\s*(and|or)\s*(-?\d{1,10})\s*([=<>]|!=|<>|<=|>=)\s*(-?\d{1,10}))?(?:\s*(and|or)\s*(-?\d{1,10})\s*([=<>]|!=|<>|<=|>=)\s*(-?\d{1,10}))?\s*\|\s*([^{|}]*)\s*(?:\|\s*([^{|}]*)\s*)?}}/g, (expr, n0, o0, a0, l1, n1, o1, a1, l2, n2, o2, a2, iftrue, iffalse = '') => {
+		var result = ifexpr([+n0, +a0], o0);
+		if ( result && l1 !== 'and' ) return iftrue.trim();
+		if ( l1 ) result = ifexpr([+n1, +a1], o1);
+		else return iffalse.trim();
+		if ( result && l2 !== 'and' ) return iftrue.trim();
+		if ( l2 ) result = ifexpr([+n2, +a2], o2);
+		else return iffalse.trim();
+		if ( result ) return iftrue.trim();
+		else return iffalse.trim();
+	} );
+	return text;
+}
+
+/**
+ * Compare to numbers based on an operator.
+ * @param {Number[]} number The numbers to compare.
+ * @param {String} operator The comparation operator.
+ * @returns {Boolean}
+ */
+function ifexpr(number, operator) {
+	var result = false;
+	switch ( operator ) {
+		case '<':
+			result = ( number[0] < number[1] );
+			break;
+		case '>':
+			result = ( number[0] > number[1] );
+			break;
+		case '=':
+			result = ( number[0] === number[1] );
+			break;
+		case '<=':
+			result = ( number[0] <= number[1] );
+			break;
+		case '>=':
+			result = ( number[0] >= number[1] );
+			break;
+		case '!=':
+		case '<>':
+			result = ( number[0] !== number[1] );
+			break;
+	}
+	return result;
 }
 
 module.exports = verify;
