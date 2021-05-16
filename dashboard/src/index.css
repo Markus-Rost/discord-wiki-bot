@@ -363,10 +363,14 @@ code {
 	border: 1px solid #202225;
 	border-radius: 3px;
 	white-space: pre-wrap;
+	font-size: 85%;
 }
 .theme-light code {
 	background-color: #f2f3f5;
 	border-color: #e3e5e8;
+}
+li {
+	margin: 3px 0;
 }
 #text {
 	position: relative;
@@ -380,6 +384,15 @@ code {
 	-moz-user-select: all;
 	-ms-user-select: all;
 	user-select: all;
+}
+.form-button:not(.user-select) {
+	cursor: pointer;
+}
+.form-button:not(.user-select):hover {
+	color: #00b0f4;
+}
+.theme-light .form-button:not(.user-select):hover {
+	color: #0067e0;
 }
 .widgets {
 	margin-top: 250px;

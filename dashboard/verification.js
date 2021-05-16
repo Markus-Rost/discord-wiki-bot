@@ -333,6 +333,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 					$('textarea, option, optgroup').attr('disabled', '');
 					$('input[type="submit"]').remove();
 				}
+				$('<div class="description">').html(dashboardLang.get('verification.help_notice')).appendTo('#text');
 				let body = $.html();
 				res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 				res.write( body );

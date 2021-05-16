@@ -226,7 +226,7 @@ if ( wiki ) {
 				if ( !readonly ) wiki.removeAttribute('readonly');
 				wikicheck.removeAttribute('disabled');
 			} );
-		}
+		};
 	}
 	const feeds = document.getElementById('wb-settings-feeds');
 	if ( feeds ) {
@@ -364,16 +364,54 @@ if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
 };
 
 var textAreas = document.getElementsByTagName('textarea');
-for ( var ta = 0; ta < textAreas.length; ta++ ) {
-	textAreas[ta].addEventListener('keydown', allowTabs);
-}
+if ( textAreas.length ) {
+	/** @type {HTMLTextAreaElement} */
+	var textArea = null;
+	var codeButtons = document.getElementsByClassName('form-button');
+	for ( var cb = 0; cb < codeButtons.length; cb++ ) {
+		codeButtons[cb].onclick = addVariable;
+	}
 
-/**
- * @this HTMLTextAreaElement
- * @param {KeyboardEvent} e
- */
-function allowTabs(e) {
-	if ( e.key === 'Tab' ) {
+	for ( var ta = 0; ta < textAreas.length; ta++ ) {
+		textAreas[ta].addEventListener('keydown', allowTabs);
+		textAreas[ta].onclick = function() {
+			if ( !textArea ) {
+				for ( var us = 0; us < codeButtons.length; us++ ) {
+					codeButtons[us].classList.remove('user-select');
+				}
+			}
+			textArea = this;
+		};
+	}
+
+	/**
+	 * @this HTMLElement
+	 * @param {MouseEvent} e
+	 */
+	function addVariable(e) {
+		if ( !textArea || e.shiftKey ) return;
+		var start = textArea.selectionStart;
+		var end = textArea.selectionEnd;
+		var valueBefore = ( this.dataset?.before || this.innerText );
+		var valueAfter = ( this.dataset?.after || '' );
+		if ( valueAfter ) {
+			textArea.value = textArea.value.substring(0, start) + valueBefore + textArea.value.substring(start, end) + valueAfter + textArea.value.substring(end);
+			textArea.selectionStart = start + valueBefore.length;
+			textArea.selectionEnd = end + valueBefore.length;
+		}
+		else {
+			textArea.value = textArea.value.substring(0, start) + valueBefore + textArea.value.substring(end);
+			textArea.selectionStart = textArea.selectionEnd = start + valueBefore.length;
+		}
+		textArea.focus();
+	}
+
+	/**
+	 * @this HTMLTextAreaElement
+	 * @param {KeyboardEvent} e
+	 */
+	function allowTabs(e) {
+		if ( e.key !== 'Tab' ) return;
 		if ( this.value.includes( '`ˋ`' ) ) this.value = this.value.replace( /`ˋ`/g, '```' );
 		var start = this.selectionStart;
 		var end = this.selectionEnd;
@@ -400,6 +438,6 @@ for ( var i = 0; i < collapsible.length; i++ ) {
 		else {
 			content.style.display = 'block';
 		}
-	}
+	};
 }
 */
