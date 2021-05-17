@@ -142,12 +142,6 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				}, dberror => {
 					console.log( '- Error while updating the RcGcDw: ' + dberror );
 				} );
-			} ).then( () => {
-				return client.query( 'DELETE FROM verifynotice WHERE guild = $1', [args[1]] ).then( () => {
-					console.log( '- Verification notices successfully deleted.' );
-				}, dberror => {
-					console.log( '- Error while deleting the verification notices: ' + dberror );
-				} );
 			} ).catch( error => {
 				if ( error ) console.log( '- Error while removing the patreon features: ' + error );
 			} ).finally( () => {
@@ -304,12 +298,6 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- RcGcDw successfully updated.' );
 				}, dberror => {
 					console.log( '- Error while updating the RcGcDw: ' + dberror );
-				} );
-			} ).then( () => {
-				return client.query( 'DELETE FROM verifynotice WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ')', guilds ).then( () => {
-					console.log( '- Verification notices successfully deleted.' );
-				}, dberror => {
-					console.log( '- Error while deleting the verification notices: ' + dberror );
 				} );
 			} ).catch( error => {
 				if ( error ) console.log( '- Error while removing the patreon features: ' + error );

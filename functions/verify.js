@@ -176,19 +176,17 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				if ( verified ) {
 					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 					var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
+					var verifynotice = {
+						logchannel: '',
+						onsuccess: ''
+					};
 					var verify_promise = [
 						member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
 							log_error(error);
 							embed.setColor('#008800');
 							comment.push(lang.get('verify.failed_roles'));
-						} )
-					];
-					var verifynotice = {
-						logchannel: '',
-						onsuccess: ''
-					};
-					if ( patreons.hasOwnProperty(channel.guild.id) ) {
-						verify_promise.push(db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+						} ),
+						db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
 							if ( !row ) return;
 							verifynotice.logchannel = row.logchannel;
 							if ( row.onsuccess ) verifynotice.onsuccess = parseNotice(row.onsuccess, {
@@ -199,8 +197,8 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 							}).trim();
 						}, dberror => {
 							console.log( '- Error while getting the notices: ' + dberror );
-						} ));
-					}
+						} )
+					];
 					if ( rename && member.displayName !== username ) {
 						if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) {
 							verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
@@ -256,22 +254,20 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 				result.content = lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender);
 				
-				if ( patreons.hasOwnProperty(channel.guild.id) ) {
-					return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
-						if ( !row?.onmatch ) return;
-						var onmatch = parseNotice(row.onmatch, {
-							editcount: queryuser.editcount,
-							postcount: queryuser.postcount,
-							accountage: Math.trunc(accountage),
-							dateformat: lang.get('dateformat')
-						});
-						if ( !onmatch.trim() ) return;
-						if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
-						else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
-					}, dberror => {
-						console.log( '- Error while getting the notices: ' + dberror );
-					} );
-				}
+				return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+					if ( !row?.onmatch ) return;
+					var onmatch = parseNotice(row.onmatch, {
+						editcount: queryuser.editcount,
+						postcount: queryuser.postcount,
+						accountage: Math.trunc(accountage),
+						dateformat: lang.get('dateformat')
+					});
+					if ( !onmatch.trim() ) return;
+					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
+					else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
+				}, dberror => {
+					console.log( '- Error while getting the notices: ' + dberror );
+				} );
 			}, error => {
 				if ( error ) console.log( '- Error while getting the Discord tag: ' + error );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
@@ -340,19 +336,17 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			if ( verified ) {
 				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
+				var verifynotice = {
+					logchannel: '',
+					onsuccess: ''
+				};
 				var verify_promise = [
 					member.roles.add( roles, lang.get('verify.audit_reason', username) ).catch( error => {
 						log_error(error);
 						embed.setColor('#008800');
 						comment.push(lang.get('verify.failed_roles'));
-					} )
-				];
-				var verifynotice = {
-					logchannel: '',
-					onsuccess: ''
-				};
-				if ( patreons.hasOwnProperty(channel.guild.id) ) {
-					verify_promise.push(db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+					} ),
+					db.query( 'SELECT logchannel, onsuccess FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
 						if ( !row ) return;
 						verifynotice.logchannel = row.logchannel;
 						if ( row.onsuccess ) verifynotice.onsuccess = parseNotice(row.onsuccess, {
@@ -362,8 +356,8 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 						}).trim();
 					}, dberror => {
 						console.log( '- Error while getting the notices: ' + dberror );
-					} ));
-				}
+					} )
+				];
 				if ( rename && member.displayName !== username ) {
 					if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) {
 						verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
@@ -419,21 +413,19 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 			result.content = lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender);
 				
-			if ( patreons.hasOwnProperty(channel.guild.id) ) {
-				return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
-					if ( !row?.onmatch ) return;
-					var onmatch = parseNotice(row.onmatch, {
-						editcount: queryuser.editcount,
-						accountage: Math.trunc(accountage),
-						dateformat: lang.get('dateformat')
-					});
-					if ( !onmatch.trim() ) return;
-					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
-					else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
-				}, dberror => {
-					console.log( '- Error while getting the notices: ' + dberror );
-				} );
-			}
+			return db.query( 'SELECT onmatch FROM verifynotice WHERE guild = $1', [channel.guild.id] ).then( ({rows:[row]}) => {
+				if ( !row?.onmatch ) return;
+				var onmatch = parseNotice(row.onmatch, {
+					editcount: queryuser.editcount,
+					accountage: Math.trunc(accountage),
+					dateformat: lang.get('dateformat')
+				});
+				if ( !onmatch.trim() ) return;
+				if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
+				else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
+			}, dberror => {
+				console.log( '- Error while getting the notices: ' + dberror );
+			} );
 		}, error => {
 			console.log( '- Error while getting the Discord tag: ' + error );
 			embed.setColor('#000000').setDescription( lang.get('verify.error') );

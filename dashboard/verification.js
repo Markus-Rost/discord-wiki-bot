@@ -269,7 +269,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('verification.new'))
 			).attr('href', `/guild/${guild.id}/verification/new${suffix}`) ),
-			( !guild.patreon || !rows.length ? '' :
+			( !rows.length ? '' :
 			$('<a class="channel" id="channel-notice">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('verification.notice'))
@@ -288,7 +288,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 			$(`.channel#channel-${row.configid}`).addClass('selected');
 			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
 		}
-		else if ( args[4] === 'notice' && guild.patreon && rows.length ) {
+		else if ( args[4] === 'notice' && rows.length ) {
 			$(`.channel#channel-notice`).addClass('selected');
 			return db.query( 'SELECT logchannel, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild.id] ).then( ({rows:[row]}) => {
 				let curCat = null;
