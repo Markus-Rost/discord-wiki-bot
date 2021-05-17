@@ -194,7 +194,8 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 							if ( row.onsuccess ) verifynotice.onsuccess = parseNotice(row.onsuccess, {
 								editcount: queryuser.editcount,
 								postcount: queryuser.postcount,
-								accountage: Math.trunc(accountage)
+								accountage: Math.trunc(accountage),
+								dateformat: lang.get('dateformat')
 							}).trim();
 						}, dberror => {
 							console.log( '- Error while getting the notices: ' + dberror );
@@ -261,7 +262,8 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 						var onmatch = parseNotice(row.onmatch, {
 							editcount: queryuser.editcount,
 							postcount: queryuser.postcount,
-							accountage: Math.trunc(accountage)
+							accountage: Math.trunc(accountage),
+							dateformat: lang.get('dateformat')
 						});
 						if ( !onmatch.trim() ) return;
 						if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
@@ -355,7 +357,8 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 						verifynotice.logchannel = row.logchannel;
 						if ( row.onsuccess ) verifynotice.onsuccess = parseNotice(row.onsuccess, {
 							editcount: queryuser.editcount,
-							accountage: Math.trunc(accountage)
+							accountage: Math.trunc(accountage),
+							dateformat: lang.get('dateformat')
 						}).trim();
 					}, dberror => {
 						console.log( '- Error while getting the notices: ' + dberror );
@@ -421,7 +424,8 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					if ( !row?.onmatch ) return;
 					var onmatch = parseNotice(row.onmatch, {
 						editcount: queryuser.editcount,
-						accountage: Math.trunc(accountage)
+						accountage: Math.trunc(accountage),
+						dateformat: lang.get('dateformat')
 					});
 					if ( !onmatch.trim() ) return;
 					if ( channel.permissionsFor(channel.guild.me).has('EMBED_LINKS') ) embed.addField( lang.get('verify.notice'), onmatch );
@@ -452,28 +456,31 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
  * @param {Number} [variables.editcount]
  * @param {Number} [variables.postcount]
  * @param {Number} [variables.accountage]
+ * @param {String} [variables.dateformat]
  * @returns {String}
  */
-function parseNotice(text = '', variables = {editcount: 0, postcount: 0, accountage: 0}) {
+function parseNotice(text = '', variables = {editcount: 0, postcount: 0, accountage: 0, dateformat: 'en-US'}) {
 	if ( !text.includes( '$' ) ) return text;
-	text = text.replace( /\$(editcount|postcount|accountage)/g, (variable, key) => {
+	text = text.replace( /\$(editcount|postcount|accountage)/g, (variable, key, offset, fulltext) => {
 		var value = variables[key];
-		return ( value > 1000000 ? 1000000 : value );
+		if ( /#(?:if)?expr:[^{|}]*$/.test(fulltext.substring(0, offset)) ) return ( value > 1000000000 ? 1000000000 : value );
+		return value.toLocaleString(variables.dateformat);
 	} );
-	if ( text.includes( '#expr:' ) ) text = text.replace( /{{\s*#expr:\s*(-?\d{1,10})\s*([+-])\s*(-?\d{1,10})(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?\s*}}/g, (expr, n0, o1, n1, o2, n2, o3, n3, o4, n4) => {
+	if ( text.includes( '#expr:' ) ) text = text.replace( /{{\s*#expr:\s*(-?\d{1,10})\s*([+-])\s*(-?\d{1,10})(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?\s*}}/g, (expr, n0, o1, n1, o2, n2, o3, n3, o4, n4, offset, fulltext) => {
+		var isLocale = !/#ifexpr:[^{|}]*$/.test(fulltext.substring(0, offset));
 		var result = +n0;
 		if ( o1 === '+' ) result += +n1;
 		else result -= +n1;
-		if ( !o2 ) return result;
+		if ( !o2 ) return ( isLocale ? result.toLocaleString(variables.dateformat) : result );
 		if ( o2 === '+' ) result += +n2;
 		else result -= +n2;
-		if ( !o3 ) return result;
+		if ( !o3 ) return ( isLocale ? result.toLocaleString(variables.dateformat) : result );
 		if ( o3 === '+' ) result += +n3;
 		else result -= +n3;
-		if ( !o4 ) return result;
+		if ( !o4 ) return ( isLocale ? result.toLocaleString(variables.dateformat) : result );
 		if ( o4 === '+' ) result += +n4;
 		else result -= +n4;
-		return result;
+		return ( isLocale ? result.toLocaleString(variables.dateformat) : result );
 	} );
 	if ( text.includes( '#ifexpr:' ) ) text = text.replace( /{{\s*#ifexpr:\s*(-?\d{1,10})\s*([=<>]|!=|<>|<=|>=)\s*(-?\d{1,10})(?:\s*(and|or)\s*(-?\d{1,10})\s*([=<>]|!=|<>|<=|>=)\s*(-?\d{1,10}))?(?:\s*(and|or)\s*(-?\d{1,10})\s*([=<>]|!=|<>|<=|>=)\s*(-?\d{1,10}))?\s*\|\s*([^{|}]*)\s*(?:\|\s*([^{|}]*)\s*)?}}/g, (expr, n0, o0, a0, l1, n1, o1, a1, l2, n2, o2, a2, iftrue, iffalse = '') => {
 		var result = ifexpr([+n0, +a0], o0);
