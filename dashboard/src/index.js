@@ -404,6 +404,7 @@ if ( textAreas.length ) {
 			textArea.value = textArea.value.substring(0, start) + valueBefore + textArea.value.substring(end);
 			textArea.selectionStart = textArea.selectionEnd = start + valueBefore.length;
 		}
+		updateTextLength.call(textArea);
 		textArea.focus();
 	}
 
@@ -425,9 +426,8 @@ if ( textAreas.length ) {
 
 	/**
 	 * @this HTMLTextAreaElement
-	 * @param {KeyboardEvent} e
 	 */
-	function updateTextLength(e) {
+	function updateTextLength() {
 		this.labels.item(0).children.item(0).textContent = this.value.length + ' / ' + this.maxLength;
 	}
 }
