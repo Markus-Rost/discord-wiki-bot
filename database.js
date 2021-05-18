@@ -85,7 +85,8 @@ CREATE INDEX idx_verification_config ON verification (
 );
 
 CREATE TABLE verifynotice (
-    guild      TEXT    NOT NULL
+    guild      TEXT    UNIQUE
+                       NOT NULL
                        REFERENCES discord (main) ON DELETE CASCADE,
     logchannel TEXT,
     onsuccess  TEXT,
@@ -144,7 +145,8 @@ ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 1;
 BEGIN TRANSACTION;
 
 CREATE TABLE verifynotice (
-    guild      TEXT    NOT NULL
+    guild      TEXT    UNIQUE
+                       NOT NULL
                        REFERENCES discord (main) ON DELETE CASCADE,
     logchannel TEXT,
     onsuccess  TEXT,
