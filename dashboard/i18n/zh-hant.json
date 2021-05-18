@@ -235,6 +235,7 @@
             "usergroup": "wiki使用者群組：",
             "usergroup_and": "所有所需的使用者群組："
         },
+        "help_notice": "<p>自訂提示也支援一些簡單的函數與變數。</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – 使用者目前的編輯次數。</li>\n<li><code class=\"form-button user-select\">$accountage</code> – 以天為單位的使用者目前的註冊時長。</li>\n<li><code class=\"form-button user-select\">$postcount</code> – 使用者目前的討論板貼文數（僅限Fandom wiki）。</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – 返回表達式的運算結果。\n<ul>\n<li>僅支援加法<code class=\"form-button user-select\">+</code>與減法<code class=\"form-button user-select\">-</code>。</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>為真時顯示的字串</i> | <i>為假時顯示的字串</i> }}</code> – 根據表達式的運算結果返回不同的文字。\n<ul>\n<li>支援<code class=\"form-button user-select\">&lt;</code>、<code class=\"form-button user-select\">&gt;</code>、<code class=\"form-button user-select\">=</code>、<code class=\"form-button user-select\">&lt;=</code>、<code class=\"form-button user-select\">&gt;=</code>、<code class=\"form-button user-select\">!=</code>、<code class=\"form-button user-select\">&lt;&gt;</code>以及<code class=\"form-button user-select\">and</code>、<code class=\"form-button user-select\">or</code>。</li>\n</ul></li>\n</ul>",
         "new": "新的驗證方式",
         "notice": "驗證提示"
     }

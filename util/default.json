@@ -236,6 +236,18 @@
 			"regex": "(revi\\.wiki)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
+		},
+		{
+			"name": "wiki-aventurica.de",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)?wiki-aventurica\\.de)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/de/"
+		},
+		{
+			"name": "pnpwiki.de",
+			"regex": "((?:www\\.)?pnpwiki\\.de)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
 		}
 	]
 }
