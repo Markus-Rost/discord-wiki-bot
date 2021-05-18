@@ -318,12 +318,16 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 							)
 						),
 						$('<div>').append(
-							$('<label for="wb-settings-success">').text(dashboardLang.get('verification.form.success')),
-							$('<textarea id="wb-settings-success" name="success" spellcheck="true" maxlength="500" cols="65">').attr('rows', ( row?.onsuccess || '' ).split('\n').length).attr('placeholder', dashboardLang.get('verification.form.success_placeholder')).text(row?.onsuccess || '')
+							$('<label for="wb-settings-success">').text(dashboardLang.get('verification.form.success')).append(
+								$('<div>').text(( row?.onsuccess || '' ).length + ' / 1000')
+							),
+							$('<textarea id="wb-settings-success" name="success" spellcheck="true" maxlength="1000" cols="65">').attr('rows', ( row?.onsuccess || '' ).split('\n').length + 3).attr('placeholder', dashboardLang.get('verification.form.success_placeholder')).text(row?.onsuccess || '')
 						),
 						$('<div>').append(
-							$('<label for="wb-settings-match">').text(dashboardLang.get('verification.form.match')),
-							$('<textarea id="wb-settings-match" name="match" spellcheck="true" maxlength="500" cols="65">').attr('rows', ( row?.onmatch || '' ).split('\n').length).attr('placeholder', dashboardLang.get('verification.form.match_placeholder')).text(row?.onmatch || '')
+							$('<label for="wb-settings-match">').text(dashboardLang.get('verification.form.match')).append(
+								$('<div>').text(( row?.onmatch || '' ).length + ' / 1000')
+							),
+							$('<textarea id="wb-settings-match" name="match" spellcheck="true" maxlength="1000" cols="65">').attr('rows', ( row?.onmatch || '' ).split('\n').length + 3).attr('placeholder', dashboardLang.get('verification.form.match_placeholder')).text(row?.onmatch || '')
 						),
 						$('<input type="submit" id="wb-settings-save" name="save_settings">').val(dashboardLang.get('general.save'))
 					)
@@ -817,10 +821,10 @@ function update_notices(res, userSettings, guild, type, settings) {
 	if ( settings.channel && !/^\d+$/.test(settings.channel) ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
-	if ( settings.success && settings.success.trim().length > 500 ) {
+	if ( settings.success && settings.success.trim().length > 1000 ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
-	if ( settings.match && settings.match.trim().length > 500 ) {
+	if ( settings.match && settings.match.trim().length > 1000 ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
 	settings.channel = ( settings.channel || null );

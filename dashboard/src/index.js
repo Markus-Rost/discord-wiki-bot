@@ -373,6 +373,7 @@ if ( textAreas.length ) {
 	}
 
 	for ( var ta = 0; ta < textAreas.length; ta++ ) {
+		textAreas[ta].addEventListener('keyup', updateTextLength);
 		textAreas[ta].addEventListener('keydown', allowTabs);
 		textAreas[ta].onclick = function() {
 			if ( !textArea ) {
@@ -420,6 +421,14 @@ if ( textAreas.length ) {
 			this.value = this.value.substring(0, start) + '\t' + this.value.substring(end);
 			this.selectionStart = this.selectionEnd = start + 1;
 		}
+	}
+
+	/**
+	 * @this HTMLTextAreaElement
+	 * @param {KeyboardEvent} e
+	 */
+	function updateTextLength(e) {
+		this.labels.item(0).children.item(0).textContent = this.value.length + ' / ' + this.maxLength;
 	}
 }
 

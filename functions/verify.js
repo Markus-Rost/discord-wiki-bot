@@ -460,9 +460,10 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
  * @returns {String}
  */
 function parseNotice(text = '', variables = {editcount: 0, postcount: 0, accountage: 0, dateformat: 'en-US'}) {
-	if ( !text.includes( '$' ) ) return text;
+	if ( !text.includes( '$' ) ) return ( text.length > 1000 ? text.substring(0, 1000) + '\u2026' : text );
 	text = text.replace( /\$(editcount|postcount|accountage)/g, (variable, key, offset, fulltext) => {
 		var value = variables[key];
+		if ( typeof value === 'string' ) return value;
 		if ( /#(?:if)?expr:[^{|}]*$/.test(fulltext.substring(0, offset)) ) return ( value > 1000000000 ? 1000000000 : value );
 		return value.toLocaleString(variables.dateformat);
 	} );
@@ -493,7 +494,7 @@ function parseNotice(text = '', variables = {editcount: 0, postcount: 0, account
 		if ( result ) return iftrue.trim();
 		else return iffalse.trim();
 	} );
-	return text;
+	return ( text.length > 1000 ? text.substring(0, 1000) + '\u2026' : text );
 }
 
 /**

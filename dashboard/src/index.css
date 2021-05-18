@@ -524,6 +524,11 @@ fieldset span {
 	display: inline-block;
 	min-width: 20%;
 }
+fieldset label div {
+	padding-top: 30px;
+	padding-right: 10px;
+	text-align: right;
+}
 fieldset input[type="url"] {
 	min-width: 30%;
 	margin-right: 5px;

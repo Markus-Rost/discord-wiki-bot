@@ -35,7 +35,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var guildchannel = ['Updates channel:', '`' + guild.channel + '`'];
 			var guildsettings = ['Settings:', '*unknown*'];
 			
-			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel ASC', [guild.id] ).then( ({rows}) => {
+			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel ASC NULLS FIRST', [guild.id] ).then( ({rows}) => {
 				if ( rows.length ) {
 					let row = rows.find( row => !row.channel );
 					row.patreon = patreons.hasOwnProperty(guild.id);
