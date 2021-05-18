@@ -21,7 +21,7 @@
         "save": "Guardar",
         "selector": "Selector de Servidor",
         "settings": "Ajustes",
-        "slash": "Comandos de barra inclinada",
+        "slash": "Comandos de barra",
         "support": "Servidor de Soporte",
         "theme-dark": "Usar tema oscuro",
         "theme-light": "Usar tema claro",
@@ -96,7 +96,12 @@
         },
         "noslash": {
             "note": "Habilitar comandos de barra inclinada.",
-            "text": "Los comandos de barra inclinada de Wiki-Bot no están habilitados en este servidor."
+            "text": "Los comandos de barra inclinada de Wiki-Bot no están habilitados en este servidor.",
+            "title": "¡Los comandos de barra inclinada no están habilitados!"
+        },
+        "noverify": {
+            "text": "Las restricciones para el comando $1 no se pueden cambiar sin que se configuren las verificaciones.",
+            "title": "¡Las verificaciones no están configuradas!"
         },
         "readonly": {
             "text": "Actualmente solo puedes ver tu configuración, pero no cambiarla.",
@@ -137,7 +142,7 @@
     },
     "rcscript": {
         "desc": "Estos son los webhooks de cambios recientes para $1:",
-        "explanation": "<h2>Webhook de Cambios Recientes</h2>\n<p>Wiki-Bot puede ejecutar un webhook de cambios recientes basado en <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Los cambios recientes se pueden mostrar en mensajes de texto compactos con enlaces en la misma línea o mensajes adjuntos con etiquetas de edición y cambios de categoría.</p>\n<p>Requisitos para agregar un webhook de cambios recientes:</p>\n<ul>\n<li>El wiki necesita ejecutarse en <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> o superior.</li>\n<li>El mensaje del sistema <code>MediaWiki:Custom-RcGcDw</code> debe configurarse con el ID del servidor Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
+        "explanation": "<h2>Webhook de Cambios Recientes</h2>\n<p>Wiki-Bot puede ejecutar un webhook de cambios recientes basado en <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Los cambios recientes se pueden mostrar en mensajes de texto compactos con enlaces en la misma línea o mensajes adjuntos con etiquetas de edición y cambios de categoría.</p>\n<p>Requisitos para agregar un webhook de cambios recientes:</p>\n<ul>\n<li>El wiki necesita ejecutarse en <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> o superior.</li>\n<li>El mensaje del sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> debe configurarse con el ID del servidor Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
         "form": {
             "channel": "Canal:",
             "confirm": "¿Realmente deseas eliminar el webhook de cambios recientes?",
@@ -186,6 +191,21 @@
         },
         "new": "Nueva sobrescritura de canal"
     },
+    "slash": {
+        "desc": "Estos son los comandos de barra inclinada para $1:",
+        "explanation": "<h2>Comandos de barra inclinada</h2>\n<p>El uso de comandos específicos de barra inclinada se puede restringir por rol. Puedes hacerlo con los comandos de barra inclinada de Wiki-Bot aquí.</p>",
+        "form": {
+            "add": "Agregar",
+            "allow": "Permitir",
+            "default": "Predeterminado",
+            "default_allow": "Por defecto, todo el mundo puede utilizar este comando.",
+            "default_deny": "Por defecto, nadie puede utilizar este comando.",
+            "deny": "Negar",
+            "entry": "Comando $1",
+            "role": "Rol:",
+            "select_role": "-- Selecciona un Rol --"
+        }
+    },
     "verification": {
         "desc": "Estas son las verificaciones en $1:",
         "explanation": "<h2>Verificación de Usuario</h2>\n<p>Con el comando <code class=\"prefix\">verify &lt;wiki username&gt;</code> , los usuarios pueden verificarse a sí mismos como usuarios wiki específicos mediante el campo Discord en su perfil wiki. Si las coincidencias de usuario y las verificaciones de usuario están configuradas en el servidor, Wiki-Bot les dará los roles para todas las entradas de verificación que coincidieron.</p>\n<p>Cada entrada de verificación permite múltiples restricciones sobre cuándo un usuario debe coincidir con la verificación:</p>\n<ul>\n<li>Canal donde usar el comando <code class=\"prefix\">verify</code> .</li>\n<li>Rol a conseguir cuando coincida la entrada de verificación.</li>\n<li>Número de ediciones necesarias en el wiki para que coincida con la entrada de verificación.</li>\n<li>Grupo de usuarios requerido que sea miembro en el wiki para que coincida con la entrada de verificación.</li>\n<li>Antigüedad de la cuenta requerida en días para que coincida con la entrada de verificación.</li>\n<li>Si el alias de los usuarios de Discord debe establecerse como su nombre de usuario wiki cuando coincida con la entrada de verificación.</li>\n</ul>",
@@ -195,8 +215,12 @@
             "confirm": "¿Realmente deseas eliminar la verificación?",
             "editcount": "Número mínimo ediciones:",
             "entry": "Verificación #$1",
+            "logging": "Canal de registro:",
+            "match": "Aviso de requisitos faltantes:",
+            "match_placeholder": "El Markdown de texto en las etiquetas de Discord coinciden, pero que no cumplen con ningún requisito para los roles.",
             "more": "Añadir más",
             "new": "Verificación Nueva",
+            "notice": "Avisos de Verificación",
             "postcount": "Número mínimo de publicaciones:",
             "postcount_and": "Requerir tanto número de ediciones como número de publicaciones.",
             "postcount_both": "Requerir número de ediciones y publicaciones combinadas.",
@@ -206,9 +230,13 @@
             "role": "Rol:",
             "select_channel": "-- Selecciona un Canal --",
             "select_role": "-- Selecciona un Rol --",
+            "success": "Aviso de operación correcta:",
+            "success_placeholder": "Texto de Markdown en verificación exitosa.",
             "usergroup": "Grupo de usuarios wiki:",
             "usergroup_and": "Requerir a todos los grupos de usuarios:"
         },
-        "new": "Nueva verificación"
+        "help_notice": "<p>Los avisos personalizados admiten algunas funciones y variables simples.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – El número de ediciones actual del usuario.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – La edad actual de la cuenta del usuario en días completos.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – El número de publicaciones en discusiones actual del usuario (solo para wikis de Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Da el resultado de una expresión.\n<ul>\n<li>Admite solo la adición <code class=\"form-button user-select\">+</code> y resta <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – Da el texto según el resultado de una expresión.\n<ul>\n<li>Admite <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> así como <code class=\"form-button user-select\">y</code>, <code class=\"form-button user-select\">o</code>.</li>\n</ul></li>\n</ul>",
+        "new": "Nueva verificación",
+        "notice": "Avisos de verificación"
     }
 }
