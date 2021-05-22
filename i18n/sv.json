@@ -180,7 +180,7 @@
                     "desc": "Jag kommer svara med en länk till en passande diskussion i Fandon wikin."
                 },
                 "thread": {
-                    "cmd": "discussion <search term> <sökterm>",
+                    "cmd": "discussion <sökterm>",
                     "desc": "Jag kommer svara med en länk till en passande diskussionstråd på Fandom-wikin."
                 }
             },
