@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "",
+        "Spisen & eke0909",
         " ",
         " ",
         " ",
@@ -111,6 +111,31 @@
             " "
         ]
     },
+    "dateformat": "sv-SE",
+    "diff": {
+        "badrev": "minst en version är inte tillgänglig!",
+        "hidden": "*gömd*",
+        "info": {
+            "added": "Tillagd:",
+            "bytes": "$1 {{PLURAL:$2|byte|bytes}} $3",
+            "comment": "Kommentar:",
+            "editor": "Redigerare:",
+            "minor": "(m)",
+            "more": "Och mer",
+            "removed": "Raderade:",
+            "size": "Skillnad:",
+            "tags": "Taggar:",
+            "timestamp": "Redigera datum:",
+            "whitespace": "Endast blanksteg"
+        },
+        "nocomment": "*Ingen beskrivning ges*"
+    },
+    "discussion": {
+        "image": "Visa bild",
+        "main": "Diskussioner",
+        "tags": "Taggar:",
+        "votes": "$1 {{PLURAL:$2|röst|röster}} ($3%)"
+    },
     "fallback": [
         "en",
         " ",
@@ -119,6 +144,8 @@
         " "
     ],
     "general": {
+        "database": "⚠️ **Begränsad funktionalitet** ⚠️\nInga inställningar hittades, var snäll och kontakta bot-ägaren!",
+        "default": "den här servern är inte konfigurerad än. Använd $1 eller kontrollpanelen för att ändra inställningar.",
         "experimental": "**Detta är en experimentell funktion! Det är inte garanterat att den kommer att fungera som den ska och kan komma att raderas i framtiden.**",
         "helpserver": "Om du har frågor eller problem, vänligen besök min support server:"
     },
