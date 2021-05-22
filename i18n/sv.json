@@ -152,7 +152,7 @@
         "missingperm": "Jag saknar behörigheter för detta kommando:",
         "patreon": "denna funktion är endast för Patreons!\nDu kan stödja mig på Patreon för att få tillgång till funktionen:",
         "prefix": "den här serverns prefix är `$1`. Du kan byta prefix med `$1settings prefix`. För en lista på alla kommandon, använd `$1help`.",
-        "readonly": "**just nu är databasen i \"läs endast\" läge, du kan inte ändra några inställningar just nu!**"
+        "readonly": "**just nu är databasen i skrivskyddat läge, du kan inte ändra några inställningar just nu!**"
     },
     "help": {
         "admin": "Dessa kommandon kan endast utföras av administratörer:",
@@ -176,7 +176,7 @@
             },
             "discussion": {
                 "post": {
-                    "cmd": "diskussionsinlägg <sökterm>",
+                    "cmd": "discussion post <search term>",
                     "desc": "Jag kommer svara med en länk till en passande diskussion i Fandon wikin."
                 },
                 "thread": {
@@ -231,6 +231,46 @@
             "overview": {
                 "cmd": "overview",
                 "desc": "Jag kommer att visa lite allmän information och statistik om wikin."
+            },
+            "user": {
+                "desc": "Jag kommer visa lite information om användaren."
+            },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <nytt kontoålder>",
+                    "desc": "Jag ändrar den minsta kontoåldern (i dagar) för wiki-verifieringen."
+                },
+                "add": {
+                    "cmd": "verification add <roll>"
+                },
+                "channel": {
+                    "cmd": "verification <id> channel <ny kanal>"
+                },
+                "default": {
+                    "cmd": "verification",
+                    "desc": "Jag kommer ändra wiki-verifieringar använda av `$1verify`-kommandot."
+                },
+                "delete": {
+                    "cmd": "verification <id> delete",
+                    "desc": "Jag kommer radera wiki-verifieringen."
+                },
+                "editcount": {
+                    "cmd": "verification <id> editcount <nytt redigeringsantal>",
+                    "desc": "Jag kommer ändra minsta antalet redigeringar för wiki-verifieringen."
+                },
+                "postcount": {
+                    "cmd": "verification <id> postcount <antal nya inlägg>"
+                },
+                "rename": {
+                    "cmd": "verification <id> rename",
+                    "desc": "Jag kommer ändra ifall användarens Discord-namn skulle vara ändrat till deras wiki-användarnamn för wiki-verifiering."
+                },
+                "role": {
+                    "cmd": "verification <id> role <ny roll>"
+                },
+                "usergroup": {
+                    "cmd": "verification <id> usergroup <ny användargrupp>"
+                }
             }
         }
     },
@@ -250,14 +290,62 @@
         },
         "private": "**Privat Problem**",
         "status": {
-            "Awaiting Response": "Inväntar svar"
-        }
+            "Awaiting Response": "Inväntar svar",
+            "Closed": "Stängd",
+            "Done": "Gjort",
+            "Duplicate": "Duplicera",
+            "Fixed": "Fixad",
+            "In Progress": "Pågående",
+            "Incomplete": "Ofullständig",
+            "Invalid": "Ogiltig",
+            "Open": "Öppen",
+            "Postponed": "Uppskjuten",
+            "Reopened": "Öppnade igen",
+            "Resolved": "Löst",
+            "Won't Fix": "Kommer inte att fixa",
+            "Works As Intended": "Fungerar som avsett"
+        },
+        "total": "$1 {{PLURAL:$2|problem fixad|problem fixade}}"
     },
     "overview": {
+        "admins": "Administratörer:",
+        "articles": "Artiklar:",
+        "comments": "Artikelkommentarer:",
+        "created": "Skapades:",
+        "crossover": "Sammanfogad med:",
+        "description": "Beskrivning:",
+        "edits": "Redigeringar:",
+        "founder": "Grundare:",
+        "image": "Bild:",
+        "inaccurate": "Statistiken kan vara felaktig",
+        "lang": "Språk:",
+        "license": "Licens:",
+        "manager": "Wiki-manager:",
+        "no": "Nej",
+        "none": "*ingen*",
+        "official": "Officiell wiki:",
         "pages": "Totalt antal sidor:",
-        "vertical": "Vertikal:"
+        "posts": "Diskussionsinlägg:",
+        "readonly": "Denna wiki är för närvarande i skrivskyddat läge!",
+        "rtl": "Höger till vänster:",
+        "talk": "diskussion",
+        "topic": "Ämne:",
+        "unknown": "*okänd*",
+        "users": "Aktiva användare:",
+        "version": "Version:",
+        "vertical": "Vertikal:",
+        "walls": "Inlägg på meddelandeväggen:",
+        "wikiid": "Wiki-ID:",
+        "yes": "Ja"
+    },
+    "pause": {
+        "off": "Jag är inte längre pausad på den här servern och kommer därmed att svara på alla kommandon igen!",
+        "on": "Jag är nu pausad på den här servern och kommer därmed att ignorera de flesta kommandona!"
     },
     "rcscript": {
+        "ad": "Vill du har senaste ändringarna direkt på discord? Använd `$1rcscript` för att lägga till en \"senaste ändringarna\"-webhook baserad på **$2** till din Discord-server!",
+        "add_more": "Lägg till fler \"senaste ändringar\"-webhooks:",
+        "added": "En \"senaste ändringarna\"-webhook har nu blivit tillagt för:",
         "channel": "Kanal:",
         "current_wiki": "wikin för den här webhooken är:",
         "delete": "Radera den här \"senaste ändringar\" webhooken:",
