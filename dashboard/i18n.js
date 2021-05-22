@@ -143,6 +143,7 @@ function plural(lang, number, args) {
 		case 'nl':
 		case 'pt-br':
 		case 'th':
+		case 'sv':
 		case 'tr':
 		case 'vi':
 		case 'zh-hans':

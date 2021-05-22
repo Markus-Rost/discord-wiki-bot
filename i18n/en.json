@@ -796,6 +796,7 @@
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Follow [this guide]($1) to add your Discord tag to your wiki profile:",
+        "help_missing": "Please make sure you are using your wiki username and the caseing is correct.",
         "help_subpage": "Please add your Discord tag ($1) to your Discord subpage on the wiki:",
         "missing": "there are no verifications set up for this channel.",
         "notice": "Notice:",
