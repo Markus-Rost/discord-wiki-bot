@@ -354,6 +354,8 @@
         "enabled": "aktiverad",
         "help_lang": "De språk som stödjs för nuvarande är:",
         "lang": "Språk:",
+        "new_lang": "<nytt språk>",
+        "new_wiki": "<länk till wiki>",
         "noadmin": "du behöver behörigheten `Hantera Webhooks` för det här kommandot!",
         "rc": "Wiki-ändringar:",
         "updated_lang": "språket för den här webhooken har ändrats till:",
