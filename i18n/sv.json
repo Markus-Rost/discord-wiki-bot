@@ -213,16 +213,19 @@
             "inline": {
                 "link": {
                     "cmd": "[[<sidnamn>]]",
-                    "desc": "Jag kommer svara med en direktlänk till den valda artikeln i wikin."
+                    "desc": "Jag kommer att svara med en direktlänk till den valda artikeln i wikin."
                 },
                 "template": {
                     "cmd": "{{<sidnamn>}}",
-                    "desc": "Jag kommer svara med en länk till artikeln på wikin."
+                    "desc": "Jag kommer att svara med en länk till artikeln på wikin."
                 }
             },
             "minecraft": {
                 "bug": {
                     "cmd": "bug <Minecraft-bugg>"
+                },
+                "command": {
+                    "cmd": "kommando <Minecraft-kommando>"
                 }
             },
             "overview": {
