@@ -739,8 +739,10 @@
         "current_selected": "esta es la verificación `$1` en este servidor:",
         "dashboard": {
             "added": "$1 agregó la verificación con ID `$2`.",
+            "added_notice": "$1 agregó algunos avisos de verificación.",
             "removed": "$1 eliminó la verificación con ID `$2`.",
-            "updated": "$1 actualizó la verificación con ID `$2`."
+            "updated": "$1 actualizó la verificación con ID `$2`.",
+            "updated_notice": "$1 actualizó algunos avisos de verificación."
         },
         "delete_current": "Eliminar esta verificación:",
         "deleted": "la verificación ha sido eliminada.",
@@ -748,6 +750,8 @@
         "editcount": "Número de ediciones:",
         "enabled": "activada",
         "indays": "(en días)",
+        "logging": "Canal de registro:",
+        "match": "Aviso de requisitos faltantes:",
         "max_entries": "ya alcanzaste la cantidad máxima de verificaciones.",
         "missing": "todavía no hay verificaciones en este servidor.",
         "new_accountage": "<nueva antigüedad de la cuenta>",
@@ -757,6 +761,7 @@
         "new_role": "<nuevo rol>",
         "new_usergroup": "<nuevo grupo de usuarios>",
         "no_role": "por favor proporciona un rol para la nueva verificación.",
+        "notice_embed": "Algunos avisos incluyen enlaces enmascarado en Markdown. Asegúrate de que el bot tenga los permisos `Insertar enlaces` en todos los canales de verificación para que funcionen correctamente.",
         "or": "o",
         "postcount": "Número de publicaciones (solo wikis de Fandom):",
         "postcount_or": "(alternativa al número de ediciones)",
@@ -770,6 +775,7 @@
         "role_missing": "el rol proporcionado no existe.",
         "role_too_high": "**¡El rol $1 está en un rango muy alto como para asignarlo a $2!**",
         "save_failed": "lamentablemente, no se pudo guardar la verificación. Vuelve a intentarlo más tarde.",
+        "success": "Aviso de operación correcta:",
         "toggle": "(activar/desactivar)",
         "updated": "la verificación se ha actualizado:",
         "usergroup": "Grupo de usuario:",
