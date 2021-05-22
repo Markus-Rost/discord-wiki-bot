@@ -170,12 +170,13 @@
                     "desc": "Jag kommer att svara med en länk till ändringen på wikin."
                 },
                 "name": {
-                    "cmd": "diff <sidnamn>",
+                    "cmd": "diff <sidonamn>",
                     "desc": "jag kommer att svara med en länk till senaste ändringen i artikeln på wikin."
                 }
             },
             "discussion": {
                 "post": {
+                    "cmd": "discussion post <sökterm>",
                     "desc": "Jag kommer svara med en länk till en passande diskussion i Fandon wikin."
                 },
                 "thread": {
