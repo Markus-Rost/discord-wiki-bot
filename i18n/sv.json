@@ -149,6 +149,66 @@
         "experimental": "**Detta är en experimentell funktion! Det är inte garanterat att den kommer att fungera som den ska och kan komma att raderas i framtiden.**",
         "helpserver": "Om du har frågor eller problem, vänligen besök min support server:"
     },
+    "help": {
+        "adminfooter": "Administratörer kan även använda sig av kontrollpanelen för att ändra botens inställningar:",
+        "list": {
+            "diff": {
+                "id": {
+                    "cmd": "diff <diff> [<oldid>]",
+                    "desc": "Jag kommer att svara med en länk till ändringen på wikin."
+                },
+                "name": {
+                    "cmd": "diff <sidnamn>",
+                    "desc": "jag kommer att svara med en länk till senaste ändringen i artikeln på wikin."
+                }
+            },
+            "discussion": {
+                "thread": {
+                    "cmd": "discussion <search term> <sökterm>",
+                    "desc": "Jag kommer svara med en länk till en passande diskussionstråd på Fandom-wikin."
+                }
+            },
+            "help": {
+                "default": {
+                    "desc": "Jag kommer lista alla kommandon som jag förstår."
+                }
+            },
+            "inline": {
+                "template": {
+                    "cmd": "{{<sidnamn>}}",
+                    "desc": "Jag kommer svara med en länk till artikeln på wikin."
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "cmd": "bug <Minecraft-bugg>"
+                }
+            }
+        }
+    },
+    "settings": {
+        "inline disabled": {
+            "channel inlinechanged": "du stängde av \"inline\"-kommandon för denna kanal.",
+            "help": "Använd `$1` för att aktivera \"inline\"-kommandon så som `[[$2]]` och `{{$2}}`.",
+            "inline": "\"inline\"-kommandon är just nu inaktiverade för den här servern.",
+            "inlinechanged": "du stängde av \"inline\"-kommandon för den här servern."
+        },
+        "inline enabled": {
+            "channel inline": "\"inline\"-kommandon är just nu aktiverade för den här servern.",
+            "channel inlinechanged": "du aktiverade \"inline\"-kommandon för den här servern.",
+            "help": "Använd `$1` för att inaktivera \"inline\"-kommandon så som `[[$2]]` och `{{$2}}`.",
+            "inline": "\"inline\"-kommandon är just nu aktiverade för den här servern.",
+            "inlinechanged": "du aktiverade \"inline\"-kommandon för den här servern."
+        },
+        "lang": "språket för denna server är:",
+        "langchanged": "du ändrade språket för denna server till:",
+        "langhelp": "Använd `$1 <language>` för att ändra språk.\nJust nu stöds dessa språk:",
+        "langinvalid": "det angivna språket är inte tillgängligt!",
+        "missing": "den här servern är inte konfigurerad än. Använd $1 och $2 för att ändra inställningar.",
+        "prefix": "prefixen för denna server är:",
+        "prefixchanged": "du ändrade prefixen för denna server till:",
+        "prefixinvalid": "den angivna prefixen stöds inte!"
+    },
     "test": {
         "text": [
             "",
