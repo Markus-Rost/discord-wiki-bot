@@ -118,6 +118,10 @@
         " ",
         " "
     ],
+    "general": {
+        "experimental": "**Detta är en experimentell funktion! Det är inte garanterat att den kommer att fungera som den ska och kan komma att raderas i framtiden.**",
+        "helpserver": "Om du har frågor eller problem, vänligen besök min support server:"
+    },
     "test": {
         "text": [
             "",
