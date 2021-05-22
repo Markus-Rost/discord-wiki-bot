@@ -52,6 +52,7 @@ const files = new Map([
 } ));
 
 const server = http.createServer( (req, res) => {
+	res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && req.url.startsWith( '/guild/' ) ) {
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {

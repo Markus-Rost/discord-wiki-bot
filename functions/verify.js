@@ -27,7 +27,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			embed: null
 		}
 	};
-	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
+	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.isFandom() ? '|usercontribs&ucprop=&uclimit=10&ucuser=' + encodeURIComponent( username ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users ) {
@@ -147,6 +147,10 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					return;
 				}
 				
+				if ( body.query.usercontribs?.length >= queryuser.editcount ) {
+					queryuser.editcount = body.query.usercontribs.length;
+					if ( body.continue?.uccontinue ) queryuser.editcount++;
+				}
 				var roles = [];
 				var missing = [];
 				var verified = false;

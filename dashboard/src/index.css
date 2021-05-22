@@ -120,7 +120,9 @@ a[alt]:hover:after {
 	display: flex;
 	justify-content: center;
 }
-.guild .theme-toggle {
+.form-button:not(.user-select),
+.guild .theme-toggle,
+#lang-dropdown div {
 	cursor: pointer;
 }
 .avatar {
@@ -322,7 +324,6 @@ a[alt]:hover:after {
 	background-color: #e3e5e8;
 }
 #lang-dropdown div {
-	cursor: pointer;
 	margin: 2px;
 	padding: 4px;
 	font-size: 90%;
@@ -336,11 +337,13 @@ a[alt]:hover:after {
 .theme-light #lang-dropdown div:hover {
 	background-color: #f2f3f5;
 }
+.form-button:not(.user-select):hover,
 .description a,
 a .description,
 .notice a {
 	color: #00b0f4;
 }
+.theme-light .form-button:not(.user-select):hover,
 .theme-light .description a,
 .theme-light a .description,
 .theme-light .notice a {
@@ -385,15 +388,6 @@ li {
 	-ms-user-select: all;
 	user-select: all;
 }
-.form-button:not(.user-select) {
-	cursor: pointer;
-}
-.form-button:not(.user-select):hover {
-	color: #00b0f4;
-}
-.theme-light .form-button:not(.user-select):hover {
-	color: #0067e0;
-}
 .widgets {
 	margin-top: 250px;
 }
@@ -433,6 +427,13 @@ li {
 .theme-light .notice-error {
 	background-color: #fcc;
 	border-color: #faa;
+}
+.notice strong,
+.notice small {
+	display: block;
+}
+.notice small {
+	color: #777;
 }
 #login-button {
 	display: flex;

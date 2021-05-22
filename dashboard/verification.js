@@ -319,13 +319,13 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 						),
 						$('<div>').append(
 							$('<label for="wb-settings-success">').text(dashboardLang.get('verification.form.success')).append(
-								$('<div>').text(( row?.onsuccess || '' ).length + ' / 1000')
+								$('<div>').html('&nbsp;')
 							),
 							$('<textarea id="wb-settings-success" name="success" spellcheck="true" maxlength="1000" cols="65">').attr('rows', ( row?.onsuccess || '' ).split('\n').length + 3).attr('placeholder', dashboardLang.get('verification.form.success_placeholder')).text(row?.onsuccess || '')
 						),
 						$('<div>').append(
 							$('<label for="wb-settings-match">').text(dashboardLang.get('verification.form.match')).append(
-								$('<div>').text(( row?.onmatch || '' ).length + ' / 1000')
+								$('<div>').html('&nbsp;')
 							),
 							$('<textarea id="wb-settings-match" name="match" spellcheck="true" maxlength="1000" cols="65">').attr('rows', ( row?.onmatch || '' ).split('\n').length + 3).attr('placeholder', dashboardLang.get('verification.form.match_placeholder')).text(row?.onmatch || '')
 						),

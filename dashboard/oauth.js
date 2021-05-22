@@ -245,6 +245,9 @@ function dashboard_api(res, input) {
 		error: false,
 		error_code: '',
 		wiki: wiki.href,
+		base: '',
+		sitename: '',
+		logo: '',
 		MediaWiki: false,
 		RcGcDw: '',
 		customRcGcDw: wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
@@ -277,6 +280,9 @@ function dashboard_api(res, input) {
 		}
 		wiki.updateWiki(body.query.general);
 		result.wiki = wiki.href;
+		result.base = body.query.general.base;
+		result.sitename = body.query.general.sitename;
+		result.logo = body.query.general.logo;
 		if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) >= 30 ) {
 			result.MediaWiki = true;
 		}

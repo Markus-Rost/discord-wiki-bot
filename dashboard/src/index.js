@@ -30,9 +30,11 @@ for ( var b = 0; b < baseSelect.length; b++ ) {
 			if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
 				widgetPath = 'widgets/RcGcDb';
 			}
-			langWidget.setAttribute('src', `/src/${widgetPath}/${baseSelect[b].value}.png`);
+			langWidget.src = `/src/${widgetPath}/${baseSelect[b].value}.png`;
+			langWidget.alt = baseSelect[b].selectedOptions.item(0).textContent;
 			baseSelect[b].addEventListener( 'input', function() {
-				langWidget.setAttribute('src', `/src/${widgetPath}/${this.value}.png`);
+				langWidget.src = `/src/${widgetPath}/${this.value}.png`;
+				langWidget.alt = this.selectedOptions.item(0).textContent;
 			} );
 		}
 	}
@@ -48,12 +50,12 @@ for ( var j = 0; j < addmore.length; j++ ) {
 		var clone = this.previousElementSibling.cloneNode(true);
 		clone.classList.add('wb-settings-additional-select');
 		clone.removeAttribute('id');
-		clone.removeAttribute('required');
+		clone.required = false;
 		clone.childNodes.forEach( function(child) {
-			child.removeAttribute('hidden');
-			child.removeAttribute('selected');
+			child.hidden = false;
+			child.selected = false;
 		} );
-		clone.querySelector('option.defaultSelect').setAttribute('selected', '');
+		clone.querySelector('option.defaultSelect').selected = true;
 		clone.addEventListener( 'input', toggleOption );
 		this.before(clone);
 		toggleOption.call(clone);
@@ -76,9 +78,9 @@ function toggleOption() {
 		if ( option && option.value ) return false;
 		else return true;
 	} ) || allSelect.length >= 10 || allSelect.length >= this.options.length-1 ) {
-		button.setAttribute('hidden', '');
+		button.hidden = true;
 	}
-	else button.removeAttribute('hidden');
+	else button.hidden = false;
 	selected = selected.filter( function(option) {
 		if ( option && option.value ) return true;
 		else return false;
@@ -87,9 +89,9 @@ function toggleOption() {
 	} );
 	options.forEach( function(option) {
 		if ( selected.includes( option.value ) && !option.selected ) {
-			option.setAttribute('disabled', '');
+			option.disabled = true;
 		}
-		else if ( option.disabled ) option.removeAttribute('disabled');
+		else if ( option.disabled ) option.disabled = false;
 	} );
 }
 
@@ -116,9 +118,9 @@ if ( wiki ) {
 			else {
 				wikinew = wikinew.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '' ).replace( /\/$/, '' );
 			}
-			var readonly = wiki.hasAttribute('readonly');
-			wiki.setAttribute('readonly', '');
-			wikicheck.setAttribute('disabled', '');
+			var readonly = wiki.readOnly;
+			wiki.readOnly = true;
+			wikicheck.disabled = true;
 			fetch( '/api?wiki=' + encodeURIComponent( wikinew ), {
 				method: 'GET',
 				cache: 'no-cache',
@@ -136,6 +138,23 @@ if ( wiki ) {
 				}
 				wikichecknotice.className = 'notice';
 				wikichecknotice.innerHTML = '';
+				var noticeExtraParts = [];
+				if ( response.sitename ) {
+					var wikiEmbed = document.createElement('a');
+					wikiEmbed.target = '_blank';
+					wikiEmbed.href = response.base;
+					var wikiEmbedDiv = document.createElement('div');
+					wikiEmbed.append(wikiEmbedDiv);
+					var wikiEmbedStrong = document.createElement('strong');
+					wikiEmbedStrong.textContent = response.sitename;
+					var wikiEmbedImg = document.createElement('img');
+					wikiEmbedImg.src = response.logo;
+					wikiEmbedImg.alt = response.sitename;
+					var wikiEmbedSmall = document.createElement('small');
+					wikiEmbedSmall.textContent = response.base;
+					wikiEmbedDiv.append(wikiEmbedStrong, wikiEmbedImg, wikiEmbedSmall);
+					noticeExtraParts.push(document.createElement('hr'), wikiEmbed);
+				}
 				if ( response.error ) {
 					wiki.setCustomValidity(lang('invalid.title'));
 					wikichecknotice.classList.add('notice-error');
@@ -148,7 +167,7 @@ if ( wiki ) {
 						noticeNote = document.createElement('div');
 						noticeNote.textContent = lang('invalid.note_' + response.error_code);
 					}
-					wikichecknotice.append(noticeTitle, noticeText, noticeNote);
+					wikichecknotice.append(noticeTitle, noticeText, noticeNote, ...noticeExtraParts);
 					return;
 				}
 				if ( !readonly ) wiki.value = response.wiki;
@@ -161,10 +180,10 @@ if ( wiki ) {
 						var noticeText = document.createElement('div');
 						noticeText.textContent = lang('outdated.text');
 						var noticeLink = document.createElement('a');
-						noticeLink.setAttribute('target', '_blank');
-						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
+						noticeLink.target = '_blank';
+						noticeLink.href = 'https://www.mediawiki.org/wiki/MediaWiki_1.30';
 						noticeLink.textContent = 'https://www.mediawiki.org/wiki/MediaWiki_1.30';
-						wikichecknotice.append(noticeTitle, noticeText, noticeLink);
+						wikichecknotice.append(noticeTitle, noticeText, noticeLink, ...noticeExtraParts);
 						return;
 					}
 					if ( response.RcGcDw !== document.location.pathname.split('/')[2] ) {
@@ -172,8 +191,8 @@ if ( wiki ) {
 						var noticeTitle = document.createElement('b');
 						noticeTitle.textContent = lang('sysmessage.title');
 						var sysmessageLink = document.createElement('a');
-						sysmessageLink.setAttribute('target', '_blank');
-						sysmessageLink.setAttribute('href', response.customRcGcDw);
+						sysmessageLink.target = '_blank';
+						sysmessageLink.href = response.customRcGcDw;
 						var sysmessageCode = document.createElement('code');
 						sysmessageCode.textContent = 'MediaWiki:Custom-RcGcDw';
 						sysmessageLink.append(sysmessageCode);
@@ -191,13 +210,13 @@ if ( wiki ) {
 						);
 						var noticeLink = sysmessageLink.cloneNode();
 						noticeLink.textContent = response.customRcGcDw;
-						wikichecknotice.append(noticeTitle, noticeText, noticeLink);
+						wikichecknotice.append(noticeTitle, noticeText, noticeLink, ...noticeExtraParts);
 						return;
 					}
 					wikichecknotice.classList.add('notice-success');
 					var noticeTitle = document.createElement('b');
 					noticeTitle.textContent = lang('valid.title');
-					wikichecknotice.append(noticeTitle);
+					wikichecknotice.append(noticeTitle, ...noticeExtraParts);
 					return;
 				}
 				wikichecknotice.classList.add('notice-success');
@@ -207,8 +226,8 @@ if ( wiki ) {
 				if ( !/\.(?:gamepedia\.com|fandom\.com|wikia\.org)$/.test(wiki.value.split('/')[2]) ) {
 					if ( !response.MediaWiki ) {
 						var noticeLink = document.createElement('a');
-						noticeLink.setAttribute('target', '_blank');
-						noticeLink.setAttribute('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
+						noticeLink.target = '_blank';
+						noticeLink.href = 'https://www.mediawiki.org/wiki/MediaWiki_1.30';
 						noticeLink.textContent = 'MediaWiki 1.30';
 						var noticeText = document.createElement('div');
 						var textSnippets = lang('valid.MediaWiki').split(/\$\d/);
@@ -220,11 +239,12 @@ if ( wiki ) {
 						wikichecknotice.append(noticeText);
 					}
 				}
+				if ( noticeExtraParts.length ) wikichecknotice.append(...noticeExtraParts);
 			}, function(error) {
 				console.log(error)
 			} ).finally( function() {
-				if ( !readonly ) wiki.removeAttribute('readonly');
-				wikicheck.removeAttribute('disabled');
+				wiki.readOnly = readonly;
+				wikicheck.disabled = false;
 			} );
 		};
 	}
@@ -235,24 +255,24 @@ if ( wiki ) {
 		const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
 		feeds.addEventListener( 'change', function() {
 			if ( this.checked ) {
-				hidefeedsonly.removeAttribute('style');
-				if ( !hidefeeds.hasAttribute('style') ) feedsonly.removeAttribute('disabled');
+				hidefeedsonly.style.visibility = '';
+				if ( !hidefeeds.style.visibility ) feedsonly.disabled = false;
 			}
 			else {
-				hidefeedsonly.setAttribute('style', 'visibility: hidden;');
-				feedsonly.setAttribute('disabled', '');
+				hidefeedsonly.style.visibility = 'hidden';
+				feedsonly.disabled = true;
 			}
 		} );
 		wiki.addEventListener( 'input', function() {
 			if ( this.validity.valid && /\.(?:fandom\.com|wikia\.org)$/.test(this.value.split('/')[2]) ) {
-				hidefeeds.removeAttribute('style');
-				feeds.removeAttribute('disabled');
-				if ( !hidefeedsonly.hasAttribute('style') ) feedsonly.removeAttribute('disabled');
+				hidefeeds.style.visibility = '';
+				feeds.disabled = false;
+				if ( !hidefeedsonly.style.visibility ) feedsonly.disabled = false;
 			}
 			else {
-				hidefeeds.setAttribute('style', 'visibility: hidden;');
-				feeds.setAttribute('disabled', '');
-				feedsonly.setAttribute('disabled', '');
+				hidefeeds.style.visibility = 'hidden';
+				feeds.disabled = true;
+				feedsonly.disabled = true;
 			}
 		} );
 	}
@@ -276,15 +296,15 @@ if ( usergroup ) {
 		}
 		var newWidth = usergroup.value.trim().length * 7;
 		if ( newWidth < usergroup.parentElement.clientWidth * 0.75 ) {
-			usergroup.setAttribute('style', `min-width: ${newWidth}px;`);
+			usergroup.style.minWidth = newWidth + 'px';
 		}
 		if ( usergroup.value.includes( ',' ) || usergroup.value.includes( '|' ) ) {
-			multigroup.removeAttribute('style');
-			multigroup.removeAttribute('disabled');
+			multigroup.style.visibility = '';
+			multigroup.disabled = false;
 		}
-		else if ( !multigroup.hasAttribute('style') ) {
-			multigroup.setAttribute('style', 'visibility: hidden;');
-			multigroup.setAttribute('disabled', '');
+		else if ( !multigroup.style.visibility ) {
+			multigroup.style.visibility = 'hidden';
+			multigroup.disabled = true;
 		}
 	} );
 }
@@ -295,10 +315,10 @@ if ( postcount.length ) {
 	postcount.forEach( function(radio) {
 		radio.addEventListener( 'change', function() {
 			if ( radio.id === 'wb-settings-postcount-both' ) {
-				postcountinput.setAttribute('style', 'display: none;');
+				postcountinput.style.display = 'none';
 			}
 			else {
-				postcountinput.removeAttribute('style');
+				postcountinput.style.display = '';
 			}
 		} );
 	} );
@@ -331,13 +351,13 @@ if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
 		var selectedRoleInfo = selectedRole.textContent.split(' – ');
 		var newPermissionSpan = document.createElement('span');
 		newPermissionSpan.textContent = ( selectedRoleInfo[1] || selectedRoleInfo[0] );
-		newPermissionSpan.setAttribute('title', selectedRoleInfo[0]);
+		newPermissionSpan.title = selectedRoleInfo[0];
 		var newPermissionDiv0 = document.createElement('div');
 		newPermissionDiv0.classList.add('wb-settings-permission');
 		var newPermissionInput = document.createElement('input');
-		newPermissionInput.setAttribute('type', 'radio');
-		newPermissionInput.setAttribute('name', 'permission-' +  addRole.value);
-		newPermissionInput.setAttribute('required', '');
+		newPermissionInput.type = 'radio';
+		newPermissionInput.name = 'permission-' +  addRole.value;
+		newPermissionInput.required = true;
 		newPermissionDiv0.append(newPermissionInput, document.createElement('label'));
 		/** @type {HTMLDivElement} */
 		var newPermissionDiv1 = newPermissionDiv0.cloneNode(true);
@@ -346,20 +366,20 @@ if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
 		newPermissionDiv0.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-0';
 		newPermissionDiv1.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-1';
 		newPermissionDiv2.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-default';
-		newPermissionDiv0.firstElementChild.setAttribute('value', '0');
-		newPermissionDiv1.firstElementChild.setAttribute('value', '1');
-		newPermissionDiv2.firstElementChild.setAttribute('value', '');
-		newPermissionDiv0.lastElementChild.setAttribute('for', 'wb-settings-permission-' + addRole.value + '-0');
-		newPermissionDiv1.lastElementChild.setAttribute('for', 'wb-settings-permission-' + addRole.value + '-1');
-		newPermissionDiv2.lastElementChild.setAttribute('for', 'wb-settings-permission-' + addRole.value + '-default');
+		newPermissionDiv0.firstElementChild.value = '0';
+		newPermissionDiv1.firstElementChild.value = '1';
+		newPermissionDiv2.firstElementChild.value = '';
+		newPermissionDiv0.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-0';
+		newPermissionDiv1.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-1';
+		newPermissionDiv2.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-default';
 		newPermissionDiv0.lastElementChild.textContent = i18nSlashPermission.deny;
 		newPermissionDiv1.lastElementChild.textContent = i18nSlashPermission.allow;
 		newPermissionDiv2.lastElementChild.textContent = i18nSlashPermission.default;
-		newPermissionDiv2.firstElementChild.setAttribute('checked', '');
+		newPermissionDiv2.firstElementChild.defaultChecked = true;
 		newPermission.append(newPermissionSpan, newPermissionDiv0, newPermissionDiv1, newPermissionDiv2);
 		addRole.parentElement.after(newPermission);
 		selectedRole.remove();
-		addRole.firstElementChild.setAttribute('selected', '');
+		addRole.firstElementChild.selected = true;
 	}
 };
 
@@ -373,6 +393,7 @@ if ( textAreas.length ) {
 	}
 
 	for ( var ta = 0; ta < textAreas.length; ta++ ) {
+		updateTextLength.call(textAreas[ta]);
 		textAreas[ta].addEventListener('keyup', updateTextLength);
 		textAreas[ta].addEventListener('keydown', allowTabs);
 		textAreas[ta].onclick = function() {
