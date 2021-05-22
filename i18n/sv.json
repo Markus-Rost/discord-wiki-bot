@@ -229,11 +229,71 @@
                 }
             },
             "overview": {
+                "cmd": "overview",
                 "desc": "Jag kommer att visa lite allmän information och statistik om wikin."
             }
         }
     },
+    "minecraft": {
+        "issue_link": {
+            "Bonfire Testing": {
+                "inward": "upptäcktes under testning av $1"
+            },
+            "Cloners": {
+                "inward": "är klonad av $1",
+                "outward": "klonar $1"
+            },
+            "Duplicate": {
+                "inward": "är dublicerad av $1",
+                "outward": "dublicerar $1"
+            }
+        },
+        "private": "**Privat Problem**",
+        "status": {
+            "Awaiting Response": "Inväntar svar"
+        }
+    },
+    "overview": {
+        "pages": "Totalt antal sidor:",
+        "vertical": "Vertikal:"
+    },
+    "rcscript": {
+        "channel": "Kanal:",
+        "current_wiki": "wikin för den här webhooken är:",
+        "delete": "Radera den här \"senaste ändringar\" webhooken:",
+        "disabled": "inaktiverad",
+        "display": "Visningsläge:",
+        "enabled": "aktiverad",
+        "help_lang": "De språk som stödjs för nuvarande är:",
+        "lang": "Språk:",
+        "noadmin": "du behöver behörigheten `Hantera Webhooks` för det här kommandot!",
+        "rc": "Wiki-ändringar:",
+        "updated_lang": "språket för den här webhooken har ändrats till:",
+        "webhook": {
+            "blocked_help": "Du kan be om fler detaljer på [support servern]($1).",
+            "dashboard": {
+                "lang": "• Språket har ändrats till $1.",
+                "wiki": "• Wikin har ändrats till $1."
+            }
+        },
+        "webhook_failed": "webhooken kunde tyvärr inte skapas, vänligen försök igen senare.",
+        "wiki": "Wiki:"
+    },
+    "search": {
+        "category": {
+            "content": "Innehåll av den här kategorin:",
+            "empty": "*Den här kategorin är tom*"
+        },
+        "empty": "*Detta special-sida är tom*",
+        "loading": "Laddar sidans beskrivning…",
+        "media": "Till filens beskrivningssida",
+        "special": "Innehåll av den här special-sidan:"
+    },
     "settings": {
+        "channel current": "dessa är de nuvarande inställningarna för den här kanalen:",
+        "channel lang": "den här kanalens språk är:",
+        "channel langchanged": "du ändrade den här kanalens språk till:",
+        "channel role": "den lägsta rollen som krävs för den här kanalen är:",
         "inline disabled": {
             "channel inlinechanged": "du stängde av \"inline\"-kommandon för denna kanal.",
             "help": "Använd `$1` för att aktivera \"inline\"-kommandon så som `[[$2]]` och `{{$2}}`.",
