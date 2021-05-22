@@ -147,11 +147,23 @@
         "database": "⚠️ **Begränsad funktionalitet** ⚠️\nInga inställningar hittades, var snäll och kontakta bot-ägaren!",
         "default": "den här servern är inte konfigurerad än. Använd $1 eller kontrollpanelen för att ändra inställningar.",
         "experimental": "**Detta är en experimentell funktion! Det är inte garanterat att den kommer att fungera som den ska och kan komma att raderas i framtiden.**",
-        "helpserver": "Om du har frågor eller problem, vänligen besök min support server:"
+        "helpserver": "Om du har frågor eller problem, vänligen besök min support server:",
+        "limit": "🚨 **Sluta, du nådde en gräns!**🚨 \n\n$1, ditt meddelande innehöll för många kommandon!",
+        "missingperm": "Jag saknar behörigheter för detta kommando:",
+        "patreon": "denna funktion är endast för Patreons!\nDu kan stödja mig på Patreon för att få tillgång till funktionen:",
+        "prefix": "den här serverns prefix är `$1`. Du kan byta prefix med `$1settings prefix`. För en lista på alla kommandon, använd `$1help`.",
+        "readonly": "**just nu är databasen i \"läs endast\" läge, du kan inte ändra några inställningar just nu!**"
     },
     "help": {
+        "admin": "Dessa kommandon kan endast utföras av administratörer:",
         "adminfooter": "Administratörer kan även använda sig av kontrollpanelen för att ändra botens inställningar:",
+        "all": "Ville du veta vad jag kan göra? Här har du en lista på alla kommandon som jag förstår:",
+        "footer": "Om du fick ett svar du inte är intresserad av så kan du reagera med 🗑️(`:wastebasket:`) på mitt meddelande så raderar jag det.",
         "list": {
+            "default": {
+                "cmd": "<sökterm>",
+                "desc": "Jag kommer att svara med en länk till en passande artikel på wikin."
+            },
             "diff": {
                 "id": {
                     "cmd": "diff <diff> [<oldid>]",
@@ -163,17 +175,45 @@
                 }
             },
             "discussion": {
+                "post": {
+                    "desc": "Jag kommer svara med en länk till en passande diskussion i Fandon wikin."
+                },
                 "thread": {
                     "cmd": "discussion <search term> <sökterm>",
                     "desc": "Jag kommer svara med en länk till en passande diskussionstråd på Fandom-wikin."
                 }
             },
+            "fandom": {
+                "cmd": "?<wiki> <sökterm>",
+                "desc": "Jag kommer att svara med en länk till en passande artikel från Fandom wikin: `https://<wiki>.fandom.com/`"
+            },
+            "gamepedia": {
+                "cmd": "!<wiki> <sökterm>",
+                "desc": "Jag kommer att svara med en länk till en passande artikel från Gamepedia wikin: `https://<wiki>.gamepedia.com/`"
+            },
             "help": {
+                "admin": {
+                    "cmd": "help admin",
+                    "desc": "Jag kommerskicka en lista med alla administrations kommandon."
+                },
+                "command": {
+                    "cmd": "help <bot kommando>",
+                    "desc": "Funderar du över hur ett kommando fungerar? Låt mig förklara det för dig!"
+                },
                 "default": {
+                    "cmd": "help",
                     "desc": "Jag kommer lista alla kommandon som jag förstår."
                 }
             },
+            "info": {
+                "cmd": "info",
+                "desc": "Jag kommer att introducera mig själv."
+            },
             "inline": {
+                "link": {
+                    "cmd": "[[<sidnamn>]]",
+                    "desc": "Jag kommer svara med en direktlänk till den valda artikeln i wikin."
+                },
                 "template": {
                     "cmd": "{{<sidnamn>}}",
                     "desc": "Jag kommer svara med en länk till artikeln på wikin."
@@ -183,6 +223,9 @@
                 "bug": {
                     "cmd": "bug <Minecraft-bugg>"
                 }
+            },
+            "overview": {
+                "desc": "Jag kommer att visa lite allmän information och statistik om wikin."
             }
         }
     },
