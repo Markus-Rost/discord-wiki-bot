@@ -550,6 +550,45 @@
                 "weeks": "$1 {{PLURAL:$2|vecka|veckor}}",
                 "years": "$1 {{PLURAL:$2|år|år}}"
             }
+        },
+        "gblock": {
+            "disabled": "Kontot är för närvarande inaktiverat!",
+            "header": "$1 är just nu blockerat på en global nivå!"
+        },
+        "gender": {
+            "female": "Kvinna",
+            "male": "Man",
+            "unknown": "Okänd"
+        },
+        "info": {
+            "discord": "Discord:",
+            "editcount": "Antal redigeringar:",
+            "favwiki": "Favorit Wiki:",
+            "gender": "Kön:",
+            "globaleditcount": "Antal redigeringar globalt:",
+            "loading": "Laddar global statistik…",
+            "registration": "Registrerings datum:",
+            "wikisedited": "Redigerade Wikis:"
         }
+    },
+    "verification": {
+        "add_more": "Lägg till fler verifikationer:",
+        "added": "verifikationen har lagts till:",
+        "and": "och",
+        "channel": "Kanal:",
+        "channel_max": "du angav för många kanaler.",
+        "channel_missing": "den angivna kanalen existerar inte.",
+        "current": "dessa är de nuvarande verifikationerna för den här servern:",
+        "current_selected": "detta är `$1` verifikationen för den här servern:",
+        "dashboard": {
+            "added": "$1 lade till verifikationen med IDt `$2`.",
+            "removed": "$1 raderade verifikationen med IDt `$2`.",
+            "updated": "$1 uppdaterade verifikationen med IDt `$2`."
+        },
+        "delete_current": "Radera denna verifikation:",
+        "deleted": "verifikationen har raderats.",
+        "disabled": "inaktiverad",
+        "editcount": "Antal redigeringar:",
+        "enabled": "aktiverad"
     }
 }
