@@ -518,9 +518,12 @@
             "blocked_help": "Du kan be om fler detaljer på [support servern]($1).",
             "dashboard": {
                 "channel": "• Webhooken har flyttats till den här kanalen.",
+                "enabled_rc": "• Wiki redigeringar har aktiverats.",
                 "lang": "• Språket har ändrats till $1.",
+                "updated": "Denna \"senaste ändringar\"-webhooken har uppdaterats:",
                 "wiki": "• Wikin har ändrats till $1."
-            }
+            },
+            "deleted": "Denna \"senaste ändringar\"-webhooken kommer att raderas."
         },
         "webhook_failed": "webhooken kunde tyvärr inte skapas, vänligen försök igen senare.",
         "wiki": "Wiki:"
