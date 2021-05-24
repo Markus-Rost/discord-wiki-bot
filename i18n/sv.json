@@ -379,7 +379,8 @@
                 "desc": "Jag försöker att ge alla i en röstkanal en specifik roll."
             },
             "wikia": {
-                "cmd": "??<wiki> <sökterm>"
+                "cmd": "??<wiki> <sökterm>",
+                "desc": "Jag kommer att svara med en länk till en matchande artikel med namnet på Wikia-wikin: `https://<wiki>.wikia.org/`"
             }
         },
         "noadmin": "du behöver behörigheten `Hantera Server` för att kunna utföra dessa kommandon!",
@@ -391,12 +392,15 @@
             "perm_default": "Standard",
             "perm_deny": "Neka"
         },
-        "nowiki": "Den använda wikin existerar inte!"
+        "inline": "Var snäll och ange text med [[wikitext]]-länkar för att använda detta kommando.",
+        "nowiki": "Den använda wikin existerar inte!",
+        "verify": "Var snäll och ange ditt wiki-användarnamn för att använda detta kommando till att verifiera ditt Discord-konto med ditt wiki-konto, och få roller som matchar ditt wiki-konto."
     },
     "invite": {
         "bot": "Använd denna länk för att bjuda in mig till en annan server:"
     },
     "minecraft": {
+        "fixed": "{{PLURAL:$1|Version fixad|Versioner fixade}}:",
         "issue_link": {
             "Blocks": {
                 "inward": "har blockerats av $1",
@@ -655,6 +659,8 @@
             "favwiki": "Favorit Wiki:",
             "gender": "Kön:",
             "globaleditcount": "Antal redigeringar globalt:",
+            "globalgroup": "{{PLURAL:$1|global grupp|globala grupper}}:",
+            "group": "{{PLURAL:$1|Grupp|Grupper}}:",
             "loading": "Laddar global statistik…",
             "registration": "Registrerings datum:",
             "wikisedited": "Redigerade Wikis:"
