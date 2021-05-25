@@ -5,5 +5,15 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "rcscript": {
+        "form": {
+            "lang": "Språk:"
+        }
+    },
+    "settings": {
+        "form": {
+            "lang": "Språk:"
+        }
+    }
 }

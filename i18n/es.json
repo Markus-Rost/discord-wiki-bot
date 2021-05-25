@@ -365,7 +365,7 @@
                 },
                 "rename": {
                     "cmd": "verification <ID> rename",
-                    "desc": "Haré el cambio si el alias de Discord debe cambiarse a su nombre de usuario wiki para la verificación wiki."
+                    "desc": "Haré el cambio si el alias de Discord debe cambiarse a tu nombre de usuario wiki para la verificación wiki."
                 },
                 "role": {
                     "cmd": "verification <ID> role <nuevo rol>",
@@ -796,6 +796,7 @@
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Sigue [esta guía]($1) para agregar tu etiqueta de Discord a tu perfil wiki:",
+        "help_missing": "Asegúrate de utilizar tu nombre de usuario wiki y que las mayúsculas y minúsculas son correctas.",
         "help_subpage": "Por favor agrega tu etiqueta de Discord ($1) a tu subpágina de Discord en el wiki:",
         "missing": "no hay verificaciones configuradas en este canal.",
         "notice": "Aviso:",

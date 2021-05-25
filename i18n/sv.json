@@ -1,7 +1,7 @@
 {
     "__translator": [
-        "",
-        " ",
+        "Spisen",
+        "eke0909",
         " ",
         " ",
         " ",
@@ -13,14 +13,14 @@
     ],
     "aliases": {
         "bug": [
-            "",
+            "bugg",
             " ",
             " ",
             " ",
             " "
         ],
         "command": [
-            "",
+            "kommando",
             " ",
             " ",
             " ",
@@ -34,82 +34,107 @@
             " "
         ],
         "discussion": [
-            "",
-            " ",
+            "diskussioner",
+            "diskussion",
             " ",
             " ",
             " "
         ],
         "help": [
-            "",
+            "hjälp",
             " ",
             " ",
             " ",
             " "
         ],
         "info": [
-            "",
+            "info",
             " ",
             " ",
             " ",
             " "
         ],
         "invite": [
-            "",
+            "inbjudan",
             " ",
             " ",
             " ",
             " "
         ],
         "overview": [
-            "",
+            "översikt",
             " ",
             " ",
             " ",
             " "
         ],
         "page": [
-            "",
+            "sida",
             " ",
             " ",
             " ",
             " "
         ],
         "random": [
-            "",
+            "slumpmessig",
             " ",
             " ",
             " ",
             " "
         ],
         "search": [
-            "",
+            "sök",
             " ",
             " ",
             " ",
             " "
         ],
         "test": [
-            "",
+            "test",
             " ",
             " ",
             " ",
             " "
         ],
         "user": [
-            "",
+            "användare",
             " ",
             " ",
             " ",
             " "
         ],
         "verify": [
-            "",
+            "verifiera",
             " ",
             " ",
             " ",
             " "
         ]
+    },
+    "dateformat": "sv-SE",
+    "diff": {
+        "badrev": "minst en version är inte tillgänglig!",
+        "hidden": "*gömd*",
+        "info": {
+            "added": "Tillagd:",
+            "bytes": "$1 {{PLURAL:$2|byte|bytes}} $3",
+            "comment": "Kommentar:",
+            "editor": "Redigerare:",
+            "minor": "(m)",
+            "more": "Och mer",
+            "removed": "Raderade:",
+            "size": "Skillnad:",
+            "tags": "Taggar:",
+            "timestamp": "Redigera datum:",
+            "whitespace": "Endast blanksteg"
+        },
+        "nocomment": "*Ingen beskrivning ges*"
+    },
+    "discussion": {
+        "image": "Visa bild",
+        "main": "Diskussioner",
+        "tags": "Taggar:",
+        "votes": "$1 {{PLURAL:$2|röst|röster}} ($3%)"
     },
     "fallback": [
         "en",
@@ -118,7 +143,465 @@
         " ",
         " "
     ],
+    "general": {
+        "database": "⚠️ **Begränsad funktionalitet** ⚠️\nInga inställningar hittades, var snäll och kontakta bot-ägaren!",
+        "default": "den här servern är inte konfigurerad än. Använd $1 eller kontrollpanelen för att ändra inställningar.",
+        "disclaimer": "Jag är en liten bot med syftet att enkelt länka och söka på MediaWiki-sidor så som Wikipedia och Fandom-wikier. Jag visar korta beskrivningar och ytterligare information om sidor, och jag kan lösa omdirigeringar och följa interwikilänkar. $1 kodade mig i JavaScript.\n\nDu kan stödja mig på Patreon:",
+        "experimental": "**Detta är en experimentell funktion! Det är inte garanterat att den kommer att fungera som den ska och kan komma att raderas i framtiden.**",
+        "helpserver": "Om du har frågor eller problem, vänligen besök min support server:",
+        "limit": "🚨 **Sluta, du nådde en gräns!**🚨 \n\n$1, ditt meddelande innehöll för många kommandon!",
+        "missingperm": "Jag saknar behörigheter för detta kommando:",
+        "patreon": "denna funktion är endast för Patreons!\nDu kan stödja mig på Patreon för att få tillgång till funktionen:",
+        "prefix": "den här serverns prefix är `$1`. Du kan byta prefix med `$1settings prefix`. För en lista på alla kommandon, använd `$1help`.",
+        "readonly": "**just nu är databasen i skrivskyddat läge, du kan inte ändra några inställningar just nu!**"
+    },
+    "help": {
+        "admin": "Dessa kommandon kan endast utföras av administratörer:",
+        "adminfooter": "Administratörer kan även använda sig av kontrollpanelen för att ändra botens inställningar:",
+        "all": "Ville du veta vad jag kan göra? Här har du en lista på alla kommandon som jag förstår:",
+        "footer": "Om du fick ett svar du inte är intresserad av så kan du reagera med 🗑️(`:wastebasket:`) på mitt meddelande så raderar jag det.",
+        "list": {
+            "default": {
+                "cmd": "<sökterm>",
+                "desc": "Jag kommer att svara med en länk till en passande artikel på wikin."
+            },
+            "diff": {
+                "id": {
+                    "cmd": "diff <diff> [<oldid>]",
+                    "desc": "Jag kommer att svara med en länk till ändringen på wikin."
+                },
+                "name": {
+                    "cmd": "diff <sidonamn>",
+                    "desc": "jag kommer att svara med en länk till senaste ändringen i artikeln på wikin."
+                }
+            },
+            "discussion": {
+                "post": {
+                    "cmd": "discussion post <sökterm>",
+                    "desc": "Jag kommer svara med en länk till en passande diskussion i Fandon wikin."
+                },
+                "thread": {
+                    "cmd": "discussion <sökterm>",
+                    "desc": "Jag kommer svara med en länk till en passande diskussionstråd på Fandom-wikin."
+                }
+            },
+            "fandom": {
+                "cmd": "?<wiki> <sökterm>",
+                "desc": "Jag kommer att svara med en länk till en passande artikel från Fandom wikin: `https://<wiki>.fandom.com/`"
+            },
+            "gamepedia": {
+                "cmd": "!<wiki> <sökterm>",
+                "desc": "Jag kommer att svara med en länk till en passande artikel från Gamepedia wikin: `https://<wiki>.gamepedia.com/`"
+            },
+            "help": {
+                "admin": {
+                    "cmd": "help admin",
+                    "desc": "Jag kommerskicka en lista med alla administrations kommandon."
+                },
+                "command": {
+                    "cmd": "help <bot kommando>",
+                    "desc": "Funderar du över hur ett kommando fungerar? Låt mig förklara det för dig!"
+                },
+                "default": {
+                    "cmd": "help",
+                    "desc": "Jag kommer lista alla kommandon som jag förstår."
+                }
+            },
+            "info": {
+                "cmd": "info",
+                "desc": "Jag kommer att introducera mig själv."
+            },
+            "inline": {
+                "link": {
+                    "cmd": "[[<sidnamn>]]",
+                    "desc": "Jag kommer att svara med en direktlänk till den valda artikeln i wikin."
+                },
+                "template": {
+                    "cmd": "{{<sidnamn>}}",
+                    "desc": "Jag kommer att svara med en länk till artikeln på wikin."
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "cmd": "bug <Minecraft-bugg>",
+                    "desc": "Jag kommer att svara med en länk till buggen i Minecrafts \"bug-tracker\"."
+                },
+                "command": {
+                    "cmd": "command <Minecraft-kommando>",
+                    "desc": "Jag kommer att svara med syntaxen för Minecraft-kommandot och en länk till artikeln för kommandot på Minecraft Wiki."
+                },
+                "default": {
+                    "cmd": "/<Minecraft-kommando>",
+                    "desc": "Jag kommer att svara med syntaxen för Minecraft-kommandot och en länk till artikeln för kommandot på Minecraft Wiki."
+                }
+            },
+            "mwprojects": {
+                "cmd": "!!<wiki> <sökterm>",
+                "desc": "Jag kommer att svara med en länk till en matchande artikel i det namngivna MediaWiki-projektet. Exempel: `$1!!sv.wikipedia.org Kaka`"
+            },
+            "overview": {
+                "cmd": "overview",
+                "desc": "Jag kommer att visa lite allmän information och statistik om wikin."
+            },
+            "page": {
+                "cmd": "page <sidnamn>",
+                "desc": "Jag kommer att svara med en direktlänk till artikeln på wikin."
+            },
+            "pause": {
+                "active": {
+                    "cmd": "pause $1",
+                    "desc": "Jag kommer att svara på alla kommandon på den här servern igen."
+                },
+                "inactive": {
+                    "cmd": "pause $1",
+                    "desc": "Jag kommer att ignorera alla kommandon på den här servern, förutom några administratörskommandon."
+                }
+            },
+            "random": {
+                "cmd": "random",
+                "desc": "Jag kommer att svara med en länk till en slumpmässig sida på wikin."
+            },
+            "rcscript": {
+                "add": {
+                    "cmd": "rcscript add [<wiki>]",
+                    "desc": "Jag lägger till en ny \"senaste ändringarna\"-webhook."
+                },
+                "default": {
+                    "cmd": "rcscript",
+                    "desc": "Jag kommer ändra \"senaste ändringarna\"-webhooken."
+                },
+                "delete": {
+                    "cmd": "rcscript delete",
+                    "desc": "Jag kommer ta bort \"senaste ändringarna\"-webhooken."
+                },
+                "display": {
+                    "cmd": "rcscript display <nytt visningsläge>",
+                    "desc": "Jag kommer att ändra visningsläget för \"senaste ändringarna\"-webhooken."
+                },
+                "feeds": {
+                    "cmd": "rcscript feeds"
+                },
+                "lang": {
+                    "cmd": "rcscript lang <nytt språk>",
+                    "desc": "Jag kommer att ändra språk \"senaste ändringarna\"-webhooken."
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <ny wiki>",
+                    "desc": "Jag kommer att ändra wiki för \"senaste ändringarna\"-webhooken."
+                }
+            },
+            "search": {
+                "cmd": "search <sökterm>",
+                "desc": "Jag kommer att svara med en direktlänk wiki-artikelns sökruta."
+            },
+            "settings": {
+                "channel": {
+                    "cmd": "settings channel"
+                },
+                "default": {
+                    "cmd": "settings",
+                    "desc": "Jag kommer att ändra den här serverns inställningar."
+                },
+                "inline": {
+                    "cmd": "settings inline toggle"
+                },
+                "lang": {
+                    "cmd": "settings lang <språk>",
+                    "desc": "Jag kommer att ändra serverns språk."
+                },
+                "prefix": {
+                    "cmd": "settings prefix <prefix>",
+                    "desc": "Jag kommer att ändra serverns prefix."
+                },
+                "role": {
+                    "cmd": "settings role <roll>",
+                    "desc": "Jag kommer att ändra vilken den lägsta rollen som krävs för att utföra detta kommando är."
+                },
+                "wiki": {
+                    "cmd": "settings wiki <wiki>",
+                    "desc": "Jag kommer att ändra serverns standard-wiki."
+                }
+            },
+            "test": {
+                "cmd": "test",
+                "desc": "Om jag är aktiv så kommer jag att svara! Annars gör jag det inte."
+            },
+            "user": {
+                "cmd": "User:<användarnamn>",
+                "desc": "Jag kommer visa lite information om användaren."
+            },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <nytt kontoålder>",
+                    "desc": "Jag ändrar den minsta kontoåldern (i dagar) för wiki-verifieringen."
+                },
+                "add": {
+                    "cmd": "verification add <roll>",
+                    "desc": "Jag kommer att lägga till en ny wiki verifiering. Accepterar en `|` separerad lista."
+                },
+                "channel": {
+                    "cmd": "verification <id> channel <ny kanal>",
+                    "desc": "Jag kommer att ändra kanalen för wiki verifiering. Accepterar en `|` separerad lista."
+                },
+                "default": {
+                    "cmd": "verification",
+                    "desc": "Jag kommer ändra wiki-verifieringar använda av `$1verify`-kommandot."
+                },
+                "delete": {
+                    "cmd": "verification <id> delete",
+                    "desc": "Jag kommer radera wiki-verifieringen."
+                },
+                "editcount": {
+                    "cmd": "verification <id> editcount <nytt redigeringsantal>",
+                    "desc": "Jag kommer ändra minsta antalet redigeringar för wiki-verifieringen."
+                },
+                "postcount": {
+                    "cmd": "verification <id> postcount <antal nya inlägg>"
+                },
+                "rename": {
+                    "cmd": "verification <id> rename",
+                    "desc": "Jag kommer ändra ifall användarens Discord-namn skulle vara ändrat till deras wiki-användarnamn för wiki-verifiering."
+                },
+                "role": {
+                    "cmd": "verification <id> role <ny roll>",
+                    "desc": "Jag kommer att ändra rollen för wiki verifiering. Accepterar en `|` separerad lista."
+                },
+                "usergroup": {
+                    "cmd": "verification <id> usergroup <ny användargrupp>"
+                }
+            },
+            "verify": {
+                "cmd": "verify <wiki användarnamn>",
+                "desc": "Använd detta kommando för att verifiera ditt Discord- med ditt wiki-konto och få roller som matchar ditt wiki-konto."
+            },
+            "voice": {
+                "cmd": "voice",
+                "desc": "Jag försöker att ge alla i en röstkanal en specifik roll."
+            },
+            "wikia": {
+                "cmd": "??<wiki> <sökterm>",
+                "desc": "Jag kommer att svara med en länk till en matchande artikel med namnet på Wikia-wikin: `https://<wiki>.wikia.org/`"
+            }
+        },
+        "noadmin": "du behöver behörigheten `Hantera Server` för att kunna utföra dessa kommandon!",
+        "pause": "**Jag är tillfälligt avstängd på den här servern!**\nEndast dessa kommandon fungerar:"
+    },
+    "interaction": {
+        "dashboard": {
+            "perm_allow": "Tillåt",
+            "perm_default": "Standard",
+            "perm_deny": "Neka"
+        },
+        "inline": "Var snäll och ange text med [[wikitext]]-länkar för att använda detta kommando.",
+        "nowiki": "Den använda wikin existerar inte!",
+        "verify": "Var snäll och ange ditt wiki-användarnamn för att använda detta kommando till att verifiera ditt Discord-konto med ditt wiki-konto, och få roller som matchar ditt wiki-konto."
+    },
+    "invite": {
+        "bot": "Använd denna länk för att bjuda in mig till en annan server:"
+    },
+    "minecraft": {
+        "fixed": "{{PLURAL:$1|Version fixad|Versioner fixade}}:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "har blockerats av $1",
+                "outward": "blockerar $1"
+            },
+            "Bonfire Testing": {
+                "inward": "upptäcktes under testning av $1",
+                "outward": "test upptäckte $1"
+            },
+            "Cloners": {
+                "inward": "är klonad av $1",
+                "outward": "klonar $1"
+            },
+            "Duplicate": {
+                "inward": "är dublicerad av $1",
+                "outward": "dublicerar $1"
+            },
+            "Relates": {
+                "inward": "relaterar till $1",
+                "outward": "relaterar till $1"
+            }
+        },
+        "more": "Och $1 till.",
+        "private": "**Privat Problem**",
+        "status": {
+            "Awaiting Response": "Inväntar svar",
+            "Closed": "Stängd",
+            "Done": "Gjort",
+            "Duplicate": "Duplicera",
+            "Fixed": "Fixad",
+            "In Progress": "Pågående",
+            "Incomplete": "Ofullständig",
+            "Invalid": "Ogiltig",
+            "Open": "Öppen",
+            "Postponed": "Uppskjuten",
+            "Reopened": "Öppnade igen",
+            "Resolved": "Löst",
+            "Won't Fix": "Kommer inte att fixa",
+            "Works As Intended": "Fungerar som avsett"
+        },
+        "total": "$1 {{PLURAL:$2|problem fixad|problem fixade}}"
+    },
+    "overview": {
+        "admins": "Administratörer:",
+        "articles": "Artiklar:",
+        "comments": "Artikelkommentarer:",
+        "created": "Skapades:",
+        "crossover": "Sammanfogad med:",
+        "description": "Beskrivning:",
+        "edits": "Redigeringar:",
+        "founder": "Grundare:",
+        "image": "Bild:",
+        "inaccurate": "Statistiken kan vara felaktig",
+        "lang": "Språk:",
+        "license": "Licens:",
+        "manager": "Wiki-manager:",
+        "no": "Nej",
+        "none": "*ingen*",
+        "official": "Officiell wiki:",
+        "pages": "Antalet sidor:",
+        "posts": "Diskussionsinlägg:",
+        "readonly": "Denna wiki är för närvarande i skrivskyddat läge!",
+        "rtl": "Höger till vänster:",
+        "talk": "diskussion",
+        "topic": "Ämne:",
+        "unknown": "*okänd*",
+        "users": "Aktiva användare:",
+        "version": "Version:",
+        "vertical": "Vertikal:",
+        "walls": "Inlägg på meddelandeväggen:",
+        "wikiid": "Wiki-ID:",
+        "yes": "Ja"
+    },
+    "pause": {
+        "off": "Jag är inte längre pausad på den här servern och kommer därmed att svara på alla kommandon igen!",
+        "on": "Jag är nu pausad på den här servern och kommer därmed att ignorera de flesta kommandona!"
+    },
+    "rcscript": {
+        "ad": "Vill du har senaste ändringarna direkt på discord? Använd `$1rcscript` för att lägga till en \"senaste ändringarna\"-webhook baserad på **$2** till din Discord-server!",
+        "add_more": "Lägg till fler \"senaste ändringar\"-webhooks:",
+        "added": "En \"senaste ändringarna\"-webhook har nu blivit tillagt för:",
+        "audit_reason": "\"Senaste ändringarna\"-webhook för \"$1\"",
+        "audit_reason_delete": "Tog bort \"senaste ändringarna\"-webhooken",
+        "audit_reason_move": "Flyttade \"senaste ändringarna\"-webhooken",
+        "blocked": "denna wiki har blockerats från att lägga till en \"senaste ändringarna\"-webhook!",
+        "blocked_reason": "denna wiki har blockerats från att lägga till en \"senaste ändringarna\"-webhook på grund av`$1`!",
+        "channel": "Kanal:",
+        "current": "det här är de aktuella \"senaste ändringarna\"-webhooksen för denna server:",
+        "current_display": "visningsläget för denna webhook är:",
+        "current_lang": "denna webhooks språk är:",
+        "current_selected": "det här är \"senaste ändringarna\"-webhooken`$1`för denna server:",
+        "current_wiki": "wikin för den här webhooken är:",
+        "dashboard": {
+            "added": "$1 la till \"senaste ändringarna\"-webhooken med id `$2`.",
+            "removed": "$1 raderade \"senaste ändringar\"-webhooken vars ID är`$2`.",
+            "updated": "$1 uppdaterade \"senaste ändringar\"-webhooken vars ID är`$2`."
+        },
+        "delete": "Radera den här \"senaste ändringar\"-webhooken:",
+        "deleted": "webhooken \"senaste ändringar\" har raderats.",
+        "disabled": "inaktiverad",
+        "display": "Visningsläge:",
+        "enabled": "aktiverad",
+        "help_lang": "De språk som stödjs för nuvarande är:",
+        "help_wiki": "Länka till en MediaWiki-sida så som `https://<wiki>.fandom.com/`",
+        "lang": "Språk:",
+        "new_lang": "<nytt språk>",
+        "new_wiki": "<länk till wikin>",
+        "noadmin": "du behöver behörigheten `Hantera Webhooks` för det här kommandot!",
+        "rc": "Wiki-ändringar:",
+        "title": "\"Senaste ändringar\"-webhook",
+        "updated_display": "visningsläget för denna webhook har ändrats till:",
+        "updated_lang": "språket för den här webhooken har ändrats till:",
+        "updated_wiki": "webhooken för denna wiki har ändrats till:",
+        "webhook": {
+            "blocked_help": "Du kan be om fler detaljer på [support servern]($1).",
+            "dashboard": {
+                "channel": "• Webhooken har flyttats till den här kanalen.",
+                "enabled_rc": "• Wiki-redigeringar har aktiverats.",
+                "lang": "• Språket har ändrats till $1.",
+                "updated": "Denna \"senaste ändringar\"-webhooken har uppdaterats:",
+                "wiki": "• Wikin har ändrats till $1."
+            },
+            "deleted": "Denna \"senaste ändringar\"-webhooken kommer att raderas."
+        },
+        "webhook_failed": "webhooken kunde tyvärr inte skapas, vänligen försök igen senare.",
+        "wiki": "Wiki:"
+    },
+    "search": {
+        "category": {
+            "content": "Innehåll av den här kategorin:",
+            "empty": "*Den här kategorin är tom*",
+            "files": "$1 {{PLURAL:$2|fil|filer}}",
+            "pages": "$1 {{PLURAL:$2|sida|sidor}}",
+            "subcats": "$1 {{PLURAL:$2|kategori|kategorier}}"
+        },
+        "empty": "*Detta special-sida är tom*",
+        "loading": "Laddar sidans beskrivning…",
+        "media": "Till filens beskrivningssida",
+        "results": "Totalt $1 {{PLURAL:$2|resultat|resultat}}",
+        "special": "Innehåll av den här special-sidan:"
+    },
+    "settings": {
+        "channel current": "dessa är de nuvarande inställningarna för den här kanalen:",
+        "channel lang": "den här kanalens språk är:",
+        "channel langchanged": "du ändrade den här kanalens språk till:",
+        "channel role": "den lägsta rollen som krävs för den här kanalen är:",
+        "channel rolechanged": "du har ändrat den lägsta rollen som krävs för denna kanal till:",
+        "channel wiki": "standardwikin för den här kanalen är:",
+        "channel wikichanged": "du har ändrat standardwikin för den här kanalen till:",
+        "current": "det här är de nuvarande inställningarna för den här servern:",
+        "currentinline": "\"Inline\"-kommandon:",
+        "currentlang": "Språk:",
+        "currentprefix": "Prefix:",
+        "currentrole": "Lägsta roll:",
+        "currentwiki": "Standardwiki:",
+        "dashboard": {
+            "channel": "$1 uppdaterade inställningarna för $2.",
+            "removed": "$1 tog bort inställningarna för $2.",
+            "updated": "$1 uppdaterade serverinställningarna."
+        },
+        "foundwikis": "Menar du någon av dessa wikis?",
+        "inline disabled": {
+            "channel inline": "\"inline\"-kommandon är just nu inaktiverade för denna kanal.",
+            "channel inlinechanged": "du stängde av \"inline\"-kommandon för denna kanal.",
+            "help": "Använd `$1` för att aktivera \"inline\"-kommandon så som `[[$2]]` och `{{$2}}`.",
+            "inline": "\"inline\"-kommandon är just nu inaktiverade för den här servern.",
+            "inlinechanged": "du stängde av \"inline\"-kommandon för den här servern."
+        },
+        "inline enabled": {
+            "channel inline": "\"inline\"-kommandon är just nu aktiverade för den här servern.",
+            "channel inlinechanged": "du aktiverade \"inline\"-kommandon för den här servern.",
+            "help": "Använd `$1` för att inaktivera \"inline\"-kommandon så som `[[$2]]` och `{{$2}}`.",
+            "inline": "\"inline\"-kommandon är just nu aktiverade för den här servern.",
+            "inlinechanged": "du aktiverade \"inline\"-kommandon för den här servern."
+        },
+        "lang": "språket för denna server är:",
+        "langchanged": "du ändrade språket för denna server till:",
+        "langhelp": "Använd `$1 <language>` för att ändra språk.\nJust nu stöds dessa språk:",
+        "langinvalid": "det angivna språket är inte tillgängligt!",
+        "missing": "den här servern är inte konfigurerad än. Använd $1 och $2 för att ändra inställningar.",
+        "prefix": "prefixen för denna server är:",
+        "prefixchanged": "du ändrade prefixen för denna server till:",
+        "prefixinvalid": "den angivna prefixen stöds inte!",
+        "role": "den lägsta rollen som krävs för denna server är:",
+        "rolechanged": "du har ändrat den lägsta rollen som krävs för denna server till:",
+        "rolehelp": "Använd`$1 <role>` för att ändra den lägsta rollen som krävs.",
+        "roleinvalid": "den angivna rollen existerar inte!",
+        "save_failed": "tyvärr kunde inte inställningarna sparas, försök igen senare.",
+        "wiki": "standardwikin för denna server är:",
+        "wikichanged": "du har ändrat standardwikin för denna server till:",
+        "wikihelp": "Använd `$1 <link>` för att ändra standardwiki.\nLänka till en MediaWiki-sida så som `https://<wiki>.fandom.com/`",
+        "wikiinvalid": "vänligen ange en giltig länk till en MediaWiki-sida, så som Wikipedia eller en Fandom-wiki!",
+        "wikiinvalid_http": "den angivna hemsidan har inget giltigt TLS/SSL-certifikat! Av säkerhetsskäl stöds endast wikis som använder HTTPS.\nOm du är administratör på hemsidan kan du få ett certifikat från en certifikatutfärdare så som *Let’s Encrypt*:\n<https://letsencrypt.org/sv/getting-started/>",
+        "wikiinvalid_private": "den angivna wikin är privat! Endast offentliga wikis som kan läsas av alla stöds.",
+        "wikiinvalid_timeout": "den angivna länken tog för lång tid på sig att svara!",
+        "wikimissing": "ingen standardwiki har ställts in för denna server ännu!"
+    },
     "test": {
+        "MediaWiki": "Kräver minst $1 för fullständig funktionalitet, hittade`$2`.",
+        "notice": "Begränsad funktionalitet",
+        "pause": "Jag är för tillfället pausad på denna server.",
         "text": [
             "",
             " ",
@@ -150,6 +633,125 @@
             " ",
             " ",
             " "
-        ]
+        ],
+        "time": "Responstid"
+    },
+    "user": {
+        "block": {
+            "duration": {
+                "days": "$1 {{PLURAL:$2|dag|dagar}}",
+                "hours": "$1 {{PLURAL:$2|timme|timmar}}",
+                "minutes": "$1 {{PLURAL:$2|minut|minuter}}",
+                "months": "$1 {{PLURAL:$2|månad|månader}}",
+                "weeks": "$1 {{PLURAL:$2|vecka|veckor}}",
+                "years": "$1 {{PLURAL:$2|år|år}}"
+            }
+        },
+        "gblock": {
+            "disabled": "Kontot är för närvarande inaktiverat!",
+            "header": "$1 är just nu blockerat på en global nivå!"
+        },
+        "gender": {
+            "female": "Kvinna",
+            "male": "Man",
+            "unknown": "Okänd"
+        },
+        "info": {
+            "discord": "Discord:",
+            "editcount": "Antal redigeringar:",
+            "favwiki": "Favorit Wiki:",
+            "gender": "Kön:",
+            "globaleditcount": "Antal redigeringar globalt:",
+            "globalgroup": "{{PLURAL:$1|global grupp|globala grupper}}:",
+            "group": "{{PLURAL:$1|Grupp|Grupper}}:",
+            "loading": "Laddar global statistik…",
+            "registration": "Registrerings datum:",
+            "wikisedited": "Redigerade Wikis:"
+        }
+    },
+    "verification": {
+        "add_more": "Lägg till fler verifikationer:",
+        "added": "verifikationen har lagts till:",
+        "and": "och",
+        "channel": "Kanal:",
+        "channel_max": "du angav för många kanaler.",
+        "channel_missing": "den angivna kanalen existerar inte.",
+        "current": "dessa är de nuvarande verifikationerna för den här servern:",
+        "current_selected": "detta är `$1` verifikationen för den här servern:",
+        "dashboard": {
+            "added": "$1 lade till verifikationen med IDt `$2`.",
+            "removed": "$1 raderade verifikationen med IDt `$2`.",
+            "updated": "$1 uppdaterade verifikationen med IDt `$2`."
+        },
+        "delete_current": "Radera denna verifikation:",
+        "deleted": "verifikationen har raderats.",
+        "disabled": "inaktiverad",
+        "editcount": "Antal redigeringar:",
+        "enabled": "aktiverad",
+        "indays": "(i dagar)",
+        "max_entries": "du har redan nått den högsta gränsen för antal verifikationer.",
+        "missing": "det finns ännu inte några verifikationer för den här servern.",
+        "new_channel": "<ny kanal>",
+        "new_role": "<ny roll>",
+        "new_usergroup": "<ny användargrupp>",
+        "no_role": "vänligen ange en roll för den nya verifikationen.",
+        "notice_embed": "Vissa notiser innehåller \"masked markdown links\". För att dessa ska fungera som de ska, se till att aktivera rättigheten `Bädda in länkar` i alla verifikationskanaler.",
+        "or": "eller",
+        "postcount": "Antal inlägg (endast Fandom Wikis):",
+        "posteditcount": "Antal ändringar och inlägg tillsammans:",
+        "rename": "Ändra smeknamn:",
+        "role": "Roll:",
+        "role_deleted": "**Rollen $1 ser inte ut att existera längre!**",
+        "role_managed": "den angivna rollen kan inte tilldelas.",
+        "role_max": "du angav för många roller.",
+        "role_missing": "den angivna rollen existerar inte.",
+        "role_too_high": "**Rolle $1 är för hög för att $2 ska kunna tilldela den!**",
+        "save_failed": "verifikationen kunde tyvärr inte sparas, vänligen försök igen senare.",
+        "updated": "verifikationen har uppdaterats:",
+        "usergroup": "Användargrupp:",
+        "usergroup_max": "du angav för många användargrupper.",
+        "usergroup_too_long": "den angivna användargruppen är för lång.",
+        "value_too_high": "det angivna värdet är för högt."
+    },
+    "verify": {
+        "audit_reason": "Verifierad som \"$1\"",
+        "discord": "Discordanvändare:",
+        "empty": "*tom*",
+        "error": "Verifikationen misslyckades på grund av ett felmeddelande.",
+        "error_reply": "verifikationen misslyckades på grund av ett felmeddelande, vänligen försök igen.",
+        "failed_roles": "**Tilldelning av roll misslyckades!**",
+        "footer": "Verifikation av Wiki konto",
+        "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
+        "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
+        "help_guide": "Följ [denna guide]($1) för att lägga till din Discord tagg i din Wiki profil:",
+        "missing": "det finns inte någon verifikation uppsatt för den här kanalen.",
+        "notice": "Notera:",
+        "qualified": "Kvalifierad för:",
+        "qualified_error": "Kvalificerad för, men kan inte lägga till:",
+        "user_blocked": "**Wiki-användaren $1 är blockerad!**",
+        "user_blocked_reply": "din länkade Wiki-användare **\"$1\" är blockerad!**",
+        "user_disabled": "**Wiki-kontot $1 är inaktiverat!**",
+        "user_disabled_reply": "ditt länkade Wiki-konto **\"$1\" är inaktiverat!**",
+        "user_failed": "Discord användaren $1 stämmer inte överens med Wiki-användaren $2.",
+        "user_failed_reply": "din Discord tagg stämmer inte överens med Wiki-användaren \"$1\".",
+        "user_gblocked": "**Wiki-användaren $1 är globalt blockerad!**",
+        "user_gblocked_reply": "din länkade Wiki-användare **\"$1\" är globalt blockerad!**",
+        "user_matches": "Discord användaren $1 stämmer överens med Wiki-användaren $2, men uppfyller inte kraven för någon roll.",
+        "user_matches_reply": "din Discord tagg stämmer överens med wiki användaren \"$1\", men uppfyller inte kraven för någon roll.",
+        "user_missing": "Wiki användaren \"$1\" existerar inte.",
+        "user_missing_reply": "din länkade wiki användare \"$1\" existerar inte.",
+        "user_verified": "Discord användaren $1 har verifierats som wiki användaren $2.",
+        "user_verified_reply": "du har verifierats som wiki användaren \"$1\".",
+        "wiki": "Wiki användare:"
+    },
+    "voice": {
+        "channel": "Röstkanal",
+        "disable": "Använd `$1` för att inaktivera denna funktion.",
+        "disabled": "du inaktiverade funktionen för att lägga till roller för röstkanaler.",
+        "enable": "Använd `$1` för att aktivera denna funktion.",
+        "enabled": "du aktiverade funktionen för att lägga till roller för röstkanaler.",
+        "join": "$1 anslöt till röstkanalen \"$2\".",
+        "left": "$1 lämnade röstkanalen \"$2\".",
+        "text": "Jag försöker ge alla i en röstkanal en specifik roll:"
     }
 }
