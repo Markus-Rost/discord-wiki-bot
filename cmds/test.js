@@ -31,7 +31,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 		let textList = lang.get('test.text').filter( text => text.trim() );
 		var text = ( textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0') );
 		if ( process.env.READONLY ) text = lang.get('general.readonly') + '\n' + process.env.invite;
-		console.log( '- Test: Fully functioning!' );
+		console.log( '- Test[' + global.shardId + ']: Fully functioning!' );
 		var now = Date.now();
 		msg.replyMsg( text ).then( message => {
 			if ( !message ) return;

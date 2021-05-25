@@ -35,7 +35,8 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				console.log( '- This wiki doesn\'t exist!' );
 				result.reaction = 'nowiki';
 			}
-			else if ( body?.error?.code === 'us400' ) { // special catch for Fandom
+			else if ( body?.error?.code === 'us400' || body?.error?.code === 'baduser_ucuser' ) {
+				// special catch for Fandom
 				if ( !old_username ) logging(wiki, channel.guild.id, 'verification');
 				embed.setTitle( escapeFormatting( old_username || username ) ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', escapeFormatting( old_username || username )) ).addField( lang.get('verify.notice'), lang.get('verify.help_missing') );
 				result.content = lang.get('verify.user_missing_reply', escapeFormatting( old_username || username ));

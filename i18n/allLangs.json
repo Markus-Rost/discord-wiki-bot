@@ -11,6 +11,7 @@
 			"pl": "Polski (pl)",
 			"pt-br": "Português do Brasil (pt-br)",
 			"ru": "Русский (ru)",
+			"sv": "Svenska (sv)",
 			"tr": "Türkçe (tr)",
 			"zh-hans": "简体中文 (zh-hans)",
 			"zh-hant": "繁體中文 (zh-hant)"
@@ -63,6 +64,10 @@
 			"russian": "ru",
 			"русский": "ru",
 			"русский (ru)": "ru",
+			"sv": "sv",
+			"swedish": "sv",
+			"svenska": "sv",
+			"svenska (sv)": "sv",
 			"tr": "tr",
 			"turkish": "tr",
 			"turkçe": "tr",

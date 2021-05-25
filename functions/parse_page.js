@@ -375,6 +375,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 					if ( disambiguation !== undefined && !fragment && embed.length < 4250 ) {
 						if ( description.length > 1500 ) description = limitLength(description, 1500, 250);
 					}
+					else if ( fragment && description.length > 500 ) description = limitLength(description, 500, 250);
 					else if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
 					embed.setDescription( description );
 				}
