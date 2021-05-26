@@ -7,7 +7,7 @@ const Wiki = require('../util/wiki.js');
 var db = require('../util/database.js');
 
 const fs = require('fs');
-const rcscriptExists = fs.existsSync('./RcGcDb/start.py');
+const rcscriptExists = ( isDebug || fs.existsSync('./RcGcDb/start.py') );
 
 const display_types = [
 	'compact',
@@ -38,6 +38,26 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			limit = rcgcdwLimit.patreon;
 			display = display_types.slice();
 		}
+		var button = {
+			type: 2,
+			style: 5,
+			label: lang.get('settings.button'),
+			emoji: {
+				id: '588723748757307403',
+				name: 'wikibot',
+				animated: false
+			},
+			url: new URL(`/guild/${msg.guild.id}/rcscript`, process.env.dashboard).href,
+			disabled: false
+		};
+		var components = [
+			{
+				type: 1,
+				components: [
+					button
+				]
+			}
+		];
 
 		if ( args[0] === 'add' ) {
 			if ( !msg.channel.permissionsFor(msg.client.user).has('MANAGE_WEBHOOKS') ) {
@@ -50,12 +70,13 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), {}, true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 
+			button.url = new URL(`/guild/${msg.guild.id}/rcscript/new`, process.env.dashboard).href;
 			var wikihelp = '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 			var input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
 			var wikinew = new Wiki(wiki);
 			if ( input ) {
 				wikinew = Wiki.fromInput(input);
-				if ( !wikinew ) return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+				if ( !wikinew ) return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {components}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
 				responseType: 'text'
@@ -79,25 +100,25 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 					if ( reaction ) reaction.removeEmoji();
 					if ( body?.error?.info === 'You need read permission to use this module.' ) {
-						return msg.replyMsg( lang.get('settings.wikiinvalid_private') + wikihelp, {}, true );
+						return msg.replyMsg( lang.get('settings.wikiinvalid_private') + wikihelp, {components}, true );
 					}
 					msg.reactEmoji('nowiki', true);
-					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {components}, true );
 				}
 				wikinew.updateWiki(body.query.general);
 				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 					if ( reaction ) reaction.removeEmoji();
-					return msg.replyMsg( lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', {}, true );
+					return msg.replyMsg( lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', {components}, true );
 				}
 				if ( body.query.allmessages[0]['*'] !== msg.guild.id ) {
 					if ( reaction ) reaction.removeEmoji();
-					return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {}, true );
+					return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {components}, true );
 				}
 				return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wikinew.href] ).then( ({rows:[block]}) => {
 					if ( block ) {
 						console.log( '- This wiki is blocked: ' + block.reason );
 						if ( reaction ) reaction.removeEmoji();
-						return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {}, true );
+						return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {components}, true );
 					}
 					if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
@@ -136,16 +157,16 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES($1, $2, $3, $4, $5, $6, $7)', [msg.guild.id, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( '- RcGcDw successfully added.' );
 								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', {}, true );
+								msg.replyMsg( lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', {components}, true );
 							}, dberror => {
 								console.log( '- Error while adding the RcGcDw: ' + dberror );
 								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+								msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 							} );
 						}, error => {
 							console.log( '- Error while creating the webhook: ' + error );
 							if ( reaction ) reaction.removeEmoji();
-							msg.replyMsg( lang.get('rcscript.webhook_failed'), {}, true );
+							msg.replyMsg( lang.get('rcscript.webhook_failed'), {components}, true );
 						} );
 					}
 				}, dberror => {
@@ -157,14 +178,14 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( reaction ) reaction.removeEmoji();
 				if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 					console.log( '- Error while testing the wiki: No HTTPS' );
-					return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
+					return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {components}, true );
 				}
 				console.log( '- Error while testing the wiki: ' + error );
 				if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
-					return msg.replyMsg( lang.get('settings.wikiinvalid_timeout') + wikihelp, {}, true );
+					return msg.replyMsg( lang.get('settings.wikiinvalid_timeout') + wikihelp, {components}, true );
 				}
 				msg.reactEmoji('nowiki', true);
-				return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+				return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {components}, true );
 			} ) );
 		}
 
@@ -195,34 +216,38 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						webhook.send( webhook_lang.get('deleted') ).catch(log_error).finally( () => {
 							webhook.delete(lang.get('rcscript.audit_reason_delete')).catch(log_error);
 						} );
-						msg.replyMsg( lang.get('rcscript.deleted'), {}, true );
+						msg.replyMsg( lang.get('rcscript.deleted'), {components}, true );
 					}, dberror => {
 						console.log( '- Error while removing the RcGcDw: ' + dberror );
-						msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+						button.url = new URL(`/guild/${msg.guild.id}/rcscript/${selected_row.configid}`, process.env.dashboard).href;
+						msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 					} );
 				}, error => {
 					log_error(error);
 					if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
-						return msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+						button.url = new URL(`/guild/${msg.guild.id}/rcscript/${selected_row.configid}`, process.env.dashboard).href;
+						return msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 					}
 					db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [selected_row.webhook] ).then( () => {
 						console.log( '- RcGcDw successfully removed.' );
-						msg.replyMsg( lang.get('rcscript.deleted'), {}, true );
+						msg.replyMsg( lang.get('rcscript.deleted'), {components}, true );
 					}, dberror => {
 						console.log( '- Error while removing the RcGcDw: ' + dberror );
-						msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+						button.url = new URL(`/guild/${msg.guild.id}/rcscript/${selected_row.configid}`, process.env.dashboard).href;
+						msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 					} );
 				} );
 			}
+			button.url = new URL(`/guild/${msg.guild.id}/rcscript/${selected_row.configid}`, process.env.dashboard).href;
 			if ( args[0] === 'wiki' ) {
 				if ( !args[1] ) {
-					return msg.replyMsg( lang.get('rcscript.current_wiki') + ' <' + selected_row.wiki + '>\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki'), {}, true );
+					return msg.replyMsg( lang.get('rcscript.current_wiki') + ' <' + selected_row.wiki + '>\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki'), {components}, true );
 				}
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 
 				var wikihelp = '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = Wiki.fromInput(args[1]);
-				if ( !wikinew ) return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+				if ( !wikinew ) return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {components}, true );
 				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
 					responseType: 'text'
 				} ).then( response => {
@@ -245,26 +270,26 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
 						if ( body?.error?.info === 'You need read permission to use this module.' ) {
-							return msg.replyMsg( lang.get('settings.wikiinvalid_private') + wikihelp, {}, true );
+							return msg.replyMsg( lang.get('settings.wikiinvalid_private') + wikihelp, {components}, true );
 						}
 						msg.reactEmoji('nowiki', true);
-						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+						return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {components}, true );
 					}
 					wikinew.updateWiki(body.query.general);
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						if ( reaction ) reaction.removeEmoji();
-						return msg.replyMsg( lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', {}, true );
+						return msg.replyMsg( lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', {components}, true );
 					}
 					if ( body.query.allmessages[0]['*'] !== msg.guild.id ) {
 						if ( reaction ) reaction.removeEmoji();
-						return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {}, true );
+						return msg.replyMsg( lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guild.id) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', {components}, true );
 					}
 					return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wikinew.href] ).then( ({rows:[block]}) => {
 						if ( block ) {
 							console.log( '- This wiki is blocked: ' + block.reason );
 							if ( reaction ) reaction.removeEmoji();
-							return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {}, true );
+							return msg.replyMsg( ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), {components}, true );
 						}
 						if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
@@ -294,11 +319,11 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							db.query( 'UPDATE rcgcdw SET wiki = $1, rcid = $2, postid = $3 WHERE webhook = $4', [wikinew.href, null, ( enableFeeds ? null : '-1' ), selected_row.webhook] ).then( () => {
 								console.log( '- RcGcDw successfully updated.' );
 								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('rcscript.updated_wiki') + ' <' + wikinew + '>\n`' + cmd + '`', {}, true );
+								msg.replyMsg( lang.get('rcscript.updated_wiki') + ' <' + wikinew + '>\n`' + cmd + '`', {components}, true );
 							}, dberror => {
 								console.log( '- Error while updating the RcGcDw: ' + dberror );
 								if ( reaction ) reaction.removeEmoji();
-								msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+								msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 							} );
 						}
 					}, dberror => {
@@ -310,23 +335,23 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( reaction ) reaction.removeEmoji();
 					if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 						console.log( '- Error while testing the wiki: No HTTPS' );
-						return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {}, true );
+						return msg.replyMsg( lang.get('settings.wikiinvalid_http') + wikihelp, {components}, true );
 					}
 					console.log( '- Error while testing the wiki: ' + error );
 					if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
-						return msg.replyMsg( lang.get('settings.wikiinvalid_timeout') + wikihelp, {}, true );
+						return msg.replyMsg( lang.get('settings.wikiinvalid_timeout') + wikihelp, {components}, true );
 					}
 					msg.reactEmoji('nowiki', true);
-					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {}, true );
+					return msg.replyMsg( lang.get('settings.wikiinvalid') + wikihelp, {components}, true );
 				} ) );
 			}
 			if ( args[0] === 'lang' || args[0] === 'language' ) {
 				if ( !args[1] ) {
-					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${selected_row.lang}.png`] : [] )}, true );
+					return msg.replyMsg( lang.get('rcscript.current_lang') + ' `' + allLangs.names[selected_row.lang] + '`\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${selected_row.lang}.png`] : [] ),components}, true );
 				}
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				if ( !allLangs.map.hasOwnProperty(args[1]) ) {
-					return msg.replyMsg( lang.get('settings.langinvalid') + '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {}, true );
+					return msg.replyMsg( lang.get('settings.langinvalid') + '\n`' + cmd + ' lang ' + lang.get('rcscript.new_lang') + '`\n' + lang.get('rcscript.help_lang') + ' `' + Object.values(allLangs.names).join('`, `') + '`', {components}, true );
 				}
 
 				msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
@@ -334,15 +359,15 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}, log_error );
 				return db.query( 'UPDATE rcgcdw SET lang = $1 WHERE webhook = $2', [allLangs.map[args[1]], selected_row.webhook] ).then( () => {
 					console.log( '- RcGcDw successfully updated.' );
-					msg.replyMsg( lang.get('rcscript.updated_lang') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n`' + cmd + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`] : [] )}, true );
+					msg.replyMsg( lang.get('rcscript.updated_lang') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n`' + cmd + '`', {files:( msg.uploadFiles() ? [`./RcGcDb/locale/widgets/${allLangs.map[args[1]]}.png`] : [] ),components}, true );
 				}, dberror => {
 					console.log( '- Error while updating the RcGcDw: ' + dberror );
-					msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+					msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 				} );
 			}
 			if ( args[0] === 'display' ) {
 				if ( !args[1] || !display_types.includes( args[1] ) ) {
-					return msg.replyMsg( lang.get('rcscript.current_display') + ' `' + display_types[selected_row.display] + '`\n`' + cmd + ' display (' + display.join('|') + ')`\n' + display.map( display_type => '`' + display_type + '`: ' + lang.get('rcscript.help_display_' + display_type) ).join('\n'), {}, true );
+					return msg.replyMsg( lang.get('rcscript.current_display') + ' `' + display_types[selected_row.display] + '`\n`' + cmd + ' display (' + display.join('|') + ')`\n' + display.map( display_type => '`' + display_type + '`: ' + lang.get('rcscript.help_display_' + display_type) ).join('\n'), {components}, true );
 				}
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
 				if ( !display.includes( args[1] ) ) {
@@ -354,10 +379,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}, log_error );
 				return db.query( 'UPDATE rcgcdw SET display = $1 WHERE webhook = $2', [display_types.indexOf(args[1]), selected_row.webhook] ).then( () => {
 					console.log( '- RcGcDw successfully updated.' );
-					msg.replyMsg( lang.get('rcscript.updated_display') + ' `' + args[1] + '`\n`' + cmd + '`', {}, true );
+					msg.replyMsg( lang.get('rcscript.updated_display') + ' `' + args[1] + '`\n`' + cmd + '`', {components}, true );
 				}, dberror => {
 					console.log( '- Error while updating the RcGcDw: ' + dberror );
-					msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+					msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 				} );
 			}
 			if ( new Wiki(selected_row.wiki).isFandom(false) && args[0] === 'feeds' ) {
@@ -369,41 +394,41 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						}, log_error );
 						return db.query( 'UPDATE rcgcdw SET rcid = $1 WHERE webhook = $2', [null, selected_row.webhook] ).then( () => {
 							console.log( '- RcGcDw successfully updated.' );
-							msg.replyMsg( lang.get('rcscript.enabled_rc') + '\n`' + cmd + '`', {}, true );
+							msg.replyMsg( lang.get('rcscript.enabled_rc') + '\n`' + cmd + '`', {components}, true );
 						}, dberror => {
 							console.log( '- Error while updating the RcGcDw: ' + dberror );
-							msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+							msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 						} );
 					}
 
 					if ( selected_row.postid === '-1' ) {
-						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
+						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {components}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 						webhook.send( webhook_lang.get('disabled_rc') ).catch(log_error);
 					}, log_error );
 					return db.query( 'UPDATE rcgcdw SET rcid = $1 WHERE webhook = $2', [-1, selected_row.webhook] ).then( () => {
 						console.log( '- RcGcDw successfully updated.' );
-						msg.replyMsg( lang.get('rcscript.disabled_rc') + '\n`' + cmd + '`', {}, true );
+						msg.replyMsg( lang.get('rcscript.disabled_rc') + '\n`' + cmd + '`', {components}, true );
 					}, dberror => {
 						console.log( '- Error while updating the RcGcDw: ' + dberror );
-						msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+						msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 					} );
 				}
 
 				if ( selected_row.postid !== '-1' ) {
 					if ( selected_row.rcid === -1 ) {
-						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {}, true );
+						return msg.replyMsg( lang.get('rcscript.all_inactive') + '\n\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`', {components}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 						webhook.send( webhook_lang.get('disabled_feeds') ).catch(log_error);
 					}, log_error );
 					return db.query( 'UPDATE rcgcdw SET postid = $1 WHERE webhook = $2', ['-1', selected_row.webhook] ).then( () => {
 						console.log( '- RcGcDw successfully updated.' );
-						msg.replyMsg( lang.get('rcscript.disabled_feeds') + '\n`' + cmd + '`', {}, true );
+						msg.replyMsg( lang.get('rcscript.disabled_feeds') + '\n`' + cmd + '`', {components}, true );
 					}, dberror => {
 						console.log( '- Error while updating the RcGcDw: ' + dberror );
-						msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+						msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 					} );
 				}
 
@@ -416,7 +441,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( dsresponse.statusCode !== 200 || !dsbody || dsbody.status === 404 ) {
 						if ( dsbody?.status !== 404 ) console.log( '- ' + dsresponse.statusCode + ': Error while checking for discussions: ' + dsbody?.title );
 						if ( reaction ) reaction.removeEmoji();
-						return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
+						return msg.replyMsg( lang.get('rcscript.no_feeds'), {components}, true );
 					}
 					msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 						webhook.send( webhook_lang.get('enabled_feeds') + '\n<' + selected_row.wiki + 'f>' ).catch(log_error);
@@ -424,16 +449,16 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					db.query( 'UPDATE rcgcdw SET postid = $1 WHERE webhook = $2', [null, selected_row.webhook] ).then( () => {
 						console.log( '- RcGcDw successfully updated.' );
 						if ( reaction ) reaction.removeEmoji();
-						msg.replyMsg( lang.get('rcscript.enabled_feeds') + '\n`' + cmd + '`', {}, true );
+						msg.replyMsg( lang.get('rcscript.enabled_feeds') + '\n`' + cmd + '`', {components}, true );
 					}, dberror => {
 						console.log( '- Error while updating the RcGcDw: ' + dberror );
 						if ( reaction ) reaction.removeEmoji();
-						msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+						msg.replyMsg( lang.get('settings.save_failed'), {components}, true );
 					} );
 				}, error => {
 					console.log( '- Error while checking for discussions: ' + error );
 					if ( reaction ) reaction.removeEmoji();
-					return msg.replyMsg( lang.get('rcscript.no_feeds'), {}, true );
+					return msg.replyMsg( lang.get('rcscript.no_feeds'), {components}, true );
 				} ) );
 			}
 
@@ -452,7 +477,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return;
 			} ).then( channel => {
 				var text = lang.get('rcscript.current_selected', selected_row.configid);
-				text += `\n<${new URL(`/guild/${msg.guild.id}/rcscript/${selected_row.configid}`, process.env.dashboard).href}>\n`;
+				text += `\n<${button.url}>\n`;
 				text += '\n' + lang.get('rcscript.channel') + ' <#' + channel + '>\n';
 				text += '\n' + lang.get('rcscript.wiki') + ' <' + selected_row.wiki + '>';
 				text += '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n';
@@ -469,8 +494,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}
 				text += '\n' + lang.get('rcscript.delete') + '\n`' + cmd + ' delete`\n';
-				msg.replyMsg( text, {}, true );
-			}, () => msg.replyMsg( lang.get('rcscript.deleted'), {}, true ) );
+				msg.replyMsg( text, {components}, true );
+			}, () => msg.replyMsg( lang.get('rcscript.deleted'), {components}, true ) );
 		}
 
 		Promise.all(rows.map( row => msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
@@ -495,7 +520,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			var text = '';
 			if ( rows.length ) {
 				text += lang.get('rcscript.current');
-				text += `\n<${new URL(`/guild/${msg.guild.id}/rcscript`, process.env.dashboard).href}>`;
+				text += `\n<${button.url}>`;
 				text += rows.map( row => {
 					var cmd = prefix + 'rcscript' + ( only ? '' : ' ' + row.configid );
 					var row_text = '\n';
@@ -522,10 +547,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			}
 			else {
 				text += lang.get('rcscript.missing');
-				text += `\n<${new URL(`/guild/${msg.guild.id}/rcscript`, process.env.dashboard).href}>`;
+				text += `\n<${button.url}>`;
 			}
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
-			msg.replyMsg( text, {split:true}, true );
+			msg.replyMsg( text, {split:true,components}, true );
 		} );
 	}, dberror => {
 		console.log( '- Error while getting the RcGcDw: ' + dberror );

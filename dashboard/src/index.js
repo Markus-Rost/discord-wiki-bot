@@ -24,6 +24,7 @@ function lang(message = '') {
 var baseSelect = document.getElementsByTagName('select');
 for ( var b = 0; b < baseSelect.length; b++ ) {
 	if ( baseSelect[b].id === 'wb-settings-lang' ) {
+		/** @type {HTMLImageElement} */
 		const langWidget = document.getElementById('wb-settings-lang-widget');
 		if ( langWidget ) {
 			var widgetPath = 'widgets';
@@ -44,9 +45,11 @@ for ( var b = 0; b < baseSelect.length; b++ ) {
 	}
 }
 
+/** @type {HTMLCollectionOf<HTMLButtonElement>} */
 var addmore = document.getElementsByClassName('addmore');
 for ( var j = 0; j < addmore.length; j++ ) {
 	addmore[j].onclick = function() {
+		/** @type {HTMLSelectElement} */
 		var clone = this.previousElementSibling.cloneNode(true);
 		clone.classList.add('wb-settings-additional-select');
 		clone.removeAttribute('id');
@@ -62,11 +65,11 @@ for ( var j = 0; j < addmore.length; j++ ) {
 	};
 }
 
-/**
- * @this HTMLSelectElement
- */
+/** @this HTMLSelectElement */
 function toggleOption() {
+	/** @type {HTMLOptionElement[]} */
 	var options = [];
+	/** @type {HTMLOptionElement[]} */
 	var selected = [];
 	var allSelect = this.parentNode.querySelectorAll('select');
 	allSelect.forEach( function(select) {
@@ -81,20 +84,21 @@ function toggleOption() {
 		button.hidden = true;
 	}
 	else button.hidden = false;
-	selected = selected.filter( function(option) {
+	var selectedValues = selected.filter( function(option) {
 		if ( option && option.value ) return true;
 		else return false;
 	} ).map( function(option) {
 		return option.value;
 	} );
 	options.forEach( function(option) {
-		if ( selected.includes( option.value ) && !option.selected ) {
+		if ( selectedValues.includes( option.value ) && !option.selected ) {
 			option.disabled = true;
 		}
 		else if ( option.disabled ) option.disabled = false;
 	} );
 }
 
+/** @type {HTMLInputElement} */
 const wiki = document.getElementById('wb-settings-wiki');
 if ( wiki ) {
 	wiki.addEventListener( 'input', function() {
@@ -107,7 +111,9 @@ if ( wiki ) {
 		}
 		else this.setCustomValidity('');
 	} );
+	/** @type {HTMLButtonElement} */
 	const wikicheck = document.getElementById('wb-settings-wiki-check');
+	/** @type {HTMLDivElement} */
 	const wikichecknotice = document.getElementById('wb-settings-wiki-check-notice');
 	if ( wikicheck && wikichecknotice ) {
 		wikicheck.onclick = function() {
@@ -186,7 +192,7 @@ if ( wiki ) {
 						wikichecknotice.append(noticeTitle, noticeText, noticeLink, ...noticeExtraParts);
 						return;
 					}
-					if ( response.RcGcDw !== document.location.pathname.split('/')[2] ) {
+					if ( response.RcGcDw !== document.location.pathname.split('/')[2] && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
 						wikichecknotice.classList.add('notice-info');
 						var noticeTitle = document.createElement('b');
 						noticeTitle.textContent = lang('sysmessage.title');
@@ -248,10 +254,14 @@ if ( wiki ) {
 			} );
 		};
 	}
+	/** @type {HTMLInputElement} */
 	const feeds = document.getElementById('wb-settings-feeds');
 	if ( feeds ) {
+		/** @type {HTMLDivElement} */
 		const hidefeeds = document.getElementById('wb-settings-feeds-hide');
+		/** @type {HTMLInputElement} */
 		const feedsonly = document.getElementById('wb-settings-feeds-only');
+		/** @type {HTMLDivElement} */
 		const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
 		feeds.addEventListener( 'change', function() {
 			if ( this.checked ) {
@@ -278,9 +288,12 @@ if ( wiki ) {
 	}
 }
 
+/** @type {HTMLInputElement} */
 const usergroup = document.getElementById('wb-settings-usergroup');
 if ( usergroup ) {
+	/** @type {HTMLDivElement} */
 	const multigroup = document.getElementById('wb-settings-usergroup-multiple');
+	/** @type {HTMLDataListElement} */
 	const usergrouplist = document.getElementById('wb-settings-usergroup-list');
 	usergroup.addEventListener( 'input', function() {
 		if ( /\s*[,|]\s*$/.test(usergroup.value) ) {
@@ -299,6 +312,7 @@ if ( usergroup ) {
 			usergroup.style.minWidth = newWidth + 'px';
 		}
 		if ( usergroup.value.includes( ',' ) || usergroup.value.includes( '|' ) ) {
+			multigroup.style.display = '';
 			multigroup.style.visibility = '';
 			multigroup.disabled = false;
 		}
@@ -309,8 +323,10 @@ if ( usergroup ) {
 	} );
 }
 
+/** @type {NodeListOf<HTMLInputElement>} */
 const postcount = document.querySelectorAll('.wb-settings-postcount input');
 if ( postcount.length ) {
+	/** @type {HTMLDivElement} */
 	const postcountinput = document.getElementById('wb-settings-postcount-input');
 	postcount.forEach( function(radio) {
 		radio.addEventListener( 'change', function() {
@@ -324,6 +340,7 @@ if ( postcount.length ) {
 	} );
 }
 
+/** @type {HTMLInputElement} */
 const prefix = document.getElementById('wb-settings-prefix');
 if ( prefix ) prefix.addEventListener( 'input', function() {
 	if ( prefix.validity.patternMismatch ) {
@@ -343,10 +360,11 @@ if ( prefix ) prefix.addEventListener( 'input', function() {
 
 /** @type {HTMLSelectElement} */
 const addRole = document.getElementById('wb-settings-addrole');
+/** @type {HTMLButtonElement} */
 const addRoleButton = document.getElementById('wb-settings-addrole-add');
 if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
 	if ( addRole.value ) {
-		var selectedRole = addRole.children.item(addRole.selectedIndex);
+		var selectedRole = addRole.selectedOptions.item(0);
 		var newPermission = document.createElement('div');
 		var selectedRoleInfo = selectedRole.textContent.split(' – ');
 		var newPermissionSpan = document.createElement('span');
@@ -445,9 +463,7 @@ if ( textAreas.length ) {
 		}
 	}
 
-	/**
-	 * @this HTMLTextAreaElement
-	 */
+	/** @this HTMLTextAreaElement */
 	function updateTextLength() {
 		this.labels.item(0).children.item(0).textContent = this.value.length + ' / ' + this.maxLength;
 	}

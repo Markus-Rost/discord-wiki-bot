@@ -114,6 +114,13 @@ String.prototype.replaceSave = function(pattern, replacement) {
 	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( /\$/g, '$$$$' ) : replacement ) );
 };
 
+Discord.APIMessage.prototype._resolveDataOld = Discord.APIMessage.prototype.resolveData;
+Discord.APIMessage.prototype.resolveData = function() {
+	this._resolveDataOld();
+	if ( this.options.components ) this.data.components = this.options.components;
+	return this;
+};
+
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
 	if ( !this.channel.isGuild() || !pause[this.guild.id] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		var emoji = ':error:440871715938238494';

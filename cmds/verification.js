@@ -25,13 +25,34 @@ function cmd_verification(lang, msg, args, line, wiki) {
 	
 	db.query( 'SELECT configid, channel, role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 ORDER BY configid ASC', [msg.guild.id] ).then( ({rows}) => {
 		var prefix = ( patreons[msg.guild.id] || process.env.prefix );
+		var button = {
+			type: 2,
+			style: 5,
+			label: lang.get('settings.button'),
+			emoji: {
+				id: '588723748757307403',
+				name: 'wikibot',
+				animated: false
+			},
+			url: new URL(`/guild/${msg.guild.id}/verification`, process.env.dashboard).href,
+			disabled: false
+		};
+		var components = [
+			{
+				type: 1,
+				components: [
+					button
+				]
+			}
+		];
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
 			var limit = verificationLimit[( patreons[msg.guild.id] ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), {}, true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
+			button.url = new URL(`/guild/${msg.guild.id}/verification/new`, process.env.dashboard).href;
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
-			if ( !roles.length ) return msg.replyMsg( lang.get('verification.no_role') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`', {}, true );
-			if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {}, true );
+			if ( !roles.length ) return msg.replyMsg( lang.get('verification.no_role') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`', {components}, true );
+			if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {components}, true );
 			roles = roles.map( role => {
 				var new_role = '';
 				if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
@@ -39,8 +60,8 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
 				return new_role;
 			} );
-			if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {}, true );
-			if ( roles.some( role => role.managed ) ) return msg.replyMsg( lang.get('verification.role_managed'), {}, true );
+			if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {components}, true );
+			if ( roles.some( role => role.managed ) ) return msg.replyMsg( lang.get('verification.role_managed'), {components}, true );
 			roles = roles.map( role => role.id ).join('|');
 			var new_configid = 1;
 			for ( let i of rows.map( row => row.configid ) ) {
@@ -64,10 +85,10 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}, error => {
 					console.log( '- Error while enabling the slash command: ' + error );
 				} );
-				msg.replyMsg( lang.get('verification.added') + formatVerification(false, false, {configid: new_configid, role: roles}), {}, true );
+				msg.replyMsg( lang.get('verification.added') + formatVerification(false, false, {configid: new_configid, role: roles}), {components}, true );
 			}, dberror => {
 				console.log( '- Error while adding the verification: ' + dberror );
-				msg.replyMsg( lang.get('verification.save_failed'), {}, true );
+				msg.replyMsg( lang.get('verification.save_failed'), {components}, true );
 			} );
 		}
 		if ( !rows.some( row => row.configid.toString() === args[0] ) ) {
@@ -78,15 +99,15 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			var text = '';
 			if ( rows.length ) {
 				text += lang.get('verification.current');
-				text += `\n<${new URL(`/guild/${msg.guild.id}/verification`, process.env.dashboard).href}>`;
+				text += `\n<${button.url}>`;
 				text += rows.map( row => formatVerification(false, true, row) ).join('');
 			}
 			else {
 				text += lang.get('verification.missing');
-				text += `\n<${new URL(`/guild/${msg.guild.id}/verification`, process.env.dashboard).href}>`;
+				text += `\n<${button.url}>`;
 			}
 			text += '\n\n' + lang.get('verification.add_more') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`';
-			return msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true}, true );
+			return msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true,components}, true );
 		}
 		var row = rows.find( row => row.configid.toString() === args[0] );
 		if ( args[1] ) args[1] = args[1].toLowerCase();
@@ -103,12 +124,14 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}, error => {
 					console.log( '- Error while disabling the slash command: ' + error );
 				} );
-				msg.replyMsg( lang.get('verification.deleted'), {}, true );
+				msg.replyMsg( lang.get('verification.deleted'), {components}, true );
 			}, dberror => {
 				console.log( '- Error while removing the verification: ' + dberror );
-				msg.replyMsg( lang.get('verification.save_failed'), {}, true );
+				button.url = new URL(`/guild/${msg.guild.id}/verification/${row.configid}`, process.env.dashboard).href;
+				msg.replyMsg( lang.get('verification.save_failed'), {components}, true );
 			} );
 		}
+		button.url = new URL(`/guild/${msg.guild.id}/verification/${row.configid}`, process.env.dashboard).href;
 		if ( args[1] === 'rename' && !args.slice(2).join('') ) {
 			if ( !row.rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
 				console.log( msg.guild.id + ': Missing permissions - MANAGE_NICKNAMES' );
@@ -118,10 +141,10 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			return db.query( 'UPDATE verification SET rename = $1 WHERE guild = $2 AND configid = $3', [( row.rename ? 0 : 1 ), msg.guild.id, row.configid] ).then( () => {
 				console.log( '- Verification successfully updated.' );
 				row.rename = ( row.rename ? 0 : 1 );
-				msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+				msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true,components}, true );
 			}, dberror => {
 				console.log( '- Error while updating the verification: ' + dberror );
-				msg.replyMsg( lang.get('verification.save_failed'), {}, true );
+				msg.replyMsg( lang.get('verification.save_failed'), {components}, true );
 			} );
 		}
 		if ( args[2] ) {
@@ -129,7 +152,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			args[2] = args.slice(2).join(' ').replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' );
 			if ( args[1] === 'channel' ) {
 				var channels = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).split('|').filter( channel => channel.length );
-				if ( channels.length > 10 ) return msg.replyMsg( lang.get('verification.channel_max'), {}, true );
+				if ( channels.length > 10 ) return msg.replyMsg( lang.get('verification.channel_max'), {components}, true );
 				channels = channels.map( channel => {
 					var new_channel = '';
 					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( tc => tc.isGuild() ).get(channel);
@@ -137,20 +160,20 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isGuild() ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
 					return new_channel;
 				} );
-				if ( channels.some( channel => !channel ) ) return msg.replyMsg( lang.get('verification.channel_missing'), {}, true );
+				if ( channels.some( channel => !channel ) ) return msg.replyMsg( lang.get('verification.channel_missing'), {components}, true );
 				channels = channels.map( channel => channel.id ).join('|');
 				if ( channels.length ) return db.query( 'UPDATE verification SET channel = $1 WHERE guild = $2 AND configid = $3', ['|' + channels + '|', msg.guild.id, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row.channel = '|' + channels + '|';
-					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true,components}, true );
 				}, dberror => {
 					console.log( '- Error while updating the verification: ' + dberror );
-					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
+					msg.replyMsg( lang.get('verification.save_failed'), {components}, true );
 				} );
 			}
 			if ( args[1] === 'role' ) {
 				var roles = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).split('|').filter( role => role.length );
-				if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {}, true );
+				if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {components}, true );
 				roles = roles.map( role => {
 					var new_role = null;
 					if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
@@ -158,31 +181,31 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
 					return new_role;
 				} );
-				if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {}, true );
-				if ( roles.some( role => role.managed || role.id === msg.guild.id ) ) return msg.replyMsg( lang.get('verification.role_managed'), {}, true );
+				if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {components}, true );
+				if ( roles.some( role => role.managed || role.id === msg.guild.id ) ) return msg.replyMsg( lang.get('verification.role_managed'), {components}, true );
 				roles = roles.map( role => role.id ).join('|');
 				if ( roles.length ) return db.query( 'UPDATE verification SET role = $1 WHERE guild = $2 AND configid = $3', [roles, msg.guild.id, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row.role = roles;
-					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true,components}, true );
 				}, dberror => {
 					console.log( '- Error while updating the verification: ' + dberror );
-					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
+					msg.replyMsg( lang.get('verification.save_failed'), {components}, true );
 				} );
 			}
 			if ( ( ( args[1] === 'editcount' || args[1] === 'accountage' ) && /^\d+$/.test(args[2]) ) || ( args[1] === 'postcount' && /^(?:-?\d+|null)$/.test(args[2]) ) ) {
 				args[2] = parseInt(args[2], 10);
 				if ( isNaN(args[2]) ) args[2] = null;
 				if ( args[2] > 1000000 || args[2] < -1000000 ) {
-					return msg.replyMsg( lang.get('verification.value_too_high'), {}, true );
+					return msg.replyMsg( lang.get('verification.value_too_high'), {components}, true );
 				}
 				return db.query( 'UPDATE verification SET ' + args[1] + ' = $1 WHERE guild = $2 AND configid = $3', [args[2], msg.guild.id, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row[args[1]] = args[2];
-					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+					msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true,components}, true );
 				}, dberror => {
 					console.log( '- Error while updating the verification: ' + dberror );
-					msg.replyMsg( lang.get('verification.save_failed'), {}, true );
+					msg.replyMsg( lang.get('verification.save_failed'), {components}, true );
 				} );
 			}
 			if ( args[1] === 'usergroup' ) {
@@ -192,8 +215,8 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					usergroups = usergroups.slice(1);
 					and_or = 'AND|';
 				}
-				if ( usergroups.length > 10 ) return msg.replyMsg( lang.get('verification.usergroup_max'), {}, true );
-				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( lang.get('verification.usergroup_too_long'), {}, true );
+				if ( usergroups.length > 10 ) return msg.replyMsg( lang.get('verification.usergroup_max'), {components}, true );
+				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( lang.get('verification.usergroup_too_long'), {components}, true );
 				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( response => {
 					var body = response.body;
 					if ( body && body.warnings ) log_warn(body.warnings);
@@ -229,19 +252,19 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					db.query( 'UPDATE verification SET usergroup = $1 WHERE guild = $2 AND configid = $3', [and_or + usergroups, msg.guild.id, row.configid] ).then( () => {
 						console.log( '- Verification successfully updated.' );
 						row.usergroup = and_or + usergroups;
-						msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true}, true );
+						msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.updated') + formatVerification(), {split:true,components}, true );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}, dberror => {
 						console.log( '- Error while updating the verification: ' + dberror );
-						msg.replyMsg( lang.get('verification.save_failed'), {}, true );
+						msg.replyMsg( lang.get('verification.save_failed'), {components}, true );
 						
 						if ( reaction ) reaction.removeEmoji();
 					} );
 				} ) );
 			}
 		}
-		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected', row.configid) + `\n<${new URL(`/guild/${msg.guild.id}/verification/${row.configid}`, process.env.dashboard).href}>` + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true}, true );
+		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected', row.configid) + `\n<${button.url}>` + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true,components}, true );
 		
 		function formatVerification(showCommands, hideNotice, {
 			configid,

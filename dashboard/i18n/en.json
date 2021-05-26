@@ -31,7 +31,7 @@
     },
     "indexjs": {
         "invalid": {
-            "note_http": "The provided website doesn't use HTTPS!",
+            "note_http": "The provided website doesn't have a valid TLS/SSL certificate! For security reasons only wikis using HTTPS are supported.",
             "note_private": "The provided wiki is private!",
             "note_timeout": "The provided link took too long to respond!",
             "text": "The URL couldn't be resolved to a valid MediaWiki site!",
@@ -120,7 +120,7 @@
             "title": "Settings saved!"
         },
         "savefail": {
-            "note_http": "The provided website doesn't use HTTPS!",
+            "note_http": "The provided website doesn't have a valid TLS/SSL certificate! For security reasons only wikis using HTTPS are supported.",
             "note_private": "The provided wiki is private!",
             "note_timeout": "The provided link took too long to respond!",
             "text": "The settings could not be saved, please try again.",
