@@ -590,6 +590,7 @@
         "special": "Inhalt der Spezialseite:"
     },
     "settings": {
+        "button": "Nutze das Dashboard",
         "channel current": "dies sind die aktuellen Einstellungen für diesen Kanal:",
         "channel lang": "die Sprache für diesen Kanal ist:",
         "channel langchanged": "du hast die Sprache für diesen Kanal geändert zu:",
