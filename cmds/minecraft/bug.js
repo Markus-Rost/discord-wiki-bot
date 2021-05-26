@@ -1,5 +1,5 @@
 const {MessageEmbed} = require('discord.js');
-const {escapeFormatting} = require('../../util/functions.js');
+const {escapeFormatting, limitLength} = require('../../util/functions.js');
 
 /**
  * Sends a Minecraft issue.
@@ -47,9 +47,8 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler) {
 					var statusList = lang.get('minecraft.status');
 					var summary = escapeFormatting(body.fields.summary);
 					if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-					var description = ( body.fields.description || '' ).replace( /\{code\}/g, '```' );
-					if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
-					var embed = new MessageEmbed().setAuthor( 'Mojira' ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( parse_links( description ) );
+					var description = parse_links( ( body.fields.description || '' ).replace( /\{code\}/g, '```' ) );
+					var embed = new MessageEmbed().setAuthor( 'Mojira' ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( limitLength(description, 2000, 20) );
 					var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 					if ( links.length ) {
 						var linkList = lang.get('minecraft.issue_link');
