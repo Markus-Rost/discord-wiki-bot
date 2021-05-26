@@ -145,6 +145,9 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler) {
 function parse_links(text) {
 	text = text.replace( /\[~([^\]]+)\]/g, '[$1](https://bugs.mojang.com/secure/ViewProfile.jspa?name=$1)' );
 	text = text.replace( /\[([^\|]+)\|([^\]]+)\]/g, '[$1]($2)' );
+	text = text.replace( /{panel(?::title=([^|}]+))?[^}]*}/g, (panel, title) => {
+		return ( title ? '**' + title + '**' : '' );
+	} );
 	return text;
 }
 
