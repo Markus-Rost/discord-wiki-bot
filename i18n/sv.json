@@ -357,7 +357,8 @@
                     "desc": "Jag kommer ändra minsta antalet redigeringar för wiki-verifieringen."
                 },
                 "postcount": {
-                    "cmd": "verification <id> postcount <antal nya inlägg>"
+                    "cmd": "verification <id> postcount <antal nya inlägg>",
+                    "desc": "Jag kommer att ändra minsta antal diskussioner som behövs för wiki-verifieringen.\n\t• Ange ett negativt tal som krävs antingen för redigerings- eller inläggs-antalet.\n\t• Ange \"null\" för att söka efter det kombinerade redigerings- och inläggs-antalet."
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
@@ -428,6 +429,7 @@
         "private": "**Privat Problem**",
         "status": {
             "Awaiting Response": "Inväntar svar",
+            "Cannot Reproduce": "Kan ej återskapas",
             "Closed": "Stängd",
             "Done": "Gjort",
             "Duplicate": "Duplicera",
@@ -554,7 +556,8 @@
             "enabled_rc": "Wiki-ändringarna har aktiverats för den senaste webhooken.",
             "updated_display_compact": "Visningsläget har ändrats till kompakta textmeddelanden med \"inline\"-länkar för den här \"senaste ändringarna\"-webhook.",
             "updated_display_diff": "Visningsläget har ändrats för inbäddade meddelanden med förhandsgranskningar av bilder och redigeringsskillnader för den här \"senaste ändringarna\"-webhook.",
-            "updated_display_embed": "Visningsläget har ändrats för inbäddade meddelanden med redigeringstaggar och kategoriändringar för den här \"senaste ändringar\"-webhooken."
+            "updated_display_embed": "Visningsläget har ändrats för inbäddade meddelanden med redigeringstaggar och kategoriändringar för den här \"senaste ändringar\"-webhooken.",
+            "updated_lang": "Språket för \"senaste ändringar\"-webhooken har ändrats till `$1`."
         },
         "webhook_failed": "webhooken kunde tyvärr inte skapas, vänligen försök igen senare.",
         "wiki": "Wiki:"
@@ -568,6 +571,8 @@
             "subcats": "$1 {{PLURAL:$2|kategori|kategorier}}"
         },
         "empty": "*Detta special-sida är tom*",
+        "infopage": "Fel resultat? Använd $1 för en direktlänk.",
+        "infosearch": "Fel resultat? Använd $1 för en direktlänk eller $2 för en lista på alla resultat.",
         "loading": "Laddar sidans beskrivning…",
         "media": "Till filens beskrivningssida",
         "results": "Totalt $1 {{PLURAL:$2|resultat|resultat}}",
@@ -615,6 +620,7 @@
         "missing": "den här servern är inte konfigurerad än. Använd $1 och $2 för att ändra inställningar.",
         "prefix": "prefixen för denna server är:",
         "prefixchanged": "du ändrade prefixen för denna server till:",
+        "prefixhelp": "Använd `$1<prefix>` för att ändra prefixet.\nAnvänd `_` på slutet för att indikera ett mellanrum i slutet av prefixet.\nPrefix kan inte innehålla taggningar!",
         "prefixinvalid": "den angivna prefixen stöds inte!",
         "role": "den lägsta rollen som krävs för denna server är:",
         "rolechanged": "du har ändrat den lägsta rollen som krävs för denna server till:",
@@ -675,9 +681,14 @@
                 "hours": "$1 {{PLURAL:$2|timme|timmar}}",
                 "minutes": "$1 {{PLURAL:$2|minut|minuter}}",
                 "months": "$1 {{PLURAL:$2|månad|månader}}",
+                "separator": ",_",
+                "separator_last": "_och_",
                 "weeks": "$1 {{PLURAL:$2|vecka|veckor}}",
                 "years": "$1 {{PLURAL:$2|år|år}}"
-            }
+            },
+            "header": "$1 är blockad!",
+            "indef_noreason": "Blockerades permanent av $4 den $1.",
+            "indef_text": "Blockerades permanent av $4 den $1 och med anledningen \"$5\"."
         },
         "gblock": {
             "disabled": "Kontot är för närvarande inaktiverat!",
@@ -697,11 +708,13 @@
             "globalgroup": "{{PLURAL:$1|global grupp|globala grupper}}:",
             "group": "{{PLURAL:$1|Grupp|Grupper}}:",
             "loading": "Laddar global statistik…",
+            "postcount": "Diskussion inlägg:",
             "registration": "Registrerings datum:",
             "wikisedited": "Redigerade Wikis:"
         }
     },
     "verification": {
+        "accountage": "Kontots ålder:",
         "add_more": "Lägg till fler verifikationer:",
         "added": "verifikationen har lagts till:",
         "and": "och",
@@ -721,8 +734,10 @@
         "editcount": "Antal redigeringar:",
         "enabled": "aktiverad",
         "indays": "(i dagar)",
+        "logging": "Logg kanal:",
         "max_entries": "du har redan nått den högsta gränsen för antal verifikationer.",
         "missing": "det finns ännu inte några verifikationer för den här servern.",
+        "new_accountage": "",
         "new_channel": "<ny kanal>",
         "new_role": "<ny roll>",
         "new_usergroup": "<ny användargrupp>",
@@ -732,6 +747,7 @@
         "postcount": "Antal inlägg (endast Fandom Wikis):",
         "posteditcount": "Antal ändringar och inlägg tillsammans:",
         "rename": "Ändra smeknamn:",
+        "rename_no_permission": "**$1 saker behörigheten `Ändra Smeknamn`, detta för att kunna tvinga wiki användarnamn!**",
         "role": "Roll:",
         "role_deleted": "**Rollen $1 ser inte ut att existera längre!**",
         "role_managed": "den angivna rollen kan inte tilldelas.",
