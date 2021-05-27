@@ -786,6 +786,7 @@
     },
     "verify": {
         "audit_reason": "Verifziert als „$1“",
+        "button_again": "Erneut prüfen",
         "discord": "{{GENDER:$1|Discord-Benutzer|Discord-Benutzerin}}:",
         "empty": "*leer*",
         "error": "Die Verifizierung schlug fehl aufgrund eines Fehlers.",
