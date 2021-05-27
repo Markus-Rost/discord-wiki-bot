@@ -238,26 +238,25 @@ function slash_verify(interaction, lang, wiki, channel) {
 							}
 						]
 					});
-					return sendMessage(interaction, message, channel, false).then( msg => {
-						interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
-							data: {
-								content: message.content,
-								embeds: message.embeds,
-								allowed_mentions,
-								components: [],
-								flags: 64
-							}
-						} ).catch(log_error);
-						if ( !result.logging.channel || !channel.guild.channels.cache.has(result.logging.channel) ) return;
-						if ( msg ) {
-							if ( result.logging.embed ) result.logging.embed.addField(msg.url, '<#' + channel.id + '>');
-							else result.logging.content += '\n<#' + channel.id + '> – <' + msg.url + '>';
-						}
+					sendMessage(interaction, message, channel, false);
+					if ( result.logging.channel && channel.guild.channels.cache.has(result.logging.channel) ) {
+						let msg_url = `https://discord.com/channels/${channel.guild.id}/${channel.id}/${interaction.message.id}`;
+						if ( result.logging.embed ) result.logging.embed.addField(msg_url, '<#' + channel.id + '>');
+						else result.logging.content += '\n<#' + channel.id + '> – <' + msg_url + '>';
 						channel.guild.channels.cache.get(result.logging.channel).send(result.logging.content, {
 							embed: result.logging.embed,
 							allowedMentions: {parse: []}
 						}).catch(log_error);
-					} );
+					}
+					interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+						data: {
+							content: message.content,
+							embeds: message.embeds,
+							allowed_mentions,
+							components: [],
+							flags: 64
+						}
+					} ).catch(log_error);
 				}, error => {
 					console.log( '- Error during the verifications: ' + error );
 					return sendMessage(interaction, {
