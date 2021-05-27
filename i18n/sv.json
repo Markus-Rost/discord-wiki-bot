@@ -328,7 +328,7 @@
                 "desc": "Om jag är aktiv så kommer jag att svara! Annars gör jag det inte."
             },
             "user": {
-                "cmd": "User:<användarnamn>",
+                "cmd": "Användare:<användarnamn>",
                 "desc": "Jag kommer visa lite information om användaren."
             },
             "verification": {
