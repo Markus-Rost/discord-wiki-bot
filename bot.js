@@ -212,6 +212,9 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 const fs = require('fs');
 var slash = {};
 var buttons = {};
+var buttonsMap = {
+	verify_again: 'verify'
+};
 fs.readdir( './interactions', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
@@ -220,6 +223,11 @@ fs.readdir( './interactions', (error, files) => {
 		if ( command.hasOwnProperty('button') ) buttons[command.name] = command.button;
 	} );
 } );
+/*
+!test eval msg.client.api.applications(msg.client.user.id).commands.post( {
+	data: require('../interactions/commands.json')[0]
+} )
+*/
 
 client.ws.on( 'INTERACTION_CREATE', interaction => {
 	if ( interaction.version !== 1 ) return;
@@ -228,16 +236,18 @@ client.ws.on( 'INTERACTION_CREATE', interaction => {
 		interaction.user = interaction.member.user;
 		interaction.member.permissions = new Discord.Permissions(+interaction.member.permissions);
 	}
-	if ( interaction.type === 2 ) return slash_command(interaction);
-	if ( interaction.type === 3 ) return message_button(interaction);
+	var channel = client.channels.cache.get(interaction.channel_id);
+	if ( interaction.type === 2 ) return slash_command(interaction, channel);
+	if ( interaction.type === 3 ) return message_button(interaction, channel);
 } );
 
-/*
-!test eval msg.client.api.applications(msg.client.user.id).commands.post( {
-	data: require('../interactions/commands.json')[0]
-} )
-*/
-function slash_command(interaction) {
+/**
+ * Handle slash commands.
+ * @param {Object} interaction - The interaction.
+ * @param {Discord.Client} interaction.client - The client of the interaction.
+ * @param {Discord.TextChannel} [channel] - The channel for the interaction.
+ */
+function slash_command(interaction, channel) {
 	if ( !slash.hasOwnProperty(interaction.data.name) ) {
 		console.log( '- Slash: Unknown command: ' + ( isDebug ? JSON.stringify(interaction, null, '\t') : interaction.data.name ) );
 		return client.api.interactions(interaction.id, interaction.token).callback.post( {
@@ -253,7 +263,6 @@ function slash_command(interaction) {
 			}
 		} ).catch(log_error);
 	}
-	var channel = client.channels.cache.get(interaction.channel_id);
 	if ( !interaction.guild_id ) {
 		return slash[interaction.data.name](interaction, new Lang(), new Wiki(), channel);
 	}
@@ -276,35 +285,42 @@ function slash_command(interaction) {
 	} );
 }
 
-function message_button(interaction) {
-	if ( interaction.data.component_type === 2 && interaction.data.custom_id === 'verify_again' && interaction.guild_id ) {
-		if ( !interaction?.message?.embeds?.[0]?.title ) {
-			interaction.message.allowed_mentions = {
-				users: [interaction.user.id]
-			};
-			interaction.message.components = [];
-			return client.api.interactions(interaction.id, interaction.token).callback.post( {
+/**
+ * Handle message components.
+ * @param {Object} interaction - The interaction.
+ * @param {Discord.Client} interaction.client - The client of the interaction.
+ * @param {Discord.TextChannel} [channel] - The channel for the interaction.
+ */
+function message_button(interaction, channel) {
+	if ( interaction.data.component_type !== 2 ) return;
+	var cmd = ( buttonsMap.hasOwnProperty(interaction.data.custom_id) ? buttonsMap[interaction.data.custom_id] : interaction.data.custom_id );
+	if ( !buttons.hasOwnProperty(cmd) ) {
+		console.log( '- Button: Unknown command: ' + ( isDebug ? JSON.stringify(interaction, null, '\t') : interaction.data.custom_id ) );
+		return client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {type: 6}
+		} ).then( () => {
+			client.api.webhooks(interaction.application_id, interaction.token).post( {
 				data: {
-					type: 7,
-					data: interaction.message
+					content: '<:error:440871715938238494> [Unknown Button!](<' + process.env.invite + '>) <:error:440871715938238494>',
+					allowed_mentions: {
+						parse: []
+					},
+					flags: 64
 				}
 			} ).catch(log_error);
-		}
-		if ( !interaction.message.content.startsWith( '<@' + ( interaction.member?.nick ? '!' : '' ) + interaction.user.id + '>, ' ) ) {
-			return client.api.interactions(interaction.id, interaction.token).callback.post( {
-				data: {type: 6}
-			} ).catch(log_error);
-		}
-		var channel = client.channels.cache.get(interaction.channel_id);
-		db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
-			return buttons.verify(interaction, new Lang(( row?.lang || channel?.guild?.preferredLocale )), new Wiki(row?.wiki), channel);
-		}, dberror => {
-			console.log( '- Button: Error while getting the wiki: ' + dberror );
-			return client.api.interactions(interaction.id, interaction.token).callback.post( {
-				data: {type: 6}
-			} ).catch(log_error);
-		} );
+		}, log_error);
 	}
+	if ( !interaction.guild_id ) {
+		return buttons[cmd](interaction, new Lang(), new Wiki(), channel);
+	}
+	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
+		return buttons[cmd](interaction, new Lang(( row?.lang || channel?.guild?.preferredLocale )), new Wiki(row?.wiki), channel);
+	}, dberror => {
+		console.log( '- Button: Error while getting the wiki: ' + dberror );
+		return client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {type: 6}
+		} ).catch(log_error);
+	} );
 }
 
 client.on( 'message', msg => {

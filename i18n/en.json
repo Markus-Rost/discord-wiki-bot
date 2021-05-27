@@ -590,7 +590,7 @@
         "special": "Content of this special page:"
     },
     "settings": {
-        "button": "Try the Dashboard",
+        "button": "Use the Dashboard",
         "channel current": "these are the current settings for this channel:",
         "channel lang": "the language for this channel is:",
         "channel langchanged": "you changed the language for this channel to:",
@@ -787,6 +787,7 @@
     "verify": {
         "audit_reason": "Verified as \"$1\"",
         "button_again": "Check again",
+        "button_wrong_user": "You can't check this verification again, this is a verification of $1!",
         "discord": "Discord user:",
         "empty": "*empty*",
         "error": "The verification failed due to an error.",

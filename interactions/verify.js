@@ -165,6 +165,34 @@ function slash_verify(interaction, lang, wiki, channel) {
  * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
  */
  function button_verify(interaction, lang, wiki, channel) {
+	var username = interaction?.message?.embeds?.[0]?.title;
+	if ( !username || !channel?.guild || !interaction.message?.mentions?.[0]?.id ) {
+		interaction.message.allowed_mentions = {
+			users: [interaction.user.id]
+		};
+		interaction.message.components = [];
+		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {
+				type: 7,
+				data: interaction.message
+			}
+		} ).catch(log_error);
+	}
+	if ( interaction.user.id !== interaction.message.mentions[0].id ) {
+		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+			data: {type: 6}
+		} ).then( () => {
+			interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+				data: {
+					content: lang.get('verify.button_wrong_user', `<@${interaction.message.mentions[0].id}>`),
+					allowed_mentions: {
+						parse: []
+					},
+					flags: 64
+				}
+			} ).catch(log_error);
+		}, log_error);
+	}
 	return db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
 		if ( !rows.length || !channel.guild.me.permissions.has('MANAGE_ROLES') ) {
 			return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
@@ -184,7 +212,6 @@ function slash_verify(interaction, lang, wiki, channel) {
 			}
 		} ).then( () => {
 			return channel.guild.members.fetch(interaction.user.id).then( member => {
-				var username = interaction.message.embeds[0].title;
 				console.log( interaction.guild_id + ': Button: ' + interaction.data.custom_id + ' ' + username );
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
 					var message = {
@@ -193,6 +220,11 @@ function slash_verify(interaction, lang, wiki, channel) {
 						allowed_mentions,
 						components: []
 					};
+					if ( result.reaction ) {
+						if ( result.reaction === 'nowiki' ) message.content = lang.get('interaction.nowiki');
+						else message.content = reply + lang.get('verify.error_reply');
+						message.embeds = [];
+					}
 					if ( result.add_button ) message.components.push({
 						type: 1,
 						components: [
@@ -206,12 +238,16 @@ function slash_verify(interaction, lang, wiki, channel) {
 							}
 						]
 					});
-					if ( result.reaction ) {
-						if ( result.reaction === 'nowiki' ) message.content = lang.get('interaction.nowiki');
-						else message.content = reply + lang.get('verify.error_reply');
-						message.embeds = [];
-					}
 					return sendMessage(interaction, message, channel, false).then( msg => {
+						interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+							data: {
+								content: message.content,
+								embeds: message.embeds,
+								allowed_mentions,
+								components: [],
+								flags: 64
+							}
+						} ).catch(log_error);
 						if ( !result.logging.channel || !channel.guild.channels.cache.has(result.logging.channel) ) return;
 						if ( msg ) {
 							if ( result.logging.embed ) result.logging.embed.addField(msg.url, '<#' + channel.id + '>');
@@ -236,7 +272,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 					allowed_mentions
 				}, channel);
 			} );
-		} ).catch(log_error);
+		}, log_error);
 	}, dberror => {
 		console.log( '- Error while getting the verifications: ' + dberror );
 		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
