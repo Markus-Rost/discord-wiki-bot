@@ -225,7 +225,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 						else message.content = reply + lang.get('verify.error_reply');
 						message.embeds = [];
 					}
-					if ( result.add_button ) message.components.push({
+					else if ( result.add_button ) message.components.push({
 						type: 1,
 						components: [
 							{
