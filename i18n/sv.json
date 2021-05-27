@@ -76,8 +76,8 @@
             " "
         ],
         "random": [
-            "slumpmessig",
-            " ",
+            "slumpmässig",
+            " slump",
             " ",
             " ",
             " "
@@ -133,6 +133,7 @@
     "discussion": {
         "image": "Visa bild",
         "main": "Diskussioner",
+        "post": "inlägg",
         "tags": "Taggar:",
         "votes": "$1 {{PLURAL:$2|röst|röster}} ($3%)"
     },
@@ -501,13 +502,26 @@
         "delete": "Radera den här \"senaste ändringar\"-webhooken:",
         "deleted": "webhooken \"senaste ändringar\" har raderats.",
         "disabled": "inaktiverad",
+        "disabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har inaktiverats för denna webhook.",
+        "disabled_rc": "wiki-ändringarna för denna webhook har inaktiverats.",
         "display": "Visningsläge:",
         "enabled": "aktiverad",
+        "enabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har aktiverats för denna webhook.",
+        "enabled_rc": "wiki-ändringarna för denna webhook har aktiverats.",
+        "feeds": "Flödesbaserade ändringar:",
+        "help_display_compact": "Kompakta textmeddelanden med \"inline\"-länkar.",
+        "help_display_diff": "Inbäddade meddelanden med bildförhandsgranskningar och redigeringsskillnader.",
+        "help_display_embed": "Inbäddade meddelanden med redigeringstaggar och kategoriändringar.",
+        "help_display_image": "Inbäddade meddelanden med bildförhandsgranskningar.",
+        "help_feeds": "(diskussioner, meddelandeväggar, artikelkommentarer)",
         "help_lang": "De språk som stödjs för nuvarande är:",
         "help_wiki": "Länka till en MediaWiki-sida så som `https://<wiki>.fandom.com/`",
         "lang": "Språk:",
+        "max_entries": "du har redan nått det maximala antalet \"senaste ändringarna\"-webhook.",
+        "missing": "det finns inga \"senaste ändringarna\"-webhook för denna server än.",
         "new_lang": "<nytt språk>",
         "new_wiki": "<länk till wikin>",
+        "no_feeds": "wikin för denna webhook har inga flödesbaserade funktioner, som diskussioner, meddelandeväggar eller artikelkommentarer, aktiverade.",
         "noadmin": "du behöver behörigheten `Hantera Webhooks` för det här kommandot!",
         "rc": "Wiki-ändringar:",
         "title": "\"Senaste ändringar\"-webhook",
@@ -515,15 +529,32 @@
         "updated_lang": "språket för den här webhooken har ändrats till:",
         "updated_wiki": "webhooken för denna wiki har ändrats till:",
         "webhook": {
+            "blocked": "\"Senaste ändringarna\"-webhooken kommer att tas bort eftersom wikin har blockerats!",
             "blocked_help": "Du kan be om fler detaljer på [support servern]($1).",
+            "blocked_reason": "\"Senaste ändringarna\"-webhooken kommer att tas bort eftersom wikin har blockerats på grund av`$1`!",
+            "created": "En \"senaste ändringarna\"-webhook för $1 har lagts till för denna kanal.",
             "dashboard": {
                 "channel": "• Webhooken har flyttats till den här kanalen.",
+                "disabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har inaktiverats.",
+                "disabled_rc": "• Wiki-ändringarna har inaktiverats.",
+                "display_compact": "• Visningsläget har ändrats till kompakta textmeddelanden med \"inline\"-länkar.",
+                "display_diff": "• Visningsläget har ändrats för inbädda meddelanden med bildförhandsgranskningar och redigeringsskillnader.",
+                "display_embed": "• Visningsläget har ändrats till inbädda meddelanden med redigeringstaggar och kategoriändringar.",
+                "display_image": "• Visningsläget har ändrats till inbäddade meddelanden med förhandsgranskning av bilder.",
+                "enabled_feeds": "• Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har aktiverats.",
                 "enabled_rc": "• Wiki-redigeringar har aktiverats.",
                 "lang": "• Språket har ändrats till $1.",
                 "updated": "Denna \"senaste ändringar\"-webhooken har uppdaterats:",
                 "wiki": "• Wikin har ändrats till $1."
             },
-            "deleted": "Denna \"senaste ändringar\"-webhooken kommer att raderas."
+            "deleted": "Denna \"senaste ändringar\"-webhooken kommer att raderas.",
+            "disabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har inaktiverats för den här senaste webhooken.",
+            "disabled_rc": "Wiki-ändringarna har inaktiverats för den senaste webhooken.",
+            "enabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har aktiverats för den här senaste webhooken.",
+            "enabled_rc": "Wiki-ändringarna har aktiverats för den senaste webhooken.",
+            "updated_display_compact": "Visningsläget har ändrats till kompakta textmeddelanden med \"inline\"-länkar för den här \"senaste ändringarna\"-webhook.",
+            "updated_display_diff": "Visningsläget har ändrats för inbäddade meddelanden med förhandsgranskningar av bilder och redigeringsskillnader för den här \"senaste ändringarna\"-webhook.",
+            "updated_display_embed": "Visningsläget har ändrats för inbäddade meddelanden med redigeringstaggar och kategoriändringar för den här \"senaste ändringar\"-webhooken."
         },
         "webhook_failed": "webhooken kunde tyvärr inte skapas, vänligen försök igen senare.",
         "wiki": "Wiki:"
@@ -543,6 +574,7 @@
         "special": "Innehåll av den här special-sidan:"
     },
     "settings": {
+        "button": "Använd kontrollpanelen",
         "channel current": "dessa är de nuvarande inställningarna för den här kanalen:",
         "channel lang": "den här kanalens språk är:",
         "channel langchanged": "du ändrade den här kanalens språk till:",
@@ -742,7 +774,7 @@
         "user_missing_reply": "din länkade wiki användare \"$1\" existerar inte.",
         "user_verified": "Discord användaren $1 har verifierats som wiki användaren $2.",
         "user_verified_reply": "du har verifierats som wiki användaren \"$1\".",
-        "wiki": "Wiki användare:"
+        "wiki": "Wiki-användare:"
     },
     "voice": {
         "channel": "Röstkanal",
