@@ -590,6 +590,7 @@
         "special": "Inhalt der Spezialseite:"
     },
     "settings": {
+        "button": "Nutze das Dashboard",
         "channel current": "dies sind die aktuellen Einstellungen für diesen Kanal:",
         "channel lang": "die Sprache für diesen Kanal ist:",
         "channel langchanged": "du hast die Sprache für diesen Kanal geändert zu:",
@@ -785,6 +786,7 @@
     },
     "verify": {
         "audit_reason": "Verifziert als „$1“",
+        "button_again": "Erneut prüfen",
         "discord": "{{GENDER:$1|Discord-Benutzer|Discord-Benutzerin}}:",
         "empty": "*leer*",
         "error": "Die Verifizierung schlug fehl aufgrund eines Fehlers.",
