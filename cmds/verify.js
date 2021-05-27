@@ -40,17 +40,33 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		msg.reactEmoji('⏳').then( reaction => {
 			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
 				if ( result.reaction ) msg.reactEmoji(result.reaction);
-				else msg.replyMsg( result.content, {embed: result.embed}, false, false ).then( message => {
-					if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
-					if ( message ) {
-						if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channel.id + '>');
-						else result.logging.content += '\n<#' + msg.channel.id + '> – <' + message.url + '>';
-					}
-					msg.guild.channels.cache.get(result.logging.channel).send(result.logging.content, {
-						embed: result.logging.embed,
-						allowedMentions: {parse: []}
-					}).catch(log_error);
-				} );
+				else {
+					var options = {embed: result.embed, components: []};
+					if ( result.add_button ) options.components.push({
+						type: 1,
+						components: [
+							{
+								type: 2,
+								style: 1,
+								label: lang.get('verify.button_again'),
+								emoji: {id: null, name: '🔂'},
+								custom_id: 'verify_again',
+								disabled: false
+							}
+						]
+					});
+					msg.replyMsg( result.content, options, false, false ).then( message => {
+						if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
+						if ( message ) {
+							if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channel.id + '>');
+							else result.logging.content += '\n<#' + msg.channel.id + '> – <' + message.url + '>';
+						}
+						msg.guild.channels.cache.get(result.logging.channel).send(result.logging.content, {
+							embed: result.logging.embed,
+							allowedMentions: {parse: []}
+						}).catch(log_error);
+					} );
+				}
 				if ( reaction ) reaction.removeEmoji();
 			}, error => {
 				console.log( '- Error during the verifications: ' + error );

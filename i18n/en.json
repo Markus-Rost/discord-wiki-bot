@@ -786,6 +786,7 @@
     },
     "verify": {
         "audit_reason": "Verified as \"$1\"",
+        "button_again": "Check again",
         "discord": "Discord user:",
         "empty": "*empty*",
         "error": "The verification failed due to an error.",

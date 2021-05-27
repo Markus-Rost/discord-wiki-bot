@@ -20,6 +20,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	var result = {
 		content: '', embed,
+		add_button: channel.permissionsFor(channel.guild.me).has('EMBED_LINKS'),
 		reaction: '',
 		logging: {
 			channel: '',
@@ -46,6 +47,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
 			}
+			result.add_button = false;
 			return;
 		}
 		wiki.updateWiki(body.query.general);
@@ -56,6 +58,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			username = ( body.query.users.length === 1 ? queryuser.name : username );
 			embed.setTitle( escapeFormatting( old_username || username ) ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', escapeFormatting( old_username || username )) ).addField( lang.get('verify.notice'), lang.get('verify.help_missing') );
 			result.content = lang.get('verify.user_missing_reply', escapeFormatting( old_username || username ));
+			result.add_button = false;
 			if ( wiki.isFandom() && !old_username ) return got.get( wiki + 'api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
 				var wsbody = wsresponse.body;
 				if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
@@ -74,6 +77,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 		if ( queryuser.blockexpiry ) {
 			embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 			result.content = lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender);
+			result.add_button = false;
 			return;
 		}
 		
@@ -251,6 +255,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 							if ( verifynotice.onsuccess ) text += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onsuccess;
 						}
 						result.content = text;
+						result.add_button = false;
 					}, log_error );
 				}
 				
@@ -275,10 +280,12 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				if ( error ) console.log( '- Error while getting the Discord tag: ' + error );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
+				result.add_button = false;
 			} );
 		}, error => {
 			embed.setColor('#FF0000').setDescription( error.desc );
 			result.content = error.reply;
+			result.add_button = false;
 		} );
 		
 		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json' ).then( mwresponse => {
@@ -294,6 +301,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				if ( mwbody.query.globaluserinfo.locked !== undefined ) {
 					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 					result.content = lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender);
+					result.add_button = false;
 					return;
 				}
 				queryuser.groups.push(...mwbody.query.globaluserinfo.groups);
@@ -410,6 +418,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 						if ( verifynotice.onsuccess ) text += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onsuccess;
 					}
 					result.content = text;
+					result.add_button = false;
 				}, log_error );
 			}
 			
@@ -433,11 +442,13 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			console.log( '- Error while getting the Discord tag: ' + error );
 			embed.setColor('#000000').setDescription( lang.get('verify.error') );
 			result.content = lang.get('verify.error_reply');
+			result.add_button = false;
 		} );
 	}, error => {
 		console.log( '- Error while getting the user: ' + error );
 		embed.setColor('#000000').setDescription( lang.get('verify.error') );
 		result.content = lang.get('verify.error_reply');
+		result.add_button = false;
 	} ).then( new_username => {
 		if ( !new_username ) return result;
 		return verify(lang, channel, member, new_username, wiki, rows, username);

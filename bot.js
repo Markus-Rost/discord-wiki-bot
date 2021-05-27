@@ -211,20 +211,33 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 
 const fs = require('fs');
 var slash = {};
+var buttons = {};
 fs.readdir( './interactions', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
 		var command = require('./interactions/' + file);
-		slash[command.name] = command.run;
+		if ( command.hasOwnProperty('run') ) slash[command.name] = command.run;
+		if ( command.hasOwnProperty('button') ) buttons[command.name] = command.button;
 	} );
 } );
+
+client.ws.on( 'INTERACTION_CREATE', interaction => {
+	if ( interaction.version !== 1 ) return;
+	interaction.client = client;
+	if ( interaction.guild_id ) {
+		interaction.user = interaction.member.user;
+		interaction.member.permissions = new Discord.Permissions(+interaction.member.permissions);
+	}
+	if ( interaction.type === 2 ) return slash_command(interaction);
+	if ( interaction.type === 3 ) return message_button(interaction);
+} );
+
 /*
 !test eval msg.client.api.applications(msg.client.user.id).commands.post( {
 	data: require('../interactions/commands.json')[0]
 } )
 */
-client.ws.on( 'INTERACTION_CREATE', interaction => {
-	if ( interaction.version !== 1 || interaction.type !== 2 ) return;
+function slash_command(interaction) {
 	if ( !slash.hasOwnProperty(interaction.data.name) ) {
 		console.log( '- Slash: Unknown command: ' + ( isDebug ? JSON.stringify(interaction, null, '\t') : interaction.data.name ) );
 		return client.api.interactions(interaction.id, interaction.token).callback.post( {
@@ -240,13 +253,10 @@ client.ws.on( 'INTERACTION_CREATE', interaction => {
 			}
 		} ).catch(log_error);
 	}
-	interaction.client = client;
 	var channel = client.channels.cache.get(interaction.channel_id);
 	if ( !interaction.guild_id ) {
 		return slash[interaction.data.name](interaction, new Lang(), new Wiki(), channel);
 	}
-	interaction.user = interaction.member.user;
-	interaction.member.permissions = new Discord.Permissions(+interaction.member.permissions);
 	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
 		return slash[interaction.data.name](interaction, new Lang(( row?.lang || channel?.guild?.preferredLocale )), new Wiki(row?.wiki), channel);
 	}, dberror => {
@@ -264,7 +274,38 @@ client.ws.on( 'INTERACTION_CREATE', interaction => {
 			}
 		} ).catch(log_error);
 	} );
-} );
+}
+
+function message_button(interaction) {
+	if ( interaction.data.component_type === 2 && interaction.data.custom_id === 'verify_again' && interaction.guild_id ) {
+		if ( !interaction?.message?.embeds?.[0]?.title ) {
+			interaction.message.allowed_mentions = {
+				users: [interaction.user.id]
+			};
+			interaction.message.components = [];
+			return client.api.interactions(interaction.id, interaction.token).callback.post( {
+				data: {
+					type: 7,
+					data: interaction.message
+				}
+			} ).catch(log_error);
+		}
+		if ( !interaction.message.content.startsWith( '<@' + ( interaction.member?.nick ? '!' : '' ) + interaction.user.id + '>, ' ) ) {
+			return client.api.interactions(interaction.id, interaction.token).callback.post( {
+				data: {type: 6}
+			} ).catch(log_error);
+		}
+		var channel = client.channels.cache.get(interaction.channel_id);
+		db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [interaction.guild_id, interaction.channel_id, '#' + channel?.parentID] ).then( ({rows:[row]}) => {
+			return buttons.verify(interaction, new Lang(( row?.lang || channel?.guild?.preferredLocale )), new Wiki(row?.wiki), channel);
+		}, dberror => {
+			console.log( '- Button: Error while getting the wiki: ' + dberror );
+			return client.api.interactions(interaction.id, interaction.token).callback.post( {
+				data: {type: 6}
+			} ).catch(log_error);
+		} );
+	}
+}
 
 client.on( 'message', msg => {
 	if ( isStop || msg.type !== 'DEFAULT' || msg.system || msg.webhookID || msg.author.bot || msg.author.id === msg.client.user.id ) return;

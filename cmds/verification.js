@@ -30,7 +30,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			style: 5,
 			label: lang.get('settings.button'),
 			emoji: {
-				id: '588723748757307403',
+				id: '588723255972593672',
 				name: 'wikibot',
 				animated: false
 			},
