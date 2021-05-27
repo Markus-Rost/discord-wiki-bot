@@ -165,7 +165,7 @@ function slash_verify(interaction, lang, wiki, channel) {
  * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
  */
  function button_verify(interaction, lang, wiki, channel) {
-	var username = interaction?.message?.embeds?.[0]?.title;
+	var username = interaction?.message?.embeds?.[0]?.title?.replace( /\\(\\)?/g, '$1' );
 	if ( !username || !channel?.guild || !interaction.message?.mentions?.[0]?.id ) {
 		interaction.message.allowed_mentions = {
 			users: [interaction.user.id]
