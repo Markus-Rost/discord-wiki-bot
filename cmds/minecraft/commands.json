@@ -301,6 +301,10 @@
 			"/particle <name> <style> <pos> <delta> <speed> <count> normal",
 			"/particle <name> <style> <pos> <delta> <speed> <count> normal <targets>"
 		],
+		"perf": [
+			"/perf start",
+			"/perf stop"
+		],
 		"playsound": [
 			"/playsound <sound> <source> <targets>",
 			"/playsound <sound> <source> <targets> <pos>",
