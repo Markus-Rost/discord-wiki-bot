@@ -76,8 +76,8 @@
             " "
         ],
         "random": [
-            "slumpmessig",
-            " ",
+            "slumpmässig",
+            " slump",
             " ",
             " ",
             " "
@@ -133,6 +133,7 @@
     "discussion": {
         "image": "Visa bild",
         "main": "Diskussioner",
+        "post": "inlägg",
         "tags": "Taggar:",
         "votes": "$1 {{PLURAL:$2|röst|röster}} ($3%)"
     },
@@ -327,7 +328,7 @@
                 "desc": "Om jag är aktiv så kommer jag att svara! Annars gör jag det inte."
             },
             "user": {
-                "cmd": "User:<användarnamn>",
+                "cmd": "Användare:<användarnamn>",
                 "desc": "Jag kommer visa lite information om användaren."
             },
             "verification": {
@@ -356,7 +357,8 @@
                     "desc": "Jag kommer ändra minsta antalet redigeringar för wiki-verifieringen."
                 },
                 "postcount": {
-                    "cmd": "verification <id> postcount <antal nya inlägg>"
+                    "cmd": "verification <id> postcount <antal nya inlägg>",
+                    "desc": "Jag kommer att ändra minsta antal diskussioner som behövs för wiki-verifieringen.\n\t• Ange ett negativt tal som krävs antingen för redigerings- eller inläggs-antalet.\n\t• Ange \"null\" för att söka efter det kombinerade redigerings- och inläggs-antalet."
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
@@ -427,6 +429,7 @@
         "private": "**Privat Problem**",
         "status": {
             "Awaiting Response": "Inväntar svar",
+            "Cannot Reproduce": "Kan ej återskapas",
             "Closed": "Stängd",
             "Done": "Gjort",
             "Duplicate": "Duplicera",
@@ -501,13 +504,26 @@
         "delete": "Radera den här \"senaste ändringar\"-webhooken:",
         "deleted": "webhooken \"senaste ändringar\" har raderats.",
         "disabled": "inaktiverad",
+        "disabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har inaktiverats för denna webhook.",
+        "disabled_rc": "wiki-ändringarna för denna webhook har inaktiverats.",
         "display": "Visningsläge:",
         "enabled": "aktiverad",
+        "enabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har aktiverats för denna webhook.",
+        "enabled_rc": "wiki-ändringarna för denna webhook har aktiverats.",
+        "feeds": "Flödesbaserade ändringar:",
+        "help_display_compact": "Kompakta textmeddelanden med \"inline\"-länkar.",
+        "help_display_diff": "Inbäddade meddelanden med bildförhandsgranskningar och redigeringsskillnader.",
+        "help_display_embed": "Inbäddade meddelanden med redigeringstaggar och kategoriändringar.",
+        "help_display_image": "Inbäddade meddelanden med bildförhandsgranskningar.",
+        "help_feeds": "(diskussioner, meddelandeväggar, artikelkommentarer)",
         "help_lang": "De språk som stödjs för nuvarande är:",
         "help_wiki": "Länka till en MediaWiki-sida så som `https://<wiki>.fandom.com/`",
         "lang": "Språk:",
+        "max_entries": "du har redan nått det maximala antalet \"senaste ändringarna\"-webhook.",
+        "missing": "det finns inga \"senaste ändringarna\"-webhook för denna server än.",
         "new_lang": "<nytt språk>",
         "new_wiki": "<länk till wikin>",
+        "no_feeds": "wikin för denna webhook har inga flödesbaserade funktioner, som diskussioner, meddelandeväggar eller artikelkommentarer, aktiverade.",
         "noadmin": "du behöver behörigheten `Hantera Webhooks` för det här kommandot!",
         "rc": "Wiki-ändringar:",
         "title": "\"Senaste ändringar\"-webhook",
@@ -515,15 +531,33 @@
         "updated_lang": "språket för den här webhooken har ändrats till:",
         "updated_wiki": "webhooken för denna wiki har ändrats till:",
         "webhook": {
+            "blocked": "\"Senaste ändringarna\"-webhooken kommer att tas bort eftersom wikin har blockerats!",
             "blocked_help": "Du kan be om fler detaljer på [support servern]($1).",
+            "blocked_reason": "\"Senaste ändringarna\"-webhooken kommer att tas bort eftersom wikin har blockerats på grund av`$1`!",
+            "created": "En \"senaste ändringarna\"-webhook för $1 har lagts till för denna kanal.",
             "dashboard": {
                 "channel": "• Webhooken har flyttats till den här kanalen.",
+                "disabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har inaktiverats.",
+                "disabled_rc": "• Wiki-ändringarna har inaktiverats.",
+                "display_compact": "• Visningsläget har ändrats till kompakta textmeddelanden med \"inline\"-länkar.",
+                "display_diff": "• Visningsläget har ändrats för inbädda meddelanden med bildförhandsgranskningar och redigeringsskillnader.",
+                "display_embed": "• Visningsläget har ändrats till inbädda meddelanden med redigeringstaggar och kategoriändringar.",
+                "display_image": "• Visningsläget har ändrats till inbäddade meddelanden med förhandsgranskning av bilder.",
+                "enabled_feeds": "• Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har aktiverats.",
                 "enabled_rc": "• Wiki-redigeringar har aktiverats.",
                 "lang": "• Språket har ändrats till $1.",
                 "updated": "Denna \"senaste ändringar\"-webhooken har uppdaterats:",
                 "wiki": "• Wikin har ändrats till $1."
             },
-            "deleted": "Denna \"senaste ändringar\"-webhooken kommer att raderas."
+            "deleted": "Denna \"senaste ändringar\"-webhooken kommer att raderas.",
+            "disabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har inaktiverats för den här senaste webhooken.",
+            "disabled_rc": "Wiki-ändringarna har inaktiverats för den senaste webhooken.",
+            "enabled_feeds": "Flödesbaserade ändringar som diskussioner, meddelandeväggar och artikelkommentarer har aktiverats för den här senaste webhooken.",
+            "enabled_rc": "Wiki-ändringarna har aktiverats för den senaste webhooken.",
+            "updated_display_compact": "Visningsläget har ändrats till kompakta textmeddelanden med \"inline\"-länkar för den här \"senaste ändringarna\"-webhook.",
+            "updated_display_diff": "Visningsläget har ändrats för inbäddade meddelanden med förhandsgranskningar av bilder och redigeringsskillnader för den här \"senaste ändringarna\"-webhook.",
+            "updated_display_embed": "Visningsläget har ändrats för inbäddade meddelanden med redigeringstaggar och kategoriändringar för den här \"senaste ändringar\"-webhooken.",
+            "updated_lang": "Språket för \"senaste ändringar\"-webhooken har ändrats till `$1`."
         },
         "webhook_failed": "webhooken kunde tyvärr inte skapas, vänligen försök igen senare.",
         "wiki": "Wiki:"
@@ -537,12 +571,15 @@
             "subcats": "$1 {{PLURAL:$2|kategori|kategorier}}"
         },
         "empty": "*Detta special-sida är tom*",
+        "infopage": "Fel resultat? Använd $1 för en direktlänk.",
+        "infosearch": "Fel resultat? Använd $1 för en direktlänk eller $2 för en lista på alla resultat.",
         "loading": "Laddar sidans beskrivning…",
         "media": "Till filens beskrivningssida",
         "results": "Totalt $1 {{PLURAL:$2|resultat|resultat}}",
         "special": "Innehåll av den här special-sidan:"
     },
     "settings": {
+        "button": "Använd kontrollpanelen",
         "channel current": "dessa är de nuvarande inställningarna för den här kanalen:",
         "channel lang": "den här kanalens språk är:",
         "channel langchanged": "du ändrade den här kanalens språk till:",
@@ -583,6 +620,7 @@
         "missing": "den här servern är inte konfigurerad än. Använd $1 och $2 för att ändra inställningar.",
         "prefix": "prefixen för denna server är:",
         "prefixchanged": "du ändrade prefixen för denna server till:",
+        "prefixhelp": "Använd `$1<prefix>` för att ändra prefixet.\nAnvänd `_` på slutet för att indikera ett mellanrum i slutet av prefixet.\nPrefix kan inte innehålla taggningar!",
         "prefixinvalid": "den angivna prefixen stöds inte!",
         "role": "den lägsta rollen som krävs för denna server är:",
         "rolechanged": "du har ändrat den lägsta rollen som krävs för denna server till:",
@@ -643,9 +681,14 @@
                 "hours": "$1 {{PLURAL:$2|timme|timmar}}",
                 "minutes": "$1 {{PLURAL:$2|minut|minuter}}",
                 "months": "$1 {{PLURAL:$2|månad|månader}}",
+                "separator": ",_",
+                "separator_last": "_och_",
                 "weeks": "$1 {{PLURAL:$2|vecka|veckor}}",
                 "years": "$1 {{PLURAL:$2|år|år}}"
-            }
+            },
+            "header": "$1 är blockad!",
+            "indef_noreason": "Blockerades permanent av $4 den $1.",
+            "indef_text": "Blockerades permanent av $4 den $1 och med anledningen \"$5\"."
         },
         "gblock": {
             "disabled": "Kontot är för närvarande inaktiverat!",
@@ -665,11 +708,13 @@
             "globalgroup": "{{PLURAL:$1|global grupp|globala grupper}}:",
             "group": "{{PLURAL:$1|Grupp|Grupper}}:",
             "loading": "Laddar global statistik…",
+            "postcount": "Diskussion inlägg:",
             "registration": "Registrerings datum:",
             "wikisedited": "Redigerade Wikis:"
         }
     },
     "verification": {
+        "accountage": "Kontots ålder:",
         "add_more": "Lägg till fler verifikationer:",
         "added": "verifikationen har lagts till:",
         "and": "och",
@@ -689,8 +734,10 @@
         "editcount": "Antal redigeringar:",
         "enabled": "aktiverad",
         "indays": "(i dagar)",
+        "logging": "Logg kanal:",
         "max_entries": "du har redan nått den högsta gränsen för antal verifikationer.",
         "missing": "det finns ännu inte några verifikationer för den här servern.",
+        "new_accountage": "",
         "new_channel": "<ny kanal>",
         "new_role": "<ny roll>",
         "new_usergroup": "<ny användargrupp>",
@@ -700,6 +747,7 @@
         "postcount": "Antal inlägg (endast Fandom Wikis):",
         "posteditcount": "Antal ändringar och inlägg tillsammans:",
         "rename": "Ändra smeknamn:",
+        "rename_no_permission": "**$1 saker behörigheten `Ändra Smeknamn`, detta för att kunna tvinga wiki användarnamn!**",
         "role": "Roll:",
         "role_deleted": "**Rollen $1 ser inte ut att existera längre!**",
         "role_managed": "den angivna rollen kan inte tilldelas.",
@@ -742,7 +790,7 @@
         "user_missing_reply": "din länkade wiki användare \"$1\" existerar inte.",
         "user_verified": "Discord användaren $1 har verifierats som wiki användaren $2.",
         "user_verified_reply": "du har verifierats som wiki användaren \"$1\".",
-        "wiki": "Wiki användare:"
+        "wiki": "Wiki-användare:"
     },
     "voice": {
         "channel": "Röstkanal",
