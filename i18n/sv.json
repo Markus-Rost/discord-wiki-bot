@@ -690,7 +690,9 @@
             },
             "header": "$1 är blockad!",
             "indef_noreason": "Blockerades permanent av $4 den $1.",
-            "indef_text": "Blockerades permanent av $4 den $1 och med anledningen \"$5\"."
+            "indef_text": "Blockerades permanent av $4 den $1 och med anledningen \"$5\".",
+            "noreason": "Blockerades i $2 av $4 den $1, avblockeras den $3.",
+            "text": "Blockerades i $2 av $4 den $1, avblockeras den $3 och med anledningen \"$5\"."
         },
         "gblock": {
             "disabled": "Kontot är för närvarande inaktiverat!",
@@ -783,6 +785,7 @@
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Följ [denna guide]($1) för att lägga till din Discord tagg i din Wiki profil:",
+        "help_missing": "Vänligen kontrollera att du använder ditt Wiki-användarnamn samt att stora/små bokstäver stämmer.",
         "help_subpage": "Lägg till din Discord-tagg ($1) på din Discord-undersida på wikin:",
         "missing": "det finns inte någon verifikation uppsatt för den här kanalen.",
         "notice": "Notera:",
