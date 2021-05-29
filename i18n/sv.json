@@ -27,7 +27,7 @@
             " "
         ],
         "diff": [
-            "",
+            "diff",
             " ",
             " ",
             " ",
@@ -77,7 +77,7 @@
         ],
         "random": [
             "slumpmässig",
-            " slump",
+            "slump",
             " ",
             " ",
             " "
@@ -557,7 +557,9 @@
             "updated_display_compact": "Visningsläget har ändrats till kompakta textmeddelanden med \"inline\"-länkar för den här \"senaste ändringarna\"-webhook.",
             "updated_display_diff": "Visningsläget har ändrats för inbäddade meddelanden med förhandsgranskningar av bilder och redigeringsskillnader för den här \"senaste ändringarna\"-webhook.",
             "updated_display_embed": "Visningsläget har ändrats för inbäddade meddelanden med redigeringstaggar och kategoriändringar för den här \"senaste ändringar\"-webhooken.",
-            "updated_lang": "Språket för \"senaste ändringar\"-webhooken har ändrats till `$1`."
+            "updated_display_image": "Visningsläget har ändrats för inbäddade meddelanden med bildförhandsgranskningar för den här \"senaste ändringar\"-webhooken.",
+            "updated_lang": "Språket för \"senaste ändringar\"-webhooken har ändrats till `$1`.",
+            "updated_wiki": "Wikin har ändrats till $1 för den här \"senaste ändringarna\"-webhooken."
         },
         "webhook_failed": "webhooken kunde tyvärr inte skapas, vänligen försök igen senare.",
         "wiki": "Wiki:"
@@ -697,7 +699,7 @@
         "gender": {
             "female": "Kvinna",
             "male": "Man",
-            "unknown": "Okänd"
+            "unknown": "Hen"
         },
         "info": {
             "discord": "Discord:",
@@ -725,8 +727,10 @@
         "current_selected": "detta är `$1` verifikationen för den här servern:",
         "dashboard": {
             "added": "$1 lade till verifikationen med IDt `$2`.",
+            "added_notice": "$1 lade till några verifieringsmeddelanden.",
             "removed": "$1 raderade verifikationen med IDt `$2`.",
-            "updated": "$1 uppdaterade verifikationen med IDt `$2`."
+            "updated": "$1 uppdaterade verifikationen med IDt `$2`.",
+            "updated_notice": "$1 uppdaterade några verifieringsmeddelanden."
         },
         "delete_current": "Radera denna verifikation:",
         "deleted": "verifikationen har raderats.",
@@ -739,12 +743,15 @@
         "missing": "det finns ännu inte några verifikationer för den här servern.",
         "new_accountage": "",
         "new_channel": "<ny kanal>",
+        "new_editcount": "<nytt redigeringsantal>",
+        "new_postcount": "<nytt inläggsantal>",
         "new_role": "<ny roll>",
         "new_usergroup": "<ny användargrupp>",
         "no_role": "vänligen ange en roll för den nya verifikationen.",
         "notice_embed": "Vissa notiser innehåller \"masked markdown links\". För att dessa ska fungera som de ska, se till att aktivera rättigheten `Bädda in länkar` i alla verifikationskanaler.",
         "or": "eller",
         "postcount": "Antal inlägg (endast Fandom Wikis):",
+        "postcount_or": "(alternativ till redigeringsantal)",
         "posteditcount": "Antal ändringar och inlägg tillsammans:",
         "rename": "Ändra smeknamn:",
         "rename_no_permission": "**$1 saker behörigheten `Ändra Smeknamn`, detta för att kunna tvinga wiki användarnamn!**",
@@ -763,15 +770,20 @@
     },
     "verify": {
         "audit_reason": "Verifierad som \"$1\"",
+        "button_again": "Kolla igen",
+        "button_wrong_user": "Du kan inte kontrollera den här verifieringen igen, det här är en verifiering på $1!",
         "discord": "Discordanvändare:",
         "empty": "*tom*",
         "error": "Verifikationen misslyckades på grund av ett felmeddelande.",
         "error_reply": "verifikationen misslyckades på grund av ett felmeddelande, vänligen försök igen.",
+        "failed_gblock": "** Kontrollen för global blockering misslyckades! **",
+        "failed_rename": "**Ändringen av {{GENDER:$1|hans|hennes|hens}} Discord-smeknamn misslyckades!**",
         "failed_roles": "**Tilldelning av roll misslyckades!**",
         "footer": "Verifikation av Wiki konto",
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Följ [denna guide]($1) för att lägga till din Discord tagg i din Wiki profil:",
+        "help_subpage": "Lägg till din Discord-tagg ($1) på din Discord-undersida på wikin:",
         "missing": "det finns inte någon verifikation uppsatt för den här kanalen.",
         "notice": "Notera:",
         "qualified": "Kvalifierad för:",
@@ -788,6 +800,7 @@
         "user_matches_reply": "din Discord tagg stämmer överens med wiki användaren \"$1\", men uppfyller inte kraven för någon roll.",
         "user_missing": "Wiki användaren \"$1\" existerar inte.",
         "user_missing_reply": "din länkade wiki användare \"$1\" existerar inte.",
+        "user_renamed": "{{GENDER:$1|Hans|Hennes|Hens}} Discord-smeknamn har ändrats till {{GENDER:$1|hans|hennes|hens}} wiki-användarnamn.",
         "user_verified": "Discord användaren $1 har verifierats som wiki användaren $2.",
         "user_verified_reply": "du har verifierats som wiki användaren \"$1\".",
         "wiki": "Wiki-användare:"
@@ -800,6 +813,7 @@
         "enabled": "du aktiverade funktionen för att lägga till roller för röstkanaler.",
         "join": "$1 anslöt till röstkanalen \"$2\".",
         "left": "$1 lämnade röstkanalen \"$2\".",
+        "name": "röstkanalsnamn",
         "text": "Jag försöker ge alla i en röstkanal en specifik roll:"
     }
 }
