@@ -590,6 +590,7 @@
         "special": "此特殊页面的内容："
     },
     "settings": {
+        "button": "使用控制面板",
         "channel current": "这是本频道的当前设置：",
         "channel lang": "本频道的语言为：",
         "channel langchanged": "您已将本频道的语言更改为：",
@@ -785,6 +786,8 @@
     },
     "verify": {
         "audit_reason": "已以“$1”的身份验证",
+        "button_again": "再次检查",
+        "button_wrong_user": "您不可以再次检查此验证，此验证用于$1的验证！",
         "discord": "Discord 用户：",
         "empty": "*空白*",
         "error": "由于一个错误，验证失败。",
@@ -796,9 +799,15 @@
         "help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/zh/wiki/Gamepedia帮助Wiki:Discord验证",
         "help_guide": "请根据[此指导]($1)来添加您的 Discord 用户名至您的 wiki 资料页：",
+        "help_missing": "请确保您正在使用自己的wiki用户名且大小写正确。",
         "help_subpage": "请将您的 Discord 用户名（$1）添加至您在 wiki 上的 Discord 子页面：",
         "missing": "本频道无可用的验证方式。",
         "notice": "注意：",
+        "oauth_button": "验证",
+        "oauth_message": "请使用[此链接]($1)验证您的wiki账号。",
+        "oauth_message_dm": "请使用此链接为$1验证您的wiki账号。",
+        "oauth_private": "此wiki使用OAuth2进行验证。请开启来自此服务器的私信或使用`/verify`命令以允许我向您私信验证链接。",
+        "oauth_used": "*已通过OAuth2验证*",
         "qualified": "符合：",
         "qualified_error": "符合，但无法添加：",
         "user_blocked": "**Wiki 用户 $1 已被封禁！**",

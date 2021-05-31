@@ -31,7 +31,7 @@
     },
     "indexjs": {
         "invalid": {
-            "note_http": "所提供的网站不使用 HTTPS！",
+            "note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
             "note_private": "所提供的 wiki 是非公开的！",
             "note_timeout": "所提供的链接花费了过多时间响应！",
             "text": "此 URL 无法解析到有效的 MediaWiki 网站！",
@@ -120,7 +120,7 @@
             "title": "已保存设置！"
         },
         "savefail": {
-            "note_http": "所提供的网站不使用 HTTPS！",
+            "note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
             "note_private": "所提供的 wiki 是非公开的！",
             "note_timeout": "所提供的链接花费了太长时间来响应！",
             "text": "无法保存设置，请再试一次。",

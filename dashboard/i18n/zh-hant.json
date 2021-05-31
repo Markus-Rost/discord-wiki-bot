@@ -31,7 +31,7 @@
     },
     "indexjs": {
         "invalid": {
-            "note_http": "所提供的網站不使用 HTTPS！",
+            "note_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。",
             "note_private": "所提供的 wiki 是私人 wiki！",
             "note_timeout": "所提供的連結使用了過長時間來應答！",
             "text": "此URL無法解析至有效的MediaWiki網站！",
@@ -120,7 +120,7 @@
             "title": "已儲存設定！"
         },
         "savefail": {
-            "note_http": "所提供的網站不使用 HTTPS！",
+            "note_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。",
             "note_private": "所提供的 wiki 是私人 wiki！",
             "note_timeout": "所提供的連結使用了過長的時間來應答！",
             "text": "無法儲存設定，請再試一次。",
