@@ -494,10 +494,11 @@ global.verifyOauthUser = function(state, access_token, settings) {
 		} ),
 		channel.guild.members.fetch(settings.user),
 		( !username ? got.get( settings.wiki + 'rest.php/oauth2/resource/profile', {
-			Authorization: `Bearer ${access_token}`
+			headers: {
+				Authorization: `Bearer ${access_token}`
+			}
 		} ).then( response => {
 			var body = response.body;
-			console.log(body)
 			if ( response.statusCode !== 200 || !body?.username ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the mediawiki profile: ' + ( body?.message || body?.error ) );
 				return;

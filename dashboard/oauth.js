@@ -346,7 +346,7 @@ function mediawiki_oauth(res, searchParams) {
 			access_token: body.access_token
 		} ).then( () => {
 			oauthVerify.delete(state);
-			res.writeHead(302, {Location: 'https://' + site[1] + '/wiki/Special:MyPage'});
+			res.writeHead(302, {Location: 'https://' + site[0] + '/index.php?title=Special:MyPage'});
 			return res.end();
 		}, error => {
 			console.log( '- Dashboard: Error while sending the mediawiki token: ' + error );
