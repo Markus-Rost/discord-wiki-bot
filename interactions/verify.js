@@ -58,16 +58,19 @@ function slash_verify(interaction, lang, wiki, channel) {
 			if ( wiki.isWikimedia() ) oauth = 'wikimedia';
 			if ( wiki.isMiraheze() ) oauth = 'miraheze';
 			if ( oauth && process.env[`oauth-${oauth}`] && process.env[`oauth-${oauth}-secret`] ) {
-				let state = `${oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+				let state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 				while ( oauthVerify.has(state) ) {
-					state = `${oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+					state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 				}
 				oauthVerify.set(state, {
-					state, wiki: oauth, channel,
+					state, wiki: wiki.hostname, channel,
 					user: interaction.user.id
 				});
 				interaction.client.shard.send({id: 'verifyUser', state});
-				let oauthURL = `https://meta.${oauth}.org/w/rest.php/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent('https://settings.wikibot.de/oauth/mw')}&client_id=${process.env['oauth-' + oauth]}&state=${state}`;
+				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+					response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+					client_id: process.env[`oauth-${oauth}`], state
+				}).toString();
 				return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 					data: {
 						type: 4,
@@ -136,16 +139,19 @@ function slash_verify(interaction, lang, wiki, channel) {
 			return channel.guild.members.fetch(interaction.user.id).then( member => {
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
 					if ( result.oauth ) {
-						let state = `${result.oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+						let state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 						while ( oauthVerify.has(state) ) {
-							state = `${result.oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+							state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 						}
 						oauthVerify.set(state, {
-							state, wiki: result.oauth, channel,
+							state, wiki: wiki.hostname, channel,
 							user: interaction.user.id
 						});
 						interaction.client.shard.send({id: 'verifyUser', state});
-						let oauthURL = `https://meta.${result.oauth}.org/w/rest.php/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent('https://settings.wikibot.de/oauth/mw')}&client_id=${process.env['oauth-' + result.oauth]}&state=${state}`;
+						let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+							client_id: process.env[`oauth-${result.oauth}`], state
+						}).toString();
 						return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').delete().then( () => {
 							return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
 								data: {
@@ -323,16 +329,19 @@ function slash_verify(interaction, lang, wiki, channel) {
 			if ( wiki.isWikimedia() ) oauth = 'wikimedia';
 			if ( wiki.isMiraheze() ) oauth = 'miraheze';
 			if ( oauth && process.env[`oauth-${oauth}`] && process.env[`oauth-${oauth}-secret`] ) {
-				let state = `${oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+				let state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 				while ( oauthVerify.has(state) ) {
-					state = `${oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+					state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 				}
 				oauthVerify.set(state, {
-					state, wiki: oauth, channel,
+					state, wiki: wiki.hostname, channel,
 					user: interaction.user.id
 				});
 				interaction.client.shard.send({id: 'verifyUser', state});
-				let oauthURL = `https://meta.${oauth}.org/w/rest.php/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent('https://settings.wikibot.de/oauth/mw')}&client_id=${process.env['oauth-' + oauth]}&state=${state}`;
+				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+					response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+					client_id: process.env[`oauth-${oauth}`], state
+				}).toString();
 				interaction.message.components = [];
 				interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 					data: {
@@ -376,16 +385,19 @@ function slash_verify(interaction, lang, wiki, channel) {
 				console.log( interaction.guild_id + ': Button: ' + interaction.data.custom_id + ' ' + username );
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
 					if ( result.oauth ) {
-						let state = `${result.oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+						let state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 						while ( oauthVerify.has(state) ) {
-							state = `${result.oauth}-${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+							state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 						}
 						oauthVerify.set(state, {
-							state, wiki: result.oauth, channel,
+							state, wiki: wiki.hostname, channel,
 							user: interaction.user.id
 						});
 						interaction.client.shard.send({id: 'verifyUser', state});
-						let oauthURL = `https://meta.${result.oauth}.org/w/rest.php/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent('https://settings.wikibot.de/oauth/mw')}&client_id=${process.env['oauth-' + result.oauth]}&state=${state}`;
+						let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+							client_id: process.env[`oauth-${result.oauth}`], state
+						}).toString();
 						interaction.message.components = [];
 						interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 							data: {

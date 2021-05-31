@@ -493,7 +493,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			} );
 		} ),
 		channel.guild.members.fetch(settings.user),
-		( !username ? got.get( 'https://meta.' + settings.wiki + '.org/w/rest.php/oauth2/resource/profile', {
+		( !username ? got.get( 'https://' + settings.wiki + '/w/rest.php/oauth2/resource/profile', {
 			Authorization: `Bearer ${access_token}`
 		} ).then( response => {
 			var body = response.body;
@@ -507,7 +507,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			console.log( '- Error while getting the mediawiki profile: ' + error );
 		} ) : null )
 	]).then( ([{rows, wiki, lang}, member]) => {
-		if ( !username ) return settings.edit?.();
+		if ( !username || ( settings.wiki && settings.wiki !== wiki.hostname ) ) return settings.edit?.();
 		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -521,8 +521,6 @@ global.verifyOauthUser = function(state, access_token, settings) {
 				return settings.edit?.();
 			}
 			wiki.updateWiki(body.query.general);
-			if ( settings.wiki === 'wikimedia' && !wiki.isWikimedia() ) return settings.edit?.();
-			if ( settings.wiki === 'miraheze' && !wiki.isMiraheze() ) return settings.edit?.();
 			logging(wiki, channel.guild.id, 'verification');
 			var queryuser = body.query.users[0];
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.edit?.();

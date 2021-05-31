@@ -325,18 +325,17 @@ function mediawiki_oauth(res, searchParams) {
 		return res.end();
 	}
 	var state = searchParams.get('state');
-	var site = state.split('-')[0];
-	got.post( 'https://meta.' + site + '.org/w/rest.php/oauth2/access_token', {
+	var site = state.split(' ');
+	got.post( 'https://' + site[1] + '/w/rest.php/oauth2/access_token', {
 		form: {
 			grant_type: 'authorization_code',
 			code: searchParams.get('code'),
-			redirect_uri: new URL('https://settings.wikibot.de/oauth/mw', process.env.dashboard).href,
-			client_id: process.env[`oauth-${site}`],
-			client_secret: process.env[`oauth-${site}-secret`]
+			redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+			client_id: process.env[`oauth-${site[0]}`],
+			client_secret: process.env[`oauth-${site[0]}-secret`]
 		}
 	} ).then( response => {
 		var body = response.body;
-		console.log(response.statusCode,body)
 		if ( response.statusCode !== 200 || !body?.access_token ) {
 			console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the mediawiki token: ' + ( body?.message || body?.error ) );
 			res.writeHead(302, {Location: '/login?action=failed'});
@@ -347,7 +346,7 @@ function mediawiki_oauth(res, searchParams) {
 			access_token: body.access_token
 		} ).then( () => {
 			oauthVerify.delete(state);
-			res.writeHead(302, {Location: '/login?action=success'});
+			res.writeHead(302, {Location: 'https://' + site[1] + '/wiki/Special:MyPage'});
 			return res.end();
 		}, error => {
 			console.log( '- Dashboard: Error while sending the mediawiki token: ' + error );
