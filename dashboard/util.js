@@ -2,7 +2,7 @@ const got = require('got').extend( {
 	throwHttpErrors: false,
 	timeout: 5000,
 	headers: {
-		'User-Agent': 'Wiki-Bot/dashboard (Discord; ' + process.env.npm_package_name + ')'
+		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + '/dashboard (Discord; ' + process.env.npm_package_name + ')'
 	},
 	responseType: 'json'
 } );
@@ -110,13 +110,19 @@ const sessionData = new Map();
 const settingsData = new Map();
 
 /**
+ * @type {Set<String>}
+ */
+const oauthVerify = new Set();
+
+/**
  * @type {Map<Number, PromiseConstructor>}
  */
 const messages = new Map();
 var messageId = 1;
 
 process.on( 'message', message => {
-	if ( message.id ) {
+	if ( message?.id === 'verifyUser' ) return oauthVerify.add(message.state);
+	if ( message?.id ) {
 		if ( message.data.error ) messages.get(message.id).reject(message.data.error);
 		else messages.get(message.id).resolve(message.data.response);
 		return messages.delete(message.id);
@@ -375,4 +381,4 @@ function hasPerm(all = 0, ...permission) {
 	} ).every( perm => perm );
 }
 
-module.exports = {got, db, oauth, slashCommands, sessionData, settingsData, sendMsg, addWidgets, createNotice, escapeText, hasPerm};
+module.exports = {got, db, oauth, slashCommands, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, escapeText, hasPerm};

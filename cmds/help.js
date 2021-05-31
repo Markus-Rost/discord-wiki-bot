@@ -96,7 +96,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 				if ( process.env.READONLY ) cmdlist = msg.author.toString() + ', ' + lang.get('general.readonly') + '\n' + process.env.invite + '\n\n' + cmdlist;
 				cmdlist += formathelp(helplist.admin, msg, lang);
 				cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
-				cmdlist += '\n\t\t' + new URL(( msg.channel.isGuild() ? `/guild/${msg.guild.id}/settings` : '/' ), process.env.dashboard).href;
+				if ( process.env.dashboard ) cmdlist += '\n\t\t' + new URL(( msg.channel.isGuild() ? `/guild/${msg.guild.id}/settings` : '/' ), process.env.dashboard).href;
 				msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
 			}
 			else {

@@ -36,6 +36,9 @@ manager.on( 'shardCreate', shard => {
 	} );
 	
 	shard.on( 'message', message => {
+		if ( message?.id === 'verifyUser' && server ) {
+			return server.send( message );
+		}
 		if ( message === 'SIGKILL' ) {
 			console.log( '\n- Killing all shards!\n\n' );
 			manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
@@ -251,6 +254,13 @@ if ( process.env.dashboard ) {
 					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
 						data.response = result;
 					}, error => {
+						data.error = error.toString();
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				case 'verifyUser':
+					return manager.broadcastEval(`global.verifyOauthUser('${message.data.state}', '${message.data.access_token}')`, message.data.state.split('-')[1][0]).catch( error => {
 						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );

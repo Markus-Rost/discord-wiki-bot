@@ -1,9 +1,9 @@
-const crypto = require('crypto');
+const {randomBytes} = require('crypto');
 const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Wiki = require('../util/wiki.js');
 const allLangs = require('./i18n.js').allLangs().names;
-const {got, oauth, sessionData, settingsData, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
+const {got, oauth, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
 
 const file = require('fs').readFileSync('./dashboard/login.html');
 
@@ -49,9 +49,9 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	);
 	if ( action === 'logout' ) prompt = 'consent';
 	if ( action === 'loginfail' ) responseCode = 400;
-	state = Date.now().toString(16) + crypto.randomBytes(16).toString("hex");
+	state = Date.now().toString(16) + randomBytes(16).toString('hex');
 	while ( sessionData.has(state) ) {
-		state = Date.now().toString(16) + crypto.randomBytes(16).toString("hex");
+		state = Date.now().toString(16) + randomBytes(16).toString('hex');
 	}
 	let invite = oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
@@ -314,9 +314,57 @@ function dashboard_api(res, input) {
 	} );
 }
 
+/**
+ * Load oauth data of a wiki user
+ * @param {import('http').ServerResponse} res - The server response
+ * @param {URLSearchParams} searchParams - The url parameters
+ */
+function mediawiki_oauth(res, searchParams) {
+	if ( !searchParams.get('code') || !oauthVerify.has(searchParams.get('state')) ) {
+		res.writeHead(302, {Location: '/login?action=failed'});
+		return res.end();
+	}
+	var state = searchParams.get('state');
+	var site = state.split('-')[0];
+	got.post( 'https://meta.' + site + '.org/w/rest.php/oauth2/access_token', {
+		form: {
+			grant_type: 'authorization_code',
+			code: searchParams.get('code'),
+			redirect_uri: new URL('https://settings.wikibot.de/oauth/mw', process.env.dashboard).href,
+			client_id: process.env[`oauth-${site}`],
+			client_secret: process.env[`oauth-${site}-secret`]
+		}
+	} ).then( response => {
+		var body = response.body;
+		console.log(response.statusCode,body)
+		if ( response.statusCode !== 200 || !body?.access_token ) {
+			console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the mediawiki token: ' + ( body?.message || body?.error ) );
+			res.writeHead(302, {Location: '/login?action=failed'});
+			return res.end();
+		}
+		sendMsg( {
+			type: 'verifyUser', state,
+			access_token: body.access_token
+		} ).then( () => {
+			oauthVerify.delete(state);
+			res.writeHead(302, {Location: '/login?action=success'});
+			return res.end();
+		}, error => {
+			console.log( '- Dashboard: Error while sending the mediawiki token: ' + error );
+			res.writeHead(302, {Location: '/login?action=failed'});
+			return res.end();
+		} );
+	}, error => {
+		console.log( '- Dashboard: Error while getting the mediawiki token: ' + error );
+		res.writeHead(302, {Location: '/login?action=failed'});
+		return res.end();
+	} );
+}
+
 module.exports = {
 	login: dashboard_login,
 	oauth: dashboard_oauth,
 	refresh: dashboard_refresh,
-	api: dashboard_api
+	api: dashboard_api,
+	verify: mediawiki_oauth
 };

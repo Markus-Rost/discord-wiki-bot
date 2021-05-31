@@ -37,18 +37,17 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			url: new URL(`/guild/${msg.guild.id}/settings`, process.env.dashboard).href,
 			disabled: false
 		};
-		var components = [
-			{
-				type: 1,
-				components: [
-					button
-				]
-			}
-		];
+		var components = [];
+		if ( process.env.dashboard ) components.push({
+			type: 1,
+			components: [
+				button
+			]
+		});
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
 		if ( rows.length ) {
 			text = lang.get('settings.current');
-			text += `\n<${button.url}>`;
+			if ( process.env.dashboard ) text += `\n<${button.url}>`;
 			text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
 			if ( patreons[msg.guild.id] ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
 			text += '\n' + lang.get('settings.currentrole') + ' ' + ( guild.role ? `<@&${guild.role}>` : '@everyone' ) + ' - `' + prefix + 'settings role`';
@@ -75,7 +74,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			} ) || guild, {channel: msg.channel.id});
 			text = lang.get('settings.' + prelang + 'current');
 			button.url = new URL(`/guild/${msg.guild.id}/settings/${msg.channel.id}`, process.env.dashboard).href;
-			text += `\n<${button.url}>`;
+			if ( process.env.dashboard ) text += `\n<${button.url}>`;
 			if ( patreons[msg.guild.id] ) {
 				text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[channel.lang] + '` - `' + prefix + 'settings channel lang`';
 				text += '\n' + lang.get('settings.currentrole') + ' ' + ( channel.role ? `<@&${channel.role}>` : '@everyone' ) + ' - `' + prefix + 'settings channel role`';

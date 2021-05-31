@@ -11,6 +11,11 @@ const got = require('got').extend( {
 const slashCommands = require('../interactions/commands.json');
 
 /**
+ * @type {Map<String, {state: String, wiki: String, channel: import('discord.js').TextChannel, user: String}>}
+ */
+const oauthVerify = new Map();
+
+/**
  * Parse infobox content
  * @param {Object} infobox - The content of the infobox.
  * @param {import('discord.js').MessageEmbed} embed - The message embed.
@@ -457,6 +462,7 @@ function sendMessage(interaction, message, channel, letDelete = true) {
 module.exports = {
 	got,
 	slashCommands,
+	oauthVerify,
 	parse_infobox,
 	toFormatting,
 	toMarkdown,

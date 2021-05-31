@@ -1,6 +1,20 @@
 const util = require('util');
 const {defaultSettings, wikiProjects} = require('./default.json');
 
+const wikimediaSites = [
+	'wikipedia.org',
+	'mediawiki.org',
+	'wikimedia.org',
+	'wiktionary.org',
+	'wikibooks.org',
+	'wikisource.org',
+	'wikidata.org',
+	'wikiversity.org',
+	'wikiquote.org',
+	'wikinews.org',
+	'wikivoyage.org'
+];
+
 /**
  * A wiki.
  * @class Wiki
@@ -26,8 +40,9 @@ class Wiki extends URL {
 		}
 		this.articlepath = articlepath;
 		this.mainpage = '';
-		this.centralauth = 'local';
 		this.miraheze = this.hostname.endsWith( '.miraheze.org' );
+		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
+		this.centralauth = ( ( this.isWikimedia() || this.isMiraheze() ) ? 'CentralAuth' : 'local' );
 	}
 
 	/**
@@ -70,6 +85,7 @@ class Wiki extends URL {
 		this.centralauth = centralidlookupprovider;
 		this.miraheze = /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo);
 		this.gamepedia = ( gamepedia === 'true' ? true : this.hostname.endsWith( '.gamepedia.com' ) );
+		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
 		return this;
 	}
 
@@ -97,6 +113,14 @@ class Wiki extends URL {
 	 */
 	isMiraheze() {
 		return this.miraheze;
+	}
+
+	/**
+	 * Check for a WikiMedia wiki.
+	 * @returns {Boolean}
+	 */
+	isWikimedia() {
+		return this.wikimedia;
 	}
 
 	/**
@@ -136,6 +160,8 @@ class Wiki extends URL {
 		if ( !querystring.toString().length ) title = ( title || this.mainpage );
 		title = title.replace( / /g, '_' ).replace( /%/g, '%2525' );
 		let link = new URL(this.articleURL);
+		link.username = '';
+		link.password = '';
 		link.pathname = link.pathname.replace( '$1', title.replace( /\\/g, '%5C' ) );
 		link.searchParams.forEach( (value, name, searchParams) => {
 			if ( value.includes( '$1' ) ) {
