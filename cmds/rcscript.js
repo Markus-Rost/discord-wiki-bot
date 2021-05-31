@@ -50,14 +50,13 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			url: new URL(`/guild/${msg.guild.id}/rcscript`, process.env.dashboard).href,
 			disabled: false
 		};
-		var components = [
-			{
-				type: 1,
-				components: [
-					button
-				]
-			}
-		];
+		var components = [];
+		if ( process.env.dashboard ) components.push({
+			type: 1,
+			components: [
+				button
+			]
+		});
 
 		if ( args[0] === 'add' ) {
 			if ( !msg.channel.permissionsFor(msg.client.user).has('MANAGE_WEBHOOKS') ) {
@@ -477,7 +476,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return;
 			} ).then( channel => {
 				var text = lang.get('rcscript.current_selected', selected_row.configid);
-				text += `\n<${button.url}>\n`;
+				if ( process.env.dashboard ) text += `\n<${button.url}>\n`;
 				text += '\n' + lang.get('rcscript.channel') + ' <#' + channel + '>\n';
 				text += '\n' + lang.get('rcscript.wiki') + ' <' + selected_row.wiki + '>';
 				text += '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n';
@@ -520,7 +519,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			var text = '';
 			if ( rows.length ) {
 				text += lang.get('rcscript.current');
-				text += `\n<${button.url}>`;
+				if ( process.env.dashboard ) text += `\n<${button.url}>`;
 				text += rows.map( row => {
 					var cmd = prefix + 'rcscript' + ( only ? '' : ' ' + row.configid );
 					var row_text = '\n';
@@ -547,7 +546,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			}
 			else {
 				text += lang.get('rcscript.missing');
-				text += `\n<${button.url}>`;
+				if ( process.env.dashboard ) text += `\n<${button.url}>`;
 			}
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
 			msg.replyMsg( text, {split:true,components}, true );

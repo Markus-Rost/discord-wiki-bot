@@ -37,14 +37,13 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			url: new URL(`/guild/${msg.guild.id}/verification`, process.env.dashboard).href,
 			disabled: false
 		};
-		var components = [
-			{
-				type: 1,
-				components: [
-					button
-				]
-			}
-		];
+		var components = [];
+		if ( process.env.dashboard ) components.push({
+			type: 1,
+			components: [
+				button
+			]
+		});
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
 			var limit = verificationLimit[( patreons[msg.guild.id] ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), {}, true );
@@ -99,12 +98,12 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			var text = '';
 			if ( rows.length ) {
 				text += lang.get('verification.current');
-				text += `\n<${button.url}>`;
+				if ( process.env.dashboard ) text += `\n<${button.url}>`;
 				text += rows.map( row => formatVerification(false, true, row) ).join('');
 			}
 			else {
 				text += lang.get('verification.missing');
-				text += `\n<${button.url}>`;
+				if ( process.env.dashboard ) text += `\n<${button.url}>`;
 			}
 			text += '\n\n' + lang.get('verification.add_more') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`';
 			return msg.sendChannel( '<@' + msg.author.id + '>, ' + text, {split:true,components}, true );
@@ -264,7 +263,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} ) );
 			}
 		}
-		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected', row.configid) + `\n<${button.url}>` + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true,components}, true );
+		return msg.sendChannel( '<@' + msg.author.id + '>, ' + lang.get('verification.current_selected', row.configid) + ( process.env.dashboard ? `\n<${button.url}>` : '' ) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`', {split:true,components}, true );
 		
 		function formatVerification(showCommands, hideNotice, {
 			configid,

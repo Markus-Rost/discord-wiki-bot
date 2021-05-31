@@ -1,5 +1,7 @@
+const {randomBytes} = require('crypto');
 var db = require('../util/database.js');
 var verify = require('../functions/verify.js');
+const {oauthVerify, allowDelete, escapeFormatting} = require('../util/functions.js');
 
 /**
  * Processes the "verify" command.
@@ -25,7 +27,55 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			if ( msg.onlyVerifyCommand ) return;
 			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + 'verification`' : '' ) );
 		}
-	
+		
+		if ( ( wiki.isWikimedia() || wiki.isMiraheze() ) && process.env.dashboard ) {
+			let oauth = '';
+			if ( wiki.isWikimedia() ) oauth = 'wikimedia';
+			if ( wiki.isMiraheze() ) oauth = 'miraheze';
+			if ( oauth && process.env[`oauth-${oauth}`] && process.env[`oauth-${oauth}-secret`] ) {
+				let state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+				while ( oauthVerify.has(state) ) {
+					state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+				}
+				oauthVerify.set(state, {
+					state, wiki: wiki.hostname,
+					channel: msg.channel,
+					user: msg.author.id
+				});
+				msg.client.shard.send({id: 'verifyUser', state});
+				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+					response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+					client_id: process.env[`oauth-${oauth}`], state
+				}).toString();
+				return msg.member.send( lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>', {
+					components: [
+						{
+							type: 1,
+							components: [
+								{
+									type: 2,
+									style: 5,
+									label: lang.get('verify.oauth_button'),
+									emoji: {id: null, name: '🔗'},
+									url: oauthURL,
+									disabled: false
+								}
+							]
+						}
+					]
+				} ).then( message => {
+					msg.reactEmoji('📩');
+					allowDelete(message, msg.author.id);
+				}, error => {
+					if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
+						return msg.replyMsg( lang.get('verify.oauth_private') );
+					}
+					log_error(error);
+					msg.reactEmoji('error');
+				} );
+			}
+		}
+		
 		var username = args.join(' ').replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0].substring(0, 250).trim();
 		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
 			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
@@ -39,7 +89,49 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		}
 		msg.reactEmoji('⏳').then( reaction => {
 			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
-				if ( result.reaction ) msg.reactEmoji(result.reaction);
+				if ( result.oauth ) {
+					let state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+					while ( oauthVerify.has(state) ) {
+						state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+					}
+					oauthVerify.set(state, {
+						state, wiki: wiki.hostname,
+						channel: msg.channel,
+						user: msg.author.id
+					});
+					msg.client.shard.send({id: 'verifyUser', state});
+					let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+						response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+						client_id: process.env[`oauth-${result.oauth}`], state
+					}).toString();
+					msg.member.send( lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>', {
+						components: [
+							{
+								type: 1,
+								components: [
+									{
+										type: 2,
+										style: 5,
+										label: lang.get('verify.oauth_button'),
+										emoji: {id: null, name: '🔗'},
+										url: oauthURL,
+										disabled: false
+									}
+								]
+							}
+						]
+					} ).then( message => {
+						msg.reactEmoji('📩');
+						allowDelete(message, msg.author.id);
+					}, error => {
+						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
+							return msg.replyMsg( lang.get('verify.oauth_private') );
+						}
+						log_error(error);
+						msg.reactEmoji('error');
+					} );
+				}
+				else if ( result.reaction ) msg.reactEmoji(result.reaction);
 				else {
 					var options = {embed: result.embed, components: []};
 					if ( result.add_button ) options.components.push({

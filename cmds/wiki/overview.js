@@ -12,7 +12,7 @@ const {toFormatting, toPlaintext, escapeFormatting} = require('../../util/functi
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
-	got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-GamepediaNotice&amenableparser=true&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.isFandom() ? '|allmessages&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -106,8 +106,15 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			var manager = [lang.get('overview.manager'), ''];
 			var founder = [lang.get('overview.founder')];
 			var crossover = [lang.get('overview.crossover')];
-			if ( body.query.allmessages[0]['*'] ) {
+			if ( body.query.allmessages?.[0]?.['*'] ) {
 				crossover[1] = '<https://' + body.query.allmessages[0]['*'] + '.gamepedia.com/>';
+			}
+			if ( body.query.allmessages?.[1]?.['*'] ) {
+				let mergeNotice = body.query.allmessages[1]['*'];
+				if ( !mergeNotice.includes( '|' ) ) {
+					mergeNotice = mergeNotice.split('/');
+					crossover[1] = '<https://' + mergeNotice[0] + '.fandom.com/' + ( mergeNotice[1] ? '/' + mergeNotice[1] : '' ) + '>';
+				}
 			}
 			var description = [lang.get('overview.description')];
 			var image = [lang.get('overview.image')];

@@ -1,11 +1,11 @@
+global.isDebug = ( process.argv[2] === 'debug' );
+
 const http = require('http');
 const pages = require('./oauth.js');
 const dashboard = require('./guilds.js');
 const {db, sessionData, settingsData} = require('./util.js');
 const Lang = require('./i18n.js');
 const allLangs = Lang.allLangs();
-
-global.isDebug = ( process.argv[2] === 'debug' );
 
 const posts = {
 	settings: require('./settings.js').post,
@@ -126,6 +126,10 @@ const server = http.createServer( (req, res) => {
 	}
 
 	var reqURL = new URL(req.url, process.env.dashboard);
+
+	if ( reqURL.pathname === '/oauth/mw' ) {
+		return pages.verify(res, reqURL.searchParams);
+	}
 
 	if ( reqURL.pathname === '/favicon.ico' ) reqURL.pathname = '/src/icon.png';
 	if ( files.has(reqURL.pathname) ) {
