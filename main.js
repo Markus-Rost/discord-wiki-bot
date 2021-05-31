@@ -260,7 +260,7 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'verifyUser':
-					return manager.broadcastEval(`global.verifyOauthUser('${message.data.state}', '${message.data.access_token}')`, message.data.state.split('-')[1][0]).catch( error => {
+					return manager.broadcastEval(`global.verifyOauthUser('${message.data.state}', '${message.data.access_token}')`, message.data.state.split(' ')[1][0]).catch( error => {
 						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );

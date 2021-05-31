@@ -326,13 +326,13 @@ function mediawiki_oauth(res, searchParams) {
 	}
 	var state = searchParams.get('state');
 	var site = state.split(' ');
-	got.post( 'https://' + site[1] + '/w/rest.php/oauth2/access_token', {
+	got.post( 'https://' + site[0] + '/rest.php/oauth2/access_token', {
 		form: {
 			grant_type: 'authorization_code',
 			code: searchParams.get('code'),
 			redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-			client_id: process.env[`oauth-${site[0]}`],
-			client_secret: process.env[`oauth-${site[0]}-secret`]
+			client_id: process.env['oauth_' + ( site[2] || site[0] )],
+			client_secret: process.env['oauth_' + ( site[2] || site[0] ) + '_secret']
 		}
 	} ).then( response => {
 		var body = response.body;

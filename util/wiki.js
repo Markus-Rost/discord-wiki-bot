@@ -15,6 +15,8 @@ const wikimediaSites = [
 	'wikivoyage.org'
 ];
 
+const oauthSites = [];
+
 /**
  * A wiki.
  * @class Wiki
@@ -43,6 +45,7 @@ class Wiki extends URL {
 		this.miraheze = this.hostname.endsWith( '.miraheze.org' );
 		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
 		this.centralauth = ( ( this.isWikimedia() || this.isMiraheze() ) ? 'CentralAuth' : 'local' );
+		this.oauth2 = oauthSites.includes( this.href );
 	}
 
 	/**
@@ -86,6 +89,7 @@ class Wiki extends URL {
 		this.miraheze = /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo);
 		this.gamepedia = ( gamepedia === 'true' ? true : this.hostname.endsWith( '.gamepedia.com' ) );
 		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
+		this.oauth2 = oauthSites.includes( this.href );
 		return this;
 	}
 
@@ -129,6 +133,14 @@ class Wiki extends URL {
 	 */
 	hasCentralAuth() {
 		return this.centralauth === 'CentralAuth';
+	}
+
+	/**
+	 * Check for OAuth2.
+	 * @returns {Boolean}
+	 */
+	hasOAuth2() {
+		return ( this.isWikimedia() || this.isMiraheze() || this.oauth2 );
 	}
 
 	/**

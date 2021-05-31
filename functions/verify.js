@@ -16,14 +16,14 @@ const toTitle = require('../util/wiki.js').toTitle;
  * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  * @param {Object[]} rows - The verification settings.
  * @param {String} [old_username] - The username before the search.
- * @returns {Promise<{content:String,embed:MessageEmbed,add_button:Boolean,reaction:String,oauth:String,logging:{channel:String,content:String,embed?:MessageEmbed}}>}
+ * @returns {Promise<{content:String,embed:MessageEmbed,add_button:Boolean,reaction:String,oauth:String[],logging:{channel:String,content:String,embed?:MessageEmbed}}>}
  */
 function verify(lang, channel, member, username, wiki, rows, old_username = '') {
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	var result = {
 		content: '', embed,
 		add_button: channel.permissionsFor(channel.guild.me).has('EMBED_LINKS'),
-		reaction: '', oauth: '',
+		reaction: '', oauth: [],
 		logging: {
 			channel: '',
 			content: '',
@@ -53,11 +53,11 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		if ( ( wiki.isWikimedia() || wiki.isMiraheze() ) && process.env.dashboard ) {
-			let oauth = '';
-			if ( wiki.isWikimedia() ) oauth = 'wikimedia';
-			if ( wiki.isMiraheze() ) oauth = 'miraheze';
-			if ( process.env[`oauth-${oauth}`] && process.env[`oauth-${oauth}-secret`] ) {
+		if ( wiki.hasOAuth2() && process.env.dashboard ) {
+			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
+			if ( wiki.isWikimedia() ) oauth.push('wikimedia');
+			if ( wiki.isMiraheze() ) oauth.push('miraheze');
+			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				result.oauth = oauth;
 				return;
 			}
@@ -493,7 +493,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			} );
 		} ),
 		channel.guild.members.fetch(settings.user),
-		( !username ? got.get( 'https://' + settings.wiki + '/w/rest.php/oauth2/resource/profile', {
+		( !username ? got.get( settings.wiki + 'rest.php/oauth2/resource/profile', {
 			Authorization: `Bearer ${access_token}`
 		} ).then( response => {
 			var body = response.body;
@@ -508,7 +508,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			console.log( '- Error while getting the mediawiki profile: ' + error );
 		} ) : null )
 	]).then( ([{rows, wiki, lang}, member]) => {
-		if ( !username || ( settings.wiki && settings.wiki !== wiki.hostname ) ) return settings.edit?.();
+		if ( !username || ( settings.wiki && settings.wiki !== wiki.href ) ) return settings.edit?.();
 		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);

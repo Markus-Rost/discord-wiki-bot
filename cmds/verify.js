@@ -28,24 +28,24 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + 'verification`' : '' ) );
 		}
 		
-		if ( ( wiki.isWikimedia() || wiki.isMiraheze() ) && process.env.dashboard ) {
-			let oauth = '';
-			if ( wiki.isWikimedia() ) oauth = 'wikimedia';
-			if ( wiki.isMiraheze() ) oauth = 'miraheze';
-			if ( oauth && process.env[`oauth-${oauth}`] && process.env[`oauth-${oauth}-secret`] ) {
-				let state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+		if ( wiki.hasOAuth2() && process.env.dashboard ) {
+			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
+			if ( wiki.isWikimedia() ) oauth.push('wikimedia');
+			if ( wiki.isMiraheze() ) oauth.push('miraheze');
+			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
+				let state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
 				while ( oauthVerify.has(state) ) {
-					state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+					state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
 				}
 				oauthVerify.set(state, {
-					state, wiki: wiki.hostname,
+					state, wiki: wiki.href,
 					channel: msg.channel,
 					user: msg.author.id
 				});
 				msg.client.shard.send({id: 'verifyUser', state});
 				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
 					response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-					client_id: process.env[`oauth-${oauth}`], state
+					client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )], state
 				}).toString();
 				return msg.member.send( lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>', {
 					components: [
@@ -90,19 +90,19 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		msg.reactEmoji('⏳').then( reaction => {
 			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
 				if ( result.oauth ) {
-					let state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+					let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
 					while ( oauthVerify.has(state) ) {
-						state = `${result.oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
+						state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
 					}
 					oauthVerify.set(state, {
-						state, wiki: wiki.hostname,
+						state, wiki: wiki.href,
 						channel: msg.channel,
 						user: msg.author.id
 					});
 					msg.client.shard.send({id: 'verifyUser', state});
 					let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
 						response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-						client_id: process.env[`oauth-${result.oauth}`], state
+						client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
 					}).toString();
 					msg.member.send( lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>', {
 						components: [
