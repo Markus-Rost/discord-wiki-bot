@@ -477,7 +477,10 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
  * @param {Function} settings.send - The function to edit the message.
  */
 global.verifyOauthUser = function(state, access_token, settings) {
-	if ( state && access_token && oauthVerify.has(state) ) settings = oauthVerify.get(state);
+	if ( state && access_token && oauthVerify.has(state) ) {
+		settings = oauthVerify.get(state);
+		oauthVerify.delete(state);
+	}
 	if ( !settings?.channel ) return;
 	var channel = settings.channel;
 	var username = settings.username;
