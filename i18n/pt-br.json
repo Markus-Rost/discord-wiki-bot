@@ -590,6 +590,7 @@
         "special": "Conteúdo desta página especial:"
     },
     "settings": {
+        "button": "Use o painel de controle",
         "channel current": "estas são as configurações atuais deste canal:",
         "channel lang": "o idioma para este canal é:",
         "channel langchanged": "você alterou o idioma deste canal para:",
@@ -785,6 +786,8 @@
     },
     "verify": {
         "audit_reason": "Verificado como \"$1\"",
+        "button_again": "Verificar novamente",
+        "button_wrong_user": "Você não pode verificar esta verificação novamente, esta é uma verificação de $1!",
         "discord": "{{GENDER:$1|Usuário do Discord|Usuária do Discord}}:",
         "empty": "*vazio*",
         "error": "Ocorreu um erro ao verificar o usuário.",
@@ -796,6 +799,7 @@
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/pt/wiki/Ajuda_para_Wikis_da_Gamepedia:Verificação_do_Discord",
         "help_guide": "Siga [esse guia]($1) para associar seu nome de usuário do Discord ao seu usuário na wiki:",
+        "help_missing": "Certifique-se de que está usando seu nome de usuário da wiki e de que as maiúsculas e minúsculas estão corretas.",
         "help_subpage": "Adicione seu nome de usuário do Discord ($1) para sua subpágina do Discord na wiki:",
         "missing": "não há verificações configuradas para este canal.",
         "notice": "Atenção:",
