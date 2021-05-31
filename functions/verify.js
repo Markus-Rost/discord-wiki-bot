@@ -569,6 +569,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			if ( verified ) {
 				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
+				var comment = [];
 				var verifynotice = {
 					logchannel: '',
 					onsuccess: ''
