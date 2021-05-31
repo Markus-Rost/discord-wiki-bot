@@ -503,6 +503,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 				return;
 			}
 			username = body.username;
+			console.log( channel.guild.id + ': OAuth2: ' + username );
 		}, error => {
 			console.log( '- Error while getting the mediawiki profile: ' + error );
 		} ) : null )

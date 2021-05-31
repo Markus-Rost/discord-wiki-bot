@@ -291,6 +291,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 		interaction.message.allowed_mentions = allowed_mentions;
 
 		if ( interaction?.message?.embeds?.[0]?.fields?.[1]?.value === lang.get('verify.oauth_used') && interaction?.message?.embeds?.[0]?.url?.startsWith( wiki.origin ) ) {
+			console.log( interaction.guild_id + ': Button: ' + interaction.data.custom_id + ': OAuth2: ' + username );
 			interaction.message.components[0].components[0].disabled = true;
 			return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 				data: {
@@ -328,6 +329,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 			if ( wiki.isWikimedia() ) oauth = 'wikimedia';
 			if ( wiki.isMiraheze() ) oauth = 'miraheze';
 			if ( oauth && process.env[`oauth-${oauth}`] && process.env[`oauth-${oauth}-secret`] ) {
+				console.log( interaction.guild_id + ': Button: ' + interaction.data.custom_id + ': OAuth2' );
 				let state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
 				while ( oauthVerify.has(state) ) {
 					state = `${oauth} ${wiki.hostname} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex');
