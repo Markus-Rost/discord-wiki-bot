@@ -474,7 +474,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
  * @param {import('discord.js').TextChannel} settings.channel - The channel.
  * @param {String} settings.username - The username.
  * @param {String} settings.user - The user id.
- * @param {Function} settings.edit - The function to edit the message.
+ * @param {Function} settings.send - The function to edit the message.
  */
 global.verifyOauthUser = function(state, access_token, settings) {
 	if ( state && access_token && oauthVerify.has(state) ) settings = oauthVerify.get(state);
@@ -509,7 +509,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			console.log( '- Error while getting the mediawiki profile: ' + error );
 		} ) : null )
 	]).then( ([{rows, wiki, lang}, member]) => {
-		if ( !username || ( settings.wiki && settings.wiki !== wiki.href ) ) return settings.edit?.();
+		if ( !username || ( settings.wiki && settings.wiki !== wiki.href ) ) return settings.send?.();
 		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warn(body.warnings);
@@ -520,12 +520,12 @@ global.verifyOauthUser = function(state, access_token, settings) {
 				else {
 					console.log( '- ' + response.statusCode + ': Error while getting the user: ' + body?.error?.info );
 				}
-				return settings.edit?.();
+				return settings.send?.();
 			}
 			wiki.updateWiki(body.query.general);
 			logging(wiki, channel.guild.id, 'verification');
 			var queryuser = body.query.users[0];
-			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.edit?.();
+			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.send?.();
 			var allowedMentions = {
 				users: [
 					member.id
@@ -536,11 +536,11 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 			if ( queryuser.blockexpiry ) {
 				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-				return ( settings.edit || channel.send )(member.toString() + ', ' + lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender), {embed, allowedMentions}).catch(log_error);
+				return ( settings.send ? settings : channel ).send(member.toString() + ', ' + lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender), {embed, allowedMentions}).catch(log_error);
 			}
 			if ( body.query.globaluserinfo.locked !== undefined ) {
 				embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-				return ( settings.edit || channel.send )(member.toString() + ', ' + lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), {embed, allowedMentions}).catch(log_error);
+				return ( settings.send ? settings : channel ).send(member.toString() + ', ' + lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), {embed, allowedMentions}).catch(log_error);
 			}
 			queryuser.groups.push(...body.query.globaluserinfo.groups);
 
@@ -639,7 +639,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 						if ( comment.length && !useLogging ) text += '\n\n' + comment.join('\n');
 						if ( verifynotice.onsuccess ) text += '\n\n**' + lang.get('verify.notice') + '** ' + verifynotice.onsuccess;
 					}
-					return ( settings.edit || channel.send )(member.toString() + ', ' + text, {embed, allowedMentions}).then( msg => {
+					return ( settings.send ? settings : channel ).send(member.toString() + ', ' + text, {embed, allowedMentions}).then( msg => {
 						if ( !useLogging ) return;
 						if ( msg ) {
 							if ( logembed ) logembed.addField(msg.url, '<#' + channel.id + '>');
@@ -683,15 +683,15 @@ global.verifyOauthUser = function(state, access_token, settings) {
 						]
 					}
 				];
-				return ( settings.edit || channel.send )(member.toString() + ', ' + lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender) + noticeContent, {embed, allowedMentions, components}).catch(log_error);
+				return ( settings.send ? settings : channel ).send(member.toString() + ', ' + lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender) + noticeContent, {embed, allowedMentions, components}).catch(log_error);
 			} );
 		}, error => {
 			console.log( '- Error while getting the user: ' + error );
-			settings.edit?.();
+			settings.send?.();
 		} );
 	}, error => {
 		if ( error ) console.log( '- Error while preparing oauth verification: ' + error );
-		settings.edit?.();
+		settings.send?.();
 	} );
 }
 

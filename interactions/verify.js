@@ -301,7 +301,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 			} ).then( () => {
 				return global.verifyOauthUser('', '', {
 					channel, username, user: interaction.user.id,
-					edit: function(content, options) {
+					send: function(content, options) {
 						if ( !content && !options ) {
 							interaction.message.components = [];
 							return sendMessage(interaction, interaction.message, channel, false);
