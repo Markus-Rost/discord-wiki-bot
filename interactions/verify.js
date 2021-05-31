@@ -26,7 +26,6 @@ function slash_verify(interaction, lang, wiki, channel) {
 			}
 		}
 	} ).catch(log_error);
-	console.log( interaction.guild_id + ': Slash: /' + interaction.data.name + ' ' + interaction.data.options?.[0]?.value );
 	if ( !channel.guild.me.permissions.has('MANAGE_ROLES') ) {
 		console.log( channel.guild.id + ': Missing permissions - MANAGE_ROLES' );
 		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {

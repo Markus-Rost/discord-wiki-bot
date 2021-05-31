@@ -248,6 +248,12 @@ client.ws.on( 'INTERACTION_CREATE', interaction => {
  * @param {Discord.TextChannel} [channel] - The channel for the interaction.
  */
 function slash_command(interaction, channel) {
+	if ( interaction.data.name !== 'inline' ) {
+		console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: /' + interaction.data.name + ' ' + ( interaction.data.options?.map( option => {
+			return option.name + ':' + option.value;
+		} ).join(' ') || '' ) );
+	}
+	else console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: /' + interaction.data.name );
 	if ( !slash.hasOwnProperty(interaction.data.name) ) {
 		console.log( '- Slash: Unknown command: ' + ( isDebug ? JSON.stringify(interaction, null, '\t') : interaction.data.name ) );
 		return client.api.interactions(interaction.id, interaction.token).callback.post( {
