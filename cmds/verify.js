@@ -89,7 +89,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		}
 		msg.reactEmoji('⏳').then( reaction => {
 			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
-				if ( result.oauth ) {
+				if ( result.oauth.length ) {
 					let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
 					while ( oauthVerify.has(state) ) {
 						state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );

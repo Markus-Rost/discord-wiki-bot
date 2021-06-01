@@ -137,7 +137,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 		} ).then( () => {
 			return channel.guild.members.fetch(interaction.user.id).then( member => {
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
-					if ( result.oauth ) {
+					if ( result.oauth.length ) {
 						let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
 						while ( oauthVerify.has(state) ) {
 							state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
@@ -385,7 +385,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 			return channel.guild.members.fetch(interaction.user.id).then( member => {
 				console.log( interaction.guild_id + ': Button: ' + interaction.data.custom_id + ' ' + username );
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
-					if ( result.oauth ) {
+					if ( result.oauth.length ) {
 						let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
 						while ( oauthVerify.has(state) ) {
 							state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
