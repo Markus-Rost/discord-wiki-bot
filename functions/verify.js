@@ -814,7 +814,14 @@ global.verifyOauthUser = function(state, access_token, settings) {
 						return channel.messages.add(message);
 					}, () => {
 						if ( (verifynotice.flags & 1 << 0) === 1 << 0 ) {
-							member.send(channel.toString() + ', ' + content, options).then( message => {
+							let dmEmbed = new MessageEmbed(options.embed);
+							dmEmbed.fields.forEach( field => {
+								field.value.replace( /<@&(\d+)>/g, (mention, id) => {
+									if ( !channel.guild.roles.cache.has(id) ) return mention;
+									return '@' + channel.guild.roles.cache.get(id)?.name;
+								} );
+							} );
+							member.send(channel.toString() + '; ' + content, Object.assign({}, options, {embed: dmEmbed})).then( message => {
 								allowDelete(message, member.id);
 							}, error => {
 								if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
@@ -827,7 +834,14 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					} );
 				}
 				else if ( (verifynotice.flags & 1 << 0) === 1 << 0 ) {
-					member.send(channel.toString() + ', ' + content, options).then( message => {
+					let dmEmbed = new MessageEmbed(options.embed);
+					dmEmbed.fields.forEach( field => {
+						field.value.replace( /<@&(\d+)>/g, (mention, id) => {
+							if ( !channel.guild.roles.cache.has(id) ) return mention;
+							return '@' + channel.guild.roles.cache.get(id)?.name;
+						} );
+					} );
+					member.send(channel.toString() + '; ' + content, Object.assign({}, options, {embed: dmEmbed})).then( message => {
 						allowDelete(message, member.id);
 					}, error => {
 						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER

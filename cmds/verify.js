@@ -1,4 +1,5 @@
 const {randomBytes} = require('crypto');
+const {MessageEmbed} = require('discord.js');
 var db = require('../util/database.js');
 var verify = require('../functions/verify.js');
 const {oauthVerify, allowDelete, escapeFormatting} = require('../util/functions.js');
@@ -150,7 +151,14 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						]
 					});
 					if ( result.send_private ) {
-						msg.member.send( msg.channel.toString() + ', ' + result.content, {embed: options.embed, components: []} ).then( message => {
+						let dmEmbed = new MessageEmbed(options.embed);
+						dmEmbed.fields.forEach( field => {
+							field.value.replace( /<@&(\d+)>/g, (mention, id) => {
+								if ( !msg.guild.roles.cache.has(id) ) return mention;
+								return '@' + msg.guild.roles.cache.get(id)?.name;
+							} );
+						} );
+						msg.member.send( msg.channel.toString() + '; ' + result.content, {embed: dmEmbed, components: []} ).then( message => {
 							msg.reactEmoji('📩');
 							allowDelete(message, msg.author.id);
 							msg.delete({timeout: 60000, reason: lang.get('verify.footer')}).catch(log_error);
