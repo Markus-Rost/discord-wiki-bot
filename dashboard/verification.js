@@ -290,7 +290,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		}
 		else if ( args[4] === 'notice' && rows.length ) {
 			$(`.channel#channel-notice`).addClass('selected');
-			return db.query( 'SELECT logchannel, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild.id] ).then( ({rows:[row]}) => {
+			return db.query( 'SELECT logchannel, flags, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild.id] ).then( ({rows:[row]}) => {
 				let curCat = null;
 				$('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
 					$('<h2>').text(dashboardLang.get('verification.form.notice')),
@@ -315,7 +315,15 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 									if ( catChannel.is('optgroup') && !catChannel.children('option').length ) return false;
 									return true;
 								} )
-							)
+							),
+							$('<div id="wb-settings-logall-hide">').append(
+								$('<label for="wb-settings-flag_logall">').text(dashboardLang.get('verification.form.flag_logall')),
+								$('<input type="checkbox" id="wb-settings-flag_logall" name="flag_logall">').attr('checked', ( (row.flags & 1 << 1) === 1 << 1 ? '' : null ))
+							).attr('style', ( row?.logchannel ? '' : 'display: none;'))
+						),
+						$('<div>').append(
+							$('<label for="wb-settings-flag_private">').text(dashboardLang.get('verification.form.flag_private')),
+							$('<input type="checkbox" id="wb-settings-flag_private" name="flag_private">').attr('checked', ( (row.flags & 1 << 0) === 1 << 0 ? '' : null ))
 						),
 						$('<div>').append(
 							$('<label for="wb-settings-success">').text(dashboardLang.get('verification.form.success')).append(
@@ -810,6 +818,8 @@ function update_verification(res, userSettings, guild, type, settings) {
  * @param {String} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String} [settings.channel]
+ * @param {String} [settings.flag_logall]
+ * @param {String} [settings.flag_private]
  * @param {String} [settings.success]
  * @param {String} [settings.match]
  * @param {String} settings.save_settings
@@ -849,18 +859,21 @@ function update_notices(res, userSettings, guild, type, settings) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		return db.connect().then( client => {
-			return client.query( 'SELECT logchannel, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild] ).then( ({rows:[row]}) => {
+			return client.query( 'SELECT logchannel, flags, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild] ).then( ({rows:[row]}) => {
+				var flags = ( settings.flag_private ? 1 << 0 : 0 ) + ( settings.flag_logall ? 1 << 1 : 0 );
 				if ( !row ) {
 					if ( !( settings.channel || settings.success || settings.match ) ) {
 						return res(`/guild/${guild}/verification/${type}`, 'save');
 					}
-					return client.query( 'INSERT INTO verifynotice(guild, logchannel, onsuccess, onmatch) VALUES($1, $2, $3, $4)', [guild, settings.channel, settings.success, settings.match] ).then( () => {
+					return client.query( 'INSERT INTO verifynotice(guild, logchannel, flags, onsuccess, onmatch) VALUES($1, $2, $3, $4, $5)', [guild, settings.channel, flags, settings.success, settings.match] ).then( () => {
 						console.log( `- Dashboard: Verification notices successfully added: ${guild}` );
 						res(`/guild/${guild}/verification/${type}`, 'save');
 						return client.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {
 							var lang = new Lang(channel?.lang);
 							var text = lang.get('verification.dashboard.added_notice', `<@${userSettings.user.id}>`) + '\n';
 							if ( settings.channel ) text += `${lang.get('verification.logging')} <#${settings.channel}>\n`;
+							if ( settings.flag_logall ) text += `${lang.get('verification.flag_logall')} *\`${lang.get('verification.enabled')}\`*\n`;
+							if ( settings.flag_private ) text += `${lang.get('verification.flag_private')} *\`${lang.get('verification.enabled')}\`*\n`;
 							if ( settings.success ) text += `${lang.get('verification.success')} \`\`\`md\n${settings.success.replace( /```/g, '`ˋ`' )}\n\`\`\``;
 							if ( settings.match ) text += `${lang.get('verification.match')} \`\`\`md\n${settings.match.replace( /```/g, '`ˋ`' )}\n\`\`\``;
 							text += `<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
@@ -880,10 +893,10 @@ function update_notices(res, userSettings, guild, type, settings) {
 						return res(`/guild/${guild}/verification/${type}`, 'savefail');
 					} );
 				}
-				if ( settings.channel === row.logchannel && settings.success === row.onsuccess && settings.match === row.onmatch ) {
+				if ( settings.channel === row.logchannel && flags === row.flags && settings.success === row.onsuccess && settings.match === row.onmatch ) {
 					return res(`/guild/${guild}/verification/${type}`, 'save');
 				}
-				return client.query( 'UPDATE verifynotice SET logchannel = $1, onsuccess = $2, onmatch = $3 WHERE guild = $4', [settings.channel, settings.success, settings.match, guild] ).then( () => {
+				return client.query( 'UPDATE verifynotice SET logchannel = $1, flags = $2, onsuccess = $3, onmatch = $4 WHERE guild = $5', [settings.channel, flags, settings.success, settings.match, guild] ).then( () => {
 					console.log( `- Dashboard: Verification notices successfully updated: ${guild}` );
 					res(`/guild/${guild}/verification/${type}`, 'save');
 					return client.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {
@@ -891,6 +904,12 @@ function update_notices(res, userSettings, guild, type, settings) {
 						var text = lang.get('verification.dashboard.updated_notice', `<@${userSettings.user.id}>`) + '\n';
 						if ( settings.channel !== row.logchannel ) {
 							text += lang.get('verification.logging') + ' ~~' + ( row.logchannel ? `<#${row.logchannel}>` : `*\`${lang.get('verification.disabled')}\`*` ) + '~~ → ' + ( settings.channel ? `<#${settings.channel}>` : `*\`${lang.get('verification.disabled')}\`*` ) + '\n';
+						}
+						if ( ( (flags & 1 << 1) === 1 << 1 ) !== ( (row.flags & 1 << 1) === 1 << 1 ) ) {
+							text += lang.get('verification.flag_logall') + ' ~~*`' + lang.get('verification.' + ( (row.flags & 1 << 1) === 1 << 1 ? 'enabled' : 'disabled')) + '`*~~ → *`' + lang.get('verification.' + ( settings.flag_logall ? 'enabled' : 'disabled')) + '`*\n';
+						}
+						if ( ( (flags & 1 << 0) === 1 << 0 ) !== ( (row.flags & 1 << 0) === 1 << 0 ) ) {
+							text += lang.get('verification.flag_private') + ' ~~*`' + lang.get('verification.' + ( (row.flags & 1 << 0) === 1 << 0 ? 'enabled' : 'disabled')) + '`*~~ → *`' + lang.get('verification.' + ( settings.flag_private ? 'enabled' : 'disabled')) + '`*\n';
 						}
 						if ( settings.success !== row.onsuccess ) {
 							text += lang.get('verification.success') + ' ' + ( row.onsuccess ? '~~```md\n' + row.onsuccess.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```~~' : `~~*\`${lang.get('verification.disabled')}\`*~~ → ` ) + ( settings.success ? '```md\n' + settings.success.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```' : ` → *\`${lang.get('verification.disabled')}\`*\n` );

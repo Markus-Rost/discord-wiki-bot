@@ -215,6 +215,8 @@
             "confirm": "Do you really want to delete the verification?",
             "editcount": "Minimal edit count:",
             "entry": "Verification #$1",
+            "flag_logall": "Log unsuccessful verifications:",
+            "flag_private": "Private command responses:",
             "logging": "Logging channel:",
             "match": "Missing requirements notice:",
             "match_placeholder": "Markdown text on matching Discord tags but not fulfilling any requirements for roles.",

@@ -22,7 +22,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		return;
 	}
 	
-	db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'] ).then( ({rows}) => {
+	db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [msg.guild.id, '%|' + msg.channel.id + '|%'] ).then( ({rows}) => {
 		if ( !rows.length ) {
 			if ( msg.onlyVerifyCommand ) return;
 			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guild.id] || process.env.prefix ) + 'verification`' : '' ) );
@@ -66,6 +66,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 				} ).then( message => {
 					msg.reactEmoji('📩');
 					allowDelete(message, msg.author.id);
+					msg.delete({timeout: 60000, reason: lang.get('verify.footer')}).catch(log_error);
 				}, error => {
 					if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
 						return msg.replyMsg( lang.get('verify.oauth_private') );
@@ -123,6 +124,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					} ).then( message => {
 						msg.reactEmoji('📩');
 						allowDelete(message, msg.author.id);
+						msg.delete({timeout: 60000, reason: lang.get('verify.footer')}).catch(log_error);
 					}, error => {
 						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
 							return msg.replyMsg( lang.get('verify.oauth_private') );
@@ -147,7 +149,26 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							}
 						]
 					});
-					msg.replyMsg( result.content, options, false, false ).then( message => {
+					if ( result.send_private ) {
+						msg.member.send( msg.channel.toString() + ', ' + result.content, {embed: options.embed, components: []} ).then( message => {
+							msg.reactEmoji('📩');
+							allowDelete(message, msg.author.id);
+							msg.delete({timeout: 60000, reason: lang.get('verify.footer')}).catch(log_error);
+						}, error => {
+							if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
+								return msg.replyMsg( result.content, options, false, false );
+							}
+							log_error(error);
+							msg.reactEmoji('error');
+						} );
+						if ( result.logging.channel && msg.guild.channels.cache.has(result.logging.channel) ) {
+							msg.guild.channels.cache.get(result.logging.channel).send(result.logging.content, {
+								embed: result.logging.embed,
+								allowedMentions: {parse: []}
+							}).catch(log_error);
+						}
+					}
+					else msg.replyMsg( result.content, options, false, false ).then( message => {
 						if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
 						if ( message ) {
 							if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channel.id + '>');

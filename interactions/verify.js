@@ -40,7 +40,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 		} ).catch(log_error);
 	}
 	
-	return db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
+	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
 		if ( !rows.length ) return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 			data: {
 				type: 4,
@@ -63,7 +63,8 @@ function slash_verify(interaction, lang, wiki, channel) {
 				}
 				oauthVerify.set(state, {
 					state, wiki: wiki.href, channel,
-					user: interaction.user.id
+					user: interaction.user.id,
+					token: interaction.token
 				});
 				interaction.client.shard.send({id: 'verifyUser', state});
 				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
@@ -131,7 +132,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 				type: 5,
 				data: {
 					allowed_mentions,
-					flags: 0
+					flags: ( (rows[0].flags & 1 << 0) === 1 << 0 ? 64 : 0 )
 				}
 			}
 		} ).then( () => {
@@ -144,35 +145,38 @@ function slash_verify(interaction, lang, wiki, channel) {
 						}
 						oauthVerify.set(state, {
 							state, wiki: wiki.href, channel,
-							user: interaction.user.id
+							user: interaction.user.id,
+							token: interaction.token
 						});
 						interaction.client.shard.send({id: 'verifyUser', state});
 						let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
 							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
 						}).toString();
-						return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').delete().then( () => {
-							return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
-								data: {
-									content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
-									allowed_mentions,
+						let message = {
+							content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
+							allowed_mentions,
+							components: [
+								{
+									type: 1,
 									components: [
 										{
-											type: 1,
-											components: [
-												{
-													type: 2,
-													style: 5,
-													label: lang.get('verify.oauth_button'),
-													emoji: {id: null, name: '🔗'},
-													url: oauthURL,
-													disabled: false
-												}
-											]
+											type: 2,
+											style: 5,
+											label: lang.get('verify.oauth_button'),
+											emoji: {id: null, name: '🔗'},
+											url: oauthURL,
+											disabled: false
 										}
-									],
-									flags: 64
+									]
 								}
+							]
+						}
+						if ( result.send_private ) return sendMessage(interaction, message, channel, false);
+						message.flags = 64;
+						return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').delete().then( () => {
+							return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+								data: message
 							} ).catch(log_error);
 						}, log_error );
 					}
@@ -182,7 +186,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 						allowed_mentions,
 						components: []
 					};
-					if ( result.add_button ) message.components.push({
+					if ( result.add_button && !result.send_private ) message.components.push({
 						type: 1,
 						components: [
 							{
@@ -202,7 +206,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 					}
 					return sendMessage(interaction, message, channel, false).then( msg => {
 						if ( !result.logging.channel || !channel.guild.channels.cache.has(result.logging.channel) ) return;
-						if ( msg ) {
+						if ( msg && !result.send_private ) {
 							if ( result.logging.embed ) result.logging.embed.addField(msg.url, '<#' + channel.id + '>');
 							else result.logging.content += '\n<#' + channel.id + '> – <' + msg.url + '>';
 						}
@@ -278,7 +282,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 			} ).catch(log_error);
 		}, log_error);
 	}
-	return db.query( 'SELECT role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
+	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guild_id, '%|' + interaction.channel_id + '|%'] ).then( ({rows}) => {
 		if ( !rows.length || !channel.guild.me.permissions.has('MANAGE_ROLES') ) {
 			return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
 				data: {type: 6}
@@ -311,8 +315,8 @@ function slash_verify(interaction, lang, wiki, channel) {
 							embeds: ( options.embed ? [options.embed] : [] ),
 							components: ( options.components ? options.components : [] )
 						};
-						sendMessage(interaction, message, channel, false);
-						return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+						var msg = sendMessage(interaction, message, channel, false);
+						interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
 							data: {
 								content, allowed_mentions,
 								embeds: ( options.embed ? [options.embed] : [] ),
@@ -320,6 +324,7 @@ function slash_verify(interaction, lang, wiki, channel) {
 								flags: 64
 							}
 						} ).catch(log_error);
+						return msg;
 					}
 				});
 			}, log_error );
@@ -336,7 +341,8 @@ function slash_verify(interaction, lang, wiki, channel) {
 				}
 				oauthVerify.set(state, {
 					state, wiki: wiki.href, channel,
-					user: interaction.user.id
+					user: interaction.user.id,
+					token: interaction.token
 				});
 				interaction.client.shard.send({id: 'verifyUser', state});
 				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
@@ -392,7 +398,8 @@ function slash_verify(interaction, lang, wiki, channel) {
 						}
 						oauthVerify.set(state, {
 							state, wiki: wiki.href, channel,
-							user: interaction.user.id
+							user: interaction.user.id,
+							token: interaction.token
 						});
 						interaction.client.shard.send({id: 'verifyUser', state});
 						let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
@@ -455,9 +462,11 @@ function slash_verify(interaction, lang, wiki, channel) {
 					});
 					sendMessage(interaction, message, channel, false);
 					if ( result.logging.channel && channel.guild.channels.cache.has(result.logging.channel) ) {
-						let msg_url = `https://discord.com/channels/${channel.guild.id}/${channel.id}/${interaction.message.id}`;
-						if ( result.logging.embed ) result.logging.embed.addField(msg_url, '<#' + channel.id + '>');
-						else result.logging.content += '\n<#' + channel.id + '> – <' + msg_url + '>';
+						if ( !result.send_private ) {
+							let msg_url = `https://discord.com/channels/${channel.guild.id}/${channel.id}/${interaction.message.id}`;
+							if ( result.logging.embed ) result.logging.embed.addField(msg_url, '<#' + channel.id + '>');
+							else result.logging.content += '\n<#' + channel.id + '> – <' + msg_url + '>';
+						}
 						channel.guild.channels.cache.get(result.logging.channel).send(result.logging.content, {
 							embed: result.logging.embed,
 							allowedMentions: {parse: []}

@@ -375,10 +375,10 @@ const permissions = {
  */
 function hasPerm(all = 0, ...permission) {
 	if ( (all & permissions.ADMINISTRATOR) === permissions.ADMINISTRATOR ) return true;
-	return permission.map( perm => {
+	return permission.every( perm => {
 		let bit = permissions[perm];
 		return ( (all & bit) === bit );
-	} ).every( perm => perm );
+	} );
 }
 
 module.exports = {got, db, oauth, slashCommands, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, escapeText, hasPerm};

@@ -289,6 +289,26 @@ if ( wiki ) {
 }
 
 /** @type {HTMLInputElement} */
+const logall = document.getElementById('wb-settings-flag_logall');
+if ( logall ) {
+	/** @type {HTMLDivElement} */
+	const hidelogall = document.getElementById('wb-settings-logall-hide');
+	/** @type {HTMLSelectElement} */
+	const logchannel = document.getElementById('wb-settings-channel');
+	if ( logchannel ) logchannel.addEventListener( 'input', function() {
+		if ( this.value ) {
+			hidelogall.style.visibility = '';
+			logall.disabled = false;
+			if ( hidelogall.style.display ) hidelogall.style.display = '';
+		}
+		else {
+			hidelogall.style.visibility = 'hidden';
+			logall.disabled = true;
+		}
+	} );
+}
+
+/** @type {HTMLInputElement} */
 const usergroup = document.getElementById('wb-settings-usergroup');
 if ( usergroup ) {
 	/** @type {HTMLDivElement} */

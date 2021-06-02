@@ -90,7 +90,9 @@ CREATE TABLE verifynotice (
                        REFERENCES discord (main) ON DELETE CASCADE,
     logchannel TEXT,
     onsuccess  TEXT,
-    onmatch    TEXT
+    onmatch    TEXT,
+    flags      INTEGER NOT NULL
+                       DEFAULT 0
 );
 
 CREATE INDEX idx_verifynotice_guild ON verifynotice (
@@ -159,6 +161,14 @@ CREATE INDEX idx_verifynotice_guild ON verifynotice (
 
 COMMIT TRANSACTION;
 ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 2;
+`,`
+BEGIN TRANSACTION;
+
+ALTER TABLE verifynotice
+ADD COLUMN flags INTEGER NOT NULL DEFAULT 0;
+
+COMMIT TRANSACTION;
+ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 3;
 `];
 
 module.exports = db.connect().then( () => {

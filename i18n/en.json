@@ -750,6 +750,8 @@
         "disabled": "disabled",
         "editcount": "Edit count:",
         "enabled": "enabled",
+        "flag_logall": "Logging of unsuccessful verifications:",
+        "flag_private": "Send verification command responses privately:",
         "indays": "(in days)",
         "logging": "Logging channel:",
         "match": "Missing requirements notice:",
