@@ -215,6 +215,8 @@
             "confirm": "Möchtest du wirklich die Verifizierung löschen?",
             "editcount": "Bearbeitungen:",
             "entry": "$1. Verifizierung",
+            "flag_logall": "Protokolliere nicht erfolgreiche Verifizierungen:",
+            "flag_private": "Private Antworten zu Befehlen:",
             "logging": "Protokollierungskanal:",
             "match": "Hinweis bei fehlenden Voraussetzungen:",
             "match_placeholder": "Markdown-Text bei passendem Discord-Tag, aber keinen Kriterien für Rollen erfüllt.",
