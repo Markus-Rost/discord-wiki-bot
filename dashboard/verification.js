@@ -862,7 +862,7 @@ function update_notices(res, userSettings, guild, type, settings) {
 			return client.query( 'SELECT logchannel, flags, onsuccess, onmatch FROM verifynotice WHERE guild = $1', [guild] ).then( ({rows:[row]}) => {
 				var flags = ( settings.flag_private ? 1 << 0 : 0 ) + ( settings.flag_logall ? 1 << 1 : 0 );
 				if ( !row ) {
-					if ( !( settings.channel || settings.success || settings.match ) ) {
+					if ( !( settings.channel || flags || settings.success || settings.match ) ) {
 						return res(`/guild/${guild}/verification/${type}`, 'save');
 					}
 					return client.query( 'INSERT INTO verifynotice(guild, logchannel, flags, onsuccess, onmatch) VALUES($1, $2, $3, $4, $5)', [guild, settings.channel, flags, settings.success, settings.match] ).then( () => {
