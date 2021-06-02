@@ -750,6 +750,8 @@
         "disabled": "deaktiviert",
         "editcount": "Bearbeitungen:",
         "enabled": "aktiviert",
+        "flag_logall": "Protokollierung von nicht erfolgreichen Verifizierungen:",
+        "flag_private": "Antworten zu Verifizierungsbefehlen werden privat gesendet:",
         "indays": "(in Tagen)",
         "logging": "Protokollierungskanal:",
         "match": "Hinweis bei fehlenden Voraussetzungen:",
