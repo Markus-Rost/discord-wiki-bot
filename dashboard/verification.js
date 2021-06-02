@@ -318,12 +318,12 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 							),
 							$('<div id="wb-settings-logall-hide">').append(
 								$('<label for="wb-settings-flag_logall">').text(dashboardLang.get('verification.form.flag_logall')),
-								$('<input type="checkbox" id="wb-settings-flag_logall" name="flag_logall">').attr('checked', ( (row.flags & 1 << 1) === 1 << 1 ? '' : null ))
+								$('<input type="checkbox" id="wb-settings-flag_logall" name="flag_logall">').attr('checked', ( (row?.flags & 1 << 1) === 1 << 1 ? '' : null ))
 							).attr('style', ( row?.logchannel ? '' : 'display: none;'))
 						),
 						$('<div>').append(
 							$('<label for="wb-settings-flag_private">').text(dashboardLang.get('verification.form.flag_private')),
-							$('<input type="checkbox" id="wb-settings-flag_private" name="flag_private">').attr('checked', ( (row.flags & 1 << 0) === 1 << 0 ? '' : null ))
+							$('<input type="checkbox" id="wb-settings-flag_private" name="flag_private">').attr('checked', ( (row?.flags & 1 << 0) === 1 << 0 ? '' : null ))
 						),
 						$('<div>').append(
 							$('<label for="wb-settings-success">').text(dashboardLang.get('verification.form.success')).append(
