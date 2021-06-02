@@ -816,7 +816,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 						if ( (verifynotice.flags & 1 << 0) === 1 << 0 ) {
 							let dmEmbed = new MessageEmbed(options.embed);
 							dmEmbed.fields.forEach( field => {
-								field.value.replace( /<@&(\d+)>/g, (mention, id) => {
+								field.value = field.value.replace( /<@&(\d+)>/g, (mention, id) => {
 									if ( !channel.guild.roles.cache.has(id) ) return mention;
 									return '@' + channel.guild.roles.cache.get(id)?.name;
 								} );
@@ -836,7 +836,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 				else if ( (verifynotice.flags & 1 << 0) === 1 << 0 ) {
 					let dmEmbed = new MessageEmbed(options.embed);
 					dmEmbed.fields.forEach( field => {
-						field.value.replace( /<@&(\d+)>/g, (mention, id) => {
+						field.value = field.value.replace( /<@&(\d+)>/g, (mention, id) => {
 							if ( !channel.guild.roles.cache.has(id) ) return mention;
 							return '@' + channel.guild.roles.cache.get(id)?.name;
 						} );
