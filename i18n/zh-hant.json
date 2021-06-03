@@ -750,6 +750,8 @@
         "disabled": "已禁用",
         "editcount": "編輯次數：",
         "enabled": "已啓用",
+        "flag_logall": "日誌記錄失敗的驗證：",
+        "flag_private": "以私訊形式傳送驗證指令回覆：",
         "indays": "（以日計算）",
         "logging": "日誌記錄頻道：",
         "match": "缺失驗證條件提示：",
