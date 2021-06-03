@@ -255,7 +255,12 @@
                     "desc": "Wiki-Botから最近の更新のウェブフックを削除します。"
                 },
                 "display": {
-                    "cmd": "rcscript display <新規 表示モード>"
+                    "cmd": "rcscript display <新規 表示モード>",
+                    "desc": "Wiki-BOTの最近の更新Webhookの表示モードを変更します。"
+                },
+                "feeds": {
+                    "cmd": "rcscript feeds",
+                    "desc": "Fandom Wikiの更新された議論のWebhookを最近の更新Webhookへ切り替えます。"
                 }
             }
         }
