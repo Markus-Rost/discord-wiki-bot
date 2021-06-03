@@ -215,6 +215,8 @@
             "confirm": "你真的想删除此验证方式吗？",
             "editcount": "最少编辑次数：",
             "entry": "验证方式 #$1",
+            "flag_logall": "记录不成功的验证：",
+            "flag_private": "私信命令回复：",
             "logging": "日志记录频道：",
             "match": "缺少验证条件提示：",
             "match_placeholder": "在匹配到 Discord ID 但不符合任何身份组验证条件时显示的 Markdown 文本。",

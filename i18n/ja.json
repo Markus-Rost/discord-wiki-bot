@@ -1,8 +1,8 @@
 {
     "__translator": [
+        "Urushibara",
+        "しぃ",
         "7yultukuri7",
-        " ",
-        " ",
         " ",
         " ",
         " ",
@@ -114,28 +114,28 @@
     "dateformat": "ja-JP",
     "diff": {
         "badrev": "2つ以上の差分が存在しません！",
-        "hidden": "*不明*",
+        "hidden": "*隠された*",
         "info": {
-            "added": "追加:",
+            "added": "追加：",
             "bytes": "$1 {{PLURAL:$2|バイト|バイト}} $3",
-            "comment": "コメント:",
-            "editor": "編集者:",
+            "comment": "コメント：",
+            "editor": "編集者：",
             "minor": "(m)",
-            "more": "他にも",
-            "removed": "削除:",
-            "size": "差分:",
-            "tags": "タグ:",
-            "timestamp": "編集日:",
+            "more": "その他にも",
+            "removed": "削除：",
+            "size": "差分：",
+            "tags": "タグ：",
+            "timestamp": "編集日：",
             "whitespace": "空白のみ"
         },
         "nocomment": "*説明はありません*"
     },
     "discussion": {
         "image": "画像を見る",
-        "main": "ディスカッション",
+        "main": "議論",
         "post": "ポスト",
-        "tags": "タグ:",
-        "votes": "$1 票 ($3%)"
+        "tags": "タグ：",
+        "votes": "$1 {{PLURAL:$2|票|票}} ($3%)"
     },
     "fallback": [
         "en",
@@ -147,32 +147,120 @@
     "general": {
         "database": "⚠️ **限定された機能です。** ⚠️\n設定が見つかりません、ボットの所有者に連絡してください！",
         "default": "このサーバーはまだ設定されていません。$1 またはダッシュボードを使用して設定を変更してください。",
-        "disclaimer": "WikipediaやFandom wikiなどのMediaWikiサイトを簡単にリンクする事や、検索することを目的とした小さなボットです。ページに関する短い説明と追加情報を表示し、リダイレクトやインターウィキのリンクを辿ることができます。$1 がJavaScriptで書いてくれました。\n\nPatreon で開発者たちをサポートできます：",
+        "disclaimer": "WikipediaやFandom wikiなどのMediaWikiサイトを簡単にリンクする事や、検索することを目的とした小さなBotです。ページに関する短い説明と追加情報を表示し、リダイレクトやWikiの関連リンクを辿ることができます。$1 がJavaScriptで書いてくれました。\n\nPatreon で開発者たちをサポートできます：",
         "experimental": "**この機能は実験的です！正常に動作することは保証されておらず、将来削除される可能性があります。**",
-        "helpserver": "質問や問題が発生した場合については、サポートサーバーにアクセスしてください:",
-        "limit": "🚨 **ストップ！！** 🚨\n\n$1 メッセージに含まれているコマンドが多すぎます！",
-        "missingperm": "このコマンドを実行する権限がありません:",
-        "patreon": "これはPatreonのみの機能です！\nこの機能にアクセスするために、Patreonで開発者をサポートしてください:",
-        "prefix": "このサーバーのプレフィックスは `$1` です。プレフィックスは `$1settings prefix` で変更できます。すべてのコマンドのリストについては、 `$1help` を参照してください。",
+        "helpserver": "質問や問題が発生した場合については、サポートサーバーにアクセスしてください：",
+        "limit": "🚨 **ストップ！制限超過！** 🚨\n\n$1 メッセージに含まれているコマンドが多すぎます！",
+        "missingperm": "このコマンドを実行する権限がありません：",
+        "patreon": "これはPatreonのみの機能です！\nこの機能にアクセスするために、Patreonで開発者をサポートしてください：",
+        "prefix": "このサーバーのプレフィックスは `$1` です。プレフィックスは `$1settings prefix` で変更できます。全てのコマンドリストについては、 `$1help` を参照してください。",
         "readonly": "**データベースが読み取り専用モードになっているので、今は設定を変更することができません！**"
     },
     "help": {
-        "admin": "これらのコマンドは、管理者のみが実行できます。",
-        "adminfooter": "また、管理者はダッシュボードを使って、ボットの設定を変更することができます。",
-        "all": "何ができるか知りたいですか？全てのコマンドのリスト:",
+        "admin": "これらのコマンドは管理者のみが実行できます：",
+        "adminfooter": "また、管理者はダッシュボードを使って、Botの設定を変更することができます：",
+        "all": "Wiki-Botが何をすることができるか知りたいですか？全てのコマンドのリストがあります：",
         "footer": "不要な応答を受け取った場合は、メッセージに 🗑️ (`:wastebasket:`) のリアクションを追加すると、メッセージが削除されます。",
         "list": {
             "default": {
-                "cmd": "<検索用語>",
-                "desc": "ウィキ内の一致する記事へのリンクを使用して回答します。"
+                "cmd": "<キーワード>",
+                "desc": "Wiki内の一致する記事へのリンクで回答します。"
             },
             "diff": {
                 "id": {
-                    "cmd": "diff <diff> [<oldid>]",
+                    "cmd": "diff <差分> [<oldid>]",
                     "desc": "Wikiの差分へのリンクでお答えします。"
                 },
                 "name": {
-                    "cmd": "diff <page name>"
+                    "cmd": "diff <ページ名>",
+                    "desc": "Wikiの記事の最終変更点へのリンクでお答えします。"
+                }
+            },
+            "discussion": {
+                "post": {
+                    "cmd": "discussion post <キーワード>"
+                }
+            },
+            "help": {
+                "admin": {
+                    "desc": "Wiki-Botが全ての管理者コマンドを一覧表示します。"
+                },
+                "command": {
+                    "cmd": "help <ボットコマンド>",
+                    "desc": "コマンドの動作を知りたいですか？私がお答えしましょう！"
+                },
+                "default": {
+                    "desc": "Wiki-Botが実行できる全てのコマンドの一覧を表示します。"
+                }
+            },
+            "inline": {
+                "link": {
+                    "desc": "Wiki-BotがWikiの記事への直リンクを返します。"
+                },
+                "template": {
+                    "cmd": "{{<ページ名>}}",
+                    "desc": "Wiki-BotがWikiの記事へのリンクを返します。"
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "desc": "Wiki-BotがMinecraftバグトラッカーへのリンクを返します。"
+                },
+                "command": {
+                    "cmd": "command <Minecraftコマンド>",
+                    "desc": "Wiki-BotがMinecraftコマンドの構文と、該当するコマンドのMinecraft Wikiの記事へのリンクを表示します。"
+                },
+                "default": {
+                    "cmd": "/<Minecraftコマンド>",
+                    "desc": "Wiki-BotがMinecraftコマンドの構文と、該当するコマンドのMinecraft Wikiの記事へのリンクを表示します。"
+                }
+            },
+            "mwprojects": {
+                "cmd": "!!<wiki> <キーワード>",
+                "desc": "Wiki-Botが該当した記事のMediaWikiプロジェクトのページへのリンクを返します。例：`$1!!en.wikipedia.org Cookie`"
+            },
+            "overview": {
+                "cmd": "overview",
+                "desc": "Wiki-BotがWikiに関する情報や統計を表示します。"
+            },
+            "page": {
+                "cmd": "page <ページ名>",
+                "desc": "Wiki-Botが該当するWikiの記事への直リンクを返します。"
+            },
+            "pause": {
+                "active": {
+                    "cmd": "pause $1",
+                    "desc": "Wiki-Botが全てのコマンドへの返答を再開します。"
+                },
+                "inactive": {
+                    "cmd": "pause $1",
+                    "desc": "Wiki-Botは一部の管理者コマンドを除き、このサーバーでの全てのコマンドを無視するようになります。"
+                }
+            },
+            "random": {
+                "cmd": "random",
+                "desc": "Wiki-BotがWikiのランダムな記事へのリンクを返します。"
+            },
+            "rcscript": {
+                "add": {
+                    "cmd": "rcscript add [<wiki>]",
+                    "desc": "新しい最近の変更のウェブフックを追加します。"
+                },
+                "default": {
+                    "cmd": "rcscript",
+                    "desc": "最近の変更のウェブフックを変更します。"
+                },
+                "delete": {
+                    "cmd": "rcscript delete",
+                    "desc": "Wiki-Botから最近の更新のウェブフックを削除します。"
+                },
+                "display": {
+                    "cmd": "rcscript display <新規 表示モード>",
+                    "desc": "Wiki-BOTの最近の更新Webhookの表示モードを変更します。"
+                },
+                "feeds": {
+                    "cmd": "rcscript feeds",
+                    "desc": "Fandom Wikiの更新された議論のWebhookを最近の更新Webhookへ切り替えます。"
                 }
             }
         }
@@ -212,6 +300,6 @@
         ]
     },
     "voice": {
-        "text": "音声チャネルの全員に特定の役割を与えるようにしています:"
+        "text": "ボイスチャンネルの全員に特定の役割を与えるようにしています："
     }
 }

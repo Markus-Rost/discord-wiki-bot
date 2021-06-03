@@ -5,5 +5,240 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "botlist": {
+            "text": "Botリストに投票することにより、他のユーザーがWiki-Botを見つけやすくなります：",
+            "title": "Botリスト"
+        },
+        "delete": "削除",
+        "invite": "Wiki-Botを招待",
+        "language": "言語の変更",
+        "login": "ログイン",
+        "logout": "ログアウト",
+        "rcscript": "最近の変更点",
+        "refresh": "サーバーリストの更新",
+        "save": "保存",
+        "selector": "サーバーを選択",
+        "settings": "設定",
+        "slash": "スラッシュコマンド",
+        "support": "サポートしているサーバー",
+        "theme-dark": "ダークテーマを使う",
+        "theme-light": "ライトテーマを使う",
+        "title": "Wiki-Botの設定",
+        "verification": "認証",
+        "welcome": "<h2>Wiki-Bot ダッシュボードへようこそ。</h2>\n<p>Wiki-Botは、DiscordサーバーとMediaWikiで作られたWikiを連携させるために作られたDiscord Botです。Wikiページへのリンク、Wikiユーザーの確認、Wikiの最新の変更についての情報提供などを行います。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[詳しく見る]</a></p>\n<p>ここでは、あなたがDiscordで「サーバー管理」権限を持っているサーバーの様々なBotの設定を変更することができます。まず、Discordアカウントを認証する必要がありますが、このボタンで認証できます。</p>"
+    },
+    "indexjs": {
+        "invalid": {
+            "note_http": "提供されたWebサイトに有効なTLS/SSL証明書がありません。セキュリティ上の理由から、HTTPSを使用したWikiのみがサポートされています。",
+            "note_private": "提供されたWikiはプライベートなものです！",
+            "note_timeout": "提供されたリンクは、応答に時間がかかりすぎました！",
+            "text": "そのURLは有効なMediaWikiサイトに接続できませんでした！",
+            "title": "無効なWikiです！"
+        },
+        "outdated": {
+            "text": "最近の変更のウェブフックには、MediaWiki 1.30以降が必要です！",
+            "title": "古いMediaWikiのバージョンです！"
+        },
+        "prefix": {
+            "backslash": "プレフィックスにバックスラッシュ(\\)を含んではいけません！",
+            "code": "プレフィックスにコードマークダウンを含んではいけません！",
+            "space": "プレフィックスにスペースを含んではいけません！"
+        },
+        "sysmessage": {
+            "text": "ページ $1 は、サーバーID $2 と一致する必要があります。",
+            "title": "システムメッセージが一致しません！"
+        },
+        "valid": {
+            "MediaWiki": "警告：全ての機能を利用するには最低でも $1 が必要です。",
+            "title": "Wikiは有効であり、使用することができます！"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "不明なエラーが発生しました。もう一度お試しください。",
+            "title": "不明なエラーが発生！"
+        },
+        "invalidusergroup": {
+            "text": "ユーザーグループ名が長すぎるか、指定した数が多すぎました。",
+            "title": "無効なユーザーグループです！"
+        },
+        "loginfail": {
+            "text": "ログイン中にエラーが発生しました、もう一度お試しください。",
+            "title": "ログインに失敗しました！"
+        },
+        "logout": {
+            "text": "ログアウトに成功しました。設定を変更するには、再度ログインする必要があります。",
+            "title": "ログアウトに成功しました！"
+        },
+        "missingperm": {
+            "text": "あなたかWiki-Botのどちらかが、この $1 の権限を許可されていません。",
+            "title": "許可がありません！"
+        },
+        "movefail": {
+            "note": "ウェブフックチャンネルを変更できませんでした！",
+            "text": "一部の設定は更新されました。",
+            "title": "設定が一部保存されました！"
+        },
+        "mwversion": {
+            "text": "少なくともMediaWiki 1.30が必要で、 $2 で $1 が見つかりました。",
+            "title": "古いMediaWikiのバージョンです！"
+        },
+        "nochange": {
+            "text": "設定は変更前の設定と一致していました。",
+            "title": "保存に失敗しました！"
+        },
+        "nosettings": {
+            "note": "設定を変更する。",
+            "text": "初めに、サーバーの設定を行ってください。",
+            "title": "サーバーがまだセットアップされていません！"
+        },
+        "noslash": {
+            "note": "スラッシュコマンドを有効にする。",
+            "text": "このサーバーでは、Wiki-Botのスラッシュコマンドが有効になっていません。",
+            "title": "スラッシュコマンドが有効ではありません！"
+        },
+        "noverify": {
+            "text": "認証がセットアップされていないと、 $1 コマンドの制限は変更できません。",
+            "title": "認証がセットアップされていません！"
+        },
+        "readonly": {
+            "text": "現在、自分の設定を確認することはできますが、変更することはできません。",
+            "title": "読み取り専用のデータベースです！"
+        },
+        "refresh": {
+            "text": "サーバーリストの更新が完了しました。",
+            "title": "更新に成功しました！"
+        },
+        "refreshfail": {
+            "text": "サーバーリストを更新できませんでした。もう一度お試しください。",
+            "title": "更新に失敗しました！"
+        },
+        "save": {
+            "text": "設定の更新に成功しました。",
+            "title": "設定を保存しました！"
+        },
+        "savefail": {
+            "note_http": "提供されたWebサイトに有効なTLS/SSL証明書がありません。セキュリティ上の理由から、HTTPSを使用したWikiのみがサポートされています。",
+            "note_private": "提供されたWikiはプライベートなものです！",
+            "note_timeout": "提供されたリンクは、応答に時間がかかりすぎました！",
+            "text": "設定を保存できませんでした。もう一度お試しください。",
+            "title": "保存に失敗しました！"
+        },
+        "sysmessage": {
+            "text": "ページ $1 は、サーバーID $2 と一致する必要があります。",
+            "title": "システムメッセージが一致しません！"
+        },
+        "unauthorized": {
+            "text": "設定を変更するにはログインが必要です。",
+            "title": "ログインしていません！"
+        },
+        "wikiblocked": {
+            "note": "理由：",
+            "text": "$1 が最近の変更のウェブフックとして追加されるのを阻止しました。",
+            "title": "Wikiがブロックされています！"
+        }
+    },
+    "rcscript": {
+        "desc": "$1 の最近の変更点のウェブフックです。",
+        "explanation": "<h2>最近の変更点のウェブフック</h2>\n<p>Wiki-Botは、<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>をベースにした最近の変更のウェブフックを実行することができます。最近の変更点は、直リンク付きの小さなテキストメッセージや、編集されたタグやカテゴリーの変更ができる埋め込みメッセージを表示することができます。</p>\n<p>最近の変更のウェブフックを追加するための要件:</p>\n<ul>\n<li>Wikiは<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>以上で動作している必要があります。</li>\n<li>システムメッセージの<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> にDiscordのサーバーID <code class=\"user-select\" id=\"server-id\"></code> を設定する必要があります。</li>\n</ul>",
+        "form": {
+            "channel": "チャンネル：",
+            "confirm": "本当に最近の変更のウェブフックを削除しますか？",
+            "display": "表示形態：",
+            "display_compact": "直リンク付きの小型のテキストメッセージ。",
+            "display_diff": "画像プレビューと編集の違いを表示した埋め込みメッセージ。",
+            "display_embed": "編集されたタグやカテゴリーの変更ができる埋め込みメッセージ。",
+            "display_image": "画像プレビューを表示した埋め込みメッセージ。",
+            "entry": "最近の変更点のウェブフック #$1",
+            "feeds": "フィードベースの変更：",
+            "feeds_only": "フィードベースの変更のみ：",
+            "lang": "言語：",
+            "new": "新しい最近の変更点のウェブフック",
+            "select_channel": "-- チャンネルを選択 --",
+            "wiki": "Wiki：",
+            "wiki_check": "Wikiを確認する"
+        },
+        "new": "新しいウェブフック"
+    },
+    "selector": {
+        "desc": "これは、[サーバー管理]($1)の権限を所持していて、設定を変更できるサーバーの一覧です。サーバーを選択してください。",
+        "invite": "Wiki-Botはまだ $1 のメンバーではありませんが、あなたは[Wiki-Botを招待]($2)することができます。",
+        "none": "現在、参加しているどのサーバーにも[サーバー管理]($1)の権限がありませんが、正しいアカウントでログインしていますか？",
+        "switch": "アカウントの切り替え",
+        "title": "サーバーを選択",
+        "with": "Wiki-Botが参加しているサーバー",
+        "without": "Wiki-Botが参加していないサーバー"
+    },
+    "settings": {
+        "desc": "$1の設定です：",
+        "failed": "設定の読み込みに失敗しました！",
+        "form": {
+            "channel": "チャンネル：",
+            "confirm": "本当にチャンネルの上書きを削除しますか？",
+            "default": "サーバー全体の設定",
+            "inline": "インラインコマンド：",
+            "lang": "言語：",
+            "new": "新しいチャンネルの上書き",
+            "overwrite": "$1 設定",
+            "prefix": "プレフィックス：",
+            "prefix_space": "プレフィックスはスペースで終わります：",
+            "role": "最小のロール：",
+            "select_channel": "-- チャンネルを選択 --",
+            "wiki": "既定のWiki：",
+            "wiki_check": "Wikiを確認"
+        },
+        "new": "新しいチャンネルの上書き"
+    },
+    "slash": {
+        "desc": "これらは、 $1 のスラッシュコマンドです：",
+        "explanation": "<h2>スラッシュコマンド</h2>\n<p>特定のスラッシュコマンドの使用をロールごとに制限することができます。Wiki-Botのスラッシュコマンドについては、ここで制限することができます。</p>",
+        "form": {
+            "add": "追加",
+            "allow": "許可",
+            "default": "既定",
+            "default_allow": "既定では、このコマンドは誰でも使用できるようになっています。",
+            "default_deny": "既定では、このコマンドは誰にも使用されないようになっています。",
+            "deny": "拒否",
+            "entry": "コマンド $1",
+            "role": "ロール：",
+            "select_role": "-- ロールを選択 --"
+        }
+    },
+    "verification": {
+        "desc": "$1 の認証結果：",
+        "explanation": "<h2>ユーザー認証</h2>\n<p><code class=\"prefix\">verify &lt;wiki username&gt;</code>コマンドを使用すると、ユーザーは自分のWikiプロフィールのDiscord欄を使用し、自分が特定のWikiユーザーであることを認証することができます。ユーザーが一致し、サーバー上でユーザー認証が設定されている場合、Wiki-Botは一致したすべての認証エントリの役割を与えます。</p>\n<p>各認証項目では、ユーザーがどのような場合に認証に一致するかについて、複数の制限を設けることができます。:</p>\n<ul>\n<li><code class=\"prefix\">verify</code>コマンドを使用するチャンネル。</li>\n<li>認証項目の照合時に取得する役割</li>\n<li>認証項目と一致するために必要なWikiの編集回数。</li>\n<li>認証項目と一致するために、Wiki上でメンバーとなる必要のあるユーザーグループ。</li>\n<li>認証項目と一致するために必要なアカウントを作成してからの日数。</li>\n<li>Discordユーザーのニックネームを、認証項目に一致したときのWikiユーザー名に設定するかどうか。</li>\n</ul>",
+        "form": {
+            "accountage": "アカウントを作成してからの日数：",
+            "channel": "チャンネル：",
+            "confirm": "本当にこの認証を削除しますか？",
+            "editcount": "最低編集回数：",
+            "entry": "認証 #$1",
+            "flag_logall": "認証に失敗したことを記録する：",
+            "flag_private": "プライベートコマンドの応答：",
+            "logging": "ログ保存チャンネル：",
+            "match": "不足している要件：",
+            "match_placeholder": "Discord タグに合致しているが、役割の要件を満たしていない場合のMarkdownテキスト。",
+            "more": "さらに追加",
+            "new": "新しい認証",
+            "notice": "認証の通知",
+            "postcount": "最低投稿回数：",
+            "postcount_and": "編集回数と投稿回数の両方を必要要件にする。",
+            "postcount_both": "編集回数と投稿回数を合計した回数を必要要件にする。",
+            "postcount_fandom": "Fandom Wikiのみ：",
+            "postcount_or": "編集回数と投稿回数のどちらかを必要要件にする。",
+            "rename": "ユーザー名の変更：",
+            "role": "ロール：",
+            "select_channel": "-- チャンネルを選択 --",
+            "select_role": "-- ロールを選択 --",
+            "success": "成功の通知：",
+            "success_placeholder": "認証に成功した場合のMarkdownテキスト。",
+            "usergroup": "Wikiのユーザーグループ：",
+            "usergroup_and": "全てのユーザーグループを要求します："
+        },
+        "help_notice": "<p>カスタム通知は、いくつかの簡単な関数や変数をサポートしています。</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – そのユーザーの現在の編集回数です。</li>\n<li><code class=\"form-button user-select\">$accountage</code> – そのユーザーの現在のアカウントを作成してからの日数です。</li>\n<li><code class=\"form-button user-select\">$postcount</code> – そのユーザーの現在の議論投稿数です (Fandom Wikiのみ)。</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – 式の結果を返します。\n<ul>\n<li>加算の <code class=\"form-button user-select\">+</code> と減算の <code class=\"form-button user-select\">-</code>のみ対応しています。</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – 式の結果に応じたテキストを返します。\n<ul>\n<li><code class=\"form-button user-select\">&lt;</code>、 <code class=\"form-button user-select\">&gt;</code>、 <code class=\"form-button user-select\">=</code>、 <code class=\"form-button user-select\">&lt;=</code>、 <code class=\"form-button user-select\">&gt;=</code>、 <code class=\"form-button user-select\">!=</code>、 <code class=\"form-button user-select\">&lt;&gt;</code> のほか、 <code class=\"form-button user-select\">and</code>、 <code class=\"form-button user-select\">or</code>に対応しています。</li>\n</ul></li>\n</ul>",
+        "new": "新しい認証",
+        "notice": "認証の通知"
+    }
 }
