@@ -750,6 +750,8 @@
         "disabled": "desativado",
         "editcount": "Contagem de edições:",
         "enabled": "ativado",
+        "flag_logall": "Registro de verificações malsucedidas:",
+        "flag_private": "Envio de respostas de comando de verificação em particular:",
         "indays": "(em dias)",
         "logging": "Canal de registro:",
         "match": "Aviso de requisitos ausentes:",
