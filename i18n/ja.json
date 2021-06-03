@@ -256,11 +256,53 @@
                 },
                 "display": {
                     "cmd": "rcscript display <新規 表示モード>",
-                    "desc": "Wiki-BOTの最近の更新Webhookの表示モードを変更します。"
+                    "desc": "Wiki-Botの最近の更新Webhookの表示モードを変更します。"
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
                     "desc": "Fandom Wikiの更新された議論のWebhookを最近の更新Webhookへ切り替えます。"
+                },
+                "lang": {
+                    "cmd": "rcscript lang <新規言語>",
+                    "desc": "Wiki-Botの最近の更新Webhookの言語を変更します。"
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <新規wiki>",
+                    "desc": "Web-Botの最近の更新WebhookのWikiを変更します。"
+                }
+            },
+            "search": {
+                "cmd": "search <検索ワード>",
+                "desc": "Wiki-BotがWikiの検索ワードに該当した記事のリンクを返します。"
+            },
+            "settings": {
+                "channel": {
+                    "cmd": "settings channel",
+                    "desc": "Wiki-Botの現在のチャンネルのオーバーライドを変更します。"
+                },
+                "default": {
+                    "cmd": "settings",
+                    "desc": "このサーバーのWiki-Botの設定を変更します。"
+                },
+                "inline": {
+                    "cmd": "settings inline toggle",
+                    "desc": "このサーバーのWiki-Botのインラインコマンドを切り替えます。"
+                },
+                "lang": {
+                    "cmd": "settings lang <言語>",
+                    "desc": "このサーバーのWiki-Botの言語を変更します。"
+                },
+                "prefix": {
+                    "cmd": "settings prefix <プレフィックス>",
+                    "desc": "このサーバーのプレフィックスを変更します。"
+                },
+                "role": {
+                    "cmd": "settings role <権限>",
+                    "desc": "このサーバーのWiki-Botがコマンドを使用するための最低限の権限を設定します。"
+                },
+                "wiki": {
+                    "cmd": "settings wiki <wiki>",
+                    "desc": "このサーバーのWiki-BotのデフォルトのWikiを設定します。"
                 }
             }
         }
