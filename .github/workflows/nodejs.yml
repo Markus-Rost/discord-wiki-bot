@@ -7,7 +7,7 @@ on:
 jobs:
   runner-job:
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/translations'
+    if: ${{ github.head_ref != 'refs/heads/translations' }}
     services:
       postgres:
         image: postgres
