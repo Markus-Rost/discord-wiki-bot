@@ -750,6 +750,8 @@
         "disabled": "已禁用",
         "editcount": "编辑数：",
         "enabled": "已启用",
+        "flag_logall": "日志记录失败的验证：",
+        "flag_private": "以私信形式发送验证命令回复：",
         "indays": "（以日计算）",
         "logging": "日志记录频道：",
         "match": "缺少验证条件提示：",
