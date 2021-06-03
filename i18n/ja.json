@@ -180,6 +180,83 @@
                 "post": {
                     "cmd": "discussion post <キーワード>"
                 }
+            },
+            "help": {
+                "admin": {
+                    "desc": "Wiki-BOTがすべての管理者コマンドを一覧表示します。"
+                },
+                "command": {
+                    "cmd": "help <ボットコマンド>",
+                    "desc": "コマンドの動作を知りたいですか？私がお答えしましょう！"
+                },
+                "default": {
+                    "desc": "Wiki-BOTが実行できるすべてのコマンドの一覧を表示します。"
+                }
+            },
+            "inline": {
+                "link": {
+                    "desc": "Wiki-BOTがWikiの記事への直リンクを返します。"
+                },
+                "template": {
+                    "cmd": "{{<ページ名>}}",
+                    "desc": "Wiki-BOTがWikiの記事へのリンクを返します。"
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "desc": "Wiki-BOTがMinecraftバグトラッカーへのリンクを返します。"
+                },
+                "command": {
+                    "cmd": "command <Minecraftコマンド>",
+                    "desc": "Wiki-BOTがMinecraftコマンドの構文と該当するMinecraft Wikiのコマンドの記事へのリンクを表示ます。"
+                },
+                "default": {
+                    "cmd": "/<Minecraftコマンド>",
+                    "desc": "Wiki-BOTがMinecraftコマンドの構文と、該当するコマンドのMinecraft Wikiの記事へのリンクを表示ます。"
+                }
+            },
+            "mwprojects": {
+                "cmd": "!!<wiki> <検索ワード>",
+                "desc": "Wiki-BOTが該当した記事のMediaWikiプロジェクトのページへのリンクを返します。例：`$1!!en.wikipedia.org Cookie`"
+            },
+            "overview": {
+                "cmd": "overview",
+                "desc": "Wiki-BOTが何かの情報や統計などを返します。"
+            },
+            "page": {
+                "cmd": "page <ページ名>",
+                "desc": "Wiki-BOTが該当するWikiの記事への直リンクを返します。"
+            },
+            "pause": {
+                "active": {
+                    "cmd": "pause $1",
+                    "desc": "Wiki-BOTがすべてのコマンドへの返答を再開します。"
+                },
+                "inactive": {
+                    "cmd": "pause $1",
+                    "desc": "Wiki-BOTは一部の管理者コマンドを除き、このサーバーでのすべてのコマンドを無視するようになります。"
+                }
+            },
+            "random": {
+                "cmd": "random",
+                "desc": "Wiki-BOTがWikiのランダムな記事へのリンクを返します。"
+            },
+            "rcscript": {
+                "add": {
+                    "cmd": "rcscript add [<wiki>]",
+                    "desc": "Wiki-BOTへ新しく、最近の更新のWebhookを追加します。"
+                },
+                "default": {
+                    "cmd": "rcscript",
+                    "desc": "Wiki-BOTの最近の更新のWebhookを変更します。"
+                },
+                "delete": {
+                    "cmd": "rcscript delete",
+                    "desc": "Wiki-BOTから最近の更新のWebhookを削除します。"
+                },
+                "display": {
+                    "cmd": "rcscript display <新規 表示モード>"
+                }
             }
         }
     },
