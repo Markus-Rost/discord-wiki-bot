@@ -24,7 +24,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-    if: ${{ github.ref != 'refs/heads/translations' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.event.pull_request.head.ref != 'refs/heads/translations' }}
     permissions:
       actions: read
       contents: read
