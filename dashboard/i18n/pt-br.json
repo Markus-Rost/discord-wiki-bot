@@ -215,6 +215,8 @@
             "confirm": "Tem certeza de que deseja excluir a verificação?",
             "editcount": "Contagem mínima de edições:",
             "entry": "Verificação #$1",
+            "flag_logall": "Registrar verificações malsucedidas:",
+            "flag_private": "Respostas de comando privadas:",
             "logging": "Canal de registro:",
             "match": "Aviso de requisitos ausentes:",
             "match_placeholder": "Texto de marcação nas etiquetas do Discord correspondentes, mas não cumprindo os requisitos para os cargos.",
