@@ -260,7 +260,7 @@
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
-                    "desc": "Fandom Wikiの更新された議論のWebhookを最近の更新Webhookへ切り替えます。"
+                    "desc": "Fandom Wikiの更新された議論のウェブフックを最近の更新のウェブフックへ切り替えます。"
                 },
                 "lang": {
                     "cmd": "rcscript lang <新規言語>",
