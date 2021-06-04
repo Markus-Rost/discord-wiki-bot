@@ -333,6 +333,11 @@
             "user": {
                 "cmd": "ユーザー:<利用者名>",
                 "desc": "利用者に関する情報を表示します。"
+            },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <新規アカウントの登録日からの日数>"
+                }
             }
         }
     },
