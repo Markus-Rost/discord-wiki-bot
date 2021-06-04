@@ -178,11 +178,25 @@
             },
             "discussion": {
                 "post": {
-                    "cmd": "discussion post <キーワード>"
+                    "cmd": "discussion post <キーワード>",
+                    "desc": "Fandom Wikiの一致する投稿された議論へのリンクで答えます。"
+                },
+                "thread": {
+                    "cmd": "discussion <キーワード>",
+                    "desc": "Fandom Wikiの一致する議論スレッドへのリンクでお答えします。"
                 }
+            },
+            "fandom": {
+                "cmd": "?<wiki> <キーワード>",
+                "desc": "名前のついたFandom wikiの一致する記事へのリンクでお答えします：`https://<wiki>.fandom.com/`"
+            },
+            "gamepedia": {
+                "cmd": "!<wiki> <キーワード>",
+                "desc": "名前のついたGamepedia wikiの一致する記事へのリンクでお答えします： `https://<wiki>.gamepedia.com/`"
             },
             "help": {
                 "admin": {
+                    "cmd": "help admin",
                     "desc": "Wiki-Botが全ての管理者コマンドを一覧表示します。"
                 },
                 "command": {
@@ -190,11 +204,17 @@
                     "desc": "コマンドの動作を知りたいですか？私がお答えしましょう！"
                 },
                 "default": {
+                    "cmd": "help",
                     "desc": "Wiki-Botが実行できる全てのコマンドの一覧を表示します。"
                 }
             },
+            "info": {
+                "cmd": "info",
+                "desc": "自己紹介をします。"
+            },
             "inline": {
                 "link": {
+                    "cmd": "[[<ページ名>]]",
                     "desc": "Wiki-BotがWikiの記事への直リンクを返します。"
                 },
                 "template": {
@@ -204,6 +224,7 @@
             },
             "minecraft": {
                 "bug": {
+                    "cmd": "bug <Minecraft バグ>",
                     "desc": "Wiki-BotがMinecraftバグトラッカーへのリンクを返します。"
                 },
                 "command": {
@@ -264,11 +285,11 @@
                 },
                 "lang": {
                     "cmd": "rcscript lang <新規言語>",
-                    "desc": "Wiki-Botの最近の更新Webhookの言語を変更します。"
+                    "desc": "Wiki-Botの最近の更新のウェブフックの言語を変更します。"
                 },
                 "wiki": {
                     "cmd": "rcscript wiki <新規wiki>",
-                    "desc": "Web-Botの最近の更新WebhookのWikiを変更します。"
+                    "desc": "Web-Botの最近の更新ウェブフックのWikiを変更します。"
                 }
             },
             "search": {
@@ -304,6 +325,13 @@
                     "cmd": "settings wiki <wiki>",
                     "desc": "このサーバーのWiki-BotのデフォルトのWikiを設定します。"
                 }
+            },
+            "test": {
+                "cmd": "test",
+                "desc": "私が活動していれば答えます！そうでなければしません。"
+            },
+            "user": {
+                "cmd": "User:<ユーザー名>"
             }
         }
     },
