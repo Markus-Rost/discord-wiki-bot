@@ -16,7 +16,7 @@
         "language": "言語の変更",
         "login": "ログイン",
         "logout": "ログアウト",
-        "rcscript": "最近の変更点",
+        "rcscript": "最近の更新",
         "refresh": "サーバーリストの更新",
         "save": "保存",
         "selector": "サーバーを選択",
@@ -38,7 +38,7 @@
             "title": "無効なWikiです！"
         },
         "outdated": {
-            "text": "最近の変更のウェブフックには、MediaWiki 1.30以降が必要です！",
+            "text": "最近の更新のウェブフックには、MediaWiki 1.30以降が必要です！",
             "title": "古いMediaWikiのバージョンです！"
         },
         "prefix": {
@@ -136,22 +136,22 @@
         },
         "wikiblocked": {
             "note": "理由：",
-            "text": "$1 が最近の変更のウェブフックとして追加されるのを阻止しました。",
+            "text": "$1 が最近の更新のウェブフックとして追加されるのを阻止しました。",
             "title": "Wikiがブロックされています！"
         }
     },
     "rcscript": {
-        "desc": "$1 の最近の変更点のウェブフックです。",
+        "desc": "$1 の最近の更新のウェブフックです。",
         "explanation": "<h2>最近の変更点のウェブフック</h2>\n<p>Wiki-Botは、<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>をベースにした最近の変更のウェブフックを実行することができます。最近の変更を、直リンク付きの小さなテキストメッセージや、編集されたタグやカテゴリーの変更ができる埋め込みメッセージを表示することができます。</p>\n<p>最近の変更のウェブフックを追加するための要件:</p>\n<ul>\n<li>Wikiは<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>以上で動作している必要があります。</li>\n<li>システムメッセージの<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> にDiscordのサーバーID <code class=\"user-select\" id=\"server-id\"></code> を設定する必要があります。</li>\n</ul>",
         "form": {
             "channel": "チャンネル：",
-            "confirm": "本当に最近の変更のウェブフックを削除しますか？",
+            "confirm": "本当に最近の更新のウェブフックを削除しますか？",
             "display": "表示形態：",
             "display_compact": "直リンク付きの小型のテキストメッセージ。",
             "display_diff": "画像プレビューと編集の違いを表示した埋め込みメッセージ。",
             "display_embed": "編集されたタグやカテゴリーの変更ができる埋め込みメッセージ。",
             "display_image": "画像プレビューを表示した埋め込みメッセージ。",
-            "entry": "最近の変更点のウェブフック #$1",
+            "entry": "最近の更新のウェブフック #$1",
             "feeds": "フィードベースの変更：",
             "feeds_only": "フィードベースの変更のみ：",
             "lang": "言語：",
