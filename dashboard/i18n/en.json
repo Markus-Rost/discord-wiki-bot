@@ -230,6 +230,8 @@
             "postcount_or": "Require either edit or post count.",
             "rename": "Rename users:",
             "role": "Role:",
+            "role_add": "Add",
+            "role_remove": "Remove",
             "select_channel": "-- Select a Channel --",
             "select_role": "-- Select a Role --",
             "success": "Success notice:",

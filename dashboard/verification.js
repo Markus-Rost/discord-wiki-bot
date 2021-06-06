@@ -4,11 +4,19 @@ const {got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm} = req
 const slashCommand = slashCommands.find( slashCommand => slashCommand.name === 'verify' );
 
 const fieldset = {
-	channel: '<label for="wb-settings-channel">Channel:</label>'
-	+ '<select id="wb-settings-channel" name="channel" required></select>'
+	channel: '<div>'
+	+ '<label for="wb-settings-channel">Channel:</label>'
+	+ '<select id="wb-settings-channel" name="channel-0" required></select>'
+	+ '</div>'
 	+ '<button type="button" id="wb-settings-channel-more" class="addmore">Add more</button>',
-	role: '<label for="wb-settings-role">Role:</label>'
-	+ '<select id="wb-settings-role" name="role" required></select>'
+	role: '<div>'
+	+ '<label for="wb-settings-role">Role:</label>'
+	+ '<select id="wb-settings-role" name="role-0" required></select>'
+	+ '<input type="radio" id="wb-settings-role-0-add" name="role-0-change" value="+">'
+	+ '<label for="wb-settings-role-0-add" class="radio-label">Add</label>'
+	+ '<input type="radio" id="wb-settings-role-0-remove" name="role-0-change" value="-">'
+	+ '<label for="wb-settings-role-0-remove" class="radio-label">Remove</label>'
+	+ '</div>'
 	+ '<button type="button" id="wb-settings-role-more" class="addmore">Add more</button>',
 	usergroup: '<label for="wb-settings-usergroup">Wiki user group:</label>'
 	+ '<input type="text" id="wb-settings-usergroup" name="usergroup" list="wb-settings-usergroup-list" autocomplete="on">'
@@ -32,13 +40,13 @@ const fieldset = {
 	+ '</div><div class="wb-settings-postcount">'
 	+ '<span>Only Fandom wikis:</span>'
 	+ '<input type="radio" id="wb-settings-postcount-and" name="posteditcount" value="and" required>'
-	+ '<label for="wb-settings-postcount-and">Require both edit and post count.</label>'
+	+ '<label for="wb-settings-postcount-and" class="radio-label">Require both edit and post count.</label>'
 	+ '</div><div class="wb-settings-postcount">'
 	+ '<input type="radio" id="wb-settings-postcount-or" name="posteditcount" value="or" required>'
-	+ '<label for="wb-settings-postcount-or">Require either edit or post count.</label>'
+	+ '<label for="wb-settings-postcount-or" class="radio-label">Require either edit or post count.</label>'
 	+ '</div><div class="wb-settings-postcount">'
 	+ '<input type="radio" id="wb-settings-postcount-both" name="posteditcount" value="both" required>'
-	+ '<label for="wb-settings-postcount-both">Require combined edit and post count.</label>'
+	+ '<label for="wb-settings-postcount-both" class="radio-label">Require combined edit and post count.</label>'
 	+ '</div>',
 	accountage: '<label for="wb-settings-accountage">Account age (in days):</label>'
 	+ '<input type="number" id="wb-settings-accountage" name="accountage" min="0" max="1000000" required>',
@@ -101,13 +109,14 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 				return $(`<option class="wb-settings-channel-${guildChannel}">`).val(guildChannel).text(`${guildChannel} – #UNKNOWN`).addClass('wb-settings-error');
 			} )
 		);
-		if ( settingsChannels.length > 1 ) channel.find('#wb-settings-channel').after(
-			...settingsChannels.slice(1).map( guildChannel => {
+		if ( settingsChannels.length > 1 ) channel.find('div').after(
+			...settingsChannels.slice(1).map( (guildChannel, i) => {
 				var additionalChannel = channel.find('#wb-settings-channel').clone();
-				additionalChannel.addClass('wb-settings-additional-select');
 				additionalChannel.find(`.wb-settings-channel-default`).removeAttr('hidden');
 				additionalChannel.find(`.wb-settings-channel-${guildChannel}`).attr('selected', '');
-				return additionalChannel.removeAttr('id').removeAttr('required');
+				additionalChannel.removeAttr('id').removeAttr('required');
+				additionalChannel.attr('name', 'channel-' + (i + 1));
+				return $('<div>').addClass('wb-settings-additional-select').append(additionalChannel);
 			} )
 		);
 		channel.find(`#wb-settings-channel .wb-settings-channel-${settingsChannels[0]}`).attr('selected', '');
@@ -118,11 +127,13 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	}
 	fields.push(channel);
 	let role = $('<div>').append(fieldset.role);
-	role.find('label').text(dashboardLang.get('verification.form.role'));
+	role.find('label').eq(0).text(dashboardLang.get('verification.form.role'));
+	role.find('label').eq(1).text(dashboardLang.get('verification.form.role_add'));
+	role.find('label').eq(2).text(dashboardLang.get('verification.form.role_remove'));
 	role.find('#wb-settings-role').append(
 		$('<option class="wb-settings-role-default defaultSelect" hidden>').val('').text(dashboardLang.get('verification.form.select_role')),
 		...guildRoles.filter( guildRole => {
-			return guildRole.lower || settings.role.split('|').includes( guildRole.id );
+			return guildRole.lower || settings.role.replace( /-/g, '' ).split('|').includes( guildRole.id );
 		} ).map( guildRole => {
 			var optionRole = $(`<option class="wb-settings-role-${guildRole.id}">`).val(guildRole.id);
 			if ( !guildRole.lower ) optionRole.addClass('wb-settings-error');
@@ -130,30 +141,44 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 		} )
 	);
 	if ( settings.role ) {
-		let settingsRoles = settings.role.split('|');
+		let settingsRoles = settings.role.split('|').map( guildRole => {
+			if ( !guildRole.startsWith( '-' ) ) return {id: guildRole, suffix: 'add'};
+			return {id: guildRole.replace( '-', '' ), suffix: 'remove'};
+		} );
 		role.find('#wb-settings-role').append(
 			...settingsRoles.filter( guildRole => {
-				return !role.find(`.wb-settings-role-${guildRole}`).length;
+				return !role.find(`.wb-settings-role-${guildRole.id}`).length;
 			} ).map( guildRole => {
-				return $(`<option class="wb-settings-role-${guildRole}">`).val(guildRole).text(`${guildRole} – @UNKNOWN`).addClass('wb-settings-error');
+				return $(`<option class="wb-settings-role-${guildRole.id}">`).val(guildRole.id).text(`${guildRole.id} – @UNKNOWN`).addClass('wb-settings-error');
 			} )
 		);
-		if ( settingsRoles.length > 1 ) role.find('#wb-settings-role').after(
-			...settingsRoles.slice(1).map( guildRole => {
-				var additionalRole = role.find('#wb-settings-role').clone();
-				additionalRole.addClass('wb-settings-additional-select');
+		if ( settingsRoles.length > 1 ) role.find('div').after(
+			...settingsRoles.slice(1).map( (guildRole, i) => {
+				var id = i + 1;
+				var additionalDiv = role.find('div').clone();
+				additionalDiv.find('label').eq(0).remove();
+				var additionalRole = additionalDiv.find('#wb-settings-role');
 				additionalRole.find(`.wb-settings-role-default`).removeAttr('hidden');
-				additionalRole.find(`.wb-settings-role-${guildRole}`).attr('selected', '');
-				return additionalRole.removeAttr('id').removeAttr('required');
+				additionalRole.find(`.wb-settings-role-${guildRole.id}`).attr('selected', '');
+				additionalRole.removeAttr('id').removeAttr('required').attr('name', 'role-' + id);
+				additionalDiv.find('input').attr('name', 'role-' + id + '-change');
+				additionalDiv.find('input').eq(0).attr('id', 'wb-settings-role-' + id + '-add');
+				additionalDiv.find('label').eq(0).attr('for', 'wb-settings-role-' + id + '-add');
+				additionalDiv.find('input').eq(1).attr('id', 'wb-settings-role-' + id + '-remove');
+				additionalDiv.find('label').eq(1).attr('for', 'wb-settings-role-' + id + '-remove');
+				additionalDiv.find(`#wb-settings-role-${id}-${guildRole.suffix}`).attr('checked', '');
+				return additionalDiv.addClass('wb-settings-additional-select');
 			} )
 		);
-		role.find(`#wb-settings-role .wb-settings-role-${settingsRoles[0]}`).attr('selected', '');
+		role.find(`#wb-settings-role .wb-settings-role-${settingsRoles[0].id}`).attr('selected', '');
+		role.find(`#wb-settings-role-0-${settingsRoles[0].suffix}`).attr('checked', '');
 	}
 	else {
 		if ( role.find(`.wb-settings-role-${settings.defaultrole}`).length ) {
 			role.find(`.wb-settings-role-${settings.defaultrole}`).attr('selected', '');
 		}
 		else role.find('.wb-settings-role-default').attr('selected', '');
+		role.find('#wb-settings-role-0-add').attr('checked', '');
 		role.find('button.addmore').attr('hidden', '');
 	}
 	fields.push(role);
@@ -255,7 +280,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		$('#channellist #verification').after(
 			...rows.map( row => {
 				let text = `${row.configid} - ${( guild.roles.find( role => {
-					return role.id === row.role.split('|')[0];
+					return role.id === row.role.replace( /-/g, '' ).split('|')[0];
 				} )?.name || guild.channels.find( channel => {
 					return channel.id === row.channel.split('|')[1];
 				} )?.name || row.usergroup.split('|')[( row.usergroup.startsWith('AND|') ? 1 : 0 )] )}`;
@@ -391,8 +416,6 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
  * @param {String} guild - The id of the guild
  * @param {String|Number} type - The setting to change
  * @param {Object} settings - The new settings
- * @param {String[]} settings.channel
- * @param {String[]} settings.role
  * @param {String[]} [settings.usergroup]
  * @param {String} [settings.usergroup_and]
  * @param {Number} settings.editcount
@@ -411,8 +434,20 @@ function update_verification(res, userSettings, guild, type, settings) {
 	if ( !settings.save_settings === !settings.delete_settings ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
+	/** @type {String[]} */
+	var channels = [];
+	/** @type {{id: String, prefix: String}[]} */
+	var roles = [];
 	if ( settings.save_settings ) {
-		if ( !/^[\d|]+ [\d|]+$/.test(`${settings.channel} ${settings.role}`) ) {
+		channels = Object.keys(settings).filter( channel => {
+			return /^channel-\d$/.test(channel) && /^\d+$/.test(settings[channel]);
+		} ).map( channel => settings[channel] );
+		roles = Object.keys(settings).filter( role => {
+			return /^role-\d$/.test(role) && /^\d+$/.test(settings[role]);
+		} ).map( role => {
+			return {id: settings[role], prefix: ( settings[role + '-change'] === '-' ? '-' : '' )};
+		} );
+		if ( !channels.length || !roles.length ) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		if ( !/^\d+ \d+$/.test(`${settings.editcount} ${settings.accountage}`) ) {
@@ -421,18 +456,9 @@ function update_verification(res, userSettings, guild, type, settings) {
 		if ( !( ['and','or','both'].includes( settings.posteditcount ) && ( /^\d+$/.test(settings.postcount) || settings.posteditcount === 'both' ) ) ) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
-		settings.channel = settings.channel.split('|').filter( (channel, i, self) => {
-			return ( channel.length && self.indexOf(channel) === i );
+		channels = channels.filter( (channel, i, self) => {
+			return self.indexOf(channel) === i;
 		} );
-		if ( !settings.channel.length || settings.channel.length > 10 ) {
-			return res(`/guild/${guild}/verification/${type}`, 'savefail');
-		}
-		settings.role = settings.role.split('|').filter( (role, i, self) => {
-			return ( role.length && self.indexOf(role) === i );
-		} );
-		if ( !settings.role.length || settings.role.length > 10 ) {
-			return res(`/guild/${guild}/verification/${type}`, 'savefail');
-		}
 		if ( !settings.usergroup ) settings.usergroup = 'user';
 		settings.usergroup = settings.usergroup.replace( /_/g, ' ' ).trim().toLowerCase();
 		settings.usergroup = settings.usergroup.split(/\s*[,|]\s*/).map( usergroup => {
@@ -458,13 +484,13 @@ function update_verification(res, userSettings, guild, type, settings) {
 		}
 		if ( type === 'new' ) {
 			let curGuild = userSettings.guilds.isMember.get(guild);
-			if ( settings.channel.some( channel => {
+			if ( channels.some( channel => {
 				return !curGuild.channels.some( guildChannel => {
 					return ( guildChannel.id === channel && !guildChannel.isCategory );
 				} );
-			} ) || settings.role.some( role => {
+			} ) || roles.some( role => {
 				return !curGuild.roles.some( guildRole => {
-					return ( guildRole.id === role && guildRole.lower );
+					return ( guildRole.id === role.id && guildRole.lower );
 				} );
 			} ) ) return res(`/guild/${guild}/verification/new`, 'savefail');
 		}
@@ -517,7 +543,12 @@ function update_verification(res, userSettings, guild, type, settings) {
 				var text = lang.get('verification.dashboard.removed', `<@${userSettings.user.id}>`, type);
 				if ( row ) {
 					text += '\n' + lang.get('verification.channel') + ' <#' + row.channel.split('|').filter( channel => channel.length ).join('>, <#') + '>';
-					text += '\n' + lang.get('verification.role') + ' <@&' + row.role.split('|').join('>, <@&') + '>';
+					let rolesRow = [
+						row.role.split('|').filter( role => !role.startsWith( '-' ) ),
+						row.role.split('|').filter( role => role.startsWith( '-' ) ).map( role => role.replace( '-', '' ) )
+					];
+					if ( rolesRow[0].length ) text += '\n' + lang.get('verification.role_add') + ' <@&' + rolesRow[0].join('>, <@&') + '>';
+					if ( rolesRow[1].length ) text += '\n' + lang.get('verification.role_remove') + ' <@&' + rolesRow[1].join('>, <@&') + '>';
 					if ( row.postcount === null ) {
 						text += '\n' + lang.get('verification.posteditcount') + ' `' + row.editcount + '`';
 					}
@@ -586,7 +617,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					if ( configid === i ) configid++;
 					else break;
 				}
-				db.query( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, '|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )] ).then( () => {
+				db.query( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, '|' + channels.join('|') + '|', roles.map( role => role.prefix + role.id ).join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )] ).then( () => {
 					console.log( `- Dashboard: Verification successfully added: ${guild}#${configid}` );
 					res(`/guild/${guild}/verification/${configid}`, 'save');
 					if ( !row.count.length && slashCommand?.id ) got.put( 'https://discord.com/api/v8/applications/' + process.env.bot + '/guilds/' + guild + '/commands/' + slashCommand.id + '/permissions', {
@@ -614,8 +645,13 @@ function update_verification(res, userSettings, guild, type, settings) {
 					} );
 					var lang = new Lang(row.lang);
 					var text = lang.get('verification.dashboard.added', `<@${userSettings.user.id}>`, configid);
-					text += '\n' + lang.get('verification.channel') + ' <#' + settings.channel.join('>, <#') + '>';
-					text += '\n' + lang.get('verification.role') + ' <@&' + settings.role.join('>, <@&') + '>';
+					text += '\n' + lang.get('verification.channel') + ' <#' + channels.join('>, <#') + '>';
+					let rolesRow = [
+						roles.filter( role => !role.prefix ).map( role => '<@&' + role.id + '>' ),
+						roles.filter( role => role.prefix ).map( role => '<@&' + role.id + '>' )
+					];
+					if ( rolesRow[0].length ) text += '\n' + lang.get('verification.role_add') + ' ' + rolesRow[0].join(', ');
+					if ( rolesRow[1].length ) text += '\n' + lang.get('verification.role_remove') + ' ' + rolesRow[1].join(', ');
 					if ( settings.postcount === null ) {
 						text += '\n' + lang.get('verification.posteditcount') + ' `' + settings.editcount + '`';
 					}
@@ -631,22 +667,22 @@ function update_verification(res, userSettings, guild, type, settings) {
 					if ( settings.rename && !hasPerm(response.botPermissions, 'MANAGE_NICKNAMES') ) {
 						text += '\n\n' + lang.get('verification.rename_no_permission', `<@${process.env.bot}>`);
 					}
-					if ( settings.role.some( role => {
+					if ( roles.some( role => {
 						return !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
-							return ( guildRole.id === role && guildRole.lower );
+							return ( guildRole.id === role.id && guildRole.lower );
 						} );
 					} ) ) {
 						text += '\n';
-						settings.role.forEach( role => {
+						roles.forEach( role => {
 							if ( !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
-								return ( guildRole.id === role );
+								return ( guildRole.id === role.id );
 							} ) ) {
-								text += '\n' + lang.get('verification.role_deleted', `<@&${role}>`);
+								text += '\n' + lang.get('verification.role_deleted', `<@&${role.id}>`);
 							}
 							else if ( userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
-								return ( guildRole.id === role && !guildRole.lower );
+								return ( guildRole.id === role.id && !guildRole.lower );
 							} ) ) {
-								text += '\n' + lang.get('verification.role_too_high', `<@&${role}>`, `<@${process.env.bot}>`);
+								text += '\n' + lang.get('verification.role_too_high', `<@&${role.id}>`, `<@${process.env.bot}>`);
 							}
 						} );
 					}
@@ -667,9 +703,15 @@ function update_verification(res, userSettings, guild, type, settings) {
 		return db.query( 'SELECT wiki, lang, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild AND verification.configid = $1 WHERE discord.guild = $2 AND discord.channel IS NULL', [type, guild] ).then( ({rows:[row]}) => {
 			if ( !row?.channel ) return res(`/guild/${guild}/verification`, 'savefail');
 			row.channel = row.channel.split('|').filter( channel => channel.length );
-			var newChannel = settings.channel.filter( channel => !row.channel.includes( channel ) );
-			row.role = row.role.split('|');
-			var newRole = settings.role.filter( role => !row.role.includes( role ) );
+			var newChannel = channels.filter( channel => !row.channel.includes( channel ) );
+			/** @type {String[][]} */
+			var rolesRow = [
+				row.role.split('|').filter( role => !role.startsWith( '-' ) ),
+				row.role.split('|').filter( role => role.startsWith( '-' ) ).map( role => role.replace( '-', '' ) )
+			];
+			var newRole = roles.filter( role => {
+				return !rolesRow[0].includes( role.id ) && !rolesRow[1].includes( role.id );
+			} );
 			row.usergroup = row.usergroup.split('|');
 			var newUsergroup = settings.usergroup.filter( group => !row.usergroup.includes( group ) );
 			if ( newChannel.length || newRole.length ) {
@@ -680,7 +722,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					} );
 				} ) || newRole.some( role => {
 					return !curGuild.roles.some( guildRole => {
-						return ( guildRole.id === role && guildRole.lower );
+						return ( guildRole.id === role.id && guildRole.lower );
 					} );
 				} ) ) return res(`/guild/${guild}/verification/${type}`, 'savefail');
 			}
@@ -717,14 +759,25 @@ function update_verification(res, userSettings, guild, type, settings) {
 				var lang = new Lang(row.lang);
 				var diff = [];
 				if ( newChannel.length || row.channel.some( channel => {
-					return !settings.channel.includes( channel );
+					return !channels.includes( channel );
 				} ) ) {
-					diff.push(lang.get('verification.channel') + ` ~~<#${row.channel.join('>, <#')}>~~ → <#${settings.channel.join('>, <#')}>`);
+					diff.push(lang.get('verification.channel') + ` ~~<#${row.channel.join('>, <#')}>~~ → <#${channels.join('>, <#')}>`);
 				}
-				if ( newRole.length || row.role.some( role => {
-					return !settings.role.includes( role );
+				if ( roles.some( role => {
+					if ( role.prefix ) return false;
+					return !rolesRow[0].includes( role.id );
+				} ) || rolesRow[0].some( roleid => {
+					return !roles.some( role => !role.prefix && role.id === roleid );
 				} ) ) {
-					diff.push(lang.get('verification.role') + ` ~~<@&${row.role.join('>, <@&')}>~~ → <@&${settings.role.join('>, <@&')}>`);
+					diff.push(lang.get('verification.role_add') + ' ~~' + ( rolesRow[0].length ? '<@&' + rolesRow[0].join('>, <@&') + '>' : '*`' + lang.get('verification.role_none') + '`*' ) + '~~ → ' + ( roles.some( role => !role.prefix ) ? roles.filter( role => !role.prefix ).map( role => '<@&' + role.id + '>' ).join(', ') : '*`' + lang.get('verification.role_none') + '`*' ));
+				}
+				if ( roles.some( role => {
+					if ( !role.prefix ) return false;
+					return !rolesRow[1].includes( role.id );
+				} ) || rolesRow[1].some( roleid => {
+					return !roles.some( role => role.prefix && role.id === roleid );
+				} ) ) {
+					diff.push(lang.get('verification.role_remove') + ' ~~' + ( rolesRow[1].length ? '<@&' + rolesRow[1].join('>, <@&') + '>' : '*`' + lang.get('verification.role_none') + '`*' ) + '~~ → ' + ( roles.some( role => role.prefix ) ? roles.filter( role => role.prefix ).map( role => '<@&' + role.id + '>' ).join(', ') : '*`' + lang.get('verification.role_none') + '`*' ));
 				}
 				if ( row.postcount !== settings.postcount && ( row.postcount === null || settings.postcount === null ) ) {
 					if ( row.postcount === null ) {
@@ -762,7 +815,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					diff.push(lang.get('verification.rename') + ` ~~*\`${lang.get('verification.' + ( row.rename ? 'enabled' : 'disabled'))}\`*~~ → *\`${lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled'))}\`*`);
 				}
 				if ( !diff.length ) return res(`/guild/${guild}/verification/${type}`, 'save');
-				db.query( 'UPDATE verification SET channel = $1, role = $2, editcount = $3, postcount = $4, usergroup = $5, accountage = $6, rename = $7 WHERE guild = $8 AND configid = $9', ['|' + settings.channel.join('|') + '|', settings.role.join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type] ).then( () => {
+				db.query( 'UPDATE verification SET channel = $1, role = $2, editcount = $3, postcount = $4, usergroup = $5, accountage = $6, rename = $7 WHERE guild = $8 AND configid = $9', ['|' + channels.join('|') + '|', roles.map( role => role.prefix + role.id ).join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 ), guild, type] ).then( () => {
 					console.log( `- Dashboard: Verification successfully updated: ${guild}#${type}` );
 					res(`/guild/${guild}/verification/${type}`, 'save');
 					var text = lang.get('verification.dashboard.updated', `<@${userSettings.user.id}>`, type);
@@ -771,22 +824,22 @@ function update_verification(res, userSettings, guild, type, settings) {
 					if ( settings.rename && !hasPerm(response.botPermissions, 'MANAGE_NICKNAMES') ) {
 						text += '\n\n' + lang.get('verification.rename_no_permission', `<@${process.env.bot}>`);
 					}
-					if ( settings.role.some( role => {
+					if ( roles.some( role => {
 						return !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
-							return ( guildRole.id === role && guildRole.lower );
+							return ( guildRole.id === role.id && guildRole.lower );
 						} );
 					} ) ) {
 						text += '\n';
-						settings.role.forEach( role => {
+						roles.forEach( role => {
 							if ( !userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
-								return ( guildRole.id === role );
+								return ( guildRole.id === role.id );
 							} ) ) {
-								text += '\n' + lang.get('verification.role_deleted', `<@&${role}>`);
+								text += '\n' + lang.get('verification.role_deleted', `<@&${role.id}>`);
 							}
 							else if ( userSettings.guilds.isMember.get(guild).roles.some( guildRole => {
-								return ( guildRole.id === role && !guildRole.lower );
+								return ( guildRole.id === role.id && !guildRole.lower );
 							} ) ) {
-								text += '\n' + lang.get('verification.role_too_high', `<@&${role}>`, `<@${process.env.bot}>`);
+								text += '\n' + lang.get('verification.role_too_high', `<@&${role.id}>`, `<@${process.env.bot}>`);
 							}
 						} );
 					}

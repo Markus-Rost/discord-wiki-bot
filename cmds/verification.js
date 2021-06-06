@@ -53,15 +53,19 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( !roles.length ) return msg.replyMsg( lang.get('verification.no_role') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`', {components}, true );
 			if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {components}, true );
 			roles = roles.map( role => {
-				var new_role = '';
-				if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
-				if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
-				if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
+				var new_role = ['', null];
+				if ( role.startsWith( '-' ) ) {
+					role = role.replace( '-', '' );
+					new_role[0] = '-';
+				}
+				if ( /^\d+$/.test(role) ) new_role[1] = msg.guild.roles.cache.get(role);
+				if ( !new_role[1] ) new_role[1] = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
+				if ( !new_role[1] ) new_role[1] = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
 				return new_role;
 			} );
-			if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {components}, true );
-			if ( roles.some( role => role.managed ) ) return msg.replyMsg( lang.get('verification.role_managed'), {components}, true );
-			roles = roles.map( role => role.id ).join('|');
+			if ( roles.some( role => !role[1] ) ) return msg.replyMsg( lang.get('verification.role_missing'), {components}, true );
+			if ( roles.some( role => role[1].managed || role[1].id === msg.guild.id ) ) return msg.replyMsg( lang.get('verification.role_managed'), {components}, true );
+			roles = roles.map( role => role[0] + role[1].id ).join('|');
 			var new_configid = 1;
 			for ( let i of rows.map( row => row.configid ) ) {
 				if ( new_configid === i ) new_configid++;
@@ -174,15 +178,19 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				var roles = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).split('|').filter( role => role.length );
 				if ( roles.length > 10 ) return msg.replyMsg( lang.get('verification.role_max'), {components}, true );
 				roles = roles.map( role => {
-					var new_role = null;
-					if ( /^\d+$/.test(role) ) new_role = msg.guild.roles.cache.get(role);
-					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
-					if ( !new_role ) new_role = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
+					var new_role = ['', null];
+					if ( role.startsWith( '-' ) ) {
+						role = role.replace( '-', '' );
+						new_role[0] = '-';
+					}
+					if ( /^\d+$/.test(role) ) new_role[1] = msg.guild.roles.cache.get(role);
+					if ( !new_role[1] ) new_role[1] = msg.guild.roles.cache.find( gc => gc.name === role.replace( /^@/, '' ) );
+					if ( !new_role[1] ) new_role[1] = msg.guild.roles.cache.find( gc => gc.name.toLowerCase() === role.toLowerCase().replace( /^@/, '' ) );
 					return new_role;
 				} );
-				if ( roles.some( role => !role ) ) return msg.replyMsg( lang.get('verification.role_missing'), {components}, true );
-				if ( roles.some( role => role.managed || role.id === msg.guild.id ) ) return msg.replyMsg( lang.get('verification.role_managed'), {components}, true );
-				roles = roles.map( role => role.id ).join('|');
+				if ( roles.some( role => !role[1] ) ) return msg.replyMsg( lang.get('verification.role_missing'), {components}, true );
+				if ( roles.some( role => role[1].managed || role[1].id === msg.guild.id ) ) return msg.replyMsg( lang.get('verification.role_managed'), {components}, true );
+				roles = roles.map( role => role[0] + role[1].id ).join('|');
 				if ( roles.length ) return db.query( 'UPDATE verification SET role = $1 WHERE guild = $2 AND configid = $3', [roles, msg.guild.id, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row.role = roles;
@@ -268,17 +276,22 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		function formatVerification(showCommands, hideNotice, {
 			configid,
 			channel = '|' + msg.channel.id + '|',
-			role,
+			role = '',
 			editcount = 0,
 			postcount = 0,
 			usergroup = 'user',
 			accountage = 0,
 			rename = 0
 		} = row) {
+			var roles = [
+				role.split('|').filter( roleid => !roleid.startsWith( '-' ) ),
+				role.split('|').filter( roleid => roleid.startsWith( '-' ) ).map( roleid => roleid.replace( '-', '' ) )
+			];
 			var verification_text = '\n\n`' + prefix + 'verification ' + configid + '`';
 			verification_text += '\n' + lang.get('verification.channel') + ' <#' + channel.split('|').filter( channel => channel.length ).join('>, <#') + '>';
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' channel ' + lang.get('verification.new_channel') + '`\n';
-			verification_text += '\n' + lang.get('verification.role') + ' <@&' + role.split('|').join('>, <@&') + '>';
+			if ( roles[0].length ) verification_text += '\n' + lang.get('verification.role_add') + ' <@&' + roles[0].join('>, <@&') + '>';
+			if ( roles[1].length ) verification_text += '\n' + lang.get('verification.role_remove') + ' <@&' + roles[1].join('>, <@&') + '>';
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' role ' + lang.get('verification.new_role') + '`\n';
 			if ( postcount === null ) verification_text += '\n' + lang.get('verification.posteditcount') + ' `' + editcount + '`';
 			else verification_text += '\n' + lang.get('verification.editcount') + ' `' + editcount + '`';
@@ -297,11 +310,11 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( !hideNotice && rename && !msg.guild.me.permissions.has('MANAGE_NICKNAMES') ) {
 				verification_text += '\n\n' + lang.get('verification.rename_no_permission', msg.guild.me.toString());
 			}
-			if ( !hideNotice && role.split('|').some( role => {
+			if ( !hideNotice && role.replace( /-/g, '' ).split('|').some( role => {
 				return ( !msg.guild.roles.cache.has(role) || msg.guild.me.roles.highest.comparePositionTo(role) <= 0 );
 			} ) ) {
 				verification_text += '\n';
-				role.split('|').forEach( role => {
+				role.replace( /-/g, '' ).split('|').forEach( role => {
 					if ( !msg.guild.roles.cache.has(role) ) {
 						verification_text += '\n' + lang.get('verification.role_deleted', '<@&' + role + '>');
 					}

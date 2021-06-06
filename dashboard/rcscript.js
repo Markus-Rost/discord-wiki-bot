@@ -34,16 +34,16 @@ const fieldset = {
 	display: '<span>Display mode:</span>'
 	+ '<div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-0" name="display" value="0" required>'
-	+ '<label for="wb-settings-display-0">Compact text messages with inline links.</label>'
+	+ '<label for="wb-settings-display-0" class="radio-label">Compact text messages with inline links.</label>'
 	+ '</div><div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-1" name="display" value="1" required>'
-	+ '<label for="wb-settings-display-1">Embed messages with edit tags and category changes.</label>'
+	+ '<label for="wb-settings-display-1" class="radio-label">Embed messages with edit tags and category changes.</label>'
 	+ '</div><div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-2" name="display" value="2" required>'
-	+ '<label for="wb-settings-display-2">Embed messages with image previews.</label>'
+	+ '<label for="wb-settings-display-2" class="radio-label">Embed messages with image previews.</label>'
 	+ '</div><div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-3" name="display" value="3" required>'
-	+ '<label for="wb-settings-display-3">Embed messages with image previews and edit differences.</label>'
+	+ '<label for="wb-settings-display-3" class="radio-label">Embed messages with image previews and edit differences.</label>'
 	+ '</div>',
 	feeds: '<label for="wb-settings-feeds">Feeds based changes:</label>'
 	+ '<input type="checkbox" id="wb-settings-feeds" name="feeds">'
@@ -161,7 +161,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	if ( readonly ) {
 		form.find('input').attr('readonly', '');
 		form.find('input[type="checkbox"], input[type="radio"]:not(:checked), option, optgroup').attr('disabled', '');
-		form.find('input[type="submit"], button.addmore').remove();
+		form.find('input[type="submit"]').remove();
 	}
 	return $('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
 		$('<h2>').text(header),

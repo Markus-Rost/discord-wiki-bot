@@ -520,10 +520,13 @@ legend {
 fieldset > div {
 	margin: 10px 0;
 }
-fieldset label,
+fieldset label:not(.radio-label),
 fieldset span {
 	display: inline-block;
 	min-width: 20%;
+}
+fieldset label.radio-label {
+	padding-right: 5px;
 }
 fieldset label div {
 	padding-top: 30px;

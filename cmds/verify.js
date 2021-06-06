@@ -155,7 +155,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						dmEmbed.fields.forEach( field => {
 							field.value = field.value.replace( /<@&(\d+)>/g, (mention, id) => {
 								if ( !msg.guild.roles.cache.has(id) ) return mention;
-								return '@' + msg.guild.roles.cache.get(id)?.name;
+								return escapeFormatting('@' + msg.guild.roles.cache.get(id)?.name);
 							} );
 						} );
 						msg.member.send( msg.channel.toString() + '; ' + result.content, {embed: dmEmbed, components: []} ).then( message => {

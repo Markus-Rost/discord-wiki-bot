@@ -39,7 +39,7 @@ for ( var b = 0; b < baseSelect.length; b++ ) {
 			} );
 		}
 	}
-	if ( baseSelect[b].parentNode.querySelector('button.addmore') ) {
+	if ( baseSelect[b].parentElement.parentElement.querySelector('button.addmore') ) {
 		baseSelect[b].addEventListener( 'input', toggleOption );
 		toggleOption.call(baseSelect[b]);
 	}
@@ -48,20 +48,45 @@ for ( var b = 0; b < baseSelect.length; b++ ) {
 /** @type {HTMLCollectionOf<HTMLButtonElement>} */
 var addmore = document.getElementsByClassName('addmore');
 for ( var j = 0; j < addmore.length; j++ ) {
+	/** @this HTMLButtonElement */
 	addmore[j].onclick = function() {
-		/** @type {HTMLSelectElement} */
+		/** @type {HTMLDivElement} */
 		var clone = this.previousElementSibling.cloneNode(true);
 		clone.classList.add('wb-settings-additional-select');
-		clone.removeAttribute('id');
-		clone.required = false;
-		clone.childNodes.forEach( function(child) {
+		if ( clone.firstElementChild.tagName === 'LABEL' ) clone.removeChild(clone.firstElementChild);
+		/** @type {HTMLSelectElement} */
+		var cloneSelect = clone.firstElementChild;
+		var newName = cloneSelect.name.replace( /^([a-z]+-)(\d)$/, function(fullname, base, id) {
+			return base + (+id + 1);
+		} );
+		cloneSelect.name = newName;
+		cloneSelect.removeAttribute('id');
+		cloneSelect.required = false;
+		cloneSelect.childNodes.forEach( function(child) {
 			child.hidden = false;
 			child.selected = false;
+			child.defaultSelected = false;
 		} );
-		clone.querySelector('option.defaultSelect').selected = true;
-		clone.addEventListener( 'input', toggleOption );
+		cloneSelect.querySelector('option.defaultSelect').defaultSelected = true;
+		cloneSelect.querySelector('option.defaultSelect').selected = true;
+		cloneSelect.addEventListener( 'input', toggleOption );
+		cloneSelect.name
+		cloneSelect.htmlFor
+		cloneSelect.id
+		if ( clone.children.length === 5 ) {
+			clone.children.item(1).name = newName + '-change';
+			clone.children.item(1).id = 'wb-settings-' + newName + '-add';
+			clone.children.item(1).checked = false;
+			clone.children.item(2).htmlFor = 'wb-settings-' + newName + '-add';
+			clone.children.item(3).name = newName + '-change';
+			clone.children.item(3).id = 'wb-settings-' + newName + '-remove';
+			clone.children.item(3).checked = false;
+			clone.children.item(4).htmlFor = 'wb-settings-' + newName + '-remove';
+			clone.children.item(1).defaultChecked = true;
+			clone.children.item(1).checked = true;
+		}
 		this.before(clone);
-		toggleOption.call(clone);
+		toggleOption.call(cloneSelect);
 	};
 }
 
@@ -71,12 +96,13 @@ function toggleOption() {
 	var options = [];
 	/** @type {HTMLOptionElement[]} */
 	var selected = [];
-	var allSelect = this.parentNode.querySelectorAll('select');
+	var allSelect = this.parentElement.parentElement.querySelectorAll('select');
 	allSelect.forEach( function(select) {
 		options.push(...select.options);
 		selected.push(...select.selectedOptions);
 	} );
-	var button = this.parentNode.querySelector('button.addmore');
+	/** @type {HTMLButtonElement} */
+	var button = this.parentElement.parentElement.querySelector('button.addmore');
 	if ( selected.some( function(option) {
 		if ( option && option.value ) return false;
 		else return true;
@@ -410,6 +436,9 @@ if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
 		newPermissionDiv0.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-0';
 		newPermissionDiv1.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-1';
 		newPermissionDiv2.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-default';
+		newPermissionDiv0.lastElementChild.classList.add('wb-settings-permission-deny', 'radio-label');
+		newPermissionDiv1.lastElementChild.classList.add('wb-settings-permission-allow', 'radio-label');
+		newPermissionDiv2.lastElementChild.classList.add('wb-settings-permission-default', 'radio-label');
 		newPermissionDiv0.lastElementChild.textContent = i18nSlashPermission.deny;
 		newPermissionDiv1.lastElementChild.textContent = i18nSlashPermission.allow;
 		newPermissionDiv2.lastElementChild.textContent = i18nSlashPermission.default;
@@ -454,6 +483,7 @@ if ( textAreas.length ) {
 		var end = textArea.selectionEnd;
 		var valueBefore = ( this.dataset?.before || this.innerText );
 		var valueAfter = ( this.dataset?.after || '' );
+		if ( (textArea.textLength - (end - start)) + (valueBefore.length + valueAfter.length) > textArea.maxLength ) return document.getSelection().selectAllChildren(this);
 		if ( valueAfter ) {
 			textArea.value = textArea.value.substring(0, start) + valueBefore + textArea.value.substring(start, end) + valueAfter + textArea.value.substring(end);
 			textArea.selectionStart = start + valueBefore.length;
@@ -478,6 +508,7 @@ if ( textAreas.length ) {
 		var end = this.selectionEnd;
 		if ( this.value.substring(0, start).includes( '```' ) && this.value.substring(end).includes( '```' ) ) {
 			e.preventDefault();
+			if ( this.textLength > this.maxLength ) return;
 			this.value = this.value.substring(0, start) + '\t' + this.value.substring(end);
 			this.selectionStart = this.selectionEnd = start + 1;
 		}
@@ -485,7 +516,7 @@ if ( textAreas.length ) {
 
 	/** @this HTMLTextAreaElement */
 	function updateTextLength() {
-		this.labels.item(0).children.item(0).textContent = this.value.length + ' / ' + this.maxLength;
+		this.labels.item(0).children.item(0).textContent = this.textLength + ' / ' + this.maxLength;
 	}
 }
 

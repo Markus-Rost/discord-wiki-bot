@@ -9,13 +9,13 @@ const fieldset = {
 	permission: '<span title="@UNKNOWN">@UNKNOWN:</span>'
 	+ '<div class="wb-settings-permission">'
 	+ '<input type="radio" id="wb-settings-permission-0" name="permission" value="0" required>'
-	+ '<label for="wb-settings-permission-0" class="wb-settings-permission-deny">Deny</label>'
+	+ '<label for="wb-settings-permission-0" class="wb-settings-permission-deny radio-label">Deny</label>'
 	+ '</div><div class="wb-settings-permission">'
 	+ '<input type="radio" id="wb-settings-permission-1" name="permission" value="1" required>'
-	+ '<label for="wb-settings-permission-1" class="wb-settings-permission-allow">Allow</label>'
+	+ '<label for="wb-settings-permission-1" class="wb-settings-permission-allow radio-label">Allow</label>'
 	+ '</div><div class="wb-settings-permission">'
 	+ '<input type="radio" id="wb-settings-permission-default" name="permission" value="" required>'
-	+ '<label for="wb-settings-permission-default" class="wb-settings-permission-default">Default</label>'
+	+ '<label for="wb-settings-permission-default" class="wb-settings-permission-default radio-label">Default</label>'
 	+ '</div>',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">'
 };
