@@ -230,6 +230,8 @@
             "postcount_or": "要求编辑数或帖子数。",
             "rename": "重命名用户：",
             "role": "身份组：",
+            "role_add": "添加",
+            "role_remove": "移除",
             "select_channel": "-- 选择频道 --",
             "select_role": "-- 选择身份组 --",
             "success": "成功提示：",
