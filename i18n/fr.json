@@ -786,7 +786,6 @@
         "help_subpage": "Veuillez rajouter votre tag Discord ($1) à votre sous-page Discord sur le wiki :",
         "missing": "il n'y a aucune vérification mise en place pour ce salon.",
         "notice": "Note :",
-        "qualified_error": "Qualifié pour, mais ne peut pas rajouter :",
         "user_blocked": "**L'utilisateur wiki $1 est bloqué !**",
         "user_blocked_reply": "votre utilisateur wiki lié **\"$1\" est bloqué !**",
         "user_disabled": "**Le compte wiki $1 est désactivé !**",

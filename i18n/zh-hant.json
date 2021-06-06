@@ -809,7 +809,6 @@
         "oauth_message_dm": "請使用此連結為$1驗證您的帳號。",
         "oauth_private": "此wiki使用OAuth2進行驗證。請開啟來自此伺服器的私訊或是使用`/verify`指令以允許我向您傳送驗證連結。",
         "oauth_used": "*已透過OAuth2驗證*",
-        "qualified_error": "符合，但無法添加：",
         "user_blocked": "**Wiki 使用者 $1 已被封鎖！**",
         "user_blocked_reply": "您連接的 wiki 使用者**“$1”已被封鎖！**",
         "user_disabled": "**Wiki 使用者 $1 已被停用！**",

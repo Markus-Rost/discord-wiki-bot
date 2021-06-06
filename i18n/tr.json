@@ -768,7 +768,6 @@
         "help_subpage": "Lütfen vikideki Discord alt sayfana Discord etiketini ($1) ekle:",
         "missing": "kanalda halihazırda bir doğrulama yok.",
         "notice": "Uyarı:",
-        "qualified_error": "Nitelikli ancak eklenemedi:",
         "user_blocked": "**Viki kullanıcısı $1 engellendi!**",
         "user_blocked_reply": "bağlı olduğun viki kullanıcısı **\"$1\" engellendi!**",
         "user_disabled": "**Viki hesabı $1 devre dışı!**",
