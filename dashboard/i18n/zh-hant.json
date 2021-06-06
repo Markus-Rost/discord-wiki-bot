@@ -230,6 +230,8 @@
             "postcount_or": "需要編輯次數或貼文數。",
             "rename": "重新命名使用者：",
             "role": "身分組：",
+            "role_add": "新增",
+            "role_remove": "移除",
             "select_channel": "-- 選擇頻道 --",
             "select_role": "-- 選擇身分組 --",
             "success": "成功提示：",
