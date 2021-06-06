@@ -120,7 +120,7 @@
             "bytes": "$1 {{PLURAL:$2|バイト|バイト}} $3",
             "comment": "コメント：",
             "editor": "編集者：",
-            "minor": "(m)",
+            "minor": "(細)",
             "more": "その他にも",
             "removed": "削除：",
             "size": "差分：",
@@ -238,7 +238,7 @@
             },
             "mwprojects": {
                 "cmd": "!!<wiki> <キーワード>",
-                "desc": "Wiki-Botが該当した記事のMediaWikiプロジェクトのページへのリンクを返します。例：`$1!!en.wikipedia.org Cookie`"
+                "desc": "Wiki-Botが該当した記事のMediaWikiプロジェクトのページへのリンクを返します。例：`$1!!ja.wikipedia.org クッキー`"
             },
             "overview": {
                 "cmd": "overview",
@@ -265,11 +265,11 @@
             "rcscript": {
                 "add": {
                     "cmd": "rcscript add [<wiki>]",
-                    "desc": "新しい最近の変更のウェブフックを追加します。"
+                    "desc": "新しい最近の更新のウェブフックを追加します。"
                 },
                 "default": {
                     "cmd": "rcscript",
-                    "desc": "最近の変更のウェブフックを変更します。"
+                    "desc": "最近の更新のウェブフックを変更します。"
                 },
                 "delete": {
                     "cmd": "rcscript delete",
