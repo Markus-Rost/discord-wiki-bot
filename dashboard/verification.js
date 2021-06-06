@@ -231,7 +231,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
 		form.find('input').attr('readonly', '');
-		form.find('input[type="checkbox"], option, optgroup').attr('disabled', '');
+		form.find('input[type="checkbox"], input[type="radio"]:not(:checked), option, optgroup').attr('disabled', '');
 		form.find('input[type="submit"], button.addmore').remove();
 	}
 	form.find('button.addmore').text(dashboardLang.get('verification.form.more'));
