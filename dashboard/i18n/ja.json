@@ -230,6 +230,8 @@
             "postcount_or": "編集回数と投稿回数のどちらかを必要要件にする。",
             "rename": "利用者名の変更：",
             "role": "ロール：",
+            "role_add": "追加",
+            "role_remove": "削除",
             "select_channel": "-- チャンネルを選択 --",
             "select_role": "-- ロールを選択 --",
             "success": "成功の通知：",
