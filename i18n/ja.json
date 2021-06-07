@@ -132,7 +132,7 @@
     },
     "discussion": {
         "image": "画像を見る",
-        "main": "議論",
+        "main": "ディスカッション",
         "post": "ポスト",
         "tags": "タグ：",
         "votes": "$1 {{PLURAL:$2|票|票}} ($3%)"
@@ -179,11 +179,11 @@
             "discussion": {
                 "post": {
                     "cmd": "discussion post <キーワード>",
-                    "desc": "Fandom Wikiの一致する投稿された議論へのリンクで答えます。"
+                    "desc": "Fandom Wikiの一致する投稿されたディスカッションへのリンクで答えます。"
                 },
                 "thread": {
                     "cmd": "discussion <キーワード>",
-                    "desc": "Fandom Wikiの一致する議論スレッドへのリンクでお答えします。"
+                    "desc": "Fandom Wikiの一致するディスカッションスレッドへのリンクでお答えします。"
                 }
             },
             "fandom": {
@@ -281,7 +281,7 @@
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
-                    "desc": "Fandom Wikiの更新された議論のウェブフックを最近の更新のウェブフックへ切り替えます。"
+                    "desc": "Fandom Wikiの更新されたディスカッションのウェブフックを最近の更新のウェブフックへ切り替えます。"
                 },
                 "lang": {
                     "cmd": "rcscript lang <新規言語>",
@@ -293,7 +293,7 @@
                 }
             },
             "search": {
-                "cmd": "search <検索ワード>",
+                "cmd": "search <検索キーワード>",
                 "desc": "Wiki-BotがWikiの検索ワードに該当した記事のリンクを返します。"
             },
             "settings": {
@@ -362,7 +362,30 @@
                 "postcount": {
                     "cmd": "verification <id> postcount <新規投稿数>",
                     "desc": "認証のためのディスカッションの最低投稿回数を変更します。\n\t• 投稿数と編集数のどちらかにチェックが入るように、マイナスの数値を入力してください。\n\t• 投稿数と編集数の両方をまとめてチェックする場合は、`null`を入力してください。"
+                },
+                "rename": {
+                    "cmd": "verification <id> rename",
+                    "desc": "Discordのユーザー名を認証時のWiki上のメンバー名に変更するかどうかを変更します。"
+                },
+                "role": {
+                    "cmd": "verification <id> role <新規ロール>",
+                    "desc": "認証のためのロールを変更します。`|`で区切られたリストを受け取ります。"
+                },
+                "usergroup": {
+                    "cmd": "verification <id> usergroup <新規ユーザーグループ>",
+                    "desc": "認証のためのユーザーグループを変更します。`|`で区切られたリストを指定します。\n\t•リストの最初の要素に `AND` を入れると、リスト内のすべてのユーザーグループが認証の対象となります。"
                 }
+            },
+            "verify": {
+                "cmd": "verify <Wikiユーザー名>",
+                "desc": "このコマンドを使用して、DiscordアカウントとWikiアカウントを照合し、Wikiアカウントに一致するロールを取得します。"
+            },
+            "voice": {
+                "cmd": "voice",
+                "desc": "このボイスチャンネルの全員に特定のロールを与えるようにします。"
+            },
+            "wikia": {
+                "cmd": "??<wiki> <検索キーワード>"
             }
         }
     },
