@@ -443,7 +443,6 @@
         "new_role": "<nieuwe rol>",
         "new_usergroup": "<nieuwe gebruikersgroep>",
         "or": "of",
-        "role": "Rol:",
         "role_managed": "de opgegeven rol kan niet toegekend worden.",
         "role_max": "je hebt te veel rollen opgegeven.",
         "role_missing": "de opgegeven rol bestaat niet.",

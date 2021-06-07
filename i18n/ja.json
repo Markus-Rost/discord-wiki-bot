@@ -97,7 +97,7 @@
             " "
         ],
         "user": [
-            "ユーザー",
+            "利用者",
             "利用者",
             " ",
             " ",
@@ -120,7 +120,7 @@
             "bytes": "$1 {{PLURAL:$2|バイト|バイト}} $3",
             "comment": "コメント：",
             "editor": "編集者：",
-            "minor": "(m)",
+            "minor": "(細)",
             "more": "その他にも",
             "removed": "削除：",
             "size": "差分：",
@@ -132,7 +132,7 @@
     },
     "discussion": {
         "image": "画像を見る",
-        "main": "議論",
+        "main": "ディスカッション",
         "post": "ポスト",
         "tags": "タグ：",
         "votes": "$1 {{PLURAL:$2|票|票}} ($3%)"
@@ -178,11 +178,25 @@
             },
             "discussion": {
                 "post": {
-                    "cmd": "discussion post <キーワード>"
+                    "cmd": "discussion post <キーワード>",
+                    "desc": "Fandom Wikiの一致する投稿されたディスカッションへのリンクで答えます。"
+                },
+                "thread": {
+                    "cmd": "discussion <キーワード>",
+                    "desc": "Fandom Wikiの一致するディスカッションスレッドへのリンクでお答えします。"
                 }
+            },
+            "fandom": {
+                "cmd": "?<wiki> <キーワード>",
+                "desc": "名前のついたFandom wikiの一致する記事へのリンクでお答えします：`https://<wiki>.fandom.com/`"
+            },
+            "gamepedia": {
+                "cmd": "!<wiki> <キーワード>",
+                "desc": "名前のついたGamepedia wikiの一致する記事へのリンクでお答えします： `https://<wiki>.gamepedia.com/`"
             },
             "help": {
                 "admin": {
+                    "cmd": "help admin",
                     "desc": "Wiki-Botが全ての管理者コマンドを一覧表示します。"
                 },
                 "command": {
@@ -190,11 +204,17 @@
                     "desc": "コマンドの動作を知りたいですか？私がお答えしましょう！"
                 },
                 "default": {
+                    "cmd": "help",
                     "desc": "Wiki-Botが実行できる全てのコマンドの一覧を表示します。"
                 }
             },
+            "info": {
+                "cmd": "info",
+                "desc": "自己紹介をします。"
+            },
             "inline": {
                 "link": {
+                    "cmd": "[[<ページ名>]]",
                     "desc": "Wiki-BotがWikiの記事への直リンクを返します。"
                 },
                 "template": {
@@ -204,6 +224,7 @@
             },
             "minecraft": {
                 "bug": {
+                    "cmd": "bug <Minecraft バグ>",
                     "desc": "Wiki-BotがMinecraftバグトラッカーへのリンクを返します。"
                 },
                 "command": {
@@ -217,7 +238,7 @@
             },
             "mwprojects": {
                 "cmd": "!!<wiki> <キーワード>",
-                "desc": "Wiki-Botが該当した記事のMediaWikiプロジェクトのページへのリンクを返します。例：`$1!!en.wikipedia.org Cookie`"
+                "desc": "Wiki-Botが該当した記事のMediaWikiプロジェクトのページへのリンクを返します。例：`$1!!ja.wikipedia.org クッキー`"
             },
             "overview": {
                 "cmd": "overview",
@@ -244,11 +265,11 @@
             "rcscript": {
                 "add": {
                     "cmd": "rcscript add [<wiki>]",
-                    "desc": "新しい最近の変更のウェブフックを追加します。"
+                    "desc": "新しい最近の更新のウェブフックを追加します。"
                 },
                 "default": {
                     "cmd": "rcscript",
-                    "desc": "最近の変更のウェブフックを変更します。"
+                    "desc": "最近の更新のウェブフックを変更します。"
                 },
                 "delete": {
                     "cmd": "rcscript delete",
@@ -256,12 +277,115 @@
                 },
                 "display": {
                     "cmd": "rcscript display <新規 表示モード>",
-                    "desc": "Wiki-BOTの最近の更新Webhookの表示モードを変更します。"
+                    "desc": "Wiki-Botの最近の更新Webhookの表示モードを変更します。"
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
-                    "desc": "Fandom Wikiの更新された議論のWebhookを最近の更新Webhookへ切り替えます。"
+                    "desc": "Fandom Wikiの更新されたディスカッションのウェブフックを最近の更新のウェブフックへ切り替えます。"
+                },
+                "lang": {
+                    "cmd": "rcscript lang <新規言語>",
+                    "desc": "Wiki-Botの最近の更新のウェブフックの言語を変更します。"
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <新規wiki>",
+                    "desc": "Web-Botの最近の更新ウェブフックのWikiを変更します。"
                 }
+            },
+            "search": {
+                "cmd": "search <検索キーワード>",
+                "desc": "Wiki-BotがWikiの検索ワードに該当した記事のリンクを返します。"
+            },
+            "settings": {
+                "channel": {
+                    "cmd": "settings channel",
+                    "desc": "Wiki-Botの現在のチャンネルのオーバーライドを変更します。"
+                },
+                "default": {
+                    "cmd": "settings",
+                    "desc": "このサーバーのWiki-Botの設定を変更します。"
+                },
+                "inline": {
+                    "cmd": "settings inline toggle",
+                    "desc": "このサーバーのWiki-Botのインラインコマンドを切り替えます。"
+                },
+                "lang": {
+                    "cmd": "settings lang <言語>",
+                    "desc": "このサーバーのWiki-Botの言語を変更します。"
+                },
+                "prefix": {
+                    "cmd": "settings prefix <プレフィックス>",
+                    "desc": "このサーバーのプレフィックスを変更します。"
+                },
+                "role": {
+                    "cmd": "settings role <権限>",
+                    "desc": "このサーバーのWiki-Botがコマンドを使用するための最低限の権限を設定します。"
+                },
+                "wiki": {
+                    "cmd": "settings wiki <wiki>",
+                    "desc": "このサーバーのWiki-BotのデフォルトのWikiを設定します。"
+                }
+            },
+            "test": {
+                "cmd": "test",
+                "desc": "私が活動していれば答えます！そうでなければしません。"
+            },
+            "user": {
+                "cmd": "ユーザー:<利用者名>",
+                "desc": "利用者に関する情報を表示します。"
+            },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <新規アカウントの登録日からの日数>",
+                    "desc": "アカウント作成から認証までの最短期間（日数）を変更します。"
+                },
+                "add": {
+                    "cmd": "verification add <ロール>",
+                    "desc": "新しい認証を追加します。`|`で区切られたリストを受け取ります。"
+                },
+                "channel": {
+                    "cmd": "verification <id> channel <新しいチャンネル>",
+                    "desc": "認証チャンネルを変更します。`|`で区切られたリストを受け取ります。"
+                },
+                "default": {
+                    "cmd": "verification",
+                    "desc": "`$1verify`コマンドで使用する認証方法を変更します。"
+                },
+                "delete": {
+                    "cmd": "verification <id> delete",
+                    "desc": "認証を削除します。"
+                },
+                "editcount": {
+                    "cmd": "verification <id> editcount <編集回数>",
+                    "desc": "認証のための最低編集回数を変更します。"
+                },
+                "postcount": {
+                    "cmd": "verification <id> postcount <新規投稿数>",
+                    "desc": "認証のためのディスカッションの最低投稿回数を変更します。\n\t• 投稿数と編集数のどちらかにチェックが入るように、マイナスの数値を入力してください。\n\t• 投稿数と編集数の両方をまとめてチェックする場合は、`null`を入力してください。"
+                },
+                "rename": {
+                    "cmd": "verification <id> rename",
+                    "desc": "Discordのユーザー名を認証時のWiki上のメンバー名に変更するかどうかを変更します。"
+                },
+                "role": {
+                    "cmd": "verification <id> role <新規ロール>",
+                    "desc": "認証のためのロールを変更します。`|`で区切られたリストを受け取ります。"
+                },
+                "usergroup": {
+                    "cmd": "verification <id> usergroup <新規ユーザーグループ>",
+                    "desc": "認証のためのユーザーグループを変更します。`|`で区切られたリストを指定します。\n\t•リストの最初の要素に `AND` を入れると、リスト内のすべてのユーザーグループが認証の対象となります。"
+                }
+            },
+            "verify": {
+                "cmd": "verify <Wikiユーザー名>",
+                "desc": "このコマンドを使用して、DiscordアカウントとWikiアカウントを照合し、Wikiアカウントに一致するロールを取得します。"
+            },
+            "voice": {
+                "cmd": "voice",
+                "desc": "このボイスチャンネルの全員に特定のロールを与えるようにします。"
+            },
+            "wikia": {
+                "cmd": "??<wiki> <検索キーワード>"
             }
         }
     },

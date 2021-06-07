@@ -230,6 +230,8 @@
             "postcount_or": "Benötige entweder das Bearbeitungs- oder das Diskussionsbeitragslimit.",
             "rename": "Benutzer umbenennen:",
             "role": "Rolle:",
+            "role_add": "Vergeben",
+            "role_remove": "Entfernen",
             "select_channel": "-- Wähle einen Kanal --",
             "select_role": "-- Wähle eine Rolle --",
             "success": "Hinweis bei Erfolg:",
