@@ -336,7 +336,32 @@
             },
             "verification": {
                 "accountage": {
-                    "cmd": "verification <id> accountage <新規アカウントの登録日からの日数>"
+                    "cmd": "verification <id> accountage <新規アカウントの登録日からの日数>",
+                    "desc": "アカウント作成から認証までの最短期間（日数）を変更します。"
+                },
+                "add": {
+                    "cmd": "verification add <ロール>",
+                    "desc": "新しい認証を追加します。`|`で区切られたリストを受け取ります。"
+                },
+                "channel": {
+                    "cmd": "verification <id> channel <新しいチャンネル>",
+                    "desc": "認証チャンネルを変更します。`|`で区切られたリストを受け取ります。"
+                },
+                "default": {
+                    "cmd": "verification",
+                    "desc": "`$1verify`コマンドで使用する認証方法を変更します。"
+                },
+                "delete": {
+                    "cmd": "verification <id> delete",
+                    "desc": "認証を削除します。"
+                },
+                "editcount": {
+                    "cmd": "verification <id> editcount <編集回数>",
+                    "desc": "認証のための最低編集回数を変更します。"
+                },
+                "postcount": {
+                    "cmd": "verification <id> postcount <新規投稿数>",
+                    "desc": "認証のためのディスカッションの最低投稿回数を変更します。\n\t• 投稿数と編集数のどちらかにチェックが入るように、マイナスの数値を入力してください。\n\t• 投稿数と編集数の両方をまとめてチェックする場合は、`null`を入力してください。"
                 }
             }
         }
