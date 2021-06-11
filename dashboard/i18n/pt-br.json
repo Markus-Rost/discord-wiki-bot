@@ -76,9 +76,6 @@
             "text": "Ou você ou o Wiki-Bot não têm a permissão $1 para esta função.",
             "title": "Faltando permissão!"
         },
-        "movefail": {
-            "text": "As configurações foram apenas parcialmente atualizadas."
-        },
         "mwversion": {
             "text": "Requer pelo menos MediaWiki 1,30, encontrado $1 em $2.",
             "title": "Versão desatualizada do MediaWiki!"

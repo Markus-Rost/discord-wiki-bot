@@ -69,9 +69,6 @@
             "text": "Ya sen ya da Wiki-Bot bu işlev için gereken $1 iznine sahip değil.",
             "title": "Eksik izin!"
         },
-        "movefail": {
-            "text": "Ayarlar sadece kısmen güncellendi."
-        },
         "mwversion": {
             "text": "En az MediaWiki 1.30 gerekli. $2, $1 sürümüne sahip.",
             "title": "Eski MediaWiki sürümü!"

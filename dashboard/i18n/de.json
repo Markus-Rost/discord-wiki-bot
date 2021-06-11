@@ -76,9 +76,6 @@
             "text": "Entweder dir oder Wiki-Bot fehlt die $1-Berechtigung für diese Funktion.",
             "title": "Fehlende Berechtigung!"
         },
-        "movefail": {
-            "text": "Die Einstellungen konnten nur teilweise aktualisiert werden."
-        },
         "mwversion": {
             "text": "Es wird mindestens MediaWiki 1.30 benötigt, auf $2 wurde $1 gefunden.",
             "title": "Veraltete MediaWiki version!"

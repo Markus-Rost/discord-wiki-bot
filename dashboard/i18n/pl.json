@@ -76,9 +76,6 @@
             "text": "Ty lub Wiki-Bot nie posiada zezwolenia $1 dla tej funkcji.",
             "title": "Niewystarczające zezwolenia!"
         },
-        "movefail": {
-            "text": "Ustawienia zostały jedynie częściowo zapisane."
-        },
         "mwversion": {
             "text": "Wymaga przynajmniej MediaWiki w wersji 1.30, znaleziono $1 na $2.",
             "title": "Przestarzała wersja MediaWiki!"
