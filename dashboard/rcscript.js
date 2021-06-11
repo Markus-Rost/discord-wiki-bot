@@ -19,7 +19,7 @@ const fieldset = {
 	name: '<label for="wb-settings-name">Webhook name:</label>'
 	+ '<input type="text" id="wb-settings-name" name="name" minlength="2" maxlength="32" autocomplete="on">',
 	avatar: '<label for="wb-settings-avatar">Webhook avatar:</label>'
-	+ '<input type="url" id="wb-settings-avatar" name="avatar" list="wb-settings-avatar-list" required autocomplete="url">'
+	+ '<input type="url" id="wb-settings-avatar" name="avatar" list="wb-settings-avatar-list" autocomplete="url">'
 	+ '<datalist id="wb-settings-avatar-list"></datalist>'
 	+ '<button type="button" id="wb-settings-avatar-preview">Preview</button>',
 	wiki: '<label for="wb-settings-wiki">Wiki:</label>'
@@ -133,7 +133,6 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	avatar.find('#wb-settings-avatar-preview').text(dashboardLang.get('rcscript.form.avatar_preview'));
 	avatar.find('#wb-settings-avatar').val(( settings.avatar || '' ));
 	if ( settings.avatar ) avatar.find('#wb-settings-avatar').attr('size', settings.avatar.length + 10);
-	else avatar.find('#wb-settings-avatar').attr('required', null);
 	avatar.find('#wb-settings-avatar-list').append(
 		$(`<option>`).val(new URL('/src/icon.png', process.env.dashboard).href),
 		( settings.avatar ? $(`<option>`).val(settings.avatar) : null )
