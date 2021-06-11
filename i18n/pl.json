@@ -494,7 +494,6 @@
         "all_inactive": "śledzenie ostatnich zmian oraz dyskusji nie może być wyłączone jednocześnie.",
         "audit_reason": "Webhook ostatnich zmian dla „$1”",
         "audit_reason_delete": "Usunięto webhook ostatnich zmian",
-        "audit_reason_move": "Przeniesiono webhook ostatnich zmian",
         "blocked": "ta wiki nie może zostać dodana do webhooka ostatnich zmian gdyż została zablokowana!",
         "blocked_reason": "zablokowano możliwość dodawania tej wiki do webhooka ostatnich zmian z powodu `$1`!",
         "channel": "Kanał:",

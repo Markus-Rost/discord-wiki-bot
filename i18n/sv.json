@@ -487,7 +487,6 @@
         "added": "En \"senaste ändringarna\"-webhook har nu blivit tillagt för:",
         "audit_reason": "\"Senaste ändringarna\"-webhook för \"$1\"",
         "audit_reason_delete": "Tog bort \"senaste ändringarna\"-webhooken",
-        "audit_reason_move": "Flyttade \"senaste ändringarna\"-webhooken",
         "blocked": "denna wiki har blockerats från att lägga till en \"senaste ändringarna\"-webhook!",
         "blocked_reason": "denna wiki har blockerats från att lägga till en \"senaste ändringarna\"-webhook på grund av`$1`!",
         "channel": "Kanal:",

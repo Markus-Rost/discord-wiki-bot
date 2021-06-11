@@ -494,7 +494,6 @@
         "all_inactive": "você não pode ter mudanças da wiki e alterações baseadas em feeds desativadas ao mesmo tempo.",
         "audit_reason": "Mudanças recentes no webhook para \"$1\"",
         "audit_reason_delete": "Removido o webhook das mudanças recentes",
-        "audit_reason_move": "Movido o webhook das mudanças recentes",
         "blocked": "essa wiki foi impedido de ser adicionado como um webhook de mudanças recentes!",
         "blocked_reason": "essa wiki foi bloqueada de ser adicionado como um webhook de mudanças recentes para `$1`!",
         "channel": "Canal:",

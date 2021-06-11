@@ -494,7 +494,6 @@
         "all_inactive": "Wiki 式更改和推送式更改无法同时禁用。",
         "audit_reason": "“$1”的最近更改 webhook",
         "audit_reason_delete": "最近更改 webhook 已删除",
-        "audit_reason_move": "已移动最近更改 webhook",
         "blocked": "此 wiki 已经被禁止添加到最近更改 webhook ！",
         "blocked_reason": "此 wiki 由于 `$1` 已經被禁止添加到最近更改 webhook！",
         "channel": "频道：",

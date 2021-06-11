@@ -494,7 +494,6 @@
         "all_inactive": "wiki變更和討論版變更無法同時停用。",
         "audit_reason": "“$1”的近期變更webhook",
         "audit_reason_delete": "已移除近期變更webhook",
-        "audit_reason_move": "已移動近期變更webhook",
         "blocked": "此 wiki 已經被禁止加入到近期變更webhook ！",
         "blocked_reason": "此 wiki 已經被禁止加入到 `$1` 近期變更 webhook ！",
         "channel": "頻道：",

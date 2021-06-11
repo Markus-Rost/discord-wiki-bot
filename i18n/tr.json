@@ -484,7 +484,6 @@
         "all_inactive": "viki değişiklikleri ve yayın bazlı değişiklikleri aynı anda devre dışı bırakamazsın.",
         "audit_reason": "\"$1\" için son değişiklikler webhook'u",
         "audit_reason_delete": "Son değişiklikler webhook'u kaldırıldı",
-        "audit_reason_move": "Son değişiklikler webhook'u taşındı",
         "blocked": "bu vikinin son değişiklikler webhook'u olarak eklemesi yasaklanmış!",
         "blocked_reason": "bu vikinin son değişiklikler webhook'u olarak eklemesi `$1` yüzünden yasaklanmış!",
         "channel": "Kanal:",

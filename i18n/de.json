@@ -494,7 +494,6 @@
         "all_inactive": "du kannst Wiki-Änderungen und Feeds-basierte Änderungen nicht gleichzeitig deaktiviert haben.",
         "audit_reason": "Letzte Änderungen-Webhook für \"$1\"",
         "audit_reason_delete": "Letzte Änderungen-Webhook entfernt",
-        "audit_reason_move": "Letzte Änderungen-Webhook verschoben",
         "blocked": "diese Wiki wurde davon gesperrt als Letzte Änderungen-Webhook hinzugefügt zu werden!",
         "blocked_reason": "diese Wiki wurde wegen `$1` davon gesperrt als Letzte Änderungen-Webhook hinzugefügt zu werden!",
         "channel": "Kanal:",
