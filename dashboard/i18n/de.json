@@ -77,9 +77,7 @@
             "title": "Fehlende Berechtigung!"
         },
         "movefail": {
-            "note": "Der Webhook-Kanal konnte nicht geändert werden!",
-            "text": "Die Einstellungen konnten nur teilweise aktualisiert werden.",
-            "title": "Einstellungen teilweise gespeichert!"
+            "text": "Die Einstellungen konnten nur teilweise aktualisiert werden."
         },
         "mwversion": {
             "text": "Es wird mindestens MediaWiki 1.30 benötigt, auf $2 wurde $1 gefunden.",

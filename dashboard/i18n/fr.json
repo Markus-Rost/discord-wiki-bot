@@ -76,9 +76,7 @@
             "title": "Permission manquante !"
         },
         "movefail": {
-            "note": "Le salon de l'intégration n'a pas pu être changé !",
-            "text": "Les paramètres n'ont été que partiellement mis à jour.",
-            "title": "Paramètres partiellement sauvegardés !"
+            "text": "Les paramètres n'ont été que partiellement mis à jour."
         },
         "mwversion": {
             "text": "Requiert au moins la version 1.30 de MediaWiki, trouvé $1 dans $2.",

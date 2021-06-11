@@ -77,9 +77,7 @@
             "title": "¡Falta el permiso!"
         },
         "movefail": {
-            "note": "¡No se pudo cambiar el canal del webhook!",
-            "text": "La configuración se ha actualizado parcialmente.",
-            "title": "¡Configuración parcialmente guardada!"
+            "text": "La configuración se ha actualizado parcialmente."
         },
         "mwversion": {
             "text": "Requiere al menos MediaWiki 1.30, se encontró $1 en $2.",

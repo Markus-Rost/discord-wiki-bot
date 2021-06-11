@@ -77,9 +77,7 @@
             "title": "缺少权限！"
         },
         "movefail": {
-            "note": "无法更改 webhook 频道！",
-            "text": "仅成功更新部分设置。",
-            "title": "已保存部分设置！"
+            "text": "仅成功更新部分设置。"
         },
         "mwversion": {
             "text": "至少需要 MediaWiki 1.30，但 $2 为 $1。",
