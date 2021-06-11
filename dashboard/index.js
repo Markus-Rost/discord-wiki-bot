@@ -115,6 +115,13 @@ const server = http.createServer( (req, res) => {
 		}
 	}
 
+	var reqURL = new URL(req.url, process.env.dashboard);
+
+	if ( req.method === 'HEAD' && files.has(reqURL.pathname) ) {
+		let file = files.get(reqURL.pathname);
+		res.writeHead(200, {'Content-Type': file.contentType});
+		return res.end();
+	}
 	if ( req.method !== 'GET' ) {
 		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
 		res.writeHead(418, {
@@ -124,8 +131,6 @@ const server = http.createServer( (req, res) => {
 		res.write( body );
 		return res.end();
 	}
-
-	var reqURL = new URL(req.url, process.env.dashboard);
 
 	if ( reqURL.pathname === '/oauth/mw' ) {
 		return pages.verify(res, reqURL.searchParams);

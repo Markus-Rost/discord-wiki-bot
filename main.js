@@ -102,7 +102,7 @@ if ( process.env.dashboard ) {
 						${JSON.stringify(message.data.guilds)}.map( id => {
 							if ( this.guilds.cache.has(id) ) {
 								let guild = this.guilds.cache.get(id);
-								return guild.members.fetch('${message.data.member}').then( member => {
+								return guild.members.fetch(${JSON.stringify(message.data.member)}).then( member => {
 									return {
 										patreon: global.patreons.hasOwnProperty(guild.id),
 										memberCount: guild.memberCount,
@@ -157,17 +157,17 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'getMember':
-					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
-						let guild = this.guilds.cache.get('${message.data.guild}');
-						guild.members.fetch('${message.data.member}').then( member => {
+					return manager.broadcastEval(`if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
+						let guild = this.guilds.cache.get(${JSON.stringify(message.data.guild)});
+						guild.members.fetch(${JSON.stringify(message.data.member)}).then( member => {
 							var response = {
 								patreon: global.patreons.hasOwnProperty(guild.id),
 								userPermissions: member.permissions.bitfield,
 								botPermissions: guild.me.permissions.bitfield
 							};
-							if ( '${( message.data.channel || '' )}' ) {
-								let channel = guild.channels.cache.get('${message.data.channel}');
-								if ( channel?.isText() || ( response.patreon && ${message.data.allowCategory} && channel?.type === 'category' ) ) {
+							if ( ${JSON.stringify(message.data.channel)} ) {
+								let channel = guild.channels.cache.get(${JSON.stringify(message.data.channel)});
+								if ( channel?.isText() || ( response.patreon && ${JSON.stringify(message.data.allowCategory)} && channel?.type === 'category' ) ) {
 									response.userPermissions = channel.permissionsFor(member).bitfield;
 									response.botPermissions = channel.permissionsFor(guild.me).bitfield;
 									response.isCategory = ( channel.type === 'category' );
@@ -175,8 +175,8 @@ if ( process.env.dashboard ) {
 								}
 								else response.message = 'noChannel';
 							}
-							if ( '${( message.data.newchannel || '' )}' ) {
-								let newchannel = guild.channels.cache.get('${message.data.newchannel}');
+							if ( ${JSON.stringify(message.data.newchannel)} ) {
+								let newchannel = guild.channels.cache.get(${JSON.stringify(message.data.newchannel)});
 								if ( newchannel?.isText() ) {
 									response.userPermissionsNew = newchannel.permissionsFor(member).bitfield;
 									response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield;
@@ -196,15 +196,15 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'notifyGuild':
-					return manager.broadcastEval(`if ( '${( message.data.prefix || '' )}' ) {
-						global.patreons['${message.data.guild}'] = '${message.data.prefix}';
+					return manager.broadcastEval(`if ( ${JSON.stringify(message.data.prefix)} ) {
+						global.patreons[${JSON.stringify(message.data.guild)}] = ${JSON.stringify(message.data.prefix)};
 					}
-					if ( '${( message.data.voice || '' )}' && global.voice.hasOwnProperty('${message.data.guild}') ) {
-						global.voice['${message.data.guild}'] = '${message.data.voice}';
+					if ( ${JSON.stringify(message.data.voice)} && global.voice.hasOwnProperty(${JSON.stringify(message.data.guild)}) ) {
+						global.voice[${JSON.stringify(message.data.guild)}] = ${JSON.stringify(message.data.voice)};
 					}
-					if ( this.guilds.cache.has('${message.data.guild}') ) {
-						let channel = this.guilds.cache.get('${message.data.guild}').publicUpdatesChannel;
-						if ( channel ) channel.send( \`${message.data.text.replace( /`/g, '\\`' )}\`, {
+					if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
+						let channel = this.guilds.cache.get(${JSON.stringify(message.data.guild)}).publicUpdatesChannel;
+						if ( channel ) channel.send( ${JSON.stringify(message.data.text)}, {
 							embed: ${JSON.stringify(message.data.embed)},
 							files: ${JSON.stringify(message.data.file)},
 							allowedMentions: {parse: []}, split: true
@@ -216,14 +216,14 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'createWebhook':
-					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
-						let channel = this.guilds.cache.get('${message.data.guild}').channels.cache.get('${message.data.channel}');
-						if ( channel ) channel.createWebhook( \`${message.data.name.replace( /`/g, '\\`' )}\`, {
-							avatar: this.user.displayAvatarURL({format:'png',size:4096}),
-							reason: \`${message.data.reason.replace( /`/g, '\\`' )}\`
+					return manager.broadcastEval(`if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
+						let channel = this.guilds.cache.get(${JSON.stringify(message.data.guild)}).channels.cache.get(${JSON.stringify(message.data.channel)});
+						if ( channel ) channel.createWebhook( ${JSON.stringify(message.data.name)}, {
+							avatar: ( ${JSON.stringify(message.data.avatar)} || this.user.displayAvatarURL({format:'png',size:4096}) ),
+							reason: ${JSON.stringify(message.data.reason)}
 						} ).then( webhook => {
 							console.log( '- Dashboard: Webhook successfully created: ${message.data.guild}#${message.data.channel}' );
-							webhook.send( \`${message.data.text.replace( /`/g, '\\`' )}\` ).catch(log_error);
+							webhook.send( ${JSON.stringify(message.data.text)} ).catch(log_error);
 							return webhook.id + '/' + webhook.token;
 						}, error => {
 							console.log( '- Dashboard: Error while creating the webhook: ' + error );
@@ -236,20 +236,22 @@ if ( process.env.dashboard ) {
 						return dashboard.send( {id: message.id, data} );
 					} );
 					break;
-				case 'moveWebhook':
-					return manager.broadcastEval(`if ( this.guilds.cache.has('${message.data.guild}') ) {
-						this.fetchWebhook(...'${message.data.webhook}'.split('/')).then( webhook => {
-							return webhook.edit( {
-								channel: '${message.data.channel}'
-							}, \`${message.data.reason.replace( /`/g, '\\`' )}\` ).then( newwebhook => {
-								console.log( '- Dashboard: Webhook successfully moved: ${message.data.guild}#${message.data.channel}' );
-								webhook.send( \`${message.data.text.replace( /`/g, '\\`' )}\` ).catch(log_error);
+				case 'editWebhook':
+					return manager.broadcastEval(`if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
+						this.fetchWebhook(...${JSON.stringify(message.data.webhook.split('/'))}).then( webhook => {
+							var changes = {};
+							if ( ${JSON.stringify(message.data.channel)} ) changes.channel = ${JSON.stringify(message.data.channel)};
+							if ( ${JSON.stringify(message.data.name)} ) changes.name = ${JSON.stringify(message.data.name)};
+							if ( ${JSON.stringify(message.data.avatar)} ) changes.avatar = ${JSON.stringify(message.data.avatar)};
+							return webhook.edit( changes, ${JSON.stringify(message.data.reason)} ).then( newwebhook => {
+								console.log( '- Dashboard: Webhook successfully edited: ${message.data.guild}#' + ( ${JSON.stringify(message.data.channel)} || webhook.channelID ) );
+								webhook.send( ${JSON.stringify(message.data.text)} ).catch(log_error);
 								return true;
 							}, error => {
-								console.log( '- Dashboard: Error while moving the webhook: ' + error );
+								console.log( '- Dashboard: Error while editing the webhook: ' + error );
 							} );
 						}, error => {
-							console.log( '- Dashboard: Error while moving the webhook: ' + error );
+							console.log( '- Dashboard: Error while editing the webhook: ' + error );
 						} );
 					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
 						data.response = result;
@@ -260,7 +262,7 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'verifyUser':
-					return manager.broadcastEval(`global.verifyOauthUser('${message.data.state}', '${message.data.access_token}')`, message.data.state.split(' ')[1][0]).catch( error => {
+					return manager.broadcastEval(`global.verifyOauthUser(${JSON.stringify(message.data.state)}, ${JSON.stringify(message.data.access_token)})`, message.data.state.split(' ')[1][0]).catch( error => {
 						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );

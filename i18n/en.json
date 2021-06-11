@@ -494,7 +494,8 @@
         "all_inactive": "you can't have wiki changes and feeds based changes disabled at the same time.",
         "audit_reason": "Recent changes webhook for \"$1\"",
         "audit_reason_delete": "Removed recent changes webhook",
-        "audit_reason_move": "Moved recent changes webhook",
+        "audit_reason_edit": "Updated recent changes webhook",
+        "avatar": "Webhook avatar:",
         "blocked": "this wiki has been blocked from being added as a recent changes webhook!",
         "blocked_reason": "this wiki has been blocked from being added as a recent changes webhook for `$1`!",
         "channel": "Channel:",
@@ -528,6 +529,7 @@
         "lang": "Language:",
         "max_entries": "you already reached the maximal amount of recent changes webhooks.",
         "missing": "there are no recent changes webhooks for this server yet.",
+        "name": "Webhook name:",
         "new_lang": "<new language>",
         "new_wiki": "<link to wiki>",
         "no_feeds": "the wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
@@ -545,6 +547,7 @@
             "blocked_reason": "This recent changes webhook will be deleted because the wiki has been blocked for `$1`!",
             "created": "A recent changes webhook for $1 has been added to this channel.",
             "dashboard": {
+                "avatar": "• The webhook avatar has been changed.",
                 "channel": "• The webhook has been moved to this channel.",
                 "disabled_feeds": "• The feeds based changes, like discussions, message walls and article comments, have been disabled.",
                 "disabled_rc": "• The wiki changes have been disabled.",
@@ -555,6 +558,7 @@
                 "enabled_feeds": "• The feeds based changes, like discussions, message walls and article comments, have been enabled.",
                 "enabled_rc": "• The wiki changes have been enabled.",
                 "lang": "• The language has been changed to $1.",
+                "name": "• The webhook name has been changed to \"$1\".",
                 "updated": "This recent changes webhook has been updated:",
                 "wiki": "• The wiki has been changed to $1."
             },

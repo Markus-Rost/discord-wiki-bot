@@ -124,15 +124,17 @@ function toggleOption() {
 	} );
 }
 
+var divTemp = document.createElement('div');
+divTemp.innerHTML = '<input type="url" value="invalid">';
+const validationMessageInvalidURL = divTemp.firstChild.validationMessage;
+
 /** @type {HTMLInputElement} */
 const wiki = document.getElementById('wb-settings-wiki');
 if ( wiki ) {
 	wiki.addEventListener( 'input', function() {
 		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
 			if ( this.validity.valid ) {
-				var divTemp = document.createElement('div');
-				divTemp.innerHTML = '<input type="url" value="invalid">';
-				this.setCustomValidity(divTemp.firstChild.validationMessage);
+				this.setCustomValidity(validationMessageInvalidURL);
 			}
 		}
 		else this.setCustomValidity('');
@@ -311,6 +313,58 @@ if ( wiki ) {
 				feedsonly.disabled = true;
 			}
 		} );
+	}
+}
+
+/** @type {HTMLInputElement} */
+const avatar = document.getElementById('wb-settings-avatar');
+if ( avatar ) {
+	avatar.addEventListener( 'input', function() {
+		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
+			if ( this.validity.valid ) {
+				this.setCustomValidity(validationMessageInvalidURL);
+			}
+		}
+		else this.setCustomValidity('');
+	} );
+	/** @type {HTMLButtonElement} */
+	const avatarbutton = document.getElementById('wb-settings-avatar-preview');
+	if ( avatarbutton ) {
+		const avatarpreview = document.createElement('img');
+		avatarpreview.id = 'wb-settings-avatar-preview-img';
+		avatarpreview.classList.add('avatar');
+		const validContentTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+		avatarbutton.onclick = function() {
+			if ( !avatar.value ) return;
+			if ( !avatar.validity.valid ) return avatar.reportValidity();
+			if ( avatar.value === avatar.defaultValue ) {
+				avatarpreview.src = avatar.value;
+				avatarbutton.after(avatarpreview);
+				return;
+			}
+			fetch( avatar.value, {
+				method: 'HEAD',
+				referrer: ''
+			} ).then( function(response) {
+				if ( !validContentTypes.includes( response.headers.get('content-type') ) ) {
+					var invalidContentType = lang('avatar.content_type').replace( /\$1/g, response.headers.get('content-type') );
+					avatar.setCustomValidity(invalidContentType + '\n' + validContentTypes.join(', ') );
+					avatar.reportValidity();
+					return console.log( 'Invalid content type:', response.headers.get('content-type') );
+				}
+				avatarpreview.src = avatar.value;
+				avatarbutton.after(avatarpreview);
+				
+			}, function(error) {
+				console.log(error);
+				avatar.setCustomValidity(lang('avatar.invalid_url'));
+				avatar.reportValidity();
+			} );
+		};
+		if ( avatar.value ) {
+			avatarpreview.src = avatar.value;
+			avatarbutton.after(avatarpreview);
+		}
 	}
 }
 

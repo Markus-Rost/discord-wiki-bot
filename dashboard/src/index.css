@@ -129,6 +129,7 @@ a[alt]:hover:after {
 	border-radius: 50%;
 	width: 48px;
 	height: 48px;
+	object-fit: cover;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -551,10 +552,16 @@ fieldset textarea {
 	color: #2e3338;
 	background-color: #ebedef;
 }
+#wb-settings-avatar-preview-img {
+	width: 128px;
+	height: 128px;
+	background: #32353b;
+}
 .wb-settings-display:first-of-type,
 .wb-settings-permission:first-of-type {
 	display: inline-block;
 }
+#wb-settings-avatar-preview-img,
 .wb-settings-display:not(:first-of-type),
 .wb-settings-permission:not(:first-of-type),
 .wb-settings-additional-select,

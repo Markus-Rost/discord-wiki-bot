@@ -309,11 +309,11 @@ function createNotice($, notice, dashboardLang, args = []) {
 				note = $('<div>').text(dashboardLang.get('notice.savefail.note_' + args[0]));
 			}
 			break;
-		case 'movefail':
+		case 'webhookfail':
 			type = 'info';
-			title.text(dashboardLang.get('notice.movefail.title'));
-			text.text(dashboardLang.get('notice.movefail.text'));
-			note = $('<div>').text(dashboardLang.get('notice.movefail.note'));
+			title.text(dashboardLang.get('notice.webhookfail.title'));
+			text.text(dashboardLang.get('notice.webhookfail.text'));
+			note = $('<div>').text(dashboardLang.get('notice.webhookfail.note'));
 			break;
 		case 'refreshfail':
 			type = 'error';
