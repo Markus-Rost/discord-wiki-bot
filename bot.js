@@ -232,11 +232,12 @@ fs.readdir( './interactions', (error, files) => {
 client.ws.on( 'INTERACTION_CREATE', interaction => {
 	if ( interaction.version !== 1 ) return;
 	interaction.client = client;
+	var channel = client.channels.cache.get(interaction.channel_id);
 	if ( interaction.guild_id ) {
 		interaction.user = interaction.member.user;
 		interaction.member.permissions = new Discord.Permissions(+interaction.member.permissions);
+		channel?.guild?.members.add(interaction.member);
 	}
-	var channel = client.channels.cache.get(interaction.channel_id);
 	if ( interaction.type === 2 ) return slash_command(interaction, channel);
 	if ( interaction.type === 3 ) return message_button(interaction, channel);
 } );
