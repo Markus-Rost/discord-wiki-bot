@@ -52,13 +52,14 @@ function diffParser(html, more, whitespace) {
 			}
 		},
 		onclosetag: (tagname) => {
-			current_tag = '';
 			if ( tagname === 'ins' ) current_tag = 'tda';
 			if ( tagname === 'del' ) current_tag = 'tdd';
+			if ( tagname === 'td' ) current_tag = '';
 			if ( tagname === 'tr' ) {
 				if ( last_ins !== null ) {
 					ins_length++;
-					if ( empty && last_ins.trim().length && !last_ins.includes( '**' ) ) {
+					if ( empty && last_ins.trim().length ) {
+						if ( last_ins.includes( '**' ) ) last_ins = last_ins.replace( /\*\*/g, '__' );
 						ins_length += 4;
 						last_ins = '**' + last_ins + '**';
 					}
@@ -68,7 +69,8 @@ function diffParser(html, more, whitespace) {
 				}
 				if ( last_del !== null ) {
 					del_length++;
-					if ( empty && last_del.trim().length && !last_del.includes( '~~' ) ) {
+					if ( empty && last_del.trim().length ) {
+						if ( last_del.includes( '~~' ) ) last_del = last_del.replace( /\~\~/g, '__' );
 						del_length += 4;
 						last_del = '~~' + last_del + '~~';
 					}
@@ -84,13 +86,13 @@ function diffParser(html, more, whitespace) {
 	parser.end();
 	var compare = ['', ''];
 	if ( small_prev_del.length ) {
-		if ( small_prev_del.replace( /\~\~/g, '' ).trim().length ) {
-			compare[0] = small_prev_del.replace( /\~\~\~\~/g, '' );
+		if ( small_prev_del.replace( /\~\~|__/g, '' ).trim().length ) {
+			compare[0] = small_prev_del.replace( /\~\~\~\~|____/g, '' );
 		} else compare[0] = whitespace;
 	}
 	if ( small_prev_ins.length ) {
-		if ( small_prev_ins.replace( /\*\*/g, '' ).trim().length ) {
-			compare[1] = small_prev_ins.replace( /\*\*\*\*/g, '' );
+		if ( small_prev_ins.replace( /\*\*|__/g, '' ).trim().length ) {
+			compare[1] = small_prev_ins.replace( /\*\*\*\*|____/g, '' );
 		} else compare[1] = whitespace;
 	}
 	return compare;
