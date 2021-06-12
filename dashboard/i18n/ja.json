@@ -30,6 +30,10 @@
         "welcome": "<h2>Wiki-Bot ダッシュボードへようこそ。</h2>\n<p>Wiki-Botは、DiscordサーバーとMediaWikiで作られたWikiを連携させるために作られたDiscord Botです。Wikiページへのリンク、Wiki利用者の確認、Wikiの最新の変更についての情報提供などを行います。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[詳しく見る]</a></p>\n<p>ここでは、あなたがDiscordで「サーバー管理」権限を持っているサーバーの様々なBotの設定を変更することができます。まず、Discordアカウントを認証する必要がありますが、このボタンで認証できます。</p>"
     },
     "indexjs": {
+        "avatar": {
+            "content_type": "提供されたリンクのコンテンツタイプは $1 ですが、以下のコンテンツタイプのみ許可されています：",
+            "invalid_url": "URLが有効な画像ファイルにアクセスできませんでした。"
+        },
         "invalid": {
             "note_http": "提供されたWebサイトに有効なTLS/SSL証明書がありません。セキュリティ上の理由から、HTTPSを使用したWikiのみがサポートされています。",
             "note_private": "提供されたWikiはプライベートなものです！",
@@ -129,6 +133,11 @@
             "text": "設定を変更するにはログインが必要です。",
             "title": "ログインしていません！"
         },
+        "webhookfail": {
+            "note": "DiscordのWebhookを変更できませんでした！",
+            "text": "設定は一部しか更新されていません。",
+            "title": "設定が一部保存されました！"
+        },
         "wikiblocked": {
             "note": "理由：",
             "text": "$1 が最近の更新のウェブフックとして追加されるのを阻止しました。",
@@ -139,6 +148,8 @@
         "desc": "$1 の最近の更新のウェブフックです。",
         "explanation": "<h2>最近の変更点のウェブフック</h2>\n<p>Wiki-Botは、<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>をベースにした最近の変更のウェブフックを実行することができます。最近の変更を、直リンク付きの小さなテキストメッセージや、編集されたタグやカテゴリーの変更ができる埋め込みメッセージを表示することができます。</p>\n<p>最近の変更のウェブフックを追加するための要件:</p>\n<ul>\n<li>Wikiは<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>以上で動作している必要があります。</li>\n<li>システムメッセージの<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> にDiscordのサーバーID <code class=\"user-select\" id=\"server-id\"></code> を設定する必要があります。</li>\n</ul>",
         "form": {
+            "avatar": "Webhookのアバター：",
+            "avatar_preview": "プレビュー",
             "channel": "チャンネル：",
             "confirm": "本当に最近の更新のウェブフックを削除しますか？",
             "display": "表示形態：",
@@ -150,6 +161,7 @@
             "feeds": "フィードベースの変更：",
             "feeds_only": "フィードベースの変更のみ：",
             "lang": "言語：",
+            "name": "Webhook名：",
             "new": "新しい最近の変更のウェブフック",
             "select_channel": "-- チャンネルを選択 --",
             "wiki": "Wiki：",
