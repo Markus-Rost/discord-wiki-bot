@@ -75,11 +75,6 @@
             "text": "Soit vous, soit le bot manque la permission $1 pour effectuer cette action.",
             "title": "Permission manquante !"
         },
-        "movefail": {
-            "note": "Le salon de l'intégration n'a pas pu être changé !",
-            "text": "Les paramètres n'ont été que partiellement mis à jour.",
-            "title": "Paramètres partiellement sauvegardés !"
-        },
         "mwversion": {
             "text": "Requiert au moins la version 1.30 de MediaWiki, trouvé $1 dans $2.",
             "title": "Version obsolète de MediaWiki !"

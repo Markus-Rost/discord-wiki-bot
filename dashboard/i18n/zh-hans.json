@@ -76,11 +76,6 @@
             "text": "您或 Wiki-Bot 缺少此功能所需的 $1 权限。",
             "title": "缺少权限！"
         },
-        "movefail": {
-            "note": "无法更改 webhook 频道！",
-            "text": "仅成功更新部分设置。",
-            "title": "已保存部分设置！"
-        },
         "mwversion": {
             "text": "至少需要 MediaWiki 1.30，但 $2 为 $1。",
             "title": "过时的 MediaWiki 版本！"

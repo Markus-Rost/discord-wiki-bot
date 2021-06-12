@@ -76,11 +76,6 @@
             "text": "Ou você ou o Wiki-Bot não têm a permissão $1 para esta função.",
             "title": "Faltando permissão!"
         },
-        "movefail": {
-            "note": "O canal do webhook não pode ser alterado!",
-            "text": "As configurações foram apenas parcialmente atualizadas.",
-            "title": "Configurações parcialmente salvas!"
-        },
         "mwversion": {
             "text": "Requer pelo menos MediaWiki 1,30, encontrado $1 em $2.",
             "title": "Versão desatualizada do MediaWiki!"
@@ -230,6 +225,8 @@
             "postcount_or": "Requer edição ou contagem de postagens.",
             "rename": "Renomear usuários:",
             "role": "Cargo:",
+            "role_add": "Adicionar",
+            "role_remove": "Remover",
             "select_channel": "-- Selecionar canal --",
             "select_role": "-- Selecionar cargo --",
             "success": "Aviso de sucesso:",

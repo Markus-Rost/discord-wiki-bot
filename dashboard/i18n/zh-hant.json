@@ -76,11 +76,6 @@
             "text": "您或Wiki-Bot缺少此功能需要的 $1 權限。",
             "title": "缺少權限！"
         },
-        "movefail": {
-            "note": "無法變更webhook頻道！",
-            "text": "僅成功更新部分設定。",
-            "title": "已儲存部分設定！"
-        },
         "mwversion": {
             "text": "至少需要MediaWiki 1.30，但 $2 為 $1。",
             "title": "過時的MediaWiki版本！"

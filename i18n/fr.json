@@ -488,7 +488,6 @@
         "all_inactive": "vous ne pouvez pas avoir les modifications de fils de discussion et de modifications de pages désactivés en même temps.",
         "audit_reason": "Intégration des modifications récentes pour \"$1\"",
         "audit_reason_delete": "Intégration des modifications récentes retirée",
-        "audit_reason_move": "Intégration des modifications récentes déplacée",
         "blocked": "ce wiki a été bloqué de l'utilisation de l'intégration des modifications récentes !",
         "blocked_reason": "ce wiki a été bloqué de l'utilisation de l'intégration des modifications récentes pour `$1` !",
         "channel": "Salon :",

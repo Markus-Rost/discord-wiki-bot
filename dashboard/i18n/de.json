@@ -30,6 +30,10 @@
         "welcome": "<h2>Willkommen auf dem Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot ist ein Discord-Bot der dazu dient Discord-Server und MediaWiki-Wikis zu verbinden. Er hilft durch das Verlinken von Wiki-Artikeln, Verifizieren von Wiki-Benutzern, informiert über die neusten Änderungen auf dem Wiki und mehr. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mehr Information]</a></p>\n<p>Hier kannst du die Bot-Einstellungen für Server ändern auf denen du die Server verwalten Berechtigung besitzt. Dafür musst du dich mit deinem Discord-Account anmelden, was du über diesen Knopf tuen kannst:</p>"
     },
     "indexjs": {
+        "avatar": {
+            "content_type": "Der Inhalt des angegebenen Links hat den Typ $1, aber es sind nur die folgenden Inhaltstypen erlaubt:",
+            "invalid_url": "Die URL konnte nicht zu einer gültigen Bilddatei aufgelöst werden."
+        },
         "invalid": {
             "note_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.",
             "note_private": "Das angegebene Wiki ist privat!",
@@ -38,7 +42,7 @@
             "title": "Ungültiges Wiki!"
         },
         "outdated": {
-            "text": "Der Letzte Änderungen-Webhook benötigt mindestens MediaWiki 1.30!",
+            "text": "Der Letzte Änderungen-WebHook benötigt mindestens MediaWiki 1.30!",
             "title": "Veraltete MediaWiki-Version!"
         },
         "prefix": {
@@ -75,11 +79,6 @@
         "missingperm": {
             "text": "Entweder dir oder Wiki-Bot fehlt die $1-Berechtigung für diese Funktion.",
             "title": "Fehlende Berechtigung!"
-        },
-        "movefail": {
-            "note": "Der Webhook-Kanal konnte nicht geändert werden!",
-            "text": "Die Einstellungen konnten nur teilweise aktualisiert werden.",
-            "title": "Einstellungen teilweise gespeichert!"
         },
         "mwversion": {
             "text": "Es wird mindestens MediaWiki 1.30 benötigt, auf $2 wurde $1 gefunden.",
@@ -134,33 +133,41 @@
             "text": "Bitte melde dich an, bevor du Einstellungen ändern kannst.",
             "title": "Nicht angemeldet!"
         },
+        "webhookfail": {
+            "note": "Der Discord-WebHook konnte nicht geändert werden!",
+            "text": "Die Einstellungen wurden nur teilweise gespeichert.",
+            "title": "Einstellungen teilweise gespeichert!"
+        },
         "wikiblocked": {
             "note": "Grund:",
-            "text": "$1 wurde gesperrt und kann nicht als Letzte Änderungen-Webhook hinzugefügt werden.",
+            "text": "$1 wurde gesperrt und kann nicht als Letzte Änderungen-WebHook hinzugefügt werden.",
             "title": "Wiki ist gesperrt!"
         }
     },
     "rcscript": {
-        "desc": "Dies sind die Letzte Änderungen-Webhooks für $1:",
-        "explanation": "<h2>Letzte Änderungen-Webhook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-Webhook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-Webhook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
+        "desc": "Dies sind die Letzte Änderungen-WebHooks für $1:",
+        "explanation": "<h2>Letzte Änderungen-WebHook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-WebHook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-WebHook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
         "form": {
+            "avatar": "WebHook-Avatar:",
+            "avatar_preview": "Vorschau",
             "channel": "Kanal:",
-            "confirm": "Möchtest du wirklich den Letzte Änderungen-Webhook löschen?",
+            "confirm": "Möchtest du wirklich den Letzte Änderungen-WebHook löschen?",
             "display": "Anzeigemodus:",
             "display_compact": "Kompakte Textnachrichten mit Inline-Links.",
             "display_diff": "Einbettungen mit Bildvorschau und Bearbeitungsunterschieden.",
             "display_embed": "Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen.",
             "display_image": "Einbettungen mit Bildvorschau.",
-            "entry": "$1. Letzte Änderungen-Webhook",
+            "entry": "$1. Letzte Änderungen-WebHook",
             "feeds": "Feeds-basierte Änderungen:",
             "feeds_only": "Nur Feeds-basierte Änderungen:",
             "lang": "Sprache:",
-            "new": "Neuer Letzte Änderungen-Webhook",
+            "name": "WebHook-Name:",
+            "new": "Neuer Letzte Änderungen-WebHook",
             "select_channel": "-- Wähle einen Kanal --",
             "wiki": "Wiki:",
             "wiki_check": "Wiki testen"
         },
-        "new": "Neuer Webhook"
+        "new": "Neuer WebHook"
     },
     "selector": {
         "desc": "Dies ist eine Liste aller Server dessen Einstellungen du ändern kannst, da du die [Server verwalten]($1)-Berechtigung hast. Bitte wähle einen Server:",

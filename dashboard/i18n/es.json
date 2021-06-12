@@ -76,11 +76,6 @@
             "text": "A ti o a Wiki-Bot les falta el permiso de $1 para realizar esta función.",
             "title": "¡Falta el permiso!"
         },
-        "movefail": {
-            "note": "¡No se pudo cambiar el canal del webhook!",
-            "text": "La configuración se ha actualizado parcialmente.",
-            "title": "¡Configuración parcialmente guardada!"
-        },
         "mwversion": {
             "text": "Requiere al menos MediaWiki 1.30, se encontró $1 en $2.",
             "title": "¡Versión de MediaWiki desactualizada!"
