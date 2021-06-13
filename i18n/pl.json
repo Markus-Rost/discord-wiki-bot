@@ -494,6 +494,8 @@
         "all_inactive": "śledzenie ostatnich zmian oraz dyskusji nie może być wyłączone jednocześnie.",
         "audit_reason": "Webhook ostatnich zmian dla „$1”",
         "audit_reason_delete": "Usunięto webhook ostatnich zmian",
+        "audit_reason_edit": "Zaktualizowano webhook ostatnich zmian",
+        "avatar": "Awatar webhooka:",
         "blocked": "ta wiki nie może zostać dodana do webhooka ostatnich zmian gdyż została zablokowana!",
         "blocked_reason": "zablokowano możliwość dodawania tej wiki do webhooka ostatnich zmian z powodu `$1`!",
         "channel": "Kanał:",
@@ -527,6 +529,7 @@
         "lang": "Język:",
         "max_entries": "osiągnięto maksymalną ilość webhooków ostatnich zmian.",
         "missing": "obecnie nie istnieją żadne webhooki ostatnich zmian na tym serwerze.",
+        "name": "Nazwa webhooka:",
         "new_lang": "<nowy język>",
         "new_wiki": "<link do wiki>",
         "no_feeds": "wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
@@ -544,6 +547,7 @@
             "blocked_reason": "Ten webhook ostatnich zmian zostanie usunięty gdyż wiki została zablokowana za `$1`!",
             "created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
             "dashboard": {
+                "avatar": "• Awatar webhooka został zmieniony.",
                 "channel": "• Webhook został przeniesiony do tego kanału.",
                 "disabled_feeds": "• Zmiany bazowane na technologii Feedów takie jak dyskusje, tablice wiadomości oraz komentarze do artykułów zostały wyłączone.",
                 "disabled_rc": "• Ostatnie zmiany na wiki zostały wyłączone.",
@@ -554,6 +558,7 @@
                 "enabled_feeds": "• Zmiany bazowane na technologii Feedów takie jak dyskusje, tablice wiadomości oraz komentarze do artykułów zostały włączone.",
                 "enabled_rc": "• Ostatnie zmiany na wiki zostały włączone.",
                 "lang": "• Język został zmieniony na $1.",
+                "name": "• Nazwa webhooka została zmieniona na „$1”.",
                 "updated": "Webhook ostatnich zmian został zaktualizowany:",
                 "wiki": "• Wiki została zmieniona na $1."
             },
@@ -589,6 +594,7 @@
         "special": "Zawartość tej strony specjalnej:"
     },
     "settings": {
+        "button": "Otwórz panel sterowania",
         "channel current": "obecne ustawienia dla tego kanału:",
         "channel lang": "językiem tego kanału jest:",
         "channel langchanged": "zmieniono język kanału na:",
@@ -738,17 +744,21 @@
         "current_selected": "to weryfikacja `$1` dla tego serwera:",
         "dashboard": {
             "added": "$1 dodał weryfikację z id `$2`.",
+            "added_notice": "$1 dodał(a) dodatkowe powiadomienia weryfikacji.",
             "removed": "$1 usunął weryfikację z id `$2`.",
-            "updated": "$1 zaktualizował weryfikację z id `$2`."
+            "updated": "$1 zaktualizował weryfikację z id `$2`.",
+            "updated_notice": "$1 zaktualizował(a) dodatkowe powiadomienia weryfikacji."
         },
         "delete_current": "Usuń tę weryfikację:",
         "deleted": "weryfikacja została usunięta.",
         "disabled": "wyłączone",
         "editcount": "Ilość edycji:",
         "enabled": "włączone",
+        "flag_logall": "Logowanie nieudanych weryfikacji:",
         "flag_private": "Wysyłanie odpowiedzi do komendy weryfikacyjnej prywatnie:",
         "indays": "(w dniach)",
         "logging": "Kanał logujący:",
+        "match": "Powiadomienie o niespełnionych wymaganiach:",
         "max_entries": "osiągnięto maksymalną ilość weryfikacji.",
         "missing": "na tym serwerze nie istnieją żadne weryfikacje na tę chwilę.",
         "new_accountage": "<nowy wiek konta>",
