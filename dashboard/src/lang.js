@@ -49,3 +49,8 @@ langDropdown.append(...langOptions);
 langSelector.append(langDropdown);
 channellist.after(langSelector);
 channellist.setAttribute('style', 'bottom: 32px;');
+var selectedChannel = channellist.querySelector('.channel.selected');
+if ( selectedChannel ) {
+	var selectedChannelOffset = channellist.offsetHeight - selectedChannel.offsetTop;
+	if ( selectedChannelOffset < 64 ) channellist.scrollBy(0, 64 - selectedChannelOffset);
+}

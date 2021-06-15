@@ -89,10 +89,42 @@ a[alt]:hover:after {
 }
 .scrollbar {
 	-ms-overflow-style: none;
-	scrollbar-width: none;
+	scrollbar-width: thin;
+	scrollbar-color: transparent transparent;
+}
+.scrollbar:hover {
+	scrollbar-color: #202225 transparent;
+}
+.theme-light .scrollbar:hover {
+	scrollbar-color: rgba(79,84,92,0.3) transparent;
 }
 .scrollbar::-webkit-scrollbar {
-	display: none;
+	width: 8px;
+	height: 8px;
+}
+.scrollbar::-webkit-scrollbar-corner {
+	background-color: transparent;
+}
+.scrollbar::-webkit-scrollbar-thumb, .scrollbar::-webkit-scrollbar-track {
+	visibility: hidden;
+}
+.scrollbar:hover::-webkit-scrollbar-thumb, .scrollbar:hover::-webkit-scrollbar-track {
+	visibility: visible;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+	background-clip: padding-box;
+	border: 2px solid transparent;
+	border-radius: 4px;
+	background-color: #202225;
+	min-height: 40px;
+}
+.theme-light .scrollbar::-webkit-scrollbar-thumb {
+	background-color: rgba(79,84,92,0.3);
+}
+.scrollbar::-webkit-scrollbar-track {
+	border-color: transparent;
+	background-color: transparent;
+	border: 2px solid transparent;
 }
 #sidebar {
 	position: fixed;
@@ -224,7 +256,7 @@ a[alt]:hover:after {
 }
 .channel {
 	padding: 3px 8px;
-	margin: 0 8px 2px 12px;
+	margin: 0 0 2px 12px;
 	min-height: 26px;
 	border-radius: 4px;
 	display: flex;
