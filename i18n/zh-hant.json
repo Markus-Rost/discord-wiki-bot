@@ -494,6 +494,8 @@
         "all_inactive": "wiki變更和討論版變更無法同時停用。",
         "audit_reason": "“$1”的近期變更webhook",
         "audit_reason_delete": "已移除近期變更webhook",
+        "audit_reason_edit": "近期變更 webhook 已更新",
+        "avatar": "Webhook 頭像：",
         "blocked": "此 wiki 已經被禁止加入到近期變更webhook ！",
         "blocked_reason": "此 wiki 已經被禁止加入到 `$1` 近期變更 webhook ！",
         "channel": "頻道：",
@@ -527,6 +529,7 @@
         "lang": "語言：",
         "max_entries": "已到達近期變更webhook的最大數量。",
         "missing": "本伺服器內暫無近期變更webhook。",
+        "name": "Webhook 名稱：",
         "new_lang": "<新語言>",
         "new_wiki": "<連結>",
         "no_feeds": "此webhook的wiki沒有如討論版、留言牆和條目評論等基於推送頁的變更，已啟用。",
@@ -544,6 +547,7 @@
             "blocked_reason": "由於此wiki已因 `$1` 被封鎖，此近期變更webhook將被刪除！",
             "created": "$1 的近期變更webhook已新增至此頻道。",
             "dashboard": {
+                "avatar": "• 已變更webhook的頭像。",
                 "channel": "• 已將webhook至此頻道。",
                 "disabled_feeds": "• 已停用討論版、留言牆和條目評論等基於推送頁的變更推送。",
                 "disabled_rc": "• 已停用wiki變更。",
@@ -554,6 +558,7 @@
                 "enabled_feeds": "• 已啟用討論版、留言牆和條目評論等基於推送頁的變更推送。",
                 "enabled_rc": "• 已啟用wiki變更。",
                 "lang": "• 已將語言變更為 $1。",
+                "name": "• 已將webhook的名稱變更為“$1”。",
                 "updated": "此近期變更webhook已被變更：",
                 "wiki": "• wiki已被變更為 $1。"
             },
