@@ -783,6 +783,7 @@
         "role_remove": "Role do usunięcia:",
         "role_too_high": "**Rola $1 jest wyżej niż najwyższa rola $2, dlatego nie będzie możliwe jej ustawienie!**",
         "save_failed": "niestety, weryfikacja nie mogła zostać zapisana, spróbuj ponownie później.",
+        "success": "powiadomienie o sukcesie",
         "toggle": "(przełącz)",
         "updated": "weryfikacja została zaktualizowana:",
         "usergroup": "Grupa użytkownika:",
