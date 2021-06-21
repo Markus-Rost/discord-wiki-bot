@@ -265,31 +265,31 @@
             "rcscript": {
                 "add": {
                     "cmd": "rcscript add [<wiki>]",
-                    "desc": "新しい最近の更新のウェブフックを追加します。"
+                    "desc": "新しい最近の更新のWebhookを追加します。"
                 },
                 "default": {
                     "cmd": "rcscript",
-                    "desc": "最近の更新のウェブフックを変更します。"
+                    "desc": "最近の更新のWebhookを変更します。"
                 },
                 "delete": {
                     "cmd": "rcscript delete",
-                    "desc": "Wiki-Botから最近の更新のウェブフックを削除します。"
+                    "desc": "Wiki-Botから最近の更新のWebhookを削除します。"
                 },
                 "display": {
                     "cmd": "rcscript display <新規 表示モード>",
-                    "desc": "Wiki-Botの最近の更新Webhookの表示モードを変更します。"
+                    "desc": "Wiki-Botの最近の更新のWebhookの表示モードを変更します。"
                 },
                 "feeds": {
                     "cmd": "rcscript feeds",
-                    "desc": "Fandom Wikiの更新されたディスカッションのウェブフックを最近の更新のウェブフックへ切り替えます。"
+                    "desc": "Fandom Wikiの更新されたディスカッションのWebhookを最近の更新のWebhookへ切り替えます。"
                 },
                 "lang": {
                     "cmd": "rcscript lang <新規言語>",
-                    "desc": "Wiki-Botの最近の更新のウェブフックの言語を変更します。"
+                    "desc": "Wiki-Botの最近の更新のWebhookの言語を変更します。"
                 },
                 "wiki": {
                     "cmd": "rcscript wiki <新規wiki>",
-                    "desc": "Web-Botの最近の更新ウェブフックのWikiを変更します。"
+                    "desc": "Web-Botの最近の更新のWebhookのWikiを変更します。"
                 }
             },
             "search": {
@@ -385,7 +385,49 @@
                 "desc": "このボイスチャンネルの全員に特定のロールを与えるようにします。"
             },
             "wikia": {
-                "cmd": "??<wiki> <検索キーワード>"
+                "cmd": "??<wiki> <検索キーワード>",
+                "desc": "選択したWikia wikiの関連記事へのリンクを返信します：`https://<wiki>.wikia.org/`"
+            }
+        },
+        "noadmin": "これらのコマンドを実行するには、`Manage Server`のパーミッションが必要です！",
+        "pause": "**このサーバーでは現在停止中です！**\nこれらのコマンドのみが実行可能です。"
+    },
+    "interaction": {
+        "dashboard": {
+            "perm_allow": "許可",
+            "perm_default": "デフォルト",
+            "perm_deny": "拒否",
+            "updated": "$1は、`$2`のスラッシュコマンドのパーミッションを上書き更新しました。"
+        },
+        "inline": "このコマンドを使用するには、参照するテキストを[[wikitext]]リンクを指定します。",
+        "nowiki": "使われているWikiは存在しません！",
+        "verify": "このコマンドでWikiのユーザー名を入力すると、DiscordアカウントとWikiアカウントが本人のものであることを確認し、Wikiアカウントに関連するロールを取得することができます。"
+    },
+    "invite": {
+        "bot": "別のサーバーに招待するには、このリンクを使ってください。"
+    },
+    "minecraft": {
+        "fixed": "{{PLURAL:$1|バージョン|バージョン}}で修正しました：",
+        "issue_link": {
+            "Blocks": {
+                "inward": "は$1でブロックされています",
+                "outward": "$1はブロックされています"
+            },
+            "Bonfire Testing": {
+                "inward": "$1のテスト中に検出された",
+                "outward": "$1のテスト中にバグが検出されました"
+            },
+            "Cloners": {
+                "inward": "は、$1でクローン化されています",
+                "outward": "クローン $1"
+            },
+            "Duplicate": {
+                "inward": "は、$1で重複しています",
+                "outward": "$1の複製"
+            },
+            "Relates": {
+                "inward": "は、$1に関連しています",
+                "outward": "は、$1に関連しています"
             }
         }
     },
