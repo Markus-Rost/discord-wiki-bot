@@ -196,23 +196,38 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
-			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrwhat=text&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
+			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
 				logging(wiki, msg.guild?.id, 'general', 'search');
 				var srbody = srresponse.body;
-				if ( srbody && srbody.warnings ) log_warn(srbody.warnings);
+				if ( srbody?.warnings ) log_warn(srbody.warnings);
 				if ( srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
-					console.log( '- ' + srresponse.statusCode + ': Error while getting the search results: ' + ( srbody && srbody.error && srbody.error.info ) );
+					console.log( '- ' + srresponse.statusCode + ': Error while getting the search results: ' + srbody?.error?.info );
 					msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Search', {search:title}) + '>' + spoiler );
 				
 					if ( reaction ) reaction.removeEmoji();
 					return;
 				}
 				if ( !srbody.query ) {
-					msg.reactEmoji('🤷');
-				
-					if ( reaction ) reaction.removeEmoji();
-					return;
+					return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrwhat=text&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( tsrresponse => {
+						var tsrbody = tsrresponse.body;
+						if ( tsrbody?.warnings ) log_warn(tsrbody.warnings);
+						if ( tsrresponse.statusCode !== 200 || !tsrbody || tsrbody.batchcomplete === undefined ) {
+							if ( tsrbody?.error?.code !== 'search-text-disabled' ) console.log( '- ' + tsrresponse.statusCode + ': Error while getting the text search results: ' + tsrbody?.error?.info );
+						}
+						else if ( tsrbody.query ) return tsrbody;
+						msg.reactEmoji('🤷');
+						
+						if ( reaction ) reaction.removeEmoji();
+					}, error => {
+						console.log( '- Error while getting the text search results: ' + error );
+						msg.reactEmoji('🤷');
+						
+						if ( reaction ) reaction.removeEmoji();
+					} );
 				}
+				return srbody;
+			} ).then( srbody => {
+				if ( !srbody?.query?.pages ) return;
 				querypage = Object.values(srbody.query.pages)[0];
 				querypage.uselang = uselang;
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);

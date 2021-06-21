@@ -25,13 +25,33 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
 	var description = [];
 	var limit = searchLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
-	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srwhat=text&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( ( searchterm || ' ' ) ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( ( searchterm || ' ' ) ) + '&format=json' ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warn(body.warnings);
-		if ( response.statusCode !== 200 || !body || !body.query || !body.query.search || body.batchcomplete === undefined ) {
-			return console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
+		if ( body?.warnings ) log_warn(body.warnings);
+		if ( response.statusCode !== 200 || !body?.query?.search || body.batchcomplete === undefined ) {
+			return console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 		}
-		if ( body.query.pages && body.query.pages['-1'] && body.query.pages['-1'].title ) {
+		if ( body.query.search.length < limit ) {
+			return got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srwhat=text&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( ( searchterm || ' ' ) ) + '&format=json' ).then( tresponse => {
+				var tbody = tresponse.body;
+				if ( tbody?.warnings ) log_warn(tbody.warnings);
+				if ( tresponse.statusCode !== 200 || !tbody?.query?.search || tbody.batchcomplete === undefined ) {
+					return console.log( '- ' + tresponse.statusCode + ': Error while getting the text search results: ' + tbody?.error?.info );
+				}
+				body.query.search.push(...tbody.query.search.filter( tresult => {
+					return !body.query.search.some( result => result.pageid === tresult.pageid );
+				} ).slice(0, limit - body.query.search.length));
+				if ( body.query.searchinfo && tbody.query.searchinfo ) body.query.searchinfo.totalhits += tbody.query.searchinfo.totalhits;
+			}, error => {
+				console.log( '- Error while getting the text search results: ' + error );
+			} ).then( () => {
+				return body;
+			} );
+		}
+		return body;
+	} ).then( body => {
+		if ( !body?.query?.search ) return;
+		if ( body.query.pages?.['-1']?.title ) {
 			if ( searchterm.trim() ) {
 				pagelink = wiki.toLink(body.query.pages['-1'].title, {search:searchterm,fulltext:1});
 				embed.setURL( pagelink );
@@ -96,7 +116,7 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler)
 		}
 	}, error => {
 		console.log( '- Error while getting the search results.' + error );
-	} ).finally( () => {
+	} ).then( () => {
 		embed.setDescription( Util.splitMessage( description.join('\n') )[0] );
 		msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 		
