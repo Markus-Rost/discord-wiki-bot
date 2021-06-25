@@ -429,7 +429,56 @@
                 "inward": "は、$1に関連しています",
                 "outward": "は、$1に関連しています"
             }
-        }
+        },
+        "more": "さらに$1あります。",
+        "private": "**機密性の高いエラーレポート**",
+        "status": {
+            "Awaiting Response": "回答の保留",
+            "Cannot Reproduce": "再現性がありません",
+            "Closed": "閉鎖",
+            "Done": "完了",
+            "Duplicate": "重複",
+            "Fixed": "修復済",
+            "In Progress": "進行中",
+            "Incomplete": "未完成",
+            "Invalid": "無効",
+            "Open": "公開",
+            "Postponed": "延期済",
+            "Reopened": "再開",
+            "Resolved": "解決済",
+            "Won't Fix": "修正不能",
+            "Works As Intended": "意図した通りの動作（仕様）"
+        },
+        "total": "$1 {{PLURAL:$2|問題は|問題は}} 修正されました"
+    },
+    "overview": {
+        "admins": "管理者：",
+        "articles": "記事：",
+        "comments": "記事のコメント：",
+        "created": "作成日時：",
+        "crossover": "合併先：",
+        "description": "説明：",
+        "edits": "編集：",
+        "founder": "創設者：",
+        "image": "画像：",
+        "inaccurate": "統計が不正確な場合もあります",
+        "lang": "言語：",
+        "license": "ライセンス：",
+        "manager": "Wiki管理人：",
+        "misermode": "サーバーファームの負荷分散状態(Miser mode)：",
+        "no": "いいえ",
+        "none": "*無し*",
+        "official": "公式Wiki：",
+        "pages": "ページ総数：",
+        "posts": "ディスカッションの投稿：",
+        "readonly": "このWikiは現在、読み取り専用です！",
+        "rtl": "右から左へ：",
+        "talk": "討論",
+        "topic": "トピック：",
+        "unknown": "*不明*",
+        "users": "アクティブユーザー：",
+        "version": "バージョン：",
+        "vertical": "縦型："
     },
     "test": {
         "text": [
