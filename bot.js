@@ -232,6 +232,7 @@ fs.readdir( './interactions', (error, files) => {
 client.ws.on( 'INTERACTION_CREATE', interaction => {
 	if ( interaction.version !== 1 ) return;
 	interaction.client = client;
+	/** @type {Discord.TextChannel} */
 	var channel = client.channels.cache.get(interaction.channel_id);
 	if ( interaction.guild_id ) {
 		interaction.user = interaction.member.user;

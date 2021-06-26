@@ -200,7 +200,9 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					queryuser.editcount = body.query.usercontribs.length;
 					if ( body.continue?.uccontinue ) queryuser.editcount++;
 				}
+				/** @type {[Set<String>,Set<String>]} */
 				var addRoles = [new Set(), new Set()];
+				/** @type {[Set<String>,Set<String>]} */
 				var removeRoles = [new Set(), new Set()];
 				var verified = false;
 				var rename = false;
@@ -234,35 +236,36 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				if ( verified ) {
 					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 					var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
-					removeRoles[0].forEach( role => addRoles[0].delete(role) );
-					removeRoles[1].forEach( role => addRoles[1].delete(role) );
-					var changeRoles = [];
-					if ( addRoles[0].size + removeRoles[0].size === 1 ) {
-						if ( addRoles[0].size === 1 ) changeRoles.push('add', [...addRoles[0]][0]);
-						else changeRoles.push('remove', [...removeRoles[0]][0]);
-					}
-					else {
-						let roles = new Set([...member.roles.cache.filter( role => {
-							return !removeRoles[0].has(role.id);
-						} ).keys(), ...addRoles[0]]);
-						changeRoles.push('set', [...roles]);
-					}
-					var verify_promise = [
-						member.roles[changeRoles[0]]( changeRoles[1], lang.get('verify.audit_reason', username) ).catch( error => {
-							log_error(error);
-							comment.push(lang.get('verify.failed_roles'));
-						} )
-					];
-					if ( rename && member.displayName !== username ) {
-						if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) {
-							verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
-								log_error(error);
-								comment.push(lang.get('verify.failed_rename', queryuser.gender));
-							} ));
-						}
+					/** @type {Promise[]} */
+					var verifyPromise = [];
+					var editMember = {};
+					if ( rename && member.displayName !== username.substring(0, 32) ) {
+						if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) editMember.nick = username.substring(0, 32);
 						else comment.push(lang.get('verify.failed_rename', queryuser.gender));
 					}
-					return Promise.all(verify_promise).then( () => {
+					removeRoles[0].forEach( role => addRoles[0].delete(role) );
+					removeRoles[1].forEach( role => addRoles[1].delete(role) );
+					if ( !editMember.nick && addRoles[0].size + removeRoles[0].size <= 1 ) {
+						if ( removeRoles[0].size === 1 ) verifyPromise.push(member.roles.remove( [...removeRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+							log_error(error);
+							comment.push(lang.get('verify.failed_roles'));
+						} ));
+						else if ( addRoles[0].size === 1 ) verifyPromise.push(member.roles.add( [...addRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+							log_error(error);
+							comment.push(lang.get('verify.failed_roles'));
+						} ));
+					}
+					else {
+						if ( addRoles[0].size + removeRoles[0].size ) editMember.roles = [...new Set([...member.roles.cache.filter( role => {
+							return !removeRoles[0].has(role.id);
+						} ).keys(), ...addRoles[0]])];
+						verifyPromise.push(member.edit( editMember, lang.get('verify.audit_reason', username) ).catch( error => {
+							log_error(error);
+							comment.push(lang.get('verify.failed_roles'));
+							if ( editMember.nick ) comment.push(lang.get('verify.failed_rename', queryuser.gender));
+						} ));
+					}
+					return Promise.all(verifyPromise).then( () => {
 						var addRolesMentions = [
 							[...addRoles[0]].map( role => '<@&' + role + '>' ),
 							[...addRoles[1]].map( role => '<@&' + role + '>' )
@@ -432,7 +435,9 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				return;
 			}
 			
+			/** @type {[Set<String>,Set<String>]} */
 			var addRoles = [new Set(), new Set()];
+			/** @type {[Set<String>,Set<String>]} */
 			var removeRoles = [new Set(), new Set()];
 			var verified = false;
 			var rename = false;
@@ -462,35 +467,36 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			if ( verified ) {
 				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
-				removeRoles[0].forEach( role => addRoles[0].delete(role) );
-				removeRoles[1].forEach( role => addRoles[1].delete(role) );
-				var changeRoles = [];
-				if ( addRoles[0].size + removeRoles[0].size === 1 ) {
-					if ( addRoles[0].size === 1 ) changeRoles.push('add', [...addRoles[0]][0]);
-					else changeRoles.push('remove', [...removeRoles[0]][0]);
-				}
-				else {
-					let roles = new Set([...member.roles.cache.filter( role => {
-						return !removeRoles[0].has(role.id);
-					} ).keys(), ...addRoles[0]]);
-					changeRoles.push('set', [...roles]);
-				}
-				var verify_promise = [
-					member.roles[changeRoles[0]]( changeRoles[1], lang.get('verify.audit_reason', username) ).catch( error => {
-						log_error(error);
-						comment.push(lang.get('verify.failed_roles'));
-					} )
-				];
-				if ( rename && member.displayName !== username ) {
-					if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) {
-						verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
-							log_error(error);
-							comment.push(lang.get('verify.failed_rename', queryuser.gender));
-						} ));
-					}
+				/** @type {Promise[]} */
+				var verifyPromise = [];
+				var editMember = {};
+				if ( rename && member.displayName !== username.substring(0, 32) ) {
+					if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) editMember.nick = username.substring(0, 32);
 					else comment.push(lang.get('verify.failed_rename', queryuser.gender));
 				}
-				return Promise.all(verify_promise).then( () => {
+				removeRoles[0].forEach( role => addRoles[0].delete(role) );
+				removeRoles[1].forEach( role => addRoles[1].delete(role) );
+				if ( !editMember.nick && addRoles[0].size + removeRoles[0].size <= 1 ) {
+					if ( removeRoles[0].size === 1 ) verifyPromise.push(member.roles.remove( [...removeRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+						log_error(error);
+						comment.push(lang.get('verify.failed_roles'));
+					} ));
+					else if ( addRoles[0].size === 1 ) verifyPromise.push(member.roles.add( [...addRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+						log_error(error);
+						comment.push(lang.get('verify.failed_roles'));
+					} ));
+				}
+				else {
+					if ( addRoles[0].size + removeRoles[0].size ) editMember.roles = [...new Set([...member.roles.cache.filter( role => {
+						return !removeRoles[0].has(role.id);
+					} ).keys(), ...addRoles[0]])];
+					verifyPromise.push(member.edit( editMember, lang.get('verify.audit_reason', username) ).catch( error => {
+						log_error(error);
+						comment.push(lang.get('verify.failed_roles'));
+						if ( editMember.nick ) comment.push(lang.get('verify.failed_rename', queryuser.gender));
+					} ));
+				}
+				return Promise.all(verifyPromise).then( () => {
 					var addRolesMentions = [
 						[...addRoles[0]].map( role => '<@&' + role + '>' ),
 						[...addRoles[1]].map( role => '<@&' + role + '>' )
@@ -703,7 +709,9 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			}
 			queryuser.groups.push(...body.query.globaluserinfo.groups);
 
+			/** @type {[Set<String>,Set<String>]} */
 			var addRoles = [new Set(), new Set()];
+			/** @type {[Set<String>,Set<String>]} */
 			var removeRoles = [new Set(), new Set()];
 			var verified = false;
 			var rename = false;
@@ -734,35 +742,36 @@ global.verifyOauthUser = function(state, access_token, settings) {
 				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
 				var comment = [];
-				removeRoles[0].forEach( role => addRoles[0].delete(role) );
-				removeRoles[1].forEach( role => addRoles[1].delete(role) );
-				var changeRoles = [];
-				if ( addRoles[0].size + removeRoles[0].size === 1 ) {
-					if ( addRoles[0].size === 1 ) changeRoles.push('add', [...addRoles[0]][0]);
-					else changeRoles.push('remove', [...removeRoles[0]][0]);
-				}
-				else {
-					let roles = new Set([...member.roles.cache.filter( role => {
-						return !removeRoles[0].has(role.id);
-					} ).keys(), ...addRoles[0]]);
-					changeRoles.push('set', [...roles]);
-				}
-				var verify_promise = [
-					member.roles[changeRoles[0]]( changeRoles[1], lang.get('verify.audit_reason', username) ).catch( error => {
-						log_error(error);
-						comment.push(lang.get('verify.failed_roles'));
-					} )
-				];
-				if ( rename && member.displayName !== username ) {
-					if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) {
-						verify_promise.push(member.setNickname( username.substring(0, 32), lang.get('verify.audit_reason', username) ).catch( error => {
-							log_error(error);
-							comment.push(lang.get('verify.failed_rename', queryuser.gender));
-						} ));
-					}
+				/** @type {Promise[]} */
+				var verifyPromise = [];
+				var editMember = {};
+				if ( rename && member.displayName !== username.substring(0, 32) ) {
+					if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) editMember.nick = username.substring(0, 32);
 					else comment.push(lang.get('verify.failed_rename', queryuser.gender));
 				}
-				return Promise.all(verify_promise).then( () => {
+				removeRoles[0].forEach( role => addRoles[0].delete(role) );
+				removeRoles[1].forEach( role => addRoles[1].delete(role) );
+				if ( !editMember.nick && addRoles[0].size + removeRoles[0].size <= 1 ) {
+					if ( removeRoles[0].size === 1 ) verifyPromise.push(member.roles.remove( [...removeRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+						log_error(error);
+						comment.push(lang.get('verify.failed_roles'));
+					} ));
+					else if ( addRoles[0].size === 1 ) verifyPromise.push(member.roles.add( [...addRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+						log_error(error);
+						comment.push(lang.get('verify.failed_roles'));
+					} ));
+				}
+				else {
+					if ( addRoles[0].size + removeRoles[0].size ) editMember.roles = [...new Set([...member.roles.cache.filter( role => {
+						return !removeRoles[0].has(role.id);
+					} ).keys(), ...addRoles[0]])];
+					verifyPromise.push(member.edit( editMember, lang.get('verify.audit_reason', username) ).catch( error => {
+						log_error(error);
+						comment.push(lang.get('verify.failed_roles'));
+						if ( editMember.nick ) comment.push(lang.get('verify.failed_rename', queryuser.gender));
+					} ));
+				}
+				return Promise.all(verifyPromise).then( () => {
 					var addRolesMentions = [
 						[...addRoles[0]].map( role => '<@&' + role + '>' ),
 						[...addRoles[1]].map( role => '<@&' + role + '>' )

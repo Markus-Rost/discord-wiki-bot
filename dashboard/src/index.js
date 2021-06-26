@@ -345,7 +345,16 @@ if ( avatar ) {
 			fetch( avatar.value, {
 				method: 'HEAD',
 				referrer: ''
+			} ).catch( function(error) {
+				if ( avatar.value.startsWith( 'https://cdn.discordapp.com/attachments/' ) && error.name === 'TypeError' ) {
+					return fetch( avatar.value.replace( 'https://cdn.discordapp.com/attachments/', 'https://media.discordapp.net/attachments/' ), {
+						method: 'HEAD',
+						referrer: ''
+					} );
+				}
+				throw error;
 			} ).then( function(response) {
+				avatar.value = response.url;
 				if ( !validContentTypes.includes( response.headers.get('content-type') ) ) {
 					var invalidContentType = lang('avatar.content_type').replace( /\$1/g, response.headers.get('content-type') );
 					avatar.setCustomValidity(invalidContentType + '\n' + validContentTypes.join(', ') );
