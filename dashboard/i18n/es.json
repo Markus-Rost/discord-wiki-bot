@@ -30,8 +30,12 @@
         "welcome": "<h2> Bienvenido al Panel de Control de Wiki-Bot. </h2> \n<p> Wiki-Bot es un bot de Discord creado para unir servidores de Discord y wikis de MediaWiki. Ayuda a vincular páginas wiki, verificar usuarios wiki, informar sobre los últimos cambios en el wiki y más. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\"> [Más información] </a> </p>\n<p> Aquí puedes cambiar diferentes configuraciones de bot para los servidores en los que tienes el permiso de administrar el servidor. Para comenzar, debes autenticar tu cuenta de Discord, lo puedes hacer con este botón: </p>"
     },
     "indexjs": {
+        "avatar": {
+            "content_type": "El enlace proporcionado tiene el tipo de contenido $1, pero solo se permiten los siguientes tipos de contenido:",
+            "invalid_url": "La URL no se pudo resolver en un archivo de imagen válido."
+        },
         "invalid": {
-            "note_http": "¡El sitio web proporcionado no utiliza HTTPS!",
+            "note_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.",
             "note_private": "¡El wiki proporcionado es privado!",
             "note_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
             "text": "¡La URL no se pudo convertir a un sitio válido de MediaWiki!",
@@ -115,7 +119,7 @@
             "title": "¡Se guardó la configuración!"
         },
         "savefail": {
-            "note_http": "¡El sitio web proporcionado no utiliza HTTPS!",
+            "note_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.",
             "note_private": "¡El wiki proporcionado es privado!",
             "note_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
             "text": "No se pudo guardar la configuración, por favor vuelve a intentarlo.",
@@ -129,6 +133,11 @@
             "text": "Inicia sesión para cambiar cualquier configuración.",
             "title": "¡No has iniciado sesión!"
         },
+        "webhookfail": {
+            "note": "¡El webhook de Discord no se pudo cambiar!",
+            "text": "La configuración solo se ha actualizado parcialmente.",
+            "title": "¡Configuración parcialmente guardada!"
+        },
         "wikiblocked": {
             "note": "Motivo:",
             "text": "Se ha bloqueado la adición de $1 como webhook de cambios recientes.",
@@ -139,6 +148,8 @@
         "desc": "Estos son los webhooks de cambios recientes para $1:",
         "explanation": "<h2>Webhook de Cambios Recientes</h2>\n<p>Wiki-Bot puede ejecutar un webhook de cambios recientes basado en <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Los cambios recientes se pueden mostrar en mensajes de texto compactos con enlaces en la misma línea o mensajes adjuntos con etiquetas de edición y cambios de categoría.</p>\n<p>Requisitos para agregar un webhook de cambios recientes:</p>\n<ul>\n<li>El wiki necesita ejecutarse en <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> o superior.</li>\n<li>El mensaje del sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> debe configurarse con el ID del servidor Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
         "form": {
+            "avatar": "Avatar del webhook:",
+            "avatar_preview": "Vista previa",
             "channel": "Canal:",
             "confirm": "¿Realmente deseas eliminar el webhook de cambios recientes?",
             "display": "Modo de visualización:",
@@ -150,6 +161,7 @@
             "feeds": "Cambios basados en feeds:",
             "feeds_only": "Solo cambios basados en feeds:",
             "lang": "Idioma:",
+            "name": "Nombre del webhook:",
             "new": "Nuevo Webhook de Cambios Recientes",
             "select_channel": "-- Selecciona un Canal --",
             "wiki": "Wiki:",
@@ -210,6 +222,8 @@
             "confirm": "¿Realmente deseas eliminar la verificación?",
             "editcount": "Número mínimo ediciones:",
             "entry": "Verificación #$1",
+            "flag_logall": "Registrar verificaciones fallidas:",
+            "flag_private": "Respuestas de comando privadas:",
             "logging": "Canal de registro:",
             "match": "Aviso de requisitos faltantes:",
             "match_placeholder": "El Markdown de texto en las etiquetas de Discord coinciden, pero que no cumplen con ningún requisito para los roles.",
@@ -223,6 +237,8 @@
             "postcount_or": "Requerir solo número de ediciones o solo número de publicaciones.",
             "rename": "Cambiar el nombre de los usuarios:",
             "role": "Rol:",
+            "role_add": "Agregar",
+            "role_remove": "Eliminar",
             "select_channel": "-- Selecciona un Canal --",
             "select_role": "-- Selecciona un Rol --",
             "success": "Aviso de operación correcta:",
