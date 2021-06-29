@@ -5,5 +5,15 @@
         " ",
         " ",
         " "
-    ]
+    ],
+    "general": {
+        "botlist": {
+            "text": "Giúp nhũng người dùng khác tìm thấy Wiki-Bot bằng cách vote trên các trang tổng hợp bot:",
+            "title": "Trang tổng hợp bot"
+        },
+        "delete": "Xóa",
+        "invite": "Mời Wiki-Bot",
+        "language": "Thay đổi ngôn ngữ",
+        "login": "Đăng nhập"
+    }
 }
