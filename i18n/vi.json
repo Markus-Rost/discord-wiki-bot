@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "",
+        "Song Ngư Kaze",
         " ",
         " ",
         " ",
@@ -111,6 +111,29 @@
             " "
         ]
     },
+    "dateformat": "vi-VN",
+    "diff": {
+        "badrev": "ít nhất một phiên bản chưa tồn tại!",
+        "hidden": "*bị ẩn*",
+        "info": {
+            "added": "Đã thêm:",
+            "bytes": "$1 {{PLURAL:$2|byte|byte}} $3",
+            "comment": "Miêu tả:",
+            "editor": "Người thực hiện:",
+            "minor": "(n)",
+            "size": "Độ khác nhau:",
+            "tags": "Thẻ:",
+            "timestamp": "Ngày sửa đổi:",
+            "whitespace": "Chỉ chứa khoảng trắng"
+        },
+        "nocomment": "*Không có miêu tả nào được cung cấp*"
+    },
+    "discussion": {
+        "image": "Xem hình ảnh",
+        "main": "Thảo luận",
+        "post": "bài",
+        "tags": "Thẻ:"
+    },
     "fallback": [
         "en",
         " ",
@@ -118,6 +141,15 @@
         " ",
         " "
     ],
+    "general": {
+        "database": "⚠️ **Tính năng giới hạn** ⚠️\nKhông có cài đặt nào như vậy cả, vui lòng liên hệ với chủ sở hữu của bot!",
+        "default": "máy chủ này vẫn chưa sẵn sàng. Dùng $1 hoặc trang quản lý để thay đổi cài đặt.",
+        "experimental": "**Tính năng này vẫn đang trong quá trình thử nghiệm! Chúng tôi không đảm bảo rằng nó sẽ hoạt động đúng cách và nó cũng có thể sẽ bị loại bỏ trong tương lai.**",
+        "helpserver": "Các câu hỏi và vấn đề với bot vui lòng điều hướng đến máy chủ hỗ trợ của tôi:",
+        "limit": "🚨 **Dừng lại, quá giới hạn rồi!** 🚨\n\n$1, đoạn tin nhắn này có chứa quá nhiều lệnh!",
+        "missingperm": "Có vẻ như tôi đang không có các quyền cần thiết cho câu lệnh này:",
+        "patreon": "đây là tính năng chỉ dành cho Patreon!"
+    },
     "test": {
         "text": [
             "",
