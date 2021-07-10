@@ -7,6 +7,10 @@
         " "
     ],
     "general": {
+        "botlist": {
+            "text": "Bot listelerinde oy vererek diğer kullanıcıların da Wiki-Bot'u bulmasına yardım et:",
+            "title": "Bot Listeleri"
+        },
         "delete": "Sil",
         "invite": "Wiki-Bot'u davet et",
         "language": "Dili Değiştir",
@@ -17,14 +21,21 @@
         "save": "Kaydet",
         "selector": "Sunucu Seçici",
         "settings": "Ayarlar",
+        "slash": "Eğik Çizgi Komutları",
         "support": "Destek Sunucusu",
+        "theme-dark": "Karanlık temayı kullan",
+        "theme-light": "Aydınlık temayı kullan",
         "title": "Wiki-Bot Ayarları",
         "verification": "Doğrulamalar",
         "welcome": "<h2>Wiki-Bot Kontrol Paneli'ne hoş geldin.</h2>\n<p>Wiki-Bot, Discord sunucularını ve MediaWiki vikilerini bir araya getirmek için yapılmış bir Discord botudur. Viki sayfalarına bağlantı vermek, viki kullanıcılarını doğrulamak, vikideki son değişiklikleri bildirmek ve benzeri özellikleri ile kullanıcılara yardım eder. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Daha fazla bilgi]</a></p>\n<p>Burada Sunucuyu Yönet yetkisine sahip olduğun sunucular için bot ayarı yapabilirsin. Başlamak için Discord hesabını bu buton ile doğrulaman gerekiyor:</p>"
     },
     "indexjs": {
+        "avatar": {
+            "content_type": "Sağlanan bağlantı $1 içerik türüne sahip ancak izin verilen tek içerik türleri şunlar:",
+            "invalid_url": "Bu bağlantı geçerli bir resim dosyasına varmıyor."
+        },
         "invalid": {
-            "note_http": "Belirtilen site HTTPS kullanmıyor!",
+            "note_http": "Belirtilen site geçerli bir TLS/SSL sertifikasına sahip değil! Güvenlik amacıyla sadece HTTPS kullanan vikiler desteklenmektedir.",
             "note_private": "Belirtilen viki gizli!",
             "note_timeout": "Belirtilen vikinin karşılık vermesi çok uzun sürdü!",
             "text": "URL geçerli bir MediaWiki sitesinin değil!",
@@ -82,6 +93,15 @@
             "text": "Lütfen sunucu için ayarları belirtin.",
             "title": "Sunucu kurulmamış!"
         },
+        "noslash": {
+            "note": "Eğik çizgi komutlarını etkinleştir.",
+            "text": "Wiki-Bot'un eğik çizgi komutları bu sunucuda etkin.",
+            "title": "Eğik çizgi komutları etkin değil!"
+        },
+        "noverify": {
+            "text": "$1 komutunun kısıtlamaları doğrulamalar kurulmadan önce değiştirilemez.",
+            "title": "Doğrulamalar kurulmamış!"
+        },
         "readonly": {
             "text": "Şu an ayarları okuyabilirsin ama değiştiremezsin.",
             "title": "Salt okunur veritabanı!"
@@ -99,7 +119,7 @@
             "title": "Ayarlar keydedildi!"
         },
         "savefail": {
-            "note_http": "Belirtilen site HTTPS kullanmıyor!",
+            "note_http": "Belirtilen site geçerli bir TLS/SSL seritifikasına sahip değil! Güvenlik amacıyla sadece HTTPS kullanan vikiler destekleniyor.",
             "note_private": "Belirtilen viki gizli!",
             "note_timeout": "Belirtilen bağlantının karşılık vermesi çok uzun sürdü!",
             "text": "Ayarlar kaydedilemedi, lütfen tekrar deneyin.",
@@ -113,6 +133,11 @@
             "text": "Lütfen herhangi bir ayar yapmadan önce giriş yapın.",
             "title": "Giriş yapılmamış!"
         },
+        "webhookfail": {
+            "note": "Discord webhook'u değiştirilemedi!",
+            "text": "Ayalarlar sadece kısmen güncellendi.",
+            "title": "Ayarlar kısmen kaydedildi!"
+        },
         "wikiblocked": {
             "note": "Neden:",
             "text": "$1 platformunun bir son değişiklikler webhook'u olarak eklenmesi yasaklanmış.",
@@ -121,8 +146,10 @@
     },
     "rcscript": {
         "desc": "$1 için son değişiklikler webhook'ları:",
-        "explanation": "<h2>Son Değişiklikler Webhook'u</h2>\n<p>Wiki-Bot <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> bazlı olarak bir son değişiklikler webhook'u sağlayabilir. Son değişiklikler; satıriçi bağlantılar ile kompakt metin mesajları veya düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar olarak görüntülenebilir.</p>\n<p>Bir son değişiklikler webhook'u ekleme gereksinimleri:</p>\n<ul>\n<li>Viki <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> veya daha güncel bir versiyona sahip olmalı.</li>\n<li>Sistem mesajı <code>MediaWiki:Custom-RcGcDw</code>, Discord sunucu ID'si <code class=\"user-select\" id=\"server-id\"></code> ile eşleşmeli.</li>\n</ul>",
+        "explanation": "<h2>Son Değişiklikler Webhook'u</h2>\n<p>Wiki-Bot <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> bazlı olarak bir son değişiklikler webhook'u sağlayabilir. Son değişiklikler; satıriçi bağlantılar ile kompakt metin mesajları veya düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar olarak görüntülenebilir.</p>\n<p>Bir son değişiklikler webhook'u ekleme gereksinimleri:</p>\n<ul>\n<li>Viki <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> veya daha güncel bir versiyona sahip olmalı.</li>\n<li>Sistem mesajı <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>, Discord sunucu ID'si <code class=\"user-select\" id=\"server-id\"></code> ile eşleşmeli.</li>\n</ul>",
         "form": {
+            "avatar": "Webhook simgesi:",
+            "avatar_preview": "Ön izleme",
             "channel": "Kanal:",
             "confirm": "Bu son değişiklikler webhook'unu silmek istediğine emin misin?",
             "display": "Görüntüleme modu:",
@@ -134,6 +161,7 @@
             "feeds": "Yayın bazlı değişiklikler:",
             "feeds_only": "Sadece yayın bazlı değişiklikler:",
             "lang": "Dil:",
+            "name": "Webhook ismi:",
             "new": "Yeni Son Değişiklikler Webhook'u",
             "select_channel": "-- Bir Kanal Seç --",
             "wiki": "Viki:",
@@ -147,8 +175,8 @@
         "none": "Halihazırda hiçbir sunucuda [Sunucuyu Yönet]($1) iznine sahip değilsin, doğru hesaba giriş yaptığına emin misin?",
         "switch": "Hesap Değiştir",
         "title": "Sunucu Seçici",
-        "with": "Wiki-Bot'un olduğu sunucu",
-        "without": "WikiBot'un olmadığı sunucu"
+        "with": "Wiki-Bot'un olduğu sunucular",
+        "without": "Wiki-Bot'un olmadığı sunucular"
     },
     "settings": {
         "desc": "$1 ayarları:",
@@ -170,6 +198,21 @@
         },
         "new": "Yeni kanal üzerine yazması"
     },
+    "slash": {
+        "desc": "$1 için mevcut eğik çizgi komutları:",
+        "explanation": "<h2>Eğik Çizgi Komutları</h2>\n<p>Spesifik eğik çizgi komutlarının kullanımı role göre kısıtlanabilir. Bunu Wiki-Bot'un eğik çizgi komutları için burada düzenleyebilirsin.</p>",
+        "form": {
+            "add": "Ekle",
+            "allow": "İzin ver",
+            "default": "Varsayılan",
+            "default_allow": "Varsayılan hali ile bu komut herkes tarafından kullanılabiliyor.",
+            "default_deny": "Varsayılan hali ile kimse bu komutu kullanamıyor.",
+            "deny": "Reddet",
+            "entry": "$1 komutu",
+            "role": "Rol:",
+            "select_role": "-- Bir Rol Seç --"
+        }
+    },
     "verification": {
         "desc": "$1 doğrulamaları:",
         "explanation": "<h2>Kullanıcı Doğrulaması</h2>\n<p>Kullanıcılar <code class=\"prefix\">verify &lt;viki kullanıcı adı&gt;</code> komutunu kullanarak kendilerini viki profillerindeki Discord bölümü sayesinde belirli spesifik bir viki kullanıcısı olarak doğrulayabilirler. Eğer kullanıcı eşleşirse ve sunucuda doğrulama sistemi kuruluysa Wiki-Bot eşleşen bütün doğrulama girdileri için ilgili rolleri verecektir.</p>\n<p>Her doğrulama girdisi, kullanıcının doğrulamayı nasıl tamamlayacağı konusunda bir kısıtlama getirir:</p>\n<ul>\n<li><code class=\"prefix\">verify</code> komutunun kullanılacağı kanal.</li>\n<li>Doğrulama girdisi eşleştiğinde verilecek rol.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için gerekli minimum düzenleme sayısı.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için üyenin vikide üyesi olması gereken kullanıcı grupları.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için hesabın gün bakımından yaşı.</li>\n<li>Doğrulama girdisi eşleştiğinde Discord kullanıcı adının viki kullanıcı adıyla değiştirilip değiştirilmeyeceği.</li>\n</ul>",
@@ -179,8 +222,14 @@
             "confirm": "Doğrulamayı silmek istediğine emin misin?",
             "editcount": "Minimal düzenleme sayısı:",
             "entry": "Doğrulama #$1",
+            "flag_logall": "Başarısız doğrulama günlüğü:",
+            "flag_private": "Özel komut yanıtları:",
+            "logging": "Günlük kanalı:",
+            "match": "Eksik gereklilik bildirileri:",
+            "match_placeholder": "Biçimlendirme metni Discord etiketleri ile uyuşuyor ancak roller için gereklilikleri karşılamıyor.",
             "more": "Daha fazla ekle",
             "new": "Yeni Doğrulama",
+            "notice": "Doğrulama Bildirileri",
             "postcount": "Asgari paylaşım sayısı:",
             "postcount_and": "Hem düzenleme hem de paylaşım gerektir.",
             "postcount_both": "Düzenleme ve paylaşım sayısı toplamı gerektir.",
@@ -188,11 +237,17 @@
             "postcount_or": "Ya düzenleme ya da paylaşım sayısı gerektir.",
             "rename": "Üyelerin kullanıcı isimlerini değiştir:",
             "role": "Rol:",
+            "role_add": "Ekle",
+            "role_remove": "Kaldır",
             "select_channel": "-- Bir Kanal Seç --",
             "select_role": "-- Bir Rol Seç --",
+            "success": "Başarı bildirisi:",
+            "success_placeholder": "Başarılı doğrulamadaki biçimlendirme metni.",
             "usergroup": "Viki kullanıcı grubu:",
             "usergroup_and": "Bütün kullanıcı gruplarını iste:"
         },
-        "new": "Yeni doğrulama"
+        "help_notice": "<p>Özel bildiriler bazı basit fonksiyon ve değişkenleri destekliyor.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> - Kullanıcının mevcut düzenleme sayısı.</li>\n<li><code class=\"form-button user-select\">$accountage</code> - Kullanıcının gün bazında hesap yaşı.</li>\n<li><code class=\"form-button user-select\">$postcount</code> - Kullanıcının tartışma gönderisi sayısı (sadece Fandom vikileri).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr:1+1}}</code> - Bir ifadenin sonucunu verir.\n<ul>\n<li>Sadece ekleme <code class=\"form-button user-select\">+</code> ve çıkarmayı <code class=\"form-button user-select\">-</code> destekler.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \"> 1 &gt; 1 | <i>eğer doğruysa</i> <i>eğer yanlışsa</i> }}</code> - Bir ifade sonucunu baz alarak metin verir.\n<ul>\n<li><code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code>, <code class=\"form-button user-select\">ve</code>, <code class=\"form-button user-select\">ya da</code> destekler.</li>\n</ul></li>\n</ul>",
+        "new": "Yeni doğrulama",
+        "notice": "Doğrulama bildirileri"
     }
 }

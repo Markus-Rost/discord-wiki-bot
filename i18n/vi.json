@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "",
+        "Song Ngư Kaze",
         " ",
         " ",
         " ",
@@ -104,12 +104,38 @@
             " "
         ],
         "verify": [
-            "Kiểm Chứng",
+            "Xác Thực",
             " ",
             " ",
             " ",
             " "
         ]
+    },
+    "dateformat": "vi-VN",
+    "diff": {
+        "badrev": "ít nhất một phiên bản chưa tồn tại!",
+        "hidden": "*bị ẩn*",
+        "info": {
+            "added": "Đã thêm:",
+            "bytes": "$1 {{PLURAL:$2|byte|byte}} $3",
+            "comment": "Miêu tả:",
+            "editor": "Người thực hiện:",
+            "minor": "(n)",
+            "more": "Và thêm nữa",
+            "removed": "Đã loại bỏ:",
+            "size": "Độ khác nhau:",
+            "tags": "Thẻ:",
+            "timestamp": "Ngày sửa đổi:",
+            "whitespace": "Chỉ chứa khoảng trắng"
+        },
+        "nocomment": "*Không có miêu tả nào được cung cấp*"
+    },
+    "discussion": {
+        "image": "Xem hình ảnh",
+        "main": "Thảo luận",
+        "post": "bài",
+        "tags": "Thẻ:",
+        "votes": "$1 {{PLURAL:$2|bình chọn|bình chọn}} ($3%)"
     },
     "fallback": [
         "en",
@@ -118,6 +144,100 @@
         " ",
         " "
     ],
+    "general": {
+        "database": "⚠️ **Tính năng giới hạn** ⚠️\nKhông có cài đặt nào như vậy cả, vui lòng liên hệ với chủ sở hữu của bot!",
+        "default": "máy chủ này vẫn chưa sẵn sàng. Dùng $1 hoặc trang quản lý để thay đổi cài đặt.",
+        "disclaimer": "Tôi là một con bot được tạo ra với mục đích làm cho việc liên kết và tìm kiếm các trang wiki website chạy MediaWiki như Wikipedia, Fandom, Miraheze và tương tự thế. Tôi hiển thị một vài miêu tả nhỏ và vài ba thông tin bổ sung về các trang và thậm chí, tôi cũng có thể xử lý các trang đổi hướng hay liên kết liên wiki. Tôi được viết bằng JavaScript bởi $1.\n\nBạn có thể hỗ trợ tôi trên Patreon:",
+        "experimental": "**Tính năng này vẫn đang trong quá trình thử nghiệm! Chúng tôi không đảm bảo rằng nó sẽ hoạt động đúng cách và nó cũng có thể sẽ bị loại bỏ trong tương lai.**",
+        "helpserver": "Các câu hỏi và vấn đề với bot vui lòng điều hướng đến máy chủ hỗ trợ của tôi:",
+        "limit": "🚨 **Dừng lại, quá giới hạn rồi!** 🚨\n\n$1, đoạn tin nhắn này có chứa quá nhiều lệnh!",
+        "missingperm": "Có vẻ như tôi đang không có các quyền cần thiết cho câu lệnh này:",
+        "patreon": "đây là tính năng chỉ dành cho Patreon!\nBạn có thể hỗ trợ tôi trên Patreon để được truy cập vào tính năng này:",
+        "prefix": "tiền tố của máy chủ hiện tại là `$1`. Bạn có thể thay đổi tiền tố với lệnh `$1settings prefix`. Danh sách lệnh đầy đủ sẽ có khi bạn dùng `$1help`.",
+        "readonly": "**Ối! Cơ sở dữ liệu hiện tại đang ở chế độ chỉ-đọc, bạn không thể thay đổi cài đặt ngay được!**"
+    },
+    "help": {
+        "admin": "Những câu lệnh này chỉ có thể được chạy bởi những người có quyền quản lý:",
+        "adminfooter": "Người quản lý cũng có thể dùng trang quản lý để thay đổi cài đặt của bot tại:",
+        "all": "Vậy là bạn muốn biết tôi có thể làm gì đúng không? Thế thì đây là danh sách câu lệnh mà tôi có thể hiểu:",
+        "footer": "Nếu bạn gặp phải một lời phản hồi không mong muốn, bạn có thể react với 🗑️ (`:wastebasket:`) vào tin nhắn của tôi và tôi sẽ tự tay xóa nó.",
+        "list": {
+            "default": {
+                "cmd": "<từ khóa>",
+                "desc": "Tôi sẽ trả lời bạn đường liên kết tương ứng với bài viết có sẵn trên wiki."
+            },
+            "diff": {
+                "id": {
+                    "cmd": "diff <diff> [<oldid>]",
+                    "desc": "Tôi sẽ trả lời bạn đường liên kết tới trang so sánh phiên bản tương ứng trên Wiki."
+                },
+                "name": {
+                    "cmd": "diff <tên trang>",
+                    "desc": "Tôi sẽ trả lời bạn đường liên kết tới trang so sánh phiên bản cuối cùng của bài viết tương ứng trên Wiki."
+                }
+            },
+            "discussion": {
+                "post": {
+                    "cmd": "discussion post <từ khóa>",
+                    "desc": "Tôi sẽ trả lời bạn đường liên kết tới bài thảo luận tương ứng trên wiki Fandom."
+                },
+                "thread": {
+                    "cmd": "discussion <từ khóa>",
+                    "desc": "Tôi sẽ trả lời bạn đường liên kết tới bài thảo luận tương ứng trên wiki Fandom."
+                }
+            },
+            "fandom": {
+                "cmd": "?<tiền tố wiki> <từ khóa>",
+                "desc": "Tôi sẽ trả lời bạn đường liên kết tới trang bài viết trên wiki Fandom tương ứng: ."
+            },
+            "gamepedia": {
+                "cmd": "!<tiền tố wiki> <từ khóa>",
+                "desc": "Tôi sẽ trả lời bạn đường liên kết tới bài viết trên wiki Gamepedia tương ứng: ``"
+            },
+            "help": {
+                "admin": {
+                    "cmd": "help admin",
+                    "desc": "Tôi sẽ liệt kê toàn bộ các câu lệnh quản trị."
+                },
+                "command": {
+                    "cmd": "help <câu lệnh bot>",
+                    "desc": "Thắc mắc cách một lệnh hoạt động? Để tôi giải thích nó cho bạn!"
+                },
+                "default": {
+                    "cmd": "help",
+                    "desc": "Tôi sẽ liệt kê hết những câu lệnh mà tôi có thể hiểu."
+                }
+            },
+            "info": {
+                "cmd": "info",
+                "desc": "Tôi sẽ giới thiệu bản thân."
+            },
+            "inline": {
+                "link": {
+                    "cmd": "[[<tên trang>]]",
+                    "desc": "Tôi sẽ trả lời với đường dẫn trực tiếp tới bài viết tương ứng trên wiki."
+                },
+                "template": {
+                    "cmd": "{{<tên trang>}}",
+                    "desc": "Tôi sẽ trả lời với đường dẫn tới bài viết tương ứng trên wiki."
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "cmd": "bug <bug trong Minecraft>",
+                    "desc": "Tôi sẽ cung cấp cho bạn liên kết tới trang theo dõi lỗi của Minecraft."
+                },
+                "command": {
+                    "cmd": "command <lệnh trong Minecraft>",
+                    "desc": "Tôi sẽ cung cấp cho bạn liên kết tới trang về câu lệnh tương ứng trên Minecraft Wiki."
+                },
+                "default": {
+                    "cmd": "/<lệnh trong Minecraft>",
+                    "desc": "Tôi sẽ cung cấp cho bạn liên kết tới trang về câu lệnh tương ứng trên Minecraft Wiki."
+                }
+            }
+        }
+    },
     "test": {
         "text": [
             "",

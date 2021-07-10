@@ -117,9 +117,10 @@
         "hidden": "*gizli*",
         "info": {
             "added": "Eklendi:",
-            "bytes": "$1 Bayt",
+            "bytes": "$1 bayt $3",
             "comment": "Yorum:",
             "editor": "Editör:",
+            "minor": "(k)",
             "more": "Daha fazlası",
             "removed": "Kaldırıldı:",
             "size": "Fark:",
@@ -144,8 +145,9 @@
         " "
     ],
     "general": {
+        "database": "⚠️ **Kısıtlı İşlevsellik** ⚠️\nAyar bulunamadı. Lütfen bot sahibi ile iletişim geç!",
         "default": "bu sunucu daha kurulmamış. $1 ile ya da kontrol panelini kullanarak ayarları değiştirin.",
-        "disclaimer": "Ben, Gamepedia ve Fandom Wikilerinin bağlantılarını göndermek ile görevlendirilmiş küçük bir botum. Sayfalar için kısa açıklamalar ve ek bilgiler verebilir ve interwiki bağlantıları ile yönlendirmeleri takip edebilirim. $1, beni JavaScript kullanarak yazdı.\n\nBeni Patreon'da da destekleyebilirsiniz:",
+        "disclaimer": "Ben, Vikipedi ve Fandom vikileri gibi MediaWiki sitelerine kolayca bağlantı vermek ve arama yapmak ile görevlendirilmiş küçük bir botum. Sayfalar için kısa açıklamalar ve ek bilgiler verebilir ve interwiki bağlantıları ile yönlendirmeleri takip edebilirim. $1, beni JavaScript kullanarak yazdı.\n\nBeni Patreon'da da destekleyebilirsiniz:",
         "experimental": "**Bu özellik deneme aşamasında! Çalışması garanti değil ve gelecekte kaldırılabilir.**",
         "helpserver": "Sorular ve sorunlarınız için lütfen destek sunucumu ziyaret edin:",
         "limit": "🚨 **Dur, limite ulaştın!** 🚨\n\n$1, mesajın çok fazla komut içeriyor!",
@@ -391,7 +393,15 @@
         "pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:"
     },
     "interaction": {
-        "inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin."
+        "dashboard": {
+            "perm_allow": "İzin ver",
+            "perm_default": "Varsayılan",
+            "perm_deny": "Reddet",
+            "updated": "$1, `$2` eğik çizgi komutu yetkilerini güncelledi."
+        },
+        "inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin.",
+        "nowiki": "Kullanılan viki mevcut değil!",
+        "verify": "Discord hesabını viki hesabın ile doğrulamak ve hesabın ile uyumlu rolleri almak için viki kullanıcı adını sağlayarak bu komutu kullan."
     },
     "invite": {
         "bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
@@ -484,6 +494,8 @@
         "all_inactive": "viki değişiklikleri ve yayın bazlı değişiklikleri aynı anda devre dışı bırakamazsın.",
         "audit_reason": "\"$1\" için son değişiklikler webhook'u",
         "audit_reason_delete": "Son değişiklikler webhook'u kaldırıldı",
+        "audit_reason_edit": "Son değişiklikler webhook'u güncellendi",
+        "avatar": "Webhook simgesi:",
         "blocked": "bu vikinin son değişiklikler webhook'u olarak eklemesi yasaklanmış!",
         "blocked_reason": "bu vikinin son değişiklikler webhook'u olarak eklemesi `$1` yüzünden yasaklanmış!",
         "channel": "Kanal:",
@@ -513,10 +525,11 @@
         "help_display_image": "Görüntü ön izlemeleri ile gömülü mesajlar.",
         "help_feeds": "(tartışmalar, mesaj duvarları, makale yorumları)",
         "help_lang": "Halihazırda desteklenen diller:",
-        "help_wiki": "`https://<wiki>.gamepedia.com/` ya da `https://<wiki>.fandom.com` gibi bir MediaWiki sitesine bağlantı verin",
+        "help_wiki": "`https://<wiki>.fandom.com/` gibi bir MediaWiki sitesine bağlantı ver",
         "lang": "Dil:",
         "max_entries": "azami son değişiklikler webhook'u sayısına ulaştın.",
         "missing": "bunu sunucuda halihazırda bir son değişiklikler webhook'u yok.",
+        "name": "Webhook adı:",
         "new_lang": "<yeni dil>",
         "new_wiki": "<vikiye bağlantı>",
         "no_feeds": "bu webhook'un vikide tartışmalar, mesaj duvarları ya da makale yorumları gibi yayın bazlı özellikler etkin değil.",
@@ -534,6 +547,7 @@
             "blocked_reason": "Bu son değişiklikler webhook'u silinecek çünkü viki `$1` nedeniyle engellendi!",
             "created": "Bu kanala $1 için bir son değişiklikler webhook'u eklendi.",
             "dashboard": {
+                "avatar": "• Webhook simgesi değiştirildi.",
                 "channel": "•Webhook bu kanala taşındı.",
                 "disabled_feeds": "•Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı değişiklikler devre dışı bırakıldı.",
                 "disabled_rc": "•Viki düzenlemeleri devre dışı bırakıldı.",
@@ -544,6 +558,7 @@
                 "enabled_feeds": "•Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı düzenlemeler etkinleştirildi.",
                 "enabled_rc": "•Viki düzenlemeleri etkinleştirildi.",
                 "lang": "•Dil $1 ile değiştirildi.",
+                "name": "• Webhook adı \"$1\" yapıldı.",
                 "updated": "Bu son değişiklikler webhook'u güncellendi:",
                 "wiki": "•Viki $1 ile değiştirildi."
             },
@@ -579,6 +594,7 @@
         "special": "Bu özel sayfanın içeriği:"
     },
     "settings": {
+        "button": "Kontrol panelini kullan",
         "channel current": "kanalın mevcut ayarları:",
         "channel lang": "bu kanalın dili:",
         "channel langchanged": "kanalın dilini şuna değiştirdin:",
@@ -630,8 +646,8 @@
         "save_failed": "ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
         "wiki": "bu sunucunun varsayılan wikisi:",
         "wikichanged": "bu sunucunun varsayılan wikisini şuna değiştirdiniz:",
-        "wikihelp": "`$1 <wiki>` kullanarak varsayılan wikiyi değiştirebilirsin.\nWiki bağlantısı: `https://<wiki>.gamepedia.com/` veya `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "lütfen Gamepedia veya Fandom wikiye geçerli bir bağlantı saylağın!",
+        "wikihelp": "`$1 <wiki>` kullanarak varsayılan vikiyi değiştirebilirsin.\n`https://<wiki>.fandom.com/` gibi bir MediaWiki sitesine bağlantı ver",
+        "wikiinvalid": "lütfen Vikipedi veya bir Fandom vikisinin geçerli bağlantısını verin!",
         "wikiinvalid_http": "belirtilen site geçerli bir TLS/SSL sertifikasına sahip değil! Güvenlik amacıyla sadece HTTPS kullanan vikiler desteklenmektedir.\nEğer bir site yöneticisiysen *Let’s Encrypt* gibi bir sertifika yetkilisinden sertifika alabilirsin:\n<https://letsencrypt.org/getting-started/>",
         "wikiinvalid_private": "belirtilen viki gizli! Sadece herkes tarafından okunabilen halka açık vikiler desteklenmektedir.",
         "wikiinvalid_timeout": "belirtilen bağlantının cevap vermesi çok uzun sürdü!",
@@ -677,7 +693,21 @@
     },
     "user": {
         "block": {
-            "header": "$1 şu anda engelli!"
+            "duration": {
+                "days": "$1 gün",
+                "hours": "$1 saat",
+                "minutes": "$1 dakika",
+                "months": "$1 ay",
+                "separator": ",_",
+                "separator_last": "_",
+                "weeks": "$1 hafta",
+                "years": "$1 yıl"
+            },
+            "header": "$1 şu anda engelli!",
+            "indef_noreason": "$1 tarihinde $4 tarafından sonsuza kadar engellendi.",
+            "indef_text": "$1 tarihinde \"$5\" nedeniyle $4 tarafından sonsuza engellendi.",
+            "noreason": "$4 tarafından $1 tarihinde $3 tarihine kadar $2 süreliğine engellendi.",
+            "text": "$4 tarafından \"$5\" nedeniyle $1 tarihinde $3 tarihine kadar $2 süreliğine engellendi."
         },
         "gblock": {
             "disabled": "Bu hesap şu anda devre dışı!",
@@ -714,15 +744,21 @@
         "current_selected": "sunucu doğrulaması `$1`:",
         "dashboard": {
             "added": "$1, `$2` ID'si ile doğrulama ekledi.",
+            "added_notice": "$1 birkaç doğrulama bildirisi ekledi.",
             "removed": "$1, `$2` ID'li doğrulamayı kaldırdı.",
-            "updated": "$1, `$2` ID'li doğrulamayı güncelledi."
+            "updated": "$1, `$2` ID'li doğrulamayı güncelledi.",
+            "updated_notice": "$1 birkaç doğrulama bildirisini güncelledi."
         },
         "delete_current": "Bu doğrulamayı sil:",
         "deleted": "doğrulama silindi.",
         "disabled": "devre dışı",
         "editcount": "Düzenleme sayısı:",
         "enabled": "etkin",
+        "flag_logall": "Başarısız doğrulamalar günlüğü:",
+        "flag_private": "Doğrulama komutu yanıtlarını özel olarak gönderme:",
         "indays": "(gün)",
+        "logging": "Günlük kanalı:",
+        "match": "Eksik gereklilik bildirisi:",
         "max_entries": "halihazırda azami doğrulama sayısına sahipsin.",
         "missing": "bu sunucuda halihazırda bir doğrulama yok.",
         "new_accountage": "<yeni hesap yaşı>",
@@ -732,18 +768,23 @@
         "new_role": "<yeni rol>",
         "new_usergroup": "<yeni kullanıcı grubu>",
         "no_role": "lütfen yeni doğrulama için bir rol belirtin.",
+        "notice_embed": "Bazı bildiriler maskeli biçimlendirme bağlantılarına sahip. Lütfen çalışabilmeleri için botun bütün doğrulama kanallarında `Bağlantı Yerleştir` yetkisine sahip olduğundan emin ol.",
         "or": "ya da",
         "postcount": "Gönderi sayısı (sadece Fandom vikileri):",
         "postcount_or": "(düzenleme sayısına alternatif)",
         "posteditcount": "Düzenleme ve paylaşım sayısı toplamı:",
         "rename": "Kullanıcı adı değiştir:",
         "rename_no_permission": "**$1, viki kullanıcı isimlerini zorlamak için `Kullanıcı Adlarını Yönet`iznine sahip olmalı!**",
+        "role_add": "Eklenecek rol:",
         "role_deleted": "**$1 rolü artık yok gibi duruyor!**",
         "role_managed": "belirtilen rol atanamıyor.",
         "role_max": "çok fazla rol belirttin.",
         "role_missing": "belirtilen rol mevcut değil.",
+        "role_none": "hiçbiri",
+        "role_remove": "Kaldırılacak rol:",
         "role_too_high": "**$1 rolü $2 tarafından atanmak için çok yüksekte!**",
         "save_failed": "ne yazık ki doğrulama kaydedilemedi, lütfen daha sonra tekrar deneyin.",
+        "success": "Başarı bildirisi:",
         "toggle": "(değiştir)",
         "updated": "doğrulama güncellendi:",
         "usergroup": "Kullanıcı grubu:",
@@ -753,6 +794,8 @@
     },
     "verify": {
         "audit_reason": "\"$1\" olarak doğrulandı",
+        "button_again": "Tekrar dene",
+        "button_wrong_user": "Bu doğrulamayı tekrar deneyemezsin. Doğrulama $1 kullanıcısına ait!",
         "discord": "Discord kullanıcısı:",
         "empty": "*boş*",
         "error": "Doğrulama bir hata sonucu başarısız oldu.",
@@ -764,9 +807,19 @@
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Viki profiline Discord etiketi eklemek için [bu rehberi]($1) oku:",
+        "help_missing": "Lütfen viki kullanıcı adını ve büyük küçük harf uyumunu doğru kullandığına emin ol.",
         "help_subpage": "Lütfen vikideki Discord alt sayfana Discord etiketini ($1) ekle:",
         "missing": "kanalda halihazırda bir doğrulama yok.",
         "notice": "Uyarı:",
+        "oauth_button": "Doğrula",
+        "oauth_message": "lütfen [bu bağlantıyı]($1) kullanarak viki hesabını doğrula.",
+        "oauth_message_dm": "$1 sunucusu için viki hesabını doğrulamak için lütfen bu bağlantıyı kullan.",
+        "oauth_private": "bu viki doğrulama için OAuth2 kullanıyor. Lütfen sunucudan gelen direkt mesajları etkinleştir ve `/verify` komutunu kullan. Böylece doğrulama bağlantısını sana özel mesaj olarak gönderebilirim.",
+        "oauth_used": "*OAuth2 kullanılarak doğrulandı*",
+        "qualified_add": "Eklendi:",
+        "qualified_add_error": "Eklenemedi:",
+        "qualified_remove": "Kaldırıldı:",
+        "qualified_remove_error": "Kaldırılamadı:",
         "user_blocked": "**Viki kullanıcısı $1 engellendi!**",
         "user_blocked_reply": "bağlı olduğun viki kullanıcısı **\"$1\" engellendi!**",
         "user_disabled": "**Viki hesabı $1 devre dışı!**",
