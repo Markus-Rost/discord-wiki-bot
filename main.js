@@ -26,7 +26,7 @@ var diedShards = 0;
 manager.on( 'shardCreate', shard => {
 	console.log( `- Shard[${shard.id}]: Launched` );
 	
-	shard.on( 'spawn', message => {
+	shard.on( 'spawn', () => {
 		console.log( `- Shard[${shard.id}]: Spawned` );
 		shard.send( {
 			shard: {
@@ -77,11 +77,19 @@ manager.spawn().then( shards => {
 	}
 }, error => {
 	console.error( '- Error while spawning the shards: ' + error );
+	manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 	if ( isDebug ) {
+		manager.respawn = false;
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		process.exit(1);
 	}
-	else manager.respawnAll();
+	else manager.spawn(manager.totalShards, 5500, -1).catch( error2 => {
+		console.error( '- Error while spawning the shards: ' + error2 );
+		manager.respawn = false;
+		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
+		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
+		process.exit(1);
+	} );
 } );
 
 var server;

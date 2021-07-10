@@ -14,7 +14,7 @@ async function cmd_stop(lang, msg, args, line, wiki) {
 	} else if ( args.join(' ').split('\n')[0].isMention(msg.guild) ) {
 		await msg.replyMsg( 'I\'ll restart myself now!', {}, true );
 		console.log( '\n- Restarting all shards!\n\n' );
-		await msg.client.shard.respawnAll();
+		await msg.client.shard.respawnAll(5000, 500, -1);
 	} else if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) {
 		this.LINK(lang, msg, line, wiki);
 	}

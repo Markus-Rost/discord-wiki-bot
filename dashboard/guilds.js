@@ -123,8 +123,8 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 		res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; SameSite=Lax; Path=/`]);
 		let url = oauth.generateAuthUrl( {
 			scope: ['identify', 'guilds', 'bot', 'applications.commands'],
-			permissions: defaultPermissions,
-			guildId: guild.id, state: userSession.state
+			permissions: defaultPermissions, guildId: guild.id,
+			disableGuildSelect: true, state: userSession.state
 		} );
 		$('#channellist').empty();
 		$('<a class="channel channel-header">').attr('href', url).append(

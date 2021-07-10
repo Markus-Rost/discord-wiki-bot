@@ -306,7 +306,8 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				timeZone: 'UTC'
 			}, timeoptions));
 		}
-		var registration = [lang.get('user.info.registration'), dateformat.format(new Date(queryuser.registration))];
+		let registrationDate = new Date(queryuser.registration);
+		var registration = [lang.get('user.info.registration'), dateformat.format(registrationDate), '<t:' + Math.trunc(registrationDate.getTime() / 1000) + ':R>'];
 		var editcount = [lang.get('user.info.editcount'), queryuser.editcount.toLocaleString(lang.get('dateformat'))];
 		var groups = queryuser.groups.filter( group => !usergroups.ignored.includes( group ) );
 		var globalgroups = [];
@@ -334,7 +335,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			console.log( '- Error while getting the group names: ' + error );
 		} ).finally( () => {
 			var group = [lang.get('user.info.group', ( groups.filter( usergroup => {
-				return !['autoconfirmed', 'user'].includes( usergroup )
+				return !['autoconfirmed', 'emailconfirmed', 'user'].includes( usergroup )
 			} ).length || 1 ))];
 			for ( var i = 0; i < usergroups.sorted.length; i++ ) {
 				let usergroup = usergroups.sorted[i];
@@ -345,7 +346,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						return groupnames[groups.indexOf(customgroup)];
 					} ));
 				}
-				else if ( groups.includes( usergroup ) && ( group.length === 1 || !['autoconfirmed', 'user'].includes( usergroup ) ) ) {
+				else if ( groups.includes( usergroup ) && ( group.length === 1 || !['autoconfirmed', 'emailconfirmed', 'user'].includes( usergroup ) ) ) {
 					group.push(groupnames[groups.indexOf(usergroup)]);
 				}
 			}
@@ -445,7 +446,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( globalgroup.length > 1 ) {
 					embed.addField( globalgroup[0], globalgroup.slice(1).join(',\n'), true );
 				}
-				embed.addField( gender[0], gender[1], true ).addField( registration[0], registration[1], true );
+				embed.addField( gender[0], gender[1], true ).addField( registration[0], registration[1] + '\n' + registration[2], true );
 				
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );

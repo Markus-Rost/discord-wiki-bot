@@ -192,18 +192,18 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 					timeZone: 'UTC'
 				}, timeoptions));
 			}
-			var timestamp = [lang.get('diff.info.timestamp'), dateformat.format(new Date(revisions[0].timestamp))];
+			var editDate = new Date(revisions[0].timestamp);
+			var timestamp = [lang.get('diff.info.timestamp'), dateformat.format(editDate), '<t:' + Math.trunc(editDate.getTime() / 1000) + ':R>'];
 			var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
 			var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes', ( difference > 0 ? '+' : '' ) + difference.toLocaleString(lang.get('dateformat')), difference, ( revisions[0].minor !== undefined ? lang.get('diff.info.minor') : '' ))];
 			var comment = [lang.get('diff.info.comment'), ( revisions[0].commenthidden !== undefined ? lang.get('diff.hidden') : ( revisions[0].parsedcomment ? ( msg.showEmbed() ? htmlToDiscord(revisions[0].parsedcomment, wiki.toLink(title), true) : htmlToPlain(revisions[0].parsedcomment) ) : lang.get('diff.nocomment') ) )];
-			if ( revisions[0].tags.length ) var tags = [lang.get('diff.info.tags'), body.query.tags.filter( tag => revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname ).join(', ')];
+			if ( revisions[0].tags.length ) var tags = [lang.get('diff.info.tags'), body.query.tags.filter( tag => tag.displayname && revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname || tag.name ).join(', ')];
 			
 			var pagelink = wiki.toLink(title, {diff,oldid});
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() ) {
-				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting( title + '?diff=' + diff + '&oldid=' + oldid ) ).setURL( pagelink ).addField( editor[0], editor[1], true ).addField( size[0], size[1], true ).addField( comment[0], comment[1] ).setFooter( timestamp[1] );
-				if ( tags ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink) );
+				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting( title + '?diff=' + diff + '&oldid=' + oldid ) ).setURL( pagelink ).addField( editor[0], editor[1], true ).addField( size[0], size[1], true ).addField( timestamp[0], timestamp[1] + '\n' + timestamp[2], true ).addField( comment[0], comment[1] ).setTimestamp( editDate );
 				
 				var more = '\n__' + lang.get('diff.info.more') + '__';
 				var whitespace = '__' + lang.get('diff.info.whitespace') + '__';
@@ -244,6 +244,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 				}, error => {
 					console.log( '- Error while getting the diff: ' + error );
 				} ).finally( () => {
+					if ( tags?.[1] ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink) );
 					msg.sendChannel( spoiler + text + spoiler, {embed} );
 					
 					if ( reaction ) reaction.removeEmoji();
@@ -264,6 +265,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 							embed.addField( lang.get('diff.info.added'), content, true );
 						} else embed.addField( lang.get('diff.info.added'), whitespace, true );
 					}
+					if ( tags?.[1] ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink) );
 					
 					msg.sendChannel( spoiler + text + spoiler, {embed} );
 					
@@ -272,7 +274,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, compare) 
 			}
 			else {
 				text += '\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ');
-				if ( tags ) text += htmlToDiscord( '\n' + tags.join(' ') );
+				if ( tags?.[1] ) text += htmlToDiscord( '\n' + tags.join(' ') );
 				
 				msg.sendChannel( spoiler + text + spoiler, {embed} );
 				

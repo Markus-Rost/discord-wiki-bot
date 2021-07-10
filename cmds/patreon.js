@@ -18,10 +18,9 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	
 	if ( args[0] === 'enable' && /^\d+$/.test(args.slice(1).join(' ')) ) return msg.client.shard.broadcastEval( `this.guilds.cache.get('${args[1]}')?.name`, shardIDForGuildID(args[1], msg.client.shard.count) ).then( guild => {
 		if ( !guild ) return msg.client.generateInvite({
-			permissions: defaultPermissions,
-			guild: args[1]
+			permissions: defaultPermissions
 		}).then( invite => {
-			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '%20applications.commands' + '>', {}, true )
+			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '+applications.commands&guild_id=' + args[1] + '&disable_guild_select=true' + '>', {}, true )
 		}, log_error );
 		if ( patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', {}, true );
 		db.query( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [msg.author.id] ).then( ({rows:[row]}) => {

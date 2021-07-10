@@ -80,6 +80,7 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 					var content = parse_text( comment.comments[0].content.raw, site );
 					if ( content.length > 1000 ) content = limitLength(content, 1000, 20);
 					embed.spliceFields( 0, 0, {name: 'Comment', value: content} );
+					if ( embed.description.length > 500 ) embed.setDescription( limitLength(description, 500, 250) );
 				}
 			}, error => {
 				console.log( '- Error while getting the task transactions: ' + error );
@@ -105,9 +106,11 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
  */
 function parse_text(text, site) {
 	text = text.replace( /```lang=/g, '```' );
+	text = text.replace( /^>>! (.+?)$/gm, '> *$1*' );
+	text = text.replace( /^>>/gm, '> >' );
 	text = text.replace( /##(.+?)##/g, '`$1`' );
 	text = text.replace( /!!(.+?)!!/g, '`$1`' );
-	text = text.replace( /\/\/(.+?)\/\//g, '*$1*' );
+	text = text.replace( /(?<!https?:)\/\/(.+?)(?<!https?:)\/\//g, '*$1*' );
 	text = text.replace( /\[\[ ?(.+?) ?(?:\| ?(.+?) ?)?\]\]/g, (match, target, display) => {
 		var link = target;
 		if ( /^(?:(?:https?:)?\/\/|\/|#)/.test(target) ) link = new URL(target, site).href;

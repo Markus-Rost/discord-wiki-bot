@@ -69,6 +69,7 @@
 			"autopatrol",
 			"rollback",
 			"autoconfirmed",
+			"emailconfirmed",
 			"user"
 		],
 		"global": [

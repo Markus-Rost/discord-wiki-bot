@@ -290,7 +290,7 @@ function createNotice($, notice, dashboardLang, args = []) {
 			type = 'error';
 			title.text(dashboardLang.get('notice.noslash.title'));
 			text.text(dashboardLang.get('notice.noslash.text'));
-			note = $('<a target="_blank">').text(dashboardLang.get('notice.noslash.note')).attr('href', `https://discord.com/api/oauth2/authorize?client_id=${process.env.bot}&scope=applications.commands&guild_id=${args[0]}`);
+			note = $('<a target="_blank">').text(dashboardLang.get('notice.noslash.note')).attr('href', `https://discord.com/api/oauth2/authorize?client_id=${process.env.bot}&scope=applications.commands&guild_id=${args[0]}&disable_guild_select=true`);
 			break;
 		case 'wikiblocked':
 			type = 'error';

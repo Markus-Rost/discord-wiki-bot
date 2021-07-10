@@ -578,6 +578,7 @@
         "wiki": "Wiki:"
     },
     "search": {
+        "cached": "Cache last updated:",
         "category": {
             "content": "Content of this category:",
             "empty": "*This category is empty*",

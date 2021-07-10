@@ -589,6 +589,9 @@ fieldset textarea {
 	height: 128px;
 	background: #32353b;
 }
+.theme-light #wb-settings-avatar-preview-img {
+	background-color: #fafafa;
+}
 .wb-settings-display:first-of-type,
 .wb-settings-permission:first-of-type {
 	display: inline-block;

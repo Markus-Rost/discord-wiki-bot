@@ -12,7 +12,7 @@ const {toFormatting, toPlaintext, escapeFormatting} = require('../../util/functi
  * @param {String} spoiler - If the response is in a spoiler.
  */
 function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
-	got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.isFandom() ? '|allmessages&ammessages=custom-GamepediaNotice|custom-FandomMergeNotice&amenableparser=true' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.isFandom() ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -32,7 +32,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		logging(wiki, msg.guild?.id, 'overview');
 		var version = [lang.get('overview.version'), body.query.general.generator];
 		var creation_date = null;
-		var created = [lang.get('overview.created'), lang.get('overview.unknown')];
+		var created = [lang.get('overview.created'), lang.get('overview.unknown'), ''];
 		try {
 			var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
 				timeZone: body.query.general.timezone
@@ -46,6 +46,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		if ( body.query.logevents?.[0]?.timestamp ) {
 			creation_date = new Date(body.query.logevents[0].timestamp);
 			created[1] = dateformat.format(creation_date);
+			created[2] = '<t:' + Math.trunc(creation_date.getTime() / 1000) + ':R>';
 		}
 		var language = [lang.get('overview.lang'), body.query.languages.find( language => {
 			return language.code === body.query.general.lang;
@@ -90,6 +91,11 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		var embed = null;
 		if ( msg.showEmbed() ) {
 			embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
+				let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
+				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
+				embed.setTitle( displaytitle );
+			}
 		}
 		else {
 			text += '\n';
@@ -106,11 +112,11 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			var manager = [lang.get('overview.manager'), ''];
 			var founder = [lang.get('overview.founder')];
 			var crossover = [lang.get('overview.crossover')];
-			if ( body.query.allmessages?.[0]?.['*'] ) {
-				crossover[1] = '<https://' + body.query.allmessages[0]['*'] + '.gamepedia.com/>';
+			if ( body.query.allmessages?.[1]?.['*']?.trim?.() ) {
+				crossover[1] = '<https://' + body.query.allmessages[1]['*'].trim() + '.gamepedia.com/>';
 			}
-			if ( body.query.allmessages?.[1]?.['*'] ) {
-				let mergeNotice = body.query.allmessages[1]['*'];
+			if ( body.query.allmessages?.[2]?.['*']?.trim?.() ) {
+				let mergeNotice = body.query.allmessages[2]['*'].trim();
 				if ( !mergeNotice.includes( '|' ) ) {
 					mergeNotice = mergeNotice.split('/');
 					crossover[1] = '<https://' + mergeNotice[0] + '.fandom.com/' + ( mergeNotice[1] ? '/' + mergeNotice[1] : '' ) + '>';
@@ -132,6 +138,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 				if ( site.creation_date && creation_date > new Date(site.creation_date) ) {
 					creation_date = new Date(site.creation_date);
 					created[1] = dateformat.format(creation_date);
+					created[2] = '<t:' + Math.trunc(creation_date.getTime() / 1000) + ':R>';
 				}
 				if ( site.desc ) {
 					description[1] = escapeFormatting(site.desc);
@@ -189,7 +196,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 					if ( official[1] ) embed.addField( official[0], official[1], true );
 					embed.addField( version[0], version[1], true ).addField( language[0], language[1], true );
 					if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
-					embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true );
+					embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true );
 					if ( posts[1] ) embed.addField( posts[0], posts[1], true );
 					if ( walls[1] ) embed.addField( walls[0], walls[1], true );
 					if ( comments[1] ) embed.addField( comments[0], comments[1], true );
@@ -234,7 +241,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		if ( msg.showEmbed() ) {
 			embed.addField( version[0], version[1], true ).addField( language[0], language[1], true );
 			if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
-			embed.addField( created[0], created[1], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
+			embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
 			if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 		}
 		else {

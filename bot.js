@@ -476,7 +476,9 @@ const common_warnings = {
 		'Unrecognized values for parameter "prop": pageimages, extracts.',
 		'Unrecognized values for parameter "prop": pageimages, extracts',
 		'Unrecognized value for parameter "prop": extracts.',
-		'Unrecognized value for parameter "prop": pageimages.'
+		'Unrecognized value for parameter "prop": extracts',
+		'Unrecognized value for parameter "prop": pageimages.',
+		'Unrecognized value for parameter "prop": pageimages'
 	]
 }
 

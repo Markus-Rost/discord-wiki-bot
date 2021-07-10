@@ -42,7 +42,8 @@ const queryfunctions = {
 				timeZone: 'UTC'
 			}, timeoptions));
 		}
-		return dateformat.format(new Date(result.timestamp)) + ': [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		let lastEditDate = new Date(result.timestamp);
+		return dateformat.format(lastEditDate) + ' <t:' + Math.trunc(lastEditDate.getTime() / 1000) + ':R>: [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
 	} ).join('\n'),
 	media: (query, wiki, lang) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');
@@ -107,6 +108,7 @@ const querypages = {
 }
 
 const descriptions = {
+	block: 'blockiptext&amargs=16|19',
 	checkuser: 'checkuser-summary&amargs=16|19',
 	resettokens: 'resettokens-text',
 	allmessages: 'allmessagestext',
@@ -144,21 +146,28 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, embe
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
 		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + ( body && body.error && body.error.info ) );
+			return;
 		}
-		else {
-			if ( body.query.allmessages[0]['*'] ) {
-				var description = toMarkdown(body.query.allmessages[0]['*'], wiki, title, true);
-				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-				embed.setDescription( description );
-			}
-			if ( msg.channel.isGuild() && patreons[msg.guild?.id] && querypages.hasOwnProperty(specialpage) ) {
-				var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
-				embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
+		if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
+			let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
+			if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
+			embed.setTitle( displaytitle );
+		}
+		if ( body.query.allmessages?.[1]?.['*']?.trim?.() ) {
+			var description = toMarkdown(body.query.allmessages[1]['*'], wiki, title, true);
+			if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+			embed.setDescription( description );
+		}
+		if ( msg.channel.isGuild() && patreons[msg.guild?.id] && querypages.hasOwnProperty(specialpage) ) {
+			var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
+			embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
+			if ( body.query.querypage.cached !== undefined ) {
+				embed.setFooter( lang.get('search.cached') ).setTimestamp(new Date(body.query.querypage.cachedtimestamp));
 			}
 		}
 	}, error => {
