@@ -117,10 +117,10 @@
         "hidden": "*隠された*",
         "info": {
             "added": "追加：",
-            "bytes": "$1 {{PLURAL:$2|バイト|バイト}} $3",
+            "bytes": "$1 {{PLURAL:$2|バイト|バイト}}",
             "comment": "コメント：",
             "editor": "編集者：",
-            "minor": "(細)",
+            "minor": "_(細)",
             "more": "その他にも",
             "removed": "削除：",
             "size": "差分：",

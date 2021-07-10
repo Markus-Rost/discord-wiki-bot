@@ -117,10 +117,10 @@
         "hidden": "*versteckt*",
         "info": {
             "added": "Hinzugefügt:",
-            "bytes": "$1 {{PLURAL:$2|Byte|Bytes}} $3",
+            "bytes": "$1 {{PLURAL:$2|Byte|Bytes}}",
             "comment": "Zusammenfassung:",
             "editor": "Autor:",
-            "minor": "(K)",
+            "minor": "_(K)",
             "more": "Und mehr",
             "removed": "Entfernt:",
             "size": "Unterschied:",

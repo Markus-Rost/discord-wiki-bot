@@ -117,10 +117,10 @@
         "hidden": "*gömd*",
         "info": {
             "added": "Tillagd:",
-            "bytes": "$1 {{PLURAL:$2|byte|bytes}} $3",
+            "bytes": "$1 {{PLURAL:$2|byte|bytes}}",
             "comment": "Kommentar:",
             "editor": "Redigerare:",
-            "minor": "(m)",
+            "minor": "_(m)",
             "more": "Och mer",
             "removed": "Raderade:",
             "size": "Skillnad:",

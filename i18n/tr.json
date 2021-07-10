@@ -117,10 +117,10 @@
         "hidden": "*gizli*",
         "info": {
             "added": "Eklendi:",
-            "bytes": "$1 bayt $3",
+            "bytes": "$1 bayt",
             "comment": "Yorum:",
             "editor": "Editör:",
-            "minor": "(k)",
+            "minor": "_(k)",
             "more": "Daha fazlası",
             "removed": "Kaldırıldı:",
             "size": "Fark:",

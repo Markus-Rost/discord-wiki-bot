@@ -117,10 +117,10 @@
         "hidden": "*bị ẩn*",
         "info": {
             "added": "Đã thêm:",
-            "bytes": "$1 {{PLURAL:$2|byte|byte}} $3",
+            "bytes": "$1 {{PLURAL:$2|byte|byte}}",
             "comment": "Miêu tả:",
             "editor": "Người thực hiện:",
-            "minor": "(n)",
+            "minor": "_(n)",
             "more": "Và thêm nữa",
             "removed": "Đã loại bỏ:",
             "size": "Độ khác nhau:",

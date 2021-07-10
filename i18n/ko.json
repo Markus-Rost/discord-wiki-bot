@@ -117,10 +117,10 @@
         "hidden": "*숨겨짐*",
         "info": {
             "added": "추가됨:",
-            "bytes": "$1 바이트 $3",
+            "bytes": "$1 바이트",
             "comment": "코멘트:",
             "editor": "편집자:",
-            "minor": "(잔글)",
+            "minor": "_(잔글)",
             "more": "내용 더 있음",
             "removed": "삭제됨:",
             "size": "차이:",

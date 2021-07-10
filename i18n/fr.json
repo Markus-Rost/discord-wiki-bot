@@ -117,10 +117,10 @@
         "hidden": "*masqué*",
         "info": {
             "added": "Ajoutés :",
-            "bytes": "$1 {{PLURAL:$2|octet|octets}} $3",
+            "bytes": "$1 {{PLURAL:$2|octet|octets}}",
             "comment": "Commentaire :",
             "editor": "Éditeur :",
-            "minor": "(m)",
+            "minor": "_(m)",
             "more": "Et plus",
             "removed": "Retirés :",
             "size": "Différence :",

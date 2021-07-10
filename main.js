@@ -65,7 +65,7 @@ manager.on( 'shardCreate', shard => {
 	} );
 } );
 
-manager.spawn().then( shards => {
+manager.spawn(manager.totalShards, 5500, 60000).then( shards => {
 	if ( !isDebug && process.env.botlist ) {
 		var botList = JSON.parse(process.env.botlist);
 		for ( let [key, value] of Object.entries(botList) ) {
