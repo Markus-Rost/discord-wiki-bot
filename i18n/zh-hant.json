@@ -120,7 +120,7 @@
             "bytes": "$1位元",
             "comment": "摘要：",
             "editor": "編輯者：",
-            "minor": "（小）",
+            "minor": "_（小）",
             "more": "更多",
             "removed": "移除：",
             "size": "差異：",
@@ -578,6 +578,7 @@
         "wiki": "wiki："
     },
     "search": {
+        "cached": "快取上次更新：",
         "category": {
             "content": "此分類的內容：",
             "empty": "*空白分類*",
