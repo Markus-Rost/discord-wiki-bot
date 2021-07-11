@@ -3,7 +3,7 @@
 
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Wikipedia](https://www.wikipedia.org/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
 
-**Wiki-Bot** has translations for Bengali, German, English, Spanish, French, Hindi, Korean, Dutch, Polish, Brazilian Portuguese, Russian, Turkish, Simplified Chinese and Traditional Chinese.
+**Wiki-Bot** has translations for Bengali, German, English, Spanish, French, Hindi, Korean, Polish, Brazilian Portuguese, Russian, Swedish, Turkish, Simplified Chinese and Traditional Chinese.
 
 [Use this link to invite **Wiki-Bot** to your Discord server.](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands)
 
@@ -20,7 +20,7 @@ Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
 * [Voice Channel](#voice-channel)
 
 ## Setup
-After [inviting](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands) **Wiki-Bot** to your server you need to set the wiki you want to search by default. You do this with the `!wiki settings` command.
+After [inviting](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands) **Wiki-Bot** to your server you need to set the wiki you want to search by default. You do this with the `!wiki settings` command or by using the [dashboard](https://settings.wikibot.de/).
 * Change the wiki with `!wiki settings wiki <url>`
   * Example: `!wiki settings wiki https://minecraft.fandom.com/wiki/Minecraft_Wiki`
 * Change the language with `!wiki settings lang <language>`
@@ -97,10 +97,9 @@ Use `!wiki voice` to get the format for the role name.
 Help other users find Wiki-Bot by voting on bot lists:
 
 [<img src="https://blist.xyz/api/v2/bot/461189216198590464/widget" alt="blist.xyz" height="150px" />](https://blist.xyz/bot/461189216198590464)
-[<img src="https://botlists.com/bot/461189216198590464/widget" alt="botlists.com" height="150px" />](https://botlists.com/bot/461189216198590464)
 [<img src="https://bots.ondiscord.xyz/bots/461189216198590464/embed?theme=dark&showGuilds=true" alt="bots.ondiscord.xyz" height="150px" />](https://bots.ondiscord.xyz/bots/461189216198590464)
-[<img src="https://botsfordiscord.com/api/bot/461189216198590464/widget?theme=dark" alt="botsfordiscord.com" height="150px" />](https://botsfordiscord.com/bots/461189216198590464)
 [<img src="https://discord.boats/api/widget/461189216198590464" alt="discord.boats" height="150px" />](https://discord.boats/bot/461189216198590464)
+[<img src="https://discords.com/bots/api/bot/461189216198590464/widget?theme=dark" alt="discords.com" height="150px" />](https://discords.com/bots/bot/461189216198590464)
 [<img src="https://infinitybotlist.com/bots/461189216198590464/widget?size=medium" alt="infinitybotlist.com" height="150px" />](https://infinitybotlist.com/bots/461189216198590464)
 [<img src="https://top.gg/api/widget/461189216198590464.svg" alt="top.gg" height="150px" />](https://top.gg/bot/461189216198590464)
 [<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)

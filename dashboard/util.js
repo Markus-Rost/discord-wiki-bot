@@ -160,13 +160,13 @@ if ( process.env.botlist ) {
 			link: 'https://bots.ondiscord.xyz/bots/' + process.env.bot,
 			widget: 'https://bots.ondiscord.xyz/bots/' + process.env.bot + '/embed?theme=dark&showGuilds=true'
 		},
-		'botsfordiscord.com': {
-			link: 'https://botsfordiscord.com/bots/' + process.env.bot,
-			widget: 'https://botsfordiscord.com/api/bot/' + process.env.bot + '/widget?theme=dark'
-		},
 		'discord.boats': {
 			link: 'https://discord.boats/bot/' + process.env.bot,
 			widget: 'https://discord.boats/api/widget/' + process.env.bot
+		},
+		'discords.com': {
+			link: 'https://discords.com/bots/bot/' + process.env.bot,
+			widget: 'https://discords.com/bots/api/bot/' + process.env.bot + '/widget?theme=dark'
 		},
 		'infinitybotlist.com': {
 			link: 'https://infinitybotlist.com/bots/' + process.env.bot,
