@@ -578,6 +578,7 @@
         "wiki": "wiki："
     },
     "search": {
+        "cached": "缓存上次更新：",
         "category": {
             "content": "分类下的内容：",
             "empty": "*空白分类*",
