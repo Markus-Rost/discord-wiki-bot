@@ -49,6 +49,29 @@ class Lang {
 	}
 
 	/**
+	 * Change the message language.
+	 * @param {String[]} languageOverwrites - Arguments for the message.
+	 * @returns {Lang}
+	 */
+	uselang(...languageOverwrites) {
+		languageOverwrites = languageOverwrites.map( lang => {
+			if ( typeof lang !== 'string' ) return;
+			if ( lang === 'allLangs' || !i18n.hasOwnProperty(lang) ) {
+				if ( /^[a-z]{2}(?:-[a-z]{2,4})?$/.test(lang) && i18n.allLangs.map.hasOwnProperty(lang) ) {
+					return i18n.allLangs.map[lang];
+				}
+				return;
+			}
+			return lang;
+		} ).filter( lang => lang );
+		if ( !languageOverwrites.length || ( languageOverwrites.length === 1 && languageOverwrites[0] === this.lang ) ) return this;
+		var newLang = new Lang(this.lang, this.namespace);
+		newLang.fallback.unshift(...languageOverwrites.slice(1), newLang.lang);
+		newLang.lang = languageOverwrites[0];
+		return newLang;
+	}
+
+	/**
 	 * Get a localized message.
 	 * @param {String} message - Name of the message.
 	 * @param {String[]} args - Arguments for the message.

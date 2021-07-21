@@ -168,6 +168,7 @@ function htmlToPlain(html) {
 		onopentag: (tagname, attribs) => {
 			if ( tagname === 'sup' && attribs.class === 'reference' ) ignoredTag = 'sup';
 			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
+			if ( tagname === 'br' ) text += ' ';
 		},
 		ontext: (htmltext) => {
 			if ( !ignoredTag ) {

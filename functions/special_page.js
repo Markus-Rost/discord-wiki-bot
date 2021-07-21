@@ -1,16 +1,36 @@
-const {Util} = require('discord.js');
+const {MessageEmbed, Util} = require('discord.js');
 const logging = require('../util/logging.js');
 const {timeoptions} = require('../util/default.json');
 const {toMarkdown, escapeFormatting} = require('../util/functions.js');
 
 const overwrites = {
-	randompage: (fn, lang, msg, wiki, reaction, spoiler) => {
-		fn.random(lang, msg, wiki, reaction, spoiler);
+	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, args, embed, query) => {
+		let namespaces = Object.values(query.namespaces);
+		let contentNamespaces = namespaces.filter( ns => ns.content !== undefined );
+		let namespaceData = [contentNamespaces.map( ns => ns.id ).join('|'), contentNamespaces.map( ns => ( ns['*'] || '*' )  ).join(', ')];
+		if ( args[0] ) {
+			args[0] = args[0].replace( /_/g, ' ' ).toLowerCase().trim();
+			let namespaceMap = {};
+			namespaces.forEach( namespace => {
+				if ( namespace.id < 0 ) return;
+				if ( namespace.canonical ) namespaceMap[namespace.canonical.toLowerCase()] = namespace.id;
+				namespaceMap[namespace['*'].toLowerCase()] = namespace.id;
+			} );
+			query.namespacealiases.forEach( namespace => {
+				if ( namespace.id < 0 ) return;
+				namespaceMap[namespace['*'].toLowerCase()] = namespace.id;
+			} );
+			if ( namespaceMap.hasOwnProperty(args[0]) ) {
+				namespaceData = [namespaceMap[args[0]].toString(), ( namespaces.find( namespace => namespace.id === namespaceMap[args[0]] )?.['*'] || '*' )];
+			}
+			else if ( args[0] === '*' ) namespaceData = ['*', '*'];
+		}
+		fn.random(lang, msg, wiki, reaction, spoiler, namespaceData, querystring, fragment, embed);
 	},
-	statistics: (fn, lang, msg, wiki, reaction, spoiler) => {
-		fn.overview(lang, msg, wiki, reaction, spoiler);
+	statistics: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler) => {
+		fn.overview(lang, msg, wiki, reaction, spoiler, querystring, fragment);
 	},
-	diff: (fn, lang, msg, wiki, reaction, spoiler, args, embed) => {
+	diff: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, args, embed) => {
 		fn.diff(lang, msg, args, wiki, reaction, spoiler, embed);
 	}
 }
@@ -34,7 +54,7 @@ const queryfunctions = {
 	timestamp: (query, wiki, lang) => query.querypage.results.map( result => {
 		try {
 			var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
-				timeZone: body.query.general.timezone
+				timeZone: query.general.timezone
 			}, timeoptions));
 		}
 		catch ( error ) {
@@ -131,15 +151,19 @@ const descriptions = {
  * @param {String} querypage.title - The title of the special page.
  * @param {String} querypage.uselang - The language of the special page.
  * @param {String} specialpage - The canonical name of the special page.
- * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
+ * @param {Object} query - The siteinfo from the wiki.
  * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {URLSearchParams} querystring - The querystring for the link.
+ * @param {String} fragment - The section for the link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  */
-function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, embed, wiki, reaction, spoiler) {
+function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler) {
+	var pagelink = wiki.toLink(title, querystring, fragment);
+	var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(query.general.logo, wiki).href );
 	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
-		overwrites[specialpage](this, lang, msg, wiki, reaction, spoiler, args, embed);
+		overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, args, embed, query);
 		return;
 	}
 	logging(wiki, msg.guild?.id, 'general', 'special');
@@ -173,7 +197,7 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, embe
 	}, error => {
 		console.log( '- Error while getting the special page: ' + error );
 	} ).finally( () => {
-		msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, {embed} );
+		msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );

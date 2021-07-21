@@ -10,9 +10,12 @@ const {toFormatting, toPlaintext, escapeFormatting} = require('../../util/functi
  * @param {import('../../util/wiki.js')} wiki - The wiki for the overview.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
+ * @param {URLSearchParams} [querystring] - The querystring for the link.
+ * @param {String} [fragment] - The section for the link.
  */
-function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
-	got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.isFandom() ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + lang.lang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
+function gamepedia_overview(lang, msg, wiki, reaction, spoiler, querystring = new URLSearchParams(), fragment = '') {
+	var uselang = ( querystring.get('variant') || querystring.get('uselang') || lang.lang );
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.isFandom() ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -22,7 +25,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 			}
 			else {
 				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
-				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler );
 			}
 			
 			if ( reaction ) reaction.removeEmoji();
@@ -86,7 +89,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		}
 		
 		var title = body.query.pages['-1'].title;
-		var pagelink = wiki.toLink(title);
+		var pagelink = wiki.toLink(title, querystring, fragment);
 		var text = '<' + pagelink + '>';
 		var embed = null;
 		if ( msg.showEmbed() ) {
@@ -262,7 +265,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler) {
 		}
 		else {
 			console.log( '- Error while getting the statistics: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics') + '>' + spoiler );
+			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler );
 		}
 		
 		if ( reaction ) reaction.removeEmoji();
