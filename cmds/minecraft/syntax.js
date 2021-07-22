@@ -12,8 +12,9 @@ const commands = require('./commands.json');
  * @param {String} cmd - The command at this point.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
+ * @param {Boolean} noEmbed - If the response should be without an embed.
  */
-function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, spoiler) {
+function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, spoiler, noEmbed) {
 	mccmd = mccmd.toLowerCase();
 	var aliasCmd = ( commands.aliases[mccmd] || mccmd );
 	var cmdpage = commands.wikis[wiki.href];
@@ -72,7 +73,7 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler);
+		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
 	}
 }
 

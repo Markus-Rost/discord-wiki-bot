@@ -10,12 +10,13 @@ const {escapeFormatting, limitLength} = require('../util/functions.js');
  * @param {URL} link - The link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} [spoiler] - If the response is in a spoiler.
+ * @param {Boolean} [noEmbed] - If the response should be without an embed.
  */
-function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
+function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '', noEmbed = false) {
 	var regex = /^(?:https?:)?\/\/phabricator\.(wikimedia|miraheze)\.org\/T(\d+)(?:#|$)/.exec(link.href);
 	if ( !regex || !process.env['phabricator_' + regex[1]] ) {
 		logging(wiki, msg.guild?.id, 'interwiki');
-		msg.sendChannel( spoiler + ' ' + link + ' ' + spoiler );
+		msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
 		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
@@ -25,20 +26,20 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the Phabricator task: ' + body?.error_info );
-			msg.sendChannelError( spoiler + ' ' + link + ' ' + spoiler );
+			msg.sendChannelError( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
 
 			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
 		if ( !body.result.data.length ) {
-			msg.sendChannel( spoiler + ' ' + link + ' ' + spoiler );
+			msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
 
 			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
 		var task = body.result.data[0];
 		var status = '**' + task.fields.status.name + ':** ' + escapeFormatting(task.fields.name) + '\n';
-		if ( !msg.showEmbed() ) {
+		if ( !msg.showEmbed() || noEmbed ) {
 			msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler );
 			
 			if ( reaction ) reaction.removeEmoji();
@@ -92,7 +93,7 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '') {
 		} );
 	}, error => {
 		console.log( '- Error while getting the Phabricator task: ' + error );
-		msg.sendChannelError( spoiler + ' ' + link + ' ' + spoiler );
+		msg.sendChannelError( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
 
 		if ( reaction ) reaction.removeEmoji();
 	} );

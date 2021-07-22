@@ -19,11 +19,15 @@ function cmd_link(lang, msg, title, wiki, cmd = '') {
 		title = title.substring( 2, title.length - 2);
 		var spoiler = '||';
 	}
+	if ( /^<[^<>]+>$/.test(title) ) {
+		title = title.substring( 1, title.length - 1);
+		var noEmbed = true;
+	}
 	msg.reactEmoji('⏳').then( reaction => {
 		if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname) ) {
-			return phabricator(lang, msg, wiki, new URL('/' + title, wiki), reaction, spoiler);
+			return phabricator(lang, msg, wiki, new URL('/' + title, wiki), reaction, spoiler, noEmbed);
 		}
-		else check_wiki.general(lang, msg, title, wiki, cmd, reaction, spoiler);
+		else check_wiki.general(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
 	} );
 }
 

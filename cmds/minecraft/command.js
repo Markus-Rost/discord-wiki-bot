@@ -8,15 +8,16 @@
  * @param {String} cmd - The command at this point.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
+ * @param {Boolean} noEmbed - If the response should be without an embed.
  */
-function minecraft_command(lang, msg, wiki, args, title, cmd, reaction, spoiler) {
+function minecraft_command(lang, msg, wiki, args, title, cmd, reaction, spoiler, noEmbed) {
 	if ( args.join('') ) {
-		if ( args[0].startsWith( '/' ) ) this.SYNTAX(lang, msg, wiki, args[0].substring(1), args.slice(1), title, cmd, reaction, spoiler);
-		else this.SYNTAX(lang, msg, wiki, args[0], args.slice(1), title, cmd, reaction, spoiler);
+		if ( args[0].startsWith( '/' ) ) this.SYNTAX(lang, msg, wiki, args[0].substring(1), args.slice(1), title, cmd, reaction, spoiler, noEmbed);
+		else this.SYNTAX(lang, msg, wiki, args[0], args.slice(1), title, cmd, reaction, spoiler, noEmbed);
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler);
+		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
 	}
 }
 

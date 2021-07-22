@@ -4,7 +4,7 @@ const {timeoptions} = require('../util/default.json');
 const {toMarkdown, escapeFormatting} = require('../util/functions.js');
 
 const overwrites = {
-	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, args, embed, query) => {
+	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query) => {
 		let namespaces = Object.values(query.namespaces);
 		let contentNamespaces = namespaces.filter( ns => ns.content !== undefined );
 		let namespaceData = [contentNamespaces.map( ns => ns.id ).join('|'), contentNamespaces.map( ns => ( ns['*'] || '*' )  ).join(', ')];
@@ -25,13 +25,13 @@ const overwrites = {
 			}
 			else if ( args[0] === '*' ) namespaceData = ['*', '*'];
 		}
-		fn.random(lang, msg, wiki, reaction, spoiler, namespaceData, querystring, fragment, embed);
+		fn.random(lang, msg, wiki, reaction, spoiler, noEmbed, namespaceData, querystring, fragment, embed);
 	},
-	statistics: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler) => {
-		fn.overview(lang, msg, wiki, reaction, spoiler, querystring, fragment);
+	statistics: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed) => {
+		fn.overview(lang, msg, wiki, reaction, spoiler, noEmbed, querystring, fragment);
 	},
-	diff: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, args, embed) => {
-		fn.diff(lang, msg, args, wiki, reaction, spoiler, embed);
+	diff: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed) => {
+		fn.diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed);
 	}
 }
 
@@ -157,25 +157,37 @@ const descriptions = {
  * @param {String} fragment - The section for the link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
+ * @param {Boolean} noEmbed - If the response should be without an embed.
  */
-function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler) {
+function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
 	var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(query.general.logo, wiki).href );
 	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
-		overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, args, embed, query);
+		overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query);
 		return;
 	}
 	logging(wiki, msg.guild?.id, 'general', 'special');
+	if ( !msg.showEmbed() || noEmbed ) {
+		msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler );
+		
+		if ( reaction ) reaction.removeEmoji();
+		return;
+	}
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
 		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + ( body && body.error && body.error.info ) );
 			return;
+		}
+		if ( body.query.pages?.['-1']?.title ) {
+			title = body.query.pages['-1'].title;
+			pagelink = wiki.toLink(title, querystring, fragment);
+			embed.setTitle( escapeFormatting(title) );
 		}
 		if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 			let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());

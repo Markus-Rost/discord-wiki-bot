@@ -21,7 +21,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 		gender = 'unknown';
 	}
 	
-	if ( msg.showEmbed() ) embed.fields.pop();
+	if ( embed && msg.showEmbed() ) embed.fields.pop();
 	else {
 		let splittext = text.split('\n\n');
 		splittext.pop();
@@ -39,11 +39,11 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 			else {
 				let $ = cheerio.load(body);
 				if ( $('#mw-content-text .errorbox').length ) {
-					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.disabled') + '**' );
+					if ( embed && msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.disabled') + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 				}
 				else if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
-					if ( msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**' );
+					if ( embed && msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
 				}
 			}
@@ -62,7 +62,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
 				if ( wikisedited ) {
 					wikisedited = parseInt(wikisedited, 10).toLocaleString(lang.get('dateformat'));
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
+					if ( embed && msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.wikisedited'),
 						value: wikisedited,
 						inline: true
@@ -76,7 +76,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
 				if ( globaledits ) {
 					globaledits = parseInt(globaledits, 10).toLocaleString(lang.get('dateformat'));
-					if ( msg.showEmbed() ) embed.spliceFields(1, 0, {
+					if ( embed && msg.showEmbed() ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
 						value: globaledits,
 						inline: true
@@ -87,7 +87,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 						text = splittext.join('\n');
 					}
 				}
-				if ( msg.showEmbed() ) {
+				if ( embed && msg.showEmbed() ) {
 					let avatar = $('.curseprofile .mainavatar img').prop('src');
 					if ( avatar ) {
 						embed.setThumbnail( avatar.replace( /^(?:https?:)?\/\//, 'https://' ).replace( '?d=mm&s=96', '?d=' + encodeURIComponent( embed?.thumbnail?.url || '404' ) ) );
