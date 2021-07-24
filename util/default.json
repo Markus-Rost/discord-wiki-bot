@@ -221,6 +221,12 @@
 			"scriptPath": "/"
 		},
 		{
+			"name": "wikihow.com",
+			"regex": "((?:www\\.)?wikihow\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
 			"name": "librewiki.net",
 			"regex": "(librewiki\\.net)",
 			"articlePath": "/wiki/",
