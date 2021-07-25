@@ -249,7 +249,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			}
 			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
 				logging(wiki, msg.guild?.id, 'inline', 'embed');
-				check_wiki.general(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, new URLSearchParams(), embed.section);
+				check_wiki.general(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, false, new URLSearchParams(), embed.section);
 			} ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
