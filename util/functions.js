@@ -233,7 +233,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				text += '─'.repeat(10) + '\n';
 			}
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
-			if ( tagname === 'ul' ) listlevel++;
+			if ( tagname === 'ul' || tagname === 'ol' ) listlevel++;
 			if ( tagname === 'li' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
@@ -345,7 +345,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';
-			if ( tagname === 'ul' ) listlevel--;
+			if ( tagname === 'ul' || tagname === 'ol' ) listlevel--;
 			if ( tagname === 'dl' ) listlevel--;
 			if ( tagname === 'dt' ) text += '**';
 			if ( tagname === 'h1' ) text += '__***';

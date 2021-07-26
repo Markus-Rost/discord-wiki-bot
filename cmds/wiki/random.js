@@ -17,7 +17,7 @@ const extract_desc = require('../../util/extract_desc.js');
  * @param {String} [fragment] - The section for the link.
  */
 function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace = ['0', '*'], querystring = new URLSearchParams(), fragment = '') {
-	var uselang = ( querystring.get('variant') || querystring.get('uselang') || lang.lang );
+	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
 	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Random&ammessages=randompage|randompage-nopages&amargs=%1F' + namespace[1] + '%1F' + namespace[0].split('|').length + '&siprop=general&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&generator=random&grnfilterredir=nonredirects&grnlimit=1&grnnamespace=' + namespace[0] + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);

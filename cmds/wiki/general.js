@@ -84,8 +84,11 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 		return fn.diff(lang, msg, args, wiki, reaction, spoiler, noEmbed);
 	}
 	var noRedirect = ( querystring.getAll('redirect').pop() === 'no' || ( querystring.has('action') && querystring.getAll('action').pop() !== 'view' ) );
-	var uselang = ( querystring.get('variant') || querystring.get('uselang') || lang.lang );
-	if ( querystring.get('variant') || querystring.get('uselang') ) lang = lang.uselang(querystring.get('variant'), querystring.get('uselang'));
+	var uselang = lang.lang;
+	if ( querystring.has('variant') || querystring.has('uselang') ) {
+		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
+		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
+	}
 	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1F' + encodeURIComponent( ( aliasInvoke === 'search' ? full_title.split(' ').slice(1).join(' ') : title ).replace( /\x1F/g, '\ufffd' ) ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
