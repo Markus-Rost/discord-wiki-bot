@@ -150,7 +150,7 @@ if ( wiki ) {
 			if ( regex ) wikinew = regex[1];
 			else if ( !wiki.validity.valid ) return wiki.reportValidity();
 			else {
-				wikinew = wikinew.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '' ).replace( /\/$/, '' );
+				wikinew = wikinew.replace( /\/(?:index|api|load|rest)\.php(?:|\?.*)$/, '' ).replace( /\/$/, '' );
 			}
 			var readonly = wiki.readOnly;
 			wiki.readOnly = true;

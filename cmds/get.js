@@ -14,7 +14,11 @@ var db = require('../util/database.js');
  */
 async function cmd_get(lang, msg, args, line, wiki) {
 	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
-	if ( /^\d+$/.test(id) ) {
+	if ( !/^\d+$/.test(id) ) {
+		if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+		return;
+	}
+	try {
 		var guild = await msg.client.shard.broadcastEval( `if ( this.guilds.cache.has('${id}') ) {
 			var guild = this.guilds.cache.get('${id}');
 			( {
@@ -140,7 +144,10 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		}
 		
 		msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', {}, true );
-	} else if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+	} catch ( error ) {
+		log_error(error);
+		msg.reactEmoji('error');
+	}
 }
 
 module.exports = {

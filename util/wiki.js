@@ -243,7 +243,7 @@ class Wiki extends URL {
 				regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
 				if ( regex ) return new this('https://' + regex[1] + project.scriptPath);
 			}
-			let wiki = input.replace( /\/(?:api|load|index)\.php(?:|\?.*)$/, '/' );
+			let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|\?.*)$/, '/' );
 			if ( !wiki.endsWith( '/' ) ) wiki += '/';
 			return new this(wiki);
 		}
