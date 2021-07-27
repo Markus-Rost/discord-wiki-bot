@@ -17,6 +17,11 @@ const wikimediaSites = [
 
 const oauthSites = [];
 
+const urlSpaceReplacement = {
+	'https://www.wikihow.com/': '-',
+	'https://wikihow.com/': '-'
+}
+
 /**
  * A wiki.
  * @class Wiki
@@ -46,6 +51,7 @@ class Wiki extends URL {
 		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
 		this.centralauth = ( ( this.isWikimedia() || this.isMiraheze() ) ? 'CentralAuth' : 'local' );
 		this.oauth2 = oauthSites.includes( this.href );
+		this.spaceReplacement = ( urlSpaceReplacement.hasOwnProperty(this.href) ? urlSpaceReplacement[this.href] : '_' );
 	}
 
 	/**
@@ -90,6 +96,7 @@ class Wiki extends URL {
 		this.gamepedia = ( gamepedia === 'true' ? true : this.hostname.endsWith( '.gamepedia.com' ) );
 		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
 		this.oauth2 = oauthSites.includes( this.href );
+		this.spaceReplacement = ( urlSpaceReplacement.hasOwnProperty(this.href) ? urlSpaceReplacement[this.href] : this.spaceReplacement );
 		return this;
 	}
 
@@ -170,7 +177,7 @@ class Wiki extends URL {
 	toLink(title = '', querystring = '', fragment = '', isMarkdown = false) {
 		querystring = new URLSearchParams(querystring);
 		if ( !querystring.toString().length ) title = ( title || this.mainpage );
-		title = title.replace( / /g, this.articleURL.space ).replace( /%/g, '%2525' );
+		title = title.replace( / /g, this.spaceReplacement ).replace( /%/g, '%2525' );
 		let link = new URL(this.articleURL);
 		link.username = '';
 		link.password = '';
@@ -184,7 +191,7 @@ class Wiki extends URL {
 		querystring.forEach( (value, name) => {
 			link.searchParams.append(name, value);
 		} );
-		let output = decodeURI( link ).replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment, true, this.articleURL.space);
+		let output = decodeURI( link ).replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment, true, this.spaceReplacement);
 		if ( isMarkdown ) return output.replace( /\(/g, '%28' ).replace( /\)/g, '%29' );
 		else return output;
 	}
@@ -192,12 +199,12 @@ class Wiki extends URL {
 	/**
 	 * Encode a page title.
 	 * @param {String} [title] - Title of the page.
-	 * @param {String} [space] - The url replacement for spaces.
+	 * @param {String} [spaceReplacement] - The url replacement for spaces.
 	 * @returns {String}
 	 * @static
 	 */
-	static toTitle(title = '', space = '_') {
-		return title.replace( / /g, space ).replace( /[?&%\\]/g, (match) => {
+	static toTitle(title = '', spaceReplacement = '_') {
+		return title.replace( / /g, spaceReplacement ).replace( /[?&%\\]/g, (match) => {
 			return '%' + match.charCodeAt().toString(16).toUpperCase();
 		} ).replace( /@(here|everyone)/g, '%40$1' ).replace( /[()]/g, '\\$&' );
 	};
@@ -206,13 +213,13 @@ class Wiki extends URL {
 	 * Encode a link section.
 	 * @param {String} [fragment] - Fragment of the page.
 	 * @param {Boolean} [simpleEncoding] - Don't fully encode the anchor.
-	 * @param {String} [space] - The url replacement for spaces.
+	 * @param {String} [spaceReplacement] - The url replacement for spaces.
 	 * @returns {String}
 	 * @static
 	 */
-	static toSection(fragment = '', simpleEncoding = true, space = '_') {
+	static toSection(fragment = '', simpleEncoding = true, spaceReplacement = '_') {
 		if ( !fragment ) return '';
-		fragment = fragment.replace( / /g, space );
+		fragment = fragment.replace( / /g, spaceReplacement );
 		if ( simpleEncoding && !/['"`^{}<>|\\]|@(everyone|here)/.test(fragment) ) return '#' + fragment;
 		return '#' + encodeURIComponent( fragment ).replace( /[!'()*~]/g, (match) => {
 			return '%' + match.charCodeAt().toString(16).toUpperCase();
@@ -269,6 +276,7 @@ class Wiki extends URL {
 			hash: this.hash,
 			articlepath: this.articlepath,
 			articleURL: this.articleURL,
+			spaceReplacement: this.spaceReplacement,
 			mainpage: this.mainpage
 		}
 		return 'Wiki ' + util.inspect(wiki, opts);
@@ -283,21 +291,21 @@ class articleURL extends URL {
 	/**
 	 * Creates a new article URL.
 	 * @param {String|URL|Wiki} [articlepath] - The article path.
-	 * @param {String|URL|Wiki} [wiki] - The wiki.
+	 * @param {Wiki} [wiki] - The wiki.
 	 * @constructs articleURL
 	 */
 	constructor(articlepath = '/index.php?title=$1', wiki) {
 		super(articlepath, wiki);
 		this.protocol = 'https';
 		this.mainpage = '';
-		this.space = ( this.hostname === 'www.wikihow.com' ? '-' : '_' );
+		this.spaceReplacement = ( wiki?.spaceReplacement || '_' );
 	}
 
 	[util.inspect.custom](depth, opts) {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
 		if ( typeof depth === 'number' && depth < 2 ) {
 			var link = this.href;
-			var mainpage = link.replace( '$1', ( this.mainpage || 'Main Page' ).replace( / /g, this.space ) );
+			var mainpage = link.replace( '$1', Wiki.toTitle(( this.mainpage || 'Main Page' ), this.spaceReplacement) );
 			return 'articleURL { ' + util.inspect(link, opts) + ' => ' + util.inspect(mainpage, opts) + ' }';
 		}
 		return super[util.inspect.custom](depth, opts);
