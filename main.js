@@ -11,7 +11,7 @@ const got = require('got').extend( {
 	throwHttpErrors: false,
 	timeout: 30000,
 	headers: {
-		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ')'
+		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json'
 } );
