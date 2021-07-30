@@ -1,7 +1,7 @@
 const htmlparser = require('htmlparser2');
 const {MessageEmbed, Util} = require('discord.js');
 const {limit: {discussion: discussionLimit}} = require('../util/default.json');
-const {htmlToDiscord, escapeFormatting} = require('../util/functions.js');
+const {got, htmlToDiscord, escapeFormatting} = require('../util/functions.js');
 
 /**
  * Processes discussion commands.

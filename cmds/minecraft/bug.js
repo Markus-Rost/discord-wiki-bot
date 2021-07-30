@@ -1,5 +1,5 @@
 const {MessageEmbed} = require('discord.js');
-const {escapeFormatting, limitLength} = require('../../util/functions.js');
+const {got, escapeFormatting, limitLength} = require('../../util/functions.js');
 
 /**
  * Sends a Minecraft issue.

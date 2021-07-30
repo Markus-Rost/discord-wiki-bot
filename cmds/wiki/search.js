@@ -1,5 +1,5 @@
 const {MessageEmbed, Util} = require('discord.js');
-const {escapeFormatting} = require('../../util/functions.js');
+const {got, escapeFormatting} = require('../../util/functions.js');
 const {limit: {search: searchLimit}} = require('../../util/default.json');
 
 /**

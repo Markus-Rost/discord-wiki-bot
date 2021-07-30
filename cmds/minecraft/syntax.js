@@ -1,3 +1,4 @@
+const {got} = require('../../util/functions.js');
 const Wiki = require('../../util/wiki.js');
 const commands = require('./commands.json');
 

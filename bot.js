@@ -8,15 +8,6 @@ process.on( 'message', message => {
 	shardId = message.shard.id;
 } );
 
-global.got = require('got').extend( {
-	throwHttpErrors: false,
-	timeout: 5000,
-	headers: {
-		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ')'
-	},
-	responseType: 'json'
-} );
-
 const Lang = require('./util/i18n.js');
 const Wiki = require('./util/wiki.js');
 const newMessage = require('./util/newMessage.js');

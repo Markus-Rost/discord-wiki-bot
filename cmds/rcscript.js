@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const help_setup = require('../functions/helpsetup.js');
 const {limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
+const {got} = require('../util/functions.js');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs(true);
 const Wiki = require('../util/wiki.js');

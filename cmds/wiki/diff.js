@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const logging = require('../../util/logging.js');
 const {timeoptions} = require('../../util/default.json');
-const {htmlToPlain, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
+const {got, htmlToPlain, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
 const diffParser = require('../../util/edit_diff.js');
 
 /**

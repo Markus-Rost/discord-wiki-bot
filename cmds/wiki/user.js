@@ -5,7 +5,7 @@ const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
 const extract_desc = require('../../util/extract_desc.js');
 const {timeoptions, usergroups} = require('../../util/default.json');
-const {toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
+const {got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
 
 /**
  * Processes a Gamepedia user.

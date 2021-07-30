@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const logging = require('../../util/logging.js');
 const {timeoptions} = require('../../util/default.json');
-const {toFormatting, toPlaintext, escapeFormatting} = require('../../util/functions.js');
+const {got, toFormatting, toPlaintext, escapeFormatting} = require('../../util/functions.js');
 
 /**
  * Sends a Gamepedia wiki overview.

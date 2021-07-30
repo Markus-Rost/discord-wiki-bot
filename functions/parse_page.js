@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
 const {toSection} = require('../util/wiki.js');
-const {parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength} = require('../util/functions.js');
+const {got, parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength} = require('../util/functions.js');
 
 const parsedContentModels = [
 	'wikitext',

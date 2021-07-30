@@ -1,7 +1,7 @@
 const {MessageEmbed} = require('discord.js');
 const parse_page = require('../../functions/parse_page.js');
 const logging = require('../../util/logging.js');
-const {toMarkdown, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
+const {got, toMarkdown, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
 const extract_desc = require('../../util/extract_desc.js');
 
 /**

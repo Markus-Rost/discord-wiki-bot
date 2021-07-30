@@ -1,7 +1,7 @@
 const {MessageEmbed, Util} = require('discord.js');
 const logging = require('../util/logging.js');
 const {timeoptions} = require('../util/default.json');
-const {toMarkdown, escapeFormatting} = require('../util/functions.js');
+const {got, toMarkdown, escapeFormatting} = require('../util/functions.js');
 
 const overwrites = {
 	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query) => {

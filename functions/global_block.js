@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const {escapeFormatting} = require('../util/functions.js');
+const {got, escapeFormatting} = require('../util/functions.js');
 
 /**
  * Add global blocks to user messages.

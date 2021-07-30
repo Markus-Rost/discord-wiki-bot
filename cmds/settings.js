@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const {MessageEmbed} = require('discord.js');
 const {defaultSettings} = require('../util/default.json');
+const {got} = require('../util/functions.js');
 const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs();
 const Wiki = require('../util/wiki.js');

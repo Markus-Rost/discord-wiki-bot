@@ -1,6 +1,6 @@
 const logging = require('../util/logging.js');
 const Wiki = require('../util/wiki.js');
-const {limitLength, partialURIdecode, sendMessage} = require('../util/functions.js');
+const {got, limitLength, partialURIdecode, sendMessage} = require('../util/functions.js');
 
 /**
  * Post a message with inline wiki links.

@@ -4,6 +4,7 @@ util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
 const cheerio = require('cheerio');
 const Discord = require('discord.js');
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
+const {got} = require('../util/functions.js');
 const newMessage = require('../util/newMessage.js');
 const Wiki = require('../util/wiki.js');
 var db = require('../util/database.js');

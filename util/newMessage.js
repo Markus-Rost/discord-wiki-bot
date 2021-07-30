@@ -1,6 +1,6 @@
 const {Util} = require('discord.js');
 const logging = require('./logging.js');
-const {partialURIdecode} = require('./functions.js');
+const {got, partialURIdecode} = require('./functions.js');
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const Wiki = require('./wiki.js');
 const check_wiki = {

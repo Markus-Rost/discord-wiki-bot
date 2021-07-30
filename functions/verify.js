@@ -4,7 +4,7 @@ var db = require('../util/database.js');
 const Lang = require('../util/i18n.js');
 const Wiki = require('../util/wiki.js');
 const logging = require('../util/logging.js');
-const {oauthVerify, escapeFormatting} = require('../util/functions.js');
+const {got, oauthVerify, escapeFormatting} = require('../util/functions.js');
 const toTitle = require('../util/wiki.js').toTitle;
 
 /**

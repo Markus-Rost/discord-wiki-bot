@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const help_setup = require('../functions/helpsetup.js');
+const {got} = require('../util/functions.js');
 const logging = require('../util/logging.js');
 
 const wsStatus = [
