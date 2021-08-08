@@ -209,6 +209,35 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					if ( reaction ) reaction.removeEmoji();
 					return;
 				}
+				if ( querypage.ns === 12 && wiki.isFandom() ) {
+					return got.head( wiki.articleURL.href.replace( '$1', encodeURIComponent( querypage.title ) ), {
+						followRedirect: false
+					} ).then( hresponse => {
+						if ( hresponse.statusCode === 301 && /^https:\/\/[a-z\d-]{1,50}\.fandom\.com\/(?:(?!wiki\/)[a-z-]{2,12}\/)?wiki\/Help:/.test( hresponse.headers?.location ) ) {
+							var location = hresponse.headers.location.split('wiki/');
+							var maxselfcall = interwikiLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
+							if ( selfcall < maxselfcall ) {
+								selfcall++;
+								return this.general(lang, msg, location.slice(1).join('wiki/'), new Wiki(location[0]), cmd, reaction, spoiler, noEmbed, querystring, fragment, '', selfcall);
+							}
+							msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + hresponse.headers.location + ( noEmbed ? '>' : ' ' ) + spoiler ).then( message => {
+								if ( message && selfcall === maxselfcall ) message.reactEmoji('⚠️');
+							} );
+							if ( reaction ) reaction.removeEmoji();
+							return;
+						}
+						if ( srbody.query ) return srbody;
+						msg.reactEmoji('🤷');
+						
+						if ( reaction ) reaction.removeEmoji();
+					}, error => {
+						console.log( '- Error while checking the help redirect: ' + error );
+						if ( srbody.query ) return srbody;
+						msg.reactEmoji('🤷');
+						
+						if ( reaction ) reaction.removeEmoji();
+					} );
+				}
 				if ( !srbody.query ) {
 					return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrwhat=text&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( tsrresponse => {
 						var tsrbody = tsrresponse.body;
