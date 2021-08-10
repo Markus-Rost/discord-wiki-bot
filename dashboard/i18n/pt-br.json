@@ -102,6 +102,26 @@
             "text": "As restrições para o comando $1 não podem ser alteradas sem que as verificações sejam configuradas.",
             "title": "As verificações não foram configuradas!"
         },
+        "oauth": {
+            "text": "Sua conta wiki foi conectada com sucesso ao Wiki-Bot.",
+            "title": "Conta conectada com sucesso!"
+        },
+        "oauthfail": {
+            "text": "Não foi possível conectar sua conta wiki, tente novamente.",
+            "title": "A conexão falhou!"
+        },
+        "oauthlogin": {
+            "text": "Por favor, entre se você não quiser que o Wiki-Bot se lembre da sua conta wiki.",
+            "title": "Sua conta wiki conectada foi salva!"
+        },
+        "oauthother": {
+            "text": "Por favor, note que sua conta wiki foi conectada a uma conta Discord diferente daquela com a qual você está atualmente entrado.",
+            "title": "Conta conectada com sucesso!"
+        },
+        "oauthverify": {
+            "text": "Sua conta wiki foi verificada com sucesso.",
+            "title": "Conta verificada com sucesso!"
+        },
         "readonly": {
             "text": "No momento, você só pode ver suas configurações, mas não pode alterá-las.",
             "title": "Banco de dados somente leitura!"
@@ -144,6 +164,20 @@
             "title": "A wiki está bloqueada!"
         }
     },
+    "oauth": {
+        "desc": "Estas são suas configurações OAuth2 para conectar contas wiki:",
+        "failed": "Falha ao carregar as configurações do OAuth2!",
+        "form": {
+            "connect": "Conectar conta.",
+            "connected": "Conectado",
+            "current": "Status atual:",
+            "default": "Conexões de conta Wiki",
+            "disable": "Não se lembra da minha conta!",
+            "disabled": "Desativado",
+            "enable": "Lembre-se de minha conta.",
+            "unconnected": "Desconectado"
+        }
+    },
     "rcscript": {
         "desc": "Estes são os webhooks de mudanças recentes para $1:",
         "explanation": "<h2>Webhook de mudanças recentes</h2>\n<p>O Wiki-Bot é capaz de executar um webhook de mudanças recentes baseado no <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links embutidos ou mensagens incorporadas com etiquetas de edição e mudanças de categoria.</p>\n<p>Requisitos para adicionar um webhook de mudanças recentes:</p>\n<ul>\n<li>A wiki precisa estar no <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> ou superior.</li>\n<li>A mensagem de sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> precisa ser definida com o ID do servidor do Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
@@ -175,6 +209,7 @@
         "none": "No momento, você não tem a permissão de [gerenciar servidor]($1) em nenhum servidor. Você está conectado à conta correta?",
         "switch": "Trocar conta",
         "title": "Seletor de servidor",
+        "user": "Contas Wiki",
         "with": "Servidores com Wiki-Bot",
         "without": "Servidores sem Wiki-Bot"
     },
