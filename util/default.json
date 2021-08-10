@@ -221,6 +221,84 @@
 			"scriptPath": "/"
 		},
 		{
+			"name": "mariowiki.com",
+			"regex": "((?:www\\.)?mariowiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "mariowiki.net",
+			"regex": "((?:www\\.)?mariowiki\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "mariowiki.it",
+			"regex": "((?:www\\.)?mariowiki\\.it)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "ssbwiki.com",
+			"regex": "((?:(?:es|www)\\.)?ssbwiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "nookipedia.com",
+			"regex": "((?:www\\.)?nookipedia\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "bulbapedia.bulbagarden.net",
+			"regex": "(bulbapedia\\.bulbagarden\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "pokewiki.de",
+			"regex": "((?:www\\.)?pokewiki\\.de)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wikidex.net",
+			"regex": "((?:www\\.)?wikidex\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "pokepedia.fr",
+			"regex": "((?:www\\.)?pokepedia\\.fr)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wiki.pokemoncentral.it",
+			"regex": "(wiki\\.pokemoncentral\\.it)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wiki.xn--rckteqa2e.com",
+			"regex": "(wiki\\.xn--rckteqa2e\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wiki.ポケモン.com",
+			"regex": "(wiki\\.ポケモン\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wiki.52poke.com",
+			"regex": "(wiki\\.52poke\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "wikihow.com",
 			"regex": "((?:www\\.)?wikihow\\.com)",
 			"articlePath": "/",

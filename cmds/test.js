@@ -46,11 +46,8 @@ function cmd_test(lang, msg, args, line, wiki) {
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
-				if ( body?.query?.general ) {
-					wiki.updateWiki(body.query.general);
-					embed.addField( wiki.toLink(), ping );
-				}
-				else embed.addField( wiki, ping );
+				if ( body?.query?.general ) wiki.updateWiki(body.query.general);
+				embed.addField( wiki.toLink(), ping );
 				var notice = [];
 				if ( response.statusCode !== 200 || !body?.query?.general ) {
 					if ( wiki.noWiki(response.url, response.statusCode) ) {
@@ -82,7 +79,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 					console.log( '- Error while reaching the wiki: ' + error );
 					ping += ' <:error:505887261200613376>';
 				}
-				embed.addField( wiki, ping );
+				embed.addField( wiki.toLink(), ping );
 			} ).finally( () => {
 				if ( msg.isOwner() ) return msg.client.shard.fetchClientValues('ws.status').then( values => {
 					return '```less\n' + values.map( (status, id) => '[' + id + ']: ' + ( wsStatus[status] || status ) ).join('\n') + '\n```';

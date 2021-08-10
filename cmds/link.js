@@ -16,11 +16,11 @@ const phabricator = require('../functions/phabricator.js');
 function cmd_link(lang, msg, title, wiki, cmd = '') {
 	if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 	if ( /^\|\|(?:(?!\|\|).)+\|\|$/.test(title) ) {
-		title = title.substring( 2, title.length - 2);
+		title = title.substring(2, title.length - 2);
 		var spoiler = '||';
 	}
 	if ( /^<[^<>]+>$/.test(title) ) {
-		title = title.substring( 1, title.length - 1);
+		title = title.substring(1, title.length - 1);
 		var noEmbed = true;
 	}
 	msg.reactEmoji('⏳').then( reaction => {
