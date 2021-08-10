@@ -1,7 +1,7 @@
 const {randomBytes} = require('crypto');
 var db = require('../util/database.js');
 var verify = require('../functions/verify.js');
-const {oauthVerify, sendMessage} = require('../util/functions.js');
+const {got, oauthVerify, sendMessage} = require('../util/functions.js');
 
 /**
  * Wiki user verification.
@@ -57,45 +57,97 @@ function slash_verify(interaction, lang, wiki, channel) {
 			if ( wiki.isWikimedia() ) oauth.push('wikimedia');
 			if ( wiki.isMiraheze() ) oauth.push('miraheze');
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
-				let state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
-				while ( oauthVerify.has(state) ) {
-					state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
-				}
-				oauthVerify.set(state, {
-					state, wiki: wiki.href, channel,
-					user: interaction.user.id,
-					token: interaction.token
-				});
-				interaction.client.shard.send({id: 'verifyUser', state});
-				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
-					response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-					client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )], state
-				}).toString();
-				return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
-					data: {
-						type: 4,
-						data: {
-							content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
-							allowed_mentions,
-							components: [
-								{
-									type: 1,
-									components: [
-										{
-											type: 2,
-											style: 5,
-											label: lang.get('verify.oauth_button'),
-											emoji: {id: null, name: '🔗'},
-											url: oauthURL,
-											disabled: false
-										}
-									]
-								}
-							],
-							flags: 64
+				return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
+					if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
+						form: {
+							grant_type: 'refresh_token', refresh_token: row.token,
+							redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+							client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )],
+							client_secret: process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret']
 						}
+					} ).then( response => {
+						var body = response.body;
+						if ( response.statusCode !== 200 || !body?.access_token ) {
+							console.log( '- ' + response.statusCode + ': Error while refreshing the mediawiki token: ' + ( body?.message || body?.error ) );
+							return Promise.reject(row);
+						}
+						if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, interaction.user.id, ( oauth[1] || oauth[0] )] ).then( () => {
+							console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully updated.' );
+						}, dberror => {
+							console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+						} );
+						return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+							data: {
+								type: 5,
+								data: {
+									allowed_mentions,
+									flags: ( (rows[0].flags & 1 << 0) === 1 << 0 ? 64 : 0 )
+								}
+							}
+						} ).then( () => {
+							return global.verifyOauthUser('', body.access_token, {
+								wiki: wiki.href, channel,
+								user: interaction.user.id,
+								token: interaction.token
+							});
+						}, log_error );
+					}, error => {
+						console.log( '- Error while refreshing the mediawiki token: ' + error );
+						return Promise.reject(row);
+					} );
+					return Promise.reject(row);
+				}, dberror => {
+					console.log( '- Error while getting the OAuth2 token: ' + dberror );
+					return Promise.reject();
+				} ).catch( row => {
+					if ( row ) {
+						if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
+						else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( () => {
+							console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully deleted.' );
+						}, dberror => {
+							console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+						} );
 					}
-				} ).catch(log_error);
+					let state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
+					while ( oauthVerify.has(state) ) {
+						state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
+					}
+					oauthVerify.set(state, {
+						state, wiki: wiki.href, channel,
+						user: interaction.user.id,
+						token: interaction.token
+					});
+					interaction.client.shard.send({id: 'verifyUser', state, user: ( row?.token === null ? '' : interaction.user.id )});
+					let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+						response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+						client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )], state
+					}).toString();
+					return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+						data: {
+							type: 4,
+							data: {
+								content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
+								allowed_mentions,
+								components: [
+									{
+										type: 1,
+										components: [
+											{
+												type: 2,
+												style: 5,
+												label: lang.get('verify.oauth_button'),
+												emoji: {id: null, name: '🔗'},
+												url: oauthURL,
+												disabled: false
+											}
+										]
+									}
+								],
+								flags: 64
+							}
+						}
+					} ).catch(log_error);
+				} );
 			}
 		}
 		
@@ -139,46 +191,88 @@ function slash_verify(interaction, lang, wiki, channel) {
 			return channel.guild.members.fetch(interaction.user.id).then( member => {
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
 					if ( result.oauth.length ) {
-						let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
-						while ( oauthVerify.has(state) ) {
-							state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
-						}
-						oauthVerify.set(state, {
-							state, wiki: wiki.href, channel,
-							user: interaction.user.id,
-							token: interaction.token
-						});
-						interaction.client.shard.send({id: 'verifyUser', state});
-						let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
-							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-							client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
-						}).toString();
-						let message = {
-							content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
-							allowed_mentions,
-							components: [
-								{
-									type: 1,
-									components: [
-										{
-											type: 2,
-											style: 5,
-											label: lang.get('verify.oauth_button'),
-											emoji: {id: null, name: '🔗'},
-											url: oauthURL,
-											disabled: false
-										}
-									]
+						return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
+							if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
+								form: {
+									grant_type: 'refresh_token', refresh_token: row.token,
+									redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+									client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )],
+									client_secret: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] ) + '_secret']
 								}
-							]
-						}
-						if ( result.send_private ) return sendMessage(interaction, message, channel, false);
-						message.flags = 64;
-						return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').delete().then( () => {
-							return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
-								data: message
-							} ).catch(log_error);
-						}, log_error );
+							} ).then( response => {
+								var body = response.body;
+								if ( response.statusCode !== 200 || !body?.access_token ) {
+									console.log( '- ' + response.statusCode + ': Error while refreshing the mediawiki token: ' + ( body?.message || body?.error ) );
+									return Promise.reject(row);
+								}
+								if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
+									console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully updated.' );
+								}, dberror => {
+									console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								} );
+								return global.verifyOauthUser('', body.access_token, {
+									wiki: wiki.href, channel,
+									user: interaction.user.id,
+									token: interaction.token
+								});
+							}, error => {
+								console.log( '- Error while refreshing the mediawiki token: ' + error );
+								return Promise.reject(row);
+							} );
+							return Promise.reject(row);
+						}, dberror => {
+							console.log( '- Error while getting the OAuth2 token: ' + dberror );
+							return Promise.reject();
+						} ).catch( row => {
+							if ( row ) {
+								if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
+								else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
+									console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully deleted.' );
+								}, dberror => {
+									console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								} );
+							}
+							let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
+							while ( oauthVerify.has(state) ) {
+								state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
+							}
+							oauthVerify.set(state, {
+								state, wiki: wiki.href, channel,
+								user: interaction.user.id,
+								token: interaction.token
+							});
+							interaction.client.shard.send({id: 'verifyUser', state, user: ( row?.token === null ? '' : interaction.user.id )});
+							let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+								response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+								client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
+							}).toString();
+							let message = {
+								content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
+								allowed_mentions,
+								components: [
+									{
+										type: 1,
+										components: [
+											{
+												type: 2,
+												style: 5,
+												label: lang.get('verify.oauth_button'),
+												emoji: {id: null, name: '🔗'},
+												url: oauthURL,
+												disabled: false
+											}
+										]
+									}
+								]
+							}
+							if ( result.send_private ) return sendMessage(interaction, message, channel, false);
+							message.flags = 64;
+							return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').delete().then( () => {
+								return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+									data: message
+								} ).catch(log_error);
+							}, log_error );
+						} );
 					}
 					var message = {
 						content: reply + result.content,
@@ -335,49 +429,98 @@ function slash_verify(interaction, lang, wiki, channel) {
 			if ( wiki.isMiraheze() ) oauth.push('miraheze');
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				console.log( interaction.guild_id + ': Button: ' + interaction.data.custom_id + ': OAuth2' );
-				let state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
-				while ( oauthVerify.has(state) ) {
-					state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
-				}
-				oauthVerify.set(state, {
-					state, wiki: wiki.href, channel,
-					user: interaction.user.id,
-					token: interaction.token
-				});
-				interaction.client.shard.send({id: 'verifyUser', state});
-				let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
-					response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-					client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )], state
-				}).toString();
-				interaction.message.components = [];
-				interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
-					data: {
-						type: 7,
-						data: interaction.message
-					}
-				} ).catch(log_error);
-				return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
-					data: {
-						content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
-						allowed_mentions,
-						components: [
-							{
-								type: 1,
-								components: [
-									{
-										type: 2,
-										style: 5,
-										label: lang.get('verify.oauth_button'),
-										emoji: {id: null, name: '🔗'},
-										url: oauthURL,
-										disabled: false
-									}
-								]
+				return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
+					if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
+						form: {
+							grant_type: 'refresh_token', refresh_token: row.token,
+							redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+							client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )],
+							client_secret: process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret']
+						}
+					} ).then( response => {
+						var body = response.body;
+						if ( response.statusCode !== 200 || !body?.access_token ) {
+							console.log( '- ' + response.statusCode + ': Error while refreshing the mediawiki token: ' + ( body?.message || body?.error ) );
+							return Promise.reject(row);
+						}
+						if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, interaction.user.id, ( oauth[1] || oauth[0] )] ).then( () => {
+							console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully updated.' );
+						}, dberror => {
+							console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+						} );
+						return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+							data: {
+								type: 7,
+								data: interaction.message
 							}
-						],
-						flags: 64
+						} ).then( () => {
+							return global.verifyOauthUser('', body.access_token, {
+								wiki: wiki.href, channel,
+								user: interaction.user.id,
+								token: interaction.token
+							});
+						}, log_error );
+					}, error => {
+						console.log( '- Error while refreshing the mediawiki token: ' + error );
+						return Promise.reject(row);
+					} );
+					return Promise.reject(row);
+				}, dberror => {
+					console.log( '- Error while getting the OAuth2 token: ' + dberror );
+					return Promise.reject();
+				} ).catch( row => {
+					if ( row ) {
+						if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
+						else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( () => {
+							console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully deleted.' );
+						}, dberror => {
+							console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+						} );
 					}
-				} ).catch(log_error);
+					let state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
+					while ( oauthVerify.has(state) ) {
+						state = `${oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
+					}
+					oauthVerify.set(state, {
+						state, wiki: wiki.href, channel,
+						user: interaction.user.id,
+						token: interaction.token
+					});
+					interaction.client.shard.send({id: 'verifyUser', state, user: ( row?.token === null ? '' : interaction.user.id )});
+					let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+						response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+						client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )], state
+					}).toString();
+					interaction.message.components = [];
+					interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+						data: {
+							type: 7,
+							data: interaction.message
+						}
+					} ).catch(log_error);
+					return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+						data: {
+							content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
+							allowed_mentions,
+							components: [
+								{
+									type: 1,
+									components: [
+										{
+											type: 2,
+											style: 5,
+											label: lang.get('verify.oauth_button'),
+											emoji: {id: null, name: '🔗'},
+											url: oauthURL,
+											disabled: false
+										}
+									]
+								}
+							],
+							flags: 64
+						}
+					} ).catch(log_error);
+				} );
 			}
 		}
 
@@ -392,49 +535,91 @@ function slash_verify(interaction, lang, wiki, channel) {
 				console.log( interaction.guild_id + ': Button: ' + interaction.data.custom_id + ' ' + username );
 				return verify(lang, channel, member, username, wiki, rows).then( result => {
 					if ( result.oauth.length ) {
-						let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
-						while ( oauthVerify.has(state) ) {
-							state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
-						}
-						oauthVerify.set(state, {
-							state, wiki: wiki.href, channel,
-							user: interaction.user.id,
-							token: interaction.token
-						});
-						interaction.client.shard.send({id: 'verifyUser', state});
-						let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
-							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-							client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
-						}).toString();
-						interaction.message.components = [];
-						interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
-							data: {
-								type: 7,
-								data: interaction.message
+						return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
+							if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
+								form: {
+									grant_type: 'refresh_token', refresh_token: row.token,
+									redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+									client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )],
+									client_secret: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] ) + '_secret']
+								}
+							} ).then( response => {
+								var body = response.body;
+								if ( response.statusCode !== 200 || !body?.access_token ) {
+									console.log( '- ' + response.statusCode + ': Error while refreshing the mediawiki token: ' + ( body?.message || body?.error ) );
+									return Promise.reject(row);
+								}
+								if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
+									console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully updated.' );
+								}, dberror => {
+									console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								} );
+								return global.verifyOauthUser('', body.access_token, {
+									wiki: wiki.href, channel,
+									user: interaction.user.id,
+									token: interaction.token
+								});
+							}, error => {
+								console.log( '- Error while refreshing the mediawiki token: ' + error );
+								return Promise.reject(row);
+							} );
+							return Promise.reject(row);
+						}, dberror => {
+							console.log( '- Error while getting the OAuth2 token: ' + dberror );
+							return Promise.reject();
+						} ).catch( row => {
+							if ( row ) {
+								if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
+								else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
+									console.log( '- Dashboard: OAuth2 token for ' + interaction.user.id + ' successfully deleted.' );
+								}, dberror => {
+									console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								} );
 							}
-						} ).catch(log_error);
-						return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
-							data: {
-								content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
-								allowed_mentions,
-								components: [
-									{
-										type: 1,
-										components: [
-											{
-												type: 2,
-												style: 5,
-												label: lang.get('verify.oauth_button'),
-												emoji: {id: null, name: '🔗'},
-												url: oauthURL,
-												disabled: false
-											}
-										]
-									}
-								],
-								flags: 64
+							let state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
+							while ( oauthVerify.has(state) ) {
+								state = `${result.oauth[0]} ${global.shardId}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
 							}
-						} ).catch(log_error);
+							oauthVerify.set(state, {
+								state, wiki: wiki.href, channel,
+								user: interaction.user.id,
+								token: interaction.token
+							});
+							interaction.client.shard.send({id: 'verifyUser', state, user: ( row?.token === null ? '' : interaction.user.id )});
+							let oauthURL = wiki + 'rest.php/oauth2/authorize?' + new URLSearchParams({
+								response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
+								client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
+							}).toString();
+							interaction.message.components = [];
+							interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
+								data: {
+									type: 7,
+									data: interaction.message
+								}
+							} ).catch(log_error);
+							return interaction.client.api.webhooks(interaction.application_id, interaction.token).post( {
+								data: {
+									content: reply + lang.get('verify.oauth_message', '<' + oauthURL + '>'),
+									allowed_mentions,
+									components: [
+										{
+											type: 1,
+											components: [
+												{
+													type: 2,
+													style: 5,
+													label: lang.get('verify.oauth_button'),
+													emoji: {id: null, name: '🔗'},
+													url: oauthURL,
+													disabled: false
+												}
+											]
+										}
+									],
+									flags: 64
+								}
+							} ).catch(log_error);
+						} );
 					}
 					var message = {
 						content: reply + result.content,

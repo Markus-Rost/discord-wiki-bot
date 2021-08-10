@@ -4,7 +4,7 @@ var db = require('../util/database.js');
 const Lang = require('../util/i18n.js');
 const Wiki = require('../util/wiki.js');
 const logging = require('../util/logging.js');
-const {got, oauthVerify, escapeFormatting} = require('../util/functions.js');
+const {got, oauthVerify, allowDelete, escapeFormatting} = require('../util/functions.js');
 const toTitle = require('../util/wiki.js').toTitle;
 
 /**
@@ -592,10 +592,12 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
  * @param {String} access_token - Access token.
  * @param {Object} [settings] - Settings to skip oauth.
  * @param {import('discord.js').TextChannel} settings.channel - The channel.
- * @param {String} settings.username - The username.
  * @param {String} settings.user - The user id.
+ * @param {String} [settings.wiki] - The OAuth2 wiki.
+ * @param {String} [settings.username] - The username.
  * @param {String} [settings.token] - The webhook token.
- * @param {Function} settings.send - The function to edit the message.
+ * @param {Function} [settings.send] - The function to edit the message.
+ * @param {import('discord.js').Message} [settings.sourceMessage] - The source message with the command.
  */
 global.verifyOauthUser = function(state, access_token, settings) {
 	if ( state && access_token && oauthVerify.has(state) ) {
@@ -896,14 +898,20 @@ global.verifyOauthUser = function(state, access_token, settings) {
 				}).catch(log_error);
 			}, log_error );
 
+			/**
+			 * Send the message responding to the OAuth2 verification.
+			 * @param {String} content - The message content.
+			 * @param {import('discord.js').MessageOptions} options - The message options.
+			 * @returns {Promise<import('discord.js').Message?>}
+			 */
 			function sendMessage(content, options) {
-				var msg;
+				var msg = Promise.resolve();
 				if ( settings.send ) msg = settings.send(member.toString() + ', ' + content, options);
 				else if ( settings.token ) {
 					msg = channel.client.api.webhooks(channel.client.user.id, settings.token).post( {
 						data: {
 							content: member.toString() + ', ' + content,
-							allowed_mentions: options.allowed_mentions,
+							allowed_mentions: options.allowedMentions,
 							embeds: ( options.embed ? [options.embed] : [] ),
 							components: ( options.components || [] ),
 							flags: ( (verifynotice.flags & 1 << 0) === 1 << 0 ? 64 : 0 )
@@ -922,14 +930,18 @@ global.verifyOauthUser = function(state, access_token, settings) {
 							} );
 							member.send(channel.toString() + '; ' + content, Object.assign({}, options, {embed: dmEmbed})).then( message => {
 								allowDelete(message, member.id);
+								if ( settings.sourceMessage ) {
+									settings.sourceMessage.reactEmoji('📩');
+									settings.sourceMessage.delete({timeout: 60000, reason: lang.get('verify.footer')}).catch(log_error);
+								}
 							}, error => {
 								if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
-									return channel.send(member.toString() + ', ' + content, options);
+									return channel.send(member.toString() + ', ' + content, options).catch(log_error);
 								}
 								log_error(error);
 							} );
 						}
-						else return channel.send(member.toString() + ', ' + content, options);
+						else return channel.send(member.toString() + ', ' + content, options).catch(log_error);
 					} );
 				}
 				else if ( (verifynotice.flags & 1 << 0) === 1 << 0 ) {
@@ -942,14 +954,18 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					} );
 					member.send(channel.toString() + '; ' + content, Object.assign({}, options, {embed: dmEmbed})).then( message => {
 						allowDelete(message, member.id);
+						if ( settings.sourceMessage ) {
+							settings.sourceMessage.reactEmoji('📩');
+							settings.sourceMessage.delete({timeout: 60000, reason: lang.get('verify.footer')}).catch(log_error);
+						}
 					}, error => {
 						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
-							return channel.send(member.toString() + ', ' + content, options);
+							return channel.send(member.toString() + ', ' + content, options).catch(log_error);
 						}
 						log_error(error);
 					} );
 				}
-				else msg = channel.send(member.toString() + ', ' + content, options);
+				else msg = channel.send(member.toString() + ', ' + content, options).catch(log_error);
 				return msg;
 			}
 		}, error => {

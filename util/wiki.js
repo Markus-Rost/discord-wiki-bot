@@ -15,8 +15,6 @@ const wikimediaSites = [
 	'wikivoyage.org'
 ];
 
-const oauthSites = [];
-
 const urlSpaceReplacement = {
 	'https://www.wikihow.com/': '-',
 	'https://wikihow.com/': '-'
@@ -36,7 +34,7 @@ class Wiki extends URL {
 	constructor(wiki = defaultSettings.wiki, base = defaultSettings.wiki) {
 		super(wiki, base);
 		this.protocol = 'https';
-		let articlepath = '/index.php?title=$1';
+		let articlepath = this.pathname + 'index.php?title=$1';
 		if ( this.isFandom() ) articlepath = this.pathname + 'wiki/$1';
 		this.gamepedia = this.hostname.endsWith( '.gamepedia.com' );
 		if ( this.isGamepedia() ) articlepath = '/$1';
@@ -50,7 +48,7 @@ class Wiki extends URL {
 		this.miraheze = this.hostname.endsWith( '.miraheze.org' );
 		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
 		this.centralauth = ( ( this.isWikimedia() || this.isMiraheze() ) ? 'CentralAuth' : 'local' );
-		this.oauth2 = oauthSites.includes( this.href );
+		this.oauth2 = Wiki.oauthSites.includes( this.href );
 		this.spaceReplacement = ( urlSpaceReplacement.hasOwnProperty(this.href) ? urlSpaceReplacement[this.href] : '_' );
 	}
 
@@ -95,7 +93,7 @@ class Wiki extends URL {
 		this.miraheze = /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo);
 		this.gamepedia = ( gamepedia === 'true' ? true : this.hostname.endsWith( '.gamepedia.com' ) );
 		this.wikimedia = wikimediaSites.includes( this.hostname.split('.').slice(-2).join('.') );
-		this.oauth2 = oauthSites.includes( this.href );
+		this.oauth2 = Wiki.oauthSites.includes( this.href );
 		this.spaceReplacement = ( urlSpaceReplacement.hasOwnProperty(this.href) ? urlSpaceReplacement[this.href] : this.spaceReplacement );
 		return this;
 	}
@@ -179,8 +177,6 @@ class Wiki extends URL {
 		if ( !querystring.toString().length ) title = ( title || this.mainpage );
 		title = title.replace( / /g, this.spaceReplacement ).replace( /%/g, '%2525' );
 		let link = new URL(this.articleURL);
-		link.username = '';
-		link.password = '';
 		link.pathname = link.pathname.replace( '$1', title.replace( /\\/g, '%5C' ) );
 		link.searchParams.forEach( (value, name, searchParams) => {
 			if ( value.includes( '$1' ) ) {
@@ -259,6 +255,9 @@ class Wiki extends URL {
 		return null;
 	}
 
+	/** @type {String[]} - Sites that support verification using OAuth2. */
+	static oauthSites = [];
+
 	[util.inspect.custom](depth, opts) {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
 		const wiki = {
@@ -297,6 +296,8 @@ class articleURL extends URL {
 	constructor(articlepath = '/index.php?title=$1', wiki) {
 		super(articlepath, wiki);
 		this.protocol = 'https';
+		this.username = '';
+		this.password = '';
 		this.mainpage = '';
 		this.spaceReplacement = ( wiki?.spaceReplacement || '_' );
 	}

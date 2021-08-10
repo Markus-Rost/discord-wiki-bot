@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Wiki = require('../util/wiki.js');
 const allLangs = require('./i18n.js').allLangs().names;
-const {got, oauth, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
+const {got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
 
 const file = require('fs').readFileSync('./dashboard/login.html');
 
@@ -44,9 +44,11 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	let prompt = 'none';
 	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);
 	if ( action ) createNotice($, action, dashboardLang);
-	if ( action === 'unauthorized' ) $('head').append(
-		$('<script>').text('history.replaceState(null, null, "/login");')
-	);
+	if ( action === 'unauthorized' ) $('<script>').text('history.replaceState(null, null, "/login");').appendTo('head');
+	else if ( action.startsWith( 'oauth' ) ) {
+		if ( action === 'oauth' ) createNotice($, 'oauthlogin', dashboardLang);
+		$('<script>').text('history.replaceState(null, null, "/user");').appendTo('head');
+	}
 	if ( action === 'logout' ) prompt = 'consent';
 	if ( action === 'loginfail' ) responseCode = 400;
 	state = Date.now().toString(16) + randomBytes(16).toString('hex');
@@ -155,8 +157,13 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				if ( searchParams.has('guild_id') && !lastGuild.startsWith( searchParams.get('guild_id') + '/' ) ) {
 					lastGuild = searchParams.get('guild_id') + '/settings';
 				}
+				let returnLocation = '/';
+				if ( lastGuild ) {
+					if ( lastGuild === 'user' ) returnLocation += lastGuild;
+					else if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
+				}
 				res.writeHead(302, {
-					Location: ( lastGuild && /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(lastGuild) ? `/guild/${lastGuild}` : '/' ),
+					Location: returnLocation,
 					'Set-Cookie': [`wikibot="${userSession.state}"; HttpOnly; SameSite=Lax; Path=/; Max-Age=31536000`]
 				});
 				return res.end();
@@ -318,44 +325,75 @@ function dashboard_api(res, input) {
  * Load oauth data of a wiki user
  * @param {import('http').ServerResponse} res - The server response
  * @param {URLSearchParams} searchParams - The url parameters
+ * @param {String} [user_id] - The current user
  */
-function mediawiki_oauth(res, searchParams) {
-	if ( !searchParams.get('code') || !oauthVerify.has(searchParams.get('state')) ) {
-		res.writeHead(302, {Location: '/login?action=failed'});
+function mediawiki_oauth(res, searchParams, user_id) {
+	if ( !searchParams.get('code') || !searchParams.get('state') ) {
+		res.writeHead(302, {Location: '/user?oauth=failed'});
 		return res.end();
 	}
 	var state = searchParams.get('state');
 	var site = state.split(' ');
-	got.post( 'https://' + site[0] + '/rest.php/oauth2/access_token', {
+	var oauthSite = enabledOAuth2.find( oauthSite => ( site[2] || site[0] ) === oauthSite.id );
+	if ( !oauthSite || ( !oauthVerify.has(state) && !user_id ) ) {
+		res.writeHead(302, {Location: '/user?oauth=failed'});
+		return res.end();
+	}
+	var url = oauthSite.url;
+	if ( oauthVerify.has(state) && site[2] === oauthSite.id ) url = 'https://' + site[0] + '/';
+	got.post( url + 'rest.php/oauth2/access_token', {
 		form: {
 			grant_type: 'authorization_code',
 			code: searchParams.get('code'),
 			redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
-			client_id: process.env['oauth_' + ( site[2] || site[0] )],
-			client_secret: process.env['oauth_' + ( site[2] || site[0] ) + '_secret']
+			client_id: process.env['oauth_' + oauthSite.id],
+			client_secret: process.env['oauth_' + oauthSite.id + '_secret']
 		}
 	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.access_token ) {
 			console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the mediawiki token: ' + ( body?.message || body?.error ) );
-			res.writeHead(302, {Location: '/login?action=failed'});
+			res.writeHead(302, {Location: '/user?oauth=failed'});
 			return res.end();
+		}
+		if ( !oauthVerify.has(state) ) {
+			if ( !body?.refresh_token || !user_id ) {
+				res.writeHead(302, {Location: '/user?oauth=failed'});
+				return res.end();
+			}
+			return db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES($1, $2, $3)', [user_id, oauthSite.id, body.refresh_token] ).then( () => {
+				console.log( '- Dashboard: OAuth2 token for ' + user_id + ' successfully saved.' );
+				res.writeHead(302, {Location: '/user?oauth=success'});
+				return res.end();
+			}, dberror => {
+				console.log( '- Dashboard: Error while saving the OAuth2 token for ' + user_id + ': ' + dberror );
+				res.writeHead(302, {Location: '/user?oauth=failed'});
+				return res.end();
+			} );
 		}
 		sendMsg( {
 			type: 'verifyUser', state,
 			access_token: body.access_token
 		} ).then( () => {
+			let userid = oauthVerify.get(state);
+			if ( userid && body?.refresh_token ) db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES($1, $2, $3)', [userid, oauthSite.id, body.refresh_token] ).then( () => {
+				console.log( '- Dashboard: OAuth2 token for ' + userid + ' successfully saved.' );
+			}, dberror => {
+				console.log( '- Dashboard: Error while saving the OAuth2 token for ' + userid + ': ' + dberror );
+			} );
 			oauthVerify.delete(state);
-			res.writeHead(302, {Location: 'https://' + site[0] + '/index.php?title=Special:MyPage'});
+			if ( !userid ) res.writeHead(302, {Location: '/user?oauth=verified'});
+			else if ( user_id && userid !== user_id ) res.writeHead(302, {Location: '/user?oauth=other'});
+			else res.writeHead(302, {Location: '/user?oauth=success'});
 			return res.end();
 		}, error => {
 			console.log( '- Dashboard: Error while sending the mediawiki token: ' + error );
-			res.writeHead(302, {Location: '/login?action=failed'});
+			res.writeHead(302, {Location: '/user?oauth=failed'});
 			return res.end();
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while getting the mediawiki token: ' + error );
-		res.writeHead(302, {Location: '/login?action=failed'});
+		res.writeHead(302, {Location: '/user?oauth=failed'});
 		return res.end();
 	} );
 }

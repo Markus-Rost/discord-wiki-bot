@@ -2,9 +2,10 @@ const cheerio = require('cheerio');
 const {defaultPermissions} = require('../util/default.json');
 const Lang = require('./i18n.js');
 const allLangs = Lang.allLangs().names;
-const {oauth, settingsData, addWidgets, createNotice} = require('./util.js');
+const {oauth, enabledOAuth2, settingsData, addWidgets, createNotice} = require('./util.js');
 
 const forms = {
+	user: require('./user.js').get,
 	settings: require('./settings.js').get,
 	verification: require('./verification.js').get,
 	rcscript: require('./rcscript.js').get,
@@ -24,7 +25,7 @@ const file = require('fs').readFileSync('./dashboard/index.html');
  * @param {String[]} [actionArgs] - The arguments for the action
  */
 function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
-	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)?)?)(?:\/.*)?$/, '$1' );
+	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:user|guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	var settings = settingsData.get(userSession.user_id);
 	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(userSession.user_id) ) {
@@ -56,7 +57,15 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 	$('#support span').text(dashboardLang.get('general.support'));
 	$('#logout').attr('alt', dashboardLang.get('general.logout'));
 	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);
-	if ( action ) createNotice($, action, dashboardLang, actionArgs);
+	if ( action ) {
+		if ( action === 'oauthother' && !actionArgs ) actionArgs = [
+			oauth.generateAuthUrl( {
+				scope: ['identify', 'guilds'],
+				prompt: 'consent', state: userSession.state
+			} )
+		];
+		createNotice($, action, dashboardLang, actionArgs);
+	}
 	$('head').append(
 		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`)
 	);
@@ -98,6 +107,27 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 		} );
 	}
 
+	if ( args[1] === 'user' && enabledOAuth2.length ) {
+		$('head title').text(`${settings.user.username} #${settings.user.discriminator} – ` + $('head title').text());
+		$('#channellist').empty();
+		$('#channellist').append(
+			$('<a class="channel channel-header">').attr('href', '/').append(
+				$('<img>').attr('src', '/src/settings.svg'),
+				$('<div>').text(dashboardLang.get('selector.title'))
+			).attr('title', dashboardLang.get('selector.title')),
+			$('<a class="channel channel-header selected">').attr('href', '/user').append(
+				$('<img>').attr('src', '/src/settings.svg'),
+				$('<div>').text(dashboardLang.get('selector.user'))
+			).attr('title', dashboardLang.get('selector.user')),
+			...enabledOAuth2.map( oauthSite => {
+				return $('<a class="channel">').attr('href', '#oauth-' + oauthSite.id).append(
+					$('<img>').attr('src', '/src/channel.svg'),
+					$('<div>').text(oauthSite.name)
+				).attr('title', oauthSite.name);
+			} )
+		)
+		return forms.user(res, $, settings.user, dashboardLang);
+	}
 	let id = args[2];
 	if ( id ) $(`.guild#${id}`).addClass('selected');
 	if ( settings.guilds.isMember.has(id) ) {
@@ -164,6 +194,10 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 	else {
 		$('head title').text(dashboardLang.get('selector.title') + ' – ' + $('head title').text());
 		$('#channellist').empty();
+		$('<a class="channel channel-header selected">').attr('href', '/').append(
+			$('<img>').attr('src', '/src/settings.svg'),
+			$('<div>').text(dashboardLang.get('selector.title'))
+		).attr('title', dashboardLang.get('selector.title')).appendTo('#channellist');
 		$('<p>').html(dashboardLang.get('selector.desc', true, $('<code>'))).appendTo('#text .description');
 		if ( settings.guilds.isMember.size ) {
 			$('<h2 id="with-wikibot">').text(dashboardLang.get('selector.with')).appendTo('#text');
@@ -202,8 +236,8 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 				scope: ['identify', 'guilds'],
 				prompt: 'consent', state: userSession.state
 			} );
-			$('<a class="channel channel-header">').attr('href', url).append(
-				$('<img>').attr('src', '/src/settings.svg'),
+			$('<a class="channel">').attr('href', url).append(
+				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('selector.switch'))
 			).attr('title', dashboardLang.get('selector.switch')).appendTo('#channellist');
 			$('#text .description').append(
@@ -213,6 +247,10 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 				)
 			);
 		}
+		if ( enabledOAuth2.length ) $('<a class="channel channel-header">').attr('href', '/user').append(
+			$('<img>').attr('src', '/src/settings.svg'),
+			$('<div>').text(dashboardLang.get('selector.user'))
+		).attr('title', dashboardLang.get('selector.user')).appendTo('#channellist');
 		addWidgets($, dashboardLang);
 	}
 	let body = $.html();

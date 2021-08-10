@@ -99,6 +99,21 @@ CREATE INDEX idx_verifynotice_guild ON verifynotice (
     guild
 );
 
+CREATE TABLE oauthusers (
+    userid TEXT NOT NULL,
+    site   TEXT NOT NULL,
+    token  TEXT,
+    UNIQUE (
+        userid,
+        site
+    )
+);
+
+CREATE INDEX idx_oauthusers_userid ON oauthusers (
+    userid,
+    site
+);
+
 CREATE TABLE rcgcdw (
     guild    TEXT    NOT NULL
                      REFERENCES discord (main) ON DELETE CASCADE,
@@ -142,14 +157,14 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
 );
 
 COMMIT TRANSACTION;
-ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 1;
+ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 4;
 `,`
 BEGIN TRANSACTION;
 
 CREATE TABLE verifynotice (
-    guild      TEXT    UNIQUE
-                       NOT NULL
-                       REFERENCES discord (main) ON DELETE CASCADE,
+    guild      TEXT UNIQUE
+                    NOT NULL
+                    REFERENCES discord (main) ON DELETE CASCADE,
     logchannel TEXT,
     onsuccess  TEXT,
     onmatch    TEXT
@@ -169,6 +184,26 @@ ADD COLUMN flags INTEGER NOT NULL DEFAULT 0;
 
 COMMIT TRANSACTION;
 ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 3;
+`,`
+BEGIN TRANSACTION;
+
+CREATE TABLE oauthusers (
+    userid TEXT NOT NULL,
+    site   TEXT NOT NULL,
+    token  TEXT,
+    UNIQUE (
+        userid,
+        site
+    )
+);
+
+CREATE INDEX idx_oauthusers_userid ON oauthusers (
+    userid,
+    site
+);
+
+COMMIT TRANSACTION;
+ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 4;
 `];
 
 module.exports = db.connect().then( () => {

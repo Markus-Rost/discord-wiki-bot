@@ -8,6 +8,7 @@ const Lang = require('./i18n.js');
 const allLangs = Lang.allLangs();
 
 const posts = {
+	user: require('./user.js').post,
 	settings: require('./settings.js').post,
 	verification: require('./verification.js').post,
 	rcscript: require('./rcscript.js').post,
@@ -53,15 +54,15 @@ const files = new Map([
 
 const server = http.createServer( (req, res) => {
 	res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && req.url.startsWith( '/guild/' ) ) {
+	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( req.url.startsWith( '/guild/' ) || req.url === '/user' ) ) {
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot' && /^"([\da-f]+(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
 		} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
-		if ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] )
-		&& /^(?:default|new|notice|\d+)$/.test(args[4]) && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id)
-		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) {
+		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id) &&
+		( ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] ) && /^(?:default|new|notice|\d+)$/.test(args[4])
+		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || req.url === '/user' ) ) {
 			if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
 			let body = [];
 			req.on( 'data', chunk => {
@@ -85,7 +86,14 @@ const server = http.createServer( (req, res) => {
 					}
 				} );
 				if ( isDebug ) console.log( '- Dashboard:', req.url, settings, sessionData.get(state).user_id );
-				return posts[args[3]](save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
+				if ( req.url === '/user' ) {
+					let setting = Object.keys(settings);
+					if ( setting.length === 1 && setting[0].startsWith( 'oauth_' ) && setting[0].split('_').length >= 3 ) {
+						setting = setting[0].split('_');
+						return posts.user(save_response, sessionData.get(state).user_id, setting[1], setting.slice(2).join('_'));
+					}
+				}
+				else return posts[args[3]](save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
 			} );
 
 			/**
@@ -94,6 +102,10 @@ const server = http.createServer( (req, res) => {
 			 * @param {String[]} [actionArgs]
 			 */
 			function save_response(resURL = '/', action, ...actionArgs) {
+				if ( action === 'REDIRECT' && resURL.startsWith( 'https://' ) ) {
+					res.writeHead(303, {Location: resURL});
+					return res.end();
+				}
 				var themeCookie = ( req.headers?.cookie?.split('; ')?.find( cookie => {
 					return cookie.split('=')[0] === 'theme' && /^"(?:light|dark)"$/.test(( cookie.split('=')[1] || '' ));
 				} ) || 'dark' ).replace( /^theme="(light|dark)"$/, '$1' );
@@ -132,10 +144,6 @@ const server = http.createServer( (req, res) => {
 		return res.end();
 	}
 
-	if ( reqURL.pathname === '/oauth/mw' ) {
-		return pages.verify(res, reqURL.searchParams);
-	}
-
 	if ( reqURL.pathname === '/favicon.ico' ) reqURL.pathname = '/src/icon.png';
 	if ( files.has(reqURL.pathname) ) {
 		let file = files.get(reqURL.pathname);
@@ -165,8 +173,8 @@ const server = http.createServer( (req, res) => {
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^"\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^guild="(\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; SameSite=Lax; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -188,14 +196,27 @@ const server = http.createServer( (req, res) => {
 		return pages.login(res, dashboardLang, themeCookie, state, 'logout');
 	}
 
+	if ( reqURL.pathname === '/oauth/mw' ) {
+		return pages.verify(res, reqURL.searchParams, sessionData.get(state)?.user_id);
+	}
+
 	if ( !state ) {
+		let action = '';
+		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
 			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
-		return pages.login(res, dashboardLang, themeCookie, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
+		else if ( reqURL.pathname === '/user' ) {
+			if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
+			if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';
+			if ( reqURL.searchParams.get('oauth') === 'verified' ) action = 'oauthverify';
+			if ( reqURL.searchParams.get('oauth') === 'other' ) action = 'oauth';
+			res.setHeader('Set-Cookie', ['guild="user"; SameSite=Lax; Path=/']);
+		}
+		return pages.login(res, dashboardLang, themeCookie, state, action);
 	}
 
 	if ( reqURL.pathname === '/oauth' ) {
@@ -203,18 +224,27 @@ const server = http.createServer( (req, res) => {
 	}
 
 	if ( !sessionData.has(state) || !settingsData.has(sessionData.get(state).user_id) ) {
+		let action = '';
+		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
 			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
-		return pages.login(res, dashboardLang, themeCookie, state, ( reqURL.pathname === '/' ? '' : 'unauthorized' ));
+		else if ( reqURL.pathname === '/user' ) {
+			if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
+			if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';
+			if ( reqURL.searchParams.get('oauth') === 'verified' ) action = 'oauthverify';
+			if ( reqURL.searchParams.get('oauth') === 'other' ) action = 'oauth';
+			res.setHeader('Set-Cookie', ['guild="user"; SameSite=Lax; Path=/']);
+		}
+		return pages.login(res, dashboardLang, themeCookie, state, action);
 	}
 
 	if ( reqURL.pathname === '/refresh' ) {
 		let returnLocation = reqURL.searchParams.get('return');
-		if ( !/^\/guild\/\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(returnLocation) ) {
+		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, sessionData.get(state), returnLocation);
@@ -228,7 +258,13 @@ const server = http.createServer( (req, res) => {
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
-	if ( reqURL.searchParams.get('slash') === 'noverify' ) action = 'noverify';
+	if ( reqURL.searchParams.get('slash') === 'noverify' && reqURL.pathname.split('/')[3] === 'slash' ) action = 'noverify';
+	if ( reqURL.pathname === '/user' ) {
+		if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
+		if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';
+		if ( reqURL.searchParams.get('oauth') === 'verified' ) action = 'oauthverify';
+		if ( reqURL.searchParams.get('oauth') === 'other' ) action = 'oauthother';
+	}
 	return dashboard(res, dashboardLang, themeCookie, sessionData.get(state), reqURL, action);
 } );
 

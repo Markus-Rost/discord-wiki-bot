@@ -18,6 +18,36 @@ const oauth = new DiscordOauth2( {
 	redirectUri: process.env.dashboard
 } );
 
+const {oauthSites} = require('../util/wiki.js');
+
+const enabledOAuth2 = [
+	...oauthSites.filter( oauthSite => {
+		let site = new URL(oauthSite);
+		site = site.hostname + site.pathname.slice(0, -1);
+		return ( process.env[`oauth_${site}`] && process.env[`oauth_${site}_secret`] );
+	} ).map( oauthSite => {
+		let site = new URL(oauthSite);
+		return {
+			id: site.hostname + site.pathname.slice(0, -1),
+			name: oauthSite, url: oauthSite,
+		};
+	} )
+];
+if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
+	enabledOAuth2.unshift({
+		id: 'miraheze',
+		name: 'Miraheze',
+		url: 'https://meta.miraheze.org/w/',
+	});
+}
+if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
+	enabledOAuth2.unshift({
+		id: 'wikimedia',
+		name: 'Wikimedia (Wikipedia)',
+		url: 'https://meta.wikimedia.org/w/',
+	});
+}
+
 const slashCommands = require('../interactions/commands.json');
 
 got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, {
@@ -110,9 +140,9 @@ const sessionData = new Map();
 const settingsData = new Map();
 
 /**
- * @type {Set<String>}
+ * @type {Map<String, String>}
  */
-const oauthVerify = new Set();
+const oauthVerify = new Map();
 
 /**
  * @type {Map<Number, PromiseConstructor>}
@@ -121,7 +151,7 @@ const messages = new Map();
 var messageId = 1;
 
 process.on( 'message', message => {
-	if ( message?.id === 'verifyUser' ) return oauthVerify.add(message.state);
+	if ( message?.id === 'verifyUser' ) return oauthVerify.set(message.state, message.user);
 	if ( message?.id ) {
 		if ( message.data.error ) messages.get(message.id).reject(message.data.error);
 		else messages.get(message.id).resolve(message.data.response);
@@ -271,6 +301,32 @@ function createNotice($, notice, dashboardLang, args = []) {
 			text.text(dashboardLang.get('notice.mwversion.text', false, args[0], args[1]));
 			note = $('<a target="_blank">').text('https://www.mediawiki.org/wiki/MediaWiki_1.30').attr('href', 'https://www.mediawiki.org/wiki/MediaWiki_1.30');
 			break;
+		case 'oauth':
+			type = 'success';
+			title.text(dashboardLang.get('notice.oauth.title'));
+			text.text(dashboardLang.get('notice.oauth.text'));
+			break;
+		case 'oauthfail':
+			type = 'error';
+			title.text(dashboardLang.get('notice.oauthfail.title'));
+			text.text(dashboardLang.get('notice.oauthfail.text'));
+			break;
+		case 'oauthverify':
+			type = 'success';
+			title.text(dashboardLang.get('notice.oauthverify.title'));
+			text.text(dashboardLang.get('notice.oauthverify.text'));
+			break;
+		case 'oauthother':
+			type = 'info';
+			title.text(dashboardLang.get('notice.oauthother.title'));
+			text.text(dashboardLang.get('notice.oauthother.text'));
+			note = $('<a>').text(dashboardLang.get('notice.oauthother.note')).attr('href', args[0]);
+			break;
+		case 'oauthlogin':
+			type = 'info';
+			title.text(dashboardLang.get('notice.oauthlogin.title'));
+			text.text(dashboardLang.get('notice.oauthlogin.text'));
+			break;
 		case 'nochange':
 			type = 'info';
 			title.text(dashboardLang.get('notice.nochange.title'));
@@ -381,4 +437,4 @@ function hasPerm(all = 0, ...permission) {
 	} );
 }
 
-module.exports = {got, db, oauth, slashCommands, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, escapeText, hasPerm};
+module.exports = {got, db, oauth, enabledOAuth2, slashCommands, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, escapeText, hasPerm};

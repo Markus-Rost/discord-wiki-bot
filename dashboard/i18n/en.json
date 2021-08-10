@@ -102,6 +102,27 @@
             "text": "The restrictions for the $1 command can't be changed without verifications being set up.",
             "title": "Verifications are not set up!"
         },
+        "oauth": {
+            "text": "Your wiki account has been successfully connected with Wiki-Bot.",
+            "title": "Account successfully connected!"
+        },
+        "oauthfail": {
+            "text": "Your wiki account could not be connected, please try again.",
+            "title": "Connection failed!"
+        },
+        "oauthlogin": {
+            "text": "Please log in if you don't want Wiki-Bot to remember your wiki account.",
+            "title": "Your connected wiki account has been saved!"
+        },
+        "oauthother": {
+            "note": "Switch accounts.",
+            "text": "Please note that your wiki account got connected with a different Discord account than the one you are currently logged in as.",
+            "title": "Account successfully connected!"
+        },
+        "oauthverify": {
+            "text": "Your wiki account has been successfully verified.",
+            "title": "Account successfully verified!"
+        },
         "readonly": {
             "text": "You can currently only view your settings, but not change them.",
             "title": "Read-only database!"
@@ -144,6 +165,21 @@
             "title": "Wiki is blocked!"
         }
     },
+    "oauth": {
+        "desc": "These are your OAuth2 settings for connecting wiki accounts:",
+        "failed": "Failed to load the OAuth2 settings!",
+        "form": {
+            "connect": "Connect account.",
+            "connected": "Connected",
+            "current": "Current Status:",
+            "default": "Wiki Account Connections",
+            "disable": "Don't remember my account!",
+            "disabled": "Disabled",
+            "disconnect": "Disconnect account.",
+            "enable": "Remember my account.",
+            "unconnected": "Unconnected"
+        }
+    },
     "rcscript": {
         "desc": "These are the recent changes webhooks for $1:",
         "explanation": "<h2>Recent Changes Webhook</h2>\n<p>Wiki-Bot is able to run a recent changes webhook based on <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.</p>\n<p>Requirements to add a recent changes webhook:</p>\n<ul>\n<li>The wiki needs to run on <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> or higher.</li>\n<li>The system message <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> needs to be set to the Discord server id <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
@@ -175,6 +211,7 @@
         "none": "You currently don't have the [Manage Server]($1) permission on any servers, are you logged into the correct account?",
         "switch": "Switch Accounts",
         "title": "Server Selector",
+        "user": "Wiki Accounts",
         "with": "Servers with Wiki-Bot",
         "without": "Servers without Wiki-Bot"
     },
