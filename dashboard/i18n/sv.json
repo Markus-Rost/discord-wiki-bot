@@ -6,6 +6,26 @@
         " ",
         " "
     ],
+    "general": {
+        "botlist": {
+            "text": "Hjälp andra att hitta Wiki-Bot genom att rösta på den i dessa bot-listor:",
+            "title": "Bot-listor"
+        },
+        "delete": "Radera",
+        "invite": "Bjud in Wiki-Bot",
+        "language": "Ändra Språk",
+        "login": "Logga in",
+        "logout": "Logga ut",
+        "rcscript": "Senaste ändringarna",
+        "refresh": "Uppdatera serverlistan",
+        "save": "Spara",
+        "selector": "Serverväljare",
+        "settings": "Inställningar",
+        "slash": "Slash-kommandon",
+        "support": "Support-server",
+        "theme-dark": "Använd mörkt tema",
+        "theme-light": "Använd ljust tema"
+    },
     "rcscript": {
         "form": {
             "lang": "Språk:"
