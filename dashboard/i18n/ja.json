@@ -102,6 +102,27 @@
             "text": "認証がセットアップされていないと、 $1 コマンドの制限は変更できません。",
             "title": "認証がセットアップされていません！"
         },
+        "oauth": {
+            "text": "あなたのWikiアカウントとWiki-Botの連携が完了しました。",
+            "title": "アカウントの連携が完了しました！"
+        },
+        "oauthfail": {
+            "text": "あなたのWikiアカウントと連携できませんでした。もう一度試してください。",
+            "title": "連携に失敗しました！"
+        },
+        "oauthlogin": {
+            "text": "Wiki-BotにあなたのWikiアカウントを覚えさせたくない場合は、ログインしてください。",
+            "title": "あなたの連携したWikiアカウントが保存されました！"
+        },
+        "oauthother": {
+            "note": "アカウントを切り替える。",
+            "text": "Wikiアカウントは、現在ログインしているアカウントとは別のDiscordアカウントと連携されています。",
+            "title": "アカウントの連携が完了しました！"
+        },
+        "oauthverify": {
+            "text": "あなたのWikiアカウントの認証が完了しました。",
+            "title": "アカウントの認証が完了しました！"
+        },
         "readonly": {
             "text": "現在、自分の設定を確認することはできますが、変更することはできません。",
             "title": "読み取り専用のデータベースです！"
@@ -144,6 +165,21 @@
             "title": "Wikiがブロックされています！"
         }
     },
+    "oauth": {
+        "desc": "Wikiアカウントと連携するためのOAuth2の設定です：",
+        "failed": "OAuth2設定の読み込みに失敗しました！",
+        "form": {
+            "connect": "アカウント連携。",
+            "connected": "連携済",
+            "current": "現在の状況：",
+            "default": "Wikiアカウントの連携",
+            "disable": "自分のアカウントを忘れた！",
+            "disabled": "無効",
+            "disconnect": "アカウントを切断する。",
+            "enable": "アカウントを記憶する。",
+            "unconnected": "未接続"
+        }
+    },
     "rcscript": {
         "desc": "$1 の最近の更新のウェブフックです。",
         "explanation": "<h2>最近の変更点のウェブフック</h2>\n<p>Wiki-Botは、<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>をベースにした最近の変更のウェブフックを実行することができます。最近の変更を、直リンク付きの小さなテキストメッセージや、編集されたタグやカテゴリーの変更ができる埋め込みメッセージを表示することができます。</p>\n<p>最近の変更のウェブフックを追加するための要件:</p>\n<ul>\n<li>Wikiは<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>以上で動作している必要があります。</li>\n<li>システムメッセージの<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> にDiscordのサーバーID <code class=\"user-select\" id=\"server-id\"></code> を設定する必要があります。</li>\n</ul>",
@@ -175,6 +211,7 @@
         "none": "現在、参加しているどのサーバーにも[サーバー管理]($1)の権限がありませんが、正しいアカウントでログインしていますか？",
         "switch": "アカウントの切り替え",
         "title": "サーバーを選択",
+        "user": "Wikiアカウント",
         "with": "Wiki-Botが参加しているサーバー",
         "without": "Wiki-Botが参加していないサーバー"
     },
