@@ -22,14 +22,15 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		context: args[1],
 		shard: shardIdForGuildId(args[1], msg.client.shard.count)
 	} ).then( guild => {
-		if ( !guild ) return msg.client.generateInvite({
-			scopes: ['bot', 'applications.commands'],
-			permissions: defaultPermissions,
-			guild: args[1],
-			disableGuildSelect: true
-		}).then( invite => {
-			msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '>', true )
-		}, log_error );
+		if ( !guild ) {
+			let invite = msg.client.generateInvite({
+				scopes: ['bot', 'applications.commands'],
+				permissions: defaultPermissions,
+				guild: args[1],
+				disableGuildSelect: true
+			});
+			return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '>', true );
+		}
 		if ( patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', true );
 		db.query( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [msg.author.id] ).then( ({rows:[row]}) => {
 			if ( !row ) return msg.replyMsg( 'You can\'t have any servers.', true );
