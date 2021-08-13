@@ -115,6 +115,7 @@
             "title": "Sua conta wiki conectada foi salva!"
         },
         "oauthother": {
+            "note": "Alterar contas.",
             "text": "Por favor, note que sua conta wiki foi conectada a uma conta Discord diferente daquela com a qual você está atualmente entrado.",
             "title": "Conta conectada com sucesso!"
         },
@@ -174,6 +175,7 @@
             "default": "Conexões de conta Wiki",
             "disable": "Não se lembra da minha conta!",
             "disabled": "Desativado",
+            "disconnect": "Desconectar conta.",
             "enable": "Lembre-se de minha conta.",
             "unconnected": "Desconectado"
         }
