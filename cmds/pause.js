@@ -8,16 +8,16 @@
  */
 function cmd_pause(lang, msg, args, line, wiki) {
 	if ( msg.channel.isGuild() && args.join(' ').split('\n')[0].isMention(msg.guild) && ( msg.isAdmin() || msg.isOwner() ) ) {
-		if ( pause[msg.guild.id] ) {
-			delete pause[msg.guild.id];
+		if ( pause[msg.guildId] ) {
+			delete pause[msg.guildId];
 			console.log( '- Pause ended.' );
-			msg.replyMsg( lang.get('pause.off'), {}, true );
+			msg.replyMsg( lang.get('pause.off'), true );
 		} else {
-			msg.replyMsg( lang.get('pause.on'), {}, true );
+			msg.replyMsg( lang.get('pause.on'), true );
 			console.log( '- Pause started.' );
-			pause[msg.guild.id] = true;
+			pause[msg.guildId] = true;
 		}
-	} else if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) {
+	} else if ( !msg.channel.isGuild() || !pause[msg.guildId] ) {
 		this.LINK(lang, msg, line, wiki);
 	}
 }

@@ -25,7 +25,7 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler,
 	if ( msg.showEmbed() && !noEmbed ) embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( '`' + searchterm + '`' ).setURL( pagelink );
 	else resultText += '\n\n**`' + searchterm + '`**';
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
-	var limit = searchLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
+	var limit = searchLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
 	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body?.warnings ) log_warn(body.warnings);
@@ -144,7 +144,7 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler,
 	}, error => {
 		console.log( '- Error while getting the search results.' + error );
 	} ).then( () => {
-		msg.sendChannel( '🔍 ' + spoiler + resultText + spoiler, {embed} );
+		msg.sendChannel( {content: '🔍 ' + spoiler + resultText + spoiler, embeds: [embed]} );
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );

@@ -321,7 +321,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			console.log( `- Dashboard: Settings successfully removed: ${guild}#${type}` );
 			res(`/guild/${guild}/settings`, 'save');
 			if ( !channel ) return;
-			db.query( 'SELECT channel, wiki, lang, role, inline FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentID] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
+			db.query( 'SELECT channel, wiki, lang, role, inline FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentId] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
 				var lang = new Lang(( guildlang || row.lang ));
 				var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 				if ( channel.wiki !== row.wiki ) text += `\n${lang.get('settings.currentwiki')} <${channel.wiki}>`;
@@ -362,7 +362,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			}
 			return fresponse;
 		} ).then( fresponse => {
-			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentID] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
+			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentId] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
 				if ( row ) row.guildlang = ( guildlang || row.lang );
 				var body = fresponse.body;
 				if ( fresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {

@@ -25,8 +25,8 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 		var text = error.toString();
 	}
 	if ( isDebug ) console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
-	if ( text.length > 2000 ) msg.reactEmoji('✅', true);
-	else msg.sendChannel( '```js\n' + text + '\n```', {split:{prepend:'```js\n',append:'\n```'},allowedMentions:{}}, true );
+	if ( text.length > 1990 ) msg.reactEmoji('✅', true);
+	else msg.sendChannel( '```js\n' + text + '\n```', true );
 
 	/**
 	 * Runs a command with admin permissions.
@@ -35,7 +35,7 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	function backdoor(cmdline) {
 		msg.evalUsed = true;
 		msg.onlyVerifyCommand = false;
-		newMessage(msg, lang, wiki, patreons[msg.guild.id], msg.noInline, cmdline);
+		newMessage(msg, lang, wiki, patreons[msg.guildId], msg.noInline, cmdline);
 		return cmdline;
 	}
 }
@@ -182,7 +182,9 @@ function removePatreons(guild, msg) {
 					console.log( '- Guild successfully updated.' );
 					messages.push('Guild successfully updated.');
 				}
-				msg.client.shard.broadcastEval( `delete global.patreons['${guild}']` );
+				msg.client.shard.broadcastEval( (discordClient, evalData) => {
+					delete global.patreons[evalData];
+				}, {context: guild} );
 			}, dberror => {
 				console.log( '- Error while updating the guild: ' + dberror );
 				messages.push('Error while updating the guild: ' + dberror);
@@ -192,21 +194,26 @@ function removePatreons(guild, msg) {
 					if ( rows.length ) {
 						console.log( '- Channel categories successfully deleted.' );
 						messages.push('Channel categories successfully deleted.');
-						return msg.client.shard.broadcastEval( `if ( this.guilds.cache.has('${guild}') ) {
-							let rows = ${JSON.stringify(rows)};
-							this.guilds.cache.get('${guild}').channels.cache.filter( channel => {
-								return ( channel.isGuild() && rows.some( row => {
-									return ( row.channel === '#' + channel.parentID );
-								} ) );
-							} ).map( channel => {
-								return {
-									id: channel.id,
-									wiki: rows.find( row => {
-										return ( row.channel === '#' + channel.parentID );
-									} ).wiki
-								};
-							} )
-						}`, Discord.ShardClientUtil.shardIDForGuildID(guild, msg.client.shard.count) ).then( channels => {
+						return msg.client.shard.broadcastEval( (discordClient, evalData) => {
+							if ( discordClient.guilds.cache.has(evalData.guild) ) {
+								let rows = evalData.rows;
+								return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
+									return ( channel.isGuild(false) && rows.some( row => {
+										return ( row.channel === '#' + channel.parentId );
+									} ) );
+								} ).map( channel => {
+									return {
+										id: channel.id,
+										wiki: rows.find( row => {
+											return ( row.channel === '#' + channel.parentId );
+										} ).wiki
+									};
+								} );
+							}
+						}, {
+							context: {guild, rows},
+							shard: Discord.ShardClientUtil.shardIdForGuildId(guild, msg.client.shard.count)
+						} ).then( channels => {
 							if ( channels.length ) return Promise.all(channels.map( channel => {
 								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, guild, channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
 									if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
@@ -297,12 +304,14 @@ function removeSettings(msg) {
 	if ( !( msg instanceof Discord.Message ) ) return 'removeSettings(msg) – No message provided!';
 	return db.connect().then( client => {
 		var messages = [];
-		return msg.client.shard.broadcastEval( `[
-			[...this.guilds.cache.keys()],
-			this.channels.cache.filter( channel => {
-				return ( channel.isGuild() || ( channel.type === 'category' && global.patreons.hasOwnProperty(channel.guild.id) ) );
-			} ).map( channel => ( channel.type === 'category' ? '#' : '' ) + channel.id )
-		]` ).then( results => {
+		return msg.client.shard.broadcastEval( discordClient => {
+			return [
+				[...discordClient.guilds.cache.keys()],
+				discordClient.channels.cache.filter( channel => {
+					return ( channel.isGuild() || ( channel.type === 'GUILD_CATEGORY' && global.patreons.hasOwnProperty(channel.guildId) ) );
+				} ).map( channel => ( channel.type === 'GUILD_CATEGORY' ? '#' : '' ) + channel.id )
+			];
+		} ).then( results => {
 			var all_guilds = results.map( result => result[0] ).reduce( (acc, val) => acc.concat(val), [] );
 			var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
 			var guilds = [];
@@ -312,8 +321,10 @@ function removeSettings(msg) {
 					if ( !all_guilds.includes(row.guild) ) {
 						if ( !row.channel ) {
 							if ( patreons.hasOwnProperty(row.guild) || voice.hasOwnProperty(row.guild) ) {
-								msg.client.shard.broadcastEval( `delete global.patreons['${row.guild}'];
-								delete global.voice['${row.guild}'];` );
+								msg.client.shard.broadcastEval( (discordClient, evalData) => {
+									delete global.patreons[evalData];
+									delete global.voice[evalData];
+								}, {context: row.guild} );
 							}
 							return guilds.push(row.guild);
 						}

@@ -13,37 +13,37 @@ function cmd_voice(lang, msg, args, line, wiki) {
 	if ( msg.isAdmin() ) {
 		if ( !args.join('') ) {
 			var text = lang.get('voice.text') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`\n';
-			text += lang.get('voice.' + ( voice[msg.guild.id] ? 'disable' : 'enable' ), ( patreons[msg.guild.id] || process.env.prefix ) + 'voice toggle');
-			return msg.replyMsg( text, {}, true );
+			text += lang.get('voice.' + ( voice[msg.guildId] ? 'disable' : 'enable' ), ( patreons[msg.guildId] || process.env.prefix ) + 'voice toggle');
+			return msg.replyMsg( text, true );
 		}
 		args[1] = args.slice(1).join(' ').trim()
 		if ( args[0].toLowerCase() === 'toggle' && !args[1] ) {
 			if ( msg.defaultSettings ) return help_setup(lang, msg);
-			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, {}, true );
-			var value = ( voice[msg.guild.id] ? null : 1 );
-			return db.query( 'UPDATE discord SET voice = $1 WHERE guild = $2 AND channel IS NULL', [value, msg.guild.id] ).then( () => {
+			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
+			var value = ( voice[msg.guildId] ? null : 1 );
+			return db.query( 'UPDATE discord SET voice = $1 WHERE guild = $2 AND channel IS NULL', [value, msg.guildId] ).then( () => {
 				console.log( '- Voice settings successfully updated.' );
 				if ( value ) {
-					voice[msg.guild.id] = lang.lang;
-					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [msg.guild.id] ).then( ({rows:[row]}) => {
+					voice[msg.guildId] = lang.lang;
+					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [msg.guildId] ).then( ({rows:[row]}) => {
 						console.log( '- Voice language successfully updated.' );
-						voice[msg.guild.id] = row.lang;
+						voice[msg.guildId] = row.lang;
 					}, dberror => {
 						console.log( '- Error while getting the voice language: ' + dberror );
 					} );
-					msg.replyMsg( lang.get('voice.enabled') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`', {}, true );
+					msg.replyMsg( lang.get('voice.enabled') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`', true );
 				}
 				else {
-					delete voice[msg.guild.id];
-					msg.replyMsg( lang.get('voice.disabled'), {}, true );
+					delete voice[msg.guildId];
+					msg.replyMsg( lang.get('voice.disabled'), true );
 				}
 			}, dberror => {
 				console.log( '- Error while editing the voice settings: ' + dberror );
-				msg.replyMsg( lang.get('settings.save_failed'), {}, true );
+				msg.replyMsg( lang.get('settings.save_failed'), true );
 			} );
 		}
 	}
-	if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+	if ( !msg.channel.isGuild() || !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
 }
 
 module.exports = {

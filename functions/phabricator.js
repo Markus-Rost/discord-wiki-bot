@@ -15,13 +15,13 @@ const {got, escapeFormatting, limitLength} = require('../util/functions.js');
 function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '', noEmbed = false) {
 	var regex = /^(?:https?:)?\/\/phabricator\.(wikimedia|miraheze)\.org\/T(\d+)(?:#|$)/.exec(link.href);
 	if ( !regex || !process.env['phabricator_' + regex[1]] ) {
-		logging(wiki, msg.guild?.id, 'interwiki');
+		logging(wiki, msg.guildId, 'interwiki');
 		msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
 		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
 	var site = 'https://phabricator.' + regex[1] + '.org/';
-	logging(site, msg.guild?.id, 'phabricator', regex[1]);
+	logging(site, msg.guildId, 'phabricator', regex[1]);
 	got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator_' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2] ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
@@ -87,7 +87,7 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '', noEmbed
 				console.log( '- Error while getting the task transactions: ' + error );
 			} ) : undefined )
 		]).finally( () => {
-			msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler, {embed} );
+			msg.sendChannel( {content: spoiler + status + '<' + link + '>' + spoiler, embeds: [embed]} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );

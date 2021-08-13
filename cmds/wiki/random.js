@@ -34,7 +34,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		logging(wiki, msg.guild?.id, 'random');
+		logging(wiki, msg.guildId, 'random');
 		if ( !body.query.pages ) {
 			var title = 'Special:Random';
 			if ( namespace[0] !== '0' && namespace[0].split('|').length === 1 ) title += '/' + namespace[1];
@@ -53,7 +53,7 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace
 					embed.setDescription( description );
 				}
 			}
-			msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
+			msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );
 			
 			if ( reaction ) reaction.removeEmoji();
 			return;
@@ -82,7 +82,6 @@ function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace
 		if ( querypage.ns === 6 ) {
 			var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
 			if ( msg.showEmbed() && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
-			else if ( msg.uploadFiles() ) embed.attachFiles( [{attachment:pageimage,name:( spoiler ? 'SPOILER ' : '' ) + querypage.title}] );
 		}
 		else if ( querypage.title === body.query.general.mainpage ) {
 			embed.setThumbnail( new URL(body.query.general.logo, wiki).href );

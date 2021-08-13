@@ -15,7 +15,7 @@ const {got, htmlToDiscord, escapeFormatting} = require('../util/functions.js');
  * @param {Boolean} noEmbed - If the response should be without an embed.
  */
 function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, noEmbed) {
-	var limit = discussionLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
+	var limit = discussionLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
 	if ( !title ) {
 		var pagelink = wiki + 'f';
 		if ( !msg.showEmbed() || noEmbed ) {
@@ -52,7 +52,7 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, 
 		}, error => {
 			console.log( '- Error while getting the description: ' + error );
 		} ).finally( () => {
-			msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
+			msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		} );
@@ -322,7 +322,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 		embed.addField( lang.get('discussion.tags'), Util.splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
 	}
 	
-	msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
+	msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );
 }
 
 /**

@@ -82,7 +82,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed
 						msg.reactEmoji('nowiki');
 					}
 					else if ( noerror ) {
-						msg.replyMsg( lang.get('diff.badrev') );
+						msg.replyMsg( {content: lang.get('diff.badrev'), allowedMentions: {repliedUser: false}} );
 					}
 					else {
 						console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
@@ -130,7 +130,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed
 		}
 	}
 	else {
-		if ( embed ) msg.sendChannel( spoiler + '<' + embed.url + '>' + spoiler, ( noEmbed ? {} : {embed} ) );
+		if ( embed ) msg.sendChannel( {content: spoiler + '<' + embed.url + '>' + spoiler, embeds: ( noEmbed ? [] : [embed] )} );
 		else msg.reactEmoji('error');
 		
 		if ( reaction ) reaction.removeEmoji();
@@ -165,13 +165,13 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, 
 			if ( reaction ) reaction.removeEmoji();
 		}
 		else if ( body.query.badrevids ) {
-			msg.replyMsg( lang.get('diff.badrev') );
+			msg.replyMsg( {content: lang.get('diff.badrev'), allowedMentions: {repliedUser: false}} );
 			
 			if ( reaction ) reaction.removeEmoji();
 		}
 		else if ( body.query.pages && !body.query.pages['-1'] ) {
 			wiki.updateWiki(body.query.general);
-			logging(wiki, msg.guild?.id, 'diff');
+			logging(wiki, msg.guildId, 'diff');
 			var pages = Object.values(body.query.pages);
 			if ( pages.length !== 1 ) {
 				msg.sendChannel( spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler );
@@ -246,7 +246,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, 
 					console.log( '- Error while getting the diff: ' + error );
 				} ).finally( () => {
 					if ( tags?.[1] ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink) );
-					msg.sendChannel( spoiler + text + spoiler, {embed} );
+					msg.sendChannel( {content: spoiler + text + spoiler, embeds: [embed]} );
 					
 					if ( reaction ) reaction.removeEmoji();
 				} );
@@ -268,7 +268,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, 
 					}
 					if ( tags?.[1] ) embed.addField( tags[0], htmlToDiscord(tags[1], pagelink) );
 					
-					msg.sendChannel( spoiler + text + spoiler, {embed} );
+					msg.sendChannel( {content: spoiler + text + spoiler, embeds: [embed]} );
 					
 					if ( reaction ) reaction.removeEmoji();
 				}

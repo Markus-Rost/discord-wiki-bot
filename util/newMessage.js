@@ -45,12 +45,12 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			cont = cont.substring(prefix.length);
 			let args = cont.split(' ').slice(1);
 			if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
-			console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + prefix + cont );
+			console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + prefix + cont );
 			return ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
 		}
 	}
 	var count = 0;
-	var maxcount = commandLimit[( patreons[msg.guild?.id] ? 'patreon' : 'default' )];
+	var maxcount = commandLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
 	var breakLines = false;
 	cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
@@ -59,7 +59,14 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			count++;
 			console.log( '- Message contains too many commands!' );
 			msg.reactEmoji('⚠️');
-			msg.sendChannelError( lang.get('general.limit', '<@' + author.id + '>'), {allowedMentions:{users:[author.id]}} );
+			msg.sendChannelError( {
+				content: lang.get('general.limit', author.toString()),
+				reply: {messageReference: msg.id},
+				allowedMentions: {
+					users: [author.id],
+					repliedUser: true
+				}
+			} );
 			return;
 		}
 		count++;
@@ -68,12 +75,12 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		var args = line.split(' ').slice(1);
 		var aliasInvoke = ( lang.aliases[invoke] || invoke );
 		var ownercmd = ( msg.isOwner() && ownercmdmap.hasOwnProperty(aliasInvoke) );
-		var pausecmd = ( msg.isAdmin() && pause[msg.guild.id] && pausecmdmap.hasOwnProperty(aliasInvoke) );
+		var pausecmd = ( msg.isAdmin() && pause[msg.guildId] && pausecmdmap.hasOwnProperty(aliasInvoke) );
 		if ( msg.onlyVerifyCommand && !( aliasInvoke === 'verify' || pausecmd || ownercmd ) ) return;
-		if ( channel.isGuild() && pause[msg.guild.id] && !( pausecmd || ownercmd ) ) {
-			return console.log( msg.guild.id + ': Paused' );
+		if ( channel.isGuild() && pause[msg.guildId] && !( pausecmd || ownercmd ) ) {
+			return console.log( msg.guildId + ': Paused' );
 		}
-		console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + prefix + line );
+		console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + prefix + line );
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
@@ -103,7 +110,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	} );
 	if ( msg.onlyVerifyCommand ) return;
 	
-	if ( ( !channel.isGuild() || !pause[msg.guild.id] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
+	if ( ( !channel.isGuild() || !pause[msg.guildId] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 		var links = [];
 		var embeds = [];
 		var linkcount = 0;
@@ -120,7 +127,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( linkcount < linkmaxcount ) {
 						linkcount++;
-						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = entry[2].split('#').slice(1).join('#');
 						links.push({title,section,spoiler:entry[1]});
@@ -140,7 +147,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( count < maxcount ) {
 						count++;
-						console.log( ( channel.isGuild() ? msg.guild.id : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = entry[2].split('#').slice(1).join('#');
 						embeds.push({title,section,spoiler:entry[1]});
@@ -172,7 +179,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			}
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
-					logging(wiki, msg.guild?.id, 'inline', 'interwiki');
+					logging(wiki, msg.guildId, 'inline', 'interwiki');
 					link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section) : decodeURI(interwiki.url) );
 				} ) );
 			}
@@ -184,20 +191,20 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
 					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
 					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
-						logging(wiki, msg.guild?.id, 'inline', 'interwiki');
+						logging(wiki, msg.guildId, 'inline', 'interwiki');
 						var iw_parts = page.title.split(':');
 						var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
 						link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section);
 						return;
 					}
-					logging(wiki, msg.guild?.id, 'inline', 'redlink');
+					logging(wiki, msg.guildId, 'inline', 'redlink');
 					link.url = wiki.toLink(link.title, 'action=edit&redlink=1');
 				} ) );
 			}
-			if ( links.length ) msg.sendChannel( links.map( link => {
-				if ( !link.url ) logging(wiki, msg.guild?.id, 'inline');
+			if ( links.length ) Util.splitMessage( links.map( link => {
+				if ( !link.url ) logging(wiki, msg.guildId, 'inline');
 				return link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section) ) + '>' + link.spoiler;
-			} ).join('\n'), {split:true} );
+			} ).join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -239,16 +246,14 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 					}
 					if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 				} ) );
-				if ( missing.length ) {
-					msg.sendChannel( missing.map( embed => {
-						if ( embed.template ) logging(wiki, msg.guild?.id, 'inline', 'template');
-						else logging(wiki, msg.guild?.id, 'inline', 'redlink');
-						return embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler;
-					} ).join('\n'), {split:true} );
-				}
+				if ( missing.length ) Util.splitMessage( missing.map( embed => {
+					if ( embed.template ) logging(wiki, msg.guildId, 'inline', 'template');
+					else logging(wiki, msg.guildId, 'inline', 'redlink');
+					return embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler;
+				} ).join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
 			}
 			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
-				logging(wiki, msg.guild?.id, 'inline', 'embed');
+				logging(wiki, msg.guildId, 'inline', 'embed');
 				check_wiki.general(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, false, new URLSearchParams(), embed.section);
 			} ) );
 		}, error => {

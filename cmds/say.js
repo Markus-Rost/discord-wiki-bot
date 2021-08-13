@@ -1,3 +1,5 @@
+const {Permissions: {FLAGS}} = require('discord.js');
+
 /**
  * Processes the "say" command.
  * @param {import('../util/i18n.js')} lang - The user language.
@@ -21,13 +23,13 @@ function cmd_say(lang, msg, args, line, wiki) {
 	}
 	if ( text.trim() || imgs.length ) {
 		var allowedMentions = {parse:['users']};
-		if ( msg.member.hasPermission(['MENTION_EVERYONE']) ) allowedMentions.parse = ['users','roles','everyone'];
+		if ( msg.member.permissions.has(FLAGS.MENTION_EVERYONE) ) allowedMentions.parse = ['users','roles','everyone'];
 		else allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0,100)
-		msg.channel.send( text, {allowedMentions,files:imgs} ).then( () => msg.delete().catch(log_error), error => {
+		msg.channel.send( {content: text, allowedMentions, files: imgs} ).then( () => msg.delete().catch(log_error), error => {
 			log_error(error);
 			msg.reactEmoji('error', true);
 		} );
-	} else if ( !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+	} else if ( !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
 }
 
 module.exports = {

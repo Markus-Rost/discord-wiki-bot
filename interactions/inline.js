@@ -1,45 +1,33 @@
+const {Permissions: {FLAGS}} = require('discord.js');
 const logging = require('../util/logging.js');
 const Wiki = require('../util/wiki.js');
 const {got, limitLength, partialURIdecode, sendMessage} = require('../util/functions.js');
 
 /**
  * Post a message with inline wiki links.
- * @param {Object} interaction - The interaction.
- * @param {import('discord.js').Client} interaction.client - The client of the interaction.
+ * @param {import('discord.js').CommandInteraction} interaction - The interaction.
  * @param {import('../util/i18n.js')} lang - The user language.
  * @param {import('../util/wiki.js')} wiki - The wiki for the interaction.
- * @param {import('discord.js').TextChannel} [channel] - The channel for the interaction.
  */
-function slash_inline(interaction, lang, wiki, channel) {
-	var text = ( interaction.data.options?.[0]?.value || '' ).replace( /\]\(/g, ']\\(' );
+function slash_inline(interaction, lang, wiki) {
+	var text = ( interaction.options.getString('text') || '' ).replace( /\]\(/g, ']\\(' );
 	text = text.replace( /\x1F/g, '' ).replace( /(?<!@)\u200b/g, '' ).trim();
 	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
-		return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
-			data: {
-				type: 4,
-				data: {
-					content: lang.get('interaction.inline'),
-					allowed_mentions: {
-						parse: []
-					},
-					flags: 64
-				}
-			}
-		} ).catch(log_error);
+		return interaction.reply( {content: lang.get('interaction.inline'), ephemeral: true} ).catch(log_error);
 	}
-	var allowed_mentions = {
+	var allowedMentions = {
 		parse: ['users']
 	};
-	if ( interaction.guild_id ) {
-		if ( interaction.member.permissions.has('MENTION_EVERYONE') ) {
-			allowed_mentions.parse = ['users', 'roles', 'everyone'];
+	if ( interaction.inGuild() ) {
+		if ( interaction.member.permissions.has(FLAGS.MENTION_EVERYONE) ) {
+			allowedMentions.parse = ['users', 'roles', 'everyone'];
 		}
-		else if ( channel?.guild ) {
-			allowed_mentions.roles = channel.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
+		else if ( interaction.guild ) {
+			allowedMentions.roles = interaction.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		}
-		if ( channel?.guild && !interaction.member.permissions.has('USE_EXTERNAL_EMOJIS') ) {
+		if ( interaction.guild && !interaction.member.permissions.has(FLAGS.USE_EXTERNAL_EMOJIS) ) {
 			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
-				if ( channel.guild.emojis.cache.has(id) ) {
+				if ( interaction.guild.emojis.cache.has(id) ) {
 					return replacement;
 				}
 				return emoji;
@@ -49,22 +37,14 @@ function slash_inline(interaction, lang, wiki, channel) {
 	if ( text.length > 1800 ) text = text.substring(0, 1800) + '\u2026';
 	var message = {
 		content: text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
-			if ( channel?.guild?.emojis.cache.has(id) ) {
+			if ( interaction.guild?.emojis.cache.has(id) ) {
 				return replacement;
 			}
 			return emoji;
 		} ),
-		allowed_mentions
+		allowedMentions
 	};
-	return interaction.client.api.interactions(interaction.id, interaction.token).callback.post( {
-		data: {
-			type: 5,
-			data: {
-				allowed_mentions,
-				flags: 0
-			}
-		}
-	} ).then( () => {
+	return interaction.deferReply().then( () => {
 		var textReplacement = [];
 		var magiclinks = [];
 		var replacedText = text.replace( /(?<!\\)(?:<a?(:\w+:)\d+>|<#(\d+)>|<@!?(\d+)>|<@&(\d+)>|```.+?```|``.+?``|`.+?`)/gs, (replacement, emoji, textchannel, user, role) => {
@@ -73,18 +53,18 @@ function slash_inline(interaction, lang, wiki, channel) {
 			if ( emoji ) arg = emoji;
 			if ( textchannel ) {
 				let tempchannel = interaction.client.channels.cache.get(textchannel);
-				if ( tempchannel ) arg = '#' + tempchannel.name;
+				if ( tempchannel ) arg = '#' + ( tempchannel.name || 'deleted-channel' );
 			}
 			if ( user ) {
-				let tempuser = channel?.guild?.members.cache.get(user);
-				if ( tempuser ) arg = '@' + tempuser.displayName;
+				let tempmember = interaction.guild?.members.cache.get(user);
+				if ( tempmember ) arg = '@' + tempmember.displayName;
 				else {
-					tempuser = interaction.client.users.cache.get(user);
+					let tempuser = interaction.client.users.cache.get(user);
 					if ( tempuser ) arg = '@' + tempuser.username;
 				}
 			}
 			if ( role ) {
-				let temprole = channel?.guild?.roles.cache.get(role);
+				let temprole = interaction.guild?.roles.cache.get(role);
 				if ( temprole ) arg = '@' + temprole.name;
 			}
 			return '\x1F<replacement\x1F' + textReplacement.length + ( arg ? '\x1F' + arg : '' ) + '>\x1F';
@@ -127,7 +107,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 			}
 		} );
 		if ( !templates.length && !links.length && !magiclinks.length ) {
-			return sendMessage(interaction, message, channel);
+			return sendMessage(interaction, message);
 		}
 		return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( magiclinks.length ? '|allmessages&ammessages=pubmedurl|rfcurl&amenableparser=true' : '' ) + '&siprop=general&iwurl=true&titles=' + encodeURIComponent( [
 			...templates.map( link => link.title + '|' + link.template ),
@@ -142,9 +122,9 @@ function slash_inline(interaction, lang, wiki, channel) {
 				else {
 					console.log( '- ' + response.statusCode + ': Error while following the links: ' + body?.error?.info );
 				}
-				return sendMessage(interaction, message, channel);
+				return sendMessage(interaction, message);
 			}
-			logging(wiki, interaction.guild_id, 'slash', 'inline');
+			logging(wiki, interaction.guildId, 'slash', 'inline');
 			wiki.updateWiki(body.query.general);
 			if ( body.query.normalized ) {
 				body.query.normalized.forEach( title => {
@@ -211,7 +191,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 						link.url = wiki.toLink(title + '/' + link.isbn, '', '', true);
 					}
 					if ( link.url ) {
-						console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + link.type + ' ' + link.id );
+						console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + link.type + ' ' + link.id );
 						textReplacement[link.replacementId] = '[' + link.type + ' ' + link.id + '](<' + link.url + '>)';
 					}
 				} );
@@ -229,7 +209,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).trim();
 							let link = templates.find( link => link.raw === title );
 							if ( !link ) return fullLink;
-							console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
+							console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
 							if ( title.startsWith( 'int:' ) ) {
 								title = title.replace( /^int:\s*/, replacement => {
 									linkprefix += replacement;
@@ -245,7 +225,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).split('#')[0].trim();
 							let link = links.find( link => link.raw === title );
 							if ( !link ) return fullLink;
-							console.log( ( interaction.guild_id || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
+							console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
 							if ( display === undefined ) display = title.replace( /^\s*:?/, '' );
 							if ( !display.trim() ) {
 								display = title.replace( /^\s*:/, '' );
@@ -267,9 +247,9 @@ function slash_inline(interaction, lang, wiki, channel) {
 				} );
 				if ( text.length > 1900 ) text = limitLength(text, 1900, 100);
 				message.content = text;
-				return sendMessage(interaction, message, channel);
+				return sendMessage(interaction, message);
 			}
-			else return sendMessage(interaction, message, channel);
+			else return sendMessage(interaction, message);
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -277,7 +257,7 @@ function slash_inline(interaction, lang, wiki, channel) {
 			else {
 				console.log( '- Error while following the links: ' + error );
 			}
-			return sendMessage(interaction, message, channel);
+			return sendMessage(interaction, message);
 		} );
 	}, log_error );
 }

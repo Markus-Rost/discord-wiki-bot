@@ -104,10 +104,11 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				embed.setDescription( embed.backupDescription );
 			}
 		}
-		return msg.sendChannel( content, {embed} );
+		return msg.sendChannel( {content: content, embeds: [embed]} );
 	}
-	return msg.sendChannel( content, {
-		embed: new MessageEmbed(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )
+	return msg.sendChannel( {
+		content,
+		embeds: [new MessageEmbed(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )]
 	} ).then( message => {
 		if ( !message ) return;
 		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
@@ -160,7 +161,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				embed.setDescription( embed.backupDescription );
 			}
 		} ).then( () => {
-			return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+			return message.edit( {content, embeds: [embed]} ).catch(log_error);
 		} );
 		if ( !fragment && !embed.fields.length && infoboxes ) {
 			try {
@@ -393,7 +394,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
 		} ).then( () => {
-			return message.edit( content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+			return message.edit( {content, embeds: [embed]} ).catch(log_error);
 		} );
 	} );
 }

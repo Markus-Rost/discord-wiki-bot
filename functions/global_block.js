@@ -13,7 +13,7 @@ const {got, escapeFormatting} = require('../util/functions.js');
  * @param {String} [gender] - The gender of the user.
  */
 function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
-	if ( !msg || !msg.channel.isGuild() || !patreons[msg.guild?.id] || !wiki.isFandom() ) return;
+	if ( !msg || !msg.channel.isGuild() || !patreons[msg.guildId] || !wiki.isFandom() ) return;
 	
 	var isUser = true;
 	if ( !gender ) {
@@ -98,7 +98,7 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 			console.log( '- Error while getting the global edit count: ' + error );
 		} ) : undefined )
 	]).finally( () => {
-		msg.edit( spoiler + text + spoiler, {embed,allowedMentions:{parse:[]}} ).catch(log_error);
+		msg.edit( {content: spoiler + text + spoiler, embeds: [embed]} ).catch(log_error);
 	} );
 }
 

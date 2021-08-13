@@ -1,4 +1,4 @@
-const {MessageEmbed, Util, ShardClientUtil: {shardIDForGuildID}} = require('discord.js');
+const {MessageEmbed, Util, ShardClientUtil: {shardIdForGuildId}, Permissions: {FLAGS}} = require('discord.js');
 const {defaultSettings, defaultPermissions} = require('../util/default.json');
 const {escapeFormatting} = require('../util/functions.js');
 var db = require('../util/database.js');
@@ -15,24 +15,29 @@ var db = require('../util/database.js');
 async function cmd_get(lang, msg, args, line, wiki) {
 	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
 	if ( !/^\d+$/.test(id) ) {
-		if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.channel.isGuild() || !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
 	try {
-		var guild = await msg.client.shard.broadcastEval( `if ( this.guilds.cache.has('${id}') ) {
-			var guild = this.guilds.cache.get('${id}');
-			( {
-				name: guild.name, id: guild.id, memberCount: guild.memberCount,
-				ownerID: guild.ownerID, owner: guild.owner?.user?.tag,
-				channel: guild.publicUpdatesChannelID, icon: guild.iconURL({dynamic:true}),
-				permissions: guild.me.permissions.missing(${defaultPermissions}),
-				pause: global.pause.hasOwnProperty(guild.id), voice: global.voice.hasOwnProperty(guild.id),
-				shardId: global.shardId
-			} )
-		}`, shardIDForGuildID(id, msg.client.shard.count) );
+		var guild = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
+			if ( discordClient.guilds.cache.has(evalData.id) ) {
+				var guild = discordClient.guilds.cache.get(evalData.id);
+				return {
+					name: guild.name, id: guild.id, memberCount: guild.memberCount,
+					ownerId: guild.ownerId, owner: discordClient.users.cache.get(guild.ownerId)?.tag,
+					channel: guild.publicUpdatesChannelId, icon: guild.iconURL({dynamic:true}),
+					permissions: guild.me.permissions.missing(evalData.defaultPermissions),
+					pause: global.pause.hasOwnProperty(guild.id), voice: global.voice.hasOwnProperty(guild.id),
+					shardId: process.env.SHARDS
+				};
+			}
+		}, {
+			context: {id, defaultPermissions},
+			shard: shardIdForGuildId(id, msg.client.shard.count)
+		} );
 		if ( guild ) {
 			var guildname = ['Guild:', escapeFormatting(guild.name) + ' `' + guild.id + '`' + ( guild.pause ? '\\*' : '' )];
-			var guildowner = ['Owner:', ( guild.owner ? escapeFormatting(guild.owner) + ' ' : '' ) + '`' + guild.ownerID + '` <@' + guild.ownerID + '>'];
+			var guildowner = ['Owner:', ( guild.owner ? escapeFormatting(guild.owner) + ' ' : '' ) + '`' + guild.ownerId + '` <@' + guild.ownerId + '>'];
 			var guildsize = ['Size:', guild.memberCount + ' members'];
 			var guildshard = ['Shard:', guild.shardId];
 			var guildpermissions = ['Missing permissions:', ( guild.permissions.length ? '`' + guild.permissions.join('`, `') + '`' : '*none*' )];
@@ -55,41 +60,58 @@ async function cmd_get(lang, msg, args, line, wiki) {
 					if ( guild.channel ) embed.addField( guildchannel[0], guildchannel[1] );
 					var split = Util.splitMessage( guildsettings[1], {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
 					if ( split.length > 5 ) {
-						msg.sendChannel( '', {embed}, true );
-						msg.sendChannel( guildsettings.join(' '), {split:{char:',\n',prepend:'```json\n',append:',\n```'}}, true );
+						msg.sendChannel( {embeds: [embed]}, true );
+						Util.splitMessage( guildsettings.join(' '), {
+							char: ',\n',
+							maxLength: 2000,
+							prepend: '```json\n',
+							append: ',\n```'
+						} ).forEach( textpart => msg.sendChannel( textpart, true ) );
 					}
 					else {
-						split.forEach( guildsettingspart => embed.addField( guildsettings[0], guildsettingspart ) );
-						msg.sendChannel( '', {embed}, true );
+						split.forEach( textpart => embed.addField( guildsettings[0], textpart ) );
+						msg.sendChannel( {embeds: [embed]}, true );
 					}
 				}
 				else {
 					var text = guildname.join(' ') + '\n' + guildowner.join(' ') + '\n' + guildsize.join(' ') + '\n' + guildshard.join(' ') + '\n' + guildpermissions.join(' ') + ( guild.channel ? '\n' + guildchannel.join(' ') : '' ) + '\n' + guildsettings.join(' ');
-					msg.sendChannel( text, {split:{char:',\n',prepend:'```json\n',append:',\n```'}}, true );
+					Util.splitMessage( text, {
+						char: ',\n',
+						maxLength: 2000,
+						prepend: '```json\n',
+						append: ',\n```'
+					} ).forEach( textpart => msg.sendChannel( textpart, true ) );
 				}
 			} );
 		}
 		
-		var channel = await msg.client.shard.broadcastEval( `if ( this.channels.cache.filter( channel => channel.isGuild() || channel.type === 'category' ).has('${id}') ) {
-			var {name, id, type, parentID, guild: {name: guild, id: guildID, me}} = this.channels.cache.get('${id}');
-			( {
-				name, id, type, parentID, guild, guildID,
-				permissions: me.permissionsIn(id).missing(${defaultPermissions}),
-				pause: global.pause.hasOwnProperty(guildID),
-				shardId: global.shardId
-			} )
-		}` ).then( results => results.find( result => result ) );
+		var channel = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
+			if ( discordClient.channels.cache.filter( channel => channel.isGuild() || channel.type === 'GUILD_CATEGORY' ).has(evalData.id) ) {
+				var channel = discordClient.channels.cache.get(evalData.id);
+				return {
+					name: channel.name, id: channel.id, type: channel.type, parentId: channel.parentId,
+					isThread: channel.isThread(), threadParentId: channel.parent?.parentId,
+					guild: channel.guild.name, guildId: channel.guildId,
+					permissions: channel.guild.me.permissionsIn(channel.id).missing(evalData.defaultPermissions),
+					pause: global.pause.hasOwnProperty(channel.guildId),
+					shardId: process.env.SHARDS
+				};
+			}
+		}, {context: {id, defaultPermissions}} ).then( results => results.find( result => result ) );
 		if ( channel ) {
-			var channelguild = ['Guild:', escapeFormatting(channel.guild) + ' `' + channel.guildID + '`' + ( channel.pause ? '\\*' : '' )];
+			var channelguild = ['Guild:', escapeFormatting(channel.guild) + ' `' + channel.guildId + '`' + ( channel.pause ? '\\*' : '' )];
 			var channelname = ['Channel:', '#' + escapeFormatting(channel.name) + ' `' + channel.id + '` <#' + channel.id + '>'];
-			var channeldetails = ['Details:', '`' + channel.type + '`' + ( channel.parentID ? ' – `' + channel.parentID + '` <#' + channel.parentID + '>' : '' )];
+			var channeldetails = ['Details:', '`' + channel.type + '`' + ( channel.parentId ? ' – `' + channel.parentId + '` <#' + channel.parentId + '>' + ( channel.isThread ? ' – `' + channel.threadParentId + '` <#' + channel.threadParentId + '>' : '' ) : '' )];
 			var channelpermissions = ['Missing permissions:', ( channel.permissions.length ? '`' + channel.permissions.join('`, `') + '`' : '*none*' )];
 			var channellang = ['Language:', '*unknown*'];
 			var channelwiki = ['Default Wiki:', '*unknown*'];
 			var channelrole = ['Minimal Role:', '*unknown*'];
 			var channelinline = ['Inline commands:', '*unknown*'];
 			
-			return db.query( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', [channel.guildID, channel.id, '#' + ( channel.type === 'category' ? channel.id : channel.parentID )] ).then( ({rows:[row]}) => {
+			let sqlargs = [channel.guildId];
+			if ( channel.isThread ) sqlargs.push(channel.parentId, '#' + channel.threadParentId);
+			else sqlargs.push(channel.id, '#' + ( channel.type === 'GUILD_CATEGORY' ? channel.id : channel.parentId ));
+			return db.query( 'SELECT wiki, lang, role, inline FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 				if ( row ) {
 					channellang[1] = row.lang;
 					channelwiki[1] = row.wiki;
@@ -113,7 +135,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				else {
 					text += channelguild.join(' ') + '\n' + channelname.join(' ') + '\n' + channeldetails.join(' ') + '\n' + channelpermissions.join(' ') + '\n' + channellang.join(' ') + '\n' + channelwiki[0] + ' <' + channelwiki[1] + '>\n' + channelrole.join(' ') + '\n' + channelinline.join(' ');
 				}
-				msg.sendChannel( text, {embed}, true );
+				msg.sendChannel( {content: text, embeds: [embed]}, true );
 			} );
 		}
 		
@@ -121,15 +143,17 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		if ( user ) {
 			var username = ['User:', escapeFormatting(user.tag) + ' `' + user.id + '` <@' + user.id + '>'];
 			var guildlist = ['Guilds:', '*none*'];
-			var guilds = await msg.client.shard.broadcastEval( `this.guilds.cache.filter( guild => guild.members.cache.has('${user.id}') ).map( guild => {
-				var member = guild.members.cache.get('${user.id}');
-				return {
-					name: guild.name,
-					id: guild.id,
-					isAdmin: member.permissions.has('MANAGE_GUILD'),
-					shardId: global.shardId
-				}
-			} )` ).then( results => {
+			var guilds = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
+				return discordClient.guilds.cache.filter( guild => guild.members.cache.has(evalData.user) ).map( guild => {
+					var member = guild.members.cache.get(evalData.user);
+					return {
+						name: guild.name,
+						id: guild.id,
+						isAdmin: member.permissions.has(evalData.MANAGE_GUILD),
+						shardId: process.env.SHARDS
+					}
+				} );
+			}, {context: {user: user.id, MANAGE_GUILD: FLAGS.MANAGE_GUILD.toString()}} ).then( results => {
 				return results.reduce( (acc, val) => acc.concat(val), [] ).map( user_guild => {
 					return escapeFormatting(user_guild.name) + ' `' + user_guild.id + '`' + ( user_guild.isAdmin ? '\\*' : '' );
 				} );
@@ -140,10 +164,10 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var embed = null;
 			if ( msg.showEmbed() ) embed = new MessageEmbed().setThumbnail( user.displayAvatarURL({dynamic:true}) ).addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
 			else text += username.join(' ') + '\n' + guildlist.join('\n');
-			return msg.sendChannel( text, {embed}, true );
+			return msg.sendChannel( {content: text, embeds: [embed]}, true );
 		}
 		
-		msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', {}, true );
+		msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', true );
 	} catch ( error ) {
 		log_error(error);
 		msg.reactEmoji('error');

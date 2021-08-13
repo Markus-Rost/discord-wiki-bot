@@ -33,7 +33,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		logging(wiki, msg.guild?.id, 'overview');
+		logging(wiki, msg.guildId, 'overview');
 		var version = [lang.get('overview.version'), body.query.general.generator];
 		var creation_date = null;
 		var created = [lang.get('overview.created'), lang.get('overview.unknown'), ''];
@@ -234,7 +234,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 					text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 				}
 				
-				msg.sendChannel( spoiler + text + spoiler, {embed} );
+				msg.sendChannel( {content: spoiler + text + spoiler, embeds: [embed]} );
 				
 				if ( reaction ) reaction.removeEmoji();
 			} );
@@ -253,7 +253,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 			text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 		}
 		
-		msg.sendChannel( spoiler + text + spoiler, {embed} );
+		msg.sendChannel( {content: spoiler + text + spoiler, embeds: [embed]} );
 		
 		if ( reaction ) reaction.removeEmoji();
 	}, error => {

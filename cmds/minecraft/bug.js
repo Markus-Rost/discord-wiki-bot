@@ -73,7 +73,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 					if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
 						fixed = '\n' + lang.get('minecraft.fixed', body.fields.fixVersions.length) + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
 					}
-					msg.sendChannel( spoiler + '**' + ( statusList?.[status] || status ) + '**: ' + escapeFormatting(body.fields.summary) + '\n<' + baseBrowseUrl + body.key + '>' + fixed + spoiler, {embed} );
+					msg.sendChannel( {content: spoiler + '**' + ( statusList?.[status] || status ) + '**: ' + escapeFormatting(body.fields.summary) + '\n<' + baseBrowseUrl + body.key + '>' + fixed + spoiler, embeds: [embed]} );
 				}
 			}
 		}, error => {
@@ -128,7 +128,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 						}
 					}
 					var total = '**' + args.join(' ') + ':** ' + lang.get('minecraft.total', body.total.toLocaleString(lang.get('dateformat')), body.total);
-					msg.sendChannel( spoiler + total + '\n<' + uri + '>' + spoiler, {embed} );
+					msg.sendChannel( {content: spoiler + total + '\n<' + uri + '>' + spoiler, embeds: [embed]} );
 				}
 			}
 		}, error => {

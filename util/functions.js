@@ -8,8 +8,6 @@ const got = require('got').extend( {
 	responseType: 'json'
 } );
 
-const slashCommands = require('../interactions/commands.json');
-
 /**
  * @type {Map<String, {state: String, wiki: String, channel: import('discord.js').TextChannel, user: String}>}
  */
@@ -432,7 +430,7 @@ function partialURIdecode(m) {
  * @param {String} author - The user id.
  */
 function allowDelete(msg, author) {
-	msg.awaitReactions( (reaction, user) => reaction.emoji.name === '🗑️' && user.id === author, {max:1,time:300000} ).then( reaction => {
+	msg?.awaitReactions?.( {filter: (reaction, user) => ( reaction.emoji.name === '🗑️' && user.id === author ), max: 1, time: 300000} ).then( reaction => {
 		if ( reaction.size ) {
 			msg.delete().catch(log_error);
 		}
@@ -441,28 +439,21 @@ function allowDelete(msg, author) {
 
 /**
  * Sends an interaction response.
- * @param {Object} interaction - The interaction.
- * @param {Object} message - The message.
- * @param {String} message.content - The message content.
- * @param {{parse: String[], roles?: String[], users?: String[]}} message.allowed_mentions - The allowed mentions.
- * @param {import('discord.js').TextChannel} channel - The channel for the interaction.
+ * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction} interaction - The interaction.
+ * @param {import('discord.js').MessageOptions} message - The message.
  * @param {Boolean} [letDelete] - Let the interaction user delete the message.
  * @returns {Promise<import('discord.js').Message?>}
  */
-function sendMessage(interaction, message, channel, letDelete = true) {
-	return interaction.client.api.webhooks(interaction.application_id, interaction.token).messages('@original').patch( {
-		data: message
-	} ).then( msg => {
-		if ( !channel ) return;
-		var responseMessage = channel.messages.add(msg);
-		if ( letDelete ) allowDelete(responseMessage, ( interaction.member?.user.id || interaction.user.id ));
-		return responseMessage;
+function sendMessage(interaction, message, letDelete = true) {
+	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
+	return interaction.editReply( message ).then( msg => {
+		if ( letDelete && (msg.flags & 64) !== 64 ) allowDelete(msg, interaction.user.id);
+		return msg;
 	}, log_error );
 };
 
 module.exports = {
 	got,
-	slashCommands,
 	oauthVerify,
 	parse_infobox,
 	toFormatting,

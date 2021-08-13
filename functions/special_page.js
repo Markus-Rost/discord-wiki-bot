@@ -167,7 +167,7 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 		overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query);
 		return;
 	}
-	logging(wiki, msg.guild?.id, 'general', 'special');
+	logging(wiki, msg.guildId, 'general', 'special');
 	if ( !msg.showEmbed() || noEmbed ) {
 		msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler );
 		
@@ -175,7 +175,7 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 		return;
 	}
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
-		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg?.guild?.id] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
+		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg.guildId] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
 	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		var body = response.body;
@@ -199,7 +199,7 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 			if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 			embed.setDescription( description );
 		}
-		if ( msg.channel.isGuild() && patreons[msg.guild?.id] && querypages.hasOwnProperty(specialpage) ) {
+		if ( msg.channel.isGuild() && patreons[msg.guildId] && querypages.hasOwnProperty(specialpage) ) {
 			var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 			embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			if ( body.query.querypage.cached !== undefined ) {
@@ -209,7 +209,7 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 	}, error => {
 		console.log( '- Error while getting the special page: ' + error );
 	} ).finally( () => {
-		msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler, {embed} );
+		msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );

@@ -13,9 +13,10 @@ function cmd_invite(lang, msg, args, line, wiki) {
 		this.LINK(lang, msg, line, wiki);
 	} else {
 		msg.client.generateInvite({
+			scopes: ['bot', 'applications.commands'],
 			permissions: defaultPermissions
 		}).then( invite => {
-			msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '+applications.commands' + '>' );
+			msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '>' );
 		}, log_error );
 	}
 }

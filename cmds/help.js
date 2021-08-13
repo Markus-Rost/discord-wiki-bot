@@ -1,3 +1,4 @@
+const {Util} = require('discord.js');
 const help_server = require('../functions/helpserver.js');
 const {wikis: mcw} = require('./minecraft/commands.json');
 
@@ -79,7 +80,7 @@ const restrictions = {
  * @param {import('../util/wiki.js')} wiki - The wiki for the message.
  */
 function cmd_help(lang, msg, args, line, wiki) {
-	if ( msg.channel.isGuild() && pause[msg.guild.id] && ( args.join('') || !msg.isAdmin() ) ) return;
+	if ( msg.channel.isGuild() && pause[msg.guildId] && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
 	var isMinecraft = mcw.hasOwnProperty(wiki.href);
 	var maxLength = ( ['hi', 'bn'].includes( lang.lang ) ? 480 : 2000 );
@@ -96,17 +97,17 @@ function cmd_help(lang, msg, args, line, wiki) {
 				if ( process.env.READONLY ) cmdlist = msg.author.toString() + ', ' + lang.get('general.readonly') + '\n' + process.env.invite + '\n\n' + cmdlist;
 				cmdlist += formathelp(helplist.admin, msg, lang);
 				cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
-				if ( process.env.dashboard ) cmdlist += '\n\t\t' + new URL(( msg.channel.isGuild() ? `/guild/${msg.guild.id}/settings` : '/' ), process.env.dashboard).href;
-				msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
+				if ( process.env.dashboard ) cmdlist += '\n\t\t' + new URL(( msg.channel.isGuild() ? `/guild/${msg.guildId}/settings` : '/' ), process.env.dashboard).href;
+				Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 			}
 			else {
-				msg.replyMsg( lang.get('help.noadmin') );
+				msg.replyMsg( {content: lang.get('help.noadmin'), allowedMentions: {repliedUser: false}} );
 			}
 		}
 		else if ( cmd === 'minecraft' ) {
 			var cmdlist = '<' + ( isMinecraft ? wiki : 'https://minecraft.fandom.com/' ) + '>\n';
 			cmdlist += formathelp(helplist.minecraft, msg, lang);
-			msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
+			Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 		}
 		else if ( helpmap.hasOwnProperty(cmd) && 
 		( !restrictions.fandom.includes( cmd ) || wiki.isFandom(false) ) && 
@@ -114,14 +115,14 @@ function cmd_help(lang, msg, args, line, wiki) {
 		( !restrictions.admin.includes( cmd ) || msg.isAdmin() ) ) {
 			var cmdlist = formathelp(helpmap[cmd], msg, lang);
 			if ( !cmdlist.length ) msg.reactEmoji('❓');
-			else msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
+			else Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 		}
 		else msg.reactEmoji('❓');
 	}
-	else if ( msg.isAdmin() && pause[msg.guild.id] ) {
+	else if ( msg.isAdmin() && pause[msg.guildId] ) {
 		var cmdlist = lang.get('help.pause') + '\n';
 		cmdlist += formathelp(helplist.pause, msg, lang);
-		msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}}, true );
+		Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 	}
 	else {
 		var cmdlist = lang.get('help.all') + '\n';
@@ -132,7 +133,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			}
 		} );
 		cmdlist += '\n🔸 ' + lang.get('help.footer');
-		msg.sendChannel( cmdlist, {split:{char:'\n🔹',prepend:'🔹',maxLength}} );
+		Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 	}
 }
 
@@ -143,12 +144,12 @@ function cmd_help(lang, msg, args, line, wiki) {
  * @param {import('../util/i18n.js')} lang - The user language.
  */
 function formathelp(messages, msg, lang) {
-	var prefix = ( msg.channel.isGuild() && patreons[msg.guild.id] || process.env.prefix );
+	var prefix = ( msg.channel.isGuild() && patreons[msg.guildId] || process.env.prefix );
 	var mention = '@' + ( msg.channel.isGuild() ? msg.guild.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
 		if ( !restrictions.patreon.includes( message ) ) return true;
-		return ( msg.channel.isGuild() && patreons[msg.guild.id] );
+		return ( msg.channel.isGuild() && patreons[msg.guildId] );
 	} ).map( message => {
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );

@@ -24,7 +24,7 @@ const {got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting} = require(
  */
 function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
-		logging(wiki, msg.guild?.id, 'user', 'ip');
+		logging(wiki, msg.guildId, 'user', 'ip');
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.blocks || fragment ) {
@@ -215,7 +215,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				} );
 			}
 			
-			if ( msg.channel.isGuild() && patreons[msg.guild?.id] && wiki.isFandom() ) {
+			if ( msg.channel.isGuild() && patreons[msg.guildId] && wiki.isFandom() ) {
 				if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 				else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 
@@ -229,14 +229,14 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			if ( reaction ) reaction.removeEmoji();
 		} );
 	}, error => {
-		logging(wiki, msg.guild?.id, 'user', 'ip');
+		logging(wiki, msg.guildId, 'user', 'ip');
 		console.log( '- Error while getting the search results: ' + error );
 		msg.sendChannelError( spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring, fragment) + '>' + spoiler );
 		
 		if ( reaction ) reaction.removeEmoji();
 	} );
 
-	logging(wiki, msg.guild?.id, 'user');
+	logging(wiki, msg.guildId, 'user');
 	got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warn(body.warnings);
@@ -564,7 +564,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					else text += '\n\n**' + block.header + '**\n' + block.text;
 				}
 				
-				if ( msg.channel.isGuild() && patreons[msg.guild?.id] ) {
+				if ( msg.channel.isGuild() && patreons[msg.guildId] ) {
 					if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 					else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 					

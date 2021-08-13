@@ -15,7 +15,7 @@ const got = require('got').extend( {
 	},
 	responseType: 'json'
 } );
-const {ShardingManager, ShardClientUtil: {shardIDForGuildID}} = require('discord.js');
+const {ShardingManager, ShardClientUtil: {shardIdForGuildId}} = require('discord.js');
 const manager = new ShardingManager( './bot.js', {
 	execArgv: ['--icu-data-dir=node_modules/full-icu'],
 	shardArgs: ( isDebug ? ['debug'] : [] ),
@@ -28,11 +28,6 @@ manager.on( 'shardCreate', shard => {
 	
 	shard.on( 'spawn', () => {
 		console.log( `- Shard[${shard.id}]: Spawned` );
-		shard.send( {
-			shard: {
-				id: shard.id
-			}
-		} );
 	} );
 	
 	shard.on( 'message', message => {
@@ -47,7 +42,9 @@ manager.on( 'shardCreate', shard => {
 		if ( message === 'toggleDebug' ) {
 			console.log( '\n- Toggle debug logging for all shards!\n' );
 			isDebug = !isDebug;
-			manager.broadcastEval( `global.isDebug = !global.isDebug` );
+			manager.broadcastEval( () => {
+				global.isDebug = !global.isDebug;
+			} );
 			if ( typeof server !== 'undefined' ) server.send( 'toggleDebug' );
 		}
 		if ( message === 'postStats' && process.env.botlist ) postStats();
@@ -65,7 +62,7 @@ manager.on( 'shardCreate', shard => {
 	} );
 } );
 
-manager.spawn(manager.totalShards, 5500, 60000).then( shards => {
+manager.spawn({timeout: 60000}).then( shards => {
 	if ( !isDebug && process.env.botlist ) {
 		var botList = JSON.parse(process.env.botlist);
 		for ( let [key, value] of Object.entries(botList) ) {
@@ -83,7 +80,7 @@ manager.spawn(manager.totalShards, 5500, 60000).then( shards => {
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		process.exit(1);
 	}
-	else manager.spawn(manager.totalShards, 5500, -1).catch( error2 => {
+	else manager.spawn({timeout: -1}).catch( error2 => {
 		console.error( '- Error while spawning the shards: ' + error2 );
 		manager.respawn = false;
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
@@ -97,6 +94,147 @@ if ( process.env.dashboard ) {
 	const dashboard = child_process.fork('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
 	server = dashboard;
 
+	const evalFunctions = {
+		getGuilds: (discordClient, evalData) => {
+			return Promise.all(
+				evalData.guilds.map( id => {
+					if ( discordClient.guilds.cache.has(id) ) {
+						let guild = discordClient.guilds.cache.get(id);
+						return guild.members.fetch(evalData.member).then( member => {
+							return {
+								patreon: global.patreons.hasOwnProperty(guild.id),
+								memberCount: guild.memberCount,
+								botPermissions: guild.me.permissions.bitfield.toString(),
+								channels: guild.channels.cache.filter( channel => {
+									return ( channel.isGuild(false) || channel.type === 'GUILD_CATEGORY' );
+								} ).sort( (a, b) => {
+									let aVal = a.rawPosition + 1;
+									if ( a.type === 'GUILD_CATEGORY' ) aVal *= 1000;
+									else if ( !a.parent ) aVal -= 1000;
+									else aVal += ( a.parent.rawPosition + 1 ) * 1000;
+									let bVal = b.rawPosition + 1;
+									if ( b.type === 'GUILD_CATEGORY' ) bVal *= 1000;
+									else if ( !b.parent ) bVal -= 1000;
+									else bVal += ( b.parent.rawPosition + 1 ) * 1000;
+									return aVal - bVal;
+								} ).map( channel => {
+									return {
+										id: channel.id,
+										name: channel.name,
+										isCategory: ( channel.type === 'GUILD_CATEGORY' ),
+										userPermissions: member.permissionsIn(channel).bitfield.toString(),
+										botPermissions: guild.me.permissionsIn(channel).bitfield.toString()
+									};
+								} ),
+								roles: guild.roles.cache.filter( role => {
+									return ( role.id !== guild.id );
+								} ).sort( (a, b) => {
+									return b.rawPosition - a.rawPosition;
+								} ).map( role => {
+									return {
+										id: role.id,
+										name: role.name,
+										lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
+									};
+								} ),
+								locale: guild.preferredLocale
+							};
+						}, error => {
+							return 'noMember';
+						} );
+					}
+				} )
+			)
+		},
+		getMember: (discordClient, evalData) => {
+			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				let guild = discordClient.guilds.cache.get(evalData.guild);
+				return guild.members.fetch(evalData.member).then( member => {
+					var response = {
+						patreon: global.patreons.hasOwnProperty(guild.id),
+						userPermissions: member.permissions.bitfield.toString(),
+						botPermissions: guild.me.permissions.bitfield.toString()
+					};
+					if ( evalData.channel ) {
+						let channel = guild.channels.cache.get(evalData.channel);
+						if ( channel?.isGuild(false) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
+							response.userPermissions = channel.permissionsFor(member).bitfield.toString();
+							response.botPermissions = channel.permissionsFor(guild.me).bitfield.toString();
+							response.isCategory = ( channel.type === 'GUILD_CATEGORY' );
+							response.parentId = channel.parentId;
+						}
+						else response.message = 'noChannel';
+					}
+					if ( evalData.newchannel ) {
+						let newchannel = guild.channels.cache.get(evalData.newchannel);
+						if ( newchannel?.isGuild(false) ) {
+							response.userPermissionsNew = newchannel.permissionsFor(member).bitfield.toString();
+							response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield.toString();
+						}
+						else response.message = 'noChannel';
+					}
+					return response;
+				}, error => {
+					return 'noMember';
+				} );
+			}
+		},
+		notifyGuild: (discordClient, evalData) => {
+			if ( evalData.prefix ) {
+				global.patreons[evalData.guild] = evalData.prefix;
+			}
+			if ( evalData.voice && global.voice.hasOwnProperty(evalData.guild) ) {
+				global.voice[evalData.guild] = evalData.voice;
+			}
+			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				let channel = discordClient.guilds.cache.get(evalData.guild).publicUpdatesChannel;
+				if ( channel ) channel.send( {
+					content: evalData.text,
+					embeds: [evalData.embed],
+					files: evalData.file,
+					allowedMentions: {parse: []}
+				} ).catch(log_error);
+			}
+		},
+		createWebhook: (discordClient, evalData) => {
+			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				let channel = discordClient.guilds.cache.get(evalData.guild).channels.cache.get(evalData.channel);
+				if ( channel ) return channel.createWebhook( evalData.name, {
+					avatar: ( evalData.avatar || discordClient.user.displayAvatarURL({format:'png',size:4096}) ),
+					reason: evalData.reason
+				} ).then( webhook => {
+					console.log( `- Dashboard: Webhook successfully created: ${evalData.guild}#${evalData.channel}` );
+					webhook.send( evalData.text ).catch(log_error);
+					return webhook.id + '/' + webhook.token;
+				}, error => {
+					console.log( '- Dashboard: Error while creating the webhook: ' + error );
+				} );
+			}
+		},
+		editWebhook: (discordClient, evalData) => {
+			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				return discordClient.fetchWebhook(...evalData.webhook.split('/')).then( webhook => {
+					var changes = {};
+					if ( evalData.channel ) changes.channel = evalData.channel;
+					if ( evalData.name ) changes.name = evalData.name;
+					if ( evalData.avatar ) changes.avatar = evalData.avatar;
+					return webhook.edit( changes, evalData.reason ).then( newwebhook => {
+						console.log( `- Dashboard: Webhook successfully edited: ${evalData.guild}#` + ( evalData.channel || webhook.channelId ) );
+						webhook.send( evalData.text ).catch(log_error);
+						return true;
+					}, error => {
+						console.log( '- Dashboard: Error while editing the webhook: ' + error );
+					} );
+				}, error => {
+					console.log( '- Dashboard: Error while editing the webhook: ' + error );
+				} );
+			}
+		},
+		verifyUser: (discordClient, evalData) => {
+			global.verifyOauthUser(evalData.state, evalData.access_token);
+		}
+	};
+
 	dashboard.on( 'message', message => {
 		if ( message.id ) {
 			var data = {
@@ -106,55 +244,7 @@ if ( process.env.dashboard ) {
 			};
 			switch ( message.data.type ) {
 				case 'getGuilds':
-					return manager.broadcastEval(`Promise.all(
-						${JSON.stringify(message.data.guilds)}.map( id => {
-							if ( this.guilds.cache.has(id) ) {
-								let guild = this.guilds.cache.get(id);
-								return guild.members.fetch(${JSON.stringify(message.data.member)}).then( member => {
-									return {
-										patreon: global.patreons.hasOwnProperty(guild.id),
-										memberCount: guild.memberCount,
-										botPermissions: guild.me.permissions.bitfield,
-										channels: guild.channels.cache.filter( channel => {
-											return ( channel.isGuild() || channel.type === 'category' );
-										} ).sort( (a, b) => {
-											let aVal = a.rawPosition + 1;
-											if ( a.type === 'category' ) aVal *= 1000;
-											else if ( !a.parent ) aVal -= 1000;
-											else aVal += ( a.parent.rawPosition + 1 ) * 1000;
-											let bVal = b.rawPosition + 1;
-											if ( b.type === 'category' ) bVal *= 1000;
-											else if ( !b.parent ) bVal -= 1000;
-											else bVal += ( b.parent.rawPosition + 1 ) * 1000;
-											return aVal - bVal;
-										} ).map( channel => {
-											return {
-												id: channel.id,
-												name: channel.name,
-												isCategory: ( channel.type === 'category' ),
-												userPermissions: member.permissionsIn(channel).bitfield,
-												botPermissions: guild.me.permissionsIn(channel).bitfield
-											};
-										} ),
-										roles: guild.roles.cache.filter( role => {
-											return ( role.id !== guild.id );
-										} ).sort( (a, b) => {
-											return b.rawPosition - a.rawPosition;
-										} ).map( role => {
-											return {
-												id: role.id,
-												name: role.name,
-												lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
-											};
-										} ),
-										locale: guild.preferredLocale
-									};
-								}, error => {
-									return 'noMember';
-								} )
-							}
-						} )
-					)`).then( results => {
+					return manager.broadcastEval( evalFunctions.getGuilds, {context: message.data} ).then( results => {
 						data.response = message.data.guilds.map( (guild, i) => {
 							return results.find( result => result[i] )?.[i];
 						} );
@@ -165,37 +255,12 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'getMember':
-					return manager.broadcastEval(`if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
-						let guild = this.guilds.cache.get(${JSON.stringify(message.data.guild)});
-						guild.members.fetch(${JSON.stringify(message.data.member)}).then( member => {
-							var response = {
-								patreon: global.patreons.hasOwnProperty(guild.id),
-								userPermissions: member.permissions.bitfield,
-								botPermissions: guild.me.permissions.bitfield
-							};
-							if ( ${JSON.stringify(message.data.channel)} ) {
-								let channel = guild.channels.cache.get(${JSON.stringify(message.data.channel)});
-								if ( channel?.isText() || ( response.patreon && ${JSON.stringify(message.data.allowCategory)} && channel?.type === 'category' ) ) {
-									response.userPermissions = channel.permissionsFor(member).bitfield;
-									response.botPermissions = channel.permissionsFor(guild.me).bitfield;
-									response.isCategory = ( channel.type === 'category' );
-									response.parentID = channel.parentID;
-								}
-								else response.message = 'noChannel';
-							}
-							if ( ${JSON.stringify(message.data.newchannel)} ) {
-								let newchannel = guild.channels.cache.get(${JSON.stringify(message.data.newchannel)});
-								if ( newchannel?.isText() ) {
-									response.userPermissionsNew = newchannel.permissionsFor(member).bitfield;
-									response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield;
-								}
-								else response.message = 'noChannel';
-							}
-							return response;
-						}, error => {
-							return 'noMember';
-						} );
-					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
+				case 'createWebhook':
+				case 'editWebhook':
+					return manager.broadcastEval( evalFunctions[message.data.type], {
+						context: message.data,
+						shard: shardIdForGuildId(message.data.guild, manager.totalShards)
+					} ).then( result => {
 						data.response = result;
 					}, error => {
 						data.error = error.toString();
@@ -204,73 +269,17 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'notifyGuild':
-					return manager.broadcastEval(`if ( ${JSON.stringify(message.data.prefix)} ) {
-						global.patreons[${JSON.stringify(message.data.guild)}] = ${JSON.stringify(message.data.prefix)};
-					}
-					if ( ${JSON.stringify(message.data.voice)} && global.voice.hasOwnProperty(${JSON.stringify(message.data.guild)}) ) {
-						global.voice[${JSON.stringify(message.data.guild)}] = ${JSON.stringify(message.data.voice)};
-					}
-					if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
-						let channel = this.guilds.cache.get(${JSON.stringify(message.data.guild)}).publicUpdatesChannel;
-						if ( channel ) channel.send( ${JSON.stringify(message.data.text)}, {
-							embed: ${JSON.stringify(message.data.embed)},
-							files: ${JSON.stringify(message.data.file)},
-							allowedMentions: {parse: []}, split: true
-						} ).catch( error => {} );
-					}`).catch( error => {
-						data.error = error.toString();
-					} ).finally( () => {
-						return dashboard.send( {id: message.id, data} );
-					} );
-					break;
-				case 'createWebhook':
-					return manager.broadcastEval(`if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
-						let channel = this.guilds.cache.get(${JSON.stringify(message.data.guild)}).channels.cache.get(${JSON.stringify(message.data.channel)});
-						if ( channel ) channel.createWebhook( ${JSON.stringify(message.data.name)}, {
-							avatar: ( ${JSON.stringify(message.data.avatar)} || this.user.displayAvatarURL({format:'png',size:4096}) ),
-							reason: ${JSON.stringify(message.data.reason)}
-						} ).then( webhook => {
-							console.log( '- Dashboard: Webhook successfully created: ${message.data.guild}#${message.data.channel}' );
-							webhook.send( ${JSON.stringify(message.data.text)} ).catch(log_error);
-							return webhook.id + '/' + webhook.token;
-						}, error => {
-							console.log( '- Dashboard: Error while creating the webhook: ' + error );
-						} );
-					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
-						data.response = result;
-					}, error => {
-						data.error = error.toString();
-					} ).finally( () => {
-						return dashboard.send( {id: message.id, data} );
-					} );
-					break;
-				case 'editWebhook':
-					return manager.broadcastEval(`if ( this.guilds.cache.has(${JSON.stringify(message.data.guild)}) ) {
-						this.fetchWebhook(...${JSON.stringify(message.data.webhook.split('/'))}).then( webhook => {
-							var changes = {};
-							if ( ${JSON.stringify(message.data.channel)} ) changes.channel = ${JSON.stringify(message.data.channel)};
-							if ( ${JSON.stringify(message.data.name)} ) changes.name = ${JSON.stringify(message.data.name)};
-							if ( ${JSON.stringify(message.data.avatar)} ) changes.avatar = ${JSON.stringify(message.data.avatar)};
-							return webhook.edit( changes, ${JSON.stringify(message.data.reason)} ).then( newwebhook => {
-								console.log( '- Dashboard: Webhook successfully edited: ${message.data.guild}#' + ( ${JSON.stringify(message.data.channel)} || webhook.channelID ) );
-								webhook.send( ${JSON.stringify(message.data.text)} ).catch(log_error);
-								return true;
-							}, error => {
-								console.log( '- Dashboard: Error while editing the webhook: ' + error );
-							} );
-						}, error => {
-							console.log( '- Dashboard: Error while editing the webhook: ' + error );
-						} );
-					}`, shardIDForGuildID(message.data.guild, manager.totalShards)).then( result => {
-						data.response = result;
-					}, error => {
+					return manager.broadcastEval( evalFunctions.notifyGuild, {context: message.data} ).catch( error => {
 						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );
 					} );
 					break;
 				case 'verifyUser':
-					return manager.broadcastEval(`global.verifyOauthUser(${JSON.stringify(message.data.state)}, ${JSON.stringify(message.data.access_token)})`, message.data.state.split(' ')[1][0]).catch( error => {
+					return manager.broadcastEval( evalFunctions.verifyUser, {
+						context: message.data,
+						shard: message.data.state.split(' ')[1][0]
+					} ).catch( error => {
 						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );

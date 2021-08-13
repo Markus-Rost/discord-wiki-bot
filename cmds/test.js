@@ -25,19 +25,19 @@ const wsStatus = [
  */
 function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
-		if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.channel.isGuild() || !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
 	}
-	else if ( !msg.channel.isGuild() || !pause[msg.guild.id] ) {
+	else if ( !msg.channel.isGuild() || !pause[msg.guildId] ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 		let textList = lang.get('test.text').filter( text => text.trim() );
 		var text = ( textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0') );
 		if ( process.env.READONLY ) text = lang.get('general.readonly') + '\n' + process.env.invite;
-		console.log( '- Test[' + global.shardId + ']: Fully functioning!' );
+		console.log( '- Test[' + process.env.SHARDS + ']: Fully functioning!' );
 		var now = Date.now();
 		msg.replyMsg( text ).then( message => {
 			if ( !message ) return;
 			var then = Date.now();
-			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + global.shardId ).addField( 'Discord', ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms' );
+			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms' );
 			now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: 10000
@@ -60,13 +60,13 @@ function cmd_test(lang, msg, args, line, wiki) {
 					}
 				}
 				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() ) {
-					logging(wiki, msg.guild?.id, 'test');
+					logging(wiki, msg.guildId, 'test');
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						notice.push(lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator));
 					}
 				}
-				else logging(wiki, msg.guild?.id, 'test');
+				else logging(wiki, msg.guildId, 'test');
 				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
 			}, error => {
 				then = Date.now();
@@ -87,15 +87,15 @@ function cmd_test(lang, msg, args, line, wiki) {
 					return '```js\n' + error + '\n```';
 				} ).then( shards => {
 					embed.addField( 'Shards', shards );
-					message.edit( message.content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+					message.edit( {content: message.content, embeds: [embed]} ).catch(log_error);
 				} );
-				message.edit( message.content, {embed,allowedMentions:{users:[msg.author.id]}} ).catch(log_error);
+				message.edit( {content: message.content, embeds: [embed]} ).catch(log_error);
 			} );
 		} );
 	}
 	else {
 		console.log( '- Test: Paused!' );
-		msg.replyMsg( lang.get('test.pause'), {}, true );
+		msg.replyMsg( lang.get('test.pause'), true );
 	}
 }
 
