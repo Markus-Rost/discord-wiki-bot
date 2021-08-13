@@ -103,24 +103,24 @@
             "title": "Verifizierungen nicht eingerichtet!"
         },
         "oauth": {
-            "text": "Dein Wiki Account wurde erfolgreich mit dem Wiki-Bot verbunden.",
+            "text": "Dein Wiki-Account wurde erfolgreich mit dem Wiki-Bot verbunden.",
             "title": "Account erfolgreich verbunden!"
         },
         "oauthfail": {
-            "text": "Dein Wiki Account konnte nicht verbunden werden, versuche es noch einmal.",
+            "text": "Dein Wiki-Account konnte nicht verbunden werden, versuche es noch einmal.",
             "title": "Verbindung fehlgeschlagen!"
         },
         "oauthlogin": {
-            "text": "Bitte melde dich an, wenn du nicht möchtest, das Wiki-Bot deinen Wiki Account speichert.",
-            "title": "Dein verbundener Wiki Account wurde gespeichert!"
+            "text": "Bitte melde dich an, wenn du nicht möchtest, das Wiki-Bot deinen Wiki-Account speichert.",
+            "title": "Dein verbundener Wiki-Account wurde gespeichert!"
         },
         "oauthother": {
-            "note": "Wechsel Accounts.",
-            "text": "Denke daran, das dein Wiki Account mit einem anderen Discord account verbunden wurde, als dem du gerade angemeldet bist.",
+            "note": "Accounts wechseln.",
+            "text": "Bitte beachte, dass dein Wiki-Account mit einem anderen Discord-Account verbunden wurde, als der mit dem du gerade angemeldet bist.",
             "title": "Account erfolgreich verbunden!"
         },
         "oauthverify": {
-            "text": "Dein Wiki Account wurde erfolgreich verifiziert.",
+            "text": "Dein Wiki-Account wurde erfolgreich verifiziert.",
             "title": "Account erfolgreich verifiziert!"
         },
         "readonly": {
@@ -166,14 +166,14 @@
         }
     },
     "oauth": {
-        "desc": "Mit diesen OAuth2 Einstellungen werden deine Wiki Accounts verbunden:",
+        "desc": "Dies sind deine OAuth2-Einstellungen zum Verbinden deiner Wiki-Accounts:",
         "failed": "Fehler beim laden der OAuth2 Einstellungen!",
         "form": {
             "connect": "Verbinde Account.",
             "connected": "Verbunden",
             "current": "Aktueller Status:",
-            "default": "Wiki Account Verbindungen",
-            "disable": "Speichere nicht meinen Account!",
+            "default": "Wiki-Account Verbindungen",
+            "disable": "Speichere meinen Account nicht!",
             "disabled": "Deaktiviert",
             "disconnect": "Account trennen.",
             "enable": "Speichere meinen Account.",
@@ -211,7 +211,7 @@
         "none": "Du hast derzeit die [Server verwalten]($1)-Berechtigung auf keinem Server, bist du mit dem richtigen Account angemeldet?",
         "switch": "Accounts wechseln",
         "title": "Serverauswahl",
-        "user": "Wiki Accounts",
+        "user": "Wiki-Accounts",
         "with": "Server mit Wiki-Bot",
         "without": "Server ohne Wiki-Bot"
     },
