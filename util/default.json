@@ -221,32 +221,14 @@
 			"scriptPath": "/"
 		},
 		{
-			"name": "mariowiki.com",
-			"regex": "((?:www\\.)?mariowiki\\.com)",
-			"articlePath": "/",
-			"scriptPath": "/"
-		},
-		{
-			"name": "mariowiki.net",
-			"regex": "((?:www\\.)?mariowiki\\.net)",
+			"name": "niwanetwork.org",
+			"regex": "((?:www\\.)?niwanetwork\\.org)",
 			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
+			"scriptPath": "/wiki/"
 		},
 		{
-			"name": "mariowiki.it",
-			"regex": "((?:www\\.)?mariowiki\\.it)",
-			"articlePath": "/",
-			"scriptPath": "/"
-		},
-		{
-			"name": "ssbwiki.com",
-			"regex": "((?:(?:es|www)\\.)?ssbwiki\\.com)",
-			"articlePath": "/",
-			"scriptPath": "/"
-		},
-		{
-			"name": "nookipedia.com",
-			"regex": "((?:www\\.)?nookipedia\\.com)",
+			"name": "armswiki.org",
+			"regex": "((?:www\\.)?armswiki\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
@@ -295,6 +277,180 @@
 		{
 			"name": "wiki.52poke.com",
 			"regex": "(wiki\\.52poke\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "dragalialost.wiki",
+			"regex": "((?:www\\.)?dragalialost\\.wiki)",
+			"articlePath": "/w/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "dragon-quest.org",
+			"regex": "((?:www\\.)?dragon-quest\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wikidragonquest.fr",
+			"regex": "((?:www\\.)?wikidragonquest\\.fr)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "fireemblemwiki.org",
+			"regex": "((?:www\\.)?fireemblemwiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "mutecity.org",
+			"regex": "((?:www\\.)?mutecity\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "goldensunwiki.net",
+			"regex": "((?:www\\.)?goldensunwiki\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "kidicaruswiki.org",
+			"regex": "((?:www\\.)?kidicaruswiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "splatoonwiki.org",
+			"regex": "((?:(?:fr|www)\\.)?splatoonwiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "starfoxwiki.info",
+			"regex": "((?:www\\.)?starfoxwiki\\.info)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "metroidwiki.org",
+			"regex": "((?:www\\.)?metroidwiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "nookipedia.com",
+			"regex": "((?:www\\.)?nookipedia\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "pikminwiki.com",
+			"regex": "((?:www\\.)?pikminwiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "pikminfanon.com",
+			"regex": "((?:www\\.)?pikminfanon\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "ssbwiki.com",
+			"regex": "((?:(?:es|www)\\.)?ssbwiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "starfywiki.org",
+			"regex": "((?:www\\.)?starfywiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "strategywiki.org",
+			"regex": "((?:www\\.)?strategywiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "mariowiki.com",
+			"regex": "((?:www\\.)?mariowiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "mariowiki.net",
+			"regex": "((?:www\\.)?mariowiki\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "mariowiki.it",
+			"regex": "((?:www\\.)?mariowiki\\.it)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "ukikipedia.net",
+			"regex": "((?:www\\.)?ukikipedia\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/mediawiki/"
+		},
+		{
+			"name": "warswiki.org",
+			"regex": "((?:www\\.)?warswiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wikibound.info",
+			"regex": "((?:(?:it|www)\\.)?wikibound\\.info)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wikirby.com",
+			"regex": "((?:www\\.)?wikirby\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "xenoserieswiki.org",
+			"regex": "((?:www\\.)?xenoserieswiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "xenopedia.it",
+			"regex": "((?:www\\.)?xenopedia\\.it)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "zeldapendium.de",
+			"regex": "((?:www\\.)?zeldapendium\\.de)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "chronowiki.org",
+			"regex": "((?:www\\.)?chronowiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "khwiki.com",
+			"regex": "((?:www\\.)?khwiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "finalfantasywiki.com",
+			"regex": "((?:www\\.)?finalfantasywiki\\.com)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
