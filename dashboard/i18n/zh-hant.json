@@ -102,6 +102,27 @@
             "text": "在未設定驗證方式時，無法對指令$1設定使用限制。",
             "title": "未設定驗證方式！"
         },
+        "oauth": {
+            "text": "您的wiki帳號已成功連接到Wiki-Bot。",
+            "title": "帳號成功連接！"
+        },
+        "oauthfail": {
+            "text": "無法連接到您的wiki帳號，請再試一次。",
+            "title": "連接失敗！"
+        },
+        "oauthlogin": {
+            "text": "若不希望Wiki-Bot記住您的wiki帳號，請登入。",
+            "title": "已儲存連接到的wiki帳號！"
+        },
+        "oauthother": {
+            "note": "切換帳號。",
+            "text": "請注意，您的wiki帳號所連接的Discord帳號與目前登入的不同。",
+            "title": "帳號成功連接！"
+        },
+        "oauthverify": {
+            "text": "已成功驗證您的wiki帳號。",
+            "title": "帳號驗證成功！"
+        },
         "readonly": {
             "text": "您目前只能查看您的設定，但您無法變更。",
             "title": "唯讀的資料庫！"
@@ -144,6 +165,21 @@
             "title": "wiki已被屏蔽！"
         }
     },
+    "oauth": {
+        "desc": "以下是您連接的wiki帳號的OAuth2設定：",
+        "failed": "載入OAuth2設定失敗！",
+        "form": {
+            "connect": "連接帳號。",
+            "connected": "已連接",
+            "current": "目前狀態：",
+            "default": "wiki帳號連接",
+            "disable": "不要記住我的帳號！",
+            "disabled": "已停用",
+            "disconnect": "解除帳號連接。",
+            "enable": "記住我的帳號。",
+            "unconnected": "未連接"
+        }
+    },
     "rcscript": {
         "desc": "以下為 $1 的近期變更webhook：",
         "explanation": "<h2>近期變更webhook</h2>\n<p>Wiki-Bot能運行基於<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的近期變更webhook。近期變更可以以多種顯示模式顯示：包含行內連結的精簡文字訊息或包含圖片預覽及編輯差異的嵌入式訊息。</p>\n<p>加入近期變更webhook的基本需求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本運行的wiki。</li>\n<li>系統訊息<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>需要設為Discord伺服器的伺服器id <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
@@ -175,6 +211,7 @@
         "none": "您目前並沒有任何伺服器的[管理伺服器]($1)權限，您是否已使用正確的帳號登入？",
         "switch": "切換帳號",
         "title": "選擇伺服器",
+        "user": "wiki帳號",
         "with": "有Wiki-Bot的伺服器",
         "without": "沒有Wiki-Bot的伺服器"
     },

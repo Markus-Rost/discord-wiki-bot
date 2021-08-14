@@ -102,6 +102,27 @@
             "text": "$1 komutunun kısıtlamaları doğrulamalar kurulmadan önce değiştirilemez.",
             "title": "Doğrulamalar kurulmamış!"
         },
+        "oauth": {
+            "text": "Viki hesabın başarıyla Wiki-Bot ile bağlandı.",
+            "title": "Hesap başarıyla bağlandı!"
+        },
+        "oauthfail": {
+            "text": "Viki hesabın bağlanamadı, lütfen tekrar dene.",
+            "title": "Bağlanılamadı!"
+        },
+        "oauthlogin": {
+            "text": "Eğer Wiki-Bot'un viki hesabını hatırlamasını istemiyorsan lütfen giriş yap.",
+            "title": "Bağlanan viki hesabın başarıyla kaydedildi!"
+        },
+        "oauthother": {
+            "note": "Hesap değiştir.",
+            "text": "Lütfen viki hesabının giriş yapmış olduğun Discord hesabından farklı bir hesap ile bağlı olduğunu unutma.",
+            "title": "Hesap başarıyla bağlandı!"
+        },
+        "oauthverify": {
+            "text": "Viki hesabın başarıyla doğrulandı.",
+            "title": "Hesap başarıyla doğrulandı!"
+        },
         "readonly": {
             "text": "Şu an ayarları okuyabilirsin ama değiştiremezsin.",
             "title": "Salt okunur veritabanı!"
@@ -144,6 +165,21 @@
             "title": "Viki engellenmiş!"
         }
     },
+    "oauth": {
+        "desc": "Viki hesapların için OAuth2 ayarların:",
+        "failed": "OAuth2 ayarları yüklenemedi!",
+        "form": {
+            "connect": "Bir hesap bağla.",
+            "connected": "Bağlandı",
+            "current": "Mevcut durum:",
+            "default": "Viki Hesabı Bağlantıları",
+            "disable": "Hesabımı hatırlama!",
+            "disabled": "Devre dışı",
+            "disconnect": "Hesabın bağlantısını kopar.",
+            "enable": "Hesabımı hatırla.",
+            "unconnected": "Bağlanmamış"
+        }
+    },
     "rcscript": {
         "desc": "$1 için son değişiklikler webhook'ları:",
         "explanation": "<h2>Son Değişiklikler Webhook'u</h2>\n<p>Wiki-Bot <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> bazlı olarak bir son değişiklikler webhook'u sağlayabilir. Son değişiklikler; satıriçi bağlantılar ile kompakt metin mesajları veya düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar olarak görüntülenebilir.</p>\n<p>Bir son değişiklikler webhook'u ekleme gereksinimleri:</p>\n<ul>\n<li>Viki <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> veya daha güncel bir versiyona sahip olmalı.</li>\n<li>Sistem mesajı <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>, Discord sunucu ID'si <code class=\"user-select\" id=\"server-id\"></code> ile eşleşmeli.</li>\n</ul>",
@@ -175,6 +211,7 @@
         "none": "Halihazırda hiçbir sunucuda [Sunucuyu Yönet]($1) iznine sahip değilsin, doğru hesaba giriş yaptığına emin misin?",
         "switch": "Hesap Değiştir",
         "title": "Sunucu Seçici",
+        "user": "Viki Hesapları",
         "with": "Wiki-Bot'un olduğu sunucular",
         "without": "Wiki-Bot'un olmadığı sunucular"
     },

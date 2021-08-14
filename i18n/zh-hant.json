@@ -596,14 +596,14 @@
     },
     "settings": {
         "button": "使用控制台",
-        "channel current": "這是本頻道的當前設定：",
+        "channel current": "這是本頻道目前的設定：",
         "channel lang": "本頻道的語言為：",
         "channel langchanged": "您已將本頻道的語言變更為：",
         "channel role": "該頻道所需的最小身分組為：",
         "channel rolechanged": "您已將頻道所需的最小身分組改為：",
         "channel wiki": "本頻道的預設 wiki 是：",
         "channel wikichanged": "你已將本頻道的預設wiki變更為：",
-        "current": "這是本伺服器的當前設定：",
+        "current": "這是本伺服器目前的設定：",
         "currentchannel": "頻道複寫：",
         "currentinline": "行內指令：",
         "currentlang": "語言：",
@@ -617,11 +617,11 @@
         },
         "foundwikis": "你也許指的是這些 wiki？",
         "inline disabled": {
-            "channel inline": "行內指令目前已在本頻道禁用。",
-            "channel inlinechanged": "您禁用了本頻道的行內指令。",
+            "channel inline": "行內指令目前已在本頻道停用。",
+            "channel inlinechanged": "您停用了本頻道的行內指令。",
             "help": "使用 `$1` 啓用如 `[[$2]]` 和 `{{$2}}` 的行內指令。",
-            "inline": "行內指令目前已在本伺服器禁用。",
-            "inlinechanged": "您禁用了本伺服器的行內指令。"
+            "inline": "行內指令目前已在本伺服器停用。",
+            "inlinechanged": "您停用了本伺服器的行內指令。"
         },
         "inline enabled": {
             "channel inline": "目前本頻道已啟用行內指令。",
@@ -690,7 +690,7 @@
             " ",
             " "
         ],
-        "time": "咋瓦魯多"
+        "time": "回應時間"
     },
     "user": {
         "block": {
@@ -736,7 +736,7 @@
     "verification": {
         "accountage": "註冊時長：",
         "add_more": "添加更多驗證方式：",
-        "added": "驗證方式已保存：",
+        "added": "驗證方式已儲存：",
         "and": "和",
         "channel": "頻道：",
         "channel_max": "提供的頻道過多。",
@@ -784,13 +784,13 @@
         "role_none": "無",
         "role_remove": "移除的身分組：",
         "role_too_high": "**$1 身分組的權重過高，$2 無法添加！**",
-        "save_failed": "抱歉，無法保存驗證方式，請稍後再試。",
+        "save_failed": "抱歉，無法儲存驗證方式，請稍後再試。",
         "success": "成功提示：",
         "toggle": "（開/關）",
         "updated": "驗證方式已更新：",
         "usergroup": "使用者組：",
         "usergroup_max": "提供的使用者組過多。",
-        "usergroup_too_long": "提供的使用者組過長。",
+        "usergroup_too_long": "提供的使用者群組過長。",
         "value_too_high": "提供的數量過高。"
     },
     "verify": {
@@ -841,9 +841,9 @@
     "voice": {
         "channel": "語音頻道",
         "disable": "使用 `$1` 禁用本功能。",
-        "disabled": "您禁用了給予每個在這個語音頻道的使用者一個特定的身分組的功能。",
+        "disabled": "您停用了給予每個在這個語音頻道的使用者一個特定的身分組的功能。",
         "enable": "使用 `$1` 啓用本功能。",
-        "enabled": "您啓用了給予每個在這個語音頻道的使用者一個特定的身分組的功能。",
+        "enabled": "您這個語音頻道的使用者一個特定的身分組的功能。",
         "join": "$1 加入了語音頻道“$2”。",
         "left": "$1 離開了語音頻道“$2”。",
         "name": "語音頻道名",
