@@ -103,7 +103,7 @@
             "title": "Verifizierungen nicht eingerichtet!"
         },
         "oauth": {
-            "text": "Dein Wiki-Account wurde erfolgreich mit dem Wiki-Bot verbunden.",
+            "text": "Dein Wiki-Account wurde erfolgreich mit Wiki-Bot verbunden.",
             "title": "Account erfolgreich verbunden!"
         },
         "oauthfail": {
@@ -167,7 +167,7 @@
     },
     "oauth": {
         "desc": "Dies sind deine OAuth2-Einstellungen zum Verbinden deiner Wiki-Accounts:",
-        "failed": "Fehler beim laden der OAuth2 Einstellungen!",
+        "failed": "Fehler beim Laden der OAuth2-Einstellungen!",
         "form": {
             "connect": "Verbinde Account.",
             "connected": "Verbunden",
