@@ -84,14 +84,14 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( !pause[msg.guildId] ) this.verify(lang, msg, args, line, wiki);
 				return;
 			}
-			var text = '';
+			var text = null;
 			if ( rows.length ) {
-				text += lang.get('verification.current');
+				text = lang.get('verification.current');
 				if ( button ) text += `\n<${button.url}>`;
 				text += rows.map( row => formatVerification(false, true, row) ).join('');
 			}
 			else {
-				text += lang.get('verification.missing');
+				text = lang.get('verification.missing');
 				if ( button ) text += `\n<${button.url}>`;
 			}
 			text += '\n\n' + lang.get('verification.add_more') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`';

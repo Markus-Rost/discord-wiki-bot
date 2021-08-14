@@ -505,9 +505,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			} );
 			rows = rows.filter( row => row.channel );
 			var only = ( rows.length === 1 );
-			var text = '';
+			var text = null;
 			if ( rows.length ) {
-				text += lang.get('rcscript.current');
+				text = lang.get('rcscript.current');
 				if ( button ) text += `\n<${button.url}>`;
 				text += rows.map( row => {
 					var cmd = prefix + 'rcscript' + ( only ? '' : ' ' + row.configid );
@@ -534,7 +534,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				} ).join('');
 			}
 			else {
-				text += lang.get('rcscript.missing');
+				text = lang.get('rcscript.missing');
 				if ( button ) text += `\n<${button.url}>`;
 			}
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
