@@ -113,7 +113,7 @@
     },
     "dateformat": "zh-CN",
     "diff": {
-        "badrev": "至少有一个历史版本未展现！",
+        "badrev": "至少有一个修订版本不存在！",
         "hidden": "*隐藏*",
         "info": {
             "added": "添加：",
@@ -389,7 +389,7 @@
                 "desc": "我将返回特定的 org 域名下的 wiki 的指定页面的链接：`https://<wiki>.wikia.org/`"
             }
         },
-        "noadmin": "这个命令仅限拥有 `管理员` 权限的用户使用！",
+        "noadmin": "这个命令仅限拥有 `管理服务器` 权限的用户使用！",
         "pause": "**我目前处于暂停状态！**\n仅能使用以下命令："
     },
     "interaction": {
@@ -497,13 +497,13 @@
         "audit_reason_edit": "最近更改 webhook 已更新",
         "avatar": "Webhook 头像：",
         "blocked": "此 wiki 已经被禁止添加到最近更改 webhook ！",
-        "blocked_reason": "此 wiki 由于 `$1` 已經被禁止添加到最近更改 webhook！",
+        "blocked_reason": "此 wiki 由于 `$1` 已经被禁止添加到最近更改 webhook！",
         "channel": "频道：",
         "current": "这些是本服务器当前的最近更改 webhook：",
         "current_display": "此 webhook 的显示模式为：",
         "current_lang": "此 webhook 的语言为：",
         "current_selected": "这是本服务器的最近更改 webhook `$1`：",
-        "current_wiki": "此 Webhook 的 wiki 是：",
+        "current_wiki": "此 webhook 的 wiki 是：",
         "dashboard": {
             "added": "$1 添加了 ID 为`$2` 的最近更改 webhook。",
             "removed": "$1 移除了 ID 为`$2` 的最近更改 webhook。",
@@ -644,7 +644,7 @@
         "rolechanged": "你将本服务器所需的最小身份组改为：",
         "rolehelp": "使用 `$1 <身份组>` 以更改所需的最小身份组。",
         "roleinvalid": "指定的身份组不存在！",
-        "save_failed": "啊喔，设置保存失败了，请稍后再试。",
+        "save_failed": "很遗憾，设置保存失败了，请稍后再试。",
         "wiki": "本服务器的默认 wiki 是：",
         "wikichanged": "你已将服务器 wiki 更改为：",
         "wikihelp": "使用 `$1 <link>` 来更改默认 wiki。\nMediaWiki 网站的链接，如 `https://<wiki>.fandom.com/`",
@@ -660,10 +660,10 @@
         "pause": "我在此服务器正处于暂停状态。",
         "text": [
             "全功率运行中！",
-            " ",
-            " ",
-            " ",
-            " ",
+            " 我在这哦！",
+            " 愿马头人护佑你！",
+            "能看见我吗？",
+            " 一切良好，动力全开！",
             " ",
             " ",
             " ",
@@ -690,7 +690,7 @@
             " ",
             " "
         ],
-        "time": "咋瓦鲁多"
+        "time": "响应时间"
     },
     "user": {
         "block": {
