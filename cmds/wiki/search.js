@@ -134,7 +134,7 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler,
 			footer = lang.get('search.results', body.query.searchinfo.totalhits.toLocaleString(lang.get('dateformat')), body.query.searchinfo.totalhits);
 		}
 		if ( msg.showEmbed() && !noEmbed ) {
-			embed.setDescription( Util.splitMessage( description.join('\n') )[0] );
+			if ( description.length ) embed.setDescription( Util.splitMessage( description.join('\n') )[0] );
 			if ( footer ) embed.setFooter( footer );
 		}
 		else {
