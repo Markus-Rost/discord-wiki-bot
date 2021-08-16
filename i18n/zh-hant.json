@@ -331,7 +331,7 @@
                 "desc": "如果我被啟動了，我就會回答你！否則不會。"
             },
             "user": {
-                "cmd": "User:<使用者名>",
+                "cmd": "User:<使用者名稱>",
                 "desc": "我將傳回指定使用者的資訊。"
             },
             "verification": {
@@ -492,7 +492,7 @@
         "add_more": "增加更多的近期變更webhook：",
         "added": "已新增一個近期變更webhook至：",
         "all_inactive": "wiki變更和討論版變更無法同時停用。",
-        "audit_reason": "“$1”的近期變更webhook",
+        "audit_reason": "「$1」的近期變更webhook",
         "audit_reason_delete": "已移除近期變更webhook",
         "audit_reason_edit": "近期變更 webhook 已更新",
         "avatar": "Webhook 頭像：",
@@ -558,7 +558,7 @@
                 "enabled_feeds": "• 已啟用討論版、留言牆和條目評論等基於推送頁的變更推送。",
                 "enabled_rc": "• 已啟用wiki變更。",
                 "lang": "• 已將語言變更為 $1。",
-                "name": "• 已將webhook的名稱變更為“$1”。",
+                "name": "• 已將webhook的名稱變更為「$1」。",
                 "updated": "此近期變更webhook已被變更：",
                 "wiki": "• wiki已被變更為 $1。"
             },
@@ -794,7 +794,7 @@
         "value_too_high": "提供的數量過高。"
     },
     "verify": {
-        "audit_reason": "已以“$1”的身份驗證",
+        "audit_reason": "已以「$1」的身份驗證",
         "button_again": "再次檢查",
         "button_wrong_user": "您不可以再次檢查此驗證，此驗證用於$1的驗證！",
         "discord": "Discord 使用者：",
@@ -807,7 +807,7 @@
         "footer": "Wiki 帳號驗證",
         "help_fandom": "https://community.fandom.com/zh/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/zh/wiki/Gamepedia帮助Wiki:Discord验证",
-        "help_guide": "請根據[此指導]($1)來添加您的 Discord 使用者名至您的 wiki 資料頁：",
+        "help_guide": "請根據[此指導]($1)來添加您的 Discord 使用者名稱至您的 wiki 資料頁：",
         "help_missing": "請確保您使用的是自己的wiki使用者名稱且大小寫正確。",
         "help_subpage": "請將您的Discord tag（$1）加至wiki上您的Discord子頁面：",
         "missing": "本頻道無可用的驗證方式。",
@@ -822,17 +822,17 @@
         "qualified_remove": "移除：",
         "qualified_remove_error": "無法移除：",
         "user_blocked": "**Wiki 使用者 $1 已被封鎖！**",
-        "user_blocked_reply": "您連接的 wiki 使用者**“$1”已被封鎖！**",
+        "user_blocked_reply": "您連接的 wiki 使用者**「$1」已被封鎖！**",
         "user_disabled": "**Wiki 使用者 $1 已被停用！**",
-        "user_disabled_reply": "您連接的 wiki 使用者**“$1”已被停用！**",
+        "user_disabled_reply": "您連接的 wiki 使用者**「$1」已被停用！**",
         "user_failed": "Discord 使用者 $1 不和 wiki 使用者 $2 對應。",
-        "user_failed_reply": "您的 Discord 使用者名不和“$1”的對應。",
+        "user_failed_reply": "您的 Discord 使用者名稱不和「$1」的對應。",
         "user_gblocked": "**Wiki 使用者 $1 已被全域封鎖！**",
-        "user_gblocked_reply": "您連接的 wiki 使用者**“$1”已被全域封鎖！**",
+        "user_gblocked_reply": "您連接的 wiki 使用者**「$1」已被全域封鎖！**",
         "user_matches": "Discord 使用者 $1 和 wiki 使用者 $2 對應，但沒有達到任何身分組的條件。",
-        "user_matches_reply": "您的 Discord 使用者名和 wiki 使用者“$1”對應，但您沒有達到添加任何身分組的條件。",
-        "user_missing": "Wiki 使用者“$1”不存在。",
-        "user_missing_reply": "您連接的 wiki 使用者“$1”不存在。",
+        "user_matches_reply": "您的 Discord 使用者名稱和 wiki 使用者「$1」對應，但您沒有達到添加任何身分組的條件。",
+        "user_missing": "Wiki 使用者「$1」不存在。",
+        "user_missing_reply": "您連接的 wiki 使用者「$1」不存在。",
         "user_renamed": "已將使用者的Discord暱稱變更為其wiki使用者名稱。",
         "user_verified": "Discord使用者 $1 已成功以wiki使用者 $2 的身分通過驗證。",
         "user_verified_reply": "您已成功以wiki使用者 $1 的身分通過驗證。",
@@ -843,9 +843,9 @@
         "disable": "使用 `$1` 禁用本功能。",
         "disabled": "您停用了給予每個在這個語音頻道的使用者一個特定的身分組的功能。",
         "enable": "使用 `$1` 啓用本功能。",
-        "enabled": "您這個語音頻道的使用者一個特定的身分組的功能。",
-        "join": "$1 加入了語音頻道“$2”。",
-        "left": "$1 離開了語音頻道“$2”。",
+        "enabled": "您啟用了給予每個在這個語音頻道的使用者一個特定的身分組的功能。",
+        "join": "$1 加入了語音頻道「$2」。",
+        "left": "$1 離開了語音頻道「$2」。",
         "name": "語音頻道名",
         "text": "我將嘗試給予每個在這個語音頻道的使用者一個特定的身分組："
     }
