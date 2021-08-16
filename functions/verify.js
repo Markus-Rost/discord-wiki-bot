@@ -679,7 +679,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					}
 					verifynotice.logchannel.send( {
 						content: logtext,
-						embeds: [logembed]
+						embeds: ( logembed ? [logembed] : [] )
 					} ).catch(log_error);
 				}, log_error );
 			}
@@ -701,7 +701,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					}
 					verifynotice.logchannel.send( {
 						content: logtext,
-						embeds: [logembed]
+						embeds: ( logembed ? [logembed] : [] )
 					} ).catch(log_error);
 				}, log_error );
 			}
@@ -833,7 +833,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 						}
 						verifynotice.logchannel.send( {
 							content: logtext,
-							embeds: [logembed]
+							embeds: ( logembed ? [logembed] : [] )
 						} ).catch(log_error);
 					}, log_error );
 				}, log_error );
@@ -880,7 +880,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 				}
 				verifynotice.logchannel.send( {
 					content: logtext,
-					embeds: [logembed]
+					embeds: ( logembed ? [logembed] : [] )
 				} ).catch(log_error);
 			}, log_error );
 

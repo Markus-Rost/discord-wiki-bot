@@ -190,7 +190,7 @@ if ( process.env.dashboard ) {
 				let channel = discordClient.guilds.cache.get(evalData.guild).publicUpdatesChannel;
 				if ( channel ) channel.send( {
 					content: evalData.text,
-					embeds: [evalData.embed],
+					embeds: ( evalData.embed ? [evalData.embed] : [] ),
 					files: evalData.file,
 					allowedMentions: {parse: []}
 				} ).catch(log_error);

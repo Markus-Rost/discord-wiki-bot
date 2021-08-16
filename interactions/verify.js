@@ -210,7 +210,7 @@ function slash_verify(interaction, lang, wiki) {
 					}
 					interaction.guild.channels.cache.get(result.logging.channel).send( {
 						content: result.logging.content,
-						embeds: [result.logging.embed]
+						embeds: ( result.logging.embed ? [result.logging.embed] : [] )
 					} ).catch(log_error);
 				} );
 			}, error => {
@@ -410,7 +410,7 @@ function slash_verify(interaction, lang, wiki) {
 					else result.logging.content += '\n<#' + interaction.channelId + '> – <' + interaction.message.url + '>';
 					interaction.guild.channels.cache.get(result.logging.channel).send( {
 						content: result.logging.content,
-						embeds: [result.logging.embed]
+						embeds: ( result.logging.embed ? [result.logging.embed] : [] )
 					} ).catch(log_error);
 				}
 				interaction.followUp( {

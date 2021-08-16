@@ -235,13 +235,17 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							}
 							log_error(error);
 							msg.reactEmoji('error');
-						} );
-						if ( result.logging.channel && msg.guild.channels.cache.has(result.logging.channel) ) {
+						} ).then( message => {
+							if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
+							if ( message ) {
+								if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channelId + '>');
+								else result.logging.content += '\n<#' + msg.channelId + '> – <' + message.url + '>';
+							}
 							msg.guild.channels.cache.get(result.logging.channel).send( {
 								content: result.logging.content,
-								embeds: [result.logging.embed]
+								embeds: ( result.logging.embed ? [result.logging.embed] : [] )
 							} ).catch(log_error);
-						}
+						} );
 					}
 					else msg.replyMsg( options, false, false ).then( message => {
 						if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
@@ -251,7 +255,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						}
 						msg.guild.channels.cache.get(result.logging.channel).send( {
 							content: result.logging.content,
-							embeds: [result.logging.embed]
+							embeds: ( result.logging.embed ? [result.logging.embed] : [] )
 						} ).catch(log_error);
 					} );
 				}
