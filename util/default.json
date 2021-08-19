@@ -221,6 +221,90 @@
 			"scriptPath": "/"
 		},
 		{
+			"name": "stardewvalleywiki.com",
+			"regex": "((?:[a-z-]{2,12}\\.)?stardewvalleywiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/mediawiki/"
+		},
+		{
+			"name": "metin2.gameforge.com",
+			"regex": "([a-z]{2}-wiki\\.metin2\\.gameforge\\.com)",
+			"articlePath": "/index.php/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "psu-clementine.net",
+			"regex": "((?:www\\.)?psu-clementine\\.net)",
+			"articlePath": "/wiki/index.php/",
+			"scriptPath": "/wiki/"
+		},
+		{
+			"name": "ddowiki.com",
+			"regex": "((?:www\\.)?ddowiki\\.com)",
+			"articlePath": "/page/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "bakugan.wiki",
+			"regex": "((?:www\\.)?bakugan\\.wiki)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wiki.melvoridle.com",
+			"regex": "(wiki\\.melvoridle\\.com)",
+			"articlePath": "/w/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "moegirl.org.cn",
+			"regex": "([a-z-]{2,12}\\.moegirl\\.org\\.cn)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wiki-aventurica.de",
+			"regex": "((?:[a-z-]{2,12}\\.)?wiki-aventurica\\.de)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/de/"
+		},
+		{
+			"name": "pnpwiki.de",
+			"regex": "((?:www\\.)?pnpwiki\\.de)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "blaseball.wiki",
+			"regex": "((?:www\\.)?blaseball\\.wiki)",
+			"articlePath": "/w/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "gbf.wiki",
+			"regex": "((?:www\\.)?gbf\\.wiki)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wiki.albiononline.com",
+			"regex": "(wiki\\.albiononline\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "atitd.wiki",
+			"regex": "((?:www\\.)?atitd\\.wiki)",
+			"articlePath": "/tale10/",
+			"scriptPath": "/tale10/w/"
+		},
+		{
+			"name": "atitd.wiki",
+			"regex": "((?:www\\.)?atitd\\.wiki)",
+			"articlePath": "/tale10/",
+			"scriptPath": "/tale10/w/"
+		},
+		{
 			"name": "niwanetwork.org",
 			"regex": "((?:www\\.)?niwanetwork\\.org)",
 			"articlePath": "/wiki/",
@@ -437,16 +521,34 @@
 			"scriptPath": "/w/"
 		},
 		{
-			"name": "chronowiki.org",
-			"regex": "((?:www\\.)?chronowiki\\.org)",
-			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
+			"name": "halopedia.org",
+			"regex": "((?:www\\.)?halopedia\\.org)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "jojowiki.com",
+			"regex": "((?:www\\.)?jojowiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wikimon.net",
+			"regex": "((?:www\\.)?wikimon\\.net)",
+			"articlePath": "/",
+			"scriptPath": "/"
 		},
 		{
 			"name": "khwiki.com",
 			"regex": "((?:www\\.)?khwiki\\.com)",
 			"articlePath": "/",
 			"scriptPath": "/"
+		},
+		{
+			"name": "chronowiki.org",
+			"regex": "((?:www\\.)?chronowiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
 		},
 		{
 			"name": "finalfantasywiki.com",
@@ -479,16 +581,10 @@
 			"scriptPath": "/w/"
 		},
 		{
-			"name": "wiki-aventurica.de",
-			"regex": "((?:[a-z\\d-]{1,50}\\.)?wiki-aventurica\\.de)",
+			"name": "lakeus.xyz",
+			"regex": "(lakeus\\.xyz)",
 			"articlePath": "/wiki/",
-			"scriptPath": "/de/"
-		},
-		{
-			"name": "pnpwiki.de",
-			"regex": "((?:www\\.)?pnpwiki\\.de)",
-			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
+			"scriptPath": "/"
 		}
 	]
 }

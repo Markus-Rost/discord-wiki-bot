@@ -1,3 +1,4 @@
+const {domainToASCII} = require('url');
 const {Util} = require('discord.js');
 const logging = require('./logging.js');
 const {got, partialURIdecode} = require('./functions.js');
@@ -84,22 +85,22 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
-		if ( /^![a-z\d-]{1,50}$/.test(invoke) ) {
+		if ( invoke.startsWith( '!' ) && /^![a-z\d-]{1,50}$/.test(invoke) ) {
 			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + invoke.substring(1) + '.gamepedia.com/'), invoke + ' ');
 		}
-		if ( /^\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+		if ( invoke.startsWith( '?' ) && /^\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
 			let invokeWiki = wiki;
 			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
 			else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
 			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
 		}
-		if ( /^\?\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
+		if ( invoke.startsWith( '??' ) && /^\?\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
 			let invokeWiki = wiki;
 			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
 			else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
 			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
 		}
-		if ( /^!!(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}(?:\/|$)/.test(invoke) ) {
+		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}(?:\/|$)/.test(domainToASCII(invoke)) ) {
 			let project = wikiProjects.find( project => invoke.split('/')[0].endsWith( project.name ) );
 			if ( project ) {
 				let regex = invoke.match( new RegExp( project.regex ) );
