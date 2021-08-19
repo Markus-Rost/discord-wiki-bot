@@ -278,7 +278,7 @@
 			"name": "wiki.52poke.com",
 			"regex": "(wiki\\.52poke\\.com)",
 			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
+			"scriptPath": "/"
 		},
 		{
 			"name": "dragalialost.wiki",
