@@ -113,7 +113,7 @@
     },
     "dateformat": "ja-JP",
     "diff": {
-        "badrev": "2つ以上の差分が存在しません！",
+        "badrev": "1つ以上の差分が存在しません！",
         "hidden": "*隠された*",
         "info": {
             "added": "追加：",
@@ -478,7 +478,22 @@
         "unknown": "*不明*",
         "users": "アクティブユーザー：",
         "version": "バージョン：",
-        "vertical": "縦型："
+        "vertical": "縦型：",
+        "walls": "ディスカッションウォールへの書き込み：",
+        "wikiid": "Wiki ID:",
+        "yes": "はい"
+    },
+    "pause": {
+        "off": "私はこのサーバーで動作を続けており、すべてのコマンドに反応します！",
+        "on": "私はこのサーバーで動作を停止しており、ほとんどのコマンドに反応しません！"
+    },
+    "rcscript": {
+        "ad": "Discordで直接最近の変更を表示したいですか？ `$1rcscript`を使って、あなたのDiscordサーバーに **$2** に基づいた最近の変更点のWebHookを追加してください！",
+        "add_more": "より最近の変更のWebHookを追加：",
+        "added": "最近の変更に関するwebhookが追加されました：",
+        "all_inactive": "Wikiの編集とフィードの変更の両方のトラッキングを同時にオフにすることはできません。",
+        "audit_reason": "\"$1\"に対する最近の編集のWebhook",
+        "audit_reason_delete": "最近の編集のWebhookを削除"
     },
     "test": {
         "text": [
