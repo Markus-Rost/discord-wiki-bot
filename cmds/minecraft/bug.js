@@ -19,7 +19,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
 		if ( /^\d+$/.test(invoke) ) invoke = 'MC-' + invoke;
 		var baseBrowseUrl = 'https://bugs.mojang.com/browse/';
-		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,description,issuelinks,fixVersions,resolution,status' ).then( response => {
+		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,description,issuelinks,fixVersions,resolution,status,versions' ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {
@@ -48,10 +48,28 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 					var statusList = lang.get('minecraft.status');
 					var summary = escapeFormatting(body.fields.summary);
 					if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-					var description = parse_links( ( body.fields.description || '' ).replace( /\{code\}/g, '```' ) );
+					var description = parse_description( body.fields.description || '' );
 					var embed = null;
 					if ( msg.showEmbed() && !noEmbed ) {
 						embed = new MessageEmbed().setAuthor( 'Mojira' ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( limitLength(description, 2000, 20) );
+						
+						var affected = '';
+						var affectedcount = 1;
+						body.fields.versions.every( version => {
+							if ( affectedcount === 8 ) {
+								extraaffected = body.fields.versions.length - 8;
+							    	affected += '\n\n' + lang.get('minecraft.more', extraaffected.toLocaleString(lang.get('dateformat')), extraaffected);
+							    	return false;
+							}
+							affectedcount++;
+							affected += '\n' + version.name;
+							return true;
+						})
+						embed.addField( 'Affected versions', limitLength(affected, 500, 20) );
+						
+						var fixversion = body.fields.fixVersions[body.fields.fixVersions.length - 1];
+						if ( fixversion ) embed.addField( 'Fixed in version', fixversion.name );
+						
 						var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 						if ( links.length ) {
 							var linkList = lang.get('minecraft.issue_link');
@@ -145,13 +163,17 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 }
 
 /**
- * Parse Mojira links.
+ * Parse Mojira descriptions.
  * @param {String} text - The text to parse.
  * @returns {String}
  */
-function parse_links(text) {
+function parse_description(text) {
 	text = text.replace( /\[~([^\]]+)\]/g, '[$1](https://bugs.mojang.com/secure/ViewProfile.jspa?name=$1)' );
 	text = text.replace( /\[([^\|]+)\|([^\]]+)\]/g, '[$1]($2)' );
+	text = text.replace( /h\d. ?([\w ]+)/g, '**$1**' );
+	text = text.replace( /{noformat}([\w \[\],.=@~-]+){noformat}/g, '`$1`' );
+	text = text.replace( /{code(:(\w+))?}/g, '```$2');
+	text = text.replace( /\n# /g, '• ');
 	text = text.replace( /{panel(?::title=([^|}]+))?[^}]*}/g, (panel, title) => {
 		return ( title ? '**' + title + '**' : '' );
 	} );
