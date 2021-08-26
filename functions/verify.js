@@ -605,7 +605,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 	}
 	if ( !settings?.channel ) return settings?.fail?.();
 	var channel = settings.channel;
-	if ( !channel.permissionsFor(channel.guild.me).has([FLAGS.VIEW_CHANNEL, FLAGS.SEND_MESSAGES]) ) return settings.fail?.();
+	if ( !channel.permissionsFor(channel.guild.me).has([FLAGS.VIEW_CHANNEL, ( channel.isThread() ? FLAGS.SEND_MESSAGES_IN_THREADS : FLAGS.SEND_MESSAGES )]) ) return settings.fail?.();
 	Promise.all([
 		db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [channel.guildId, '%|' + ( channel.isThread() ? channel.parentId : channel.id ) + '|%'] ).then( ({rows}) => {
 			if ( !rows.length ) return Promise.reject();

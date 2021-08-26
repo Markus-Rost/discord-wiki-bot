@@ -26,7 +26,7 @@
 			"display": 2
 		}
 	},
-	"defaultPermissions": "939904064",
+	"defaultPermissions": "939904128",
 	"defaultSettings": {
 		"lang": "en",
 		"wiki": "https://en.wikipedia.org/w/"
@@ -225,6 +225,12 @@
 			"regex": "((?:[a-z-]{2,12}\\.)?stardewvalleywiki\\.com)",
 			"articlePath": "/",
 			"scriptPath": "/mediawiki/"
+		},
+		{
+			"name": "pcgamingwiki.com",
+			"regex": "((?:www\\.)?pcgamingwiki.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
 		},
 		{
 			"name": "metin2.gameforge.com",

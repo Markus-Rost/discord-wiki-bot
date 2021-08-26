@@ -12,6 +12,7 @@ global.voice = {};
 const db = require('./util/database.js');
 
 const Discord = require('discord.js');
+if ( !Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS ) Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS = Discord.Permissions.FLAGS.SEND_MESSAGES;
 const client = new Discord.Client( {
 	makeCache: Discord.Options.cacheWithLimits( {
 		MessageManager: {
@@ -268,7 +269,7 @@ function messageCreate(msg) {
 	if ( isStop || !msg.channel.isText() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
 	if ( !msg.content.hasPrefix(( msg.channel.isGuild() && patreons[msg.guildId] || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
-			if ( msg.channel.permissionsFor(msg.client.user).has(Discord.Permissions.FLAGS.SEND_MESSAGES) ) {
+			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES )) ) {
 				console.log( msg.guildId + ': ' + msg.content );
 				let sqlargs = [msg.guildId];
 				if ( msg.channel?.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
@@ -290,7 +291,7 @@ function messageCreate(msg) {
 		else sqlargs.push(msg.channelId, '#' + msg.channel.parentId);
 		var permissions = msg.channel.permissionsFor(msg.client.user);
 		var missing = permissions.missing([
-			Discord.Permissions.FLAGS.SEND_MESSAGES,
+			( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES ),
 			Discord.Permissions.FLAGS.ADD_REACTIONS,
 			Discord.Permissions.FLAGS.USE_EXTERNAL_EMOJIS,
 			Discord.Permissions.FLAGS.READ_MESSAGE_HISTORY
@@ -298,7 +299,7 @@ function messageCreate(msg) {
 		if ( missing.length ) {
 			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreons[msg.guildId] || process.env.prefix ), 'm') ) {
 				console.log( msg.guildId + ': Missing permissions - ' + missing.join(', ') );
-				if ( !missing.includes( 'SEND_MESSAGES' ) ) {
+				if ( !missing.includes( 'SEND_MESSAGES' ) && !missing.includes( 'SEND_MESSAGES_IN_THREADS' ) ) {
 					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 						msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', true );
 					}, dberror => {

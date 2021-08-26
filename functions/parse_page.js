@@ -61,6 +61,7 @@ const removeClassesExceptions = [
 	'div.poem',
 	'div.treeview',
 	'div.redirectMsg',
+	'div.introduction',
 	'div.wikibase-entityview',
 	'div.wikibase-entityview-main',
 	'div.wikibase-entitytermsview',
