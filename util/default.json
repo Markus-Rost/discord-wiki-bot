@@ -569,6 +569,12 @@
 			"scriptPath": "/"
 		},
 		{
+			"name": "wikiapiary.com",
+			"regex": "((?:www\\.)?wikiapiary\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "librewiki.net",
 			"regex": "(librewiki\\.net)",
 			"articlePath": "/wiki/",
