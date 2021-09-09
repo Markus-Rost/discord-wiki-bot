@@ -563,6 +563,12 @@
 			"scriptPath": "/w/"
 		},
 		{
+			"name": "miiwiki.org",
+			"regex": "((?:www\\.)?miiwiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "wikihow.com",
 			"regex": "((?:www\\.)?wikihow\\.com)",
 			"articlePath": "/",
