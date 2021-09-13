@@ -159,7 +159,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				} );
 			} );
 			if ( guilds.length ) guildlist[1] = guilds.join('\n');
-			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length;
+			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length.toLocaleString();
 			var text = null;
 			var embed = null;
 			if ( msg.showEmbed() ) embed = new MessageEmbed().setThumbnail( user.displayAvatarURL({dynamic:true}) ).addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
