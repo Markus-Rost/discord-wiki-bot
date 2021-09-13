@@ -201,7 +201,7 @@ client.on( 'interactionCreate', interaction => {
 	if ( interaction.inGuild() && typeof interaction.member.permissions === 'string' ) {
 		interaction.member.permissions = new Discord.Permissions(interaction.member.permissions);
 	}
-	if ( interaction.channel.partial ) return interaction.channel.fetch().then( () => {
+	if ( interaction.channel?.partial ) return interaction.channel.fetch().then( () => {
 		if ( interaction.isCommand() ) return slash_command(interaction);
 		if ( interaction.isButton() ) return message_button(interaction);
 	}, log_error );
