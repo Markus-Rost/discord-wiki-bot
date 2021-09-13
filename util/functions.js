@@ -36,7 +36,7 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 	switch ( infobox.type ) {
 		case 'data':
 			var {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
-			label = htmlToPlain(label).trim();
+			label = htmlToPlain(label, true).trim();
 			value = htmlToDiscord(value, pagelink).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
 				if ( !( source || name ) ) break;
@@ -159,7 +159,7 @@ function toPlaintext(text = '', fullWikitext = false) {
  * @param {String} html - The text in HTML.
  * @returns {String}
  */
-function htmlToPlain(html) {
+function htmlToPlain(html, includeComments = false) {
 	var text = '';
 	var ignoredTag = '';
 	var parser = new htmlparser.Parser( {
@@ -177,6 +177,11 @@ function htmlToPlain(html) {
 		},
 		onclosetag: (tagname) => {
 			if ( tagname === ignoredTag ) ignoredTag = '';
+		},
+		oncomment: (commenttext) => {
+			if ( includeComments && /^(?:IW)?LINK'" \d+:\d+$/.test(commenttext) ) {
+				text += '*UNKNOWN LINK*';
+			}
 		}
 	} );
 	parser.write( html );
