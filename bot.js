@@ -355,7 +355,7 @@ const leftGuilds = new Map();
 client.on( 'guildCreate', guild => {
 	console.log( '- ' + guild.id + ': I\'ve been added to a server.' );
 	if ( leftGuilds.has(guild.id) ) {
-		client.clearTimeout(leftGuilds.get(guild.id));
+		clearTimeout(leftGuilds.get(guild.id));
 		leftGuilds.delete(guild.id);
 	}
 } );

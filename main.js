@@ -60,6 +60,10 @@ manager.on( 'shardCreate', shard => {
 			else console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error!\n\n` );
 		}
 	} );
+
+	shard.on( 'error', error => {
+		console.log( `- Shard[${shard.id}]: Error received!`, error );
+	} );
 } );
 
 manager.spawn({timeout: 60000}).then( shards => {
