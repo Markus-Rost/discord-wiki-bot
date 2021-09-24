@@ -184,7 +184,7 @@ function htmlToPlain(html, includeComments = false) {
 			}
 		}
 	} );
-	parser.write( html );
+	parser.write( String(html) );
 	parser.end();
 	return text;
 };
@@ -370,7 +370,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 		}
 	} );
-	parser.write( html );
+	parser.write( String(html) );
 	parser.end();
 	return text;
 };
