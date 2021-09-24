@@ -221,9 +221,15 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 			return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( response => {
 				if ( !response.body?.channel_id ) {
 					console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the webhook: ' + response.body?.message );
-					row.channel = 'UNKNOWN';
-					row.name = 'UNKNOWN';
-					row.avatar = '';
+					if ( ( response.body?.message === 'Unknown Webhook' && response.body?.code === 10015 )
+					|| ( response.body?.message === 'Invalid Webhook Token' && response.body?.code === 50027 ) ) {
+						row.DELETED = true;
+					}
+					else {
+						row.channel = 'UNKNOWN';
+						row.name = 'UNKNOWN';
+						row.avatar = '';
+					}
 				}
 				else {
 					row.channel = response.body.channel_id;
@@ -237,6 +243,15 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 				row.avatar = '';
 			} );
 		} )).finally( () => {
+			if ( rows.some( row => row.DELETED ) ) {
+				let deletedRows = rows.filter( row => row.DELETED ).map( row => row.webhook );
+				db.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + deletedRows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', deletedRows ).then( () => {
+					console.log( '- Dashboard: Deleted RcGcDw successfully removed.' );
+				}, dberror => {
+					console.log( '- Dashboard: Error while removing the deleted RcGcDw: ' + dberror );
+				} );
+				rows = rows.filter( row => !row.DELETED );
+			}
 			let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 			$('#channellist #rcscript').after(
 				...rows.map( row => {
