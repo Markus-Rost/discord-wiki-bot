@@ -64,6 +64,10 @@ a[alt]:hover:after {
 	height: 48px;
 	margin-top: -48px;
 }
+#navbar > #selector > img {
+	width: 32px;
+	padding-right: 5px;
+}
 #navbar a {
 	display: flex;
 	align-items: center;
@@ -494,7 +498,7 @@ li {
 #login-button img {
 	width: 60px;
 	height: 60px;
-	padding-right: 10px;
+	padding-right: 25px;
 }
 .server-selector {
 	display: flex;
