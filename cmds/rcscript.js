@@ -212,7 +212,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}, error => {
 					log_error(error);
-					if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
+					if ( error.name !== 'DiscordAPIError' || !['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
 						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
 						return msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					}
