@@ -345,7 +345,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
 					);
 					section.find('div, ' + removeClasses.join(', ')).remove();
-					extraImages.push(...[
+					extraImages.push(...new Set(...[
 						...sectionContent.find(infoboxList.join(', ')).find([
 							'tr:eq(1) img',
 							'div.images img',
@@ -361,7 +361,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 						imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
 						return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
-					} ));
+					} )));
 					sectionContent.find(infoboxList.join(', ')).remove();
 					sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
 					var name = htmlToPlain(section).trim();
@@ -416,7 +416,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 			let embeds = [embed];
 			if ( extraImages.length ) {
 				if ( !embed.image ) embed.setImage( extraImages.shift() );
-				extraImages.forEach( extraImage => {
+				extraImages.slice(0, 10).forEach( extraImage => {
 					let imageEmbed = new MessageEmbed().setURL( embed.url ).setImage( extraImage );
 					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + val.length, imageEmbed.length ) <= 5500 ) embeds.push(imageEmbed);
 				} );
