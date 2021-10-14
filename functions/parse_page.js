@@ -173,6 +173,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				console.log( '- Failed to parse the infobox: ' + error );
 			}
 		}
+		let extraImages = [];
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: 10000
 		} ).then( response => {
@@ -344,6 +345,23 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
 					);
 					section.find('div, ' + removeClasses.join(', ')).remove();
+					extraImages.push(
+						...sectionContent.find(infoboxList.join(', ')).find([
+							'tr:eq(1) img',
+							'div.images img',
+							'figure.pi-image img',
+							'div.infobox-imagearea img'
+						].join(', ')).toArray().filter( img => {
+							let imgURL = img.attribs.src;
+							if ( !imgURL ) return false;
+							return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						} ).map( img => new URL(img.attribs.src.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href ),
+						...sectionContent.find('ul.gallery > li.gallerybox img').toArray().filter( img => {
+							let imgURL = img.attribs.src;
+							if ( !imgURL ) return false;
+							return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						} ).map( img => new URL(img.attribs.src.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href )
+					);
 					sectionContent.find(infoboxList.join(', ')).remove();
 					sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
 					var name = htmlToPlain(section).trim();
@@ -395,7 +413,15 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
 		} ).then( () => {
-			return message.edit( {content, embeds: [embed]} ).catch(log_error);
+			let embeds = [embed];
+			if ( extraImages.length ) {
+				if ( !embed.image ) embed.setImage( extraImages.shift() );
+				extraImages.forEach( extraImage => {
+					let imageEmbed = new MessageEmbed().setURL( embed.url ).setImage( extraImage );
+					if ( embeds.reduce( (acc, val) => acc + val.length, imageEmbed.length ) <= 5500 ) embeds.push(imageEmbed);
+				} );
+			}
+			return message.edit( {content, embeds} ).catch(log_error);
 		} );
 	} );
 }
