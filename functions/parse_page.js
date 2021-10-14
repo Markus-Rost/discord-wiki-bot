@@ -345,7 +345,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
 					);
 					section.find('div, ' + removeClasses.join(', ')).remove();
-					extraImages.push(...new Set(...[
+					extraImages.push(...new Set([
 						...sectionContent.find(infoboxList.join(', ')).find([
 							'tr:eq(1) img',
 							'div.images img',
