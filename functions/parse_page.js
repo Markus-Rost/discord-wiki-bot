@@ -418,7 +418,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				if ( !embed.image ) embed.setImage( extraImages.shift() );
 				extraImages.forEach( extraImage => {
 					let imageEmbed = new MessageEmbed().setURL( embed.url ).setImage( extraImage );
-					if ( embeds.reduce( (acc, val) => acc + val.length, imageEmbed.length ) <= 5500 ) embeds.push(imageEmbed);
+					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + val.length, imageEmbed.length ) <= 5500 ) embeds.push(imageEmbed);
 				} );
 			}
 			return message.edit( {content, embeds} ).catch(log_error);
