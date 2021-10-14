@@ -359,6 +359,7 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
 					} ).map( img => {
 						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+						imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
 						return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
 					} ));
 					sectionContent.find(infoboxList.join(', ')).remove();
