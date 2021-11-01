@@ -120,6 +120,7 @@
             "bytes": "$1 {{PLURAL:$2|Byte|Bytes}}",
             "comment": "Beschrijving:",
             "editor": "Bewerker:",
+            "minor": "_(m)",
             "more": "En meer",
             "removed": "Verwijderd:",
             "size": "Verschil:",
