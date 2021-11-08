@@ -72,8 +72,9 @@ const fieldset = {
  * @param {String} [settings.defaultrole]
  * @param {import('./util.js').Channel[]} guildChannels - The guild channels
  * @param {import('./util.js').Role[]} guildRoles - The guild roles
+ * @param {String} wiki - The guild wiki
  */
-function createForm($, header, dashboardLang, settings, guildChannels, guildRoles) {
+function createForm($, header, dashboardLang, settings, guildChannels, guildRoles, wiki) {
 	var readonly = ( process.env.READONLY ? true : false );
 	var fields = [];
 	let channel = $('<div>').append(fieldset.channel);
@@ -194,6 +195,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 		usergroup.find('#wb-settings-usergroup-multiple').attr('style', 'display: none;');
 	}
 	fields.push(usergroup);
+	$('<script>').attr('src', wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&amlang=' + dashboardLang.lang + '&format=json&callback=fillUsergroupList').attr('defer', '').insertAfter('script#indexjs');
 	let editcount = $('<div>').append(fieldset.editcount);
 	editcount.find('label').text(dashboardLang.get('verification.form.editcount'));
 	editcount.find('#wb-settings-editcount').val(settings.editcount);
@@ -306,12 +308,12 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 				channel: '', role: '', usergroup: 'user',
 				editcount: 0, postcount: 0, accountage: 0,
 				rename: false, defaultrole
-			}, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
+			}, guild.channels, guild.roles, wiki).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
 		}
 		else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 			let row = rows.find( row => row.configid.toString() === args[4] );
 			$(`.channel#channel-${row.configid}`).addClass('selected');
-			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
+			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles, wiki).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
 		}
 		else if ( args[4] === 'notice' && rows.length ) {
 			$(`.channel#channel-notice`).addClass('selected');
