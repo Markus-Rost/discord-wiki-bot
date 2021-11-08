@@ -430,6 +430,25 @@ if ( usergroup ) {
 			multigroup.disabled = true;
 		}
 	} );
+
+	function fillUsergroupList({query: {allmessages: wikiUsergroupList = []} = {}} = {}) {
+		if ( !wikiUsergroupList.length ) return;
+		usergrouplist.replaceChildren(...wikiUsergroupList.filter( wikigroup => {
+			if ( wikigroup.name === 'group-all' ) return false;
+			if ( wikigroup.name === 'group-membership-link-with-expiry' ) return false;
+			if ( wikigroup.name.endsWith( '.css' ) || wikigroup.name.endsWith( '.js' ) ) return false;
+			if ( wikigroup.name.endsWith( '-member' ) && wikiUsergroupList.some( wikigroupmember => {
+				return wikigroupmember.name === wikigroup.name.replace( /-member$/, '' );
+			} ) ) return false;
+			return true;
+		} ).map( wikigroup => {
+			return new Option(wikigroup['*'], wikigroup.name.replace( /^group-/, '' ));
+		} ).sort( (a, b) => {
+			if ( a.value < b.value ) return -1;
+			if ( a.value > b.value ) return 1;
+			return 0;
+		} ));
+	}
 }
 
 /** @type {NodeListOf<HTMLInputElement>} */
