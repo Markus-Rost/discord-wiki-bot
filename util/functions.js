@@ -222,7 +222,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 					syntaxhighlight = ( classes.find( syntax => syntax.startsWith( 'mw-highlight-lang-' ) )?.replace( 'mw-highlight-lang-', '' ) || '' );
 				}
 			}
-			if ( tagname === 'b' ) text += '**';
+			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';

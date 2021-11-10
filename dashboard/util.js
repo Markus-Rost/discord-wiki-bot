@@ -406,31 +406,32 @@ function escapeText(text) {
 }
 
 const permissions = {
-	ADMINISTRATOR: 1 << 3,
-	MANAGE_CHANNELS: 1 << 4,
-	MANAGE_GUILD: 1 << 5,
-	ADD_REACTIONS: 1 << 6,
-	VIEW_CHANNEL: 1 << 10,
-	SEND_MESSAGES: 1 << 11,
-	MANAGE_MESSAGES: 1 << 13,
-	EMBED_LINKS: 1 << 14,
-	ATTACH_FILES: 1 << 15,
-	READ_MESSAGE_HISTORY: 1 << 16,
-	MENTION_EVERYONE: 1 << 17,
-	USE_EXTERNAL_EMOJIS: 1 << 18,
-	MANAGE_NICKNAMES: 1 << 27,
-	MANAGE_ROLES: 1 << 28,
-	MANAGE_WEBHOOKS: 1 << 29,
-	SEND_MESSAGES_IN_THREADS: 1 << 64
+	ADMINISTRATOR: 1n << 3n,
+	MANAGE_CHANNELS: 1n << 4n,
+	MANAGE_GUILD: 1n << 5n,
+	ADD_REACTIONS: 1n << 6n,
+	VIEW_CHANNEL: 1n << 10n,
+	SEND_MESSAGES: 1n << 11n,
+	MANAGE_MESSAGES: 1n << 13n,
+	EMBED_LINKS: 1n << 14n,
+	ATTACH_FILES: 1n << 15n,
+	READ_MESSAGE_HISTORY: 1n << 16n,
+	MENTION_EVERYONE: 1n << 17n,
+	USE_EXTERNAL_EMOJIS: 1n << 18n,
+	MANAGE_NICKNAMES: 1n << 27n,
+	MANAGE_ROLES: 1n << 28n,
+	MANAGE_WEBHOOKS: 1n << 29n,
+	SEND_MESSAGES_IN_THREADS: 1n << 38n
 }
 
 /**
  * Check if a permission is included in the BitField
- * @param {String|Number} all - BitField of multiple permissions
+ * @param {String|Number|BigInt} all - BitField of multiple permissions
  * @param {String[]} permission - Name of the permission to check for
  * @returns {Boolean}
  */
-function hasPerm(all = 0, ...permission) {
+function hasPerm(all = 0n, ...permission) {
+	all = BitInt(all);
 	if ( (all & permissions.ADMINISTRATOR) === permissions.ADMINISTRATOR ) return true;
 	return permission.every( perm => {
 		let bit = permissions[perm];

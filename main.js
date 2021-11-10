@@ -66,7 +66,10 @@ manager.on( 'shardCreate', shard => {
 	} );
 } );
 
-manager.spawn({timeout: 60000}).then( shards => {
+manager.spawn( {
+	delay: 0,
+	timeout: 60000
+} ).then( shards => {
 	if ( !isDebug && process.env.botlist ) {
 		var botList = JSON.parse(process.env.botlist);
 		for ( let [key, value] of Object.entries(botList) ) {

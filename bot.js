@@ -12,7 +12,6 @@ global.voice = {};
 const db = require('./util/database.js');
 
 const Discord = require('discord.js');
-if ( !Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS ) Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS = Discord.Permissions.FLAGS.SEND_MESSAGES;
 const client = new Discord.Client( {
 	makeCache: Discord.Options.cacheWithLimits( {
 		MessageManager: {
