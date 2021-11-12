@@ -431,7 +431,7 @@ const permissions = {
  * @returns {Boolean}
  */
 function hasPerm(all = 0n, ...permission) {
-	all = BitInt(all);
+	all = BigInt(all);
 	if ( (all & permissions.ADMINISTRATOR) === permissions.ADMINISTRATOR ) return true;
 	return permission.every( perm => {
 		let bit = permissions[perm];
