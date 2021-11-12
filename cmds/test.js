@@ -33,16 +33,14 @@ function cmd_test(lang, msg, args, line, wiki) {
 		var text = ( textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0') );
 		if ( process.env.READONLY ) text = lang.get('general.readonly') + '\n' + process.env.invite;
 		console.log( '- Test[' + process.env.SHARDS + ']: Fully functioning!' );
-		var now = Date.now();
 		msg.replyMsg( text ).then( message => {
 			if ( !message ) return;
-			var then = Date.now();
-			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms' );
-			now = Date.now();
+			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', ( message.createdTimestamp - msg.createdTimestamp ).toLocaleString(lang.get('dateformat')) + 'ms' );
+			var now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: 10000
 			} ).then( response => {
-				then = Date.now();
+				var then = Date.now();
 				var body = response.body;
 				if ( body && body.warnings ) log_warn(body.warnings);
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
@@ -69,7 +67,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 				else logging(wiki, msg.guildId, 'test');
 				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
 			}, error => {
-				then = Date.now();
+				var then = Date.now();
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
 				if ( wiki.noWiki(error.message) ) {
 					console.log( '- This wiki doesn\'t exist!' );
