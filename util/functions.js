@@ -435,10 +435,11 @@ function partialURIdecode(m) {
  * @param {String} author - The user id.
  */
 function allowDelete(msg, author) {
-	msg?.awaitReactions?.( {filter: (reaction, user) => ( reaction.emoji.name === '🗑️' && user.id === author ), max: 1, time: 300000} ).then( reaction => {
-		if ( reaction.size ) {
-			msg.delete().catch(log_error);
-		}
+	msg?.awaitReactions?.( {
+		filter: (reaction, user) => ( reaction.emoji.name === '🗑️' && user.id === author ),
+		max: 1, time: 300000
+	} ).then( reaction => {
+		if ( reaction.size ) msg.delete().catch(log_error);
 	} );
 };
 

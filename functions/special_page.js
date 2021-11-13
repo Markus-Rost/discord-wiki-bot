@@ -202,7 +202,7 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 		if ( msg.channel.isGuild() && patreons[msg.guildId] && querypages.hasOwnProperty(specialpage) ) {
 			var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 			embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
-			if ( body.query.querypage.cached !== undefined ) {
+			if ( body.query.querypage?.cached !== undefined ) {
 				embed.setFooter( lang.get('search.cached') ).setTimestamp(new Date(body.query.querypage.cachedtimestamp));
 			}
 		}
