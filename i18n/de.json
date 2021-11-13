@@ -658,6 +658,7 @@
         "MediaWiki": "Benötigt mindestens $1 für vollständige Funktionalität, fand `$2`.",
         "notice": "Eingeschränkte Funktionalität",
         "pause": "ich bin auf diesem Server derzeit pausiert.",
+        "slow": "Entschuldigung, ich scheine derzeit etwas langsam zu sein.",
         "text": [
             "Ich bin voll funktionsfähig!",
             "Ich bin ja schon wach!",
