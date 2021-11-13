@@ -35,7 +35,9 @@ function cmd_test(lang, msg, args, line, wiki) {
 		console.log( '- Test[' + process.env.SHARDS + ']: Fully functioning!' );
 		msg.replyMsg( text ).then( message => {
 			if ( !message ) return;
-			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', ( message.createdTimestamp - msg.createdTimestamp ).toLocaleString(lang.get('dateformat')) + 'ms' );
+			var discordPing = message.createdTimestamp - msg.createdTimestamp;
+			if ( discordPing > 1000 ) text = lang.get('test.slow') + ' 🐌\n' + process.env.invite;
+			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', discordPing.toLocaleString(lang.get('dateformat')) + 'ms' );
 			var now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: 10000
@@ -85,9 +87,9 @@ function cmd_test(lang, msg, args, line, wiki) {
 					return '```js\n' + error + '\n```';
 				} ).then( shards => {
 					embed.addField( 'Shards', shards );
-					message.edit( {content: message.content, embeds: [embed]} ).catch(log_error);
+					message.edit( {content: text, embeds: [embed]} ).catch(log_error);
 				} );
-				message.edit( {content: message.content, embeds: [embed]} ).catch(log_error);
+				message.edit( {content: text, embeds: [embed]} ).catch(log_error);
 			} );
 		} );
 	}
