@@ -210,11 +210,17 @@ function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '
 					return;
 				}
 				if ( querypage.ns === 12 && wiki.isFandom() ) {
-					return got.head( wiki.articleURL.href.replace( '$1', encodeURIComponent( querypage.title ) ), {
+					return got.head( wiki.articleURL.href.replace( '$1', encodeURIComponent( querypage.title ).replace( /%3A/g, ':' ) ), {
 						followRedirect: false
 					} ).then( hresponse => {
 						if ( hresponse.statusCode === 301 && /^https:\/\/[a-z\d-]{1,50}\.fandom\.com\/(?:(?!wiki\/)[a-z-]{2,12}\/)?wiki\/Help:/.test( hresponse.headers?.location ) ) {
 							var location = hresponse.headers.location.split('wiki/');
+							if ( location[0] === wiki.href && location.slice(1).join('wiki/').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ) === querypage.title ) {
+								if ( srbody.query ) return srbody;
+								msg.reactEmoji('🤷');
+								
+								if ( reaction ) reaction.removeEmoji();
+							}
 							var maxselfcall = interwikiLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
 							if ( selfcall < maxselfcall ) {
 								selfcall++;
