@@ -496,9 +496,17 @@
         "audit_reason_delete": "最近の編集のWebhookを削除",
         "audit_reason_edit": "更新された最近の変更のWebhook",
         "avatar": "Webhook アバター：",
-        "blocked": "このWikiは、最近の変更のWebhookとして追加されるのがブロックされています！"
+        "blocked": "このWikiは、最近の変更のWebhookとして追加されるのがブロックされています！",
+        "blocked_reason": "このWikiは、以下の理由でWebhookへの新しい編集の追加がブロックされています: `$1`!",
+        "channel": "チャンネル：",
+        "current": "これらは、このサーバーの現在の最新の変更点を示すウェブフックです。",
+        "current_display": "このWebhookの表示モード：",
+        "current_lang": "このWebhookの言語：",
+        "current_selected": "このサーバーに現在存在する新鮮なエディット `$1` の Webhook。",
+        "current_wiki": "このWebhookのWiki："
     },
     "test": {
+        "slow": "申し訳ありませんが、私は今、少し遅いようです。",
         "text": [
             "",
             " ",
