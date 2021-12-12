@@ -23,7 +23,7 @@ const oauthVerify = new Map();
  */
 function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 	if ( !infobox || embed.fields.length >= 25 || embed.length > 5400 ) return;
-	if ( infobox.parser_tag_version === 2 ) {
+	if ( infobox.parser_tag_version === 5 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, thumbnail, pagelink);
 		} );
