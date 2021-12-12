@@ -179,7 +179,7 @@ function htmlToPlain(html, includeComments = false) {
 			if ( tagname === ignoredTag ) ignoredTag = '';
 		},
 		oncomment: (commenttext) => {
-			if ( includeComments && /^(?:IW)?LINK'" \d+:\d+$/.test(commenttext) ) {
+			if ( includeComments && /^(?:IW)?LINK'" \d+(?::\d+)?$/.test(commenttext) ) {
 				text += '*UNKNOWN LINK*';
 			}
 		}
@@ -365,7 +365,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 		},
 		oncomment: (commenttext) => {
-			if ( pagelink && /^(?:IW)?LINK'" \d+:\d+$/.test(commenttext) ) {
+			if ( pagelink && /^(?:IW)?LINK'" \d+(?::\d+)?$/.test(commenttext) ) {
 				text += '*UNKNOWN LINK*';
 			}
 		}
