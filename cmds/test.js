@@ -1,7 +1,7 @@
-const {MessageEmbed} = require('discord.js');
-const help_setup = require('../functions/helpsetup.js');
-const {got} = require('../util/functions.js');
-const logging = require('../util/logging.js');
+import {MessageEmbed} from 'discord.js';
+import help_setup from '../functions/helpsetup.js';
+import {got} from '../util/functions.js';
+import logging from '../util/logging.js';
 
 const wsStatus = [
 	'READY',
@@ -17,17 +17,17 @@ const wsStatus = [
 
 /**
  * Processes the "test" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
-		if ( !msg.channel.isGuild() || !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 	}
-	else if ( !msg.channel.isGuild() || !pause[msg.guildId] ) {
+	else if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 		let textList = lang.get('test.text').filter( text => text.trim() );
 		var text = ( textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0') );
@@ -40,11 +40,13 @@ function cmd_test(lang, msg, args, line, wiki) {
 			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', discordPing.toLocaleString(lang.get('dateformat')) + 'ms' );
 			var now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
-				timeout: 10000
+				timeout: {
+					request: 10000
+				}
 			} ).then( response => {
 				var then = Date.now();
 				var body = response.body;
-				if ( body && body.warnings ) log_warn(body.warnings);
+				if ( body && body.warnings ) log_warning(body.warnings);
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
 				if ( body?.query?.general ) wiki.updateWiki(body.query.general);
 				embed.addField( wiki.toLink(), ping );
@@ -99,7 +101,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 	}
 }
 
-module.exports = {
+export default {
 	name: 'test',
 	everyone: true,
 	pause: true,

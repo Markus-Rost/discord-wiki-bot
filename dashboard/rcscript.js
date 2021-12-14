@@ -1,9 +1,11 @@
-const cheerio = require('cheerio');
+import cheerio from 'cheerio';
+import Lang from '../util/i18n.js';
+import Wiki from '../util/wiki.js';
+import {got, db, sendMsg, createNotice, hasPerm} from './util.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
-const Lang = require('../util/i18n.js');
-const allLangs = Lang.allLangs(true);
-const Wiki = require('../util/wiki.js');
-const {got, db, sendMsg, createNotice, hasPerm} = require('./util.js');
+const allLangs = Lang.allLangs(true).names;
 
 const display_types = [
 	'compact',
@@ -33,8 +35,8 @@ const fieldset = {
 	//+ '</fieldset>',
 	lang: '<label for="wb-settings-lang">Language:</label>'
 	+ '<select id="wb-settings-lang" name="lang" required autocomplete="language">'
-	+ Object.keys(allLangs.names).map( lang => {
-		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
+	+ Object.keys(allLangs).map( lang => {
+		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs[lang]}</option>`
 	} ).join('')
 	+ '</select>'
 	+ '<img id="wb-settings-lang-widget">',
@@ -64,9 +66,9 @@ const fieldset = {
 
 /**
  * Create a settings form
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {String} header - The form header
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {Boolean} settings.patreon
  * @param {String} [settings.channel]
@@ -195,10 +197,10 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 /**
  * Let a user change recent changes scripts
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  */
 function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
@@ -272,7 +274,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 			if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= rcgcdwLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 				$('.channel#channel-new').addClass('selected');
 				createForm($, dashboardLang.get('rcscript.form.new'), dashboardLang, {
-					wiki, lang: ( allLangs.names.hasOwnProperty(lang) ? lang : defaultSettings.lang ),
+					wiki, lang: ( allLangs.hasOwnProperty(lang) ? lang : defaultSettings.lang ),
 					display: 1, patreon: guild.patreon
 				}, guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
 			}
@@ -332,7 +334,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 	}
 	if ( settings.save_settings ) {
-		if ( !settings.wiki || !allLangs.names.hasOwnProperty(settings.lang) ) {
+		if ( !settings.wiki || !allLangs.hasOwnProperty(settings.lang) ) {
 			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		}
 		if ( !['0', '1', '2', '3'].includes( settings.display ) ) {
@@ -469,7 +471,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								text += `\n${lang.get('rcscript.name')} \`${( settings.name || body.query.allmessages[1]['*'] || 'Recent changes' )}\``;
 								if ( settings.avatar ) text += `\n${lang.get('rcscript.avatar')} <${settings.avatar}>`;
 								text += `\n${lang.get('rcscript.wiki')} <${wiki.href}>`;
-								text += `\n${lang.get('rcscript.lang')} \`${allLangs.names[settings.lang]}\``;
+								text += `\n${lang.get('rcscript.lang')} \`${allLangs[settings.lang]}\``;
 								text += `\n${lang.get('rcscript.display')} \`${display_types[settings.display]}\``;
 								if ( enableFeeds && settings.feeds_only ) text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
 								if ( wiki.isFandom(false) ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
@@ -586,7 +588,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						text += `\n${lang.get('rcscript.channel')} <#${row.channel}>`;
 						text += `\n${lang.get('rcscript.name')} \`${row.name}\``;
 						text += `\n${lang.get('rcscript.wiki')} <${row.wiki}>`;
-						text += `\n${lang.get('rcscript.lang')} \`${allLangs.names[row.lang]}\``;
+						text += `\n${lang.get('rcscript.lang')} \`${allLangs[row.lang]}\``;
 						text += `\n${lang.get('rcscript.display')} \`${display_types[row.display]}\``;
 						if ( row.rcid === -1 ) {
 							text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
@@ -741,8 +743,8 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								}
 								if ( row.lang !== settings.lang ) {
 									file.push(`./RcGcDb/locale/widgets/${settings.lang}.png`);
-									diff.push(lang.get('rcscript.lang') + ` ~~\`${allLangs.names[row.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
-									webhook_diff.push(webhook_lang.get('dashboard.lang', allLangs.names[settings.lang]));
+									diff.push(lang.get('rcscript.lang') + ` ~~\`${allLangs[row.lang]}\`~~ → \`${allLangs[settings.lang]}\``);
+									webhook_diff.push(webhook_lang.get('dashboard.lang', allLangs[settings.lang]));
 								}
 								if ( row.display !== settings.display ) {
 									diff.push(lang.get('rcscript.display') + ` ~~\`${display_types[row.display]}\`~~ → \`${display_types[settings.display]}\``);
@@ -864,7 +866,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 	} );
 }
 
-module.exports = {
-	get: dashboard_rcscript,
-	post: update_rcscript
+export {
+	dashboard_rcscript as get,
+	update_rcscript as post
 };

@@ -1,5 +1,7 @@
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
-var i18n = require('../i18n/allLangs.json');
+const i18n = require('../i18n/allLangs.json');
 Object.keys(i18n.allLangs.names).forEach( lang => i18n[lang] = require('../i18n/' + lang + '.json') );
 
 const defaultAliases = ( i18n?.[defaultSettings.lang]?.aliases || {} );
@@ -8,7 +10,7 @@ const defaultAliases = ( i18n?.[defaultSettings.lang]?.aliases || {} );
  * A language.
  * @class
  */
-class Lang {
+export default class Lang {
 	/**
 	 * Creates a new language.
 	 * @param {String} [lang] - The language code.
@@ -249,4 +251,4 @@ function getArg(args, index) {
 	return ( args.length > index ? args[index] : args[args.length - 1] );
 }
 
-module.exports = Lang;
+export const allLangs = Lang.allLangs;

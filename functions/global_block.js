@@ -1,19 +1,19 @@
-const cheerio = require('cheerio');
-const {got, escapeFormatting} = require('../util/functions.js');
+import cheerio from 'cheerio';
+import {got, escapeFormatting} from '../util/functions.js';
 
 /**
  * Add global blocks to user messages.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} username - The name of the user.
  * @param {String} text - The text of the response.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {String} [gender] - The gender of the user.
  */
-function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
-	if ( !msg || !msg.channel.isGuild() || !patreons[msg.guildId] || !wiki.isFandom() ) return;
+export default function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
+	if ( !msg || !msg.channel.isGuild() || !patreonGuildsPrefix.has(msg.guildId) || !wiki.isFandom() ) return;
 	
 	var isUser = true;
 	if ( !gender ) {
@@ -101,5 +101,3 @@ function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 		msg.edit( {content: spoiler + text + spoiler, embeds: [embed]} ).catch(log_error);
 	} );
 }
-
-module.exports = global_block;

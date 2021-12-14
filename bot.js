@@ -1,17 +1,15 @@
-const util = require('util');
-util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
+import './util/globals.js';
+import {readdir} from 'fs';
+import {inspect} from 'util';
+import Discord from 'discord.js';
+import db from './util/database.js';
+import Lang from './util/i18n.js';
+import Wiki from './util/wiki.js';
+import newMessage from './util/newMessage.js';
+import {allowDelete} from './util/functions.js';
 
-global.isDebug = ( process.argv[2] === 'debug' );
+inspect.defaultOptions = {compact: false, breakLength: Infinity};
 
-const Lang = require('./util/i18n.js');
-const Wiki = require('./util/wiki.js');
-const newMessage = require('./util/newMessage.js');
-const {allowDelete} = require('./util/functions.js');
-global.patreons = {};
-global.voice = {};
-const db = require('./util/database.js');
-
-const Discord = require('discord.js');
 const client = new Discord.Client( {
 	makeCache: Discord.Options.cacheWithLimits( {
 		MessageManager: {
@@ -58,12 +56,11 @@ const client = new Discord.Client( {
 	]
 } );
 
-global.pause = {};
 var isStop = false;
 client.on( 'ready', () => {
 	console.log( '\n- ' + process.env.SHARDS + ': Successfully logged in as ' + client.user.username + '!\n' );
-	Object.keys(voice).forEach( guild => {
-		if ( !client.guilds.cache.has(guild) ) delete voice[guild];
+	[...voiceGuildsLang.keys()].forEach( guild => {
+		if ( !client.guilds.cache.has(guild) ) voiceGuildsLang.delete(guild);
 	} );
 	client.application.commands.fetch();
 } );
@@ -99,7 +96,7 @@ String.prototype.replaceSave = function(pattern, replacement) {
 };
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
-	if ( !this.channel.isGuild() || !pause[this.guildId] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+	if ( !this.channel.isGuild() || !pausedGuilds.has(this.guildId) || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		var emoji = '<:error:440871715938238494>';
 		switch ( name ) {
 			case 'nowiki':
@@ -123,7 +120,7 @@ Discord.MessageReaction.prototype.removeEmoji = function() {
 };
 
 Discord.Message.prototype.sendChannel = function(message, ignorePause = false) {
-	if ( !this.channel.isGuild() || !pause[this.guildId] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+	if ( !this.channel.isGuild() || !pausedGuilds.has(this.guildId) || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 		return this.channel.send( message ).then( msg => {
 			allowDelete(msg, this.author.id);
@@ -151,7 +148,7 @@ Discord.Message.prototype.sendChannelError = function(message) {
 };
 
 Discord.Message.prototype.replyMsg = function(message, ignorePause = false, letDelete = true) {
-	if ( !this.channel.isGuild() || !pause[this.guildId] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
+	if ( !this.channel.isGuild() || !pausedGuilds.has(this.guildId) || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
 		if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 		return this.reply( message ).then( msg => {
 			if ( letDelete ) allowDelete(msg, this.author.id);
@@ -176,18 +173,18 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 	return regex.test(this.replace( /\u200b/g, '' ).toLowerCase());
 };
 
-const fs = require('fs');
 var slash = {};
 var buttons = {};
 var buttonsMap = {
 	verify_again: 'verify'
 };
-fs.readdir( './interactions', (error, files) => {
+readdir( './interactions', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
-		var command = require('./interactions/' + file);
-		if ( command.hasOwnProperty('run') ) slash[command.name] = command.run;
-		if ( command.hasOwnProperty('button') ) buttons[command.name] = command.button;
+		import('./interactions/' + file).then( ({default: command}) => {
+			if ( command.hasOwnProperty('run') ) slash[command.name] = command.run;
+			if ( command.hasOwnProperty('button') ) buttons[command.name] = command.button;
+		} );
 	} );
 } );
 /*
@@ -266,7 +263,7 @@ client.on( 'messageCreate', msg => {
  */
 function messageCreate(msg) {
 	if ( isStop || !msg.channel.isText() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
-	if ( !msg.content.hasPrefix(( msg.channel.isGuild() && patreons[msg.guildId] || process.env.prefix ), 'm') ) {
+	if ( !msg.content.hasPrefix(( msg.channel.isGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES )) ) {
 				console.log( msg.guildId + ': ' + msg.content );
@@ -274,10 +271,10 @@ function messageCreate(msg) {
 				if ( msg.channel?.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
 				else sqlargs.push(msg.channelId, '#' + msg.channel.parentId);
 				db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-					msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('prefix', patreons[msg.guildId]), true );
+					msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('prefix', patreonGuildsPrefix.get(msg.guildId)), true );
 				}, dberror => {
 					console.log( '- Error while getting the lang: ' + dberror );
-					msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('prefix', patreons[msg.guildId]), true );
+					msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('prefix', patreonGuildsPrefix.get(msg.guildId)), true );
 				} );
 			}
 			return;
@@ -296,7 +293,7 @@ function messageCreate(msg) {
 			Discord.Permissions.FLAGS.READ_MESSAGE_HISTORY
 		]);
 		if ( missing.length ) {
-			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreons[msg.guildId] || process.env.prefix ), 'm') ) {
+			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), 'm') ) {
 				console.log( msg.guildId + ': Missing permissions - ' + missing.join(', ') );
 				if ( !missing.includes( 'SEND_MESSAGES' ) && !missing.includes( 'SEND_MESSAGES_IN_THREADS' ) ) {
 					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
@@ -314,7 +311,7 @@ function messageCreate(msg) {
 				if ( msg.guild.roles.cache.has(row.role) && msg.guild.roles.cache.get(row.role).comparePositionTo(msg.member.roles.highest) > 0 && !msg.isAdmin() ) {
 					msg.onlyVerifyCommand = true;
 				}
-				newMessage(msg, new Lang(row.lang), row.wiki, patreons[msg.guildId], row.inline);
+				newMessage(msg, new Lang(row.lang), row.wiki, patreonGuildsPrefix.get(msg.guildId), row.inline);
 			}
 			else {
 				msg.defaultSettings = true;
@@ -330,8 +327,8 @@ function messageCreate(msg) {
 
 
 client.on( 'voiceStateUpdate', (olds, news) => {
-	if ( isStop || !( voice.hasOwnProperty(olds.guild.id) ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelId === news.channelId ) return;
-	var lang = new Lang(voice[olds.guild.id], 'voice');
+	if ( isStop || !( voiceGuildsLang.has(olds.guild.id) ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelId === news.channelId ) return;
+	var lang = new Lang(voiceGuildsLang.get(olds.guild.id), 'voice');
 	if ( olds.member && olds.channel ) {
 		var oldrole = olds.member.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + olds.channel.name );
 		if ( oldrole && oldrole.comparePositionTo(olds.guild.me.roles.highest) < 0 ) {
@@ -372,10 +369,10 @@ function removeSettings(guild) {
 	leftGuilds.delete(guild);
 	if ( client.guilds.cache.has(guild) ) return;
 	db.query( 'DELETE FROM discord WHERE main = $1', [guild] ).then( ({rowCount}) => {
-		if ( patreons.hasOwnProperty(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
-			delete global.patreons[evalData];
+		if ( patreonGuildsPrefix.has(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
+			patreonGuildsPrefix.delete(evalData);
 		}, {context: guild} );
-		if ( voice.hasOwnProperty(guild) ) delete voice[guild];
+		if ( voiceGuildsLang.has(guild) ) voiceGuildsLang.delete(guild);
 		if ( rowCount ) console.log( '- ' + guild + ': Settings successfully removed.' );
 	}, dberror => {
 		console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );
@@ -384,7 +381,7 @@ function removeSettings(guild) {
 
 
 client.on( 'error', error => log_error(error, true) );
-client.on( 'warn', warning => log_warn(warning, false) );
+client.on( 'warn', warning => log_warning(warning, false) );
 
 client.login(process.env.token).catch( error => {
 	log_error(error, true, 'LOGIN-');
@@ -401,45 +398,6 @@ if ( isDebug ) client.on( 'debug', debug => {
 	if ( isDebug ) console.log( '- ' + process.env.SHARDS + ': Debug: ' + debug );
 } );
 
-
-global.log_error = function(error, isBig = false, type = '') {
-	var time = new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' });
-	if ( isDebug ) {
-		console.error( '--- ' + type + 'ERROR START ' + time + ' ---\n', error, '\n--- ' + type + 'ERROR END ' + time + ' ---' );
-	} else {
-		if ( isBig ) console.log( '--- ' + type + 'ERROR: ' + time + ' ---\n-', error );
-		else console.log( '- ' + error.name + ': ' + error.message );
-	}
-}
-
-const common_warnings = {
-	main: [
-		'Unrecognized parameters: piprop, explaintext, exsectionformat, exlimit.',
-		'Unrecognized parameters: explaintext, exsectionformat, exlimit.',
-		'Unrecognized parameter: piprop.'
-	],
-	query: [
-		'Unrecognized values for parameter "prop": pageimages, extracts.',
-		'Unrecognized values for parameter "prop": pageimages, extracts',
-		'Unrecognized value for parameter "prop": extracts.',
-		'Unrecognized value for parameter "prop": extracts',
-		'Unrecognized value for parameter "prop": pageimages.',
-		'Unrecognized value for parameter "prop": pageimages'
-	]
-}
-
-global.log_warn = function(warning, api = true) {
-	if ( isDebug ) {
-		console.warn( '--- Warning start ---\n' + util.inspect( warning ) + '\n--- Warning end ---' );
-	}
-	else if ( api ) {
-		if ( common_warnings.main.includes( warning?.main?.['*'] ) ) delete warning.main;
-		if ( common_warnings.query.includes( warning?.query?.['*'] ) ) delete warning.query;
-		var warningKeys = Object.keys(warning);
-		if ( warningKeys.length ) console.warn( '- Warning: ' + warningKeys.join(', ') );
-	}
-	else console.warn( '--- Warning ---\n' + util.inspect( warning ) );
-}
 
 /**
  * End the process gracefully.

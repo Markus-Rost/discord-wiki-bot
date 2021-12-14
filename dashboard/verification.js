@@ -1,6 +1,8 @@
+import Lang from '../util/i18n.js';
+import {got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm} from './util.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
-const Lang = require('../util/i18n.js');
-const {got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm} = require('./util.js');
 const slashCommand = slashCommands.find( slashCommand => slashCommand.name === 'verify' );
 
 const fieldset = {
@@ -58,9 +60,9 @@ const fieldset = {
 
 /**
  * Create a settings form
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {String} header - The form header
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {String} settings.channel
  * @param {String} settings.role
@@ -246,10 +248,10 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 /**
  * Let a user change verifications
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  */
 function dashboard_verification(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
@@ -527,7 +529,9 @@ function update_verification(res, userSettings, guild, type, settings) {
 					json: {
 						permissions: []
 					},
-					timeout: 10000
+					timeout: {
+						request: 10000
+					}
 				} ).then( response=> {
 					if ( response.statusCode !== 200 || !response.body ) {
 						console.log( '- Dashboard: ' + response.statusCode + ': Error while disabling the slash command: ' + response.body?.message );
@@ -635,7 +639,9 @@ function update_verification(res, userSettings, guild, type, settings) {
 								}
 							]
 						},
-						timeout: 10000
+						timeout: {
+							request: 10000
+						}
 					} ).then( response=> {
 						if ( response.statusCode !== 200 || !response.body ) {
 							console.log( '- Dashboard: ' + response.statusCode + ': Error while enabling the slash command: ' + response.body?.message );
@@ -1004,7 +1010,7 @@ function update_notices(res, userSettings, guild, type, settings) {
 	} );
 }
 
-module.exports = {
-	get: dashboard_verification,
-	post: update_verification
+export {
+	dashboard_verification as get,
+	update_verification as post
 };

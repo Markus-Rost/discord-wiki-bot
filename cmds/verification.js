@@ -1,31 +1,33 @@
-const {Util, MessageActionRow, MessageButton, Permissions: {FLAGS}} = require('discord.js');
-const help_setup = require('../functions/helpsetup.js');
+import {Util, MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import help_setup from '../functions/helpsetup.js';
+import db from '../util/database.js';
+import {got} from '../util/functions.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
-var db = require('../util/database.js');
-const {got} = require('../util/functions.js');
 
 /**
  * Processes the "verification" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
-		if ( msg.channel.isGuild() && !pause[msg.guildId] ) this.verify(lang, msg, args, line, wiki);
+		if ( msg.channel.isGuild() && !pausedGuilds.has(msg.guildId) ) this.verify(lang, msg, args, line, wiki);
 		else msg.reactEmoji('❌');
 		return;
 	}
 	if ( msg.defaultSettings ) return help_setup(lang, msg);
-	if ( !msg.guild.me.permissions.has(FLAGS.MANAGE_ROLES) ) {
+	if ( !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
 		console.log( msg.guildId + ': Missing permissions - MANAGE_ROLES' );
 		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
 	}
 	
 	db.query( 'SELECT configid, channel, role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 ORDER BY configid ASC', [msg.guildId] ).then( ({rows}) => {
-		var prefix = ( patreons[msg.guildId] || process.env.prefix );
+		var prefix = ( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
@@ -33,7 +35,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			components.push(new MessageActionRow().addComponents(button));
 		}
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
-			var limit = verificationLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
+			var limit = verificationLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 			button?.setURL(new URL(`/guild/${msg.guildId}/verification/new`, button.url).href);
@@ -81,7 +83,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		}
 		if ( !rows.some( row => row.configid.toString() === args[0] ) ) {
 			if ( args.length ) {
-				if ( !pause[msg.guildId] ) this.verify(lang, msg, args, line, wiki);
+				if ( !pausedGuilds.has(msg.guildId) ) this.verify(lang, msg, args, line, wiki);
 				return;
 			}
 			var text = null;
@@ -120,7 +122,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		}
 		button?.setURL(new URL(`/guild/${msg.guildId}/verification/${row.configid}`, button.url).href);
 		if ( args[1] === 'rename' && !args.slice(2).join('') ) {
-			if ( !row.rename && !msg.guild.me.permissions.has(FLAGS.MANAGE_NICKNAMES) ) {
+			if ( !row.rename && !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_NICKNAMES) ) {
 				console.log( msg.guildId + ': Missing permissions - MANAGE_NICKNAMES' );
 				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_NICKNAMES`' );
 			}
@@ -210,7 +212,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( {content: lang.get('verification.usergroup_too_long'), components}, true );
 				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( response => {
 					var body = response.body;
-					if ( body && body.warnings ) log_warn(body.warnings);
+					if ( body && body.warnings ) log_warning(body.warnings);
 					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {
 						if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
 						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
@@ -291,7 +293,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' accountage ' + lang.get('verification.new_accountage') + '`\n';
 			verification_text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( rename ? 'enabled' : 'disabled')) + '`*';
 			if ( showCommands ) verification_text += ' ' + lang.get('verification.toggle') + '\n`' + prefix + 'verification ' + row.configid + ' rename`\n';
-			if ( !hideNotice && rename && !msg.guild.me.permissions.has(FLAGS.MANAGE_NICKNAMES) ) {
+			if ( !hideNotice && rename && !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_NICKNAMES) ) {
 				verification_text += '\n\n' + lang.get('verification.rename_no_permission', msg.guild.me.toString());
 			}
 			if ( !hideNotice && role.replace( /-/g, '' ).split('|').some( role => {
@@ -315,7 +317,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 	} );
 }
 
-module.exports = {
+export default {
 	name: 'verification',
 	everyone: true,
 	pause: true,

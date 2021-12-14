@@ -1,7 +1,9 @@
-const {MessageEmbed, Util} = require('discord.js');
-const logging = require('../util/logging.js');
-const {timeoptions} = require('../util/default.json');
-const {got, toMarkdown, escapeFormatting} = require('../util/functions.js');
+import {MessageEmbed, Util} from 'discord.js';
+import logging from '../../util/logging.js';
+import {got, toMarkdown, escapeFormatting} from '../../util/functions.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
+const {timeoptions} = require('../../util/default.json');
 
 const overwrites = {
 	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query) => {
@@ -145,21 +147,21 @@ const descriptions = {
 
 /**
  * Processes special pages.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {Object} querypage - The details of the special page.
  * @param {String} querypage.title - The title of the special page.
  * @param {String} querypage.uselang - The language of the special page.
  * @param {String} specialpage - The canonical name of the special page.
  * @param {Object} query - The siteinfo from the wiki.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  */
-function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
+export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
 	var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(query.general.logo, wiki).href );
 	if ( overwrites.hasOwnProperty(specialpage) ) {
@@ -175,11 +177,11 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 		return;
 	}
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
-		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreons[msg.guildId] || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
+		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
 	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + ( body && body.error && body.error.info ) );
 			return;
@@ -199,7 +201,7 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 			if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 			embed.setDescription( description );
 		}
-		if ( msg.channel.isGuild() && patreons[msg.guildId] && querypages.hasOwnProperty(specialpage) ) {
+		if ( msg.channel.isGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) ) {
 			var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 			embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			if ( body.query.querypage?.cached !== undefined ) {
@@ -214,5 +216,3 @@ function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, quer
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
-
-module.exports = special_page;

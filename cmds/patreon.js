@@ -1,18 +1,21 @@
-const {ShardClientUtil: {shardIdForGuildId}} = require('discord.js');
+import {ShardClientUtil} from 'discord.js';
+import db from '../util/database.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {defaultPermissions, limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
-var db = require('../util/database.js');
+const {shardIdForGuildId} = ShardClientUtil;
 
 /**
  * Processes the "patreon" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( !( process.env.channel.split('|').includes( msg.channelId ) && args.join('') ) ) {
-		if ( !msg.channel.isGuild() || !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
 	
@@ -31,7 +34,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			});
 			return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.\n<' + invite + '>', true );
 		}
-		if ( patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', true );
+		if ( patreonGuildsPrefix.has(args[1]) ) return msg.replyMsg( '"' + guild + '" has the patreon features already enabled.', true );
 		db.query( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [msg.author.id] ).then( ({rows:[row]}) => {
 			if ( !row ) return msg.replyMsg( 'You can\'t have any servers.', true );
 			if ( row.count <= row.guilds ) return msg.replyMsg( 'You already reached your maximal server count.', true );
@@ -40,7 +43,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES($1, $1, $2)', [args[1], msg.author.id] ).then( () => {
 					console.log( '- Guild successfully added.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
-						global.patreons[evalData.guild] = evalData.prefix;
+						patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 					}, {context: {guild: args[1], prefix: process.env.prefix}} );
 					msg.replyMsg( 'The patreon features are now enabled on "' + guild + '".', true );
 				}, dberror => {
@@ -49,7 +52,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				} );
 				console.log( '- Guild successfully updated.' );
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					global.patreons[evalData.guild] = evalData.prefix;
+					patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 				}, {context: {guild: args[1], prefix: process.env.prefix}} );
 				msg.replyMsg( 'The patreon features are now enabled on "' + guild + '".', true );
 			}, dberror => {
@@ -69,7 +72,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		shard: shardIdForGuildId(args[1], msg.client.shard.count)
 	} ).then( guild => {
 		if ( !guild ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', true );
-		if ( !patreons[args[1]] ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', true );
+		if ( !patreonGuildsPrefix.has(args[1]) ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', true );
 		return db.connect().then( client => {
 			return client.query( 'SELECT lang, role, inline FROM discord WHERE guild = $1 AND patreon = $2', [args[1], msg.author.id] ).then( ({rows:[row]}) => {
 				if ( !row ) {
@@ -83,7 +86,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, args[1]] ).then( () => {
 					console.log( '- Guild successfully updated.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
-						delete global.patreons[evalData];
+						patreonGuildsPrefix.delete(evalData);
 					}, {context: args[1]} );
 					msg.replyMsg( 'The patreon features are now disabled on "' + guild + '".', true );
 				}, dberror => {
@@ -237,7 +240,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				if ( !guilds.length ) return Promise.reject();
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
 					return evalData.map( guild => {
-						delete global.patreons[guild];
+						patreonGuildsPrefix.delete(guild);
 					} );
 				}, {context: row.guilds} );
 			}, dberror => {
@@ -361,10 +364,10 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		msg.replyMsg( 'I got an error while searching for <@' + args[1] + '>, please try again later.', true );
 	} );
 	
-	if ( !msg.channel.isGuild() || !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
+	if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }
 
-module.exports = {
+export default {
 	name: 'patreon',
 	everyone: true,
 	pause: true,

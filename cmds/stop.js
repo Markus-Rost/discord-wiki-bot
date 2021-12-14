@@ -1,10 +1,10 @@
 /**
  * Processes the "stop" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  * @async
  */
 async function cmd_stop(lang, msg, args, line, wiki) {
@@ -15,12 +15,12 @@ async function cmd_stop(lang, msg, args, line, wiki) {
 		await msg.replyMsg( 'I\'ll restart myself now!', true );
 		console.log( '\n- Restarting all shards!\n\n' );
 		await msg.client.shard.respawnAll({timeout: -1});
-	} else if ( !msg.channel.isGuild() || !pause[msg.guildId] ) {
+	} else if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) {
 		this.LINK(lang, msg, line, wiki);
 	}
 }
 
-module.exports = {
+export default {
 	name: 'stop',
 	everyone: false,
 	pause: false,

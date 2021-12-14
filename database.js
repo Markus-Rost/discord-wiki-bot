@@ -1,6 +1,8 @@
+import {createRequire} from 'module';
+import pg from 'pg';
+const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./util/default.json');
-const {Client} = require('pg');
-const db = new Client();
+const db = new pg.Client();
 db.on( 'error', dberror => {
 	console.log( '- Error while connecting to the database: ' + dberror );
 } );
@@ -206,7 +208,7 @@ COMMIT TRANSACTION;
 ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 4;
 `];
 
-module.exports = db.connect().then( () => {
+export default await db.connect().then( () => {
 	return db.query( 'SELECT CURRENT_SETTING($1, $2) AS version', ['my.version', true] ).then( ({rows:[row]}) => {
 		if ( row.version === null ) {
 			return db.query( schema[0] ).then( () => {
@@ -253,6 +255,6 @@ module.exports = db.connect().then( () => {
 	}, dberror => {
 		console.log( '- Error while closing the database connection: ' + dberror );
 	} ).then( () => {
-		return Promise.reject();
+		process.exit(1);
 	} );
 } );

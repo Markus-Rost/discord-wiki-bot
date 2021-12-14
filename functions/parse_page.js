@@ -1,7 +1,7 @@
-const cheerio = require('cheerio');
-const {MessageEmbed} = require('discord.js');
-const {toSection} = require('../util/wiki.js');
-const {got, parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength} = require('../util/functions.js');
+import cheerio from 'cheerio';
+import {MessageEmbed} from 'discord.js';
+import {toSection} from '../util/wiki.js';
+import {got, parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength} from '../util/functions.js';
 
 const parsedContentModels = [
 	'wikitext',
@@ -74,11 +74,11 @@ const removeClassesExceptions = [
 
 /**
  * Parses a wiki page to get it's description.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} content - The content for the message.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the message.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {Object} querypage - The details of the page.
  * @param {String} querypage.title - The title of the page.
@@ -94,7 +94,7 @@ const removeClassesExceptions = [
  * @param {String} [pagelink] - The link to the page.
  * @returns {Promise<import('discord.js').Message>} The edited message.
  */
-function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, missing, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
+export default function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, missing, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
 	if ( !msg?.showEmbed?.() || missing !== undefined || !embed || embed.description ) {
 		if ( missing !== undefined && embed ) {
@@ -113,10 +113,12 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 	} ).then( message => {
 		if ( !message ) return;
 		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
-			timeout: 10000
+			timeout: {
+				request: 10000
+			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warn(body.warnings);
+			if ( body && body.warnings ) log_warning(body.warnings);
 			var revision = Object.values(( body?.query?.pages || {} ))?.[0]?.revisions?.[0];
 			revision = ( revision?.slots?.main || revision );
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
@@ -175,7 +177,9 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 		}
 		let extraImages = [];
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
-			timeout: 10000
+			timeout: {
+				request: 10000
+			}
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 				console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
@@ -425,5 +429,3 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 		} );
 	} );
 }
-
-module.exports = parse_page;

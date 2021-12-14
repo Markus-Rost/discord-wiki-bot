@@ -1,24 +1,24 @@
-const {randomBytes} = require('crypto');
-const {MessageActionRow, MessageButton, Permissions: {FLAGS}} = require('discord.js');
-var db = require('../util/database.js');
-var verify = require('../functions/verify.js');
-const {got, oauthVerify, sendMessage} = require('../util/functions.js');
+import {randomBytes} from 'crypto';
+import {MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import db from '../util/database.js';
+import verify from '../functions/verify.js';
+import {got, oauthVerify, sendMessage} from '../util/functions.js';
 
 /**
  * Wiki user verification.
  * @param {import('discord.js').CommandInteraction} interaction - The interaction.
- * @param {import('../util/i18n.js')} lang - The user language.
- * @param {import('../util/wiki.js')} wiki - The wiki for the interaction.
+ * @param {import('../util/i18n.js').default} lang - The user language.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_verify(interaction, lang, wiki) {
 	if ( !interaction.guild ) return interaction.reply( {content: lang.get('verify.missing'), ephemeral: true} ).catch(log_error);
-	if ( !interaction.guild.me.permissions.has(FLAGS.MANAGE_ROLES) ) {
+	if ( !interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
 		console.log( interaction.guildId + ': Missing permissions - MANAGE_ROLES' );
 		return interaction.reply( {content: lang.get('general.missingperm') + ' `MANAGE_ROLES`', ephemeral: true} ).catch(log_error);
 	}
 	
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
-		if ( !rows.length ) return interaction.reply( {content: lang.get('verify.missing') + ( interaction.member.permissions.has(FLAGS.MANAGE_GUILD) && process.env.dashboard ? '\n' + new URL(`/guild/${interaction.guildId}/verification`, process.env.dashboard).href : '' ), ephemeral: true} ).catch(log_error);
+		if ( !rows.length ) return interaction.reply( {content: lang.get('verify.missing') + ( interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && process.env.dashboard ? '\n' + new URL(`/guild/${interaction.guildId}/verification`, process.env.dashboard).href : '' ), ephemeral: true} ).catch(log_error);
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
@@ -45,7 +45,7 @@ function slash_verify(interaction, lang, wiki) {
 							}, dberror => {
 								console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
 							} );
-							return global.verifyOauthUser('', body.access_token, {
+							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
 								fail: () => sendMessage(interaction, lang.get('verify.error_reply'))
@@ -137,7 +137,7 @@ function slash_verify(interaction, lang, wiki) {
 							}, dberror => {
 								console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
 							} );
-							return global.verifyOauthUser('', body.access_token, {
+							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
 								fail: () => sendMessage(interaction, lang.get('verify.error_reply'))
@@ -227,10 +227,10 @@ function slash_verify(interaction, lang, wiki) {
 /**
  * Wiki user verification.
  * @param {import('discord.js').ButtonInteraction} interaction - The interaction.
- * @param {import('../util/i18n.js')} lang - The user language.
- * @param {import('../util/wiki.js')} wiki - The wiki for the interaction.
+ * @param {import('../util/i18n.js').default} lang - The user language.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
- function button_verify(interaction, lang, wiki) {
+function button_verify(interaction, lang, wiki) {
 	var username = interaction.message?.embeds?.[0]?.title?.replace( /\\(\\)?/g, '$1' );
 	if ( !username || !interaction.guild || !interaction.message.mentions?.users?.size ) {
 		return interaction.update( {components: []} ).catch(log_error);
@@ -239,7 +239,7 @@ function slash_verify(interaction, lang, wiki) {
 		return interaction.reply( {content: lang.get('verify.button_wrong_user', interaction.message.mentions.users.first().toString()), ephemeral: true} ).catch(log_error);
 	}
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
-		if ( !rows.length || !interaction.guild.me.permissions.has(FLAGS.MANAGE_ROLES) ) return interaction.update( {components: []} ).catch(log_error);
+		if ( !rows.length || !interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) return interaction.update( {components: []} ).catch(log_error);
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
@@ -269,7 +269,7 @@ function slash_verify(interaction, lang, wiki) {
 							}, dberror => {
 								console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
 							} );
-							return global.verifyOauthUser('', body.access_token, {
+							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
 								fail: () => sendMessage(interaction, {components: []}, false)
@@ -342,7 +342,7 @@ function slash_verify(interaction, lang, wiki) {
 							}, dberror => {
 								console.log( '- Dashboard: Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
 							} );
-							return global.verifyOauthUser('', body.access_token, {
+							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
 								fail: () => sendMessage(interaction, {components: []}, false)
@@ -430,7 +430,7 @@ function slash_verify(interaction, lang, wiki) {
 	} );
 }
 
-module.exports = {
+export default {
 	name: 'verify',
 	run: slash_verify,
 	button: button_verify

@@ -1,24 +1,34 @@
-const got = require('got').extend( {
+import gotDefault from 'got';
+import pg from 'pg';
+import DiscordOauth2 from 'discord-oauth2';
+import {oauthSites} from '../util/wiki.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
+const slashCommands = require('../interactions/commands.json');
+
+globalThis.isDebug = ( process.argv[2] === 'debug' );
+
+const got = gotDefault.extend( {
 	throwHttpErrors: false,
-	timeout: 5000,
+	timeout: {
+		request: 5000
+	},
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + '/dashboard (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json'
 } );
-const {Pool} = require('pg');
-const db = new Pool();
+
+const db = new pg.Pool();
 db.on( 'error', dberror => {
 	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
-const DiscordOauth2 = require('discord-oauth2');
+
 const oauth = new DiscordOauth2( {
 	clientId: process.env.bot,
 	clientSecret: process.env.secret,
 	redirectUri: process.env.dashboard
 } );
-
-const {oauthSites} = require('../util/wiki.js');
 
 const enabledOAuth2 = [
 	...oauthSites.filter( oauthSite => {
@@ -48,13 +58,13 @@ if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 	});
 }
 
-const slashCommands = require('../interactions/commands.json');
-
 got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, {
 	headers: {
 		Authorization: `Bot ${process.env.token}`
 	},
-	timeout: 10000
+	timeout: {
+		request: 10000
+	}
 } ).then( response=> {
 	if ( response.statusCode !== 200 || !response.body ) {
 		console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the global slash commands: ' + response.body?.message );
@@ -157,7 +167,7 @@ process.on( 'message', message => {
 		else messages.get(message.id).resolve(message.data.response);
 		return messages.delete(message.id);
 	}
-	if ( message === 'toggleDebug' ) global.isDebug = !global.isDebug;
+	if ( message === 'toggleDebug' ) isDebug = !isDebug;
 	console.log( '- [Dashboard]: Message received!', message );
 } );
 
@@ -223,9 +233,9 @@ if ( process.env.botlist ) {
 
 /**
  * Add bot list widgets.
- * @param {import('cheerio')} $ - The cheerio static
- * @param {import('./i18n.js')} dashboardLang - The user language
- * @returns {import('cheerio')}
+ * @param {import('cheerio').default} $ - The cheerio static
+ * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @returns {import('cheerio').default}
 */
 function addWidgets($, dashboardLang) {
 	if ( !botLists.length ) return;
@@ -238,11 +248,11 @@ function addWidgets($, dashboardLang) {
 
 /**
  * Create a red notice
- * @param {import('cheerio')} $ - The cheerio static
+ * @param {import('cheerio').default} $ - The cheerio static
  * @param {String} notice - The notice to create
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {String[]} [args] - The arguments for the notice
- * @returns {import('cheerio')}
+ * @returns {import('cheerio').default}
  */
 function createNotice($, notice, dashboardLang, args = []) {
 	if ( !notice ) return;
@@ -439,4 +449,18 @@ function hasPerm(all = 0n, ...permission) {
 	} );
 }
 
-module.exports = {got, db, oauth, enabledOAuth2, slashCommands, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, escapeText, hasPerm};
+export {
+	got,
+	db,
+	oauth,
+	enabledOAuth2,
+	slashCommands,
+	sessionData,
+	settingsData,
+	oauthVerify,
+	sendMsg,
+	addWidgets,
+	createNotice,
+	escapeText,
+	hasPerm
+};

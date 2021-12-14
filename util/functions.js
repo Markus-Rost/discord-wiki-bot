@@ -1,7 +1,10 @@
-const htmlparser = require('htmlparser2');
-const got = require('got').extend( {
+import htmlparser from 'htmlparser2';
+import gotDefault from 'got';
+const got = gotDefault.extend( {
 	throwHttpErrors: false,
-	timeout: 5000,
+	timeout: {
+		request: 5000
+	},
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
@@ -97,7 +100,7 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
  * Make wikitext formatting usage.
  * @param {String} [text] - The text to modify.
  * @param {Boolean} [showEmbed] - If the text is used in an embed.
- * @param {import('./wiki.js')} [wiki] - The wiki.
+ * @param {import('./wiki.js').default} [wiki] - The wiki.
  * @param {String} [title] - The page title.
  * @param {Boolean} [fullWikitext] - If the text can contain full wikitext.
  * @returns {String}
@@ -110,7 +113,7 @@ function toFormatting(text = '', showEmbed = false, wiki, title = '', fullWikite
 /**
  * Turns wikitext formatting into markdown.
  * @param {String} [text] - The text to modify.
- * @param {import('./wiki.js')} wiki - The wiki.
+ * @param {import('./wiki.js').default} wiki - The wiki.
  * @param {String} [title] - The page title.
  * @param {Boolean} [fullWikitext] - If the text can contain full wikitext.
  * @returns {String}
@@ -458,7 +461,7 @@ function sendMessage(interaction, message, letDelete = true) {
 	}, log_error );
 };
 
-module.exports = {
+export {
 	got,
 	oauthVerify,
 	parse_infobox,

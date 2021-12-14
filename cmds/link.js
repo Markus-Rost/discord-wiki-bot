@@ -1,16 +1,18 @@
+import help_setup from '../functions/helpsetup.js';
+import phabricator from '../functions/phabricator.js';
+import check_wiki_general from './wiki/general.js';
+import check_wiki_test from './test.js';
 const check_wiki = {
-	general: require('./wiki/general.js'),
-	test: require('./test.js').run
+	general: check_wiki_general,
+	test: check_wiki_test.run
 };
-const help_setup = require('../functions/helpsetup.js');
-const phabricator = require('../functions/phabricator.js');
 
 /**
  * Processes the wiki linking command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} title - The page title.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {String} [cmd] - The command at this point.
  */
 function cmd_link(lang, msg, title, wiki, cmd = '') {
@@ -31,7 +33,7 @@ function cmd_link(lang, msg, title, wiki, cmd = '') {
 	} );
 }
 
-module.exports = {
+export default {
 	name: 'LINK',
 	everyone: true,
 	pause: false,

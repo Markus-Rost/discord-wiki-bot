@@ -1,16 +1,20 @@
-const {randomBytes} = require('crypto');
-const cheerio = require('cheerio');
+import {readFileSync} from 'fs';
+import {randomBytes} from 'crypto';
+import cheerio from 'cheerio';
+import Wiki from '../util/wiki.js';
+import {allLangs} from './i18n.js';
+import {got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm} from './util.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
-const Wiki = require('../util/wiki.js');
-const allLangs = require('./i18n.js').allLangs().names;
-const {got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm} = require('./util.js');
+const allLangNames = allLangs().names;
 
-const file = require('fs').readFileSync('./dashboard/login.html');
+const file = readFileSync('./dashboard/login.html');
 
 /**
  * Let a user login
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('./i18n.js')} dashboardLang - The user language.
+ * @param {import('./i18n.js').default} dashboardLang - The user language.
  * @param {String} theme - The display theme
  * @param {String} [state] - The user state
  * @param {String} [action] - The action the user made
@@ -28,7 +32,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
 		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
-		const allLangs = ${JSON.stringify(allLangs)};
+		const allLangs = ${JSON.stringify(allLangNames)};
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.login') + ' – ' + dashboardLang.get('general.title'));
 	$('#login-button span, .channel#login div').text(dashboardLang.get('general.login'));
@@ -398,10 +402,10 @@ function mediawiki_oauth(res, searchParams, user_id) {
 	} );
 }
 
-module.exports = {
-	login: dashboard_login,
-	oauth: dashboard_oauth,
-	refresh: dashboard_refresh,
-	api: dashboard_api,
-	verify: mediawiki_oauth
+export {
+	dashboard_login as login,
+	dashboard_oauth as oauth,
+	dashboard_refresh as refresh,
+	dashboard_api as api,
+	mediawiki_oauth as verify
 };

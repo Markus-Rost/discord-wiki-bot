@@ -1,19 +1,21 @@
-const {MessageEmbed, Util} = require('discord.js');
-const {got, escapeFormatting} = require('../../util/functions.js');
+import {MessageEmbed, Util} from 'discord.js';
+import {got, escapeFormatting} from '../../util/functions.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {limit: {search: searchLimit}} = require('../../util/default.json');
 
 /**
  * Searches a Gamepedia wiki.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} searchterm - The searchterm.
- * @param {import('../../util/wiki.js')} wiki - The wiki for the search.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the search.
  * @param {Object} query - The siteinfo from the wiki.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  */
-function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler, noEmbed) {
+export default function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler, noEmbed) {
 	if ( searchterm.length > 250 ) {
 		searchterm = searchterm.substring(0, 250);
 		msg.reactEmoji('⚠️');
@@ -25,17 +27,17 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler,
 	if ( msg.showEmbed() && !noEmbed ) embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( '`' + searchterm + '`' ).setURL( pagelink );
 	else resultText += '\n\n**`' + searchterm + '`**';
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
-	var limit = searchLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
+	var limit = searchLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json' ).then( response => {
 		var body = response.body;
-		if ( body?.warnings ) log_warn(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body?.query?.search || body.batchcomplete === undefined ) {
 			return console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 		}
 		if ( body.query.search.length < limit ) {
 			return got.get( wiki + 'api.php?action=query&list=search&srwhat=text&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json' ).then( tresponse => {
 				var tbody = tresponse.body;
-				if ( tbody?.warnings ) log_warn(tbody.warnings);
+				if ( tbody?.warnings ) log_warning(tbody.warnings);
 				if ( tresponse.statusCode !== 200 || !tbody?.query?.search || tbody.batchcomplete === undefined ) {
 					return console.log( '- ' + tresponse.statusCode + ': Error while getting the text search results: ' + tbody?.error?.info );
 				}
@@ -149,8 +151,3 @@ function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler,
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
-
-module.exports = {
-	name: 'search',
-	run: gamepedia_search
-};

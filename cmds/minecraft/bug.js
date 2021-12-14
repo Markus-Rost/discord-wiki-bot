@@ -1,11 +1,11 @@
-const {MessageEmbed} = require('discord.js');
-const {got, escapeFormatting, limitLength} = require('../../util/functions.js');
+import {MessageEmbed} from 'discord.js';
+import {got, escapeFormatting, limitLength} from '../../util/functions.js';
 
 /**
  * Sends a Minecraft issue.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../../util/wiki.js')} wiki - The wiki.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki.
  * @param {String[]} args - The command arguments.
  * @param {String} title - The page title.
  * @param {String} cmd - The command at this point.
@@ -158,7 +158,7 @@ function parse_links(text) {
 	return text;
 }
 
-module.exports = {
+export default {
 	name: 'bug',
 	run: minecraft_bug
 };

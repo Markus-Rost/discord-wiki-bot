@@ -1,20 +1,20 @@
-const {randomBytes} = require('crypto');
-const {MessageEmbed, MessageActionRow, MessageButton, Permissions: {FLAGS}} = require('discord.js');
-var db = require('../util/database.js');
-var verify = require('../functions/verify.js');
-const {got, oauthVerify, allowDelete, escapeFormatting} = require('../util/functions.js');
+import {randomBytes} from 'crypto';
+import {MessageEmbed, MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import db from '../util/database.js';
+import verify from '../functions/verify.js';
+import {got, oauthVerify, allowDelete, escapeFormatting} from '../util/functions.js';
 
 /**
  * Processes the "verify" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_verify(lang, msg, args, line, wiki) {
 	if ( !msg.channel.isGuild() || msg.defaultSettings ) return this.LINK(lang, msg, line, wiki);
-	if ( !msg.guild.me.permissions.has(FLAGS.MANAGE_ROLES) ) {
+	if ( !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
 		if ( msg.isAdmin() ) {
 			console.log( msg.guildId + ': Missing permissions - MANAGE_ROLES' );
 			msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
@@ -26,7 +26,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 	db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [msg.guildId, '%|' + ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId ) + '|%'] ).then( ({rows}) => {
 		if ( !rows.length ) {
 			if ( msg.onlyVerifyCommand ) return;
-			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreons[msg.guildId] || process.env.prefix ) + 'verification`' : '' ) );
+			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ) + 'verification`' : '' ) );
 		}
 		
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
@@ -53,7 +53,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						}, dberror => {
 							console.log( '- Dashboard: Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 						} );
-						return global.verifyOauthUser('', body.access_token, {
+						return verifyOauthUser('', body.access_token, {
 							wiki: wiki.href, channel: msg.channel,
 							user: msg.author.id, sourceMessage: msg,
 							fail: () => msg.replyMsg( lang.get('verify.error_reply'), false, false ).then( message => {
@@ -144,7 +144,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							}, dberror => {
 								console.log( '- Dashboard: Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 							} );
-							return global.verifyOauthUser('', body.access_token, {
+							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: msg.channel,
 								user: msg.author.id, sourceMessage: msg,
 								fail: () => msg.replyMsg( lang.get('verify.error_reply'), false, false ).then( message => {
@@ -275,7 +275,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 	} );
 }
 
-module.exports = {
+export default {
 	name: 'verify',
 	everyone: true,
 	pause: false,

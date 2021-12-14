@@ -1,4 +1,6 @@
-const util = require('util');
+import {inspect} from 'util';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {defaultSettings, wikiProjects} = require('./default.json');
 
 const wikimediaSites = [
@@ -24,7 +26,7 @@ const urlSpaceReplacement = {
  * A wiki.
  * @class Wiki
  */
-class Wiki extends URL {
+export default class Wiki extends URL {
 	/**
 	 * Creates a new wiki.
 	 * @param {String|URL|Wiki} [wiki] - The wiki script path.
@@ -229,28 +231,28 @@ class Wiki extends URL {
 	 * @static
 	 */
 	static fromInput(input = '') {
-		if ( input instanceof URL ) return new this(input);
+		if ( input instanceof URL ) return new Wiki(input);
 		input = input.replace( /^(?:https?:)?\/\//, 'https://' );
 		var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-		if ( regex ) return new this('https://' + regex[1] + '/');
+		if ( regex ) return new Wiki('https://' + regex[1] + '/');
 		if ( input.startsWith( 'https://' ) ) {
 			let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
 			if ( project ) {
 				regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-				if ( regex ) return new this('https://' + regex[1] + project.scriptPath);
+				if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
 			}
 			let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|[\?\/#].*)$/, '/' );
 			if ( !wiki.endsWith( '/' ) ) wiki += '/';
-			return new this(wiki);
+			return new Wiki(wiki);
 		}
 		let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
 		if ( project ) {
 			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-			if ( regex ) return new this('https://' + regex[1] + project.scriptPath);
+			if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
 		}
 		if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
-			if ( !input.includes( '.' ) ) return new this('https://' + input + '.fandom.com/');
-			else return new this('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
+			if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');
+			else return new Wiki('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
 		}
 		return null;
 	}
@@ -258,7 +260,7 @@ class Wiki extends URL {
 	/** @type {String[]} - Sites that support verification using OAuth2. */
 	static oauthSites = [];
 
-	[util.inspect.custom](depth, opts) {
+	[inspect.custom](depth, opts) {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
 		const wiki = {
 			href: this.href,
@@ -278,7 +280,7 @@ class Wiki extends URL {
 			spaceReplacement: this.spaceReplacement,
 			mainpage: this.mainpage
 		}
-		return 'Wiki ' + util.inspect(wiki, opts);
+		return 'Wiki ' + inspect(wiki, opts);
 	}
 }
 
@@ -302,15 +304,18 @@ class articleURL extends URL {
 		this.spaceReplacement = ( wiki?.spaceReplacement || '_' );
 	}
 
-	[util.inspect.custom](depth, opts) {
+	[inspect.custom](depth, opts) {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
 		if ( typeof depth === 'number' && depth < 2 ) {
 			var link = this.href;
 			var mainpage = link.replace( '$1', Wiki.toTitle(( this.mainpage || 'Main Page' ), this.spaceReplacement) );
-			return 'articleURL { ' + util.inspect(link, opts) + ' => ' + util.inspect(mainpage, opts) + ' }';
+			return 'articleURL { ' + inspect(link, opts) + ' => ' + inspect(mainpage, opts) + ' }';
 		}
-		return super[util.inspect.custom](depth, opts);
+		return super[inspect.custom](depth, opts);
 	}
 }
 
-module.exports = Wiki;
+export const toTitle = Wiki.toTitle;
+export const toSection = Wiki.toSection;
+export const fromInput = Wiki.fromInput;
+export const oauthSites = Wiki.oauthSites;

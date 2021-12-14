@@ -1,5 +1,7 @@
-const {Util} = require('discord.js');
-const help_server = require('../functions/helpserver.js');
+import {Util} from 'discord.js';
+import help_server from '../functions/helpserver.js';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 const {wikis: mcw} = require('./minecraft/commands.json');
 
 const helpmap = {
@@ -73,14 +75,14 @@ const restrictions = {
 
 /**
  * Processes the "help" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_help(lang, msg, args, line, wiki) {
-	if ( msg.channel.isGuild() && pause[msg.guildId] && ( args.join('') || !msg.isAdmin() ) ) return;
+	if ( msg.channel.isGuild() && pausedGuilds.has(msg.guildId) && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
 	var isMinecraft = mcw.hasOwnProperty(wiki.href);
 	var maxLength = ( ['hi', 'bn'].includes( lang.lang ) ? 480 : 2000 );
@@ -119,7 +121,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 		}
 		else msg.reactEmoji('❓');
 	}
-	else if ( msg.isAdmin() && pause[msg.guildId] ) {
+	else if ( msg.isAdmin() && pausedGuilds.has(msg.guildId) ) {
 		var cmdlist = lang.get('help.pause') + '\n';
 		cmdlist += formathelp(helplist.pause, msg, lang);
 		Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
@@ -141,15 +143,15 @@ function cmd_help(lang, msg, args, line, wiki) {
  * Format the help messages.
  * @param {String[]} messages - The help messages.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  */
 function formathelp(messages, msg, lang) {
-	var prefix = ( msg.channel.isGuild() && patreons[msg.guildId] || process.env.prefix );
+	var prefix = ( msg.channel.isGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
 	var mention = '@' + ( msg.channel.isGuild() ? msg.guild.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
 		if ( !restrictions.patreon.includes( message ) ) return true;
-		return ( msg.channel.isGuild() && patreons[msg.guildId] );
+		return ( msg.channel.isGuild() && patreonGuildsPrefix.has(msg.guildId) );
 	} ).map( message => {
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );
@@ -157,7 +159,7 @@ function formathelp(messages, msg, lang) {
 	} ).join('\n');
 }
 
-module.exports = {
+export default {
 	name: 'help',
 	everyone: true,
 	pause: true,

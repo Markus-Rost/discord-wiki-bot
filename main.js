@@ -1,21 +1,24 @@
-require('dotenv').config();
+import 'dotenv/config';
+import './database.js';
+import {fork as forkChildProcess} from 'child_process';
+import gotDefault from 'got';
+import {ShardingManager, ShardClientUtil} from 'discord.js';
+const {shardIdForGuildId} = ShardClientUtil;
 
 var isDebug = ( process.argv[2] === 'debug' );
 if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
 
-require('./database.js').then( () => {
-
-const child_process = require('child_process');
-
-const got = require('got').extend( {
+const got = gotDefault.extend( {
 	throwHttpErrors: false,
-	timeout: 30000,
+	timeout: {
+		request: 30000
+	},
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json'
 } );
-const {ShardingManager, ShardClientUtil: {shardIdForGuildId}} = require('discord.js');
+
 const manager = new ShardingManager( './bot.js', {
 	execArgv: ['--icu-data-dir=node_modules/full-icu'],
 	shardArgs: ( isDebug ? ['debug'] : [] ),
@@ -43,7 +46,7 @@ manager.on( 'shardCreate', shard => {
 			console.log( '\n- Toggle debug logging for all shards!\n' );
 			isDebug = !isDebug;
 			manager.broadcastEval( () => {
-				global.isDebug = !global.isDebug;
+				globalThis.isDebug = !globalThis.isDebug;
 			} );
 			if ( typeof server !== 'undefined' ) server.send( 'toggleDebug' );
 		}
@@ -98,7 +101,7 @@ manager.spawn( {
 
 var server;
 if ( process.env.dashboard ) {
-	const dashboard = child_process.fork('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
+	const dashboard = forkChildProcess('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
 	server = dashboard;
 
 	const evalFunctions = {
@@ -109,7 +112,7 @@ if ( process.env.dashboard ) {
 						let guild = discordClient.guilds.cache.get(id);
 						return guild.members.fetch(evalData.member).then( member => {
 							return {
-								patreon: global.patreons.hasOwnProperty(guild.id),
+								patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 								memberCount: guild.memberCount,
 								botPermissions: guild.me.permissions.bitfield.toString(),
 								channels: guild.channels.cache.filter( channel => {
@@ -158,7 +161,7 @@ if ( process.env.dashboard ) {
 				let guild = discordClient.guilds.cache.get(evalData.guild);
 				return guild.members.fetch(evalData.member).then( member => {
 					var response = {
-						patreon: global.patreons.hasOwnProperty(guild.id),
+						patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 						userPermissions: member.permissions.bitfield.toString(),
 						botPermissions: guild.me.permissions.bitfield.toString()
 					};
@@ -188,10 +191,10 @@ if ( process.env.dashboard ) {
 		},
 		notifyGuild: (discordClient, evalData) => {
 			if ( evalData.prefix ) {
-				global.patreons[evalData.guild] = evalData.prefix;
+				globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 			}
-			if ( evalData.voice && global.voice.hasOwnProperty(evalData.guild) ) {
-				global.voice[evalData.guild] = evalData.voice;
+			if ( evalData.voice && globalThis.voiceGuildsLang.has(evalData.guild) ) {
+				globalThis.voiceGuildsLang.set(evalData.guild, evalData.voice);
 			}
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				let channel = discordClient.guilds.cache.get(evalData.guild).publicUpdatesChannel;
@@ -200,7 +203,7 @@ if ( process.env.dashboard ) {
 					embeds: ( evalData.embed ? [evalData.embed] : [] ),
 					files: evalData.file,
 					allowedMentions: {parse: []}
-				} ).catch(log_error);
+				} ).catch(globalThis.log_error);
 			}
 		},
 		createWebhook: (discordClient, evalData) => {
@@ -211,7 +214,7 @@ if ( process.env.dashboard ) {
 					reason: evalData.reason
 				} ).then( webhook => {
 					console.log( `- Dashboard: Webhook successfully created: ${evalData.guild}#${evalData.channel}` );
-					webhook.send( evalData.text ).catch(log_error);
+					webhook.send( evalData.text ).catch(globalThis.log_error);
 					return webhook.id + '/' + webhook.token;
 				}, error => {
 					console.log( '- Dashboard: Error while creating the webhook: ' + error );
@@ -227,7 +230,7 @@ if ( process.env.dashboard ) {
 					if ( evalData.avatar ) changes.avatar = evalData.avatar;
 					return webhook.edit( changes, evalData.reason ).then( newwebhook => {
 						console.log( `- Dashboard: Webhook successfully edited: ${evalData.guild}#` + ( evalData.channel || webhook.channelId ) );
-						webhook.send( evalData.text ).catch(log_error);
+						webhook.send( evalData.text ).catch(globalThis.log_error);
 						return true;
 					}, error => {
 						console.log( '- Dashboard: Error while editing the webhook: ' + error );
@@ -238,7 +241,7 @@ if ( process.env.dashboard ) {
 			}
 		},
 		verifyUser: (discordClient, evalData) => {
-			global.verifyOauthUser(evalData.state, evalData.access_token);
+			globalThis.verifyOauthUser(evalData.state, evalData.access_token);
 		}
 	};
 
@@ -374,7 +377,3 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 	}, timeout * 1000 ).unref();
 }
-
-}, () => {
-	process.exit(1);
-} )
