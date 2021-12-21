@@ -3,7 +3,7 @@ import {MessageEmbed} from 'discord.js';
 import parse_page from '../../functions/parse_page.js';
 import phabricator from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
-import {got, htmlToDiscord, escapeFormatting, partialURIdecode} from '../../util/functions.js';
+import {got, htmlToDiscord, escapeFormatting, partialURIdecode, breakOnTimeoutPause} from '../../util/functions.js';
 import extract_desc from '../../util/extract_desc.js';
 import Wiki from '../../util/wiki.js';
 import * as fn from './functions.js'
@@ -298,7 +298,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				}
 				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 				
-				var prefix = ( msg.channel.isGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
+				var prefix = ( msg.inGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
 				var linksuffix = ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' );
 				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
 					text = '';
@@ -414,9 +414,8 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ), pagelink);
 		}
 		if ( body.query.interwiki ) {
-			if ( msg.channel.isGuild() && pausedGuilds.has(msg.guildId) ) {
+			if ( breakOnTimeoutPause(msg) ) {
 				if ( reaction ) reaction.removeEmoji();
-				console.log( '- Aborted, paused.' );
 				return;
 			}
 			var iw = new URL(body.query.interwiki[0].url.replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);

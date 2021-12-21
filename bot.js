@@ -6,7 +6,7 @@ import db from './util/database.js';
 import Lang from './util/i18n.js';
 import Wiki from './util/wiki.js';
 import newMessage from './util/newMessage.js';
-import {allowDelete} from './util/functions.js';
+import {breakOnTimeoutPause, allowDelete} from './util/functions.js';
 
 inspect.defaultOptions = {compact: false, breakLength: Infinity};
 
@@ -71,12 +71,8 @@ String.prototype.isMention = function(guild) {
 	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.me.displayName );
 };
 
-Discord.Channel.prototype.isGuild = function(includeThreads = true) {
-	return this.isText() && this.type.startsWith( 'GUILD_' ) && ( includeThreads || !this.isThread() );
-}
-
 Discord.Message.prototype.isAdmin = function() {
-	return this.channel.isGuild() && this.member && ( this.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || ( this.isOwner() && this.evalUsed ) );
+	return this.inGuild() && this.member && ( this.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || ( this.isOwner() && this.evalUsed ) );
 };
 
 Discord.Message.prototype.isOwner = function() {
@@ -84,11 +80,11 @@ Discord.Message.prototype.isOwner = function() {
 };
 
 Discord.Message.prototype.showEmbed = function() {
-	return !this.channel.isGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.EMBED_LINKS);
+	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.EMBED_LINKS);
 };
 
 Discord.Message.prototype.uploadFiles = function() {
-	return !this.channel.isGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.ATTACH_FILES);
+	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.ATTACH_FILES);
 };
 
 String.prototype.replaceSave = function(pattern, replacement) {
@@ -96,23 +92,19 @@ String.prototype.replaceSave = function(pattern, replacement) {
 };
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
-	if ( !this.channel.isGuild() || !pausedGuilds.has(this.guildId) || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		var emoji = '<:error:440871715938238494>';
-		switch ( name ) {
-			case 'nowiki':
-				emoji = '<:unknown_wiki:505884572001763348>';
-				break;
-			case 'error':
-				emoji = '<:error:440871715938238494>';
-				break;
-			default:
-				emoji = name;
-		}
-		return this.react(emoji).catch(log_error);
-	} else {
-		console.log( '- Aborted, paused.' );
-		return Promise.resolve();
+	if ( breakOnTimeoutPause(this, ignorePause) ) return Promise.resolve();
+	var emoji = '<:error:440871715938238494>';
+	switch ( name ) {
+		case 'nowiki':
+			emoji = '<:unknown_wiki:505884572001763348>';
+			break;
+		case 'error':
+			emoji = '<:error:440871715938238494>';
+			break;
+		default:
+			emoji = name;
 	}
+	return this.react(emoji).catch(log_error);
 };
 
 Discord.MessageReaction.prototype.removeEmoji = function() {
@@ -120,22 +112,19 @@ Discord.MessageReaction.prototype.removeEmoji = function() {
 };
 
 Discord.Message.prototype.sendChannel = function(message, ignorePause = false) {
-	if ( !this.channel.isGuild() || !pausedGuilds.has(this.guildId) || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
-		return this.channel.send( message ).then( msg => {
-			allowDelete(msg, this.author.id);
-			return msg;
-		}, error => {
-			log_error(error);
-			this.reactEmoji('error');
-		} );
-	} else {
-		console.log( '- Aborted, paused.' );
-		return Promise.resolve();
-	}
+	if ( breakOnTimeoutPause(this, ignorePause) ) return Promise.resolve();
+	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
+	return this.channel.send( message ).then( msg => {
+		allowDelete(msg, this.author.id);
+		return msg;
+	}, error => {
+		log_error(error);
+		this.reactEmoji('error');
+	} );
 };
 
 Discord.Message.prototype.sendChannelError = function(message) {
+	if ( breakOnTimeoutPause(this) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return this.channel.send( message ).then( msg => {
 		msg.reactEmoji('error');
@@ -148,19 +137,15 @@ Discord.Message.prototype.sendChannelError = function(message) {
 };
 
 Discord.Message.prototype.replyMsg = function(message, ignorePause = false, letDelete = true) {
-	if ( !this.channel.isGuild() || !pausedGuilds.has(this.guildId) || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
-		return this.reply( message ).then( msg => {
-			if ( letDelete ) allowDelete(msg, this.author.id);
-			return msg;
-		}, error => {
-			log_error(error);
-			this.reactEmoji('error');
-		} );
-	} else {
-		console.log( '- Aborted, paused.' );
-		return Promise.resolve();
-	}
+	if ( breakOnTimeoutPause(this, ignorePause) ) return Promise.resolve();
+	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
+	return this.reply( message ).then( msg => {
+		if ( letDelete ) allowDelete(msg, this.author.id);
+		return msg;
+	}, error => {
+		log_error(error);
+		this.reactEmoji('error');
+	} );
 };
 
 String.prototype.hasPrefix = function(prefix, flags = '') {
@@ -210,6 +195,7 @@ client.on( 'interactionCreate', interaction => {
  * @param {Discord.CommandInteraction} interaction - The interaction.
  */
 function slash_command(interaction) {
+	if ( breakOnTimeoutPause(interaction) ) return;
 	if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
 	else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 		return option.name + ':' + option.value;
@@ -234,6 +220,7 @@ function slash_command(interaction) {
  * @param {Discord.ButtonInteraction} interaction - The interaction.
  */
 function message_button(interaction) {
+	if ( breakOnTimeoutPause(interaction) ) return;
 	var cmd = ( buttonsMap.hasOwnProperty(interaction.customId) ? buttonsMap[interaction.customId] : interaction.customId );
 	if ( !buttons.hasOwnProperty(cmd) ) return;
 	if ( !interaction.inGuild() ) {
@@ -263,7 +250,8 @@ client.on( 'messageCreate', msg => {
  */
 function messageCreate(msg) {
 	if ( isStop || !msg.channel.isText() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
-	if ( !msg.content.hasPrefix(( msg.channel.isGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), 'm') ) {
+	if ( msg.member?.communicationDisabledUntilTimestamp > Date.now() || msg.guild?.me.communicationDisabledUntilTimestamp > Date.now() ) return;
+	if ( !msg.content.hasPrefix(( msg.inGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES )) ) {
 				console.log( msg.guildId + ': ' + msg.content );
@@ -281,7 +269,7 @@ function messageCreate(msg) {
 		}
 		if ( !( msg.content.includes( '[[' ) && msg.content.includes( ']]' ) ) && !( msg.content.includes( '{{' ) && msg.content.includes( '}}' ) ) ) return;
 	}
-	if ( msg.channel.isGuild() ) {
+	if ( msg.inGuild() ) {
 		let sqlargs = [msg.guildId];
 		if ( msg.channel.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
 		else sqlargs.push(msg.channelId, '#' + msg.channel.parentId);
@@ -297,10 +285,14 @@ function messageCreate(msg) {
 				console.log( msg.guildId + ': Missing permissions - ' + missing.join(', ') );
 				if ( !missing.includes( 'SEND_MESSAGES' ) && !missing.includes( 'SEND_MESSAGES_IN_THREADS' ) ) {
 					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-						msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', true );
+						return row.lang;
 					}, dberror => {
 						console.log( '- Error while getting the lang: ' + dberror );
-						msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', true );
+					} ).then( lang => {
+						msg.sendChannel( {
+							content: new Lang(( lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`',
+							reply: ( missing.includes( 'READ_MESSAGE_HISTORY' ) ? null : {messageReference: msg.id} )
+						}, true );
 					} );
 				}
 			}
@@ -362,7 +354,7 @@ client.on( 'guildDelete', guild => {
 		return;
 	}
 	console.log( '- ' + guild.id + ': I\'ve been removed from a server.' );
-	leftGuilds.set(guild.id, setTimeout(removeSettings, 300000, guild.id).unref());
+	leftGuilds.set(guild.id, setTimeout(removeSettings, 300_000, guild.id).unref());
 } );
 
 function removeSettings(guild) {
@@ -415,7 +407,7 @@ function graceful(signal) {
 		}, dberror => {
 			console.log( '- ' + process.env.SHARDS + ': ' + signal + ': Error while closing the database connection: ' + dberror );
 		} );
-	}, 1000 ).unref();
+	}, 1_000 ).unref();
 }
 
 process.once( 'SIGINT', graceful );

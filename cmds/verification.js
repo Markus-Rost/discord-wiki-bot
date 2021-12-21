@@ -16,7 +16,7 @@ const {limit: {verification: verificationLimit}} = require('../util/default.json
  */
 function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
-		if ( msg.channel.isGuild() && !pausedGuilds.has(msg.guildId) ) this.verify(lang, msg, args, line, wiki);
+		if ( msg.inGuild() && !pausedGuilds.has(msg.guildId) ) this.verify(lang, msg, args, line, wiki);
 		else msg.reactEmoji('❌');
 		return;
 	}
@@ -144,9 +144,9 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( channels.length > 10 ) return msg.replyMsg( {content: lang.get('verification.channel_max'), components}, true );
 				channels = channels.map( channel => {
 					var new_channel = '';
-					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( tc => tc.isGuild(false) ).get(channel);
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isGuild(false) ).find( gc => gc.name === channel.replace( /^#/, '' ) );
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isGuild(false) ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
+					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( gc => gc.isText() && !gc.isThread() ).get(channel);
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isText() && !gc.isThread() ).find( gc => gc.name === channel.replace( /^#/, '' ) );
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isText() && !gc.isThread() ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
 					return new_channel;
 				} );
 				if ( channels.some( channel => !channel ) ) return msg.replyMsg( {content: lang.get('verification.channel_missing'), components}, true );
@@ -189,7 +189,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( ( ( args[1] === 'editcount' || args[1] === 'accountage' ) && /^\d+$/.test(args[2]) ) || ( args[1] === 'postcount' && /^(?:-?\d+|null)$/.test(args[2]) ) ) {
 				args[2] = parseInt(args[2], 10);
 				if ( isNaN(args[2]) ) args[2] = null;
-				if ( args[2] > 1000000 || args[2] < -1000000 ) {
+				if ( args[2] > 1_000_000 || args[2] < -1_000_000 ) {
 					return msg.replyMsg( {content: lang.get('verification.value_too_high'), components}, true );
 				}
 				return db.query( 'UPDATE verification SET ' + args[1] + ' = $1 WHERE guild = $2 AND configid = $3', [args[2], msg.guildId, row.configid] ).then( () => {

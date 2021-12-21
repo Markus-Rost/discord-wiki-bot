@@ -25,9 +25,9 @@ const wsStatus = [
  */
 function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
-		if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 	}
-	else if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) {
+	else if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 		let textList = lang.get('test.text').filter( text => text.trim() );
 		var text = ( textList[Math.floor(Math.random() * ( textList.length * 5 ))] || lang.get('test.text.0') );
@@ -36,12 +36,12 @@ function cmd_test(lang, msg, args, line, wiki) {
 		msg.replyMsg( text ).then( message => {
 			if ( !message ) return;
 			var discordPing = message.createdTimestamp - msg.createdTimestamp;
-			if ( discordPing > 1000 ) text = lang.get('test.slow') + ' 🐌\n' + process.env.invite;
+			if ( discordPing > 1_000 ) text = lang.get('test.slow') + ' 🐌\n' + process.env.invite;
 			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', discordPing.toLocaleString(lang.get('dateformat')) + 'ms' );
 			var now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: {
-					request: 10000
+					request: 10_000
 				}
 			} ).then( response => {
 				var then = Date.now();

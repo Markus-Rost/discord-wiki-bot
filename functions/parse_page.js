@@ -114,7 +114,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {t
 		if ( !message ) return;
 		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
-				request: 10000
+				request: 10_000
 			}
 		} ).then( response => {
 			var body = response.body;
@@ -178,7 +178,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {t
 		let extraImages = [];
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
-				request: 10000
+				request: 10_000
 			}
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {

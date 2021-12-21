@@ -13,7 +13,7 @@ import {got, escapeFormatting} from '../util/functions.js';
  * @param {String} [gender] - The gender of the user.
  */
 export default function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
-	if ( !msg || !msg.channel.isGuild() || !patreonGuildsPrefix.has(msg.guildId) || !wiki.isFandom() ) return;
+	if ( !msg || !msg.inGuild() || !patreonGuildsPrefix.has(msg.guildId) || !wiki.isFandom() ) return;
 	
 	var isUser = true;
 	if ( !gender ) {

@@ -14,8 +14,12 @@ async function cmd_stop(lang, msg, args, line, wiki) {
 	} else if ( args.join(' ').split('\n')[0].isMention(msg.guild) ) {
 		await msg.replyMsg( 'I\'ll restart myself now!', true );
 		console.log( '\n- Restarting all shards!\n\n' );
-		await msg.client.shard.respawnAll({timeout: -1});
-	} else if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) {
+		await msg.client.shard.respawnAll( {
+			shardDelay: 5_000,
+			respawnDelay: 500,
+			timeout: 60_000
+		} );
+	} else if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) {
 		this.LINK(lang, msg, line, wiki);
 	}
 }

@@ -43,7 +43,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 			} );
 		}
 	}
-	if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
+	if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }
 
 export default {

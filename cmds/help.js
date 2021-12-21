@@ -82,7 +82,7 @@ const restrictions = {
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_help(lang, msg, args, line, wiki) {
-	if ( msg.channel.isGuild() && pausedGuilds.has(msg.guildId) && ( args.join('') || !msg.isAdmin() ) ) return;
+	if ( msg.inGuild() && pausedGuilds.has(msg.guildId) && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
 	var isMinecraft = mcw.hasOwnProperty(wiki.href);
 	var maxLength = ( ['hi', 'bn'].includes( lang.lang ) ? 480 : 2000 );
@@ -94,12 +94,12 @@ function cmd_help(lang, msg, args, line, wiki) {
 		var invoke = args[0].toLowerCase();
 		var cmd = ( lang.aliases[invoke] || invoke );
 		if ( cmd === 'admin' ) {
-			if ( !msg.channel.isGuild() || msg.isAdmin() ) {
+			if ( !msg.inGuild() || msg.isAdmin() ) {
 				var cmdlist = lang.get('help.admin') + '\n';
 				if ( process.env.READONLY ) cmdlist = msg.author.toString() + ', ' + lang.get('general.readonly') + '\n' + process.env.invite + '\n\n' + cmdlist;
 				cmdlist += formathelp(helplist.admin, msg, lang);
 				cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
-				if ( process.env.dashboard ) cmdlist += '\n\t\t' + new URL(( msg.channel.isGuild() ? `/guild/${msg.guildId}/settings` : '/' ), process.env.dashboard).href;
+				if ( process.env.dashboard ) cmdlist += '\n\t\t' + new URL(( msg.inGuild() ? `/guild/${msg.guildId}/settings` : '/' ), process.env.dashboard).href;
 				Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 			}
 			else {
@@ -146,12 +146,12 @@ function cmd_help(lang, msg, args, line, wiki) {
  * @param {import('../util/i18n.js').default} lang - The user language.
  */
 function formathelp(messages, msg, lang) {
-	var prefix = ( msg.channel.isGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
-	var mention = '@' + ( msg.channel.isGuild() ? msg.guild.me.displayName : msg.client.user.username );
+	var prefix = ( msg.inGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
+	var mention = '@' + ( msg.inGuild() ? msg.guild.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
 		if ( !restrictions.patreon.includes( message ) ) return true;
-		return ( msg.channel.isGuild() && patreonGuildsPrefix.has(msg.guildId) );
+		return ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) );
 	} ).map( message => {
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );

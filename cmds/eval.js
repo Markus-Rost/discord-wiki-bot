@@ -84,7 +84,7 @@ function checkWiki(wiki) {
 		if ( rc.length ) {
 			result.rcid = rc[0].rcid;
 			let text = '';
-			let len = ( Date.parse(rc[0].timestamp) - Date.parse(rc[rc.length - 1].timestamp) ) / 60000;
+			let len = ( Date.parse(rc[0].timestamp) - Date.parse(rc[rc.length - 1].timestamp) ) / 60_000;
 			len = Math.round(len);
 			let rdays = ( len / 1440 );
 			let days = Math.floor(rdays);
@@ -200,7 +200,7 @@ function removePatreons(guild, msg) {
 							if ( discordClient.guilds.cache.has(evalData.guild) ) {
 								let rows = evalData.rows;
 								return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-									return ( channel.isGuild(false) && rows.some( row => {
+									return ( ( channel.isText() && !channel.isThread() ) && rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {
@@ -310,7 +310,7 @@ function removeSettings(msg) {
 			return [
 				[...discordClient.guilds.cache.keys()],
 				discordClient.channels.cache.filter( channel => {
-					return ( channel.isGuild() || ( channel.type === 'GUILD_CATEGORY' && patreonGuildsPrefix.has(channel.guildId) ) );
+					return ( ( channel.isText() && channel.guildId ) || ( channel.type === 'GUILD_CATEGORY' && patreonGuildsPrefix.has(channel.guildId) ) );
 				} ).map( channel => ( channel.type === 'GUILD_CATEGORY' ? '#' : '' ) + channel.id )
 			];
 		} ).then( results => {

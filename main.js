@@ -11,7 +11,7 @@ if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
 	timeout: {
-		request: 30000
+		request: 30_000
 	},
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
@@ -71,7 +71,7 @@ manager.on( 'shardCreate', shard => {
 
 manager.spawn( {
 	delay: 0,
-	timeout: 60000
+	timeout: -1
 } ).then( shards => {
 	if ( !isDebug && process.env.botlist ) {
 		var botList = JSON.parse(process.env.botlist);
@@ -79,7 +79,7 @@ manager.spawn( {
 			if ( !value ) delete botList[key];
 		}
 		if ( Object.keys(botList).length ) {
-			setInterval( postStats, 10800000, botList, shards.size ).unref();
+			setInterval( postStats, 10_800_000, botList, shards.size ).unref();
 		}
 	}
 }, error => {
@@ -90,7 +90,10 @@ manager.spawn( {
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		process.exit(1);
 	}
-	else manager.spawn({timeout: -1}).catch( error2 => {
+	else manager.spawn( {
+		delay: 5_000,
+		timeout: 90_000
+	} ).catch( error2 => {
 		console.error( '- Error while spawning the shards: ' + error2 );
 		manager.respawn = false;
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
@@ -104,6 +107,7 @@ if ( process.env.dashboard ) {
 	const dashboard = forkChildProcess('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
 	server = dashboard;
 
+	/** @type {Object.<string, function(import('discord.js').Client, Object)>} */
 	const evalFunctions = {
 		getGuilds: (discordClient, evalData) => {
 			return Promise.all(
@@ -116,7 +120,7 @@ if ( process.env.dashboard ) {
 								memberCount: guild.memberCount,
 								botPermissions: guild.me.permissions.bitfield.toString(),
 								channels: guild.channels.cache.filter( channel => {
-									return ( channel.isGuild(false) || channel.type === 'GUILD_CATEGORY' );
+									return ( ( channel.isText() && !channel.isThread() ) || channel.type === 'GUILD_CATEGORY' );
 								} ).sort( (a, b) => {
 									let aVal = a.rawPosition + 1;
 									if ( a.type === 'GUILD_CATEGORY' ) aVal *= 1000;
@@ -167,7 +171,7 @@ if ( process.env.dashboard ) {
 					};
 					if ( evalData.channel ) {
 						let channel = guild.channels.cache.get(evalData.channel);
-						if ( channel?.isGuild(false) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
+						if ( ( channel?.isText() && !channel.isThread() ) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
 							response.userPermissions = channel.permissionsFor(member).bitfield.toString();
 							response.botPermissions = channel.permissionsFor(guild.me).bitfield.toString();
 							response.isCategory = ( channel.type === 'GUILD_CATEGORY' );
@@ -177,7 +181,7 @@ if ( process.env.dashboard ) {
 					}
 					if ( evalData.newchannel ) {
 						let newchannel = guild.channels.cache.get(evalData.newchannel);
-						if ( newchannel?.isGuild(false) ) {
+						if ( newchannel?.isText() && !newchannel.isThread() ) {
 							response.userPermissionsNew = newchannel.permissionsFor(member).bitfield.toString();
 							response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield.toString();
 						}
@@ -375,5 +379,5 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 		isDebug = false;
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
-	}, timeout * 1000 ).unref();
+	}, timeout * 1_000 ).unref();
 }

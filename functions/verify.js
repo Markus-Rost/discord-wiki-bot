@@ -26,7 +26,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 		onmatch: rows[0].onmatch
 	};
 	verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
-		return ( logchannel.isGuild() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
+		return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 	} ).get(verifynotice.logchannel) : null );
 	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
 	var result = {
@@ -205,7 +205,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 				var removeRoles = [new Set(), new Set()];
 				var verified = false;
 				var rename = false;
-				var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+				var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86_400_000;
 				rows.forEach( row => {
 					let and_or = 'some';
 					if ( row.usergroup.startsWith( 'AND|' ) ) {
@@ -440,7 +440,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 			var removeRoles = [new Set(), new Set()];
 			var verified = false;
 			var rename = false;
-			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86_400_000;
 			rows.forEach( row => {
 				var and_or = 'some';
 				if ( row.usergroup.startsWith( 'AND|' ) ) {
@@ -640,7 +640,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		/** @type {{logchannel:import('discord.js').TextChannel,flags:Number,onsuccess:String,onmatch:String}} */
 		var verifynotice = ( rows[0] || {} );
 		verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
-			return ( logchannel.isGuild() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
+			return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 		} ).get(verifynotice.logchannel) : null );
 		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
@@ -713,7 +713,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			var removeRoles = [new Set(), new Set()];
 			var verified = false;
 			var rename = false;
-			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86_400_000;
 			rows.forEach( row => {
 				var and_or = 'some';
 				if ( row.usergroup.startsWith( 'AND|' ) ) {
@@ -925,7 +925,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 							allowDelete(msg, member.id);
 							if ( settings.sourceMessage ) {
 								settings.sourceMessage.reactEmoji('📩');
-								setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60000 ).unref();
+								setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60_000 ).unref();
 							}
 						}, error => {
 							if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
@@ -951,7 +951,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 						allowDelete(msg, member.id);
 						if ( settings.sourceMessage ) {
 							settings.sourceMessage.reactEmoji('📩');
-							setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60000 ).unref();
+							setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60_000 ).unref();
 						}
 					}, error => {
 						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
@@ -987,7 +987,7 @@ function parseNotice(text = '', variables = {editcount: 0, postcount: 0, account
 	text = text.replace( /\$(editcount|postcount|accountage)/g, (variable, key, offset, fulltext) => {
 		var value = ( variables[key] ?? 0 );
 		if ( typeof value === 'string' ) return value;
-		if ( /#(?:if)?expr:[^{|}]*$/.test(fulltext.substring(0, offset)) ) return ( value > 1000000000 ? 1000000000 : value );
+		if ( /#(?:if)?expr:[^{|}]*$/.test(fulltext.substring(0, offset)) ) return ( value > 1_000_000_000 ? 1_000_000_000 : value );
 		return value.toLocaleString(variables.dateformat);
 	} );
 	if ( text.includes( '#expr:' ) ) text = text.replace( /{{\s*#expr:\s*(-?\d{1,10})\s*([+-])\s*(-?\d{1,10})(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?\s*}}/g, (expr, n0, o1, n1, o2, n2, o3, n3, o4, n4, offset, fulltext) => {

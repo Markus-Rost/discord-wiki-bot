@@ -13,7 +13,7 @@ import {got, oauthVerify, allowDelete, escapeFormatting} from '../util/functions
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_verify(lang, msg, args, line, wiki) {
-	if ( !msg.channel.isGuild() || msg.defaultSettings ) return this.LINK(lang, msg, line, wiki);
+	if ( !msg.inGuild() || msg.defaultSettings ) return this.LINK(lang, msg, line, wiki);
 	if ( !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
 		if ( msg.isAdmin() ) {
 			console.log( msg.guildId + ': Missing permissions - MANAGE_ROLES' );
@@ -99,7 +99,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					} ).then( message => {
 						msg.reactEmoji('📩');
 						allowDelete(message, msg.author.id);
-						setTimeout( () => msg.delete().catch(log_error), 60000 ).unref();
+						setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 					}, error => {
 						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
 							return msg.replyMsg( lang.get('verify.oauth_private') );
@@ -190,7 +190,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						} ).then( message => {
 							msg.reactEmoji('📩');
 							allowDelete(message, msg.author.id);
-							setTimeout( () => msg.delete().catch(log_error), 60000 ).unref();
+							setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 						}, error => {
 							if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
 								return msg.replyMsg( lang.get('verify.oauth_private') );
@@ -228,7 +228,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						msg.member.send( {content: msg.channel.toString() + '; ' + result.content, embeds: dmEmbeds, components: []} ).then( message => {
 							msg.reactEmoji('📩');
 							allowDelete(message, msg.author.id);
-							setTimeout( () => msg.delete().catch(log_error), 60000 ).unref();
+							setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 						}, error => {
 							if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
 								return msg.replyMsg( options, false, false );

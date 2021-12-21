@@ -591,6 +591,7 @@ fieldset textarea {
 #wb-settings-avatar-preview-img {
 	width: 128px;
 	height: 128px;
+	image-rendering: pixelated;
 	background: #32353b;
 }
 .theme-light #wb-settings-avatar-preview-img {

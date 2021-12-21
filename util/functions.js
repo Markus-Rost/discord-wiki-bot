@@ -3,7 +3,7 @@ import gotDefault from 'got';
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
 	timeout: {
-		request: 5000
+		request: 5_000
 	},
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
@@ -433,6 +433,29 @@ function partialURIdecode(m) {
 };
 
 /**
+ * Check for timeout or pause.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The message.
+ * @param {Boolean} [ignorePause] - Ignore pause for admins.
+ * @returns {Boolean}
+ */
+function breakOnTimeoutPause(msg, ignorePause = false) {
+	if ( !msg.inGuild() ) return false;
+	if ( msg.member?.communicationDisabledUntilTimestamp > Date.now() ) {
+		console.log( '- Aborted, communication disabled for User.' );
+		return true;
+	}
+	if ( msg.guild?.me.communicationDisabledUntilTimestamp > Date.now() ) {
+		console.log( '- Aborted, communication disabled for Wiki-Bot.' );
+		return true;
+	}
+	if ( pausedGuilds.has(msg.guildId) && !( ignorePause && ( msg.isAdmin() || msg.isOwner() ) ) ) {
+		console.log( '- Aborted, guild paused.' );
+		return true;
+	};
+	return false;
+};
+
+/**
  * Allow users to delete their command responses.
  * @param {import('discord.js').Message} msg - The response.
  * @param {String} author - The user id.
@@ -440,7 +463,7 @@ function partialURIdecode(m) {
 function allowDelete(msg, author) {
 	msg?.awaitReactions?.( {
 		filter: (reaction, user) => ( reaction.emoji.name === '🗑️' && user.id === author ),
-		max: 1, time: 300000
+		max: 1, time: 300_000
 	} ).then( reaction => {
 		if ( reaction.size ) msg.delete().catch(log_error);
 	} );
@@ -454,6 +477,7 @@ function allowDelete(msg, author) {
  * @returns {Promise<import('discord.js').Message?>}
  */
 function sendMessage(interaction, message, letDelete = true) {
+	if ( !interaction.ephemeral && letDelete && breakOnTimeoutPause(interaction) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return interaction.editReply( message ).then( msg => {
 		if ( letDelete && (msg.flags & 64) !== 64 ) allowDelete(msg, interaction.user.id);
@@ -473,6 +497,7 @@ export {
 	escapeFormatting,
 	limitLength,
 	partialURIdecode,
+	breakOnTimeoutPause,
 	allowDelete,
 	sendMessage
 };

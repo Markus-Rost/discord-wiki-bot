@@ -15,7 +15,7 @@ const {shardIdForGuildId} = ShardClientUtil;
  */
 function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( !( process.env.channel.split('|').includes( msg.channelId ) && args.join('') ) ) {
-		if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
 	
@@ -100,7 +100,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 							return msg.client.shard.broadcastEval( (discordClient, evalData) => {
 								if ( discordClient.guilds.cache.has(evalData.guild) ) {
 									return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-										return ( channel.isGuild(false) && evalData.rows.some( row => {
+										return ( ( channel.isText() && !channel.isThread() ) && evalData.rows.some( row => {
 											return ( row.channel === '#' + channel.parentId );
 										} ) );
 									} ).map( channel => {
@@ -268,7 +268,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 								return discordClient.guilds.cache.has(guild);
 							} ).map( guild => {
 								return discordClient.guilds.cache.get(guild).channels.cache.filter( channel => {
-									return ( channel.isGuild(false) && evalData.rows.some( row => {
+									return ( ( channel.isText() && !channel.isThread() ) && evalData.rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {
@@ -364,7 +364,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 		msg.replyMsg( 'I got an error while searching for <@' + args[1] + '>, please try again later.', true );
 	} );
 	
-	if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
+	if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }
 
 export default {

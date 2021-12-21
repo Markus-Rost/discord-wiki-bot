@@ -41,9 +41,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	wiki = new Wiki(wiki);
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
-	var cleanCont = ( content && Util.cleanContent(content, msg) || msg.cleanContent );
-	var author = msg.author;
-	var channel = msg.channel;
+	var cleanCont = ( content ? Util.cleanContent(content, msg) : msg.cleanContent );
 	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
 		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
 		let aliasInvoke = ( lang.aliases[invoke] || invoke );
@@ -51,7 +49,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			cont = cont.substring(prefix.length);
 			let args = cont.split(' ').slice(1);
 			if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
-			console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + prefix + cont );
+			console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + prefix + cont );
 			return ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
 		}
 	}
@@ -66,10 +64,10 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			console.log( '- Message contains too many commands!' );
 			msg.reactEmoji('⚠️');
 			msg.sendChannelError( {
-				content: lang.get('general.limit', author.toString()),
+				content: lang.get('general.limit', msg.author.toString()),
 				reply: {messageReference: msg.id},
 				allowedMentions: {
-					users: [author.id],
+					users: [msg.author.id],
 					repliedUser: true
 				}
 			} );
@@ -83,10 +81,10 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		var ownercmd = ( msg.isOwner() && ownercmdmap.hasOwnProperty(aliasInvoke) );
 		var pausecmd = ( msg.isAdmin() && pausedGuilds.has(msg.guildId) && pausecmdmap.hasOwnProperty(aliasInvoke) );
 		if ( msg.onlyVerifyCommand && !( aliasInvoke === 'verify' || pausecmd || ownercmd ) ) return;
-		if ( channel.isGuild() && pausedGuilds.has(msg.guildId) && !( pausecmd || ownercmd ) ) {
+		if ( msg.inGuild() && pausedGuilds.has(msg.guildId) && !( pausecmd || ownercmd ) ) {
 			return console.log( msg.guildId + ': Paused' );
 		}
-		console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + prefix + line );
+		console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + prefix + line );
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
@@ -116,7 +114,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	} );
 	if ( msg.onlyVerifyCommand ) return;
 	
-	if ( ( !channel.isGuild() || !pausedGuilds.has(msg.guildId) ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
+	if ( ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 		var links = [];
 		var embeds = [];
 		var linkcount = 0;
@@ -133,7 +131,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( linkcount < linkmaxcount ) {
 						linkcount++;
-						console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = entry[2].split('#').slice(1).join('#');
 						links.push({title,section,spoiler:entry[1]});
@@ -153,7 +151,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( count < maxcount ) {
 						count++;
-						console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = entry[2].split('#').slice(1).join('#');
 						embeds.push({title,section,spoiler:entry[1]});

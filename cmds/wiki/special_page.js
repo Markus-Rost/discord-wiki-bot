@@ -201,7 +201,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 			if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 			embed.setDescription( description );
 		}
-		if ( msg.channel.isGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) ) {
+		if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) ) {
 			var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 			embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			if ( body.query.querypage?.cached !== undefined ) {

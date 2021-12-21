@@ -217,7 +217,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				} );
 			}
 			
-			if ( msg.channel.isGuild() && patreonGuildsPrefix.has(msg.guildId) && wiki.isFandom() ) {
+			if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && wiki.isFandom() ) {
 				if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 				else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 
@@ -519,7 +519,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 					}
 					if ( discord ) {
-						if ( msg.channel.isGuild() ) {
+						if ( msg.inGuild() ) {
 							var discordmember = msg.guild.members.cache.find( member => {
 								return escapeFormatting(member.user.tag) === discord;
 							} );
@@ -547,7 +547,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					console.log( '- Error while getting the curse profile: ' + error );
 				} );
 				if ( discord ) {
-					if ( msg.channel.isGuild() ) {
+					if ( msg.inGuild() ) {
 						var discordmember = msg.guild.members.cache.find( member => {
 							return escapeFormatting(member.user.tag) === discord;
 						} );
@@ -566,7 +566,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					else text += '\n\n**' + block.header + '**\n' + block.text;
 				}
 				
-				if ( msg.channel.isGuild() && patreonGuildsPrefix.has(msg.guildId) ) {
+				if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) ) {
 					if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 					else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 					
@@ -579,7 +579,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( revision?.user === username ) {
 					let discord = ( revision?.slots?.main || revision )['*'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
-					if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
+					if ( msg.inGuild() ) var discordmember = msg.guild.members.cache.find( member => {
 						return member.user.tag === discord;
 					} );
 					let discordname = [lang.get('user.info.discord'),escapeFormatting(discord)];

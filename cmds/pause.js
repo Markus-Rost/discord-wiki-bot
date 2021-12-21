@@ -7,7 +7,7 @@
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
 function cmd_pause(lang, msg, args, line, wiki) {
-	if ( msg.channel.isGuild() && args.join(' ').split('\n')[0].isMention(msg.guild) && ( msg.isAdmin() || msg.isOwner() ) ) {
+	if ( msg.inGuild() && args.join(' ').split('\n')[0].isMention(msg.guild) && ( msg.isAdmin() || msg.isOwner() ) ) {
 		if ( pausedGuilds.has(msg.guildId) ) {
 			pausedGuilds.delete(msg.guildId);
 			console.log( '- Pause ended.' );
@@ -17,7 +17,7 @@ function cmd_pause(lang, msg, args, line, wiki) {
 			console.log( '- Pause started.' );
 			pausedGuilds.add(msg.guildId);
 		}
-	} else if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) {
+	} else if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) {
 		this.LINK(lang, msg, line, wiki);
 	}
 }

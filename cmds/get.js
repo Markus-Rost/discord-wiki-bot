@@ -18,7 +18,7 @@ const {shardIdForGuildId} = ShardClientUtil;
 async function cmd_get(lang, msg, args, line, wiki) {
 	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
 	if ( !/^\d+$/.test(id) ) {
-		if ( !msg.channel.isGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
 	try {
@@ -89,7 +89,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		}
 		
 		var channel = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
-			if ( discordClient.channels.cache.filter( channel => channel.isGuild() || channel.type === 'GUILD_CATEGORY' ).has(evalData.id) ) {
+			if ( discordClient.channels.cache.filter( channel => ( channel.isText() && channel.guildId ) || channel.type === 'GUILD_CATEGORY' ).has(evalData.id) ) {
 				var channel = discordClient.channels.cache.get(evalData.id);
 				return {
 					name: channel.name, id: channel.id, type: channel.type, parentId: channel.parentId,
