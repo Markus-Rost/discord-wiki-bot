@@ -1,3 +1,6 @@
+import {inspect} from 'util';
+inspect.defaultOptions = {compact: false, breakLength: Infinity};
+
 /**
  * If debug logging is enabled.
  * @type {Boolean}

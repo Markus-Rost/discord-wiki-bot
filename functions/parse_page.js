@@ -81,9 +81,12 @@ const removeClassesExceptions = [
  * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {Object} querypage - The details of the page.
+ * @param {Number} querypage.ns - The namespace of the page.
  * @param {String} querypage.title - The title of the page.
  * @param {String} querypage.contentmodel - The content model of the page.
+ * @param {String} querypage.pagelanguage - The language of the page.
  * @param {String} [querypage.missing] - If the page doesn't exist.
+ * @param {String} [querypage.known] - If the page is known.
  * @param {Object} [querypage.pageprops] - The properties of the page.
  * @param {String} [querypage.pageprops.infoboxes] - The JSON data for portable infoboxes on the page.
  * @param {String} [querypage.pageprops.disambiguation] - The disambiguation property of the page.
@@ -94,9 +97,9 @@ const removeClassesExceptions = [
  * @param {String} [pagelink] - The link to the page.
  * @returns {Promise<import('discord.js').Message>} The edited message.
  */
-export default function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, missing, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
+export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
-	if ( !msg?.showEmbed?.() || missing !== undefined || !embed || embed.description ) {
+	if ( !msg?.showEmbed?.() || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.description ) {
 		if ( missing !== undefined && embed ) {
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
@@ -112,6 +115,74 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {t
 		embeds: [new MessageEmbed(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )]
 	} ).then( message => {
 		if ( !message ) return;
+		if ( ns === 8 ) {
+			title = title.split(':').slice(1).join(':');
+			if ( title.endsWith( '/' + pagelanguage ) ) title = title.substring(0, title.length - ( pagelanguage.length + 1 ));
+			return got.get( wiki + 'api.php?action=query&meta=allmessages&amprop=default&amincludelocal=true&amlang=' + encodeURIComponent( pagelanguage ) + '&ammessages=' + encodeURIComponent( title ) + '&format=json', {
+				timeout: {
+					request: 10_000
+				}
+			} ).then( response => {
+				var body = response.body;
+				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.allmessages?.[0] ) {
+					console.log( '- ' + response.statusCode + ': Error while getting the system message: ' + body?.error?.info );
+					if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+						embed.spliceFields( 0, 0, embed.backupField );
+					}
+					if ( embed.backupDescription && embed.length < 5000 ) {
+						embed.setDescription( embed.backupDescription );
+					}
+					return;
+				}
+				if ( !embed.description && embed.length < 4000 ) {
+					var description = body.query.allmessages[0]['*'];
+					var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
+					if ( regex ) {
+						let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || regex[1] ));
+						if ( descArray.length ) {
+							description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
+							if ( description ) {
+								if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+								description = '```' + ( contentModels[contentmodel] || '' ) + '\n' + description + '\n```';
+								embed.setDescription( description );
+							}
+						}
+					}
+					else {
+						let defaultDescription = body.query.allmessages[0].default;
+						if ( description.trim() ) {
+							description = description.replace( /^\n+/, '' ).replace( /\n+$/, '' );
+							if ( description.length > 500 ) description = description.substring(0, 500) + '\u2026';
+							description = '```' + ( contentModels[contentmodel] || '' ) + '\n' + description + '\n```';
+							embed.setDescription( description );
+						}
+						else if ( embed.backupDescription ) {
+							embed.setDescription( embed.backupDescription );
+						}
+						if ( defaultDescription?.trim() ) {
+							defaultDescription = defaultDescription.replace( /^\n+/, '' ).replace( /\n+$/, '' );
+							if ( defaultDescription.length > 250 ) defaultDescription = defaultDescription.substring(0, 250) + '\u2026';
+							defaultDescription = '```' + ( contentModels[contentmodel] || '' ) + '\n' + defaultDescription + '\n```';
+							embed.addField( lang.get('search.messagedefault'), defaultDescription );
+						}
+						else if ( body.query.allmessages[0].defaultmissing !== undefined ) {
+							embed.addField( lang.get('search.messagedefault'), lang.get('search.messagedefaultnone') );
+						}
+					}
+				}
+			}, error => {
+				console.log( '- Error while getting the system message: ' + error );
+				if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+					embed.spliceFields( 0, 0, embed.backupField );
+				}
+				if ( embed.backupDescription && embed.length < 5000 ) {
+					embed.setDescription( embed.backupDescription );
+				}
+			} ).then( () => {
+				return message.edit( {content, embeds: [embed]} ).catch(log_error);
+			} );
+		}
 		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
 				request: 10_000

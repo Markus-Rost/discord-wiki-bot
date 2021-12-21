@@ -1,14 +1,11 @@
 import './util/globals.js';
 import {readdir} from 'fs';
-import {inspect} from 'util';
 import Discord from 'discord.js';
 import db from './util/database.js';
 import Lang from './util/i18n.js';
 import Wiki from './util/wiki.js';
 import newMessage from './util/newMessage.js';
 import {breakOnTimeoutPause, allowDelete} from './util/functions.js';
-
-inspect.defaultOptions = {compact: false, breakLength: Infinity};
 
 const client = new Discord.Client( {
 	makeCache: Discord.Options.cacheWithLimits( {

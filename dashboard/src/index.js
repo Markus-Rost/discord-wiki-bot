@@ -431,19 +431,32 @@ if ( usergroup ) {
 		}
 	} );
 
-	function fillUsergroupList({query: {allmessages: wikiUsergroupList = []} = {}} = {}) {
+	function fillUsergroupList({query: {allmessages: wikiUsergroupList = [], usergroups: wikiUsergroupListPermissions = []} = {}} = {}) {
 		if ( !wikiUsergroupList.length ) return;
-		usergrouplist.replaceChildren(...wikiUsergroupList.filter( wikigroup => {
-			if ( wikigroup.name === 'group-all' ) return false;
-			if ( wikigroup.name === 'group-membership-link-with-expiry' ) return false;
-			if ( wikigroup.name.endsWith( '.css' ) || wikigroup.name.endsWith( '.js' ) ) return false;
-			if ( wikigroup.name.endsWith( '-member' ) && wikiUsergroupList.some( wikigroupmember => {
-				return wikigroupmember.name === wikigroup.name.replace( /-member$/, '' );
-			} ) ) return false;
-			return true;
-		} ).map( wikigroup => {
-			return new Option(wikigroup['*'], wikigroup.name.replace( /^group-/, '' ));
-		} ).sort( (a, b) => {
+		usergrouplist.replaceChildren(...[
+			...wikiUsergroupList.filter( wikigroup => {
+				if ( wikigroup.name === 'group-all' ) return false;
+				if ( wikigroup.name === 'group-membership-link-with-expiry' ) return false;
+				if ( wikigroup.name.endsWith( '.css' ) || wikigroup.name.endsWith( '.js' ) ) return false;
+				if ( wikigroup.name.endsWith( '-member' ) && wikiUsergroupList.some( wikigroupmember => {
+					return wikigroupmember.name === wikigroup.name.replace( /-member$/, '' );
+				} ) ) return false;
+				return true;
+			} ).map( wikigroup => {
+				return new Option(wikigroup['*'], wikigroup.name.replace( /^group-/, '' ));
+			} ),
+			...wikiUsergroupListPermissions.map( wikigroup => wikigroup.name ).filter( function(wikigroup) {
+				if ( wikigroup === '*' ) return false;
+				if ( wikiUsergroupList.some( wikigroupmember => {
+					if ( 'group-' + wikigroup === wikigroupmember.name ) return true;
+					if ( 'group-' + wikigroup + '-member' === wikigroupmember.name ) return true;
+					return false;
+				} ) ) return false;
+				return true;
+			} ).map( wikigroup => {
+				return new Option(wikigroup, wikigroup);
+			} )
+		].sort( (a, b) => {
 			if ( a.value < b.value ) return -1;
 			if ( a.value > b.value ) return 1;
 			return 0;

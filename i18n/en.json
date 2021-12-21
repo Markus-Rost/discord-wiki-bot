@@ -591,6 +591,8 @@
         "infosearch": "Not the correct result? Use $1 for a direct link or $2 for a list of all hits.",
         "loading": "Loading page description…",
         "media": "To the file description page",
+        "messagedefault": "Default:",
+        "messagedefaultnone": "*none*",
         "results": "$1 total {{PLURAL:$2|result|results}}",
         "special": "Content of this special page:"
     },

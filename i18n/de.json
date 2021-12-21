@@ -591,6 +591,8 @@
         "infosearch": "Nicht das richtige Ergebnis? Nutze $1 für einen direkten Link oder $2 für eine Liste mit allen Treffern.",
         "loading": "Lade Seitenbeschreibung…",
         "media": "Zur Dateibeschreibungsseite",
+        "messagedefault": "Standardwert:",
+        "messagedefaultnone": "*keiner*",
         "results": "$1 {{PLURAL:$2|Ergebnis|Ergebnisse}} insgesamt",
         "special": "Inhalt der Spezialseite:"
     },

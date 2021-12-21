@@ -197,7 +197,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 		usergroup.find('#wb-settings-usergroup-multiple').attr('style', 'display: none;');
 	}
 	fields.push(usergroup);
-	$('<script>').attr('src', wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&amlang=' + dashboardLang.lang + '&format=json&callback=fillUsergroupList').attr('defer', '').insertAfter('script#indexjs');
+	$('<script>').attr('src', wiki + 'api.php?action=query&meta=allmessages|siteinfo&amprefix=group-&amincludelocal=true&amenableparser=true&amlang=' + dashboardLang.lang + '&siprop=usergroups&format=json&callback=fillUsergroupList').attr('defer', '').insertAfter('script#indexjs');
 	let editcount = $('<div>').append(fieldset.editcount);
 	editcount.find('label').text(dashboardLang.get('verification.form.editcount'));
 	editcount.find('#wb-settings-editcount').val(settings.editcount);
