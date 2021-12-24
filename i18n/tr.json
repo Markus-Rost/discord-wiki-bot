@@ -658,6 +658,7 @@
         "MediaWiki": "Tam işlevsellik için $1 gerekli, bulunan `$2`.",
         "notice": "Sınırlı işlevsellik",
         "pause": "Şu anda bu sunucuda duraklatılmış durumdayım.",
+        "slow": "Pardon, biraz yavaşlamış durumdayım.",
         "text": [
             "Tamamen işlevselim!",
             "Hala hayattayım!",
