@@ -288,7 +288,7 @@ function messageCreate(msg) {
 					} ).then( lang => {
 						msg.sendChannel( {
 							content: new Lang(( lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`',
-							reply: ( missing.includes( 'READ_MESSAGE_HISTORY' ) ? null : {messageReference: msg.id} )
+							reply: ( missing.includes( 'READ_MESSAGE_HISTORY' ) ? undefined : {messageReference: msg.id} )
 						}, true );
 					} );
 				}
