@@ -208,11 +208,12 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					} ).then( hresponse => {
 						if ( hresponse.statusCode === 301 && /^https:\/\/[a-z\d-]{1,50}\.fandom\.com\/(?:(?!wiki\/)[a-z-]{2,12}\/)?wiki\/Help:/.test( hresponse.headers?.location ) ) {
 							var location = hresponse.headers.location.split('wiki/');
-							if ( location[0] === wiki.href && location.slice(1).join('wiki/').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ) === querypage.title ) {
+							if ( location[0] === wiki.href && location.slice(1).join('wiki/').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /_/g, ' ' ) === querypage.title ) {
 								if ( srbody.query ) return srbody;
 								msg.reactEmoji('🤷');
 								
 								if ( reaction ) reaction.removeEmoji();
+								return;
 							}
 							var maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 							if ( selfcall < maxselfcall ) {
