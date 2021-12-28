@@ -1,5 +1,5 @@
 import cheerio from 'cheerio';
-import {got, escapeFormatting} from '../util/functions.js';
+import { got, escapeFormatting } from '../util/functions.js';
 
 /**
  * Add global blocks to user messages.

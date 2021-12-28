@@ -1,12 +1,12 @@
-import {readdir} from 'fs';
-import {domainToASCII} from 'url';
-import {Util} from 'discord.js';
+import { readdir } from 'fs';
+import { domainToASCII } from 'url';
+import { Util } from 'discord.js';
 import Wiki from './wiki.js';
 import logging from './logging.js';
-import {got, partialURIdecode} from './functions.js';
+import { got, partialURIdecode } from './functions.js';
 import check_wiki_general from '../cmds/wiki/general.js';
 import check_wiki_test from '../cmds/test.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const check_wiki = {

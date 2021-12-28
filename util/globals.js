@@ -1,4 +1,4 @@
-import {inspect} from 'util';
+import { inspect } from 'util';
 inspect.defaultOptions = {compact: false, breakLength: Infinity};
 
 /**

@@ -1,6 +1,6 @@
 import Lang from '../util/i18n.js';
-import {got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm} from './util.js';
-import {createRequire} from 'module';
+import { got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm } from './util.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
 const slashCommand = slashCommands.find( slashCommand => slashCommand.name === 'verify' );

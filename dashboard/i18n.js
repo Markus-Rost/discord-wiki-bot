@@ -1,5 +1,5 @@
-import {escapeText} from './util.js';
-import {createRequire} from 'module';
+import { escapeText } from './util.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 const i18n = require('./i18n/allLangs.json');

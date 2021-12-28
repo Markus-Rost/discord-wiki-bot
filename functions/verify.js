@@ -1,10 +1,10 @@
 import cheerio from 'cheerio';
-import {MessageEmbed, MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import { MessageEmbed, MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import db from '../util/database.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import logging from '../util/logging.js';
-import {got, oauthVerify, allowDelete, escapeFormatting} from '../util/functions.js';
+import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functions.js';
 
 /**
  * Processes the "verify" command.

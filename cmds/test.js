@@ -1,6 +1,6 @@
-import {MessageEmbed} from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
-import {got} from '../util/functions.js';
+import { got } from '../util/functions.js';
 import logging from '../util/logging.js';
 
 const wsStatus = [

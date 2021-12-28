@@ -1,8 +1,8 @@
-import {MessageEmbed} from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import logging from '../../util/logging.js';
-import {got, htmlToPlain, htmlToDiscord, escapeFormatting} from '../../util/functions.js';
+import { got, htmlToPlain, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
 import diffParser from '../../util/edit_diff.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
 

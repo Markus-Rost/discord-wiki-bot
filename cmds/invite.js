@@ -1,4 +1,4 @@
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
 

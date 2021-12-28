@@ -1,11 +1,11 @@
-import {MessageEmbed} from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import datetimeDifference from 'datetime-difference';
 import global_block from '../../functions/global_block.js';
 import parse_page from '../../functions/parse_page.js';
 import logging from '../../util/logging.js';
 import extract_desc from '../../util/extract_desc.js';
-import {got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting} from '../../util/functions.js';
-import {createRequire} from 'module';
+import { got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {timeoptions, usergroups} = require('../../util/default.json');
 

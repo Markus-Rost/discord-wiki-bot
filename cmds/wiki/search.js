@@ -1,6 +1,6 @@
-import {MessageEmbed, Util} from 'discord.js';
-import {got, escapeFormatting} from '../../util/functions.js';
-import {createRequire} from 'module';
+import { MessageEmbed, Util } from 'discord.js';
+import { got, escapeFormatting } from '../../util/functions.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {search: searchLimit}} = require('../../util/default.json');
 

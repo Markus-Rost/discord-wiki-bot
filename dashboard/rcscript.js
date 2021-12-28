@@ -1,8 +1,8 @@
 import cheerio from 'cheerio';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
-import {got, db, sendMsg, createNotice, hasPerm} from './util.js';
-import {createRequire} from 'module';
+import { got, db, sendMsg, createNotice, hasPerm } from './util.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const allLangs = Lang.allLangs(true).names;

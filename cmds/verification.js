@@ -1,8 +1,8 @@
-import {Util, MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import { Util, MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import db from '../util/database.js';
-import {got} from '../util/functions.js';
-import {createRequire} from 'module';
+import { got } from '../util/functions.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
 

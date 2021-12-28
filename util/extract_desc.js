@@ -1,4 +1,4 @@
-import {escapeFormatting} from './functions.js';
+import { escapeFormatting } from './functions.js';
 
 /**
  * Get the description for a page.

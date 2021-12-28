@@ -1,6 +1,6 @@
-import {Util} from 'discord.js';
+import { Util } from 'discord.js';
 import help_server from '../functions/helpserver.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {wikis: mcw} = require('./minecraft/commands.json');
 

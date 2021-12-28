@@ -167,8 +167,14 @@ function htmlToPlain(html, includeComments = false) {
 	var ignoredTag = '';
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
-			if ( tagname === 'sup' && attribs.class === 'reference' ) ignoredTag = 'sup';
-			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
+			let classes = ( attribs.class?.split(' ') ?? [] );
+			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
+			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
+				ignoredTag = tagname;
+				return;
+			}
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
 			if ( tagname === 'br' ) text += ' ';
 		},
 		ontext: (htmltext) => {
@@ -209,8 +215,14 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
 			if ( ignoredTag || code ) return;
-			if ( tagname === 'sup' && attribs.class === 'reference' ) ignoredTag = 'sup';
-			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
+			let classes = ( attribs.class?.split(' ') ?? [] );
+			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
+			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
+				ignoredTag = tagname;
+				return;
+			}
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
 			if ( tagname === 'code' ) {
 				code = true;
 				text += '`';
@@ -219,8 +231,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				code = true;
 				text += '```' + syntaxhighlight + '\n';
 			}
-			if ( tagname === 'div' && attribs.class ) {
-				let classes = attribs.class.split(' ');
+			if ( tagname === 'div' && classes.length ) {
 				if ( classes.includes( 'mw-highlight' ) ) {
 					syntaxhighlight = ( classes.find( syntax => syntax.startsWith( 'mw-highlight-lang-' ) )?.replace( 'mw-highlight-lang-', '' ) || '' );
 				}
@@ -243,7 +254,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'li' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( attribs.class !== 'mw-empty-elt' ) {
+				if ( !classes.includes( 'mw-empty-elt' ) ) {
 					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 					text += '• ';
 				}
@@ -252,7 +263,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'dt' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( attribs.class !== 'mw-empty-elt' ) {
+				if ( !classes.includes( 'mw-empty-elt' ) ) {
 					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
 					text += '**';
 				}
@@ -260,7 +271,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'dd' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 && attribs.class !== 'mw-empty-elt' ) text += '\u200b '.repeat(4 * (listlevel + 1));
+				if ( listlevel > -1 && !classes.includes( 'mw-empty-elt' ) ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
 				if ( attribs.alt && attribs.src ) {
@@ -309,7 +320,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				text += '';
 			}
 			if ( !pagelink ) return;
-			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
+			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
 				href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
 				if ( text.endsWith( '](<' + href + '>)' ) ) {
 					text = text.substring(0, text.length - ( href.length + 5 ));

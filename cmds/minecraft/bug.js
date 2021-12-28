@@ -1,5 +1,5 @@
-import {MessageEmbed} from 'discord.js';
-import {got, escapeFormatting, limitLength} from '../../util/functions.js';
+import { MessageEmbed } from 'discord.js';
+import { got, escapeFormatting, limitLength } from '../../util/functions.js';
 
 /**
  * Sends a Minecraft issue.

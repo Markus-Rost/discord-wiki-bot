@@ -1,5 +1,5 @@
 import Lang from '../util/i18n.js';
-import {got, db, slashCommands, sendMsg, createNotice, hasPerm} from './util.js';
+import { got, db, slashCommands, sendMsg, createNotice, hasPerm } from './util.js';
 
 const fieldset = {
 	role: '<label for="wb-settings-addrole">Role:</label>'

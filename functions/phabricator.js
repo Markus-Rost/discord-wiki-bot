@@ -1,6 +1,6 @@
-import {MessageEmbed} from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import logging from '../util/logging.js';
-import {got, escapeFormatting, limitLength} from '../util/functions.js';
+import { got, escapeFormatting, limitLength } from '../util/functions.js';
 
 /**
  * Sends a Phabricator task.

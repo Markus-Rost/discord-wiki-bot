@@ -1,12 +1,12 @@
-import {existsSync} from 'fs';
+import { existsSync } from 'fs';
 import cheerio from 'cheerio';
-import {Util, MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import { Util, MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
-import {got} from '../util/functions.js';
+import { got } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const allLangs = Lang.allLangs(true);

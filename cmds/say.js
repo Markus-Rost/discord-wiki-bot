@@ -1,4 +1,4 @@
-import {Permissions} from 'discord.js';
+import { Permissions } from 'discord.js';
 
 /**
  * Processes the "say" command.

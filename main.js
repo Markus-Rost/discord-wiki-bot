@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import './database.js';
-import {fork as forkChildProcess} from 'child_process';
+import { fork as forkChildProcess } from 'child_process';
 import gotDefault from 'got';
-import {ShardingManager, ShardClientUtil} from 'discord.js';
+import { ShardingManager, ShardClientUtil } from 'discord.js';
 const {shardIdForGuildId} = ShardClientUtil;
 
 var isDebug = ( process.argv[2] === 'debug' );

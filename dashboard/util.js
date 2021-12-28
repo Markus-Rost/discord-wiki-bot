@@ -1,8 +1,8 @@
 import gotDefault from 'got';
 import pg from 'pg';
 import DiscordOauth2 from 'discord-oauth2';
-import {oauthSites} from '../util/wiki.js';
-import {createRequire} from 'module';
+import { oauthSites } from '../util/wiki.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const slashCommands = require('../interactions/commands.json');
 

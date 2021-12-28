@@ -1,13 +1,13 @@
-import {readdir} from 'fs';
-import {MessageEmbed} from 'discord.js';
+import { readdir } from 'fs';
+import { MessageEmbed } from 'discord.js';
 import parse_page from '../../functions/parse_page.js';
 import phabricator from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
-import {got, htmlToDiscord, escapeFormatting, partialURIdecode, breakOnTimeoutPause} from '../../util/functions.js';
+import { got, htmlToDiscord, escapeFormatting, partialURIdecode, breakOnTimeoutPause } from '../../util/functions.js';
 import extract_desc from '../../util/extract_desc.js';
 import Wiki from '../../util/wiki.js';
 import * as fn from './functions.js'
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 const {wikis: mcw} = require('../minecraft/commands.json');

@@ -1,4 +1,4 @@
-import {db, enabledOAuth2} from './util.js';
+import { db, enabledOAuth2 } from './util.js';
 
 /**
  * Let a user change settings

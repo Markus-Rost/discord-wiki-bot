@@ -1,7 +1,7 @@
-import {MessageEmbed} from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import parse_page from '../../functions/parse_page.js';
 import logging from '../../util/logging.js';
-import {got, toMarkdown, htmlToDiscord, escapeFormatting} from '../../util/functions.js';
+import { got, toMarkdown, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
 import extract_desc from '../../util/extract_desc.js';
 
 /**

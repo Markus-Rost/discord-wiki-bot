@@ -1,11 +1,11 @@
-import {inspect} from 'util';
+import { inspect } from 'util';
 import cheerio from 'cheerio';
 import Discord from 'discord.js';
-import {got} from '../util/functions.js';
+import { got } from '../util/functions.js';
 import newMessage from '../util/newMessage.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 

@@ -1,8 +1,8 @@
-import {randomBytes} from 'crypto';
-import {MessageEmbed, MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import { randomBytes } from 'crypto';
+import { MessageEmbed, MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
-import {got, oauthVerify, allowDelete, escapeFormatting} from '../util/functions.js';
+import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functions.js';
 
 /**
  * Processes the "verify" command.

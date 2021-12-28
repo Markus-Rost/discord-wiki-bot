@@ -1,7 +1,7 @@
-import {MessageEmbed} from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import logging from '../../util/logging.js';
-import {got, toFormatting, toPlaintext, escapeFormatting} from '../../util/functions.js';
-import {createRequire} from 'module';
+import { got, toFormatting, toPlaintext, escapeFormatting } from '../../util/functions.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
 

@@ -1,7 +1,7 @@
-import {Permissions} from 'discord.js';
+import { Permissions } from 'discord.js';
 import logging from '../util/logging.js';
 import Wiki from '../util/wiki.js';
-import {got, limitLength, partialURIdecode, sendMessage} from '../util/functions.js';
+import { got, limitLength, partialURIdecode, sendMessage } from '../util/functions.js';
 
 /**
  * Post a message with inline wiki links.

@@ -1,10 +1,10 @@
 import http from 'http';
 import fs from 'fs';
-import {extname} from 'path';
+import { extname } from 'path';
 import * as pages from './oauth.js';
 import dashboard from './guilds.js';
-import {posts} from './functions.js';
-import {db, sessionData, settingsData} from './util.js';
+import { posts } from './functions.js';
+import { db, sessionData, settingsData } from './util.js';
 import Lang from './i18n.js';
 const allLangs = Lang.allLangs();
 

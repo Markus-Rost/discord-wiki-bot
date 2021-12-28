@@ -1,5 +1,5 @@
 import htmlparser from 'htmlparser2';
-import {escapeFormatting} from './functions.js';
+import { escapeFormatting } from './functions.js';
 
 /**
  * Change edit diffs to markdown text.

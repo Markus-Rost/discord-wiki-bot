@@ -1,4 +1,4 @@
-import {createWriteStream} from 'fs';
+import { createWriteStream } from 'fs';
 
 /**
  * Log wikis by usage.

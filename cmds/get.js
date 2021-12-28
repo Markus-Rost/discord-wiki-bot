@@ -1,7 +1,7 @@
-import {MessageEmbed, Util, ShardClientUtil, Permissions} from 'discord.js';
-import {escapeFormatting} from '../util/functions.js';
+import { MessageEmbed, Util, ShardClientUtil, Permissions } from 'discord.js';
+import { escapeFormatting } from '../util/functions.js';
 import db from '../util/database.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, defaultPermissions} = require('../util/default.json');
 const {shardIdForGuildId} = ShardClientUtil;

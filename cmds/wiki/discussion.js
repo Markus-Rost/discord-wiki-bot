@@ -1,7 +1,7 @@
 import htmlparser from 'htmlparser2';
-import {MessageEmbed, Util} from 'discord.js';
-import {got, htmlToDiscord, escapeFormatting} from '../../util/functions.js';
-import {createRequire} from 'module';
+import { MessageEmbed, Util } from 'discord.js';
+import { got, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {discussion: discussionLimit}} = require('../../util/default.json');
 

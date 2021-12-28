@@ -1,8 +1,8 @@
-import {randomBytes} from 'crypto';
-import {MessageActionRow, MessageButton, Permissions} from 'discord.js';
+import { randomBytes } from 'crypto';
+import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
-import {got, oauthVerify, sendMessage} from '../util/functions.js';
+import { got, oauthVerify, sendMessage } from '../util/functions.js';
 
 /**
  * Wiki user verification.

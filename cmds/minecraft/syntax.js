@@ -1,7 +1,7 @@
-import {Util} from 'discord.js';
-import {got} from '../../util/functions.js';
+import { Util } from 'discord.js';
+import { got } from '../../util/functions.js';
 import Wiki from '../../util/wiki.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const commands = require('./commands.json');
 

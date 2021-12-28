@@ -1,10 +1,10 @@
 import cheerio from 'cheerio';
-import {MessageEmbed, Util, MessageActionRow, MessageButton} from 'discord.js';
-import {got} from '../util/functions.js';
+import { MessageEmbed, Util, MessageActionRow, MessageButton } from 'discord.js';
+import { got } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import {createRequire} from 'module';
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 const allLangs = Lang.allLangs();

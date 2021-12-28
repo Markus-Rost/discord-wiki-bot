@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
-import {MessageEmbed} from 'discord.js';
-import {toSection} from '../util/wiki.js';
-import {got, parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength} from '../util/functions.js';
+import { MessageEmbed } from 'discord.js';
+import { toSection } from '../util/wiki.js';
+import { got, parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
 
 const parsedContentModels = [
 	'wikitext',
@@ -51,6 +51,7 @@ const removeClasses = [
 	'.noprint',
 	'.noexcerpt',
 	'.sortkey',
+	'.mw-collapsible.mw-collapsed',
 	'wb\\:sectionedit'
 ];
 
