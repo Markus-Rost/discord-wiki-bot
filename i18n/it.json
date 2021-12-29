@@ -1,7 +1,7 @@
 {
     "__translator": [
         "Raffox97",
-        " ",
+        "Daeron",
         " ",
         " ",
         " ",
@@ -407,7 +407,7 @@
         "bot": "Usa questo link per invitarmi su un altro server:"
     },
     "minecraft": {
-        "fixed": "{{PLURAL:$1|Versione|Versioni}} {{PLURAL:$1|corretta|corrette}}:",
+        "fixed": "{{PLURAL:$1|Versione corretta|Versioni corrette}}:",
         "issue_link": {
             "Blocks": {
                 "inward": "è bloccata da $1",
