@@ -47,7 +47,7 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 		}
 		var summary = escapeFormatting(task.fields.name);
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-		var embed = new MessageEmbed().setAuthor( 'Phabricator' ).setTitle( summary ).setURL( link ).addField( 'Status', escapeFormatting(task.fields.status.name), true ).addField( 'Priority', escapeFormatting(task.fields.priority.name), true );
+		var embed = new MessageEmbed().setAuthor( {name: 'Phabricator'} ).setTitle( summary ).setURL( link ).addField( 'Status', escapeFormatting(task.fields.status.name), true ).addField( 'Priority', escapeFormatting(task.fields.priority.name), true );
 		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', escapeFormatting(task.fields.subtype), true );
 		var description = parse_text( task.fields.description.raw, site );
 		if ( description.length > 2000 ) description = limitLength(description, 2000, 40);

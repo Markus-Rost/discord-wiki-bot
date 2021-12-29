@@ -41,7 +41,7 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 			var pagelink = wiki.toLink(title, querystring, fragment);
 			var embed = null;
 			if ( msg.showEmbed() && !noEmbed ) {
-				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+				embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 				if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 					let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -61,7 +61,7 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 		var querypage = Object.values(body.query.pages)[0];
 		var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 		var text = '';
-		var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
+		var embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 		if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 			var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 			if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';

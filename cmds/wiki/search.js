@@ -24,7 +24,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 	var pagelink = wiki.toLink('Special:Search', {search:searchterm,fulltext:1});
 	var resultText = '<' + pagelink + '>';
 	var embed = null;
-	if ( msg.showEmbed() && !noEmbed ) embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( '`' + searchterm + '`' ).setURL( pagelink );
+	if ( msg.showEmbed() && !noEmbed ) embed = new MessageEmbed().setAuthor( {name: query.general.sitename} ).setTitle( '`' + searchterm + '`' ).setURL( pagelink );
 	else resultText += '\n\n**`' + searchterm + '`**';
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
 	var limit = searchLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
@@ -137,7 +137,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 		}
 		if ( msg.showEmbed() && !noEmbed ) {
 			if ( description.length ) embed.setDescription( Util.splitMessage( description.join('\n') )[0] );
-			if ( footer ) embed.setFooter( footer );
+			if ( footer ) embed.setFooter( {text: footer} );
 		}
 		else {
 			if ( description.length ) resultText += '\n' + Util.splitMessage( description.join('\n'), {maxLength: 1995 - resultText.length - footer.length} )[0];

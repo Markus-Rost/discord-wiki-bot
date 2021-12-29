@@ -451,11 +451,11 @@ function partialURIdecode(m) {
  */
 function breakOnTimeoutPause(msg, ignorePause = false) {
 	if ( !msg.inGuild() ) return false;
-	if ( msg.member?.communicationDisabledUntilTimestamp > Date.now() ) {
+	if ( msg.member?.isCommunicationDisabled() ) {
 		console.log( '- Aborted, communication disabled for User.' );
 		return true;
 	}
-	if ( msg.guild?.me.communicationDisabledUntilTimestamp > Date.now() ) {
+	if ( msg.guild?.me.isCommunicationDisabled() ) {
 		console.log( '- Aborted, communication disabled for Wiki-Bot.' );
 		return true;
 	}

@@ -96,7 +96,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 		var text = '<' + pagelink + '>';
 		var embed = null;
 		if ( msg.showEmbed() && !noEmbed ) {
-			embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 			if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 				let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -210,7 +210,9 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 					if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
 					if ( founder[1] ) embed.addField( founder[0], founder[1], true );
 					if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
-					embed.addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') + ( wikiid ? ' • ' + lang.get('overview.wikiid') + ' ' + wikiid : '' ) );
+					embed.addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( {
+						text: lang.get('overview.inaccurate') + ( wikiid ? ' • ' + lang.get('overview.wikiid') + ' ' + wikiid : '' )
+					} );
 					if ( description[1] ) embed.addField( description[0], description[1] );
 					if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
 					if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
@@ -244,7 +246,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 		if ( msg.showEmbed() && !noEmbed ) {
 			embed.addField( version[0], version[1], true ).addField( language[0], language[1], true );
 			if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
-			embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
+			embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( {text: lang.get('overview.inaccurate')} );
 			if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 		}
 		else {

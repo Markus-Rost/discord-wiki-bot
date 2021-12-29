@@ -28,7 +28,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 	verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
 		return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 	} ).get(verifynotice.logchannel) : null );
-	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
+	var embed = new MessageEmbed().setFooter( {text: lang.get('verify.footer')} ).setTimestamp();
 	var result = {
 		content: '', embed,
 		add_button: channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS),
@@ -74,7 +74,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 		}
 		if ( !old_username ) logging(wiki, channel.guildId, 'verification');
 		var queryuser = body.query.users[0];
-		embed.setAuthor( body.query.general.sitename );
+		embed.setAuthor( {name: body.query.general.sitename} );
 		if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 			username = ( body.query.users.length === 1 ? queryuser.name : username );
 			embed.setTitle( escapeFormatting( old_username || username ) ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', escapeFormatting( old_username || username )) ).addField( lang.get('verify.notice'), lang.get('verify.help_missing') );
@@ -658,7 +658,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			logging(wiki, channel.guildId, 'verification');
 			var queryuser = body.query.users[0];
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.fail?.();
-			var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp().setAuthor( body.query.general.sitename ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
+			var embed = new MessageEmbed().setFooter( {text: lang.get('verify.footer')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
 			var pagelink = wiki.toLink('User:' + username, '', '', true);
 			embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 			if ( queryuser.blockexpiry ) {

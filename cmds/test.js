@@ -37,7 +37,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 			if ( !message ) return;
 			var discordPing = message.createdTimestamp - msg.createdTimestamp;
 			if ( discordPing > 1_000 ) text = lang.get('test.slow') + ' 🐌\n' + process.env.invite;
-			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( 'Shard: ' + process.env.SHARDS ).addField( 'Discord', discordPing.toLocaleString(lang.get('dateformat')) + 'ms' );
+			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( {text: 'Shard: ' + process.env.SHARDS} ).addField( 'Discord', discordPing.toLocaleString(lang.get('dateformat')) + 'ms' );
 			var now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: {

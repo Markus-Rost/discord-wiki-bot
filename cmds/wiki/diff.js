@@ -206,7 +206,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, 
 			var pagelink = wiki.toLink(title, {diff,oldid});
 			var text = '<' + pagelink + '>';
 			if ( msg.showEmbed() && !noEmbed ) {
-				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting( title + '?diff=' + diff + '&oldid=' + oldid ) ).setURL( pagelink ).addField( editor[0], editor[1], true ).addField( size[0], size[1], true ).addField( timestamp[0], timestamp[1] + '\n' + timestamp[2], true ).addField( comment[0], comment[1] ).setTimestamp( editDate );
+				var embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting( title + '?diff=' + diff + '&oldid=' + oldid ) ).setURL( pagelink ).addField( editor[0], editor[1], true ).addField( size[0], size[1], true ).addField( timestamp[0], timestamp[1] + '\n' + timestamp[2], true ).addField( comment[0], comment[1] ).setTimestamp( editDate );
 				
 				var more = '\n__' + lang.get('diff.info.more') + '__';
 				var whitespace = '__' + lang.get('diff.info.whitespace') + '__';

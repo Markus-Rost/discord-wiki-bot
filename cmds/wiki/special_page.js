@@ -163,7 +163,7 @@ const descriptions = {
  */
 export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
-	var embed = new MessageEmbed().setAuthor( query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(query.general.logo, wiki).href );
+	var embed = new MessageEmbed().setAuthor( {name: query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(query.general.logo, wiki).href );
 	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
 		overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query);
@@ -205,7 +205,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 			var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 			embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			if ( body.query.querypage?.cached !== undefined ) {
-				embed.setFooter( lang.get('search.cached') ).setTimestamp(new Date(body.query.querypage.cachedtimestamp));
+				embed.setFooter( {text: lang.get('search.cached')} ).setTimestamp(new Date(body.query.querypage.cachedtimestamp));
 			}
 		}
 	}, error => {

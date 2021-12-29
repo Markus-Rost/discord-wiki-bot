@@ -37,8 +37,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					var embed = new MessageEmbed().setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 					if ( body?.query?.general ) {
 						wiki.updateWiki(body.query.general);
-						embed.setAuthor( body.query.general.sitename );
-						embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+						embed.setAuthor( {name: body.query.general.sitename} ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 					}
 					if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 						var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
@@ -195,7 +194,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() && !noEmbed ) {
-				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
+				embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
 				embed.forceTitle = true;
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
@@ -254,7 +253,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			if ( querypage.missing !== undefined || querypage.ns === -1 ) msg.reactEmoji('🤷');
 			else {
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
+				var embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -440,7 +439,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() && !noEmbed ) {
-				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true );
+				embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true );
 				embed.forceTitle = true;
 				if ( wiki.hasCentralAuth() ) {
 					embed.addField( lang.get('user.info.globaleditcount'), '[' + body.query.globaluserinfo.editcount.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true ).addField( lang.get('user.info.wikisedited'), '[' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true );

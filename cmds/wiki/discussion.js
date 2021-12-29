@@ -26,7 +26,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
-		var embed = new MessageEmbed().setAuthor( sitename ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
+		var embed = new MessageEmbed().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
 		got.get( wiki + 'f', {
 			responseType: 'text'
 		} ).then( descresponse => {
@@ -75,7 +75,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 			}
 			else if ( body._embedded['doc:posts'].length ) {
 				var posts = body._embedded['doc:posts'];
-				var embed = new MessageEmbed().setAuthor( sitename );
+				var embed = new MessageEmbed().setAuthor( {name: sitename} );
 				
 				if ( posts.some( post => post.id === title ) ) {
 					discussion_send(lang, msg, wiki, posts.find( post => post.id === title ), embed, spoiler, noEmbed);
@@ -172,7 +172,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 			}
 			else if ( body._embedded.threads.length ) {
 				var threads = body._embedded.threads;
-				var embed = new MessageEmbed().setAuthor( sitename );
+				var embed = new MessageEmbed().setAuthor( {name: sitename} );
 				
 				if ( threads.some( thread => thread.id === title ) ) {
 					discussion_send(lang, msg, wiki, threads.find( thread => thread.id === title ), embed, spoiler, noEmbed);
@@ -271,7 +271,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 		var pagelink = wiki + 'f/p/' + discussion.threadId + '/r/' + discussion.id;
 	}
 	if ( !msg.showEmbed() || noEmbed ) msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler );
-	embed.setURL( pagelink ).setFooter( discussion.createdBy.name, discussion.createdBy.avatarUrl ).setTimestamp( discussion.creationDate.epochSecond * 1000 );
+	embed.setURL( pagelink ).setFooter( {text: discussion.createdBy.name, iconURL: discussion.createdBy.avatarUrl} ).setTimestamp( discussion.creationDate.epochSecond * 1000 );
 	var description = '';
 	switch ( discussion.funnel ) {
 		case 'IMAGE':

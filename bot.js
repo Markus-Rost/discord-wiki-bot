@@ -9,15 +9,15 @@ import { breakOnTimeoutPause, allowDelete } from './util/functions.js';
 
 const client = new Discord.Client( {
 	makeCache: Discord.Options.cacheWithLimits( {
-		MessageManager: {
-			maxSize: 100,
-			sweepInterval: 300,
-			sweepFilter: Discord.LimitedCollection.filterByLifetime( {
-				lifetime: 300,
-			} )
-		},
+		MessageManager: 100,
 		PresenceManager: 0
 	} ),
+	sweepers: {
+		messages: {
+			interval: 300,
+			lifetime: 300
+		}
+	},
 	allowedMentions: {
 		parse: [],
 		repliedUser: true
@@ -247,7 +247,7 @@ client.on( 'messageCreate', msg => {
  */
 function messageCreate(msg) {
 	if ( isStop || !msg.channel.isText() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
-	if ( msg.member?.communicationDisabledUntilTimestamp > Date.now() || msg.guild?.me.communicationDisabledUntilTimestamp > Date.now() ) return;
+	if ( msg.member?.isCommunicationDisabled() || msg.guild?.me.isCommunicationDisabled() ) return;
 	if ( !msg.content.hasPrefix(( msg.inGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES )) ) {

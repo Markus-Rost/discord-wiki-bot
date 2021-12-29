@@ -134,7 +134,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 							});
 						}
 						if ( notice.length ) {
-							embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( lang.get('test.notice') ).addFields( notice );
+							embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
 						}
 					}
 					var sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND wiki = $3';
