@@ -502,7 +502,7 @@
         "current": "これらは、このサーバーの現在の最新の変更点を示すウェブフックです。",
         "current_display": "このWebhookの表示モード：",
         "current_lang": "このWebhookの言語：",
-        "current_selected": "このサーバーに現在存在する新鮮なエディット `$1` の Webhook。",
+        "current_selected": "このサーバーに現在存在する最近の更新 `$1` の Webhook。",
         "current_wiki": "このWebhookのWiki："
     },
     "test": {
