@@ -146,7 +146,7 @@ function cmd_help(lang, msg, args, line, wiki) {
  * @param {import('../util/i18n.js').default} lang - The user language.
  */
 function formathelp(messages, msg, lang) {
-	var prefix = ( msg.inGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
+	var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );
 	var mention = '@' + ( msg.inGuild() ? msg.guild.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;

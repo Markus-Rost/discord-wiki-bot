@@ -13,7 +13,7 @@ function cmd_voice(lang, msg, args, line, wiki) {
 	if ( msg.isAdmin() ) {
 		if ( !args.join('') ) {
 			var text = lang.get('voice.text') + '\n`' + lang.get('voice.channel') + ' – <' + lang.get('voice.name') + '>`\n';
-			text += lang.get('voice.' + ( voiceGuildsLang.has(msg.guildId) ? 'disable' : 'enable' ), ( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ) + 'voice toggle');
+			text += lang.get('voice.' + ( voiceGuildsLang.has(msg.guildId) ? 'disable' : 'enable' ), ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ) + 'voice toggle');
 			return msg.replyMsg( text, true );
 		}
 		args[1] = args.slice(1).join(' ').trim()

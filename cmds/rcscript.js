@@ -554,7 +554,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
  * @param {String[]} args - The command arguments.
  */
 function blocklist(msg, args) {
-	var prefix = ( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
+	var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );
 	if ( args[0] === 'add' ) {
 		if ( !args[1] ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', true );
 		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );

@@ -27,7 +27,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 	}
 	
 	db.query( 'SELECT configid, channel, role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 ORDER BY configid ASC', [msg.guildId] ).then( ({rows}) => {
-		var prefix = ( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
+		var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {

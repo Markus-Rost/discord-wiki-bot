@@ -26,7 +26,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 	db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [msg.guildId, '%|' + ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId ) + '|%'] ).then( ({rows}) => {
 		if ( !rows.length ) {
 			if ( msg.onlyVerifyCommand ) return;
-			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ) + 'verification`' : '' ) );
+			return msg.replyMsg( lang.get('verify.missing') + ( msg.isAdmin() ? '\n`' + ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ) + 'verification`' : '' ) );
 		}
 		
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {

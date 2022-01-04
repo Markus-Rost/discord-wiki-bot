@@ -299,7 +299,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				}
 				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 				
-				var prefix = ( msg.inGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix );
+				var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );
 				var linksuffix = ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' );
 				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
 					text = '';

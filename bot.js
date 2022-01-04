@@ -248,7 +248,7 @@ client.on( 'messageCreate', msg => {
 function messageCreate(msg) {
 	if ( isStop || !msg.channel.isText() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
 	if ( msg.member?.isCommunicationDisabled() || msg.guild?.me.isCommunicationDisabled() ) return;
-	if ( !msg.content.hasPrefix(( msg.inGuild() && patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), 'm') ) {
+	if ( !msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
 			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES )) ) {
 				console.log( msg.guildId + ': ' + msg.content );
@@ -278,7 +278,7 @@ function messageCreate(msg) {
 			Discord.Permissions.FLAGS.READ_MESSAGE_HISTORY
 		]);
 		if ( missing.length ) {
-			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) || process.env.prefix ), 'm') ) {
+			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
 				console.log( msg.guildId + ': Missing permissions - ' + missing.join(', ') );
 				if ( !missing.includes( 'SEND_MESSAGES' ) && !missing.includes( 'SEND_MESSAGES_IN_THREADS' ) ) {
 					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
