@@ -206,6 +206,7 @@ function plural(lang, number, args) {
 			else text = getArg(args, 2);
 			break;
 		case 'ru':
+		case 'sr':
 		case 'uk':
 			if ( args.length > 2 ) {
 				if ( number % 10 === 1 && number % 100 !== 11 ) text = getArg(args, 0);
