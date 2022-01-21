@@ -205,10 +205,10 @@ function slash_command(interaction) {
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
 	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-		return slash[interaction.commandName](interaction, new Lang(( row?.lang || interaction.guild?.preferredLocale )), new Wiki(row?.wiki));
+		return slash[interaction.commandName](interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Slash: Error while getting the wiki: ' + dberror );
-		return interaction.reply( {content: new Lang(interaction.guild?.preferredLocale, 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
 	} );
 }
 
@@ -227,10 +227,10 @@ function message_button(interaction) {
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
 	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-		return buttons[cmd](interaction, new Lang(( row?.lang || interaction.guild?.preferredLocale )), new Wiki(row?.wiki));
+		return buttons[cmd](interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Button: Error while getting the wiki: ' + dberror );
-		return interaction.reply( {content: new Lang(interaction.guild?.preferredLocale, 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
 	} );
 }
 

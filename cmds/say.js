@@ -22,10 +22,17 @@ function cmd_say(lang, msg, args, line, wiki) {
 		}
 	}
 	if ( text.trim() || imgs.length ) {
-		var allowedMentions = {parse:['users']};
+		let allowedMentions = {parse:['users']};
 		if ( msg.member.permissions.has(Permissions.FLAGS.MENTION_EVERYONE) ) allowedMentions.parse = ['users','roles','everyone'];
-		else allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0,100)
-		msg.channel.send( {content: text, allowedMentions, files: imgs} ).then( () => msg.delete().catch(log_error), error => {
+		else allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
+		msg.channel.send( {
+			content: text,
+			files: imgs,
+			allowedMentions,
+			reply: {
+				messageReference: msg.reference?.messageId
+			}
+		} ).then( () => msg.delete().catch(log_error), error => {
 			log_error(error);
 			msg.reactEmoji('error', true);
 		} );

@@ -6,7 +6,7 @@ import { escapeFormatting } from './functions.js';
  * @param {String} html - The edit diff in HTML.
  * @param {String} more - The localized string for more content.
  * @param {String} whitespace - The localized string for only whitespace.
- * @returns {String[]}
+ * @returns {[String, String]}
  */
 export default function diffParser(html, more, whitespace) {
 	var current_tag = '';

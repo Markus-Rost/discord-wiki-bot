@@ -569,6 +569,78 @@
 			"scriptPath": "/w/"
 		},
 		{
+			"name": "banjokazooiewiki.com",
+			"regex": "((?:www\\.)?banjokazooiewiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "conkerwiki.com",
+			"regex": "((?:www\\.)?conkerwiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "crashbandicootwiki.com",
+			"regex": "((?:www\\.)?crashbandicootwiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "spyrowiki.com",
+			"regex": "((?:www\\.)?spyrowiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "triforcewiki.com",
+			"regex": "((?:www\\.)?triforcewiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wikiofmana.com",
+			"regex": "((?:www\\.)?wikiofmana\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "rarewiki.com",
+			"regex": "((?:www\\.)?rarewiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "arthurwiki\\.com",
+			"regex": "((?:www\\.)?arthurwiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "sanriowiki.com",
+			"regex": "((?:www\\.)?sanriowiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "spongebobwiki.org",
+			"regex": "((?:www\\.)?spongebobwiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wimpykidwiki\\.com",
+			"regex": "((?:www\\.)?wimpykidwiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "zeldadungeon.net",
+			"regex": "((?:www\\.)?zeldadungeon\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/wiki/"
+		},
+		{
 			"name": "wikihow.com",
 			"regex": "((?:www\\.)?wikihow\\.com)",
 			"articlePath": "/",
