@@ -611,7 +611,7 @@
 			"scriptPath": "/w/"
 		},
 		{
-			"name": "arthurwiki\\.com",
+			"name": "arthurwiki.com",
 			"regex": "((?:www\\.)?arthurwiki\\.com)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
@@ -629,7 +629,7 @@
 			"scriptPath": "/w/"
 		},
 		{
-			"name": "wimpykidwiki\\.com",
+			"name": "wimpykidwiki.com",
 			"regex": "((?:www\\.)?wimpykidwiki\\.com)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
