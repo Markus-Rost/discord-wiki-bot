@@ -227,34 +227,38 @@ export default class Wiki extends URL {
 	/**
 	 * Turn user input into a wiki.
 	 * @param {String} input - The user input referring to a wiki.
-	 * @returns {Wiki}
+	 * @returns {Wiki?}
 	 * @static
 	 */
 	static fromInput(input = '') {
-		if ( input instanceof URL ) return new Wiki(input);
-		input = input.replace( /^(?:https?:)?\/\//, 'https://' );
-		var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-		if ( regex ) return new Wiki('https://' + regex[1] + '/');
-		if ( input.startsWith( 'https://' ) ) {
-			let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
+		try {
+			if ( input instanceof URL ) return new Wiki(input);
+			input = input.replace( /^(?:https?:)?\/\//, 'https://' );
+			var regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
+			if ( regex ) return new Wiki('https://' + regex[1] + '/');
+			if ( input.startsWith( 'https://' ) ) {
+				let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
+				if ( project ) {
+					regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
+					if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
+				}
+				let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|[\?\/#].*)$/, '/' );
+				if ( !wiki.endsWith( '/' ) ) wiki += '/';
+				return new Wiki(wiki);
+			}
+			let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
 			if ( project ) {
 				regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
 				if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
 			}
-			let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|[\?\/#].*)$/, '/' );
-			if ( !wiki.endsWith( '/' ) ) wiki += '/';
-			return new Wiki(wiki);
+			if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
+				if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');
+				else return new Wiki('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
+			}
 		}
-		let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
-		if ( project ) {
-			regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-			if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
+		catch {
+			return null;
 		}
-		if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
-			if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');
-			else return new Wiki('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
-		}
-		return null;
 	}
 
 	/** @type {String[]} - Sites that support verification using OAuth2. */

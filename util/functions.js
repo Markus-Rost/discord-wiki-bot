@@ -212,15 +212,17 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var ignoredTag = '';
 	var syntaxhighlight = '';
 	var listlevel = -1;
+	var horizontalList = '';
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
 			if ( ignoredTag || code ) return;
 			let classes = ( attribs.class?.split(' ') ?? [] );
-			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
+			if ( classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
 				ignoredTag = tagname;
 				return;
 			}
+			if ( classes.includes( 'hlist' ) ) horizontalList = tagname;
 			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
 			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
 			if ( tagname === 'code' ) {
@@ -250,28 +252,25 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				text += '─'.repeat(10) + '\n';
 			}
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
-			if ( tagname === 'ul' || tagname === 'ol' ) listlevel++;
-			if ( tagname === 'li' ) {
-				text = text.replace( / +$/, '' );
-				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( !classes.includes( 'mw-empty-elt' ) ) {
-					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
-					text += '• ';
-				}
+			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
+				if ( ++listlevel ) text += ' (';
 			}
-			if ( tagname === 'dl' ) listlevel++;
-			if ( tagname === 'dt' ) {
-				text = text.replace( / +$/, '' );
+			if ( tagname === 'li' && !horizontalList ) {
+				text = text.replace( /[ \u200b]+$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( !classes.includes( 'mw-empty-elt' ) ) {
-					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
-					text += '**';
-				}
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				text += '• ';
 			}
-			if ( tagname === 'dd' ) {
-				text = text.replace( / +$/, '' );
+			if ( tagname === 'dt' && !horizontalList ) {
+				text = text.replace( /[ \u200b]+$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 && !classes.includes( 'mw-empty-elt' ) ) text += '\u200b '.repeat(4 * (listlevel + 1));
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				text += '**';
+			}
+			if ( tagname === 'dd' && !horizontalList ) {
+				text = text.replace( /[ \u200b]+$/, '' );
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
 				if ( attribs.alt && attribs.src ) {
@@ -362,9 +361,17 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';
-			if ( tagname === 'ul' || tagname === 'ol' ) listlevel--;
-			if ( tagname === 'dl' ) listlevel--;
-			if ( tagname === 'dt' ) text += '**';
+			if ( tagname === 'dl' && horizontalList ) text = text.replace( /: $/, '' );
+			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
+				if ( horizontalList ) text = text.replace( / • $/, '' );
+				if ( listlevel-- ) text += ')';
+			}
+			if ( ( tagname === 'li' || tagname === 'dd' ) && horizontalList ) text += ' • ';
+			if ( tagname === 'dt' ) {
+				text += '**';
+				if ( horizontalList ) text += ': ';
+			}
+			if ( tagname === horizontalList ) horizontalList = '';
 			if ( tagname === 'h1' ) text += '__***';
 			if ( tagname === 'h2' ) text += '__**';
 			if ( tagname === 'h3' ) text += '**';
