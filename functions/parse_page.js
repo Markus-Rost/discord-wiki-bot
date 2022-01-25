@@ -60,6 +60,7 @@ const removeClassesExceptions = [
 	'div.lcs-container',
 	'div.mw-highlight',
 	'div.poem',
+	'div.hlist',
 	'div.treeview',
 	'div.redirectMsg',
 	'div.introduction',
