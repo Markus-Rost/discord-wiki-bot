@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "",
+        "Fensokratica",
         " ",
         " ",
         " ",
@@ -111,6 +111,26 @@
             " "
         ]
     },
+    "diff": {
+        "info": {
+            "added": "Dodato:",
+            "comment": "Komentar:",
+            "editor": "Urednik:",
+            "more": "I više",
+            "removed": "Uklonjeno:",
+            "size": "Razlika:",
+            "tags": "Oznake (Tagovi):",
+            "timestamp": "Uredi datum:",
+            "whitespace": "Samo razmak"
+        },
+        "nocomment": "*Nema opisa*"
+    },
+    "discussion": {
+        "image": "Prikaži Sliku",
+        "main": "Diskusije",
+        "post": "objava",
+        "tags": "Oznake (Tagovi):"
+    },
     "fallback": [
         "en",
         " ",
@@ -118,6 +138,10 @@
         " ",
         " "
     ],
+    "general": {
+        "database": "⚠️ **Ograničena Funkcionalnost** ⚠️\nNisu pronađena podešavanja, kontaktirajte vlasnika bota!",
+        "default": "Ovaj server još nije podešen. Koristite $1 ili kontrolnu tablu da promenite podešavanja."
+    },
     "test": {
         "text": [
             "",
