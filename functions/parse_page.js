@@ -430,13 +430,15 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						].join(', ')).toArray(),
 						...sectionContent.find([
 							'ul.gallery > li.gallerybox img',
-							'div.wikia-gallery > div.wikia-gallery-item img'
+							'div.wikia-gallery > div.wikia-gallery-item img',
+							'div.ogv-gallery > div.ogv-gallery-item img'
 						].join(', ')).toArray()
 					].filter( img => {
 						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 						if ( !imgURL ) return false;
 						return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
 					} ).map( img => {
+						if ( img.attribs['data-image-name']?.endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
 						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 						imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
 						return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
