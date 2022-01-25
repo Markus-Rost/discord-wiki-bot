@@ -428,7 +428,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							'figure.pi-image img',
 							'div.infobox-imagearea img'
 						].join(', ')).toArray(),
-						...sectionContent.find('ul.gallery > li.gallerybox img').toArray()
+						...sectionContent.find([
+							'ul.gallery > li.gallerybox img',
+							'div.wikia-gallery > div.wikia-gallery-item img'
+						].join(', ')).toArray()
 					].filter( img => {
 						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 						if ( !imgURL ) return false;
