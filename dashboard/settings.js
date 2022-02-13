@@ -346,6 +346,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		} );
 		var wiki = Wiki.fromInput(settings.wiki);
+		if ( !wiki ) return res(`/guild/${guild}/settings`, 'savefail');
 		var embed;
 		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
 			responseType: 'text'

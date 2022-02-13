@@ -282,7 +282,7 @@ function messageCreate(msg) {
 				console.log( msg.guildId + ': Missing permissions - ' + missing.join(', ') );
 				if ( !missing.includes( 'SEND_MESSAGES' ) && !missing.includes( 'SEND_MESSAGES_IN_THREADS' ) ) {
 					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-						return row.lang;
+						return row?.lang;
 					}, dberror => {
 						console.log( '- Error while getting the lang: ' + dberror );
 					} ).then( lang => {

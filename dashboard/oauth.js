@@ -255,14 +255,24 @@ function dashboard_api(res, input) {
 		api: true,
 		error: false,
 		error_code: '',
-		wiki: wiki.href,
+		wiki: wiki?.href,
 		base: '',
 		sitename: '',
 		logo: '',
 		MediaWiki: false,
 		RcGcDw: '',
-		customRcGcDw: wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
+		customRcGcDw: wiki?.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
 	};
+	if ( !wiki ) {
+		result.error = true;
+		let body = JSON.stringify(result);
+		res.writeHead(200, {
+			'Content-Length': Buffer.byteLength(body),
+			'Content-Type': 'application/json'
+		});
+		res.write( body );
+		return res.end();
+	}
 	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
 		responseType: 'text'
 	} ).then( response => {

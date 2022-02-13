@@ -378,6 +378,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				return res(`/guild/${guild}/rcscript`, 'savefail');
 			}
 			var wiki = Wiki.fromInput(settings.wiki);
+			if ( !wiki ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 			return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
 				responseType: 'text'
 			} ).then( fresponse => {
@@ -622,6 +623,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( ( row.postid === '-1' ) !== !settings.feeds ) hasDiff = true;
 				if ( !hasDiff ) return res(`/guild/${guild}/rcscript/${type}`, 'save');
 				var wiki = Wiki.fromInput(settings.wiki);
+				if ( !wiki ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
 					responseType: 'text'
 				} ).then( fresponse => {

@@ -255,6 +255,7 @@ export default class Wiki extends URL {
 				if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');
 				else return new Wiki('https://' + input.split('.')[1] + '.fandom.com/' + input.split('.')[0] + '/');
 			}
+			return null;
 		}
 		catch {
 			return null;
