@@ -357,7 +357,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				return;
 			}
 			if ( syntaxhighlight && tagname === 'div' ) syntaxhighlight = '';
-			if ( tagname === 'b' ) text += '**';
+			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';
@@ -405,8 +405,11 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
  */
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 	if ( !isMarkdown ) text = text.replace( /\\/g, '\\\\' ).replace( /\]\(/g, ']\\(' );
-	if ( !keepLinks ) text = text.replace( /\/\//g, '/\\/' );
-	return text.replace( /[`_*~:<>{}@|]/g, '\\$&' );
+	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replace( /\/\//g, '/\\/' );
+	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
+		return match.replace( /\\\\/g, '/' ).replace( /\\/g, '' );
+	} );
+	return text;
 };
 
 /**
