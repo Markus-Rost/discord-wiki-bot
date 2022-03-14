@@ -101,6 +101,12 @@
 	},
 	"wikiProjects": [
 		{
+			"name": "fandom.com",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)fandom\\.com(?:/[a-z-]{2,12})?)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
 			"name": "wikipedia.org",
 			"regex": "((?:[a-z\\d-]{1,50}\\.)?(?:m\\.)?wikipedia\\.org)",
 			"articlePath": "/wiki/",
@@ -171,6 +177,12 @@
 			"regex": "(translatewiki\\.net)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
+		},
+		{
+			"name": "wiki.gg",
+			"regex": "((?:[a-z\\d-]{1,50}\\.)wiki\\.gg(?:/[a-z-]{2,12})?)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
 		},
 		{
 			"name": "miraheze.org",
