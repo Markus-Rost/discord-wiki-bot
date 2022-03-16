@@ -1,44 +1,47 @@
-const {domainToASCII} = require('url');
-const {Util} = require('discord.js');
-const logging = require('./logging.js');
-const {got, partialURIdecode} = require('./functions.js');
+import { readdir } from 'fs';
+import { domainToASCII } from 'url';
+import { Util } from 'discord.js';
+import Wiki from './wiki.js';
+import logging from './logging.js';
+import { got, partialURIdecode } from './functions.js';
+import check_wiki_general from '../cmds/wiki/general.js';
+import check_wiki_test from '../cmds/test.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
-const Wiki = require('./wiki.js');
 const check_wiki = {
-	general: require('../cmds/wiki/general.js'),
-	test: require('../cmds/test.js').run
+	general: check_wiki_general,
+	test: check_wiki_test.run
 };
 
-const fs = require('fs');
 var cmdmap = {};
 var pausecmdmap = {};
 var ownercmdmap = {};
-fs.readdir( './cmds', (error, files) => {
+readdir( './cmds', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
-		var command = require('../cmds/' + file);
-		if ( command.everyone ) cmdmap[command.name] = command.run;
-		if ( command.pause ) pausecmdmap[command.name] = command.run;
-		if ( command.owner ) ownercmdmap[command.name] = command.run;
+		import('../cmds/' + file).then( ({default: command}) => {
+			if ( command.everyone ) cmdmap[command.name] = command.run;
+			if ( command.pause ) pausecmdmap[command.name] = command.run;
+			if ( command.owner ) ownercmdmap[command.name] = command.run;
+		} );
 	} );
 } );
 
 /**
  * Processes new messages.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('./i18n.js')} lang - The user language.
+ * @param {import('./i18n.js').default} lang - The user language.
  * @param {Wiki} [wiki] - The default wiki.
  * @param {String} [prefix] - The prefix for the message.
  * @param {Boolean} [noInline] - Parse inline commands?
  * @param {String} [content] - Overwrite for the message content.
  */
-function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, content = '') {
+export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, content = '') {
 	wiki = new Wiki(wiki);
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
-	var cleanCont = ( content && Util.cleanContent(content, msg) || msg.cleanContent );
-	var author = msg.author;
-	var channel = msg.channel;
+	var cleanCont = ( content ? Util.cleanContent(content, msg) : msg.cleanContent );
 	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
 		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
 		let aliasInvoke = ( lang.aliases[invoke] || invoke );
@@ -46,12 +49,12 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			cont = cont.substring(prefix.length);
 			let args = cont.split(' ').slice(1);
 			if ( cont.split(' ')[0].split('\n')[1] ) args.unshift( '', cont.split(' ')[0].split('\n')[1] );
-			console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + prefix + cont );
+			console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + prefix + cont );
 			return ownercmdmap[aliasInvoke](lang, msg, args, cont, wiki);
 		}
 	}
 	var count = 0;
-	var maxcount = commandLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
+	var maxcount = commandLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 	var breakLines = false;
 	cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
@@ -61,10 +64,10 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			console.log( '- Message contains too many commands!' );
 			msg.reactEmoji('⚠️');
 			msg.sendChannelError( {
-				content: lang.get('general.limit', author.toString()),
+				content: lang.get('general.limit', msg.author.toString()),
 				reply: {messageReference: msg.id},
 				allowedMentions: {
-					users: [author.id],
+					users: [msg.author.id],
 					repliedUser: true
 				}
 			} );
@@ -76,12 +79,12 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		var args = line.split(' ').slice(1);
 		var aliasInvoke = ( lang.aliases[invoke] || invoke );
 		var ownercmd = ( msg.isOwner() && ownercmdmap.hasOwnProperty(aliasInvoke) );
-		var pausecmd = ( msg.isAdmin() && pause[msg.guildId] && pausecmdmap.hasOwnProperty(aliasInvoke) );
+		var pausecmd = ( msg.isAdmin() && pausedGuilds.has(msg.guildId) && pausecmdmap.hasOwnProperty(aliasInvoke) );
 		if ( msg.onlyVerifyCommand && !( aliasInvoke === 'verify' || pausecmd || ownercmd ) ) return;
-		if ( channel.isGuild() && pause[msg.guildId] && !( pausecmd || ownercmd ) ) {
+		if ( msg.inGuild() && pausedGuilds.has(msg.guildId) && !( pausecmd || ownercmd ) ) {
 			return console.log( msg.guildId + ': Paused' );
 		}
-		console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + prefix + line );
+		console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + prefix + line );
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
@@ -100,7 +103,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 			else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
 			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
 		}
-		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}(?:\/|$)/.test(domainToASCII(invoke)) ) {
+		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}$/.test(domainToASCII(invoke.split('/')[0])) ) {
 			let project = wikiProjects.find( project => invoke.split('/')[0].endsWith( project.name ) );
 			if ( project ) {
 				let regex = invoke.match( new RegExp( project.regex ) );
@@ -111,7 +114,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 	} );
 	if ( msg.onlyVerifyCommand ) return;
 	
-	if ( ( !channel.isGuild() || !pause[msg.guildId] ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
+	if ( ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) && !noInline && ( cont.includes( '[[' ) || cont.includes( '{{' ) ) ) {
 		var links = [];
 		var embeds = [];
 		var linkcount = 0;
@@ -128,7 +131,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( linkcount < linkmaxcount ) {
 						linkcount++;
-						console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = entry[2].split('#').slice(1).join('#');
 						links.push({title,section,spoiler:entry[1]});
@@ -148,7 +151,7 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( count < maxcount ) {
 						count++;
-						console.log( ( channel.isGuild() ? msg.guildId : '@' + author.id ) + ': ' + entry[0] );
+						console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
 						let section = entry[2].split('#').slice(1).join('#');
 						embeds.push({title,section,spoiler:entry[1]});
@@ -268,5 +271,3 @@ function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env
 		} );
 	}
 }
-
-module.exports = newMessage;

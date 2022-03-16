@@ -1,5 +1,5 @@
-const Lang = require('../util/i18n.js');
-const {got, db, slashCommands, sendMsg, createNotice, hasPerm} = require('./util.js');
+import Lang from '../util/i18n.js';
+import { got, db, slashCommands, sendMsg, createNotice, hasPerm } from './util.js';
 
 const fieldset = {
 	role: '<label for="wb-settings-addrole">Role:</label>'
@@ -22,9 +22,9 @@ const fieldset = {
 
 /**
  * Create a settings form
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {slashCommands[0]} slashCommand - The slash command
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {Object[]} permissions - The current permissions
  * @param {String} permissions.id
  * @param {Number} permissions.type
@@ -94,10 +94,10 @@ function createForm($, slashCommand, dashboardLang, permissions, guildId, guildR
 /**
  * Let a user change slashs
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  */
 function dashboard_slash(res, $, guild, args, dashboardLang) {
 	let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
@@ -115,7 +115,9 @@ function dashboard_slash(res, $, guild, args, dashboardLang) {
 			headers: {
 				Authorization: `Bot ${process.env.token}`
 			},
-			timeout: 10000
+			timeout: {
+				request: 10000
+			}
 		} ).then( response=> {
 			var permissions = [];
 			if ( response.statusCode !== 200 || !response.body ) {
@@ -214,7 +216,9 @@ function update_slash(res, userSettings, guild, type, settings) {
 			headers: {
 				Authorization: `Bot ${process.env.token}`
 			},
-			timeout: 10000
+			timeout: {
+				request: 10000
+			}
 		} ).then( response=> {
 			if ( response.statusCode !== 200 || !response.body ) {
 				if ( response.statusCode === 403 && response.body?.message === 'Missing Access' ) {
@@ -245,7 +249,9 @@ function update_slash(res, userSettings, guild, type, settings) {
 					Authorization: `Bot ${process.env.token}`
 				},
 				json: {permissions},
-				timeout: 10000
+				timeout: {
+					request: 10000
+				}
 			} ).then( response=> {
 				if ( response.statusCode !== 200 || !response.body ) {
 					console.log( '- Dashboard: ' + response.statusCode + ': Error while saving the slash command permissions: ' + response.body?.message );
@@ -307,7 +313,7 @@ function update_slash(res, userSettings, guild, type, settings) {
 	} );
 }
 
-module.exports = {
-	get: dashboard_slash,
-	post: update_slash
+export {
+	dashboard_slash as get,
+	update_slash as post
 };

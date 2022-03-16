@@ -1,7 +1,10 @@
-const htmlparser = require('htmlparser2');
-const got = require('got').extend( {
+import htmlparser from 'htmlparser2';
+import gotDefault from 'got';
+const got = gotDefault.extend( {
 	throwHttpErrors: false,
-	timeout: 5000,
+	timeout: {
+		request: 5_000
+	},
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
@@ -23,7 +26,7 @@ const oauthVerify = new Map();
  */
 function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 	if ( !infobox || embed.fields.length >= 25 || embed.length > 5400 ) return;
-	if ( infobox.parser_tag_version === 2 ) {
+	if ( infobox.parser_tag_version === 5 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, thumbnail, pagelink);
 		} );
@@ -36,7 +39,7 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 	switch ( infobox.type ) {
 		case 'data':
 			var {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
-			label = htmlToPlain(label).trim();
+			label = htmlToPlain(label, true).trim();
 			value = htmlToDiscord(value, pagelink).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
 				if ( !( source || name ) ) break;
@@ -97,7 +100,7 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
  * Make wikitext formatting usage.
  * @param {String} [text] - The text to modify.
  * @param {Boolean} [showEmbed] - If the text is used in an embed.
- * @param {import('./wiki.js')} [wiki] - The wiki.
+ * @param {import('./wiki.js').default} [wiki] - The wiki.
  * @param {String} [title] - The page title.
  * @param {Boolean} [fullWikitext] - If the text can contain full wikitext.
  * @returns {String}
@@ -110,7 +113,7 @@ function toFormatting(text = '', showEmbed = false, wiki, title = '', fullWikite
 /**
  * Turns wikitext formatting into markdown.
  * @param {String} [text] - The text to modify.
- * @param {import('./wiki.js')} wiki - The wiki.
+ * @param {import('./wiki.js').default} wiki - The wiki.
  * @param {String} [title] - The page title.
  * @param {Boolean} [fullWikitext] - If the text can contain full wikitext.
  * @returns {String}
@@ -159,13 +162,19 @@ function toPlaintext(text = '', fullWikitext = false) {
  * @param {String} html - The text in HTML.
  * @returns {String}
  */
-function htmlToPlain(html) {
+function htmlToPlain(html, includeComments = false) {
 	var text = '';
 	var ignoredTag = '';
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
-			if ( tagname === 'sup' && attribs.class === 'reference' ) ignoredTag = 'sup';
-			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
+			let classes = ( attribs.class?.split(' ') ?? [] );
+			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
+			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
+				ignoredTag = tagname;
+				return;
+			}
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
 			if ( tagname === 'br' ) text += ' ';
 		},
 		ontext: (htmltext) => {
@@ -177,9 +186,14 @@ function htmlToPlain(html) {
 		},
 		onclosetag: (tagname) => {
 			if ( tagname === ignoredTag ) ignoredTag = '';
+		},
+		oncomment: (commenttext) => {
+			if ( includeComments && /^(?:IW)?LINK'" \d+(?::\d+)?$/.test(commenttext) ) {
+				text += '*UNKNOWN LINK*';
+			}
 		}
 	} );
-	parser.write( html );
+	parser.write( String(html) );
 	parser.end();
 	return text;
 };
@@ -198,11 +212,19 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var ignoredTag = '';
 	var syntaxhighlight = '';
 	var listlevel = -1;
+	var horizontalList = '';
 	var parser = new htmlparser.Parser( {
 		onopentag: (tagname, attribs) => {
 			if ( ignoredTag || code ) return;
-			if ( tagname === 'sup' && attribs.class === 'reference' ) ignoredTag = 'sup';
-			if ( tagname === 'span' && attribs.class === 'smwttcontent' ) ignoredTag = 'span';
+			let classes = ( attribs.class?.split(' ') ?? [] );
+			if ( classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
+			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
+				ignoredTag = tagname;
+				return;
+			}
+			if ( classes.includes( 'hlist' ) ) horizontalList = tagname;
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
 			if ( tagname === 'code' ) {
 				code = true;
 				text += '`';
@@ -211,13 +233,12 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				code = true;
 				text += '```' + syntaxhighlight + '\n';
 			}
-			if ( tagname === 'div' && attribs.class ) {
-				let classes = attribs.class.split(' ');
+			if ( tagname === 'div' && classes.length ) {
 				if ( classes.includes( 'mw-highlight' ) ) {
 					syntaxhighlight = ( classes.find( syntax => syntax.startsWith( 'mw-highlight-lang-' ) )?.replace( 'mw-highlight-lang-', '' ) || '' );
 				}
 			}
-			if ( tagname === 'b' ) text += '**';
+			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';
@@ -231,28 +252,25 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				text += '─'.repeat(10) + '\n';
 			}
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
-			if ( tagname === 'ul' || tagname === 'ol' ) listlevel++;
-			if ( tagname === 'li' ) {
-				text = text.replace( / +$/, '' );
-				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( attribs.class !== 'mw-empty-elt' ) {
-					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
-					text += '• ';
-				}
+			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
+				if ( ++listlevel ) text += ' (';
 			}
-			if ( tagname === 'dl' ) listlevel++;
-			if ( tagname === 'dt' ) {
-				text = text.replace( / +$/, '' );
+			if ( tagname === 'li' && !horizontalList ) {
+				text = text.replace( /[ \u200b]+$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( attribs.class !== 'mw-empty-elt' ) {
-					if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
-					text += '**';
-				}
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				text += '• ';
 			}
-			if ( tagname === 'dd' ) {
-				text = text.replace( / +$/, '' );
+			if ( tagname === 'dt' && !horizontalList ) {
+				text = text.replace( /[ \u200b]+$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				if ( listlevel > -1 && attribs.class !== 'mw-empty-elt' ) text += '\u200b '.repeat(4 * (listlevel + 1));
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel);
+				text += '**';
+			}
+			if ( tagname === 'dd' && !horizontalList ) {
+				text = text.replace( /[ \u200b]+$/, '' );
+				if ( !text.endsWith( '\n' ) ) text += '\n';
+				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * (listlevel + 1));
 			}
 			if ( tagname === 'img' ) {
 				if ( attribs.alt && attribs.src ) {
@@ -301,7 +319,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				text += '';
 			}
 			if ( !pagelink ) return;
-			if ( tagname === 'a' && attribs.href && attribs.class !== 'new' && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
+			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
 				href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
 				if ( text.endsWith( '](<' + href + '>)' ) ) {
 					text = text.substring(0, text.length - ( href.length + 5 ));
@@ -339,13 +357,21 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				return;
 			}
 			if ( syntaxhighlight && tagname === 'div' ) syntaxhighlight = '';
-			if ( tagname === 'b' ) text += '**';
+			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
 			if ( tagname === 'i' ) text += '*';
 			if ( tagname === 's' ) text += '~~';
 			if ( tagname === 'u' ) text += '__';
-			if ( tagname === 'ul' || tagname === 'ol' ) listlevel--;
-			if ( tagname === 'dl' ) listlevel--;
-			if ( tagname === 'dt' ) text += '**';
+			if ( tagname === 'dl' && horizontalList ) text = text.replace( /: $/, '' );
+			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
+				if ( horizontalList ) text = text.replace( / • $/, '' );
+				if ( listlevel-- ) text += ')';
+			}
+			if ( ( tagname === 'li' || tagname === 'dd' ) && horizontalList ) text += ' • ';
+			if ( tagname === 'dt' ) {
+				text += '**';
+				if ( horizontalList ) text += ': ';
+			}
+			if ( tagname === horizontalList ) horizontalList = '';
 			if ( tagname === 'h1' ) text += '__***';
 			if ( tagname === 'h2' ) text += '__**';
 			if ( tagname === 'h3' ) text += '**';
@@ -360,12 +386,12 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 		},
 		oncomment: (commenttext) => {
-			if ( pagelink && /^(?:IW)?LINK'" \d+:\d+$/.test(commenttext) ) {
+			if ( pagelink && /^(?:IW)?LINK'" \d+(?::\d+)?$/.test(commenttext) ) {
 				text += '*UNKNOWN LINK*';
 			}
 		}
 	} );
-	parser.write( html );
+	parser.write( String(html) );
 	parser.end();
 	return text;
 };
@@ -379,8 +405,11 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
  */
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 	if ( !isMarkdown ) text = text.replace( /\\/g, '\\\\' ).replace( /\]\(/g, ']\\(' );
-	if ( !keepLinks ) text = text.replace( /\/\//g, '/\\/' );
-	return text.replace( /[`_*~:<>{}@|]/g, '\\$&' );
+	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replace( /\/\//g, '/\\/' );
+	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
+		return match.replace( /\\\\/g, '/' ).replace( /\\/g, '' );
+	} );
+	return text;
 };
 
 /**
@@ -425,15 +454,39 @@ function partialURIdecode(m) {
 };
 
 /**
+ * Check for timeout or pause.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The message.
+ * @param {Boolean} [ignorePause] - Ignore pause for admins.
+ * @returns {Boolean}
+ */
+function breakOnTimeoutPause(msg, ignorePause = false) {
+	if ( !msg.inGuild() ) return false;
+	if ( msg.member?.isCommunicationDisabled() ) {
+		console.log( '- Aborted, communication disabled for User.' );
+		return true;
+	}
+	if ( msg.guild?.me.isCommunicationDisabled() ) {
+		console.log( '- Aborted, communication disabled for Wiki-Bot.' );
+		return true;
+	}
+	if ( pausedGuilds.has(msg.guildId) && !( ignorePause && ( msg.isAdmin() || msg.isOwner() ) ) ) {
+		console.log( '- Aborted, guild paused.' );
+		return true;
+	};
+	return false;
+};
+
+/**
  * Allow users to delete their command responses.
  * @param {import('discord.js').Message} msg - The response.
  * @param {String} author - The user id.
  */
 function allowDelete(msg, author) {
-	msg?.awaitReactions?.( {filter: (reaction, user) => ( reaction.emoji.name === '🗑️' && user.id === author ), max: 1, time: 300000} ).then( reaction => {
-		if ( reaction.size ) {
-			msg.delete().catch(log_error);
-		}
+	msg?.awaitReactions?.( {
+		filter: (reaction, user) => ( reaction.emoji.name === '🗑️' && user.id === author ),
+		max: 1, time: 300_000
+	} ).then( reaction => {
+		if ( reaction.size ) msg.delete().catch(log_error);
 	} );
 };
 
@@ -445,6 +498,7 @@ function allowDelete(msg, author) {
  * @returns {Promise<import('discord.js').Message?>}
  */
 function sendMessage(interaction, message, letDelete = true) {
+	if ( !interaction.ephemeral && letDelete && breakOnTimeoutPause(interaction) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return interaction.editReply( message ).then( msg => {
 		if ( letDelete && (msg.flags & 64) !== 64 ) allowDelete(msg, interaction.user.id);
@@ -452,7 +506,7 @@ function sendMessage(interaction, message, letDelete = true) {
 	}, log_error );
 };
 
-module.exports = {
+export {
 	got,
 	oauthVerify,
 	parse_infobox,
@@ -464,6 +518,7 @@ module.exports = {
 	escapeFormatting,
 	limitLength,
 	partialURIdecode,
+	breakOnTimeoutPause,
 	allowDelete,
 	sendMessage
 };

@@ -1,13 +1,13 @@
-const {Permissions: {FLAGS}} = require('discord.js');
-const logging = require('../util/logging.js');
-const Wiki = require('../util/wiki.js');
-const {got, limitLength, partialURIdecode, sendMessage} = require('../util/functions.js');
+import { Permissions } from 'discord.js';
+import logging from '../util/logging.js';
+import Wiki from '../util/wiki.js';
+import { got, limitLength, partialURIdecode, sendMessage } from '../util/functions.js';
 
 /**
  * Post a message with inline wiki links.
  * @param {import('discord.js').CommandInteraction} interaction - The interaction.
- * @param {import('../util/i18n.js')} lang - The user language.
- * @param {import('../util/wiki.js')} wiki - The wiki for the interaction.
+ * @param {import('../util/i18n.js').default} lang - The user language.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_inline(interaction, lang, wiki) {
 	var text = ( interaction.options.getString('text') || '' ).replace( /\]\(/g, ']\\(' );
@@ -15,17 +15,18 @@ function slash_inline(interaction, lang, wiki) {
 	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
 		return interaction.reply( {content: lang.get('interaction.inline'), ephemeral: true} ).catch(log_error);
 	}
+	/** @type {import('discord.js').MessageMentionOptions} */
 	var allowedMentions = {
 		parse: ['users']
 	};
 	if ( interaction.inGuild() ) {
-		if ( interaction.member.permissions.has(FLAGS.MENTION_EVERYONE) ) {
+		if ( interaction.member.permissions.has(Permissions.FLAGS.MENTION_EVERYONE) ) {
 			allowedMentions.parse = ['users', 'roles', 'everyone'];
 		}
 		else if ( interaction.guild ) {
 			allowedMentions.roles = interaction.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		}
-		if ( interaction.guild && !interaction.member.permissions.has(FLAGS.USE_EXTERNAL_EMOJIS) ) {
+		if ( interaction.guild && !interaction.member.permissions.has(Permissions.FLAGS.USE_EXTERNAL_EMOJIS) ) {
 			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
 				if ( interaction.guild.emojis.cache.has(id) ) {
 					return replacement;
@@ -262,7 +263,8 @@ function slash_inline(interaction, lang, wiki) {
 	}, log_error );
 }
 
-module.exports = {
+export default {
 	name: 'inline',
-	run: slash_inline
+	run: slash_inline,
+	button: null
 };

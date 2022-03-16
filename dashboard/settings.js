@@ -1,9 +1,11 @@
-const cheerio = require('cheerio');
+import cheerio from 'cheerio';
+import Lang from '../util/i18n.js';
+import Wiki from '../util/wiki.js';
+import { got, db, sendMsg, createNotice, hasPerm } from './util.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
-const Lang = require('../util/i18n.js');
-const allLangs = Lang.allLangs();
-const Wiki = require('../util/wiki.js');
-const {got, db, sendMsg, createNotice, hasPerm} = require('./util.js');
+const allLangs = Lang.allLangs().names;
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -18,8 +20,8 @@ const fieldset = {
 	//+ '</fieldset>',
 	lang: '<label for="wb-settings-lang">Language:</label>'
 	+ '<select id="wb-settings-lang" name="lang" required autocomplete="language">'
-	+ Object.keys(allLangs.names).map( lang => {
-		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs.names[lang]}</option>`
+	+ Object.keys(allLangs).map( lang => {
+		return `<option id="wb-settings-lang-${lang}" value="${lang}">${allLangs[lang]}</option>`
 	} ).join('')
 	+ '</select>'
 	+ '<img id="wb-settings-lang-widget">',
@@ -38,9 +40,9 @@ const fieldset = {
 
 /**
  * Create a settings form
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {String} header - The form header
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {Boolean} settings.patreon
  * @param {String} settings.channel
@@ -165,10 +167,10 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 /**
  * Let a user change settings
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  */
 function dashboard_settings(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [guild.id] ).then( ({rows}) => {
@@ -277,7 +279,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/settings/${type}`, 'savefail');
 	}
 	if ( settings.save_settings ) {
-		if ( !settings.wiki || ( settings.lang && !allLangs.names.hasOwnProperty(settings.lang) ) ) {
+		if ( !settings.wiki || ( settings.lang && !allLangs.hasOwnProperty(settings.lang) ) ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.channel && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
@@ -326,7 +328,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 				if ( channel.wiki !== row.wiki ) text += `\n${lang.get('settings.currentwiki')} <${channel.wiki}>`;
 				if ( response.patreon ) {
-					if ( channel.lang !== row.lang ) text += `\n${lang.get('settings.currentlang')} \`${allLangs.names[channel.lang]}\``;
+					if ( channel.lang !== row.lang ) text += `\n${lang.get('settings.currentlang')} \`${allLangs[channel.lang]}\``;
 					if ( channel.role !== row.role ) text += `\n${lang.get('settings.currentrole')} ` + ( channel.role ? `<@&${channel.role}>` : '@everyone' );
 					if ( channel.inline !== row.inline ) text += `\n${lang.get('settings.currentinline')} ${( channel.inline ? '~~' : '' )}\`[[${( lang.localNames.page || 'page' )}]]\`${( channel.inline ? '~~' : '' )}`;
 				}
@@ -344,6 +346,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		} );
 		var wiki = Wiki.fromInput(settings.wiki);
+		if ( !wiki ) return res(`/guild/${guild}/settings`, 'savefail');
 		var embed;
 		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
 			responseType: 'text'
@@ -375,6 +378,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 				wiki.updateWiki(body.query.general);
 				if ( !wiki.isFandom() ) {
+					let lang = new Lang(( type === 'default' && settings.lang || row?.guildlang ));
 					let notice = [];
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
 						console.log( '- Dashboard: This wiki is using ' + body.query.general.generator + '.' );
@@ -424,7 +428,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					res(`/guild/${guild}/settings`, 'save');
 					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
 					text += '\n' + lang.get('settings.currentwiki') + ` <${wiki.href}>`;
-					text += '\n' + lang.get('settings.currentlang') + ` \`${allLangs.names[settings.lang]}\``;
+					text += '\n' + lang.get('settings.currentlang') + ` \`${allLangs[settings.lang]}\``;
 					text += '\n' + lang.get('settings.currentrole') + ( settings.role ? ` <@&${settings.role}>` : ' @everyone' );
 					if ( response.patreon ) {
 						text += '\n' + lang.get('settings.currentprefix') + ` \`${settings.prefix.replace( /\\/g, '\\$&' )}\``;
@@ -452,7 +456,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( row.lang !== settings.lang ) {
 					updateChannel = true;
 					file.push(`./i18n/widgets/${settings.lang}.png`);
-					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs.names[row.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
+					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs[row.lang]}\`~~ → \`${allLangs[settings.lang]}\``);
 				}
 				if ( response.patreon && row.prefix !== settings.prefix ) {
 					updateChannel = true;
@@ -526,7 +530,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					var text = lang.get('settings.dashboard.removed', `<@${userSettings.user.id}>`, `<#${type}>`);
 					if ( channel.wiki !== row.wiki ) text += `\n${lang.get('settings.currentwiki')} <${channel.wiki}>`;
 					if ( response.patreon ) {
-						if ( channel.lang !== row.lang ) text += `\n${lang.get('settings.currentlang')} \`${allLangs.names[channel.lang]}\``;
+						if ( channel.lang !== row.lang ) text += `\n${lang.get('settings.currentlang')} \`${allLangs[channel.lang]}\``;
 						if ( channel.role !== row.role ) text += `\n${lang.get('settings.currentrole')} ` + ( channel.role ? `<@&${channel.role}>` : '@everyone' );
 						if ( channel.inline !== row.inline ) text += `\n${lang.get('settings.currentinline')} ${( channel.inline ? '~~' : '' )}\`[[${( lang.localNames.page || 'page' )}]]\`${( channel.inline ? '~~' : '' )}`;
 					}
@@ -552,7 +556,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 				if ( response.patreon && channel.lang !== settings.lang ) {
 					file.push(`./i18n/widgets/${settings.lang}.png`);
-					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs.names[channel.lang]}\`~~ → \`${allLangs.names[settings.lang]}\``);
+					diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs[channel.lang]}\`~~ → \`${allLangs[settings.lang]}\``);
 				}
 				if ( response.patreon && channel.role !== ( settings.role || null ) ) {
 					diff.push(lang.get('settings.currentrole') + ` ~~${( channel.role ? `<@&${channel.role}>` : '@everyone' )}~~ → ${( settings.role ? `<@&${settings.role}>` : '@everyone' )}`);
@@ -599,7 +603,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 	} );
 }
 
-module.exports = {
-	get: dashboard_settings,
-	post: update_settings
+export {
+	dashboard_settings as get,
+	update_settings as post
 };

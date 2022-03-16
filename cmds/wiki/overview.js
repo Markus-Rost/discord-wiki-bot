@@ -1,24 +1,26 @@
-const {MessageEmbed} = require('discord.js');
-const logging = require('../../util/logging.js');
+import { MessageEmbed } from 'discord.js';
+import logging from '../../util/logging.js';
+import { got, toFormatting, toPlaintext, escapeFormatting } from '../../util/functions.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
-const {got, toFormatting, toPlaintext, escapeFormatting} = require('../../util/functions.js');
 
 /**
  * Sends a Gamepedia wiki overview.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../../util/wiki.js')} wiki - The wiki for the overview.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the overview.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @param {URLSearchParams} [querystring] - The querystring for the link.
  * @param {String} [fragment] - The section for the link.
  */
-function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
+export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
 	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
 	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.isFandom() ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -94,7 +96,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 		var text = '<' + pagelink + '>';
 		var embed = null;
 		if ( msg.showEmbed() && !noEmbed ) {
-			embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 			if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 				let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -155,7 +157,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 				return Promise.all([
 					( founder[1] > 0 ? got.get( wiki + 'api.php?action=query&list=users&usprop=&ususerids=' + founder[1] + '&format=json' ).then( usresponse => {
 						var usbody = usresponse.body;
-						if ( usbody && usbody.warnings ) log_warn(usbody.warnings);
+						if ( usbody && usbody.warnings ) log_warning(usbody.warnings);
 						if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
 							console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + ( usbody && usbody.error && usbody.error.info ) );
 							founder[1] = 'ID: ' + founder[1];
@@ -208,7 +210,9 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 					if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
 					if ( founder[1] ) embed.addField( founder[0], founder[1], true );
 					if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
-					embed.addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') + ( wikiid ? ' • ' + lang.get('overview.wikiid') + ' ' + wikiid : '' ) );
+					embed.addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( {
+						text: lang.get('overview.inaccurate') + ( wikiid ? ' • ' + lang.get('overview.wikiid') + ' ' + wikiid : '' )
+					} );
 					if ( description[1] ) embed.addField( description[0], description[1] );
 					if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
 					if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
@@ -242,7 +246,7 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 		if ( msg.showEmbed() && !noEmbed ) {
 			embed.addField( version[0], version[1], true ).addField( language[0], language[1], true );
 			if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
-			embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( lang.get('overview.inaccurate') );
+			embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( {text: lang.get('overview.inaccurate')} );
 			if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
 		}
 		else {
@@ -269,8 +273,3 @@ function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, queryst
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
-
-module.exports = {
-	name: 'overview',
-	run: gamepedia_overview
-};

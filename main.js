@@ -1,21 +1,24 @@
-require('dotenv').config();
+import 'dotenv/config';
+import './database.js';
+import { fork as forkChildProcess } from 'child_process';
+import gotDefault from 'got';
+import { ShardingManager, ShardClientUtil } from 'discord.js';
+const {shardIdForGuildId} = ShardClientUtil;
 
 var isDebug = ( process.argv[2] === 'debug' );
 if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
 
-require('./database.js').then( () => {
-
-const child_process = require('child_process');
-
-const got = require('got').extend( {
+const got = gotDefault.extend( {
 	throwHttpErrors: false,
-	timeout: 30000,
+	timeout: {
+		request: 30_000
+	},
 	headers: {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json'
 } );
-const {ShardingManager, ShardClientUtil: {shardIdForGuildId}} = require('discord.js');
+
 const manager = new ShardingManager( './bot.js', {
 	execArgv: ['--icu-data-dir=node_modules/full-icu'],
 	shardArgs: ( isDebug ? ['debug'] : [] ),
@@ -43,7 +46,7 @@ manager.on( 'shardCreate', shard => {
 			console.log( '\n- Toggle debug logging for all shards!\n' );
 			isDebug = !isDebug;
 			manager.broadcastEval( () => {
-				global.isDebug = !global.isDebug;
+				globalThis.isDebug = !globalThis.isDebug;
 			} );
 			if ( typeof server !== 'undefined' ) server.send( 'toggleDebug' );
 		}
@@ -60,16 +63,23 @@ manager.on( 'shardCreate', shard => {
 			else console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error!\n\n` );
 		}
 	} );
+
+	shard.on( 'error', error => {
+		console.log( `- Shard[${shard.id}]: Error received!`, error );
+	} );
 } );
 
-manager.spawn({timeout: 60000}).then( shards => {
+manager.spawn( {
+	delay: 0,
+	timeout: -1
+} ).then( shards => {
 	if ( !isDebug && process.env.botlist ) {
 		var botList = JSON.parse(process.env.botlist);
 		for ( let [key, value] of Object.entries(botList) ) {
 			if ( !value ) delete botList[key];
 		}
 		if ( Object.keys(botList).length ) {
-			setInterval( postStats, 10800000, botList, shards.size ).unref();
+			setInterval( postStats, 10_800_000, botList, shards.size ).unref();
 		}
 	}
 }, error => {
@@ -80,7 +90,10 @@ manager.spawn({timeout: 60000}).then( shards => {
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		process.exit(1);
 	}
-	else manager.spawn({timeout: -1}).catch( error2 => {
+	else manager.spawn( {
+		delay: 5_000,
+		timeout: 90_000
+	} ).catch( error2 => {
 		console.error( '- Error while spawning the shards: ' + error2 );
 		manager.respawn = false;
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
@@ -91,9 +104,10 @@ manager.spawn({timeout: 60000}).then( shards => {
 
 var server;
 if ( process.env.dashboard ) {
-	const dashboard = child_process.fork('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
+	const dashboard = forkChildProcess('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
 	server = dashboard;
 
+	/** @type {Object.<string, function(import('discord.js').Client, Object)>} */
 	const evalFunctions = {
 		getGuilds: (discordClient, evalData) => {
 			return Promise.all(
@@ -102,11 +116,11 @@ if ( process.env.dashboard ) {
 						let guild = discordClient.guilds.cache.get(id);
 						return guild.members.fetch(evalData.member).then( member => {
 							return {
-								patreon: global.patreons.hasOwnProperty(guild.id),
+								patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 								memberCount: guild.memberCount,
 								botPermissions: guild.me.permissions.bitfield.toString(),
 								channels: guild.channels.cache.filter( channel => {
-									return ( channel.isGuild(false) || channel.type === 'GUILD_CATEGORY' );
+									return ( ( channel.isText() && !channel.isThread() ) || channel.type === 'GUILD_CATEGORY' );
 								} ).sort( (a, b) => {
 									let aVal = a.rawPosition + 1;
 									if ( a.type === 'GUILD_CATEGORY' ) aVal *= 1000;
@@ -151,13 +165,13 @@ if ( process.env.dashboard ) {
 				let guild = discordClient.guilds.cache.get(evalData.guild);
 				return guild.members.fetch(evalData.member).then( member => {
 					var response = {
-						patreon: global.patreons.hasOwnProperty(guild.id),
+						patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 						userPermissions: member.permissions.bitfield.toString(),
 						botPermissions: guild.me.permissions.bitfield.toString()
 					};
 					if ( evalData.channel ) {
 						let channel = guild.channels.cache.get(evalData.channel);
-						if ( channel?.isGuild(false) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
+						if ( ( channel?.isText() && !channel.isThread() ) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
 							response.userPermissions = channel.permissionsFor(member).bitfield.toString();
 							response.botPermissions = channel.permissionsFor(guild.me).bitfield.toString();
 							response.isCategory = ( channel.type === 'GUILD_CATEGORY' );
@@ -167,7 +181,7 @@ if ( process.env.dashboard ) {
 					}
 					if ( evalData.newchannel ) {
 						let newchannel = guild.channels.cache.get(evalData.newchannel);
-						if ( newchannel?.isGuild(false) ) {
+						if ( newchannel?.isText() && !newchannel.isThread() ) {
 							response.userPermissionsNew = newchannel.permissionsFor(member).bitfield.toString();
 							response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield.toString();
 						}
@@ -181,10 +195,10 @@ if ( process.env.dashboard ) {
 		},
 		notifyGuild: (discordClient, evalData) => {
 			if ( evalData.prefix ) {
-				global.patreons[evalData.guild] = evalData.prefix;
+				globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 			}
-			if ( evalData.voice && global.voice.hasOwnProperty(evalData.guild) ) {
-				global.voice[evalData.guild] = evalData.voice;
+			if ( evalData.voice && globalThis.voiceGuildsLang.has(evalData.guild) ) {
+				globalThis.voiceGuildsLang.set(evalData.guild, evalData.voice);
 			}
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				let channel = discordClient.guilds.cache.get(evalData.guild).publicUpdatesChannel;
@@ -193,7 +207,7 @@ if ( process.env.dashboard ) {
 					embeds: ( evalData.embed ? [evalData.embed] : [] ),
 					files: evalData.file,
 					allowedMentions: {parse: []}
-				} ).catch(log_error);
+				} ).catch(globalThis.log_error);
 			}
 		},
 		createWebhook: (discordClient, evalData) => {
@@ -204,7 +218,7 @@ if ( process.env.dashboard ) {
 					reason: evalData.reason
 				} ).then( webhook => {
 					console.log( `- Dashboard: Webhook successfully created: ${evalData.guild}#${evalData.channel}` );
-					webhook.send( evalData.text ).catch(log_error);
+					webhook.send( evalData.text ).catch(globalThis.log_error);
 					return webhook.id + '/' + webhook.token;
 				}, error => {
 					console.log( '- Dashboard: Error while creating the webhook: ' + error );
@@ -220,7 +234,7 @@ if ( process.env.dashboard ) {
 					if ( evalData.avatar ) changes.avatar = evalData.avatar;
 					return webhook.edit( changes, evalData.reason ).then( newwebhook => {
 						console.log( `- Dashboard: Webhook successfully edited: ${evalData.guild}#` + ( evalData.channel || webhook.channelId ) );
-						webhook.send( evalData.text ).catch(log_error);
+						webhook.send( evalData.text ).catch(globalThis.log_error);
 						return true;
 					}, error => {
 						console.log( '- Dashboard: Error while editing the webhook: ' + error );
@@ -231,7 +245,7 @@ if ( process.env.dashboard ) {
 			}
 		},
 		verifyUser: (discordClient, evalData) => {
-			global.verifyOauthUser(evalData.state, evalData.access_token);
+			globalThis.verifyOauthUser(evalData.state, evalData.access_token);
 		}
 	};
 
@@ -365,9 +379,5 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 		isDebug = false;
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
-	}, timeout * 1000 ).unref();
+	}, timeout * 1_000 ).unref();
 }
-
-}, () => {
-	process.exit(1);
-} )

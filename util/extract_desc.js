@@ -1,4 +1,4 @@
-const {escapeFormatting} = require('./functions.js');
+import { escapeFormatting } from './functions.js';
 
 /**
  * Get the description for a page.
@@ -6,7 +6,7 @@ const {escapeFormatting} = require('./functions.js');
  * @param {String} [fragment] - The section title.
  * @returns {String[]}
  */
-function extract_desc(text = '', fragment = '') {
+export default function extract_desc(text = '', fragment = '') {
 	var sectionIndex = text.indexOf('\ufffd\ufffd');
 	var extract = escapeFormatting(( sectionIndex !== -1 ? text.substring(0, sectionIndex) : text ).trim());
 	if ( extract.length > 1000 ) extract = extract.substring(0, 1000) + '\u2026';
@@ -75,5 +75,3 @@ function section_formatting(title, n) {
 	}
 	return title;
 }
-
-module.exports = extract_desc;

@@ -1,28 +1,23 @@
-const util = require('util');
-util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
+import './util/globals.js';
+import { readdir } from 'fs';
+import Discord from 'discord.js';
+import db from './util/database.js';
+import Lang from './util/i18n.js';
+import Wiki from './util/wiki.js';
+import newMessage from './util/newMessage.js';
+import { breakOnTimeoutPause, allowDelete } from './util/functions.js';
 
-global.isDebug = ( process.argv[2] === 'debug' );
-
-const Lang = require('./util/i18n.js');
-const Wiki = require('./util/wiki.js');
-const newMessage = require('./util/newMessage.js');
-const {allowDelete} = require('./util/functions.js');
-global.patreons = {};
-global.voice = {};
-const db = require('./util/database.js');
-
-const Discord = require('discord.js');
 const client = new Discord.Client( {
 	makeCache: Discord.Options.cacheWithLimits( {
-		MessageManager: {
-			maxSize: 100,
-			sweepInterval: 300,
-			sweepFilter: Discord.LimitedCollection.filterByLifetime( {
-				lifetime: 300,
-			} )
-		},
+		MessageManager: 100,
 		PresenceManager: 0
 	} ),
+	sweepers: {
+		messages: {
+			interval: 300,
+			lifetime: 300
+		}
+	},
 	allowedMentions: {
 		parse: [],
 		repliedUser: true
@@ -58,12 +53,11 @@ const client = new Discord.Client( {
 	]
 } );
 
-global.pause = {};
 var isStop = false;
 client.on( 'ready', () => {
 	console.log( '\n- ' + process.env.SHARDS + ': Successfully logged in as ' + client.user.username + '!\n' );
-	Object.keys(voice).forEach( guild => {
-		if ( !client.guilds.cache.has(guild) ) delete voice[guild];
+	[...voiceGuildsLang.keys()].forEach( guild => {
+		if ( !client.guilds.cache.has(guild) ) voiceGuildsLang.delete(guild);
 	} );
 	client.application.commands.fetch();
 } );
@@ -74,12 +68,8 @@ String.prototype.isMention = function(guild) {
 	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.me.displayName );
 };
 
-Discord.Channel.prototype.isGuild = function(includeThreads = true) {
-	return this.isText() && this.type.startsWith( 'GUILD_' ) && ( includeThreads || !this.isThread() );
-}
-
 Discord.Message.prototype.isAdmin = function() {
-	return this.channel.isGuild() && this.member && ( this.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || ( this.isOwner() && this.evalUsed ) );
+	return this.inGuild() && this.member && ( this.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || ( this.isOwner() && this.evalUsed ) );
 };
 
 Discord.Message.prototype.isOwner = function() {
@@ -87,11 +77,11 @@ Discord.Message.prototype.isOwner = function() {
 };
 
 Discord.Message.prototype.showEmbed = function() {
-	return !this.channel.isGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.EMBED_LINKS);
+	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.EMBED_LINKS);
 };
 
 Discord.Message.prototype.uploadFiles = function() {
-	return !this.channel.isGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.ATTACH_FILES);
+	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.ATTACH_FILES);
 };
 
 String.prototype.replaceSave = function(pattern, replacement) {
@@ -99,23 +89,19 @@ String.prototype.replaceSave = function(pattern, replacement) {
 };
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
-	if ( !this.channel.isGuild() || !pause[this.guildId] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		var emoji = '<:error:440871715938238494>';
-		switch ( name ) {
-			case 'nowiki':
-				emoji = '<:unknown_wiki:505884572001763348>';
-				break;
-			case 'error':
-				emoji = '<:error:440871715938238494>';
-				break;
-			default:
-				emoji = name;
-		}
-		return this.react(emoji).catch(log_error);
-	} else {
-		console.log( '- Aborted, paused.' );
-		return Promise.resolve();
+	if ( breakOnTimeoutPause(this, ignorePause) ) return Promise.resolve();
+	var emoji = '<:error:440871715938238494>';
+	switch ( name ) {
+		case 'nowiki':
+			emoji = '<:unknown_wiki:505884572001763348>';
+			break;
+		case 'error':
+			emoji = '<:error:440871715938238494>';
+			break;
+		default:
+			emoji = name;
 	}
+	return this.react(emoji).catch(log_error);
 };
 
 Discord.MessageReaction.prototype.removeEmoji = function() {
@@ -123,22 +109,19 @@ Discord.MessageReaction.prototype.removeEmoji = function() {
 };
 
 Discord.Message.prototype.sendChannel = function(message, ignorePause = false) {
-	if ( !this.channel.isGuild() || !pause[this.guildId] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
-		return this.channel.send( message ).then( msg => {
-			allowDelete(msg, this.author.id);
-			return msg;
-		}, error => {
-			log_error(error);
-			this.reactEmoji('error');
-		} );
-	} else {
-		console.log( '- Aborted, paused.' );
-		return Promise.resolve();
-	}
+	if ( breakOnTimeoutPause(this, ignorePause) ) return Promise.resolve();
+	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
+	return this.channel.send( message ).then( msg => {
+		allowDelete(msg, this.author.id);
+		return msg;
+	}, error => {
+		log_error(error);
+		this.reactEmoji('error');
+	} );
 };
 
 Discord.Message.prototype.sendChannelError = function(message) {
+	if ( breakOnTimeoutPause(this) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return this.channel.send( message ).then( msg => {
 		msg.reactEmoji('error');
@@ -151,19 +134,15 @@ Discord.Message.prototype.sendChannelError = function(message) {
 };
 
 Discord.Message.prototype.replyMsg = function(message, ignorePause = false, letDelete = true) {
-	if ( !this.channel.isGuild() || !pause[this.guildId] || ( ignorePause && ( this.isAdmin() || this.isOwner() ) ) ) {
-		if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
-		return this.reply( message ).then( msg => {
-			if ( letDelete ) allowDelete(msg, this.author.id);
-			return msg;
-		}, error => {
-			log_error(error);
-			this.reactEmoji('error');
-		} );
-	} else {
-		console.log( '- Aborted, paused.' );
-		return Promise.resolve();
-	}
+	if ( breakOnTimeoutPause(this, ignorePause) ) return Promise.resolve();
+	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
+	return this.reply( message ).then( msg => {
+		if ( letDelete ) allowDelete(msg, this.author.id);
+		return msg;
+	}, error => {
+		log_error(error);
+		this.reactEmoji('error');
+	} );
 };
 
 String.prototype.hasPrefix = function(prefix, flags = '') {
@@ -176,18 +155,18 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 	return regex.test(this.replace( /\u200b/g, '' ).toLowerCase());
 };
 
-const fs = require('fs');
 var slash = {};
 var buttons = {};
 var buttonsMap = {
 	verify_again: 'verify'
 };
-fs.readdir( './interactions', (error, files) => {
+readdir( './interactions', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
-		var command = require('./interactions/' + file);
-		if ( command.hasOwnProperty('run') ) slash[command.name] = command.run;
-		if ( command.hasOwnProperty('button') ) buttons[command.name] = command.button;
+		import('./interactions/' + file).then( ({default: command}) => {
+			if ( command.hasOwnProperty('run') ) slash[command.name] = command.run;
+			if ( command.hasOwnProperty('button') ) buttons[command.name] = command.button;
+		} );
 	} );
 } );
 /*
@@ -200,7 +179,7 @@ client.on( 'interactionCreate', interaction => {
 	if ( interaction.inGuild() && typeof interaction.member.permissions === 'string' ) {
 		interaction.member.permissions = new Discord.Permissions(interaction.member.permissions);
 	}
-	if ( interaction.channel.partial ) return interaction.channel.fetch().then( () => {
+	if ( interaction.channel?.partial ) return interaction.channel.fetch().then( () => {
 		if ( interaction.isCommand() ) return slash_command(interaction);
 		if ( interaction.isButton() ) return message_button(interaction);
 	}, log_error );
@@ -213,6 +192,7 @@ client.on( 'interactionCreate', interaction => {
  * @param {Discord.CommandInteraction} interaction - The interaction.
  */
 function slash_command(interaction) {
+	if ( breakOnTimeoutPause(interaction) ) return;
 	if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
 	else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 		return option.name + ':' + option.value;
@@ -225,10 +205,10 @@ function slash_command(interaction) {
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
 	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-		return slash[interaction.commandName](interaction, new Lang(( row?.lang || interaction.guild?.preferredLocale )), new Wiki(row?.wiki));
+		return slash[interaction.commandName](interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Slash: Error while getting the wiki: ' + dberror );
-		return interaction.reply( {content: new Lang(interaction.guild?.preferredLocale, 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
 	} );
 }
 
@@ -237,6 +217,7 @@ function slash_command(interaction) {
  * @param {Discord.ButtonInteraction} interaction - The interaction.
  */
 function message_button(interaction) {
+	if ( breakOnTimeoutPause(interaction) ) return;
 	var cmd = ( buttonsMap.hasOwnProperty(interaction.customId) ? buttonsMap[interaction.customId] : interaction.customId );
 	if ( !buttons.hasOwnProperty(cmd) ) return;
 	if ( !interaction.inGuild() ) {
@@ -246,10 +227,10 @@ function message_button(interaction) {
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
 	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-		return buttons[cmd](interaction, new Lang(( row?.lang || interaction.guild?.preferredLocale )), new Wiki(row?.wiki));
+		return buttons[cmd](interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Button: Error while getting the wiki: ' + dberror );
-		return interaction.reply( {content: new Lang(interaction.guild?.preferredLocale, 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
 	} );
 }
 
@@ -266,44 +247,49 @@ client.on( 'messageCreate', msg => {
  */
 function messageCreate(msg) {
 	if ( isStop || !msg.channel.isText() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
-	if ( !msg.content.hasPrefix(( msg.channel.isGuild() && patreons[msg.guildId] || process.env.prefix ), 'm') ) {
+	if ( msg.member?.isCommunicationDisabled() || msg.guild?.me.isCommunicationDisabled() ) return;
+	if ( !msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
-			if ( msg.channel.permissionsFor(msg.client.user).has(Discord.Permissions.FLAGS.SEND_MESSAGES) ) {
+			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES )) ) {
 				console.log( msg.guildId + ': ' + msg.content );
 				let sqlargs = [msg.guildId];
 				if ( msg.channel?.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
 				else sqlargs.push(msg.channelId, '#' + msg.channel.parentId);
 				db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-					msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('prefix', patreons[msg.guildId]), true );
+					msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('prefix', patreonGuildsPrefix.get(msg.guildId)), true );
 				}, dberror => {
 					console.log( '- Error while getting the lang: ' + dberror );
-					msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('prefix', patreons[msg.guildId]), true );
+					msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('prefix', patreonGuildsPrefix.get(msg.guildId)), true );
 				} );
 			}
 			return;
 		}
 		if ( !( msg.content.includes( '[[' ) && msg.content.includes( ']]' ) ) && !( msg.content.includes( '{{' ) && msg.content.includes( '}}' ) ) ) return;
 	}
-	if ( msg.channel.isGuild() ) {
+	if ( msg.inGuild() ) {
 		let sqlargs = [msg.guildId];
 		if ( msg.channel.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
 		else sqlargs.push(msg.channelId, '#' + msg.channel.parentId);
 		var permissions = msg.channel.permissionsFor(msg.client.user);
 		var missing = permissions.missing([
-			Discord.Permissions.FLAGS.SEND_MESSAGES,
+			( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES ),
 			Discord.Permissions.FLAGS.ADD_REACTIONS,
 			Discord.Permissions.FLAGS.USE_EXTERNAL_EMOJIS,
 			Discord.Permissions.FLAGS.READ_MESSAGE_HISTORY
 		]);
 		if ( missing.length ) {
-			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreons[msg.guildId] || process.env.prefix ), 'm') ) {
+			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
 				console.log( msg.guildId + ': Missing permissions - ' + missing.join(', ') );
-				if ( !missing.includes( 'SEND_MESSAGES' ) ) {
+				if ( !missing.includes( 'SEND_MESSAGES' ) && !missing.includes( 'SEND_MESSAGES_IN_THREADS' ) ) {
 					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-						msg.replyMsg( new Lang(( row?.lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', true );
+						return row?.lang;
 					}, dberror => {
 						console.log( '- Error while getting the lang: ' + dberror );
-						msg.replyMsg( new Lang(msg.guild.preferredLocale, 'general').get('missingperm') + ' `' + missing.join('`, `') + '`', true );
+					} ).then( lang => {
+						msg.sendChannel( {
+							content: new Lang(( lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`',
+							reply: ( missing.includes( 'READ_MESSAGE_HISTORY' ) ? undefined : {messageReference: msg.id} )
+						}, true );
 					} );
 				}
 			}
@@ -314,7 +300,7 @@ function messageCreate(msg) {
 				if ( msg.guild.roles.cache.has(row.role) && msg.guild.roles.cache.get(row.role).comparePositionTo(msg.member.roles.highest) > 0 && !msg.isAdmin() ) {
 					msg.onlyVerifyCommand = true;
 				}
-				newMessage(msg, new Lang(row.lang), row.wiki, patreons[msg.guildId], row.inline);
+				newMessage(msg, new Lang(row.lang), row.wiki, patreonGuildsPrefix.get(msg.guildId), row.inline);
 			}
 			else {
 				msg.defaultSettings = true;
@@ -330,8 +316,8 @@ function messageCreate(msg) {
 
 
 client.on( 'voiceStateUpdate', (olds, news) => {
-	if ( isStop || !( voice.hasOwnProperty(olds.guild.id) ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelId === news.channelId ) return;
-	var lang = new Lang(voice[olds.guild.id], 'voice');
+	if ( isStop || !( voiceGuildsLang.has(olds.guild.id) ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelId === news.channelId ) return;
+	var lang = new Lang(voiceGuildsLang.get(olds.guild.id), 'voice');
 	if ( olds.member && olds.channel ) {
 		var oldrole = olds.member.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + olds.channel.name );
 		if ( oldrole && oldrole.comparePositionTo(olds.guild.me.roles.highest) < 0 ) {
@@ -354,7 +340,7 @@ const leftGuilds = new Map();
 client.on( 'guildCreate', guild => {
 	console.log( '- ' + guild.id + ': I\'ve been added to a server.' );
 	if ( leftGuilds.has(guild.id) ) {
-		client.clearTimeout(leftGuilds.get(guild.id));
+		clearTimeout(leftGuilds.get(guild.id));
 		leftGuilds.delete(guild.id);
 	}
 } );
@@ -365,17 +351,17 @@ client.on( 'guildDelete', guild => {
 		return;
 	}
 	console.log( '- ' + guild.id + ': I\'ve been removed from a server.' );
-	leftGuilds.set(guild.id, setTimeout(removeSettings, 300000, guild.id).unref());
+	leftGuilds.set(guild.id, setTimeout(removeSettings, 300_000, guild.id).unref());
 } );
 
 function removeSettings(guild) {
 	leftGuilds.delete(guild);
 	if ( client.guilds.cache.has(guild) ) return;
 	db.query( 'DELETE FROM discord WHERE main = $1', [guild] ).then( ({rowCount}) => {
-		if ( patreons.hasOwnProperty(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
-			delete global.patreons[evalData];
+		if ( patreonGuildsPrefix.has(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
+			patreonGuildsPrefix.delete(evalData);
 		}, {context: guild} );
-		if ( voice.hasOwnProperty(guild) ) delete voice[guild];
+		if ( voiceGuildsLang.has(guild) ) voiceGuildsLang.delete(guild);
 		if ( rowCount ) console.log( '- ' + guild + ': Settings successfully removed.' );
 	}, dberror => {
 		console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );
@@ -384,7 +370,7 @@ function removeSettings(guild) {
 
 
 client.on( 'error', error => log_error(error, true) );
-client.on( 'warn', warning => log_warn(warning, false) );
+client.on( 'warn', warning => log_warning(warning, false) );
 
 client.login(process.env.token).catch( error => {
 	log_error(error, true, 'LOGIN-');
@@ -402,45 +388,6 @@ if ( isDebug ) client.on( 'debug', debug => {
 } );
 
 
-global.log_error = function(error, isBig = false, type = '') {
-	var time = new Date(Date.now()).toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin' });
-	if ( isDebug ) {
-		console.error( '--- ' + type + 'ERROR START ' + time + ' ---\n', error, '\n--- ' + type + 'ERROR END ' + time + ' ---' );
-	} else {
-		if ( isBig ) console.log( '--- ' + type + 'ERROR: ' + time + ' ---\n-', error );
-		else console.log( '- ' + error.name + ': ' + error.message );
-	}
-}
-
-const common_warnings = {
-	main: [
-		'Unrecognized parameters: piprop, explaintext, exsectionformat, exlimit.',
-		'Unrecognized parameters: explaintext, exsectionformat, exlimit.',
-		'Unrecognized parameter: piprop.'
-	],
-	query: [
-		'Unrecognized values for parameter "prop": pageimages, extracts.',
-		'Unrecognized values for parameter "prop": pageimages, extracts',
-		'Unrecognized value for parameter "prop": extracts.',
-		'Unrecognized value for parameter "prop": extracts',
-		'Unrecognized value for parameter "prop": pageimages.',
-		'Unrecognized value for parameter "prop": pageimages'
-	]
-}
-
-global.log_warn = function(warning, api = true) {
-	if ( isDebug ) {
-		console.warn( '--- Warning start ---\n' + util.inspect( warning ) + '\n--- Warning end ---' );
-	}
-	else if ( api ) {
-		if ( common_warnings.main.includes( warning?.main?.['*'] ) ) delete warning.main;
-		if ( common_warnings.query.includes( warning?.query?.['*'] ) ) delete warning.query;
-		var warningKeys = Object.keys(warning);
-		if ( warningKeys.length ) console.warn( '- Warning: ' + warningKeys.join(', ') );
-	}
-	else console.warn( '--- Warning ---\n' + util.inspect( warning ) );
-}
-
 /**
  * End the process gracefully.
  * @param {NodeJS.Signals} signal - The signal received.
@@ -457,7 +404,7 @@ function graceful(signal) {
 		}, dberror => {
 			console.log( '- ' + process.env.SHARDS + ': ' + signal + ': Error while closing the database connection: ' + dberror );
 		} );
-	}, 1000 ).unref();
+	}, 1_000 ).unref();
 }
 
 process.once( 'SIGINT', graceful );

@@ -1,14 +1,14 @@
-const htmlparser = require('htmlparser2');
-const {escapeFormatting} = require('./functions.js');
+import htmlparser from 'htmlparser2';
+import { escapeFormatting } from './functions.js';
 
 /**
  * Change edit diffs to markdown text.
  * @param {String} html - The edit diff in HTML.
  * @param {String} more - The localized string for more content.
  * @param {String} whitespace - The localized string for only whitespace.
- * @returns {String[]}
+ * @returns {[String, String]}
  */
-function diffParser(html, more, whitespace) {
+export default function diffParser(html, more, whitespace) {
 	var current_tag = '';
 	var last_ins = null;
 	var last_del = null;
@@ -97,5 +97,3 @@ function diffParser(html, more, whitespace) {
 	}
 	return compare;
 }
-
-module.exports = diffParser;

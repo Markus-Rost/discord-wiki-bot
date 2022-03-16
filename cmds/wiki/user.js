@@ -1,19 +1,21 @@
-const {MessageEmbed} = require('discord.js');
-const datetimeDifference = require('datetime-difference');
-const global_block = require('../../functions/global_block.js');
-const parse_page = require('../../functions/parse_page.js');
-const logging = require('../../util/logging.js');
-const extract_desc = require('../../util/extract_desc.js');
+import { MessageEmbed } from 'discord.js';
+import datetimeDifference from 'datetime-difference';
+import global_block from '../../functions/global_block.js';
+import parse_page from '../../functions/parse_page.js';
+import logging from '../../util/logging.js';
+import extract_desc from '../../util/extract_desc.js';
+import { got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {timeoptions, usergroups} = require('../../util/default.json');
-const {got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
 
 /**
  * Processes a Gamepedia user.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} namespace - The user namespace on the wiki.
  * @param {String} username - The name of the user.
- * @param {import('../../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
  * @param {Object} querypage - The user page on the wiki.
@@ -22,11 +24,11 @@ const {got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting} = require(
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  */
-function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
+export default function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		logging(wiki, msg.guildId, 'user', 'ip');
 		var body = response.body;
-		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.blocks || fragment ) {
 			if ( body && body.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) || fragment ) {
 				if ( querypage.missing !== undefined || querypage.ns === -1 ) msg.reactEmoji('error');
@@ -35,8 +37,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					var embed = new MessageEmbed().setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 					if ( body?.query?.general ) {
 						wiki.updateWiki(body.query.general);
-						embed.setAuthor( body.query.general.sitename );
-						embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+						embed.setAuthor( {name: body.query.general.sitename} ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 					}
 					if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 						var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
@@ -175,7 +176,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 		got.get( wiki.updateWiki(body.query.general) + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ) + '&format=json' ).then( ucresponse => {
 			var ucbody = ucresponse.body;
 			if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
-			if ( ucbody && ucbody.warnings ) log_warn(ucbody.warnings);
+			if ( ucbody && ucbody.warnings ) log_warning(ucbody.warnings);
 			if ( ucresponse.statusCode !== 200 || !ucbody || ucbody.batchcomplete === undefined || !ucbody.query || !ucbody.query.usercontribs ) {
 				if ( ucbody && ucbody.error && ucbody.error.code === 'baduser_ucuser' ) {
 					msg.reactEmoji('error');
@@ -193,7 +194,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() && !noEmbed ) {
-				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
+				embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
 				embed.forceTitle = true;
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
@@ -215,7 +216,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				} );
 			}
 			
-			if ( msg.channel.isGuild() && patreons[msg.guildId] && wiki.isFandom() ) {
+			if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && wiki.isFandom() ) {
 				if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 				else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 
@@ -239,7 +240,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 	logging(wiki, msg.guildId, 'user');
 	got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users || !body.query.users[0] ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 			msg.sendChannelError( spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler );
@@ -252,7 +253,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			if ( querypage.missing !== undefined || querypage.ns === -1 ) msg.reactEmoji('🤷');
 			else {
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
+				var embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -324,7 +325,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 		groupnames.push(...globalgroups);
 		got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amincludelocal=true&amargs=' + encodeURIComponent( username ) + '&amlang=' + querypage.uselang + '&ammessages=' + groupnames.map( group => `group-${group}|group-${group}-member` ).join('|') + '&format=json' ).then( gresponse => {
 			var gbody = gresponse.body;
-			if ( gbody && gbody.warnings ) log_warn(gbody.warnings);
+			if ( gbody && gbody.warnings ) log_warning(gbody.warnings);
 			if ( gresponse.statusCode !== 200 || !gbody || gbody.batchcomplete === undefined || !gbody?.query?.allmessages?.length ) {
 				console.log( '- ' + gresponse.statusCode + ': Error while getting the group names: ' + gbody?.error?.info );
 				return;
@@ -438,7 +439,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() && !noEmbed ) {
-				embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true );
+				embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true );
 				embed.forceTitle = true;
 				if ( wiki.hasCentralAuth() ) {
 					embed.addField( lang.get('user.info.globaleditcount'), '[' + body.query.globaluserinfo.editcount.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true ).addField( lang.get('user.info.wikisedited'), '[' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true );
@@ -517,7 +518,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 					}
 					if ( discord ) {
-						if ( msg.channel.isGuild() ) {
+						if ( msg.inGuild() ) {
 							var discordmember = msg.guild.members.cache.find( member => {
 								return escapeFormatting(member.user.tag) === discord;
 							} );
@@ -545,7 +546,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					console.log( '- Error while getting the curse profile: ' + error );
 				} );
 				if ( discord ) {
-					if ( msg.channel.isGuild() ) {
+					if ( msg.inGuild() ) {
 						var discordmember = msg.guild.members.cache.find( member => {
 							return escapeFormatting(member.user.tag) === discord;
 						} );
@@ -564,7 +565,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 					else text += '\n\n**' + block.header + '**\n' + block.text;
 				}
 				
-				if ( msg.channel.isGuild() && patreons[msg.guildId] ) {
+				if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) ) {
 					if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 					else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 					
@@ -577,7 +578,7 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 				if ( revision?.user === username ) {
 					let discord = ( revision?.slots?.main || revision )['*'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
-					if ( msg.channel.isGuild() ) var discordmember = msg.guild.members.cache.find( member => {
+					if ( msg.inGuild() ) var discordmember = msg.guild.members.cache.find( member => {
 						return member.user.tag === discord;
 					} );
 					let discordname = [lang.get('user.info.discord'),escapeFormatting(discord)];
@@ -605,8 +606,3 @@ function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragm
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
-
-module.exports = {
-	name: 'user',
-	run: gamepedia_user
-};

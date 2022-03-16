@@ -1,24 +1,23 @@
-const cheerio = require('cheerio');
-const {MessageEmbed, MessageActionRow, MessageButton, Permissions: {FLAGS}} = require('discord.js');
-var db = require('../util/database.js');
-const Lang = require('../util/i18n.js');
-const Wiki = require('../util/wiki.js');
-const logging = require('../util/logging.js');
-const {got, oauthVerify, allowDelete, escapeFormatting} = require('../util/functions.js');
-const toTitle = require('../util/wiki.js').toTitle;
+import cheerio from 'cheerio';
+import { MessageEmbed, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import db from '../util/database.js';
+import Lang from '../util/i18n.js';
+import Wiki from '../util/wiki.js';
+import logging from '../util/logging.js';
+import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functions.js';
 
 /**
  * Processes the "verify" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').TextChannel} channel - The Discord channel.
  * @param {import('discord.js').GuildMember} member - The Discord guild member.
  * @param {String} username - The username.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  * @param {Object[]} rows - The verification settings.
  * @param {String} [old_username] - The username before the search.
  * @returns {Promise<{content:String,embed:MessageEmbed,add_button:Boolean,send_private:Boolean,reaction:String,oauth:String[],logging:{channel:String,content:String,embed?:MessageEmbed}}>}
  */
-function verify(lang, channel, member, username, wiki, rows, old_username = '') {
+export default function verify(lang, channel, member, username, wiki, rows, old_username = '') {
 	/** @type {{logchannel:import('discord.js').TextChannel,flags:Number,onsuccess:String,onmatch:String}} */
 	var verifynotice = {
 		logchannel: rows[0].logchannel,
@@ -27,12 +26,12 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 		onmatch: rows[0].onmatch
 	};
 	verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
-		return ( logchannel.isGuild() && logchannel.permissionsFor(channel.guild.me).has([FLAGS.VIEW_CHANNEL, FLAGS.SEND_MESSAGES]) );
+		return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 	} ).get(verifynotice.logchannel) : null );
-	var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp();
+	var embed = new MessageEmbed().setFooter( {text: lang.get('verify.footer')} ).setTimestamp();
 	var result = {
 		content: '', embed,
-		add_button: channel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS),
+		add_button: channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS),
 		send_private: ( (verifynotice.flags & 1 << 0) === 1 << 0 ),
 		reaction: '', oauth: [],
 		logging: {
@@ -43,7 +42,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 	};
 	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.isFandom() ? '|usercontribs&ucprop=&uclimit=10&ucuser=' + encodeURIComponent( username ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -75,7 +74,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 		}
 		if ( !old_username ) logging(wiki, channel.guildId, 'verification');
 		var queryuser = body.query.users[0];
-		embed.setAuthor( body.query.general.sitename );
+		embed.setAuthor( {name: body.query.general.sitename} );
 		if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
 			username = ( body.query.users.length === 1 ? queryuser.name : username );
 			embed.setTitle( escapeFormatting( old_username || username ) ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', escapeFormatting( old_username || username )) ).addField( lang.get('verify.notice'), lang.get('verify.help_missing') );
@@ -101,7 +100,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			result.content = lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender);
 			if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
 				result.logging.channel = verifynotice.logchannel.id;
-				if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+				if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 					let logembed = new MessageEmbed(embed);
 					logembed.addField( lang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
 					result.logging.embed = logembed;
@@ -179,7 +178,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 					if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
 						result.logging.channel = verifynotice.logchannel.id;
-						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 							result.logging.embed = new MessageEmbed(embed);
 						}
 						else {
@@ -188,9 +187,10 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 							result.logging.content = logtext;
 						}
 					}
+					let prefix = ( patreonGuildsPrefix.get(channel.guildId) ?? process.env.prefix );
 					var help_link = '';
-					if ( wiki.isGamepedia() ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( patreons[channel.guildId] && patreons[channel.guildId] !== process.env.prefix ? encodeURIComponent( patreons[channel.guildId] + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + toTitle(username) + '&discord=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
-					else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + toTitle(username) + '?c=' + ( patreons[channel.guildId] && patreons[channel.guildId] !== process.env.prefix ? encodeURIComponent( patreons[channel.guildId] + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
+					if ( wiki.isGamepedia() ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( prefix !== '!wiki ' ? encodeURIComponent( prefix + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + Wiki.toTitle(username) + '&discord=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
+					else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + Wiki.toTitle(username) + '?c=' + ( prefix !== '!wiki ' ? encodeURIComponent( prefix + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
 					if ( help_link.length ) embed.addField( lang.get('verify.notice'), lang.get('verify.help_guide', help_link, queryuser.gender) + '\n' + help_link );
 					result.content = lang.get('verify.user_failed_reply', escapeFormatting(username), queryuser.gender);
 					return;
@@ -206,7 +206,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				var removeRoles = [new Set(), new Set()];
 				var verified = false;
 				var rename = false;
-				var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+				var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86_400_000;
 				rows.forEach( row => {
 					let and_or = 'some';
 					if ( row.usergroup.startsWith( 'AND|' ) ) {
@@ -278,7 +278,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 						if ( verifynotice.logchannel ) {
 							useLogging = true;
 							result.logging.channel = verifynotice.logchannel.id;
-							if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+							if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 								let logembed = new MessageEmbed(embed);
 								if ( addRolesMentions[0].length ) logembed.addField( lang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
 								if ( addRolesMentions[1].length ) logembed.setColor('#008800').addField( lang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
@@ -305,7 +305,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 							accountage: Math.trunc(accountage),
 							dateformat: lang.get('dateformat')
 						}).trim() : '' );
-						if ( channel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+						if ( channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 							if ( addRolesMentions[0].length ) embed.addField( lang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
 							if ( addRolesMentions[1].length && !useLogging ) embed.setColor('#008800').addField( lang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
 							if ( removeRolesMentions[0].length ) embed.addField( lang.get('verify.qualified_remove'), removeRolesMentions[0].join('\n') );
@@ -332,7 +332,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 
 				if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
 					result.logging.channel = verifynotice.logchannel.id;
-					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 						result.logging.embed = new MessageEmbed(embed);
 					}
 					else {
@@ -350,7 +350,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					dateformat: lang.get('dateformat')
 				});
 				if ( !onmatch.trim() ) return;
-				if ( channel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) embed.addField( lang.get('verify.notice'), onmatch );
+				if ( channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) embed.addField( lang.get('verify.notice'), onmatch );
 				else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
 			}, error => {
 				if ( error ) console.log( '- Error while getting the Discord tag: ' + error );
@@ -363,7 +363,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			result.content = error.reply;
 			if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
 				result.logging.channel = verifynotice.logchannel.id;
-				if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+				if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 					let logembed = new MessageEmbed(embed);
 					logembed.addField( lang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
 					result.logging.embed = logembed;
@@ -379,7 +379,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 		
 		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json' ).then( mwresponse => {
 			var mwbody = mwresponse.body;
-			if ( mwbody && mwbody.warnings ) log_warn(mwbody.warnings);
+			if ( mwbody && mwbody.warnings ) log_warning(mwbody.warnings);
 			if ( mwresponse.statusCode !== 200 || mwbody?.batchcomplete === undefined || !mwbody?.query?.pages ) {
 				console.log( '- ' + mwresponse.statusCode + ': Error while getting the Discord tag: ' + ( mwbody && mwbody.error && mwbody.error.info ) );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
@@ -392,7 +392,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					result.content = lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender);
 					if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
 						result.logging.channel = verifynotice.logchannel.id;
-						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 							let logembed = new MessageEmbed(embed);
 							logembed.addField( lang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
 							result.logging.embed = logembed;
@@ -421,7 +421,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 				if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
 					result.logging.channel = verifynotice.logchannel.id;
-					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 						result.logging.embed = new MessageEmbed(embed);
 					}
 					else {
@@ -441,7 +441,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 			var removeRoles = [new Set(), new Set()];
 			var verified = false;
 			var rename = false;
-			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86_400_000;
 			rows.forEach( row => {
 				var and_or = 'some';
 				if ( row.usergroup.startsWith( 'AND|' ) ) {
@@ -509,7 +509,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 					if ( verifynotice.logchannel ) {
 						useLogging = true;
 						result.logging.channel = verifynotice.logchannel.id;
-						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 							var logembed = new MessageEmbed(embed);
 							if ( addRolesMentions[0].length ) logembed.addField( lang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
 							if ( addRolesMentions[1].length ) logembed.setColor('#008800').addField( lang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
@@ -535,7 +535,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 						accountage: Math.trunc(accountage),
 						dateformat: lang.get('dateformat')
 					}).trim() : '' );
-					if ( channel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+					if ( channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 						if ( addRolesMentions[0].length ) embed.addField( lang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
 						if ( addRolesMentions[1].length && !useLogging ) embed.setColor('#008800').addField( lang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
 						if ( removeRolesMentions[0].length ) embed.addField( lang.get('verify.qualified_remove'), removeRolesMentions[0].join('\n') );
@@ -567,7 +567,7 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
 				dateformat: lang.get('dateformat')
 			});
 			if ( !onmatch.trim() ) return;
-			if ( channel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) embed.addField( lang.get('verify.notice'), onmatch );
+			if ( channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) embed.addField( lang.get('verify.notice'), onmatch );
 			else result.content += '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
 		}, error => {
 			console.log( '- Error while getting the Discord tag: ' + error );
@@ -597,15 +597,16 @@ function verify(lang, channel, member, username, wiki, rows, old_username = '') 
  * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction} [settings.interaction] - The interaction.
  * @param {Function} [settings.fail] - The function to call when the verifiction errors.
  * @param {import('discord.js').Message} [settings.sourceMessage] - The source message with the command.
+ * @global
  */
-global.verifyOauthUser = function(state, access_token, settings) {
+globalThis.verifyOauthUser = function(state, access_token, settings) {
 	if ( state && access_token && oauthVerify.has(state) ) {
 		settings = oauthVerify.get(state);
 		oauthVerify.delete(state);
 	}
 	if ( !settings?.channel ) return settings?.fail?.();
 	var channel = settings.channel;
-	if ( !channel.permissionsFor(channel.guild.me).has([FLAGS.VIEW_CHANNEL, FLAGS.SEND_MESSAGES]) ) return settings.fail?.();
+	if ( !channel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, ( channel.isThread() ? Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Permissions.FLAGS.SEND_MESSAGES )]) ) return settings.fail?.();
 	Promise.all([
 		db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [channel.guildId, '%|' + ( channel.isThread() ? channel.parentId : channel.id ) + '|%'] ).then( ({rows}) => {
 			if ( !rows.length ) return Promise.reject();
@@ -640,11 +641,11 @@ global.verifyOauthUser = function(state, access_token, settings) {
 		/** @type {{logchannel:import('discord.js').TextChannel,flags:Number,onsuccess:String,onmatch:String}} */
 		var verifynotice = ( rows[0] || {} );
 		verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
-			return ( logchannel.isGuild() && logchannel.permissionsFor(channel.guild.me).has([FLAGS.VIEW_CHANNEL, FLAGS.SEND_MESSAGES]) );
+			return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 		} ).get(verifynotice.logchannel) : null );
 		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warn(body.warnings);
+			if ( body && body.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users?.[0] ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
@@ -658,7 +659,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			logging(wiki, channel.guildId, 'verification');
 			var queryuser = body.query.users[0];
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.fail?.();
-			var embed = new MessageEmbed().setFooter( lang.get('verify.footer') ).setTimestamp().setAuthor( body.query.general.sitename ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
+			var embed = new MessageEmbed().setFooter( {text: lang.get('verify.footer')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
 			var pagelink = wiki.toLink('User:' + username, '', '', true);
 			embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 			if ( queryuser.blockexpiry ) {
@@ -667,7 +668,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					if ( (verifynotice.flags & 1 << 1) !== 1 << 1 || !verifynotice.logchannel ) return;
 					let logembed;
 					let logtext;
-					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 						logembed = new MessageEmbed(embed);
 						logembed.addField( lang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
 						if ( msg ) logembed.addField(msg.url, '<#' + channel.id + '>');
@@ -689,7 +690,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					if ( (verifynotice.flags & 1 << 1) !== 1 << 1 || !verifynotice.logchannel ) return;
 					let logembed;
 					let logtext;
-					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 						logembed = new MessageEmbed(embed);
 						logembed.addField( lang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
 						if ( msg ) logembed.addField(msg.url, '<#' + channel.id + '>');
@@ -713,7 +714,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			var removeRoles = [new Set(), new Set()];
 			var verified = false;
 			var rename = false;
-			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86400000;
+			var accountage = ( Date.now() - new Date(queryuser.registration) ) / 86_400_000;
 			rows.forEach( row => {
 				var and_or = 'some';
 				if ( row.usergroup.startsWith( 'AND|' ) ) {
@@ -783,7 +784,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					var logtext;
 					if ( verifynotice.logchannel ) {
 						useLogging = true;
-						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 							logembed = new MessageEmbed(embed);
 							if ( addRolesMentions[0].length ) logembed.addField( lang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
 							if ( addRolesMentions[1].length ) logembed.setColor('#008800').addField( lang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
@@ -808,7 +809,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 						accountage: Math.trunc(accountage),
 						dateformat: lang.get('dateformat')
 					}).trim() : '' );
-					if ( channel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+					if ( channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 						if ( addRolesMentions[0].length ) embed.addField( lang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
 						if ( addRolesMentions[1].length && !useLogging ) embed.setColor('#008800').addField( lang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
 						if ( removeRolesMentions[0].length ) embed.addField( lang.get('verify.qualified_remove'), removeRolesMentions[0].join('\n') );
@@ -844,7 +845,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			let logembed;
 			let logtext;
 			if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
-				if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+				if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 					logembed = new MessageEmbed(embed);
 				}
 				else {
@@ -861,7 +862,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 					dateformat: lang.get('dateformat')
 				});
 				if ( onmatch.trim() ) {
-					if ( channel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) embed.addField( lang.get('verify.notice'), onmatch );
+					if ( channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) embed.addField( lang.get('verify.notice'), onmatch );
 					else noticeContent = '\n\n**' + lang.get('verify.notice') + '** ' + onmatch;
 				}
 			}
@@ -873,7 +874,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 			} ).then( msg => {
 				if ( !logtext && !logembed ) return;
 				if ( msg ) {
-					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(FLAGS.EMBED_LINKS) ) {
+					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
 						logembed.addField(msg.url, '<#' + channel.id + '>');
 					}
 					else logtext += '\n<#' + channel.id + '> – <' + msg.url + '>';
@@ -925,7 +926,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 							allowDelete(msg, member.id);
 							if ( settings.sourceMessage ) {
 								settings.sourceMessage.reactEmoji('📩');
-								setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60000 ).unref();
+								setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60_000 ).unref();
 							}
 						}, error => {
 							if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
@@ -951,7 +952,7 @@ global.verifyOauthUser = function(state, access_token, settings) {
 						allowDelete(msg, member.id);
 						if ( settings.sourceMessage ) {
 							settings.sourceMessage.reactEmoji('📩');
-							setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60000 ).unref();
+							setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60_000 ).unref();
 						}
 					}, error => {
 						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
@@ -987,7 +988,7 @@ function parseNotice(text = '', variables = {editcount: 0, postcount: 0, account
 	text = text.replace( /\$(editcount|postcount|accountage)/g, (variable, key, offset, fulltext) => {
 		var value = ( variables[key] ?? 0 );
 		if ( typeof value === 'string' ) return value;
-		if ( /#(?:if)?expr:[^{|}]*$/.test(fulltext.substring(0, offset)) ) return ( value > 1000000000 ? 1000000000 : value );
+		if ( /#(?:if)?expr:[^{|}]*$/.test(fulltext.substring(0, offset)) ) return ( value > 1_000_000_000 ? 1_000_000_000 : value );
 		return value.toLocaleString(variables.dateformat);
 	} );
 	if ( text.includes( '#expr:' ) ) text = text.replace( /{{\s*#expr:\s*(-?\d{1,10})\s*([+-])\s*(-?\d{1,10})(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?(?:\s*([+-])\s*(-?\d{1,10}))?\s*}}/g, (expr, n0, o1, n1, o2, n2, o3, n3, o4, n4, offset, fulltext) => {
@@ -1051,5 +1052,3 @@ function ifexpr(number, operator) {
 	}
 	return result;
 }
-
-module.exports = verify;

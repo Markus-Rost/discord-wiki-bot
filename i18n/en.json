@@ -591,6 +591,8 @@
         "infosearch": "Not the correct result? Use $1 for a direct link or $2 for a list of all hits.",
         "loading": "Loading page description…",
         "media": "To the file description page",
+        "messagedefault": "Default:",
+        "messagedefaultnone": "*none*",
         "results": "$1 total {{PLURAL:$2|result|results}}",
         "special": "Content of this special page:"
     },
@@ -658,6 +660,7 @@
         "MediaWiki": "Requires at least $1 for full functionality, found `$2`.",
         "notice": "Limited functionality",
         "pause": "I'm currently paused on this server.",
+        "slow": "Sorry, I seem to be a bit slow right now.",
         "text": [
             "I'm fully functional!",
             "I'm still alive!",

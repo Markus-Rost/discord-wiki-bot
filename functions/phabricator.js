@@ -1,18 +1,18 @@
-const {MessageEmbed} = require('discord.js');
-const logging = require('../util/logging.js');
-const {got, escapeFormatting, limitLength} = require('../util/functions.js');
+import { MessageEmbed } from 'discord.js';
+import logging from '../util/logging.js';
+import { got, escapeFormatting, limitLength } from '../util/functions.js';
 
 /**
  * Sends a Phabricator task.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../util/wiki.js')} wiki - The wiki.
+ * @param {import('../util/wiki.js').default} wiki - The wiki.
  * @param {URL} link - The link.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} [spoiler] - If the response is in a spoiler.
  * @param {Boolean} [noEmbed] - If the response should be without an embed.
  */
-function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '', noEmbed = false) {
+export default function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '', noEmbed = false) {
 	var regex = /^(?:https?:)?\/\/phabricator\.(wikimedia|miraheze)\.org\/T(\d+)(?:#|$)/.exec(link.href);
 	if ( !regex || !process.env['phabricator_' + regex[1]] ) {
 		logging(wiki, msg.guildId, 'interwiki');
@@ -47,7 +47,7 @@ function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '', noEmbed
 		}
 		var summary = escapeFormatting(task.fields.name);
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-		var embed = new MessageEmbed().setAuthor( 'Phabricator' ).setTitle( summary ).setURL( link ).addField( 'Status', escapeFormatting(task.fields.status.name), true ).addField( 'Priority', escapeFormatting(task.fields.priority.name), true );
+		var embed = new MessageEmbed().setAuthor( {name: 'Phabricator'} ).setTitle( summary ).setURL( link ).addField( 'Status', escapeFormatting(task.fields.status.name), true ).addField( 'Priority', escapeFormatting(task.fields.priority.name), true );
 		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', escapeFormatting(task.fields.subtype), true );
 		var description = parse_text( task.fields.description.raw, site );
 		if ( description.length > 2000 ) description = limitLength(description, 2000, 40);
@@ -124,5 +124,3 @@ function parse_text(text, site) {
 	text = text.replace( /(?<!https?:\/\/[^\s]+)#([a-z0-9_-]+)\b/g, '[#$1](' + site + 'tag/$1)' );
 	return text;
 }
-
-module.exports = phabricator_task;

@@ -1,13 +1,15 @@
+import { escapeText } from './util.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
-const {escapeText} = require('./util.js');
-var i18n = require('./i18n/allLangs.json');
+const i18n = require('./i18n/allLangs.json');
 Object.keys(i18n.allLangs.names).forEach( lang => i18n[lang] = require('./i18n/' + lang + '.json') );
 
 /**
  * A language.
  * @class
  */
-class Lang {
+export default class Lang {
 	/**
 	 * Creates a new language.
 	 * @param {String[]} [langs] - The language code.
@@ -28,7 +30,7 @@ class Lang {
 	 * Get a localized message.
 	 * @param {String} message - Name of the message.
 	 * @param {Boolean} escaped - If the message should be HTML escaped.
-	 * @param {(String|import('cheerio'))[]} args - Arguments for the message.
+	 * @param {(String|import('cheerio').default)[]} args - Arguments for the message.
 	 * @returns {String}
 	 */
 	get(message = '', escaped = false, ...args) {
@@ -120,6 +122,7 @@ function plural(lang, number, args) {
 			else text = getArg(args, 2);
 			break;
 		case 'ru':
+		case 'sr':
 		case 'uk':
 			if ( args.length > 2 ) {
 				if ( number % 10 === 1 && number % 100 !== 11 ) text = getArg(args, 0);
@@ -165,4 +168,4 @@ function getArg(args, index) {
 	return ( args.length > index ? args[index] : args[args.length - 1] );
 }
 
-module.exports = Lang;
+export const allLangs = Lang.allLangs;

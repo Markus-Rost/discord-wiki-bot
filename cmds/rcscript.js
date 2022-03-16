@@ -1,15 +1,17 @@
-const cheerio = require('cheerio');
-const {Util, MessageActionRow, MessageButton, Permissions: {FLAGS}} = require('discord.js');
-const help_setup = require('../functions/helpsetup.js');
+import { existsSync } from 'fs';
+import cheerio from 'cheerio';
+import { Util, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import help_setup from '../functions/helpsetup.js';
+import { got } from '../util/functions.js';
+import Lang from '../util/i18n.js';
+import Wiki from '../util/wiki.js';
+import db from '../util/database.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
-const {got} = require('../util/functions.js');
-const Lang = require('../util/i18n.js');
 const allLangs = Lang.allLangs(true);
-const Wiki = require('../util/wiki.js');
-var db = require('../util/database.js');
 
-const fs = require('fs');
-const rcscriptExists = ( isDebug || fs.existsSync('./RcGcDb/start.py') );
+const rcscriptExists = ( isDebug || existsSync('./RcGcDb/start.py') );
 
 const display_types = [
 	'compact',
@@ -35,8 +37,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		var prefix = process.env.prefix;
 		var limit = rcgcdwLimit.default;
 		var display = display_types.slice(0, rcgcdwLimit.display + 1);
-		if ( patreons[msg.guildId] ) {
-			prefix = patreons[msg.guildId];
+		if ( patreonGuildsPrefix.has(msg.guildId) ) {
+			prefix = patreonGuildsPrefix.get(msg.guildId);
 			limit = rcgcdwLimit.patreon;
 			display = display_types.slice();
 		}
@@ -48,11 +50,11 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		}
 
 		if ( args[0] === 'add' ) {
-			if ( !msg.channel.permissionsFor(msg.client.user).has(FLAGS.MANAGE_WEBHOOKS) ) {
+			if ( !msg.channel.permissionsFor(msg.client.user).has(Permissions.FLAGS.MANAGE_WEBHOOKS) ) {
 				console.log( msg.guildId + ': Missing permissions - MANAGE_WEBHOOKS' );
 				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_WEBHOOKS`' );
 			}
-			if ( !( msg.channel.permissionsFor(msg.member).has(FLAGS.MANAGE_WEBHOOKS) || ( msg.isOwner() && msg.evalUsed ) ) ) {
+			if ( !( msg.channel.permissionsFor(msg.member).has(Permissions.FLAGS.MANAGE_WEBHOOKS) || ( msg.isOwner() && msg.evalUsed ) ) ) {
 				return msg.replyMsg( lang.get('rcscript.noadmin') );
 			}
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), true );
@@ -196,7 +198,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 				return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 					var channel = msg.guild.channels.cache.get(webhook.channelId);
-					if ( !channel || !channel.permissionsFor(msg.member).has(FLAGS.MANAGE_WEBHOOKS) ) {
+					if ( !channel || !channel.permissionsFor(msg.member).has(Permissions.FLAGS.MANAGE_WEBHOOKS) ) {
 						return msg.replyMsg( lang.get('rcscript.noadmin') );
 					}
 					db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [selected_row.webhook] ).then( () => {
@@ -212,7 +214,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}, error => {
 					log_error(error);
-					if ( error.name === 'DiscordAPIError' && ['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
+					if ( error.name !== 'DiscordAPIError' || !['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
 						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
 						return msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					}
@@ -552,7 +554,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
  * @param {String[]} args - The command arguments.
  */
 function blocklist(msg, args) {
-	var prefix = ( patreons[msg?.guildId] || process.env.prefix );
+	var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );
 	if ( args[0] === 'add' ) {
 		if ( !args[1] ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', true );
 		if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
@@ -622,7 +624,7 @@ function blocklist(msg, args) {
 	} );
 }
 
-module.exports = {
+export default {
 	name: 'rcscript',
 	everyone: rcscriptExists,
 	pause: rcscriptExists,

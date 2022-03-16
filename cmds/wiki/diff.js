@@ -1,21 +1,23 @@
-const {MessageEmbed} = require('discord.js');
-const logging = require('../../util/logging.js');
+import { MessageEmbed } from 'discord.js';
+import logging from '../../util/logging.js';
+import { got, htmlToPlain, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
+import diffParser from '../../util/edit_diff.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
-const {got, htmlToPlain, htmlToDiscord, escapeFormatting} = require('../../util/functions.js');
-const diffParser = require('../../util/edit_diff.js');
 
 /**
  * Processes a Gamepedia edit.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
- * @param {import('../../util/wiki.js')} wiki - The wiki for the edit.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the edit.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @param {MessageEmbed} [embed] - The embed for the page.
  */
-function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed) {
+export default function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed) {
 	if ( args[0] ) {
 		var error = false;
 		var title = '';
@@ -56,7 +58,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed
 		else {
 			got.get( wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json' ).then( response => {
 				var body = response.body;
-				if ( body && body.warnings ) log_warn(body.warnings);
+				if ( body && body.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || !body || !body.compare ) {
 					var noerror = false;
 					if ( body && body.error ) {
@@ -139,10 +141,10 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed
 
 /**
  * Sends a Gamepedia edit.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
- * @param {import('../../util/wiki.js')} wiki - The wiki for the edit.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the edit.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
@@ -151,7 +153,7 @@ function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed
 function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, compare) {
 	got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json' ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warn(body.warnings);
+		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -204,13 +206,13 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, 
 			var pagelink = wiki.toLink(title, {diff,oldid});
 			var text = '<' + pagelink + '>';
 			if ( msg.showEmbed() && !noEmbed ) {
-				var embed = new MessageEmbed().setAuthor( body.query.general.sitename ).setTitle( escapeFormatting( title + '?diff=' + diff + '&oldid=' + oldid ) ).setURL( pagelink ).addField( editor[0], editor[1], true ).addField( size[0], size[1], true ).addField( timestamp[0], timestamp[1] + '\n' + timestamp[2], true ).addField( comment[0], comment[1] ).setTimestamp( editDate );
+				var embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting( title + '?diff=' + diff + '&oldid=' + oldid ) ).setURL( pagelink ).addField( editor[0], editor[1], true ).addField( size[0], size[1], true ).addField( timestamp[0], timestamp[1] + '\n' + timestamp[2], true ).addField( comment[0], comment[1] ).setTimestamp( editDate );
 				
 				var more = '\n__' + lang.get('diff.info.more') + '__';
 				var whitespace = '__' + lang.get('diff.info.whitespace') + '__';
 				if ( !compare && oldid ) got.get( wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json' ).then( cpresponse => {
 					var cpbody = cpresponse.body;
-					if ( cpbody && cpbody.warnings ) log_warn(cpbody.warnings);
+					if ( cpbody && cpbody.warnings ) log_warning(cpbody.warnings);
 					if ( cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || cpbody.compare['*'] === undefined ) {
 						var noerror = false;
 						if ( cpbody && cpbody.error ) {
@@ -300,8 +302,3 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, 
 		if ( reaction ) reaction.removeEmoji();
 	} );
 }
-
-module.exports = {
-	name: 'diff',
-	run: gamepedia_diff
-};

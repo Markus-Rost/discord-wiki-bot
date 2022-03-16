@@ -1,21 +1,23 @@
-const htmlparser = require('htmlparser2');
-const {MessageEmbed, Util} = require('discord.js');
-const {limit: {discussion: discussionLimit}} = require('../util/default.json');
-const {got, htmlToDiscord, escapeFormatting} = require('../util/functions.js');
+import htmlparser from 'htmlparser2';
+import { MessageEmbed, Util } from 'discord.js';
+import { got, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const {limit: {discussion: discussionLimit}} = require('../../util/default.json');
 
 /**
  * Processes discussion commands.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {String} title - The title of the discussion post.
  * @param {String} sitename - The sitename of the wiki.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  */
-function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, noEmbed) {
-	var limit = discussionLimit[( patreons[msg.guildId] ? 'patreon' : 'default' )];
+export default function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, noEmbed) {
+	var limit = discussionLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 	if ( !title ) {
 		var pagelink = wiki + 'f';
 		if ( !msg.showEmbed() || noEmbed ) {
@@ -24,7 +26,7 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, 
 			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
-		var embed = new MessageEmbed().setAuthor( sitename ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
+		var embed = new MessageEmbed().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
 		got.get( wiki + 'f', {
 			responseType: 'text'
 		} ).then( descresponse => {
@@ -73,7 +75,7 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, 
 			}
 			else if ( body._embedded['doc:posts'].length ) {
 				var posts = body._embedded['doc:posts'];
-				var embed = new MessageEmbed().setAuthor( sitename );
+				var embed = new MessageEmbed().setAuthor( {name: sitename} );
 				
 				if ( posts.some( post => post.id === title ) ) {
 					discussion_send(lang, msg, wiki, posts.find( post => post.id === title ), embed, spoiler, noEmbed);
@@ -170,7 +172,7 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, 
 			}
 			else if ( body._embedded.threads.length ) {
 				var threads = body._embedded.threads;
-				var embed = new MessageEmbed().setAuthor( sitename );
+				var embed = new MessageEmbed().setAuthor( {name: sitename} );
 				
 				if ( threads.some( thread => thread.id === title ) ) {
 					discussion_send(lang, msg, wiki, threads.find( thread => thread.id === title ), embed, spoiler, noEmbed);
@@ -251,9 +253,9 @@ function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, 
 
 /**
  * Send discussion posts.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {Object} discussion - The discussion post.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
  * @param {String} spoiler - If the response is in a spoiler.
@@ -269,7 +271,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 		var pagelink = wiki + 'f/p/' + discussion.threadId + '/r/' + discussion.id;
 	}
 	if ( !msg.showEmbed() || noEmbed ) msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler );
-	embed.setURL( pagelink ).setFooter( discussion.createdBy.name, discussion.createdBy.avatarUrl ).setTimestamp( discussion.creationDate.epochSecond * 1000 );
+	embed.setURL( pagelink ).setFooter( {text: discussion.createdBy.name, iconURL: discussion.createdBy.avatarUrl} ).setTimestamp( discussion.creationDate.epochSecond * 1000 );
 	var description = '';
 	switch ( discussion.funnel ) {
 		case 'IMAGE':
@@ -395,5 +397,3 @@ function discussion_formatting(jsonModel) {
 	}
 	return description;
 }
-
-module.exports = fandom_discussion;

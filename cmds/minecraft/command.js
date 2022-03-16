@@ -1,8 +1,8 @@
 /**
  * Processes Minecraft commands.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../../util/wiki.js')} wiki - The wiki.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki.
  * @param {String[]} args - The command arguments.
  * @param {String} title - The page title.
  * @param {String} cmd - The command at this point.
@@ -21,7 +21,7 @@ function minecraft_command(lang, msg, wiki, args, title, cmd, reaction, spoiler,
 	}
 }
 
-module.exports = {
+export default {
 	name: 'command',
 	run: minecraft_command
 };

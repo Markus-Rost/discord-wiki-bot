@@ -1,17 +1,19 @@
-const util = require('util');
-util.inspect.defaultOptions = {compact:false,breakLength:Infinity};
-
-const cheerio = require('cheerio');
-const Discord = require('discord.js');
+import { inspect } from 'util';
+import cheerio from 'cheerio';
+import Discord from 'discord.js';
+import { got } from '../util/functions.js';
+import newMessage from '../util/newMessage.js';
+import Wiki from '../util/wiki.js';
+import db from '../util/database.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
-const {got} = require('../util/functions.js');
-const newMessage = require('../util/newMessage.js');
-const Wiki = require('../util/wiki.js');
-var db = require('../util/database.js');
+
+inspect.defaultOptions = {compact: false, breakLength: Infinity};
 
 /**
  * Processes the "eval" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {Discord.Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
@@ -20,7 +22,7 @@ var db = require('../util/database.js');
  */
 async function cmd_eval(lang, msg, args, line, wiki) {
 	try {
-		var text = util.inspect( await eval( args.join(' ') ) );
+		var text = inspect( await eval( args.join(' ') ) );
 	} catch ( error ) {
 		var text = error.toString();
 	}
@@ -35,7 +37,7 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	function backdoor(cmdline) {
 		msg.evalUsed = true;
 		msg.onlyVerifyCommand = false;
-		newMessage(msg, lang, wiki, patreons[msg.guildId], msg.noInline, cmdline);
+		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, cmdline);
 		return cmdline;
 	}
 }
@@ -57,6 +59,7 @@ function database(sql, sqlargs = []) {
  */
 function checkWiki(wiki) {
 	wiki = Wiki.fromInput(wiki);
+	if ( !wiki ) return `Couldn't resolve "${wiki}" into a valid url.`;
 	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' ).then( response => {
 		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
 			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
@@ -82,7 +85,7 @@ function checkWiki(wiki) {
 		if ( rc.length ) {
 			result.rcid = rc[0].rcid;
 			let text = '';
-			let len = ( Date.parse(rc[0].timestamp) - Date.parse(rc[rc.length - 1].timestamp) ) / 60000;
+			let len = ( Date.parse(rc[0].timestamp) - Date.parse(rc[rc.length - 1].timestamp) ) / 60_000;
 			len = Math.round(len);
 			let rdays = ( len / 1440 );
 			let days = Math.floor(rdays);
@@ -183,7 +186,7 @@ function removePatreons(guild, msg) {
 					messages.push('Guild successfully updated.');
 				}
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					delete global.patreons[evalData];
+					patreonGuildsPrefix.delete(evalData);
 				}, {context: guild} );
 			}, dberror => {
 				console.log( '- Error while updating the guild: ' + dberror );
@@ -198,7 +201,7 @@ function removePatreons(guild, msg) {
 							if ( discordClient.guilds.cache.has(evalData.guild) ) {
 								let rows = evalData.rows;
 								return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-									return ( channel.isGuild(false) && rows.some( row => {
+									return ( ( channel.isText() && !channel.isThread() ) && rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {
@@ -308,7 +311,7 @@ function removeSettings(msg) {
 			return [
 				[...discordClient.guilds.cache.keys()],
 				discordClient.channels.cache.filter( channel => {
-					return ( channel.isGuild() || ( channel.type === 'GUILD_CATEGORY' && global.patreons.hasOwnProperty(channel.guildId) ) );
+					return ( ( channel.isText() && channel.guildId ) || ( channel.type === 'GUILD_CATEGORY' && patreonGuildsPrefix.has(channel.guildId) ) );
 				} ).map( channel => ( channel.type === 'GUILD_CATEGORY' ? '#' : '' ) + channel.id )
 			];
 		} ).then( results => {
@@ -320,10 +323,10 @@ function removeSettings(msg) {
 				return rows.forEach( row => {
 					if ( !all_guilds.includes(row.guild) ) {
 						if ( !row.channel ) {
-							if ( patreons.hasOwnProperty(row.guild) || voice.hasOwnProperty(row.guild) ) {
+							if ( patreonGuildsPrefix.has(row.guild) || voiceGuildsLang.has(row.guild) ) {
 								msg.client.shard.broadcastEval( (discordClient, evalData) => {
-									delete global.patreons[evalData];
-									delete global.voice[evalData];
+									patreonGuildsPrefix.delete(evalData);
+									voiceGuildsLang.delete(evalData);
 								}, {context: row.guild} );
 							}
 							return guilds.push(row.guild);
@@ -376,7 +379,7 @@ function removeSettings(msg) {
 	} );
 }
 
-module.exports = {
+export default {
 	name: 'eval',
 	everyone: false,
 	pause: false,

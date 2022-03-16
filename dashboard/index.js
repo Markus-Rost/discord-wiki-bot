@@ -1,22 +1,13 @@
-global.isDebug = ( process.argv[2] === 'debug' );
-
-const http = require('http');
-const pages = require('./oauth.js');
-const dashboard = require('./guilds.js');
-const {db, sessionData, settingsData} = require('./util.js');
-const Lang = require('./i18n.js');
+import http from 'http';
+import fs from 'fs';
+import { extname } from 'path';
+import * as pages from './oauth.js';
+import dashboard from './guilds.js';
+import { posts } from './functions.js';
+import { db, sessionData, settingsData } from './util.js';
+import Lang from './i18n.js';
 const allLangs = Lang.allLangs();
 
-const posts = {
-	user: require('./user.js').post,
-	settings: require('./settings.js').post,
-	verification: require('./verification.js').post,
-	rcscript: require('./rcscript.js').post,
-	slash: require('./slash.js').post
-};
-
-const fs = require('fs');
-const path = require('path');
 const files = new Map([
 	...fs.readdirSync( './dashboard/src' ).map( file => {
 		return [`/src/${file}`, `./dashboard/src/${file}`];
@@ -29,7 +20,7 @@ const files = new Map([
 	} ) : [] )
 ].map( ([file, filepath]) => {
 	let contentType = 'text/html';
-	switch ( path.extname(file) ) {
+	switch ( extname(file) ) {
 		case '.css':
 			contentType = 'text/css';
 			break;
@@ -63,7 +54,6 @@ const server = http.createServer( (req, res) => {
 		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id) &&
 		( ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] ) && /^(?:default|new|notice|\d+)$/.test(args[4])
 		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || req.url === '/user' ) ) {
-			if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
 			let body = [];
 			req.on( 'data', chunk => {
 				body.push(chunk);
@@ -73,6 +63,7 @@ const server = http.createServer( (req, res) => {
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
+				if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
 				var settings = {};
 				Buffer.concat(body).toString().split('&').forEach( arg => {
 					if ( arg ) {
@@ -94,36 +85,36 @@ const server = http.createServer( (req, res) => {
 					}
 				}
 				else return posts[args[3]](save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
-			} );
 
-			/**
-			 * @param {String} [resURL]
-			 * @param {String} [action]
-			 * @param {String[]} [actionArgs]
-			 */
-			function save_response(resURL = '/', action, ...actionArgs) {
-				if ( action === 'REDIRECT' && resURL.startsWith( 'https://' ) ) {
-					res.writeHead(303, {Location: resURL});
-					return res.end();
+				/**
+				 * @param {String} [resURL]
+				 * @param {String} [action]
+				 * @param {String[]} [actionArgs]
+				 */
+				function save_response(resURL = '/', action, ...actionArgs) {
+					if ( action === 'REDIRECT' && resURL.startsWith( 'https://' ) ) {
+						res.writeHead(303, {Location: resURL});
+						return res.end();
+					}
+					var themeCookie = ( req.headers?.cookie?.split('; ')?.find( cookie => {
+						return cookie.split('=')[0] === 'theme' && /^"(?:light|dark)"$/.test(( cookie.split('=')[1] || '' ));
+					} ) || 'dark' ).replace( /^theme="(light|dark)"$/, '$1' );
+					var langCookie = ( req.headers?.cookie?.split('; ')?.filter( cookie => {
+						return cookie.split('=')[0] === 'language' && /^"[a-z\-]+"$/.test(( cookie.split('=')[1] || '' ));
+					} )?.map( cookie => cookie.replace( /^language="([a-z\-]+)"$/, '$1' ) ) || [] );
+					var dashboardLang = new Lang(...langCookie, ...( req.headers?.['accept-language']?.split(',')?.map( lang => {
+						lang = lang.split(';')[0].toLowerCase();
+						if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+						lang = lang.replace( /-\w+$/, '' );
+						if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+						lang = lang.replace( /-\w+$/, '' );
+						if ( allLangs.map.hasOwnProperty(lang) ) return lang;
+						return '';
+					} ) || [] ));
+					dashboardLang.fromCookie = langCookie;
+					return dashboard(res, dashboardLang, themeCookie, sessionData.get(state), new URL(resURL, process.env.dashboard), action, actionArgs);
 				}
-				var themeCookie = ( req.headers?.cookie?.split('; ')?.find( cookie => {
-					return cookie.split('=')[0] === 'theme' && /^"(?:light|dark)"$/.test(( cookie.split('=')[1] || '' ));
-				} ) || 'dark' ).replace( /^theme="(light|dark)"$/, '$1' );
-				var langCookie = ( req.headers?.cookie?.split('; ')?.filter( cookie => {
-					return cookie.split('=')[0] === 'language' && /^"[a-z\-]+"$/.test(( cookie.split('=')[1] || '' ));
-				} )?.map( cookie => cookie.replace( /^language="([a-z\-]+)"$/, '$1' ) ) || [] );
-				var dashboardLang = new Lang(...langCookie, ...( req.headers?.['accept-language']?.split(',')?.map( lang => {
-					lang = lang.split(';')[0].toLowerCase();
-					if ( allLangs.map.hasOwnProperty(lang) ) return lang;
-					lang = lang.replace( /-\w+$/, '' );
-					if ( allLangs.map.hasOwnProperty(lang) ) return lang;
-					lang = lang.replace( /-\w+$/, '' );
-					if ( allLangs.map.hasOwnProperty(lang) ) return lang;
-					return '';
-				} ) || [] ));
-				dashboardLang.fromCookie = langCookie;
-				return dashboard(res, dashboardLang, themeCookie, sessionData.get(state), new URL(resURL, process.env.dashboard), action, actionArgs);
-			}
+			} );
 		}
 	}
 

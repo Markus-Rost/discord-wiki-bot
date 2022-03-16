@@ -1,7 +1,7 @@
-const cheerio = require('cheerio');
-const {MessageEmbed} = require('discord.js');
-const {toSection} = require('../util/wiki.js');
-const {got, parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength} = require('../util/functions.js');
+import cheerio from 'cheerio';
+import { MessageEmbed } from 'discord.js';
+import { toSection } from '../util/wiki.js';
+import { got, parse_infobox, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
 
 const parsedContentModels = [
 	'wikitext',
@@ -51,6 +51,7 @@ const removeClasses = [
 	'.noprint',
 	'.noexcerpt',
 	'.sortkey',
+	'.mw-collapsible.mw-collapsed',
 	'wb\\:sectionedit'
 ];
 
@@ -59,8 +60,10 @@ const removeClassesExceptions = [
 	'div.lcs-container',
 	'div.mw-highlight',
 	'div.poem',
+	'div.hlist',
 	'div.treeview',
 	'div.redirectMsg',
+	'div.introduction',
 	'div.wikibase-entityview',
 	'div.wikibase-entityview-main',
 	'div.wikibase-entitytermsview',
@@ -73,16 +76,19 @@ const removeClassesExceptions = [
 
 /**
  * Parses a wiki page to get it's description.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String} content - The content for the message.
  * @param {import('discord.js').MessageEmbed} embed - The embed for the message.
- * @param {import('../util/wiki.js')} wiki - The wiki for the page.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {Object} querypage - The details of the page.
+ * @param {Number} querypage.ns - The namespace of the page.
  * @param {String} querypage.title - The title of the page.
  * @param {String} querypage.contentmodel - The content model of the page.
+ * @param {String} querypage.pagelanguage - The language of the page.
  * @param {String} [querypage.missing] - If the page doesn't exist.
+ * @param {String} [querypage.known] - If the page is known.
  * @param {Object} [querypage.pageprops] - The properties of the page.
  * @param {String} [querypage.pageprops.infoboxes] - The JSON data for portable infoboxes on the page.
  * @param {String} [querypage.pageprops.disambiguation] - The disambiguation property of the page.
@@ -93,9 +99,9 @@ const removeClassesExceptions = [
  * @param {String} [pagelink] - The link to the page.
  * @returns {Promise<import('discord.js').Message>} The edited message.
  */
-function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmodel, missing, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
+export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
-	if ( !msg?.showEmbed?.() || missing !== undefined || !embed || embed.description ) {
+	if ( !msg?.showEmbed?.() || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.description ) {
 		if ( missing !== undefined && embed ) {
 			if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
@@ -111,11 +117,81 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 		embeds: [new MessageEmbed(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )]
 	} ).then( message => {
 		if ( !message ) return;
+		if ( ns === 8 ) {
+			title = title.split(':').slice(1).join(':');
+			if ( title.endsWith( '/' + pagelanguage ) ) title = title.substring(0, title.length - ( pagelanguage.length + 1 ));
+			return got.get( wiki + 'api.php?action=query&meta=allmessages&amprop=default&amincludelocal=true&amlang=' + encodeURIComponent( pagelanguage ) + '&ammessages=' + encodeURIComponent( title ) + '&format=json', {
+				timeout: {
+					request: 10_000
+				}
+			} ).then( response => {
+				var body = response.body;
+				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.allmessages?.[0] ) {
+					console.log( '- ' + response.statusCode + ': Error while getting the system message: ' + body?.error?.info );
+					if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+						embed.spliceFields( 0, 0, embed.backupField );
+					}
+					if ( embed.backupDescription && embed.length < 5000 ) {
+						embed.setDescription( embed.backupDescription );
+					}
+					return;
+				}
+				if ( !embed.description && embed.length < 4000 ) {
+					var description = body.query.allmessages[0]['*'];
+					var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
+					if ( regex ) {
+						let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || regex[1] ));
+						if ( descArray.length ) {
+							description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
+							if ( description ) {
+								if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+								description = '```' + ( contentModels[contentmodel] || '' ) + '\n' + description + '\n```';
+								embed.setDescription( description );
+							}
+						}
+					}
+					else {
+						let defaultDescription = body.query.allmessages[0].default;
+						if ( description.trim() ) {
+							description = description.replace( /^\n+/, '' ).replace( /\n+$/, '' );
+							if ( description.length > 500 ) description = description.substring(0, 500) + '\u2026';
+							description = '```' + ( contentModels[contentmodel] || '' ) + '\n' + description + '\n```';
+							embed.setDescription( description );
+						}
+						else if ( embed.backupDescription ) {
+							embed.setDescription( embed.backupDescription );
+						}
+						if ( defaultDescription?.trim() ) {
+							defaultDescription = defaultDescription.replace( /^\n+/, '' ).replace( /\n+$/, '' );
+							if ( defaultDescription.length > 250 ) defaultDescription = defaultDescription.substring(0, 250) + '\u2026';
+							defaultDescription = '```' + ( contentModels[contentmodel] || '' ) + '\n' + defaultDescription + '\n```';
+							embed.addField( lang.get('search.messagedefault'), defaultDescription );
+						}
+						else if ( body.query.allmessages[0].defaultmissing !== undefined ) {
+							embed.addField( lang.get('search.messagedefault'), lang.get('search.messagedefaultnone') );
+						}
+					}
+				}
+			}, error => {
+				console.log( '- Error while getting the system message: ' + error );
+				if ( embed.backupField && embed.length < 4750 && embed.fields.length < 25 ) {
+					embed.spliceFields( 0, 0, embed.backupField );
+				}
+				if ( embed.backupDescription && embed.length < 5000 ) {
+					embed.setDescription( embed.backupDescription );
+				}
+			} ).then( () => {
+				return message.edit( {content, embeds: [embed]} ).catch(log_error);
+			} );
+		}
 		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
-			timeout: 10000
+			timeout: {
+				request: 10_000
+			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warn(body.warnings);
+			if ( body && body.warnings ) log_warning(body.warnings);
 			var revision = Object.values(( body?.query?.pages || {} ))?.[0]?.revisions?.[0];
 			revision = ( revision?.slots?.main || revision );
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
@@ -172,8 +248,11 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				console.log( '- Failed to parse the infobox: ' + error );
 			}
 		}
+		let extraImages = [];
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
-			timeout: 10000
+			timeout: {
+				request: 10_000
+			}
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 				console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
@@ -343,6 +422,28 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 						section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
 					);
 					section.find('div, ' + removeClasses.join(', ')).remove();
+					extraImages.push(...new Set([
+						...sectionContent.find(infoboxList.join(', ')).find([
+							'tr:eq(1) img',
+							'div.images img',
+							'figure.pi-image img',
+							'div.infobox-imagearea img'
+						].join(', ')).toArray(),
+						...sectionContent.find([
+							'ul.gallery > li.gallerybox img',
+							'div.wikia-gallery > div.wikia-gallery-item img',
+							'div.ogv-gallery > div.ogv-gallery-item img'
+						].join(', ')).toArray()
+					].filter( img => {
+						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+						if ( !imgURL ) return false;
+						return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+					} ).map( img => {
+						if ( img.attribs['data-image-name']?.endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
+						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+						imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
+						return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
+					} )));
 					sectionContent.find(infoboxList.join(', ')).remove();
 					sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
 					var name = htmlToPlain(section).trim();
@@ -394,9 +495,15 @@ function parse_page(lang, msg, content, embed, wiki, reaction, {title, contentmo
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
 		} ).then( () => {
-			return message.edit( {content, embeds: [embed]} ).catch(log_error);
+			let embeds = [embed];
+			if ( extraImages.length ) {
+				if ( !embed.image ) embed.setImage( extraImages.shift() );
+				extraImages.slice(0, 10).forEach( extraImage => {
+					let imageEmbed = new MessageEmbed().setURL( embed.url ).setImage( extraImage );
+					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + val.length, imageEmbed.length ) <= 5500 ) embeds.push(imageEmbed);
+				} );
+			}
+			return message.edit( {content, embeds} ).catch(log_error);
 		} );
 	} );
 }
-
-module.exports = parse_page;

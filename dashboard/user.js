@@ -1,11 +1,11 @@
-const {db, enabledOAuth2, oauthVerify} = require('./util.js');
+import { db, enabledOAuth2 } from './util.js';
 
 /**
  * Let a user change settings
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio')} $ - The response body
+ * @param {import('cheerio').default} $ - The response body
  * @param {import('./util.js').User} user - The current user
- * @param {import('./i18n.js')} dashboardLang - The user language
+ * @param {import('./i18n.js').default} dashboardLang - The user language
  */
 function dashboard_user(res, $, user, dashboardLang) {
 	db.query( 'SELECT site, token FROM oauthusers WHERE userid = $1', [user.id] ).then( ({rows}) => {
@@ -123,7 +123,7 @@ function update_user(res, user_id, type, oauth_id) {
 	} );
 }
 
-module.exports = {
-	get: dashboard_user,
-	post: update_user
+export {
+	dashboard_user as get,
+	update_user as post
 };

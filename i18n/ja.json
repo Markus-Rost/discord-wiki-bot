@@ -493,13 +493,24 @@
         "added": "最近の変更に関するwebhookが追加されました：",
         "all_inactive": "Wikiの編集とフィードの変更の両方のトラッキングを同時にオフにすることはできません。",
         "audit_reason": "\"$1\"に対する最近の編集のWebhook",
-        "audit_reason_delete": "最近の編集のWebhookを削除"
+        "audit_reason_delete": "最近の編集のWebhookを削除",
+        "audit_reason_edit": "更新された最近の変更のWebhook",
+        "avatar": "Webhook アバター：",
+        "blocked": "このWikiは、最近の変更のWebhookとして追加されるのがブロックされています！",
+        "blocked_reason": "このWikiは、以下の理由でWebhookへの新しい編集の追加がブロックされています: `$1`!",
+        "channel": "チャンネル：",
+        "current": "これらは、このサーバーの現在の最新の変更点を示すウェブフックです。",
+        "current_display": "このWebhookの表示モード：",
+        "current_lang": "このWebhookの言語：",
+        "current_selected": "このサーバーに現在存在する最近の更新 `$1` の Webhook。",
+        "current_wiki": "このWebhookのWiki："
     },
     "test": {
+        "slow": "申し訳ありませんが、私は今、少し遅いようです。",
         "text": [
             "",
             " ",
-            " ",
+            " そして、信じてください、私はまだ生きています。",
             " ",
             " ",
             " ",

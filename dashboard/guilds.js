@@ -1,30 +1,26 @@
-const cheerio = require('cheerio');
+import { readFileSync } from 'fs';
+import cheerio from 'cheerio';
+import { forms } from './functions.js';
+import Lang from './i18n.js';
+import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice } from './util.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
-const Lang = require('./i18n.js');
 const allLangs = Lang.allLangs().names;
-const {oauth, enabledOAuth2, settingsData, addWidgets, createNotice} = require('./util.js');
 
-const forms = {
-	user: require('./user.js').get,
-	settings: require('./settings.js').get,
-	verification: require('./verification.js').get,
-	rcscript: require('./rcscript.js').get,
-	slash: require('./slash.js').get
-};
-
-const file = require('fs').readFileSync('./dashboard/index.html');
+const file = readFileSync('./dashboard/index.html');
 
 /**
  * Let a user view settings
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('./i18n.js')} dashboardLang - The user language.
+ * @param {import('./i18n.js').default} dashboardLang - The user language.
  * @param {String} theme - The display theme
  * @param {import('./util.js').UserSession} userSession - The user session
  * @param {URL} reqURL - The used url
  * @param {String} [action] - The action the user made
  * @param {String[]} [actionArgs] - The arguments for the action
  */
-function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
+export default function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
 	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:user|guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	var settings = settingsData.get(userSession.user_id);
@@ -258,5 +254,3 @@ function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action
 	res.write( body );
 	return res.end();
 }
-
-module.exports = dashboard_guilds;

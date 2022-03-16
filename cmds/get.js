@@ -1,21 +1,24 @@
-const {MessageEmbed, Util, ShardClientUtil: {shardIdForGuildId}, Permissions: {FLAGS}} = require('discord.js');
+import { MessageEmbed, Util, ShardClientUtil, Permissions } from 'discord.js';
+import { escapeFormatting } from '../util/functions.js';
+import db from '../util/database.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const {defaultSettings, defaultPermissions} = require('../util/default.json');
-const {escapeFormatting} = require('../util/functions.js');
-var db = require('../util/database.js');
+const {shardIdForGuildId} = ShardClientUtil;
 
 /**
  * Processes the "get" command.
- * @param {import('../util/i18n.js')} lang - The user language.
+ * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {String[]} args - The command arguments.
  * @param {String} line - The command as plain text.
- * @param {import('../util/wiki.js')} wiki - The wiki for the message.
+ * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  * @async
  */
 async function cmd_get(lang, msg, args, line, wiki) {
 	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
 	if ( !/^\d+$/.test(id) ) {
-		if ( !msg.channel.isGuild() || !pause[msg.guildId] ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 		return;
 	}
 	try {
@@ -27,7 +30,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 					ownerId: guild.ownerId, owner: discordClient.users.cache.get(guild.ownerId)?.tag,
 					channel: guild.publicUpdatesChannelId, icon: guild.iconURL({dynamic:true}),
 					permissions: guild.me.permissions.missing(evalData.defaultPermissions),
-					pause: global.pause.hasOwnProperty(guild.id), voice: global.voice.hasOwnProperty(guild.id),
+					pause: pausedGuilds.has(guild.id), voice: voiceGuildsLang.has(guild.id),
 					shardId: process.env.SHARDS
 				};
 			}
@@ -47,7 +50,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel ASC NULLS FIRST', [guild.id] ).then( ({rows}) => {
 				if ( rows.length ) {
 					let row = rows.find( row => !row.channel );
-					row.patreon = patreons.hasOwnProperty(guild.id);
+					row.patreon = patreonGuildsPrefix.has(guild.id);
 					row.voice = guild.voice;
 					guildsettings[1] = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 				}
@@ -86,14 +89,14 @@ async function cmd_get(lang, msg, args, line, wiki) {
 		}
 		
 		var channel = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
-			if ( discordClient.channels.cache.filter( channel => channel.isGuild() || channel.type === 'GUILD_CATEGORY' ).has(evalData.id) ) {
+			if ( discordClient.channels.cache.filter( channel => ( channel.isText() && channel.guildId ) || channel.type === 'GUILD_CATEGORY' ).has(evalData.id) ) {
 				var channel = discordClient.channels.cache.get(evalData.id);
 				return {
 					name: channel.name, id: channel.id, type: channel.type, parentId: channel.parentId,
 					isThread: channel.isThread(), threadParentId: channel.parent?.parentId,
 					guild: channel.guild.name, guildId: channel.guildId,
 					permissions: channel.guild.me.permissionsIn(channel.id).missing(evalData.defaultPermissions),
-					pause: global.pause.hasOwnProperty(channel.guildId),
+					pause: pausedGuilds.has(channel.guildId),
 					shardId: process.env.SHARDS
 				};
 			}
@@ -153,13 +156,13 @@ async function cmd_get(lang, msg, args, line, wiki) {
 						shardId: process.env.SHARDS
 					}
 				} );
-			}, {context: {user: user.id, MANAGE_GUILD: FLAGS.MANAGE_GUILD.toString()}} ).then( results => {
+			}, {context: {user: user.id, MANAGE_GUILD: Permissions.FLAGS.MANAGE_GUILD.toString()}} ).then( results => {
 				return results.reduce( (acc, val) => acc.concat(val), [] ).map( user_guild => {
 					return escapeFormatting(user_guild.name) + ' `' + user_guild.id + '`' + ( user_guild.isAdmin ? '\\*' : '' );
 				} );
 			} );
 			if ( guilds.length ) guildlist[1] = guilds.join('\n');
-			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length;
+			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length.toLocaleString();
 			var text = null;
 			var embed = null;
 			if ( msg.showEmbed() ) embed = new MessageEmbed().setThumbnail( user.displayAvatarURL({dynamic:true}) ).addField( username[0], username[1] ).addField( guildlist[0], guildlist[1] );
@@ -174,7 +177,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 	}
 }
 
-module.exports = {
+export default {
 	name: 'get',
 	everyone: false,
 	pause: false,

@@ -1,13 +1,15 @@
-const {Util} = require('discord.js');
-const {got} = require('../../util/functions.js');
-const Wiki = require('../../util/wiki.js');
+import { Util } from 'discord.js';
+import { got } from '../../util/functions.js';
+import Wiki from '../../util/wiki.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const commands = require('./commands.json');
 
 /**
  * Sends a Minecraft command.
- * @param {import('../../util/i18n.js')} lang - The user language.
+ * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message} msg - The Discord message.
- * @param {import('../../util/wiki.js')} wiki - The wiki.
+ * @param {import('../../util/wiki.js').default} wiki - The wiki.
  * @param {String} mccmd - The Minecraft command argument.
  * @param {String[]} args - The command arguments.
  * @param {String} title - The page title.
@@ -39,7 +41,7 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 		var cmdSyntax = commands.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + mccmd );
 		got.get( wiki + ( cmdpage.endsWith( '/' ) ? 'api.php?action=query&redirects=true&converttitles=true&titles=%1F' + encodeURIComponent( cmdpage + aliasCmd ) : 'api.php?action=parse&redirects=true&prop=sections&page=' + encodeURIComponent( cmdpage ) ) + '&format=json' ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warn(body.warnings);
+			if ( body && body.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !( body?.query?.pages || body?.parse?.sections?.length ) ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the command page: ' + ( body && body.error && body.error.info ) );
 			}
@@ -79,7 +81,7 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 	}
 }
 
-module.exports = {
+export default {
 	name: 'SYNTAX',
 	run: minecraft_syntax
 };
