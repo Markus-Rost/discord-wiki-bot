@@ -1,6 +1,6 @@
 {
     "inline": {
-        "description": "Skicka ett meddelande med länkar till wikin.",
+        "description": "Skicka ett meddelande med wikilänkar på samma rad.",
         "name": "inline",
         "options[0].description": "Text med länkar till wikitext.",
         "options[0].name": "text"

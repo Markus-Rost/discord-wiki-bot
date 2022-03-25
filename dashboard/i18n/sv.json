@@ -24,7 +24,40 @@
         "slash": "Slash-kommandon",
         "support": "Support-server",
         "theme-dark": "Använd mörkt tema",
-        "theme-light": "Använd ljust tema"
+        "theme-light": "Använd ljust tema",
+        "title": "Wiki Bot-inställningar",
+        "verification": "Verifieringar"
+    },
+    "indexjs": {
+        "avatar": {
+            "invalid_url": "Det gick inte att hämta en giltig bildfil från webbadressen."
+        },
+        "invalid": {
+            "title": "Ogiltig wiki!"
+        },
+        "outdated": {
+            "text": "Webhooken för de senaste ändringarna kräver minst MediaWiki 1.30!",
+            "title": "En gammal MediaWiki version används!"
+        },
+        "prefix": {
+            "backslash": "Prefixet får inte innehålla snedstreck!",
+            "code": "Prefixet får inte innehålla kodmarkering!",
+            "space": "Prefixet får inte innehålla mellanslag!"
+        },
+        "sysmessage": {
+            "text": "Sidan $1 måste matcha server-id:t $2.",
+            "title": "Systemmeddelandet matchar inte!"
+        },
+        "valid": {
+            "MediaWiki": "Varning: Kräver minst $1 för full funktionalitet.",
+            "title": "Wikin är giltig och kan användas!"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "Ett okänt fel uppstod, försök igen.",
+            "title": "Okänt fel!"
+        }
     },
     "rcscript": {
         "form": {
