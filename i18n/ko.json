@@ -648,7 +648,7 @@
         "wikichanged": "이 서버의 기본 위키를 다음 위키로 변경했습니다:",
         "wikihelp": "`$1 <링크>` 명령어로 기본 위키를 변경하세요.\n`https://<위키>.fandom.com` 과 같은 미디어위키 사이트 링크를 입력하세요",
         "wikiinvalid": "위키백과나 팬덤 위키와 같은 유효한 미디어위키 사이트로 가는 링크를 제공해 주세요!",
-        "wikiinvalid_http": "제공된 웹사이트에 해당하는 TLS/SSL 인증서를 찾을 수 없습니다! 보안상의 이유로 HTTPS를 사용하는 위키만 지원됩니다.\n사이트 관리자라면 *Let's Encrypt*와 같은 인증 기관에서 인증서를 받을 수 있습니다.\n<https://letsencrypt.org/ko/getting-started/>",
+        "wikiinvalid_http": "제공된 웹사이트에 해당하는 TLS/SSL 인증서를 찾을 수 없습니다! 보안상의 이유로 HTTPS를 사용하는 위키만 지원됩니다.\n사이트 관리자라면 *Let’s Encrypt*와 같은 인증 기관에서 인증서를 받을 수 있습니다.\n<https://letsencrypt.org/ko/getting-started/>",
         "wikiinvalid_private": "제공된 위키는 비공개 위키입니다! 모두가 읽을 수 있는 공개 위키만 지원하고 있습니다.",
         "wikiinvalid_timeout": "이 링크는 응답하기에는 너무 깁니다!",
         "wikimissing": "이 서버의 기본 위키가 설정되지 않았습니다!"
