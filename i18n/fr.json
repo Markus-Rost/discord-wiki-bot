@@ -636,7 +636,7 @@
         "wikichanged": "le wiki par défaut a été changé pour :",
         "wikihelp": "Utilisez `$1 <lien>` pour changer le wiki par défaut.\nLien du wiki : `https://<wiki>.fandom.com/`",
         "wikiinvalid": "veuillez fournir un lien valide vers un wiki de Fandom ou Wikipedia !",
-        "wikiinvalid_http": "le site web fourni ne dispose pas d'un certificat TLS/SSL valide ! Pour des raisons de sécurité, seuls les wikis utilisant le protocole HTTPS sont pris en charge.\nSi vous êtes un administrateur de site, vous pouvez obtenir un certificat auprès d'une autorité de certification comme *Let's Encrypt* :\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_http": "le site web fourni ne dispose pas d'un certificat TLS/SSL valide ! Pour des raisons de sécurité, seuls les wikis utilisant le protocole HTTPS sont pris en charge.\nSi vous êtes un administrateur de site, vous pouvez obtenir un certificat auprès d'une autorité de certification comme *Let’s Encrypt* :\n<https://letsencrypt.org/getting-started/>",
         "wikiinvalid_private": "le wiki fourni est privé ! Seuls les wikis publics qui peuvent être lus par tout le monde sont pris en charge.",
         "wikiinvalid_timeout": "le lien fourni a mis trop de temps à répondre !",
         "wikimissing": "aucun wiki n'est encore défini pour ce serveur !"
