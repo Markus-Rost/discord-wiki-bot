@@ -48,6 +48,6 @@ jobs:
         author_email: 69196528+WikiBot-bot@users.noreply.github.com
         committer_name: WikiBot-bot
         committer_email: 69196528+WikiBot-bot@users.noreply.github.com
-        message: "Update translation widgets"
+        message: "Update slash command localization"
         add: "interactions/commands/*.json"
         github_token: ${{ secrets.WIKIBOT_TOKEN }}
