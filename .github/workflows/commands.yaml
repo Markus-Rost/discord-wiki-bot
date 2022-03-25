@@ -34,7 +34,7 @@ jobs:
                 echo "`jq \".${key}_localizations.\\\"en-GB\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
                 echo "`jq \".${key}_localizations.\\\"en-US\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
               else
-                echo "`jq \".${key}_localizations.$language=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"$language\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
               fi
             done
           done
