@@ -1,0 +1,24 @@
+{
+  "id": "",
+  "application_id": "",
+  "name": "inline",
+  "name_localizations": {
+  },
+  "description": "Post a message with inline wiki links.",
+  "description_localizations": {
+  },
+  "default_permission": true,
+  "default_member_permissions": "68608",
+  "options": [
+    {
+      "type": 3,
+      "name": "text",
+      "name_localizations": {
+      },
+      "description": "Text including wikitext links.",
+      "description_localizations": {
+      },
+      "required": true
+    }
+  ]
+}
