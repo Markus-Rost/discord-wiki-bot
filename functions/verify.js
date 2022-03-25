@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import { MessageEmbed, MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import db from '../util/database.js';
 import Lang from '../util/i18n.js';
@@ -124,7 +124,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 				comment.push(lang.get('verify.failed_gblock'));
 			}
 			else {
-				let $ = cheerio.load(gbresponse.body);
+				let $ = cheerioLoad(gbresponse.body);
 				if ( $('#mw-content-text .errorbox').length ) {
 					return Promise.reject({
 						desc: lang.get('verify.user_disabled', '[' + escapeFormatting(username) + '](' + pagelink + ')'),

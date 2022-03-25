@@ -233,9 +233,9 @@ if ( process.env.botlist ) {
 
 /**
  * Add bot list widgets.
- * @param {import('cheerio').default} $ - The cheerio static
+ * @param {import('cheerio').CheerioAPI} $ - The cheerio static
  * @param {import('./i18n.js').default} dashboardLang - The user language
- * @returns {import('cheerio').default}
+ * @returns {import('cheerio').CheerioAPI}
 */
 function addWidgets($, dashboardLang) {
 	if ( !botLists.length ) return;
@@ -248,11 +248,11 @@ function addWidgets($, dashboardLang) {
 
 /**
  * Create a red notice
- * @param {import('cheerio').default} $ - The cheerio static
+ * @param {import('cheerio').CheerioAPI} $ - The cheerio static
  * @param {String} notice - The notice to create
  * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {String[]} [args] - The arguments for the notice
- * @returns {import('cheerio').default}
+ * @returns {import('cheerio').CheerioAPI}
  */
 function createNotice($, notice, dashboardLang, args = []) {
 	if ( !notice ) return;

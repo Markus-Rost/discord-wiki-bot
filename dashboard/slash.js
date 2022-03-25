@@ -22,7 +22,7 @@ const fieldset = {
 
 /**
  * Create a settings form
- * @param {import('cheerio').default} $ - The response body
+ * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {slashCommands[0]} slashCommand - The slash command
  * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {Object[]} permissions - The current permissions
@@ -94,7 +94,7 @@ function createForm($, slashCommand, dashboardLang, permissions, guildId, guildR
 /**
  * Let a user change slashs
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio').default} $ - The response body
+ * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
  * @param {import('./i18n.js').default} dashboardLang - The user language

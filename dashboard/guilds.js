@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import { forms } from './functions.js';
 import Lang from './i18n.js';
 import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice } from './util.js';
@@ -29,7 +29,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	}
 	dashboardLang = new Lang(...dashboardLang.fromCookie, settings.user.locale, dashboardLang.lang);
 	res.setHeader('Content-Language', [dashboardLang.lang]);
-	var $ = cheerio.load(file);
+	var $ = cheerioLoad(file);
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`

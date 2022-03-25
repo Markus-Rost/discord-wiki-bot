@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { randomBytes } from 'crypto';
-import cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import Wiki from '../util/wiki.js';
 import { allLangs } from './i18n.js';
 import { got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm } from './util.js';
@@ -27,7 +27,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		}
 		sessionData.delete(state);
 	}
-	var $ = cheerio.load(file);
+	var $ = cheerioLoad(file);
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
@@ -281,7 +281,7 @@ function dashboard_api(res, input) {
 		}
 		catch (error) {
 			if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-				let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+				let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
 				if ( api ) {
 					wiki = new Wiki(api.split('api.php?')[0], wiki);
 					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
