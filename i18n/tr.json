@@ -591,6 +591,8 @@
         "infosearch": "Doğru sonucu alamadın mı? Doğrudan bir bağlantı için $1, tüm isabetlerin listesi için $2 kullan.",
         "loading": "Sayfa açıklaması yükleniyor…",
         "media": "Dosya açıklama sayfasına",
+        "messagedefault": "Varsayılan:",
+        "messagedefaultnone": "*hiç*",
         "results": "Toplam $1 sonuç",
         "special": "Bu özel sayfanın içeriği:"
     },
