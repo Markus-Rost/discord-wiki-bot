@@ -7,7 +7,8 @@
     "en-US": "inline",
     "de": "inline",
     "it": "inline",
-    "sv-SE": "inline"
+    "sv-SE": "inline",
+    "tr": "inline"
   },
   "description": "Post a message with inline wiki links.",
   "description_localizations": {
@@ -16,7 +17,8 @@
     "de": "Sende eine Nachricht mit Inline-Links zum Wiki.",
     "es-ES": "Publicar un mensaje con enlaces wiki en la misma línea.",
     "it": "Posta un messaggio con link wiki inline.",
-    "sv-SE": "Skicka ett meddelande med wikilänkar på samma rad."
+    "sv-SE": "Skicka ett meddelande med wikilänkar på samma rad.",
+    "tr": "Satır içi viki bağlantıları ile mesaj paylaş."
   },
   "default_permission": true,
   "default_member_permissions": "68608",
@@ -29,7 +31,8 @@
         "en-US": "text",
         "de": "text",
         "it": "testo",
-        "sv-SE": "text"
+        "sv-SE": "text",
+        "tr": "text"
       },
       "description": "Text including wikitext links.",
       "description_localizations": {
@@ -37,7 +40,8 @@
         "en-US": "Text including wikitext links.",
         "de": "Text mit Wikitext-Links.",
         "it": "Testo che include link in wikitext.",
-        "sv-SE": "Text med länkar till wikitext."
+        "sv-SE": "Text med länkar till wikitext.",
+        "tr": "Wikitext bağlantılarını içeren metin."
       },
       "required": true
     }

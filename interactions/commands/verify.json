@@ -7,7 +7,8 @@
     "en-US": "verify",
     "de": "verify",
     "it": "verifica",
-    "sv-SE": "verifiera"
+    "sv-SE": "verifiera",
+    "tr": "verify"
   },
   "description": "Verify your Discord account with your wiki account.",
   "description_localizations": {
@@ -15,7 +16,8 @@
     "en-US": "Verify your Discord account with your wiki account.",
     "de": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
     "it": "Verifica il tuo account Discord tramite il tuo account sulla wiki.",
-    "sv-SE": "Verifiera ditt Discord-konto med ditt wiki-konto."
+    "sv-SE": "Verifiera ditt Discord-konto med ditt wiki-konto.",
+    "tr": "Viki hesabın ile Discord hesabını doğrula."
   },
   "default_permission": false,
   "default_member_permissions": "68608",
@@ -28,7 +30,8 @@
         "en-US": "username",
         "de": "benutzername",
         "it": "username",
-        "sv-SE": "username"
+        "sv-SE": "username",
+        "tr": "username"
       },
       "description": "Your username on the wiki.",
       "description_localizations": {
@@ -36,7 +39,8 @@
         "en-US": "Your username on the wiki.",
         "de": "Dein Benutzername im Wiki.",
         "it": "Il tuo nome utente sulla wiki.",
-        "sv-SE": "Ditt användarnamn på wikin."
+        "sv-SE": "Ditt användarnamn på wikin.",
+        "tr": "Vikideki kullanıcı adın."
       },
       "required": false
     }
