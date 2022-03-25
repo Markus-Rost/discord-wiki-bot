@@ -591,6 +591,8 @@
         "infosearch": "Não é o resultado correto? Use $1 para um link direto ou $2 para uma lista de todos os acessos.",
         "loading": "Carregando descrição da página…",
         "media": "Para a página de descrição do arquivo",
+        "messagedefault": "Padrão:",
+        "messagedefaultnone": "*ninguém*",
         "results": "$1 total {{PLURAL:$2|resultado|resultados}}",
         "special": "Conteúdo desta página especial:"
     },
