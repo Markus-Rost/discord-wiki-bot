@@ -21,6 +21,7 @@
   },
   "default_permission": false,
   "default_member_permissions": "68608",
+  "dm_permission": false,
   "options": [
     {
       "type": 3,
