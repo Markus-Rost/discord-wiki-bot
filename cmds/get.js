@@ -26,7 +26,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			if ( discordClient.guilds.cache.has(evalData.id) ) {
 				var guild = discordClient.guilds.cache.get(evalData.id);
 				return {
-					name: guild.name, id: guild.id, memberCount: guild.memberCount,
+					name: guild.name, id: guild.id, memberCount: guild.approximateMemberCount ?? guild.memberCount,
 					ownerId: guild.ownerId, owner: discordClient.users.cache.get(guild.ownerId)?.tag,
 					channel: guild.publicUpdatesChannelId, icon: guild.iconURL({dynamic:true}),
 					permissions: guild.me.permissions.missing(evalData.defaultPermissions),
@@ -170,7 +170,37 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			return msg.sendChannel( {content: text, embeds: [embed]}, true );
 		}
 		
-		msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', true );
+		return db.query( 'SELECT guild, channel, wiki, lang, role, inline, prefix, patreon, voice FROM discord WHERE guild = $1 OR channel = $1 OR channel = $2 ORDER BY guild, channel DESC NULLS LAST LIMIT 1', [id, '#' + id] ).then( ({rows}) => {
+			if ( !rows.length ) return msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', true );
+			var result = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
+			if ( msg.showEmbed() ) {
+				var split = Util.splitMessage( result, {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
+				if ( split.length > 5 ) {
+					Util.splitMessage( '`' + id + '`: ' + result, {
+						char: ',\n',
+						maxLength: 2000,
+						prepend: '```json\n',
+						append: ',\n```'
+					} ).forEach( textpart => msg.sendChannel( textpart, true ) );
+				}
+				else {
+					var embed = new MessageEmbed();
+					split.forEach( textpart => embed.addField( '`' + id + '`: ', textpart ) );
+					msg.sendChannel( {embeds: [embed]}, true );
+				}
+			}
+			else {
+				Util.splitMessage( '`' + id + '`: ' + result, {
+					char: ',\n',
+					maxLength: 2000,
+					prepend: '```json\n',
+					append: ',\n```'
+				} ).forEach( textpart => msg.sendChannel( textpart, true ) );
+			}
+		}, dberror => {
+			console.log( '- Error while getting the settings: ' + dberror );
+			msg.reactEmoji('error');
+		} );
 	} catch ( error ) {
 		log_error(error);
 		msg.reactEmoji('error');

@@ -30,7 +30,7 @@ export default class Lang {
 	 * Get a localized message.
 	 * @param {String} message - Name of the message.
 	 * @param {Boolean} escaped - If the message should be HTML escaped.
-	 * @param {(String|import('cheerio').default)[]} args - Arguments for the message.
+	 * @param {(String|import('cheerio').CheerioAPI)[]} args - Arguments for the message.
 	 * @returns {String}
 	 */
 	get(message = '', escaped = false, ...args) {

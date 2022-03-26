@@ -60,7 +60,7 @@ const fieldset = {
 
 /**
  * Create a settings form
- * @param {import('cheerio').default} $ - The response body
+ * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {String} header - The form header
  * @param {import('./i18n.js').default} dashboardLang - The user language
  * @param {Object} settings - The current settings
@@ -248,7 +248,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 /**
  * Let a user change verifications
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio').default} $ - The response body
+ * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {import('./util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
  * @param {import('./i18n.js').default} dashboardLang - The user language

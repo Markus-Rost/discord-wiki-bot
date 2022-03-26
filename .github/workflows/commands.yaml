@@ -1,0 +1,51 @@
+name: Update slash command localization
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'interactions/i18n/*.json'
+jobs:
+  translations:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Load Repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.WIKIBOT_TOKEN }}
+    - name: Update slash commands
+      run: |
+        for language in interactions/i18n/*.json
+        do
+          language=$(basename $language .json)
+          for file in `jq -r 'keys[]' interactions/i18n/$language.json`
+          do
+            echo $file
+            for key in `jq -r ".$file | keys[]" interactions/i18n/$language.json`
+            do
+              echo $key
+              content="`jq \".$file.\\\"$key\\\"\" interactions/i18n/$language.json`"
+              echo $content
+              if [[ "$language" = "en" ]]
+              then
+                if [[ "$key" =~ description$ || "$key" =~ choices\[[0-9]+\]\.name$ ]]
+                then
+                  echo "`jq \".$key=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                fi
+                echo "`jq \".${key}_localizations.\\\"en-GB\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"en-US\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+              else
+                echo "`jq \".${key}_localizations.\\\"$language\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+              fi
+            done
+          done
+        done
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        author_name: WikiBot-bot
+        author_email: 69196528+WikiBot-bot@users.noreply.github.com
+        committer_name: WikiBot-bot
+        committer_email: 69196528+WikiBot-bot@users.noreply.github.com
+        message: "Update slash command localization"
+        add: "interactions/commands/*.json"
+        github_token: ${{ secrets.WIKIBOT_TOKEN }}

@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import { got, escapeFormatting } from '../util/functions.js';
 
 /**
@@ -37,7 +37,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 				console.log( '- ' + response.statusCode + ': Error while getting the global block.' );
 			}
 			else {
-				let $ = cheerio.load(body);
+				let $ = cheerioLoad(body);
 				if ( $('#mw-content-text .errorbox').length ) {
 					if ( embed && msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.disabled') + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
@@ -58,7 +58,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 				console.log( '- ' + gresponse.statusCode + ': Error while getting the global edit count.' );
 			}
 			else {
-				let $ = cheerio.load(gbody);
+				let $ = cheerioLoad(gbody);
 				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
 				if ( wikisedited ) {
 					wikisedited = parseInt(wikisedited, 10).toLocaleString(lang.get('dateformat'));

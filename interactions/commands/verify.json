@@ -1,0 +1,49 @@
+{
+  "id": "",
+  "application_id": "",
+  "name": "verify",
+  "name_localizations": {
+    "en-GB": "verify",
+    "en-US": "verify",
+    "de": "verify",
+    "it": "verifica",
+    "sv-SE": "verifiera",
+    "tr": "verify"
+  },
+  "description": "Verify your Discord account with your wiki account.",
+  "description_localizations": {
+    "en-GB": "Verify your Discord account with your wiki account.",
+    "en-US": "Verify your Discord account with your wiki account.",
+    "de": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
+    "it": "Verifica il tuo account Discord tramite il tuo account sulla wiki.",
+    "sv-SE": "Verifiera ditt Discord-konto med ditt wiki-konto.",
+    "tr": "Viki hesabın ile Discord hesabını doğrula."
+  },
+  "default_permission": false,
+  "default_member_permissions": "68608",
+  "dm_permission": false,
+  "options": [
+    {
+      "type": 3,
+      "name": "username",
+      "name_localizations": {
+        "en-GB": "username",
+        "en-US": "username",
+        "de": "benutzername",
+        "it": "username",
+        "sv-SE": "username",
+        "tr": "username"
+      },
+      "description": "Your username on the wiki.",
+      "description_localizations": {
+        "en-GB": "Your username on the wiki.",
+        "en-US": "Your username on the wiki.",
+        "de": "Dein Benutzername im Wiki.",
+        "it": "Il tuo nome utente sulla wiki.",
+        "sv-SE": "Ditt användarnamn på wikin.",
+        "tr": "Vikideki kullanıcı adın."
+      },
+      "required": false
+    }
+  ]
+}

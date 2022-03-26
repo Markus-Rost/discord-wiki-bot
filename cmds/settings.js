@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import { MessageEmbed, Util, MessageActionRow, MessageButton } from 'discord.js';
 import { got } from '../util/functions.js';
 import Lang from '../util/i18n.js';
@@ -103,7 +103,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					}
 					catch (error) {
 						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-							let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
 								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general&format=json' );

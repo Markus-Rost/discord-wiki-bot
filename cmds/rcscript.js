@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import { Util, MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import { got } from '../util/functions.js';
@@ -76,7 +76,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				}
 				catch (error) {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-						let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+						let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
 							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
@@ -246,7 +246,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					}
 					catch (error) {
 						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-							let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
 								return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );

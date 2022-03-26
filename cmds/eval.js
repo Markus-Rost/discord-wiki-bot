@@ -1,5 +1,5 @@
 import { inspect } from 'util';
-import cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import Discord from 'discord.js';
 import { got } from '../util/functions.js';
 import newMessage from '../util/newMessage.js';
@@ -62,7 +62,7 @@ function checkWiki(wiki) {
 	if ( !wiki ) return `Couldn't resolve "${wiki}" into a valid url.`;
 	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' ).then( response => {
 		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-			let api = cheerio.load(response.body)('head link[rel="EditURI"]').prop('href');
+			let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
 			if ( api ) {
 				wiki = new Wiki(api.split('api.php?')[0], wiki);
 				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' );

@@ -31,9 +31,12 @@ jobs:
           fi
         done
     - name: Commit changes
-      uses: EndBug/add-and-commit@v4
+      uses: EndBug/add-and-commit@v9
       with:
         author_name: WikiBot-bot
         author_email: 69196528+WikiBot-bot@users.noreply.github.com
+        committer_name: WikiBot-bot
+        committer_email: 69196528+WikiBot-bot@users.noreply.github.com
         message: "Update translation widgets"
         add: "i18n/widgets/*.png"
+        github_token: ${{ secrets.WIKIBOT_TOKEN }}

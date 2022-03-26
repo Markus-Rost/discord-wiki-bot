@@ -3,7 +3,7 @@ import { db, enabledOAuth2 } from './util.js';
 /**
  * Let a user change settings
  * @param {import('http').ServerResponse} res - The server response
- * @param {import('cheerio').default} $ - The response body
+ * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {import('./util.js').User} user - The current user
  * @param {import('./i18n.js').default} dashboardLang - The user language
  */

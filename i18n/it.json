@@ -154,12 +154,12 @@
         "missingperm": "Mi mancano alcuni permessi per questo comando:",
         "patreon": "Questa è una funzione esclusiva per i Patreon!\nPuoi supportarmi su Patreon per avere accesso a questa funzione:",
         "prefix": "Il prefisso per questo server è `$1`. Puoi cambiare il prefisso con `$1settings prefix`. Per un elenco di tutti i comandi vedi `$1help`.",
-        "readonly": "**Il database è attualmente nella modalità di sola lettura, non puoi cambiare alcuna impostazione per adesso!**"
+        "readonly": "**Il database è attualmente in modalità di sola lettura, non puoi cambiare nessuna impostazione per adesso!**"
     },
     "help": {
         "admin": "Questi comandi possono essere eseguiti solo dagli amministratori:",
         "adminfooter": "Gli amministratori possono anche usare la dashboard per cambiare le impostazioni del bot:",
-        "all": "Quindi, vuoi sapere quali cose so fare? Ecco un elenco di tutti i comandi che capisco:",
+        "all": "Quindi vuoi sapere cosa so fare? Ecco un elenco di tutti i comandi che capisco:",
         "footer": "Se hai ricevuto una risposta non voluta, puoi reagire con 🗑️ (`:wastebasket:`) al mio messaggio e lo cancellerò.",
         "list": {
             "default": {
@@ -361,11 +361,11 @@
                 },
                 "postcount": {
                     "cmd": "verification <id> postcount <nuovo numero di post>",
-                    "desc": "Cambierò il numero minimo di post in discussioni per la verifica tramite wiki.\n\t• Inserisci un numero negativo per richiedere o il numero di modifiche o quello di post.\n\t• Inserisci `null` per controllare il numero combinato di modifiche e post."
+                    "desc": "Cambierò il numero minimo di post in discussioni per la verifica tramite wiki.\n\t• Inserisci un numero negativo per richiedere o il conteggio delle modifiche o quello dei post.\n\t• Inserisci `null` per controllare il conteggio combinato di modifiche e post."
                 },
                 "rename": {
                     "cmd": "verification <id> rename",
-                    "desc": "Cambierò se il soprannome dell'utente su Discord debba essere modificato nel nome utente sulla wiki o meno durante la verifica tramite wiki."
+                    "desc": "Cambierò se il soprannome dell'utente su Discord debba essere modificato o meno nel nome utente della wiki durante la verifica tramite wiki."
                 },
                 "role": {
                     "cmd": "verification <id> role <nuovo ruolo>",
@@ -536,7 +536,7 @@
         "noadmin": "Hai bisogno del permesso `Gestire i webhook` per questo comando!",
         "rc": "Modifiche sulla wiki:",
         "sysmessage": "Il messaggio di sistema `$1` deve contenere il server id `$2` per aggiungere un webhook delle ultime modifiche.",
-        "title": "Webhook delle ultime modifiche",
+        "title": "Webhook ultime modifiche",
         "toggle": "(attiva/disattiva)",
         "updated_display": "La modalità di visualizzazione di questo webhook è stata cambiata in:",
         "updated_lang": "La lingua per questo webhook è stata cambiata in:",
@@ -811,7 +811,7 @@
         "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
         "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
         "help_guide": "Segui [questa guida]($1) per aggiungere il tuo tag Discord al tuo profilo della wiki:",
-        "help_missing": "Per favore assicurati di usare il tuo nome utente sulla wiki e che le maiuscole/minuscole siano corrette.",
+        "help_missing": "Per favore assicurati di usare il nome utente che hai sulla wiki e che le maiuscole/minuscole siano corrette.",
         "help_subpage": "Per favore aggiungi il tuo tag Discord ($1) nella tua sottopagina Discord sulla wiki:",
         "missing": "Non ci sono verifiche impostate per questo canale.",
         "notice": "Avviso:",
@@ -825,17 +825,17 @@
         "qualified_remove": "Rimosso da:",
         "qualified_remove_error": "Non può essere rimosso da:",
         "user_blocked": "**L'utente della wiki $1 è bloccato!**",
-        "user_blocked_reply": "il tuo utente della wiki collegato **\"$1\" è bloccato!**",
+        "user_blocked_reply": "il tuo utente della wiki linkato **\"$1\" è bloccato!**",
         "user_disabled": "**L'account della wiki $1 è disabilitato!**",
-        "user_disabled_reply": "il tuo account della wiki collegato **\"$1\" è disabilitato!**",
+        "user_disabled_reply": "il tuo account della wiki linkato **\"$1\" è disabilitato!**",
         "user_failed": "L'utente Discord $1 non corrisponde all'utente $2 della wiki.",
         "user_failed_reply": "il tuo tag Discord non corrisponde all'utente della wiki \"$1\".",
         "user_gblocked": "**L'utente della wiki $1 è bloccato globalmente!**",
-        "user_gblocked_reply": "il tuo utente della wiki collegato **\"$1\" è bloccato globalmente!**",
+        "user_gblocked_reply": "il tuo utente della wiki linkato **\"$1\" è bloccato globalmente!**",
         "user_matches": "L'utente Discord $1 corrisponde all'utente wiki $2, ma non soddisfa i requisiti per alcun ruolo.",
         "user_matches_reply": "il tuo tag Discord corrisponde all'utente della wiki \"$1\", ma non soddisfi i requisiti per alcun ruolo.",
         "user_missing": "L'utente della wiki \"$1\" non esiste.",
-        "user_missing_reply": "il tuo utente della wiki collegato \"$1\" non esiste.",
+        "user_missing_reply": "il tuo utente della wiki linkato \"$1\" non esiste.",
         "user_renamed": "Il suo soprannome Discord è stato cambiato nel suo nome utente sulla wiki.",
         "user_verified": "L'utente Discord $1 è {{GENDER:$3|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki $2.",
         "user_verified_reply": "sei {{GENDER:$2|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki \"$1\".",

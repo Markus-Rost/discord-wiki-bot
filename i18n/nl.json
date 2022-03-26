@@ -155,7 +155,7 @@
     "help": {
         "admin": "Deze opdrachten kunnen alleen door administratoren uitgevoerd worden:",
         "all": "Zo, dus je wilt weten welke dingen ik kan doen? Hier is een lijst van alle opdrachten die ik begrijp:",
-        "footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑️ op mijn bericht en ik zal het verwijderen.",
+        "footer": "Als je een ongewenst antwoord krijgt, kun je reageren met 🗑️ (`:wastebasket:`) op mijn bericht en ik zal het verwijderen.",
         "list": {
             "default": {
                 "cmd": "<zoek term>",

@@ -1,0 +1,14 @@
+{
+    "inline": {
+        "description": "Post a message with inline wiki links.",
+        "name": "inline",
+        "options[0].description": "Text including wikitext links.",
+        "options[0].name": "text"
+    },
+    "verify": {
+        "description": "Verify your Discord account with your wiki account.",
+        "name": "verify",
+        "options[0].description": "Your username on the wiki.",
+        "options[0].name": "username"
+    }
+}
