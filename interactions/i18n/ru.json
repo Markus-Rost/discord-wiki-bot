@@ -8,7 +8,7 @@
     "verify": {
         "description": "Подтвердите свою учетную запись Discord с помощью вашей учетной записи wiki.",
         "name": "verify",
-        "options[0].description": "Ваше имя пользователя в вики.",
+        "options[0].description": "Ваше имя пользователя на вики.",
         "options[0].name": "username"
     }
 }
