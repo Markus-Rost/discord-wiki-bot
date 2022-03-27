@@ -1,1 +1,14 @@
-{}
+{
+    "inline": {
+        "description": "傳送含有行內wiki連結的訊息。",
+        "name": "inline",
+        "options[0].description": "含有wikitext連結的文字。",
+        "options[0].name": "文字"
+    },
+    "verify": {
+        "description": "使用您的wiki帳號驗證您的Discord帳號。",
+        "name": "verify",
+        "options[0].description": "您在此wiki上的使用者名稱。",
+        "options[0].name": "使用者名稱"
+    }
+}

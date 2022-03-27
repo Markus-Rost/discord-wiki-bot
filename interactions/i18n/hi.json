@@ -1,1 +1,14 @@
-{}
+{
+    "inline": {
+        "description": "इनलाइन विकि कड़ियों के साथ एक संदेश पोस्ट करें।",
+        "name": "inline",
+        "options[0].description": "विकिटेक्स्ट कड़ियों वाला टेक्स्ट।",
+        "options[0].name": "text"
+    },
+    "verify": {
+        "description": "अपने विकि खाते के साथ अपने डिस्कॉर्ड खाते को प्रमाणित करें।",
+        "name": "verify",
+        "options[0].description": "विकि पर आपका सदस्यनाम।",
+        "options[0].name": "username"
+    }
+}
