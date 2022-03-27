@@ -8,7 +8,12 @@
     "de": "verify",
     "it": "verifica",
     "sv-SE": "verifiera",
-    "tr": "verify"
+    "tr": "verify",
+    "hi": "verify",
+    "pl": "weryfikuj",
+    "ru": "verify",
+    "zh-CN": "verify",
+    "zh-TW": "verify"
   },
   "description": "Verify your Discord account with your wiki account.",
   "description_localizations": {
@@ -17,7 +22,12 @@
     "de": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
     "it": "Verifica il tuo account Discord tramite il tuo account sulla wiki.",
     "sv-SE": "Verifiera ditt Discord-konto med ditt wiki-konto.",
-    "tr": "Viki hesabın ile Discord hesabını doğrula."
+    "tr": "Viki hesabın ile Discord hesabını doğrula.",
+    "hi": "अपने विकि खाते के साथ अपने डिस्कॉर्ड खाते को प्रमाणित करें।",
+    "pl": "Zweryfikuj swoje konto Discord używając konta na wiki.",
+    "ru": "Подтвердите свою учетную запись Discord с помощью вашей учетной записи wiki.",
+    "zh-CN": "使用你的wiki账号来验证你的Discord账号。",
+    "zh-TW": "使用您的wiki帳號驗證您的Discord帳號。"
   },
   "default_permission": false,
   "default_member_permissions": "68608",
@@ -32,7 +42,12 @@
         "de": "benutzername",
         "it": "username",
         "sv-SE": "username",
-        "tr": "username"
+        "tr": "username",
+        "hi": "username",
+        "pl": "nick",
+        "ru": "username",
+        "zh-CN": "用户名",
+        "zh-TW": "使用者名稱"
       },
       "description": "Your username on the wiki.",
       "description_localizations": {
@@ -41,7 +56,12 @@
         "de": "Dein Benutzername im Wiki.",
         "it": "Il tuo nome utente sulla wiki.",
         "sv-SE": "Ditt användarnamn på wikin.",
-        "tr": "Vikideki kullanıcı adın."
+        "tr": "Vikideki kullanıcı adın.",
+        "hi": "विकि पर आपका सदस्यनाम।",
+        "pl": "Twoja nazwa użytkownika na wiki.",
+        "ru": "Ваше имя пользователя на вики.",
+        "zh-CN": "你在此wiki上的用户名。",
+        "zh-TW": "您在此wiki上的使用者名稱。"
       },
       "required": false
     }
