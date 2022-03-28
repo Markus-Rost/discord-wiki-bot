@@ -1,5 +1,14 @@
 {
     "inline": {
-        "description": "Publicar un mensaje con enlaces wiki en la misma línea."
+        "description": "Publicar un mensaje con inline wiki links.",
+        "name": "inline",
+        "options[0].description": "Texto que incluye enlaces de wikitexto.",
+        "options[0].name": "texto"
+    },
+    "verify": {
+        "description": "Verifica tu cuenta de Discord con tu cuenta wiki.",
+        "name": "verificar",
+        "options[0].description": "Tu nombre de usuario en el wiki.",
+        "options[0].name": "nombre_de_usuario"
     }
 }
