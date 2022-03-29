@@ -5,7 +5,7 @@
   "name_localizations": {
     "en-GB": "inline",
     "en-US": "inline",
-    "de": "inlinäöe",
+    "de": "inline",
     "it": "inline",
     "sv-SE": "inline",
     "tr": "inline",
@@ -13,14 +13,16 @@
     "pl": "inline",
     "ru": "inline",
     "zh-CN": "inline",
-    "zh-TW": "inline"
+    "zh-TW": "inline",
+    "es-ES": "inline",
+    "pt-BR": "inline"
   },
   "description": "Post a message with inline wiki links.",
   "description_localizations": {
     "en-GB": "Post a message with inline wiki links.",
     "en-US": "Post a message with inline wiki links.",
     "de": "Sende eine Nachricht mit Inline-Links zum Wiki.",
-    "es-ES": "Publicar un mensaje con enlaces wiki en la misma línea.",
+    "es-ES": "Publicar un mensaje con inline wiki links.",
     "it": "Posta un messaggio con link wiki inline.",
     "sv-SE": "Skicka ett meddelande med wikilänkar på samma rad.",
     "tr": "Satır içi viki bağlantıları ile mesaj paylaş.",
@@ -48,7 +50,8 @@
         "pl": "tekst",
         "ru": "text",
         "zh-CN": "文本",
-        "zh-TW": "文字"
+        "zh-TW": "文字",
+        "es-ES": "texto"
       },
       "description": "Text including wikitext links.",
       "description_localizations": {
@@ -62,7 +65,8 @@
         "pl": "Tekst zawierający linki pisane składnią wiki.",
         "ru": "Текст, включающий ссылки на вики-текст.",
         "zh-CN": "包含wikitext链接的文本。",
-        "zh-TW": "含有wikitext連結的文字。"
+        "zh-TW": "含有wikitext連結的文字。",
+        "es-ES": "Texto que incluye enlaces de wikitexto."
       },
       "required": true
     }
