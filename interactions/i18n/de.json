@@ -1,7 +1,7 @@
 {
     "inline": {
         "description": "Sende eine Nachricht mit Inline-Links zum Wiki.",
-        "name": "inline",
+        "name": "INlinäÖe",
         "options[0].description": "Text mit Wikitext-Links.",
         "options[0].name": "text"
     },
