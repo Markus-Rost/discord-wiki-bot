@@ -24,6 +24,10 @@ jobs:
             do
               echo $key
               content="`jq \".$file.\\\"$key\\\"\" interactions/i18n/$language.json`"
+              if ! [[ "$key" =~ description$ || "$key" =~ choices\[[0-9]+\]\.name$ ]]
+              then
+                content=${content,,}
+              fi
               echo $content
               if [[ "$language" = "en" ]]
               then
