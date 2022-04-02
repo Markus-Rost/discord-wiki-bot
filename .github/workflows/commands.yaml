@@ -19,6 +19,10 @@ jobs:
           language=$(basename $language .json)
           for file in `jq -r 'keys[]' interactions/i18n/$language.json`
           do
+            if [[ "$file" =~ ^_ ]]
+            then
+              continue
+            fi
             echo $file
             for key in `jq -r ".$file | keys[]" interactions/i18n/$language.json`
             do
