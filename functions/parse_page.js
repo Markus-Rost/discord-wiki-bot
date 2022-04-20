@@ -52,6 +52,7 @@ const removeClasses = [
 	'.noexcerpt',
 	'.sortkey',
 	'.mw-collapsible.mw-collapsed',
+	'.c-item-hoverbox__display',
 	'wb\\:sectionedit'
 ];
 

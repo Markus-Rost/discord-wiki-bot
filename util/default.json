@@ -653,6 +653,12 @@
 			"scriptPath": "/wiki/"
 		},
 		{
+			"name": "poewiki.net",
+			"regex": "((?:www\\.)?poewiki\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "wikihow.com",
 			"regex": "((?:www\\.)?wikihow\\.com)",
 			"articlePath": "/",

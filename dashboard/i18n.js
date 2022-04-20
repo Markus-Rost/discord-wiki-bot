@@ -140,6 +140,7 @@ function plural(lang, number, args) {
 		case 'de':
 		case 'en':
 		case 'es':
+		case 'id':
 		case 'it':
 		case 'ja':
 		case 'ko':
