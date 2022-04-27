@@ -583,8 +583,8 @@
             "content": "Isi dari kategori ini:",
             "empty": "*Kategori ini kosong*",
             "files": "$1 {{PLURAL:$2|berkas|berkas}}",
-            "pages": "$1 {{JAMAK:$2|halaman|halaman}}",
-            "subcats": "$1 {{JAMAK:$2|kategori|kategori}}"
+            "pages": "$1 {{PLURAL:$2|halaman|halaman}}",
+            "subcats": "$1 {{PLURAL:$2|kategori|kategori}}"
         },
         "empty": "*Halaman khusus ini kosong*",
         "infopage": "Bukan hasil yang benar? Gunakan $1 untuk tautan langsung.",
@@ -698,14 +698,14 @@
     "user": {
         "block": {
             "duration": {
-                "days": "$1 {{JAMAK:$2|hari|hari}}",
-                "hours": "$1 {{JAMAK:$2|jam|jam}}",
+                "days": "$1 {{PLURAL:$2|hari|hari}}",
+                "hours": "$1 {{PLURAL:$2|jam|jam}}",
                 "minutes": "$1 {{PLURAL:$2|minute|minutes}}",
-                "months": "$1 {{JAMAK:$2|bulan|bulan}}",
+                "months": "$1 {{PLURAL:$2|bulan|bulan}}",
                 "separator": ",_",
                 "separator_last": "_dan_",
-                "weeks": "$1 {{JAMAK:$2|minggu|minggu}}",
-                "years": "$1 {{JAMAK:$2|tahun|tahun}}"
+                "weeks": "$1 {{PLURAL:$2|minggu|minggu}}",
+                "years": "$1 {{PLURAL:$2|tahun|tahun}}"
             },
             "header": "$1 saat ini diblokir!",
             "indef_noreason": "Diblokir tanpa batas pada $1 oleh $4.",
