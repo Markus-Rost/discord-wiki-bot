@@ -103,7 +103,7 @@
             "title": "Verifikasi belum dikonfigurasi!"
         },
         "oauth": {
-            "text": "Akun wiki mu telah berhasil terhubung dengan Wiki-Bot. ( YeeY :3 )",
+            "text": "Akun wiki mu telah berhasil terhubung dengan Wiki-Bot.",
             "title": "Akun berhasil terhubung!"
         },
         "oauthfail": {
