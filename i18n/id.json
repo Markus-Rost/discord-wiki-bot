@@ -1,6 +1,6 @@
 {
     "__translator": [
-        "",
+        "NFXL",
         " ",
         " ",
         " ",
@@ -13,103 +13,129 @@
     ],
     "aliases": {
         "bug": [
-            "",
+            "bugs",
             " ",
             " ",
             " ",
             " "
         ],
         "command": [
-            "",
+            "perintah",
             " ",
             " ",
             " ",
             " "
         ],
         "diff": [
-            "",
+            "beda",
             " ",
             " ",
             " ",
             " "
         ],
         "discussion": [
-            "",
+            "diskusi",
             " ",
             " ",
             " ",
             " "
         ],
         "help": [
-            "",
+            "bantuan",
             " ",
             " ",
             " ",
             " "
         ],
         "info": [
-            "",
+            "informasi",
             " ",
             " ",
             " ",
             " "
         ],
         "invite": [
-            "",
+            "undang",
             " ",
             " ",
             " ",
             " "
         ],
         "overview": [
-            "",
+            "gambaran",
             " ",
             " ",
             " ",
             " "
         ],
         "page": [
-            "",
+            "halaman",
             " ",
             " ",
             " ",
             " "
         ],
         "random": [
-            "",
+            "acak",
             " ",
             " ",
             " ",
             " "
         ],
         "search": [
-            "",
+            "pencarian",
             " ",
             " ",
             " ",
             " "
         ],
         "test": [
-            "",
+            "tes",
             " ",
             " ",
             " ",
             " "
         ],
         "user": [
-            "",
+            "pengguna",
             " ",
             " ",
             " ",
             " "
         ],
         "verify": [
-            "",
+            "verifikasi",
             " ",
             " ",
             " ",
             " "
         ]
+    },
+    "dateformat": "id-ID",
+    "diff": {
+        "badrev": "Setidaknya satu revisi tidak ada!",
+        "hidden": "*tersembunyi*",
+        "info": {
+            "added": "Ditambahkan:",
+            "bytes": "$1 {{PLURAL:$2|byte|bytes}}",
+            "comment": "Komentar:",
+            "editor": "Editor:",
+            "minor": "_(m)",
+            "more": "Dan banyak lagi",
+            "removed": "Dibuang:",
+            "size": "Perbedaan:",
+            "tags": "Tags:",
+            "timestamp": "Ubah tanggal:",
+            "whitespace": "Hanya ruang kosong"
+        },
+        "nocomment": "*Tidak ada deskripsi yang tersedia*"
+    },
+    "discussion": {
+        "image": "Lihat gambar",
+        "main": "Diskusi",
+        "post": "post",
+        "tags": "Tags:",
+        "votes": "$1 {{PLURAL:$2|pilih|suara}} ($3%)"
     },
     "fallback": [
         "en",
@@ -118,9 +144,525 @@
         " ",
         " "
     ],
+    "general": {
+        "database": "⚠️ **Fungsi Dibatasi**⚠️\nTidak ada pengaturan yang ditemukan, Silakan hubungi pemilik bot!",
+        "default": "Server ini belum disiapkan. Gunakan $1 atau dasbor untuk mengubah setelan.",
+        "disclaimer": "Saya adalah bot kecil dengan tujuan sederhana untuk menautkan dan mencari situs MediaWiki seperti Wikipedia dan wiki Fandom. Saya menunjukkan deskripsi singkat dan info tambahan tentang suatu halaman dan juga saya dapat menyelesaikan pengalihan dan mengikuti tautan interwiki. $1 menulis saya dalam JavaScript.\n\nKamu dapat mendukung $1 di Patreon berikut ini:",
+        "experimental": "**Fitur ini dalam uji coba! Itu tidak dijamin berfungsi dengan benar dan dapat dihapus di masa mendatang.**",
+        "helpserver": "Untuk pertanyaan dan masalah, silakan kunjungi server dukungan saya:",
+        "limit": "**Berhenti, Kamu mencapai batas!**\n\n$1, pesan mu berisi terlalu banyak perintah!",
+        "missingperm": "Saya kehilangan beberapa izin untuk perintah ini:",
+        "patreon": "Ini adalah satu-satunya fitur Patreon!\nKamu dapat mendukung saya di Patreon untuk mendapatkan akses ke fitur ini:",
+        "prefix": "Prefix untuk server ini adalah `$1`. Kamu dapat mengubah awalan dengan `$1settings prefix`. Untuk melihat semua daftar perintah, ketik dan lihat `$1help`.",
+        "readonly": "**Basis data saat ini dalam mode read-only, Kamu tidak dapat mengubah pengaturan apa pun sekarang!**"
+    },
+    "help": {
+        "admin": "Perintah ini hanya dapat dilakukan oleh administrator:",
+        "adminfooter": "Administrator juga dapat menggunakan dasbor untuk mengubah pengaturan bot:",
+        "all": "Jadi, kamu ingin tahu hal-hal apa yang bisa saya lakukan? Berikut adalah daftar semua perintah yang saya mengerti:",
+        "footer": "Jika Kamu mendapat respons yang tidak diinginkan, kamu dapat bereaksi dengan 🗑️ (`:wastebasket:`) ke pesan saya dan saya akan menghapusnya.",
+        "list": {
+            "default": {
+                "cmd": "<istilah pencarian>",
+                "desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki."
+            },
+            "diff": {
+                "id": {
+                    "cmd": "diff <beda> [<oldid>]",
+                    "desc": "Saya akan menjawab dengan tautan ke diff di wiki."
+                },
+                "name": {
+                    "cmd": "diff <nama halaman>",
+                    "desc": "Saya akan menjawab dengan tautan ke diff terakhir pada artikel di wiki."
+                }
+            },
+            "discussion": {
+                "post": {
+                    "cmd": "discussion post <istilah penelusuran>",
+                    "desc": "Saya akan menjawab dengan tautan ke posting diskusi yang cocok di wiki Fandom."
+                },
+                "thread": {
+                    "cmd": "discussion <istilah penelusuran>",
+                    "desc": "Saya akan menjawab dengan tautan ke utas diskusi yang cocok di wiki Fandom."
+                }
+            },
+            "fandom": {
+                "cmd": "?<wiki> <istilah pencarian>",
+                "desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Fandom bernama: `https://<wiki>.fandom.com/`"
+            },
+            "gamepedia": {
+                "cmd": "!<wiki> <search term>",
+                "desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Gamepedia bernama: `https://<wiki>.gamepedia.com/`"
+            },
+            "help": {
+                "admin": {
+                    "cmd": "help admin",
+                    "desc": "Saya akan mencantumkan semua perintah administrator."
+                },
+                "command": {
+                    "cmd": "help <perintah bot>",
+                    "desc": "Ingin tahu bagaimana sebuah perintah bekerja? Biarkan saya menjelaskannya kepada mu!"
+                },
+                "default": {
+                    "cmd": "help",
+                    "desc": "Saya akan membuat daftar semua perintah yang saya mengerti."
+                }
+            },
+            "info": {
+                "cmd": "info",
+                "desc": "Biarkan saya memperkenalkan diri."
+            },
+            "inline": {
+                "link": {
+                    "cmd": "[[<nama halaman>]]",
+                    "desc": "Saya akan menjawab dengan tautan langsung ke artikel di wiki."
+                },
+                "template": {
+                    "cmd": "{{<nama halaman>}}",
+                    "desc": "Saya akan menjawab dengan tautan ke artikel di wiki."
+                }
+            },
+            "minecraft": {
+                "bug": {
+                    "cmd": "bug <Minecraft bug>",
+                    "desc": "Saya akan menjawab dengan tautan ke Minecraft bug tracker."
+                },
+                "command": {
+                    "cmd": "command <Perintah Minecraft>",
+                    "desc": "Saya akan menjawab dengan sintaks perintah Minecraft dan tautan ke artikel untuk perintah di Wiki Minecraft."
+                },
+                "default": {
+                    "cmd": "/<Perintah Minecraft>",
+                    "desc": "Saya akan menjawab dengan sintaks perintah Minecraft dan tautan ke artikel untuk perintah di Wiki Minecraft."
+                }
+            },
+            "mwprojects": {
+                "cmd": "!!<wiki> <istilah pencarian>",
+                "desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di proyek MediaWiki bernama. Contoh: `$1!!en.wikipedia.org Cookie`"
+            },
+            "overview": {
+                "cmd": "overview",
+                "desc": "Saya akan menunjukkan beberapa informasi dan statistik tentang wiki."
+            },
+            "page": {
+                "cmd": "page <nama halaman>",
+                "desc": "Saya akan menjawab dengan tautan langsung ke artikel di wiki."
+            },
+            "pause": {
+                "active": {
+                    "cmd": "pause $1",
+                    "desc": "Saya akan menanggapi semua perintah di server ini lagi."
+                },
+                "inactive": {
+                    "cmd": "pause $1",
+                    "desc": "Saya akan mengabaikan semua perintah di server ini, kecuali beberapa perintah admin."
+                }
+            },
+            "random": {
+                "cmd": "random",
+                "desc": "Saya akan menjawab dengan tautan ke halaman acak di wiki."
+            },
+            "rcscript": {
+                "add": {
+                    "cmd": "rcscript add [<wiki>]",
+                    "desc": "Saya akan menambahkan webhook perubahan baru."
+                },
+                "default": {
+                    "cmd": "rcscript",
+                    "desc": "Saya akan mengubah webhook perubahan terbaru."
+                },
+                "delete": {
+                    "cmd": "rcscript delete",
+                    "desc": "Saya akan menghapus webhook perubahan terbaru."
+                },
+                "display": {
+                    "cmd": "rcscript display <mode tampilan baru>",
+                    "desc": "Saya akan mengubah mode tampilan untuk webhook perubahan terbaru."
+                },
+                "feeds": {
+                    "cmd": "rcscript feeds",
+                    "desc": "Saya akan mengaktifkan perubahan diskusi di wiki Fandom untuk webhook perubahan terbaru."
+                },
+                "lang": {
+                    "cmd": "rcscript lang <bahasa baru>",
+                    "desc": "Saya akan mengubah mode tampilan untuk webhook perubahan terbaru."
+                },
+                "wiki": {
+                    "cmd": "rcscript wiki <wiki baru>",
+                    "desc": "Saya akan mengubah wiki untuk webhook perubahan terbaru."
+                }
+            },
+            "search": {
+                "cmd": "search <istilah pencarian>",
+                "desc": "Saya akan menjawab dengan tautan langsung ke halaman pencarian artikel di wiki."
+            },
+            "settings": {
+                "channel": {
+                    "cmd": "settings channel",
+                    "desc": "Saya akan mengubah penimpaan untuk saluran saat ini."
+                },
+                "default": {
+                    "cmd": "settings",
+                    "desc": "Saya akan mengubah pengaturan untuk server ini."
+                },
+                "inline": {
+                    "cmd": "settings inline toggle",
+                    "desc": "Saya akan mengaktifkan perintah sebaris untuk server ini."
+                },
+                "lang": {
+                    "cmd": "settings lang <bahasa>",
+                    "desc": "Saya akan mengubah bahasa untuk server ini."
+                },
+                "prefix": {
+                    "cmd": "settings prefix <prefix>",
+                    "desc": "Saya akan mengubah awalan untuk server ini."
+                },
+                "role": {
+                    "cmd": "settings role <role>",
+                    "desc": "Saya akan mengubah peran minimal yang diperlukan untuk menggunakan perintah untuk server ini."
+                },
+                "wiki": {
+                    "cmd": "settings wiki <wiki>",
+                    "desc": "Saya akan mengubah wiki default untuk server ini."
+                }
+            },
+            "test": {
+                "cmd": "test",
+                "desc": "Jika saya aktif, saya akan menjawab! Jika tidak."
+            },
+            "user": {
+                "cmd": "User:<username>",
+                "desc": "Saya akan menunjukkan beberapa informasi tentang pengguna."
+            },
+            "verification": {
+                "accountage": {
+                    "cmd": "verification <id> accountage <umur akun baru>",
+                    "desc": "Saya akan mengubah usia akun minimal (dalam hari) untuk verifikasi wiki."
+                },
+                "add": {
+                    "cmd": "verification add <role>",
+                    "desc": "Saya akan menambahkan verifikasi wiki baru. Menerima `|` daftar terpisah."
+                },
+                "channel": {
+                    "cmd": "verification <id> channel <saluran baru>",
+                    "desc": "Saya akan mengubah saluran untuk verifikasi wiki. Menerima `|` daftar terpisah."
+                },
+                "default": {
+                    "cmd": "verification",
+                    "desc": "Saya akan mengubah verifikasi wiki yang digunakan oleh perintah `$1verify`."
+                },
+                "delete": {
+                    "cmd": "verification <id> delete",
+                    "desc": "Saya akan menghapus verifikasi wiki."
+                },
+                "editcount": {
+                    "cmd": "verification <id> editcount <jumlah edit baru>",
+                    "desc": "Saya akan mengubah jumlah edit minimal untuk verifikasi wiki."
+                },
+                "postcount": {
+                    "cmd": "verification <id> postcount <jumlah posting baru>",
+                    "desc": "Saya akan mengubah jumlah posting diskusi minimal untuk verifikasi wiki.\n• Berikan nomor negatif untuk meminta edit atau jumlah posting.\n• Berikan `null` untuk memeriksa gabungan edit dan jumlah posting."
+                },
+                "rename": {
+                    "cmd": "verification <id> rename",
+                    "desc": "Saya akan mengubah jika nama panggilan Discord pengguna harus diubah menjadi nama pengguna wiki mereka untuk verifikasi wiki."
+                },
+                "role": {
+                    "cmd": "verification <id> role <role baru>",
+                    "desc": "Saya akan mengubah peran untuk verifikasi wiki. Menerima daftar terpisah `|`."
+                },
+                "usergroup": {
+                    "cmd": "verification <id> usergroup <grup pengguna baru>",
+                    "desc": "Saya akan mengubah grup pengguna untuk verifikasi wiki. Menerima daftar terpisah `|`.\n• Berikan `AND` sebagai entri daftar pertama untuk membuat semua grup pengguna yang disediakan diperlukan."
+                }
+            },
+            "verify": {
+                "cmd": "verify <nama pengguna wiki>",
+                "desc": "Gunakan perintah ini untuk memverifikasi akun Discord kamu dengan akun wiki dan mendapatkan lah peran yang cocok dengan akun wiki Anda."
+            },
+            "voice": {
+                "cmd": "voice",
+                "desc": "Saya mencoba memberi semua orang di saluran suara peran tertentu."
+            },
+            "wikia": {
+                "cmd": "??<wiki> <search term>",
+                "desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Wikia bernama: `https://<wiki>.wikia.org/`"
+            }
+        },
+        "noadmin": "Kamu memerlukan izin `Kelola Server` untuk perintah ini!",
+        "pause": "**Saat ini saya sedang dijeda di server ini!**\nHanya perintah ini yang dapat dilakukan:"
+    },
+    "interaction": {
+        "dashboard": {
+            "perm_allow": "Izinkan",
+            "perm_default": "Utama",
+            "perm_deny": "Tolak",
+            "updated": "$1 memperbarui izin perintah slash yang ditimpa untuk `$2`."
+        },
+        "inline": "Harap berikan beberapa teks dengan tautan [[wikitext]] untuk menggunakan perintah ini.",
+        "nowiki": "Wiki yang dicantumkan tidak ada!",
+        "verify": "Harap berikan nama pengguna wiki kamu untuk menggunakan perintah ini untuk memverifikasi akun Discord milik kamu dengan akun wiki dan dapatkan peran yang cocok dengan akun wiki mu."
+    },
+    "invite": {
+        "bot": "Gunakan tautan ini untuk mengundang saya ke server lain:"
+    },
+    "minecraft": {
+        "fixed": "Gunakan tautan ini untuk mengundang saya ke server lain: {{PLURAL:$1|Versi|Versi}} telah diperbaiki:",
+        "issue_link": {
+            "Blocks": {
+                "inward": "diblokir oleh $1",
+                "outward": "blok $1"
+            },
+            "Bonfire Testing": {
+                "inward": "ditemukan saat menguji $1",
+                "outward": "pengujian ditemukan $1"
+            },
+            "Cloners": {
+                "inward": "dikloning oleh $1",
+                "outward": "kloningan $1"
+            },
+            "Duplicate": {
+                "inward": "diduplikasikan oleh $1",
+                "outward": "duplikat $1"
+            },
+            "Relates": {
+                "inward": "berhubungan dengan $1",
+                "outward": "berhubungan dengan $1"
+            }
+        },
+        "more": "Dan $1 selebihnya.",
+        "private": "**Masalah Pribadi**",
+        "status": {
+            "Awaiting Response": "Menunggu Respon",
+            "Cannot Reproduce": "Tidak Dapat Mereproduksi",
+            "Closed": "Tertutup",
+            "Done": "Selesai",
+            "Duplicate": "Duplikat",
+            "Fixed": "Diperbaiki",
+            "In Progress": "Dalam Proses",
+            "Incomplete": "Belum Selesai",
+            "Invalid": "Tidak sah",
+            "Open": "Terbuka",
+            "Postponed": "Ditunda",
+            "Reopened": "dibuka kembali",
+            "Resolved": "Terselesaikan",
+            "Won't Fix": "Tidak akan Memperbaiki",
+            "Works As Intended": "Bekerja Seperti yang Dimaksudkan"
+        },
+        "total": "$1 {{PLURAL:$2|masalah|masalah}} diperbaiki"
+    },
+    "overview": {
+        "admins": "Pengurus:",
+        "articles": "Artikel:",
+        "comments": "Komentar artikel:",
+        "created": "Dibuat:",
+        "crossover": "Digabung menjadi:",
+        "description": "Deskripsi:",
+        "edits": "Suntingan:",
+        "founder": "Pendiri:",
+        "image": "Gambar:",
+        "inaccurate": "Statistik mungkin tidak akurat",
+        "lang": "Bahasa:",
+        "license": "Lisensi:",
+        "manager": "Manajer Wiki:",
+        "misermode": "Mode miser:",
+        "no": "Tidak",
+        "none": "*kosong*",
+        "official": "Wiki resmi:",
+        "pages": "Jumlah halaman:",
+        "posts": "Postingan diskusi:",
+        "readonly": "Wiki ini sedang dalam mode hanya-baca!",
+        "rtl": "Kanan ke kiri:",
+        "talk": "bicara",
+        "topic": "Tema:",
+        "unknown": "*tidak diketahui*",
+        "users": "Pengguna aktif:",
+        "version": "Versi:",
+        "vertical": "Vertikal:",
+        "walls": "Postingan dinding pesan:",
+        "wikiid": "ID Wiki:",
+        "yes": "Iya"
+    },
+    "pause": {
+        "off": "Saya tidak lagi dijeda di server ini dan akan menanggapi semua perintah lagi!",
+        "on": "Saya sekarang dijeda di server ini dan akan mengabaikan sebagian besar perintah!"
+    },
+    "rcscript": {
+        "ad": "Anda ingin perubahan terbaru langsung di Discord? Gunakan `$1rcscript` untuk menambahkan webhook perubahan terbaru berdasarkan **$2** ke server Discord Anda!",
+        "add_more": "Tambahkan lebih banyak perubahan terbaru webhook:",
+        "added": "Webhook perubahan terbaru telah ditambahkan untuk:",
+        "all_inactive": "Kamu tidak dapat menonaktifkan perubahan wiki dan perubahan berbasis feed secara bersamaan.",
+        "audit_reason": "Perubahan terbaru webhook untuk \"$1\"",
+        "audit_reason_delete": "Menghapus webhook perubahan terbaru",
+        "audit_reason_edit": "Webhook perubahan terbaru yang diperbarui",
+        "avatar": "Avatar webhook:",
+        "blocked": "Wiki ini telah diblokir agar tidak ditambahkan sebagai webhook perubahan terbaru!",
+        "blocked_reason": "Wiki ini telah diblokir agar tidak ditambahkan sebagai webhook perubahan terbaru untuk `$1`!",
+        "channel": "Saluran:",
+        "current": "Ini adalah webhook perubahan terbaru saat ini untuk server ini:",
+        "current_display": "Mode tampilan untuk webhook ini adalah:",
+        "current_lang": "Bahasa untuk webhook ini adalah:",
+        "current_selected": "Ini adalah perubahan terbaru webhook `$1` untuk server ini:",
+        "current_wiki": "Wiki untuk webhook ini adalah:",
+        "dashboard": {
+            "added": "$1 menambahkan webhook perubahan terbaru dengan id `$2`.",
+            "removed": "$1 menghapus webhook perubahan terbaru dengan id `$2`.",
+            "updated": "$1 memperbarui webhook perubahan terbaru dengan id `$2`."
+        },
+        "delete": "Hapus webhook perubahan terbaru ini:",
+        "deleted": "Webhook perubahan terbaru telah dihapus.",
+        "disabled": "dimatikan",
+        "disabled_feeds": "Perubahan berbasis umpan, seperti diskusi, dinding pesan, dan komentar artikel, untuk webhook ini telah dinonaktifkan.",
+        "disabled_rc": "Perubahan wiki untuk webhook ini telah dinonaktifkan.",
+        "display": "Mode tampilan:",
+        "enabled": "dihidupkan",
+        "enabled_feeds": "Perubahan berbasis umpan, seperti diskusi, dinding pesan, dan komentar artikel, untuk webhook ini telah diaktifkan.",
+        "enabled_rc": "Perubahan wiki untuk webhook ini telah diaktifkan.",
+        "feeds": "Perubahan berbasis feed:",
+        "help_display_compact": "Pesan teks ringkas dengan tautan sebaris.",
+        "help_display_diff": "Sematkan pesan dengan pratinjau gambar dan edit perbedaan.",
+        "help_display_embed": "Sematkan pesan dengan tag edit dan perubahan kategori.",
+        "help_display_image": "Sematkan pesan dengan pratinjau gambar.",
+        "help_feeds": "(diskusi, dinding pesan, komentar artikel)",
+        "help_lang": "Bahasa yang didukung saat ini adalah:",
+        "help_wiki": "Tautan ke situs MediaWiki seperti `https://<wiki>.fandom.com/`",
+        "lang": "Bahasa:",
+        "max_entries": "Kamu telah mencapai jumlah maksimal webhook perubahan terbaru.",
+        "missing": "Belum ada webhook perubahan terbaru untuk server ini.",
+        "name": "Nama webhook:",
+        "new_lang": "<bahasa baru>",
+        "new_wiki": "<tautan ke wiki>",
+        "no_feeds": "Wiki untuk webhook ini tidak mengaktifkan fitur berbasis umpan, seperti diskusi, dinding pesan, atau komentar artikel.",
+        "noadmin": "Kamu memerlukan izin `Kelola Webhooks` untuk perintah ini!",
+        "rc": "Perubahan Wiki:",
+        "sysmessage": "Pesan sistem `$1` harus berupa id server `$2` untuk menambahkan webhook perubahan terbaru.",
+        "title": "Perubahan terbaru webhook",
+        "toggle": "(beralih)",
+        "updated_display": "Mode tampilan untuk webhook ini telah diubah menjadi:",
+        "updated_lang": "Bahasa untuk webhook ini telah diubah menjadi:",
+        "updated_wiki": "Wiki untuk webhook ini telah diubah menjadi:",
+        "webhook": {
+            "blocked": "Webhook perubahan terbaru ini akan dihapus karena wiki telah diblokir!",
+            "blocked_help": "Kamu dapat meminta detail lebih lanjut di [server dukungan]($1).",
+            "blocked_reason": "Webhook perubahan terbaru ini akan dihapus karena wiki telah diblokir untuk `$1`!",
+            "created": "Webhook perubahan terbaru untuk $1 telah ditambahkan ke saluran ini.",
+            "dashboard": {
+                "avatar": "• Avatar webhook telah diubah.",
+                "channel": "• Webhook telah dipindahkan ke saluran ini.",
+                "disabled_feeds": "• Perubahan berbasis feed, seperti diskusi, dinding pesan, dan komentar artikel, telah dinonaktifkan.",
+                "disabled_rc": "• Perubahan wiki telah dinonaktifkan.",
+                "display_compact": "• Mode tampilan telah diubah menjadi pesan teks ringkas dengan tautan sebaris.",
+                "display_diff": "• Mode tampilan telah diubah untuk menyematkan pesan dengan pratinjau gambar dan mengedit perbedaan.",
+                "display_embed": "• Mode tampilan telah diubah untuk menyematkan pesan dengan tag edit dan perubahan kategori.",
+                "display_image": "• Mode tampilan telah diubah untuk menyematkan pesan dengan pratinjau gambar.",
+                "enabled_feeds": "• Perubahan berbasis feed, seperti diskusi, dinding pesan, dan komentar artikel, telah diaktifkan.",
+                "enabled_rc": "• Perubahan wiki telah diaktifkan.",
+                "lang": "• Bahasa telah diubah menjadi $1.",
+                "name": "• Nama webhook telah diubah menjadi \"$1\".",
+                "updated": "Webhook perubahan terbaru ini telah diperbarui:",
+                "wiki": "• Wiki telah diubah menjadi $1."
+            },
+            "deleted": "Webhook perubahan terbaru ini akan dihapus.",
+            "disabled_feeds": "Perubahan berbasis umpan, seperti diskusi, dinding pesan, dan komentar artikel, telah dinonaktifkan untuk webhook perubahan terbaru ini.",
+            "disabled_rc": "Perubahan wiki telah dinonaktifkan untuk webhook perubahan terbaru ini.",
+            "enabled_feeds": "Perubahan berbasis umpan, seperti diskusi, dinding pesan, dan komentar artikel, telah diaktifkan untuk webhook perubahan terbaru ini.",
+            "enabled_rc": "Perubahan wiki telah diaktifkan untuk webhook perubahan terbaru ini.",
+            "updated_display_compact": "Mode tampilan telah diubah menjadi pesan teks ringkas dengan tautan sebaris untuk webhook perubahan terbaru ini.",
+            "updated_display_diff": "Mode tampilan telah diubah untuk menyematkan pesan dengan pratinjau gambar dan mengedit perbedaan untuk webhook perubahan terbaru ini.",
+            "updated_display_embed": "Mode tampilan telah diubah untuk menyematkan pesan dengan tag edit dan perubahan kategori untuk webhook perubahan terbaru ini.",
+            "updated_display_image": "Mode tampilan telah diubah untuk menyematkan pesan dengan pratinjau gambar untuk webhook perubahan terbaru ini.",
+            "updated_lang": "Bahasa telah diubah menjadi `$1` untuk webhook perubahan terbaru ini.",
+            "updated_wiki": "Wiki telah diubah menjadi $1 untuk webhook perubahan terbaru ini."
+        },
+        "webhook_failed": "Sayangnya webhook tidak dapat dibuat, coba lagi nanti.",
+        "wiki": "Wiki:"
+    },
+    "search": {
+        "cached": "Tembolok terakhir diperbarui:",
+        "category": {
+            "content": "Isi dari kategori ini:",
+            "empty": "*Kategori ini kosong*",
+            "files": "$1 {{PLURAL:$2|berkas|berkas}}",
+            "pages": "$1 {{PLURAL:$2|halaman|halaman}}",
+            "subcats": "$1 {{PLURAL:$2|kategori|kategori}}"
+        },
+        "empty": "*Halaman khusus ini kosong*",
+        "infopage": "Bukan hasil yang benar? Gunakan $1 untuk tautan langsung.",
+        "infosearch": "Bukan hasil yang benar? Gunakan $1 untuk tautan langsung atau $2 untuk daftar semua hit.",
+        "loading": "Memuat deskripsi halaman…",
+        "media": "Ke halaman deskripsi file",
+        "messagedefault": "Bawaan:",
+        "messagedefaultnone": "*tidak ada*",
+        "results": "$1 total {{PLURAL:$2|hasil|hasil}}",
+        "special": "Konten halaman khusus ini:"
+    },
+    "settings": {
+        "button": "Gunakan Dasbor",
+        "channel current": "Ini adalah pengaturan saat ini untuk saluran ini:",
+        "channel lang": "Bahasa untuk saluran ini adalah:",
+        "channel langchanged": "Kamu mengubah bahasa saluran ini menjadi:",
+        "channel role": "Peran minimal yang diperlukan untuk saluran ini adalah:",
+        "channel rolechanged": "Kamu mengubah peran minimal yang diperlukan untuk saluran ini menjadi:",
+        "channel wiki": "Wiki default untuk saluran ini adalah:",
+        "channel wikichanged": "Kamu mengubah wiki default untuk saluran ini menjadi:",
+        "current": "Ini adalah pengaturan saat ini untuk server ini:",
+        "currentchannel": "Penimpaan saluran:",
+        "currentinline": "Perintah sebaris:",
+        "currentlang": "Bahasa:",
+        "currentprefix": "Prefix:",
+        "currentrole": "Peran minimal:",
+        "currentwiki": "Wiki utama:",
+        "dashboard": {
+            "channel": "$1 memperbarui pengaturan untuk $2.",
+            "removed": "$1 menghapus pengaturan untuk $2.",
+            "updated": "$1 memperbarui pengaturan server."
+        },
+        "foundwikis": "Apakah maksud mu salah satu dari wiki ini?",
+        "inline disabled": {
+            "channel inline": "Perintah sebaris saat ini dinonaktifkan untuk saluran ini.",
+            "channel inlinechanged": "Kamu menonaktifkan perintah sebaris untuk saluran ini.",
+            "help": "Gunakan `$1` untuk mengaktifkan perintah sebaris seperti `[[$2]]` dan `{{$2}}`.",
+            "inline": "Perintah sebaris saat ini dinonaktifkan untuk server ini.",
+            "inlinechanged": "Kamu menonaktifkan perintah sebaris untuk server ini."
+        },
+        "inline enabled": {
+            "channel inline": "Perintah sebaris saat ini diaktifkan untuk saluran ini.",
+            "channel inlinechanged": "Kamu mengaktifkan perintah sebaris untuk saluran ini.",
+            "help": "Gunakan `$1` untuk menonaktifkan perintah sebaris seperti `[[$2]]` dan `{{$2}}`.",
+            "inline": "Perintah sebaris saat ini diaktifkan untuk server ini.",
+            "inlinechanged": "Kamu mengaktifkan perintah sebaris untuk server ini."
+        },
+        "lang": "Bahasa untuk server ini adalah:",
+        "langchanged": "Kamu mengubah bahasa untuk server ini menjadi:",
+        "langhelp": "Gunakan `$1 <bahasa>` untuk mengubah bahasa.\nBahasa yang didukung saat ini adalah:",
+        "langinvalid": "Bahasa yang ditentukan tidak didukung!",
+        "missing": "Server ini belum disiapkan. Gunakan $1 dan $2 untuk mengubah pengaturan.",
+        "nochannels": "*Belum ada saluran yang ditimpa*",
+        "prefix": "Awalan untuk server ini adalah:",
+        "prefixchanged": "Kamu mengubah awalan untuk server ini menjadi:",
+        "prefixhelp": "Gunakan `$1 <prefix>` untuk mengubah awalan.\nGunakan `_` di akhir untuk menunjukkan spasi di akhir awalan.\nAwalan mungkin tidak termasuk sebutan!",
+        "prefixinvalid": "Awalan yang ditentukan tidak didukung!",
+        "role": "Peran minimal yang diperlukan untuk server ini adalah:",
+        "rolechanged": "Kamu mengubah peran minimal yang diperlukan untuk server ini menjadi:",
+        "rolehelp": "Gunakan `$1 <role>` untuk mengubah peran minimal yang diperlukan.",
+        "roleinvalid": "Peran yang ditentukan tidak ada!",
+        "save_failed": "Sayangnya pengaturannys tidak dapat disimpan, coba lagi nanti.",
+        "wiki": "Wiki default untuk server ini adalah:",
+        "wikichanged": "Kamu mengubah wiki default untuk server ini menjadi:",
+        "wikihelp": "Gunakan `$1 <link>` untuk mengubah wiki default.\nTautan ke situs MediaWiki seperti `https://<wiki>.fandom.com/`",
+        "wikiinvalid": "Harap berikan tautan yang valid ke situs MediaWiki, seperti Wikipedia atau wiki Fandom!",
+        "wikiinvalid_http": "Situs web yang disediakan tidak memiliki sertifikat TLS/SSL yang valid! Untuk alasan keamanan, hanya wiki yang menggunakan HTTPS yang didukung.\nJika Kamu adalah administrator situs, kamu bisa mendapatkan sertifikat dari otoritas sertifikat seperti *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
+        "wikiinvalid_private": "Wiki yang disediakan bersifat pribadi! Hanya wiki publik yang dapat dibaca oleh semua orang yang didukung.",
+        "wikiinvalid_timeout": "Tautan yang disediakan terlalu lama untuk ditanggapi!",
+        "wikimissing": "Belum ada wiki default yang disetel untuk server ini!"
+    },
     "test": {
+        "MediaWiki": "Membutuhkan setidaknya $1 untuk fungsionalitas penuh, ditemukan `$2`.",
+        "notice": "Fungsionalitas terbatas",
+        "pause": "Saat ini saya dijeda di server ini.",
+        "slow": "Maaf, sepertinya saya agak lambat sekarang.",
         "text": [
-            "",
+            "Saya berfungsi penuh!",
             " ",
             " ",
             " ",
@@ -150,6 +692,164 @@
             " ",
             " ",
             " "
-        ]
+        ],
+        "time": "Waktu merespon"
+    },
+    "user": {
+        "block": {
+            "duration": {
+                "days": "$1 {{PLURAL:$2|hari|hari}}",
+                "hours": "$1 {{PLURAL:$2|jam|jam}}",
+                "minutes": "$1 {{PLURAL:$2|minute|minutes}}",
+                "months": "$1 {{PLURAL:$2|bulan|bulan}}",
+                "separator": ",_",
+                "separator_last": "_dan_",
+                "weeks": "$1 {{PLURAL:$2|minggu|minggu}}",
+                "years": "$1 {{PLURAL:$2|tahun|tahun}}"
+            },
+            "header": "$1 saat ini diblokir!",
+            "indef_noreason": "Diblokir tanpa batas pada $1 oleh $4.",
+            "indef_text": "Diblokir tanpa batas pada $1 oleh $4 dengan alasan \"$5\".",
+            "noreason": "Diblokir pada $1 untuk $2 hingga $3 oleh $4.",
+            "text": "Diblokir pada $1 untuk $2 hingga $3 oleh $4 dengan alasan \"$5\"."
+        },
+        "gblock": {
+            "disabled": "Akun ini saat ini dinonaktifkan!",
+            "header": "$1 saat ini diblokir secara global!"
+        },
+        "gender": {
+            "female": "Wanita",
+            "male": "Pria",
+            "unknown": "Privasi"
+        },
+        "info": {
+            "discord": "Discord:",
+            "editcount": "Mengedit jumlah:",
+            "favwiki": "wiki favorit:",
+            "gender": "Jenis kelamin:",
+            "globaleditcount": "Jumlah edit global:",
+            "globalgroup": "{{PLURAL:$1|grup|grup}} global:",
+            "group": "{{PLURAL:$1|Grup|Grup}}:",
+            "loading": "Sedang memuat statistik global…",
+            "postcount": "Postingan diskusi:",
+            "registration": "Tanggal registrasi:",
+            "wikisedited": "Wiki diedit:"
+        }
+    },
+    "verification": {
+        "accountage": "Usia akun:",
+        "add_more": "Tambahkan lebih banyak verifikasi:",
+        "added": "Verifikasi telah ditambahkan:",
+        "and": "dan",
+        "channel": "Saluran:",
+        "channel_max": "Kamu menyediakan terlalu banyak saluran.",
+        "channel_missing": "Saluran yang disediakan tidak ada.",
+        "current": "Ini adalah verifikasi saat ini untuk server ini:",
+        "current_selected": "Ini adalah verifikasi `$1` untuk server ini:",
+        "dashboard": {
+            "added": "$1 menambahkan verifikasi dengan id `$2`.",
+            "added_notice": "$1 menambahkan beberapa pemberitahuan verifikasi.",
+            "removed": "$1 menghapus verifikasi dengan id `$2`.",
+            "updated": "$1 memperbarui verifikasi dengan id `$2`.",
+            "updated_notice": "$1 memperbarui beberapa pemberitahuan verifikasi."
+        },
+        "delete_current": "Hapus verifikasi ini:",
+        "deleted": "Verifikasi telah dihapus.",
+        "disabled": "dimatikan",
+        "editcount": "Jumlah edit:",
+        "enabled": "diaktifkan",
+        "flag_logall": "Pencatatan verifikasi yang gagal:",
+        "flag_private": "Mengirim tanggapan perintah verifikasi secara pribadi:",
+        "indays": "(dalam hari)",
+        "logging": "Saluran pencatatan:",
+        "match": "Pemberitahuan persyaratan yang tidak ada:",
+        "max_entries": "Kamu telah mencapai jumlah verifikasi maksimal.",
+        "missing": "Belum ada verifikasi untuk server ini.",
+        "new_accountage": "<usia akun baru>",
+        "new_channel": "<saluran baru>",
+        "new_editcount": "<jumlah edit baru>",
+        "new_postcount": "<jumlah postingan baru>",
+        "new_role": "<role baru>",
+        "new_usergroup": "<grup pengguna baru>",
+        "no_role": "Harap berikan peran untuk verifikasi baru.",
+        "notice_embed": "Beberapa pemberitahuan menyertakan tautan penurunan harga bertopeng. Pastikan bot memiliki izin `Sematkan Tautan` di semua saluran verifikasi agar berfungsi dengan baik.",
+        "or": "atau",
+        "postcount": "Jumlah postingan (hanya wiki Fandom):",
+        "postcount_or": "(alternatif untuk mengedit hitungan)",
+        "posteditcount": "Edit dan jumlah posting digabungkan:",
+        "rename": "Ubah nama panggilan:",
+        "rename_no_permission": "**$1 tidak memiliki izin `Kelola Nama Panggilan` untuk memaksa nama pengguna wiki!**",
+        "role_add": "Peran untuk ditambahkan:",
+        "role_deleted": "**Role $1 sepertinya sudah tidak ada lagi!**",
+        "role_managed": "Peran yang diberikan tidak dapat ditetapkan.",
+        "role_max": "Kamu memberikan terlalu banyak peran.",
+        "role_missing": "Peran yang diberikan tidak ada.",
+        "role_none": "tidak ada",
+        "role_remove": "Role dicabut:",
+        "role_too_high": "**Peran $1 terlalu tinggi untuk ditetapkan $2!**",
+        "save_failed": "Sayangnya verifikasi tidak dapat disimpan, coba lagi nanti.",
+        "success": "Pemberitahuan sukses:",
+        "toggle": "(beralih)",
+        "updated": "Verifikasi telah diperbarui:",
+        "usergroup": "Grup pengguna:",
+        "usergroup_max": "Kamu memberikan terlalu banyak grup pengguna.",
+        "usergroup_too_long": "Grup pengguna yang diberikan terlalu panjang.",
+        "value_too_high": "Nilai yang diberikan terlalu tinggi."
+    },
+    "verify": {
+        "audit_reason": "Diverifikasi sebagai \"$1\"",
+        "button_again": "Periksa lagi",
+        "button_wrong_user": "Kamu tidak dapat memeriksa verifikasi ini lagi, ini adalah verifikasi $1!",
+        "discord": "Pengguna Discord:",
+        "empty": "*kosong*",
+        "error": "Verifikasi gagal karena kesalahan.",
+        "error_reply": "Verifikasi gagal karena kesalahan, harap coba lagi.",
+        "failed_gblock": "**Periksa blok global gagal!**",
+        "failed_rename": "**Gagal mengubah nama panggilan Discord {{GENDER:$1|dia laki-laki|dia perempuan|mereka}}!**",
+        "failed_roles": "**Gagal menambahkan role!**",
+        "footer": "Verifikasi Akun Wiki",
+        "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
+        "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
+        "help_guide": "Ikuti [panduan ini]($1) untuk menambahkan tag Discord kamuke profil wiki mu:",
+        "help_missing": "Harap pastikan bahwa Kamu menggunakan nama pengguna wiki mu dan penggunaan huruf besar/kecil sudah benar.",
+        "help_subpage": "Silakan tambahkan tag Discord Kamu ($1) ke subhalaman Discord mu di wiki:",
+        "missing": "Tidak ada verifikasi yang disiapkan untuk saluran ini.",
+        "notice": "Pemberitahuan:",
+        "oauth_button": "Otentikasi",
+        "oauth_message": "Harap gunakan [tautan ini]($1) untuk mengautentikasi akun wiki kamu.",
+        "oauth_message_dm": "Silakan gunakan tautan ini untuk mengautentikasi akun wiki kamu untuk pengguna $1.",
+        "oauth_private": "Wiki menggunakan OAuth2 untuk verifikasi. Harap aktifkan pesan langsung dari server ini atau gunakan perintah `/verify` sehingga saya dapat mengirimi Kamu tautan autentikasi secara pribadi.",
+        "oauth_used": "*Diverifikasi menggunakan OAuth2*",
+        "qualified_add": "Ditambahkan ke:",
+        "qualified_add_error": "Tidak dapat ditambahkan ke:",
+        "qualified_remove": "Dihapus dari:",
+        "qualified_remove_error": "Tidak dapat dihapus dari:",
+        "user_blocked": "**Pengguna wiki $1 diblokir!**",
+        "user_blocked_reply": "pengguna wiki yang tertaut dikamu **\"$1\" diblokir!**",
+        "user_disabled": "**Akun wiki $1 dinonaktifkan!**",
+        "user_disabled_reply": "akun wiki mu yang tertaut **\"$1\" dinonaktifkan!**",
+        "user_failed": "Pengguna Discord $1 tidak cocok dengan pengguna wiki $2.",
+        "user_failed_reply": "tag Discord Kamu tidak cocok dengan pengguna wiki \"$1\".",
+        "user_gblocked": "**Pengguna wiki $1 diblokir secara global!**",
+        "user_gblocked_reply": "pengguna wiki tertaut kamu **\"$1\" diblokir secara global!**",
+        "user_matches": "Pengguna Discord $1 cocok dengan pengguna wiki $2, tetapi tidak memenuhi persyaratan untuk peran apa pun.",
+        "user_matches_reply": "tag Discord kamu cocok dengan pengguna wiki \"$1\", tetapi sayangnya kamu tidak memenuhi persyaratan untuk role apa pun.",
+        "user_missing": "Pengguna wiki \"$1\" tidak tersedia.",
+        "user_missing_reply": "pengguna wiki yang tertaut di kamu \"$1\" tidak tersedia.",
+        "user_renamed": "{{GENDER:$1|dia laki-laki|dia perempuan|mereka}} Nama panggilan Discord telah diubah menjadi {{GENDER:$1|dia laki-laki|dia perempuan|mereka}} nama pengguna.",
+        "user_verified": "Pengguna Discord $1 telah berhasil diverifikasi sebagai pengguna wiki $2.",
+        "user_verified_reply": "Kamu telah berhasil diverifikasi sebagai pengguna wiki \"$1\".",
+        "wiki": "Pengguna Wiki:"
+    },
+    "voice": {
+        "channel": "Saluran suara",
+        "disable": "Gunakan `$1` untuk menonaktifkan fungsi ini.",
+        "disabled": "Kamu menonaktifkan fungsi untuk menambahkan peran untuk saluran suara.",
+        "enable": "Gunakan `$1` untuk mengaktifkan fungsi ini.",
+        "enabled": "Kamu mengaktifkan fungsi untuk menambahkan peran untuk saluran suara.",
+        "join": "$1 bergabung dengan saluran suara \"$2\".",
+        "left": "$1 meninggalkan saluran suara \"$2\".",
+        "name": "nama saluran suara",
+        "text": "Saya mencoba memberi semua orang di saluran suara peran tertentu:"
     }
 }

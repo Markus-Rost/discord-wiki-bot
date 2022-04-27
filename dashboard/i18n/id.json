@@ -1,9 +1,290 @@
 {
-	"fallback": [
-		"en",
-		"",
-		"",
-		"",
-		""
-	]
+    "fallback": [
+        "en",
+        " ",
+        " ",
+        " ",
+        " "
+    ],
+    "general": {
+        "botlist": {
+            "text": "Bantu pengguna lain menemukan Wiki-Bot dengan memberikan suara pada daftar bot:",
+            "title": "Daftar Bot"
+        },
+        "delete": "Hapus",
+        "invite": "Undang Wiki-Bot",
+        "language": "Ubah Bahasa",
+        "login": "Masuk",
+        "logout": "Keluar",
+        "rcscript": "Perubahan Terbaru",
+        "refresh": "Refresh daftar server",
+        "save": "Simpan",
+        "selector": "Memilih Server",
+        "settings": "Setelan",
+        "slash": "Slash Command",
+        "support": "Dukungan Server",
+        "theme-dark": "Gunakan tema gelap",
+        "theme-light": "Gunakan tema terang",
+        "title": "Pengaturan Wiki-Bot",
+        "verification": "Verifikasi",
+        "welcome": "<h2>Selamat datang di Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot adalah bot Discord yang dibuat untuk menyatukan server Discord dan wiki MediaWiki. Ini membantu dengan menghubungkan halaman wiki, memverifikasi pengguna wiki, menginformasikan tentang perubahan terbaru di wiki dan banyak lagi. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Informasi selengkapnya]</a></p>\n<p>Di sini Kamu dapat mengubah pengaturan bot yang berbeda untuk server tempat Kamu memiliki izin Kelola Server. Untuk memulai, Kamu harus mengautentikasi akun Discord Kamu yang dapat Kamu lakukan dengan tombol ini:</p>"
+    },
+    "indexjs": {
+        "avatar": {
+            "content_type": "Tautan yang disediakan memiliki tipe konten $1, tetapi hanya tipe konten berikut yang diizinkan:",
+            "invalid_url": "URL tidak dapat diselesaikan menjadi file gambar yang valid."
+        },
+        "invalid": {
+            "note_http": "Situs web yang disediakan tidak memiliki sertifikat TLS/SSL yang valid! Untuk alasan keamanan, hanya wiki yang menggunakan HTTPS yang didukung.",
+            "note_private": "Wiki yang disediakan bersifat pribadi!",
+            "note_timeout": "Tautan yang disediakan terlalu lama untuk ditanggapi!",
+            "text": "URL tidak dapat diselesaikan ke situs MediaWiki yang valid!",
+            "title": "wiki Error/Invalid!"
+        },
+        "outdated": {
+            "text": "Perubahan terbaru webhook membutuhkan setidaknya MediaWiki 1.30!",
+            "title": "Versi MediaWiki yang ketinggalan zaman!"
+        },
+        "prefix": {
+            "backslash": "Prefix tidak boleh menyertakan garis miring terbalik!",
+            "code": "Awalan mungkin tidak menyertakan kode markdown!",
+            "space": "Prefix tidak boleh menyertakan spasi!"
+        },
+        "sysmessage": {
+            "text": "Halaman $1 harus cocok dengan id server $2.",
+            "title": "Pesan sistem tidak cocok!"
+        },
+        "valid": {
+            "MediaWiki": "Peringatan: Membutuhkan setidaknya $1 untuk fungsionalitas penuh.",
+            "title": "Wiki ini valid dan dapat digunakan!"
+        }
+    },
+    "notice": {
+        "error": {
+            "text": "Terjadi kesalahan yang tidak diketahui, harap coba lagi.",
+            "title": "Kesalahan yang tidak diketahui!"
+        },
+        "invalidusergroup": {
+            "text": "Nama grup pengguna terlalu panjang atau Kamu yang memberikan terlalu banyak.",
+            "title": "Grup pengguna tidak valid!"
+        },
+        "loginfail": {
+            "text": "Terjadi kesalahan saat kamu masuk, coba lagi.",
+            "title": "Gagal masuk!"
+        },
+        "logout": {
+            "text": "Kamu telah berhasil logout. Untuk mengubah pengaturan apa pun, Kamu harus masuk kembali.",
+            "title": "Berhasil Keluar!"
+        },
+        "missingperm": {
+            "text": "Kamu atau Wiki-Bot tidak memiliki izin $1 untuk fungsi ini.",
+            "title": "Izin hilang/kurang!"
+        },
+        "mwversion": {
+            "text": "Membutuhkan setidaknya MediaWiki 1.30, ditemukan $1 pada $2.",
+            "title": "Versi MediaWiki lawas!"
+        },
+        "nochange": {
+            "text": "Pengaturan cocok dengan pengaturan utama saat ini.",
+            "title": "Gagal menyimpan!"
+        },
+        "nosettings": {
+            "note": "Ubah Setelan.",
+            "text": "Harap tentukan pengaturan untuk server terlebih dahulu.",
+            "title": "Server belum disiapkan!"
+        },
+        "noslash": {
+            "note": "Aktifkan perintah garis miring.",
+            "text": "Perintah garis miring dari Wiki-Bot tidak diaktifkan di server ini.",
+            "title": "Perintah garis miring tidak diaktifkan!"
+        },
+        "noverify": {
+            "text": "Pembatasan untuk perintah $1 tidak dapat diubah tanpa verifikasi yang disiapkan.",
+            "title": "Verifikasi belum dikonfigurasi!"
+        },
+        "oauth": {
+            "text": "Akun wiki mu telah berhasil terhubung dengan Wiki-Bot.",
+            "title": "Akun berhasil terhubung!"
+        },
+        "oauthfail": {
+            "text": "Akun wiki mu tidak dapat terhubung, silakan coba lagi.",
+            "title": "Koneksi gagal!"
+        },
+        "oauthlogin": {
+            "text": "Silakan masuk jika Kamu tidak ingin Wiki-Bot mengingat akun wiki kamu.",
+            "title": "Akun wiki Kamu yang terhubung telah disimpan!"
+        },
+        "oauthother": {
+            "note": "Beralih akun.",
+            "text": "Harap dicatat bahwa akun wiki kamu terhubung dengan akun Discord yang berbeda dari yang kamu gunakan saat ini.",
+            "title": "Akun berhasil terhubung!"
+        },
+        "oauthverify": {
+            "text": "Akun wiki mu telah berhasil diverifikasi.",
+            "title": "Akun berhasil diverifikasi!"
+        },
+        "readonly": {
+            "text": "Saat ini kamu hanya dapat melihat pengaturan anda, tetapi tidak dapat mengubahnya.",
+            "title": "Read-only database!"
+        },
+        "refresh": {
+            "text": "Daftar server kamu telah berhasil di-refresh.",
+            "title": "Penyegaran berhasil!"
+        },
+        "refreshfail": {
+            "text": "Daftar server Kamu tidak dapat di-refresh, silakan coba lagi.",
+            "title": "Penyegaran gagal!"
+        },
+        "save": {
+            "text": "Pengaturan telah berhasil diperbarui.",
+            "title": "Pengaturan disimpan!"
+        },
+        "savefail": {
+            "note_http": "Situs web yang disediakan tidak memiliki sertifikat TLS/SSL yang valid! Untuk alasan keamanan, hanya wiki yang menggunakan HTTPS yang didukung.",
+            "note_private": "Wiki yang disediakan bersifat pribadi!",
+            "note_timeout": "Tautan yang disediakan terlalu lama untuk ditanggapi!",
+            "text": "Pengaturan tidak dapat disimpan, harap coba lagi.",
+            "title": "Gagal menyimpan!"
+        },
+        "sysmessage": {
+            "text": "Halaman $1 harus cocok dengan id server $2.",
+            "title": "Pesan sistem tidak cocok!"
+        },
+        "unauthorized": {
+            "text": "Silakan masuk sebelum Kamu dapat mengubah pengaturan apa pun.",
+            "title": "Belum masuk!"
+        },
+        "webhookfail": {
+            "note": "Webhook Discord tidak dapat diubah!",
+            "text": "Pengaturan hanya sebagian diperbarui.",
+            "title": "Pengaturan disimpan sebagian!"
+        },
+        "wikiblocked": {
+            "note": "Alasan:",
+            "text": "$1 telah diblokir agar tidak ditambahkan sebagai webhook untuk perubahan terbaru.",
+            "title": "Wiki diblokir!"
+        }
+    },
+    "oauth": {
+        "desc": "Ini adalah pengaturan OAuth2 kamu untuk menghubungkan akun wiki:",
+        "failed": "Gagal memuat setelan OAuth2!",
+        "form": {
+            "connect": "Hubungkan akun.",
+            "connected": "Terhubung",
+            "current": "Status terkini:",
+            "default": "Koneksi Akun Wiki",
+            "disable": "Jangan ingat akun saya!",
+            "disabled": "Tidak Aktif",
+            "disconnect": "Putuskan akun.",
+            "enable": "Ingat akun saya.",
+            "unconnected": "Tidak terhubung"
+        }
+    },
+    "rcscript": {
+        "desc": "Ini adalah webhook perubahan terbaru untuk $1:",
+        "explanation": "<h2>Webhook Perubahan Terbaru</h2>\n<p>Wiki-Bot dapat menjalankan webhook perubahan terbaru berdasarkan <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Perubahan terbaru dapat ditampilkan dalam pesan teks ringkas dengan tautan sebaris atau pesan tersemat dengan tag edit dan perubahan kategori.</p>\n<p>Persyaratan untuk menambahkan webhook perubahan terbaru:</p>\n<ul>\n<li>Wiki harus berjalan di <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> atau lebih tinggi.</li>\n<li>Pesan sistem <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> perlu disetel ke id server Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
+        "form": {
+            "avatar": "Avatar webhook:",
+            "avatar_preview": "Pratinjau",
+            "channel": "Saluran:",
+            "confirm": "Apakah Anda benar-benar ingin menghapus webhook perubahan terbaru?",
+            "display": "Mode tampilan:",
+            "display_compact": "Pesan teks ringkas dengan tautan sebaris.",
+            "display_diff": "Sematkan pesan dengan pratinjau gambar dan edit perbedaan.",
+            "display_embed": "Sematkan pesan dengan tag edit dan perubahan kategori.",
+            "display_image": "Sematkan pesan dengan pratinjau gambar.",
+            "entry": "Perubahan Terbaru Webhook #$1",
+            "feeds": "Perubahan berbasis feed:",
+            "feeds_only": "Hanya perubahan berbasis feed:",
+            "lang": "Bahasa:",
+            "name": "Nama webhook:",
+            "new": "Webhook Perubahan Terbaru Baru",
+            "select_channel": "-- Pilih Saluran --",
+            "wiki": "Wiki:",
+            "wiki_check": "Cek wiki"
+        },
+        "new": "Webhook Baru"
+    },
+    "selector": {
+        "desc": "Ini adalah daftar semua server tempat Kamu dapat mengubah pengaturan karena Kamu memiliki izin [Kelola Server]($1). Silakan pilih server:",
+        "invite": "Wiki-Bot belum menjadi anggota $1, tetapi Kamu dapat [mengundang Wiki-Bot]($2).",
+        "none": "Saat ini Anda tidak memiliki izin [Kelola Server]($1) di server mana pun, apakah Anda masuk ke akun yang benar?",
+        "switch": "Ganti Akun",
+        "title": "Memilih Server",
+        "user": "Akun Wiki",
+        "with": "Server dengan Wiki-Bot",
+        "without": "Server tanpa Wiki-Bot"
+    },
+    "settings": {
+        "desc": "Ini adalah pengaturan untuk $1:",
+        "failed": "Gagal memuat pengaturan!",
+        "form": {
+            "channel": "Saluran:",
+            "confirm": "Apakah kamu benar-benar ingin menghapus penimpaan saluran?",
+            "default": "Pengaturan di seluruh server",
+            "inline": "Perintah sebaris:",
+            "lang": "Bahasa:",
+            "new": "Penimpaan Saluran Baru",
+            "overwrite": "$1 Pengaturan",
+            "prefix": "Prefix:",
+            "prefix_space": "Awalan diakhiri dengan spasi:",
+            "role": "Role Minimal:",
+            "select_channel": "-- Pilih Saluran --",
+            "wiki": "Wiki Utama:",
+            "wiki_check": "Cek wiki"
+        },
+        "new": "Saluran baru ditimpa"
+    },
+    "slash": {
+        "desc": "Ini adalah perintah slash untuk $1:",
+        "explanation": "<h2>Perintah Slash</h2>\n<p>Penggunaan perintah garis miring tertentu dapat dibatasi per peran. Anda dapat melakukannya untuk perintah garis miring Wiki-Bot di sini.</p>",
+        "form": {
+            "add": "Tambahkan",
+            "allow": "Izinkan",
+            "default": "Utama",
+            "default_allow": "Secara default perintah ini diperbolehkan untuk digunakan oleh semua orang.",
+            "default_deny": "Secara default perintah ini tidak boleh digunakan oleh siapapun.",
+            "deny": "Tolak",
+            "entry": "Perintah $1",
+            "role": "Role:",
+            "select_role": "-- Pilih Role--"
+        }
+    },
+    "verification": {
+        "desc": "Ini adalah verifikasi untuk $1:",
+        "explanation": "<h2>Verifikasi Pengguna</h2>\n<p>Menggunakan perintah <code class=\"prefix\">verify &lt;wiki username&gt;</code>, pengguna dapat memverifikasi diri mereka sendiri sebagai pengguna wiki tertentu dengan menggunakan bidang Discord pada profil wiki mereka. Jika pengguna cocok dan verifikasi pengguna diatur di server, Wiki-Bot akan memberi mereka peran untuk semua entri verifikasi yang cocok.</p>\n<p>Setiap entri verifikasi memungkinkan beberapa batasan tentang kapan pengguna harus cocok dengan verifikasi:</p>\n<ul>\n<li>Saluran untuk menggunakan perintah <code class=\"prefix\">verifikasi</code>.</li>\n<li>Peran yang didapat saat mencocokkan entri verifikasi.</li>\n<li>Jumlah edit yang diperlukan di wiki untuk mencocokkan entri verifikasi.</li>\n<li>Grup pengguna yang diperlukan untuk menjadi anggota di wiki agar cocok dengan entri verifikasi.</li>\n<li>Usia akun yang diperlukan dalam hari agar sesuai dengan entri verifikasi.</li>\n<li>Apakah nama panggilan pengguna Discord harus disetel ke nama pengguna wiki mereka saat mereka cocok dengan entri verifikasi.</li>\n</ul>",
+        "form": {
+            "accountage": "Usia akun (dalam hari):",
+            "channel": "Minimal Role:",
+            "confirm": "Apakah Kamu benar-benar ingin menghapus verifikasi?",
+            "editcount": "Jumlah edit minimal:",
+            "entry": "Verifikasi #$1",
+            "flag_logall": "Log verifikasi yang gagal:",
+            "flag_private": "Tanggapan perintah pribadi:",
+            "logging": "Log Saluran:",
+            "match": "Pemberitahuan persyaratan yang tidak ada:",
+            "match_placeholder": "Teks MD pada tag Discord yang cocok tetapi tidak memenuhi persyaratan apa pun untuk peran.",
+            "more": "Tambahkan lebih banyak",
+            "new": "Verifikasi Baru",
+            "notice": "Pemberitahuan Verifikasi",
+            "postcount": "Jumlah posting minimal:",
+            "postcount_and": "Memerlukan edit dan jumlah posting.",
+            "postcount_both": "Memerlukan gabungan edit dan jumlah posting.",
+            "postcount_fandom": "Hanya wiki Fandom:",
+            "postcount_or": "Memerlukan edit atau jumlah posting.",
+            "rename": "Ganti nama Pengguna:",
+            "role": "Role:",
+            "role_add": "Tambahkan",
+            "role_remove": "Hapus",
+            "select_channel": "-- Pilih Saluran --",
+            "select_role": "-- Pilih Peran --",
+            "success": "Pemberitahuan sukses:",
+            "success_placeholder": "Teks MD tentang verifikasi yang berhasil.",
+            "usergroup": "Grup pengguna Wiki:",
+            "usergroup_and": "Wajibkan semua grup pengguna:"
+        },
+        "help_notice": "<p>Pemberitahuan khusus mendukung beberapa fungsi dan variabel sederhana.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – Jumlah edit pengguna saat ini.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – Usia akun pengguna saat ini dalam hari penuh.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – Jumlah posting diskusi saat ini dari pengguna (hanya wiki Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Mengembalikan hasil ekspresi.\n<ul>\n<li>Hanya mendukung penambahan <code class=\"form-button user-select\">+</code> dan pengurangan <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – Mengembalikan teks tergantung pada hasil ekspresi.\n<ul>\n<li>Dukung<code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> serta <code class=\"form-button user-select\">dan</code>, <code class=\"form-button user-select\">atau</code>.</li>\n</ul></li>\n</ul>",
+        "new": "Verifikasi baru",
+        "notice": "Pemberitahuan verifikasi"
+    }
 }
