@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
-import { got } from '../util/functions.js';
+import { got, toMarkdown } from '../util/functions.js';
 import logging from '../util/logging.js';
 
 const wsStatus = [
@@ -70,6 +70,12 @@ function cmd_test(lang, msg, args, line, wiki) {
 				}
 				else logging(wiki, msg.guildId, 'test');
 				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
+				if ( body?.query?.general?.readonly !== undefined ) {
+					if ( body.query.general.readonlyreason ) {
+						embed.addField( lang.get('overview.readonly'), toMarkdown(body.query.general.readonlyreason, wiki, '', true) );
+					}
+					else embed.addField( '\u200b', '**' + lang.get('overview.readonly') + '**' );
+				}
 			}, error => {
 				var then = Date.now();
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
