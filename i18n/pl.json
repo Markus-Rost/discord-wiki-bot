@@ -394,7 +394,6 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_default": "Domyślne",
             "updated": "$1 zaktualizował zezwolenia specjalne komendy po ukośniku dla `$2`."
         },
         "inline": "Wyślij wiadomość z linkami [[wikitekstu]] aby użyć tej komendy.",

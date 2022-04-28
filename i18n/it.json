@@ -394,7 +394,6 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_default": "Default",
             "updated": "$1 ha aggiornato le sovrascritture per i permessi del comando slash `$2`."
         },
         "inline": "Per favore fornisci del testo con link [[wikitext]] per usare questo comando.",

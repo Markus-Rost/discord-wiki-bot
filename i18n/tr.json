@@ -394,7 +394,6 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_default": "Varsayılan",
             "updated": "$1, `$2` eğik çizgi komutu yetkilerini güncelledi."
         },
         "inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin.",

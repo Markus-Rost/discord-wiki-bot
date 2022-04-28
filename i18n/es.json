@@ -394,7 +394,6 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_default": "Predeterminado",
             "updated": "$1 actualizó el permiso del comando de barra inclinada sobreescrito para `$2`."
         },
         "inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",

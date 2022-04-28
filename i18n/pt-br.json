@@ -394,7 +394,6 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_default": "Padrão",
             "updated": "$1 atualizou as substituições de permissão do comando slash para `$2`."
         },
         "inline": "Forneça algum texto com links de [[wikitexto]] para usar este comando.",

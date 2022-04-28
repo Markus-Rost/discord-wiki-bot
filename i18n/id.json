@@ -394,7 +394,6 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_default": "Utama",
             "updated": "$1 memperbarui izin perintah slash yang ditimpa untuk `$2`."
         },
         "inline": "Harap berikan beberapa teks dengan tautan [[wikitext]] untuk menggunakan perintah ini.",

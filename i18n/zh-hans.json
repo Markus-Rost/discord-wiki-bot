@@ -394,7 +394,6 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_default": "默认",
             "updated": "$1更新了`$2`的斜杠命令权限覆写。"
         },
         "inline": "请提供一些有 [[wiki 文本]] 的文字来使用此命令。",

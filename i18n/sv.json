@@ -389,9 +389,6 @@
         "pause": "**Jag är tillfälligt avstängd på den här servern!**\nEndast dessa kommandon fungerar:"
     },
     "interaction": {
-        "dashboard": {
-            "perm_default": "Standard"
-        },
         "inline": "Var snäll och ange text med [[wikitext]]-länkar för att använda detta kommando.",
         "nowiki": "Den använda wikin existerar inte!",
         "verify": "Var snäll och ange ditt wiki-användarnamn för att använda detta kommando till att verifiera ditt Discord-konto med ditt wiki-konto, och få roller som matchar ditt wiki-konto."
