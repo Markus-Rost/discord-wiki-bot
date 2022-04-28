@@ -9,7 +9,7 @@ const overwrites = {
 	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query) => {
 		let namespaces = Object.values(query.namespaces);
 		let contentNamespaces = namespaces.filter( ns => ns.content !== undefined );
-		let namespaceData = [contentNamespaces.map( ns => ns.id ).join('|'), contentNamespaces.map( ns => ( ns['*'] || '*' )  ).join(', ')];
+		let namespaceData = [contentNamespaces.map( ns => ns.id ).join('|'), contentNamespaces.map( ns => ( ns['*'] || '*' ) ).join(', ')];
 		if ( args[0] ) {
 			args[0] = args[0].replace( /_/g, ' ' ).toLowerCase().trim();
 			let namespaceMap = {};

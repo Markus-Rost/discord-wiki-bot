@@ -1,9 +1,8 @@
 import Lang from '../util/i18n.js';
-import { got, db, slashCommands, sendMsg, createNotice, escapeText, hasPerm } from './util.js';
+import { got, db, sendMsg, createNotice, escapeText, hasPerm } from './util.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
-const slashCommand = slashCommands.find( slashCommand => slashCommand.name === 'verify' );
 
 const fieldset = {
 	channel: '<div>'
@@ -520,6 +519,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 		if ( settings.delete_settings ) return db.query( 'DELETE FROM verification WHERE guild = $1 AND configid = $2 RETURNING channel, role, editcount, postcount, usergroup, accountage, rename', [guild, type] ).then( ({rows:[row]}) => {
 			console.log( `- Dashboard: Verification successfully removed: ${guild}#${type}` );
 			res(`/guild/${guild}/verification`, 'save');
+			/*
 			if ( slashCommand?.id ) db.query( 'SELECT COUNT(1) FROM verification WHERE guild = $1', [guild] ).then( ({rows:[{count}]}) => {
 				if ( count > 0 ) return;
 				got.put( 'https://discord.com/api/v8/applications/' + process.env.bot + '/guilds/' + guild + '/commands/' + slashCommand.id + '/permissions', {
@@ -544,6 +544,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 			}, dberror => {
 				console.log( '- Dashboard: Error while disabling the slash command: ' + dberror );
 			} );
+			*/
 			if ( row ) db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {
 				var lang = new Lang(channel.lang);
 				var text = lang.get('verification.dashboard.removed', `<@${userSettings.user.id}>`, type);
@@ -626,6 +627,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 				db.query( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, '|' + channels.join('|') + '|', roles.map( role => role.prefix + role.id ).join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )] ).then( () => {
 					console.log( `- Dashboard: Verification successfully added: ${guild}#${configid}` );
 					res(`/guild/${guild}/verification/${configid}`, 'save');
+					/*
 					if ( !row.count.length && slashCommand?.id ) got.put( 'https://discord.com/api/v8/applications/' + process.env.bot + '/guilds/' + guild + '/commands/' + slashCommand.id + '/permissions', {
 						headers:{
 							Authorization: 'Bot ' + process.env.token
@@ -651,6 +653,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					}, error => {
 						console.log( '- Dashboard: Error while enabling the slash command: ' + error );
 					} );
+					*/
 					var lang = new Lang(row.lang);
 					var text = lang.get('verification.dashboard.added', `<@${userSettings.user.id}>`, configid);
 					text += '\n' + lang.get('verification.channel') + ' <#' + channels.join('>, <#') + '>';

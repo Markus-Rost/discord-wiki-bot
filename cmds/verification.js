@@ -63,6 +63,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			}
 			return db.query( 'INSERT INTO verification(guild, configid, channel, role) VALUES($1, $2, $3, $4)', [msg.guildId, new_configid, '|' + ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId ) + '|', roles] ).then( () => {
 				console.log( '- Verification successfully added.' );
+				/*
 				if ( !rows.length ) msg.client.application.commands.cache.find( slashCommand => slashCommand.name === 'verify' )?.permissions.set( {
 					guild: msg.guildId,
 					permissions: [{
@@ -75,6 +76,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}, error => {
 					console.log( '- Error while enabling the slash command: ' + error );
 				} );
+				*/
 				msg.replyMsg( {content: lang.get('verification.added') + formatVerification(false, false, {configid: new_configid, role: roles}), components}, true );
 			}, dberror => {
 				console.log( '- Error while adding the verification: ' + dberror );
@@ -105,6 +107,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 			return db.query( 'DELETE FROM verification WHERE guild = $1 AND configid = $2', [msg.guildId, row.configid] ).then( () => {
 				console.log( '- Verification successfully removed.' );
+				/*
 				if ( rows.length === 1 ) msg.client.application.commands.cache.find( slashCommand => slashCommand.name === 'verify' )?.permissions.set( {
 					guild: msg.guildId,
 					permissions: []
@@ -113,6 +116,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}, error => {
 					console.log( '- Error while disabling the slash command: ' + error );
 				} );
+				*/
 				msg.replyMsg( {content: lang.get('verification.deleted'), components}, true );
 			}, dberror => {
 				console.log( '- Error while removing the verification: ' + dberror );

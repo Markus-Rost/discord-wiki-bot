@@ -499,52 +499,6 @@ if ( prefix ) prefix.addEventListener( 'input', function() {
 	else prefix.setCustomValidity('');
 } );
 
-/** @type {HTMLSelectElement} */
-const addRole = document.getElementById('wb-settings-addrole');
-/** @type {HTMLButtonElement} */
-const addRoleButton = document.getElementById('wb-settings-addrole-add');
-if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
-	if ( addRole.value ) {
-		var selectedRole = addRole.selectedOptions.item(0);
-		var newPermission = document.createElement('div');
-		var selectedRoleInfo = selectedRole.textContent.split(' – ');
-		var newPermissionSpan = document.createElement('span');
-		newPermissionSpan.textContent = ( selectedRoleInfo[1] || selectedRoleInfo[0] );
-		newPermissionSpan.title = selectedRoleInfo[0];
-		var newPermissionDiv0 = document.createElement('div');
-		newPermissionDiv0.classList.add('wb-settings-permission');
-		var newPermissionInput = document.createElement('input');
-		newPermissionInput.type = 'radio';
-		newPermissionInput.name = 'permission-' +  addRole.value;
-		newPermissionInput.required = true;
-		newPermissionDiv0.append(newPermissionInput, document.createElement('label'));
-		/** @type {HTMLDivElement} */
-		var newPermissionDiv1 = newPermissionDiv0.cloneNode(true);
-		/** @type {HTMLDivElement} */
-		var newPermissionDiv2 = newPermissionDiv0.cloneNode(true);
-		newPermissionDiv0.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-0';
-		newPermissionDiv1.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-1';
-		newPermissionDiv2.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-default';
-		newPermissionDiv0.firstElementChild.value = '0';
-		newPermissionDiv1.firstElementChild.value = '1';
-		newPermissionDiv2.firstElementChild.value = '';
-		newPermissionDiv0.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-0';
-		newPermissionDiv1.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-1';
-		newPermissionDiv2.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-default';
-		newPermissionDiv0.lastElementChild.classList.add('wb-settings-permission-deny', 'radio-label');
-		newPermissionDiv1.lastElementChild.classList.add('wb-settings-permission-allow', 'radio-label');
-		newPermissionDiv2.lastElementChild.classList.add('wb-settings-permission-default', 'radio-label');
-		newPermissionDiv0.lastElementChild.textContent = i18nSlashPermission.deny;
-		newPermissionDiv1.lastElementChild.textContent = i18nSlashPermission.allow;
-		newPermissionDiv2.lastElementChild.textContent = i18nSlashPermission.default;
-		newPermissionDiv2.firstElementChild.defaultChecked = true;
-		newPermission.append(newPermissionSpan, newPermissionDiv0, newPermissionDiv1, newPermissionDiv2);
-		addRole.parentElement.after(newPermission);
-		selectedRole.remove();
-		addRole.firstElementChild.selected = true;
-	}
-};
-
 var textAreas = document.getElementsByTagName('textarea');
 if ( textAreas.length ) {
 	/** @type {HTMLTextAreaElement} */

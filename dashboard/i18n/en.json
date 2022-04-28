@@ -21,7 +21,6 @@
         "save": "Save",
         "selector": "Server Selector",
         "settings": "Settings",
-        "slash": "Slash Commands",
         "support": "Support Server",
         "theme-dark": "Use dark theme",
         "theme-light": "Use light theme",
@@ -92,15 +91,6 @@
             "note": "Change settings.",
             "text": "Please define settings for the server first.",
             "title": "Server not set up yet!"
-        },
-        "noslash": {
-            "note": "Enable slash commands.",
-            "text": "The slash commands of Wiki-Bot are not enabled on this server.",
-            "title": "Slash commands are not enabled!"
-        },
-        "noverify": {
-            "text": "The restrictions for the $1 command can't be changed without verifications being set up.",
-            "title": "Verifications are not set up!"
         },
         "oauth": {
             "text": "Your wiki account has been successfully connected with Wiki-Bot.",
@@ -234,21 +224,6 @@
             "wiki_check": "Check wiki"
         },
         "new": "New channel overwrite"
-    },
-    "slash": {
-        "desc": "These are the slash commands for $1:",
-        "explanation": "<h2>Slash Commands</h2>\n<p>The usage of specific slash commands can be restricted per role. You can do that for the slash commands of Wiki-Bot here.</p>",
-        "form": {
-            "add": "Add",
-            "allow": "Allow",
-            "default": "Default",
-            "default_allow": "By default this command is allowed to be used by everyone.",
-            "default_deny": "By default this command is not allowed to be used by anyone.",
-            "deny": "Deny",
-            "entry": "Command $1",
-            "role": "Role:",
-            "select_role": "-- Select a Role --"
-        }
     },
     "verification": {
         "desc": "These are the verifications for $1:",

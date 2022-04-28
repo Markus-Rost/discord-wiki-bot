@@ -21,7 +21,7 @@ const file = readFileSync('./dashboard/index.html');
  * @param {String[]} [actionArgs] - The arguments for the action
  */
 export default function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
-	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:user|guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)?)?)(?:\/.*)?$/, '$1' );
+	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:user|guild\/\d+(?:\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	var settings = settingsData.get(userSession.user_id);
 	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(userSession.user_id) ) {
@@ -43,8 +43,6 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	$('.channel#verification').attr('title', dashboardLang.get('general.verification'));
 	$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
 	$('.channel#rcscript').attr('title', dashboardLang.get('general.rcscript'));
-	$('.channel#slash div').text(dashboardLang.get('general.slash'));
-	$('.channel#slash').attr('title', dashboardLang.get('general.slash'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
@@ -136,11 +134,9 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
-		$('.channel#slash').attr('href', `/guild/${guild.id}/slash`);
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'slash' ) return forms.slash(res, $, guild, args, dashboardLang);
 		return forms.settings(res, $, guild, args, dashboardLang);
 	}
 	else if ( settings.guilds.notMember.has(id) ) {
@@ -180,11 +176,9 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings?owner=true`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification?owner=true`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript?owner=true`);
-		$('.channel#slash').attr('href', `/guild/${guild.id}/slash?owner=true`);
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'slash' ) return forms.slash(res, $, guild, args, dashboardLang);
 		return forms.settings(res, $, guild, args, dashboardLang);
 	}
 	else {

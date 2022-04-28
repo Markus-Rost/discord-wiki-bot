@@ -393,12 +393,6 @@
         "pause": "**I'm currently paused on this server!**\nOnly these commands can be performed:"
     },
     "interaction": {
-        "dashboard": {
-            "perm_allow": "Allow",
-            "perm_default": "Default",
-            "perm_deny": "Deny",
-            "updated": "$1 updated the slash command permission overwrites for `$2`."
-        },
         "inline": "Please provide some text with [[wikitext]] links to use this command.",
         "nowiki": "The used wiki doesn't exist!",
         "verify": "Please provide your wiki username to use this command to verify your Discord account with your wiki account and get roles matching your wiki account."

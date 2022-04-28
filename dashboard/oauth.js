@@ -164,7 +164,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				let returnLocation = '/';
 				if ( lastGuild ) {
 					if ( lastGuild === 'user' ) returnLocation += lastGuild;
-					else if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
+					else if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
 				}
 				res.writeHead(302, {
 					Location: returnLocation,

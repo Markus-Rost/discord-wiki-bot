@@ -52,7 +52,7 @@ const server = http.createServer( (req, res) => {
 		} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
 		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id) &&
-		( ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] ) && /^(?:default|new|notice|\d+)$/.test(args[4])
+		( ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] ) && /^(?:default|new|notice|\d+)$/.test(args[4])
 		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || req.url === '/user' ) ) {
 			let body = [];
 			req.on( 'data', chunk => {
@@ -164,8 +164,8 @@ const server = http.createServer( (req, res) => {
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?)"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; SameSite=Lax; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -196,7 +196,7 @@ const server = http.createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -219,7 +219,7 @@ const server = http.createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -235,7 +235,7 @@ const server = http.createServer( (req, res) => {
 
 	if ( reqURL.pathname === '/refresh' ) {
 		let returnLocation = reqURL.searchParams.get('return');
-		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)$/.test(returnLocation) ) {
+		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?)$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, sessionData.get(state), returnLocation);
@@ -249,7 +249,6 @@ const server = http.createServer( (req, res) => {
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
-	if ( reqURL.searchParams.get('slash') === 'noverify' && reqURL.pathname.split('/')[3] === 'slash' ) action = 'noverify';
 	if ( reqURL.pathname === '/user' ) {
 		if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
 		if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';

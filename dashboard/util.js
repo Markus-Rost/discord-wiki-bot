@@ -2,9 +2,6 @@ import gotDefault from 'got';
 import pg from 'pg';
 import DiscordOauth2 from 'discord-oauth2';
 import { oauthSites } from '../util/wiki.js';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const slashCommands = require('../interactions/commands.json');
 
 globalThis.isDebug = ( process.argv[2] === 'debug' );
 
@@ -57,31 +54,6 @@ if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 		url: 'https://meta.wikimedia.org/w/',
 	});
 }
-
-got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, {
-	headers: {
-		Authorization: `Bot ${process.env.token}`
-	},
-	timeout: {
-		request: 10000
-	}
-} ).then( response=> {
-	if ( response.statusCode !== 200 || !response.body ) {
-		console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the global slash commands: ' + response.body?.message );
-		return;
-	}
-	console.log( '- Dashboard: Slash commands successfully loaded.' );
-	response.body.forEach( command => {
-		var slashCommand = slashCommands.find( slashCommand => slashCommand.name === command.name );
-		if ( slashCommand ) {
-			slashCommand.id = command.id;
-			slashCommand.application_id = command.application_id;
-		}
-		else slashCommands.push(slashCommand);
-	} );
-}, error => {
-	console.log( '- Dashboard: Error while getting the global slash commands: ' + error );
-} );
 
 /**
  * @typedef UserSession
@@ -347,17 +319,6 @@ function createNotice($, notice, dashboardLang, args = []) {
 			title.text(dashboardLang.get('notice.invalidusergroup.title'));
 			text.text(dashboardLang.get('notice.invalidusergroup.text'));
 			break;
-		case 'noverify':
-			type = 'info';
-			title.text(dashboardLang.get('notice.noverify.title'));
-			text.html(dashboardLang.get('notice.noverify.text', true, $('<code>').text('/verify')));
-			break;
-		case 'noslash':
-			type = 'error';
-			title.text(dashboardLang.get('notice.noslash.title'));
-			text.text(dashboardLang.get('notice.noslash.text'));
-			note = $('<a target="_blank">').text(dashboardLang.get('notice.noslash.note')).attr('href', `https://discord.com/api/oauth2/authorize?client_id=${process.env.bot}&scope=applications.commands&guild_id=${args[0]}&disable_guild_select=true`);
-			break;
 		case 'wikiblocked':
 			type = 'error';
 			title.text(dashboardLang.get('notice.wikiblocked.title'));
@@ -454,7 +415,6 @@ export {
 	db,
 	oauth,
 	enabledOAuth2,
-	slashCommands,
 	sessionData,
 	settingsData,
 	oauthVerify,
