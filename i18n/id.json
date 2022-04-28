@@ -393,12 +393,6 @@
         "pause": "**Saat ini saya sedang dijeda di server ini!**\nHanya perintah ini yang dapat dilakukan:"
     },
     "interaction": {
-        "dashboard": {
-            "perm_allow": "Izinkan",
-            "perm_default": "Utama",
-            "perm_deny": "Tolak",
-            "updated": "$1 memperbarui izin perintah slash yang ditimpa untuk `$2`."
-        },
         "inline": "Harap berikan beberapa teks dengan tautan [[wikitext]] untuk menggunakan perintah ini.",
         "nowiki": "Wiki yang dicantumkan tidak ada!",
         "verify": "Harap berikan nama pengguna wiki kamu untuk menggunakan perintah ini untuk memverifikasi akun Discord milik kamu dengan akun wiki dan dapatkan peran yang cocok dengan akun wiki mu."

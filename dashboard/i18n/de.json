@@ -21,7 +21,6 @@
         "save": "Speichern",
         "selector": "Serverauswahl",
         "settings": "Einstellungen",
-        "slash": "Slash-Befehle",
         "support": "Support-Server",
         "theme-dark": "Nutze das dunkle Design",
         "theme-light": "Nutze das helle Design",
@@ -92,15 +91,6 @@
             "note": "Einstellungen ändern.",
             "text": "Bitte nimm für diesen Server vorher noch Einstellungen vor.",
             "title": "Server noch nicht aufgesetzt!"
-        },
-        "noslash": {
-            "note": "Aktiviere Slash-Befehle.",
-            "text": "Die Slash-Befehle von Wiki-Bot sind auf diesem Server nicht aktiviert.",
-            "title": "Slash-Befehle sind nicht aktiviert!"
-        },
-        "noverify": {
-            "text": "Die Beschränkungen für den Befehl $1 können nicht geändert werden, ohne dass Verifizierungen eingerichtet wurden.",
-            "title": "Verifizierungen nicht eingerichtet!"
         },
         "oauth": {
             "text": "Dein Wiki-Account wurde erfolgreich mit Wiki-Bot verbunden.",
@@ -234,21 +224,6 @@
             "wiki_check": "Wiki testen"
         },
         "new": "Neue Überschreibung"
-    },
-    "slash": {
-        "desc": "Dies sind die Slash-Befehle für $1:",
-        "explanation": "<h2>Slash-Befehle</h2>\n<p>Die Nutzung von Slash-Befehlen kann pro Rolle beschränkt werden. Dies kannst du hier für die Slash-Befehle von Wiki-Bot tun.</p>",
-        "form": {
-            "add": "Hinzufügen",
-            "allow": "Erlaubt",
-            "default": "Standard",
-            "default_allow": "Standardmäßig kann dieser Befehl von allen genutzt werden.",
-            "default_deny": "Standardmäßig kann dieser Befehl von niemandem genutzt werden.",
-            "deny": "Verboten",
-            "entry": "Befehl $1",
-            "role": "Rolle:",
-            "select_role": "-- Wähle eine Rolle --"
-        }
     },
     "verification": {
         "desc": "Dies sind die Verifizierungen für $1:",

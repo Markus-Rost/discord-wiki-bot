@@ -21,7 +21,6 @@
         "save": "Salva",
         "selector": "Seleziona il server",
         "settings": "Impostazioni",
-        "slash": "Comandi slash",
         "support": "Server di supporto",
         "theme-dark": "Usa il tema scuro",
         "theme-light": "Usa il tema chiaro",
@@ -92,15 +91,6 @@
             "note": "Modifica le impostazioni.",
             "text": "Per favore definisci prima le impostazioni del server.",
             "title": "Il server non è ancora impostato!"
-        },
-        "noslash": {
-            "note": "Abilita i comandi slash.",
-            "text": "I comandi slash di Wiki-Bot non sono abilitati su questo server.",
-            "title": "I comandi slash non sono abilitati!"
-        },
-        "noverify": {
-            "text": "Le restrizioni per il comando $1 non possono essere modificate senza aver impostato le verifiche.",
-            "title": "Le verifiche non sono impostate!"
         },
         "oauth": {
             "text": "Il tuo account sulla wiki è stato connesso con successo da Wiki-Bot.",
@@ -234,21 +224,6 @@
             "wiki_check": "Controlla la wiki"
         },
         "new": "Nuova sovrascrittura canale"
-    },
-    "slash": {
-        "desc": "Questi sono i comandi slash per $1:",
-        "explanation": "<h2>Comandi slash</h2>\n<p>L'uso di specifici comandi slash può essere ristretto ad alcuni ruoli. Puoi farlo per i comandi slash di Wiki-Bot qui.</p>",
-        "form": {
-            "add": "Aggiungi",
-            "allow": "Acconsenti",
-            "default": "Default",
-            "default_allow": "Di default questo comando può essere usato da tutti.",
-            "default_deny": "Di default questo comando non può essere usato da tutti.",
-            "deny": "Nega",
-            "entry": "Comando $1",
-            "role": "Ruolo:",
-            "select_role": "-- Seleziona un ruolo --"
-        }
     },
     "verification": {
         "desc": "Queste sono le verifiche per $1:",

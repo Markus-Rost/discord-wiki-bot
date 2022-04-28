@@ -393,12 +393,6 @@
         "pause": "**Ich bin auf diesem Server derzeit pausiert!**\nNur diese Befehle können ausgeführt werden:"
     },
     "interaction": {
-        "dashboard": {
-            "perm_allow": "Erlaubt",
-            "perm_default": "Standard",
-            "perm_deny": "Verboten",
-            "updated": "$1 hat die Berechtigungen für `$2` bearbeitet."
-        },
         "inline": "Bitte gebe einen Text mit [[Wikitext]]-Links an um diesen Befehl zu nutzen.",
         "nowiki": "Das genutzte Wiki existiert nicht!",
         "verify": "Bitte gebe deinen Wiki-Benutzernamen an um diesen Befehl dazu zu nutzen, deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."

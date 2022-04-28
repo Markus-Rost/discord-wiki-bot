@@ -21,7 +21,6 @@
         "save": "Guardar",
         "selector": "Selector de Servidor",
         "settings": "Ajustes",
-        "slash": "Comandos de barra",
         "support": "Servidor de Soporte",
         "theme-dark": "Usar tema oscuro",
         "theme-light": "Usar tema claro",
@@ -92,15 +91,6 @@
             "note": "Cambiar la configuración.",
             "text": "Primero, define la configuración del servidor.",
             "title": "¡El servidor aún no está configurado!"
-        },
-        "noslash": {
-            "note": "Habilitar comandos de barra inclinada.",
-            "text": "Los comandos de barra inclinada de Wiki-Bot no están habilitados en este servidor.",
-            "title": "¡Los comandos de barra inclinada no están habilitados!"
-        },
-        "noverify": {
-            "text": "Las restricciones para el comando $1 no se pueden cambiar sin que se configuren las verificaciones.",
-            "title": "¡Las verificaciones no están configuradas!"
         },
         "oauth": {
             "text": "Tu cuenta wiki se ha conectado correctamente con Wiki-Bot.",
@@ -234,21 +224,6 @@
             "wiki_check": "Comprobar wiki"
         },
         "new": "Nueva sobrescritura de canal"
-    },
-    "slash": {
-        "desc": "Estos son los comandos de barra inclinada para $1:",
-        "explanation": "<h2>Comandos de barra inclinada</h2>\n<p>El uso de comandos específicos de barra inclinada se puede restringir por rol. Puedes hacerlo con los comandos de barra inclinada de Wiki-Bot aquí.</p>",
-        "form": {
-            "add": "Agregar",
-            "allow": "Permitir",
-            "default": "Predeterminado",
-            "default_allow": "Por defecto, todo el mundo puede utilizar este comando.",
-            "default_deny": "Por defecto, nadie puede utilizar este comando.",
-            "deny": "Negar",
-            "entry": "Comando $1",
-            "role": "Rol:",
-            "select_role": "-- Selecciona un Rol --"
-        }
     },
     "verification": {
         "desc": "Estas son las verificaciones en $1:",

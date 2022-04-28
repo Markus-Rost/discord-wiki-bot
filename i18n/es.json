@@ -393,12 +393,6 @@
         "pause": "**¡Actualmente estoy en pausa en este servidor!**\nSolo se pueden ejecutar estos comandos:"
     },
     "interaction": {
-        "dashboard": {
-            "perm_allow": "Permitir",
-            "perm_default": "Predeterminado",
-            "perm_deny": "Negar",
-            "updated": "$1 actualizó el permiso del comando de barra inclinada sobreescrito para `$2`."
-        },
         "inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
         "nowiki": "¡El wiki usado no existe!",
         "verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."

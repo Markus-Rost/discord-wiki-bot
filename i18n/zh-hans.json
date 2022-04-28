@@ -393,12 +393,6 @@
         "pause": "**我目前处于暂停状态！**\n仅能使用以下命令："
     },
     "interaction": {
-        "dashboard": {
-            "perm_allow": "允许",
-            "perm_default": "默认",
-            "perm_deny": "拒绝",
-            "updated": "$1更新了`$2`的斜杠命令权限覆写。"
-        },
         "inline": "请提供一些有 [[wiki 文本]] 的文字来使用此命令。",
         "nowiki": "所使用的 wiki 不存在！",
         "verify": "为了验证您的 Discord 与您的 wiki 账户相匹配并授予与您 wiki 账户相符合的身份组，请提供您的 wiki 用户名。"

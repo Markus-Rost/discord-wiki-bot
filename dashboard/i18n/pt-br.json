@@ -21,7 +21,6 @@
         "save": "Salvar",
         "selector": "Seletor de servidor",
         "settings": "Configurações",
-        "slash": "Comandos de slash",
         "support": "Servidor de suporte",
         "theme-dark": "Usar tema escuro",
         "theme-light": "Usar tema claro",
@@ -92,15 +91,6 @@
             "note": "Alterar configurações.",
             "text": "Primeiro defina as configurações para o servidor.",
             "title": "Servidor ainda não configurado!"
-        },
-        "noslash": {
-            "note": "Ativar os comandos de barra.",
-            "text": "Os comandos de barra do Wiki-Bot não estão habilitados neste servidor.",
-            "title": "Os comandos de barra não estão habilitados!"
-        },
-        "noverify": {
-            "text": "As restrições para o comando $1 não podem ser alteradas sem que as verificações sejam configuradas.",
-            "title": "As verificações não foram configuradas!"
         },
         "oauth": {
             "text": "Sua conta wiki foi conectada com sucesso ao Wiki-Bot.",
@@ -234,21 +224,6 @@
             "wiki_check": "Verificar wiki"
         },
         "new": "Nova sobreposição de canal"
-    },
-    "slash": {
-        "desc": "Estes são os comandos de slash para $1:",
-        "explanation": "<h2>Comandos slash</h2>\n<p>O uso de comandos de slash específicos pode ser restrito por função. Você pode fazer isso para os comandos de slash do Wiki-Bot aqui.</p>",
-        "form": {
-            "add": "Adicionar",
-            "allow": "Permitir",
-            "default": "Padrão",
-            "default_allow": "Por padrão, este comando pode ser usado por todos.",
-            "default_deny": "Por padrão, este comando não pode ser usado por ninguém.",
-            "deny": "Negar",
-            "entry": "Comando $1",
-            "role": "Cargo:",
-            "select_role": "-- Selecionar cargo --"
-        }
     },
     "verification": {
         "desc": "Estas são as verificações para $1:",
