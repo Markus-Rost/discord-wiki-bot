@@ -92,9 +92,6 @@
             "text": "Harap tentukan pengaturan untuk server terlebih dahulu.",
             "title": "Server belum disiapkan!"
         },
-        "noslash": {
-            "text": "Perintah garis miring dari Wiki-Bot tidak diaktifkan di server ini."
-        },
         "noverify": {
             "text": "Pembatasan untuk perintah $1 tidak dapat diubah tanpa verifikasi yang disiapkan."
         },
@@ -232,12 +229,9 @@
         "new": "Saluran baru ditimpa"
     },
     "slash": {
-        "explanation": "<h2>Perintah Slash</h2>\n<p>Penggunaan perintah garis miring tertentu dapat dibatasi per peran. Anda dapat melakukannya untuk perintah garis miring Wiki-Bot di sini.</p>",
         "form": {
             "allow": "Izinkan",
-            "default_allow": "Secara default perintah ini diperbolehkan untuk digunakan oleh semua orang.",
-            "deny": "Tolak",
-            "role": "Role:"
+            "deny": "Tolak"
         }
     },
     "verification": {

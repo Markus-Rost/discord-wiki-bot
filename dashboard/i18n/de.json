@@ -92,9 +92,6 @@
             "text": "Bitte nimm für diesen Server vorher noch Einstellungen vor.",
             "title": "Server noch nicht aufgesetzt!"
         },
-        "noslash": {
-            "text": "Die Slash-Befehle von Wiki-Bot sind auf diesem Server nicht aktiviert."
-        },
         "noverify": {
             "text": "Die Beschränkungen für den Befehl $1 können nicht geändert werden, ohne dass Verifizierungen eingerichtet wurden."
         },
@@ -232,12 +229,9 @@
         "new": "Neue Überschreibung"
     },
     "slash": {
-        "explanation": "<h2>Slash-Befehle</h2>\n<p>Die Nutzung von Slash-Befehlen kann pro Rolle beschränkt werden. Dies kannst du hier für die Slash-Befehle von Wiki-Bot tun.</p>",
         "form": {
             "allow": "Erlaubt",
-            "default_allow": "Standardmäßig kann dieser Befehl von allen genutzt werden.",
-            "deny": "Verboten",
-            "role": "Rolle:"
+            "deny": "Verboten"
         }
     },
     "verification": {

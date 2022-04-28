@@ -92,9 +92,6 @@
             "text": "Lütfen sunucu için ayarları belirtin.",
             "title": "Sunucu kurulmamış!"
         },
-        "noslash": {
-            "text": "Wiki-Bot'un eğik çizgi komutları bu sunucuda etkin."
-        },
         "noverify": {
             "text": "$1 komutunun kısıtlamaları doğrulamalar kurulmadan önce değiştirilemez."
         },
@@ -232,12 +229,9 @@
         "new": "Yeni kanal üzerine yazması"
     },
     "slash": {
-        "explanation": "<h2>Eğik Çizgi Komutları</h2>\n<p>Spesifik eğik çizgi komutlarının kullanımı role göre kısıtlanabilir. Bunu Wiki-Bot'un eğik çizgi komutları için burada düzenleyebilirsin.</p>",
         "form": {
             "allow": "İzin ver",
-            "default_allow": "Varsayılan hali ile bu komut herkes tarafından kullanılabiliyor.",
-            "deny": "Reddet",
-            "role": "Rol:"
+            "deny": "Reddet"
         }
     },
     "verification": {

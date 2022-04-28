@@ -92,9 +92,6 @@
             "text": "Primeiro defina as configurações para o servidor.",
             "title": "Servidor ainda não configurado!"
         },
-        "noslash": {
-            "text": "Os comandos de barra do Wiki-Bot não estão habilitados neste servidor."
-        },
         "noverify": {
             "text": "As restrições para o comando $1 não podem ser alteradas sem que as verificações sejam configuradas."
         },
@@ -232,12 +229,9 @@
         "new": "Nova sobreposição de canal"
     },
     "slash": {
-        "explanation": "<h2>Comandos slash</h2>\n<p>O uso de comandos de slash específicos pode ser restrito por função. Você pode fazer isso para os comandos de slash do Wiki-Bot aqui.</p>",
         "form": {
             "allow": "Permitir",
-            "default_allow": "Por padrão, este comando pode ser usado por todos.",
-            "deny": "Negar",
-            "role": "Cargo:"
+            "deny": "Negar"
         }
     },
     "verification": {

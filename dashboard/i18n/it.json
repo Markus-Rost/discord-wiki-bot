@@ -92,9 +92,6 @@
             "text": "Per favore definisci prima le impostazioni del server.",
             "title": "Il server non è ancora impostato!"
         },
-        "noslash": {
-            "text": "I comandi slash di Wiki-Bot non sono abilitati su questo server."
-        },
         "noverify": {
             "text": "Le restrizioni per il comando $1 non possono essere modificate senza aver impostato le verifiche."
         },
@@ -232,12 +229,9 @@
         "new": "Nuova sovrascrittura canale"
     },
     "slash": {
-        "explanation": "<h2>Comandi slash</h2>\n<p>L'uso di specifici comandi slash può essere ristretto ad alcuni ruoli. Puoi farlo per i comandi slash di Wiki-Bot qui.</p>",
         "form": {
             "allow": "Acconsenti",
-            "default_allow": "Di default questo comando può essere usato da tutti.",
-            "deny": "Nega",
-            "role": "Ruolo:"
+            "deny": "Nega"
         }
     },
     "verification": {

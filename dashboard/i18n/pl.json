@@ -88,9 +88,6 @@
             "text": "Najpierw zdefiniuj ustawienia serwera.",
             "title": "Serwer nie został jeszcze skonfigurowany!"
         },
-        "noslash": {
-            "text": "Komendy po ukośniku Wiki-Bota nie są włączone na tym serwerze."
-        },
         "noverify": {
             "text": "Ograniczenia dla komendy $1 nie mogą zostać zmienione bez wcześniejszej konfiguracji weryfikacji."
         },
@@ -183,12 +180,9 @@
         "new": "Nowe ustawienia kanału"
     },
     "slash": {
-        "explanation": "<h2>Komendy po ukośniku</h2>\n<p>Używanie poszczególnych komend po ukośniku może być ograniczone w zależności od roli co może zostać zmienione tutaj.</p>",
         "form": {
             "allow": "Zezwalaj",
-            "default_allow": "Domyślnie ta komenda może być używana przez każdego.",
-            "deny": "Zabraniaj",
-            "role": "Rola:"
+            "deny": "Zabraniaj"
         }
     },
     "verification": {

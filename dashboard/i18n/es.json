@@ -92,9 +92,6 @@
             "text": "Primero, define la configuración del servidor.",
             "title": "¡El servidor aún no está configurado!"
         },
-        "noslash": {
-            "text": "Los comandos de barra inclinada de Wiki-Bot no están habilitados en este servidor."
-        },
         "noverify": {
             "text": "Las restricciones para el comando $1 no se pueden cambiar sin que se configuren las verificaciones."
         },
@@ -232,12 +229,9 @@
         "new": "Nueva sobrescritura de canal"
     },
     "slash": {
-        "explanation": "<h2>Comandos de barra inclinada</h2>\n<p>El uso de comandos específicos de barra inclinada se puede restringir por rol. Puedes hacerlo con los comandos de barra inclinada de Wiki-Bot aquí.</p>",
         "form": {
             "allow": "Permitir",
-            "default_allow": "Por defecto, todo el mundo puede utilizar este comando.",
-            "deny": "Negar",
-            "role": "Rol:"
+            "deny": "Negar"
         }
     },
     "verification": {
