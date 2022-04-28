@@ -176,11 +176,6 @@
         },
         "new": "Nowe ustawienia kanału"
     },
-    "slash": {
-        "form": {
-            "deny": "Zabraniaj"
-        }
-    },
     "verification": {
         "desc": "Weryfikacje dla $1:",
         "explanation": "<h2>Weryfikacja użytkownika</h2>\n<p>Używając komendy <code class=\"prefix\">weryfikuj &lt;nazwa użytkownika na wiki&gt;</code>, użytkownicy mogą się zweryfikować swoje konto na wiki z użyciem pola „Discord” na swoim profilu bądź stronie użytkownika. Jeżeli nazwa użytkownika na Discordzie oraz wiki się pokrywając oraz weryfikacje użytkowników są skonfigurowane - Wiki-Bot nada odpowiednie role dla wszystkich pasujących reguł weryfikacji które pasują.</p>\n<p>Każda reguła weryfikacji pozwala na nadawanie wielu restrykcji oraz opcji, które zmieniają zachowanie weryfikacji na daną rolę:</p>\n<ul>\n<li>Kanał na którym można użyć komendy <code class=\"prefix\">weryfikuj</code>.</li>\n<li>Rola do otrzymania po poprawnym spełnieniu warunków reguły weryfikacji.</li>\n<li>Wymagana ilość edycji do spełnienia warunku.</li>\n<li>Wymagane grupy użytkowników konta wiki do spełniania warunku.</li>\n<li>Wymagany wiek konta (w dniach) do spełnienia warunku.</li>\n<li>Czy nazwa użytkownika Discord powinna zostać zmieniona na nazwę użytkownika na wiki gdy warunki weryfikacji reguły zostaną spełnione.</li>\n</ul>",

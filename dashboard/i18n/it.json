@@ -225,11 +225,6 @@
         },
         "new": "Nuova sovrascrittura canale"
     },
-    "slash": {
-        "form": {
-            "deny": "Nega"
-        }
-    },
     "verification": {
         "desc": "Queste sono le verifiche per $1:",
         "explanation": "<h2>Verifica utente</h2>\n<p>Usando il comando <code class=\"prefix\">verify &lt;nome utente wiki&gt;</code>, gli utenti possono confermare di essere uno specifico utente della wiki utilizzando il campo Discord del proprio profilo. Se l'utente corrisponde e le verifiche degli utenti sono impostate sul server, Wiki-Bot assegnerà i ruoli corrispondenti a tutte le entrate di verifica superate.</p>\n<p>Ciascuna entrata permette di inserire restrizioni multiple sulle condizioni che un utente deve soddisfare per essere verificato:</p>\n<ul>\n<li>Il canale in cui usare il comando <code class=\"prefix\">verify</code>.</li>\n<li>Il ruolo che si ottiene superando la verifica.</li>\n<li>Il conteggio delle modifiche richiesto sulla wiki per superare la verifica.</li>\n<li>Il gruppo utente di cui è richiesto essere membri sulla wiki per superare la verifica.</li>\n<li>Età dell'account in giorni richiesta per superare la verifica.</li>\n<li>Opzione per cambiare il soprannome dell'utente Discord nel nome utente della wiki quando si supera la verifica.</li>\n</ul>",

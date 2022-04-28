@@ -225,11 +225,6 @@
         },
         "new": "Yeni kanal üzerine yazması"
     },
-    "slash": {
-        "form": {
-            "deny": "Reddet"
-        }
-    },
     "verification": {
         "desc": "$1 doğrulamaları:",
         "explanation": "<h2>Kullanıcı Doğrulaması</h2>\n<p>Kullanıcılar <code class=\"prefix\">verify &lt;viki kullanıcı adı&gt;</code> komutunu kullanarak kendilerini viki profillerindeki Discord bölümü sayesinde belirli spesifik bir viki kullanıcısı olarak doğrulayabilirler. Eğer kullanıcı eşleşirse ve sunucuda doğrulama sistemi kuruluysa Wiki-Bot eşleşen bütün doğrulama girdileri için ilgili rolleri verecektir.</p>\n<p>Her doğrulama girdisi, kullanıcının doğrulamayı nasıl tamamlayacağı konusunda bir kısıtlama getirir:</p>\n<ul>\n<li><code class=\"prefix\">verify</code> komutunun kullanılacağı kanal.</li>\n<li>Doğrulama girdisi eşleştiğinde verilecek rol.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için gerekli minimum düzenleme sayısı.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için üyenin vikide üyesi olması gereken kullanıcı grupları.</li>\n<li>Doğrulama girdisinin eşleşebilmesi için hesabın gün bakımından yaşı.</li>\n<li>Doğrulama girdisi eşleştiğinde Discord kullanıcı adının viki kullanıcı adıyla değiştirilip değiştirilmeyeceği.</li>\n</ul>",

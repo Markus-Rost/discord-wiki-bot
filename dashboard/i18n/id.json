@@ -225,11 +225,6 @@
         },
         "new": "Saluran baru ditimpa"
     },
-    "slash": {
-        "form": {
-            "deny": "Tolak"
-        }
-    },
     "verification": {
         "desc": "Ini adalah verifikasi untuk $1:",
         "explanation": "<h2>Verifikasi Pengguna</h2>\n<p>Menggunakan perintah <code class=\"prefix\">verify &lt;wiki username&gt;</code>, pengguna dapat memverifikasi diri mereka sendiri sebagai pengguna wiki tertentu dengan menggunakan bidang Discord pada profil wiki mereka. Jika pengguna cocok dan verifikasi pengguna diatur di server, Wiki-Bot akan memberi mereka peran untuk semua entri verifikasi yang cocok.</p>\n<p>Setiap entri verifikasi memungkinkan beberapa batasan tentang kapan pengguna harus cocok dengan verifikasi:</p>\n<ul>\n<li>Saluran untuk menggunakan perintah <code class=\"prefix\">verifikasi</code>.</li>\n<li>Peran yang didapat saat mencocokkan entri verifikasi.</li>\n<li>Jumlah edit yang diperlukan di wiki untuk mencocokkan entri verifikasi.</li>\n<li>Grup pengguna yang diperlukan untuk menjadi anggota di wiki agar cocok dengan entri verifikasi.</li>\n<li>Usia akun yang diperlukan dalam hari agar sesuai dengan entri verifikasi.</li>\n<li>Apakah nama panggilan pengguna Discord harus disetel ke nama pengguna wiki mereka saat mereka cocok dengan entri verifikasi.</li>\n</ul>",

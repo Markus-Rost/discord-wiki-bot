@@ -225,11 +225,6 @@
         },
         "new": "新的频道覆写设置"
     },
-    "slash": {
-        "form": {
-            "deny": "拒绝"
-        }
-    },
     "verification": {
         "desc": "以下是 $1 的验证方式：",
         "explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 wiki 用户，只需要他们在 wiki 个人资料的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时授予的身份组。</li>\n<li>匹配该验证项所需的编辑次数。</li>\n<li>匹配该验证项所需的 wiki 用户组。</li>\n<li>匹配该验证项所需的账号注册时长（单位为天）。</li>\n<li>匹配该验证项时是否将 Discord 用户的昵称设置为他们的 wiki 用户名。</li>\n</ul>",
