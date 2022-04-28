@@ -394,9 +394,7 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_allow": "Erlaubt",
             "perm_default": "Standard",
-            "perm_deny": "Verboten",
             "updated": "$1 hat die Berechtigungen für `$2` bearbeitet."
         },
         "inline": "Bitte gebe einen Text mit [[Wikitext]]-Links an um diesen Befehl zu nutzen.",

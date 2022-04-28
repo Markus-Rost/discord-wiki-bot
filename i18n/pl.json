@@ -394,9 +394,7 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_allow": "Zezwalaj",
             "perm_default": "Domyślne",
-            "perm_deny": "Zabraniaj",
             "updated": "$1 zaktualizował zezwolenia specjalne komendy po ukośniku dla `$2`."
         },
         "inline": "Wyślij wiadomość z linkami [[wikitekstu]] aby użyć tej komendy.",

@@ -390,9 +390,7 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_allow": "Tillåt",
-            "perm_default": "Standard",
-            "perm_deny": "Neka"
+            "perm_default": "Standard"
         },
         "inline": "Var snäll och ange text med [[wikitext]]-länkar för att använda detta kommando.",
         "nowiki": "Den använda wikin existerar inte!",

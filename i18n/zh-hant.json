@@ -394,9 +394,7 @@
     },
     "interaction": {
         "dashboard": {
-            "perm_allow": "允許",
             "perm_default": "預設",
-            "perm_deny": "拒絕",
             "updated": "$1更新了`$2`的斜線指令權限覆寫。"
         },
         "inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
