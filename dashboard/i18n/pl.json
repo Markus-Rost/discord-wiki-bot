@@ -21,7 +21,6 @@
         "save": "Zapisz",
         "selector": "Selektor serwera",
         "settings": "Ustawienia",
-        "slash": "Komendy po ukośniku",
         "support": "Serwer wsparcia",
         "theme-dark": "Używaj ciemnego stylu",
         "theme-light": "Używaj jasnego stylu",
@@ -90,13 +89,10 @@
             "title": "Serwer nie został jeszcze skonfigurowany!"
         },
         "noslash": {
-            "note": "Włącz komendy po ukośniku.",
-            "text": "Komendy po ukośniku Wiki-Bota nie są włączone na tym serwerze.",
-            "title": "Komendy po ukośniku są wyłączone!"
+            "text": "Komendy po ukośniku Wiki-Bota nie są włączone na tym serwerze."
         },
         "noverify": {
-            "text": "Ograniczenia dla komendy $1 nie mogą zostać zmienione bez wcześniejszej konfiguracji weryfikacji.",
-            "title": "Weryfikacje nie zostały skonfigurowane!"
+            "text": "Ograniczenia dla komendy $1 nie mogą zostać zmienione bez wcześniejszej konfiguracji weryfikacji."
         },
         "readonly": {
             "text": "Aktualnie możliwy jest jedynie podgląd ustawień, zapisywanie nie jest możliwe.",
@@ -187,18 +183,12 @@
         "new": "Nowe ustawienia kanału"
     },
     "slash": {
-        "desc": "Komendy po ukośniku dla $1:",
         "explanation": "<h2>Komendy po ukośniku</h2>\n<p>Używanie poszczególnych komend po ukośniku może być ograniczone w zależności od roli co może zostać zmienione tutaj.</p>",
         "form": {
-            "add": "Dodaj",
             "allow": "Zezwalaj",
-            "default": "Domyślne",
             "default_allow": "Domyślnie ta komenda może być używana przez każdego.",
-            "default_deny": "Domyślnie ta komenda nie może być używana przez każdego.",
             "deny": "Zabraniaj",
-            "entry": "Komenda $1",
-            "role": "Rola:",
-            "select_role": "-- Wybierz rolę --"
+            "role": "Rola:"
         }
     },
     "verification": {

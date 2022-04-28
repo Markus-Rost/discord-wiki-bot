@@ -21,7 +21,6 @@
         "save": "Simpan",
         "selector": "Memilih Server",
         "settings": "Setelan",
-        "slash": "Slash Command",
         "support": "Dukungan Server",
         "theme-dark": "Gunakan tema gelap",
         "theme-light": "Gunakan tema terang",
@@ -94,13 +93,10 @@
             "title": "Server belum disiapkan!"
         },
         "noslash": {
-            "note": "Aktifkan perintah garis miring.",
-            "text": "Perintah garis miring dari Wiki-Bot tidak diaktifkan di server ini.",
-            "title": "Perintah garis miring tidak diaktifkan!"
+            "text": "Perintah garis miring dari Wiki-Bot tidak diaktifkan di server ini."
         },
         "noverify": {
-            "text": "Pembatasan untuk perintah $1 tidak dapat diubah tanpa verifikasi yang disiapkan.",
-            "title": "Verifikasi belum dikonfigurasi!"
+            "text": "Pembatasan untuk perintah $1 tidak dapat diubah tanpa verifikasi yang disiapkan."
         },
         "oauth": {
             "text": "Akun wiki mu telah berhasil terhubung dengan Wiki-Bot.",
@@ -236,18 +232,12 @@
         "new": "Saluran baru ditimpa"
     },
     "slash": {
-        "desc": "Ini adalah perintah slash untuk $1:",
         "explanation": "<h2>Perintah Slash</h2>\n<p>Penggunaan perintah garis miring tertentu dapat dibatasi per peran. Anda dapat melakukannya untuk perintah garis miring Wiki-Bot di sini.</p>",
         "form": {
-            "add": "Tambahkan",
             "allow": "Izinkan",
-            "default": "Utama",
             "default_allow": "Secara default perintah ini diperbolehkan untuk digunakan oleh semua orang.",
-            "default_deny": "Secara default perintah ini tidak boleh digunakan oleh siapapun.",
             "deny": "Tolak",
-            "entry": "Perintah $1",
-            "role": "Role:",
-            "select_role": "-- Pilih Role--"
+            "role": "Role:"
         }
     },
     "verification": {

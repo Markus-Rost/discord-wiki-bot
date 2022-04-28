@@ -21,7 +21,6 @@
         "save": "保存",
         "selector": "选择服务器",
         "settings": "设置",
-        "slash": "斜杠命令",
         "support": "支持服务器",
         "theme-dark": "使用酷黑主题",
         "theme-light": "使用明亮主题",
@@ -94,13 +93,10 @@
             "title": "尚未配置服务器！"
         },
         "noslash": {
-            "note": "启用斜杠命令。",
-            "text": "Wiki-Bot 的斜杠命令在本服务器上未启用。",
-            "title": "斜杠命令未启用！"
+            "text": "Wiki-Bot 的斜杠命令在本服务器上未启用。"
         },
         "noverify": {
-            "text": "在没有设置验证方式的情况下，无法对命令$1设置使用限制。",
-            "title": "未配置验证方式！"
+            "text": "在没有设置验证方式的情况下，无法对命令$1设置使用限制。"
         },
         "oauth": {
             "text": "您的wiki账号已成功连接到 Wiki-Bot。",
@@ -236,18 +232,12 @@
         "new": "新的频道覆写设置"
     },
     "slash": {
-        "desc": "以下是$1的斜杠命令：",
         "explanation": "<h2>斜杠命令</h2>\n<p>可以为每个身份组设置特定斜杠命令的使用限制。在此你可以设置 Wiki-Bot 斜杠命令的使用限制。</p>",
         "form": {
-            "add": "添加",
             "allow": "允许",
-            "default": "默认",
             "default_allow": "默认情况下，此命令可被任何人使用。",
-            "default_deny": "默认情况下，此命令不允许任何人使用。",
             "deny": "拒绝",
-            "entry": "命令 $1",
-            "role": "身份组：",
-            "select_role": "-- 选择身份组 --"
+            "role": "身份组："
         }
     },
     "verification": {

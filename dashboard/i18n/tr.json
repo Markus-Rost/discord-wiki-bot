@@ -21,7 +21,6 @@
         "save": "Kaydet",
         "selector": "Sunucu Seçici",
         "settings": "Ayarlar",
-        "slash": "Eğik Çizgi Komutları",
         "support": "Destek Sunucusu",
         "theme-dark": "Karanlık temayı kullan",
         "theme-light": "Aydınlık temayı kullan",
@@ -94,13 +93,10 @@
             "title": "Sunucu kurulmamış!"
         },
         "noslash": {
-            "note": "Eğik çizgi komutlarını etkinleştir.",
-            "text": "Wiki-Bot'un eğik çizgi komutları bu sunucuda etkin.",
-            "title": "Eğik çizgi komutları etkin değil!"
+            "text": "Wiki-Bot'un eğik çizgi komutları bu sunucuda etkin."
         },
         "noverify": {
-            "text": "$1 komutunun kısıtlamaları doğrulamalar kurulmadan önce değiştirilemez.",
-            "title": "Doğrulamalar kurulmamış!"
+            "text": "$1 komutunun kısıtlamaları doğrulamalar kurulmadan önce değiştirilemez."
         },
         "oauth": {
             "text": "Viki hesabın başarıyla Wiki-Bot ile bağlandı.",
@@ -236,18 +232,12 @@
         "new": "Yeni kanal üzerine yazması"
     },
     "slash": {
-        "desc": "$1 için mevcut eğik çizgi komutları:",
         "explanation": "<h2>Eğik Çizgi Komutları</h2>\n<p>Spesifik eğik çizgi komutlarının kullanımı role göre kısıtlanabilir. Bunu Wiki-Bot'un eğik çizgi komutları için burada düzenleyebilirsin.</p>",
         "form": {
-            "add": "Ekle",
             "allow": "İzin ver",
-            "default": "Varsayılan",
             "default_allow": "Varsayılan hali ile bu komut herkes tarafından kullanılabiliyor.",
-            "default_deny": "Varsayılan hali ile kimse bu komutu kullanamıyor.",
             "deny": "Reddet",
-            "entry": "$1 komutu",
-            "role": "Rol:",
-            "select_role": "-- Bir Rol Seç --"
+            "role": "Rol:"
         }
     },
     "verification": {
