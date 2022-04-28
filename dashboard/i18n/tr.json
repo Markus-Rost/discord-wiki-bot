@@ -92,9 +92,6 @@
             "text": "Lütfen sunucu için ayarları belirtin.",
             "title": "Sunucu kurulmamış!"
         },
-        "noverify": {
-            "text": "$1 komutunun kısıtlamaları doğrulamalar kurulmadan önce değiştirilemez."
-        },
         "oauth": {
             "text": "Viki hesabın başarıyla Wiki-Bot ile bağlandı.",
             "title": "Hesap başarıyla bağlandı!"
@@ -230,7 +227,6 @@
     },
     "slash": {
         "form": {
-            "allow": "İzin ver",
             "deny": "Reddet"
         }
     },

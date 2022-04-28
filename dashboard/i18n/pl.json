@@ -88,9 +88,6 @@
             "text": "Najpierw zdefiniuj ustawienia serwera.",
             "title": "Serwer nie został jeszcze skonfigurowany!"
         },
-        "noverify": {
-            "text": "Ograniczenia dla komendy $1 nie mogą zostać zmienione bez wcześniejszej konfiguracji weryfikacji."
-        },
         "readonly": {
             "text": "Aktualnie możliwy jest jedynie podgląd ustawień, zapisywanie nie jest możliwe.",
             "title": "Baza danych w trybie tylko do odczytu!"
@@ -181,7 +178,6 @@
     },
     "slash": {
         "form": {
-            "allow": "Zezwalaj",
             "deny": "Zabraniaj"
         }
     },

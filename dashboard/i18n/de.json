@@ -92,9 +92,6 @@
             "text": "Bitte nimm für diesen Server vorher noch Einstellungen vor.",
             "title": "Server noch nicht aufgesetzt!"
         },
-        "noverify": {
-            "text": "Die Beschränkungen für den Befehl $1 können nicht geändert werden, ohne dass Verifizierungen eingerichtet wurden."
-        },
         "oauth": {
             "text": "Dein Wiki-Account wurde erfolgreich mit Wiki-Bot verbunden.",
             "title": "Account erfolgreich verbunden!"
@@ -230,7 +227,6 @@
     },
     "slash": {
         "form": {
-            "allow": "Erlaubt",
             "deny": "Verboten"
         }
     },

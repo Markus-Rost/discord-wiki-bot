@@ -92,9 +92,6 @@
             "text": "Primero, define la configuración del servidor.",
             "title": "¡El servidor aún no está configurado!"
         },
-        "noverify": {
-            "text": "Las restricciones para el comando $1 no se pueden cambiar sin que se configuren las verificaciones."
-        },
         "oauth": {
             "text": "Tu cuenta wiki se ha conectado correctamente con Wiki-Bot.",
             "title": "¡Cuenta conectada correctamente!"
@@ -230,7 +227,6 @@
     },
     "slash": {
         "form": {
-            "allow": "Permitir",
             "deny": "Negar"
         }
     },

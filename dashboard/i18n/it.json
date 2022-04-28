@@ -92,9 +92,6 @@
             "text": "Per favore definisci prima le impostazioni del server.",
             "title": "Il server non è ancora impostato!"
         },
-        "noverify": {
-            "text": "Le restrizioni per il comando $1 non possono essere modificate senza aver impostato le verifiche."
-        },
         "oauth": {
             "text": "Il tuo account sulla wiki è stato connesso con successo da Wiki-Bot.",
             "title": "Account connesso con successo!"
@@ -230,7 +227,6 @@
     },
     "slash": {
         "form": {
-            "allow": "Acconsenti",
             "deny": "Nega"
         }
     },

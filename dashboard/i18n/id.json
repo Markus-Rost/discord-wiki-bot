@@ -92,9 +92,6 @@
             "text": "Harap tentukan pengaturan untuk server terlebih dahulu.",
             "title": "Server belum disiapkan!"
         },
-        "noverify": {
-            "text": "Pembatasan untuk perintah $1 tidak dapat diubah tanpa verifikasi yang disiapkan."
-        },
         "oauth": {
             "text": "Akun wiki mu telah berhasil terhubung dengan Wiki-Bot.",
             "title": "Akun berhasil terhubung!"
@@ -230,7 +227,6 @@
     },
     "slash": {
         "form": {
-            "allow": "Izinkan",
             "deny": "Tolak"
         }
     },
