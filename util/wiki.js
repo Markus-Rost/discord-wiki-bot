@@ -177,9 +177,11 @@ export default class Wiki extends URL {
 	 * @returns {String}
 	 */
 	toLink(title = '', querystring = '', fragment = '', isMarkdown = false) {
-		if ( this.mainpageisdomainroot && title === this.mainpage && !querystring ) return this.origin + '/' + Wiki.toSection(fragment, true, this.spaceReplacement);
 		querystring = new URLSearchParams(querystring);
-		if ( !querystring.toString().length ) title = ( title || this.mainpage );
+		if ( !querystring.toString().length ) {
+			title = ( title || this.mainpage );
+			if ( this.mainpageisdomainroot && title === this.mainpage ) return this.origin + '/' + Wiki.toSection(fragment, true, this.spaceReplacement);
+		}
 		title = title.replace( / /g, this.spaceReplacement ).replace( /%/g, '%2525' );
 		let link = new URL(this.articleURL);
 		link.pathname = link.pathname.replace( '$1', title.replace( /\\/g, '%5C' ) );

@@ -711,6 +711,12 @@
 			"regex": "(wiki\\.teamfortress\\.com)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
+		},
+		{
+			"name": "lain.wiki",
+			"regex": "((?:www\\.)?lain\\.wiki)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
 		}
 	]
 }
