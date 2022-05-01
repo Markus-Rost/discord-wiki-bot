@@ -690,31 +690,25 @@
 		},
 		{
 			"name": "betawiki.net",
-			"regex": "(betawiki\\.net)",
+			"regex": "((?:www\\.)?betawiki\\.net)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/"
 		},
 		{
 			"name": "destinypedia.com",
-			"regex": "(((?:www\\.)?destinypedia\\.com)",
+			"regex": "((?:www\\.)?destinypedia\\.com)",
 			"articlePath": "/",
 			"scriptPath": "/"
 		},
 		{
 			"name": "grifkuba.net",
-			"regex": "(((?:www\\.)?grifkuba\\.net)",
-			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
-		},
-		{
-			"name": "wiki.grifkuba.net",
-			"regex": "(((?:wiki\\.)?grifkuba\\.net)",
+			"regex": "((?:www\\.)?(?:(wiki)\\.)?grifkuba\\.net)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "wiki.teamfortress.com",
-			"regex": "(((?:wiki\\.)?teamfortress\\.com)",
+			"regex": "(wiki\\.teamfortress\\.com)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		}
