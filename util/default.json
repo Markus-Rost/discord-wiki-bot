@@ -335,8 +335,8 @@
 			"scriptPath": "/w/"
 		},
 		{
-			"name": "bulbapedia.bulbagarden.net",
-			"regex": "((?:(bulbapedia|archives|bulbanews)\\.)?bulbagarden\\.net)",
+			"name": "bulbagarden.net",
+			"regex": "((bulbapedia|archives|bulbanews)\\.bulbagarden\\.net)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
@@ -426,7 +426,7 @@
 		},
 		{
 			"name": "splatoonwiki.org",
-			"regex": "((?:(fr|es|www)\\.)?splatoonwiki\\.org)",
+			"regex": "((?:(es|fr|www)\\.)?splatoonwiki\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
@@ -737,7 +737,7 @@
 			"scriptPath": "/"
 		},
 		{
-			"name": "www.glitchtale.com",
+			"name": "glitchtale.com",
 			"regex": "((?:www\\.)?glitchtale\\.com)",
 			"articlePath": "/wiki/index.php/",
 			"scriptPath": "/wiki/"
