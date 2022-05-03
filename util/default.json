@@ -750,13 +750,13 @@
 		},
 		{
 			"name": "yugipedia.com",
-			"regex": "(yugipedia\\.com)",
+			"regex": "((?:www\\.)?yugipedia\\.com)",
 			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
+			"scriptPath": "/"
 		},
 		{
 			"name": "polandballwiki.com",
-			"regex": "((?:www\\.)?(?:(pwsc)\\.)?polandballwiki\\.com)",
+			"regex": "((?:([a-z-]{2,12})\\.)?polandballwiki\\.com)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
@@ -767,9 +767,28 @@
 			"scriptPath": "/"
 		},
 		{
-			"name": "es.amiibopedia.com",
-			"regex": "(es\\.amiibopedia\\.com)",
+			"name": "amiibopedia.com",
+			"regex": "((?:es\\.)?amiibopedia\\.com)",
 			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "tcrf.net",
+			"regex": "((?:www\\.)?tcrf\\.net)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "raymanpc.com",
+			"regex": "((?:www\\.)?raymanpc\\.com)/(?:wiki/)?(?:script\\-)?([a-z-]{2,12})",
+			"articlePath": "/wiki/$2/",
+			"scriptPath": "/wiki/script-$2/",
+			"regexPaths": true
+		},
+		{
+			"name": "liquipedia.net // disabled due to rate-limit concerns",
+			"regex": "((?:www\\.)?liquipedia\\.net/([a-z\\d]{1,50}))",
+			"articlePath": "/",
 			"scriptPath": "/"
 		}
 	]
