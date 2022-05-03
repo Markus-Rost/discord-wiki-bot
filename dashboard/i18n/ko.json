@@ -1,227 +1,227 @@
 {
-    "fallback": [
-        "en",
-        " ",
-        " ",
-        " ",
-        " "
-    ],
-    "general": {
-        "botlist": {
-            "text": "봇 리스트에 투표해서 다른 사람들이 Wiki-Bot을 찾도록 도와주세요!",
-            "title": "봇 목록"
-        },
-        "delete": "삭제",
-        "invite": "Wiki-Bot 초대",
-        "language": "언어 변경",
-        "login": "로그인",
-        "logout": "로그아웃",
-        "rcscript": "최근 바뀜",
-        "refresh": "서버 목록 새로고침",
-        "save": "저장",
-        "selector": "서버 선택기",
-        "settings": "설정",
-        "support": "지원 서버",
-        "theme-dark": "다크 테마 사용",
-        "theme-light": "밝은 테마 사용",
-        "title": "Wiki-Bot 설정",
-        "verification": "인증",
-        "welcome": "<h2>Wiki-Bot 대시보드에 오신 것을 환영합니다.</h2>\n<p>Wiki-Bot은 디스코드 서버와 미디어위키 위키를 통합하기 위한 디스코드 봇입니다. 위키링크를 연결하고, 위키 사용자 계정을 인증하고, 위키의 최근 바뀜을 전달하는 것 외에 여러 작업을 수행할 수 있습니다. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[더 많은 정보]</a></p>\n<p>이 사이트에서 서버 관리하기 권한을 가진 서버의 봇 설정을 관리할 수 있습니다. 시작하려면 아래 버튼을 이용하여 디스코드 계정으로 로그인하세요.</p>"
-    },
-    "indexjs": {
-        "avatar": {
-            "content_type": "제공된 링크는 $1 콘텐츠 타입을 사용하지만, 다음 콘텐츠 타입만이 허용됩니다.",
-            "invalid_url": "URL에서 유효한 이미지 파일을 불러올 수 없었습니다."
-        },
-        "invalid": {
-            "note_http": "제공된 웹사이트는 유효한 TLS/SSL 인증서를 제공하고 있지 않습니다! 보안을 위해 HTTPS를 이용하는 위키만 추가할 수 있습니다.",
-            "note_private": "제공된 위키는 비공개입니다!",
-            "note_timeout": "제공된 링크가 너무 오래 응답하지 않습니다!",
-            "text": "URL에서 유효한 미디어위키 사이트로 연결할 수 없었습니다!",
-            "title": "무효한 위키입니다!"
-        },
-        "outdated": {
-            "text": "최근 바뀜 웹훅은 최소 미디어위키 1.30 이상을 사용하는 위키여야 합니다!",
-            "title": "오래된 미디어위키 버전!"
-        },
-        "prefix": {
-            "backslash": "접두어는 백슬래시 (_)를 포함하면 안 됩니다!",
-            "code": "접두어는 마크다운 코드를 포함하면 안 됩니다!",
-            "space": "접두어는 스페이스를 포함하면 안 됩니다!"
-        },
-        "sysmessage": {
-            "text": "$1 문서는 서버 아이디 $2 와 일치해야 합니다.",
-            "title": "시스템 메시지가 일치하지 않습니다!"
-        },
-        "valid": {
-            "MediaWiki": "경고: 완전한 기능 동작을 위해 최소 $1 이(가) 필요합니다.",
-            "title": "이 위키는 유효하고 사용할 수 있습니다!"
-        }
-    },
-    "notice": {
-        "error": {
-            "text": "알 수 없는 오류가 발생했습니다, 다시 시도해 주세요.",
-            "title": "알 수 없는 오류!"
-        },
-        "invalidusergroup": {
-            "text": "사용자 권한 이름이 너무 길었거나 너무 많은 사용자 권한을 제공했습니다.",
-            "title": "유효하지 않은 사용자 권한!"
-        },
-        "loginfail": {
-            "text": "로그인 중에 오류가 발생했습니다, 다시 시도해 주세요.",
-            "title": "로그인 실패!"
-        },
-        "logout": {
-            "text": "성공적으로 로그아웃되었습니다. 설정을 변경하려면 다시 로그인해야 합니다.",
-            "title": "성공적으로 로그아웃했습니다!"
-        },
-        "missingperm": {
-            "text": "사용자 또는 Wiki-Bot에 $1 권한이 없어서 이 기능을 설정할 수 없습니다.",
-            "title": "권한 부족!"
-        },
-        "mwversion": {
-            "text": "미디어위키 1.30 이상이 필요하지만, $2 위키에서 $1 버전을 발견했습니다.",
-            "title": "오래된 미디어위키 버전!"
-        },
-        "nochange": {
-            "text": "설정이 현재 기본 설정과 일치합니다.",
-            "title": "저장 실패!"
-        },
-        "nosettings": {
-            "note": "설정 변경.",
-            "text": "서버 설정을 먼저 정의해 주세요.",
-            "title": "서버가 설정되지 않았습니다!"
-        },
-        "readonly": {
-            "text": "현재 설정을 볼 수는 있지만, 변경할 수는 없습니다.",
-            "title": "데이터베이스 읽기 전용!"
-        },
-        "refresh": {
-            "text": "서버 리스트를 새로 불러왔습니다.",
-            "title": "새로고침 성공!"
-        },
-        "refreshfail": {
-            "text": "서버 목록을 새로 고칠 수 없었습니다, 다시 시도해 주세요.",
-            "title": "새로고침 실패!"
-        },
-        "save": {
-            "text": "설정이 업데이트되었습니다.",
-            "title": "설정 저장됨!"
-        },
-        "savefail": {
-            "note_http": "제공된 웹사이트에는 유효한 TLS/SSL 인증서를 제공하고 있지 않습니다! 보안을 위해 HTTPS를 이용하는 위키만 추가할 수 있습니다.",
-            "note_private": "제공된 위키는 비공개입니다!",
-            "note_timeout": "제공된 링크가 너무 오래 응답하지 않습니다!",
-            "text": "설정을 저장할 수 없었습니다, 다시 시도해 주세요.",
-            "title": "저장 실패!"
-        },
-        "sysmessage": {
-            "text": "$1 페이지가 서버 ID $2 와(과) 일치해야 합니다.",
-            "title": "시스템 메시지가 일치하지 않습니다!"
-        },
-        "unauthorized": {
-            "text": "설정을 변경하기 전에 로그인해 주세요.",
-            "title": "로그인하지 않음!"
-        },
-        "webhookfail": {
-            "note": "디스코드 웹훅을 변경할 수 없었습니다!",
-            "text": "설정의 일부만 업데이트했습니다.",
-            "title": "설정을 일부만 저장했습니다!"
-        },
-        "wikiblocked": {
-            "note": "이유:",
-            "text": "$1 위키는 최근 바뀜 웹훅으로 추가되지 못하도록 차단되어 있습니다.",
-            "title": "위키 차단됨!"
-        }
-    },
-    "rcscript": {
-        "desc": "$1 서버의 최근 바뀜 웹훅입니다:",
-        "explanation": "<h2>최근 바뀜 웹훅</h2>\n<p>Wiki-Bot은 <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> 기반 최근 바뀜 웹훅을 지원합니다. 최근 바뀜 내용은 인라인 링크를 포함한 압축 텍스트 모드로 발송되거나, 편집 태그와 분류 변경을 포함하는 임베드 메시지로 발송될 수 있습니다.</p>\n<p>최근 바뀜 웹훅을 추가하기 위한 조건:</p>\n<ul>\n<li>위키가 <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">미디어위키 1.30</a> 또는 그 이상 버전을 지원해야 합니다.</li>\n<li><code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> 시스템 메시지가 디스코드 서버 ID <code class=\"user-select\" id=\"server-id\"></code>로 설정되어야 합니다.</li>\n</ul>",
-        "form": {
-            "avatar": "웹훅 아바타:",
-            "avatar_preview": "미리 보기",
-            "channel": "채널:",
-            "confirm": "정말로 최근 바뀜 웹훅을 삭제할 건가요?",
-            "display": "표시 모드:",
-            "display_compact": "인라인 링크가 포함된 압축된 글 메시지를 표시합니다.",
-            "display_diff": "사진 미리보기와 편집 차이가 포함된 메시지 임베드를 표시합니다.",
-            "display_embed": "편집 태그와 분류 변경이 포함된 메시지 임베드를 표시합니다.",
-            "display_image": "사진 미리보기가 포함된 메시지 임베드를 표시합니다.",
-            "entry": "최근 바뀜 웹훅 #$1",
-            "feeds": "피드 기반 변경:",
-            "feeds_only": "피드 기반 변경 전용:",
-            "lang": "언어:",
-            "name": "웹훅 이름:",
-            "new": "새 최근 바뀜 웹훅",
-            "select_channel": "-- 채널을 선택하세요 --",
-            "wiki": "위키:",
-            "wiki_check": "위키 검사"
-        },
-        "new": "새 웹훅"
-    },
-    "selector": {
-        "desc": "[서버 관리하기]($1) 권한을 가지고 있으므로 설정을 변경할 수 있는 위키의 목록입니다. 서버를 선택해 주세요:",
-        "invite": "Wiki-Bot은 $1 서버의 일원이 아니지만, [Wiki-Bot을 초대]($2)할 수 있습니다.",
-        "none": "[서버 관리하기]($1) 권한을 가진 서버가 하나도 없습니다. 올바른 계정으로 로그인하신 건가요?",
-        "switch": "계정 변경",
-        "title": "서버 선택기",
-        "with": "Wiki-Bot이 있는 서버",
-        "without": "Wiki-Bot이 없는 서버"
-    },
-    "settings": {
-        "desc": "$1 서버의 설정입니다:",
-        "failed": "설정을 불러오지 못했습니다!",
-        "form": {
-            "channel": "채널:",
-            "confirm": "채널 덮어쓰기를 삭제할까요?",
-            "default": "서버-단위 설정",
-            "inline": "인라인 명령어:",
-            "lang": "언어:",
-            "new": "새 채널 덮어쓰기",
-            "overwrite": "$1 설정",
-            "prefix": "접두어:",
-            "prefix_space": "접두어 끝에 공백이 붙습니까?:",
-            "role": "최소 역할:",
-            "select_channel": "-- 채널을 선택하세요 --",
-            "wiki": "기본 위키:",
-            "wiki_check": "위키 검사"
-        },
-        "new": "새 채널 덮어쓰기"
-    },
-    "verification": {
-        "desc": "$1 서버의 인증입니다:",
-        "explanation": "<h2>사용자 인증</h2>\n<p><code class=\"prefix\">verify &lt;위키 사용자이름&gt;</code>명령어를 이용해, 사용자가 위키 프로필의 디스코드 태그와 일치한다는 것을 증명할 수 있습니다. 사용자 계정이 일치하고, 사용자 인증이 서버에 설정되어 있는 경우, Wiki-Bot이 해당하는 인증 역할을 부여합니다.</p>\n<p>각각의 인증 항목을 통해 인증 조건을 세부설정할 수 있습니다:</p>\n<ul>\n<li><code class=\"prefix\">verify</code> 명령어를 사용할 수 있는 채널.</li>\n<li>인증이 성공하면 얻을 역할.</li>\n<li>인증이 성공하기 위해 필요한 위키 편집 횟수.</li>\n<li>인증이 성공하기 위해 필요한 사용자 권한.</li>\n<li>인증이 성공하기 위해 필요한 계정 생성 이후 지난 시간.</li>\n<li>인증이 성공하면 디스코드 닉네임을 위키 계정과 일치하도록 변경할지 여부</li>\n</ul>",
-        "form": {
-            "accountage": "계정 기간 (일 기준으로):",
-            "channel": "채널:",
-            "confirm": "정말 이 인증을 삭제하시겠어요?",
-            "editcount": "최소 편집 횟수:",
-            "entry": "인증 #$1",
-            "flag_logall": "인증 실패를 기록할 채널:",
-            "flag_private": "응답을 개인 메시지로 할 지 여부:",
-            "logging": "기록 채널:",
-            "match": "요구조건 불충족 공지:",
-            "match_placeholder": "디스코드 태그가 일치하지만 역할을 받기 위한 조건을 충족하지 않습니다.",
-            "more": "더 추가",
-            "new": "새 인증",
-            "notice": "인증 공지",
-            "postcount": "최소 게시글 갯수:",
-            "postcount_and": "편집 횟수와 게시글 횟수를 모두 확인합니다.",
-            "postcount_both": "편집 횟수와 게시글 횟수를 통합하여 확인합니다.",
-            "postcount_fandom": "팬덤 위키에서만:",
-            "postcount_or": "편집 횟수 또는 게시글 횟수 중 하나만 확인합니다.",
-            "rename": "이름 변경:",
-            "role": "역할:",
-            "role_add": "추가",
-            "role_remove": "삭제",
-            "select_channel": "-- 채널을 선택하세요 --",
-            "select_role": "-- 역할을 선택하세요 --",
-            "success": "성공 공지:",
-            "success_placeholder": "인증이 성공하면 표시할 마크다운 본문.",
-            "usergroup": "위키 사용자 권한:",
-            "usergroup_and": "모든 사용자 권한 강제:"
-        },
-        "new": "새 인증",
-        "notice": "인증 공지"
-    }
+	"fallback": [
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
+	],
+	"general": {
+		"botlist": {
+			"text": "봇 리스트에 투표해서 다른 사람들이 Wiki-Bot을 찾도록 도와주세요!",
+			"title": "봇 목록"
+		},
+		"delete": "삭제",
+		"invite": "Wiki-Bot 초대",
+		"language": "언어 변경",
+		"login": "로그인",
+		"logout": "로그아웃",
+		"rcscript": "최근 바뀜",
+		"refresh": "서버 목록 새로고침",
+		"save": "저장",
+		"selector": "서버 선택기",
+		"settings": "설정",
+		"support": "지원 서버",
+		"theme-dark": "다크 테마 사용",
+		"theme-light": "밝은 테마 사용",
+		"title": "Wiki-Bot 설정",
+		"verification": "인증",
+		"welcome": "<h2>Wiki-Bot 대시보드에 오신 것을 환영합니다.</h2>\n<p>Wiki-Bot은 디스코드 서버와 미디어위키 위키를 통합하기 위한 디스코드 봇입니다. 위키링크를 연결하고, 위키 사용자 계정을 인증하고, 위키의 최근 바뀜을 전달하는 것 외에 여러 작업을 수행할 수 있습니다. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[더 많은 정보]</a></p>\n<p>이 사이트에서 서버 관리하기 권한을 가진 서버의 봇 설정을 관리할 수 있습니다. 시작하려면 아래 버튼을 이용하여 디스코드 계정으로 로그인하세요.</p>"
+	},
+	"indexjs": {
+		"avatar": {
+			"content_type": "제공된 링크는 $1 콘텐츠 타입을 사용하지만, 다음 콘텐츠 타입만이 허용됩니다.",
+			"invalid_url": "URL에서 유효한 이미지 파일을 불러올 수 없었습니다."
+		},
+		"invalid": {
+			"note_http": "제공된 웹사이트는 유효한 TLS/SSL 인증서를 제공하고 있지 않습니다! 보안을 위해 HTTPS를 이용하는 위키만 추가할 수 있습니다.",
+			"note_private": "제공된 위키는 비공개입니다!",
+			"note_timeout": "제공된 링크가 너무 오래 응답하지 않습니다!",
+			"text": "URL에서 유효한 미디어위키 사이트로 연결할 수 없었습니다!",
+			"title": "무효한 위키입니다!"
+		},
+		"outdated": {
+			"text": "최근 바뀜 웹훅은 최소 미디어위키 1.30 이상을 사용하는 위키여야 합니다!",
+			"title": "오래된 미디어위키 버전!"
+		},
+		"prefix": {
+			"backslash": "접두어는 백슬래시 (_)를 포함하면 안 됩니다!",
+			"code": "접두어는 마크다운 코드를 포함하면 안 됩니다!",
+			"space": "접두어는 스페이스를 포함하면 안 됩니다!"
+		},
+		"sysmessage": {
+			"text": "$1 문서는 서버 아이디 $2 와 일치해야 합니다.",
+			"title": "시스템 메시지가 일치하지 않습니다!"
+		},
+		"valid": {
+			"MediaWiki": "경고: 완전한 기능 동작을 위해 최소 $1 이(가) 필요합니다.",
+			"title": "이 위키는 유효하고 사용할 수 있습니다!"
+		}
+	},
+	"notice": {
+		"error": {
+			"text": "알 수 없는 오류가 발생했습니다, 다시 시도해 주세요.",
+			"title": "알 수 없는 오류!"
+		},
+		"invalidusergroup": {
+			"text": "사용자 권한 이름이 너무 길었거나 너무 많은 사용자 권한을 제공했습니다.",
+			"title": "유효하지 않은 사용자 권한!"
+		},
+		"loginfail": {
+			"text": "로그인 중에 오류가 발생했습니다, 다시 시도해 주세요.",
+			"title": "로그인 실패!"
+		},
+		"logout": {
+			"text": "성공적으로 로그아웃되었습니다. 설정을 변경하려면 다시 로그인해야 합니다.",
+			"title": "성공적으로 로그아웃했습니다!"
+		},
+		"missingperm": {
+			"text": "사용자 또는 Wiki-Bot에 $1 권한이 없어서 이 기능을 설정할 수 없습니다.",
+			"title": "권한 부족!"
+		},
+		"mwversion": {
+			"text": "미디어위키 1.30 이상이 필요하지만, $2 위키에서 $1 버전을 발견했습니다.",
+			"title": "오래된 미디어위키 버전!"
+		},
+		"nochange": {
+			"text": "설정이 현재 기본 설정과 일치합니다.",
+			"title": "저장 실패!"
+		},
+		"nosettings": {
+			"note": "설정 변경.",
+			"text": "서버 설정을 먼저 정의해 주세요.",
+			"title": "서버가 설정되지 않았습니다!"
+		},
+		"readonly": {
+			"text": "현재 설정을 볼 수는 있지만, 변경할 수는 없습니다.",
+			"title": "데이터베이스 읽기 전용!"
+		},
+		"refresh": {
+			"text": "서버 리스트를 새로 불러왔습니다.",
+			"title": "새로고침 성공!"
+		},
+		"refreshfail": {
+			"text": "서버 목록을 새로 고칠 수 없었습니다, 다시 시도해 주세요.",
+			"title": "새로고침 실패!"
+		},
+		"save": {
+			"text": "설정이 업데이트되었습니다.",
+			"title": "설정 저장됨!"
+		},
+		"savefail": {
+			"note_http": "제공된 웹사이트에는 유효한 TLS/SSL 인증서를 제공하고 있지 않습니다! 보안을 위해 HTTPS를 이용하는 위키만 추가할 수 있습니다.",
+			"note_private": "제공된 위키는 비공개입니다!",
+			"note_timeout": "제공된 링크가 너무 오래 응답하지 않습니다!",
+			"text": "설정을 저장할 수 없었습니다, 다시 시도해 주세요.",
+			"title": "저장 실패!"
+		},
+		"sysmessage": {
+			"text": "$1 페이지가 서버 ID $2 와(과) 일치해야 합니다.",
+			"title": "시스템 메시지가 일치하지 않습니다!"
+		},
+		"unauthorized": {
+			"text": "설정을 변경하기 전에 로그인해 주세요.",
+			"title": "로그인하지 않음!"
+		},
+		"webhookfail": {
+			"note": "디스코드 웹훅을 변경할 수 없었습니다!",
+			"text": "설정의 일부만 업데이트했습니다.",
+			"title": "설정을 일부만 저장했습니다!"
+		},
+		"wikiblocked": {
+			"note": "이유:",
+			"text": "$1 위키는 최근 바뀜 웹훅으로 추가되지 못하도록 차단되어 있습니다.",
+			"title": "위키 차단됨!"
+		}
+	},
+	"rcscript": {
+		"desc": "$1 서버의 최근 바뀜 웹훅입니다:",
+		"explanation": "<h2>최근 바뀜 웹훅</h2>\n<p>Wiki-Bot은 <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> 기반 최근 바뀜 웹훅을 지원합니다. 최근 바뀜 내용은 인라인 링크를 포함한 압축 텍스트 모드로 발송되거나, 편집 태그와 분류 변경을 포함하는 임베드 메시지로 발송될 수 있습니다.</p>\n<p>최근 바뀜 웹훅을 추가하기 위한 조건:</p>\n<ul>\n<li>위키가 <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">미디어위키 1.30</a> 또는 그 이상 버전을 지원해야 합니다.</li>\n<li><code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> 시스템 메시지가 디스코드 서버 ID <code class=\"user-select\" id=\"server-id\"></code>로 설정되어야 합니다.</li>\n</ul>",
+		"form": {
+			"avatar": "웹훅 아바타:",
+			"avatar_preview": "미리 보기",
+			"channel": "채널:",
+			"confirm": "정말로 최근 바뀜 웹훅을 삭제할 건가요?",
+			"display": "표시 모드:",
+			"display_compact": "인라인 링크가 포함된 압축된 글 메시지를 표시합니다.",
+			"display_diff": "사진 미리보기와 편집 차이가 포함된 메시지 임베드를 표시합니다.",
+			"display_embed": "편집 태그와 분류 변경이 포함된 메시지 임베드를 표시합니다.",
+			"display_image": "사진 미리보기가 포함된 메시지 임베드를 표시합니다.",
+			"entry": "최근 바뀜 웹훅 #$1",
+			"feeds": "피드 기반 변경:",
+			"feeds_only": "피드 기반 변경 전용:",
+			"lang": "언어:",
+			"name": "웹훅 이름:",
+			"new": "새 최근 바뀜 웹훅",
+			"select_channel": "-- 채널을 선택하세요 --",
+			"wiki": "위키:",
+			"wiki_check": "위키 검사"
+		},
+		"new": "새 웹훅"
+	},
+	"selector": {
+		"desc": "[서버 관리하기]($1) 권한을 가지고 있으므로 설정을 변경할 수 있는 위키의 목록입니다. 서버를 선택해 주세요:",
+		"invite": "Wiki-Bot은 $1 서버의 일원이 아니지만, [Wiki-Bot을 초대]($2)할 수 있습니다.",
+		"none": "[서버 관리하기]($1) 권한을 가진 서버가 하나도 없습니다. 올바른 계정으로 로그인하신 건가요?",
+		"switch": "계정 변경",
+		"title": "서버 선택기",
+		"with": "Wiki-Bot이 있는 서버",
+		"without": "Wiki-Bot이 없는 서버"
+	},
+	"settings": {
+		"desc": "$1 서버의 설정입니다:",
+		"failed": "설정을 불러오지 못했습니다!",
+		"form": {
+			"channel": "채널:",
+			"confirm": "채널 덮어쓰기를 삭제할까요?",
+			"default": "서버-단위 설정",
+			"inline": "인라인 명령어:",
+			"lang": "언어:",
+			"new": "새 채널 덮어쓰기",
+			"overwrite": "$1 설정",
+			"prefix": "접두어:",
+			"prefix_space": "접두어 끝에 공백이 붙습니까?:",
+			"role": "최소 역할:",
+			"select_channel": "-- 채널을 선택하세요 --",
+			"wiki": "기본 위키:",
+			"wiki_check": "위키 검사"
+		},
+		"new": "새 채널 덮어쓰기"
+	},
+	"verification": {
+		"desc": "$1 서버의 인증입니다:",
+		"explanation": "<h2>사용자 인증</h2>\n<p><code class=\"prefix\">verify &lt;위키 사용자이름&gt;</code>명령어를 이용해, 사용자가 위키 프로필의 디스코드 태그와 일치한다는 것을 증명할 수 있습니다. 사용자 계정이 일치하고, 사용자 인증이 서버에 설정되어 있는 경우, Wiki-Bot이 해당하는 인증 역할을 부여합니다.</p>\n<p>각각의 인증 항목을 통해 인증 조건을 세부설정할 수 있습니다:</p>\n<ul>\n<li><code class=\"prefix\">verify</code> 명령어를 사용할 수 있는 채널.</li>\n<li>인증이 성공하면 얻을 역할.</li>\n<li>인증이 성공하기 위해 필요한 위키 편집 횟수.</li>\n<li>인증이 성공하기 위해 필요한 사용자 권한.</li>\n<li>인증이 성공하기 위해 필요한 계정 생성 이후 지난 시간.</li>\n<li>인증이 성공하면 디스코드 닉네임을 위키 계정과 일치하도록 변경할지 여부</li>\n</ul>",
+		"form": {
+			"accountage": "계정 기간 (일 기준으로):",
+			"channel": "채널:",
+			"confirm": "정말 이 인증을 삭제하시겠어요?",
+			"editcount": "최소 편집 횟수:",
+			"entry": "인증 #$1",
+			"flag_logall": "인증 실패를 기록할 채널:",
+			"flag_private": "응답을 개인 메시지로 할 지 여부:",
+			"logging": "기록 채널:",
+			"match": "요구조건 불충족 공지:",
+			"match_placeholder": "디스코드 태그가 일치하지만 역할을 받기 위한 조건을 충족하지 않습니다.",
+			"more": "더 추가",
+			"new": "새 인증",
+			"notice": "인증 공지",
+			"postcount": "최소 게시글 갯수:",
+			"postcount_and": "편집 횟수와 게시글 횟수를 모두 확인합니다.",
+			"postcount_both": "편집 횟수와 게시글 횟수를 통합하여 확인합니다.",
+			"postcount_fandom": "팬덤 위키에서만:",
+			"postcount_or": "편집 횟수 또는 게시글 횟수 중 하나만 확인합니다.",
+			"rename": "이름 변경:",
+			"role": "역할:",
+			"role_add": "추가",
+			"role_remove": "삭제",
+			"select_channel": "-- 채널을 선택하세요 --",
+			"select_role": "-- 역할을 선택하세요 --",
+			"success": "성공 공지:",
+			"success_placeholder": "인증이 성공하면 표시할 마크다운 본문.",
+			"usergroup": "위키 사용자 권한:",
+			"usergroup_and": "모든 사용자 권한 강제:"
+		},
+		"new": "새 인증",
+		"notice": "인증 공지"
+	}
 }

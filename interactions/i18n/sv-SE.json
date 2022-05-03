@@ -1,14 +1,14 @@
 {
-    "inline": {
-        "description": "Skicka ett meddelande med wikilänkar på samma rad.",
-        "name": "inline",
-        "options[0].description": "Text med länkar till wikitext.",
-        "options[0].name": "text"
-    },
-    "verify": {
-        "description": "Verifiera ditt Discord-konto med ditt wiki-konto.",
-        "name": "verifiera",
-        "options[0].description": "Ditt användarnamn på wikin.",
-        "options[0].name": "username"
-    }
+	"inline": {
+		"description": "Skicka ett meddelande med wikilänkar på samma rad.",
+		"name": "inline",
+		"options[0].description": "Text med länkar till wikitext.",
+		"options[0].name": "text"
+	},
+	"verify": {
+		"description": "Verifiera ditt Discord-konto med ditt wiki-konto.",
+		"name": "verifiera",
+		"options[0].description": "Ditt användarnamn på wikin.",
+		"options[0].name": "username"
+	}
 }

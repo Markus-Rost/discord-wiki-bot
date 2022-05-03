@@ -1,204 +1,204 @@
 {
-    "fallback": [
-        "en",
-        " ",
-        " ",
-        " ",
-        " "
-    ],
-    "general": {
-        "botlist": {
-            "text": "Pomóż innym użytkownikom znaleźć Wiki-Bota przez głosowanie na listach botów:",
-            "title": "Listy botów"
-        },
-        "delete": "Usuń",
-        "invite": "Zaproś Wiki-Bota",
-        "language": "Zmień język",
-        "login": "Zaloguj się",
-        "logout": "Wyloguj się",
-        "rcscript": "Ostatnie zmiany",
-        "refresh": "Odśwież listę serwerów",
-        "save": "Zapisz",
-        "selector": "Selektor serwera",
-        "settings": "Ustawienia",
-        "support": "Serwer wsparcia",
-        "theme-dark": "Używaj ciemnego stylu",
-        "theme-light": "Używaj jasnego stylu",
-        "title": "Ustawienia Wiki-Bota",
-        "verification": "Weryfikacje",
-        "welcome": "<h2>Witaj na panelu sterowania Wiki-Bota</h2>\n<p>Wiki-Bot to bot działający na Discordzie ułatwiający integrację wiki bazujących na MediaWiki wraz z czatem Discorda. Pomaga w linkowaniu stron, weryfikowaniu użytkowników wiki, informowania o ostatnich zmianach z wiki oraz więcej. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Więcej informacji]</a></p>\n<p>Możesz tutaj zmienić ustawienia bota dla serwerów na których posiadasz zezwolenie „Zarządzaj serwerem”. Aby zacząć, uwierzytelnij swoje konto Discord z panelem tym przyciskiem:</p>"
-    },
-    "indexjs": {
-        "invalid": {
-            "note_http": "Podana strona nie używa HTTPS!",
-            "note_private": "Podana wiki jest prywatna!",
-            "note_timeout": "Podany link zajął zbyt dużo czasu na odpowiedź!",
-            "text": "Ten adres URL nie może zostać rozpoznany jako poprawna strona MediaWiki!",
-            "title": "Niepoprawna wiki!"
-        },
-        "outdated": {
-            "text": "Webhook ostatnich zmian wymaga przynajmniej MediaWiki 1.30!",
-            "title": "Stara wersja MediaWiki!"
-        },
-        "prefix": {
-            "backslash": "Prefix nie może zawierać lewych ukośników (\\)!",
-            "code": "Prefiks nie może zawierać znaków stylu (Markdown)!",
-            "space": "Prefiks nie może zawierać spacji!"
-        },
-        "sysmessage": {
-            "text": "ID serwera Discord $2 musi być jedyną treścią strony $1 na wiki.",
-            "title": "Wiadomość systemowa nie jest poprawna!"
-        },
-        "valid": {
-            "MediaWiki": "Ostrzeżenie: Wymaga przynajmniej $1 dla pełnej funkcjonalności.",
-            "title": "Ta wiki jest poprawna i może być użyta!"
-        }
-    },
-    "notice": {
-        "error": {
-            "text": "Wystąpił niespodziewany błąd, spróbuj ponownie później.",
-            "title": "Nieznany błąd!"
-        },
-        "invalidusergroup": {
-            "text": "Ta nazwa grupy użytkowników jest za długa lub podano ich zbyt dużo.",
-            "title": "Niepoprawna grupa użytkowników!"
-        },
-        "loginfail": {
-            "text": "Wystąpił błąd podczas logowania, spróbuj ponownie później.",
-            "title": "Logowanie nie powiodło się!"
-        },
-        "logout": {
-            "text": "Nastąpiło poprawne wylogowanie. Aby zmienić ustawienia musisz się ponownie zalogować.",
-            "title": "Nastąpiło poprawne wylogowanie!"
-        },
-        "missingperm": {
-            "text": "Ty lub Wiki-Bot nie posiada zezwolenia $1 dla tej funkcji.",
-            "title": "Niewystarczające zezwolenia!"
-        },
-        "mwversion": {
-            "text": "Wymaga przynajmniej MediaWiki w wersji 1.30, znaleziono $1 na $2.",
-            "title": "Przestarzała wersja MediaWiki!"
-        },
-        "nochange": {
-            "text": "Ustawienia są takie same jak obecnie używane domyślne ustawienia.",
-            "title": "Zapisanie nie powiodło się!"
-        },
-        "nosettings": {
-            "note": "Zmień ustawienia.",
-            "text": "Najpierw zdefiniuj ustawienia serwera.",
-            "title": "Serwer nie został jeszcze skonfigurowany!"
-        },
-        "readonly": {
-            "text": "Aktualnie możliwy jest jedynie podgląd ustawień, zapisywanie nie jest możliwe.",
-            "title": "Baza danych w trybie tylko do odczytu!"
-        },
-        "refresh": {
-            "text": "Lista serwerów została poprawnie odświeżona.",
-            "title": "Odświeżenie pomyślne!"
-        },
-        "refreshfail": {
-            "text": "Lista serwerów nie mogła zostać odświeżona, spróbuj ponownie później.",
-            "title": "Odświeżenie nie powiodło się!"
-        },
-        "save": {
-            "text": "Ustawienia zostały zapisane poprawnie.",
-            "title": "Ustawienia zapisane!"
-        },
-        "savefail": {
-            "note_http": "Podana strona nie używa HTTPS!",
-            "note_private": "Podana wiki jest prywatna!",
-            "note_timeout": "Podany link zajął zbyt dużo czasu na odpowiedź!",
-            "text": "Ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
-            "title": "Zapisanie nie powiodło się!"
-        },
-        "sysmessage": {
-            "text": "ID serwera Discord $2 musi być jedyną treścią strony $1 na wiki.",
-            "title": "Wiadomość systemowa nie jest poprawna!"
-        },
-        "unauthorized": {
-            "text": "Zaloguj się przed zmianą ustawień.",
-            "title": "Niezalogowany!"
-        },
-        "wikiblocked": {
-            "note": "Powód:",
-            "text": "$1 został zablokowany przed dodaniem jako webhook ostatnich zmian.",
-            "title": "Wiki jest zablokowana!"
-        }
-    },
-    "rcscript": {
-        "desc": "Webhooki ostatnich zmian dla $1:",
-        "explanation": "<h2>Webhook ostatnich zmian</h2>\n<p>Wiki-Bot utylizuje webhook ostatnich zmian oparty na <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Ostatnie zmiany mogą zostać wysłane na kanał w stylu kompaktowym lub w stylu wiadomości typu embed z tagami edycji oraz zmianami kategorii.</p>\n<p>Wymagania do dodania webhooka ostatnich zmian:</p>\n<ul>\n<li>Wiki musi działać na wersji <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> lub wyższej.</li>\n<li>Zawartość wiadomości systemowej <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> musi być taka sama jak ID serwera <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
-        "form": {
-            "channel": "Kanał:",
-            "confirm": "Czy naprawdę chcesz usunąć ten webhook ostatnich zmian?",
-            "display": "Tryb wyświetlania:",
-            "display_compact": "Kompaktowe wiadomości.",
-            "display_diff": "Szczegółowe wiadomości z podglądami zdjęć oraz podglądem zmian edycji.",
-            "display_embed": "Szczegółowe wiadomości z tagami oraz zmianami kategorii.",
-            "display_image": "Szczegółowe wiadomości podglądami zdjęć.",
-            "entry": "Webhook ostatnich zmian #$1",
-            "feeds": "Zmiany bazowane na Feeds:",
-            "feeds_only": "Tylko zmiany bazowane na Feeds:",
-            "lang": "Język:",
-            "new": "Nowy webhook ostatnich zmian",
-            "select_channel": "-- Wybierz kanał --",
-            "wiki": "Wiki:",
-            "wiki_check": "Sprawdź wiki"
-        },
-        "new": "Nowy webhook"
-    },
-    "selector": {
-        "desc": "To lista wszystkich serwerów, których ustawienia możesz zmienić gdyż masz zezwolenie [Zarządzanie serwerem]($1). Wybierz serwer:",
-        "invite": "Wiki-Bot nie jest członkiem $1, ale możesz [zaprosić Wiki-Bota]($2).",
-        "none": "Aktualnie nie masz zezwolenia [Zarządzanie serwerem]($1) na żadnym z serwerów, czy jesteś na odpowiednim koncie?",
-        "switch": "Zmień konta",
-        "title": "Wybór serwera",
-        "with": "Serwery z Wiki-Botem",
-        "without": "Serwery bez Wiki-Bota"
-    },
-    "settings": {
-        "desc": "Ustawienia dla $1:",
-        "failed": "Nie udało się załadować ustawień!",
-        "form": {
-            "channel": "Kanał:",
-            "confirm": "Czy na pewno chcesz usunąć te ustawienia kanału?",
-            "default": "Ustawienia serwerowe",
-            "inline": "Linkowanie składnią wiki:",
-            "lang": "Język:",
-            "new": "Nowe ustawienia kanału",
-            "overwrite": "$1 Ustawienia",
-            "prefix": "Prefiks:",
-            "prefix_space": "Prefiks kończy się spacją:",
-            "role": "Minimalna rola:",
-            "select_channel": "-- Wybierz kanał --",
-            "wiki": "Domyślna wiki:",
-            "wiki_check": "Sprawdź wiki"
-        },
-        "new": "Nowe ustawienia kanału"
-    },
-    "verification": {
-        "desc": "Weryfikacje dla $1:",
-        "explanation": "<h2>Weryfikacja użytkownika</h2>\n<p>Używając komendy <code class=\"prefix\">weryfikuj &lt;nazwa użytkownika na wiki&gt;</code>, użytkownicy mogą się zweryfikować swoje konto na wiki z użyciem pola „Discord” na swoim profilu bądź stronie użytkownika. Jeżeli nazwa użytkownika na Discordzie oraz wiki się pokrywając oraz weryfikacje użytkowników są skonfigurowane - Wiki-Bot nada odpowiednie role dla wszystkich pasujących reguł weryfikacji które pasują.</p>\n<p>Każda reguła weryfikacji pozwala na nadawanie wielu restrykcji oraz opcji, które zmieniają zachowanie weryfikacji na daną rolę:</p>\n<ul>\n<li>Kanał na którym można użyć komendy <code class=\"prefix\">weryfikuj</code>.</li>\n<li>Rola do otrzymania po poprawnym spełnieniu warunków reguły weryfikacji.</li>\n<li>Wymagana ilość edycji do spełnienia warunku.</li>\n<li>Wymagane grupy użytkowników konta wiki do spełniania warunku.</li>\n<li>Wymagany wiek konta (w dniach) do spełnienia warunku.</li>\n<li>Czy nazwa użytkownika Discord powinna zostać zmieniona na nazwę użytkownika na wiki gdy warunki weryfikacji reguły zostaną spełnione.</li>\n</ul>",
-        "form": {
-            "accountage": "Wiek konta (w dniach):",
-            "channel": "Kanał:",
-            "confirm": "Czy na pewno chcesz usunąć weryfikację?",
-            "editcount": "Minimalna ilość edycji:",
-            "entry": "Weryfikacja #$1",
-            "more": "Dodaj więcej",
-            "new": "Nowa weryfikacja",
-            "postcount": "Minimalna ilość postów:",
-            "postcount_and": "Wymagaj zarówno edycji jak i postów.",
-            "postcount_both": "Wymagaj zsumowanej ilości edycji oraz postów.",
-            "postcount_fandom": "Tylko wiki na Fandomie:",
-            "postcount_or": "Wymagaj edycji lub postów.",
-            "rename": "Zmień nazwę użytkowników:",
-            "role": "Rola:",
-            "select_channel": "-- Wybierz kanał --",
-            "select_role": "-- Wybierz rolę --",
-            "usergroup": "Nazwa grupy użytkowników:",
-            "usergroup_and": "Wymagaj wszystkich grup użytkowników:"
-        },
-        "new": "Nowa weryfikacja"
-    }
+	"fallback": [
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
+	],
+	"general": {
+		"botlist": {
+			"text": "Pomóż innym użytkownikom znaleźć Wiki-Bota przez głosowanie na listach botów:",
+			"title": "Listy botów"
+		},
+		"delete": "Usuń",
+		"invite": "Zaproś Wiki-Bota",
+		"language": "Zmień język",
+		"login": "Zaloguj się",
+		"logout": "Wyloguj się",
+		"rcscript": "Ostatnie zmiany",
+		"refresh": "Odśwież listę serwerów",
+		"save": "Zapisz",
+		"selector": "Selektor serwera",
+		"settings": "Ustawienia",
+		"support": "Serwer wsparcia",
+		"theme-dark": "Używaj ciemnego stylu",
+		"theme-light": "Używaj jasnego stylu",
+		"title": "Ustawienia Wiki-Bota",
+		"verification": "Weryfikacje",
+		"welcome": "<h2>Witaj na panelu sterowania Wiki-Bota</h2>\n<p>Wiki-Bot to bot działający na Discordzie ułatwiający integrację wiki bazujących na MediaWiki wraz z czatem Discorda. Pomaga w linkowaniu stron, weryfikowaniu użytkowników wiki, informowania o ostatnich zmianach z wiki oraz więcej. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Więcej informacji]</a></p>\n<p>Możesz tutaj zmienić ustawienia bota dla serwerów na których posiadasz zezwolenie „Zarządzaj serwerem”. Aby zacząć, uwierzytelnij swoje konto Discord z panelem tym przyciskiem:</p>"
+	},
+	"indexjs": {
+		"invalid": {
+			"note_http": "Podana strona nie używa HTTPS!",
+			"note_private": "Podana wiki jest prywatna!",
+			"note_timeout": "Podany link zajął zbyt dużo czasu na odpowiedź!",
+			"text": "Ten adres URL nie może zostać rozpoznany jako poprawna strona MediaWiki!",
+			"title": "Niepoprawna wiki!"
+		},
+		"outdated": {
+			"text": "Webhook ostatnich zmian wymaga przynajmniej MediaWiki 1.30!",
+			"title": "Stara wersja MediaWiki!"
+		},
+		"prefix": {
+			"backslash": "Prefix nie może zawierać lewych ukośników (\\)!",
+			"code": "Prefiks nie może zawierać znaków stylu (Markdown)!",
+			"space": "Prefiks nie może zawierać spacji!"
+		},
+		"sysmessage": {
+			"text": "ID serwera Discord $2 musi być jedyną treścią strony $1 na wiki.",
+			"title": "Wiadomość systemowa nie jest poprawna!"
+		},
+		"valid": {
+			"MediaWiki": "Ostrzeżenie: Wymaga przynajmniej $1 dla pełnej funkcjonalności.",
+			"title": "Ta wiki jest poprawna i może być użyta!"
+		}
+	},
+	"notice": {
+		"error": {
+			"text": "Wystąpił niespodziewany błąd, spróbuj ponownie później.",
+			"title": "Nieznany błąd!"
+		},
+		"invalidusergroup": {
+			"text": "Ta nazwa grupy użytkowników jest za długa lub podano ich zbyt dużo.",
+			"title": "Niepoprawna grupa użytkowników!"
+		},
+		"loginfail": {
+			"text": "Wystąpił błąd podczas logowania, spróbuj ponownie później.",
+			"title": "Logowanie nie powiodło się!"
+		},
+		"logout": {
+			"text": "Nastąpiło poprawne wylogowanie. Aby zmienić ustawienia musisz się ponownie zalogować.",
+			"title": "Nastąpiło poprawne wylogowanie!"
+		},
+		"missingperm": {
+			"text": "Ty lub Wiki-Bot nie posiada zezwolenia $1 dla tej funkcji.",
+			"title": "Niewystarczające zezwolenia!"
+		},
+		"mwversion": {
+			"text": "Wymaga przynajmniej MediaWiki w wersji 1.30, znaleziono $1 na $2.",
+			"title": "Przestarzała wersja MediaWiki!"
+		},
+		"nochange": {
+			"text": "Ustawienia są takie same jak obecnie używane domyślne ustawienia.",
+			"title": "Zapisanie nie powiodło się!"
+		},
+		"nosettings": {
+			"note": "Zmień ustawienia.",
+			"text": "Najpierw zdefiniuj ustawienia serwera.",
+			"title": "Serwer nie został jeszcze skonfigurowany!"
+		},
+		"readonly": {
+			"text": "Aktualnie możliwy jest jedynie podgląd ustawień, zapisywanie nie jest możliwe.",
+			"title": "Baza danych w trybie tylko do odczytu!"
+		},
+		"refresh": {
+			"text": "Lista serwerów została poprawnie odświeżona.",
+			"title": "Odświeżenie pomyślne!"
+		},
+		"refreshfail": {
+			"text": "Lista serwerów nie mogła zostać odświeżona, spróbuj ponownie później.",
+			"title": "Odświeżenie nie powiodło się!"
+		},
+		"save": {
+			"text": "Ustawienia zostały zapisane poprawnie.",
+			"title": "Ustawienia zapisane!"
+		},
+		"savefail": {
+			"note_http": "Podana strona nie używa HTTPS!",
+			"note_private": "Podana wiki jest prywatna!",
+			"note_timeout": "Podany link zajął zbyt dużo czasu na odpowiedź!",
+			"text": "Ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
+			"title": "Zapisanie nie powiodło się!"
+		},
+		"sysmessage": {
+			"text": "ID serwera Discord $2 musi być jedyną treścią strony $1 na wiki.",
+			"title": "Wiadomość systemowa nie jest poprawna!"
+		},
+		"unauthorized": {
+			"text": "Zaloguj się przed zmianą ustawień.",
+			"title": "Niezalogowany!"
+		},
+		"wikiblocked": {
+			"note": "Powód:",
+			"text": "$1 został zablokowany przed dodaniem jako webhook ostatnich zmian.",
+			"title": "Wiki jest zablokowana!"
+		}
+	},
+	"rcscript": {
+		"desc": "Webhooki ostatnich zmian dla $1:",
+		"explanation": "<h2>Webhook ostatnich zmian</h2>\n<p>Wiki-Bot utylizuje webhook ostatnich zmian oparty na <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Ostatnie zmiany mogą zostać wysłane na kanał w stylu kompaktowym lub w stylu wiadomości typu embed z tagami edycji oraz zmianami kategorii.</p>\n<p>Wymagania do dodania webhooka ostatnich zmian:</p>\n<ul>\n<li>Wiki musi działać na wersji <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> lub wyższej.</li>\n<li>Zawartość wiadomości systemowej <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> musi być taka sama jak ID serwera <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
+		"form": {
+			"channel": "Kanał:",
+			"confirm": "Czy naprawdę chcesz usunąć ten webhook ostatnich zmian?",
+			"display": "Tryb wyświetlania:",
+			"display_compact": "Kompaktowe wiadomości.",
+			"display_diff": "Szczegółowe wiadomości z podglądami zdjęć oraz podglądem zmian edycji.",
+			"display_embed": "Szczegółowe wiadomości z tagami oraz zmianami kategorii.",
+			"display_image": "Szczegółowe wiadomości podglądami zdjęć.",
+			"entry": "Webhook ostatnich zmian #$1",
+			"feeds": "Zmiany bazowane na Feeds:",
+			"feeds_only": "Tylko zmiany bazowane na Feeds:",
+			"lang": "Język:",
+			"new": "Nowy webhook ostatnich zmian",
+			"select_channel": "-- Wybierz kanał --",
+			"wiki": "Wiki:",
+			"wiki_check": "Sprawdź wiki"
+		},
+		"new": "Nowy webhook"
+	},
+	"selector": {
+		"desc": "To lista wszystkich serwerów, których ustawienia możesz zmienić gdyż masz zezwolenie [Zarządzanie serwerem]($1). Wybierz serwer:",
+		"invite": "Wiki-Bot nie jest członkiem $1, ale możesz [zaprosić Wiki-Bota]($2).",
+		"none": "Aktualnie nie masz zezwolenia [Zarządzanie serwerem]($1) na żadnym z serwerów, czy jesteś na odpowiednim koncie?",
+		"switch": "Zmień konta",
+		"title": "Wybór serwera",
+		"with": "Serwery z Wiki-Botem",
+		"without": "Serwery bez Wiki-Bota"
+	},
+	"settings": {
+		"desc": "Ustawienia dla $1:",
+		"failed": "Nie udało się załadować ustawień!",
+		"form": {
+			"channel": "Kanał:",
+			"confirm": "Czy na pewno chcesz usunąć te ustawienia kanału?",
+			"default": "Ustawienia serwerowe",
+			"inline": "Linkowanie składnią wiki:",
+			"lang": "Język:",
+			"new": "Nowe ustawienia kanału",
+			"overwrite": "$1 Ustawienia",
+			"prefix": "Prefiks:",
+			"prefix_space": "Prefiks kończy się spacją:",
+			"role": "Minimalna rola:",
+			"select_channel": "-- Wybierz kanał --",
+			"wiki": "Domyślna wiki:",
+			"wiki_check": "Sprawdź wiki"
+		},
+		"new": "Nowe ustawienia kanału"
+	},
+	"verification": {
+		"desc": "Weryfikacje dla $1:",
+		"explanation": "<h2>Weryfikacja użytkownika</h2>\n<p>Używając komendy <code class=\"prefix\">weryfikuj &lt;nazwa użytkownika na wiki&gt;</code>, użytkownicy mogą się zweryfikować swoje konto na wiki z użyciem pola „Discord” na swoim profilu bądź stronie użytkownika. Jeżeli nazwa użytkownika na Discordzie oraz wiki się pokrywając oraz weryfikacje użytkowników są skonfigurowane - Wiki-Bot nada odpowiednie role dla wszystkich pasujących reguł weryfikacji które pasują.</p>\n<p>Każda reguła weryfikacji pozwala na nadawanie wielu restrykcji oraz opcji, które zmieniają zachowanie weryfikacji na daną rolę:</p>\n<ul>\n<li>Kanał na którym można użyć komendy <code class=\"prefix\">weryfikuj</code>.</li>\n<li>Rola do otrzymania po poprawnym spełnieniu warunków reguły weryfikacji.</li>\n<li>Wymagana ilość edycji do spełnienia warunku.</li>\n<li>Wymagane grupy użytkowników konta wiki do spełniania warunku.</li>\n<li>Wymagany wiek konta (w dniach) do spełnienia warunku.</li>\n<li>Czy nazwa użytkownika Discord powinna zostać zmieniona na nazwę użytkownika na wiki gdy warunki weryfikacji reguły zostaną spełnione.</li>\n</ul>",
+		"form": {
+			"accountage": "Wiek konta (w dniach):",
+			"channel": "Kanał:",
+			"confirm": "Czy na pewno chcesz usunąć weryfikację?",
+			"editcount": "Minimalna ilość edycji:",
+			"entry": "Weryfikacja #$1",
+			"more": "Dodaj więcej",
+			"new": "Nowa weryfikacja",
+			"postcount": "Minimalna ilość postów:",
+			"postcount_and": "Wymagaj zarówno edycji jak i postów.",
+			"postcount_both": "Wymagaj zsumowanej ilości edycji oraz postów.",
+			"postcount_fandom": "Tylko wiki na Fandomie:",
+			"postcount_or": "Wymagaj edycji lub postów.",
+			"rename": "Zmień nazwę użytkowników:",
+			"role": "Rola:",
+			"select_channel": "-- Wybierz kanał --",
+			"select_role": "-- Wybierz rolę --",
+			"usergroup": "Nazwa grupy użytkowników:",
+			"usergroup_and": "Wymagaj wszystkich grup użytkowników:"
+		},
+		"new": "Nowa weryfikacja"
+	}
 }

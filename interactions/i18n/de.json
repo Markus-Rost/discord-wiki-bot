@@ -1,14 +1,14 @@
 {
-    "inline": {
-        "description": "Sende eine Nachricht mit Inline-Links zum Wiki.",
-        "name": "inline",
-        "options[0].description": "Text mit Wikitext-Links.",
-        "options[0].name": "text"
-    },
-    "verify": {
-        "description": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
-        "name": "verify",
-        "options[0].description": "Dein Benutzername im Wiki.",
-        "options[0].name": "benutzername"
-    }
+	"inline": {
+		"description": "Sende eine Nachricht mit Inline-Links zum Wiki.",
+		"name": "inline",
+		"options[0].description": "Text mit Wikitext-Links.",
+		"options[0].name": "text"
+	},
+	"verify": {
+		"description": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
+		"name": "verify",
+		"options[0].description": "Dein Benutzername im Wiki.",
+		"options[0].name": "benutzername"
+	}
 }

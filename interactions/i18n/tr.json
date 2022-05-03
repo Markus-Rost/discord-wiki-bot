@@ -1,14 +1,14 @@
 {
-    "inline": {
-        "description": "Satır içi viki bağlantıları ile mesaj paylaş.",
-        "name": "inline",
-        "options[0].description": "Wikitext bağlantılarını içeren metin.",
-        "options[0].name": "text"
-    },
-    "verify": {
-        "description": "Viki hesabın ile Discord hesabını doğrula.",
-        "name": "verify",
-        "options[0].description": "Vikideki kullanıcı adın.",
-        "options[0].name": "username"
-    }
+	"inline": {
+		"description": "Satır içi viki bağlantıları ile mesaj paylaş.",
+		"name": "inline",
+		"options[0].description": "Wikitext bağlantılarını içeren metin.",
+		"options[0].name": "text"
+	},
+	"verify": {
+		"description": "Viki hesabın ile Discord hesabını doğrula.",
+		"name": "verify",
+		"options[0].description": "Vikideki kullanıcı adın.",
+		"options[0].name": "username"
+	}
 }

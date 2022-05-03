@@ -37,12 +37,12 @@ jobs:
               then
                 if [[ "$key" =~ description$ || "$key" =~ choices\[[0-9]+\]\.name$ ]]
                 then
-                  echo "`jq \".$key=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                  echo "`jq \".$key=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
                 fi
-                echo "`jq \".${key}_localizations.\\\"en-GB\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
-                echo "`jq \".${key}_localizations.\\\"en-US\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"en-GB\\\"=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"en-US\\\"=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
               else
-                echo "`jq \".${key}_localizations.\\\"$language\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"$language\\\"=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
               fi
             done
           done
