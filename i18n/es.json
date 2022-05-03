@@ -805,7 +805,7 @@
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
 		"help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
 		"help_guide": "Sigue [esta guía]($1) para agregar tu etiqueta de Discord a tu perfil wiki:",
-		"help_missing": "Asegúrate de utilizar tu nombre de usuario wiki y que las mayúsculas y minúsculas son correctas.",
+		"help_missing": "Por favor, asegúrate de utilizar tu nombre de usuario wiki y que las mayúsculas y minúsculas son correctas.",
 		"help_subpage": "Por favor agrega tu etiqueta de Discord ($1) a tu subpágina de Discord en el wiki:",
 		"missing": "No hay verificaciones configuradas en este canal.",
 		"notice": "Aviso:",
