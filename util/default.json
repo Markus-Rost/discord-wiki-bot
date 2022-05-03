@@ -741,6 +741,36 @@
 			"regex": "((?:www\\.)?glitchtale\\.com)",
 			"articlePath": "/wiki/index.php/",
 			"scriptPath": "/wiki/"
+		},
+		{
+			"name": "wiki.therofl98.co",
+			"regex": "(wiki\\.therofl98\\.co)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "yugipedia.com",
+			"regex": "(yugipedia\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "polandballwiki.com",
+			"regex": "((?:www\\.)?(?:(pwsc)\\.)?polandballwiki\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "lostmediawiki.com",
+			"regex": "((?:www\\.)?lostmediawiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "es.amiibopedia.com",
+			"regex": "(es\\.amiibopedia\\.com)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
 		}
 	]
 }
