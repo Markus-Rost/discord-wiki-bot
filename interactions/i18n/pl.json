@@ -1,14 +1,14 @@
 {
-    "inline": {
-        "description": "Utwórz wiadomość z linkami pisanymi składnią wiki.",
-        "name": "inline",
-        "options[0].description": "Tekst zawierający linki pisane składnią wiki.",
-        "options[0].name": "tekst"
-    },
-    "verify": {
-        "description": "Zweryfikuj swoje konto Discord używając konta na wiki.",
-        "name": "weryfikuj",
-        "options[0].description": "Twoja nazwa użytkownika na wiki.",
-        "options[0].name": "nick"
-    }
+	"inline": {
+		"description": "Utwórz wiadomość z linkami pisanymi składnią wiki.",
+		"name": "inline",
+		"options[0].description": "Tekst zawierający linki pisane składnią wiki.",
+		"options[0].name": "tekst"
+	},
+	"verify": {
+		"description": "Zweryfikuj swoje konto Discord używając konta na wiki.",
+		"name": "weryfikuj",
+		"options[0].description": "Twoja nazwa użytkownika na wiki.",
+		"options[0].name": "nick"
+	}
 }

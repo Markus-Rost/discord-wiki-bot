@@ -1,265 +1,265 @@
 {
-    "fallback": [
-        "en",
-        " ",
-        " ",
-        " ",
-        " "
-    ],
-    "general": {
-        "botlist": {
-            "text": "Hilf anderen Nutzern Wiki-Bot zu finden durch abstimmen auf Bot-Listen:",
-            "title": "Bot-Listen"
-        },
-        "delete": "Löschen",
-        "invite": "Lade Wiki-Bot ein",
-        "language": "Sprache ändern",
-        "login": "Anmelden",
-        "logout": "Abmelden",
-        "rcscript": "Wiki-Änderungen",
-        "refresh": "Serverliste aktualisieren",
-        "save": "Speichern",
-        "selector": "Serverauswahl",
-        "settings": "Einstellungen",
-        "support": "Support-Server",
-        "theme-dark": "Nutze das dunkle Design",
-        "theme-light": "Nutze das helle Design",
-        "title": "Wiki-Bot Einstellungen",
-        "verification": "Verifizierungen",
-        "welcome": "<h2>Willkommen auf dem Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot ist ein Discord-Bot der dazu dient Discord-Server und MediaWiki-Wikis zu verbinden. Er hilft durch das Verlinken von Wiki-Artikeln, Verifizieren von Wiki-Benutzern, informiert über die neusten Änderungen auf dem Wiki und mehr. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mehr Information]</a></p>\n<p>Hier kannst du die Bot-Einstellungen für Server ändern auf denen du die Server verwalten Berechtigung besitzt. Dafür musst du dich mit deinem Discord-Account anmelden, was du über diesen Knopf tuen kannst:</p>"
-    },
-    "indexjs": {
-        "avatar": {
-            "content_type": "Der Inhalt des angegebenen Links hat den Typ $1, aber es sind nur die folgenden Inhaltstypen erlaubt:",
-            "invalid_url": "Die URL konnte nicht zu einer gültigen Bilddatei aufgelöst werden."
-        },
-        "invalid": {
-            "note_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.",
-            "note_private": "Das angegebene Wiki ist privat!",
-            "note_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
-            "text": "Die URL konnte nicht zu einer gültigen MediaWiki-Seite aufgelöst werden!",
-            "title": "Ungültiges Wiki!"
-        },
-        "outdated": {
-            "text": "Der Letzte Änderungen-WebHook benötigt mindestens MediaWiki 1.30!",
-            "title": "Veraltete MediaWiki-Version!"
-        },
-        "prefix": {
-            "backslash": "Das Präfix darf keine Backslashes beinhalten!",
-            "code": "Das Präfix darf kein Code-Markdown beinhalten!",
-            "space": "Das Präfix darf keine Leerzeichen beinhalten!"
-        },
-        "sysmessage": {
-            "text": "Die Systemnachricht $1 muss der Server-ID $2 entsprechen.",
-            "title": "Systemnachricht stimmt nicht überein!"
-        },
-        "valid": {
-            "MediaWiki": "Warnung: Benötigt mindestens $1 für vollständige Funktionalität.",
-            "title": "Das Wiki kann benutzt werden!"
-        }
-    },
-    "notice": {
-        "error": {
-            "text": "Ein unbekannter Fehler ist aufgetreten, bitte versuche es erneut.",
-            "title": "Unbekannter Fehler!"
-        },
-        "invalidusergroup": {
-            "text": "Die Wiki-Benutzergruppe ist zu lang oder du hast zu viele angegeben.",
-            "title": "Ungültige Benutzergruppe!"
-        },
-        "loginfail": {
-            "text": "Es ist bei Fehler aufgetreten beim Versuch dich anzumelden, bitte versuche es erneut.",
-            "title": "Anmeldung fehlgeschlagen!"
-        },
-        "logout": {
-            "text": "Du wurdest erfolgreich abgemeldet. Um Einstellungen zu ändern musst du dich erneut anmelden.",
-            "title": "Erfolgreich abgemeldet!"
-        },
-        "missingperm": {
-            "text": "Entweder dir oder Wiki-Bot fehlt die $1-Berechtigung für diese Funktion.",
-            "title": "Fehlende Berechtigung!"
-        },
-        "mwversion": {
-            "text": "Es wird mindestens MediaWiki 1.30 benötigt, auf $2 wurde $1 gefunden.",
-            "title": "Veraltete MediaWiki version!"
-        },
-        "nochange": {
-            "text": "Die Einstellungen stimmen mit den aktuellen Standard-Einstellungen überein.",
-            "title": "Speichern fehlgeschlagen!"
-        },
-        "nosettings": {
-            "note": "Einstellungen ändern.",
-            "text": "Bitte nimm für diesen Server vorher noch Einstellungen vor.",
-            "title": "Server noch nicht aufgesetzt!"
-        },
-        "oauth": {
-            "text": "Dein Wiki-Account wurde erfolgreich mit Wiki-Bot verbunden.",
-            "title": "Account erfolgreich verbunden!"
-        },
-        "oauthfail": {
-            "text": "Dein Wiki-Account konnte nicht verbunden werden, versuche es noch einmal.",
-            "title": "Verbindung fehlgeschlagen!"
-        },
-        "oauthlogin": {
-            "text": "Bitte melde dich an, wenn du nicht möchtest, das Wiki-Bot deinen Wiki-Account speichert.",
-            "title": "Dein verbundener Wiki-Account wurde gespeichert!"
-        },
-        "oauthother": {
-            "note": "Accounts wechseln.",
-            "text": "Bitte beachte, dass dein Wiki-Account mit einem anderen Discord-Account verbunden wurde, als der mit dem du gerade angemeldet bist.",
-            "title": "Account erfolgreich verbunden!"
-        },
-        "oauthverify": {
-            "text": "Dein Wiki-Account wurde erfolgreich verifiziert.",
-            "title": "Account erfolgreich verifiziert!"
-        },
-        "readonly": {
-            "text": "Du kannst die Einstellungen aktuell nur sehen, jedoch nicht ändern.",
-            "title": "Nur-Lese-Modus!"
-        },
-        "refresh": {
-            "text": "Deine Serverliste wurde erfolgreich aktualisiert.",
-            "title": "Aktualisierung erfolgreich!"
-        },
-        "refreshfail": {
-            "text": "Deine Serverliste konnte nicht aktualisiert werden, bitte versuche es erneut.",
-            "title": "Aktualisierung fehlgeschlagen!"
-        },
-        "save": {
-            "text": "Die Einstellungen wurden erfolgreich aktualisiert.",
-            "title": "Einstellungen gespeichert!"
-        },
-        "savefail": {
-            "note_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.",
-            "note_private": "Das angegebene Wiki ist privat!",
-            "note_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
-            "text": "Die Einstellungen konnten nicht gespeichert werden, bitte versuche es erneut.",
-            "title": "Speichern fehlgeschlagen!"
-        },
-        "sysmessage": {
-            "text": "Die Systemnachricht $1 muss der Server-ID $2 entsprechen.",
-            "title": "Systemnachricht stimmt nicht überein!"
-        },
-        "unauthorized": {
-            "text": "Bitte melde dich an, bevor du Einstellungen ändern kannst.",
-            "title": "Nicht angemeldet!"
-        },
-        "webhookfail": {
-            "note": "Der Discord-WebHook konnte nicht geändert werden!",
-            "text": "Die Einstellungen wurden nur teilweise gespeichert.",
-            "title": "Einstellungen teilweise gespeichert!"
-        },
-        "wikiblocked": {
-            "note": "Grund:",
-            "text": "$1 wurde gesperrt und kann nicht als Letzte Änderungen-WebHook hinzugefügt werden.",
-            "title": "Wiki ist gesperrt!"
-        }
-    },
-    "oauth": {
-        "desc": "Dies sind deine OAuth2-Einstellungen zum Verbinden deiner Wiki-Accounts:",
-        "failed": "Fehler beim Laden der OAuth2-Einstellungen!",
-        "form": {
-            "connect": "Verbinde Account.",
-            "connected": "Verbunden",
-            "current": "Aktueller Status:",
-            "default": "Wiki-Account Verbindungen",
-            "disable": "Speichere meinen Account nicht!",
-            "disabled": "Deaktiviert",
-            "disconnect": "Account trennen.",
-            "enable": "Speichere meinen Account.",
-            "unconnected": "Nicht verbunden"
-        }
-    },
-    "rcscript": {
-        "desc": "Dies sind die Letzte Änderungen-WebHooks für $1:",
-        "explanation": "<h2>Letzte Änderungen-WebHook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-WebHook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-WebHook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
-        "form": {
-            "avatar": "WebHook-Avatar:",
-            "avatar_preview": "Vorschau",
-            "channel": "Kanal:",
-            "confirm": "Möchtest du wirklich den Letzte Änderungen-WebHook löschen?",
-            "display": "Anzeigemodus:",
-            "display_compact": "Kompakte Textnachrichten mit Inline-Links.",
-            "display_diff": "Einbettungen mit Bildvorschau und Bearbeitungsunterschieden.",
-            "display_embed": "Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen.",
-            "display_image": "Einbettungen mit Bildvorschau.",
-            "entry": "$1. Letzte Änderungen-WebHook",
-            "feeds": "Feeds-basierte Änderungen:",
-            "feeds_only": "Nur Feeds-basierte Änderungen:",
-            "lang": "Sprache:",
-            "name": "WebHook-Name:",
-            "new": "Neuer Letzte Änderungen-WebHook",
-            "select_channel": "-- Wähle einen Kanal --",
-            "wiki": "Wiki:",
-            "wiki_check": "Wiki testen"
-        },
-        "new": "Neuer WebHook"
-    },
-    "selector": {
-        "desc": "Dies ist eine Liste aller Server dessen Einstellungen du ändern kannst, da du die [Server verwalten]($1)-Berechtigung hast. Bitte wähle einen Server:",
-        "invite": "Wiki-Bot ist noch kein Mitglied von $1, aber du kannst [Wiki-Bot einladen]($2).",
-        "none": "Du hast derzeit die [Server verwalten]($1)-Berechtigung auf keinem Server, bist du mit dem richtigen Account angemeldet?",
-        "switch": "Accounts wechseln",
-        "title": "Serverauswahl",
-        "user": "Wiki-Accounts",
-        "with": "Server mit Wiki-Bot",
-        "without": "Server ohne Wiki-Bot"
-    },
-    "settings": {
-        "desc": "Dies sind die Einstellungen für $1:",
-        "failed": "Die Einstellungen konnten nicht geladen werden!",
-        "form": {
-            "channel": "Kanal:",
-            "confirm": "Möchtest du wirklich die Kanal-Überschreibung löschen?",
-            "default": "Server-Einstellungen",
-            "inline": "Inline-Befehle:",
-            "lang": "Sprache:",
-            "new": "Neue Kanal-Überschreibung",
-            "overwrite": "Einstellungen für $1",
-            "prefix": "Präfix:",
-            "prefix_space": "Präfix endet mit einem Leerzeichen:",
-            "role": "Minimale Rolle:",
-            "select_channel": "-- Wähle einen Kanal --",
-            "wiki": "Standard-Wiki:",
-            "wiki_check": "Wiki testen"
-        },
-        "new": "Neue Überschreibung"
-    },
-    "verification": {
-        "desc": "Dies sind die Verifizierungen für $1:",
-        "explanation": "<h2>Wiki-Benutzer Verifizierung</h2>\n<p>Mit dem <code class=\"prefix\">verify &lt;Wiki-Benutzername&gt;</code>-Befehl können Discord-Benutzer sich selbst als ein bestimmter Wiki-Benutzer verifizieren mithilfe des Discord-Feldes auf deren Wiki-Profil. Falls der Benutzer übereinstimmt und Verifizierungen auf dem Server vorhanden sind, wird Wiki-Bot dem Benutzer die Rollen für alle Verifizierungs-Einträge geben, die der Benutzer erfüllt.</p>\n<p>Jeder Verifizierungs-Eintrag erlaubt mehrere Bedingungen, die der Wiki-Benutzer erreicht haben muss um die Verifizierung zu erfüllen:</p>\n<ul>\n<li>Kanal in dem der <code class=\"prefix\">verify</code>-Befehl genutzt werden muss.</li>\n<li>Discord-Rolle die vergeben wird, wenn der Benutzer die Verifizierung erfüllt.</li>\n<li>Mindestens benötigte Bearbeitungsanzahl auf dem Wiki um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Benötigte Wiki-Benutzergruppe um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Mindestalter des Wiki-Accounts in Tagen um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Ob der Discord-Benutzername zu dem Wiki-Benutzernamen geändert werden soll, wenn der Benutzer die Verifizierung erfüllt.</li>\n</ul>",
-        "form": {
-            "accountage": "Account-Alter (in Tagen):",
-            "channel": "Kanal:",
-            "confirm": "Möchtest du wirklich die Verifizierung löschen?",
-            "editcount": "Bearbeitungen:",
-            "entry": "$1. Verifizierung",
-            "flag_logall": "Protokolliere nicht erfolgreiche Verifizierungen:",
-            "flag_private": "Private Antworten zu Befehlen:",
-            "logging": "Protokollierungskanal:",
-            "match": "Hinweis bei fehlenden Voraussetzungen:",
-            "match_placeholder": "Markdown-Text bei passendem Discord-Tag, aber keinen Kriterien für Rollen erfüllt.",
-            "more": "Weitere hinzufügen",
-            "new": "Neue Verifizierung",
-            "notice": "Verifizierungshinweise",
-            "postcount": "Diskussionsbeitragslimit:",
-            "postcount_and": "Benötige sowohl das Bearbeitungs- als auch das Diskussionsbeitragslimit.",
-            "postcount_both": "Benötige das zusammengezählte Bearbeitungs- und Diskussionsbeitragslimit.",
-            "postcount_fandom": "Nur für Fandom Wikis:",
-            "postcount_or": "Benötige entweder das Bearbeitungs- oder das Diskussionsbeitragslimit.",
-            "rename": "Benutzer umbenennen:",
-            "role": "Rolle:",
-            "role_add": "Vergeben",
-            "role_remove": "Entfernen",
-            "select_channel": "-- Wähle einen Kanal --",
-            "select_role": "-- Wähle eine Rolle --",
-            "success": "Hinweis bei Erfolg:",
-            "success_placeholder": "Markdown-Text bei erfolgreicher Verifizierung.",
-            "usergroup": "Wiki-Benutzergruppe:",
-            "usergroup_and": "Benötige alle Benutzergruppen:"
-        },
-        "help_notice": "<p>Die Hinweise unterstützen ein paar einfache Funktionen und Variablen.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – Die aktuelle Anzahl von Bearbeitungen des Benutzers.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – Das aktuelle Alter des Accounts des Benutzers in ganzen Tagen.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – Die aktuelle Anzahl von Diskussionsbeiträgen des Benutzers (nur für Fandom Wikis).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Gibt des Wert eines Ausdrucks wieder.\n<ul>\n<li>Unterstützt nur Addition (<code class=\"form-button user-select\">+</code>) und Subtraction (<code class=\"form-button user-select\">-</code>).</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>wenn wahr</i> | <i>wenn falsch</i> }}</code> – Gibt Text abhängig vom Ergebnis eines Ausdrucks wieder.\n<ul>\n<li>Unterstützt <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code> und <code class=\"form-button user-select\">&lt;&gt;</code> sowie <code class=\"form-button user-select\">and</code> und <code class=\"form-button user-select\">or</code>.</li>\n</ul></li>\n</ul>",
-        "new": "Neue Verifizierung",
-        "notice": "Verifizierungshinweise"
-    }
+	"fallback": [
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
+	],
+	"general": {
+		"botlist": {
+			"text": "Hilf anderen Nutzern Wiki-Bot zu finden durch abstimmen auf Bot-Listen:",
+			"title": "Bot-Listen"
+		},
+		"delete": "Löschen",
+		"invite": "Lade Wiki-Bot ein",
+		"language": "Sprache ändern",
+		"login": "Anmelden",
+		"logout": "Abmelden",
+		"rcscript": "Wiki-Änderungen",
+		"refresh": "Serverliste aktualisieren",
+		"save": "Speichern",
+		"selector": "Serverauswahl",
+		"settings": "Einstellungen",
+		"support": "Support-Server",
+		"theme-dark": "Nutze das dunkle Design",
+		"theme-light": "Nutze das helle Design",
+		"title": "Wiki-Bot Einstellungen",
+		"verification": "Verifizierungen",
+		"welcome": "<h2>Willkommen auf dem Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot ist ein Discord-Bot der dazu dient Discord-Server und MediaWiki-Wikis zu verbinden. Er hilft durch das Verlinken von Wiki-Artikeln, Verifizieren von Wiki-Benutzern, informiert über die neusten Änderungen auf dem Wiki und mehr. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mehr Information]</a></p>\n<p>Hier kannst du die Bot-Einstellungen für Server ändern auf denen du die Server verwalten Berechtigung besitzt. Dafür musst du dich mit deinem Discord-Account anmelden, was du über diesen Knopf tuen kannst:</p>"
+	},
+	"indexjs": {
+		"avatar": {
+			"content_type": "Der Inhalt des angegebenen Links hat den Typ $1, aber es sind nur die folgenden Inhaltstypen erlaubt:",
+			"invalid_url": "Die URL konnte nicht zu einer gültigen Bilddatei aufgelöst werden."
+		},
+		"invalid": {
+			"note_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.",
+			"note_private": "Das angegebene Wiki ist privat!",
+			"note_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
+			"text": "Die URL konnte nicht zu einer gültigen MediaWiki-Seite aufgelöst werden!",
+			"title": "Ungültiges Wiki!"
+		},
+		"outdated": {
+			"text": "Der Letzte Änderungen-WebHook benötigt mindestens MediaWiki 1.30!",
+			"title": "Veraltete MediaWiki-Version!"
+		},
+		"prefix": {
+			"backslash": "Das Präfix darf keine Backslashes beinhalten!",
+			"code": "Das Präfix darf kein Code-Markdown beinhalten!",
+			"space": "Das Präfix darf keine Leerzeichen beinhalten!"
+		},
+		"sysmessage": {
+			"text": "Die Systemnachricht $1 muss der Server-ID $2 entsprechen.",
+			"title": "Systemnachricht stimmt nicht überein!"
+		},
+		"valid": {
+			"MediaWiki": "Warnung: Benötigt mindestens $1 für vollständige Funktionalität.",
+			"title": "Das Wiki kann benutzt werden!"
+		}
+	},
+	"notice": {
+		"error": {
+			"text": "Ein unbekannter Fehler ist aufgetreten, bitte versuche es erneut.",
+			"title": "Unbekannter Fehler!"
+		},
+		"invalidusergroup": {
+			"text": "Die Wiki-Benutzergruppe ist zu lang oder du hast zu viele angegeben.",
+			"title": "Ungültige Benutzergruppe!"
+		},
+		"loginfail": {
+			"text": "Es ist bei Fehler aufgetreten beim Versuch dich anzumelden, bitte versuche es erneut.",
+			"title": "Anmeldung fehlgeschlagen!"
+		},
+		"logout": {
+			"text": "Du wurdest erfolgreich abgemeldet. Um Einstellungen zu ändern musst du dich erneut anmelden.",
+			"title": "Erfolgreich abgemeldet!"
+		},
+		"missingperm": {
+			"text": "Entweder dir oder Wiki-Bot fehlt die $1-Berechtigung für diese Funktion.",
+			"title": "Fehlende Berechtigung!"
+		},
+		"mwversion": {
+			"text": "Es wird mindestens MediaWiki 1.30 benötigt, auf $2 wurde $1 gefunden.",
+			"title": "Veraltete MediaWiki version!"
+		},
+		"nochange": {
+			"text": "Die Einstellungen stimmen mit den aktuellen Standard-Einstellungen überein.",
+			"title": "Speichern fehlgeschlagen!"
+		},
+		"nosettings": {
+			"note": "Einstellungen ändern.",
+			"text": "Bitte nimm für diesen Server vorher noch Einstellungen vor.",
+			"title": "Server noch nicht aufgesetzt!"
+		},
+		"oauth": {
+			"text": "Dein Wiki-Account wurde erfolgreich mit Wiki-Bot verbunden.",
+			"title": "Account erfolgreich verbunden!"
+		},
+		"oauthfail": {
+			"text": "Dein Wiki-Account konnte nicht verbunden werden, versuche es noch einmal.",
+			"title": "Verbindung fehlgeschlagen!"
+		},
+		"oauthlogin": {
+			"text": "Bitte melde dich an, wenn du nicht möchtest, das Wiki-Bot deinen Wiki-Account speichert.",
+			"title": "Dein verbundener Wiki-Account wurde gespeichert!"
+		},
+		"oauthother": {
+			"note": "Accounts wechseln.",
+			"text": "Bitte beachte, dass dein Wiki-Account mit einem anderen Discord-Account verbunden wurde, als der mit dem du gerade angemeldet bist.",
+			"title": "Account erfolgreich verbunden!"
+		},
+		"oauthverify": {
+			"text": "Dein Wiki-Account wurde erfolgreich verifiziert.",
+			"title": "Account erfolgreich verifiziert!"
+		},
+		"readonly": {
+			"text": "Du kannst die Einstellungen aktuell nur sehen, jedoch nicht ändern.",
+			"title": "Nur-Lese-Modus!"
+		},
+		"refresh": {
+			"text": "Deine Serverliste wurde erfolgreich aktualisiert.",
+			"title": "Aktualisierung erfolgreich!"
+		},
+		"refreshfail": {
+			"text": "Deine Serverliste konnte nicht aktualisiert werden, bitte versuche es erneut.",
+			"title": "Aktualisierung fehlgeschlagen!"
+		},
+		"save": {
+			"text": "Die Einstellungen wurden erfolgreich aktualisiert.",
+			"title": "Einstellungen gespeichert!"
+		},
+		"savefail": {
+			"note_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.",
+			"note_private": "Das angegebene Wiki ist privat!",
+			"note_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
+			"text": "Die Einstellungen konnten nicht gespeichert werden, bitte versuche es erneut.",
+			"title": "Speichern fehlgeschlagen!"
+		},
+		"sysmessage": {
+			"text": "Die Systemnachricht $1 muss der Server-ID $2 entsprechen.",
+			"title": "Systemnachricht stimmt nicht überein!"
+		},
+		"unauthorized": {
+			"text": "Bitte melde dich an, bevor du Einstellungen ändern kannst.",
+			"title": "Nicht angemeldet!"
+		},
+		"webhookfail": {
+			"note": "Der Discord-WebHook konnte nicht geändert werden!",
+			"text": "Die Einstellungen wurden nur teilweise gespeichert.",
+			"title": "Einstellungen teilweise gespeichert!"
+		},
+		"wikiblocked": {
+			"note": "Grund:",
+			"text": "$1 wurde gesperrt und kann nicht als Letzte Änderungen-WebHook hinzugefügt werden.",
+			"title": "Wiki ist gesperrt!"
+		}
+	},
+	"oauth": {
+		"desc": "Dies sind deine OAuth2-Einstellungen zum Verbinden deiner Wiki-Accounts:",
+		"failed": "Fehler beim Laden der OAuth2-Einstellungen!",
+		"form": {
+			"connect": "Verbinde Account.",
+			"connected": "Verbunden",
+			"current": "Aktueller Status:",
+			"default": "Wiki-Account Verbindungen",
+			"disable": "Speichere meinen Account nicht!",
+			"disabled": "Deaktiviert",
+			"disconnect": "Account trennen.",
+			"enable": "Speichere meinen Account.",
+			"unconnected": "Nicht verbunden"
+		}
+	},
+	"rcscript": {
+		"desc": "Dies sind die Letzte Änderungen-WebHooks für $1:",
+		"explanation": "<h2>Letzte Änderungen-WebHook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-WebHook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-WebHook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
+		"form": {
+			"avatar": "WebHook-Avatar:",
+			"avatar_preview": "Vorschau",
+			"channel": "Kanal:",
+			"confirm": "Möchtest du wirklich den Letzte Änderungen-WebHook löschen?",
+			"display": "Anzeigemodus:",
+			"display_compact": "Kompakte Textnachrichten mit Inline-Links.",
+			"display_diff": "Einbettungen mit Bildvorschau und Bearbeitungsunterschieden.",
+			"display_embed": "Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen.",
+			"display_image": "Einbettungen mit Bildvorschau.",
+			"entry": "$1. Letzte Änderungen-WebHook",
+			"feeds": "Feeds-basierte Änderungen:",
+			"feeds_only": "Nur Feeds-basierte Änderungen:",
+			"lang": "Sprache:",
+			"name": "WebHook-Name:",
+			"new": "Neuer Letzte Änderungen-WebHook",
+			"select_channel": "-- Wähle einen Kanal --",
+			"wiki": "Wiki:",
+			"wiki_check": "Wiki testen"
+		},
+		"new": "Neuer WebHook"
+	},
+	"selector": {
+		"desc": "Dies ist eine Liste aller Server dessen Einstellungen du ändern kannst, da du die [Server verwalten]($1)-Berechtigung hast. Bitte wähle einen Server:",
+		"invite": "Wiki-Bot ist noch kein Mitglied von $1, aber du kannst [Wiki-Bot einladen]($2).",
+		"none": "Du hast derzeit die [Server verwalten]($1)-Berechtigung auf keinem Server, bist du mit dem richtigen Account angemeldet?",
+		"switch": "Accounts wechseln",
+		"title": "Serverauswahl",
+		"user": "Wiki-Accounts",
+		"with": "Server mit Wiki-Bot",
+		"without": "Server ohne Wiki-Bot"
+	},
+	"settings": {
+		"desc": "Dies sind die Einstellungen für $1:",
+		"failed": "Die Einstellungen konnten nicht geladen werden!",
+		"form": {
+			"channel": "Kanal:",
+			"confirm": "Möchtest du wirklich die Kanal-Überschreibung löschen?",
+			"default": "Server-Einstellungen",
+			"inline": "Inline-Befehle:",
+			"lang": "Sprache:",
+			"new": "Neue Kanal-Überschreibung",
+			"overwrite": "Einstellungen für $1",
+			"prefix": "Präfix:",
+			"prefix_space": "Präfix endet mit einem Leerzeichen:",
+			"role": "Minimale Rolle:",
+			"select_channel": "-- Wähle einen Kanal --",
+			"wiki": "Standard-Wiki:",
+			"wiki_check": "Wiki testen"
+		},
+		"new": "Neue Überschreibung"
+	},
+	"verification": {
+		"desc": "Dies sind die Verifizierungen für $1:",
+		"explanation": "<h2>Wiki-Benutzer Verifizierung</h2>\n<p>Mit dem <code class=\"prefix\">verify &lt;Wiki-Benutzername&gt;</code>-Befehl können Discord-Benutzer sich selbst als ein bestimmter Wiki-Benutzer verifizieren mithilfe des Discord-Feldes auf deren Wiki-Profil. Falls der Benutzer übereinstimmt und Verifizierungen auf dem Server vorhanden sind, wird Wiki-Bot dem Benutzer die Rollen für alle Verifizierungs-Einträge geben, die der Benutzer erfüllt.</p>\n<p>Jeder Verifizierungs-Eintrag erlaubt mehrere Bedingungen, die der Wiki-Benutzer erreicht haben muss um die Verifizierung zu erfüllen:</p>\n<ul>\n<li>Kanal in dem der <code class=\"prefix\">verify</code>-Befehl genutzt werden muss.</li>\n<li>Discord-Rolle die vergeben wird, wenn der Benutzer die Verifizierung erfüllt.</li>\n<li>Mindestens benötigte Bearbeitungsanzahl auf dem Wiki um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Benötigte Wiki-Benutzergruppe um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Mindestalter des Wiki-Accounts in Tagen um den Verifizierungs-Eintrag zu erfüllen.</li>\n<li>Ob der Discord-Benutzername zu dem Wiki-Benutzernamen geändert werden soll, wenn der Benutzer die Verifizierung erfüllt.</li>\n</ul>",
+		"form": {
+			"accountage": "Account-Alter (in Tagen):",
+			"channel": "Kanal:",
+			"confirm": "Möchtest du wirklich die Verifizierung löschen?",
+			"editcount": "Bearbeitungen:",
+			"entry": "$1. Verifizierung",
+			"flag_logall": "Protokolliere nicht erfolgreiche Verifizierungen:",
+			"flag_private": "Private Antworten zu Befehlen:",
+			"logging": "Protokollierungskanal:",
+			"match": "Hinweis bei fehlenden Voraussetzungen:",
+			"match_placeholder": "Markdown-Text bei passendem Discord-Tag, aber keinen Kriterien für Rollen erfüllt.",
+			"more": "Weitere hinzufügen",
+			"new": "Neue Verifizierung",
+			"notice": "Verifizierungshinweise",
+			"postcount": "Diskussionsbeitragslimit:",
+			"postcount_and": "Benötige sowohl das Bearbeitungs- als auch das Diskussionsbeitragslimit.",
+			"postcount_both": "Benötige das zusammengezählte Bearbeitungs- und Diskussionsbeitragslimit.",
+			"postcount_fandom": "Nur für Fandom Wikis:",
+			"postcount_or": "Benötige entweder das Bearbeitungs- oder das Diskussionsbeitragslimit.",
+			"rename": "Benutzer umbenennen:",
+			"role": "Rolle:",
+			"role_add": "Vergeben",
+			"role_remove": "Entfernen",
+			"select_channel": "-- Wähle einen Kanal --",
+			"select_role": "-- Wähle eine Rolle --",
+			"success": "Hinweis bei Erfolg:",
+			"success_placeholder": "Markdown-Text bei erfolgreicher Verifizierung.",
+			"usergroup": "Wiki-Benutzergruppe:",
+			"usergroup_and": "Benötige alle Benutzergruppen:"
+		},
+		"help_notice": "<p>Die Hinweise unterstützen ein paar einfache Funktionen und Variablen.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – Die aktuelle Anzahl von Bearbeitungen des Benutzers.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – Das aktuelle Alter des Accounts des Benutzers in ganzen Tagen.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – Die aktuelle Anzahl von Diskussionsbeiträgen des Benutzers (nur für Fandom Wikis).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Gibt des Wert eines Ausdrucks wieder.\n<ul>\n<li>Unterstützt nur Addition (<code class=\"form-button user-select\">+</code>) und Subtraction (<code class=\"form-button user-select\">-</code>).</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>wenn wahr</i> | <i>wenn falsch</i> }}</code> – Gibt Text abhängig vom Ergebnis eines Ausdrucks wieder.\n<ul>\n<li>Unterstützt <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code> und <code class=\"form-button user-select\">&lt;&gt;</code> sowie <code class=\"form-button user-select\">and</code> und <code class=\"form-button user-select\">or</code>.</li>\n</ul></li>\n</ul>",
+		"new": "Neue Verifizierung",
+		"notice": "Verifizierungshinweise"
+	}
 }

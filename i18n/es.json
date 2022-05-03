@@ -1,849 +1,849 @@
 {
-    "__translator": [
-        "Tamara Carvallo",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " "
-    ],
-    "aliases": {
-        "bug": [
-            "error",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "command": [
-            "comando",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "diff": [
-            "dif",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "discussion": [
-            "discusiones",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "help": [
-            "ayuda",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "info": [
-            " ",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "invite": [
-            "invita",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "overview": [
-            "resumen",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "page": [
-            "página",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "random": [
-            "aleatoria",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "search": [
-            "búsqueda",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "test": [
-            "prueba",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "user": [
-            "usuario",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "verify": [
-            "verificar",
-            " ",
-            " ",
-            " ",
-            " "
-        ]
-    },
-    "dateformat": "es-ES",
-    "diff": {
-        "badrev": "¡Al menos una edición no existe!",
-        "hidden": "*oculto*",
-        "info": {
-            "added": "Añadido:",
-            "bytes": "$1 {{PLURAL:$2|Byte|Bytes}}",
-            "comment": "Comentario:",
-            "editor": "Editor:",
-            "minor": "_(m)",
-            "more": "Y más",
-            "removed": "Eliminado:",
-            "size": "Diferencia:",
-            "tags": "Etiquetas:",
-            "timestamp": "Fecha de edición:",
-            "whitespace": "Solo espacios en blanco"
-        },
-        "nocomment": "*No se genero descripción*"
-    },
-    "discussion": {
-        "image": "Ver Imagen",
-        "main": "Discusiones",
-        "post": "publicación",
-        "tags": "Etiquetas:",
-        "votes": "$1 {{PLURAL:$2|voto|votos}} ($3%)"
-    },
-    "fallback": [
-        "en",
-        " ",
-        " ",
-        " ",
-        " "
-    ],
-    "general": {
-        "database": "⚠️ **Funcionalidad limitada** ⚠️\n¡No se encontraron configuraciones, por favor contacta al propietario del bot!",
-        "default": "Este servidor aún no está configurado. Usa $1 o el panel de control para cambiar la configuración.",
-        "disclaimer": "Soy un pequeño bot creado con el propósito de vincular y buscar fácilmente sitios de MediaWiki como Wikipedia y wikis de Fandom. Muestro breves descripciones e información adicional sobre las páginas y puedo resolver redireccionamientos y seguir enlaces interwiki. $1 me escribió en JavaScript.\n\nPuedes apoyarme en Patreon:",
-        "experimental": "**¡Esta función es experimental! No se garantiza que funcione correctamente y puede eliminarse en el futuro.**",
-        "helpserver": "Si tienes preguntas o problemas, visita mi servidor de soporte:",
-        "limit": "🚨 ** ¡Detente, has llegado al límite! ** 🚨\n\n$1, ¡tu mensaje contenía demasiados comandos!",
-        "missingperm": "Me faltan algunos permisos para este comando:",
-        "patreon": "¡Esta es una función exclusiva de Patreon!\nPuedes apoyarme en Patreon para acceder a esta función:",
-        "prefix": "El prefijo de este servidor es `$1`. Puedes cambiar el prefijo con `$1settings prefix`. Para obtener una lista de todos los comandos, consulta `$1help`.",
-        "readonly": "**La base de datos está actualmente en modo de solo lectura, ¡no puedes cambiar ninguna configuración en este momento!**"
-    },
-    "help": {
-        "admin": "Estos comandos solo pueden ser ejecutados por administradores:",
-        "adminfooter": "Los administradores también pueden usar el panel de control para cambiar la configuración del bot:",
-        "all": "Entonces, ¿quieres saber qué cosas puedo hacer? Aquí hay una lista de todos los comandos que entiendo:",
-        "footer": "Si recibiste una respuesta no deseada, puedes reaccionar con 🗑️ (`: wastebasket:`) a mi mensaje y lo eliminaré.",
-        "list": {
-            "default": {
-                "cmd": "<término de búsqueda>",
-                "desc": "Responderé con un enlace a un artículo que coincida en el wiki."
-            },
-            "diff": {
-                "id": {
-                    "cmd": "diff <diff> [<oldid>]",
-                    "desc": "Responderé con un enlace al dif en el wiki."
-                },
-                "name": {
-                    "cmd": "diff <nombre de la página>",
-                    "desc": "Responderé con un enlace al último dif del artículo en el wiki."
-                }
-            },
-            "discussion": {
-                "post": {
-                    "cmd": "discussion post <término de búsqueda>",
-                    "desc": "Responderé con un enlace a una publicación de la página discusiones que coincida en el wiki de Fandom."
-                },
-                "thread": {
-                    "cmd": "discussion <término de búsqueda>",
-                    "desc": "Responderé con un enlace a un hilo de la página de discusiones que coincida en el wiki de Fandom."
-                }
-            },
-            "fandom": {
-                "cmd": "?<wiki> <término de búsqueda >",
-                "desc": "Responderé con un enlace a un artículo que coincida en el wiki de Fandom llamado: `https://<wiki>.fandom.com/`"
-            },
-            "gamepedia": {
-                "cmd": "!<wiki> <término de búsqueda >",
-                "desc": "Responderé con un enlace a un artículo que coincida en el wiki de Gamepedia llamado: `https://<wiki>.gamepedia.com/`"
-            },
-            "help": {
-                "admin": {
-                    "cmd": "help admin",
-                    "desc": "Haré una lista de todos los comandos de administrador."
-                },
-                "command": {
-                    "cmd": "help <comando del bot>",
-                    "desc": "¿Te preguntas cómo funciona un comando? ¡Déjame explicarte!"
-                },
-                "default": {
-                    "cmd": "help",
-                    "desc": "Haré una lista de todos los comandos que entiendo."
-                }
-            },
-            "info": {
-                "cmd": "info",
-                "desc": "Me presentaré."
-            },
-            "inline": {
-                "link": {
-                    "cmd": "[[<nombre de la página>]]",
-                    "desc": "Responderé con un enlace directo al artículo en el wiki."
-                },
-                "template": {
-                    "cmd": "{{<nombre de la página>}}",
-                    "desc": "Responderé con un enlace al artículo en el wiki."
-                }
-            },
-            "minecraft": {
-                "bug": {
-                    "cmd": "bug <error de Minecraft>",
-                    "desc": "Responderé con un enlace al error en el rastreador de errores de Minecraft."
-                },
-                "command": {
-                    "cmd": "command <comando de Minecraft>",
-                    "desc": "Responderé con la sintaxis del comando de Minecraft y un enlace al artículo del comando en Minecraft Wiki."
-                },
-                "default": {
-                    "cmd": "/<comando de Minecraft>",
-                    "desc": "Responderé con la sintaxis del comando de Minecraft y un enlace al artículo del comando en Minecraft Wiki."
-                }
-            },
-            "mwprojects": {
-                "cmd": "!!<wiki> <término de búsqueda>",
-                "desc": "Responderé con un enlace a un artículo que coincida en el proyecto MediaWiki. Ejemplo: `$1!!en.wikipedia.org Cookie`"
-            },
-            "overview": {
-                "cmd": "overview",
-                "desc": "Mostraré información y estadísticas sobre el wiki."
-            },
-            "page": {
-                "cmd": "page <nombre de la página>",
-                "desc": "Responderé con un enlace directo al artículo en el wiki."
-            },
-            "pause": {
-                "active": {
-                    "cmd": "pause $1",
-                    "desc": "Volveré a responder a todos los comandos de este servidor."
-                },
-                "inactive": {
-                    "cmd": "pause $1",
-                    "desc": "Ignoraré todos los comandos en este servidor, excepto algunos comandos de administrador."
-                }
-            },
-            "random": {
-                "cmd": "random",
-                "desc": "Responderé con un enlace a una página aleatoria en el wiki."
-            },
-            "rcscript": {
-                "add": {
-                    "cmd": "rcscript add [<wiki>]",
-                    "desc": "Agregaré un nuevo webhook de cambios recientes."
-                },
-                "default": {
-                    "cmd": "rcscript",
-                    "desc": "Cambiaré el webhook de cambios recientes."
-                },
-                "delete": {
-                    "cmd": "rcscript delete",
-                    "desc": "Eliminaré el webhook de cambios recientes."
-                },
-                "display": {
-                    "cmd": "rcscript display <nuevo modo de visualización>",
-                    "desc": "Cambiaré el modo de visualización del webhook de cambios recientes."
-                },
-                "feeds": {
-                    "cmd": "rcscript feeds",
-                    "desc": "Activaré/Desactivaré los cambios de la página de discusiones de un wiki de Fandom al webhook de cambios recientes."
-                },
-                "lang": {
-                    "cmd": "rcscript lang <nuevo idioma>",
-                    "desc": "Cambiaré el idioma del webhook de cambios recientes."
-                },
-                "wiki": {
-                    "cmd": "rcscript wiki <nuevo wiki>",
-                    "desc": "Cambiaré el wiki del webhook de cambios recientes."
-                }
-            },
-            "search": {
-                "cmd": "search <término de búsqueda>",
-                "desc": "Responderé con un enlace directo a la página de búsqueda del artículo en el wiki."
-            },
-            "settings": {
-                "channel": {
-                    "cmd": "settings channel",
-                    "desc": "Cambiaré las sobrescrituras del canal actual."
-                },
-                "default": {
-                    "cmd": "settings",
-                    "desc": "Cambiaré la configuración de este servidor."
-                },
-                "inline": {
-                    "cmd": "settings inline toggle",
-                    "desc": "Activaré/Desactivaré los comandos inline en este servidor."
-                },
-                "lang": {
-                    "cmd": "settings lang <idioma>",
-                    "desc": "Cambiaré el idioma de este servidor."
-                },
-                "prefix": {
-                    "cmd": "settings prefix <prefijo>",
-                    "desc": "Cambiaré el prefijo de este servidor."
-                },
-                "role": {
-                    "cmd": "settings role <rol>",
-                    "desc": "Cambiaré el rol mínimo requerido para usar comandos en este servidor."
-                },
-                "wiki": {
-                    "cmd": "settings wiki <wiki>",
-                    "desc": "Cambiaré el wiki predeterminado de este servidor."
-                }
-            },
-            "test": {
-                "cmd": "test",
-                "desc": "¡Si estoy activo, responderé! De lo contrario no."
-            },
-            "user": {
-                "cmd": "User:<nombre de usuario>",
-                "desc": "Mostraré información sobre el usuario."
-            },
-            "verification": {
-                "accountage": {
-                    "cmd": "verification <ID> accountage <edad de la cuenta>",
-                    "desc": "Cambiaré la antigüedad mínima de la cuenta (en días) para la verificación wiki."
-                },
-                "add": {
-                    "cmd": "verification add <rol>",
-                    "desc": "Agregaré una nueva verificación wiki. Acepta una lista separada por `|`."
-                },
-                "channel": {
-                    "cmd": "verification <ID> channel <canal nuevo>",
-                    "desc": "Cambiaré el canal para la verificación wiki. Acepta una lista separada por `|`."
-                },
-                "default": {
-                    "cmd": "verification",
-                    "desc": "Cambiaré las verificaciones wiki utilizadas por el comando `$1verify`."
-                },
-                "delete": {
-                    "cmd": "verification <ID> delete",
-                    "desc": "Eliminaré la verificación wiki."
-                },
-                "editcount": {
-                    "cmd": "verification <ID> editcount <número de ediciones>",
-                    "desc": "Cambiaré el número mínimo de ediciones para la verificación wiki."
-                },
-                "postcount": {
-                    "cmd": "verification <ID> postcount <nuevo número de publicaciones>",
-                    "desc": "Cambiaré el número mínimo de publicaciones de discusiones para la verificación wiki.\n• Proporciona un número negativo para requerir el número de ediciones o el número de publicaciones.\n• Proporciona `null` para comprobar el número de publicaciones y ediciones combinadas."
-                },
-                "rename": {
-                    "cmd": "verification <ID> rename",
-                    "desc": "Haré el cambio si el alias de Discord debe cambiarse a tu nombre de usuario wiki para la verificación wiki."
-                },
-                "role": {
-                    "cmd": "verification <ID> role <nuevo rol>",
-                    "desc": "Cambiaré el rol para la verificación wiki. Acepta una lista separada por `|`."
-                },
-                "usergroup": {
-                    "cmd": "verification <ID> usergroup <nuevo grupo de usuarios>",
-                    "desc": "Cambiaré el grupo de usuarios para la verificación wiki. Acepta una lista separada por `|`.\n\t• Proporcione `AND` como la primera entrada de la lista para que todos los grupos de usuarios proporcionados sean obligatorios."
-                }
-            },
-            "verify": {
-                "cmd": "verify <nombre de usuario wiki>",
-                "desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
-            },
-            "voice": {
-                "cmd": "voice",
-                "desc": "Intento darles a todos en un canal de chat de voz un rol específico."
-            },
-            "wikia": {
-                "cmd": "??<wiki> <término de búsqueda>",
-                "desc": "Responderé con un enlace a un artículo que coincida en el wiki de Wikia llamado: `https://<wiki>.wikia.org/`"
-            }
-        },
-        "noadmin": "¡Necesitas el permiso `Manage Server` para estos comandos!",
-        "pause": "**¡Actualmente estoy en pausa en este servidor!**\nSolo se pueden ejecutar estos comandos:"
-    },
-    "interaction": {
-        "inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
-        "nowiki": "¡El wiki usado no existe!",
-        "verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
-    },
-    "invite": {
-        "bot": "Usa este enlace para invitarme a otro servidor:"
-    },
-    "minecraft": {
-        "fixed": "Se arregló {{PLURAL:$1|Versión| Versiones}}:",
-        "issue_link": {
-            "Blocks": {
-                "inward": "está bloqueado por $1",
-                "outward": "bloquea a $1"
-            },
-            "Bonfire Testing": {
-                "inward": "descubrió mientras probaba $1",
-                "outward": "probando descubrió $1"
-            },
-            "Cloners": {
-                "inward": "es clonado por $1",
-                "outward": "clona $1"
-            },
-            "Duplicate": {
-                "inward": "está duplicado por $1",
-                "outward": "duplica $1"
-            },
-            "Relates": {
-                "inward": "se relaciona con $1",
-                "outward": "se relaciona con $1"
-            }
-        },
-        "more": "Y $1 más.",
-        "private": "**Problema Privado**",
-        "status": {
-            "Awaiting Response": "Esperando respuesta",
-            "Cannot Reproduce": "No puede reproducir",
-            "Closed": "Cerrado",
-            "Done": "Hecho",
-            "Duplicate": "Duplicado",
-            "Fixed": "Se arregló",
-            "In Progress": "En progreso",
-            "Incomplete": "Incompleto",
-            "Invalid": "Inválido",
-            "Open": "Abierto",
-            "Postponed": "Aplazado",
-            "Reopened": "Reabierto",
-            "Resolved": "Resuelto",
-            "Won't Fix": "No se arreglará",
-            "Works As Intended": "Funciona según lo previsto"
-        },
-        "total": "$1 {{PLURAL:$2|problema|problemas}} resueltos"
-    },
-    "overview": {
-        "admins": "Administradores:",
-        "articles": "Artículos:",
-        "comments": "Comentarios del artículo:",
-        "created": "Creado el:",
-        "crossover": "Fusionado con:",
-        "description": "Descripción:",
-        "edits": "Ediciones:",
-        "founder": "Fundador:",
-        "image": "Imagen:",
-        "inaccurate": "Las estadísticas pueden ser inexactas",
-        "lang": "Idioma:",
-        "license": "Licencia:",
-        "manager": "Wiki manager:",
-        "misermode": "Miser mode:",
-        "no": "No",
-        "none": "*ninguno*",
-        "official": "Wiki oficial:",
-        "pages": "Total de páginas:",
-        "posts": "Publicaciones de discusiones:",
-        "readonly": "¡Este wiki se encuentra actualmente en modo de solo lectura!",
-        "rtl": "De derecha a izquierda:",
-        "talk": "muro",
-        "topic": "Tema:",
-        "unknown": "*desconocido*",
-        "users": "Usuarios activos:",
-        "version": "Versión:",
-        "vertical": "Categoría:",
-        "walls": "Publicaciones en el muro de mensajes:",
-        "wikiid": "Wiki ID:",
-        "yes": "Si"
-    },
-    "pause": {
-        "off": "¡Ya no estoy en pausa en este servidor y responderé a todos los comandos nuevamente!",
-        "on": "¡Ahora estoy en pausa en este servidor e ignoraré la mayoría de los comandos!"
-    },
-    "rcscript": {
-        "ad": "¿Quieres cambios recientes directamente en Discord? ¡Usa `$1rcscript` para agregar un webhook de cambios recientes basado en **$2** a tu servidor de Discord!",
-        "add_more": "Agrega más webhooks de cambios recientes:",
-        "added": "Se ha agregado un webhook de cambios recientes a:",
-        "all_inactive": "No puedes deshabilitar los cambios al wiki y los cambios basados en feeds al mismo tiempo.",
-        "audit_reason": "Webhook de cambios recientes para \"$1\"",
-        "audit_reason_delete": "Webhook de cambios recientes eliminado",
-        "audit_reason_edit": "Actualizó el webhook de cambios recientes",
-        "avatar": "Avatar del webhook:",
-        "blocked": "¡Este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes!",
-        "blocked_reason": "¡Este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes por `$1`!",
-        "channel": "Canal:",
-        "current": "Estos son los webhooks de cambios recientes de este servidor:",
-        "current_display": "El modo de visualización de este webhook es:",
-        "current_lang": "El idioma de este webhook es:",
-        "current_selected": "Este es el webhook de cambios recientes `$1` para este servidor:",
-        "current_wiki": "El wiki de este webhook es:",
-        "dashboard": {
-            "added": "$1 agregó el webhook de cambios recientes con el ID `$2`.",
-            "removed": "$1 eliminó el webhook de cambios recientes con el ID `$2`.",
-            "updated": "$1 actualizó el webhook de cambios recientes con el ID `$2`."
-        },
-        "delete": "Elimina este webhook de cambios recientes:",
-        "deleted": "Se ha eliminado el webhook de cambios recientes.",
-        "disabled": "desactivado",
-        "disabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos para este webhook se han desactivado.",
-        "disabled_rc": "Se han desactivado los cambios del wiki para este webhook.",
-        "display": "Modo de visualización:",
-        "enabled": "activado",
-        "enabled_feeds": "Se han activado los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos para este webhook.",
-        "enabled_rc": "Se han activado los cambios del wiki para este webhook.",
-        "feeds": "Cambios basados en feeds:",
-        "help_display_compact": "Mensajes de texto compactos con enlaces en la misma línea.",
-        "help_display_diff": "Mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones.",
-        "help_display_embed": "Mensajes adjuntos con etiquetas de edición y cambios de categoría.",
-        "help_display_image": "Mensajes adjuntos con vistas previas de imágenes.",
-        "help_feeds": "(discusiones, muros de mensajes, comentarios de artículos)",
-        "help_lang": "Los idiomas disponibles actualmente son:",
-        "help_wiki": "Enlace a un sitio de MediaWiki como `https://<wiki>.fandom.com/`",
-        "lang": "Idioma:",
-        "max_entries": "Ya alcanzaste la cantidad máxima de webhooks de cambios recientes.",
-        "missing": "Todavía no hay webhooks de cambios recientes en este servidor.",
-        "name": "Nombre del webhook:",
-        "new_lang": "<nuevo idioma>",
-        "new_wiki": "<enlace al wiki>",
-        "no_feeds": "El wiki de este webhook no tiene funciones basadas en feeds, como discusiones, muros de mensajes o comentarios de artículos, habilitadas.",
-        "noadmin": "¡Necesitas el permiso `Manage Webhooks` para ejecutar este comando!",
-        "rc": "Cambios del wiki:",
-        "sysmessage": "El mensaje del sistema `$1` tiene que ser el ID del servidor `$2` para agregar un webhook de cambios recientes.",
-        "title": "Webhook de cambios recientes",
-        "toggle": "(activar/desactivar)",
-        "updated_display": "El modo de visualización de este webhook se ha cambiado a:",
-        "updated_lang": "El idioma de este webhook se ha cambiado a:",
-        "updated_wiki": "El wiki de este webhook se ha cambiado a:",
-        "webhook": {
-            "blocked": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado!",
-            "blocked_help": "Puedes solicitar más detalles en el [servidor de soporte]($1).",
-            "blocked_reason": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado por `$1`!",
-            "created": "Se ha agregado a este canal un webhook de cambios recientes para $1.",
-            "dashboard": {
-                "avatar": "• Se ha cambiado el avatar del webhook.",
-                "channel": "• El webhook se ha movido a este canal.",
-                "disabled_feeds": "• Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han desactivado.",
-                "disabled_rc": "• Los cambios del wiki se han desactivado.",
-                "display_compact": "• El modo de visualización se ha cambiado a mensajes de texto compactos con enlaces en la misma línea.",
-                "display_diff": "• El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones.",
-                "display_embed": "• El modo de visualización se ha cambiado a mensajes adjuntos con etiquetas de edición y cambios de categoría.",
-                "display_image": "• El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes.",
-                "enabled_feeds": "• Se han activado los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos.",
-                "enabled_rc": "• Se han activado los cambios del wiki.",
-                "lang": "• El idioma se ha cambiado a $1.",
-                "name": "• El nombre del webhook se ha cambiado a \"$1\".",
-                "updated": "Este webhook de cambios recientes se ha actualizado:",
-                "wiki": "• El wiki se ha cambiado a $1."
-            },
-            "deleted": "Este webhook de cambios recientes se eliminará.",
-            "disabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han desactivado para este webhook de cambios recientes.",
-            "disabled_rc": "Los cambios del wiki se han desactivado en este webhook de cambios recientes.",
-            "enabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han activado en este webhook de cambios recientes.",
-            "enabled_rc": "Los cambios del wiki se han activado en este webhook de cambios recientes.",
-            "updated_display_compact": "El modo de visualización se ha cambiado a mensajes de texto compactos con enlaces en la misma línea en este webhook de cambios recientes.",
-            "updated_display_diff": "El modo de visualización se ha cambiado mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones en este webhook de cambios recientes.",
-            "updated_display_embed": "El modo de visualización se ha cambiado a mensajes adjuntos con etiquetas de edición y cambios de categoría en este webhook de cambios recientes.",
-            "updated_display_image": "El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes en este webhook de cambios recientes.",
-            "updated_lang": "El idioma se ha cambiado a `$1` en este webhook de cambios recientes.",
-            "updated_wiki": "El wiki se ha cambiado a $1 en este webhook de cambios recientes."
-        },
-        "webhook_failed": "Lamentablemente, no se pudo crear el webhook. Vuelve a intentarlo más tarde.",
-        "wiki": "Wiki:"
-    },
-    "search": {
-        "cached": "Caché actualizado por última vez:",
-        "category": {
-            "content": "Contenido de esta categoría:",
-            "empty": "*Esta categoría está vacía*",
-            "files": "$1 {{PLURAL:$2|archivo|archivos}}",
-            "pages": "$1 {{PLURAL:$2|página|páginas}}",
-            "subcats": "$1 {{PLURAL:$2|categoría|categorías}}"
-        },
-        "empty": "*Esta página especial está vacía*",
-        "infopage": "¿No es el resultado correcto? Utiliza $1 para obtener un enlace directo.",
-        "infosearch": "¿No es el resultado correcto? Usa $1 para obtener un enlace directo o $2 para obtener una lista de todos los resultados.",
-        "loading": "Cargando descripción de la página…",
-        "media": "A la página de descripción del archivo",
-        "messagedefault": "Predeterminado:",
-        "messagedefaultnone": "*ninguno*",
-        "results": "$1 total {{PLURAL:$2|resultado|resultados}}",
-        "special": "Contenido de esta página especial:"
-    },
-    "settings": {
-        "button": "Usar el panel de control",
-        "channel current": "Estas son las configuraciones actuales en este canal:",
-        "channel lang": "El idioma de este canal es:",
-        "channel langchanged": "Cambiaste el idioma de este canal a:",
-        "channel role": "El rol mínimo requerido para este canal es:",
-        "channel rolechanged": "Cambiaste el rol mínimo requerido en este canal a:",
-        "channel wiki": "El wiki predeterminado en este canal es:",
-        "channel wikichanged": "Cambiaste el wiki predeterminado en este canal a:",
-        "current": "Estas son las configuraciones actuales en este servidor:",
-        "currentchannel": "Sobrescrituras de este canal:",
-        "currentinline": "Comandos inline:",
-        "currentlang": "Idioma:",
-        "currentprefix": "Prefijo:",
-        "currentrole": "Rol mínimo:",
-        "currentwiki": "Wiki predeterminado:",
-        "dashboard": {
-            "channel": "$1 actualizó la configuración de $2.",
-            "removed": "$1 eliminó la configuración de $2.",
-            "updated": "$1 actualizó la configuración del servidor."
-        },
-        "foundwikis": "¿Te refieres a alguno de estos wikis?",
-        "inline disabled": {
-            "channel inline": "Los comandos inline están actualmente deshabilitados en este canal.",
-            "channel inlinechanged": "Deshabilitaste los comandos inline en este canal.",
-            "help": "Utiliza `$1` para habilitar comandos inline como `[[$2]]` y `{{$2}}`.",
-            "inline": "Los comandos inline están actualmente deshabilitados en este servidor.",
-            "inlinechanged": "Deshabilitaste los comandos inline en este servidor."
-        },
-        "inline enabled": {
-            "channel inline": "Los comandos inline están actualmente habilitados en este canal.",
-            "channel inlinechanged": "Habilitaste los comandos inline en este canal.",
-            "help": "Use `$1` para deshabilitar comandos inline como `[[$2]]` y `{{$2}}`.",
-            "inline": "Los comandos inline están actualmente habilitados en este servidor.",
-            "inlinechanged": "Habilitaste los comandos inline en este servidor."
-        },
-        "lang": "El idioma de este servidor es:",
-        "langchanged": "Has cambiado el idioma de este servidor a:",
-        "langhelp": "Utiliza `$1 <language>` para cambiar el idioma.\nLos idiomas disponibles actualmente son:",
-        "langinvalid": "¡El idioma especificado no está disponible!",
-        "missing": "Este servidor aún no está configurado. Usa $1 y $2 para cambiar la configuración.",
-        "nochannels": "*No hay sobrescrituras de canal todavía*",
-        "prefix": "El prefijo de este servidor es:",
-        "prefixchanged": "Cambiaste el prefijo de este servidor a:",
-        "prefixhelp": "Usa `$1 <prefix>` para cambiar el prefijo.\nUsa `_` al final para indicar un espacio al final del prefijo.\n¡El prefijo no puede incluir menciones!",
-        "prefixinvalid": "¡El prefijo especificado no es compatible!",
-        "role": "El rol mínimo requerido para este servidor es:",
-        "rolechanged": "El rol mínimo requerido en este servidor es:",
-        "rolehelp": "Usa `$1 <rol>` para cambiar el rol mínimo requerido.",
-        "roleinvalid": "¡El rol especificado no existe!",
-        "save_failed": "Lamentablemente, la configuración no se pudo guardar, intenta nuevamente más tarde.",
-        "wiki": "El wiki predeterminado de este servidor es:",
-        "wikichanged": "Cambiaste el wiki predeterminado de este servidor a:",
-        "wikihelp": "Usa `$1 <link> para cambiar el wiki predeterminado.\nY el enlace un sitio de MediaWiki como `https://<wiki>.fandom.com/`",
-        "wikiinvalid": "¡Proporciona un enlace válido a un sitio de MediaWiki, como Wikipedia o un wiki de Fandom!",
-        "wikiinvalid_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.\nSi eres el administrador del sitio, puedes obtener un certificado de una autoridad de certificación como *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
-        "wikiinvalid_private": "¡El wiki proporcionado es privado! Solo se admiten wikis públicos que todos puedan leer.",
-        "wikiinvalid_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
-        "wikimissing": "¡Todavía no hay un wiki predeterminado en este servidor!"
-    },
-    "test": {
-        "MediaWiki": "Requiere al menos $1 para la funcionalidad completa, se encuentra la versión `$2`.",
-        "notice": "Funcionalidad limitada",
-        "pause": "Actualmente estoy en pausa en este servidor.",
-        "slow": "Lo siento, estoy un poco lento en este momento.",
-        "text": [
-            "¡Estoy completamente funcional!",
-            " ",
-            " Y créeme, todavía estoy vivo.",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " "
-        ],
-        "time": "Tiempo de respuesta"
-    },
-    "user": {
-        "block": {
-            "duration": {
-                "days": "$1 {{PLURAL:$2|día|dias}}",
-                "hours": "$1 {{PLURAL:$2|hora|horas}}",
-                "minutes": "$1 {{PLURAL:$2|minuto|minutos}}",
-                "months": "$1 {{PLURAL:$2|mes|meses}}",
-                "separator": ",_",
-                "separator_last": "_y_",
-                "weeks": "$1 {{PLURAL:$2|semana|semanas}}",
-                "years": "$1 {{PLURAL:$2|año|años}}"
-            },
-            "header": "¡$1 está bloqueado actualmente!",
-            "indef_noreason": "Bloqueado indefinidamente el $1 por $4.",
-            "indef_text": "Bloqueado indefinidamente el $1 por $4 con motivo \"$5\".",
-            "noreason": "Bloqueado el $1 por $2 hasta $3 por $4.",
-            "text": "Bloqueado el $1 por $2 hasta $3 por $4 con motivo \"$5\"."
-        },
-        "gblock": {
-            "disabled": "¡Esta cuenta está actualmente deshabilitada!",
-            "header": "¡$1 está bloqueado globalmente en estos momentos!"
-        },
-        "gender": {
-            "female": "Femenino",
-            "male": "Masculino",
-            "unknown": "Desconocido"
-        },
-        "info": {
-            "discord": "Discord:",
-            "editcount": "Número de ediciones:",
-            "favwiki": "Wiki favorito:",
-            "gender": "Sexo:",
-            "globaleditcount": "Número de ediciones globales:",
-            "globalgroup": "Global {{PLURAL:$1|grupo|grupos}}:",
-            "group": "{{PLURAL:$1|Grupo|Grupos}}:",
-            "loading": "Cargando estadísticas globales…",
-            "postcount": "Publicaciones de discusiones:",
-            "registration": "Fecha de registro:",
-            "wikisedited": "Wikis editados:"
-        }
-    },
-    "verification": {
-        "accountage": "Antigüedad de la cuenta:",
-        "add_more": "Agregar más verificaciones:",
-        "added": "Se ha agregado la verificación:",
-        "and": "y",
-        "channel": "Canal:",
-        "channel_max": "Proporcionaste demasiados canales.",
-        "channel_missing": "El canal proporcionado no existe.",
-        "current": "Estas son las verificaciones actuales en este servidor:",
-        "current_selected": "Esta es la verificación `$1` en este servidor:",
-        "dashboard": {
-            "added": "$1 agregó la verificación con ID `$2`.",
-            "added_notice": "$1 agregó algunos avisos de verificación.",
-            "removed": "$1 eliminó la verificación con ID `$2`.",
-            "updated": "$1 actualizó la verificación con ID `$2`.",
-            "updated_notice": "$1 actualizó algunos avisos de verificación."
-        },
-        "delete_current": "Eliminar esta verificación:",
-        "deleted": "La verificación ha sido eliminada.",
-        "disabled": "desactivada",
-        "editcount": "Número de ediciones:",
-        "enabled": "activada",
-        "flag_logall": "Registro de verificaciones fallidas:",
-        "flag_private": "Envío de respuestas de comandos de verificación de forma privada:",
-        "indays": "(en días)",
-        "logging": "Canal de registro:",
-        "match": "Aviso de requisitos faltantes:",
-        "max_entries": "Ya alcanzaste la cantidad máxima de verificaciones.",
-        "missing": "Todavía no hay verificaciones en este servidor.",
-        "new_accountage": "<nueva antigüedad de la cuenta>",
-        "new_channel": "<nuevo canal>",
-        "new_editcount": "<nuevo número de ediciones>",
-        "new_postcount": "<nuevo número de publicaciones>",
-        "new_role": "<nuevo rol>",
-        "new_usergroup": "<nuevo grupo de usuarios>",
-        "no_role": "Por favor proporciona un rol para la nueva verificación.",
-        "notice_embed": "Algunos avisos incluyen enlaces enmascarado en Markdown. Asegúrate de que el bot tenga los permisos `Insertar enlaces` en todos los canales de verificación para que funcionen correctamente.",
-        "or": "o",
-        "postcount": "Número de publicaciones (solo wikis de Fandom):",
-        "postcount_or": "(alternativa al número de ediciones)",
-        "posteditcount": "Número de ediciones y publicaciones combinadas:",
-        "rename": "Cambiar alias:",
-        "rename_no_permission": "**¡A $1 le falta el permiso `Manage Nicknames` para imponer nombres de usuario wiki!**",
-        "role_add": "Rol a agregar:",
-        "role_deleted": "**¡El rol $1 parece que ya no existe!**",
-        "role_managed": "No se puede asignar el rol proporcionado.",
-        "role_max": "Proporcionaste demasiados roles.",
-        "role_missing": "El rol proporcionado no existe.",
-        "role_none": "ninguno",
-        "role_remove": "Rol a remover:",
-        "role_too_high": "**¡El rol $1 está en un rango muy alto como para asignarlo a $2!**",
-        "save_failed": "Lamentablemente, no se pudo guardar la verificación. Vuelve a intentarlo más tarde.",
-        "success": "Aviso de operación correcta:",
-        "toggle": "(activar/desactivar)",
-        "updated": "La verificación se ha actualizado:",
-        "usergroup": "Grupo de usuario:",
-        "usergroup_max": "Proporcionaste demasiados grupos de usuarios.",
-        "usergroup_too_long": "El grupo de usuarios proporcionado es demasiado largo.",
-        "value_too_high": "El valor proporcionado es demasiado alto."
-    },
-    "verify": {
-        "audit_reason": "Verificado como \"$1\"",
-        "button_again": "Revisar otra vez",
-        "button_wrong_user": "No puedes volver a comprobar esta verificación, ¡es la verificación de $1!",
-        "discord": "Usuario de Discord:",
-        "empty": "*vacío*",
-        "error": "La verificación falló debido a un error.",
-        "error_reply": "La verificación falló debido a un error, inténtalo de nuevo.",
-        "failed_gblock": "**¡La verificación de bloqueo global falló!**",
-        "failed_rename": "**¡Ha fallado el cambio de {{SEXO:$1|su|su|su}} alias de Discord!**",
-        "failed_roles": "**¡Error al agregar roles!**",
-        "footer": "Verificación de cuenta wiki",
-        "help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
-        "help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
-        "help_guide": "Sigue [esta guía]($1) para agregar tu etiqueta de Discord a tu perfil wiki:",
-        "help_missing": "Asegúrate de utilizar tu nombre de usuario wiki y que las mayúsculas y minúsculas son correctas.",
-        "help_subpage": "Por favor agrega tu etiqueta de Discord ($1) a tu subpágina de Discord en el wiki:",
-        "missing": "No hay verificaciones configuradas en este canal.",
-        "notice": "Aviso:",
-        "oauth_button": "Autenticar",
-        "oauth_message": "Por favor usa [este enlace]($1) para autenticar tu cuenta wiki.",
-        "oauth_message_dm": "Por favor, utiliza este enlace para autenticar tu cuenta wiki para $1.",
-        "oauth_private": "El wiki usa OAuth2 para la verificación. Por favor, habilita los mensajes directos de este servidor o use el comando `/verify` para que pueda enviarte un enlace de autenticación de forma privada.",
-        "oauth_used": "*Verificado usando OAuth2*",
-        "qualified_add": "Agregado a:",
-        "qualified_add_error": "No se puede agregar a:",
-        "qualified_remove": "Eliminado de:",
-        "qualified_remove_error": "No se puede eliminar de:",
-        "user_blocked": "**El usuario wiki $1 está bloqueado!**",
-        "user_blocked_reply": "¡tu usuario wiki vinculado **\"$1\" está bloqueado!**",
-        "user_disabled": "**¡La cuenta wiki $1 está deshabilitada!**",
-        "user_disabled_reply": "¡tu cuenta wiki vinculada **\"$1\" está deshabilitada!**",
-        "user_failed": "El usuario de Discord $1 no coincide con el usuario wiki $2.",
-        "user_failed_reply": "tu etiqueta de Discord no coincide con el usuario wiki \"$1\".",
-        "user_gblocked": "**¡El usuario wiki $1 está bloqueado globalmente!**",
-        "user_gblocked_reply": "¡tu usuario wiki vinculado **\"$1\" está bloqueado globalmente!**",
-        "user_matches": "El usuario de Discord $1 coincide con el usuario wiki $2, pero no cumple con los requisitos para ningún rol.",
-        "user_matches_reply": "tu etiqueta de Discord coincide con el usuario wiki \"$1\", pero no cumples con los requisitos para ningún rol.",
-        "user_missing": "El usuario wiki \"$1\" no existe.",
-        "user_missing_reply": "tu usuario wiki vinculado \"$1\" no existe.",
-        "user_renamed": "{{SEXO:$1|Su|Su|Su}} alias de Discord ha sido cambiado a {{SEXO:$1|su|su|su}} nombre de usuario wiki.",
-        "user_verified": "El usuario de Discord $1 ha sido verificado con éxito como el usuario wiki $2.",
-        "user_verified_reply": "has sido verificado con éxito como el usuario wiki \"$1\".",
-        "wiki": "Usuario wiki:"
-    },
-    "voice": {
-        "channel": "Canal de chat de voz",
-        "disable": "Usa `$1` para desactivar esta función.",
-        "disabled": "Desactivaste la función de agregar roles para canales de chat de voz.",
-        "enable": "Usa `$1` para activar esta función.",
-        "enabled": "Activaste la función de agregar roles para canales de chat de voz.",
-        "join": "$1 se unió al canal de chat de voz \"$2\".",
-        "left": "$1 salió del canal de chat de voz \"$2\".",
-        "name": "nombre del canal de chat de voz",
-        "text": "Intento darles a todos en un canal de chat de voz un rol específico:"
-    }
+	"__translator": [
+		"Tamara Carvallo",
+		" ",
+		" ",
+		" ",
+		" ",
+		" ",
+		" ",
+		" ",
+		" ",
+		" "
+	],
+	"aliases": {
+		"bug": [
+			"error",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"command": [
+			"comando",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"diff": [
+			"dif",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"discussion": [
+			"discusiones",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"help": [
+			"ayuda",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"info": [
+			" ",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"invite": [
+			"invita",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"overview": [
+			"resumen",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"page": [
+			"página",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"random": [
+			"aleatoria",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"search": [
+			"búsqueda",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"test": [
+			"prueba",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"user": [
+			"usuario",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"verify": [
+			"verificar",
+			" ",
+			" ",
+			" ",
+			" "
+		]
+	},
+	"dateformat": "es-ES",
+	"diff": {
+		"badrev": "¡Al menos una edición no existe!",
+		"hidden": "*oculto*",
+		"info": {
+			"added": "Añadido:",
+			"bytes": "$1 {{PLURAL:$2|Byte|Bytes}}",
+			"comment": "Comentario:",
+			"editor": "Editor:",
+			"minor": "_(m)",
+			"more": "Y más",
+			"removed": "Eliminado:",
+			"size": "Diferencia:",
+			"tags": "Etiquetas:",
+			"timestamp": "Fecha de edición:",
+			"whitespace": "Solo espacios en blanco"
+		},
+		"nocomment": "*No se genero descripción*"
+	},
+	"discussion": {
+		"image": "Ver Imagen",
+		"main": "Discusiones",
+		"post": "publicación",
+		"tags": "Etiquetas:",
+		"votes": "$1 {{PLURAL:$2|voto|votos}} ($3%)"
+	},
+	"fallback": [
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
+	],
+	"general": {
+		"database": "⚠️ **Funcionalidad limitada** ⚠️\n¡No se encontraron configuraciones, por favor contacta al propietario del bot!",
+		"default": "Este servidor aún no está configurado. Usa $1 o el panel de control para cambiar la configuración.",
+		"disclaimer": "Soy un pequeño bot creado con el propósito de vincular y buscar fácilmente sitios de MediaWiki como Wikipedia y wikis de Fandom. Muestro breves descripciones e información adicional sobre las páginas y puedo resolver redireccionamientos y seguir enlaces interwiki. $1 me escribió en JavaScript.\n\nPuedes apoyarme en Patreon:",
+		"experimental": "**¡Esta función es experimental! No se garantiza que funcione correctamente y puede eliminarse en el futuro.**",
+		"helpserver": "Si tienes preguntas o problemas, visita mi servidor de soporte:",
+		"limit": "🚨 ** ¡Detente, has llegado al límite! ** 🚨\n\n$1, ¡tu mensaje contenía demasiados comandos!",
+		"missingperm": "Me faltan algunos permisos para este comando:",
+		"patreon": "¡Esta es una función exclusiva de Patreon!\nPuedes apoyarme en Patreon para acceder a esta función:",
+		"prefix": "El prefijo de este servidor es `$1`. Puedes cambiar el prefijo con `$1settings prefix`. Para obtener una lista de todos los comandos, consulta `$1help`.",
+		"readonly": "**La base de datos está actualmente en modo de solo lectura, ¡no puedes cambiar ninguna configuración en este momento!**"
+	},
+	"help": {
+		"admin": "Estos comandos solo pueden ser ejecutados por administradores:",
+		"adminfooter": "Los administradores también pueden usar el panel de control para cambiar la configuración del bot:",
+		"all": "Entonces, ¿quieres saber qué cosas puedo hacer? Aquí hay una lista de todos los comandos que entiendo:",
+		"footer": "Si recibiste una respuesta no deseada, puedes reaccionar con 🗑️ (`: wastebasket:`) a mi mensaje y lo eliminaré.",
+		"list": {
+			"default": {
+				"cmd": "<término de búsqueda>",
+				"desc": "Responderé con un enlace a un artículo que coincida en el wiki."
+			},
+			"diff": {
+				"id": {
+					"cmd": "diff <diff> [<oldid>]",
+					"desc": "Responderé con un enlace al dif en el wiki."
+				},
+				"name": {
+					"cmd": "diff <nombre de la página>",
+					"desc": "Responderé con un enlace al último dif del artículo en el wiki."
+				}
+			},
+			"discussion": {
+				"post": {
+					"cmd": "discussion post <término de búsqueda>",
+					"desc": "Responderé con un enlace a una publicación de la página discusiones que coincida en el wiki de Fandom."
+				},
+				"thread": {
+					"cmd": "discussion <término de búsqueda>",
+					"desc": "Responderé con un enlace a un hilo de la página de discusiones que coincida en el wiki de Fandom."
+				}
+			},
+			"fandom": {
+				"cmd": "?<wiki> <término de búsqueda >",
+				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Fandom llamado: `https://<wiki>.fandom.com/`"
+			},
+			"gamepedia": {
+				"cmd": "!<wiki> <término de búsqueda >",
+				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Gamepedia llamado: `https://<wiki>.gamepedia.com/`"
+			},
+			"help": {
+				"admin": {
+					"cmd": "help admin",
+					"desc": "Haré una lista de todos los comandos de administrador."
+				},
+				"command": {
+					"cmd": "help <comando del bot>",
+					"desc": "¿Te preguntas cómo funciona un comando? ¡Déjame explicarte!"
+				},
+				"default": {
+					"cmd": "help",
+					"desc": "Haré una lista de todos los comandos que entiendo."
+				}
+			},
+			"info": {
+				"cmd": "info",
+				"desc": "Me presentaré."
+			},
+			"inline": {
+				"link": {
+					"cmd": "[[<nombre de la página>]]",
+					"desc": "Responderé con un enlace directo al artículo en el wiki."
+				},
+				"template": {
+					"cmd": "{{<nombre de la página>}}",
+					"desc": "Responderé con un enlace al artículo en el wiki."
+				}
+			},
+			"minecraft": {
+				"bug": {
+					"cmd": "bug <error de Minecraft>",
+					"desc": "Responderé con un enlace al error en el rastreador de errores de Minecraft."
+				},
+				"command": {
+					"cmd": "command <comando de Minecraft>",
+					"desc": "Responderé con la sintaxis del comando de Minecraft y un enlace al artículo del comando en Minecraft Wiki."
+				},
+				"default": {
+					"cmd": "/<comando de Minecraft>",
+					"desc": "Responderé con la sintaxis del comando de Minecraft y un enlace al artículo del comando en Minecraft Wiki."
+				}
+			},
+			"mwprojects": {
+				"cmd": "!!<wiki> <término de búsqueda>",
+				"desc": "Responderé con un enlace a un artículo que coincida en el proyecto MediaWiki. Ejemplo: `$1!!en.wikipedia.org Cookie`"
+			},
+			"overview": {
+				"cmd": "overview",
+				"desc": "Mostraré información y estadísticas sobre el wiki."
+			},
+			"page": {
+				"cmd": "page <nombre de la página>",
+				"desc": "Responderé con un enlace directo al artículo en el wiki."
+			},
+			"pause": {
+				"active": {
+					"cmd": "pause $1",
+					"desc": "Volveré a responder a todos los comandos de este servidor."
+				},
+				"inactive": {
+					"cmd": "pause $1",
+					"desc": "Ignoraré todos los comandos en este servidor, excepto algunos comandos de administrador."
+				}
+			},
+			"random": {
+				"cmd": "random",
+				"desc": "Responderé con un enlace a una página aleatoria en el wiki."
+			},
+			"rcscript": {
+				"add": {
+					"cmd": "rcscript add [<wiki>]",
+					"desc": "Agregaré un nuevo webhook de cambios recientes."
+				},
+				"default": {
+					"cmd": "rcscript",
+					"desc": "Cambiaré el webhook de cambios recientes."
+				},
+				"delete": {
+					"cmd": "rcscript delete",
+					"desc": "Eliminaré el webhook de cambios recientes."
+				},
+				"display": {
+					"cmd": "rcscript display <nuevo modo de visualización>",
+					"desc": "Cambiaré el modo de visualización del webhook de cambios recientes."
+				},
+				"feeds": {
+					"cmd": "rcscript feeds",
+					"desc": "Activaré/Desactivaré los cambios de la página de discusiones de un wiki de Fandom al webhook de cambios recientes."
+				},
+				"lang": {
+					"cmd": "rcscript lang <nuevo idioma>",
+					"desc": "Cambiaré el idioma del webhook de cambios recientes."
+				},
+				"wiki": {
+					"cmd": "rcscript wiki <nuevo wiki>",
+					"desc": "Cambiaré el wiki del webhook de cambios recientes."
+				}
+			},
+			"search": {
+				"cmd": "search <término de búsqueda>",
+				"desc": "Responderé con un enlace directo a la página de búsqueda del artículo en el wiki."
+			},
+			"settings": {
+				"channel": {
+					"cmd": "settings channel",
+					"desc": "Cambiaré las sobrescrituras del canal actual."
+				},
+				"default": {
+					"cmd": "settings",
+					"desc": "Cambiaré la configuración de este servidor."
+				},
+				"inline": {
+					"cmd": "settings inline toggle",
+					"desc": "Activaré/Desactivaré los comandos inline en este servidor."
+				},
+				"lang": {
+					"cmd": "settings lang <idioma>",
+					"desc": "Cambiaré el idioma de este servidor."
+				},
+				"prefix": {
+					"cmd": "settings prefix <prefijo>",
+					"desc": "Cambiaré el prefijo de este servidor."
+				},
+				"role": {
+					"cmd": "settings role <rol>",
+					"desc": "Cambiaré el rol mínimo requerido para usar comandos en este servidor."
+				},
+				"wiki": {
+					"cmd": "settings wiki <wiki>",
+					"desc": "Cambiaré el wiki predeterminado de este servidor."
+				}
+			},
+			"test": {
+				"cmd": "test",
+				"desc": "¡Si estoy activo, responderé! De lo contrario no."
+			},
+			"user": {
+				"cmd": "User:<nombre de usuario>",
+				"desc": "Mostraré información sobre el usuario."
+			},
+			"verification": {
+				"accountage": {
+					"cmd": "verification <ID> accountage <edad de la cuenta>",
+					"desc": "Cambiaré la antigüedad mínima de la cuenta (en días) para la verificación wiki."
+				},
+				"add": {
+					"cmd": "verification add <rol>",
+					"desc": "Agregaré una nueva verificación wiki. Acepta una lista separada por `|`."
+				},
+				"channel": {
+					"cmd": "verification <ID> channel <canal nuevo>",
+					"desc": "Cambiaré el canal para la verificación wiki. Acepta una lista separada por `|`."
+				},
+				"default": {
+					"cmd": "verification",
+					"desc": "Cambiaré las verificaciones wiki utilizadas por el comando `$1verify`."
+				},
+				"delete": {
+					"cmd": "verification <ID> delete",
+					"desc": "Eliminaré la verificación wiki."
+				},
+				"editcount": {
+					"cmd": "verification <ID> editcount <número de ediciones>",
+					"desc": "Cambiaré el número mínimo de ediciones para la verificación wiki."
+				},
+				"postcount": {
+					"cmd": "verification <ID> postcount <nuevo número de publicaciones>",
+					"desc": "Cambiaré el número mínimo de publicaciones de discusiones para la verificación wiki.\n• Proporciona un número negativo para requerir el número de ediciones o el número de publicaciones.\n• Proporciona `null` para comprobar el número de publicaciones y ediciones combinadas."
+				},
+				"rename": {
+					"cmd": "verification <ID> rename",
+					"desc": "Haré el cambio si el alias de Discord debe cambiarse a tu nombre de usuario wiki para la verificación wiki."
+				},
+				"role": {
+					"cmd": "verification <ID> role <nuevo rol>",
+					"desc": "Cambiaré el rol para la verificación wiki. Acepta una lista separada por `|`."
+				},
+				"usergroup": {
+					"cmd": "verification <ID> usergroup <nuevo grupo de usuarios>",
+					"desc": "Cambiaré el grupo de usuarios para la verificación wiki. Acepta una lista separada por `|`.\n\t• Proporcione `AND` como la primera entrada de la lista para que todos los grupos de usuarios proporcionados sean obligatorios."
+				}
+			},
+			"verify": {
+				"cmd": "verify <nombre de usuario wiki>",
+				"desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
+			},
+			"voice": {
+				"cmd": "voice",
+				"desc": "Intento darles a todos en un canal de chat de voz un rol específico."
+			},
+			"wikia": {
+				"cmd": "??<wiki> <término de búsqueda>",
+				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Wikia llamado: `https://<wiki>.wikia.org/`"
+			}
+		},
+		"noadmin": "¡Necesitas el permiso `Manage Server` para estos comandos!",
+		"pause": "**¡Actualmente estoy en pausa en este servidor!**\nSolo se pueden ejecutar estos comandos:"
+	},
+	"interaction": {
+		"inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
+		"nowiki": "¡El wiki usado no existe!",
+		"verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
+	},
+	"invite": {
+		"bot": "Usa este enlace para invitarme a otro servidor:"
+	},
+	"minecraft": {
+		"fixed": "Se arregló {{PLURAL:$1|Versión| Versiones}}:",
+		"issue_link": {
+			"Blocks": {
+				"inward": "está bloqueado por $1",
+				"outward": "bloquea a $1"
+			},
+			"Bonfire Testing": {
+				"inward": "descubrió mientras probaba $1",
+				"outward": "probando descubrió $1"
+			},
+			"Cloners": {
+				"inward": "es clonado por $1",
+				"outward": "clona $1"
+			},
+			"Duplicate": {
+				"inward": "está duplicado por $1",
+				"outward": "duplica $1"
+			},
+			"Relates": {
+				"inward": "se relaciona con $1",
+				"outward": "se relaciona con $1"
+			}
+		},
+		"more": "Y $1 más.",
+		"private": "**Problema Privado**",
+		"status": {
+			"Awaiting Response": "Esperando respuesta",
+			"Cannot Reproduce": "No puede reproducir",
+			"Closed": "Cerrado",
+			"Done": "Hecho",
+			"Duplicate": "Duplicado",
+			"Fixed": "Se arregló",
+			"In Progress": "En progreso",
+			"Incomplete": "Incompleto",
+			"Invalid": "Inválido",
+			"Open": "Abierto",
+			"Postponed": "Aplazado",
+			"Reopened": "Reabierto",
+			"Resolved": "Resuelto",
+			"Won't Fix": "No se arreglará",
+			"Works As Intended": "Funciona según lo previsto"
+		},
+		"total": "$1 {{PLURAL:$2|problema|problemas}} resueltos"
+	},
+	"overview": {
+		"admins": "Administradores:",
+		"articles": "Artículos:",
+		"comments": "Comentarios del artículo:",
+		"created": "Creado el:",
+		"crossover": "Fusionado con:",
+		"description": "Descripción:",
+		"edits": "Ediciones:",
+		"founder": "Fundador:",
+		"image": "Imagen:",
+		"inaccurate": "Las estadísticas pueden ser inexactas",
+		"lang": "Idioma:",
+		"license": "Licencia:",
+		"manager": "Wiki manager:",
+		"misermode": "Miser mode:",
+		"no": "No",
+		"none": "*ninguno*",
+		"official": "Wiki oficial:",
+		"pages": "Total de páginas:",
+		"posts": "Publicaciones de discusiones:",
+		"readonly": "¡Este wiki se encuentra actualmente en modo de solo lectura!",
+		"rtl": "De derecha a izquierda:",
+		"talk": "muro",
+		"topic": "Tema:",
+		"unknown": "*desconocido*",
+		"users": "Usuarios activos:",
+		"version": "Versión:",
+		"vertical": "Categoría:",
+		"walls": "Publicaciones en el muro de mensajes:",
+		"wikiid": "Wiki ID:",
+		"yes": "Si"
+	},
+	"pause": {
+		"off": "¡Ya no estoy en pausa en este servidor y responderé a todos los comandos nuevamente!",
+		"on": "¡Ahora estoy en pausa en este servidor e ignoraré la mayoría de los comandos!"
+	},
+	"rcscript": {
+		"ad": "¿Quieres cambios recientes directamente en Discord? ¡Usa `$1rcscript` para agregar un webhook de cambios recientes basado en **$2** a tu servidor de Discord!",
+		"add_more": "Agrega más webhooks de cambios recientes:",
+		"added": "Se ha agregado un webhook de cambios recientes a:",
+		"all_inactive": "No puedes deshabilitar los cambios al wiki y los cambios basados en feeds al mismo tiempo.",
+		"audit_reason": "Webhook de cambios recientes para \"$1\"",
+		"audit_reason_delete": "Webhook de cambios recientes eliminado",
+		"audit_reason_edit": "Actualizó el webhook de cambios recientes",
+		"avatar": "Avatar del webhook:",
+		"blocked": "¡Este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes!",
+		"blocked_reason": "¡Este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes por `$1`!",
+		"channel": "Canal:",
+		"current": "Estos son los webhooks de cambios recientes de este servidor:",
+		"current_display": "El modo de visualización de este webhook es:",
+		"current_lang": "El idioma de este webhook es:",
+		"current_selected": "Este es el webhook de cambios recientes `$1` para este servidor:",
+		"current_wiki": "El wiki de este webhook es:",
+		"dashboard": {
+			"added": "$1 agregó el webhook de cambios recientes con el ID `$2`.",
+			"removed": "$1 eliminó el webhook de cambios recientes con el ID `$2`.",
+			"updated": "$1 actualizó el webhook de cambios recientes con el ID `$2`."
+		},
+		"delete": "Elimina este webhook de cambios recientes:",
+		"deleted": "Se ha eliminado el webhook de cambios recientes.",
+		"disabled": "desactivado",
+		"disabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos para este webhook se han desactivado.",
+		"disabled_rc": "Se han desactivado los cambios del wiki para este webhook.",
+		"display": "Modo de visualización:",
+		"enabled": "activado",
+		"enabled_feeds": "Se han activado los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos para este webhook.",
+		"enabled_rc": "Se han activado los cambios del wiki para este webhook.",
+		"feeds": "Cambios basados en feeds:",
+		"help_display_compact": "Mensajes de texto compactos con enlaces en la misma línea.",
+		"help_display_diff": "Mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones.",
+		"help_display_embed": "Mensajes adjuntos con etiquetas de edición y cambios de categoría.",
+		"help_display_image": "Mensajes adjuntos con vistas previas de imágenes.",
+		"help_feeds": "(discusiones, muros de mensajes, comentarios de artículos)",
+		"help_lang": "Los idiomas disponibles actualmente son:",
+		"help_wiki": "Enlace a un sitio de MediaWiki como `https://<wiki>.fandom.com/`",
+		"lang": "Idioma:",
+		"max_entries": "Ya alcanzaste la cantidad máxima de webhooks de cambios recientes.",
+		"missing": "Todavía no hay webhooks de cambios recientes en este servidor.",
+		"name": "Nombre del webhook:",
+		"new_lang": "<nuevo idioma>",
+		"new_wiki": "<enlace al wiki>",
+		"no_feeds": "El wiki de este webhook no tiene funciones basadas en feeds, como discusiones, muros de mensajes o comentarios de artículos, habilitadas.",
+		"noadmin": "¡Necesitas el permiso `Manage Webhooks` para ejecutar este comando!",
+		"rc": "Cambios del wiki:",
+		"sysmessage": "El mensaje del sistema `$1` tiene que ser el ID del servidor `$2` para agregar un webhook de cambios recientes.",
+		"title": "Webhook de cambios recientes",
+		"toggle": "(activar/desactivar)",
+		"updated_display": "El modo de visualización de este webhook se ha cambiado a:",
+		"updated_lang": "El idioma de este webhook se ha cambiado a:",
+		"updated_wiki": "El wiki de este webhook se ha cambiado a:",
+		"webhook": {
+			"blocked": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado!",
+			"blocked_help": "Puedes solicitar más detalles en el [servidor de soporte]($1).",
+			"blocked_reason": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado por `$1`!",
+			"created": "Se ha agregado a este canal un webhook de cambios recientes para $1.",
+			"dashboard": {
+				"avatar": "• Se ha cambiado el avatar del webhook.",
+				"channel": "• El webhook se ha movido a este canal.",
+				"disabled_feeds": "• Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han desactivado.",
+				"disabled_rc": "• Los cambios del wiki se han desactivado.",
+				"display_compact": "• El modo de visualización se ha cambiado a mensajes de texto compactos con enlaces en la misma línea.",
+				"display_diff": "• El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones.",
+				"display_embed": "• El modo de visualización se ha cambiado a mensajes adjuntos con etiquetas de edición y cambios de categoría.",
+				"display_image": "• El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes.",
+				"enabled_feeds": "• Se han activado los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos.",
+				"enabled_rc": "• Se han activado los cambios del wiki.",
+				"lang": "• El idioma se ha cambiado a $1.",
+				"name": "• El nombre del webhook se ha cambiado a \"$1\".",
+				"updated": "Este webhook de cambios recientes se ha actualizado:",
+				"wiki": "• El wiki se ha cambiado a $1."
+			},
+			"deleted": "Este webhook de cambios recientes se eliminará.",
+			"disabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han desactivado para este webhook de cambios recientes.",
+			"disabled_rc": "Los cambios del wiki se han desactivado en este webhook de cambios recientes.",
+			"enabled_feeds": "Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han activado en este webhook de cambios recientes.",
+			"enabled_rc": "Los cambios del wiki se han activado en este webhook de cambios recientes.",
+			"updated_display_compact": "El modo de visualización se ha cambiado a mensajes de texto compactos con enlaces en la misma línea en este webhook de cambios recientes.",
+			"updated_display_diff": "El modo de visualización se ha cambiado mensajes adjuntos con vistas previas de imágenes y diferencias entre ediciones en este webhook de cambios recientes.",
+			"updated_display_embed": "El modo de visualización se ha cambiado a mensajes adjuntos con etiquetas de edición y cambios de categoría en este webhook de cambios recientes.",
+			"updated_display_image": "El modo de visualización se ha cambiado a mensajes adjuntos con vistas previas de imágenes en este webhook de cambios recientes.",
+			"updated_lang": "El idioma se ha cambiado a `$1` en este webhook de cambios recientes.",
+			"updated_wiki": "El wiki se ha cambiado a $1 en este webhook de cambios recientes."
+		},
+		"webhook_failed": "Lamentablemente, no se pudo crear el webhook. Vuelve a intentarlo más tarde.",
+		"wiki": "Wiki:"
+	},
+	"search": {
+		"cached": "Caché actualizado por última vez:",
+		"category": {
+			"content": "Contenido de esta categoría:",
+			"empty": "*Esta categoría está vacía*",
+			"files": "$1 {{PLURAL:$2|archivo|archivos}}",
+			"pages": "$1 {{PLURAL:$2|página|páginas}}",
+			"subcats": "$1 {{PLURAL:$2|categoría|categorías}}"
+		},
+		"empty": "*Esta página especial está vacía*",
+		"infopage": "¿No es el resultado correcto? Utiliza $1 para obtener un enlace directo.",
+		"infosearch": "¿No es el resultado correcto? Usa $1 para obtener un enlace directo o $2 para obtener una lista de todos los resultados.",
+		"loading": "Cargando descripción de la página…",
+		"media": "A la página de descripción del archivo",
+		"messagedefault": "Predeterminado:",
+		"messagedefaultnone": "*ninguno*",
+		"results": "$1 total {{PLURAL:$2|resultado|resultados}}",
+		"special": "Contenido de esta página especial:"
+	},
+	"settings": {
+		"button": "Usar el panel de control",
+		"channel current": "Estas son las configuraciones actuales en este canal:",
+		"channel lang": "El idioma de este canal es:",
+		"channel langchanged": "Cambiaste el idioma de este canal a:",
+		"channel role": "El rol mínimo requerido para este canal es:",
+		"channel rolechanged": "Cambiaste el rol mínimo requerido en este canal a:",
+		"channel wiki": "El wiki predeterminado en este canal es:",
+		"channel wikichanged": "Cambiaste el wiki predeterminado en este canal a:",
+		"current": "Estas son las configuraciones actuales en este servidor:",
+		"currentchannel": "Sobrescrituras de este canal:",
+		"currentinline": "Comandos inline:",
+		"currentlang": "Idioma:",
+		"currentprefix": "Prefijo:",
+		"currentrole": "Rol mínimo:",
+		"currentwiki": "Wiki predeterminado:",
+		"dashboard": {
+			"channel": "$1 actualizó la configuración de $2.",
+			"removed": "$1 eliminó la configuración de $2.",
+			"updated": "$1 actualizó la configuración del servidor."
+		},
+		"foundwikis": "¿Te refieres a alguno de estos wikis?",
+		"inline disabled": {
+			"channel inline": "Los comandos inline están actualmente deshabilitados en este canal.",
+			"channel inlinechanged": "Deshabilitaste los comandos inline en este canal.",
+			"help": "Utiliza `$1` para habilitar comandos inline como `[[$2]]` y `{{$2}}`.",
+			"inline": "Los comandos inline están actualmente deshabilitados en este servidor.",
+			"inlinechanged": "Deshabilitaste los comandos inline en este servidor."
+		},
+		"inline enabled": {
+			"channel inline": "Los comandos inline están actualmente habilitados en este canal.",
+			"channel inlinechanged": "Habilitaste los comandos inline en este canal.",
+			"help": "Use `$1` para deshabilitar comandos inline como `[[$2]]` y `{{$2}}`.",
+			"inline": "Los comandos inline están actualmente habilitados en este servidor.",
+			"inlinechanged": "Habilitaste los comandos inline en este servidor."
+		},
+		"lang": "El idioma de este servidor es:",
+		"langchanged": "Has cambiado el idioma de este servidor a:",
+		"langhelp": "Utiliza `$1 <language>` para cambiar el idioma.\nLos idiomas disponibles actualmente son:",
+		"langinvalid": "¡El idioma especificado no está disponible!",
+		"missing": "Este servidor aún no está configurado. Usa $1 y $2 para cambiar la configuración.",
+		"nochannels": "*No hay sobrescrituras de canal todavía*",
+		"prefix": "El prefijo de este servidor es:",
+		"prefixchanged": "Cambiaste el prefijo de este servidor a:",
+		"prefixhelp": "Usa `$1 <prefix>` para cambiar el prefijo.\nUsa `_` al final para indicar un espacio al final del prefijo.\n¡El prefijo no puede incluir menciones!",
+		"prefixinvalid": "¡El prefijo especificado no es compatible!",
+		"role": "El rol mínimo requerido para este servidor es:",
+		"rolechanged": "El rol mínimo requerido en este servidor es:",
+		"rolehelp": "Usa `$1 <rol>` para cambiar el rol mínimo requerido.",
+		"roleinvalid": "¡El rol especificado no existe!",
+		"save_failed": "Lamentablemente, la configuración no se pudo guardar, intenta nuevamente más tarde.",
+		"wiki": "El wiki predeterminado de este servidor es:",
+		"wikichanged": "Cambiaste el wiki predeterminado de este servidor a:",
+		"wikihelp": "Usa `$1 <link> para cambiar el wiki predeterminado.\nY el enlace un sitio de MediaWiki como `https://<wiki>.fandom.com/`",
+		"wikiinvalid": "¡Proporciona un enlace válido a un sitio de MediaWiki, como Wikipedia o un wiki de Fandom!",
+		"wikiinvalid_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.\nSi eres el administrador del sitio, puedes obtener un certificado de una autoridad de certificación como *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
+		"wikiinvalid_private": "¡El wiki proporcionado es privado! Solo se admiten wikis públicos que todos puedan leer.",
+		"wikiinvalid_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
+		"wikimissing": "¡Todavía no hay un wiki predeterminado en este servidor!"
+	},
+	"test": {
+		"MediaWiki": "Requiere al menos $1 para la funcionalidad completa, se encuentra la versión `$2`.",
+		"notice": "Funcionalidad limitada",
+		"pause": "Actualmente estoy en pausa en este servidor.",
+		"slow": "Lo siento, estoy un poco lento en este momento.",
+		"text": [
+			"¡Estoy completamente funcional!",
+			" ",
+			" Y créeme, todavía estoy vivo.",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" "
+		],
+		"time": "Tiempo de respuesta"
+	},
+	"user": {
+		"block": {
+			"duration": {
+				"days": "$1 {{PLURAL:$2|día|dias}}",
+				"hours": "$1 {{PLURAL:$2|hora|horas}}",
+				"minutes": "$1 {{PLURAL:$2|minuto|minutos}}",
+				"months": "$1 {{PLURAL:$2|mes|meses}}",
+				"separator": ",_",
+				"separator_last": "_y_",
+				"weeks": "$1 {{PLURAL:$2|semana|semanas}}",
+				"years": "$1 {{PLURAL:$2|año|años}}"
+			},
+			"header": "¡$1 está bloqueado actualmente!",
+			"indef_noreason": "Bloqueado indefinidamente el $1 por $4.",
+			"indef_text": "Bloqueado indefinidamente el $1 por $4 con motivo \"$5\".",
+			"noreason": "Bloqueado el $1 por $2 hasta $3 por $4.",
+			"text": "Bloqueado el $1 por $2 hasta $3 por $4 con motivo \"$5\"."
+		},
+		"gblock": {
+			"disabled": "¡Esta cuenta está actualmente deshabilitada!",
+			"header": "¡$1 está bloqueado globalmente en estos momentos!"
+		},
+		"gender": {
+			"female": "Femenino",
+			"male": "Masculino",
+			"unknown": "Desconocido"
+		},
+		"info": {
+			"discord": "Discord:",
+			"editcount": "Número de ediciones:",
+			"favwiki": "Wiki favorito:",
+			"gender": "Sexo:",
+			"globaleditcount": "Número de ediciones globales:",
+			"globalgroup": "Global {{PLURAL:$1|grupo|grupos}}:",
+			"group": "{{PLURAL:$1|Grupo|Grupos}}:",
+			"loading": "Cargando estadísticas globales…",
+			"postcount": "Publicaciones de discusiones:",
+			"registration": "Fecha de registro:",
+			"wikisedited": "Wikis editados:"
+		}
+	},
+	"verification": {
+		"accountage": "Antigüedad de la cuenta:",
+		"add_more": "Agregar más verificaciones:",
+		"added": "Se ha agregado la verificación:",
+		"and": "y",
+		"channel": "Canal:",
+		"channel_max": "Proporcionaste demasiados canales.",
+		"channel_missing": "El canal proporcionado no existe.",
+		"current": "Estas son las verificaciones actuales en este servidor:",
+		"current_selected": "Esta es la verificación `$1` en este servidor:",
+		"dashboard": {
+			"added": "$1 agregó la verificación con ID `$2`.",
+			"added_notice": "$1 agregó algunos avisos de verificación.",
+			"removed": "$1 eliminó la verificación con ID `$2`.",
+			"updated": "$1 actualizó la verificación con ID `$2`.",
+			"updated_notice": "$1 actualizó algunos avisos de verificación."
+		},
+		"delete_current": "Eliminar esta verificación:",
+		"deleted": "La verificación ha sido eliminada.",
+		"disabled": "desactivada",
+		"editcount": "Número de ediciones:",
+		"enabled": "activada",
+		"flag_logall": "Registro de verificaciones fallidas:",
+		"flag_private": "Envío de respuestas de comandos de verificación de forma privada:",
+		"indays": "(en días)",
+		"logging": "Canal de registro:",
+		"match": "Aviso de requisitos faltantes:",
+		"max_entries": "Ya alcanzaste la cantidad máxima de verificaciones.",
+		"missing": "Todavía no hay verificaciones en este servidor.",
+		"new_accountage": "<nueva antigüedad de la cuenta>",
+		"new_channel": "<nuevo canal>",
+		"new_editcount": "<nuevo número de ediciones>",
+		"new_postcount": "<nuevo número de publicaciones>",
+		"new_role": "<nuevo rol>",
+		"new_usergroup": "<nuevo grupo de usuarios>",
+		"no_role": "Por favor proporciona un rol para la nueva verificación.",
+		"notice_embed": "Algunos avisos incluyen enlaces enmascarado en Markdown. Asegúrate de que el bot tenga los permisos `Insertar enlaces` en todos los canales de verificación para que funcionen correctamente.",
+		"or": "o",
+		"postcount": "Número de publicaciones (solo wikis de Fandom):",
+		"postcount_or": "(alternativa al número de ediciones)",
+		"posteditcount": "Número de ediciones y publicaciones combinadas:",
+		"rename": "Cambiar alias:",
+		"rename_no_permission": "**¡A $1 le falta el permiso `Manage Nicknames` para imponer nombres de usuario wiki!**",
+		"role_add": "Rol a agregar:",
+		"role_deleted": "**¡El rol $1 parece que ya no existe!**",
+		"role_managed": "No se puede asignar el rol proporcionado.",
+		"role_max": "Proporcionaste demasiados roles.",
+		"role_missing": "El rol proporcionado no existe.",
+		"role_none": "ninguno",
+		"role_remove": "Rol a remover:",
+		"role_too_high": "**¡El rol $1 está en un rango muy alto como para asignarlo a $2!**",
+		"save_failed": "Lamentablemente, no se pudo guardar la verificación. Vuelve a intentarlo más tarde.",
+		"success": "Aviso de operación correcta:",
+		"toggle": "(activar/desactivar)",
+		"updated": "La verificación se ha actualizado:",
+		"usergroup": "Grupo de usuario:",
+		"usergroup_max": "Proporcionaste demasiados grupos de usuarios.",
+		"usergroup_too_long": "El grupo de usuarios proporcionado es demasiado largo.",
+		"value_too_high": "El valor proporcionado es demasiado alto."
+	},
+	"verify": {
+		"audit_reason": "Verificado como \"$1\"",
+		"button_again": "Revisar otra vez",
+		"button_wrong_user": "No puedes volver a comprobar esta verificación, ¡es la verificación de $1!",
+		"discord": "Usuario de Discord:",
+		"empty": "*vacío*",
+		"error": "La verificación falló debido a un error.",
+		"error_reply": "La verificación falló debido a un error, inténtalo de nuevo.",
+		"failed_gblock": "**¡La verificación de bloqueo global falló!**",
+		"failed_rename": "**¡Ha fallado el cambio de {{SEXO:$1|su|su|su}} alias de Discord!**",
+		"failed_roles": "**¡Error al agregar roles!**",
+		"footer": "Verificación de cuenta wiki",
+		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
+		"help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
+		"help_guide": "Sigue [esta guía]($1) para agregar tu etiqueta de Discord a tu perfil wiki:",
+		"help_missing": "Asegúrate de utilizar tu nombre de usuario wiki y que las mayúsculas y minúsculas son correctas.",
+		"help_subpage": "Por favor agrega tu etiqueta de Discord ($1) a tu subpágina de Discord en el wiki:",
+		"missing": "No hay verificaciones configuradas en este canal.",
+		"notice": "Aviso:",
+		"oauth_button": "Autenticar",
+		"oauth_message": "Por favor usa [este enlace]($1) para autenticar tu cuenta wiki.",
+		"oauth_message_dm": "Por favor, utiliza este enlace para autenticar tu cuenta wiki para $1.",
+		"oauth_private": "El wiki usa OAuth2 para la verificación. Por favor, habilita los mensajes directos de este servidor o use el comando `/verify` para que pueda enviarte un enlace de autenticación de forma privada.",
+		"oauth_used": "*Verificado usando OAuth2*",
+		"qualified_add": "Agregado a:",
+		"qualified_add_error": "No se puede agregar a:",
+		"qualified_remove": "Eliminado de:",
+		"qualified_remove_error": "No se puede eliminar de:",
+		"user_blocked": "**El usuario wiki $1 está bloqueado!**",
+		"user_blocked_reply": "¡tu usuario wiki vinculado **\"$1\" está bloqueado!**",
+		"user_disabled": "**¡La cuenta wiki $1 está deshabilitada!**",
+		"user_disabled_reply": "¡tu cuenta wiki vinculada **\"$1\" está deshabilitada!**",
+		"user_failed": "El usuario de Discord $1 no coincide con el usuario wiki $2.",
+		"user_failed_reply": "tu etiqueta de Discord no coincide con el usuario wiki \"$1\".",
+		"user_gblocked": "**¡El usuario wiki $1 está bloqueado globalmente!**",
+		"user_gblocked_reply": "¡tu usuario wiki vinculado **\"$1\" está bloqueado globalmente!**",
+		"user_matches": "El usuario de Discord $1 coincide con el usuario wiki $2, pero no cumple con los requisitos para ningún rol.",
+		"user_matches_reply": "tu etiqueta de Discord coincide con el usuario wiki \"$1\", pero no cumples con los requisitos para ningún rol.",
+		"user_missing": "El usuario wiki \"$1\" no existe.",
+		"user_missing_reply": "tu usuario wiki vinculado \"$1\" no existe.",
+		"user_renamed": "{{SEXO:$1|Su|Su|Su}} alias de Discord ha sido cambiado a {{SEXO:$1|su|su|su}} nombre de usuario wiki.",
+		"user_verified": "El usuario de Discord $1 ha sido verificado con éxito como el usuario wiki $2.",
+		"user_verified_reply": "has sido verificado con éxito como el usuario wiki \"$1\".",
+		"wiki": "Usuario wiki:"
+	},
+	"voice": {
+		"channel": "Canal de chat de voz",
+		"disable": "Usa `$1` para desactivar esta función.",
+		"disabled": "Desactivaste la función de agregar roles para canales de chat de voz.",
+		"enable": "Usa `$1` para activar esta función.",
+		"enabled": "Activaste la función de agregar roles para canales de chat de voz.",
+		"join": "$1 se unió al canal de chat de voz \"$2\".",
+		"left": "$1 salió del canal de chat de voz \"$2\".",
+		"name": "nombre del canal de chat de voz",
+		"text": "Intento darles a todos en un canal de chat de voz un rol específico:"
+	}
 }
