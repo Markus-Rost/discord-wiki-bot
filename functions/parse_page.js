@@ -30,7 +30,8 @@ const infoboxList = [
 	'.portable-infobox',
 	'.infoboxtable',
 	'.notaninfobox',
-	'.tpl-infobox'
+	'.tpl-infobox',
+	'table[class*="infobox"]'
 ];
 
 const removeClasses = [
