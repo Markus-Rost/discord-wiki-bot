@@ -42,8 +42,13 @@ export default class Wiki extends URL {
 		if ( this.isGamepedia() ) articlepath = '/$1';
 		let project = wikiProjects.find( project => this.hostname.endsWith( project.name ) );
 		if ( project ) {
-			let regex = ( this.host + this.pathname ).match( new RegExp( '^' + project.regex + project.scriptPath + '$' ) );
-			if ( regex ) articlepath = 'https://' + regex[1] + project.articlePath + '$1';
+			let scriptPath = ( project.regexPaths ? '/' : project.scriptPath );
+			let regex = ( this.host + this.pathname ).match( new RegExp( '^' + project.regex + scriptPath + '$' ) );
+			if ( regex ) {
+				let articlePath = project.articlePath;
+				if ( project.regexPaths ) articlePath = articlePath.replace( /\$(\d)/g, (match, n) => regex[n] );
+				articlepath = 'https://' + regex[1] + articlePath + '$1';
+			}
 		}
 		this.articlepath = articlepath;
 		this.mainpage = '';
@@ -244,8 +249,13 @@ export default class Wiki extends URL {
 			if ( input.startsWith( 'https://' ) ) {
 				let project = wikiProjects.find( project => input.split('/')[2].endsWith( project.name ) );
 				if ( project ) {
-					regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-					if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
+					let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+					let scriptPath = ( project.regexPaths ? '/' : project.scriptPath );
+					regex = input.match( new RegExp( project.regex + `(?:${articlePath}|${scriptPath}|/?$)` ) );
+					if ( regex ) {
+						if ( project.regexPaths ) scriptPath = project.scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
+						return new Wiki('https://' + regex[1] + scriptPath);
+					}
 				}
 				let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|[\?\/#].*)$/, '/' );
 				if ( !wiki.endsWith( '/' ) ) wiki += '/';
@@ -253,8 +263,13 @@ export default class Wiki extends URL {
 			}
 			let project = wikiProjects.find( project => input.split('/')[0].endsWith( project.name ) );
 			if ( project ) {
-				regex = input.match( new RegExp( project.regex + `(?:${project.articlePath}|${project.scriptPath}|/?$)` ) );
-				if ( regex ) return new Wiki('https://' + regex[1] + project.scriptPath);
+				let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+				let scriptPath = ( project.regexPaths ? '/' : project.scriptPath );
+				regex = input.match( new RegExp( project.regex + `(?:${articlePath}|${scriptPath}|/?$)` ) );
+				if ( regex ) {
+					if ( project.regexPaths ) scriptPath = project.scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
+					return new Wiki('https://' + regex[1] + scriptPath);
+				}
 			}
 			if ( /^(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(input) ) {
 				if ( !input.includes( '.' ) ) return new Wiki('https://' + input + '.fandom.com/');

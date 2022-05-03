@@ -293,11 +293,14 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							}
 							let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
 							if ( project ) {
-								let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + project.articlePath + '|/?$)' ) );
+								let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+								let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
 								if ( regex ) {
 									let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replace( /_/g, ' ' );
 									cmd = '!!' + regex[1] + ' ';
-									return this.general(lang, msg, iwtitle, new Wiki('https://' + regex[1] + project.scriptPath), cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
+									let scriptPath = project.scriptPath;
+									if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
+									return this.general(lang, msg, iwtitle, new Wiki('https://' + regex[1] + scriptPath), cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 								}
 							}
 						}
@@ -498,11 +501,14 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				}
 				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
 				if ( project ) {
-					let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + project.articlePath + '|/?$)' ) );
+					let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+					let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
 					if ( regex ) {
 						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replace( /_/g, ' ' );
 						cmd = '!!' + regex[1] + ' ';
-						return this.general(lang, msg, iwtitle, new Wiki('https://' + regex[1] + project.scriptPath), cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
+						let scriptPath = project.scriptPath;
+						if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
+						return this.general(lang, msg, iwtitle, new Wiki('https://' + regex[1] + scriptPath), cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 			}

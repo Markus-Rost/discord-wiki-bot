@@ -107,7 +107,11 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			let project = wikiProjects.find( project => invoke.split('/')[0].endsWith( project.name ) );
 			if ( project ) {
 				let regex = invoke.match( new RegExp( '^!!' + project.regex + '$' ) );
-				if ( regex && invoke === '!!' + regex[1] ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + regex[1] + project.scriptPath), invoke + ' ');
+				if ( regex ) {
+					let scriptPath = project.scriptPath;
+					if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
+					return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + regex[1] + scriptPath), invoke + ' ');
+				}
 			}
 		}
 		return cmdmap.LINK(lang, msg, line, wiki);
