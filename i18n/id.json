@@ -117,14 +117,14 @@
 		"hidden": "*tersembunyi*",
 		"info": {
 			"added": "Ditambahkan:",
-			"bytes": "$1 {{PLURAL:$2|byte|bytes}}",
+			"bytes": "$1 {{PLURAL:$2|bita|bita}}",
 			"comment": "Komentar:",
 			"editor": "Editor:",
 			"minor": "_(m)",
 			"more": "Dan banyak lagi",
 			"removed": "Dibuang:",
 			"size": "Perbedaan:",
-			"tags": "Tags:",
+			"tags": "Penanda:",
 			"timestamp": "Ubah tanggal:",
 			"whitespace": "Hanya ruang kosong"
 		},
@@ -134,7 +134,7 @@
 		"image": "Lihat gambar",
 		"main": "Diskusi",
 		"post": "post",
-		"tags": "Tags:",
+		"tags": "Penanda:",
 		"votes": "$1 {{PLURAL:$2|pilih|suara}} ($3%)"
 	},
 	"fallback": [
@@ -150,7 +150,7 @@
 		"disclaimer": "Saya adalah bot kecil dengan tujuan sederhana untuk menautkan dan mencari situs MediaWiki seperti Wikipedia dan wiki Fandom. Saya menunjukkan deskripsi singkat dan info tambahan tentang suatu halaman dan juga saya dapat menyelesaikan pengalihan dan mengikuti tautan interwiki. $1 menulis saya dalam JavaScript.\n\nKamu dapat mendukung $1 di Patreon berikut ini:",
 		"experimental": "**Fitur ini dalam uji coba! Itu tidak dijamin berfungsi dengan benar dan dapat dihapus di masa mendatang.**",
 		"helpserver": "Untuk pertanyaan dan masalah, silakan kunjungi server dukungan saya:",
-		"limit": "**Berhenti, Kamu mencapai batas!**\n\n$1, pesan mu berisi terlalu banyak perintah!",
+		"limit": "🚨**Berhenti, Kamu mencapai batas!**🚨\n\n$1, pesan mu berisi terlalu banyak perintah!",
 		"missingperm": "Saya kehilangan beberapa izin untuk perintah ini:",
 		"patreon": "Ini adalah satu-satunya fitur Patreon!\nKamu dapat mendukung saya di Patreon untuk mendapatkan akses ke fitur ini:",
 		"prefix": "Prefix untuk server ini adalah `$1`. Kamu dapat mengubah awalan dengan `$1settings prefix`. Untuk melihat semua daftar perintah, ketik dan lihat `$1help`.",
@@ -169,7 +169,7 @@
 			"diff": {
 				"id": {
 					"cmd": "diff <beda> [<oldid>]",
-					"desc": "Saya akan menjawab dengan tautan ke diff di wiki."
+					"desc": "Saya akan menjawab dengan tautan ke perbedaan di wiki."
 				},
 				"name": {
 					"cmd": "diff <nama halaman>",
@@ -179,7 +179,7 @@
 			"discussion": {
 				"post": {
 					"cmd": "discussion post <istilah penelusuran>",
-					"desc": "Saya akan menjawab dengan tautan ke posting diskusi yang cocok di wiki Fandom."
+					"desc": "Saya akan menjawab dengan tautan ke postingan diskusi yang cocok di wiki Fandom."
 				},
 				"thread": {
 					"cmd": "discussion <istilah penelusuran>",
@@ -429,7 +429,7 @@
 		"status": {
 			"Awaiting Response": "Menunggu Respon",
 			"Cannot Reproduce": "Tidak Dapat Mereproduksi",
-			"Closed": "Tertutup",
+			"Closed": "Ditutup",
 			"Done": "Selesai",
 			"Duplicate": "Duplikat",
 			"Fixed": "Diperbaiki",
@@ -438,7 +438,7 @@
 			"Invalid": "Tidak sah",
 			"Open": "Terbuka",
 			"Postponed": "Ditunda",
-			"Reopened": "dibuka kembali",
+			"Reopened": "Dibuka kembali",
 			"Resolved": "Terselesaikan",
 			"Won't Fix": "Tidak akan Memperbaiki",
 			"Works As Intended": "Bekerja Seperti yang Dimaksudkan"
@@ -805,7 +805,7 @@
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
 		"help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
 		"help_guide": "Ikuti [panduan ini]($1) untuk menambahkan tag Discord kamuke profil wiki mu:",
-		"help_missing": "Harap pastikan bahwa Kamu menggunakan nama pengguna wiki mu dan penggunaan huruf besar/kecil sudah benar.",
+		"help_missing": "Harap pastikan bahwa Kamu menggunakan nama pengguna wiki dan kapitalisasinya itu sudah benar.",
 		"help_subpage": "Silakan tambahkan tag Discord Kamu ($1) ke subhalaman Discord mu di wiki:",
 		"missing": "Tidak ada verifikasi yang disiapkan untuk saluran ini.",
 		"notice": "Pemberitahuan:",
