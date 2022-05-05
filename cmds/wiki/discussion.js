@@ -1,4 +1,4 @@
-import htmlparser from 'htmlparser2';
+import { Parser as HTMLParser } from 'htmlparser2';
 import { MessageEmbed, Util } from 'discord.js';
 import { got, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
 import { createRequire } from 'module';
@@ -35,7 +35,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 				console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 			} else {
 				var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
-				var parser = new htmlparser.Parser( {
+				var parser = new HTMLParser( {
 					onopentag: (tagname, attribs) => {
 						if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 							var description = escapeFormatting(attribs.content);

@@ -1,4 +1,4 @@
-import htmlparser from 'htmlparser2';
+import { Parser as HTMLParser } from 'htmlparser2';
 import gotDefault from 'got';
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
@@ -165,7 +165,7 @@ function toPlaintext(text = '', fullWikitext = false) {
 function htmlToPlain(html, includeComments = false) {
 	var text = '';
 	var ignoredTag = '';
-	var parser = new htmlparser.Parser( {
+	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
 			let classes = ( attribs.class?.split(' ') ?? [] );
 			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
@@ -213,7 +213,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var syntaxhighlight = '';
 	var listlevel = -1;
 	var horizontalList = '';
-	var parser = new htmlparser.Parser( {
+	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
 			if ( ignoredTag || code ) return;
 			let classes = ( attribs.class?.split(' ') ?? [] );

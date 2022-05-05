@@ -1,4 +1,4 @@
-import htmlparser from 'htmlparser2';
+import { Parser as HTMLParser } from 'htmlparser2';
 import { escapeFormatting } from './functions.js';
 
 /**
@@ -17,7 +17,7 @@ export default function diffParser(html, more, whitespace) {
 	var small_prev_del = '';
 	var ins_length = more.length;
 	var del_length = more.length;
-	var parser = new htmlparser.Parser( {
+	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
 			if ( tagname === 'ins' || tagname == 'del' ) current_tag = tagname;
 			if ( tagname === 'td' ) {
