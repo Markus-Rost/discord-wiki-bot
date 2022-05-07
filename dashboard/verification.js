@@ -370,7 +370,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 				).attr('action', `/guild/${guild.id}/verification/notice`).appendTo('#text');
 				if ( process.env.READONLY ) {
 					$('input, textarea').attr('readonly', '');
-					$('textarea, option, optgroup').attr('disabled', '');
+					$('textarea, option, optgroup, input[type="checkbox"]').attr('disabled', '');
 					$('input[type="submit"]').remove();
 				}
 				$('<div class="description">').html(dashboardLang.get('verification.help_notice')).appendTo('#text');

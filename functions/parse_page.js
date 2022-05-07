@@ -14,8 +14,9 @@ const parsedContentModels = [
 const contentModels = {
 	Scribunto: 'lua',
 	javascript: 'js',
+	css: 'css',
 	json: 'json',
-	css: 'css'
+	interactivemap: 'json'
 };
 
 const contentFormats = {
