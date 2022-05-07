@@ -158,8 +158,9 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
     wiki
 );
 
+SET my.version TO 4;
+
 COMMIT TRANSACTION;
-ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 4;
 `,`
 BEGIN TRANSACTION;
 
@@ -176,16 +177,18 @@ CREATE INDEX idx_verifynotice_guild ON verifynotice (
     guild
 );
 
+SET my.version TO 2;
+
 COMMIT TRANSACTION;
-ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 2;
 `,`
 BEGIN TRANSACTION;
 
 ALTER TABLE verifynotice
 ADD COLUMN flags INTEGER NOT NULL DEFAULT 0;
 
+SET my.version TO 3;
+
 COMMIT TRANSACTION;
-ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 3;
 `,`
 BEGIN TRANSACTION;
 
@@ -204,8 +207,9 @@ CREATE INDEX idx_oauthusers_userid ON oauthusers (
     site
 );
 
+SET my.version TO 4;
+
 COMMIT TRANSACTION;
-ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 4;
 `];
 
 export default await db.connect().then( () => {
