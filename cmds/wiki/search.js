@@ -1,6 +1,6 @@
-import { MessageEmbed, Util } from 'discord.js';
-import { got, escapeFormatting } from '../../util/functions.js';
-import { createRequire } from 'module';
+import { MessageEmbed } from 'discord.js';
+import { got, escapeFormatting, splitMessage } from '../../util/functions.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {search: searchLimit}} = require('../../util/default.json');
 
@@ -136,11 +136,11 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 			footer = lang.get('search.results', body.query.searchinfo.totalhits.toLocaleString(lang.get('dateformat')), body.query.searchinfo.totalhits);
 		}
 		if ( msg.showEmbed() && !noEmbed ) {
-			if ( description.length ) embed.setDescription( Util.splitMessage( description.join('\n') )[0] );
+			if ( description.length ) embed.setDescription( splitMessage( description.join('\n') )[0] );
 			if ( footer ) embed.setFooter( {text: footer} );
 		}
 		else {
-			if ( description.length ) resultText += '\n' + Util.splitMessage( description.join('\n'), {maxLength: 1995 - resultText.length - footer.length} )[0];
+			if ( description.length ) resultText += '\n' + splitMessage( description.join('\n'), {maxLength: 1995 - resultText.length - footer.length} )[0];
 			if ( footer ) resultText += '\n' + footer;
 		}
 	}, error => {

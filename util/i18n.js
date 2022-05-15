@@ -1,4 +1,4 @@
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
 const i18n = require('../i18n/allLangs.json');

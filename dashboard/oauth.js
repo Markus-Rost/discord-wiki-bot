@@ -1,10 +1,10 @@
-import { readFileSync } from 'fs';
-import { randomBytes } from 'crypto';
+import { readFileSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
 import { load as cheerioLoad } from 'cheerio';
 import Wiki from '../util/wiki.js';
 import { allLangs } from './i18n.js';
 import { got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm } from './util.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
 const allLangNames = allLangs().names;

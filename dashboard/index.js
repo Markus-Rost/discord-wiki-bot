@@ -1,6 +1,6 @@
-import http from 'http';
-import fs from 'fs';
-import { extname } from 'path';
+import { createServer, STATUS_CODES } from 'node:http';
+import { createReadStream, readdirSync, existsSync } from 'node:fs';
+import { extname } from 'node:path';
 import * as pages from './oauth.js';
 import dashboard from './guilds.js';
 import { posts } from './functions.js';
@@ -9,13 +9,13 @@ import Lang from './i18n.js';
 const allLangs = Lang.allLangs();
 
 const files = new Map([
-	...fs.readdirSync( './dashboard/src' ).map( file => {
+	...readdirSync( './dashboard/src' ).map( file => {
 		return [`/src/${file}`, `./dashboard/src/${file}`];
 	} ),
-	...fs.readdirSync( './i18n/widgets' ).map( file => {
+	...readdirSync( './i18n/widgets' ).map( file => {
 		return [`/src/widgets/${file}`, `./i18n/widgets/${file}`];
 	} ),
-	...( fs.existsSync('./RcGcDb/start.py') ? fs.readdirSync( './RcGcDb/locale/widgets' ).map( file => {
+	...( existsSync('./RcGcDb/start.py') ? readdirSync( './RcGcDb/locale/widgets' ).map( file => {
 		return [`/src/widgets/RcGcDb/${file}`, `./RcGcDb/locale/widgets/${file}`];
 	} ) : [] )
 ].map( ([file, filepath]) => {
@@ -43,7 +43,7 @@ const files = new Map([
 	return [file, {path: filepath, contentType}];
 } ));
 
-const server = http.createServer( (req, res) => {
+const server = createServer( (req, res) => {
 	res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( req.url.startsWith( '/guild/' ) || req.url === '/user' ) ) {
 		let args = req.url.split('/');
@@ -126,7 +126,7 @@ const server = http.createServer( (req, res) => {
 		return res.end();
 	}
 	if ( req.method !== 'GET' ) {
-		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
+		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + STATUS_CODES[418] + '</strong>';
 		res.writeHead(418, {
 			'Content-Type': 'text/html',
 			'Content-Length': Buffer.byteLength(body)
@@ -139,7 +139,7 @@ const server = http.createServer( (req, res) => {
 	if ( files.has(reqURL.pathname) ) {
 		let file = files.get(reqURL.pathname);
 		res.writeHead(200, {'Content-Type': file.contentType});
-		return fs.createReadStream(file.path).pipe(res);
+		return createReadStream(file.path).pipe(res);
 	}
 
 	res.setHeader('Content-Type', 'text/html');

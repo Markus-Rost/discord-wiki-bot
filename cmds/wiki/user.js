@@ -5,7 +5,7 @@ import parse_page from '../../functions/parse_page.js';
 import logging from '../../util/logging.js';
 import extract_desc from '../../util/extract_desc.js';
 import { got, toMarkdown, toPlaintext, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {timeoptions, usergroups} = require('../../util/default.json');
 

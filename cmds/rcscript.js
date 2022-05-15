@@ -1,12 +1,12 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
-import { Util, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
-import { got } from '../util/functions.js';
+import { got, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const allLangs = Lang.allLangs(true);
@@ -540,7 +540,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( button ) text += `\n<${button.url}>`;
 			}
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
-			Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+			splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 		} );
 	}, dberror => {
 		console.log( '- Error while getting the RcGcDw: ' + dberror );
@@ -617,7 +617,7 @@ function blocklist(msg, args) {
 	}
 	db.query( 'SELECT wiki, reason FROM blocklist' ).then( ({rows}) => {
 		if ( !rows.length ) return msg.replyMsg( 'There are currently no wikis on the blocklist.\n`' + prefix + 'rcscript block add <wiki> [<reason>]`', true );
-		Util.splitMessage( 'There are currently ' + rows.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`' ).forEach( textpart => msg.replyMsg( textpart, true ) );
+		splitMessage( 'There are currently ' + rows.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`' ).forEach( textpart => msg.replyMsg( textpart, true ) );
 	}, dberror => {
 		console.log( '- Error while checking the blocklist: ' + dberror );
 		msg.replyMsg( 'I got an error while checking the blocklist: ' + dberror, true );

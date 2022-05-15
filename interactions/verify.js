@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';

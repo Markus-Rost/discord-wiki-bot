@@ -1,4 +1,4 @@
-import { readdir } from 'fs';
+import { readdir } from 'node:fs';
 import { MessageEmbed } from 'discord.js';
 import parse_page from '../../functions/parse_page.js';
 import phabricator from '../../functions/phabricator.js';
@@ -7,7 +7,7 @@ import { got, htmlToDiscord, escapeFormatting, partialURIdecode, breakOnTimeoutP
 import extract_desc from '../../util/extract_desc.js';
 import Wiki from '../../util/wiki.js';
 import * as fn from './functions.js'
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
 const {wikis: mcw} = require('../minecraft/commands.json');

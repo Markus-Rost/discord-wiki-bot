@@ -1,7 +1,6 @@
-import { Util } from 'discord.js';
-import { got } from '../../util/functions.js';
+import { got, splitMessage } from '../../util/functions.js';
 import Wiki from '../../util/wiki.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const commands = require('./commands.json');
 
@@ -70,7 +69,7 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 		}, error => {
 			console.log( '- Error while getting the command page: ' + error );
 		} ).finally( () => {
-			Util.splitMessage( spoiler + '```md\n' + cmdSyntax + '```<' + wiki.toLink(( cmdpage.endsWith( '/' ) ? cmdpage + aliasCmd : cmdpage ), '', ( cmdpage.endsWith( '/' ) ? '' : aliasCmd )) + '>' + spoiler, {maxLength: 2000, prepend: spoiler + '```md\n', append: '```' + spoiler} ).forEach( textpart => msg.sendChannel( textpart ) );
+			splitMessage( spoiler + '```md\n' + cmdSyntax + '```<' + wiki.toLink(( cmdpage.endsWith( '/' ) ? cmdpage + aliasCmd : cmdpage ), '', ( cmdpage.endsWith( '/' ) ? '' : aliasCmd )) + '>' + spoiler, {maxLength: 2000, prepend: spoiler + '```md\n', append: '```' + spoiler} ).forEach( textpart => msg.sendChannel( textpart ) );
 
 			if ( reaction ) reaction.removeEmoji();
 		} );

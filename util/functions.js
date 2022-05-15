@@ -441,6 +441,26 @@ function limitLength(text = '', limit = 1000, maxExtra = 20) {
 };
 
 /**
+ * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
+ * @param {string} text Content to split
+ * @param {object} [options] Options controlling the behavior of the split
+ * @param {number} [options.maxLength] Maximum character length per message piece
+ * @param {string} [options.char] Character to split the message with
+ * @param {string} [options.prepend] Text to prepend to every piece except the first
+ * @param {string} [options.append] Text to append to every piece except the last
+ * @returns {string[]}
+ */
+function splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
+	if ( text.length <= maxLength ) return [text];
+	return text.split(char).map( (part, i, parts) => {
+		part = limitLength(part, maxLength);
+		if ( i > 0 ) part = prepend + part;
+		if ( i < parts.length - 1 ) part += append;
+		return part;
+	} ).filter( part => part );
+};
+
+/**
  * Try to URI decode.
  * @param {String} m - The character to decode.
  * @returns {String}
@@ -521,6 +541,7 @@ export {
 	htmlToDiscord,
 	escapeFormatting,
 	limitLength,
+	splitMessage,
 	partialURIdecode,
 	breakOnTimeoutPause,
 	allowDelete,

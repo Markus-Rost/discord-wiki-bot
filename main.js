@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { fork as forkChildProcess } from 'child_process';
+import { fork as forkChildProcess } from 'node:child_process';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
 import { ShardingManager, ShardClientUtil } from 'discord.js';

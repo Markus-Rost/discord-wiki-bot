@@ -1,5 +1,5 @@
 import './util/globals.js';
-import { readdir } from 'fs';
+import { readdir } from 'node:fs';
 import Discord from 'discord.js';
 import db from './util/database.js';
 import Lang from './util/i18n.js';

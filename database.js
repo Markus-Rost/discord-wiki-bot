@@ -1,4 +1,4 @@
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 import pg from 'pg';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./util/default.json');

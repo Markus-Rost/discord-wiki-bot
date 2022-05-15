@@ -1,10 +1,10 @@
 import { load as cheerioLoad } from 'cheerio';
-import { MessageEmbed, Util, MessageActionRow, MessageButton } from 'discord.js';
-import { got } from '../util/functions.js';
+import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import { got, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 const allLangs = Lang.allLangs();
@@ -49,7 +49,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		}
 		
 		if ( !args.length ) {
-			return Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+			return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 		}
 		var channelId = ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId );
 		
@@ -57,7 +57,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		args[0] = args[0].toLowerCase();
 		if ( args[0] === 'channel' ) {
 			prelang = 'channel ';
-			if ( !rows.length ) return Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+			if ( !rows.length ) return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 			
 			var channel = rows.find( row => row.channel === channelId );
 			if ( !channel ) channel = Object.assign({}, rows.find( row => {
@@ -92,7 +92,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !wikinew ) {
 				let wikisuggest = lang.get('settings.wikiinvalid') + wikihelp;
 				//wikisuggest += '\n\n' + lang.get('settings.foundwikis') + '\n' + sites.map( site => site.wiki_display_name + ': `' + site.wiki_domain + '`' ).join('\n');
-				return Util.splitMessage( wikisuggest ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+				return splitMessage( wikisuggest ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
 				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
@@ -388,7 +388,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		return Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+		return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 	}, dberror => {
 		console.log( '- Error while getting the settings: ' + dberror );
 		msg.reactEmoji('error', true);

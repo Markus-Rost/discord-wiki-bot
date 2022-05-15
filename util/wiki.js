@@ -1,5 +1,5 @@
-import { inspect } from 'util';
-import { createRequire } from 'module';
+import { inspect } from 'node:util';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, wikiProjects} = require('./default.json');
 

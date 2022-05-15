@@ -1,8 +1,8 @@
-import { Util, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import db from '../util/database.js';
-import { got } from '../util/functions.js';
-import { createRequire } from 'module';
+import { got, splitMessage } from '../util/functions.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}} = require('../util/default.json');
 
@@ -99,7 +99,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( button ) text += `\n<${button.url}>`;
 			}
 			text += '\n\n' + lang.get('verification.add_more') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`';
-			return Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+			return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 		}
 		var row = rows.find( row => row.configid.toString() === args[0] );
 		if ( args[1] ) args[1] = args[1].toLowerCase();
@@ -134,7 +134,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			return db.query( 'UPDATE verification SET rename = $1 WHERE guild = $2 AND configid = $3', [( row.rename ? 0 : 1 ), msg.guildId, row.configid] ).then( () => {
 				console.log( '- Verification successfully updated.' );
 				row.rename = ( row.rename ? 0 : 1 );
-				Util.splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+				splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 			}, dberror => {
 				console.log( '- Error while updating the verification: ' + dberror );
 				msg.replyMsg( {content: lang.get('verification.save_failed'), components}, true );
@@ -158,7 +158,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( channels.length ) return db.query( 'UPDATE verification SET channel = $1 WHERE guild = $2 AND configid = $3', ['|' + channels + '|', msg.guildId, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row.channel = '|' + channels + '|';
-					Util.splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+					splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 				}, dberror => {
 					console.log( '- Error while updating the verification: ' + dberror );
 					msg.replyMsg( {content: lang.get('verification.save_failed'), components}, true );
@@ -184,7 +184,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( roles.length ) return db.query( 'UPDATE verification SET role = $1 WHERE guild = $2 AND configid = $3', [roles, msg.guildId, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row.role = roles;
-					Util.splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+					splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 				}, dberror => {
 					console.log( '- Error while updating the verification: ' + dberror );
 					msg.replyMsg( {content: lang.get('verification.save_failed'), components}, true );
@@ -199,7 +199,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				return db.query( 'UPDATE verification SET ' + args[1] + ' = $1 WHERE guild = $2 AND configid = $3', [args[2], msg.guildId, row.configid] ).then( () => {
 					console.log( '- Verification successfully updated.' );
 					row[args[1]] = args[2];
-					Util.splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+					splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 				}, dberror => {
 					console.log( '- Error while updating the verification: ' + dberror );
 					msg.replyMsg( {content: lang.get('verification.save_failed'), components}, true );
@@ -249,7 +249,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 					db.query( 'UPDATE verification SET usergroup = $1 WHERE guild = $2 AND configid = $3', [and_or + usergroups, msg.guildId, row.configid] ).then( () => {
 						console.log( '- Verification successfully updated.' );
 						row.usergroup = and_or + usergroups;
-						Util.splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+						splitMessage( lang.get('verification.updated') + formatVerification() ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 						
 						if ( reaction ) reaction.removeEmoji();
 					}, dberror => {
@@ -261,7 +261,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} ) );
 			}
 		}
-		return Util.splitMessage( lang.get('verification.current_selected', row.configid) + ( button ? `\n<${button.url}>` : '' ) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`' ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+		return splitMessage( lang.get('verification.current_selected', row.configid) + ( button ? `\n<${button.url}>` : '' ) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`' ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 		
 		function formatVerification(showCommands, hideNotice, {
 			configid,

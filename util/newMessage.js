@@ -1,12 +1,12 @@
-import { readdir } from 'fs';
-import { domainToASCII } from 'url';
+import { readdir } from 'node:fs';
+import { domainToASCII } from 'node:url';
 import { Util } from 'discord.js';
 import Wiki from './wiki.js';
 import logging from './logging.js';
-import { got, partialURIdecode } from './functions.js';
+import { got, splitMessage, partialURIdecode } from './functions.js';
 import check_wiki_general from '../cmds/wiki/general.js';
 import check_wiki_test from '../cmds/test.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
 const check_wiki = {
@@ -209,7 +209,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					link.url = wiki.toLink(link.title, 'action=edit&redlink=1');
 				} ) );
 			}
-			if ( links.length ) Util.splitMessage( links.map( link => {
+			if ( links.length ) splitMessage( links.map( link => {
 				if ( !link.url ) logging(wiki, msg.guildId, 'inline');
 				return link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section) ) + '>' + link.spoiler;
 			} ).join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
@@ -254,7 +254,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					}
 					if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 				} ) );
-				if ( missing.length ) Util.splitMessage( missing.map( embed => {
+				if ( missing.length ) splitMessage( missing.map( embed => {
 					if ( embed.template ) logging(wiki, msg.guildId, 'inline', 'template');
 					else logging(wiki, msg.guildId, 'inline', 'redlink');
 					return embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler;

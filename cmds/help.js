@@ -1,6 +1,6 @@
-import { Util } from 'discord.js';
 import help_server from '../functions/helpserver.js';
-import { createRequire } from 'module';
+import { splitMessage } from '../util/functions.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {wikis: mcw} = require('./minecraft/commands.json');
 
@@ -100,7 +100,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 				cmdlist += formathelp(helplist.admin, msg, lang);
 				cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
 				if ( process.env.dashboard ) cmdlist += '\n\t\t' + new URL(( msg.inGuild() ? `/guild/${msg.guildId}/settings` : '/' ), process.env.dashboard).href;
-				Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
+				splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 			}
 			else {
 				msg.replyMsg( {content: lang.get('help.noadmin'), allowedMentions: {repliedUser: false}} );
@@ -109,7 +109,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 		else if ( cmd === 'minecraft' ) {
 			var cmdlist = '<' + ( isMinecraft ? wiki : 'https://minecraft.fandom.com/' ) + '>\n';
 			cmdlist += formathelp(helplist.minecraft, msg, lang);
-			Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
+			splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 		}
 		else if ( helpmap.hasOwnProperty(cmd) && 
 		( !restrictions.fandom.includes( cmd ) || wiki.isFandom(false) ) && 
@@ -117,14 +117,14 @@ function cmd_help(lang, msg, args, line, wiki) {
 		( !restrictions.admin.includes( cmd ) || msg.isAdmin() ) ) {
 			var cmdlist = formathelp(helpmap[cmd], msg, lang);
 			if ( !cmdlist.length ) msg.reactEmoji('❓');
-			else Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
+			else splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 		}
 		else msg.reactEmoji('❓');
 	}
 	else if ( msg.isAdmin() && pausedGuilds.has(msg.guildId) ) {
 		var cmdlist = lang.get('help.pause') + '\n';
 		cmdlist += formathelp(helplist.pause, msg, lang);
-		Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
+		splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 	}
 	else {
 		var cmdlist = lang.get('help.all') + '\n';
@@ -135,7 +135,7 @@ function cmd_help(lang, msg, args, line, wiki) {
 			}
 		} );
 		cmdlist += '\n🔸 ' + lang.get('help.footer');
-		Util.splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
+		splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 	}
 }
 

@@ -1,7 +1,7 @@
-import { MessageEmbed, Util, ShardClientUtil, Permissions } from 'discord.js';
-import { escapeFormatting } from '../util/functions.js';
+import { MessageEmbed, ShardClientUtil, Permissions } from 'discord.js';
+import { escapeFormatting, splitMessage } from '../util/functions.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, defaultPermissions} = require('../util/default.json');
 const {shardIdForGuildId} = ShardClientUtil;
@@ -61,10 +61,10 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				if ( msg.showEmbed() ) {
 					var embed = new MessageEmbed().setThumbnail( guild.icon ).addField( guildname[0], guildname[1] ).addField( guildowner[0], guildowner[1] ).addField( guildsize[0], guildsize[1], true ).addField( guildshard[0], guildshard[1], true ).addField( guildpermissions[0], guildpermissions[1] );
 					if ( guild.channel ) embed.addField( guildchannel[0], guildchannel[1] );
-					var split = Util.splitMessage( guildsettings[1], {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
+					var split = splitMessage( guildsettings[1], {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
 					if ( split.length > 5 ) {
 						msg.sendChannel( {embeds: [embed]}, true );
-						Util.splitMessage( guildsettings.join(' '), {
+						splitMessage( guildsettings.join(' '), {
 							char: ',\n',
 							maxLength: 2000,
 							prepend: '```json\n',
@@ -78,7 +78,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				}
 				else {
 					var text = guildname.join(' ') + '\n' + guildowner.join(' ') + '\n' + guildsize.join(' ') + '\n' + guildshard.join(' ') + '\n' + guildpermissions.join(' ') + ( guild.channel ? '\n' + guildchannel.join(' ') : '' ) + '\n' + guildsettings.join(' ');
-					Util.splitMessage( text, {
+					splitMessage( text, {
 						char: ',\n',
 						maxLength: 2000,
 						prepend: '```json\n',
@@ -174,9 +174,9 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			if ( !rows.length ) return msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', true );
 			var result = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 			if ( msg.showEmbed() ) {
-				var split = Util.splitMessage( result, {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
+				var split = splitMessage( result, {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
 				if ( split.length > 5 ) {
-					Util.splitMessage( '`' + id + '`: ' + result, {
+					splitMessage( '`' + id + '`: ' + result, {
 						char: ',\n',
 						maxLength: 2000,
 						prepend: '```json\n',
@@ -190,7 +190,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				}
 			}
 			else {
-				Util.splitMessage( '`' + id + '`: ' + result, {
+				splitMessage( '`' + id + '`: ' + result, {
 					char: ',\n',
 					maxLength: 2000,
 					prepend: '```json\n',

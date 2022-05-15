@@ -1,6 +1,6 @@
 import Lang from '../util/i18n.js';
 import { got, db, sendMsg, createNotice, escapeText, hasPerm } from './util.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
 

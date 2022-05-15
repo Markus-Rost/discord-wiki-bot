@@ -1,7 +1,7 @@
-import { MessageEmbed, Util } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import logging from '../../util/logging.js';
-import { got, toMarkdown, escapeFormatting } from '../../util/functions.js';
-import { createRequire } from 'module';
+import { got, toMarkdown, escapeFormatting, splitMessage } from '../../util/functions.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
 
@@ -202,7 +202,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 			embed.setDescription( description );
 		}
 		if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) ) {
-			var text = Util.splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
+			var text = splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength:1000} )[0];
 			embed.addField( lang.get('search.special'), ( text || lang.get('search.empty') ) );
 			if ( body.query.querypage?.cached !== undefined ) {
 				embed.setFooter( {text: lang.get('search.cached')} ).setTimestamp(new Date(body.query.querypage.cachedtimestamp));

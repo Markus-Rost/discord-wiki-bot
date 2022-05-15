@@ -1,9 +1,9 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
 import { forms } from './functions.js';
 import Lang from './i18n.js';
 import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice } from './util.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
 const allLangs = Lang.allLangs().names;

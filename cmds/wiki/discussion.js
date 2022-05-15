@@ -1,7 +1,7 @@
 import { Parser as HTMLParser } from 'htmlparser2';
-import { MessageEmbed, Util } from 'discord.js';
-import { got, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
-import { createRequire } from 'module';
+import { MessageEmbed } from 'discord.js';
+import { got, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {discussion: discussionLimit}} = require('../../util/default.json');
 
@@ -321,7 +321,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 	embed.setDescription( description );
 	if ( discussion.tags?.length ) {
-		embed.addField( lang.get('discussion.tags'), Util.splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
+		embed.addField( lang.get('discussion.tags'), splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
 	}
 	
 	msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );

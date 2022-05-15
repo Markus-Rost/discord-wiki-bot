@@ -1,4 +1,4 @@
-import { createWriteStream } from 'fs';
+import { createWriteStream } from 'node:fs';
 
 /**
  * Log wikis by usage.

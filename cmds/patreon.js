@@ -1,6 +1,6 @@
 import { ShardClientUtil } from 'discord.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions, limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const {shardIdForGuildId} = ShardClientUtil;
