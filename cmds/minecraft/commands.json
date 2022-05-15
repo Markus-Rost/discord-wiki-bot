@@ -248,6 +248,10 @@
 			"/help",
 			"/help <command>"
 		],
+		"jfr": [
+			"/jfr start",
+			"/jfr stop"
+		],
 		"item": [
 			"/item replace block <pos> <slot> with <item> [<count>]",
 			"/item replace block <pos> <slot> from block <pos> <slot> [<modifier>]",
@@ -271,7 +275,9 @@
 			"/list uuids"
 		],
 		"locate": [
-			"/locate <structure>"
+			"/locate structure <structure>",
+			"/locate biome <biome>",
+			"/locate poi <poi>"
 		],
 		"locatebiome": [
 			"/locatebiome <biome>"
@@ -320,6 +326,12 @@
 			"/perf start",
 			"/perf stop"
 		],
+		"place": [
+			"/place feature <feature> [<pos>]",
+			"/place jigsaw <pool> <target> <max_depth> [<pos>]",
+			"/place structure <structure> [<pos>]",
+			"/place template <template> [<pos>] [<rotation>] [<mirror>] [<integrity>] [<seed>]"
+		],
 		"playsound": [
 			"/playsound <sound> <source> <targets>",
 			"/playsound <sound> <source> <targets> <pos>",
@@ -341,6 +353,7 @@
 			"/reload"
 		],
 		"replaceitem": [
+			"/* This command is Bedrock Edition only */",
 			"/replaceitem block <pos> <slot> <item>",
 			"/replaceitem block <pos> <slot> <item> <count>",
 			"/replaceitem entity <targets> <slot> <item>",
