@@ -1,5 +1,6 @@
 import { Parser as HTMLParser } from 'htmlparser2';
 import gotDefault from 'got';
+import { gotSsrf } from 'got-ssrf';
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
 	timeout: {
@@ -9,7 +10,7 @@ const got = gotDefault.extend( {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json'
-} );
+}, gotSsrf );
 
 /**
  * @type {Map<String, {state: String, wiki: String, channel: import('discord.js').TextChannel, user: String}>}
@@ -26,11 +27,12 @@ const oauthVerify = new Map();
  */
 function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 	if ( !infobox || embed.fields.length >= 25 || embed.length > 5400 ) return;
-	if ( infobox.parser_tag_version === 5 ) {
+	if ( infobox.parser_tag_version === 2 || infobox.parser_tag_version === 5 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, thumbnail, pagelink);
 		} );
 		embed.fields = embed.fields.filter( (field, i, fields) => {
+			// entferne header gefolgt von header
 			if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 			return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
 		} );
@@ -61,13 +63,15 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
 			embed.fields = embed.fields.filter( (field, i, fields) => {
-				if ( i < embedLength || field.name !== '\u200b' ) return true;
-				if ( !field.value.startsWith( '__**' ) ) return true;
+				if ( i < embedLength ) return true;
+				// entferne header gefolgt von header oder section
+				if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 				return ( fields[i + 1]?.name && fields[i + 1].name !== '\u200b' );
 			} ).filter( (field, i, fields) => {
-				if ( i < embedLength || field.name !== '\u200b' ) return true;
-				if ( field.value.startsWith( '__**' ) ) return true;
-				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
+				if ( i < embedLength ) return true;
+				// entferne section gefolgt von section
+				if ( field.name !== '\u200b' || field.value.startsWith( '__**' ) ) return true;
+				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || fields[i + 1].value.startsWith( '__**' ) ) );
 			} );
 			break;
 		case 'section':

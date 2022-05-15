@@ -617,7 +617,7 @@ function blocklist(msg, args) {
 	}
 	db.query( 'SELECT wiki, reason FROM blocklist' ).then( ({rows}) => {
 		if ( !rows.length ) return msg.replyMsg( 'There are currently no wikis on the blocklist.\n`' + prefix + 'rcscript block add <wiki> [<reason>]`', true );
-		Util.splitMessage( 'There are currently ' + row.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`' ).forEach( textpart => msg.replyMsg( textpart, true ) );
+		Util.splitMessage( 'There are currently ' + rows.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`' ).forEach( textpart => msg.replyMsg( textpart, true ) );
 	}, dberror => {
 		console.log( '- Error while checking the blocklist: ' + dberror );
 		msg.replyMsg( 'I got an error while checking the blocklist: ' + dberror, true );

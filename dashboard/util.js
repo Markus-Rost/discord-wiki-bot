@@ -1,4 +1,5 @@
 import gotDefault from 'got';
+import { gotSsrf } from 'got-ssrf';
 import pg from 'pg';
 import DiscordOauth2 from 'discord-oauth2';
 import { oauthSites } from '../util/wiki.js';
@@ -14,7 +15,7 @@ const got = gotDefault.extend( {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + '/dashboard (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json'
-} );
+}, gotSsrf );
 
 const db = new pg.Pool();
 db.on( 'error', dberror => {

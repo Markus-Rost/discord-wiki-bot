@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { fork as forkChildProcess } from 'child_process';
 import gotDefault from 'got';
+import { gotSsrf } from 'got-ssrf';
 import { ShardingManager, ShardClientUtil } from 'discord.js';
 const {shardIdForGuildId} = ShardClientUtil;
 
@@ -17,7 +18,7 @@ const got = gotDefault.extend( {
 		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json'
-} );
+}, gotSsrf );
 
 const manager = new ShardingManager( './bot.js', {
 	execArgv: ['--icu-data-dir=node_modules/full-icu'],
