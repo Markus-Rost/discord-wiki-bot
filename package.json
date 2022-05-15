@@ -13,7 +13,7 @@
   "author": "MarkusRost",
   "license": "ISC",
   "engines": {
-    "node": ">=16.6.0"
+    "node": ">=18.1.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
