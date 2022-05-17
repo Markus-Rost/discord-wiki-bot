@@ -49,7 +49,6 @@ function cmd_test(lang, msg, args, line, wiki) {
 				if ( body && body.warnings ) log_warning(body.warnings);
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
 				if ( body?.query?.general ) wiki.updateWiki(body.query.general);
-				embed.addField( wiki.toLink(), ping );
 				var notice = [];
 				if ( response.statusCode !== 200 || !body?.query?.general ) {
 					if ( wiki.noWiki(response.url, response.statusCode) ) {
@@ -57,8 +56,9 @@ function cmd_test(lang, msg, args, line, wiki) {
 						ping += ' <:unknown_wiki:505887262077353984>';
 					}
 					else {
-						console.log( '- ' + response.statusCode + ': Error while reaching the wiki: ' + ( body && body.error && body.error.info ) );
+						console.log( '- ' + response.statusCode + ': Error while reaching the wiki: ' + body?.error?.info );
 						ping += ' <:error:505887261200613376>';
+						if ( body?.error?.info === 'You need read permission to use this module.' ) notice.push(lang.get('settings.wikiinvalid_private'));
 					}
 				}
 				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() ) {
@@ -69,6 +69,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 					}
 				}
 				else logging(wiki, msg.guildId, 'test');
+				embed.addField( wiki.toLink(), ping );
 				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
 				if ( body?.query?.general?.readonly !== undefined ) {
 					if ( body.query.general.readonlyreason ) {
