@@ -376,11 +376,11 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					thumbnail = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
 						img = $(img).prop('src')?.toLowerCase();
 						return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
-					} ).first().prop('src');
+					} ).first()?.prop('src');
 					if ( !thumbnail ) thumbnail = $('img').filter( (i, img) => {
 						img = $(img).prop('src')?.toLowerCase();
 						return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
-					} ).first().prop('src');
+					} ).first()?.prop('src');
 					if ( !thumbnail ) image = response.body.parse.images.find( pageimage => {
 						return /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase());
 					} );
