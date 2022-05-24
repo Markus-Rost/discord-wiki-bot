@@ -373,14 +373,18 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			if ( embed.thumbnail?.url === thumbnail ) {
 				let image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
 				if ( !image ) {
-					thumbnail = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
+					let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
 						img = $(img).prop('src')?.toLowerCase();
 						return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
-					} ).first()?.prop('src');
-					if ( !thumbnail ) thumbnail = $('img').filter( (i, img) => {
-						img = $(img).prop('src')?.toLowerCase();
-						return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
-					} ).first()?.prop('src');
+					} ).first();
+					thumbnail = ( first.length ? first.prop('src') : null );
+					if ( !thumbnail ) {
+						first = $('img').filter( (i, img) => {
+							img = $(img).prop('src')?.toLowerCase();
+							return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
+						} ).first();
+						thumbnail = ( first.length ? first.prop('src') : null );
+					}
 					if ( !thumbnail ) image = response.body.parse.images.find( pageimage => {
 						return /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase());
 					} );
