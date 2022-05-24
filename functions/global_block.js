@@ -30,7 +30,10 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 	
 	Promise.all([
 		got.get( 'https://community.fandom.com/wiki/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1', {
-			responseType: 'text'
+			responseType: 'text',
+			context: {
+				guildId: msg.guildId
+			}
 		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body ) {
@@ -51,15 +54,18 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 			console.log( '- Error while getting the global block: ' + error );
 		} ),
 		( isUser && wiki.isGamepedia() ? got.get( 'https://help.fandom.com/wiki/UserProfile:' + encodeURIComponent( username ) + '?cache=' + Date.now(), {
-			responseType: 'text'
+			responseType: 'text',
+			context: {
+				guildId: msg.guildId
+			}
 		} ).then( gresponse => {
 			var gbody = gresponse.body;
 			if ( gresponse.statusCode !== 200 || !gbody ) {
 				console.log( '- ' + gresponse.statusCode + ': Error while getting the global edit count.' );
 			}
 			else {
-				let $ = cheerioLoad(gbody);
-				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).text().replace( /[,\.]/g, '' );
+				let $ = cheerioLoad(gbody, {baseURI: gresponse.url});
+				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).prop('innerText').replace( /[,\.]/g, '' );
 				if ( wikisedited ) {
 					wikisedited = parseInt(wikisedited, 10).toLocaleString(lang.get('dateformat'));
 					if ( embed && msg.showEmbed() ) embed.spliceFields(1, 0, {
@@ -73,7 +79,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 						text = splittext.join('\n');
 					}
 				}
-				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).text().replace( /[,\.]/g, '' );
+				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).prop('innerText').replace( /[,\.]/g, '' );
 				if ( globaledits ) {
 					globaledits = parseInt(globaledits, 10).toLocaleString(lang.get('dateformat'));
 					if ( embed && msg.showEmbed() ) embed.spliceFields(1, 0, {

@@ -96,17 +96,24 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
 				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
-					responseType: 'text'
+					responseType: 'text',
+					context: {
+						guildId: msg.guildId
+					}
 				} ).then( response => {
 					try {
 						response.body = JSON.parse(response.body);
 					}
 					catch (error) {
 						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-							let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general&format=json' );
+								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+									context: {
+										guildId: msg.guildId
+									}
+								} );
 							}
 						}
 					}

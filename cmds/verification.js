@@ -214,7 +214,11 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				}
 				if ( usergroups.length > 10 ) return msg.replyMsg( {content: lang.get('verification.usergroup_max'), components}, true );
 				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( {content: lang.get('verification.usergroup_too_long'), components}, true );
-				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( response => {
+				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json', {
+					context: {
+						guildId: msg.guildId
+					}
+				} ).then( response => {
 					var body = response.body;
 					if ( body && body.warnings ) log_warning(body.warnings);
 					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {

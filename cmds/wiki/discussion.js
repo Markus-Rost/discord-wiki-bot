@@ -28,7 +28,10 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 		}
 		var embed = new MessageEmbed().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
 		got.get( wiki + 'f', {
-			responseType: 'text'
+			responseType: 'text',
+			context: {
+				guildId: msg.guildId
+			}
 		} ).then( descresponse => {
 			var descbody = descresponse.body;
 			if ( descresponse.statusCode !== 200 || !descbody ) {
@@ -64,6 +67,9 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 		got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=' + limit + '&format=json&cache=' + Date.now(), {
 			headers: {
 				Accept: 'application/hal+json'
+			},
+			context: {
+				guildId: msg.guildId
 			}
 		} ).then( response => {
 			var body = response.body;
@@ -86,6 +92,9 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 					got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPost&postId=' + title + '&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
+						},
+						context: {
+							guildId: msg.guildId
 						}
 					} ).then( presponse => {
 						var pbody = presponse.body;
@@ -111,6 +120,9 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 						else got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + pbody.threadId + '&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
+							},
+							context: {
+								guildId: msg.guildId
 							}
 						} ).then( thresponse => {
 							var thbody = thresponse.body;
@@ -161,6 +173,9 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 		got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThreads&sortKey=trending&limit=' + limit + '&format=json&cache=' + Date.now(), {
 			headers: {
 				Accept: 'application/hal+json'
+			},
+			context: {
+				guildId: msg.guildId
 			}
 		} ).then( response => {
 			var body = response.body;
@@ -203,6 +218,9 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 					got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + title + '&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
+						},
+						context: {
+							guildId: msg.guildId
 						}
 					} ).then( thresponse => {
 						var thbody = thresponse.body;

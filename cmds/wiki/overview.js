@@ -18,7 +18,11 @@ const {timeoptions} = require('../../util/default.json');
  */
 export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
 	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.isFandom() ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.isFandom() ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
@@ -130,7 +134,11 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			}
 			var description = [lang.get('overview.description')];
 			var image = [lang.get('overview.image')];
-			return got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + wikiid + '&format=json&cache=' + Date.now() ).then( ovresponse => {
+			return got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + wikiid + '&format=json&cache=' + Date.now(), {
+				context: {
+					guildId: msg.guildId
+				}
+			} ).then( ovresponse => {
 				var ovbody = ovresponse.body;
 				if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[wikiid] ) {
 					console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
@@ -155,7 +163,11 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 				if ( site.image ) image[1] = new URL(site.image, wiki).href;
 				
 				return Promise.all([
-					( founder[1] > 0 ? got.get( wiki + 'api.php?action=query&list=users&usprop=&ususerids=' + founder[1] + '&format=json' ).then( usresponse => {
+					( founder[1] > 0 ? got.get( wiki + 'api.php?action=query&list=users&usprop=&ususerids=' + founder[1] + '&format=json', {
+						context: {
+							guildId: msg.guildId
+						}
+					} ).then( usresponse => {
 						var usbody = usresponse.body;
 						if ( usbody && usbody.warnings ) log_warning(usbody.warnings);
 						if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
@@ -174,6 +186,9 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 					got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
+						},
+						context: {
+							guildId: msg.guildId
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;

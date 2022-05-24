@@ -38,7 +38,11 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 		var matchCount = Math.max(...cmdSyntaxMap.filter( command => command[0] === lastIndex ).map( command => command[1] ));
 		var regex = new RegExp('/' + aliasCmd, 'g');
 		var cmdSyntax = commands.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + mccmd );
-		got.get( wiki + ( cmdpage.endsWith( '/' ) ? 'api.php?action=query&redirects=true&converttitles=true&titles=%1F' + encodeURIComponent( cmdpage + aliasCmd ) : 'api.php?action=parse&redirects=true&prop=sections&page=' + encodeURIComponent( cmdpage ) ) + '&format=json' ).then( response => {
+		got.get( wiki + ( cmdpage.endsWith( '/' ) ? 'api.php?action=query&redirects=true&converttitles=true&titles=%1F' + encodeURIComponent( cmdpage + aliasCmd ) : 'api.php?action=parse&redirects=true&prop=sections&page=' + encodeURIComponent( cmdpage ) ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !( body?.query?.pages || body?.parse?.sections?.length ) ) {

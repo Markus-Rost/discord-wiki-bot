@@ -589,7 +589,11 @@ function update_verification(res, userSettings, guild, type, settings) {
 			if ( row.count.length >= verificationLimit[( response.patreon ? 'patreon' : 'default' )] ) {
 				return res(`/guild/${guild}/verification`, 'savefail');
 			}
-			return got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
+			return got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json', {
+				context: {
+					guildId: guild
+				}
+			} ).then( gresponse => {
 				var body = gresponse.body;
 				if ( gresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {
 					console.log( '- Dashboard: ' + gresponse.statusCode + ': Error while getting the usergroups: ' + body?.error?.info );
@@ -737,7 +741,11 @@ function update_verification(res, userSettings, guild, type, settings) {
 					} );
 				} ) ) return res(`/guild/${guild}/verification/${type}`, 'savefail');
 			}
-			( newUsergroup.length ? got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json' ).then( gresponse => {
+			( newUsergroup.length ? got.get( row.wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json', {
+				context: {
+					guildId: guild
+				}
+			} ).then( gresponse => {
 				var body = gresponse.body;
 				if ( gresponse.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {
 					console.log( '- Dashboard: ' + gresponse.statusCode + ': Error while getting the usergroups: ' + body?.error?.info );

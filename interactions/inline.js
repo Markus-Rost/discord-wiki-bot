@@ -114,7 +114,11 @@ function slash_inline(interaction, lang, wiki) {
 			...templates.map( link => link.title + '|' + link.template ),
 			...links.map( link => link.title ),
 			...( magiclinks.length ? ['Special:BookSources'] : [] )
-		].join('|') ) + '&format=json' ).then( response => {
+		].join('|') ) + '&format=json', {
+			context: {
+				guildId: interaction.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {

@@ -170,7 +170,11 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 		} );
 	
-		if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json' ).then( response => {
+		if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
@@ -223,7 +227,11 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 		} );
 		
-		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json' ).then( response => {
+		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {

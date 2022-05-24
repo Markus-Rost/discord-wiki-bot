@@ -7,9 +7,17 @@ const got = gotDefault.extend( {
 		request: 5_000
 	},
 	headers: {
-		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
+		'user-agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
-	responseType: 'json'
+	responseType: 'json',
+	hooks: ( process.env['x-origin-guild'] ? {
+		beforeRequest: [
+			options => {
+				if ( options.context?.guildId ) options.headers['x-origin-guild'] = options.context.guildId;
+				else if ( options.context?.guildId === null ) options.headers['x-origin-guild'] = 'DM';
+			}
+		]
+	} : {} )
 }, gotSsrf );
 
 /**

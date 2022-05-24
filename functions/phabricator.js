@@ -22,7 +22,11 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 	}
 	var site = 'https://phabricator.' + regex[1] + '.org/';
 	logging(site, msg.guildId, 'phabricator', regex[1]);
-	got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator_' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2] ).then( response => {
+	got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator_' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2], {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the Phabricator task: ' + body?.error_info );
@@ -54,7 +58,11 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 		embed.setDescription( description );
 
 		Promise.all([
-			( task.attachments.projects.projectPHIDs.length ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&') ).then( presponse => {
+			( task.attachments.projects.projectPHIDs.length ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
+				context: {
+					guildId: msg.guildId
+				}
+			} ).then( presponse => {
 				var pbody = presponse.body;
 				if ( presponse.statusCode !== 200 || !pbody?.result || pbody.error_code ) {
 					console.log( '- ' + presponse.statusCode + ': Error while getting the projects: ' + pbody?.error_info );
@@ -70,7 +78,11 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 			}, error => {
 				console.log( '- Error while getting the projects: ' + error );
 			} ) : undefined ),
-			( /^#\d+$/.test( link.hash ) ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator_' + regex[1]] + '&objectIdentifier=' + task.phid ).then( tresponse => {
+			( /^#\d+$/.test( link.hash ) ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator_' + regex[1]] + '&objectIdentifier=' + task.phid, {
+				context: {
+					guildId: msg.guildId
+				}
+			} ).then( tresponse => {
 				var tbody = tresponse.body;
 				if ( tresponse.statusCode !== 200 || !tbody?.result?.data || tbody.error_code ) {
 					console.log( '- ' + tresponse.statusCode + ': Error while getting the task transactions: ' + tbody?.error_info );

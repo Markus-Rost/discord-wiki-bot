@@ -6,7 +6,7 @@ import { ShardingManager, ShardClientUtil } from 'discord.js';
 const {shardIdForGuildId} = ShardClientUtil;
 
 var isDebug = ( process.argv[2] === 'debug' );
-if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
+if ( process.argv[2] === 'readonly' ) process.env.READONLY = 'true';
 import './database.js';
 
 const got = gotDefault.extend( {
@@ -15,9 +15,17 @@ const got = gotDefault.extend( {
 		request: 30_000
 	},
 	headers: {
-		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
+		'user-agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
-	responseType: 'json'
+	responseType: 'json',
+	hooks: ( process.env['x-origin-guild'] ? {
+		beforeRequest: [
+			options => {
+				if ( options.context?.guildId ) options.headers['x-origin-guild'] = options.context.guildId;
+				else if ( options.context?.guildId === null ) options.headers['x-origin-guild'] = 'DM';
+			}
+		]
+	} : {} )
 }, gotSsrf );
 
 const manager = new ShardingManager( './bot.js', {

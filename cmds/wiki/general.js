@@ -82,7 +82,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
 		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
 	}
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1F' + encodeURIComponent( ( aliasInvoke === 'search' ? full_title.split(' ').slice(1).join(' ') : title ).replace( /\x1F/g, '\ufffd' ) ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1F' + encodeURIComponent( ( aliasInvoke === 'search' ? full_title.split(' ').slice(1).join(' ') : title ).replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
@@ -142,7 +146,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			}
 			if ( querypage.ns === -1 && querypage.title.startsWith( contribs ) && querypage.title.length > contribs.length ) {
 				var username = querypage.title.split('/').slice(1).join('/');
-				return got.get( wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json' ).then( uresponse => {
+				return got.get( wiki + 'api.php?action=query&titles=User:' + encodeURIComponent( username ) + '&format=json', {
+					context: {
+						guildId: msg.guildId
+					}
+				} ).then( uresponse => {
 					var ubody = uresponse.body;
 					if ( uresponse.statusCode !== 200 || !ubody || ubody.batchcomplete === undefined || !ubody.query ) {
 						console.log( '- ' + uresponse.statusCode + ': Error while getting the user: ' + ( ubody && ubody.error && ubody.error.info ) );
@@ -191,7 +199,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
-			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( srresponse => {
+			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
+				context: {
+					guildId: msg.guildId
+				}
+			} ).then( srresponse => {
 				logging(wiki, msg.guildId, 'general', 'search');
 				var srbody = srresponse.body;
 				if ( srbody?.warnings ) log_warning(srbody.warnings);
@@ -204,7 +216,10 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				}
 				if ( querypage.ns === 12 && wiki.isFandom() ) {
 					return got.head( wiki.articleURL.href.replace( '$1', encodeURIComponent( querypage.title ).replace( /%3A/g, ':' ) ), {
-						followRedirect: false
+						followRedirect: false,
+						context: {
+							guildId: msg.guildId
+						}
 					} ).then( hresponse => {
 						if ( hresponse.statusCode === 301 && /^https:\/\/[a-z\d-]{1,50}\.fandom\.com\/(?:(?!wiki\/)[a-z-]{2,12}\/)?wiki\/Help:/.test( hresponse.headers?.location ) ) {
 							var location = hresponse.headers.location.split('wiki/');
@@ -239,7 +254,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					} );
 				}
 				if ( !srbody.query ) {
-					return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrwhat=text&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json' ).then( tsrresponse => {
+					return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrwhat=text&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
+						context: {
+							guildId: msg.guildId
+						}
+					} ).then( tsrresponse => {
 						var tsrbody = tsrresponse.body;
 						if ( tsrbody?.warnings ) log_warning(tsrbody.warnings);
 						if ( tsrresponse.statusCode !== 200 || !tsrbody || tsrbody.batchcomplete === undefined ) {
@@ -526,7 +545,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		};
 		var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 		var embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
-		got.get( wiki + 'api.php?uselang=' + uselang + '&action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=info|pageprops|extracts&ppprop=description|displaytitle|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( querypage.title ) + '&format=json' ).then( mpresponse => {
+		got.get( wiki + 'api.php?uselang=' + uselang + '&action=query' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=info|pageprops|extracts&ppprop=description|displaytitle|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&titles=' + encodeURIComponent( querypage.title ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( mpresponse => {
 			var mpbody = mpresponse.body;
 			if ( mpbody && mpbody.warnings ) log_warning(body.warnings);
 			if ( mpresponse.statusCode !== 200 || !mpbody || mpbody.batchcomplete === undefined || !mpbody.query ) {

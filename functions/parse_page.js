@@ -126,6 +126,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			return got.get( wiki + 'api.php?action=query&meta=allmessages&amprop=default&amincludelocal=true&amlang=' + encodeURIComponent( pagelanguage ) + '&ammessages=' + encodeURIComponent( title ) + '&format=json', {
 				timeout: {
 					request: 10_000
+				},
+				context: {
+					guildId: msg.guildId
 				}
 			} ).then( response => {
 				var body = response.body;
@@ -191,6 +194,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
 				request: 10_000
+			},
+			context: {
+				guildId: msg.guildId
 			}
 		} ).then( response => {
 			var body = response.body;
@@ -255,6 +261,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
 				request: 10_000
+			},
+			context: {
+				guildId: msg.guildId
 			}
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
@@ -272,7 +281,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
 				embed.setTitle( displaytitle );
 			}
-			var $ = cheerioLoad(response.body.parse.text['*'].replace( /\n?<br(?: ?\/)?>\n?/g, '<br>' ));
+			var $ = cheerioLoad(response.body.parse.text['*'].replace( /\n?<br(?: ?\/)?>\n?/g, '<br>' ), {baseURI: wiki.toLink(response.body.parse.title)});
 			if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
 				let infobox = $('aside.portable-infobox');
 				embed.fields.forEach( field => {
@@ -405,13 +414,13 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					return ( '#' + span.attribs.id?.toLowerCase() === toSection(fragment).toLowerCase() );
 				} );
 				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( $(span).parent().text().trim() === fragment );
+					return ( $(span).parent().prop('innerText').trim() === fragment );
 				} );
 				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( $(span).parent().text().trim().toLowerCase() === fragment.toLowerCase() );
+					return ( $(span).parent().prop('innerText').trim().toLowerCase() === fragment.toLowerCase() );
 				} );
 				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return $(span).parent().text().toLowerCase().includes( fragment.toLowerCase() );
+					return $(span).parent().prop('innerText').toLowerCase().includes( fragment.toLowerCase() );
 				} );
 				if ( !exactMatch && section.length ) {
 					newFragment = section.attr('id');

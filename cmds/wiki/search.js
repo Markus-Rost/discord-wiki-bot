@@ -28,14 +28,22 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 	else resultText += '\n\n**`' + searchterm + '`**';
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
 	var limit = searchLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
-	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body?.query?.search || body.batchcomplete === undefined ) {
 			return console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 		}
 		if ( body.query.search.length < limit ) {
-			return got.get( wiki + 'api.php?action=query&list=search&srwhat=text&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json' ).then( tresponse => {
+			return got.get( wiki + 'api.php?action=query&list=search&srwhat=text&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
+				context: {
+					guildId: msg.guildId
+				}
+			} ).then( tresponse => {
 				var tbody = tresponse.body;
 				if ( tbody?.warnings ) log_warning(tbody.warnings);
 				if ( tresponse.statusCode !== 200 || !tbody?.query?.search || tbody.batchcomplete === undefined ) {

@@ -380,17 +380,24 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			var wiki = Wiki.fromInput(settings.wiki);
 			if ( !wiki ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 			return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
-				responseType: 'text'
+				responseType: 'text',
+				context: {
+					guildId: guild
+				}
 			} ).then( fresponse => {
 				try {
 					fresponse.body = JSON.parse(fresponse.body);
 				}
 				catch (error) {
 					if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-						let api = cheerioLoad(fresponse.body)('head link[rel="EditURI"]').prop('href');
+						let api = cheerioLoad(fresponse.body, {baseURI: fresponse.url})('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wiki = new Wiki(api.split('api.php?')[0], wiki);
-							return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+							return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+								context: {
+									guildId: guild
+								}
+							} );
 						}
 					}
 				}
@@ -428,6 +435,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					if ( settings.feeds && wiki.isFandom(false) ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
+						},
+						context: {
+							guildId: guild
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
@@ -625,17 +635,24 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				var wiki = Wiki.fromInput(settings.wiki);
 				if ( !wiki ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
-					responseType: 'text'
+					responseType: 'text',
+					context: {
+						guildId: guild
+					}
 				} ).then( fresponse => {
 					try {
 						fresponse.body = JSON.parse(fresponse.body);
 					}
 					catch (error) {
 						if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-							let api = cheerioLoad(fresponse.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(fresponse.body, {baseURI: fresponse.url})('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wiki = new Wiki(api.split('api.php?')[0], wiki);
-								return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
+								return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
+									context: {
+										guildId: guild
+									}
+								} );
 							}
 						}
 					}
@@ -673,6 +690,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						if ( settings.feeds && wiki.isFandom(false) ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
+							},
+							context: {
+								guildId: guild
 							}
 						} ).then( dsresponse => {
 							var dsbody = dsresponse.body;

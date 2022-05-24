@@ -248,8 +248,9 @@ function dashboard_refresh(res, userSession, returnLocation = '/') {
  * Check if a wiki is availabe
  * @param {import('http').ServerResponse} res - The server response
  * @param {String} input - The wiki to check
+ * @param {String} [guild] - The guild the check is for
  */
-function dashboard_api(res, input) {
+function dashboard_api(res, input, guild = null) {
 	var wiki = Wiki.fromInput('https://' + input + '/');
 	var result = {
 		api: true,
@@ -274,17 +275,24 @@ function dashboard_api(res, input) {
 		return res.end();
 	}
 	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
-		responseType: 'text'
+		responseType: 'text',
+		context: {
+			guildId: guild
+		}
 	} ).then( response => {
 		try {
 			response.body = JSON.parse(response.body);
 		}
 		catch (error) {
 			if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-				let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+				let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 				if ( api ) {
 					wiki = new Wiki(api.split('api.php?')[0], wiki);
-					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
+					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
+						context: {
+							guildId: guild
+						}
+					} );
 				}
 			}
 		}

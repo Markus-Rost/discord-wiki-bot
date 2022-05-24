@@ -19,7 +19,11 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
 		if ( /^\d+$/.test(invoke) ) invoke = 'MC-' + invoke;
 		var baseBrowseUrl = 'https://bugs.mojang.com/browse/';
-		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,description,issuelinks,fixVersions,resolution,status' ).then( response => {
+		got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,description,issuelinks,fixVersions,resolution,status', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {
@@ -88,7 +92,11 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			jql: 'fixVersion="' + args.join(' ').replace( /["\\]/g, '\\$&' ) + '" order by key'
 		});
 		var uri = 'https://bugs.mojang.com/issues/?' + jql;
-		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&' + jql + '&maxResults=25' ).then( response => {
+		got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&' + jql + '&maxResults=25', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
 				if ( body && body.errorMessages ) {

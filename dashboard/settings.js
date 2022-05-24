@@ -349,17 +349,24 @@ function update_settings(res, userSettings, guild, type, settings) {
 		if ( !wiki ) return res(`/guild/${guild}/settings`, 'savefail');
 		var embed;
 		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
-			responseType: 'text'
+			responseType: 'text',
+			context: {
+				guildId: guild
+			}
 		} ).then( fresponse => {
 			try {
 				fresponse.body = JSON.parse(fresponse.body);
 			}
 			catch (error) {
 				if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-					let api = cheerioLoad(fresponse.body)('head link[rel="EditURI"]').prop('href');
+					let api = cheerioLoad(fresponse.body, {baseURI: fresponse.url})('head link[rel="EditURI"]').prop('href');
 					if ( api ) {
 						wiki = new Wiki(api.split('api.php?')[0], wiki);
-						return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json' );
+						return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+							context: {
+								guildId: guild
+							}
+						} );
 					}
 				}
 			}

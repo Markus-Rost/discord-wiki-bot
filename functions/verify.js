@@ -40,7 +40,11 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 			embed: null
 		}
 	};
-	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.isFandom() ? '|usercontribs&ucprop=&uclimit=10&ucuser=' + encodeURIComponent( username ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
+	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.isFandom() ? '|usercontribs&ucprop=&uclimit=10&ucuser=' + encodeURIComponent( username ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
+		context: {
+			guildId: channel.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users ) {
@@ -80,7 +84,11 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 			embed.setTitle( escapeFormatting( old_username || username ) ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', escapeFormatting( old_username || username )) ).addField( lang.get('verify.notice'), lang.get('verify.help_missing') );
 			result.content = lang.get('verify.user_missing_reply', escapeFormatting( old_username || username ));
 			result.add_button = false;
-			if ( wiki.isFandom() && !old_username ) return got.get( wiki + 'api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json' ).then( wsresponse => {
+			if ( wiki.isFandom() && !old_username ) return got.get( wiki + 'api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json', {
+				context: {
+					guildId: channel.guildId
+				}
+			} ).then( wsresponse => {
 				var wsbody = wsresponse.body;
 				if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
 					if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + wsbody?.exception?.details );
@@ -117,7 +125,10 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 		
 		var comment = [];
 		if ( wiki.isFandom() ) return got.get( 'https://community.fandom.com/wiki/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
-			responseType: 'text'
+			responseType: 'text',
+			context: {
+				guildId: channel.guildId
+			}
 		} ).then( gbresponse => {
 			if ( gbresponse.statusCode !== 200 || !gbresponse.body ) {
 				console.log( '- ' + gbresponse.statusCode + ': Error while getting the global block.' );
@@ -143,7 +154,11 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 			comment.push(lang.get('verify.failed_gblock'));
 		} ).then( () => {
 			var discordname = '';
-			return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now() ).then( ucresponse => {
+			return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now(), {
+				context: {
+					guildId: channel.guildId
+				}
+			} ).then( ucresponse => {
 				var ucbody = ucresponse.body;
 				if ( ucresponse.statusCode !== 200 || !ucbody?.userData?.id ) {
 					console.log( '- ' + ucresponse.statusCode + ': Error while getting the user profile.' );
@@ -153,7 +168,11 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 				queryuser.postcount = ucbody.userData.posts;
 				if ( ucbody.userData.discordHandle ) discordname = escapeFormatting(ucbody.userData.discordHandle).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 				
-				if ( wiki.isGamepedia() || !discordname ) return got.get( ( wiki.isGamepedia() ? wiki : 'https://help.fandom.com/' ) + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( presponse => {
+				if ( wiki.isGamepedia() || !discordname ) return got.get( ( wiki.isGamepedia() ? wiki : 'https://help.fandom.com/' ) + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
+					context: {
+						guildId: channel.guildId
+					}
+				} ).then( presponse => {
 					var pbody = presponse.body;
 					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
 						if ( !wiki.isGamepedia() ) return;
@@ -377,7 +396,11 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 			result.add_button = false;
 		} );
 		
-		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json' ).then( mwresponse => {
+		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&format=json', {
+			context: {
+				guildId: channel.guildId
+			}
+		} ).then( mwresponse => {
 			var mwbody = mwresponse.body;
 			if ( mwbody && mwbody.warnings ) log_warning(mwbody.warnings);
 			if ( mwresponse.statusCode !== 200 || mwbody?.batchcomplete === undefined || !mwbody?.query?.pages ) {
@@ -624,6 +647,9 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		got.get( settings.wiki + 'rest.php/oauth2/resource/profile', {
 			headers: {
 				Authorization: `Bearer ${access_token}`
+			},
+			context: {
+				guildId: channel.guildId
 			}
 		} ).then( response => {
 			var body = response.body;
@@ -643,7 +669,11 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
 			return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 		} ).get(verifynotice.logchannel) : null );
-		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
+			context: {
+				guildId: channel.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users?.[0] ) {

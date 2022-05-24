@@ -179,7 +179,11 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
 		embed.addField( lang.get('rcscript.title'), lang.get('rcscript.ad', ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)') );
 	}
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {

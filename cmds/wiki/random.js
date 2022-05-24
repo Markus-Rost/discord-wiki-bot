@@ -18,7 +18,11 @@ import extract_desc from '../../util/extract_desc.js';
  */
 export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace = ['0', '*'], querystring = new URLSearchParams(), fragment = '') {
 	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Random&ammessages=randompage|randompage-nopages&amargs=%1F' + encodeURIComponent( namespace[1] ) + '%1F' + namespace[0].split('|').length + '&siprop=general&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&generator=random&grnfilterredir=nonredirects&grnlimit=1&grnnamespace=' + encodeURIComponent( namespace[0] ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Random&ammessages=randompage|randompage-nopages&amargs=%1F' + encodeURIComponent( namespace[1] ) + '%1F' + namespace[0].split('|').length + '&siprop=general&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&generator=random&grnfilterredir=nonredirects&grnlimit=1&grnnamespace=' + encodeURIComponent( namespace[0] ) + '&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.general ) {

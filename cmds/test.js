@@ -42,6 +42,9 @@ function cmd_test(lang, msg, args, line, wiki) {
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: {
 					request: 10_000
+				},
+				context: {
+					guildId: msg.guildId
 				}
 			} ).then( response => {
 				var then = Date.now();
@@ -90,8 +93,14 @@ function cmd_test(lang, msg, args, line, wiki) {
 				}
 				embed.addField( wiki.toLink(), ping );
 			} ).finally( () => {
-				if ( msg.isOwner() ) return msg.client.shard.fetchClientValues('ws.status').then( values => {
-					return '```less\n' + values.map( (status, id) => '[' + id + ']: ' + ( wsStatus[status] || status ) ).join('\n') + '\n```';
+				if ( msg.isOwner() ) return msg.client.shard.broadcastEval(discordClient => {
+					return {
+						status: discordClient.ws.status,
+						guilds: discordClient.guilds.cache.size
+					};
+				}).then( values => {
+					embed.addField( 'Guilds', values.reduce( (acc, val) => acc + val.guilds, 0 ).toLocaleString(lang.get('dateformat')) );
+					return '```less\n' + values.map( (value, id) => '[' + id + ']: ' + ( wsStatus[value.status] || value.status ) ).join('\n') + '\n```';
 				}, error => {
 					return '```js\n' + error + '\n```';
 				} ).then( shards => {

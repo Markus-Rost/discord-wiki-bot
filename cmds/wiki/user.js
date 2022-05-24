@@ -25,7 +25,11 @@ const {timeoptions, usergroups} = require('../../util/default.json');
  * @param {Boolean} noEmbed - If the response should be without an embed.
  */
 export default function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
-	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
+	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		logging(wiki, msg.guildId, 'user', 'ip');
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
@@ -173,7 +177,11 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				else if ( range >= 16 ) rangeprefix = username.replace( /^((?:\d{1,3}\.){2}).+$/, '$1' );
 			}
 		}
-		got.get( wiki.updateWiki(body.query.general) + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ) + '&format=json' ).then( ucresponse => {
+		got.get( wiki.updateWiki(body.query.general) + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=' + encodeURIComponent( username ) ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( ucresponse => {
 			var ucbody = ucresponse.body;
 			if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 			if ( ucbody && ucbody.warnings ) log_warning(ucbody.warnings);
@@ -238,7 +246,11 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 	} );
 
 	logging(wiki, msg.guildId, 'user');
-	got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=User:' + encodeURIComponent( username ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users || !body.query.users[0] ) {
@@ -323,7 +335,11 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 		var groupnames = [];
 		groupnames.push(...groups);
 		groupnames.push(...globalgroups);
-		got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amincludelocal=true&amargs=' + encodeURIComponent( username ) + '&amlang=' + querypage.uselang + '&ammessages=' + groupnames.map( group => `group-${group}|group-${group}-member` ).join('|') + '&format=json' ).then( gresponse => {
+		got.get( wiki + 'api.php?action=query&meta=allmessages&amenableparser=true&amincludelocal=true&amargs=' + encodeURIComponent( username ) + '&amlang=' + querypage.uselang + '&ammessages=' + groupnames.map( group => `group-${group}|group-${group}-member` ).join('|') + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( gresponse => {
 			var gbody = gresponse.body;
 			if ( gbody && gbody.warnings ) log_warning(gbody.warnings);
 			if ( gresponse.statusCode !== 200 || !gbody || gbody.batchcomplete === undefined || !gbody?.query?.allmessages?.length ) {
@@ -470,7 +486,11 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					text += '\n' + globalgroup[0] + ' ' + globalgroup.slice(1).join(', ');
 				}
 			}
-			if ( wiki.isFandom() ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now() ).then( presponse => {
+			if ( wiki.isFandom() ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now(), {
+				context: {
+					guildId: msg.guildId
+				}
+			} ).then( presponse => {
 				var pbody = presponse.body;
 				if ( presponse.statusCode !== 200 || !pbody || !pbody.userData || !pbody.userData.id ) {
 					console.log( '- ' + presponse.statusCode + ': Error while getting the user profile.' );
@@ -507,7 +527,11 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					discord = escapeFormatting(pbody.userData.discordHandle).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 				}
-				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now() ).then( cpresponse => {
+				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
+					context: {
+						guildId: msg.guildId
+					}
+				} ).then( cpresponse => {
 					var cpbody = cpresponse.body;
 					if ( cpresponse.statusCode !== 200 || !cpbody || cpbody.error || cpbody.errormsg || !cpbody.profile ) {
 						console.log( '- ' + cpresponse.statusCode + ': Error while getting the user profile: ' + ( cpbody && ( cpbody.error && cpbody.error.info || cpbody.errormsg ) ) );
@@ -530,7 +554,11 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						else text += '\n' + discordname.join(' ');
 					}
 					if ( cpbody.profile['favwiki'] ) {
-						return got.get( wiki + 'api.php?action=profile&do=getWiki&hash=' + encodeURIComponent( cpbody.profile['favwiki'] ) + '&format=json' ).then( favresponse => {
+						return got.get( wiki + 'api.php?action=profile&do=getWiki&hash=' + encodeURIComponent( cpbody.profile['favwiki'] ) + '&format=json', {
+							context: {
+								guildId: msg.guildId
+							}
+						} ).then( favresponse => {
 							var favbody = favresponse.body;
 							if ( favresponse.statusCode !== 200 || !favbody?.result === 'success' || !favbody.data ) {
 								console.log( '- ' + favresponse.statusCode + ': Error while getting the favorite wiki: ' + ( favbody && ( favbody.error && favbody.error.info || favbody.errormsg ) ) );

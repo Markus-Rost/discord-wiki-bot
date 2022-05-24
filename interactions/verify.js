@@ -33,6 +33,9 @@ function slash_verify(interaction, lang, wiki) {
 								redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 								client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )],
 								client_secret: process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret']
+							},
+							context: {
+								guildId: interaction.guildId
 							}
 						} ).then( response => {
 							var body = response.body;
@@ -125,6 +128,9 @@ function slash_verify(interaction, lang, wiki) {
 								redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 								client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )],
 								client_secret: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] ) + '_secret']
+							},
+							context: {
+								guildId: interaction.guildId
 							}
 						} ).then( response => {
 							var body = response.body;
@@ -257,6 +263,9 @@ function button_verify(interaction, lang, wiki) {
 								redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 								client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )],
 								client_secret: process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret']
+							},
+							context: {
+								guildId: interaction.guildId
 							}
 						} ).then( response => {
 							var body = response.body;
@@ -330,6 +339,9 @@ function button_verify(interaction, lang, wiki) {
 								redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 								client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )],
 								client_secret: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] ) + '_secret']
+							},
+							context: {
+								guildId: interaction.guildId
 							}
 						} ).then( response => {
 							var body = response.body;

@@ -56,7 +56,11 @@ export default function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler,
 			gamepedia_diff_send(lang, msg, [diff, revision], wiki, reaction, spoiler, noEmbed);
 		}
 		else {
-			got.get( wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json' ).then( response => {
+			got.get( wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json', {
+				context: {
+					guildId: msg.guildId
+				}
+			} ).then( response => {
 				var body = response.body;
 				if ( body && body.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || !body || !body.compare ) {
@@ -151,7 +155,11 @@ export default function gamepedia_diff(lang, msg, args, wiki, reaction, spoiler,
  * @param {String[]} [compare] - The edit difference.
  */
 function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, compare) {
-	got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json' ).then( response => {
+	got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
@@ -210,7 +218,11 @@ function gamepedia_diff_send(lang, msg, args, wiki, reaction, spoiler, noEmbed, 
 				
 				var more = '\n__' + lang.get('diff.info.more') + '__';
 				var whitespace = '__' + lang.get('diff.info.whitespace') + '__';
-				if ( !compare && oldid ) got.get( wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json' ).then( cpresponse => {
+				if ( !compare && oldid ) got.get( wiki + 'api.php?action=compare&prop=diff&fromrev=' + oldid + '&torev=' + diff + '&format=json', {
+					context: {
+						guildId: msg.guildId
+					}
+				} ).then( cpresponse => {
 					var cpbody = cpresponse.body;
 					if ( cpbody && cpbody.warnings ) log_warning(cpbody.warnings);
 					if ( cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || cpbody.compare['*'] === undefined ) {

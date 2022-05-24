@@ -41,6 +41,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )],
 							client_secret: process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret']
+						},
+						context: {
+							guildId: msg.guildId
 						}
 					} ).then( response => {
 						var body = response.body;
@@ -132,6 +135,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 								client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )],
 								client_secret: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] ) + '_secret']
+							},
+							context: {
+								guildId: msg.guildId
 							}
 						} ).then( response => {
 							var body = response.body;

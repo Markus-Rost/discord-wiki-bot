@@ -243,7 +243,8 @@ const server = createServer( (req, res) => {
 
 	if ( reqURL.pathname === '/api' ) {
 		let wiki = reqURL.searchParams.get('wiki');
-		if ( wiki ) return pages.api(res, wiki);
+		let [, guild] = req.headers.referer.match( /\/guild\/(\d+)\// );
+		if ( wiki ) return pages.api(res, wiki, guild || null);
 	}
 
 	let action = '';

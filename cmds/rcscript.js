@@ -69,17 +69,24 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !wikinew ) return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
-				responseType: 'text'
+				responseType: 'text',
+				context: {
+					guildId: msg.guildId
+				}
 			} ).then( response => {
 				try {
 					response.body = JSON.parse(response.body);
 				}
 				catch (error) {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-						let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+						let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+								context: {
+									guildId: msg.guildId
+								}
+							} );
 						}
 					}
 				}
@@ -113,6 +120,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
+						},
+						context: {
+							guildId: msg.guildId
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
@@ -239,17 +249,24 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikinew = Wiki.fromInput(args[1]);
 				if ( !wikinew ) return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
-					responseType: 'text'
+					responseType: 'text',
+					context: {
+						guildId: msg.guildId
+					}
 				} ).then( response => {
 					try {
 						response.body = JSON.parse(response.body);
 					}
 					catch (error) {
 						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-							let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-								return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+								return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+									context: {
+										guildId: msg.guildId
+									}
+								} );
 							}
 						}
 					}
@@ -284,6 +301,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
+							},
+							context: {
+								guildId: msg.guildId
 							}
 						} ).then( dsresponse => {
 							var dsbody = dsresponse.body;
@@ -425,6 +445,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return msg.reactEmoji('⏳', true).then( reaction => got.get( selected_row.wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 					headers: {
 						Accept: 'application/hal+json'
+					},
+					context: {
+						guildId: msg.guildId
 					}
 				} ).then( dsresponse => {
 					var dsbody = dsresponse.body;
