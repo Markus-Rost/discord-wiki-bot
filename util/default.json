@@ -793,7 +793,7 @@
 		},
 		{
 			"name": "simpsonspedia.net",
-			"regex": "((?:www\\.)?theinfosphere\\.org)",
+			"regex": "(simpsonspedia\\.net)",
 			"articlePath": "/index.php?title=",
 			"scriptPath": "/"
 		},
@@ -811,13 +811,13 @@
 		},
 		{
 			"name": "necretro.org",
-			"regex": "((?:www\\.)?necretro\\.org)",
+			"regex": "(necretro\\.org)",
 			"articlePath": "/",
 			"scriptPath": "/"
 		},
 		{
-			"name": "retrocdn.org",
-			"regex": "((?:www\\.)?retrocdn\\.org)",
+			"name": "retrocdn.net",
+			"regex": "((?:www\\.)?retrocdn\\.net)",
 			"articlePath": "/",
 			"scriptPath": "/"
 		},
@@ -830,12 +830,6 @@
 		{
 			"name": "semantic-mediawiki.org",
 			"regex": "((?:www\\.)?semantic-mediawiki\\.org)",
-			"articlePath": "/wiki/",
-			"scriptPath": "/w/"
-		},
-		{
-			"name": "wikizilla.org",
-			"regex": "((?:www\\.)?wikizilla\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
@@ -865,25 +859,31 @@
 		},
 		{
 			"name": "touhouwiki.net",
-			"regex": "((?:([a-z\\d-]{1,50})\\.)?touhouwiki\\.net)",
+			"regex": "(([a-z\\d-]{1,50})\\.touhouwiki\\.net)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/"
 		},
 		{
 			"name": "tockdom.com",
-			"regex": "((wiki|www)\\.tockdom\\.net)",
+			"regex": "((?:(mk8|wiki|www)\\.)?tockdom\\.com)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
 		{
 			"name": "ufopaedia.org",
-			"regex": "((?:www\\.)?ufopaedia\\.neorgt)",
+			"regex": "((?:www\\.)?ufopaedia\\.org)",
 			"articlePath": "/index.php/",
 			"scriptPath": "/"
 		},
 		{
 			"name": "wiibrew.org",
 			"regex": "((?:www\\.)?wiibrew\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wiiubrew.org",
+			"regex": "((?:www\\.)?wiiubrew\\.org)",
 			"articlePath": "/wiki/",
 			"scriptPath": "/w/"
 		},
