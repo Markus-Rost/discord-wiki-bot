@@ -460,12 +460,18 @@ function limitLength(text = '', limit = 1000, maxExtra = 20) {
  */
 function splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
 	if ( text.length <= maxLength ) return [text];
-	return text.split(char).map( (part, i, parts) => {
-		part = limitLength(part, maxLength);
-		if ( i > 0 ) part = prepend + part;
-		if ( i < parts.length - 1 ) part += append;
-		return part;
-	} ).filter( part => part );
+	let messages = [];
+	let msg = '';
+	for ( let part of text.split(char) ) {
+		if ( part.length > maxLength ) part = limitLength(part, maxLength);
+		if ( msg && (msg + char + part + append).length > maxLength ) {
+			messages.push(msg + append);
+			msg = prepend + part;
+		}
+		else msg += char + part;
+	}
+	messages.push(msg);
+	return messages.filter( part => part );
 };
 
 /**
