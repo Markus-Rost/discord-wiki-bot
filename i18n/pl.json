@@ -585,6 +585,7 @@
 		"infosearch": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku lub $2 dla listy wszystkich wyników.",
 		"loading": "Ładowanie opisu strony…",
 		"media": "Do strony opisu pliku",
+		"messagedefaultnone": "*brak*",
 		"results": "$1 {{PLURAL:$2|wynik|wyniki|wszystkich wyników}}",
 		"special": "Zawartość tej strony specjalnej:"
 	},
