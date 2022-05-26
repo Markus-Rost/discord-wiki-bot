@@ -786,6 +786,126 @@
 			"regexPaths": true
 		},
 		{
+			"name": "theinfosphere.org",
+			"regex": "((?:www\\.)?theinfosphere\\.org)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "simpsonspedia.net",
+			"regex": "((?:www\\.)?theinfosphere\\.org)",
+			"articlePath": "/index.php?title=",
+			"scriptPath": "/"
+		},
+		{
+			"name": "info.sonicretro.org",
+			"regex": "(info\\.sonicretro\\.org)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "segaretro.org",
+			"regex": "((?:www\\.)?segaretro\\.org)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "necretro.org",
+			"regex": "((?:www\\.)?necretro\\.org)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "retrocdn.org",
+			"regex": "((?:www\\.)?retrocdn\\.org)",
+			"articlePath": "/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "banglapedia.org",
+			"regex": "((en|bn)\\.banglapedia\\.org)",
+			"articlePath": "/index.php/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "semantic-mediawiki.org",
+			"regex": "((?:www\\.)?semantic-mediawiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wikizilla.org",
+			"regex": "((?:www\\.)?wikizilla\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wikizilla.org",
+			"regex": "((?:www\\.)?wikizilla\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "wiki.gentoo.org",
+			"regex": "(wiki\\.gentoo\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "pidgi.net",
+			"regex": "((?:www\\.)?pidgi\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/wiki/"
+		},
+		{
+			"name": "rct.wiki",
+			"regex": "(rct\\.wiki)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "touhouwiki.net",
+			"regex": "((?:([a-z\\d-]{1,50})\\.)?touhouwiki\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "tockdom.com",
+			"regex": "((wiki|www)\\.tockdom\\.net)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "ufopaedia.org",
+			"regex": "((?:www\\.)?ufopaedia\\.neorgt)",
+			"articlePath": "/index.php/",
+			"scriptPath": "/"
+		},
+		{
+			"name": "wiibrew.org",
+			"regex": "((?:www\\.)?wiibrew\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "dsibrew.org",
+			"regex": "((?:www\\.)?dsibrew\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "3dbrew.org",
+			"regex": "((?:www\\.)?3dbrew\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
+			"name": "switchbrew.org",
+			"regex": "((?:www\\.)?switchbrew\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "liquipedia.net // disabled due to rate-limit concerns",
 			"regex": "((?:www\\.)?liquipedia\\.net/([a-z\\d]{1,50}))",
 			"articlePath": "/",
