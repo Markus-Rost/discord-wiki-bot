@@ -340,7 +340,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					if ( row.is('th.mainheader, th.infobox-header, div.title, h2.pi-header') ) {
 						row.find(removeClasses.join(', ')).remove();
 						let label = htmlToDiscord(row, embed.url).trim();
-						if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
+						if ( label.length > 100 ) label = limitLength(label, 100, 100);
 						if ( label ) {
 							if ( !label.includes( '**' ) ) label = '**' + label + '**';
 							if ( embed.fields.length && embed.fields[embed.fields.length - 1].name === '\u200b' ) {
