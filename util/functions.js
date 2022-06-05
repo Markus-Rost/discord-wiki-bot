@@ -176,28 +176,36 @@ function toPlaintext(text = '', fullWikitext = false) {
  */
 function htmlToPlain(html, includeComments = false) {
 	var text = '';
-	var ignoredTag = '';
+	var ignoredTag = ['', 0];
 	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
+			if ( ignoredTag[0] ) {
+				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
+				return;
+			}
 			let classes = ( attribs.class?.split(' ') ?? [] );
 			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
-				ignoredTag = tagname;
+				ignoredTag[0] = tagname;
 				return;
 			}
-			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
-			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag[0] = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag[0] = 'span';
 			if ( tagname === 'br' ) text += ' ';
 		},
 		ontext: (htmltext) => {
-			if ( !ignoredTag ) {
+			if ( !ignoredTag[0] ) {
 				htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
 				if ( /[\n ]$/.test(text) && htmltext.startsWith( ' ' ) ) htmltext = htmltext.replace( /^ +/, '' );
 				text += escapeFormatting(htmltext);
 			}
 		},
 		onclosetag: (tagname) => {
-			if ( tagname === ignoredTag ) ignoredTag = '';
+			if ( tagname === ignoredTag[0] ) {
+				if ( ignoredTag[1] ) ignoredTag[1]--;
+				else ignoredTag[0] = '';
+				return;
+			}
 		},
 		oncomment: (commenttext) => {
 			if ( includeComments && /^(?:IW)?LINK'" \d+(?::\d+)?$/.test(commenttext) ) {
@@ -221,22 +229,25 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var text = '';
 	var code = false;
 	var href = '';
-	var ignoredTag = '';
+	var ignoredTag = ['', 0];
 	var syntaxhighlight = '';
 	var listlevel = -1;
 	var horizontalList = '';
 	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
-			if ( ignoredTag || code ) return;
+			if ( ignoredTag[0] || code ) {
+				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
+				return;
+			}
 			let classes = ( attribs.class?.split(' ') ?? [] );
 			if ( classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
-				ignoredTag = tagname;
+				ignoredTag[0] = tagname;
 				return;
 			}
 			if ( classes.includes( 'hlist' ) ) horizontalList = tagname;
-			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
-			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag[0] = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag[0] = 'span';
 			if ( tagname === 'code' ) {
 				code = true;
 				text += '`';
@@ -340,7 +351,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 		},
 		ontext: (htmltext) => {
-			if ( !ignoredTag ) {
+			if ( !ignoredTag[0] ) {
 				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
 				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
 				else {
@@ -353,8 +364,9 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 		},
 		onclosetag: (tagname) => {
-			if ( tagname === ignoredTag ) {
-				ignoredTag = '';
+			if ( tagname === ignoredTag[0] ) {
+				if ( ignoredTag[1] ) ignoredTag[1]--;
+				else ignoredTag[0] = '';
 				return;
 			}
 			if ( code ) {
