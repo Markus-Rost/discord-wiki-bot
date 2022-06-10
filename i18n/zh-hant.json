@@ -717,6 +717,7 @@
 			"unknown": "未知"
 		},
 		"info": {
+			"aka": "別名：",
 			"discord": "Discord：",
 			"editcount": "編輯次數：",
 			"favwiki": "最喜愛的 wiki：",
