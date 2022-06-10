@@ -40,9 +40,15 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			parse_infobox(group, embed, thumbnail, pagelink);
 		} );
 		embed.fields = embed.fields.filter( (field, i, fields) => {
-			// entferne header gefolgt von header
+			// remove header followed by header
 			if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 			return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
+		} ).filter( (field, i, fields) => {
+			// combine header followed by section
+			if ( field.name !== '\u200b' || fields[i - 1]?.name !== '\u200b' ) return true;
+			fields[i - 1].value += '\n' + field.value;
+			fields[i] = fields[i - 1];
+			return false;
 		} );
 		return embed;
 	}
@@ -72,12 +78,12 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			} );
 			embed.fields = embed.fields.filter( (field, i, fields) => {
 				if ( i < embedLength ) return true;
-				// entferne header gefolgt von header oder section
+				// remove header followed by header or section
 				if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 				return ( fields[i + 1]?.name && fields[i + 1].name !== '\u200b' );
 			} ).filter( (field, i, fields) => {
 				if ( i < embedLength ) return true;
-				// entferne section gefolgt von section
+				// remove section followed by section
 				if ( field.name !== '\u200b' || field.value.startsWith( '__**' ) ) return true;
 				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || fields[i + 1].value.startsWith( '__**' ) ) );
 			} );

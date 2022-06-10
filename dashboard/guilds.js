@@ -29,7 +29,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	}
 	dashboardLang = new Lang(...dashboardLang.fromCookie, settings.user.locale, dashboardLang.lang);
 	res.setHeader('Content-Language', [dashboardLang.lang]);
-	var $ = cheerioLoad(file);
+	var $ = cheerioLoad(file, {baseURI: reqURL});
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`

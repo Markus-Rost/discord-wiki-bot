@@ -40,7 +40,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 				console.log( '- ' + response.statusCode + ': Error while getting the global block.' );
 			}
 			else {
-				let $ = cheerioLoad(body);
+				let $ = cheerioLoad(body, {baseURI: response.url});
 				if ( $('#mw-content-text .errorbox').length ) {
 					if ( embed && msg.showEmbed() ) embed.addField( '\u200b', '**' + lang.get('user.gblock.disabled') + '**' );
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
@@ -104,6 +104,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 			console.log( '- Error while getting the global edit count: ' + error );
 		} ) : undefined )
 	]).finally( () => {
-		msg.edit( {content: spoiler + text + spoiler, embeds: [embed]} ).catch(log_error);
+		if ( embed && msg.showEmbed() ) msg.edit( {content: spoiler + text + spoiler, embeds: [embed]} ).catch(log_error);
+		else msg.edit( {content: spoiler + text + spoiler} ).catch(log_error);
 	} );
 }

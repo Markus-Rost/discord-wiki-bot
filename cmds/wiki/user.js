@@ -515,11 +515,21 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						if ( bio.length > 1000 ) bio = bio.substring(0, 1000) + '\u2026';
 						embed.backupDescription = bio;
 					}
+					if ( pbody.userData.name ) {
+						let aka = escapeFormatting(pbody.userData.name);
+						if ( aka.length > 100 ) aka = aka.substring(0, 100) + '\u2026';
+						embed.addField(lang.get('user.info.aka'), aka, true);
+					}
 				}
 				else {
 					let splittext = text.split('\n');
 					splittext.splice(4, 1, editcount[0] + ' ' + pbody.userData.localEdits.toLocaleString(lang.get('dateformat')));
 					if ( pbody.userData.posts ) splittext.splice(5, 0, lang.get('user.info.postcount') + ' ' + pbody.userData.posts.toLocaleString(lang.get('dateformat')));
+					if ( pbody.userData.name ) {
+						let aka = escapeFormatting(pbody.userData.name);
+						if ( aka.length > 100 ) aka = aka.substring(0, 100) + '\u2026';
+						splittext.push(lang.get('user.info.aka') + ' ' + aka);
+					}
 					text = splittext.join('\n');
 				}
 				var discord = '';

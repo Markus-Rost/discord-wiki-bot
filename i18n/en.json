@@ -717,6 +717,7 @@
 			"unknown": "Unknown"
 		},
 		"info": {
+			"aka": "Also known as:",
 			"discord": "Discord:",
 			"editcount": "Edit count:",
 			"favwiki": "Favorite wiki:",

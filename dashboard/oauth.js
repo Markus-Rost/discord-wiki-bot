@@ -27,7 +27,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		}
 		sessionData.delete(state);
 	}
-	var $ = cheerioLoad(file);
+	var $ = cheerioLoad(file, {baseURI: new URL('/login', process.env.dashboard)});
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`

@@ -135,7 +135,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 				comment.push(lang.get('verify.failed_gblock'));
 			}
 			else {
-				let $ = cheerioLoad(gbresponse.body);
+				let $ = cheerioLoad(gbresponse.body, {baseURI: gbresponse.url});
 				if ( $('#mw-content-text .errorbox').length ) {
 					return Promise.reject({
 						desc: lang.get('verify.user_disabled', '[' + escapeFormatting(username) + '](' + pagelink + ')'),
