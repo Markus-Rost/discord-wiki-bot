@@ -489,7 +489,6 @@
 		"audit_reason": "Webhook delle ultime modifiche per \"$1\"",
 		"audit_reason_delete": "Rimosso webhook delle ultime modifiche",
 		"audit_reason_edit": "Aggiornato webhook delle ultime modifiche",
-		"avatar": "Avatar del webhook:",
 		"blocked": "Questa wiki è stata bloccata dall'essere aggiunta come webhook delle ultime modifiche!",
 		"blocked_reason": "Questa wiki è stata bloccata dall'essere aggiunta come webhook delle ultime modifiche per `$1`!",
 		"channel": "Canale:",
@@ -523,7 +522,6 @@
 		"lang": "Lingua:",
 		"max_entries": "Hai già raggiunto il numero massimo di webhook delle ultime modifiche.",
 		"missing": "Non ci sono ancora webhook delle ultime modifiche su questo server.",
-		"name": "Nome del webhook:",
 		"new_lang": "<nuova lingua>",
 		"new_wiki": "<link alla wiki>",
 		"no_feeds": "La wiki di questo webhook non ha nessuna funzione feed, come discussioni, bacheche o commenti agli articoli, abilitata.",
@@ -541,7 +539,6 @@
 			"blocked_reason": "Questo webhook delle ultime modifiche sarà eliminato perché la wiki è stata bloccata per `$1`!",
 			"created": "Un webhook delle ultime modifiche per $1 è stato aggiunto a questo canale.",
 			"dashboard": {
-				"avatar": "• L'avatar del webhook è stata cambiato.",
 				"channel": "• Il webhook è stato spostato in questo canale.",
 				"disabled_feeds": "• L'attività dei feed, come discussioni, bacheche e commenti agli articoli, è stata rimossa.",
 				"disabled_rc": "• Le modifiche sulla wiki sono state rimosse.",
@@ -552,7 +549,6 @@
 				"enabled_feeds": "• L'attività dei feed, come discussioni, bacheche e commenti agli articoli, è stata aggiunta.",
 				"enabled_rc": "• Le modifiche sulla wiki sono state aggiunte.",
 				"lang": "• La lingua è stata cambiata in $1.",
-				"name": "• Il nome del webhook è stato cambiato in \"$1\".",
 				"updated": "Questo webhook delle ultime modifiche è stato aggiornato:",
 				"wiki": "• La wiki è stata cambiata in $1."
 			},

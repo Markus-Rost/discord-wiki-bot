@@ -489,7 +489,6 @@
 		"audit_reason": "Perubahan terbaru webhook untuk \"$1\"",
 		"audit_reason_delete": "Menghapus webhook perubahan terbaru",
 		"audit_reason_edit": "Webhook perubahan terbaru yang diperbarui",
-		"avatar": "Avatar webhook:",
 		"blocked": "Wiki ini telah diblokir agar tidak ditambahkan sebagai webhook perubahan terbaru!",
 		"blocked_reason": "Wiki ini telah diblokir agar tidak ditambahkan sebagai webhook perubahan terbaru untuk `$1`!",
 		"channel": "Saluran:",
@@ -523,7 +522,6 @@
 		"lang": "Bahasa:",
 		"max_entries": "Kamu telah mencapai jumlah maksimal webhook perubahan terbaru.",
 		"missing": "Belum ada webhook perubahan terbaru untuk server ini.",
-		"name": "Nama webhook:",
 		"new_lang": "<bahasa baru>",
 		"new_wiki": "<tautan ke wiki>",
 		"no_feeds": "Wiki untuk webhook ini tidak mengaktifkan fitur berbasis umpan, seperti diskusi, dinding pesan, atau komentar artikel.",
@@ -541,7 +539,6 @@
 			"blocked_reason": "Webhook perubahan terbaru ini akan dihapus karena wiki telah diblokir untuk `$1`!",
 			"created": "Webhook perubahan terbaru untuk $1 telah ditambahkan ke saluran ini.",
 			"dashboard": {
-				"avatar": "• Avatar webhook telah diubah.",
 				"channel": "• Webhook telah dipindahkan ke saluran ini.",
 				"disabled_feeds": "• Perubahan berbasis feed, seperti diskusi, dinding pesan, dan komentar artikel, telah dinonaktifkan.",
 				"disabled_rc": "• Perubahan wiki telah dinonaktifkan.",
@@ -552,7 +549,6 @@
 				"enabled_feeds": "• Perubahan berbasis feed, seperti diskusi, dinding pesan, dan komentar artikel, telah diaktifkan.",
 				"enabled_rc": "• Perubahan wiki telah diaktifkan.",
 				"lang": "• Bahasa telah diubah menjadi $1.",
-				"name": "• Nama webhook telah diubah menjadi \"$1\".",
 				"updated": "Webhook perubahan terbaru ini telah diperbarui:",
 				"wiki": "• Wiki telah diubah menjadi $1."
 			},
