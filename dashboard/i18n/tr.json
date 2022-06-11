@@ -29,9 +29,6 @@
 		"welcome": "<h2>Wiki-Bot Kontrol Paneli'ne hoş geldin.</h2>\n<p>Wiki-Bot, Discord sunucularını ve MediaWiki vikilerini bir araya getirmek için yapılmış bir Discord botudur. Viki sayfalarına bağlantı vermek, viki kullanıcılarını doğrulamak, vikideki son değişiklikleri bildirmek ve benzeri özellikleri ile kullanıcılara yardım eder. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Daha fazla bilgi]</a></p>\n<p>Burada Sunucuyu Yönet yetkisine sahip olduğun sunucular için bot ayarı yapabilirsin. Başlamak için Discord hesabını bu buton ile doğrulaman gerekiyor:</p>"
 	},
 	"indexjs": {
-		"avatar": {
-			"invalid_url": "Bu bağlantı geçerli bir resim dosyasına varmıyor."
-		},
 		"invalid": {
 			"note_http": "Belirtilen site geçerli bir TLS/SSL sertifikasına sahip değil! Güvenlik amacıyla sadece HTTPS kullanan vikiler desteklenmektedir.",
 			"note_private": "Belirtilen viki gizli!",
@@ -173,7 +170,6 @@
 		"desc": "$1 için son değişiklikler webhook'ları:",
 		"explanation": "<h2>Son Değişiklikler Webhook'u</h2>\n<p>Wiki-Bot <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> bazlı olarak bir son değişiklikler webhook'u sağlayabilir. Son değişiklikler; satıriçi bağlantılar ile kompakt metin mesajları veya düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar olarak görüntülenebilir.</p>\n<p>Bir son değişiklikler webhook'u ekleme gereksinimleri:</p>\n<ul>\n<li>Viki <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> veya daha güncel bir versiyona sahip olmalı.</li>\n<li>Sistem mesajı <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>, Discord sunucu ID'si <code class=\"user-select\" id=\"server-id\"></code> ile eşleşmeli.</li>\n</ul>",
 		"form": {
-			"avatar_preview": "Ön izleme",
 			"channel": "Kanal:",
 			"confirm": "Bu son değişiklikler webhook'unu silmek istediğine emin misin?",
 			"display": "Görüntüleme modu:",

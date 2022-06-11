@@ -29,9 +29,6 @@
 		"welcome": "<h2>Willkommen auf dem Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot ist ein Discord-Bot der dazu dient Discord-Server und MediaWiki-Wikis zu verbinden. Er hilft durch das Verlinken von Wiki-Artikeln, Verifizieren von Wiki-Benutzern, informiert über die neusten Änderungen auf dem Wiki und mehr. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mehr Information]</a></p>\n<p>Hier kannst du die Bot-Einstellungen für Server ändern auf denen du die Server verwalten Berechtigung besitzt. Dafür musst du dich mit deinem Discord-Account anmelden, was du über diesen Knopf tuen kannst:</p>"
 	},
 	"indexjs": {
-		"avatar": {
-			"invalid_url": "Die URL konnte nicht zu einer gültigen Bilddatei aufgelöst werden."
-		},
 		"invalid": {
 			"note_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.",
 			"note_private": "Das angegebene Wiki ist privat!",
@@ -173,7 +170,6 @@
 		"desc": "Dies sind die Letzte Änderungen-WebHooks für $1:",
 		"explanation": "<h2>Letzte Änderungen-WebHook</h2>\n<p>Wiki-Bot ist in der Lage einen Letzte Änderungen-WebHook basierend auf <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> auszuführen. Die letzten Änderungen können als kompakte Textnachrichten mit Inline-Links oder als Einbettungen mit Bearbeitungsmarkierungen und Kategorieänderungen angezeigt werden.</p>\n<p>Voraussetzungen um einen Letzte Änderungen-WebHook hinzuzufügen:</p>\n<ul>\n<li>Das Wiki benötigt mindestens <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>.</li>\n<li>Die Systemnachricht <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> muss mit der Discord-Server-ID <code class=\"user-select\" id=\"server-id\"></code> übereinstimmen.</li>\n</ul>",
 		"form": {
-			"avatar_preview": "Vorschau",
 			"channel": "Kanal:",
 			"confirm": "Möchtest du wirklich den Letzte Änderungen-WebHook löschen?",
 			"display": "Anzeigemodus:",

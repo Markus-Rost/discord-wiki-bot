@@ -29,9 +29,6 @@
 		"welcome": "<h2>Bem-vindo ao painel de controle do Wiki-Bot.</h2>\n<p>Wiki-Bot é um robô no Discord feito para reunir os servidores no Discord e as wikis do MediaWiki. Isso ajuda a vincular páginas da wiki, verificar usuários da wiki, informar sobre as últimas mudanças no a wiki e muito mais. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mais Informações]</a></p>\n<p>Aqui você pode alterar diferentes configurações de bot para servidores nos quais você tem permissão para gerenciar servidor. Para começar, você terá que autenticar sua conta do Discord, o que pode ser feito com este botão:</p>"
 	},
 	"indexjs": {
-		"avatar": {
-			"invalid_url": "O URL não pôde ser resolvido para um arquivo de imagem válido."
-		},
 		"invalid": {
 			"note_http": "O site fornecido não possui um certificado TLS/SSL válido! Por razões de segurança, apenas wikis que usam HTTPS são suportados.",
 			"note_private": "A wiki fornecida é privada!",
@@ -173,7 +170,6 @@
 		"desc": "Estes são os webhooks de mudanças recentes para $1:",
 		"explanation": "<h2>Webhook de mudanças recentes</h2>\n<p>O Wiki-Bot é capaz de executar um webhook de mudanças recentes baseado no <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links embutidos ou mensagens incorporadas com etiquetas de edição e mudanças de categoria.</p>\n<p>Requisitos para adicionar um webhook de mudanças recentes:</p>\n<ul>\n<li>A wiki precisa estar no <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> ou superior.</li>\n<li>A mensagem de sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> precisa ser definida com o ID do servidor do Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
 		"form": {
-			"avatar_preview": "Pré-visualização",
 			"channel": "Canal:",
 			"confirm": "Tem certeza de que deseja excluir o webhook de mudanças recentes?",
 			"display": "Modo de exibição:",

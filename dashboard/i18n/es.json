@@ -29,9 +29,6 @@
 		"welcome": "<h2> Bienvenido al Panel de Control de Wiki-Bot. </h2> \n<p> Wiki-Bot es un bot de Discord creado para unir servidores de Discord y wikis de MediaWiki. Ayuda a vincular páginas wiki, verificar usuarios wiki, informar sobre los últimos cambios en el wiki y más. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\"> [Más información] </a> </p>\n<p> Aquí puedes cambiar diferentes configuraciones de bot para los servidores en los que tienes el permiso de administrar el servidor. Para comenzar, debes autenticar tu cuenta de Discord, lo puedes hacer con este botón: </p>"
 	},
 	"indexjs": {
-		"avatar": {
-			"invalid_url": "La URL no se pudo resolver en un archivo de imagen válido."
-		},
 		"invalid": {
 			"note_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.",
 			"note_private": "¡El wiki proporcionado es privado!",
@@ -173,7 +170,6 @@
 		"desc": "Estos son los webhooks de cambios recientes para $1:",
 		"explanation": "<h2>Webhook de Cambios Recientes</h2>\n<p>Wiki-Bot puede ejecutar un webhook de cambios recientes basado en <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Los cambios recientes se pueden mostrar en mensajes de texto compactos con inline links o mensajes adjuntos con etiquetas de edición y cambios de categoría.</p>\n<p>Requisitos para agregar un webhook de cambios recientes:</p>\n<ul>\n<li>El wiki necesita ejecutarse en <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> o superior.</li>\n<li>El mensaje del sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> debe configurarse con el ID del servidor Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
 		"form": {
-			"avatar_preview": "Vista previa",
 			"channel": "Canal:",
 			"confirm": "¿Realmente deseas eliminar el webhook de cambios recientes?",
 			"display": "Modo de visualización:",

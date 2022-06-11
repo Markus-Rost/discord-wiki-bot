@@ -29,9 +29,6 @@
 		"welcome": "<h2>Wiki-Bot 대시보드에 오신 것을 환영합니다.</h2>\n<p>Wiki-Bot은 디스코드 서버와 미디어위키 위키를 통합하기 위한 디스코드 봇입니다. 위키링크를 연결하고, 위키 사용자 계정을 인증하고, 위키의 최근 바뀜을 전달하는 것 외에 여러 작업을 수행할 수 있습니다. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[더 많은 정보]</a></p>\n<p>이 사이트에서 서버 관리하기 권한을 가진 서버의 봇 설정을 관리할 수 있습니다. 시작하려면 아래 버튼을 이용하여 디스코드 계정으로 로그인하세요.</p>"
 	},
 	"indexjs": {
-		"avatar": {
-			"invalid_url": "URL에서 유효한 이미지 파일을 불러올 수 없었습니다."
-		},
 		"invalid": {
 			"note_http": "제공된 웹사이트는 유효한 TLS/SSL 인증서를 제공하고 있지 않습니다! 보안을 위해 HTTPS를 이용하는 위키만 추가할 수 있습니다.",
 			"note_private": "제공된 위키는 비공개입니다!",
@@ -137,7 +134,6 @@
 		"desc": "$1 서버의 최근 바뀜 웹훅입니다:",
 		"explanation": "<h2>최근 바뀜 웹훅</h2>\n<p>Wiki-Bot은 <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> 기반 최근 바뀜 웹훅을 지원합니다. 최근 바뀜 내용은 인라인 링크를 포함한 압축 텍스트 모드로 발송되거나, 편집 태그와 분류 변경을 포함하는 임베드 메시지로 발송될 수 있습니다.</p>\n<p>최근 바뀜 웹훅을 추가하기 위한 조건:</p>\n<ul>\n<li>위키가 <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">미디어위키 1.30</a> 또는 그 이상 버전을 지원해야 합니다.</li>\n<li><code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> 시스템 메시지가 디스코드 서버 ID <code class=\"user-select\" id=\"server-id\"></code>로 설정되어야 합니다.</li>\n</ul>",
 		"form": {
-			"avatar_preview": "미리 보기",
 			"channel": "채널:",
 			"confirm": "정말로 최근 바뀜 웹훅을 삭제할 건가요?",
 			"display": "표시 모드:",
