@@ -30,7 +30,6 @@
 	},
 	"indexjs": {
 		"avatar": {
-			"content_type": "Sağlanan bağlantı $1 içerik türüne sahip ancak izin verilen tek içerik türleri şunlar:",
 			"invalid_url": "Bu bağlantı geçerli bir resim dosyasına varmıyor."
 		},
 		"invalid": {
@@ -174,7 +173,6 @@
 		"desc": "$1 için son değişiklikler webhook'ları:",
 		"explanation": "<h2>Son Değişiklikler Webhook'u</h2>\n<p>Wiki-Bot <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a> bazlı olarak bir son değişiklikler webhook'u sağlayabilir. Son değişiklikler; satıriçi bağlantılar ile kompakt metin mesajları veya düzenleme etiketleri ve kategori değişiklikleri ile gömülü mesajlar olarak görüntülenebilir.</p>\n<p>Bir son değişiklikler webhook'u ekleme gereksinimleri:</p>\n<ul>\n<li>Viki <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> veya daha güncel bir versiyona sahip olmalı.</li>\n<li>Sistem mesajı <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>, Discord sunucu ID'si <code class=\"user-select\" id=\"server-id\"></code> ile eşleşmeli.</li>\n</ul>",
 		"form": {
-			"avatar": "Webhook simgesi:",
 			"avatar_preview": "Ön izleme",
 			"channel": "Kanal:",
 			"confirm": "Bu son değişiklikler webhook'unu silmek istediğine emin misin?",
@@ -187,7 +185,6 @@
 			"feeds": "Yayın bazlı değişiklikler:",
 			"feeds_only": "Sadece yayın bazlı değişiklikler:",
 			"lang": "Dil:",
-			"name": "Webhook ismi:",
 			"new": "Yeni Son Değişiklikler Webhook'u",
 			"select_channel": "-- Bir Kanal Seç --",
 			"wiki": "Viki:",

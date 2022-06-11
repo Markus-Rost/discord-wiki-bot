@@ -30,7 +30,6 @@
 	},
 	"indexjs": {
 		"avatar": {
-			"content_type": "O link fornecido tem o tipo de conteúdo $1, mas apenas os seguintes tipos de conteúdo são permitidos:",
 			"invalid_url": "O URL não pôde ser resolvido para um arquivo de imagem válido."
 		},
 		"invalid": {
@@ -174,7 +173,6 @@
 		"desc": "Estes são os webhooks de mudanças recentes para $1:",
 		"explanation": "<h2>Webhook de mudanças recentes</h2>\n<p>O Wiki-Bot é capaz de executar um webhook de mudanças recentes baseado no <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links embutidos ou mensagens incorporadas com etiquetas de edição e mudanças de categoria.</p>\n<p>Requisitos para adicionar um webhook de mudanças recentes:</p>\n<ul>\n<li>A wiki precisa estar no <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> ou superior.</li>\n<li>A mensagem de sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> precisa ser definida com o ID do servidor do Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
 		"form": {
-			"avatar": "Avatar do webhook:",
 			"avatar_preview": "Pré-visualização",
 			"channel": "Canal:",
 			"confirm": "Tem certeza de que deseja excluir o webhook de mudanças recentes?",
@@ -187,7 +185,6 @@
 			"feeds": "Mudanças de feeds:",
 			"feeds_only": "Apenas mudanças de feeds:",
 			"lang": "Idioma:",
-			"name": "Nome do webhook:",
 			"new": "Webhook de novas mudanças recentes",
 			"select_channel": "-- Selecionar canal --",
 			"wiki": "Wiki:",
