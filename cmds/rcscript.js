@@ -283,7 +283,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 					}
 					wikinew.updateWiki(body.query.general);
-					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
+					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( {content: lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', components}, true );

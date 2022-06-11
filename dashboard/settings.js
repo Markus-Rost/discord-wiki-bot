@@ -387,7 +387,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				if ( !wiki.isFandom() ) {
 					let lang = new Lang(( type === 'default' && settings.lang || row?.guildlang ));
 					let notice = [];
-					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
+					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- Dashboard: This wiki is using ' + body.query.general.generator + '.' );
 						notice.push({
 							name: 'MediaWiki',

@@ -906,6 +906,12 @@
 			"scriptPath": "/w/"
 		},
 		{
+			"name": "explainxkcd.com",
+			"regex": "((?:www\\.)?explainxkcd\\.com)",
+			"articlePath": "/wiki/index.php/",
+			"scriptPath": "/wiki/"
+		},
+		{
 			"name": "liquipedia.net // disabled due to rate-limit concerns",
 			"regex": "((?:www\\.)?liquipedia\\.net/([a-z\\d]{1,50}))",
 			"articlePath": "/",
