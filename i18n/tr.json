@@ -489,7 +489,6 @@
 		"audit_reason": "\"$1\" için son değişiklikler webhook'u",
 		"audit_reason_delete": "Son değişiklikler webhook'u kaldırıldı",
 		"audit_reason_edit": "Son değişiklikler webhook'u güncellendi",
-		"avatar": "Webhook simgesi:",
 		"blocked": "Bu vikinin son değişiklikler webhook'u olarak eklemesi yasaklanmış!",
 		"blocked_reason": "Bu vikinin son değişiklikler webhook'u olarak eklemesi `$1` yüzünden yasaklanmış!",
 		"channel": "Kanal:",
@@ -523,7 +522,6 @@
 		"lang": "Dil:",
 		"max_entries": "Azami son değişiklikler webhook'u sayısına ulaştın.",
 		"missing": "Bunu sunucuda halihazırda bir son değişiklikler webhook'u yok.",
-		"name": "Webhook adı:",
 		"new_lang": "<yeni dil>",
 		"new_wiki": "<vikiye bağlantı>",
 		"no_feeds": "Bu webhook'un vikide tartışmalar, mesaj duvarları ya da makale yorumları gibi yayın bazlı özellikler etkin değil.",
@@ -541,7 +539,6 @@
 			"blocked_reason": "Bu son değişiklikler webhook'u silinecek çünkü viki `$1` nedeniyle engellendi!",
 			"created": "Bu kanala $1 için bir son değişiklikler webhook'u eklendi.",
 			"dashboard": {
-				"avatar": "• Webhook simgesi değiştirildi.",
 				"channel": "•Webhook bu kanala taşındı.",
 				"disabled_feeds": "•Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı değişiklikler devre dışı bırakıldı.",
 				"disabled_rc": "•Viki düzenlemeleri devre dışı bırakıldı.",
@@ -552,7 +549,6 @@
 				"enabled_feeds": "•Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı düzenlemeler etkinleştirildi.",
 				"enabled_rc": "•Viki düzenlemeleri etkinleştirildi.",
 				"lang": "•Dil $1 ile değiştirildi.",
-				"name": "• Webhook adı \"$1\" yapıldı.",
 				"updated": "Bu son değişiklikler webhook'u güncellendi:",
 				"wiki": "•Viki $1 ile değiştirildi."
 			},

@@ -489,7 +489,6 @@
 		"audit_reason": "Mudanças recentes no webhook para \"$1\"",
 		"audit_reason_delete": "Removido o webhook das mudanças recentes",
 		"audit_reason_edit": "Webhook de mudanças recentes atualizado",
-		"avatar": "Avatar do webhook:",
 		"blocked": "Essa wiki foi impedido de ser adicionado como um webhook de mudanças recentes!",
 		"blocked_reason": "Essa wiki foi bloqueada de ser adicionado como um webhook de mudanças recentes para `$1`!",
 		"channel": "Canal:",
@@ -523,7 +522,6 @@
 		"lang": "Idioma:",
 		"max_entries": "Você já atingiu a quantidade máxima de webhooks de mudanças recentes.",
 		"missing": "Ainda não há webhooks de mudanças recentes para este servidor.",
-		"name": "Nome do webhook:",
 		"new_lang": "<novo idioma>",
 		"new_wiki": "<link para a wiki>",
 		"no_feeds": "A wiki deste webhook não possui recursos baseados em feeds, como discussões, murais de mensagens ou comentários de artigos, ativados.",
@@ -541,7 +539,6 @@
 			"blocked_reason": "Este webhook de mudanças recentes será excluído porque a wiki foi bloqueado por `$1`!",
 			"created": "Um webhook de mudanças recentes para $1 foi adicionado a este canal.",
 			"dashboard": {
-				"avatar": "• O avatar do webhook foi alterado.",
 				"channel": "• O webhook foi movido para esse canal.",
 				"disabled_feeds": "• As mudanças baseadas em feeds, como discussões, mural de mensagens e comentários de artigos, foram desabilitadas.",
 				"disabled_rc": "As mudanças da wiki foram desativadas.",
@@ -552,7 +549,6 @@
 				"enabled_feeds": "• As mudanças baseadas em feeds, como discussões, mural de mensagens e comentários de artigos, foram habilitadas.",
 				"enabled_rc": "• As mudanças da wiki foram habilitadas.",
 				"lang": "• O idioma foi alterado para $1.",
-				"name": "• O nome do webhook foi alterado para \"$1\".",
 				"updated": "Este webhook de mudanças recentes foi atualizado:",
 				"wiki": "• A wiki foi alterada para $1."
 			},

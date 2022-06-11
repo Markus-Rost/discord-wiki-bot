@@ -28,9 +28,6 @@
 		"verification": "Verifieringar"
 	},
 	"indexjs": {
-		"avatar": {
-			"invalid_url": "Det gick inte att hämta en giltig bildfil från webbadressen."
-		},
 		"invalid": {
 			"title": "Ogiltig wiki!"
 		},

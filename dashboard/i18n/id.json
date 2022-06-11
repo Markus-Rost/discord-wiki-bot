@@ -29,10 +29,6 @@
 		"welcome": "<h2>Selamat datang di Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot adalah bot Discord yang dibuat untuk menyatukan server Discord dan wiki MediaWiki. Ini membantu dengan menghubungkan halaman wiki, memverifikasi pengguna wiki, menginformasikan tentang perubahan terbaru di wiki dan banyak lagi. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Informasi selengkapnya]</a></p>\n<p>Di sini Kamu dapat mengubah pengaturan bot yang berbeda untuk server tempat Kamu memiliki izin Kelola Server. Untuk memulai, Kamu harus mengautentikasi akun Discord Kamu yang dapat Kamu lakukan dengan tombol ini:</p>"
 	},
 	"indexjs": {
-		"avatar": {
-			"content_type": "Tautan yang disediakan memiliki tipe konten $1, tetapi hanya tipe konten berikut yang diizinkan:",
-			"invalid_url": "URL tidak dapat diselesaikan menjadi file gambar yang valid."
-		},
 		"invalid": {
 			"note_http": "Situs web yang disediakan tidak memiliki sertifikat TLS/SSL yang valid! Untuk alasan keamanan, hanya wiki yang menggunakan HTTPS yang didukung.",
 			"note_private": "Wiki yang disediakan bersifat pribadi!",
@@ -174,8 +170,6 @@
 		"desc": "Ini adalah webhook perubahan terbaru untuk $1:",
 		"explanation": "<h2>Webhook Perubahan Terbaru</h2>\n<p>Wiki-Bot dapat menjalankan webhook perubahan terbaru berdasarkan <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Perubahan terbaru dapat ditampilkan dalam pesan teks ringkas dengan tautan sebaris atau pesan tersemat dengan tag edit dan perubahan kategori.</p>\n<p>Persyaratan untuk menambahkan webhook perubahan terbaru:</p>\n<ul>\n<li>Wiki harus berjalan di <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> atau lebih tinggi.</li>\n<li>Pesan sistem <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> perlu disetel ke id server Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
 		"form": {
-			"avatar": "Avatar webhook:",
-			"avatar_preview": "Pratinjau",
 			"channel": "Saluran:",
 			"confirm": "Apakah Anda benar-benar ingin menghapus webhook perubahan terbaru?",
 			"display": "Mode tampilan:",
@@ -187,7 +181,6 @@
 			"feeds": "Perubahan berbasis feed:",
 			"feeds_only": "Hanya perubahan berbasis feed:",
 			"lang": "Bahasa:",
-			"name": "Nama webhook:",
 			"new": "Webhook Perubahan Terbaru Baru",
 			"select_channel": "-- Pilih Saluran --",
 			"wiki": "Wiki:",

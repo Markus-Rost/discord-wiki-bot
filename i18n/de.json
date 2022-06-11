@@ -489,7 +489,6 @@
 		"audit_reason": "Letzte Änderungen-WebHook für \"$1\"",
 		"audit_reason_delete": "Letzte Änderungen-WebHook entfernt",
 		"audit_reason_edit": "Letzte Änderungen-WebHook aktualisiert",
-		"avatar": "WebHook-Avatar:",
 		"blocked": "Diese Wiki wurde davon gesperrt als Letzte Änderungen-WebHook hinzugefügt zu werden!",
 		"blocked_reason": "Diese Wiki wurde wegen `$1` davon gesperrt als Letzte Änderungen-WebHook hinzugefügt zu werden!",
 		"channel": "Kanal:",
@@ -523,7 +522,6 @@
 		"lang": "Sprache:",
 		"max_entries": "Du hast bereits die maximale Anzahl an Letzte Änderungen-WebHooks erreicht.",
 		"missing": "Es ist noch kein Letzte Änderungen-WebHook für diesen Server vorhanden.",
-		"name": "WebHook-Name:",
 		"new_lang": "<neue Sprache>",
 		"new_wiki": "<Link zum Wiki>",
 		"no_feeds": "Das Wiki für diesen WebHook hat keine Feeds-basierten Funktionen, wie Diskussionen, Nachrichtenseiten oder Artikelkommentare, aktiviert.",
@@ -541,7 +539,6 @@
 			"blocked_reason": "Dieser Letzte Änderungen-WebHook wird gelöscht, da das Wiki wegen `$1` gesperrt wurde!",
 			"created": "Ein Letzte Änderungen-WebHook für $1 wurde zu diesem Kanal hinzugefügt.",
 			"dashboard": {
-				"avatar": "• Der WebHook-Avatar wurde geändert.",
 				"channel": "• Der WebHook wurde in diesen Kanal verschoben.",
 				"disabled_feeds": "• Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden deaktiviert.",
 				"disabled_rc": "• Die Wiki-Änderungen wurden deaktiviert.",
@@ -552,7 +549,6 @@
 				"enabled_feeds": "• Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden aktiviert.",
 				"enabled_rc": "• Die Wiki-Änderungen wurden aktiviert.",
 				"lang": "• Die Sprache wurde zu $1 geändert.",
-				"name": "• Der WebHook-Name wurde zu „$1“ geändert.",
 				"updated": "Dieser Letzte Änderungen-WebHook wurde bearbeitet:",
 				"wiki": "• Das Wiki wurde zu $1 geändert."
 			},

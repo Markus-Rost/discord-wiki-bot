@@ -29,10 +29,6 @@
 		"welcome": "<h2>歡迎使用Wiki-Bot控制台。</h2>\n<p>Wiki-Bot是一個Discord機器人，旨在將使用MediaWiki的wiki與Discord伺服器整合在一起。它可以幫忙連結到wiki頁面，驗證wiki使用者，傳送近期變更等。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多資訊]</a></p>\n<p>您可以在此為您擁有「管理伺服器」權限的伺服器變更機器人設定。在開始之前，您需要透過這個按鈕驗證您的Discord帳號：</p>"
 	},
 	"indexjs": {
-		"avatar": {
-			"content_type": "所提供的連結的內容類型（Content-Type）為$1，但僅允許以下內容類型：",
-			"invalid_url": "此URL無法解析至有效的圖檔。"
-		},
 		"invalid": {
 			"note_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。",
 			"note_private": "所提供的 wiki 是私人 wiki！",
@@ -174,8 +170,6 @@
 		"desc": "以下為 $1 的近期變更webhook：",
 		"explanation": "<h2>近期變更webhook</h2>\n<p>Wiki-Bot能運行基於<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的近期變更webhook。近期變更可以以多種顯示模式顯示：包含行內連結的精簡文字訊息或包含圖片預覽及編輯差異的嵌入式訊息。</p>\n<p>加入近期變更webhook的基本需求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本運行的wiki。</li>\n<li>系統訊息<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>需要設為Discord伺服器的伺服器id <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
 		"form": {
-			"avatar": "Webhook 頭像：",
-			"avatar_preview": "預覽",
 			"channel": "頻道：",
 			"confirm": "您確定要刪除近期變更webhook嗎？",
 			"display": "顯示模式：",
@@ -187,7 +181,6 @@
 			"feeds": "基於推送頁的變更：",
 			"feeds_only": "僅啟用基於推送頁的變更：",
 			"lang": "語言：",
-			"name": "Webhook 名稱：",
 			"new": "新的近期變更webhook",
 			"select_channel": "-- 選擇頻道 --",
 			"wiki": "wiki：",

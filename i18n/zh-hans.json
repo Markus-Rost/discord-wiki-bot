@@ -489,7 +489,6 @@
 		"audit_reason": "“$1”的最近更改 webhook",
 		"audit_reason_delete": "最近更改 webhook 已删除",
 		"audit_reason_edit": "最近更改 webhook 已更新",
-		"avatar": "Webhook 头像：",
 		"blocked": "此 wiki 已经被禁止添加到最近更改 webhook ！",
 		"blocked_reason": "此 wiki 由于 `$1` 已经被禁止添加到最近更改 webhook！",
 		"channel": "频道：",
@@ -523,7 +522,6 @@
 		"lang": "语言：",
 		"max_entries": "已到达最近更改 webhook 的最大数量。",
 		"missing": "本服务器内暂无最近更改 webhook。",
-		"name": "Webhook 名称：",
 		"new_lang": "<新语言>",
 		"new_wiki": "<至 wiki 的链接>",
 		"no_feeds": "此 webhook 的 wiki 没有如讨论版、留言墙和条目评论等推送式的更改，已启用。",
@@ -541,7 +539,6 @@
 			"blocked_reason": "由于此 wiki 已因 `$1` 被封禁，此最近更改 webhook 将被删除！",
 			"created": "$1 的最近更改 webhook 已被添加到此频道。",
 			"dashboard": {
-				"avatar": "• Webhook 的头像已被更改。",
 				"channel": "• Webhook 已被移动到此频道。",
 				"disabled_feeds": "• 已禁用讨论版、留言墙和条目评论等推送式的更改推送。",
 				"disabled_rc": "• 已禁用wiki式更改。",
@@ -552,7 +549,6 @@
 				"enabled_feeds": "• 已启用讨论版、留言墙和条目评论等推送式的更改推送。",
 				"enabled_rc": "• 已启用wiki式更改。",
 				"lang": "• 语言已被更改为 $1。",
-				"name": "• Webhook 的名称已被更改为“$1”。",
 				"updated": "此最近更改 webhook 已被更新：",
 				"wiki": "• wiki 已被更改为 $1。"
 			},
