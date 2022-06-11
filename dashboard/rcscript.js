@@ -13,17 +13,10 @@ const display_types = [
 	'image',
 	'diff'
 ];
-const avatar_content_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
-	name: '<label for="wb-settings-name">Webhook name:</label>'
-	+ '<input type="text" id="wb-settings-name" name="name" minlength="2" maxlength="32" autocomplete="on">',
-	avatar: '<label for="wb-settings-avatar">Webhook avatar:</label>'
-	+ '<input type="url" id="wb-settings-avatar" name="avatar" list="wb-settings-avatar-list" autocomplete="url">'
-	+ '<datalist id="wb-settings-avatar-list"></datalist>'
-	+ '<button type="button" id="wb-settings-avatar-preview">Preview</button>',
 	wiki: '<label for="wb-settings-wiki">Wiki:</label>'
 	+ '<input type="url" id="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required autocomplete="url">'
 	+ '<datalist id="wb-settings-wiki-list"></datalist>'
@@ -72,8 +65,6 @@ const fieldset = {
  * @param {Object} settings - The current settings
  * @param {Boolean} settings.patreon
  * @param {String} [settings.channel]
- * @param {String} [settings.name]
- * @param {String} [settings.avatar]
  * @param {String} settings.wiki
  * @param {String} settings.lang
  * @param {Number} settings.display
@@ -126,20 +117,6 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 		$(`<option id="wb-settings-channel-${settings.channel}">`).val(settings.channel).attr('selected', '').text(settings.channel)
 	);
 	fields.push(channel);
-	let webhook_name = $('<div>').append(fieldset.name);
-	webhook_name.find('label').text(dashboardLang.get('rcscript.form.name'));
-	webhook_name.find('#wb-settings-name').val(settings.name);
-	fields.push(webhook_name);
-	let avatar = $('<div>').append(fieldset.avatar);
-	avatar.find('label').text(dashboardLang.get('rcscript.form.avatar'));
-	avatar.find('#wb-settings-avatar-preview').text(dashboardLang.get('rcscript.form.avatar_preview'));
-	avatar.find('#wb-settings-avatar').val(( settings.avatar || '' ));
-	if ( settings.avatar ) avatar.find('#wb-settings-avatar').attr('size', settings.avatar.length + 10);
-	avatar.find('#wb-settings-avatar-list').append(
-		$(`<option>`).val(new URL('/src/icon.png', process.env.dashboard).href),
-		( settings.avatar ? $(`<option>`).val(settings.avatar) : null )
-	);
-	fields.push(avatar);
 	let wiki = $('<div>').append(fieldset.wiki);
 	wiki.find('label').text(dashboardLang.get('rcscript.form.wiki'));
 	wiki.find('#wb-settings-wiki-check').text(dashboardLang.get('rcscript.form.wiki_check'));
@@ -227,22 +204,12 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 					|| ( response.body?.message === 'Invalid Webhook Token' && response.body?.code === 50027 ) ) {
 						row.DELETED = true;
 					}
-					else {
-						row.channel = 'UNKNOWN';
-						row.name = 'UNKNOWN';
-						row.avatar = '';
-					}
+					else row.channel = 'UNKNOWN';
 				}
-				else {
-					row.channel = response.body.channel_id;
-					row.name = response.body.name;
-					row.avatar = ( response.body.avatar ? `https://cdn.discordapp.com/avatars/${response.body.id}/${response.body.avatar}` : '' );
-				}
+				else row.channel = response.body.channel_id;
 			}, error => {
 				console.log( '- Dashboard: Error while getting the webhook: ' + error );
 				row.channel = 'UNKNOWN';
-				row.name = 'UNKNOWN';
-				row.avatar = '';
 			} );
 		} )).finally( () => {
 			if ( rows.some( row => row.DELETED ) ) {
@@ -316,8 +283,6 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
  * @param {String|Number} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String} settings.channel
- * @param {String} [settings.name]
- * @param {String} [settings.avatar]
  * @param {String} settings.wiki
  * @param {String} settings.lang
  * @param {Number} settings.display
@@ -344,9 +309,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		if ( type === 'new' && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
 			return ( channel.id === settings.channel && !channel.isCategory );
 		} ) ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
-		settings.name = ( settings.name || '' ).trim();
-		if ( settings.name.length < 2 ) settings.name = '';
-		if ( !settings.avatar || !/^https?:\/\//.test(settings.avatar) ) settings.avatar = '';
 	}
 	if ( settings.delete_settings && type === 'new' ) {
 		return res(`/guild/${guild}/rcscript/new`, 'savefail');
@@ -418,16 +380,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( body.query.allmessages[0]['*'] !== guild ) {
 					return res(`/guild/${guild}/rcscript/new`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 				}
-				return Promise.all([
-					db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ),
-					( settings.avatar ? got.head( settings.avatar ).then( headresponse => {
-						if ( avatar_content_types.includes( headresponse.headers?.['content-type'] ) ) return;
-						settings.avatar = '';
-					}, error => {
-						console.log( '- Dashboard: Error while checking for the HEAD: ' + error );
-						settings.avatar = '';
-					} ) : null )
-				]).then( ([{rows:[block]}]) => {
+				return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {
 					if ( block ) {
 						console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 						return res(`/guild/${guild}/rcscript/new`, 'wikiblocked', body.query.general.sitename, block.reason);
@@ -463,8 +416,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							type: 'createWebhook',
 							guild: guild,
 							channel: settings.channel,
-							name: ( settings.name || body.query.allmessages[1]['*'] || 'Recent changes' ),
-							avatar: settings.avatar,
+							name: ( body.query.allmessages[1]['*'] || 'Recent changes' ),
 							reason: lang.get('rcscript.audit_reason', wiki.href),
 							text: webhook_lang.get('created', body.query.general.sitename) + ( enableFeeds && settings.feeds_only ? '' : `\n<${wiki.toLink(body.query.pages['-1'].title)}>` ) + ( enableFeeds ? `\n<${wiki.href}f>` : '' )
 						} ).then( webhook => {
@@ -479,8 +431,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								res(`/guild/${guild}/rcscript/${configid}`, 'save');
 								var text = lang.get('rcscript.dashboard.added', `<@${userSettings.user.id}>`, configid);
 								text += `\n${lang.get('rcscript.channel')} <#${settings.channel}>`;
-								text += `\n${lang.get('rcscript.name')} \`${( settings.name || body.query.allmessages[1]['*'] || 'Recent changes' )}\``;
-								if ( settings.avatar ) text += `\n${lang.get('rcscript.avatar')} <${settings.avatar}>`;
 								text += `\n${lang.get('rcscript.wiki')} <${wiki.href}>`;
 								text += `\n${lang.get('rcscript.lang')} \`${allLangs[settings.lang]}\``;
 								text += `\n${lang.get('rcscript.display')} \`${display_types[settings.display]}\``;
@@ -534,8 +484,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 			}
 			row.channel = wresponse.body.channel_id;
-			row.name = wresponse.body.name;
-			row.avatar = ( wresponse.body.avatar ? `https://cdn.discordapp.com/avatars/${wresponse.body.id}/${wresponse.body.avatar}` : '' );
 			var newChannel = false;
 			if ( settings.save_settings && row.channel !== settings.channel ) {
 				if ( !userSettings.guilds.isMember.get(guild).channels.some( channel => {
@@ -597,7 +545,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						} );
 						var text = lang.get('rcscript.dashboard.removed', `<@${userSettings.user.id}>`, type);
 						text += `\n${lang.get('rcscript.channel')} <#${row.channel}>`;
-						text += `\n${lang.get('rcscript.name')} \`${row.name}\``;
 						text += `\n${lang.get('rcscript.wiki')} <${row.wiki}>`;
 						text += `\n${lang.get('rcscript.lang')} \`${allLangs[row.lang]}\``;
 						text += `\n${lang.get('rcscript.display')} \`${display_types[row.display]}\``;
@@ -624,8 +571,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				}
 				var hasDiff = false;
 				if ( newChannel ) hasDiff = true;
-				if ( settings.name && row.name !== settings.name ) hasDiff = true;
-				if ( settings.avatar && row.avatar !== settings.avatar ) hasDiff = true;
 				if ( row.wiki !== settings.wiki ) hasDiff = true;
 				if ( row.lang !== settings.lang ) hasDiff = true;
 				if ( row.display !== settings.display ) hasDiff = true;
@@ -673,16 +618,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					if ( row.wiki !== wiki.href && body.query.allmessages[0]['*'] !== guild ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 					}
-					return Promise.all([
-						db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ),
-						( settings.avatar && row.avatar !== settings.avatar ? got.head( settings.avatar ).then( headresponse => {
-							if ( avatar_content_types.includes( headresponse.headers?.['content-type'] ) ) return;
-							settings.avatar = '';
-						}, error => {
-							console.log( '- Dashboard: Error while checking for the HEAD: ' + error );
-							settings.avatar = '';
-						} ) : null )
-					]).then( ([{rows:[block]}]) => {
+					return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {
 						if ( block ) {
 							console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 							return res(`/guild/${guild}/rcscript/${type}`, 'wikiblocked', body.query.general.sitename, block.reason);
@@ -749,16 +685,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									webhook_diff.push(webhook_lang.get('dashboard.channel'));
 									webhook_changes.channel = settings.channel;
 								}
-								if ( settings.name && row.name !== settings.name ) {
-									diff.push(lang.get('rcscript.name') + ` ~~\`${row.name}\`~~ → \`${settings.name}\``);
-									webhook_diff.push(webhook_lang.get('dashboard.name', settings.name));
-									webhook_changes.name = settings.name;
-								}
-								if ( settings.avatar && row.avatar !== settings.avatar ) {
-									diff.push(lang.get('rcscript.avatar') + ` <${settings.avatar}>`);
-									webhook_diff.push(webhook_lang.get('dashboard.avatar'));
-									webhook_changes.avatar = settings.avatar;
-								}
 								if ( row.wiki !== wiki.href ) {
 									diff.push(lang.get('rcscript.wiki') + ` ~~<${row.wiki}>~~ → <${wiki.href}>`);
 									webhook_diff.push(webhook_lang.get('dashboard.wiki', `[${body.query.general.sitename}](<${wiki.href}>)`));
@@ -785,8 +711,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									guild: guild,
 									webhook: row.webhook,
 									channel: webhook_changes.channel,
-									name: webhook_changes.name,
-									avatar: webhook_changes.avatar,
 									reason: lang.get('rcscript.audit_reason_edit'),
 									text: webhook_lang.get('dashboard.updated') + '\n' + webhook_diff.join('\n')
 								} ).then( webhook => {

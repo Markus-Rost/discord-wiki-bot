@@ -588,20 +588,10 @@ fieldset textarea {
 	color: #2e3338;
 	background-color: #ebedef;
 }
-#wb-settings-avatar-preview-img {
-	width: 128px;
-	height: 128px;
-	image-rendering: pixelated;
-	background: #32353b;
-}
-.theme-light #wb-settings-avatar-preview-img {
-	background-color: #fafafa;
-}
 .wb-settings-display:first-of-type,
 .wb-settings-permission:first-of-type {
 	display: inline-block;
 }
-#wb-settings-avatar-preview-img,
 .wb-settings-display:not(:first-of-type),
 .wb-settings-permission:not(:first-of-type),
 .wb-settings-additional-select,

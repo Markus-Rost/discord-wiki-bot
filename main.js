@@ -223,7 +223,7 @@ if ( process.env.dashboard ) {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				let channel = discordClient.guilds.cache.get(evalData.guild).channels.cache.get(evalData.channel);
 				if ( channel ) return channel.createWebhook( evalData.name, {
-					avatar: ( evalData.avatar || discordClient.user.displayAvatarURL({format:'png',size:4096}) ),
+					avatar: discordClient.user.displayAvatarURL({format:'png',size:4096}),
 					reason: evalData.reason
 				} ).then( webhook => {
 					console.log( `- Dashboard: Webhook successfully created: ${evalData.guild}#${evalData.channel}` );
@@ -239,11 +239,9 @@ if ( process.env.dashboard ) {
 				return discordClient.fetchWebhook(...evalData.webhook.split('/')).then( webhook => {
 					var changes = {};
 					if ( evalData.channel ) changes.channel = evalData.channel;
-					if ( evalData.name ) changes.name = evalData.name;
-					if ( evalData.avatar ) changes.avatar = evalData.avatar;
-					return webhook.edit( changes, evalData.reason ).then( newwebhook => {
+					return webhook.edit( changes, evalData.reason ).then( newWebhook => {
 						console.log( `- Dashboard: Webhook successfully edited: ${evalData.guild}#` + ( evalData.channel || webhook.channelId ) );
-						webhook.send( evalData.text ).catch(globalThis.log_error);
+						newWebhook.send( evalData.text ).catch(globalThis.log_error);
 						return true;
 					}, error => {
 						console.log( '- Dashboard: Error while editing the webhook: ' + error );
