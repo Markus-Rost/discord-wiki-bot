@@ -96,7 +96,8 @@
 			"abusefilter-maintainer",
 			"abusefilter-helper",
 			"global-rollbacker",
-			"global-ipblock-exempt"
+			"global-ipblock-exempt",
+			"voldev"
 		]
 	},
 	"wikiProjects": [

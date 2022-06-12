@@ -380,10 +380,6 @@
 				"cmd": "verify <nazwa użytkownika na wiki>",
 				"desc": "Użyj tej komendy do weryfikacji konta Discord kontem na wiki, oraz zdobycia ról odpowiednich dla Twojego konta na wiki."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Nadaję każdej osobie w kanale głosowym specjalną rolę."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <wyszukiwana fraza>",
 				"desc": "Odpowiem z pasującym linkiem do podanej wiki na Wikia: `https://<wiki>.wikia.org/`"
@@ -828,16 +824,5 @@
 		"user_verified": "Pomyślnie zweryfikowano użytkownika Discord $1 jako {{GENDER:$3|użytkownika|użytkowniczkę|użytkownika/użytkowniczkę}} wiki $2.",
 		"user_verified_reply": "pomyślnie zweryfikowano Ciebie jako użytkownika wiki „$1”.",
 		"wiki": "{{GENDER:$1|Użytkownik wiki|Użytkowniczka wiki|Użytkownik/Użytkowniczka wiki}}:"
-	},
-	"voice": {
-		"channel": "Kanał głosowy",
-		"disable": "Użyj `$1` aby wyłączyć tę funkcję.",
-		"disabled": "Wyłączono funkcję nadawania ról dla osób korzystających z czatów głosowych.",
-		"enable": "Użyj `$1` aby włączyć tę funkcję.",
-		"enabled": "Włączono funkcję nadawania ról dla osób korzystających z czatów głosowych.",
-		"join": "$1 dołączył do „$2”.",
-		"left": "$1 wyszedł z „$2”.",
-		"name": "nazwa kanału głosowego",
-		"text": "nadaję każdemu w kanale głosowym określoną rolę:"
 	}
 }

@@ -380,10 +380,6 @@
 				"cmd": "verify <Wiki-Benutzername>",
 				"desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben."
-			},
 			"wikia": {
 				"cmd": "??<Wiki> <Suchbegriff>",
 				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wikia-Wiki: `https://<Wiki>.wikia.org/`"
@@ -831,16 +827,5 @@
 		"user_verified": "{{GENDER:$3|Discord-Benutzer|Discord-Benutzerin}} $1 wurde erfolgreich als {{GENDER:$3|Wiki-Benutzer|Wiki-Benutzerin}} $2 verifiziert.",
 		"user_verified_reply": "du wurdest erfolgreich als {{GENDER:$2|Wiki-Benutzer|Wiki-Benutzerin}} „$1“ verifiziert.",
 		"wiki": "{{GENDER:$1|Wiki-Benutzer|Wiki-Benutzerin}}:"
-	},
-	"voice": {
-		"channel": "Sprachkanal",
-		"disable": "Nutze `$1` um diese Funktion zu deaktivieren.",
-		"disabled": "Du hast die Funktion, Rollen für Sprachkanäle hinzuzufügen, deaktiviert.",
-		"enable": "Nutze `$1` um diese Funktion zu aktivieren.",
-		"enabled": "Du hast die Funktion, Rollen für Sprachkanäle hinzuzufügen, aktiviert.",
-		"join": "$1 hat den Sprachkanal „$2“ betreten.",
-		"left": "$1 hat den Sprachkanal „$2“ verlassen.",
-		"name": "Name des Sprachkanals",
-		"text": "ich versuche allen in einem Sprachkanal eine bestimmte Rolle zu geben:"
 	}
 }

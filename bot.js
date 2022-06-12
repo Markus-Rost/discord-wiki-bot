@@ -43,7 +43,6 @@ const client = new Discord.Client( {
 		Discord.Intents.FLAGS.GUILDS,
 		Discord.Intents.FLAGS.GUILD_MESSAGES,
 		Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-		Discord.Intents.FLAGS.GUILD_VOICE_STATES,
 		Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
 		Discord.Intents.FLAGS.DIRECT_MESSAGES,
 		Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
@@ -56,9 +55,6 @@ const client = new Discord.Client( {
 var isStop = false;
 client.on( 'ready', () => {
 	console.log( '\n- ' + process.env.SHARDS + ': Successfully logged in as ' + client.user.username + '!\n' );
-	[...voiceGuildsLang.keys()].forEach( guild => {
-		if ( !client.guilds.cache.has(guild) ) voiceGuildsLang.delete(guild);
-	} );
 	client.application.commands.fetch();
 } );
 
@@ -315,26 +311,6 @@ function messageCreate(msg) {
 };
 
 
-client.on( 'voiceStateUpdate', (olds, news) => {
-	if ( isStop || !( voiceGuildsLang.has(olds.guild.id) ) || !olds.guild.me.permissions.has('MANAGE_ROLES') || olds.channelId === news.channelId ) return;
-	var lang = new Lang(voiceGuildsLang.get(olds.guild.id), 'voice');
-	if ( olds.member && olds.channel ) {
-		var oldrole = olds.member.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + olds.channel.name );
-		if ( oldrole && oldrole.comparePositionTo(olds.guild.me.roles.highest) < 0 ) {
-			console.log( olds.guild.id + ': ' + olds.member.id + ' left the voice channel "' + olds.channelId + '".' );
-			olds.member.roles.remove( oldrole, lang.get('left', olds.member.displayName, olds.channel.name) ).catch(log_error);
-		}
-	}
-	if ( news.member && news.channel ) {
-		var newrole = news.guild.roles.cache.find( role => role.name === lang.get('channel') + ' – ' + news.channel.name );
-		if ( newrole && newrole.comparePositionTo(news.guild.me.roles.highest) < 0 ) {
-			console.log( news.guild.id + ': ' + news.member.id + ' joined the voice channel "' + news.channelId + '".' );
-			news.member.roles.add( newrole, lang.get('join', news.member.displayName, news.channel.name) ).catch(log_error);
-		}
-	}
-} );
-
-
 const leftGuilds = new Map();
 
 client.on( 'guildCreate', guild => {
@@ -361,7 +337,6 @@ function removeSettings(guild) {
 		if ( patreonGuildsPrefix.has(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
 			patreonGuildsPrefix.delete(evalData);
 		}, {context: guild} );
-		if ( voiceGuildsLang.has(guild) ) voiceGuildsLang.delete(guild);
 		if ( rowCount ) console.log( '- ' + guild + ': Settings successfully removed.' );
 	}, dberror => {
 		console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );

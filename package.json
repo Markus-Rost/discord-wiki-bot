@@ -1,6 +1,6 @@
 {
   "name": "discord-wiki-bot",
-  "version": "4.3.1",
+  "version": "4.4.0",
   "type": "module",
   "description": "Wiki-Bot is a bot with the purpose to easily search for and link to wiki pages. Wiki-Bot shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.",
   "main": "main.js",
@@ -39,7 +39,6 @@
     "wikia",
     "discord",
     "wikibot",
-    "voice-channel",
     "wiki",
     "discord-bot",
     "wikipedia"

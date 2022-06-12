@@ -380,10 +380,6 @@
 				"cmd": "verify <wiki username>",
 				"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "I try to give everyone in a voice channel a specific role."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <search term>",
 				"desc": "I will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/`"
@@ -831,16 +827,5 @@
 		"user_verified": "Discord user $1 has been successfully verified as wiki user $2.",
 		"user_verified_reply": "you have been successfully verified as wiki user \"$1\".",
 		"wiki": "Wiki user:"
-	},
-	"voice": {
-		"channel": "Voice channel",
-		"disable": "Use `$1` to disable this function.",
-		"disabled": "You disabled the function to add roles for voice channels.",
-		"enable": "Use `$1` to enable this function.",
-		"enabled": "You enabled the function to add roles for voice channels.",
-		"join": "$1 joined the voice channel \"$2\".",
-		"left": "$1 left the voice channel \"$2\".",
-		"name": "voice channel name",
-		"text": "I try to give everyone in a voice channel a specific role:"
 	}
 }

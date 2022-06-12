@@ -277,10 +277,6 @@
 				"cmd": "Gebruiker:<gebruikersnaam>",
 				"desc": "Ik zal wat informatie over de gebruiker weergeven."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <zoek term>",
 				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`"
@@ -460,16 +456,5 @@
 		"error_reply": "de verificatie is mislukt vanwege een fout, probeer het opnieuw.",
 		"user_verified_reply": "je bent succesvol geverifiëerd als wiki gebruiker \"$1\".",
 		"wiki": "Wiki gebruiker:"
-	},
-	"voice": {
-		"channel": "Spraakkanaal",
-		"disable": "Gebruik `$1` om deze functie uit te schakelen.",
-		"disabled": "je hebt de functie uitgeschakeld om rollen toe te voegen aan spraakkanalen.",
-		"enable": "Gebruik `$1` om deze functie in te schakelen.",
-		"enabled": "je hebt de functie ingeschakeld om rollen toe te voegen aan spraakkanalen.",
-		"join": "$1 kwam het spraakkanaal \"$2\" binnen.",
-		"left": "$1 verlaatte het spraakkanaal \"$2\".",
-		"name": "spraakkanaal naam",
-		"text": "Ik probeer iedereen in een spraakkanaal een specifieke rol te geven:"
 	}
 }

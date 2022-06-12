@@ -237,7 +237,6 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						if ( row.channel && row.lang === guild.lang ) row.lang = allLangs.map[args[1]];
 					} );
 					guild.lang = allLangs.map[args[1]];
-					if ( voiceGuildsLang.has(msg.guildId) ) voiceGuildsLang.set(msg.guildId, guild.lang);
 				}
 				if ( channel || !patreonGuildsPrefix.has(msg.guildId) || !rows.some( row => row.channel === channelId ) ) lang = new Lang(allLangs.map[args[1]]);
 				msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`', files: ( msg.uploadFiles() ? [`./i18n/widgets/${allLangs.map[args[1]]}.png`] : [] ), components}, true );

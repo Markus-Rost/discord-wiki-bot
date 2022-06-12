@@ -323,10 +323,9 @@ function removeSettings(msg) {
 				return rows.forEach( row => {
 					if ( !all_guilds.includes(row.guild) ) {
 						if ( !row.channel ) {
-							if ( patreonGuildsPrefix.has(row.guild) || voiceGuildsLang.has(row.guild) ) {
+							if ( patreonGuildsPrefix.has(row.guild) ) {
 								msg.client.shard.broadcastEval( (discordClient, evalData) => {
 									patreonGuildsPrefix.delete(evalData);
-									voiceGuildsLang.delete(evalData);
 								}, {context: row.guild} );
 							}
 							return guilds.push(row.guild);

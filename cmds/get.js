@@ -30,8 +30,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 					ownerId: guild.ownerId, owner: discordClient.users.cache.get(guild.ownerId)?.tag,
 					channel: guild.publicUpdatesChannelId, icon: guild.iconURL({dynamic:true}),
 					permissions: guild.me.permissions.missing(evalData.defaultPermissions),
-					pause: pausedGuilds.has(guild.id), voice: voiceGuildsLang.has(guild.id),
-					shardId: process.env.SHARDS
+					pause: pausedGuilds.has(guild.id), shardId: process.env.SHARDS
 				};
 			}
 		}, {
@@ -51,7 +50,6 @@ async function cmd_get(lang, msg, args, line, wiki) {
 				if ( rows.length ) {
 					let row = rows.find( row => !row.channel );
 					row.patreon = patreonGuildsPrefix.has(guild.id);
-					row.voice = guild.voice;
 					guildsettings[1] = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 				}
 				else guildsettings[1] = '*default*';
@@ -170,7 +168,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			return msg.sendChannel( {content: text, embeds: [embed]}, true );
 		}
 		
-		return db.query( 'SELECT guild, channel, wiki, lang, role, inline, prefix, patreon, voice FROM discord WHERE guild = $1 OR channel = $1 OR channel = $2 ORDER BY guild, channel DESC NULLS LAST LIMIT 1', [id, '#' + id] ).then( ({rows}) => {
+		return db.query( 'SELECT guild, channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 OR channel = $1 OR channel = $2 ORDER BY guild, channel DESC NULLS LAST LIMIT 1', [id, '#' + id] ).then( ({rows}) => {
 			if ( !rows.length ) return msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', true );
 			var result = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 			if ( msg.showEmbed() ) {

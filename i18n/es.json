@@ -380,10 +380,6 @@
 				"cmd": "verify <nombre de usuario wiki>",
 				"desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Intento darles a todos en un canal de chat de voz un rol específico."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <término de búsqueda>",
 				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Wikia llamado: `https://<wiki>.wikia.org/`"
@@ -831,16 +827,5 @@
 		"user_verified": "El usuario de Discord $1 ha sido verificado con éxito como el usuario wiki $2.",
 		"user_verified_reply": "has sido verificado con éxito como el usuario wiki \"$1\".",
 		"wiki": "Usuario wiki:"
-	},
-	"voice": {
-		"channel": "Canal de chat de voz",
-		"disable": "Usa `$1` para desactivar esta función.",
-		"disabled": "Desactivaste la función de agregar roles para canales de chat de voz.",
-		"enable": "Usa `$1` para activar esta función.",
-		"enabled": "Activaste la función de agregar roles para canales de chat de voz.",
-		"join": "$1 se unió al canal de chat de voz \"$2\".",
-		"left": "$1 salió del canal de chat de voz \"$2\".",
-		"name": "nombre del canal de chat de voz",
-		"text": "Intento darles a todos en un canal de chat de voz un rol específico:"
 	}
 }

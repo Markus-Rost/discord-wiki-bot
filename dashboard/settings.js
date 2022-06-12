@@ -511,7 +511,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						sendMsg( {
 							type: 'notifyGuild', guild, text, file,
 							embed: ( updateGuild ? embed : undefined ),
-							prefix: settings.prefix, voice: settings.lang
+							prefix: settings.prefix
 						} ).catch( error => {
 							console.log( '- Dashboard: Error while notifying the guild: ' + error );
 						} );

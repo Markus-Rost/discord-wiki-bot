@@ -24,7 +24,6 @@ const helpmap = {
 	verify: ['verify'],
 	verification: ['verification.default', 'verification.add', 'verification.channel', 'verification.role', 'verification.editcount', 'verification.postcount', 'verification.usergroup', 'verification.accountage', 'verification.rename', 'verification.delete'],
 	rcscript: ['rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete'],
-	voice: ['voice'],
 	pause: ['pause.inactive'],
 	test: ['test'],
 }
@@ -47,7 +46,6 @@ const helplist = {
 		'settings.default',
 		'verification.default',
 		'rcscript.default',
-		'voice',
 		'pause.inactive'
 	],
 	pause: [
@@ -55,7 +53,6 @@ const helplist = {
 		'settings.default',
 		'verification.default',
 		'rcscript.default',
-		'voice',
 		'test'
 	],
 	minecraft: [
@@ -67,7 +64,7 @@ const helplist = {
 const restrictions = {
 	fandom: ['discussion'],
 	minecraft: ['minecraftHelp', 'command', 'bug'],
-	admin: ['settings', 'verification', 'rcscript', 'voice', 'pause'],
+	admin: ['settings', 'verification', 'rcscript', 'pause'],
 	inline: ['inline.link', 'inline.template'],
 	patreon: ['settings.prefix'],
 	experimental: []

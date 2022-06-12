@@ -380,10 +380,6 @@
 				"cmd": "verify <pseudo wiki>",
 				"desc": "Utilisez cette commande pour lier votre compte Discord avec votre compte wiki et obtenir les rôles correspondants."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "J'essaye de donner un rôle spécifique à tous ceux dans un salon vocal."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <terme de recherche>",
 				"desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Wikia nommé : `https://<wiki>.wikia.org/`"
@@ -801,16 +797,5 @@
 		"user_verified": "L'utilisateur discord $1 a bien été vérifié en tant qu'utilisateur wiki $2.",
 		"user_verified_reply": "vous avez bien été vérifié en tant qu'utilisateur wiki \"$1\".",
 		"wiki": "Utilisateur wiki :"
-	},
-	"voice": {
-		"channel": "Salon vocal",
-		"disable": "Utilisez `$1` pour désactiver cette fonction.",
-		"disabled": "vous avez désactivé la fonction pour ajouter des rôles aux salons vocaux.",
-		"enable": "Utilisez `$1` pour activer cette fonction.",
-		"enabled": "vous avez activé la fonction pour ajouter des rôles aux salons vocaux.",
-		"join": "$1 a rejoint le salon vocal \"$2\".",
-		"left": "$1 a quitté le salon vocal \"$2\".",
-		"name": "nom du salon vocal",
-		"text": "j'essaye de donner un rôle spécifique à tout le monde dans un salon vocal :"
 	}
 }

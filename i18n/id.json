@@ -380,10 +380,6 @@
 				"cmd": "verify <nama pengguna wiki>",
 				"desc": "Gunakan perintah ini untuk memverifikasi akun Discord kamu dengan akun wiki dan mendapatkan lah peran yang cocok dengan akun wiki Anda."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Saya mencoba memberi semua orang di saluran suara peran tertentu."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <search term>",
 				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Wikia bernama: `https://<wiki>.wikia.org/`"
@@ -831,16 +827,5 @@
 		"user_verified": "Pengguna Discord $1 telah berhasil diverifikasi sebagai pengguna wiki $2.",
 		"user_verified_reply": "Kamu telah berhasil diverifikasi sebagai pengguna wiki \"$1\".",
 		"wiki": "Pengguna Wiki:"
-	},
-	"voice": {
-		"channel": "Saluran suara",
-		"disable": "Gunakan `$1` untuk menonaktifkan fungsi ini.",
-		"disabled": "Kamu menonaktifkan fungsi untuk menambahkan peran untuk saluran suara.",
-		"enable": "Gunakan `$1` untuk mengaktifkan fungsi ini.",
-		"enabled": "Kamu mengaktifkan fungsi untuk menambahkan peran untuk saluran suara.",
-		"join": "$1 bergabung dengan saluran suara \"$2\".",
-		"left": "$1 meninggalkan saluran suara \"$2\".",
-		"name": "nama saluran suara",
-		"text": "Saya mencoba memberi semua orang di saluran suara peran tertentu:"
 	}
 }

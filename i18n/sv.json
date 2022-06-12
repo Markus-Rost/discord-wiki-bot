@@ -376,10 +376,6 @@
 				"cmd": "verify <wiki användarnamn>",
 				"desc": "Använd detta kommando för att verifiera ditt Discord- med ditt wiki-konto och få roller som matchar ditt wiki-konto."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Jag försöker att ge alla i en röstkanal en specifik roll."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <sökterm>",
 				"desc": "Jag kommer att svara med en länk till en matchande artikel med namnet på Wikia-wikin: `https://<wiki>.wikia.org/`"
@@ -813,16 +809,5 @@
 		"user_verified": "Discord-användaren $1 har verifierats som wiki-användaren $2.",
 		"user_verified_reply": "du har verifierats som wiki-användaren \"$1\".",
 		"wiki": "Wiki-användare:"
-	},
-	"voice": {
-		"channel": "Röstkanal",
-		"disable": "Använd `$1` för att inaktivera denna funktion.",
-		"disabled": "du inaktiverade funktionen för att lägga till roller för röstkanaler.",
-		"enable": "Använd `$1` för att aktivera denna funktion.",
-		"enabled": "du aktiverade funktionen för att lägga till roller för röstkanaler.",
-		"join": "$1 anslöt till röstkanalen \"$2\".",
-		"left": "$1 lämnade röstkanalen \"$2\".",
-		"name": "röstkanalsnamn",
-		"text": "Jag försöker ge alla i en röstkanal en specifik roll:"
 	}
 }

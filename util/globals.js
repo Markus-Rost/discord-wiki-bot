@@ -16,13 +16,6 @@ globalThis.isDebug = ( process.argv[2] === 'debug' );
 globalThis.patreonGuildsPrefix = new Map();
 
 /**
- * Language code of guilds with voice channel role enabled.
- * @type {Map<String, String>}
- * @global
- */
-globalThis.voiceGuildsLang = new Map();
-
-/**
  * Guilds with pause activated.
  * @type {Set<String>}
  * @global

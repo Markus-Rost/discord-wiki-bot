@@ -380,10 +380,6 @@
 				"cmd": "verify <nome de usuário da wiki>",
 				"desc": "Use este comando para verificar sua conta do Discord com a sua conta wiki e obter cargos correspondentes à sua conta na wiki."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Eu tento dar a todos em um canal de voz um cargo específico."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <termo de pesquisa>",
 				"desc": "Vou responder com um link para um artigo correspondente na wiki da Wikia: `https://<wiki>.wikia.org/`"
@@ -830,16 +826,5 @@
 		"user_verified": "O usuário $1 do Discord foi verificado com sucesso como o usuário $2 da wiki.",
 		"user_verified_reply": "você foi verificado com sucesso como o usuário \"$1\" da wiki.",
 		"wiki": "{{GENDER:$1|Usuário da wiki|Usuária da wiki}}:"
-	},
-	"voice": {
-		"channel": "Canal de voz",
-		"disable": "Use `$1` desativar esta função.",
-		"disabled": "Você desabilitou a função para adicionar cargos aos canais de voz.",
-		"enable": "Use `$1` para habilitar esta função.",
-		"enabled": "Você ativou a função para adicionar cargos aos canais de voz.",
-		"join": "$1 juntou-se ao canal de voz \"$2\".",
-		"left": "$1 deixou o canal de voz \"$2\".",
-		"name": "nome do canal de voz",
-		"text": "Eu tento dar a todos em um canal de voz um cargo específico:"
 	}
 }

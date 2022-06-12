@@ -206,9 +206,6 @@ if ( process.env.dashboard ) {
 			if ( evalData.prefix ) {
 				globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 			}
-			if ( evalData.voice && globalThis.voiceGuildsLang.has(evalData.guild) ) {
-				globalThis.voiceGuildsLang.set(evalData.guild, evalData.voice);
-			}
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				let channel = discordClient.guilds.cache.get(evalData.guild).publicUpdatesChannel;
 				if ( channel ) channel.send( {

@@ -17,7 +17,6 @@ Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
   * [Admin](#admin)
 * [User Verification](#user-verification)
 * [Recent Changes Webhook](#recent-changes-webhook)
-* [Voice Channel](#voice-channel)
 
 ## Setup
 After [inviting](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands) **Wiki-Bot** to your server you need to set the wiki you want to search by default. You do this with the `!wiki settings` command or by using the [dashboard](https://settings.wikibot.de/).
@@ -60,7 +59,6 @@ For a full list with all administrator commands use `!wiki help admin`
 | `!wiki settings` | **Wiki-Bot** will change the settings for the server. |
 | `!wiki verification` | **Wiki-Bot** will change the wiki verifications used by the `!wiki verify` command. |
 | `!wiki rcscript` | **Wiki-Bot** will change the recent changes webhook. |
-| `!wiki voice` | **Wiki-Bot** will try to give everyone in a voice channel a specific role. |
 | `!wiki pause @Wiki-Bot` | **Wiki-Bot** will ignore all commands on this server, except a few admin commands. |
 
 Administators can also use the [dashboard](https://settings.wikibot.de/) to change the bot settings.
@@ -84,11 +82,6 @@ See the [admin commands](#admin) or `!wiki help verification` on how to change t
 Requirements to add a recent changes webhook:
 * The wiki needs to run on [MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30) or higher.
 * The system message `MediaWiki:Custom-RcGcDw` needs to be set to the Discord server id.
-
-## Voice Channel
-**Wiki-Bot** is able to give everyone in a voice channel a specific role. This allows for the creation of channels only visible or writable when in a specific voice channel.
-
-Use `!wiki voice` to get the format for the role name.
 
 ## Translations
 [<img src="https://translate.wikibot.de/widgets/wiki-bot/-/multi-auto.svg" alt="Translation status" width="100%" />](https://translate.wikibot.de/engage/wiki-bot/?utm_source=widget)

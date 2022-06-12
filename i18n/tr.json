@@ -380,10 +380,6 @@
 				"cmd": "verify <viki kullanıcı adı>",
 				"desc": "Discord hesabını viki hesabın ile doğrulamak ve viki hesabınla eşleşen rolleri almak için bu komutu kullan."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Sesli kanalda bulunan kişilere belirli bir rol vermeye çalışacağım."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <arama terimi>",
 				"desc": "Belirtilen Wikia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.wikia.org/`"
@@ -830,16 +826,5 @@
 		"user_verified": "Discord kullanıcısı $1 başarıyla viki kullanıcısı $2 olarak doğrulandı.",
 		"user_verified_reply": "başarıyla viki kullanıcısı \"$1\" olarak doğrulandın.",
 		"wiki": "Viki kullanıcısı:"
-	},
-	"voice": {
-		"channel": "Ses kanalı",
-		"disable": "Bu fonksiyou devre dışı bırakmak için `$1` komutunu kullanmalısın.",
-		"disabled": "Sesli kanallara rol ekleme fonksiyonunu devre dışı bıraktın.",
-		"enable": "Bu fonksiyonu etkinleştirmek için `$1` komutunu kullanmalısın.",
-		"enabled": "Sesli kanallara rol ekleme fonksiyonunu etkinleştirdin.",
-		"join": "$1 ses kanalına katıldı \"$2\".",
-		"left": "$1 ses kanalından ayrıldı \"$2\".",
-		"name": "ses kanalı adı",
-		"text": "Ses kanalındaki herkese belirli bir rol vermeye çalışıyorum:"
 	}
 }

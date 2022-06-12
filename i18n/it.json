@@ -380,10 +380,6 @@
 				"cmd": "verify <nome utente wiki>",
 				"desc": "Usa questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "Cerco di dare a tutti in un canale vocale un ruolo specifico."
-			},
 			"wikia": {
 				"cmd": "??<wiki> <termine di ricerca>",
 				"desc": "Ti risponderò con un collegamento all'articolo corrispondente sulla wiki di Wikia richiesta: `https://<wiki>.wikia.org/`"
@@ -830,16 +826,5 @@
 		"user_verified": "L'utente Discord $1 è {{GENDER:$3|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki $2.",
 		"user_verified_reply": "sei {{GENDER:$2|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki \"$1\".",
 		"wiki": "Utente wiki:"
-	},
-	"voice": {
-		"channel": "Canale vocale",
-		"disable": "Usa `$1` per disabilitare questa funzione.",
-		"disabled": "Hai disabilitato la funzione per aggiungere ruoli per i canali vocali.",
-		"enable": "Usa `$1` per abilitare questa funzione.",
-		"enabled": "Hai abilitato questa funzione per aggiungere ruoli ai canali vocali.",
-		"join": "$1 è entrato nel canale vocale \"$2\".",
-		"left": "$1 ha lasciato il canale vocale \"$2\".",
-		"name": "nome canale vocale",
-		"text": "Provo a dare a tutti in un canale vocale uno specifico ruolo:"
 	}
 }

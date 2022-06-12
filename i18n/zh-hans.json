@@ -380,10 +380,6 @@
 				"cmd": "verify <wiki 用户名>",
 				"desc": "使用此命令来验证您的 Discord 账户和您的 wiki 账户，并获取您的 wiki 账户对应的身份组。"
 			},
-			"voice": {
-				"cmd": "voice",
-				"desc": "我将尝试给予每个在这个语音频道的用户一个特定的身份组。"
-			},
 			"wikia": {
 				"cmd": "??<wiki> <关键词>",
 				"desc": "我将返回特定的 org 域名下的 wiki 的指定页面的链接：`https://<wiki>.wikia.org/`"
@@ -831,16 +827,5 @@
 		"user_verified": "Discord 用户 $1 已成功验证为 wiki 用户 $2。",
 		"user_verified_reply": "您已成功验证为 wiki 用户“$1”。",
 		"wiki": "Wiki 用户："
-	},
-	"voice": {
-		"channel": "语音频道",
-		"disable": "使用 `$1` 禁用本功能。",
-		"disabled": "您禁用了给予每个在这个语音频道的用户一个特定的身份组的功能。",
-		"enable": "使用 `$1` 启用本功能。",
-		"enabled": "您启用了给予每个在这个语音频道的用户一个特定的身份组的功能。",
-		"join": "$1 加入了语音频道“$2”。",
-		"left": "$1 离开了语音频道“$2”。",
-		"name": "语音频道名",
-		"text": "我将尝试给予每个在这个语音频道的用户一个特定的身份组："
 	}
 }
