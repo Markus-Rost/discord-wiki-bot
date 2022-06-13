@@ -913,6 +913,12 @@
 			"scriptPath": "/wiki/"
 		},
 		{
+			"name": "rationalwiki.org",
+			"regex": "((?:www\\.)?rationalwiki\\.org)",
+			"articlePath": "/wiki/",
+			"scriptPath": "/w/"
+		},
+		{
 			"name": "liquipedia.net // disabled due to rate-limit concerns",
 			"regex": "((?:www\\.)?liquipedia\\.net/([a-z\\d]{1,50}))",
 			"articlePath": "/",
