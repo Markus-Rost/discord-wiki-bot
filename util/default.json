@@ -919,6 +919,18 @@
 			"scriptPath": "/w/"
 		},
 		{
+			"name": "eastwardwiki.com",
+			"regex": "((?:([a-z-]{2,12})\\.)?eastwardwiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/mediawiki/"
+		},
+		{
+			"name": "timespinnerwiki.com",
+			"regex": "((?:www\\.)?timespinnerwiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/mediawiki/"
+		},
+		{
 			"name": "liquipedia.net // disabled due to rate-limit concerns",
 			"regex": "((?:www\\.)?liquipedia\\.net/([a-z\\d]{1,50}))",
 			"articlePath": "/",
