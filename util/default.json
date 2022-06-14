@@ -931,6 +931,12 @@
 			"scriptPath": "/mediawiki/"
 		},
 		{
+			"name": "starmancerwiki.com",
+			"regex": "((?:www\\.)?starmancerwiki\\.com)",
+			"articlePath": "/",
+			"scriptPath": "/mediawiki/"
+		},
+		{
 			"name": "liquipedia.net // disabled due to rate-limit concerns",
 			"regex": "((?:www\\.)?liquipedia\\.net/([a-z\\d]{1,50}))",
 			"articlePath": "/",
