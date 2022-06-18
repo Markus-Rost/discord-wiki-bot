@@ -64,7 +64,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 						if ( body?.error?.info === 'You need read permission to use this module.' ) notice.push(lang.get('settings.wikiinvalid_private'));
 					}
 				}
-				else if ( ( msg.isAdmin() || msg.isOwner() ) && !wiki.isFandom() ) {
+				else if ( msg.isAdmin() || msg.isOwner() ) {
 					logging(wiki, msg.guildId, 'test');
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );

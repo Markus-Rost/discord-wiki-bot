@@ -170,7 +170,7 @@ function slash_inline(interaction, lang, wiki) {
 							if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) {
 								return;
 							}
-							if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
+							if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
 								var iw_parts = page.title.split(':');
 								var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
 								link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section, true);

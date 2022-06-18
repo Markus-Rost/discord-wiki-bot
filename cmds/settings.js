@@ -131,18 +131,16 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					}
 					wikinew.updateWiki(body.query.general);
 					var embed;
-					if ( !wikinew.isFandom() ) {
-						var notice = [];
-						if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
-							console.log( '- This wiki is using ' + body.query.general.generator + '.' );
-							notice.push({
-								name: 'MediaWiki',
-								value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator)
-							});
-						}
-						if ( notice.length ) {
-							embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
-						}
+					var notice = [];
+					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
+						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
+						notice.push({
+							name: 'MediaWiki',
+							value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator)
+						});
+					}
+					if ( notice.length ) {
+						embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
 					}
 					var sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND wiki = $3';
 					var sqlargs = [wikinew.href, msg.guildId, guild.wiki];

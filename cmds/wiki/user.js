@@ -224,7 +224,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				} );
 			}
 			
-			if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && wiki.isFandom() ) {
+			if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && wiki.wikifarm === 'fandom' ) {
 				if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
 				else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 
@@ -325,7 +325,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 		var editcount = [lang.get('user.info.editcount'), queryuser.editcount.toLocaleString(lang.get('dateformat'))];
 		var groups = queryuser.groups.filter( group => !usergroups.ignored.includes( group ) );
 		var globalgroups = [];
-		if ( wiki.isFandom() ) {
+		if ( wiki.wikifarm === 'fandom' ) {
 			globalgroups = groups.filter( group => usergroups.global.includes( group ) );
 			groups = groups.filter( group => !usergroups.global.includes( group ) );
 		}
@@ -486,7 +486,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					text += '\n' + globalgroup[0] + ' ' + globalgroup.slice(1).join(', ');
 				}
 			}
-			if ( wiki.isFandom() ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now(), {
+			if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now(), {
 				context: {
 					guildId: msg.guildId
 				}

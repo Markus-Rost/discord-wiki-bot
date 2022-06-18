@@ -1,5 +1,6 @@
 import { readdir } from 'node:fs';
 import { MessageEmbed } from 'discord.js';
+import { wikiProjects } from 'mediawiki-projects-list';
 import parse_page from '../../functions/parse_page.js';
 import phabricator from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
@@ -9,7 +10,7 @@ import Wiki from '../../util/wiki.js';
 import * as fn from './functions.js'
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const {limit: {interwiki: interwikiLimit}, wikiProjects} = require('../../util/default.json');
+const {limit: {interwiki: interwikiLimit}} = require('../../util/default.json');
 const {wikis: mcw} = require('../minecraft/commands.json');
 
 var minecraft = {};
@@ -108,7 +109,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			logging(wiki, msg.guildId, 'search');
 			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler, noEmbed);
 		}
-		if ( aliasInvoke === 'discussion' && wiki.isFandom(false) && !querystring.toString() && !fragment ) {
+		if ( aliasInvoke === 'discussion' && wiki.wikifarm === 'fandom' && !wiki.isGamepedia() && !querystring.toString() && !fragment ) {
 			logging(wiki, msg.guildId, 'discussion');
 			return fn.discussion(lang, msg, wiki, args.join(' '), body.query.general.sitename, reaction, spoiler, noEmbed);
 		}
@@ -183,7 +184,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					if ( reaction ) reaction.removeEmoji();
 				} );
 			}
-			if ( wiki.isMiraheze() && querypage.ns === 0 && /^Mh:[a-z\d]+:/.test(querypage.title) ) {
+			if ( wiki.wikifarm === 'miraheze' && querypage.ns === 0 && /^Mh:[a-z\d]+:/.test(querypage.title) ) {
 				logging(wiki, msg.guildId, 'interwiki', 'miraheze');
 				var iw_parts = querypage.title.split(':');
 				var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
@@ -214,7 +215,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					if ( reaction ) reaction.removeEmoji();
 					return;
 				}
-				if ( querypage.ns === 12 && wiki.isFandom() ) {
+				if ( querypage.ns === 12 && wiki.wikifarm === 'fandom' ) {
 					return got.head( wiki.articleURL.href.replace( '$1', encodeURIComponent( querypage.title ).replace( /%3A/g, ':' ) ), {
 						followRedirect: false,
 						context: {

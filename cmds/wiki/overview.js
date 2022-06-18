@@ -18,7 +18,7 @@ const {timeoptions} = require('../../util/default.json');
  */
 export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
 	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.isFandom() ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.isFandom() ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json', {
+	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.wikifarm === 'fandom' ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.wikifarm === 'fandom' ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -112,7 +112,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 		}
 		
 		var wikiid = body.query.variables?.find?.( variable => variable?.id === 'wgCityId' )?.['*'];
-		if ( wiki.isFandom() && wikiid ) {
+		if ( wiki.wikifarm === 'fandom' && wikiid ) {
 			var vertical = [lang.get('overview.vertical')];
 			var topic = [lang.get('overview.topic')];
 			var official = [lang.get('overview.official')];

@@ -22,8 +22,8 @@ function slash_verify(interaction, lang, wiki) {
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
-			if ( wiki.isWikimedia() ) oauth.push('wikimedia');
-			if ( wiki.isMiraheze() ) oauth.push('miraheze');
+			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
+			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				return interaction.deferReply( {ephemeral: ( (rows[0].flags & 1 << 0) === 1 << 0 )} ).then( () => {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
@@ -249,8 +249,8 @@ function button_verify(interaction, lang, wiki) {
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
-			if ( wiki.isWikimedia() ) oauth.push('wikimedia');
-			if ( wiki.isMiraheze() ) oauth.push('miraheze');
+			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
+			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				console.log( interaction.guildId + ': Button: ' + interaction.customId + ': OAuth2' );
 				return interaction.update( {components: [new MessageActionRow().addComponents(

@@ -1,6 +1,7 @@
 import { readdir } from 'node:fs';
 import { domainToASCII } from 'node:url';
 import { Util } from 'discord.js';
+import { inputToWikiProject } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
 import { got, splitMessage, partialURIdecode } from './functions.js';
@@ -8,7 +9,7 @@ import check_wiki_general from '../cmds/wiki/general.js';
 import check_wiki_test from '../cmds/test.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
+const {limit: {command: commandLimit}, defaultSettings} = require('./default.json');
 const check_wiki = {
 	general: check_wiki_general,
 	test: check_wiki_test.run
@@ -104,15 +105,8 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
 		}
 		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}$/.test(domainToASCII(invoke.split('/')[0])) ) {
-			let project = wikiProjects.find( project => invoke.split('/')[0].endsWith( project.name ) );
-			if ( project ) {
-				let regex = invoke.match( new RegExp( '^!!' + project.regex + '$' ) );
-				if ( regex ) {
-					let scriptPath = project.scriptPath;
-					if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
-					return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + regex[1] + scriptPath), invoke + ' ');
-				}
-			}
+			let project = inputToWikiProject(invoke.slice(2));
+			if ( project ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(project.fullScriptPath), invoke + ' ');
 		}
 		return cmdmap.LINK(lang, msg, line, wiki);
 	} );
@@ -202,7 +196,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				} ) );
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
 					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
+					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
 						logging(wiki, msg.guildId, 'inline', 'interwiki');
 						var iw_parts = page.title.split(':');
 						var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
@@ -227,7 +221,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 		} );
 		
-		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
+		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.wikifarm === 'fandom' ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
 			context: {
 				guildId: msg.guildId
 			}
@@ -254,7 +248,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				var missing = [];
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
 					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) return;
+					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) return;
 					embeds.splice(embeds.indexOf(embed), 1);
 					if ( page.ns === 0 && !embed.section ) {
 						var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );

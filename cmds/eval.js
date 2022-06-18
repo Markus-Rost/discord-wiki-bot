@@ -115,7 +115,7 @@ function checkWiki(wiki) {
 			}, dberror => {
 				result.rcgcdb = dberror.toString();
 			} ),
-			( wiki.isFandom() ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
+			( wiki.wikifarm === 'fandom' ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'
 				}

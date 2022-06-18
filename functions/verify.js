@@ -40,7 +40,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 			embed: null
 		}
 	};
-	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.isFandom() ? '|usercontribs&ucprop=&uclimit=10&ucuser=' + encodeURIComponent( username ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
+	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.wikifarm === 'fandom' ? '|usercontribs&ucprop=&uclimit=10&ucuser=' + encodeURIComponent( username ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
 		context: {
 			guildId: channel.guildId
 		}
@@ -69,8 +69,8 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 		wiki.updateWiki(body.query.general);
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
-			if ( wiki.isWikimedia() ) oauth.push('wikimedia');
-			if ( wiki.isMiraheze() ) oauth.push('miraheze');
+			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
+			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				result.oauth = oauth;
 				return;
@@ -84,7 +84,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 			embed.setTitle( escapeFormatting( old_username || username ) ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', escapeFormatting( old_username || username )) ).addField( lang.get('verify.notice'), lang.get('verify.help_missing') );
 			result.content = lang.get('verify.user_missing_reply', escapeFormatting( old_username || username ));
 			result.add_button = false;
-			if ( wiki.isFandom() && !old_username ) return got.get( wiki + 'api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json', {
+			if ( wiki.wikifarm === 'fandom' && !old_username ) return got.get( wiki + 'api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json', {
 				context: {
 					guildId: channel.guildId
 				}
@@ -124,7 +124,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 		}
 		
 		var comment = [];
-		if ( wiki.isFandom() ) return got.get( 'https://community.fandom.com/wiki/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
+		if ( wiki.wikifarm === 'fandom' ) return got.get( 'https://community.fandom.com/wiki/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1&cache=' + Date.now(), {
 			responseType: 'text',
 			context: {
 				guildId: channel.guildId
@@ -209,7 +209,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 					let prefix = ( patreonGuildsPrefix.get(channel.guildId) ?? process.env.prefix );
 					var help_link = '';
 					if ( wiki.isGamepedia() ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( prefix !== '!wiki ' ? encodeURIComponent( prefix + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + Wiki.toTitle(username) + '&discord=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
-					else if ( wiki.isFandom() ) help_link = lang.get('verify.help_fandom') + '/' + Wiki.toTitle(username) + '?c=' + ( prefix !== '!wiki ' ? encodeURIComponent( prefix + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
+					else if ( wiki.wikifarm === 'fandom' ) help_link = lang.get('verify.help_fandom') + '/' + Wiki.toTitle(username) + '?c=' + ( prefix !== '!wiki ' ? encodeURIComponent( prefix + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
 					if ( help_link.length ) embed.addField( lang.get('verify.notice'), lang.get('verify.help_guide', help_link, queryuser.gender) + '\n' + help_link );
 					result.content = lang.get('verify.user_failed_reply', escapeFormatting(username), queryuser.gender);
 					return;

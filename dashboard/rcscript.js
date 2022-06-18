@@ -385,7 +385,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 						return res(`/guild/${guild}/rcscript/new`, 'wikiblocked', body.query.general.sitename, block.reason);
 					}
-					if ( settings.feeds && wiki.isFandom(false) ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+					if ( settings.feeds && wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						},
@@ -435,7 +435,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								text += `\n${lang.get('rcscript.lang')} \`${allLangs[settings.lang]}\``;
 								text += `\n${lang.get('rcscript.display')} \`${display_types[settings.display]}\``;
 								if ( enableFeeds && settings.feeds_only ) text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
-								if ( wiki.isFandom(false) ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
+								if ( wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
 								text += `\n<${new URL(`/guild/${guild}/rcscript/${configid}`, process.env.dashboard).href}>`;
 								sendMsg( {
 									type: 'notifyGuild', guild, text,
@@ -551,7 +551,8 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						if ( row.rcid === -1 ) {
 							text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
 						}
-						if ( new Wiki(row.wiki).isFandom(false) ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
+						let rowwiki = new Wiki(row.wiki);
+						if ( rowwiki.wikifarm === 'fandom' && !rowwiki.isGamepedia() ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
 						text += `\n<${new URL(`/guild/${guild}/rcscript`, process.env.dashboard).href}>`;
 						sendMsg( {
 							type: 'notifyGuild', guild, text
@@ -623,7 +624,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 							return res(`/guild/${guild}/rcscript/${type}`, 'wikiblocked', body.query.general.sitename, block.reason);
 						}
-						if ( settings.feeds && wiki.isFandom(false) ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+						if ( settings.feeds && wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
 							},

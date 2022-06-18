@@ -384,7 +384,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					return Promise.reject();
 				}
 				wiki.updateWiki(body.query.general);
-				if ( !wiki.isFandom() ) {
+				if ( wiki.wikifarm !== 'fandom' ) {
 					let lang = new Lang(( type === 'default' && settings.lang || row?.guildlang ));
 					let notice = [];
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
