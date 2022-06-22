@@ -45,7 +45,8 @@ const client = new Discord.Client( {
 		Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
 		Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
 		Discord.Intents.FLAGS.DIRECT_MESSAGES,
-		Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+		Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+		//Discord.Intents.FLAGS.MESSAGE_CONTENT
 	],
 	partials: [
 		'CHANNEL'
@@ -167,7 +168,7 @@ readdir( './interactions', (error, files) => {
 } );
 /*
 !test eval msg.client.api.applications(msg.client.user.id).commands.post( {
-	data: require('../interactions/commands.json')[0]
+	data: require('../interactions/commands/inline.json')
 } )
 */
 

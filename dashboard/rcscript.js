@@ -570,6 +570,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				|| !hasPerm(response.botPermissionsNew, 'MANAGE_WEBHOOKS') ) ) {
 					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				}
+				if ( settings.display > rcgcdwLimit.display && !response.patreon ) {
+					if ( row.display !== settings.display ) settings.display = rcgcdwLimit.display;
+				}
 				var hasDiff = false;
 				if ( newChannel ) hasDiff = true;
 				if ( row.wiki !== settings.wiki ) hasDiff = true;
