@@ -14,9 +14,14 @@ jobs:
         token: ${{ secrets.WIKIBOT_TOKEN }}
     - name: Update slash commands
       run: |
+        validlang=("en", "ja" "fr" "zh-TW" "no" "ro" "da" "ko" "nl" "ru" "uk" "el" "sv-SE" "hr" "pl" "tr" "vi" "hi" "zh-CN" "es-ES" "hu" "en-GB" "pt-BR" "de" "lt" "en-US" "cs" "fi" "bg" "th" "it")
         for language in interactions/i18n/*.json
         do
           language=$(basename $language .json)
+          if [[ ! " ${validlang[*]} " =~ " ${language} " ]]
+          then
+            continue
+          fi
           for file in `jq -r 'keys[]' interactions/i18n/$language.json`
           do
             if [[ "$file" =~ ^_ ]]

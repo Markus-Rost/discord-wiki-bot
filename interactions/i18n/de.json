@@ -7,7 +7,7 @@
 	},
 	"verify": {
 		"description": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
-		"name": "verify",
+		"name": "verifizieren",
 		"options[0].description": "Dein Benutzername im Wiki.",
 		"options[0].name": "benutzername"
 	}
