@@ -15,7 +15,8 @@
 		"zh-CN": "verify",
 		"zh-TW": "verify",
 		"es-ES": "verificar",
-		"id": "verifikasi"
+		"id": "verifikasi",
+		"pt-BR": "verificar"
 	},
 	"description": "Verify your Discord account with your wiki account.",
 	"description_localizations": {
@@ -31,7 +32,8 @@
 		"zh-CN": "使用你的wiki账号来验证你的Discord账号。",
 		"zh-TW": "使用您的wiki帳號驗證您的Discord帳號。",
 		"es-ES": "Verifica tu cuenta de Discord con tu cuenta wiki.",
-		"id": "Verifikasi akun Discord kamu dengan akun wiki."
+		"id": "Verifikasi akun Discord kamu dengan akun wiki.",
+		"pt-BR": "Verifique a sua conta do Discord na sua conta da wiki."
 	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
@@ -53,7 +55,8 @@
 				"zh-CN": "用户名",
 				"zh-TW": "使用者名稱",
 				"es-ES": "nombre_de_usuario",
-				"id": "username"
+				"id": "username",
+				"pt-BR": "nomedeusuario"
 			},
 			"description": "Your username on the wiki.",
 			"description_localizations": {
@@ -69,7 +72,8 @@
 				"zh-CN": "你在此wiki上的用户名。",
 				"zh-TW": "您在此wiki上的使用者名稱。",
 				"es-ES": "Tu nombre de usuario en el wiki.",
-				"id": "Nama pengguna kamu di wiki."
+				"id": "Nama pengguna kamu di wiki.",
+				"pt-BR": "Seu nome de usuário na wiki."
 			},
 			"required": false
 		}

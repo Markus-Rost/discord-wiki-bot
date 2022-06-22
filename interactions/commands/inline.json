@@ -32,7 +32,8 @@
 		"ru": "Разместите сообщение со встроенными вики-ссылками.",
 		"zh-CN": "发送一条带有行内wiki链接的消息。",
 		"zh-TW": "傳送含有行內wiki連結的訊息。",
-		"id": "Posting pesan dengan tautan wiki inline."
+		"id": "Posting pesan dengan tautan wiki inline.",
+		"pt-BR": "Posta uma mensagem com links da wiki embutidos na linha."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -54,7 +55,8 @@
 				"zh-CN": "文本",
 				"zh-TW": "文字",
 				"es-ES": "texto",
-				"id": "teks"
+				"id": "teks",
+				"pt-BR": "texto"
 			},
 			"description": "Text including wikitext links.",
 			"description_localizations": {
@@ -70,7 +72,8 @@
 				"zh-CN": "包含wikitext链接的文本。",
 				"zh-TW": "含有wikitext連結的文字。",
 				"es-ES": "Texto que incluye enlaces de wikitexto.",
-				"id": "Teks termasuk tautan wikitext."
+				"id": "Teks termasuk tautan wikitext.",
+				"pt-BR": "Texto incluindo links no estilo wikitexto."
 			},
 			"required": true
 		}
