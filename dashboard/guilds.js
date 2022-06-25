@@ -156,7 +156,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('#text .description').append(
 			$('<p>').html(dashboardLang.get('selector.invite', true, $('<code>').text(guild.name), $('<a>').attr('href', url))),
 			$('<a id="login-button">').attr('href', url).text(dashboardLang.get('general.invite')).prepend(
-				$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
+				$('<img alt="Discord">').attr('src', '/src/discord.svg')
 			)
 		);
 		addWidgets($, dashboardLang);
@@ -233,7 +233,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 			$('#text .description').append(
 				$('<p>').html(dashboardLang.get('selector.none', true, $('<code>'))),
 				$('<a id="login-button">').attr('href', url).text(dashboardLang.get('selector.switch')).prepend(
-					$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
+					$('<img alt="Discord">').attr('src', '/src/discord.svg')
 				)
 			);
 		}
