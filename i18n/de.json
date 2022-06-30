@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<Suchbegriff>",
-				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki."
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki:"
 			},
 			"diff": {
 				"id": {
@@ -317,6 +317,10 @@
 					"cmd": "settings wiki <Wiki>",
 					"desc": "Ich ändere das Standard-Wiki für diesen Server."
 				}
+			},
+			"subprefix": {
+				"cmd": "<Wiki> <Suchbegriff>",
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wiki:"
 			},
 			"test": {
 				"cmd": "test",
@@ -585,6 +589,7 @@
 		"currentlang": "Sprache:",
 		"currentprefix": "Präfix:",
 		"currentrole": "Minimale Rolle:",
+		"currentsubprefix": "Unterbefehl-Präfix `$1`:",
 		"currentwiki": "Standard-Wiki:",
 		"dashboard": {
 			"channel": "$1 hat die Einstellungen für $2 geändert.",
