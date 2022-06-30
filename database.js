@@ -60,6 +60,21 @@ CREATE INDEX idx_discord_patreon ON discord (
 )
 WHERE patreon IS NOT NULL;
 
+CREATE TABLE subprefix (
+    guild      TEXT NOT NULL
+                    REFERENCES discord (main) ON DELETE CASCADE,
+    prefixchar TEXT NOT NULL,
+    prefixwiki TEXT NOT NULL,
+    UNIQUE (
+        guild,
+        prefixchar
+    )
+);
+
+CREATE INDEX idx_subprefix_guild ON subprefix (
+    guild
+);
+
 CREATE TABLE verification (
     guild      TEXT    NOT NULL
                        REFERENCES discord (main) ON DELETE CASCADE,
@@ -159,7 +174,7 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
     wiki
 );
 
-INSERT INTO versions(type, version) VALUES('discord', 5)
+INSERT INTO versions(type, version) VALUES ('discord', 6)
 ON CONFLICT (type) DO UPDATE SET version = excluded.version;
 
 COMMIT TRANSACTION;
@@ -227,7 +242,29 @@ DROP INDEX idx_discord_voice;
 ALTER TABLE discord
 DROP COLUMN voice;
 
-INSERT INTO versions(type, version) VALUES('discord', 5)
+INSERT INTO versions(type, version) VALUES ('discord', 5)
+ON CONFLICT (type) DO UPDATE SET version = excluded.version;
+
+COMMIT TRANSACTION;
+`,`
+BEGIN TRANSACTION;
+
+CREATE TABLE subprefix (
+    guild      TEXT NOT NULL
+                    REFERENCES discord (main) ON DELETE CASCADE,
+    prefixchar TEXT NOT NULL,
+    prefixwiki TEXT NOT NULL,
+    UNIQUE (
+        guild,
+        prefixchar
+    )
+);
+
+CREATE INDEX idx_subprefix_guild ON subprefix (
+    guild
+);
+
+INSERT INTO versions(type, version) VALUES ('discord', 6)
 ON CONFLICT (type) DO UPDATE SET version = excluded.version;
 
 COMMIT TRANSACTION;

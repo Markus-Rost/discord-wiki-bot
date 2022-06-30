@@ -628,7 +628,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					if ( configid === i ) configid++;
 					else break;
 				}
-				db.query( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, '|' + channels.join('|') + '|', roles.map( role => role.prefix + role.id ).join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )] ).then( () => {
+				db.query( 'INSERT INTO verification(guild, configid, channel, role, editcount, postcount, usergroup, accountage, rename) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, '|' + channels.join('|') + '|', roles.map( role => role.prefix + role.id ).join('|'), settings.editcount, settings.postcount, settings.usergroup.join('|'), settings.accountage, ( settings.rename ? 1 : 0 )] ).then( () => {
 					console.log( `- Dashboard: Verification successfully added: ${guild}#${configid}` );
 					res(`/guild/${guild}/verification/${configid}`, 'save');
 					/*
@@ -937,7 +937,7 @@ function update_notices(res, userSettings, guild, type, settings) {
 					if ( !( settings.channel || flags || settings.success || settings.match ) ) {
 						return res(`/guild/${guild}/verification/${type}`, 'save');
 					}
-					return client.query( 'INSERT INTO verifynotice(guild, logchannel, flags, onsuccess, onmatch) VALUES($1, $2, $3, $4, $5)', [guild, settings.channel, flags, settings.success, settings.match] ).then( () => {
+					return client.query( 'INSERT INTO verifynotice(guild, logchannel, flags, onsuccess, onmatch) VALUES ($1, $2, $3, $4, $5)', [guild, settings.channel, flags, settings.success, settings.match] ).then( () => {
 						console.log( `- Dashboard: Verification notices successfully added: ${guild}` );
 						res(`/guild/${guild}/verification/${type}`, 'save');
 						return client.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[channel]}) => {

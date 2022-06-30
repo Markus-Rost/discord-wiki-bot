@@ -396,6 +396,7 @@ code,
 pre {
 	font-family: Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace;
 }
+kbd,
 code {
 	background: #2f3136;
 	padding: 1px 3px;
@@ -405,9 +406,16 @@ code {
 	white-space: pre-wrap;
 	font-size: 85%;
 }
+.theme-light kbd,
 .theme-light code {
 	background-color: #f2f3f5;
 	border-color: #e3e5e8;
+}
+kbd {
+	font-size: 120%;
+}
+.wb-settings-subprefix-label {
+	text-align: center;
 }
 li {
 	margin: 3px 0;
@@ -596,7 +604,7 @@ fieldset textarea {
 .wb-settings-permission:not(:first-of-type),
 .wb-settings-additional-select,
 .wb-settings-postcount:not(:nth-of-type(2)),
-#wb-settings-wiki-check-notice,
+.wb-settings-wiki-check-notice,
 button.addmore:not([hidden]) {
 	display: block;
 	margin-left: 20%;

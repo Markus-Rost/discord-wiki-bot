@@ -95,7 +95,7 @@ function update_user(res, user_id, type, oauth_id) {
 	} );
 	return db.query( 'SELECT FROM oauthusers WHERE userid = $1 AND site = $2', [user_id, oauth_id] ).then( ({rows:[row]}) => {
 		if ( type === 'disable' ) {
-			let sql = 'INSERT INTO oauthusers(userid, site, token) VALUES($1, $2, $3)';
+			let sql = 'INSERT INTO oauthusers(userid, site, token) VALUES ($1, $2, $3)';
 			if ( row ) sql = 'UPDATE oauthusers SET token = $3 WHERE userid = $1 AND site = $2';
 			return db.query( sql, [user_id, oauth_id, null] ).then( () => {
 				console.log( '- Dashboard: Successfully disabled ' + oauth_id + ' for ' + user_id + '.' );

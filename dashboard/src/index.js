@@ -39,6 +39,25 @@ for ( var b = 0; b < baseSelect.length; b++ ) {
 			} );
 		}
 	}
+	if ( baseSelect[b].classList.contains( 'wb-settings-project-subprefix' ) ) {
+		baseSelect[b].addEventListener( 'input', function() {
+			let idTemplate = 'wb-settings-wiki-subprefix-' + this.name.replace( 'subprefix_', '' );
+			if ( this.value ) {
+				this.parentElement.children[idTemplate].disabled = true;
+				this.parentElement.children[idTemplate].style.display = 'none';
+				this.parentElement.children[idTemplate + '-check'].disabled = true;
+				this.parentElement.children[idTemplate + '-check'].style.display = 'none';
+				this.parentElement.children[idTemplate + '-check-notice'].innerHTML = '';
+				this.parentElement.children[idTemplate + '-check-notice'].className = 'wb-settings-wiki-check-notice';
+			}
+			else {
+				this.parentElement.children[idTemplate].disabled = false;
+				this.parentElement.children[idTemplate].style.display = null;
+				this.parentElement.children[idTemplate + '-check'].disabled = false;
+				this.parentElement.children[idTemplate + '-check'].style.display = null;
+			}
+		} );
+	}
 	if ( baseSelect[b].parentElement.parentElement.querySelector('button.addmore') ) {
 		baseSelect[b].addEventListener( 'input', toggleOption );
 		toggleOption.call(baseSelect[b]);
@@ -128,9 +147,9 @@ var divTemp = document.createElement('div');
 divTemp.innerHTML = '<input type="url" value="invalid">';
 const validationMessageInvalidURL = divTemp.firstChild.validationMessage;
 
-/** @type {HTMLInputElement} */
-const wiki = document.getElementById('wb-settings-wiki');
-if ( wiki ) {
+/** @type {HTMLCollectionOf<HTMLInputElement>} */
+const wikis = document.getElementsByClassName('wb-settings-wiki');
+for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 	wiki.addEventListener( 'input', function() {
 		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
 			if ( this.validity.valid ) {
@@ -140,9 +159,9 @@ if ( wiki ) {
 		else this.setCustomValidity('');
 	} );
 	/** @type {HTMLButtonElement} */
-	const wikicheck = document.getElementById('wb-settings-wiki-check');
+	const wikicheck = wiki.parentElement.children[wiki.id + '-check'];
 	/** @type {HTMLDivElement} */
-	const wikichecknotice = document.getElementById('wb-settings-wiki-check-notice');
+	const wikichecknotice = wiki.parentElement.children[wiki.id + '-check-notice'];
 	if ( wikicheck && wikichecknotice ) {
 		wikicheck.onclick = function() {
 			var wikinew = wiki.value.replace( /^(?:https?:)?\/\//, '' );
@@ -170,7 +189,7 @@ if ( wiki ) {
 					console.log('Error: The server did not respond correctly.');
 					return;
 				}
-				wikichecknotice.className = 'notice';
+				wikichecknotice.className = ['wb-settings-wiki-check-notice', 'notice'].join(' ');
 				wikichecknotice.innerHTML = '';
 				var noticeExtraParts = [];
 				if ( response.sitename ) {
@@ -257,21 +276,19 @@ if ( wiki ) {
 				var noticeTitle = document.createElement('b');
 				noticeTitle.textContent = lang('valid.title');
 				wikichecknotice.append(noticeTitle);
-				if ( !/\.(?:gamepedia\.com|fandom\.com|wikia\.org)$/.test(wiki.value.split('/')[2]) ) {
-					if ( !response.MediaWiki ) {
-						var noticeLink = document.createElement('a');
-						noticeLink.target = '_blank';
-						noticeLink.href = 'https://www.mediawiki.org/wiki/MediaWiki_1.30';
-						noticeLink.textContent = 'MediaWiki 1.30';
-						var noticeText = document.createElement('div');
-						var textSnippets = lang('valid.MediaWiki').split(/\$\d/);
-						noticeText.append(
-							document.createTextNode(textSnippets[0]),
-							noticeLink,
-							document.createTextNode(textSnippets[1])
-						);
-						wikichecknotice.append(noticeText);
-					}
+				if ( !response.MediaWiki ) {
+					var noticeLink = document.createElement('a');
+					noticeLink.target = '_blank';
+					noticeLink.href = 'https://www.mediawiki.org/wiki/MediaWiki_1.30';
+					noticeLink.textContent = 'MediaWiki 1.30';
+					var noticeText = document.createElement('div');
+					var textSnippets = lang('valid.MediaWiki').split(/\$\d/);
+					noticeText.append(
+						document.createTextNode(textSnippets[0]),
+						noticeLink,
+						document.createTextNode(textSnippets[1])
+					);
+					wikichecknotice.append(noticeText);
 				}
 				if ( noticeExtraParts.length ) wikichecknotice.append(...noticeExtraParts);
 			}, function(error) {
@@ -282,39 +299,41 @@ if ( wiki ) {
 			} );
 		};
 	}
-	/** @type {HTMLInputElement} */
-	const feeds = document.getElementById('wb-settings-feeds');
-	if ( feeds ) {
-		/** @type {HTMLDivElement} */
-		const hidefeeds = document.getElementById('wb-settings-feeds-hide');
+	if ( wiki.id === 'wb-settings-wiki' ) {
 		/** @type {HTMLInputElement} */
-		const feedsonly = document.getElementById('wb-settings-feeds-only');
-		/** @type {HTMLDivElement} */
-		const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
-		feeds.addEventListener( 'change', function() {
-			if ( this.checked ) {
-				hidefeedsonly.style.visibility = '';
-				if ( !hidefeeds.style.visibility ) feedsonly.disabled = false;
-			}
-			else {
-				hidefeedsonly.style.visibility = 'hidden';
-				feedsonly.disabled = true;
-			}
-		} );
-		wiki.addEventListener( 'input', function() {
-			if ( this.validity.valid && /\.(?:fandom\.com|wikia\.org)$/.test(this.value.split('/')[2]) ) {
-				hidefeeds.style.visibility = '';
-				feeds.disabled = false;
-				if ( !hidefeedsonly.style.visibility ) feedsonly.disabled = false;
-			}
-			else {
-				hidefeeds.style.visibility = 'hidden';
-				feeds.disabled = true;
-				feedsonly.disabled = true;
-			}
-		} );
+		const feeds = document.getElementById('wb-settings-feeds');
+		if ( feeds ) {
+			/** @type {HTMLDivElement} */
+			const hidefeeds = document.getElementById('wb-settings-feeds-hide');
+			/** @type {HTMLInputElement} */
+			const feedsonly = document.getElementById('wb-settings-feeds-only');
+			/** @type {HTMLDivElement} */
+			const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
+			feeds.addEventListener( 'change', function() {
+				if ( this.checked ) {
+					hidefeedsonly.style.visibility = '';
+					if ( !hidefeeds.style.visibility ) feedsonly.disabled = false;
+				}
+				else {
+					hidefeedsonly.style.visibility = 'hidden';
+					feedsonly.disabled = true;
+				}
+			} );
+			wiki.addEventListener( 'input', function() {
+				if ( this.validity.valid && this.value.split('/')[2].endsWith( '.fandom.com' ) ) {
+					hidefeeds.style.visibility = '';
+					feeds.disabled = false;
+					if ( !hidefeedsonly.style.visibility ) feedsonly.disabled = false;
+				}
+				else {
+					hidefeeds.style.visibility = 'hidden';
+					feeds.disabled = true;
+					feedsonly.disabled = true;
+				}
+			} );
+		}
 	}
-}
+})(wikis[w]);
 
 /** @type {HTMLInputElement} */
 const logall = document.getElementById('wb-settings-flag_logall');

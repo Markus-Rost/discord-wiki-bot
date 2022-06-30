@@ -18,10 +18,10 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required autocomplete="url">'
-	+ '<datalist id="wb-settings-wiki-list"></datalist>'
-	+ '<button type="button" id="wb-settings-wiki-check">Check wiki</button>'
-	+ '<div id="wb-settings-wiki-check-notice"></div>',
+	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required autocomplete="url">'
+	+ '<datalist id="wb-settings-wiki-list" class="wb-settings-wiki-list"></datalist>'
+	+ '<button type="button" id="wb-settings-wiki-check" class="wb-settings-wiki-check">Check wiki</button>'
+	+ '<div id="wb-settings-wiki-check-notice" class="wb-settings-wiki-check-notice"></div>',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
 	//+ '<fieldset style="display: none;">'
 	//+ '<legend>Wiki search</legend>'
@@ -426,7 +426,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								if ( configid === i ) configid++;
 								else break;
 							}
-							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, rcid, postid) VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
+							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, rcid, postid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( `- Dashboard: RcGcDw successfully added: ${guild}#${configid}` );
 								res(`/guild/${guild}/rcscript/${configid}`, 'save');
 								var text = lang.get('rcscript.dashboard.added', `<@${userSettings.user.id}>`, configid);

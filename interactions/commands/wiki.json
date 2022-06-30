@@ -1,0 +1,29 @@
+{
+	"id": "",
+	"application_id": "",
+	"name": "inline",
+	"description": "Post a wiki link.",
+	"default_permission": true,
+	"default_member_permissions": "68608",
+	"dm_permission": true,
+	"options": [
+		{
+			"type": 3,
+			"name": "title",
+			"description": "Page title to search for.",
+			"required": true
+		},
+		{
+			"type": 5,
+			"name": "noembed",
+			"description": "Send only the link without embed?",
+			"required": false
+		},
+		{
+			"type": 5,
+			"name": "spoiler",
+			"description": "Hide the link and embed in a spoiler?",
+			"required": false
+		}
+	]
+}

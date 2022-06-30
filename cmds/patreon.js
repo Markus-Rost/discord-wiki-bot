@@ -40,7 +40,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( row.count <= row.guilds ) return msg.replyMsg( 'You already reached your maximal server count.', true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 			db.query( 'UPDATE discord SET patreon = $1 WHERE guild = $2 AND channel IS NULL', [msg.author.id, args[1]] ).then( ({rowCount}) => {
-				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES($1, $1, $2)', [args[1], msg.author.id] ).then( () => {
+				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES ($1, $1, $2)', [args[1], msg.author.id] ).then( () => {
 					console.log( '- Guild successfully added.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
 						patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
@@ -117,7 +117,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 								shard: shardIdForGuildId(args[1], msg.client.shard.count)
 							} ).then( channels => {
 								if ( channels.length ) return Promise.all(channels.map( channel => {
-									return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, args[1], channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
+									return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, args[1], channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
 										if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
 											console.log( '- Error while adding category settings to channels: ' + dberror );
 										}
@@ -284,7 +284,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 						}, {context: {rows, guilds}} ).then( response => {
 							var channels = [].concat(...response);
 							if ( channels.length ) return Promise.all(channels.map( channel => {
-								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, channel.guild, channel.id, channel.lang, channel.role, channel.inline, process.env.prefix] ).catch( dberror => {
+								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, channel.guild, channel.id, channel.lang, channel.role, channel.inline, process.env.prefix] ).catch( dberror => {
 									if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
 										console.log( '- Error while adding category settings to channels: ' + dberror );
 									}
@@ -343,7 +343,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			console.log( '- Error while connecting to the database client: ' + dberror );
 			msg.replyMsg( 'I got an error while updating <@' + args[1] + '>, please try again later.', true );
 		} );
-		if ( !row ) return db.query( 'INSERT INTO patreons(patreon, count) VALUES($1, $2)', [args[1], count] ).then( () => {
+		if ( !row ) return db.query( 'INSERT INTO patreons(patreon, count) VALUES ($1, $2)', [args[1], count] ).then( () => {
 			console.log( '- Patreon successfully added.' );
 			msg.replyMsg( '<@' + args[1] + '> can now have up to ' + count + ' servers.', true );
 		}, dberror => {

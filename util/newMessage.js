@@ -1,7 +1,7 @@
 import { readdir } from 'node:fs';
 import { domainToASCII } from 'node:url';
 import { Util } from 'discord.js';
-import { inputToWikiProject } from 'mediawiki-projects-list';
+import { inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
 import { got, splitMessage, partialURIdecode } from './functions.js';
@@ -36,10 +36,14 @@ readdir( './cmds', (error, files) => {
  * @param {Wiki} [wiki] - The default wiki.
  * @param {String} [prefix] - The prefix for the message.
  * @param {Boolean} [noInline] - Parse inline commands?
+ * @param {Map<String, String>} [subprefixes] - Parse inline commands?
  * @param {String} [content] - Overwrite for the message content.
  */
-export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, content = '') {
+export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), content = '') {
 	wiki = new Wiki(wiki);
+	msg.wikiPrefixes = new Map();
+	subprefixes.forEach( (prefixwiki, prefixchar) => msg.wikiPrefixes.set(prefixwiki, prefixchar) );
+	msg.wikiPrefixes.set(wiki.href, '');
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
 	var cleanCont = ( content ? Util.cleanContent(content, msg) : msg.cleanContent );
@@ -89,24 +93,15 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
-		if ( invoke.startsWith( '!' ) && /^![a-z\d-]{1,50}$/.test(invoke) ) {
-			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + invoke.substring(1) + '.gamepedia.com/'), invoke + ' ');
-		}
-		if ( invoke.startsWith( '?' ) && /^\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-			let invokeWiki = wiki;
-			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
-			else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
-			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
-		}
-		if ( invoke.startsWith( '??' ) && /^\?\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-			let invokeWiki = wiki;
-			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
-			else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
-			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
+		if ( subprefixes.has(invoke[0]) ) {
+			let subprefix = subprefixes.get(invoke[0]);
+			if ( subprefix.startsWith( 'https://' ) ) return cmdmap.LINK(lang, msg, line.substring(1), new Wiki(subprefix), ( subprefix === wiki.href ? '' : invoke[0] ));
+			let subprefixUrl = idStringToUrl(invoke.substring(1), subprefix);
+			if ( subprefixUrl ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(subprefixUrl), ( subprefixUrl === wiki.href ? '' : invoke + ' ' ));
 		}
 		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}$/.test(domainToASCII(invoke.split('/')[0])) ) {
 			let project = inputToWikiProject(invoke.slice(2));
-			if ( project ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(project.fullScriptPath), invoke + ' ');
+			if ( project ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(project.fullScriptPath), ( project.fullScriptPath === wiki.href ? '' : invoke + ' ' ));
 		}
 		return cmdmap.LINK(lang, msg, line, wiki);
 	} );

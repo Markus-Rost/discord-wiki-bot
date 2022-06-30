@@ -1,8 +1,16 @@
 import { inspect } from 'node:util';
-import { inputToWikiProject } from 'mediawiki-projects-list';
+import { wikiProjects, inputToWikiProject } from 'mediawiki-projects-list';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
+
+// Remove wikis with notes
+wikiProjects.filter( project => project.note ).forEach( project => {
+	if ( globalThis.isDebug ) {
+		console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
+	}
+	wikiProjects.splice( wikiProjects.indexOf( project ), 1 );
+} );
 
 /**
  * A wiki.
@@ -240,7 +248,10 @@ export default class Wiki extends URL {
 			articleURL: this.articleURL,
 			spaceReplacement: this.spaceReplacement,
 			mainpage: this.mainpage,
-			mainpageisdomainroot: this.mainpageisdomainroot,
+			centralauth: this.centralauth,
+			oauth2: this.oauth2,
+			wikifarm: this.wikifarm,
+			gamepedia: this.gamepedia,
 		}
 		return 'Wiki ' + inspect(wiki, opts);
 	}

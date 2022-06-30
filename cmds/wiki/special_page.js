@@ -141,6 +141,7 @@ const descriptions = {
 	categorytree: 'categorytree-header',
 	drafts: 'drafts-view-summary&amargs=30',
 	analytics: 'analytics_confidential',
+	jspages: 'content-review-special-js-description',
 	mostlinkedfilesincontent: 'mostimagesincontent-summary',
 	popularpages: 'insights-list-description-popularpages'
 }

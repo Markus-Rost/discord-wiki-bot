@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<search term>",
-				"desc": "I will answer with a link to a matching article in the wiki."
+				"desc": "I will answer with a link to a matching article in the wiki:"
 			},
 			"diff": {
 				"id": {
@@ -185,14 +185,6 @@
 					"cmd": "discussion <search term>",
 					"desc": "I will answer with a link to a matching discussion thread in the Fandom wiki."
 				}
-			},
-			"fandom": {
-				"cmd": "?<wiki> <search term>",
-				"desc": "I will answer with a link to a matching article in the named Fandom wiki: `https://<wiki>.fandom.com/`"
-			},
-			"gamepedia": {
-				"cmd": "!<wiki> <search term>",
-				"desc": "I will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
 				"admin": {
@@ -326,6 +318,10 @@
 					"desc": "I will change the default wiki for this server."
 				}
 			},
+			"subprefix": {
+				"cmd": "<wiki> <search term>",
+				"desc": "I will answer with a link to a matching article in the named wiki:"
+			},
 			"test": {
 				"cmd": "test",
 				"desc": "If I'm active, I'll answer! Otherwise not."
@@ -379,10 +375,6 @@
 			"verify": {
 				"cmd": "verify <wiki username>",
 				"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
-			},
-			"wikia": {
-				"cmd": "??<wiki> <search term>",
-				"desc": "I will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "You need the `Manage Server` permission for these commands!",
@@ -597,6 +589,7 @@
 		"currentlang": "Language:",
 		"currentprefix": "Prefix:",
 		"currentrole": "Minimal role:",
+		"currentsubprefix": "Subprefix `$1`:",
 		"currentwiki": "Default wiki:",
 		"dashboard": {
 			"channel": "$1 updated the settings for $2.",

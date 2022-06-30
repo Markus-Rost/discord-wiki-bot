@@ -61,7 +61,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( new_configid === i ) new_configid++;
 				else break;
 			}
-			return db.query( 'INSERT INTO verification(guild, configid, channel, role) VALUES($1, $2, $3, $4)', [msg.guildId, new_configid, '|' + ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId ) + '|', roles] ).then( () => {
+			return db.query( 'INSERT INTO verification(guild, configid, channel, role) VALUES ($1, $2, $3, $4)', [msg.guildId, new_configid, '|' + ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId ) + '|', roles] ).then( () => {
 				console.log( '- Verification successfully added.' );
 				/*
 				if ( !rows.length ) msg.client.application.commands.cache.find( slashCommand => slashCommand.name === 'verify' )?.permissions.set( {

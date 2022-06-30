@@ -213,6 +213,8 @@
 			"prefix_space": "Prefix ends with space:",
 			"role": "Minimal Role:",
 			"select_channel": "-- Select a Channel --",
+			"select_subprefix": "Set a specific wiki -->",
+			"subprefix": "Subcommand wiki prefix:",
 			"wiki": "Default Wiki:",
 			"wiki_check": "Check wiki"
 		},

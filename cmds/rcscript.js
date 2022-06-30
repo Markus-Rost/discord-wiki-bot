@@ -154,7 +154,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 								if ( new_configid === i ) new_configid++;
 								else break;
 							}
-							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES($1, $2, $3, $4, $5, $6, $7)', [msg.guildId, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), ( enableFeeds ? null : '-1' )] ).then( () => {
+							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES ($1, $2, $3, $4, $5, $6, $7)', [msg.guildId, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( '- RcGcDw successfully added.' );
 								if ( reaction ) reaction.removeEmoji();
 								msg.replyMsg( {content: lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', components}, true );
@@ -587,7 +587,7 @@ function blocklist(msg, args) {
 		let wiki = Wiki.fromInput(input);
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', true );
 		let reason = ( args.slice(2).join(' ').trim() || null );
-		return db.query( 'INSERT INTO blocklist(wiki, reason) VALUES($1, $2)', [wiki.href, reason] ).then( () => {
+		return db.query( 'INSERT INTO blocklist(wiki, reason) VALUES ($1, $2)', [wiki.href, reason] ).then( () => {
 			console.log( '- Successfully added to the blocklist.' );
 			db.query( 'DELETE FROM rcgcdw WHERE wiki = $1 RETURNING webhook, lang', [wiki.href] ).then( ({rows}) => {
 				console.log( '- Successfully removed ' + rows.length + ' webhooks.' );

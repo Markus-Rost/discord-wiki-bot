@@ -29,7 +29,11 @@
 	"defaultPermissions": "275817811008",
 	"defaultSettings": {
 		"lang": "en",
-		"wiki": "https://en.wikipedia.org/w/"
+		"wiki": "https://en.wikipedia.org/w/",
+		"subprefixes": [
+			["!", "wikipedia.org"],
+			["?", "fandom.com"]
+		]
 	},
 	"timeoptions": {
 		"year": "numeric",

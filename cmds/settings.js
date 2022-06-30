@@ -145,7 +145,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					var sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND wiki = $3';
 					var sqlargs = [wikinew.href, msg.guildId, guild.wiki];
 					if ( !rows.length ) {
-						sql = 'INSERT INTO discord(wiki, guild, main, lang) VALUES($1, $2, $2, $3)';
+						sql = 'INSERT INTO discord(wiki, guild, main, lang) VALUES ($1, $2, $2, $3)';
 						sqlargs[2] = lang.lang;
 					}
 					else if ( channel ) {
@@ -156,7 +156,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 								if ( reaction ) reaction.removeEmoji();
 								return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, embeds: [embed], components}, true );
 							}
-							sql = 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+							sql = 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 							sqlargs.push(guild.lang, guild.role, guild.inline, guild.prefix);
 						}
 					}
@@ -213,7 +213,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET lang = $1 WHERE guild = $2 AND lang = $3';
 			var sqlargs = [allLangs.map[args[1]], msg.guildId, guild.lang];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(lang, guild, main) VALUES($1, $2, $2)';
+				sql = 'INSERT INTO discord(lang, guild, main) VALUES ($1, $2, $2)';
 				sqlargs.pop();
 			}
 			else if ( channel ) {
@@ -223,7 +223,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					if ( channel.lang === allLangs.map[args[1]] ) {
 						return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang] + '`' + langhelp, files: ( msg.uploadFiles() ? [`./i18n/widgets/${channel.lang}.png`] : [] ), components}, true );
 					}
-					sql = 'INSERT INTO discord(lang, guild, channel, wiki, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+					sql = 'INSERT INTO discord(lang, guild, channel, wiki, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(guild.wiki, guild.role, guild.inline, guild.prefix);
 				}
 			}
@@ -271,7 +271,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET role = $1 WHERE guild = $2';
 			var sqlargs = [role, msg.guildId];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(role, guild, main, lang) VALUES($1, $2, $2, $3)';
+				sql = 'INSERT INTO discord(role, guild, main, lang) VALUES ($1, $2, $2, $3)';
 				sqlargs.push(lang.lang);
 			}
 			else if ( channel ) {
@@ -281,7 +281,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					if ( channel.role === role ) {
 						return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + ( channel.role ? `<@&${channel.role}>` : '@everyone' ) + rolehelp, components}, true );
 					}
-					sql = 'INSERT INTO discord(role, guild, channel, wiki, lang, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+					sql = 'INSERT INTO discord(role, guild, channel, wiki, lang, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(guild.wiki, guild.lang, guild.inline, guild.prefix);
 				}
 			}
@@ -329,7 +329,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET prefix = $1 WHERE guild = $2';
 			var sqlargs = [args[1], msg.guildId];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(prefix, guild, main, lang) VALUES($1, $2, $2, $3)';
+				sql = 'INSERT INTO discord(prefix, guild, main, lang) VALUES ($1, $2, $2, $3)';
 				sqlargs.push(lang.lang);
 			}
 			return db.query( sql, sqlargs ).then( () => {
@@ -358,14 +358,14 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET inline = $1 WHERE guild = $2';
 			var sqlargs = [value, msg.guildId];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(inline, guild, main, lang) VALUES($1, $2, $2, $3)';
+				sql = 'INSERT INTO discord(inline, guild, main, lang) VALUES ($1, $2, $2, $3)';
 				sqlargs.push(lang.lang);
 			}
 			else if ( channel ) {
 				sql = 'UPDATE discord SET inline = $1 WHERE guild = $2 AND channel = $3';
 				sqlargs.push(channelId);
 				if ( !rows.includes( channel ) ) {
-					sql = 'INSERT INTO discord(inline, guild, channel, wiki, lang, role, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+					sql = 'INSERT INTO discord(inline, guild, channel, wiki, lang, role, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(guild.wiki, guild.lang, guild.role, guild.prefix);
 				}
 			}

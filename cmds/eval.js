@@ -37,7 +37,11 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	function backdoor(cmdline) {
 		msg.evalUsed = true;
 		msg.onlyVerifyCommand = false;
-		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, cmdline);
+		let subprefixes = new Map();
+		msg.wikiPrefixes.forEach( (prefixchar, prefixwiki) => {
+			if ( prefixchar ) subprefixes.set(prefixchar, prefixwiki);
+		} );
+		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, cmdline);
 		return cmdline;
 	}
 }
@@ -218,7 +222,7 @@ function removePatreons(guild, msg) {
 							shard: Discord.ShardClientUtil.shardIdForGuildId(guild, msg.client.shard.count)
 						} ).then( channels => {
 							if ( channels.length ) return Promise.all(channels.map( channel => {
-								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, guild, channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
+								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, guild, channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
 									if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
 										console.log( '- Error while adding category settings to channels: ' + dberror );
 									}
