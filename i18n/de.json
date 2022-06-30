@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<Suchbegriff>",
-				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki."
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki:"
 			},
 			"diff": {
 				"id": {
@@ -185,14 +185,6 @@
 					"cmd": "discussion <Suchbegriff>",
 					"desc": "Ich antworte mit einem Link auf ein passendes Diskussionsthema im Fandom-Wiki."
 				}
-			},
-			"fandom": {
-				"cmd": "?<Wiki> <Suchbegriff>",
-				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Fandom-Wiki: `https://<Wiki>.fandom.com/`"
-			},
-			"gamepedia": {
-				"cmd": "!<Wiki> <Suchbegriff>",
-				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`"
 			},
 			"help": {
 				"admin": {
@@ -326,6 +318,10 @@
 					"desc": "Ich ändere das Standard-Wiki für diesen Server."
 				}
 			},
+			"subprefix": {
+				"cmd": "<Wiki> <Suchbegriff>",
+				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wiki:"
+			},
 			"test": {
 				"cmd": "test",
 				"desc": "Wenn ich gerade aktiv bin, werde ich antworten! Sonst nicht."
@@ -379,10 +375,6 @@
 			"verify": {
 				"cmd": "verify <Wiki-Benutzername>",
 				"desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
-			},
-			"wikia": {
-				"cmd": "??<Wiki> <Suchbegriff>",
-				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wikia-Wiki: `https://<Wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "Du benötigst die `Server verwalten`-Berechtigung für diese Befehle!",
@@ -597,6 +589,7 @@
 		"currentlang": "Sprache:",
 		"currentprefix": "Präfix:",
 		"currentrole": "Minimale Rolle:",
+		"currentsubprefix": "Unterbefehl-Präfix `$1`:",
 		"currentwiki": "Standard-Wiki:",
 		"dashboard": {
 			"channel": "$1 hat die Einstellungen für $2 geändert.",

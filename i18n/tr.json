@@ -186,14 +186,6 @@
 					"desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim."
 				}
 			},
-			"fandom": {
-				"cmd": "?<wiki> <arama terimi>",
-				"desc": "Belirtilen Fandom Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.fandom.com/`"
-			},
-			"gamepedia": {
-				"cmd": "!<wiki> <arama terimi>",
-				"desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",
@@ -379,10 +371,6 @@
 			"verify": {
 				"cmd": "verify <viki kullanıcı adı>",
 				"desc": "Discord hesabını viki hesabın ile doğrulamak ve viki hesabınla eşleşen rolleri almak için bu komutu kullan."
-			},
-			"wikia": {
-				"cmd": "??<wiki> <arama terimi>",
-				"desc": "Belirtilen Wikia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "Bu komutlar için `Sunucuyu Yönetme` iznine ihtiyacınız var!",

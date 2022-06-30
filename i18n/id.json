@@ -186,14 +186,6 @@
 					"desc": "Saya akan menjawab dengan tautan ke utas diskusi yang cocok di wiki Fandom."
 				}
 			},
-			"fandom": {
-				"cmd": "?<wiki> <istilah pencarian>",
-				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Fandom bernama: `https://<wiki>.fandom.com/`"
-			},
-			"gamepedia": {
-				"cmd": "!<wiki> <search term>",
-				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Gamepedia bernama: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",
@@ -379,10 +371,6 @@
 			"verify": {
 				"cmd": "verify <nama pengguna wiki>",
 				"desc": "Gunakan perintah ini untuk memverifikasi akun Discord kamu dengan akun wiki dan mendapatkan lah peran yang cocok dengan akun wiki Anda."
-			},
-			"wikia": {
-				"cmd": "??<wiki> <search term>",
-				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Wikia bernama: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "Kamu memerlukan izin `Kelola Server` untuk perintah ini!",

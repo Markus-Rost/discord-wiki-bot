@@ -186,14 +186,6 @@
 					"desc": "Odpowiem linkiem do odpowiadającego wątku w dyskusji na wiki na Fandomie."
 				}
 			},
-			"fandom": {
-				"cmd": "?<wiki> <wyszukiwana fraza>",
-				"desc": "Odpowiem z pasującym linkiem do podanej wiki na Fandomie: `https://<wiki>.fandom.com/`"
-			},
-			"gamepedia": {
-				"cmd": "!<wiki> <wyszukiwana fraza>",
-				"desc": "Odpowiem z pasującym linkiem do podanej wiki na Gamepedii: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",
@@ -379,10 +371,6 @@
 			"verify": {
 				"cmd": "verify <nazwa użytkownika na wiki>",
 				"desc": "Użyj tej komendy do weryfikacji konta Discord kontem na wiki, oraz zdobycia ról odpowiednich dla Twojego konta na wiki."
-			},
-			"wikia": {
-				"cmd": "??<wiki> <wyszukiwana fraza>",
-				"desc": "Odpowiem z pasującym linkiem do podanej wiki na Wikia: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "Potrzebujesz uprawnienia `Zarządzanie serwerem` aby używać tych komend!",

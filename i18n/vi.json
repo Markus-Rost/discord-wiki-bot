@@ -186,14 +186,6 @@
 					"desc": "Tôi sẽ trả lời bạn đường liên kết tới bài thảo luận tương ứng trên wiki Fandom."
 				}
 			},
-			"fandom": {
-				"cmd": "?<tiền tố wiki> <từ khóa>",
-				"desc": "Tôi sẽ trả lời bạn đường liên kết tới trang bài viết trên wiki Fandom tương ứng: ."
-			},
-			"gamepedia": {
-				"cmd": "!<tiền tố wiki> <từ khóa>",
-				"desc": "Tôi sẽ trả lời bạn đường liên kết tới bài viết trên wiki Gamepedia tương ứng: ``"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

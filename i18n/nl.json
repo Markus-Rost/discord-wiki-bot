@@ -181,14 +181,6 @@
 					"desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki."
 				}
 			},
-			"fandom": {
-				"cmd": "?<wiki> <zoek term>",
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`"
-			},
-			"gamepedia": {
-				"cmd": "!<wiki> <zoek term>",
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",
@@ -276,10 +268,6 @@
 			"user": {
 				"cmd": "Gebruiker:<gebruikersnaam>",
 				"desc": "Ik zal wat informatie over de gebruiker weergeven."
-			},
-			"wikia": {
-				"cmd": "??<wiki> <zoek term>",
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "je hebt de `Beheer Server` permissie nodig voor deze opdrachten!",
