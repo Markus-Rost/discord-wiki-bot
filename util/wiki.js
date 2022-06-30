@@ -127,6 +127,7 @@ export default class Wiki extends URL {
 	 */
 	noWiki(message = '', statusCode = 0) {
 		if ( statusCode === 410 || statusCode === 404 ) return true;
+		if ( message === 'getaddrinfo ENOTFOUND ' + this.hostname ) return true;
 		if ( this.wikifarm !== 'fandom' ) return false;
 		if ( this.hostname.startsWith( 'www.' ) || message.startsWith( 'https://www.' ) ) return true;
 		return [
