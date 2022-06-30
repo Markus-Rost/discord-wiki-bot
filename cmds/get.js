@@ -46,10 +46,14 @@ async function cmd_get(lang, msg, args, line, wiki) {
 			var guildchannel = ['Updates channel:', '`' + guild.channel + '`'];
 			var guildsettings = ['Settings:', '*unknown*'];
 			
-			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel ASC NULLS FIRST', [guild.id] ).then( ({rows}) => {
+			return db.query( 'SELECT channel, wiki, lang, role, inline, prefix, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel ASC NULLS FIRST', [guild.id] ).then( ({rows}) => {
 				if ( rows.length ) {
 					let row = rows.find( row => !row.channel );
 					row.patreon = patreonGuildsPrefix.has(guild.id);
+					let subprefixes = {};
+					row.subprefixes.forEach( subprefix => subprefixes[subprefix[0]] = subprefix[1] );
+					row.subprefixes = subprefixes;
+					rows.filter( row => row.channel ).forEach( row => delete row.subprefixes );
 					guildsettings[1] = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 				}
 				else guildsettings[1] = '*default*';
