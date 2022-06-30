@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <キーワード>",
 				"desc": "名前のついたFandom wikiの一致する記事へのリンクでお答えします：`https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <キーワード>",
 				"desc": "名前のついたGamepedia wikiの一致する記事へのリンクでお答えします： `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -381,7 +379,6 @@
 				"desc": "このコマンドを使用して、DiscordアカウントとWikiアカウントを照合し、Wikiアカウントに一致するロールを取得します。"
 			},
 			"wikia": {
-				"cmd": "??<wiki> <検索キーワード>",
 				"desc": "選択したWikia wikiの関連記事へのリンクを返信します：`https://<wiki>.wikia.org/`"
 			}
 		},

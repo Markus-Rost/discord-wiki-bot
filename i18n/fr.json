@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <terme de recherche>",
 				"desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Fandom nommé : `https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <terme de recherche>",
 				"desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Gamepedia nommé : `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -381,7 +379,6 @@
 				"desc": "Utilisez cette commande pour lier votre compte Discord avec votre compte wiki et obtenir les rôles correspondants."
 			},
 			"wikia": {
-				"cmd": "??<wiki> <terme de recherche>",
 				"desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Wikia nommé : `https://<wiki>.wikia.org/`"
 			}
 		},

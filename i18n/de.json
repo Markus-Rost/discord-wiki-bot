@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<Wiki> <Suchbegriff>",
 				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Fandom-Wiki: `https://<Wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<Wiki> <Suchbegriff>",
 				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -381,7 +379,6 @@
 				"desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
 			},
 			"wikia": {
-				"cmd": "??<Wiki> <Suchbegriff>",
 				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wikia-Wiki: `https://<Wiki>.wikia.org/`"
 			}
 		},

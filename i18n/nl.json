@@ -182,11 +182,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <zoek term>",
 				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Fandom wiki: `https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <zoek term>",
 				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -278,7 +276,6 @@
 				"desc": "Ik zal wat informatie over de gebruiker weergeven."
 			},
 			"wikia": {
-				"cmd": "??<wiki> <zoek term>",
 				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Wikia wiki: `https://<wiki>.wikia.org/`"
 			}
 		},

@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <关键词>",
 				"desc": "我将返回特定 Fandom wiki 的指定页面的链接：`https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <关键字>",
 				"desc": "我将返回特定 Gamepedia wiki 指定页面的链接：`https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -381,7 +379,6 @@
 				"desc": "使用此命令来验证您的 Discord 账号和您的 wiki 账号，并获取您的 wiki 账号对应的身份组。"
 			},
 			"wikia": {
-				"cmd": "??<wiki> <关键词>",
 				"desc": "我将返回特定的 org 域名下的 wiki 的指定页面的链接：`https://<wiki>.wikia.org/`"
 			}
 		},

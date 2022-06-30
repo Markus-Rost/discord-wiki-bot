@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <término de búsqueda >",
 				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Fandom llamado: `https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <término de búsqueda >",
 				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Gamepedia llamado: `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -381,7 +379,6 @@
 				"desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
 			},
 			"wikia": {
-				"cmd": "??<wiki> <término de búsqueda>",
 				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Wikia llamado: `https://<wiki>.wikia.org/`"
 			}
 		},

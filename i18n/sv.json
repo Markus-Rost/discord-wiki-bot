@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <sökterm>",
 				"desc": "Jag kommer att svara med en länk till en passande artikel från Fandom wikin: `https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <sökterm>",
 				"desc": "Jag kommer att svara med en länk till en passande artikel från Gamepedia wikin: `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -377,7 +375,6 @@
 				"desc": "Använd detta kommando för att verifiera ditt Discord- med ditt wiki-konto och få roller som matchar ditt wiki-konto."
 			},
 			"wikia": {
-				"cmd": "??<wiki> <sökterm>",
 				"desc": "Jag kommer att svara med en länk till en matchande artikel med namnet på Wikia-wikin: `https://<wiki>.wikia.org/`"
 			}
 		},

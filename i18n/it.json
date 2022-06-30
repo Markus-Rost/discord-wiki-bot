@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <termine di ricerca>",
 				"desc": "Ti risponderò con un collegamento all'articolo corrispondente sulla wiki di Fandom richiesta: `https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <termine di ricerca>",
 				"desc": "Ti risponderò con un collegamento all'articolo corrispondente sulla wiki di Gamepedia richiesta: `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -381,7 +379,6 @@
 				"desc": "Usa questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
 			},
 			"wikia": {
-				"cmd": "??<wiki> <termine di ricerca>",
 				"desc": "Ti risponderò con un collegamento all'articolo corrispondente sulla wiki di Wikia richiesta: `https://<wiki>.wikia.org/`"
 			}
 		},

@@ -187,11 +187,9 @@
 				}
 			},
 			"fandom": {
-				"cmd": "?<wiki> <termo de pesquisa>",
 				"desc": "Vou responder com um link para um artigo correspondente em uma wiki da Fandom: `https://<wiki>.fandom.com/`"
 			},
 			"gamepedia": {
-				"cmd": "!<wiki> <termo de pesquisa>",
 				"desc": "Vou responder com um link para um artigo correspondente em uma wiki da Gamepedia: `https://<wiki>.gamepedia.com/`"
 			},
 			"help": {
@@ -381,7 +379,6 @@
 				"desc": "Use este comando para verificar sua conta do Discord com a sua conta wiki e obter cargos correspondentes à sua conta na wiki."
 			},
 			"wikia": {
-				"cmd": "??<wiki> <termo de pesquisa>",
 				"desc": "Vou responder com um link para um artigo correspondente na wiki da Wikia: `https://<wiki>.wikia.org/`"
 			}
 		},
