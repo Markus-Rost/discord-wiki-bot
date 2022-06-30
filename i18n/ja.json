@@ -186,9 +186,6 @@
 					"desc": "Fandom Wikiの一致するディスカッションスレッドへのリンクでお答えします。"
 				}
 			},
-			"fandom": {
-				"desc": "名前のついたFandom wikiの一致する記事へのリンクでお答えします：`https://<wiki>.fandom.com/`"
-			},
 			"gamepedia": {
 				"desc": "名前のついたGamepedia wikiの一致する記事へのリンクでお答えします： `https://<wiki>.gamepedia.com/`"
 			},
@@ -377,9 +374,6 @@
 			"verify": {
 				"cmd": "verify <Wikiユーザー名>",
 				"desc": "このコマンドを使用して、DiscordアカウントとWikiアカウントを照合し、Wikiアカウントに一致するロールを取得します。"
-			},
-			"wikia": {
-				"desc": "選択したWikia wikiの関連記事へのリンクを返信します：`https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "これらのコマンドを実行するには、`Manage Server`のパーミッションが必要です！",

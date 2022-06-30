@@ -186,9 +186,6 @@
 					"desc": "Vou responder com um link para um tópico de discussão correspondente na wiki da Fandom."
 				}
 			},
-			"fandom": {
-				"desc": "Vou responder com um link para um artigo correspondente em uma wiki da Fandom: `https://<wiki>.fandom.com/`"
-			},
 			"gamepedia": {
 				"desc": "Vou responder com um link para um artigo correspondente em uma wiki da Gamepedia: `https://<wiki>.gamepedia.com/`"
 			},
@@ -377,9 +374,6 @@
 			"verify": {
 				"cmd": "verify <nome de usuário da wiki>",
 				"desc": "Use este comando para verificar sua conta do Discord com a sua conta wiki e obter cargos correspondentes à sua conta na wiki."
-			},
-			"wikia": {
-				"desc": "Vou responder com um link para um artigo correspondente na wiki da Wikia: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "Você precisa da permissão de `Gerenciar servidor` para esses comandos!",

@@ -186,9 +186,6 @@
 					"desc": "我將返回在相關 Fandom wiki 中的討論。"
 				}
 			},
-			"fandom": {
-				"desc": "我將返回特定 Fandom wiki 的指定頁面的連結：`https://<wiki>.fandom.com/`"
-			},
 			"gamepedia": {
 				"desc": "我將返回特定 Gamepedia wiki 指定頁面的連結：`https://<wiki>.gamepedia.com/`"
 			},
@@ -377,9 +374,6 @@
 			"verify": {
 				"cmd": "verify <wiki 使用者名稱>",
 				"desc": "使用此指令來驗證您的 Discord 帳號和您的 wiki 帳號，並取得您的 wiki 帳號對應的身分組。"
-			},
-			"wikia": {
-				"desc": "我將返回特定的 org 域名下的 wiki 的指定頁面的連結：`https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "這個指令僅限擁有`管理伺服器`權限的使用者使用！",

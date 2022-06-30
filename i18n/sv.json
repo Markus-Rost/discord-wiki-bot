@@ -186,9 +186,6 @@
 					"desc": "Jag kommer svara med en länk till en passande diskussionstråd på Fandom-wikin."
 				}
 			},
-			"fandom": {
-				"desc": "Jag kommer att svara med en länk till en passande artikel från Fandom wikin: `https://<wiki>.fandom.com/`"
-			},
 			"gamepedia": {
 				"desc": "Jag kommer att svara med en länk till en passande artikel från Gamepedia wikin: `https://<wiki>.gamepedia.com/`"
 			},
@@ -373,9 +370,6 @@
 			"verify": {
 				"cmd": "verify <wiki användarnamn>",
 				"desc": "Använd detta kommando för att verifiera ditt Discord- med ditt wiki-konto och få roller som matchar ditt wiki-konto."
-			},
-			"wikia": {
-				"desc": "Jag kommer att svara med en länk till en matchande artikel med namnet på Wikia-wikin: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "du behöver behörigheten `Hantera Server` för att kunna utföra dessa kommandon!",

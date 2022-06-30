@@ -186,9 +186,6 @@
 					"desc": "Responderé con un enlace a un hilo de la página de discusiones que coincida en el wiki de Fandom."
 				}
 			},
-			"fandom": {
-				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Fandom llamado: `https://<wiki>.fandom.com/`"
-			},
 			"gamepedia": {
 				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Gamepedia llamado: `https://<wiki>.gamepedia.com/`"
 			},
@@ -377,9 +374,6 @@
 			"verify": {
 				"cmd": "verify <nombre de usuario wiki>",
 				"desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
-			},
-			"wikia": {
-				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Wikia llamado: `https://<wiki>.wikia.org/`"
 			}
 		},
 		"noadmin": "¡Necesitas el permiso `Manage Server` para estos comandos!",
