@@ -186,9 +186,6 @@
 					"desc": "Je répondrais avec un lien vers un fil de discussion correspondant sur le wiki Fandom."
 				}
 			},
-			"gamepedia": {
-				"desc": "Je vais répondre avec un lien vers un article correspondant sur wiki Gamepedia nommé : `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

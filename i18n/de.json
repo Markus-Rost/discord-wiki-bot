@@ -186,9 +186,6 @@
 					"desc": "Ich antworte mit einem Link auf ein passendes Diskussionsthema im Fandom-Wiki."
 				}
 			},
-			"gamepedia": {
-				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Gamepedia-Wiki: `https://<Wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

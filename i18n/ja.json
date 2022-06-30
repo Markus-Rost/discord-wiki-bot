@@ -186,9 +186,6 @@
 					"desc": "Fandom Wikiの一致するディスカッションスレッドへのリンクでお答えします。"
 				}
 			},
-			"gamepedia": {
-				"desc": "名前のついたGamepedia wikiの一致する記事へのリンクでお答えします： `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

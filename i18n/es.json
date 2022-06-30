@@ -186,9 +186,6 @@
 					"desc": "Responderé con un enlace a un hilo de la página de discusiones que coincida en el wiki de Fandom."
 				}
 			},
-			"gamepedia": {
-				"desc": "Responderé con un enlace a un artículo que coincida en el wiki de Gamepedia llamado: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

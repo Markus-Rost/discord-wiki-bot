@@ -181,9 +181,6 @@
 					"desc": "Ik zal antwoorden met een link naar een overeenkomende discussie sectie op de Fandom wiki."
 				}
 			},
-			"gamepedia": {
-				"desc": "Ik zal antwoorden met een link naar een passend artikel uit de benoemde Gamepedia wiki: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

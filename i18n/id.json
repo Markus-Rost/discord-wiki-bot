@@ -186,9 +186,6 @@
 					"desc": "Saya akan menjawab dengan tautan ke utas diskusi yang cocok di wiki Fandom."
 				}
 			},
-			"gamepedia": {
-				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki Gamepedia bernama: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

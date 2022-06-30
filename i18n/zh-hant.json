@@ -186,9 +186,6 @@
 					"desc": "我將返回在相關 Fandom wiki 中的討論。"
 				}
 			},
-			"gamepedia": {
-				"desc": "我將返回特定 Gamepedia wiki 指定頁面的連結：`https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

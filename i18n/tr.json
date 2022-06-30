@@ -186,9 +186,6 @@
 					"desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim."
 				}
 			},
-			"gamepedia": {
-				"desc": "Belirtilen Gamepedia Wikideki eşleşen bir makale bağlantısıyla cevap vereceğim: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

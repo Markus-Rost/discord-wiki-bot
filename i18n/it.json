@@ -186,9 +186,6 @@
 					"desc": "Ti risponderò con un collegamento al thread della discussione corrispondente sulla wiki di Fandom."
 				}
 			},
-			"gamepedia": {
-				"desc": "Ti risponderò con un collegamento all'articolo corrispondente sulla wiki di Gamepedia richiesta: `https://<wiki>.gamepedia.com/`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

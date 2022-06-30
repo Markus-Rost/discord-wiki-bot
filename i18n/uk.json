@@ -186,9 +186,6 @@
 					"desc": "Я відповім посиланням на відповідну тему в обговореннях на вікі FANDOM."
 				}
 			},
-			"gamepedia": {
-				"desc": "Я відповім посиланням на відповідну статтю в названій вікі Gamepedia: `https: / /<wiki>.gamepedia.com /`"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",

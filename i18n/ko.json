@@ -186,9 +186,6 @@
 					"desc": "팬덤 위키에서 검색되는 토론 스레드의 링크를 답변해 드려요."
 				}
 			},
-			"gamepedia": {
-				"desc": "`https://<위키>.gamepedia.com/` 에 맞는 게임피디아 위키에서 검색되는 문서의 링크를 답변해 드려요"
-			},
 			"help": {
 				"admin": {
 					"cmd": "help admin",
