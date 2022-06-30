@@ -6,7 +6,7 @@ const {defaultSettings} = require('./default.json');
 
 // Remove wikis with notes
 wikiProjects.filter( project => project.note ).forEach( project => {
-	if ( globalThis.isDebug ) {
+	if ( globalThis.isDebug ?? ( process.argv[2] === 'debug' ) ) {
 		console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
 	}
 	wikiProjects.splice( wikiProjects.indexOf( project ), 1 );

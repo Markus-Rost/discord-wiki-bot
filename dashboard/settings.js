@@ -169,6 +169,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 			subprefix.find('kbd').text(prefixchar);
 			subprefix.find('label').attr('for', 'wb-settings-project-subprefix-' + prefixchar);
 			subprefix.find('select').attr('id', 'wb-settings-project-subprefix-' + prefixchar).attr('name', 'subprefix_' + prefixchar);
+			subprefix.find('#wb-settings-project-subprefix--none').text(dashboardLang.get('settings.form.select_subprefix'));
 			subprefix.find('option').each( function() {
 				$(this).attr('id', $(this).attr('id').replace( '--', '-' + prefixchar + '-' ));
 			} );
