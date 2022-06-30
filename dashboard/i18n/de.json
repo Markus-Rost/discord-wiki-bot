@@ -213,6 +213,8 @@
 			"prefix_space": "Präfix endet mit einem Leerzeichen:",
 			"role": "Minimale Rolle:",
 			"select_channel": "-- Wähle einen Kanal --",
+			"select_subprefix": "Setze ein bestimmtes Wiki -->",
+			"subprefix": "Präfixe für Wiki-Unterbefehle:",
 			"wiki": "Standard-Wiki:",
 			"wiki_check": "Wiki testen"
 		},
