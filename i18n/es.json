@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<término de búsqueda>",
-				"desc": "Responderé con un enlace a un artículo que coincida en el wiki."
+				"desc": "Responderé con un enlace a un artículo que coincida en el wiki:"
 			},
 			"diff": {
 				"id": {
@@ -317,6 +317,10 @@
 					"cmd": "settings wiki <wiki>",
 					"desc": "Cambiaré el wiki predeterminado de este servidor."
 				}
+			},
+			"subprefix": {
+				"cmd": "<wiki> <término de búsqueda>",
+				"desc": "Responderé con un enlace a un artículo coincidente en el wiki nombrado:"
 			},
 			"test": {
 				"cmd": "test",
@@ -585,6 +589,7 @@
 		"currentlang": "Idioma:",
 		"currentprefix": "Prefijo:",
 		"currentrole": "Rol mínimo:",
+		"currentsubprefix": "Subprefijo `$1`:",
 		"currentwiki": "Wiki predeterminado:",
 		"dashboard": {
 			"channel": "$1 actualizó la configuración de $2.",
