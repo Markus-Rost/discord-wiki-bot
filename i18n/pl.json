@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<wyszukiwana fraza>",
-				"desc": "Odpowiem linkiem do pasującego artykułu na wiki."
+				"desc": "Odpowiem linkiem do pasującego artykułu na wiki:"
 			},
 			"diff": {
 				"id": {
@@ -317,6 +317,10 @@
 					"cmd": "settings wiki <wiki>",
 					"desc": "Zmienię domyślną wiki tego serwera."
 				}
+			},
+			"subprefix": {
+				"cmd": "<wiki> <wyszukiwana fraza>",
+				"desc": "Odpowiem linkiem do pasującego artykułu na podanej wiki:"
 			},
 			"test": {
 				"cmd": "test",
@@ -565,6 +569,7 @@
 		"infosearch": "Nie to czego szukałeś? Użyj $1 dla bezpośredniego linku lub $2 dla listy wszystkich wyników.",
 		"loading": "Ładowanie opisu strony…",
 		"media": "Do strony opisu pliku",
+		"messagedefault": "Domyślnie:",
 		"messagedefaultnone": "*brak*",
 		"results": "$1 {{PLURAL:$2|wynik|wyniki|wszystkich wyników}}",
 		"special": "Zawartość tej strony specjalnej:"
@@ -584,6 +589,7 @@
 		"currentlang": "Język:",
 		"currentprefix": "Prefiks:",
 		"currentrole": "Minimalna rola:",
+		"currentsubprefix": "Subprefix `$1`:",
 		"currentwiki": "Domyślna wiki:",
 		"dashboard": {
 			"channel": "$1 zaktualizował ustawienia dla $2.",
@@ -696,6 +702,7 @@
 			"unknown": "Nieznane"
 		},
 		"info": {
+			"aka": "Również znany(-a) jako:",
 			"discord": "Discord:",
 			"editcount": "Ilość edycji:",
 			"favwiki": "Ulubiona wiki:",
@@ -783,7 +790,7 @@
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
 		"help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
 		"help_guide": "Podążaj za [tym poradnikiem]($1) w celu dodania nazwy użytkownika Discord na profil wiki:",
-		"help_missing": "Upewnij się że używasz swojego nicku z wiki oraz wielkość liter w nicku się zgadza.",
+		"help_missing": "Upewnij się że używasz swojego nicku z wiki oraz wielkość liter w nicku się zgadza.",
 		"help_subpage": "Dodaj swoją nazwę użytkownika Discord ($1) do podstrony Discord na wiki:",
 		"missing": "Nie ustawiono weryfikacji dla tego kanału.",
 		"notice": "Powiadomienie:",
