@@ -30,7 +30,7 @@
 	},
 	"indexjs": {
 		"invalid": {
-			"note_http": "Podana strona nie używa HTTPS!",
+			"note_http": "Podana strona nie posiada poprawnego certyfikatu TLS/SSL! Z powodów bezpieczeństwa, tylko wiki używające HTTPS są wspierane.",
 			"note_private": "Podana wiki jest prywatna!",
 			"note_timeout": "Podany link zajął zbyt dużo czasu na odpowiedź!",
 			"text": "Ten adres URL nie może zostać rozpoznany jako poprawna strona MediaWiki!",
@@ -87,6 +87,10 @@
 			"note": "Zmień ustawienia.",
 			"text": "Najpierw zdefiniuj ustawienia serwera.",
 			"title": "Serwer nie został jeszcze skonfigurowany!"
+		},
+		"oauth": {
+			"text": "Twoje konto wiki zostało poprawnie połączone z Wiki-Botem.",
+			"title": "Konto poprawnie połączone!"
 		},
 		"readonly": {
 			"text": "Aktualnie możliwy jest jedynie podgląd ustawień, zapisywanie nie jest możliwe.",
