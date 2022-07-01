@@ -213,6 +213,8 @@
 			"prefix_space": "Önek boşluk ile bitiyor:",
 			"role": "Minimal Rol:",
 			"select_channel": "-- Bir Kanal Seç --",
+			"select_subprefix": "Spesifik bir viki belirle →",
+			"subprefix": "Alt komut viki öneki:",
 			"wiki": "Varsayılan Viki:",
 			"wiki_check": "Vikiyi kontrol et"
 		},
