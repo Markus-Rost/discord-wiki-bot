@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<istilah pencarian>",
-				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki."
+				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki:"
 			},
 			"diff": {
 				"id": {
@@ -317,6 +317,10 @@
 					"cmd": "settings wiki <wiki>",
 					"desc": "Saya akan mengubah wiki default untuk server ini."
 				}
+			},
+			"subprefix": {
+				"cmd": "<wiki> <search term>",
+				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki yang bernama:"
 			},
 			"test": {
 				"cmd": "test",
@@ -585,6 +589,7 @@
 		"currentlang": "Bahasa:",
 		"currentprefix": "Prefix:",
 		"currentrole": "Peran minimal:",
+		"currentsubprefix": "SubAwalan `$1`:",
 		"currentwiki": "Wiki utama:",
 		"dashboard": {
 			"channel": "$1 memperbarui pengaturan untuk $2.",
