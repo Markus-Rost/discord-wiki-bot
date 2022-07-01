@@ -213,6 +213,8 @@
 			"prefix_space": "以空格结尾的前缀：",
 			"role": "最小身份组：",
 			"select_channel": "-- 选择频道 --",
+			"select_subprefix": "设置一个指定的wiki →",
+			"subprefix": "子命令wiki前缀：",
 			"wiki": "默认 wiki：",
 			"wiki_check": "检查 wiki"
 		},

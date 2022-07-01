@@ -213,6 +213,8 @@
 			"prefix_space": "以空格結尾的前綴：",
 			"role": "最小身分組：",
 			"select_channel": "-- 選擇頻道 --",
+			"select_subprefix": "設定一個指定的 wiki →",
+			"subprefix": "子指令 wiki 前綴：",
 			"wiki": "預設wiki：",
 			"wiki_check": "檢查wiki"
 		},

@@ -164,26 +164,26 @@
 		"list": {
 			"default": {
 				"cmd": "<arama terimi>",
-				"desc": "Wiki'deki eşleşen bir makale bağlantısıyla cevap vereceğim."
+				"desc": "Vikideki eşleşen bir makale bağlantısıyla cevap vereceğim:"
 			},
 			"diff": {
 				"id": {
 					"cmd": "diff <diff> [<oldid>]",
-					"desc": "Wikideki farkların bağlantısıyla cevap vereceğim."
+					"desc": "Vikideki değişikliklerin bağlantısıyla cevap vereceğim."
 				},
 				"name": {
 					"cmd": "diff <sayfa adı>",
-					"desc": "Wikideki son farkın bağlantısıyla cevap vereceğim."
+					"desc": "Vikideki son değişikliğin bağlantısıyla cevap vereceğim."
 				}
 			},
 			"discussion": {
 				"post": {
 					"cmd": "discussion gönderisi <arama terimi>",
-					"desc": "Fandom Wikideki eşleşen tartışma gönderisinin bağlantısıyla cevap vereceğim."
+					"desc": "Fandom vikideki eşleşen tartışma gönderisinin bağlantısıyla cevap vereceğim."
 				},
 				"thread": {
 					"cmd": "discussion <arama terimi>",
-					"desc": "Fandom Wikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim."
+					"desc": "Fandom vikideki eşleşen tartışma konusunun bağlantısıyla cevap vereceğim."
 				}
 			},
 			"help": {
@@ -229,16 +229,16 @@
 				}
 			},
 			"mwprojects": {
-				"cmd": "!!<viki> <aranacak terim>",
+				"cmd": "!!<wiki> <search term>",
 				"desc": "Verilen MediaWiki projesinde eşleşen bir makale bağlantısı ile yanıt vereceğim. Örnek: `$1!!en.wikipedia.org Cookie`"
 			},
 			"overview": {
 				"cmd": "overview",
-				"desc": "Wiki ile ilgili bazı bilgileri ve istatistikleri göstereceğim."
+				"desc": "Viki ile ilgili bazı bilgileri ve istatistikleri göstereceğim."
 			},
 			"page": {
 				"cmd": "page <sayfa adı>",
-				"desc": "Makalenin wikideki bağlantısıyla cevap vereceğim."
+				"desc": "Makalenin vikideki direkt bağlantısıyla cevap vereceğim."
 			},
 			"pause": {
 				"active": {
@@ -252,11 +252,11 @@
 			},
 			"random": {
 				"cmd": "random",
-				"desc": "Wiki'deki rastgele bir sayfanın bağlantısı ile cevap vereceğim."
+				"desc": "Vikideki rastgele bir sayfanın bağlantısı ile cevap vereceğim."
 			},
 			"rcscript": {
 				"add": {
-					"cmd": "rcscript add [<viki>]",
+					"cmd": "rcscript add [<wiki>]",
 					"desc": "Yeni bir son değişiklikler webhook'u ekleyeceğim."
 				},
 				"default": {
@@ -286,7 +286,7 @@
 			},
 			"search": {
 				"cmd": "search <arama terimi>",
-				"desc": "Wikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim."
+				"desc": "Vikideki makalenin arama sayfasına doğrudan bir bağlantı ile cevap vereceğim."
 			},
 			"settings": {
 				"channel": {
@@ -314,9 +314,13 @@
 					"desc": "Sunucuda komut kullanmak için gerekli minimal rolü değiştireceğim."
 				},
 				"wiki": {
-					"cmd": "settings wiki <wiki>",
-					"desc": "Bu sunucunun varsayılan wikisini değiştireceğim."
+					"cmd": "settings wiki <viki>",
+					"desc": "Bu sunucunun varsayılan vikisini değiştireceğim."
 				}
+			},
+			"subprefix": {
+				"cmd": "<viki> <aranacak terim>",
+				"desc": "Vikide eşleşen isme sahip bir bağlantı ile cevap vereceğim:"
 			},
 			"test": {
 				"cmd": "test",
@@ -442,11 +446,11 @@
 		"inaccurate": "İstatistikler yanlış olabilir",
 		"lang": "Dil:",
 		"license": "Lisans:",
-		"manager": "Wiki yöneticisi:",
+		"manager": "Viki yöneticisi:",
 		"misermode": "Cimri mod:",
 		"no": "Hayır",
 		"none": "*hiçbiri*",
-		"official": "Resmi wiki:",
+		"official": "Resmi viki:",
 		"pages": "Toplam sayfalar:",
 		"posts": "Tartışma gönderileri:",
 		"readonly": "Bu viki şimdilik salt okunur modda!",
@@ -502,7 +506,7 @@
 		"help_display_image": "Görüntü ön izlemeleri ile gömülü mesajlar.",
 		"help_feeds": "(tartışmalar, mesaj duvarları, makale yorumları)",
 		"help_lang": "Halihazırda desteklenen diller:",
-		"help_wiki": "`https://<wiki>.fandom.com/` gibi bir MediaWiki sitesine bağlantı ver",
+		"help_wiki": "`https://<viki>.fandom.com/` gibi bir MediaWiki sitesine bağlantı",
 		"lang": "Dil:",
 		"max_entries": "Azami son değişiklikler webhook'u sayısına ulaştın.",
 		"missing": "Bunu sunucuda halihazırda bir son değişiklikler webhook'u yok.",
@@ -577,21 +581,22 @@
 		"channel langchanged": "Kanalın dilini şuna değiştirdin:",
 		"channel role": "Bu kanal için gerekli minimal rol:",
 		"channel rolechanged": "Bu kanal için gerekli minimal rol değiştirildi:",
-		"channel wiki": "Bu kanalın varsayılan wikisi:",
-		"channel wikichanged": "Bu kanalın varsayılan wikisini şuna değiştirdiniz:",
+		"channel wiki": "Bu kanalın varsayılan vikisi:",
+		"channel wikichanged": "Bu kanalın varsayılan vikisini şuna değiştirdiniz:",
 		"current": "Sunucunun mevcut ayarları:",
 		"currentchannel": "Kanal özel ayarları:",
 		"currentinline": "Satır içi komutlar:",
 		"currentlang": "Dil:",
 		"currentprefix": "Önek:",
 		"currentrole": "Minimal rol:",
-		"currentwiki": "Varsayılan wiki:",
+		"currentsubprefix": "Alt önek`$1`:",
+		"currentwiki": "Varsayılan viki:",
 		"dashboard": {
 			"channel": "$1, $2 ayarlarını değiştirdi.",
 			"removed": "$1, $2 ayarlarını kaldırdı.",
 			"updated": "$1 sunucu ayarlarını güncelledi."
 		},
-		"foundwikis": "Bu wikilerden herhangi birini mi kastediyorsun?",
+		"foundwikis": "Bu vikilerden herhangi birini mi kastediyorsun?",
 		"inline disabled": {
 			"channel inline": "Bu kanalda satır içi komutlar devre dışı.",
 			"channel inlinechanged": "Bu kanal için satır içi komutları devre dışı bıraktın.",
@@ -621,14 +626,14 @@
 		"rolehelp": "Gerekli minimal rolü değiştirmek için `$1 <rol>` kullan.",
 		"roleinvalid": "Belirtilen rol mevcut değil!",
 		"save_failed": "Ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
-		"wiki": "Bu sunucunun varsayılan wikisi:",
-		"wikichanged": "Bu sunucunun varsayılan wikisini şuna değiştirdiniz:",
-		"wikihelp": "`$1 <wiki>` kullanarak varsayılan vikiyi değiştirebilirsin.\n`https://<wiki>.fandom.com/` gibi bir MediaWiki sitesine bağlantı ver",
+		"wiki": "Bu sunucunun varsayılan vikisi:",
+		"wikichanged": "Bu sunucunun varsayılan vikisini şuna değiştirdiniz:",
+		"wikihelp": "`$1 <viki>` kullanarak varsayılan vikiyi değiştirebilirsin.\n`https://<viki>.fandom.com/` gibi bir MediaWiki sitesine bağlantı ver",
 		"wikiinvalid": "Lütfen Vikipedi veya bir Fandom vikisinin geçerli bağlantısını verin!",
 		"wikiinvalid_http": "Belirtilen site geçerli bir TLS/SSL sertifikasına sahip değil! Güvenlik amacıyla sadece HTTPS kullanan vikiler desteklenmektedir.\nEğer bir site yöneticisiysen *Let’s Encrypt* gibi bir sertifika yetkilisinden sertifika alabilirsin:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "Belirtilen viki gizli! Sadece herkes tarafından okunabilen halka açık vikiler desteklenmektedir.",
 		"wikiinvalid_timeout": "Belirtilen bağlantının cevap vermesi çok uzun sürdü!",
-		"wikimissing": "Bu sunucu için varsayılan bir wiki belirlenmemiş!"
+		"wikimissing": "Bu sunucu için varsayılan bir viki belirlenmemiş!"
 	},
 	"test": {
 		"MediaWiki": "Tam işlevsellik için $1 gerekli, bulunan `$2`.",
@@ -697,6 +702,7 @@
 			"unknown": "meçhul"
 		},
 		"info": {
+			"aka": "Şöyle de bilinir:",
 			"discord": "Discord:",
 			"editcount": "Düzenleme sayısı:",
 			"favwiki": "Favori viki:",
@@ -707,7 +713,7 @@
 			"loading": "Global istatistikler yükleniyor…",
 			"postcount": "Tartışma gönderileri:",
 			"registration": "Kayıt tarihi:",
-			"wikisedited": "Düzenlenen wikiler:"
+			"wikisedited": "Düzenlenen vikiler:"
 		}
 	},
 	"verification": {
