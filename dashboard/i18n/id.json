@@ -213,7 +213,7 @@
 			"prefix_space": "Awalan diakhiri dengan spasi:",
 			"role": "Role Minimal:",
 			"select_channel": "-- Pilih Saluran --",
-			"select_subprefix": "Setel wiki tertentu -->",
+			"select_subprefix": "Setel wiki tertentu ->",
 			"subprefix": "Awalan/prefix wiki subperintah:",
 			"wiki": "Wiki Utama:",
 			"wiki_check": "Cek wiki"
