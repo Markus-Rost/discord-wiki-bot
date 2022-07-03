@@ -51,7 +51,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 					let row = rows.find( row => !row.channel );
 					row.patreon = patreonGuildsPrefix.has(guild.id);
 					let subprefixes = {};
-					row.subprefixes.forEach( subprefix => subprefixes[subprefix[0]] = subprefix[1] );
+					row.subprefixes?.forEach( subprefix => subprefixes[subprefix[0]] = subprefix[1] );
 					row.subprefixes = subprefixes;
 					rows.filter( row => row.channel ).forEach( row => delete row.subprefixes );
 					guildsettings[1] = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
