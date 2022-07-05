@@ -31,9 +31,8 @@ For a full list with all commands use `!wiki help`
 | Command | Description |
 | ------- | ----------- |
 | `!wiki <search term>` | **Wiki-Bot** will answer with a link to a matching article in the wiki. |
-| `!wiki !<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/` |
+| `!wiki !<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Wikipedia: `https://<wiki>.wikipedia.org/w/` |
 | `!wiki ?<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Fandom wiki: `https://<wiki>.fandom.com/` |
-| `!wiki ??<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/` |
 | `!wiki !!<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named MediaWiki project. Example: `!wiki !!en.wikipedia.org Cookie` |
 | `!wiki User:<username>` | **Wiki-Bot** will show some information about the user. |
 | `!wiki diff <diff> [<oldid>]` | **Wiki-Bot** will answer with a link to the diff in the wiki. |
