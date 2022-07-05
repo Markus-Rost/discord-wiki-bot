@@ -37,7 +37,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 				return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
 					if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
 						form: {
-							grant_type: 'refresh_token', refresh_token: row.token,
+							grant_type: 'refresh_token',
+							refresh_token: row.token,
 							redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )],
 							client_secret: process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret']
@@ -52,9 +53,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							return Promise.reject(row);
 						}
 						if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, msg.author.id, ( oauth[1] || oauth[0] )] ).then( () => {
-							console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully updated.' );
+							console.log( '- OAuth2 token for ' + msg.author.id + ' successfully updated.' );
 						}, dberror => {
-							console.log( '- Dashboard: Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+							console.log( '- Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 						} );
 						return verifyOauthUser('', body.access_token, {
 							wiki: wiki.href, channel: msg.channel,
@@ -75,9 +76,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					if ( row ) {
 						if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 						else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( oauth[1] || oauth[0] )] ).then( () => {
-							console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
+							console.log( '- OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
 						}, dberror => {
-							console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+							console.log( '- Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 						} );
 					}
 					let state = `${oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
@@ -131,7 +132,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
 							form: {
-								grant_type: 'refresh_token', refresh_token: row.token,
+								grant_type: 'refresh_token',
+								refresh_token: row.token,
 								redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 								client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )],
 								client_secret: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] ) + '_secret']
@@ -146,9 +148,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								return Promise.reject(row);
 							}
 							if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully updated.' );
+								console.log( '- OAuth2 token for ' + msg.author.id + ' successfully updated.' );
 							}, dberror => {
-								console.log( '- Dashboard: Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+								console.log( '- Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 							} );
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: msg.channel,
@@ -169,9 +171,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						if ( row ) {
 							if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 							else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
+								console.log( '- OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
 							}, dberror => {
-								console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+								console.log( '- Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 							} );
 						}
 						let state = `${result.oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );

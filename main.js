@@ -18,7 +18,7 @@ const got = gotDefault.extend( {
 		'user-agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
 	responseType: 'json',
-	hooks: ( process.env['x-origin-guild'] ? {
+	hooks: ( process.env.x_origin_guild ? {
 		beforeRequest: [
 			options => {
 				if ( options.context?.guildId ) options.headers['x-origin-guild'] = options.context.guildId;
