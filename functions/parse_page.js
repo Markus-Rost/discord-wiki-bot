@@ -215,7 +215,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 			if ( !embed.description && embed.length < 4000 ) {
 				var description = revision['*'];
-				var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
+				var regex = /^L-?(\d+)(?:-(?:L-?)?(\d+))?$/.exec(fragment);
 				if ( regex ) {
 					let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || regex[1] ));
 					if ( descArray.length ) {
