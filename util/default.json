@@ -58,6 +58,7 @@
 		],
 		"sorted": [
 			"bot",
+			"suppress",
 			"checkuser",
 			"bureaucrat",
 			"interface-admin",
