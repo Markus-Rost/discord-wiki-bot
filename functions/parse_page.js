@@ -32,6 +32,7 @@ const infoboxList = [
 	'.infoboxtable',
 	'.notaninfobox',
 	'.tpl-infobox',
+	'.va-infobox',
 	'table[class*="infobox"]'
 ];
 
@@ -308,6 +309,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 			if ( !fragment && !embed.fields.length && $(infoboxList.join(', ')).length ) {
 				let infobox = $(infoboxList.join(', ')).first();
+				infobox.find('[class*="va-infobox-spacing"]').remove();
 				if ( embed.thumbnail?.url === thumbnail ) {
 					let image = infobox.find([
 						'tr:eq(1) img',
@@ -331,13 +333,15 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					'h2.pi-header',
 					'div.pi-data',
 					'table.infobox-rows > tbody > tr',
-					'div.infobox-rows:not(.subinfobox) > div.infobox-row'
+					'div.infobox-rows:not(.subinfobox) > div.infobox-row',
+					'.va-infobox-cont tr',
+					'.va-infobox-cont th.va-infobox-header'
 				].join(', '));
 				let tdLabel = true;
 				for ( let i = 0; i < rows.length; i++ ) {
 					if ( embed.fields.length >= 25 || embed.length > 5400 ) break;
 					let row = rows.eq(i);
-					if ( row.is('th.mainheader, th.infobox-header, div.title, h2.pi-header') ) {
+					if ( row.is('th.mainheader, th.infobox-header, th.va-infobox-header, div.title, h2.pi-header') ) {
 						row.find(removeClasses.join(', ')).remove();
 						let label = htmlToDiscord(row, embed.url).trim();
 						if ( label.length > 100 ) label = limitLength(label, 100, 100);
