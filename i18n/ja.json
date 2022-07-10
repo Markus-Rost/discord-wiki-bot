@@ -257,31 +257,31 @@
 			"rcscript": {
 				"add": {
 					"cmd": "rcscript add [<wiki>]",
-					"desc": "新しい最近の更新のWebhookを追加します。"
+					"desc": "新しい最近の更新 Webhookを追加します。"
 				},
 				"default": {
 					"cmd": "rcscript",
-					"desc": "最近の更新のWebhookを変更します。"
+					"desc": "最近の更新 Webhookを変更します。"
 				},
 				"delete": {
 					"cmd": "rcscript delete",
-					"desc": "Wiki-Botから最近の更新のWebhookを削除します。"
+					"desc": "Wiki-Botから最近の更新 Webhookを削除します。"
 				},
 				"display": {
 					"cmd": "rcscript display <新規 表示モード>",
-					"desc": "Wiki-Botの最近の更新のWebhookの表示モードを変更します。"
+					"desc": "Wiki-Botの最近の更新 Webhookの表示モードを変更します。"
 				},
 				"feeds": {
 					"cmd": "rcscript feeds",
-					"desc": "Fandom Wikiの更新されたディスカッションのWebhookを最近の更新のWebhookへ切り替えます。"
+					"desc": "Fandom Wikiの更新されたディスカッションのWebhookを最近の更新 Webhookへ切り替えます。"
 				},
 				"lang": {
 					"cmd": "rcscript lang <新規言語>",
-					"desc": "Wiki-Botの最近の更新のWebhookの言語を変更します。"
+					"desc": "Wiki-Botの最近の更新 Webhookの言語を変更します。"
 				},
 				"wiki": {
 					"cmd": "rcscript wiki <新規wiki>",
-					"desc": "Web-Botの最近の更新のWebhookのWikiを変更します。"
+					"desc": "Web-Botの最近の更新 WebhookのWikiを変更します。"
 				}
 			},
 			"search": {
@@ -470,17 +470,17 @@
 		"on": "私はこのサーバーで動作を停止しており、ほとんどのコマンドに反応しません！"
 	},
 	"rcscript": {
-		"ad": "Discordで直接最近の変更を表示したいですか？ `$1rcscript`を使って、あなたのDiscordサーバーに **$2** に基づいた最近の変更点のWebHookを追加してください！",
-		"add_more": "より最近の変更のWebHookを追加：",
-		"added": "最近の変更に関するwebhookが追加されました：",
+		"ad": "Discordで直接最近の更新を表示したいですか？ `$1rcscript`を使って、あなたのDiscordサーバーに **$2** に基づいた最近の更新 Webhookを追加してください！",
+		"add_more": "より最近の更新 Webhookを追加：",
+		"added": "最近の更新に関するwebhookが追加されました：",
 		"all_inactive": "Wikiの編集とフィードの変更の両方のトラッキングを同時にオフにすることはできません。",
-		"audit_reason": "\"$1\"に対する最近の編集のWebhook",
-		"audit_reason_delete": "最近の編集のWebhookを削除",
-		"audit_reason_edit": "更新された最近の変更のWebhook",
-		"blocked": "このWikiは、最近の変更のWebhookとして追加されるのがブロックされています！",
+		"audit_reason": "\"$1\"に対する最近の更新 Webhook",
+		"audit_reason_delete": "最近の更新 Webhookを削除",
+		"audit_reason_edit": "更新された最近の更新 Webhook",
+		"blocked": "このWikiは、最近の更新 Webhookとして追加されるのがブロックされています！",
 		"blocked_reason": "このWikiは、以下の理由でWebhookへの新しい編集の追加がブロックされています: `$1`!",
 		"channel": "チャンネル：",
-		"current": "これらは、このサーバーの現在の最新の変更点を示すウェブフックです。",
+		"current": "これらは、このサーバーの現在の最近の更新を示すWebhookです。",
 		"current_display": "このWebhookの表示モード：",
 		"current_lang": "このWebhookの言語：",
 		"current_selected": "このサーバーに現在存在する最近の更新 `$1` の Webhook。",
