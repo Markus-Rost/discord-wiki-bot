@@ -168,7 +168,7 @@
 			},
 			"diff": {
 				"id": {
-					"cmd": "diff <差分> [<oldid>]",
+					"cmd": "diff <diff> [<oldid>]",
 					"desc": "Wikiの差分へのリンクでお答えします。"
 				},
 				"name": {
