@@ -213,7 +213,7 @@
 			"prefix_space": "El prefijo termina con un espacio:",
 			"role": "Rol Mínimo:",
 			"select_channel": "-- Selecciona un Canal --",
-			"select_subprefix": "Establecer un wiki específico -->",
+			"select_subprefix": "Establecer un wiki específico →",
 			"subprefix": "Prefijo de subcomando wiki:",
 			"wiki": "Wiki Predeterminado:",
 			"wiki_check": "Comprobar wiki"

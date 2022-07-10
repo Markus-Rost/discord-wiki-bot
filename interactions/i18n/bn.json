@@ -1,1 +1,14 @@
-{}
+{
+	"inline": {
+		"description": "ইনলাইন উইকি লিঙ্কসহ একটি বার্তা পোস্ট করুন।",
+		"name": "inline",
+		"options[0].description": "উইকিটেক্সট লিঙ্ক সহ পাঠ্য।",
+		"options[0].name": "text"
+	},
+	"verify": {
+		"description": "আপনার উইকি অ্যাকাউন্ট দিয়ে আপনার ডিসকর্ড অ্যাকাউন্ট যাচাই করুন।",
+		"name": "verify",
+		"options[0].description": "উইকিতে আপনার ব্যবহারকারী নাম।",
+		"options[0].name": "username"
+	}
+}
