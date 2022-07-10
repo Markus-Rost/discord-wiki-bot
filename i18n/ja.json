@@ -257,31 +257,31 @@
 			"rcscript": {
 				"add": {
 					"cmd": "rcscript add [<wiki>]",
-					"desc": "新しい最近の更新を示すWebhookを追加します。"
+					"desc": "新しい最近の更新を示す Webhook を追加します。"
 				},
 				"default": {
 					"cmd": "rcscript",
-					"desc": "最近の更新を示すWebhookを変更します。"
+					"desc": "最近の更新を示す Webhook を変更します。"
 				},
 				"delete": {
 					"cmd": "rcscript delete",
-					"desc": "Wiki-Botから最近の更新を示すWebhookを削除します。"
+					"desc": "Wiki-Botから最近の更新を示す Webhook を削除します。"
 				},
 				"display": {
 					"cmd": "rcscript display <新規 表示モード>",
-					"desc": "Wiki-Botの最近の更新を示すWebhookの表示モードを変更します。"
+					"desc": "Wiki-Botの最近の更新を示す Webhook の表示モードを変更します。"
 				},
 				"feeds": {
 					"cmd": "rcscript feeds",
-					"desc": "Fandom Wikiの更新されたディスカッションのWebhookを最近の更新を示すWebhookへ切り替えます。"
+					"desc": "Fandom Wikiの更新されたディスカッションの Webhook を最近の更新を示す Webhook へ切り替えます。"
 				},
 				"lang": {
 					"cmd": "rcscript lang <新規言語>",
-					"desc": "Wiki-Botの最近の更新を示すWebhookの言語を変更します。"
+					"desc": "Wiki-Botの最近の更新を示す Webhook の言語を変更します。"
 				},
 				"wiki": {
 					"cmd": "rcscript wiki <新規wiki>",
-					"desc": "Web-Botの最近の更新を示すWebhookのWikiを変更します。"
+					"desc": "Web-Botの最近の更新を示す Webhook のWikiを変更します。"
 				}
 			},
 			"search": {
@@ -470,7 +470,7 @@
 		"on": "私はこのサーバーで動作を停止しており、ほとんどのコマンドに反応しません！"
 	},
 	"rcscript": {
-		"ad": "Discordで直接最近の更新を表示したいですか？ `$1rcscript`を使って、あなたのDiscordサーバーに **$2** に基づいた最近の更新を示すWebhookを追加してください！",
+		"ad": "Discordで直接最近の更新を表示したいですか？ `$1rcscript`を使って、あなたのDiscordサーバーに **$2** に基づいた最近の更新を示す Webhook を追加してください！",
 		"add_more": "最近の更新を示すWebhookを追加：",
 		"added": "最近の更新を示すWebhookが追加されました：",
 		"all_inactive": "Wikiの編集とフィードの変更の両方のトラッキングを同時にオフにすることはできません。",
@@ -486,12 +486,12 @@
 		"current_selected": "このサーバーに現在存在する最近の更新 `$1` を示すWebhook。",
 		"current_wiki": "このWebhookのWiki：",
 		"dashboard": {
-			"added": "$1 は `$2`の最近の更新 Webhookを追加しました。",
-			"removed": "$1 は `$2`の最近の更新 Webhookを削除しました。",
-			"updated": "$1 は `$2`の最近の変更のウェブフックを更新しました。"
+			"added": "$1 は `$2`の最近の更新を示すWebhookを追加しました。",
+			"removed": "$1 は `$2`の最近の変更のウェブフックを削除しました。",
+			"updated": "$1 は `$2`の最近の更新を示すWebhookを更新しました。"
 		},
-		"delete": "この最近の変更のウェブフックを削除します：",
-		"deleted": "最近の変更のウェブフックは削除されました。",
+		"delete": "この最近の更新を示すWebhookを削除します：",
+		"deleted": "最近の更新を示すWebhookは削除されました。",
 		"disabled": "無効",
 		"disabled_feeds": "このウェブフックに対するディスカッション、メッセージウォール、記事コメントなどのフィードベースの変更は無効化されました。",
 		"disabled_rc": "このウェブフックのWikiの変更は無効化されました。",
@@ -508,24 +508,24 @@
 		"help_lang": "現在、対応している言語は以下の通りです：",
 		"help_wiki": "`https://<wiki>.fandom.com/` のようなMediaWikiのサイトへのリンク",
 		"lang": "言語：",
-		"max_entries": "最近の変更のウェブフックがすでに最大量に達しています。",
-		"missing": "このサーバーの最近の変更に関するウェブフックはまだありません。",
+		"max_entries": "最近の更新を示すWebhook がすでに最大量に達しています。",
+		"missing": "このサーバーの最近の更新に関するWebhookはまだありません。",
 		"new_lang": "<新しい言語>",
 		"new_wiki": "<Wikiへのリンク>",
 		"no_feeds": "このウェブフックのためのWikiは、ディスカッション、メッセージウォール、記事コメントなどのフィードベースの機能を有効にしていません。",
 		"noadmin": "このコマンドを実行するには `ウェブフックの管理` という権限が必要です！",
 		"rc": "Wikiの変更：",
-		"sysmessage": "システムメッセージ `$1` は、最近の変更のウェブフックを追加するために、サーバーID `$2` でなければなりません。",
-		"title": "最近の変更 ウェブフック",
+		"sysmessage": "システムメッセージ `$1` は、最近の更新を示すWebhook を追加するために、サーバーID `$2` でなければなりません。",
+		"title": "最近の更新を示すWebhook",
 		"toggle": "(スイッチ)",
 		"updated_display": "このウェブフックの表示モードが変更されました：",
 		"updated_lang": "このウェブフックの言語が変更されました：",
 		"updated_wiki": "このウェブフックのWikiが変更されました：",
 		"webhook": {
-			"blocked": "この最近の変更のウェブフックは、Wikiがブロックされたため、削除されるでしょう！",
+			"blocked": "この最近の更新を示すWebhook は、Wikiがブロックされたため、削除されるでしょう！",
 			"blocked_help": "ご質問は[サポートサーバー]($1)でお聞きください。",
-			"blocked_reason": "Wiki が `$1` でブロックされたため、この最近の変更のウェブフックは削除されます！",
-			"created": "このチャンネルに$1の最近の変更のウェブフックが追加されました。",
+			"blocked_reason": "Wiki が `$1` でブロックされたため、この最近の更新を示すWebhook は削除されます！",
+			"created": "このチャンネルに$1の最近の更新を示すWebhook が追加されました。",
 			"dashboard": {
 				"channel": "・ウェブフックはこのチャンネルに移動されました。",
 				"disabled_feeds": "・ディスカッション、メッセージウォール、記事コメントなどのフィードベースの変更は無効化されました。",
@@ -537,20 +537,20 @@
 				"enabled_feeds": "・ディスカッション、メッセージウォール、記事コメントなど、フィードベースの変更が可能になりました。",
 				"enabled_rc": "・Wikiの変更が有効になりました。",
 				"lang": "・$1に言語が変更されました。",
-				"updated": "この最近の変更のウェブフックは更新されました：",
+				"updated": "この最近の更新を示すWebhook は更新されました：",
 				"wiki": "・Wikiが$1に変更されました。"
 			},
-			"deleted": "この最近の変更のウェブフックは削除されます。",
-			"disabled_feeds": "ディスカッション、メッセージウォール、記事コメントなどのフィードベースの変更は、この最近の変更のウェブフックでは無効化されています。",
-			"disabled_rc": "Wiki の変更は、この最近の変更のウェブフックに対して無効化されました。",
-			"enabled_feeds": "ディスカッション、メッセージウォール、記事コメントなどのフィードベースの変更が、この最近の変更のウェブフックに対して有効にされました。",
-			"enabled_rc": "Wiki の変更がこの最近の変更のウェブフックに対して有効になりました。",
-			"updated_display_compact": "この最近の変更のウェブフックは、表示モードが埋め込みリンクのあるコンパクトなテキストメッセージに変更しました。",
-			"updated_display_diff": "この最近の変更のウェブフックは、画像プレビューや編集差分を含む埋め込みメッセージに変更しました。",
-			"updated_display_embed": "この最近の変更のウェブフックは、編集タグやカテゴリー変更のある埋め込みメッセージに変更しました。",
-			"updated_display_image": "この最近の変更のウェブフックは、画像プレビュー付きの埋め込みメッセージに変更しました。",
-			"updated_lang": "この最近の変更のウェブフックは、言語が `$1` に変更されました。",
-			"updated_wiki": "Wikiはこの最近の変更のウェブフックのために$1に変更されました。"
+			"deleted": "この最近の更新を示すWebhook は削除されます。",
+			"disabled_feeds": "ディスカッション、メッセージウォール、記事コメントなどのフィードベースの変更は、この最近の更新を示すWebhook では無効化されています。",
+			"disabled_rc": "Wiki の変更は、この最近の更新を示すWebhook に対して無効化されました。",
+			"enabled_feeds": "ディスカッション、メッセージウォール、記事コメントなどのフィードベースの変更が、この最近の更新を示すWebhook に対して有効にされました。",
+			"enabled_rc": "Wiki の変更がこの最近の更新を示すWebhook に対して有効になりました。",
+			"updated_display_compact": "この最近の更新を示すWebhook は、表示モードが埋め込みリンクのあるコンパクトなテキストメッセージに変更しました。",
+			"updated_display_diff": "この最近の更新を示すWebhook は、画像プレビューや編集差分を含む埋め込みメッセージに変更しました。",
+			"updated_display_embed": "この最近の更新を示すWebhook は、編集タグやカテゴリー変更のある埋め込みメッセージに変更しました。",
+			"updated_display_image": "この最近の更新を示すWebhook は、画像プレビュー付きの埋め込みメッセージに変更しました。",
+			"updated_lang": "この最近の更新を示すWebhook は、言語が `$1` に変更されました。",
+			"updated_wiki": "Wikiはこの最近の更新を示すWebhook のために$1に変更されました。"
 		},
 		"webhook_failed": "ウェブフックを作成できませんでした。後でもう一度試してください。",
 		"wiki": "Wiki:"
