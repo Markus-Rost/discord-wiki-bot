@@ -33,6 +33,7 @@ const infoboxList = [
 	'.notaninfobox',
 	'.tpl-infobox',
 	'.va-infobox',
+	'.side-infobox',
 	'table[class*="infobox"]'
 ];
 
@@ -259,7 +260,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}
 		let extraImages = [];
-		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle' + ( contentmodel !== 'wikitext' || fragment || disambiguation !== undefined ? '' : '&section=0' ) + '&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
+		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle&disablelimitreport=true&disableeditsection=true&disabletoc=true&sectionpreview=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
 				request: 10_000
 			},
@@ -487,13 +488,19 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 			}
 			if ( !embed.description && embed.length < 5000 ) {
+				$(infoboxList.join(', ')).remove();
+				$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassesExceptions.join(', ')).remove();
+				let backupDescription = null;
 				if ( contentmodel !== 'wikitext' || disambiguation === undefined || fragment ) {
+					if ( !fragment ) {
+						backupDescription = $('h1, h2, h3, h4, h5, h6').eq(0);
+						backupDescription = $('<div>').append(backupDescription, backupDescription.nextUntil('h1, h2, h3, h4, h5, h6'));
+					}
 					$('h1, h2, h3, h4, h5, h6').nextAll().remove();
 					$('h1, h2, h3, h4, h5, h6').remove();
 				}
-				$(infoboxList.join(', ')).remove();
-				$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassesExceptions.join(', ')).remove();
 				var description = htmlToDiscord($.html(), embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
+				if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 				if ( description ) {
 					if ( disambiguation !== undefined && !fragment && embed.length < 4250 ) {
 						if ( description.length > 1500 ) description = limitLength(description, 1500, 250);
