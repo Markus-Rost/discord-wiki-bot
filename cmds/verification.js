@@ -25,6 +25,12 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		console.log( msg.guildId + ': Missing permissions - MANAGE_ROLES' );
 		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
 	}
+
+	if ( args.join(' ').toLocaleLowerCase() === 'button' ) {
+		return msg.sendChannel( {components: [new MessageActionRow().addComponents(
+			new MessageButton().setCustomId('verify').setStyle('PRIMARY').setLabel(lang.get('verify.title'))
+		)]} ).then( () => msg.delete().catch(log_error) );
+	}
 	
 	db.query( 'SELECT configid, channel, role, editcount, postcount, usergroup, accountage, rename FROM verification WHERE guild = $1 ORDER BY configid ASC', [msg.guildId] ).then( ({rows}) => {
 		var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );

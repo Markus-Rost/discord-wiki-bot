@@ -691,6 +691,9 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
 			return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 		} ).get(verifynotice.logchannel) : null );
+		var useLogging = ( verifynotice.logchannel ? true : false );
+		var logLang = lang;
+		if ( !state && (verifynotice.flags & 1 << 0) === 1 << 0 ) lang = lang.uselang(settings?.interaction?.locale);
 		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=' + encodeURIComponent( username ) + '&format=json', {
 			context: {
 				guildId: channel.guildId
@@ -711,51 +714,51 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			logging(wiki, channel.guildId, 'verification');
 			var queryuser = body.query.users[0];
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.fail?.();
-			var embed = new MessageEmbed().setFooter( {text: lang.get('verify.title')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
 			var pagelink = wiki.toLink('User:' + username, '', '', true);
-			embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
+			var embed = new MessageEmbed().setFooter( {text: lang.get('verify.title')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
+			var logEmbed = new MessageEmbed().setFooter( {text: logLang.get('verify.title')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addField( logLang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( logLang.get('verify.wiki', queryuser.gender), logLang.get('verify.oauth_used'), true );
 			if ( queryuser.blockexpiry ) {
 				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+				logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 				return sendMessage( {content: lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
-					if ( (verifynotice.flags & 1 << 1) !== 1 << 1 || !verifynotice.logchannel ) return;
-					let logembed;
-					let logtext;
+					if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
+					let logMessage = {
+						embeds: []
+					};
 					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
-						logembed = new MessageEmbed(embed);
-						logembed.addField( lang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
-						if ( msg ) logembed.addField(msg.url, '<#' + channel.id + '>');
+						logEmbed.addField( logLang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
+						if ( msg ) logEmbed.addField(msg.url, '<#' + channel.id + '>');
+						logMessage.embeds.push(logEmbed);
 					}
 					else {
-						logtext = '🔸 ' + lang.get('verify.user_blocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
-						logtext += '\n<' + pagelink + '>';
-						if ( msg ) logtext += '\n<#' + channel.id + '> – <' + msg.url + '>';
+						let logText = '🔸 ' + logLang.get('verify.user_blocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
+						logText += '\n<' + pagelink + '>';
+						if ( msg ) logText += '\n<#' + channel.id + '> – <' + msg.url + '>';
+						logMessage.content = logText;
 					}
-					verifynotice.logchannel.send( {
-						content: logtext,
-						embeds: ( logembed ? [logembed] : [] )
-					} ).catch(log_error);
+					verifynotice.logchannel.send( logMessage ).catch(log_error);
 				}, log_error );
 			}
 			if ( body.query.globaluserinfo.locked !== undefined ) {
 				embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+				logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 				return sendMessage( {content: lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
-					if ( (verifynotice.flags & 1 << 1) !== 1 << 1 || !verifynotice.logchannel ) return;
-					let logembed;
-					let logtext;
+					if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
+					let logMessage = {
+						embeds: []
+					};
 					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
-						logembed = new MessageEmbed(embed);
-						logembed.addField( lang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
-						if ( msg ) logembed.addField(msg.url, '<#' + channel.id + '>');
+						logEmbed.addField( logLang.get('verify.discord', 'unknown'), escapeFormatting(member.user.tag) + ` (${member.toString()})`, true );
+						if ( msg ) logEmbed.addField(msg.url, '<#' + channel.id + '>');
+						logMessage.embeds.push(logEmbed);
 					}
 					else {
-						logtext = '🔸 ' + lang.get('verify.user_gblocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
-						logtext += '\n<' + pagelink + '>';
-						if ( msg ) logtext += '\n<#' + channel.id + '> – <' + msg.url + '>';
+						let logText = '🔸 ' + logLang.get('verify.user_gblocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
+						logText += '\n<' + pagelink + '>';
+						if ( msg ) logText += '\n<#' + channel.id + '> – <' + msg.url + '>';
+						logMessage.content = logText;
 					}
-					verifynotice.logchannel.send( {
-						content: logtext,
-						embeds: ( logembed ? [logembed] : [] )
-					} ).catch(log_error);
+					verifynotice.logchannel.send( logMessage ).catch(log_error);
 				}, log_error );
 			}
 			queryuser.groups.push(...body.query.globaluserinfo.groups);
@@ -791,6 +794,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			} );
 			if ( verified ) {
 				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
+				logEmbed.setColor('#00FF00').setDescription( logLang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + logLang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
 				var comment = [];
 				/** @type {Promise[]} */
@@ -798,28 +802,28 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 				var editMember = {};
 				if ( rename && member.displayName !== username.substring(0, 32) ) {
 					if ( channel.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) editMember.nick = username.substring(0, 32);
-					else comment.push(lang.get('verify.failed_rename', queryuser.gender));
+					else comment.push(( useLogging ? logLang : lang ).get('verify.failed_rename', queryuser.gender));
 				}
 				removeRoles[0].forEach( role => addRoles[0].delete(role) );
 				removeRoles[1].forEach( role => addRoles[1].delete(role) );
 				if ( !editMember.nick && addRoles[0].size + removeRoles[0].size <= 1 ) {
-					if ( removeRoles[0].size === 1 ) verifyPromise.push(member.roles.remove( [...removeRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+					if ( removeRoles[0].size === 1 ) verifyPromise.push(member.roles.remove( [...removeRoles[0]][0], logLang.get('verify.audit_reason', username) ).catch( error => {
 						log_error(error);
-						comment.push(lang.get('verify.failed_roles'));
+						comment.push(( useLogging ? logLang : lang ).get('verify.failed_roles'));
 					} ));
-					else if ( addRoles[0].size === 1 ) verifyPromise.push(member.roles.add( [...addRoles[0]][0], lang.get('verify.audit_reason', username) ).catch( error => {
+					else if ( addRoles[0].size === 1 ) verifyPromise.push(member.roles.add( [...addRoles[0]][0], logLang.get('verify.audit_reason', username) ).catch( error => {
 						log_error(error);
-						comment.push(lang.get('verify.failed_roles'));
+						comment.push(( useLogging ? logLang : lang ).get('verify.failed_roles'));
 					} ));
 				}
 				else {
 					if ( addRoles[0].size + removeRoles[0].size ) editMember.roles = [...new Set([...member.roles.cache.filter( role => {
 						return !removeRoles[0].has(role.id);
 					} ).keys(), ...addRoles[0]])];
-					verifyPromise.push(member.edit( editMember, lang.get('verify.audit_reason', username) ).catch( error => {
+					verifyPromise.push(member.edit( editMember, logLang.get('verify.audit_reason', username) ).catch( error => {
 						log_error(error);
-						comment.push(lang.get('verify.failed_roles'));
-						if ( editMember.nick ) comment.push(lang.get('verify.failed_rename', queryuser.gender));
+						comment.push(( useLogging ? logLang : lang ).get('verify.failed_roles'));
+						if ( editMember.nick ) comment.push(( useLogging ? logLang : lang ).get('verify.failed_rename', queryuser.gender));
 					} ));
 				}
 				return Promise.all(verifyPromise).then( () => {
@@ -831,28 +835,28 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 						[...removeRoles[0]].map( role => '<@&' + role + '>' ),
 						[...removeRoles[1]].map( role => '<@&' + role + '>' )
 					];
-					var useLogging = false;
-					var logembed;
-					var logtext;
-					if ( verifynotice.logchannel ) {
-						useLogging = true;
+					var logMessage = {
+						embeds: []
+					};
+					if ( useLogging ) {
 						if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
-							logembed = new MessageEmbed(embed);
-							if ( addRolesMentions[0].length ) logembed.addField( lang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
-							if ( addRolesMentions[1].length ) logembed.setColor('#008800').addField( lang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
-							if ( removeRolesMentions[0].length ) logembed.addField( lang.get('verify.qualified_remove'), removeRolesMentions[0].join('\n') );
-							if ( removeRolesMentions[1].length ) logembed.setColor('#008800').addField( lang.get('verify.qualified_remove_error'), removeRolesMentions[1].join('\n') );
-							if ( comment.length ) logembed.setColor('#008800').addField( lang.get('verify.notice'), comment.join('\n') );
+							if ( addRolesMentions[0].length ) logEmbed.addField( logLang.get('verify.qualified_add'), addRolesMentions[0].join('\n') );
+							if ( addRolesMentions[1].length ) logEmbed.setColor('#008800').addField( logLang.get('verify.qualified_add_error'), addRolesMentions[1].join('\n') );
+							if ( removeRolesMentions[0].length ) logEmbed.addField( logLang.get('verify.qualified_remove'), removeRolesMentions[0].join('\n') );
+							if ( removeRolesMentions[1].length ) logEmbed.setColor('#008800').addField( logLang.get('verify.qualified_remove_error'), removeRolesMentions[1].join('\n') );
+							if ( comment.length ) logEmbed.setColor('#008800').addField( logLang.get('verify.notice'), comment.join('\n') );
+							logMessage.embeds.push(logEmbed);
 						}
 						else {
-							logtext = '🔸 ' + lang.get('verify.user_verified', member.toString(), escapeFormatting(username), queryuser.gender);
-							if ( rename ) logtext += '\n' + lang.get('verify.user_renamed', queryuser.gender);
-							logtext += '\n<' + pagelink + '>';
-							if ( addRolesMentions[0].length ) logtext += '\n**' + lang.get('verify.qualified_add') + '** ' + addRolesMentions[0].join(', ');
-							if ( addRolesMentions[1].length ) logtext += '\n**' + lang.get('verify.qualified_add_error') + '** ' + addRolesMentions[1].join(', ');
-							if ( removeRolesMentions[0].length ) logtext += '\n**' + lang.get('verify.qualified_remove') + '** ' + removeRolesMentions[0].join(', ');
-							if ( removeRolesMentions[1].length ) logtext += '\n**' + lang.get('verify.qualified_remove_error') + '** ' + removeRolesMentions[1].join(', ');
-							if ( comment.length ) logtext += '\n**' + lang.get('verify.notice') + '** ' + comment.join('\n**' + lang.get('verify.notice') + '** ');
+							let logText = '🔸 ' + logLang.get('verify.user_verified', member.toString(), escapeFormatting(username), queryuser.gender);
+							if ( rename ) logText += '\n' + logLang.get('verify.user_renamed', queryuser.gender);
+							logText += '\n<' + pagelink + '>';
+							if ( addRolesMentions[0].length ) logText += '\n**' + logLang.get('verify.qualified_add') + '** ' + addRolesMentions[0].join(', ');
+							if ( addRolesMentions[1].length ) logText += '\n**' + logLang.get('verify.qualified_add_error') + '** ' + addRolesMentions[1].join(', ');
+							if ( removeRolesMentions[0].length ) logText += '\n**' + logLang.get('verify.qualified_remove') + '** ' + removeRolesMentions[0].join(', ');
+							if ( removeRolesMentions[1].length ) logText += '\n**' + logLang.get('verify.qualified_remove_error') + '** ' + removeRolesMentions[1].join(', ');
+							if ( comment.length ) logText += '\n**' + logLang.get('verify.notice') + '** ' + comment.join('\n**' + logLang.get('verify.notice') + '** ');
+							logMessage.content = logText;
 						}
 					}
 					var onsuccess = ( verifynotice.onsuccess ? parseNotice(verifynotice.onsuccess, {
@@ -881,28 +885,28 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 					return sendMessage( {content: text, embeds: [embed]} ).then( msg => {
 						if ( !useLogging ) return;
 						if ( msg ) {
-							if ( logembed ) logembed.addField(msg.url, '<#' + channel.id + '>');
-							else logtext += '\n<#' + channel.id + '> – <' + msg.url + '>';
+							if ( logMessage.content ) logMessage.content += '\n<#' + channel.id + '> – <' + msg.url + '>';
+							else logEmbed.addField(msg.url, '<#' + channel.id + '>');
 						}
-						verifynotice.logchannel.send( {
-							content: logtext,
-							embeds: ( logembed ? [logembed] : [] )
-						} ).catch(log_error);
+						verifynotice.logchannel.send( logMessage ).catch(log_error);
 					}, log_error );
 				}, log_error );
 			}
 			
 			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+			logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
 
-			let logembed;
-			let logtext;
-			if ( (verifynotice.flags & 1 << 1) === 1 << 1 && verifynotice.logchannel ) {
+			let logMessage = {
+				embeds: []
+			};
+			if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 				if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
-					logembed = new MessageEmbed(embed);
+					logMessage.embeds.push(logEmbed);
 				}
 				else {
-					logtext = '🔸 ' + lang.get('verify.user_matches', member.toString(), escapeFormatting(username), queryuser.gender);
-					logtext += '\n<' + pagelink + '>';
+					let logText = '🔸 ' + logLang.get('verify.user_matches', member.toString(), escapeFormatting(username), queryuser.gender);
+					logText += '\n<' + pagelink + '>';
+					logMessage.content = logText;
 				}
 			}
 			
@@ -924,17 +928,12 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 					new MessageButton().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle('PRIMARY').setCustomId('verify_again')
 				)]
 			} ).then( msg => {
-				if ( !logtext && !logembed ) return;
+				if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
 				if ( msg ) {
-					if ( verifynotice.logchannel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) ) {
-						logembed.addField(msg.url, '<#' + channel.id + '>');
-					}
-					else logtext += '\n<#' + channel.id + '> – <' + msg.url + '>';
+					if ( logMessage.content ) logMessage.content += '\n<#' + channel.id + '> – <' + msg.url + '>';
+					else logEmbed.addField(msg.url, '<#' + channel.id + '>');
 				}
-				verifynotice.logchannel.send( {
-					content: logtext,
-					embeds: ( logembed ? [logembed] : [] )
-				} ).catch(log_error);
+				verifynotice.logchannel.send( logMessage ).catch(log_error);
 			}, log_error );
 
 			/**
