@@ -800,6 +800,7 @@
 		"oauth_message_dm": "Please use this link to authenticate your wiki account for $1.",
 		"oauth_private": "The wiki uses OAuth2 for verification. Please enable direct messages from this server or use the `/verify` command so I can send you an authentication link privately.",
 		"oauth_used": "*Verified using OAuth2*",
+		"placeholder": "Your wiki username with the correct capitalization.",
 		"qualified_add": "Added to:",
 		"qualified_add_error": "Can't be added to:",
 		"qualified_remove": "Removed from:",
@@ -819,6 +820,7 @@
 		"user_renamed": "{{GENDER:$1|His|Her|Their}} Discord nickname has been changed to {{GENDER:$1|his|her|their}} wiki username.",
 		"user_verified": "Discord user $1 has been successfully verified as wiki user $2.",
 		"user_verified_reply": "you have been successfully verified as wiki user \"$1\".",
+		"username": "Wiki username:",
 		"wiki": "Wiki user:"
 	}
 }

@@ -13,7 +13,7 @@ function slash_inline(interaction, lang, wiki) {
 	var text = ( interaction.options.getString('text') || '' ).replace( /\]\(/g, ']\\(' );
 	text = text.replace( /\x1F/g, '' ).replace( /(?<!@)\u200b/g, '' ).trim();
 	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
-		return interaction.reply( {content: lang.get('interaction.inline'), ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: lang.uselang(interaction.locale).get('interaction.inline'), ephemeral: true} ).catch(log_error);
 	}
 	/** @type {import('discord.js').MessageMentionOptions} */
 	var allowedMentions = {
@@ -269,6 +269,5 @@ function slash_inline(interaction, lang, wiki) {
 
 export default {
 	name: 'inline',
-	run: slash_inline,
-	button: null
+	slash: slash_inline
 };

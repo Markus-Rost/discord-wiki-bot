@@ -1,35 +1,36 @@
 import { randomBytes } from 'node:crypto';
-import { MessageActionRow, MessageButton, Modal, TextInputComponent, Permissions } from 'discord.js';
+import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, sendMessage } from '../util/functions.js';
 
 /**
  * Wiki user verification.
- * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction|import('discord.js').ModalSubmitInteraction} interaction - The interaction.
+ * @param {import('discord.js').ButtonInteraction} interaction - The interaction.
  * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
-function interaction_verify(interaction, lang, wiki) {
-	var userLang = lang.uselang(interaction.locale);
-	if ( !interaction.guild ) return interaction.reply( {content: userLang.get('verify.missing'), ephemeral: true} ).catch(log_error);
-	if ( !interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
-		console.log( interaction.guildId + ': Missing permissions - MANAGE_ROLES' );
-		return interaction.reply( {content: userLang.get('general.missingperm') + ' `MANAGE_ROLES`', ephemeral: true} ).catch(log_error);
+function button_verify(interaction, lang, wiki) {
+	var username = interaction.message?.embeds?.[0]?.title?.replace( /\\(\\)?/g, '$1' );
+	if ( !username || !interaction.guild || !interaction.message.mentions?.users?.size ) {
+		return interaction.update( {components: []} ).catch(log_error);
 	}
-	
+	var userLang = lang.uselang(interaction.locale);
+	if ( !interaction.message.mentions.users.has(interaction.user.id) ) {
+		return interaction.reply( {content: userLang.get('verify.button_wrong_user', interaction.message.mentions.users.first().toString()), ephemeral: true} ).catch(log_error);
+	}
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
-		if ( !rows.length ) return interaction.reply( {content: userLang.get('verify.missing') + ( interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && process.env.dashboard ? '\n' + new URL(`/guild/${interaction.guildId}/verification`, process.env.dashboard).href : '' ), ephemeral: true} ).catch(log_error);
-
-		let isEphemeral = ( (rows[0].flags & 1 << 0) === 1 << 0 );
-		if ( isEphemeral ) lang = userLang;
+		if ( !rows.length || !interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) return interaction.update( {components: []} ).catch(log_error);
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
 			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
 			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
-				return interaction.deferReply( {ephemeral: isEphemeral} ).then( () => {
+				console.log( interaction.guildId + ': Button: ' + interaction.customId + ': OAuth2' );
+				return interaction.update( {components: [new MessageActionRow().addComponents(
+					new MessageButton(interaction.message.components[0].components[0]).setDisabled()
+				)]} ).then( () => {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
 							form: {
@@ -56,7 +57,7 @@ function interaction_verify(interaction, lang, wiki) {
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
-								fail: () => sendMessage(interaction, lang.get('verify.error_reply'))
+								fail: () => sendMessage(interaction, {components: []}, false)
 							});
 						}, error => {
 							console.log( '- Error while refreshing the mediawiki token: ' + error );
@@ -88,50 +89,23 @@ function interaction_verify(interaction, lang, wiki) {
 							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )], state
 						}).toString();
-						let message = {
+						sendMessage(interaction, {components: []}, false);
+						return interaction.followUp( {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
 							components: [new MessageActionRow().addComponents(
 								new MessageButton().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
 							)],
 							ephemeral: true
-						};
-						if ( (rows[0].flags & 1 << 0) === 1 << 0 ) return sendMessage(interaction, message, false);
-						return interaction.deleteReply().then( () => {
-							return interaction.followUp( message ).catch(log_error);
-						}, log_error );
+						} ).catch(log_error);
 					} );
 				}, log_error );
 			}
 		}
-		
-		var username = '';
-		if ( interaction.isCommand() ) username = interaction.options.getString('username') ?? '';
-		else if ( interaction.isModalSubmit() ) username = interaction.fields.getTextInputValue('username') ?? '';
-		username = username.replace( /^\s*<@!?(\d+)>\s*$/, (mention, id) => {
-			if ( id === interaction.user.id ) {
-				return interaction.member.displayName;
-			}
-			let member = interaction.guild.members.cache.get(id);
-			if ( member ) return member.displayName;
-			else {
-				let user = interaction.client.users.cache.get(id);
-				if ( user ) return user.username;
-			}
-			return mention;
-		} ).replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).split('#')[0].substring(0, 250).trim();
-		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
-			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
-		}
-		if ( wiki.wikifarm === 'fandom' ) username = username.replace( /^userprofile\s*:\s*/i, '' );
-		
-		if ( !username.trim() ) {
-			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), ephemeral: true} ).catch(log_error);
-			return interaction.showModal( new Modal().setCustomId('verify').setTitle(userLang.get('verify.title')).addComponents(new MessageActionRow().addComponents(
-				new TextInputComponent().setCustomId('username').setLabel(userLang.get('verify.username')).setPlaceholder(userLang.get('verify.placeholder')).setStyle('SHORT').setRequired().setMinLength(1).setMaxLength(500)
-			)) ).catch(log_error);
-		}
 
-		return interaction.deferReply( {ephemeral: isEphemeral} ).then( () => {
+		return interaction.update( {components: [new MessageActionRow().addComponents(
+			new MessageButton(interaction.message.components[0].components[0]).setDisabled()
+		)]} ).then( () => {
+			console.log( interaction.guildId + ': Button: ' + interaction.customId + ' ' + username );
 			return verify(lang, interaction.channel, interaction.member, username, wiki, rows).then( result => {
 				if ( result.oauth.length ) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
@@ -160,7 +134,7 @@ function interaction_verify(interaction, lang, wiki) {
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
-								fail: () => sendMessage(interaction, lang.get('verify.error_reply'))
+								fail: () => sendMessage(interaction, {components: []}, false)
 							});
 						}, error => {
 							console.log( '- Error while refreshing the mediawiki token: ' + error );
@@ -192,17 +166,14 @@ function interaction_verify(interaction, lang, wiki) {
 							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
 						}).toString();
-						let message = {
+						sendMessage(interaction, {components: []}, false);
+						return interaction.followUp( {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
 							components: [new MessageActionRow().addComponents(
 								new MessageButton().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
 							)],
 							ephemeral: true
-						}
-						if ( result.send_private ) return sendMessage(interaction, message, false);
-						return interaction.deleteReply().then( () => {
-							return interaction.followUp( message ).catch(log_error);
-						}, log_error );
+						} ).catch(log_error);
 					} );
 				}
 				var message = {
@@ -219,25 +190,29 @@ function interaction_verify(interaction, lang, wiki) {
 					else message.content = lang.get('verify.error_reply');
 					message.embeds = [];
 				}
-				else if ( result.add_button && !result.send_private ) message.components.push(new MessageActionRow().addComponents(
+				else if ( result.add_button ) message.components.push(new MessageActionRow().addComponents(
 					new MessageButton().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle('PRIMARY').setCustomId('verify_again')
 				));
-				return sendMessage(interaction, message, false).then( msg => {
-					if ( !result.logging.channel || !interaction.guild.channels.cache.has(result.logging.channel) ) return;
-					if ( msg && !result.send_private ) {
-						if ( result.logging.embed ) result.logging.embed.addField(msg.url, '<#' + interaction.channelId + '>');
-						else result.logging.content += '\n<#' + interaction.channelId + '> – <' + msg.url + '>';
-					}
+				sendMessage(interaction, message, false);
+				if ( result.logging.channel && interaction.guild.channels.cache.has(result.logging.channel) ) {
+					if ( result.logging.embed ) result.logging.embed.addField(interaction.message.url, '<#' + interaction.channelId + '>');
+					else result.logging.content += '\n<#' + interaction.channelId + '> – <' + interaction.message.url + '>';
 					interaction.guild.channels.cache.get(result.logging.channel).send( {
 						content: result.logging.content,
 						embeds: ( result.logging.embed ? [result.logging.embed] : [] )
 					} ).catch(log_error);
-				} );
+				}
+				interaction.followUp( {
+					content: message.content,
+					embeds: message.embeds,
+					components: [],
+					ephemeral: true
+				} ).catch(log_error);
 			}, error => {
 				console.log( '- Error during the verifications: ' + error );
-				return sendMessage(interaction, lang.get('verify.error_reply'));
+				return sendMessage(interaction, {components: []});
 			} );
-		}, log_error );
+		}, log_error);
 	}, dberror => {
 		console.log( '- Error while getting the verifications: ' + dberror );
 		return interaction.reply( {content: userLang.get('verify.error_reply'), ephemeral: true} ).catch(log_error);
@@ -245,8 +220,6 @@ function interaction_verify(interaction, lang, wiki) {
 }
 
 export default {
-	name: 'verify',
-	slash: interaction_verify,
-	modal: interaction_verify,
-	button: interaction_verify
+	name: 'verify_again',
+	button: button_verify
 };

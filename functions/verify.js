@@ -28,7 +28,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
 	verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
 		return ( logchannel.isText() && logchannel.permissionsFor(channel.guild.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) );
 	} ).get(verifynotice.logchannel) : null );
-	var embed = new MessageEmbed().setFooter( {text: lang.get('verify.footer')} ).setTimestamp();
+	var embed = new MessageEmbed().setFooter( {text: lang.get('verify.title')} ).setTimestamp();
 	var result = {
 		content: '', embed,
 		add_button: channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS),
@@ -617,7 +617,7 @@ export default function verify(lang, channel, member, username, wiki, rows, old_
  * @param {import('discord.js').TextChannel} settings.channel - The channel.
  * @param {String} settings.user - The user id.
  * @param {String} settings.wiki - The OAuth2 wiki.
- * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction} [settings.interaction] - The interaction.
+ * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction|import('discord.js').ModalSubmitInteraction} [settings.interaction] - The interaction.
  * @param {Function} [settings.fail] - The function to call when the verifiction errors.
  * @param {import('discord.js').Message} [settings.sourceMessage] - The source message with the command.
  * @global
@@ -689,7 +689,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			logging(wiki, channel.guildId, 'verification');
 			var queryuser = body.query.users[0];
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.fail?.();
-			var embed = new MessageEmbed().setFooter( {text: lang.get('verify.footer')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
+			var embed = new MessageEmbed().setFooter( {text: lang.get('verify.title')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).addField( lang.get('verify.discord', queryuser.gender), escapeFormatting(member.user.tag), true ).addField( lang.get('verify.wiki', queryuser.gender), lang.get('verify.oauth_used'), true );
 			var pagelink = wiki.toLink('User:' + username, '', '', true);
 			embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 			if ( queryuser.blockexpiry ) {
@@ -931,7 +931,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 					ephemeral: ( (verifynotice.flags & 1 << 0) === 1 << 0 )
 				}
 				if ( settings.interaction ) return settings.interaction.editReply( message ).then( msg => {
-					if ( settings.interaction.isButton() ) settings.interaction.followUp( {
+					if ( settings.interaction.isButton() && settings.interaction.customId === 'verify_again' ) settings.interaction.followUp( {
 						content: message.content,
 						embeds: message.embeds,
 						components: [],

@@ -152,17 +152,21 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 	return regex.test(this.replace( /\u200b/g, '' ).toLowerCase());
 };
 
-var slash = {};
-var buttons = {};
-var buttonsMap = {
-	verify_again: 'verify'
+var interaction_commands = {
+	/** @type {{[x: string]: function(Interaction, Lang, Wiki)>}} */
+	slash: {},
+	/** @type {{[x: string]: function(Interaction, Lang, Wiki)>}} */
+	modal: {},
+	/** @type {{[x: string]: function(Interaction, Lang, Wiki)>}} */
+	button: {}
 };
 readdir( './interactions', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
 		import('./interactions/' + file).then( ({default: command}) => {
-			if ( command.hasOwnProperty('run') ) slash[command.name] = command.run;
-			if ( command.hasOwnProperty('button') ) buttons[command.name] = command.button;
+			if ( command.hasOwnProperty('slash') ) interaction_commands.slash[command.name] = command.slash;
+			if ( command.hasOwnProperty('modal') ) interaction_commands.modal[command.name] = command.modal;
+			if ( command.hasOwnProperty('button') ) interaction_commands.button[command.name] = command.button;
 		} );
 	} );
 } );
@@ -177,56 +181,52 @@ client.on( 'interactionCreate', interaction => {
 		interaction.member.permissions = new Discord.Permissions(interaction.member.permissions);
 	}
 	if ( interaction.channel?.partial ) return interaction.channel.fetch().then( () => {
-		if ( interaction.isCommand() ) return slash_command(interaction);
-		if ( interaction.isButton() ) return message_button(interaction);
+		return interactionCreate(interaction);
 	}, log_error );
-	if ( interaction.isCommand() ) return slash_command(interaction);
-	if ( interaction.isButton() ) return message_button(interaction);
+	return interactionCreate(interaction);
 } );
 
 /**
- * Handle slash commands.
- * @param {Discord.CommandInteraction} interaction - The interaction.
+ * Handle interactions.
+ * @param {Discord.Interaction} interaction - The interaction.
  */
-function slash_command(interaction) {
+ function interactionCreate(interaction) {
 	if ( breakOnTimeoutPause(interaction) ) return;
-	if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
-	else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
-		return option.name + ':' + option.value;
-	} ).join(' ') );
-	if ( !slash.hasOwnProperty(interaction.commandName) ) return;
-	if ( !interaction.inGuild() ) {
-		return slash[interaction.commandName](interaction, new Lang(), new Wiki());
+	var cmd = null;
+	if ( interaction.isCommand() ) {
+		if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
+		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			return option.name + ':' + option.value;
+		} ).join(' ') );
+		if ( !interaction_commands.slash.hasOwnProperty(interaction.commandName) ) return;
+		cmd = interaction_commands.slash[interaction.commandName];
 	}
-	let sqlargs = [interaction.guildId];
-	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
-	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
-	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-		return slash[interaction.commandName](interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
-	}, dberror => {
-		console.log( '- Slash: Error while getting the wiki: ' + dberror );
-		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
-	} );
-}
+	else if ( interaction.isModalSubmit() ) {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Modal: ' + interaction.customId + ' ' + interaction.fields.components.reduce( (prev, next) => {
+			return prev.concat(next.components);
+		}, [] ).map( option => {
+			return option.customId + ':' + option.value;
+		} ).join(' ') );
+		if ( !interaction_commands.modal.hasOwnProperty(interaction.customId) ) return;
+		cmd = interaction_commands.modal[interaction.customId];
+	}
+	else if ( interaction.isButton() ) {
+		if ( interaction.customId !== 'verify_again' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Button: ' + interaction.customId );
+		if ( !interaction_commands.button.hasOwnProperty(interaction.customId) ) return;
+		cmd = interaction_commands.button[interaction.customId];
+	}
+	else return;
 
-/**
- * Handle message buttons.
- * @param {Discord.ButtonInteraction} interaction - The interaction.
- */
-function message_button(interaction) {
-	if ( breakOnTimeoutPause(interaction) ) return;
-	var cmd = ( buttonsMap.hasOwnProperty(interaction.customId) ? buttonsMap[interaction.customId] : interaction.customId );
-	if ( !buttons.hasOwnProperty(cmd) ) return;
 	if ( !interaction.inGuild() ) {
-		return buttons[cmd](interaction, new Lang(), new Wiki());
+		return cmd(interaction, new Lang(interaction.guildLocale), new Wiki());
 	}
 	let sqlargs = [interaction.guildId];
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
 	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
-		return buttons[cmd](interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
+		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
-		console.log( '- Button: Error while getting the wiki: ' + dberror );
+		console.log( '- Interaction: Error while getting the wiki: ' + dberror );
 		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
 	} );
 }

@@ -31,6 +31,6 @@ function slash_wiki(interaction, lang, wiki) {
 */
 export default {
 	name: 'wiki',
-	run: null,
+	slash: null,
 	button: null
 };
