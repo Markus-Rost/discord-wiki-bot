@@ -799,6 +799,7 @@
 		"oauth_message_dm": "请使用此链接为$1验证您的wiki账号。",
 		"oauth_private": "此wiki使用OAuth2进行验证。请开启来自此服务器的私信或使用`/verify`命令以允许我向您私信验证链接。",
 		"oauth_used": "*已通过OAuth2验证*",
+		"placeholder": "你的wiki用户名（请确保大小写正确）。",
 		"qualified_add": "添加：",
 		"qualified_add_error": "无法添加：",
 		"qualified_remove": "移除：",
@@ -819,6 +820,7 @@
 		"user_renamed": "用户的 Discord 昵称已被改为其 wiki 用户名。",
 		"user_verified": "Discord 用户 $1 已成功验证为 wiki 用户 $2。",
 		"user_verified_reply": "您已成功验证为 wiki 用户“$1”。",
+		"username": "Wiki 用户名：",
 		"wiki": "Wiki 用户："
 	}
 }
