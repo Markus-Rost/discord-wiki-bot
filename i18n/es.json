@@ -799,6 +799,7 @@
 		"oauth_message_dm": "Por favor, utiliza este enlace para autenticar tu cuenta wiki para $1.",
 		"oauth_private": "El wiki usa OAuth2 para la verificación. Por favor, habilita los mensajes directos de este servidor o use el comando `/verify` para que pueda enviarte un enlace de autenticación de forma privada.",
 		"oauth_used": "*Verificado usando OAuth2*",
+		"placeholder": "Tu nombre de usuario wiki, distingue entre mayúsculas y minúsculas.",
 		"qualified_add": "Agregado a:",
 		"qualified_add_error": "No se puede agregar a:",
 		"qualified_remove": "Eliminado de:",
@@ -819,6 +820,7 @@
 		"user_renamed": "{{SEXO:$1|Su|Su|Su}} alias de Discord ha sido cambiado a {{SEXO:$1|su|su|su}} nombre de usuario wiki.",
 		"user_verified": "El usuario de Discord $1 ha sido verificado con éxito como el usuario wiki $2.",
 		"user_verified_reply": "has sido verificado con éxito como el usuario wiki \"$1\".",
+		"username": "Nombre de usuario wiki:",
 		"wiki": "Usuario wiki:"
 	}
 }
