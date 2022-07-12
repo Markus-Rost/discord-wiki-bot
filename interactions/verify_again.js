@@ -106,7 +106,7 @@ function button_verify(interaction, lang, wiki) {
 			new MessageButton(interaction.message.components[0].components[0]).setDisabled()
 		)]} ).then( () => {
 			console.log( interaction.guildId + ': Button: ' + interaction.customId + ' ' + username );
-			return verify(lang, interaction.channel, interaction.member, username, wiki, rows).then( result => {
+			return verify(lang, lang, interaction.channel, interaction.member, username, wiki, rows).then( result => {
 				if ( result.oauth.length ) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {

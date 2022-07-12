@@ -11,6 +11,7 @@ import { got, oauthVerify, sendMessage } from '../util/functions.js';
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function interaction_verify(interaction, lang, wiki) {
+	var loggingLang = lang;
 	var userLang = lang.uselang(interaction.locale);
 	if ( !interaction.guild ) return interaction.reply( {content: userLang.get('verify.missing'), ephemeral: true} ).catch(log_error);
 	if ( !interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
@@ -132,7 +133,7 @@ function interaction_verify(interaction, lang, wiki) {
 		}
 
 		return interaction.deferReply( {ephemeral: isEphemeral} ).then( () => {
-			return verify(lang, interaction.channel, interaction.member, username, wiki, rows).then( result => {
+			return verify(lang, loggingLang, interaction.channel, interaction.member, username, wiki, rows).then( result => {
 				if ( result.oauth.length ) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {

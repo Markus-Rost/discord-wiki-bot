@@ -127,7 +127,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			return this.help(lang, msg, args, line, wiki);
 		}
 		msg.reactEmoji('⏳').then( reaction => {
-			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
+			verify(lang, lang, msg.channel, msg.member, username, wiki, rows).then( result => {
 				if ( result.oauth.length ) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
