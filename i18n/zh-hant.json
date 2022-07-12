@@ -799,6 +799,7 @@
 		"oauth_message_dm": "請使用此連結為$1驗證您的帳號。",
 		"oauth_private": "此wiki使用OAuth2進行驗證。請開啟來自此伺服器的私訊或是使用`/verify`指令以允許我向您傳送驗證連結。",
 		"oauth_used": "*已透過OAuth2驗證*",
+		"placeholder": "您的wiki使用者名稱（請確保大小寫正確）。",
 		"qualified_add": "新增：",
 		"qualified_add_error": "無法新增：",
 		"qualified_remove": "移除：",
@@ -819,6 +820,7 @@
 		"user_renamed": "已將使用者的Discord暱稱變更為其wiki使用者名稱。",
 		"user_verified": "Discord使用者 $1 已成功以wiki使用者 $2 的身分通過驗證。",
 		"user_verified_reply": "您已成功以wiki使用者 $1 的身分通過驗證。",
+		"username": "Wiki使用者名稱：",
 		"wiki": "Wiki使用者："
 	}
 }

@@ -799,6 +799,7 @@
 		"oauth_message_dm": "Bitte nutze diesen Link um deinen Wiki-Account für $1 zu authentifizieren.",
 		"oauth_private": "Dieses Wiki nutzt OAuth2 zur Verifizierung. Bitte erlaube Direktnachrichten von diesem Server oder nutze den `/verify`-Befehl damit ich dir privat einen Authentifizierungslink senden kann.",
 		"oauth_used": "*Verifiziert über OAuth2*",
+		"placeholder": "Dein Wiki-Benutzername mit korrekter Groß- und Kleinschreibung.",
 		"qualified_add": "Hinzugefügt zu:",
 		"qualified_add_error": "Kann nicht hinzugefügt werden zu:",
 		"qualified_remove": "Entfernt von:",
@@ -819,6 +820,7 @@
 		"user_renamed": "{{GENDER:$1|Sein|Ihr}} Discord-Nickname wurde zu {{GENDER:$1|seinem|ihrem}} Wiki-Benutzernamen geändert.",
 		"user_verified": "{{GENDER:$3|Discord-Benutzer|Discord-Benutzerin}} $1 wurde erfolgreich als {{GENDER:$3|Wiki-Benutzer|Wiki-Benutzerin}} $2 verifiziert.",
 		"user_verified_reply": "du wurdest erfolgreich als {{GENDER:$2|Wiki-Benutzer|Wiki-Benutzerin}} „$1“ verifiziert.",
+		"username": "Wiki-Benutzername:",
 		"wiki": "{{GENDER:$1|Wiki-Benutzer|Wiki-Benutzerin}}:"
 	}
 }
