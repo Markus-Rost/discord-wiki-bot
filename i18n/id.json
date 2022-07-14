@@ -721,6 +721,7 @@
 		"add_more": "Tambahkan lebih banyak verifikasi:",
 		"added": "Verifikasi telah ditambahkan:",
 		"and": "dan",
+		"audit_reason": "Mengirim pesan dengan tombol verifikasi",
 		"channel": "Saluran:",
 		"channel_max": "Kamu menyediakan terlalu banyak saluran.",
 		"channel_missing": "Saluran yang disediakan tidak ada.",
@@ -729,6 +730,7 @@
 		"dashboard": {
 			"added": "$1 menambahkan verifikasi dengan id `$2`.",
 			"added_notice": "$1 menambahkan beberapa pemberitahuan verifikasi.",
+			"button": "$1 mengirim pesan dengan tombol verifikasi.",
 			"removed": "$1 menghapus verifikasi dengan id `$2`.",
 			"updated": "$1 memperbarui verifikasi dengan id `$2`.",
 			"updated_notice": "$1 memperbarui beberapa pemberitahuan verifikasi."
