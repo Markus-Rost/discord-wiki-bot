@@ -29,6 +29,9 @@
 		"welcome": "<h2>歡迎使用Wiki-Bot控制台。</h2>\n<p>Wiki-Bot是一個Discord機器人，旨在將使用MediaWiki的wiki與Discord伺服器整合在一起。它可以幫忙連結到wiki頁面，驗證wiki使用者，傳送近期變更等。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多資訊]</a></p>\n<p>您可以在此為您擁有「管理伺服器」權限的伺服器變更機器人設定。在開始之前，您需要透過這個按鈕驗證您的Discord帳號：</p>"
 	},
 	"indexjs": {
+		"avatar": {
+			"content_type": "所提供的連結的內容類型是$1，但僅允許以下內容類型："
+		},
 		"invalid": {
 			"note_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。",
 			"note_private": "所提供的 wiki 是私人 wiki！",
