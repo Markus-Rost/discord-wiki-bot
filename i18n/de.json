@@ -721,6 +721,7 @@
 		"add_more": "Füge mehr Verifizierungen hinzu:",
 		"added": "Die Verifizierung wurde hinzugefügt:",
 		"and": "und",
+		"audit_reason": "Nachricht mit Verifizierungsknopf senden",
 		"channel": "Kanal:",
 		"channel_max": "Du hast zu viele Kanäle angegeben.",
 		"channel_missing": "Der angegebene Kanal existiert nicht.",
@@ -729,6 +730,7 @@
 		"dashboard": {
 			"added": "$1 hat die Verifizierung mit der ID `$2` hinzugefügt.",
 			"added_notice": "$1 hat einige Verifizierungshinweise hinzugefügt.",
+			"button": "$1 hat eine Nachricht mit Verifizierungsknopf gesendet.",
 			"removed": "$1 hat die Verifizierung mit der ID `$2` gelöscht.",
 			"updated": "$1 hat die Verifizierung mit der ID `$2` bearbeitet.",
 			"updated_notice": "$1 hat einige Verifizierungshinweise aktualisiert."
