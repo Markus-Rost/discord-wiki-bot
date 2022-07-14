@@ -721,6 +721,7 @@
 		"add_more": "添加更多驗證方式：",
 		"added": "驗證方式已儲存：",
 		"and": "和",
+		"audit_reason": "傳送帶有驗證按鈕的訊息",
 		"channel": "頻道：",
 		"channel_max": "提供的頻道過多。",
 		"channel_missing": "提供的頻道不存在。",
@@ -729,6 +730,7 @@
 		"dashboard": {
 			"added": "$1 新增了ID為`$2`的驗證方式。",
 			"added_notice": "$1新增了一些驗證提示。",
+			"button": "$1 傳送了一則帶有驗證按鈕的訊息。",
 			"removed": "$1 移除了ID為`$2`的驗證方式。",
 			"updated": "$1 變更了ID為`$2`的驗證方式。",
 			"updated_notice": "$1更新了一些驗證提示。"
