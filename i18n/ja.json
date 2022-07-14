@@ -721,6 +721,7 @@
 		"add_more": "検証を追加：",
 		"added": "検証を追加しました：",
 		"and": "と",
+		"audit_reason": "認証ボタンでメッセージを送信する",
 		"channel": "チャンネル：",
 		"channel_max": "チャンネルを多く用意しすぎたのですね。",
 		"channel_missing": "提示されたチャンネルが存在しません。",
@@ -729,6 +730,7 @@
 		"dashboard": {
 			"added": "$1 は ID `$2` の検証を追加しました。",
 			"added_notice": "$1 検証のお知らせをいくつか追加しました。",
+			"button": "$1 は、認証ボタン付きのメッセージを送信しました。",
 			"removed": "$1 は id `$2` の検証を削除しました。",
 			"updated": "$1 は id `$2` の検証を更新しました。",
 			"updated_notice": "$1 検証のお知らせを更新しました。"
@@ -790,7 +792,7 @@
 		"help_fandom": "https://community.fandom.com/wiki/Special:VerifyUser",
 		"help_gamepedia": "https://help.fandom.com/wiki/Gamepedia_Help_Wiki:Discord_verification",
 		"help_guide": "[このガイド]($1)に従って、WikiのプロフィールにDiscordのタグを追加してください：",
-		"help_missing": "Wikiのユーザー名を使用し、大文字小文字が正しいかどうか確認してください。",
+		"help_missing": "Wikiのユーザー名を確認してください(大文字/小文字は区別されます)。",
 		"help_subpage": "WikiのDiscordサブページにあなたのDiscordタグ($1)を追加してください：",
 		"missing": "このチャンネルには、検証は設定されていません。",
 		"notice": "通知：",
@@ -799,7 +801,7 @@
 		"oauth_message_dm": "このリンクから、$1でWikiアカウントを認証してください。",
 		"oauth_private": "Wikiは認証にOAuth2を使用しています。このサーバからのダイレクトメッセージを有効にするか、`/verify`コマンドを使用してください。そうすれば、個人的に認証リンクを送ることができます。",
 		"oauth_used": "*OAuth2による検証済*",
-		"placeholder": "Wikiのユーザー名を大文字と小文字を正しく表記してください。",
+		"placeholder": "Wikiのユーザー名を入力してください。",
 		"qualified_add": "右記に追加しました：",
 		"qualified_add_error": "右記に追加できない：",
 		"qualified_remove": "右記から削除しました：",

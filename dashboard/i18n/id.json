@@ -29,6 +29,10 @@
 		"welcome": "<h2>Selamat datang di Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot adalah bot Discord yang dibuat untuk menyatukan server Discord dan wiki MediaWiki. Ini membantu dengan menghubungkan halaman wiki, memverifikasi pengguna wiki, menginformasikan tentang perubahan terbaru di wiki dan banyak lagi. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Informasi selengkapnya]</a></p>\n<p>Di sini Kamu dapat mengubah pengaturan bot yang berbeda untuk server tempat Kamu memiliki izin Kelola Server. Untuk memulai, Kamu harus mengautentikasi akun Discord Kamu yang dapat Kamu lakukan dengan tombol ini:</p>"
 	},
 	"indexjs": {
+		"avatar": {
+			"content_type": "Tautan yang disediakan memiliki tipe konten $1, tetapi hanya tipe konten berikut yang diizinkan:",
+			"invalid_url": "URL tidak dapat diselesaikan menjadi file gambar yang valid."
+		},
 		"invalid": {
 			"note_http": "Situs web yang disediakan tidak memiliki sertifikat TLS/SSL yang valid! Untuk alasan keamanan, hanya wiki yang menggunakan HTTPS yang didukung.",
 			"note_private": "Wiki yang disediakan bersifat pribadi!",
@@ -132,6 +136,14 @@
 			"text": "Pengaturan tidak dapat disimpan, harap coba lagi.",
 			"title": "Gagal menyimpan!"
 		},
+		"send": {
+			"text": "Pesan telah berhasil dikirim.",
+			"title": "Pesan terkirim!"
+		},
+		"sendfail": {
+			"text": "Pesan tidak dapat terkirim, harap coba lagi.",
+			"title": "Pengiriman gagal!"
+		},
 		"sysmessage": {
 			"text": "Halaman $1 harus cocok dengan id server $2.",
 			"title": "Pesan sistem tidak cocok!"
@@ -221,12 +233,24 @@
 		"new": "Saluran baru ditimpa"
 	},
 	"verification": {
+		"button": "Tombol verifikasi",
 		"desc": "Ini adalah verifikasi untuk $1:",
 		"explanation": "<h2>Verifikasi Pengguna</h2>\n<p>Menggunakan perintah <code class=\"prefix\">verify &lt;wiki username&gt;</code>, pengguna dapat memverifikasi diri mereka sendiri sebagai pengguna wiki tertentu dengan menggunakan bidang Discord pada profil wiki mereka. Jika pengguna cocok dan verifikasi pengguna diatur di server, Wiki-Bot akan memberi mereka peran untuk semua entri verifikasi yang cocok.</p>\n<p>Setiap entri verifikasi memungkinkan beberapa batasan tentang kapan pengguna harus cocok dengan verifikasi:</p>\n<ul>\n<li>Saluran untuk menggunakan perintah <code class=\"prefix\">verifikasi</code>.</li>\n<li>Peran yang didapat saat mencocokkan entri verifikasi.</li>\n<li>Jumlah edit yang diperlukan di wiki untuk mencocokkan entri verifikasi.</li>\n<li>Grup pengguna yang diperlukan untuk menjadi anggota di wiki agar cocok dengan entri verifikasi.</li>\n<li>Usia akun yang diperlukan dalam hari agar sesuai dengan entri verifikasi.</li>\n<li>Apakah nama panggilan pengguna Discord harus disetel ke nama pengguna wiki mereka saat mereka cocok dengan entri verifikasi.</li>\n</ul>",
 		"form": {
 			"accountage": "Usia akun (dalam hari):",
+			"avatar": "Avatar penulis:",
+			"avatar_bot": "Avatar bot",
+			"avatar_guild": "Ikon server",
+			"avatar_preview": "Pratinjau",
+			"button": "Kirim Pesan dengan Tombol Verifikasi",
+			"button_emoji": "Tombol emoji:",
+			"button_name": "Tombol teks:",
+			"button_name_default": "Verifikasi Akun Wiki",
+			"button_style": "Gaya tombol:",
 			"channel": "Minimal Role:",
 			"confirm": "Apakah Kamu benar-benar ingin menghapus verifikasi?",
+			"content": "Isi pesan:",
+			"content_placeholder": "Teks markdown pesan, mendukung tautan mask.",
 			"editcount": "Jumlah edit minimal:",
 			"entry": "Verifikasi #$1",
 			"flag_logall": "Log verifikasi yang gagal:",
@@ -248,10 +272,12 @@
 			"role_remove": "Hapus",
 			"select_channel": "-- Pilih Saluran --",
 			"select_role": "-- Pilih Peran --",
+			"send_message": "Mengirim pesan",
 			"success": "Pemberitahuan sukses:",
 			"success_placeholder": "Teks MD tentang verifikasi yang berhasil.",
 			"usergroup": "Grup pengguna Wiki:",
-			"usergroup_and": "Wajibkan semua grup pengguna:"
+			"usergroup_and": "Wajibkan semua grup pengguna:",
+			"webhook_name": "Nama penulis:"
 		},
 		"help_notice": "<p>Pemberitahuan khusus mendukung beberapa fungsi dan variabel sederhana.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – Jumlah edit pengguna saat ini.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – Usia akun pengguna saat ini dalam hari penuh.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – Jumlah posting diskusi saat ini dari pengguna (hanya wiki Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Mengembalikan hasil ekspresi.\n<ul>\n<li>Hanya mendukung penambahan <code class=\"form-button user-select\">+</code> dan pengurangan <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – Mengembalikan teks tergantung pada hasil ekspresi.\n<ul>\n<li>Dukung<code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> serta <code class=\"form-button user-select\">dan</code>, <code class=\"form-button user-select\">atau</code>.</li>\n</ul></li>\n</ul>",
 		"new": "Verifikasi baru",
