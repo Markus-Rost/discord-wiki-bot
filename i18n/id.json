@@ -799,6 +799,7 @@
 		"oauth_message_dm": "Silakan gunakan tautan ini untuk mengautentikasi akun wiki kamu untuk pengguna $1.",
 		"oauth_private": "Wiki menggunakan OAuth2 untuk verifikasi. Harap aktifkan pesan langsung dari server ini atau gunakan perintah `/verify` sehingga saya dapat mengirimi Kamu tautan autentikasi secara pribadi.",
 		"oauth_used": "*Diverifikasi menggunakan OAuth2*",
+		"placeholder": "Perhatikan nama pengguna wiki Anda dengan huruf besar yang benar.",
 		"qualified_add": "Ditambahkan ke:",
 		"qualified_add_error": "Tidak dapat ditambahkan ke:",
 		"qualified_remove": "Dihapus dari:",
@@ -819,6 +820,7 @@
 		"user_renamed": "{{GENDER:$1|dia laki-laki|dia perempuan|mereka}} Nama panggilan Discord telah diubah menjadi {{GENDER:$1|dia laki-laki|dia perempuan|mereka}} nama pengguna.",
 		"user_verified": "Pengguna Discord $1 telah berhasil diverifikasi sebagai pengguna wiki $2.",
 		"user_verified_reply": "Kamu telah berhasil diverifikasi sebagai pengguna wiki \"$1\".",
+		"username": "Nama pengguna Wiki:",
 		"wiki": "Pengguna Wiki:"
 	}
 }

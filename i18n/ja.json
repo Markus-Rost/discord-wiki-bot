@@ -799,6 +799,7 @@
 		"oauth_message_dm": "このリンクから、$1でWikiアカウントを認証してください。",
 		"oauth_private": "Wikiは認証にOAuth2を使用しています。このサーバからのダイレクトメッセージを有効にするか、`/verify`コマンドを使用してください。そうすれば、個人的に認証リンクを送ることができます。",
 		"oauth_used": "*OAuth2による検証済*",
+		"placeholder": "Wikiのユーザー名を大文字と小文字を正しく表記してください。",
 		"qualified_add": "右記に追加しました：",
 		"qualified_add_error": "右記に追加できない：",
 		"qualified_remove": "右記から削除しました：",
@@ -819,6 +820,7 @@
 		"user_renamed": "{{GENDER:$1|彼|彼女|彼ら}} のDiscordのニックネームが{{GENDER:$1|彼|彼女|彼ら}} のWikiユーザー名に変更にしました。",
 		"user_verified": "Discordユーザー$1はWikiユーザー$2として正常に認証されました。",
 		"user_verified_reply": "あなたはWikiユーザー\"$1\"として認証されました。",
+		"username": "Wikiユーザ名：",
 		"wiki": "Wikiユーザー："
 	}
 }
