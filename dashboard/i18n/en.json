@@ -137,8 +137,8 @@
 			"title": "Save failed!"
 		},
 		"send": {
-			"text": "The message has been send successfully.",
-			"title": "Message send!"
+			"text": "The message has been sent successfully.",
+			"title": "Message sent!"
 		},
 		"sendfail": {
 			"text": "The message could not be send, please try again.",
