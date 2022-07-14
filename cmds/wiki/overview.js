@@ -134,7 +134,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			}
 			var description = [lang.get('overview.description')];
 			var image = [lang.get('overview.image')];
-			return got.get( 'https://community.fandom.com/api/v1/Wikis/Details?ids=' + wikiid + '&format=json&cache=' + Date.now(), {
+			return got.get( 'https://community.fandom.com/wikia.php?controller=WikisApiController&method=getDetails&ids=' + wikiid + '&format=json&cache=' + Date.now(), {
 				context: {
 					guildId: msg.guildId
 				}

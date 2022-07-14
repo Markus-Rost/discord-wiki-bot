@@ -88,7 +88,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			embed.setTitle( escapeFormatting( old_username || username ) ).setColor('#0000FF').setDescription( lang.get('verify.user_missing', escapeFormatting( old_username || username )) ).addField( lang.get('verify.notice'), lang.get('verify.help_missing') );
 			result.content = lang.get('verify.user_missing_reply', escapeFormatting( old_username || username ));
 			result.add_button = false;
-			if ( wiki.wikifarm === 'fandom' && !old_username ) return got.get( wiki + 'api/v1/User/UsersByName?limit=1&query=' + encodeURIComponent( username ) + '&format=json', {
+			if ( wiki.wikifarm === 'fandom' && !old_username ) return got.get( wiki + 'wikia.php?controller=UserApiController&method=getUsersByName&limit=1&query=' + encodeURIComponent( username ) + '&format=json', {
 				context: {
 					guildId: channel.guildId
 				}

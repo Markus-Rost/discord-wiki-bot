@@ -29,6 +29,10 @@
 		"welcome": "<h2>Welcome to the Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot is a Discord bot made to bring Discord servers and MediaWiki wikis together. It helps with linking wiki pages, verifying wiki users, informing about latest changes on the wiki and more. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[More information]</a></p>\n<p>Here you can change different bot settings for servers you have Manage Server permission on. To begin, you will have to authenticate your Discord account which you can do with this button:</p>"
 	},
 	"indexjs": {
+		"avatar": {
+			"content_type": "The provided link has the content type $1, but only the following content types are allowed:",
+			"invalid_url": "The URL couldn't be resolved to a valid image file."
+		},
 		"invalid": {
 			"note_http": "The provided website doesn't have a valid TLS/SSL certificate! For security reasons only wikis using HTTPS are supported.",
 			"note_private": "The provided wiki is private!",
@@ -132,6 +136,14 @@
 			"text": "The settings could not be saved, please try again.",
 			"title": "Save failed!"
 		},
+		"send": {
+			"text": "The message has been send successfully.",
+			"title": "Message send!"
+		},
+		"sendfail": {
+			"text": "The message could not be send, please try again.",
+			"title": "Sending failed!"
+		},
 		"sysmessage": {
 			"text": "The page $1 needs to match the server id $2.",
 			"title": "System message doesn't match!"
@@ -221,12 +233,24 @@
 		"new": "New channel overwrite"
 	},
 	"verification": {
+		"button": "Verification button",
 		"desc": "These are the verifications for $1:",
 		"explanation": "<h2>User Verification</h2>\n<p>Using the <code class=\"prefix\">verify &lt;wiki username&gt;</code> command, users are able to verify themselves as a specific wiki user by using the Discord field on their wiki profile. If the user matches and user verifications are set up on the server, Wiki-Bot will give them the roles for all verification entries they matched.</p>\n<p>Every verification entry allows for multiple restrictions on when a user should match the verification:</p>\n<ul>\n<li>Channel to use the <code class=\"prefix\">verify</code> command in.</li>\n<li>Role to get when matching the verification entry.</li>\n<li>Required edit count on the wiki to match the verification entry.</li>\n<li>Required user group to be a member of on the wiki to match the verification entry.</li>\n<li>Required account age in days to match the verification entry.</li>\n<li>Whether the Discord users nickname should be set to their wiki username when they match the verification entry.</li>\n</ul>",
 		"form": {
 			"accountage": "Account age (in days):",
+			"avatar": "Author avatar:",
+			"avatar_bot": "Bot avatar",
+			"avatar_guild": "Server avatar",
+			"avatar_preview": "Preview",
+			"button": "Send Message with Verification Button",
+			"button_emoji": "Button emoji:",
+			"button_name": "Button text:",
+			"button_name_default": "Wiki Account Verification",
+			"button_style": "Button style:",
 			"channel": "Channel:",
 			"confirm": "Do you really want to delete the verification?",
+			"content": "Message content:",
+			"content_placeholder": "Markdown text of the message, supports masked links.",
 			"editcount": "Minimal edit count:",
 			"entry": "Verification #$1",
 			"flag_logall": "Log unsuccessful verifications:",
@@ -246,13 +270,16 @@
 			"role": "Role:",
 			"role_add": "Add",
 			"role_remove": "Remove",
+			"send_message": "Send message",
 			"select_channel": "-- Select a Channel --",
 			"select_role": "-- Select a Role --",
 			"success": "Success notice:",
 			"success_placeholder": "Markdown text on successful verification.",
 			"usergroup": "Wiki user group:",
-			"usergroup_and": "Require all user groups:"
+			"usergroup_and": "Require all user groups:",
+			"webhook_name": "Author name:"
 		},
+		"help_button": "",
 		"help_notice": "<p>The custom notices support some simple functions and variables.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – The current edit count of the user.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – The current account age of the user in full days.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – The current discussions post count of the user (only Fandom wikis).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Returns the result of an expression.\n<ul>\n<li>Supports only addition <code class=\"form-button user-select\">+</code> and subtraction <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – Returns text depending on the result of an expression.\n<ul>\n<li>Supports <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> as well as <code class=\"form-button user-select\">and</code>, <code class=\"form-button user-select\">or</code>.</li>\n</ul></li>\n</ul>",
 		"new": "New verification",
 		"notice": "Verification notices"

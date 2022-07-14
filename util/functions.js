@@ -517,7 +517,7 @@ function partialURIdecode(m) {
  */
 function breakOnTimeoutPause(msg, ignorePause = false) {
 	if ( !msg.inGuild() ) return false;
-	if ( msg.member?.isCommunicationDisabled() ) {
+	if ( msg.member?.isCommunicationDisabled?.() ) {
 		console.log( '- Aborted, communication disabled for User.' );
 		return true;
 	}
@@ -525,7 +525,7 @@ function breakOnTimeoutPause(msg, ignorePause = false) {
 		console.log( '- Aborted, communication disabled for Wiki-Bot.' );
 		return true;
 	}
-	if ( pausedGuilds.has(msg.guildId) && !( ignorePause && ( msg.isAdmin() || msg.isOwner() ) ) ) {
+	if ( pausedGuilds.has(msg.guildId) && !( ignorePause && ( msg.isAdmin?.() || msg.isOwner?.() ) ) ) {
 		console.log( '- Aborted, guild paused.' );
 		return true;
 	};

@@ -336,6 +336,71 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 })(wikis[w]);
 
 /** @type {HTMLInputElement} */
+const avatar = document.getElementById('wb-settings-avatar');
+if ( avatar ) {
+	avatar.addEventListener( 'input', function() {
+		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
+			if ( this.validity.valid ) {
+				this.setCustomValidity(validationMessageInvalidURL);
+			}
+		}
+		else this.setCustomValidity('');
+	} );
+	/** @type {HTMLButtonElement} */
+	const avatarbutton = document.getElementById('wb-settings-avatar-preview');
+	if ( avatarbutton ) {
+		const avatarpreview = document.createElement('img');
+		avatarpreview.id = 'wb-settings-avatar-preview-img';
+		avatarpreview.classList.add('avatar');
+		const validContentTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+		avatarbutton.onclick = function() {
+			if ( !avatar.value ) return avatarpreview.remove();
+			if ( !avatar.validity.valid ) {
+				avatarpreview.remove();
+				return avatar.reportValidity();
+			}
+			if ( avatar.value === avatar.defaultValue ) {
+				avatarpreview.src = avatar.value;
+				avatarbutton.after(avatarpreview);
+				return;
+			}
+			fetch( avatar.value, {
+				method: 'HEAD',
+				referrer: ''
+			} ).catch( function(error) {
+				if ( avatar.value.startsWith( 'https://cdn.discordapp.com/attachments/' ) && error.name === 'TypeError' ) {
+					return fetch( avatar.value.replace( 'https://cdn.discordapp.com/attachments/', 'https://media.discordapp.net/attachments/' ), {
+						method: 'HEAD',
+						referrer: ''
+					} );
+				}
+				throw error;
+			} ).then( function(response) {
+				avatar.value = response.url;
+				if ( !validContentTypes.includes( response.headers.get('content-type') ) ) {
+					avatarpreview.remove();
+					var invalidContentType = lang('avatar.content_type').replace( /\$1/g, response.headers.get('content-type') );
+					avatar.setCustomValidity(invalidContentType + '\n' + validContentTypes.join(', ') );
+					avatar.reportValidity();
+					return console.log( 'Invalid content type:', response.headers.get('content-type') );
+				}
+				avatarpreview.src = avatar.value;
+				avatarbutton.after(avatarpreview);
+			}, function(error) {
+				console.log(error);
+				avatarpreview.remove();
+				avatar.setCustomValidity(lang('avatar.invalid_url'));
+				avatar.reportValidity();
+			} );
+		};
+		if ( avatar.value ) {
+			avatarpreview.src = avatar.value;
+			avatarbutton.after(avatarpreview);
+		}
+	}
+}
+
+/** @type {HTMLInputElement} */
 const logall = document.getElementById('wb-settings-flag_logall');
 if ( logall ) {
 	/** @type {HTMLDivElement} */

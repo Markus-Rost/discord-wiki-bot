@@ -46,13 +46,14 @@ const files = new Map([
 const server = createServer( (req, res) => {
 	res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( req.url.startsWith( '/guild/' ) || req.url === '/user' ) ) {
+		/** @type {String[]} */
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot' && /^"([\da-f]+(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
 		} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
 		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id) &&
-		( ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] ) && /^(?:default|new|notice|\d+)$/.test(args[4])
+		( ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] ) && /^(?:default|new|notice|button|\d+)$/.test(args[4])
 		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || req.url === '/user' ) ) {
 			let body = [];
 			req.on( 'data', chunk => {
@@ -63,7 +64,7 @@ const server = createServer( (req, res) => {
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
-				if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
+				if ( process.env.READONLY && args.slice(3).join('/') !== 'verification/button' ) return save_response(`${req.url}?save=failed`);
 				var settings = {};
 				Buffer.concat(body).toString().split('&').forEach( arg => {
 					if ( arg ) {
@@ -164,8 +165,8 @@ const server = createServer( (req, res) => {
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?)"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; SameSite=Lax; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -196,7 +197,7 @@ const server = createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -219,7 +220,7 @@ const server = createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -235,7 +236,7 @@ const server = createServer( (req, res) => {
 
 	if ( reqURL.pathname === '/refresh' ) {
 		let returnLocation = reqURL.searchParams.get('return');
-		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice))?)$/.test(returnLocation) ) {
+		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, sessionData.get(state), returnLocation);

@@ -18,7 +18,7 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required autocomplete="url">'
+	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required inputmode="url" autocomplete="url">'
 	+ '<datalist id="wb-settings-wiki-list" class="wb-settings-wiki-list"></datalist>'
 	+ '<button type="button" id="wb-settings-wiki-check" class="wb-settings-wiki-check">Check wiki</button>'
 	+ '<div id="wb-settings-wiki-check-notice" class="wb-settings-wiki-check-notice"></div>',
@@ -80,10 +80,10 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	let channel = $('<div>').append(fieldset.channel);
 	channel.find('label').text(dashboardLang.get('rcscript.form.channel'));
 	let curCat = null;
-	if ( !settings.channel || ( curChannel && hasPerm(curChannel.botPermissions, 'MANAGE_WEBHOOKS') && hasPerm(curChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
+	if ( !settings.channel || ( curChannel && hasPerm(curChannel.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && hasPerm(curChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
 		channel.find('#wb-settings-channel').append(
 			...guildChannels.filter( guildChannel => {
-				return ( ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && hasPerm(guildChannel.botPermissions, 'MANAGE_WEBHOOKS') ) || guildChannel.isCategory );
+				return ( ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) || guildChannel.isCategory );
 			} ).map( guildChannel => {
 				if ( guildChannel.isCategory ) {
 					curCat = $('<optgroup>').attr('label', guildChannel.name);
@@ -292,7 +292,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
  * @param {String} [settings.delete_settings]
  */
 function update_rcscript(res, userSettings, guild, type, settings) {
-	if ( type === 'default' || type === 'notice' ) {
+	if ( type === 'default' || type === 'notice' || type === 'button' ) {
 		return res(`/guild/${guild}/rcscript`, 'savefail');
 	}
 	if ( !settings.save_settings === !settings.delete_settings ) {
@@ -328,7 +328,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
-		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'MANAGE_WEBHOOKS') || !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) {
+		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') || !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) {
 			return res(`/guild/${guild}/rcscript/new`, 'savefail');
 		}
 		if ( settings.display > rcgcdwLimit.display && !response.patreon ) {
@@ -419,7 +419,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							name: ( body.query.allmessages[1]['*'] || 'Recent changes' ),
 							reason: lang.get('rcscript.audit_reason', wiki.href),
 							text: webhook_lang.get('created', body.query.general.sitename) + ( enableFeeds && settings.feeds_only ? '' : `\n<${wiki.toLink(body.query.pages['-1'].title)}>` ) + ( enableFeeds ? `\n<${wiki.href}f>` : '' )
-						} ).then( webhook => {
+						} ).then( ({webhook} = {}) => {
 							if ( !webhook ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 							var configid = 1;
 							for ( let i of row.count ) {
@@ -564,10 +564,10 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					} );
 				}
-				if ( newChannel && ( !hasPerm(response.botPermissions, 'MANAGE_WEBHOOKS') 
+				if ( newChannel && ( !hasPerm(response.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') 
 				|| !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') 
 				|| !hasPerm(response.userPermissionsNew, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') 
-				|| !hasPerm(response.botPermissionsNew, 'MANAGE_WEBHOOKS') ) ) {
+				|| !hasPerm(response.botPermissionsNew, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
 					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				}
 				if ( settings.display > rcgcdwLimit.display && !response.patreon ) {

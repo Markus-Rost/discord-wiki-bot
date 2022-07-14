@@ -4,6 +4,8 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
 
+const buttonStyles = ['PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER'];
+
 const fieldset = {
 	channel: '<div>'
 	+ '<label for="wb-settings-channel">Channel:</label>'
@@ -20,7 +22,7 @@ const fieldset = {
 	+ '</div>'
 	+ '<button type="button" id="wb-settings-role-more" class="addmore">Add more</button>',
 	usergroup: '<label for="wb-settings-usergroup">Wiki user group:</label>'
-	+ '<input type="text" id="wb-settings-usergroup" name="usergroup" list="wb-settings-usergroup-list" autocomplete="on">'
+	+ '<input type="text" id="wb-settings-usergroup" name="usergroup" list="wb-settings-usergroup-list" inputmode="text" autocomplete="on">'
 	+ '<datalist id="wb-settings-usergroup-list">'
 	+ usergroups.sorted.filter( group => group !== '__CUSTOM__' ).map( group => {
 		return `<option value="${group}"></option>`
@@ -34,10 +36,10 @@ const fieldset = {
 	+ '<input type="checkbox" id="wb-settings-usergroup-and" name="usergroup_and">'
 	+ '</div>',
 	editcount: '<label for="wb-settings-editcount">Minimal edit count:</label>'
-	+ '<input type="number" id="wb-settings-editcount" name="editcount" min="0" max="1000000" required>',
+	+ '<input type="number" id="wb-settings-editcount" name="editcount" min="0" max="1000000" required inputmode="numeric">',
 	postcount: '<div id="wb-settings-postcount-input">'
 	+ '<label for="wb-settings-postcount">Minimal post count:</label>'
-	+ '<input type="number" id="wb-settings-postcount" name="postcount" min="0" max="1000000" required>'
+	+ '<input type="number" id="wb-settings-postcount" name="postcount" min="0" max="1000000" required inputmode="numeric">'
 	+ '</div><div class="wb-settings-postcount">'
 	+ '<span>Only Fandom wikis:</span>'
 	+ '<input type="radio" id="wb-settings-postcount-and" name="posteditcount" value="and" required>'
@@ -50,7 +52,7 @@ const fieldset = {
 	+ '<label for="wb-settings-postcount-both" class="radio-label">Require combined edit and post count.</label>'
 	+ '</div>',
 	accountage: '<label for="wb-settings-accountage">Account age (in days):</label>'
-	+ '<input type="number" id="wb-settings-accountage" name="accountage" min="0" max="1000000" required>',
+	+ '<input type="number" id="wb-settings-accountage" name="accountage" min="0" max="1000000" required inputmode="numeric">',
 	rename: '<label for="wb-settings-rename">Rename users:</label>'
 	+ '<input type="checkbox" id="wb-settings-rename" name="rename">',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
@@ -297,11 +299,16 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 				$('<img>').attr('src', '/src/channel.svg'),
 				$('<div>').text(dashboardLang.get('verification.new'))
 			).attr('href', `/guild/${guild.id}/verification/new${suffix}`) ),
-			( !rows.length ? '' :
-			$('<a class="channel" id="channel-notice">').append(
-				$('<img>').attr('src', '/src/channel.svg'),
-				$('<div>').text(dashboardLang.get('verification.notice'))
-			).attr('href', `/guild/${guild.id}/verification/notice${suffix}`) )
+			...( !rows.length ? [] : [
+				$('<a class="channel" id="channel-notice">').append(
+					$('<img>').attr('src', '/src/channel.svg'),
+					$('<div>').text(dashboardLang.get('verification.notice'))
+				).attr('href', `/guild/${guild.id}/verification/notice${suffix}`),
+				$('<a class="channel" id="channel-button">').append(
+					$('<img>').attr('src', '/src/channel.svg'),
+					$('<div>').text(dashboardLang.get('verification.button'))
+				).attr('href', `/guild/${guild.id}/verification/button${suffix}`)
+			] )
 		);
 		if ( args[4] === 'new' && !( process.env.READONLY || rows.length >= verificationLimit[( guild.patreon ? 'patreon' : 'default' )] ) ) {
 			$('.channel#channel-new').addClass('selected');
@@ -326,7 +333,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 						$('<div>').append(
 							$('<label for="wb-settings-channel">').text(dashboardLang.get('verification.form.logging')),
 							$('<select id="wb-settings-channel" name="channel">').append(
-								$('<option class="wb-settings-channel-default defaultSelect">').val('').text(dashboardLang.get('verification.form.select_channel')),
+								$('<option class="wb-settings-channel-default">').val('').text(dashboardLang.get('verification.form.select_channel')),
 								...guild.channels.filter( guildChannel => {
 									return ( ( hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') ) || guildChannel.isCategory );
 								} ).map( guildChannel => {
@@ -390,6 +397,81 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 				return res.end();
 			} );
 		}
+		else if ( args[4] === 'button' && rows.length ) {
+			$(`.channel#channel-button`).addClass('selected');
+			let curCat = null;
+			$('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
+				$('<h2>').text(dashboardLang.get('verification.form.button')),
+				$('<fieldset>').append(
+					$('<div>').append(
+						$('<label for="wb-settings-channel">').text(dashboardLang.get('verification.form.channel')),
+						$('<select id="wb-settings-channel" name="channel" required>').append(
+							$('<option class="wb-settings-channel-default" selected hidden>').val('').text(dashboardLang.get('verification.form.select_channel')),
+							...guild.channels.filter( guildChannel => {
+								return ( ( rows.some( row => row.channel.split('|').includes( guildChannel.id ) ) && hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGE') || hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) || guildChannel.isCategory );
+							} ).map( guildChannel => {
+								if ( guildChannel.isCategory ) {
+									curCat = $('<optgroup>').attr('label', guildChannel.name);
+									return curCat;
+								}
+								var optionChannel = $(`<option class="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`);
+								if ( !curCat ) return optionChannel;
+								optionChannel.appendTo(curCat);
+							} ).filter( catChannel => {
+								if ( !catChannel ) return false;
+								if ( catChannel.is('optgroup') && !catChannel.children('option').length ) return false;
+								return true;
+							} )
+						)
+					),
+					$('<div>').append(
+						$('<label for="wb-settings-webhook_name">').text(dashboardLang.get('verification.form.webhook_name')),
+						$('<input type="text" id="wb-settings-webhook_name" name="webhook_name" minlength="2" maxlength="32" required inputmode="text" autocomplete="on">').val('Wiki-Bot')
+					),
+					$('<div>').append(
+						$('<label for="wb-settings-avatar">').text(dashboardLang.get('verification.form.avatar')),
+						$('<input type="url" id="wb-settings-avatar" name="avatar" list="wb-settings-avatar-list" required inputmode="url" autocomplete="url">').val(new URL('/src/icon.png', process.env.dashboard).href),
+						$('<datalist id="wb-settings-avatar-list">').append(
+							$('<option>').val(new URL('/src/icon.png', process.env.dashboard).href).text(dashboardLang.get('verification.form.avatar_bot')),
+							( guild.icon ? $(`<option>`).val(guild.icon).text(dashboardLang.get('verification.form.avatar_guild')) : null )
+						),
+						$('<button type="button" id="wb-settings-avatar-preview">').text(dashboardLang.get('verification.form.avatar_preview'))
+					),
+					$('<div>').append(
+						$('<label for="wb-settings-content">').text(dashboardLang.get('verification.form.content')).append(
+							$('<div>').html('&nbsp;')
+						),
+						$('<textarea id="wb-settings-content" name="content" spellcheck="true" maxlength="2000" cols="65" rows="4">').attr('placeholder', dashboardLang.get('verification.form.content_placeholder'))
+					),
+					$('<div>').append(
+						$('<label for="wb-settings-button_name">').text(dashboardLang.get('verification.form.button_name')),
+						$('<input type="text" id="wb-settings-button_name" name="button_name" minlength="1" maxlength="80" required inputmode="text" autocomplete="on">').val(dashboardLang.get('verification.form.button_name_default'))
+					),
+					$('<div>').append(
+						$('<label for="wb-settings-button_style">').text(dashboardLang.get('verification.form.button_style')),
+						$('<select id="wb-settings-button_style" name="button_style" required>').append(
+							$('<option selected>').val('PRIMARY').text('Primary (blurple)'),
+							$('<option>').val('SECONDARY').text('Secondary (grey)'),
+							$('<option>').val('SUCCESS').text('Success (green)'),
+							$('<option>').val('DANGER').text('Danger (red)')
+						)
+					),
+					$('<div>').append(
+						$('<label for="wb-settings-button_emoji">').text(dashboardLang.get('verification.form.button_emoji')),
+						$('<input type="text" id="wb-settings-button_emoji" name="button_emoji" pattern="^\\s*[^\\s`\\\\]{1,80}\\s*$" minlength="1" maxlength="80" inputmode="text" autocomplete="on">')
+					),
+					$('<input type="submit" id="wb-settings-save" name="save_settings">').val(dashboardLang.get('verification.form.send_message'))
+				)
+			).attr('action', `/guild/${guild.id}/verification/button`).appendTo('#text');
+			if ( $('#wb-settings-channel').children().length <= 1 ) {
+				createNotice($, 'missingperm', dashboardLang, ['Manage Webhooks']);
+			}
+			$('<div class="description">').html(dashboardLang.get('verification.help_button')).appendTo('#text');
+			let body = $.html();
+			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
+			res.write( body );
+			return res.end();
+		}
 		else {
 			$('.channel#verification').addClass('selected');
 			$('#text .description').html(dashboardLang.get('verification.explanation'));
@@ -434,6 +516,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/verification`, 'savefail');
 	}
 	if ( type === 'notice' ) return update_notices(res, userSettings, guild, type, settings);
+	if ( type === 'button' ) return send_button(res, userSettings, guild, type, settings);
 	if ( !settings.save_settings === !settings.delete_settings ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
@@ -887,7 +970,7 @@ function update_verification(res, userSettings, guild, type, settings) {
  * @param {Function} res - The server response
  * @param {import('./util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
- * @param {String} type - The setting to change
+ * @param {'notice'} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String} [settings.channel]
  * @param {String} [settings.flag_logall]
@@ -1018,6 +1101,99 @@ function update_notices(res, userSettings, guild, type, settings) {
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
+	} );
+}
+
+/**
+ * Send message with verification button
+ * @param {Function} res - The server response
+ * @param {import('./util.js').Settings} userSettings - The settings of the user
+ * @param {String} guild - The id of the guild
+ * @param {'button'} type - The setting to change
+ * @param {Object} settings - The new settings
+ * @param {String} settings.channel
+ * @param {String} settings.webhook_name
+ * @param {String} settings.avatar
+ * @param {String} [settings.content]
+ * @param {String} settings.button_name
+ * @param {String} settings.button_style
+ * @param {String} [settings.button_emoji]
+ * @param {String} settings.save_settings
+ */
+function send_button(res, userSettings, guild, type, settings) {
+	settings.webhook_name = settings.webhook_name?.trim?.();
+	settings.avatar = settings.avatar?.trim?.();
+	settings.content = ( settings.content?.trim?.() || null );
+	settings.button_name = settings.button_name?.trim?.();
+	settings.button_emoji = ( settings.button_emoji?.replace?.( /^\s*:|\s+|:\s*$/g, '' ) || null );
+	if ( !settings.save_settings || !settings.button_name || !buttonStyles.includes( settings.button_style ) ) {
+		return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+	}
+	if ( !( settings.webhook_name?.length >= 2 && settings.webhook_name?.length <= 32 ) ) {
+		return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+	}
+	if ( !/^https?:\/\//.test(settings.avatar) || settings.content?.length > 2000 ) {
+		return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+	}
+	if ( !userSettings.guilds.isMember.get(guild).channels.some( channel => {
+		return ( channel.id === settings.channel && !channel.isCategory );
+	} ) ) return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+	return sendMsg( {
+		type: 'getMember',
+		member: userSettings.user.id,
+		guild: guild,
+		channel: settings.channel
+	} ).then( response => {
+		if ( !response ) {
+			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+			userSettings.guilds.isMember.delete(guild);
+			return res(`/guild/${guild}`, 'sendfail');
+		}
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+			userSettings.guilds.isMember.delete(guild);
+			return res('/', 'sendfail');
+		}
+		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') || !( hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGE') || hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
+			return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+		}
+		return db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {
+			var lang = new Lang(row?.lang);
+			sendMsg( {
+				type: 'createWebhook',
+				guild: guild,
+				channel: settings.channel,
+				name: settings.webhook_name,
+				reason: lang.get('verification.audit_reason'),
+				text: settings.content,
+				avatar: settings.avatar,
+				button_text: settings.button_name,
+				button_style: settings.button_style,
+				button_emoji: settings.button_emoji,
+				button_id: 'verify',
+				deleteWebhook: true
+			} ).then( ({message}) => {
+				if ( !message ) return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+				console.log( `- Dashboard: Verify button message successfully created: ${guild}` );
+				res(`/guild/${guild}/verification/${type}`, 'send');
+				var text = lang.get('verification.dashboard.button', `<@${userSettings.user.id}>`);
+				text += `\n<#${settings.channel}>: <https://discord.com/channels/${guild}/${settings.channel}/${message}>`;
+				text += `\n<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
+				sendMsg( {
+					type: 'notifyGuild',
+					guild, text
+				} ).catch( error => {
+					console.log( '- Dashboard: Error while notifying the guild: ' + error );
+				} );
+			}, error => {
+				console.log( '- Dashboard: Error while creating the verify button message: ' + error );
+				return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+			} );
+		}, dberror => {
+			console.log( '- Dashboard: Error while getting the guild language: ' + dberror );
+		} );
+	}, error => {
+		console.log( '- Dashboard: Error while getting the member: ' + error );
+		return res(`/guild/${guild}/verification/${type}`, 'sendfail');
 	} );
 }
 

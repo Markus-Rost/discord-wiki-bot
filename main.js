@@ -218,14 +218,32 @@ if ( process.env.dashboard ) {
 		},
 		createWebhook: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
-				let channel = discordClient.guilds.cache.get(evalData.guild).channels.cache.get(evalData.channel);
+				let guild = discordClient.guilds.cache.get(evalData.guild);
+				/** @type {import('discord.js').BaseGuildTextChannel} */
+				let channel = guild.channels.cache.get(evalData.channel);
 				if ( channel ) return channel.createWebhook( evalData.name, {
 					avatar: discordClient.user.displayAvatarURL({format:'png',size:4096}),
 					reason: evalData.reason
 				} ).then( webhook => {
 					console.log( `- Dashboard: Webhook successfully created: ${evalData.guild}#${evalData.channel}` );
-					webhook.send( evalData.text ).catch(globalThis.log_error);
-					return webhook.id + '/' + webhook.token;
+					return webhook.send( {
+						avatarURL: evalData.avatar,
+						content: evalData.text,
+						components: ( evalData.button_text && evalData.button_style && evalData.button_id ? [{
+							type: 'ACTION_ROW',
+							components: [{
+								type: 'BUTTON',
+								style: evalData.button_style,
+								customId: evalData.button_id,
+								label: evalData.button_text,
+								emoji: ( evalData.button_emoji ? ( guild.emojis.cache.find( emoji => emoji.name === evalData.button_emoji ) ?? evalData.button_emoji ) : null )
+							}]
+						}] : [] ),
+						allowedMentions: {parse: []}
+					} ).then( message => message?.id, globalThis.log_error ).then( message => {
+						if ( evalData.deleteWebhook ) webhook.delete(evalData.reason).catch(globalThis.log_error);
+						return {message, webhook: webhook.id + '/' + webhook.token};
+					} );
 				}, error => {
 					console.log( '- Dashboard: Error while creating the webhook: ' + error );
 				} );

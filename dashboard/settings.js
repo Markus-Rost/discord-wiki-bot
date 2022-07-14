@@ -13,7 +13,7 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Default Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" required autocomplete="url">'
+	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" required inputmode="url" autocomplete="url">'
 	+ '<button type="button" id="wb-settings-wiki-check" class="wb-settings-wiki-check">Check wiki</button>'
 	+ '<div id="wb-settings-wiki-check-notice" class="wb-settings-wiki-check-notice"></div>',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
@@ -30,7 +30,7 @@ const fieldset = {
 	role: '<label for="wb-settings-role">Minimal Role:</label>'
 	+ '<select id="wb-settings-role" name="role"></select>',
 	prefix: '<label for="wb-settings-prefix">Prefix:</label>'
-	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^\\s*[^\\s`\\\\]{1,100}\\s*$" minlength="1" maxlength="100" required autocomplete="on">'
+	+ '<input type="text" id="wb-settings-prefix" name="prefix" pattern="^\\s*[^\\s`\\\\]{1,100}\\s*$" minlength="1" maxlength="100" required inputmode="text" autocomplete="on">'
 	+ '<br>'
 	+ '<label for="wb-settings-prefix-space">Prefix ends with space:</label>'
 	+ '<input type="checkbox" id="wb-settings-prefix-space" name="prefix_space">',
@@ -43,7 +43,7 @@ const fieldset = {
 		return `<option id="wb-settings-project-subprefix--${wikiProject}" value="${wikiProject}">${wikiProject}</option>`
 	} ).join('')
 	+ '</select>'
-	+ '<input type="url" id="wb-settings-wiki-subprefix-" class="wb-settings-wiki" name="subprefix_" required autocomplete="url">'
+	+ '<input type="url" id="wb-settings-wiki-subprefix-" class="wb-settings-wiki" name="subprefix_" required inputmode="url" autocomplete="url">'
 	+ '<button type="button" id="wb-settings-wiki-subprefix--check" class="wb-settings-wiki-check">Check wiki</button>'
 	+ '<div id="wb-settings-wiki-subprefix--check-notice" class="wb-settings-wiki-check-notice"></div>',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',

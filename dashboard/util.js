@@ -258,6 +258,11 @@ function createNotice($, notice, dashboardLang, args = []) {
 			text.text(dashboardLang.get('notice.nosettings.text'));
 			if ( args[0] ) note = $('<a>').text(dashboardLang.get('notice.nosettings.note')).attr('href', `/guild/${args[0]}/settings`);
 			break;
+		case 'send':
+			type = 'success';
+			title.text(dashboardLang.get('notice.send.title'));
+			text.text(dashboardLang.get('notice.send.text'));
+			break;
 		case 'logout':
 			type = 'success';
 			title.text(dashboardLang.get('notice.logout.title'));
@@ -344,6 +349,11 @@ function createNotice($, notice, dashboardLang, args = []) {
 			if ( typeof args[0] === 'string' ) {
 				note = $('<div>').text(dashboardLang.get('notice.savefail.note_' + args[0]));
 			}
+			break;
+		case 'sendfail':
+			type = 'error';
+			title.text(dashboardLang.get('notice.sendfail.title'));
+			text.text(dashboardLang.get('notice.sendfail.text'));
 			break;
 		case 'webhookfail':
 			type = 'info';
