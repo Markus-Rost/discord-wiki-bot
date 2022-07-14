@@ -730,7 +730,7 @@
 		"dashboard": {
 			"added": "$1 added the verification with id `$2`.",
 			"added_notice": "$1 added some verification notices.",
-			"button": "$1 send a message with verify button.",
+			"button": "$1 sent a message with verify button.",
 			"removed": "$1 removed the verification with id `$2`.",
 			"updated": "$1 updated the verification with id `$2`.",
 			"updated_notice": "$1 updated some verification notices."
