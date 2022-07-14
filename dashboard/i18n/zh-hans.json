@@ -29,6 +29,10 @@
 		"welcome": "<h2>欢迎来到 Wiki-Bot 控制面板。</h2>\n<p>Wiki-Bot 是一个 Discord 机器人，旨在将 MediaWiki 驱动的 wiki 站点与 Discord 服务器整合在一起。它可以帮忙链接到 wiki 页面，验证 wiki 用户，通知 wiki 上最近的更改，等等。 <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多信息]</a></p>\n<p>在此，你可以为每个你拥有“管理服务器”权限的服务器管理并使用不同的机器人设置。但首先，你需要通过这个按钮验证你的 Discord 账号：</p>"
 	},
 	"indexjs": {
+		"avatar": {
+			"content_type": "所提供的链接的内容类型是$1，但仅允许以下内容类型：",
+			"invalid_url": "无法将URL解析为有效的图像文件。"
+		},
 		"invalid": {
 			"note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
 			"note_private": "所提供的 wiki 是非公开的！",
@@ -132,6 +136,14 @@
 			"text": "无法保存设置，请再试一次。",
 			"title": "保存失败！"
 		},
+		"send": {
+			"text": "消息已成功发送。",
+			"title": "消息已发送！"
+		},
+		"sendfail": {
+			"text": "无法发送消息，请再试一次。",
+			"title": "发送失败！"
+		},
 		"sysmessage": {
 			"text": "页面 $1 应与服务器 ID $2 相匹配。",
 			"title": "系统消息不匹配！"
@@ -221,12 +233,24 @@
 		"new": "新的频道覆写设置"
 	},
 	"verification": {
+		"button": "验证按钮",
 		"desc": "以下是 $1 的验证方式：",
 		"explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 wiki 用户，只需要他们在 wiki 个人资料的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时授予的身份组。</li>\n<li>匹配该验证项所需的编辑次数。</li>\n<li>匹配该验证项所需的 wiki 用户组。</li>\n<li>匹配该验证项所需的账号注册时长（单位为天）。</li>\n<li>匹配该验证项时是否将 Discord 用户的昵称设置为他们的 wiki 用户名。</li>\n</ul>",
 		"form": {
 			"accountage": "账号注册时长（天）：",
+			"avatar": "作者头像：",
+			"avatar_bot": "机器人头像",
+			"avatar_guild": "服务器图标",
+			"avatar_preview": "预览",
+			"button": "发送带有验证按钮的消息",
+			"button_emoji": "按钮的Emoji：",
+			"button_name": "按钮文本：",
+			"button_name_default": "wiki 账号验证",
+			"button_style": "按钮样式：",
 			"channel": "频道：",
 			"confirm": "你真的想删除此验证方式吗？",
+			"content": "消息内容：",
+			"content_placeholder": "消息的Markdown文本，支持更改显示文本的链接。",
 			"editcount": "最少编辑次数：",
 			"entry": "验证方式 #$1",
 			"flag_logall": "记录不成功的验证：",
@@ -248,10 +272,12 @@
 			"role_remove": "移除",
 			"select_channel": "-- 选择频道 --",
 			"select_role": "-- 选择身份组 --",
+			"send_message": "发送消息",
 			"success": "成功提示：",
 			"success_placeholder": "验证成功时显示的 Markdown 文本。",
 			"usergroup": "wiki 用户组：",
-			"usergroup_and": "所有所需的用户组："
+			"usergroup_and": "所有所需的用户组：",
+			"webhook_name": "作者名称："
 		},
 		"help_notice": "<p>自定义提示也支持一些简单的函数与变量。</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – 用户的当前编辑次数。</li>\n<li><code class=\"form-button user-select\">$accountage</code> – 以天为单位的用户当前注册时长。</li>\n<li><code class=\"form-button user-select\">$postcount</code> – 用户当前讨论板帖子数（仅Fandom wiki可用）。</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – 返回表达式的运算结果。\n<ul>\n<li>仅支持加法<code class=\"form-button user-select\">+</code>和减法<code class=\"form-button user-select\">-</code>。</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>为真时显示的字符串</i> | <i>为假时显示的字符串</i> }}</code> – 根据表达式的运算结果返回不同的文本。\n<ul>\n<li>支持<code class=\"form-button user-select\">&lt;</code>、<code class=\"form-button user-select\">&gt;</code>、<code class=\"form-button user-select\">=</code>、<code class=\"form-button user-select\">&lt;=</code>、<code class=\"form-button user-select\">&gt;=</code>、<code class=\"form-button user-select\">!=</code>、<code class=\"form-button user-select\">&lt;&gt;</code>以及<code class=\"form-button user-select\">and</code>、<code class=\"form-button user-select\">or</code>。</li>\n</ul></li>\n</ul>",
 		"new": "新的验证方式",
