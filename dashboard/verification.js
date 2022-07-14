@@ -408,7 +408,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 						$('<select id="wb-settings-channel" name="channel" required>').append(
 							$('<option class="wb-settings-channel-default" selected hidden>').val('').text(dashboardLang.get('verification.form.select_channel')),
 							...guild.channels.filter( guildChannel => {
-								return ( ( rows.some( row => row.channel.split('|').includes( guildChannel.id ) ) && hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGE') || hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) || guildChannel.isCategory );
+								return ( ( rows.some( row => row.channel.split('|').includes( guildChannel.id ) ) && hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') || hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) || guildChannel.isCategory );
 							} ).map( guildChannel => {
 								if ( guildChannel.isCategory ) {
 									curCat = $('<optgroup>').attr('label', guildChannel.name);
@@ -1153,7 +1153,7 @@ function send_button(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'sendfail');
 		}
-		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') || !( hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGE') || hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
+		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') || !( hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') || hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
 			return res(`/guild/${guild}/verification/${type}`, 'sendfail');
 		}
 		return db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {
