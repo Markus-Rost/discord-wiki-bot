@@ -29,6 +29,10 @@
 		"welcome": "<h2>Benvenuto sulla Dashboard di Wiki-Bot.</h2>\n<p>Wiki-Bot è un bot Discord creato per collegare i server Discord e le wiki di MediaWiki. Aiuta nel linkare alle pagine delle wiki, nel verificare gli utenti della wiki, nel riportare le modifiche più recenti sulla wiki e altro ancora. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Maggiori informazioni]</a></p>\n<p>Qui puoi modificare diverse impostazioni del bot per i server sui quali hai il permesso \"Gestire Server\". Per iniziare, dovrai autenticare il tuo account Discord, cosa che puoi fare con questo pulsante:</p>"
 	},
 	"indexjs": {
+		"avatar": {
+			"content_type": "Il contenuto del link fornite è in formato $1, ma sono permessi solo i seguenti formati:",
+			"invalid_url": "Non è stato possibile risolvere l'URL ad un file immagine valido."
+		},
 		"invalid": {
 			"note_http": "Il sito web fornito non ha un certificato TLS/SSL valido! Per motivi di sicurezza, sono supportate solo wiki che usano HTTPS.",
 			"note_private": "La wiki fornita è privata!",
@@ -132,6 +136,14 @@
 			"text": "Non è stato possibile salvare le impostazioni, per favore riprova di nuovo.",
 			"title": "Salvataggio fallito!"
 		},
+		"send": {
+			"text": "Il messaggio è stato inviato con successo.",
+			"title": "Messaggio inviato!"
+		},
+		"sendfail": {
+			"text": "Non è stato possibile inviare il messaggio, riprova di nuovo.",
+			"title": "Invio fallito!"
+		},
 		"sysmessage": {
 			"text": "La pagina $1 deve corrispondere al server id $2.",
 			"title": "Il messaggio di sistema non corrisponde!"
@@ -213,18 +225,32 @@
 			"prefix_space": "Prefisso finisce con uno spazio:",
 			"role": "Ruolo minimo:",
 			"select_channel": "-- Seleziona un canale --",
+			"select_subprefix": "Imposta una wiki specifica →",
+			"subprefix": "Prefisso sottocomando wiki:",
 			"wiki": "Wiki di default:",
 			"wiki_check": "Controlla la wiki"
 		},
 		"new": "Nuova sovrascrittura canale"
 	},
 	"verification": {
+		"button": "Pulsante di verifica",
 		"desc": "Queste sono le verifiche per $1:",
 		"explanation": "<h2>Verifica utente</h2>\n<p>Usando il comando <code class=\"prefix\">verify &lt;nome utente wiki&gt;</code>, gli utenti possono confermare di essere uno specifico utente della wiki utilizzando il campo Discord del proprio profilo. Se l'utente corrisponde e le verifiche degli utenti sono impostate sul server, Wiki-Bot assegnerà i ruoli corrispondenti a tutte le entrate di verifica superate.</p>\n<p>Ciascuna entrata permette di inserire restrizioni multiple sulle condizioni che un utente deve soddisfare per essere verificato:</p>\n<ul>\n<li>Il canale in cui usare il comando <code class=\"prefix\">verify</code>.</li>\n<li>Il ruolo che si ottiene superando la verifica.</li>\n<li>Il conteggio delle modifiche richiesto sulla wiki per superare la verifica.</li>\n<li>Il gruppo utente di cui è richiesto essere membri sulla wiki per superare la verifica.</li>\n<li>Età dell'account in giorni richiesta per superare la verifica.</li>\n<li>Opzione per cambiare il soprannome dell'utente Discord nel nome utente della wiki quando si supera la verifica.</li>\n</ul>",
 		"form": {
 			"accountage": "Età dell'account (in giorni):",
+			"avatar": "Avatar autore:",
+			"avatar_bot": "Avatar bot",
+			"avatar_guild": "Icona del server",
+			"avatar_preview": "Anteprima",
+			"button": "Invia un messaggio con il Pulsante di Verifica",
+			"button_emoji": "Emoji pulsante:",
+			"button_name": "Testo pulsante:",
+			"button_name_default": "Verifica dell'account sulla wiki",
+			"button_style": "Stile pulsante:",
 			"channel": "Canale:",
 			"confirm": "Vuoi davvero eliminare questa verifica?",
+			"content": "Contenuto del messaggio:",
+			"content_placeholder": "Testo del messaggio in markdown, supporta i link.",
 			"editcount": "Conteggio delle modifiche minimo:",
 			"entry": "Verifica #$1",
 			"flag_logall": "Registra le verifiche senza successo:",
@@ -246,10 +272,12 @@
 			"role_remove": "Rimuovi",
 			"select_channel": "-- Seleziona un canale --",
 			"select_role": "-- Seleziona un ruolo --",
+			"send_message": "Invia il messaggio",
 			"success": "Avviso di successo:",
 			"success_placeholder": "Testo in markdown in caso di successo della verifica.",
 			"usergroup": "Gruppo utente della wiki:",
-			"usergroup_and": "Richiedi tutti i gruppi utente:"
+			"usergroup_and": "Richiedi tutti i gruppi utente:",
+			"webhook_name": "Nome autore:"
 		},
 		"help_notice": "<p>Gli avvisi personalizzati supportano alcune semplici funzioni e variabili.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – L'attuale conteggio delle modifiche dell'utente.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – L'attuale età dell'account dell'utente in giorni.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – L'attuale conteggio dei post di Discussioni dell'utente (solo per le wiki di Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Ritorna il risultato di un'espressione.\n<ul>\n<li>Supporta solo la somma <code class=\"form-button user-select\">+</code> e la sottrazione <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – Ritorna il testo a seconda del risultato dell'espressione.\n<ul>\n<li>Supporta <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> così come <code class=\"form-button user-select\">e</code>, <code class=\"form-button user-select\">o</code>.</li>\n</ul></li>\n</ul>",
 		"new": "Nuova verifica",
