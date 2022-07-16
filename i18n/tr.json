@@ -721,6 +721,7 @@
 		"add_more": "Daha fazla doğrulama ekle:",
 		"added": "Doğrulama eklendi:",
 		"and": "ve",
+		"audit_reason": "Doğrulama butonlu mesaj gönderiliyor",
 		"channel": "Kanal:",
 		"channel_max": "Çok fazla kanal belirttin.",
 		"channel_missing": "Belirtilen kanal mevcut değil.",
@@ -729,6 +730,7 @@
 		"dashboard": {
 			"added": "$1, `$2` ID'si ile doğrulama ekledi.",
 			"added_notice": "$1 birkaç doğrulama bildirisi ekledi.",
+			"button": "$1 doğrulama butonlu bir mesaj gönderdi.",
 			"removed": "$1, `$2` ID'li doğrulamayı kaldırdı.",
 			"updated": "$1, `$2` ID'li doğrulamayı güncelledi.",
 			"updated_notice": "$1 birkaç doğrulama bildirisini güncelledi."
@@ -799,6 +801,7 @@
 		"oauth_message_dm": "$1 sunucusu için viki hesabını doğrulamak için lütfen bu bağlantıyı kullan.",
 		"oauth_private": "Bu viki doğrulama için OAuth2 kullanıyor. Lütfen sunucudan gelen direkt mesajları etkinleştir ve `/verify` komutunu kullan. Böylece doğrulama bağlantısını sana özel mesaj olarak gönderebilirim.",
 		"oauth_used": "*OAuth2 kullanılarak doğrulandı*",
+		"placeholder": "Büyük küçük harf uyumu doğru olan viki kullanıcı adın.",
 		"qualified_add": "Eklendi:",
 		"qualified_add_error": "Eklenemedi:",
 		"qualified_remove": "Kaldırıldı:",
@@ -819,6 +822,7 @@
 		"user_renamed": "Discord kullanıcısı ismi viki kullanıcı ismiyle değiştirildi.",
 		"user_verified": "Discord kullanıcısı $1 başarıyla viki kullanıcısı $2 olarak doğrulandı.",
 		"user_verified_reply": "başarıyla viki kullanıcısı \"$1\" olarak doğrulandın.",
+		"username": "Viki kullanıcı adı:",
 		"wiki": "Viki kullanıcısı:"
 	}
 }
