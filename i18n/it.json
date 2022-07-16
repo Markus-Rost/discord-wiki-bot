@@ -721,6 +721,7 @@
 		"add_more": "Aggiungi altre verifiche:",
 		"added": "La verifica è stata aggiunta:",
 		"and": "e",
+		"audit_reason": "Invio messaggio tramite pulsante di verifica",
 		"channel": "Canale:",
 		"channel_max": "Hai fornito troppi canali.",
 		"channel_missing": "Il canale fornito non esiste.",
@@ -729,6 +730,7 @@
 		"dashboard": {
 			"added": "$1 ha aggiunto la verifica con id `$2`.",
 			"added_notice": "$1 ha aggiunto alcuni avvisi di verifica.",
+			"button": "$1 ha inviato un messaggio con il pulsante di verifica.",
 			"removed": "$1 ha rimosso la verifica con id `$2`.",
 			"updated": "$1 ha aggiornato la verifica con id `$2`.",
 			"updated_notice": "$1 ha aggiornato alcuni avvisi di verifica."
@@ -799,6 +801,7 @@
 		"oauth_message_dm": "Per favore usa questo link per autenticare il tuo account sulla wiki per $1.",
 		"oauth_private": "La wiki utilizza OAuth2 per la verifica. Per favore attiva i messaggi diretti da questo server o usa il comando `/verify` così che possa inviarti il link di autenticazione privatamente.",
 		"oauth_used": "*Verificato usando OAuth2*",
+		"placeholder": "Il tuo nome utente sulla wiki con le maiuscole/minuscole corrette.",
 		"qualified_add": "Aggiunto a:",
 		"qualified_add_error": "Non può essere aggiunto a:",
 		"qualified_remove": "Rimosso da:",
@@ -819,6 +822,7 @@
 		"user_renamed": "Il suo soprannome Discord è stato cambiato nel suo nome utente sulla wiki.",
 		"user_verified": "L'utente Discord $1 è {{GENDER:$3|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki $2.",
 		"user_verified_reply": "sei {{GENDER:$2|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki \"$1\".",
+		"username": "Nome utente sulla wiki:",
 		"wiki": "Utente wiki:"
 	}
 }
