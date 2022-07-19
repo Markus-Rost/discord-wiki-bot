@@ -589,6 +589,7 @@
 		"currentlang": "Язык:",
 		"currentprefix": "Префикс:",
 		"currentrole": "Минимальная роль:",
+		"currentsubprefix": "Префикс команды запроса к определённой вики `$1`:",
 		"currentwiki": "Стандартная вики:",
 		"dashboard": {
 			"channel": "$1 изменил настройки для $2.",
