@@ -132,13 +132,15 @@ if ( process.env.dashboard ) {
 									return ( ( channel.isText() && !channel.isThread() ) || channel.type === 'GUILD_CATEGORY' );
 								} ).sort( (a, b) => {
 									let aVal = a.rawPosition + 1;
-									if ( a.type === 'GUILD_CATEGORY' ) aVal *= 1000;
-									else if ( !a.parent ) aVal -= 1000;
-									else aVal += ( a.parent.rawPosition + 1 ) * 1000;
+									if ( a.type === 'GUILD_VOICE' ) aVal *= 1_000;
+									if ( a.type === 'GUILD_CATEGORY' ) aVal *= 1_000_000;
+									else if ( !a.parent ) aVal -= 1_000_000;
+									else aVal += ( a.parent.rawPosition + 1 ) * 1_000_000;
 									let bVal = b.rawPosition + 1;
-									if ( b.type === 'GUILD_CATEGORY' ) bVal *= 1000;
-									else if ( !b.parent ) bVal -= 1000;
-									else bVal += ( b.parent.rawPosition + 1 ) * 1000;
+									if ( b.type === 'GUILD_VOICE' ) bVal *= 1_000;
+									if ( b.type === 'GUILD_CATEGORY' ) bVal *= 1_000_000;
+									else if ( !b.parent ) bVal -= 1_000_000;
+									else bVal += ( b.parent.rawPosition + 1 ) * 1_000_000;
 									return aVal - bVal;
 								} ).map( channel => {
 									return {
@@ -172,19 +174,27 @@ if ( process.env.dashboard ) {
 		getMember: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				let guild = discordClient.guilds.cache.get(evalData.guild);
-				return guild.members.fetch(evalData.member).then( member => {
+				return guild.members.fetch(evalData.member).then( async member => {
 					var response = {
 						patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 						userPermissions: member.permissions.bitfield.toString(),
 						botPermissions: guild.me.permissions.bitfield.toString()
 					};
 					if ( evalData.channel ) {
+						/** @type {import('discord.js').TextChannel} */
 						let channel = guild.channels.cache.get(evalData.channel);
 						if ( ( channel?.isText() && !channel.isThread() ) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
 							response.userPermissions = channel.permissionsFor(member).bitfield.toString();
 							response.botPermissions = channel.permissionsFor(guild.me).bitfield.toString();
 							response.isCategory = ( channel.type === 'GUILD_CATEGORY' );
 							response.parentId = channel.parentId;
+							if ( evalData.thread ) {
+								let thread = await channel.threads?.fetchActive().then( ({threads}) => {
+									if ( threads.has(evalData.thread) ) return threads.get(evalData.thread);
+									return threads.find( thread => thread.name.toLowerCase() === evalData.thread.toLowerCase() );
+								}, () => {} );
+								response.thread = thread?.id || null;
+							}
 						}
 						else response.message = 'noChannel';
 					}
@@ -239,6 +249,7 @@ if ( process.env.dashboard ) {
 								emoji: ( evalData.button_emoji ? ( guild.emojis.cache.find( emoji => emoji.name === evalData.button_emoji ) ?? evalData.button_emoji ) : null )
 							}]
 						}] : [] ),
+						threadId: evalData.thread,
 						allowedMentions: {parse: []}
 					} ).then( message => message?.id, globalThis.log_error ).then( message => {
 						if ( evalData.deleteWebhook ) webhook.delete(evalData.reason).catch(globalThis.log_error);

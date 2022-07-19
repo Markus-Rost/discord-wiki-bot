@@ -425,6 +425,10 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 						)
 					),
 					$('<div>').append(
+						$('<label for="wb-settings-thread">').text(dashboardLang.get('verification.form.thread')),
+						$('<input type="text" id="wb-settings-thread" name="thread" minlength="1" maxlength="100" inputmode="text" autocomplete="on">')
+					),
+					$('<div>').append(
 						$('<label for="wb-settings-webhook_name">').text(dashboardLang.get('verification.form.webhook_name')),
 						$('<input type="text" id="wb-settings-webhook_name" name="webhook_name" minlength="2" maxlength="32" required inputmode="text" autocomplete="on">').val('Wiki-Bot')
 					),
@@ -466,7 +470,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 			if ( $('#wb-settings-channel').children().length <= 1 ) {
 				createNotice($, 'missingperm', dashboardLang, ['Manage Webhooks']);
 			}
-			$('<div class="description">').html(dashboardLang.get('verification.help_button')).appendTo('#text');
+			$('<div class="description">').html(dashboardLang.get('verification.help_button', false, guild.id, suffix)).appendTo('#text');
 			let body = $.html();
 			res.writeHead(200, {'Content-Length': Buffer.byteLength(body)});
 			res.write( body );
@@ -1112,6 +1116,7 @@ function update_notices(res, userSettings, guild, type, settings) {
  * @param {'button'} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String} settings.channel
+ * @param {String} [settings.thread]
  * @param {String} settings.webhook_name
  * @param {String} settings.avatar
  * @param {String} [settings.content]
@@ -1121,6 +1126,7 @@ function update_notices(res, userSettings, guild, type, settings) {
  * @param {String} settings.save_settings
  */
 function send_button(res, userSettings, guild, type, settings) {
+	settings.thread = settings.thread?.trim?.();
 	settings.webhook_name = settings.webhook_name?.trim?.();
 	settings.avatar = settings.avatar?.trim?.();
 	settings.content = ( settings.content?.trim?.() || null );
@@ -1142,7 +1148,8 @@ function send_button(res, userSettings, guild, type, settings) {
 		type: 'getMember',
 		member: userSettings.user.id,
 		guild: guild,
-		channel: settings.channel
+		channel: settings.channel,
+		thread: settings.thread
 	} ).then( response => {
 		if ( !response ) {
 			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
@@ -1162,6 +1169,7 @@ function send_button(res, userSettings, guild, type, settings) {
 				type: 'createWebhook',
 				guild: guild,
 				channel: settings.channel,
+				thread: response.thread,
 				name: settings.webhook_name,
 				reason: lang.get('verification.audit_reason'),
 				text: settings.content,
@@ -1176,7 +1184,8 @@ function send_button(res, userSettings, guild, type, settings) {
 				console.log( `- Dashboard: Verify button message successfully created: ${guild}` );
 				res(`/guild/${guild}/verification/${type}`, 'send');
 				var text = lang.get('verification.dashboard.button', `<@${userSettings.user.id}>`);
-				text += `\n<#${settings.channel}>: <https://discord.com/channels/${guild}/${settings.channel}/${message}>`;
+				if ( response.thread ) text += `\n<#${response.thread}>: <https://discord.com/channels/${guild}/${response.thread}/${message}>`;
+				else text += `\n<#${settings.channel}>: <https://discord.com/channels/${guild}/${settings.channel}/${message}>`;
 				text += `\n<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
 				sendMsg( {
 					type: 'notifyGuild',
