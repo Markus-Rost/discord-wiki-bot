@@ -93,8 +93,8 @@
 			"title": "尚未設定伺服器！"
 		},
 		"oauth": {
-			"text": "您的wiki帳號已成功連接到Wiki-Bot。",
-			"title": "帳號成功連接！"
+			"text": "已成功將您的wiki帳號連接到Wiki-Bot。",
+			"title": "已成功連接帳號！"
 		},
 		"oauthfail": {
 			"text": "無法連接到您的wiki帳號，請再試一次。",
@@ -102,24 +102,24 @@
 		},
 		"oauthlogin": {
 			"text": "若不希望Wiki-Bot記住您的wiki帳號，請登入。",
-			"title": "已儲存連接到的wiki帳號！"
+			"title": "已儲存已連接的wiki帳號！"
 		},
 		"oauthother": {
 			"note": "切換帳號。",
 			"text": "請注意，您的wiki帳號所連接的Discord帳號與目前登入的不同。",
-			"title": "帳號成功連接！"
+			"title": "已成功連接帳號！"
 		},
 		"oauthverify": {
 			"text": "已成功驗證您的wiki帳號。",
-			"title": "帳號驗證成功！"
+			"title": "已成功驗證帳號！"
 		},
 		"readonly": {
 			"text": "您目前只能查看您的設定，但您無法變更。",
-			"title": "唯讀的資料庫！"
+			"title": "資料庫唯讀！"
 		},
 		"refresh": {
 			"text": "已成功重新整理您的伺服器清單。",
-			"title": "重新整理成功！"
+			"title": "已成功重新整理！"
 		},
 		"refreshfail": {
 			"text": "無法重新整理您的伺服器清單，請再試一次。",
@@ -137,15 +137,15 @@
 			"title": "儲存失敗！"
 		},
 		"send": {
-			"text": "訊息已成功傳送。",
-			"title": "訊息已傳送！"
+			"text": "已成功傳送訊息。",
+			"title": "已傳送訊息！"
 		},
 		"sendfail": {
 			"text": "無法傳送訊息，請再試一次。",
 			"title": "傳送失敗！"
 		},
 		"sysmessage": {
-			"text": "頁面 $1 應與伺服器id $2 相符。",
+			"text": "頁面 $1 應與伺服器ID $2 相符。",
 			"title": "系統訊息不相符！"
 		},
 		"unauthorized": {
@@ -243,13 +243,17 @@
 			"avatar_guild": "伺服器圖示",
 			"avatar_preview": "預覽",
 			"button": "傳送帶有驗證按鈕的訊息",
-			"button_emoji": "按鈕的Emoji（可選）：",
+			"button_emoji": "按鈕的emoji（選擇性）：",
 			"button_name": "按鈕文字：",
 			"button_name_default": "wiki 帳號驗證",
 			"button_style": "按鈕樣式：",
+			"button_style_danger": "危險色（紅色）",
+			"button_style_primary": "主要色（Blurple，Discord藍紫色）",
+			"button_style_secondary": "次要色（灰色）",
+			"button_style_success": "成功色（綠色）",
 			"channel": "頻道：",
 			"confirm": "您確定要刪除此驗證方式嗎？",
-			"content": "訊息內容（可選）：",
+			"content": "訊息內容（選擇性）：",
 			"content_placeholder": "訊息的Markdown文字，支援變更過顯示文字的連結。",
 			"editcount": "最少編輯次數：",
 			"entry": "驗證方式 #$1",
@@ -275,7 +279,7 @@
 			"send_message": "傳送訊息",
 			"success": "成功提示：",
 			"success_placeholder": "驗證成功時顯示的Markdown文字。",
-			"thread": "討論串（可選）：",
+			"thread": "討論串（選擇性）：",
 			"usergroup": "wiki使用者群組：",
 			"usergroup_and": "所有所需的使用者群組：",
 			"webhook_name": "作者名稱："
