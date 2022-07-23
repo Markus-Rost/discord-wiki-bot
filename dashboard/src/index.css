@@ -480,9 +480,14 @@ li {
 .notice small {
 	color: #777;
 }
-#login-button {
+#big-buttons {
 	display: flex;
-	margin: 20px auto;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
+.big-button {
+	display: flex;
+	margin: 20px;
 	padding: 20px 50px;
 	width: -moz-fit-content;
 	width: fit-content;
@@ -493,17 +498,17 @@ li {
 	border: 5px solid #202225;
 	border-radius: 30px;
 }
-.theme-light #login-button {
+.theme-light .big-button {
 	background-color: #f2f3f5;
 	border-color: #e3e5e8;
 }
-#login-button:hover {
+.big-button:hover {
 	background-color: #36393f;
 }
-.theme-light #login-button:hover {
+.theme-light .big-button:hover {
 	background-color: #fff;
 }
-#login-button img {
+.big-button img {
 	width: 60px;
 	height: 60px;
 	padding-right: 25px;

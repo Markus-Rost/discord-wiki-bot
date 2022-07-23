@@ -37,7 +37,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	$('head title').text(dashboardLang.get('general.login') + ' – ' + dashboardLang.get('general.title'));
 	$('#login-button span, .channel#login div').text(dashboardLang.get('general.login'));
 	$('.channel#login').attr('title', dashboardLang.get('general.login'));
-	$('.channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
+	$('#invite-button span, .channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
 	$('.channel#invite-wikibot').attr('title', dashboardLang.get('general.invite'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
@@ -63,7 +63,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
 		permissions: defaultPermissions, state
 	} );
-	$('.guild#invite a, .channel#invite-wikibot').attr('href', invite);
+	$('.guild#invite a, .channel#invite-wikibot, #invite-button').attr('href', invite);
 	let url = oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds'],
 		prompt, state
