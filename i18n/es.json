@@ -469,6 +469,13 @@
 		"off": "¡Ya no estoy en pausa en este servidor y responderé a todos los comandos nuevamente!",
 		"on": "¡Ahora estoy en pausa en este servidor e ignoraré la mayoría de los comandos!"
 	},
+	"phabricator": {
+		"comment": "Comentario:",
+		"priority": "Prioridad:",
+		"status": "Estado:",
+		"subtype": "Subtipo:",
+		"tags": "Etiquetas:"
+	},
 	"rcscript": {
 		"ad": "¿Quieres cambios recientes directamente en Discord? ¡Usa `$1rcscript` para agregar un webhook de cambios recientes basado en **$2** a tu servidor de Discord!",
 		"add_more": "Agrega más webhooks de cambios recientes:",
