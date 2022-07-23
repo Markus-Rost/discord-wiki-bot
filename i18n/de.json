@@ -469,6 +469,12 @@
 		"off": "ich bin auf diesem Server nicht länger pausiert und werde wieder auf alle Befehle reagieren!",
 		"on": "ich bin auf diesem Server nun pausiert und werde die meisten Befehle ignorieren!"
 	},
+	"phabricator": {
+		"comment": "Kommentar:",
+		"priority": "Priorität:",
+		"status": "Status:",
+		"subtype": ""
+	},
 	"rcscript": {
 		"ad": "Du möchtest letzte Änderungen direkt in Discord? Nutze `$1rcscript` um einen Letzte Änderungen-WebHook basierend auf **$2** zu deinen Diesocrd server hinzuzufügen!",
 		"add_more": "Füge mehr Letzte Änderungen-WebHooks hinzu:",
