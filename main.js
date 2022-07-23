@@ -119,6 +119,8 @@ if ( process.env.dashboard ) {
 	/** @type {Object.<string, function(import('discord.js').Client, Object)>} */
 	const evalFunctions = {
 		getGuilds: (discordClient, evalData) => {
+			/** @type {import('discord.js').ChannelType.GuildCategory} */
+			const GuildCategory = 4;
 			return Promise.all(
 				evalData.guilds.map( id => {
 					if ( discordClient.guilds.cache.has(id) ) {
@@ -127,18 +129,18 @@ if ( process.env.dashboard ) {
 							return {
 								patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 								memberCount: guild.memberCount,
-								botPermissions: guild.me.permissions.bitfield.toString(),
+								botPermissions: guild.members.me.permissions.bitfield.toString(),
 								channels: guild.channels.cache.filter( channel => {
-									return ( ( channel.isText() && !channel.isThread() ) || channel.type === 'GUILD_CATEGORY' );
+									return ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === GuildCategory );
 								} ).sort( (a, b) => {
 									let aVal = a.rawPosition + 1;
-									if ( a.type === 'GUILD_VOICE' ) aVal *= 1_000;
-									if ( a.type === 'GUILD_CATEGORY' ) aVal *= 1_000_000;
+									if ( a.isVoiceBased() ) aVal *= 1_000;
+									if ( a.type === GuildCategory ) aVal *= 1_000_000;
 									else if ( !a.parent ) aVal -= 1_000_000;
 									else aVal += ( a.parent.rawPosition + 1 ) * 1_000_000;
 									let bVal = b.rawPosition + 1;
-									if ( b.type === 'GUILD_VOICE' ) bVal *= 1_000;
-									if ( b.type === 'GUILD_CATEGORY' ) bVal *= 1_000_000;
+									if ( b.isVoiceBased() ) bVal *= 1_000;
+									if ( b.type === GuildCategory ) bVal *= 1_000_000;
 									else if ( !b.parent ) bVal -= 1_000_000;
 									else bVal += ( b.parent.rawPosition + 1 ) * 1_000_000;
 									return aVal - bVal;
@@ -146,9 +148,9 @@ if ( process.env.dashboard ) {
 									return {
 										id: channel.id,
 										name: channel.name,
-										isCategory: ( channel.type === 'GUILD_CATEGORY' ),
+										isCategory: ( channel.type === GuildCategory ),
 										userPermissions: member.permissionsIn(channel).bitfield.toString(),
-										botPermissions: guild.me.permissionsIn(channel).bitfield.toString()
+										botPermissions: guild.members.me.permissionsIn(channel).bitfield.toString()
 									};
 								} ),
 								roles: guild.roles.cache.filter( role => {
@@ -159,7 +161,7 @@ if ( process.env.dashboard ) {
 									return {
 										id: role.id,
 										name: role.name,
-										lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
+										lower: ( guild.members.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
 									};
 								} ),
 								locale: guild.preferredLocale
@@ -173,20 +175,22 @@ if ( process.env.dashboard ) {
 		},
 		getMember: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				/** @type {import('discord.js').ChannelType.GuildCategory} */
+				const GuildCategory = 4;
 				let guild = discordClient.guilds.cache.get(evalData.guild);
 				return guild.members.fetch(evalData.member).then( async member => {
 					var response = {
 						patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 						userPermissions: member.permissions.bitfield.toString(),
-						botPermissions: guild.me.permissions.bitfield.toString()
+						botPermissions: guild.members.me.permissions.bitfield.toString()
 					};
 					if ( evalData.channel ) {
-						/** @type {import('discord.js').TextChannel} */
+						/** @type {import('discord.js').BaseGuildTextChannel} */
 						let channel = guild.channels.cache.get(evalData.channel);
-						if ( ( channel?.isText() && !channel.isThread() ) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
+						if ( ( channel?.isTextBased() && !channel.isThread() ) || ( response.patreon && evalData.allowCategory && channel?.type === GuildCategory ) ) {
 							response.userPermissions = channel.permissionsFor(member).bitfield.toString();
-							response.botPermissions = channel.permissionsFor(guild.me).bitfield.toString();
-							response.isCategory = ( channel.type === 'GUILD_CATEGORY' );
+							response.botPermissions = channel.permissionsFor(guild.members.me).bitfield.toString();
+							response.isCategory = ( channel.type === GuildCategory );
 							response.parentId = channel.parentId;
 							if ( evalData.thread ) {
 								let thread = await channel.threads?.fetchActive().then( ({threads}) => {
@@ -200,9 +204,9 @@ if ( process.env.dashboard ) {
 					}
 					if ( evalData.newchannel ) {
 						let newchannel = guild.channels.cache.get(evalData.newchannel);
-						if ( newchannel?.isText() && !newchannel.isThread() ) {
+						if ( newchannel?.isTextBased() && !newchannel.isThread() ) {
 							response.userPermissionsNew = newchannel.permissionsFor(member).bitfield.toString();
-							response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield.toString();
+							response.botPermissionsNew = newchannel.permissionsFor(guild.members.me).bitfield.toString();
 						}
 						else response.message = 'noChannel';
 					}
@@ -228,10 +232,26 @@ if ( process.env.dashboard ) {
 		},
 		createWebhook: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				/** @type {import('discord.js').ComponentType.ActionRow} */
+				const ActionRow = 1;
+				/** @type {import('discord.js').ComponentType.Button} */
+				const Button = 2;
+				/** @enum {import('discord.js').ButtonStyle} */
+				const ButtonStyle = {
+					/** @type {import('discord.js').ButtonStyle.Primary} */
+					Primary: 1,
+					/** @type {import('discord.js').ButtonStyle.Secondary} */
+					Secondary: 2,
+					/** @type {import('discord.js').ButtonStyle.Success} */
+					Success: 3,
+					/** @type {import('discord.js').ButtonStyle.Danger} */
+					Danger: 4,
+				};
 				let guild = discordClient.guilds.cache.get(evalData.guild);
 				/** @type {import('discord.js').BaseGuildTextChannel} */
 				let channel = guild.channels.cache.get(evalData.channel);
-				if ( channel ) return channel.createWebhook( evalData.name, {
+				if ( channel ) return channel.createWebhook( {
+					name: evalData.name,
 					avatar: discordClient.user.displayAvatarURL({format:'png',size:4096}),
 					reason: evalData.reason
 				} ).then( webhook => {
@@ -239,11 +259,11 @@ if ( process.env.dashboard ) {
 					return webhook.send( {
 						avatarURL: evalData.avatar,
 						content: evalData.text,
-						components: ( evalData.button_text && evalData.button_style && evalData.button_id ? [{
-							type: 'ACTION_ROW',
+						components: ( evalData.button_text && evalData.button_id && ButtonStyle.hasOwnProperty(evalData.button_style) ? [{
+							type: ActionRow,
 							components: [{
-								type: 'BUTTON',
-								style: evalData.button_style,
+								type: Button,
+								style: ButtonStyle[evalData.button_style],
 								customId: evalData.button_id,
 								label: evalData.button_text,
 								emoji: ( evalData.button_emoji ? ( guild.emojis.cache.find( emoji => emoji.name === evalData.button_emoji ) ?? evalData.button_emoji ) : null )
@@ -264,8 +284,9 @@ if ( process.env.dashboard ) {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				return discordClient.fetchWebhook(...evalData.webhook.split('/')).then( webhook => {
 					var changes = {};
+					if ( evalData.reason ) changes.reason = evalData.reason;
 					if ( evalData.channel ) changes.channel = evalData.channel;
-					return webhook.edit( changes, evalData.reason ).then( newWebhook => {
+					return webhook.edit( changes ).then( newWebhook => {
 						console.log( `- Dashboard: Webhook successfully edited: ${evalData.guild}#` + ( evalData.channel || webhook.channelId ) );
 						newWebhook.send( evalData.text ).catch(globalThis.log_error);
 						return true;

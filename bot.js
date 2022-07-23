@@ -24,32 +24,32 @@ const client = new Discord.Client( {
 	},
 	failIfNotExists: false,
 	presence: ( process.env.READONLY ? {
-		status: 'dnd',
+		status: Discord.PresenceUpdateStatus.DoNotDisturb,
 		activities: [{
-			type: 'PLAYING',
+			type: Discord.ActivityType.Watching,
 			name: 'READONLY: ' + process.env.prefix + 'test' + ( process.env.SHARD_COUNT > 1 ? ' • Shard: ' + process.env.SHARDS : '' ),
 		}],
 		shardId: process.env.SHARDS
 	} : {
-		status: 'online',
+		status: Discord.PresenceUpdateStatus.Online,
 		activities: [{
-			type: 'STREAMING',
+			type: Discord.ActivityType.Streaming,
 			name: process.env.prefix + 'help' + ( process.env.SHARD_COUNT > 1 ? ' • Shard: ' + process.env.SHARDS : '' ),
 			url: 'https://www.twitch.tv/wikibot'
 		}],
 		shardId: process.env.SHARDS
 	} ),
 	intents: [
-		Discord.Intents.FLAGS.GUILDS,
-		Discord.Intents.FLAGS.GUILD_MESSAGES,
-		Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-		Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-		Discord.Intents.FLAGS.DIRECT_MESSAGES,
-		Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-		//Discord.Intents.FLAGS.MESSAGE_CONTENT
+		Discord.GatewayIntentBits.Guilds,
+		Discord.GatewayIntentBits.GuildMessages,
+		Discord.GatewayIntentBits.GuildMessageReactions,
+		//Discord.GatewayIntentBits.GuildIntegrations,
+		Discord.GatewayIntentBits.DirectMessages,
+		Discord.GatewayIntentBits.DirectMessageReactions,
+		Discord.GatewayIntentBits.MessageContent
 	],
 	partials: [
-		'CHANNEL'
+		Discord.Partials.Channel
 	]
 } );
 
@@ -62,11 +62,11 @@ client.on( 'ready', () => {
 
 String.prototype.isMention = function(guild) {
 	var text = this.trim();
-	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.me.displayName );
+	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.members.me.displayName );
 };
 
 Discord.Message.prototype.isAdmin = function() {
-	return this.inGuild() && this.member && ( this.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD) || ( this.isOwner() && this.evalUsed ) );
+	return this.inGuild() && this.member && ( this.member.permissions.has(Discord.PermissionFlagsBits.ManageGuild) || ( this.isOwner() && this.evalUsed ) );
 };
 
 Discord.Message.prototype.isOwner = function() {
@@ -74,11 +74,11 @@ Discord.Message.prototype.isOwner = function() {
 };
 
 Discord.Message.prototype.showEmbed = function() {
-	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.EMBED_LINKS);
+	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.PermissionFlagsBits.EmbedLinks);
 };
 
 Discord.Message.prototype.uploadFiles = function() {
-	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.Permissions.FLAGS.ATTACH_FILES);
+	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.PermissionFlagsBits.AttachFiles);
 };
 
 String.prototype.replaceSave = function(pattern, replacement) {
@@ -178,7 +178,7 @@ readdir( './interactions', (error, files) => {
 
 client.on( 'interactionCreate', interaction => {
 	if ( interaction.inGuild() && typeof interaction.member.permissions === 'string' ) {
-		interaction.member.permissions = new Discord.Permissions(interaction.member.permissions);
+		interaction.member.permissions = new Discord.PermissionsBitField(interaction.member.permissions);
 	}
 	if ( interaction.channel?.partial ) return interaction.channel.fetch().then( () => {
 		return interactionCreate(interaction);
@@ -193,7 +193,7 @@ client.on( 'interactionCreate', interaction => {
  function interactionCreate(interaction) {
 	if ( breakOnTimeoutPause(interaction) ) return;
 	var cmd = null;
-	if ( interaction.isCommand() ) {
+	if ( interaction.type === Discord.InteractionType.ApplicationCommand ) {
 		if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
 		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 			return option.name + ':' + option.value;
@@ -201,7 +201,7 @@ client.on( 'interactionCreate', interaction => {
 		if ( !interaction_commands.slash.hasOwnProperty(interaction.commandName) ) return;
 		cmd = interaction_commands.slash[interaction.commandName];
 	}
-	else if ( interaction.isModalSubmit() ) {
+	else if ( interaction.type === Discord.InteractionType.ModalSubmit ) {
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Modal: ' + interaction.customId + ' ' + interaction.fields.components.reduce( (prev, next) => {
 			return prev.concat(next.components);
 		}, [] ).map( option => {
@@ -243,11 +243,11 @@ client.on( 'messageCreate', msg => {
  * @param {Discord.Message} msg - The message.
  */
 function messageCreate(msg) {
-	if ( isStop || !msg.channel.isText() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
-	if ( msg.member?.isCommunicationDisabled() || msg.guild?.me.isCommunicationDisabled() ) return;
+	if ( isStop || !msg.channel.isTextBased() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
+	if ( msg.member?.isCommunicationDisabled() || msg.guild?.members?.me?.isCommunicationDisabled() ) return;
 	if ( !msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
 		if ( msg.content === process.env.prefix + 'help' && ( msg.isAdmin() || msg.isOwner() ) ) {
-			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES )) ) {
+			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.PermissionFlagsBits.SendMessagesInThreads : Discord.PermissionFlagsBits.SendMessages )) ) {
 				console.log( msg.guildId + ': ' + msg.content );
 				let sqlargs = [msg.guildId];
 				if ( msg.channel?.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
@@ -267,25 +267,24 @@ function messageCreate(msg) {
 		let sqlargs = [msg.guildId];
 		if ( msg.channel.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
 		else sqlargs.push(msg.channelId, '#' + msg.channel.parentId);
-		var permissions = msg.channel.permissionsFor(msg.client.user);
-		var missing = permissions.missing([
-			( msg.channel.isThread() ? Discord.Permissions.FLAGS.SEND_MESSAGES_IN_THREADS : Discord.Permissions.FLAGS.SEND_MESSAGES ),
-			Discord.Permissions.FLAGS.ADD_REACTIONS,
-			Discord.Permissions.FLAGS.USE_EXTERNAL_EMOJIS,
-			Discord.Permissions.FLAGS.READ_MESSAGE_HISTORY
-		]);
-		if ( missing.length ) {
+		var missing = new Discord.PermissionsBitField([
+			( msg.channel.isThread() ? Discord.PermissionFlagsBits.SendMessagesInThreads : Discord.PermissionFlagsBits.SendMessages ),
+			Discord.PermissionFlagsBits.AddReactions,
+			Discord.PermissionFlagsBits.UseExternalEmojis,
+			Discord.PermissionFlagsBits.ReadMessageHistory
+		]).remove(msg.channel.permissionsFor(msg.client.user));
+		if ( missing > 0n ) {
 			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
-				console.log( msg.guildId + ': Missing permissions - ' + missing.join(', ') );
-				if ( !missing.includes( 'SEND_MESSAGES' ) && !missing.includes( 'SEND_MESSAGES_IN_THREADS' ) ) {
+				console.log( msg.guildId + ': Missing permissions - ' + missing.toArray().join(', ') );
+				if ( !missing.has(Discord.PermissionFlagsBits.SendMessages) && !missing.has(Discord.PermissionFlagsBits.SendMessagesInThreads) ) {
 					db.query( 'SELECT lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 						return row?.lang;
 					}, dberror => {
 						console.log( '- Error while getting the lang: ' + dberror );
 					} ).then( lang => {
 						msg.sendChannel( {
-							content: new Lang(( lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.join('`, `') + '`',
-							reply: ( missing.includes( 'READ_MESSAGE_HISTORY' ) ? undefined : {messageReference: msg.id} )
+							content: new Lang(( lang || msg.guild.preferredLocale ), 'general').get('missingperm') + ' `' + missing.toArray().join('`, `') + '`',
+							reply: ( missing.has(Discord.PermissionFlagsBits.ReadMessageHistory) ? undefined : {messageReference: msg.id} )
 						}, true );
 					} );
 				}

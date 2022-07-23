@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, sendMessage } from '../util/functions.js';
@@ -20,7 +20,7 @@ function button_verify(interaction, lang, wiki) {
 		return interaction.reply( {content: userLang.get('verify.button_wrong_user', interaction.message.mentions.users.first().toString()), ephemeral: true} ).catch(log_error);
 	}
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
-		if ( !rows.length || !interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) return interaction.update( {components: []} ).catch(log_error);
+		if ( !rows.length || !interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) return interaction.update( {components: []} ).catch(log_error);
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
@@ -28,8 +28,8 @@ function button_verify(interaction, lang, wiki) {
 			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				console.log( interaction.guildId + ': Button: ' + interaction.customId + ': OAuth2' );
-				return interaction.update( {components: [new MessageActionRow().addComponents(
-					new MessageButton(interaction.message.components[0].components[0]).setDisabled()
+				return interaction.update( {components: [new ActionRowBuilder().addComponents(
+					ButtonBuilder.from(interaction.message.components[0].components[0]).setDisabled()
 				)]} ).then( () => {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
@@ -92,8 +92,8 @@ function button_verify(interaction, lang, wiki) {
 						sendMessage(interaction, {components: []}, false);
 						return interaction.followUp( {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
-							components: [new MessageActionRow().addComponents(
-								new MessageButton().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+							components: [new ActionRowBuilder().addComponents(
+								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
 							ephemeral: true
 						} ).catch(log_error);
@@ -102,8 +102,8 @@ function button_verify(interaction, lang, wiki) {
 			}
 		}
 
-		return interaction.update( {components: [new MessageActionRow().addComponents(
-			new MessageButton(interaction.message.components[0].components[0]).setDisabled()
+		return interaction.update( {components: [new ActionRowBuilder().addComponents(
+			ButtonBuilder.from(interaction.message.components[0].components[0]).setDisabled()
 		)]} ).then( () => {
 			console.log( interaction.guildId + ': Button: ' + interaction.customId + ' ' + username );
 			return verify(lang, lang, interaction.channel, interaction.member, username, wiki, rows).then( result => {
@@ -169,8 +169,8 @@ function button_verify(interaction, lang, wiki) {
 						sendMessage(interaction, {components: []}, false);
 						return interaction.followUp( {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
-							components: [new MessageActionRow().addComponents(
-								new MessageButton().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+							components: [new ActionRowBuilder().addComponents(
+								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
 							ephemeral: true
 						} ).catch(log_error);
@@ -190,12 +190,12 @@ function button_verify(interaction, lang, wiki) {
 					else message.content = lang.get('verify.error_reply');
 					message.embeds = [];
 				}
-				else if ( result.add_button ) message.components.push(new MessageActionRow().addComponents(
-					new MessageButton().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle('PRIMARY').setCustomId('verify_again')
+				else if ( result.add_button ) message.components.push(new ActionRowBuilder().addComponents(
+					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 				));
 				sendMessage(interaction, message, false);
 				if ( result.logging.channel && interaction.guild.channels.cache.has(result.logging.channel) ) {
-					if ( result.logging.embed ) result.logging.embed.addField(interaction.message.url, '<#' + interaction.channelId + '>');
+					if ( result.logging.embed ) result.logging.embed.addFields( {name: interaction.message.url, value: '<#' + interaction.channelId + '>'} );
 					else result.logging.content += '\n<#' + interaction.channelId + '> – <' + interaction.message.url + '>';
 					interaction.guild.channels.cache.get(result.logging.channel).send( {
 						content: result.logging.content,

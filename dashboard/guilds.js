@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
 import { forms } from './functions.js';
 import Lang from './i18n.js';
-import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice } from './util.js';
+import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice, OAuth2Scopes } from './util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
@@ -66,7 +66,12 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	$('#logout img').attr('src', settings.user.avatar);
 	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
+		scope: [
+			OAuth2Scopes.Identify,
+			OAuth2Scopes.Guilds,
+			OAuth2Scopes.Bot,
+			OAuth2Scopes.ApplicationsCommands
+		],
 		permissions: defaultPermissions, state: userSession.state
 	} ));
 	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
@@ -144,7 +149,12 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('head title').text(`${guild.name} – ` + $('head title').text());
 		res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; SameSite=Lax; Path=/`]);
 		let url = oauth.generateAuthUrl( {
-			scope: ['identify', 'guilds', 'bot', 'applications.commands'],
+			scope: [
+				OAuth2Scopes.Identify,
+				OAuth2Scopes.Guilds,
+				OAuth2Scopes.Bot,
+				OAuth2Scopes.ApplicationsCommands
+			],
 			permissions: defaultPermissions, guildId: guild.id,
 			disableGuildSelect: true, state: userSession.state
 		} );
@@ -225,7 +235,10 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		}
 		if ( !settings.guilds.count ) {
 			let url = oauth.generateAuthUrl( {
-				scope: ['identify', 'guilds'],
+				scope: [
+					OAuth2Scopes.Identify,
+					OAuth2Scopes.Guilds
+				],
 				prompt: 'consent', state: userSession.state
 			} );
 			$('<a class="channel">').attr('href', url).append(

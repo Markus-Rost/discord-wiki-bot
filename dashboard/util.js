@@ -1,3 +1,4 @@
+import { PermissionFlagsBits, OAuth2Scopes } from 'discord.js';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
 import pg from 'pg';
@@ -395,36 +396,17 @@ function escapeText(text) {
 	return text.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
 }
 
-const permissions = {
-	ADMINISTRATOR: 1n << 3n,
-	MANAGE_CHANNELS: 1n << 4n,
-	MANAGE_GUILD: 1n << 5n,
-	ADD_REACTIONS: 1n << 6n,
-	VIEW_CHANNEL: 1n << 10n,
-	SEND_MESSAGES: 1n << 11n,
-	MANAGE_MESSAGES: 1n << 13n,
-	EMBED_LINKS: 1n << 14n,
-	ATTACH_FILES: 1n << 15n,
-	READ_MESSAGE_HISTORY: 1n << 16n,
-	MENTION_EVERYONE: 1n << 17n,
-	USE_EXTERNAL_EMOJIS: 1n << 18n,
-	MANAGE_NICKNAMES: 1n << 27n,
-	MANAGE_ROLES: 1n << 28n,
-	MANAGE_WEBHOOKS: 1n << 29n,
-	SEND_MESSAGES_IN_THREADS: 1n << 38n
-}
-
 /**
  * Check if a permission is included in the BitField
  * @param {String|Number|BigInt} all - BitField of multiple permissions
- * @param {String[]} permission - Name of the permission to check for
+ * @param {(String|BigInt)[]} permission - Name of the permission to check for
  * @returns {Boolean}
  */
 function hasPerm(all = 0n, ...permission) {
 	all = BigInt(all);
-	if ( (all & permissions.ADMINISTRATOR) === permissions.ADMINISTRATOR ) return true;
+	if ( (all & PermissionFlagsBits.Administrator) === PermissionFlagsBits.Administrator ) return true;
 	return permission.every( perm => {
-		let bit = permissions[perm];
+		let bit = ( typeof perm === 'bigint' ? perm : PermissionFlagsBits[perm] );
 		return ( (all & bit) === bit );
 	} );
 }
@@ -441,5 +423,7 @@ export {
 	addWidgets,
 	createNotice,
 	escapeText,
-	hasPerm
+	hasPerm,
+	PermissionFlagsBits,
+	OAuth2Scopes
 };

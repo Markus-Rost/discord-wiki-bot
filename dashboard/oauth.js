@@ -3,7 +3,7 @@ import { randomBytes } from 'node:crypto';
 import { load as cheerioLoad } from 'cheerio';
 import Wiki from '../util/wiki.js';
 import { allLangs } from './i18n.js';
-import { got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm } from './util.js';
+import { got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm, PermissionFlagsBits, OAuth2Scopes } from './util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
@@ -60,7 +60,12 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		state = Date.now().toString(16) + randomBytes(16).toString('hex');
 	}
 	let invite = oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
+		scope: [
+			OAuth2Scopes.Identify,
+			OAuth2Scopes.Guilds,
+			OAuth2Scopes.Bot,
+			OAuth2Scopes.ApplicationsCommands
+		],
 		permissions: defaultPermissions, state
 	} );
 	$('.guild#invite a, .channel#invite-wikibot, #invite-button').attr('href', invite);
@@ -109,7 +114,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 			oauth.getUserGuilds(access_token)
 		]).then( ([user, guilds]) => {
 			guilds = guilds.filter( guild => {
-				return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
+				return ( guild.owner || hasPerm(guild.permissions, PermissionFlagsBits.ManageGuild) );
 			} ).map( guild => {
 				return {
 					id: guild.id,
@@ -197,7 +202,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 function dashboard_refresh(res, userSession, returnLocation = '/') {
 	return oauth.getUserGuilds(userSession.access_token).then( guilds => {
 		guilds = guilds.filter( guild => {
-			return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
+			return ( guild.owner || hasPerm(guild.permissions, PermissionFlagsBits.ManageGuild) );
 		} ).map( guild => {
 			return {
 				id: guild.id,

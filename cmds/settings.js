@@ -1,5 +1,5 @@
 import { load as cheerioLoad } from 'cheerio';
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { got, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
@@ -31,8 +31,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new MessageButton().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle('LINK').setURL(new URL(`/guild/${msg.guildId}/settings`, process.env.dashboard).href);
-			components.push(new MessageActionRow().addComponents(button));
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/settings`, process.env.dashboard).href);
+			components.push(new ActionRowBuilder().addComponents(button));
 		}
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
 		if ( rows.length ) {
@@ -140,7 +140,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						});
 					}
 					if ( notice.length ) {
-						embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
+						embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
 					}
 					var sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND wiki = $3';
 					var sqlargs = [wikinew.href, msg.guildId, guild.wiki];

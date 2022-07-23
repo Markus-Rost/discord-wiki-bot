@@ -26,20 +26,35 @@ const got = gotDefault.extend( {
 const oauthVerify = new Map();
 
 /**
+* The accumulated length for the embed title, description, fields, footer text, and author name.
+* @param {EmbedBuilder} embed
+* @returns {number}
+*/
+function getEmbedLength(embed) {
+	return (
+		(embed.data.title?.length ?? 0) +
+		(embed.data.description?.length ?? 0) +
+		(embed.data.fields?.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) ?? 0) +
+		(embed.data.footer?.text.length ?? 0) +
+		(embed.data.author?.name.length ?? 0)
+	);
+}
+
+/**
  * Parse infobox content
  * @param {Object} infobox - The content of the infobox.
- * @param {import('discord.js').MessageEmbed} embed - The message embed.
+ * @param {import('discord.js').EmbedBuilder} embed - The message embed.
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
  * @param {String} [pagelink] - The article path for relative links.
- * @returns {import('discord.js').MessageEmbed?}
+ * @returns {import('discord.js').EmbedBuilder?}
  */
 function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
-	if ( !infobox || embed.fields.length >= 25 || embed.length > 5400 ) return;
+	if ( !infobox || ( embed.data.fields?.length ?? 0 ) >= 25 || getEmbedLength(embed) > 5400 ) return;
 	if ( infobox.parser_tag_version === 2 || infobox.parser_tag_version === 5 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, thumbnail, pagelink);
 		} );
-		embed.fields = embed.fields.filter( (field, i, fields) => {
+		embed.data.fields = embed.data.fields?.filter( (field, i, fields) => {
 			// remove header followed by header
 			if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 			return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
@@ -49,7 +64,7 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			fields[i - 1].value += '\n' + field.value;
 			fields[i] = fields[i - 1];
 			return false;
-		} );
+		} ) ?? [];
 		return embed;
 	}
 	switch ( infobox.type ) {
@@ -69,14 +84,14 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			}
 			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 			if ( value.length > 500 ) value = limitLength(value, 500, 250);
-			if ( label && value ) embed.addField( label, value, true );
+			if ( label && value ) embed.addFields( {name: label, value, inline: true} );
 			break;
 		case 'panel':
-			var embedLength = embed.fields.length;
+			var embedLength = embed.data.fields?.length ?? 0;
 			infobox.data.value.forEach( group => {
 				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
-			embed.fields = embed.fields.filter( (field, i, fields) => {
+			embed.data.fields = embed.data.fields?.filter( (field, i, fields) => {
 				if ( i < embedLength ) return true;
 				// remove header followed by header or section
 				if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
@@ -86,13 +101,13 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 				// remove section followed by section
 				if ( field.name !== '\u200b' || field.value.startsWith( '__**' ) ) return true;
 				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || fields[i + 1].value.startsWith( '__**' ) ) );
-			} );
+			} ) ?? [];
 			break;
 		case 'section':
 			var {label = ''} = infobox.data;
 			label = htmlToPlain(label).trim();
 			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
-			if ( label ) embed.addField( '\u200b', '**' + label + '**', false );
+			if ( label ) embed.addFields( {name: '\u200b', value: '**' + label + '**'} );
 		case 'group':
 			infobox.data.value.forEach( group => {
 				parse_infobox(group, embed, thumbnail, pagelink);
@@ -102,10 +117,10 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			var {value = ''} = infobox.data;
 			value = htmlToPlain(value).trim();
 			if ( value.length > 100 ) value = value.substring(0, 100) + '\u2026';
-			if ( value ) embed.addField( '\u200b', '__**' + value + '**__', false );
+			if ( value ) embed.addFields( {name: '\u200b', value: '__**' + value + '**__'} );
 			break;
 		case 'image':
-			if ( embed.thumbnail?.url !== thumbnail ) return;
+			if ( embed.data.thumbnail?.url !== thumbnail ) return;
 			var image = infobox.data.find( img => {
 				return ( /^(?:https?:)?\/\//.test(img.url) && /\.(?:png|jpg|jpeg|gif)$/.test(img.name) );
 			} );
@@ -521,7 +536,7 @@ function breakOnTimeoutPause(msg, ignorePause = false) {
 		console.log( '- Aborted, communication disabled for User.' );
 		return true;
 	}
-	if ( msg.guild?.me.isCommunicationDisabled() ) {
+	if ( msg.guild?.members?.me?.isCommunicationDisabled() ) {
 		console.log( '- Aborted, communication disabled for Wiki-Bot.' );
 		return true;
 	}
@@ -565,6 +580,7 @@ function sendMessage(interaction, message, letDelete = true) {
 export {
 	got,
 	oauthVerify,
+	getEmbedLength,
 	parse_infobox,
 	toFormatting,
 	toMarkdown,

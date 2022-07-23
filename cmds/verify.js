@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { MessageEmbed, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ButtonStyle, EmbedBuilder } from 'discord.js';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functions.js';
@@ -14,10 +14,10 @@ import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functio
  */
 function cmd_verify(lang, msg, args, line, wiki) {
 	if ( !msg.inGuild() || msg.defaultSettings ) return this.LINK(lang, msg, line, wiki);
-	if ( !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
+	if ( !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) {
 		if ( msg.isAdmin() ) {
-			console.log( msg.guildId + ': Missing permissions - MANAGE_ROLES' );
-			msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
+			console.log( msg.guildId + ': Missing permissions - ManageRoles' );
+			msg.replyMsg( lang.get('general.missingperm') + ' `ManageRoles`' );
 		}
 		else if ( !msg.onlyVerifyCommand ) this.LINK(lang, msg, line, wiki);
 		return;
@@ -97,8 +97,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					}).toString();
 					return msg.member.send( {
 						content: lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>',
-						components: [new MessageActionRow().addComponents(
-							new MessageButton().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+						components: [new ActionRowBuilder().addComponents(
+							new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 						)]
 					} ).then( message => {
 						msg.reactEmoji('📩');
@@ -192,8 +192,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						}).toString();
 						msg.member.send( {
 							content: lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>',
-							components: [new MessageActionRow().addComponents(
-								new MessageButton().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+							components: [new ActionRowBuilder().addComponents(
+								new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)]
 						} ).then( message => {
 							msg.reactEmoji('📩');
@@ -219,21 +219,25 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							repliedUser: true
 						}
 					};
-					if ( result.add_button ) options.components.push(new MessageActionRow().addComponents(
-						new MessageButton().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle('PRIMARY').setCustomId('verify_again')
+					if ( result.add_button ) options.components.push(new ActionRowBuilder().addComponents(
+						new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 					));
 					if ( result.send_private ) {
-						let dmEmbeds = [new MessageEmbed(result.embed)];
+						let dmEmbeds = [];
 						if ( options.embeds[0] ) {
-							dmEmbeds.push(new MessageEmbed(options.embeds[0]));
-							dmEmbeds[0].fields.forEach( field => {
+							dmEmbeds.push(EmbedBuilder.from(options.embeds[0]));
+							dmEmbeds[0].data.fields?.forEach( field => {
 								field.value = field.value.replace( /<@&(\d+)>/g, (mention, id) => {
 									if ( !msg.guild.roles.cache.has(id) ) return mention;
 									return escapeFormatting('@' + msg.guild.roles.cache.get(id)?.name);
 								} );
 							} );
 						}
-						msg.member.send( {content: msg.channel.toString() + '; ' + result.content, embeds: dmEmbeds, components: []} ).then( message => {
+						msg.member.send( {
+							content: msg.channel.toString() + '; ' + result.content,
+							embeds: dmEmbeds,
+							components: []
+						} ).then( message => {
 							msg.reactEmoji('📩');
 							allowDelete(message, msg.author.id);
 							setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
@@ -246,7 +250,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						} ).then( message => {
 							if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
 							if ( message ) {
-								if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channelId + '>');
+								if ( result.logging.embed ) result.logging.embed.addFields( {name: message.url, value: '<#' + msg.channelId + '>'} );
 								else result.logging.content += '\n<#' + msg.channelId + '> – <' + message.url + '>';
 							}
 							msg.guild.channels.cache.get(result.logging.channel).send( {
@@ -258,7 +262,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					else msg.replyMsg( options, false, false ).then( message => {
 						if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
 						if ( message ) {
-							if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channelId + '>');
+							if ( result.logging.embed ) result.logging.embed.addFields( {name: message.url, value: '<#' + msg.channelId + '>'} );
 							else result.logging.content += '\n<#' + msg.channelId + '> – <' + message.url + '>';
 						}
 						msg.guild.channels.cache.get(result.logging.channel).send( {

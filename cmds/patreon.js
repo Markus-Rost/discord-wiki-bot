@@ -1,4 +1,4 @@
-import { ShardClientUtil } from 'discord.js';
+import { ShardClientUtil, OAuth2Scopes } from 'discord.js';
 import db from '../util/database.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -27,7 +27,10 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	} ).then( guild => {
 		if ( !guild ) {
 			let invite = msg.client.generateInvite({
-				scopes: ['bot', 'applications.commands'],
+				scopes: [
+					OAuth2Scopes.Bot,
+					OAuth2Scopes.ApplicationsCommands
+				],
 				permissions: defaultPermissions,
 				guild: args[1],
 				disableGuildSelect: true
@@ -100,7 +103,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 							return msg.client.shard.broadcastEval( (discordClient, evalData) => {
 								if ( discordClient.guilds.cache.has(evalData.guild) ) {
 									return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-										return ( ( channel.isText() && !channel.isThread() ) && evalData.rows.some( row => {
+										return ( ( channel.isTextBased() && !channel.isThread() ) && evalData.rows.some( row => {
 											return ( row.channel === '#' + channel.parentId );
 										} ) );
 									} ).map( channel => {
@@ -268,7 +271,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 								return discordClient.guilds.cache.has(guild);
 							} ).map( guild => {
 								return discordClient.guilds.cache.get(guild).channels.cache.filter( channel => {
-									return ( ( channel.isText() && !channel.isThread() ) && evalData.rows.some( row => {
+									return ( ( channel.isTextBased() && !channel.isThread() ) && evalData.rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {

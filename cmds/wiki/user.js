@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import datetimeDifference from 'datetime-difference';
 import global_block from '../../functions/global_block.js';
 import parse_page from '../../functions/parse_page.js';
@@ -38,7 +38,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( querypage.missing !== undefined || querypage.ns === -1 ) msg.reactEmoji('error');
 				else {
 					var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-					var embed = new MessageEmbed().setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
+					var embed = new EmbedBuilder().setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 					if ( body?.query?.general ) {
 						wiki.updateWiki(body.query.general);
 						embed.setAuthor( {name: body.query.general.sitename} ).setThumbnail( new URL(body.query.general.logo, wiki).href );
@@ -202,7 +202,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() && !noEmbed ) {
-				embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( username ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')' );
+				embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( username ).setURL( pagelink ).addFields( {name: editcount[0], value: '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', inline: true} );
 				embed.forceTitle = true;
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
@@ -214,7 +214,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					embed.backupDescription = extract[0];
 				}
 				if ( blocks.length ) blocks.forEach( block => {
-					embed.addField( block.header, block.text );
+					embed.addFields( {name: block.header, value: block.text} );
 				} );
 			}
 			else {
@@ -225,7 +225,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			}
 			
 			if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && wiki.wikifarm === 'fandom' ) {
-				if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
+				if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: '\u200b', value: '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**'} );
 				else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 
 				parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage).then( message => global_block(lang, message, username, text, ( noEmbed ? null : embed ), wiki, spoiler) );
@@ -265,7 +265,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			if ( querypage.missing !== undefined || querypage.ns === -1 ) msg.reactEmoji('🤷');
 			else {
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-				var embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
+				var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -455,16 +455,18 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			var text = '<' + pagelink + '>';
 			var embed = null;
 			if ( msg.showEmbed() && !noEmbed ) {
-				embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addField( editcount[0], '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', true );
+				embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addFields( {name: editcount[0], value: '[' + editcount[1] + '](' + wiki.toLink(contribs + username, '', '', true) + ')', inline: true} );
 				embed.forceTitle = true;
-				if ( wiki.hasCentralAuth() ) {
-					embed.addField( lang.get('user.info.globaleditcount'), '[' + body.query.globaluserinfo.editcount.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true ).addField( lang.get('user.info.wikisedited'), '[' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', true );
-				}
-				embed.addField( group[0], group.slice(1).join(',\n'), true );
-				if ( globalgroup.length > 1 ) {
-					embed.addField( globalgroup[0], globalgroup.slice(1).join(',\n'), true );
-				}
-				embed.addField( gender[0], gender[1], true ).addField( registration[0], registration[1] + '\n' + registration[2], true );
+				if ( wiki.hasCentralAuth() ) embed.addFields(...[
+					{name: lang.get('user.info.globaleditcount'), value: '[' + body.query.globaluserinfo.editcount.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', inline: true},
+					{name: lang.get('user.info.wikisedited'), value: '[' + body.query.globaluserinfo.merged.filter( mergedWiki => mergedWiki.editcount ).length.toLocaleString(lang.get('dateformat')) + '](' + wiki.toLink('Special:CentralAuth/' + username, '', '', true) + ')', inline: true}
+				]);
+				embed.addFields( {name: group[0], value: group.slice(1).join(',\n'), inline: true} );
+				if ( globalgroup.length > 1 ) embed.addFields( {name: globalgroup[0], value: globalgroup.slice(1).join(',\n'), inline: true} );
+				embed.addFields(...[
+					{name: gender[0], value: gender[1], inline: true},
+					{name: registration[0], value: registration[1] + '\n' + registration[2], inline: true}
+				]);
 				
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
@@ -518,7 +520,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					if ( pbody.userData.name ) {
 						let aka = escapeFormatting(pbody.userData.name);
 						if ( aka.length > 100 ) aka = aka.substring(0, 100) + '\u2026';
-						embed.addField(lang.get('user.info.aka'), aka, true);
+						embed.addFields( {name: lang.get('user.info.aka'), value: aka, inline: true} );
 					}
 				}
 				else {
@@ -560,7 +562,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						var discordname = [lang.get('user.info.discord'),discord];
 						if ( discordmember ) discordname[1] = discordmember.toString();
 						
-						if ( msg.showEmbed() && !noEmbed ) embed.addField( discordname[0], discordname[1], true );
+						if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
 						else text += '\n' + discordname.join(' ');
 					}
 					if ( cpbody.profile['favwiki'] ) {
@@ -574,7 +576,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 								console.log( '- ' + favresponse.statusCode + ': Error while getting the favorite wiki: ' + ( favbody && ( favbody.error && favbody.error.info || favbody.errormsg ) ) );
 								return;
 							}
-							if ( msg.showEmbed() && !noEmbed ) embed.addField( lang.get('user.info.favwiki'), '[' + favbody.data.wiki_name_display + '](<' + favbody.data.wiki_url + '>)', true );
+							if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: lang.get('user.info.favwiki'), value: '[' + favbody.data.wiki_name_display + '](<' + favbody.data.wiki_url + '>)', inline: true} );
 							else text += '\n' + lang.get('user.info.favwiki') + ' <' + favbody.data.wiki_url + '>';
 						}, error => {
 							console.log( '- Error while getting the favorite wiki: ' + error );
@@ -592,19 +594,19 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					let discordname = [lang.get('user.info.discord'),discord];
 					if ( discordmember ) discordname[1] = discordmember.toString();
 					
-					if ( msg.showEmbed() && !noEmbed ) embed.addField( discordname[0], discordname[1], true );
+					if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
 					else text += '\n' + discordname.join(' ');
 				}
 			}, error => {
 				console.log( '- Error while getting the user profile: ' + error );
 			} ).finally( () => {
 				if ( isBlocked ) {
-					if ( msg.showEmbed() && !noEmbed ) embed.addField( block.header, block.text );
+					if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: block.header, value: block.text} );
 					else text += '\n\n**' + block.header + '**\n' + block.text;
 				}
 				
 				if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) ) {
-					if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**' );
+					if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: '\u200b', value: '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**'} );
 					else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
 					
 					parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage).then( message => global_block(lang, message, username, text, ( noEmbed ? null : embed ), wiki, spoiler, queryuser.gender) );
@@ -622,16 +624,16 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					let discordname = [lang.get('user.info.discord'),escapeFormatting(discord)];
 					if ( discordmember ) discordname[1] = discordmember.toString();
 					
-					if ( msg.showEmbed() && !noEmbed ) embed.addField( discordname[0], discordname[1], true );
+					if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
 					else text += '\n' + discordname.join(' ');
 				}
 			}
 			if ( isBlocked ) {
-				if ( msg.showEmbed() && !noEmbed ) embed.addField( block.header, block.text );
+				if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: block.header, value: block.text} );
 				else text += '\n\n**' + block.header + '**\n' + block.text;
 			}
 			if ( wiki.hasCentralAuth() && body.query.globaluserinfo.locked !== undefined ) {
-				if ( msg.showEmbed() && !noEmbed ) embed.addField( '\u200b', '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**' );
+				if ( msg.showEmbed() && !noEmbed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**'} );
 				else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
 			}
 			

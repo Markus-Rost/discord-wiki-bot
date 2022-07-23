@@ -146,7 +146,7 @@ function cmd_help(lang, msg, args, line, wiki) {
  */
 function formathelp(messages, msg, lang, wiki) {
 	var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );
-	var mention = '@' + ( msg.inGuild() ? msg.guild.me.displayName : msg.client.user.username );
+	var mention = '@' + ( msg.inGuild() ? msg.guild.members.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
 		if ( !restrictions.patreon.includes( message ) ) return true;

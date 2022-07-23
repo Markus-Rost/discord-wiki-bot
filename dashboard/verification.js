@@ -1,10 +1,10 @@
 import Lang from '../util/i18n.js';
-import { got, db, sendMsg, createNotice, escapeText, hasPerm } from './util.js';
+import { got, db, sendMsg, createNotice, escapeText, hasPerm, PermissionFlagsBits } from './util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
 
-const buttonStyles = ['PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER'];
+const buttonStyles = ['Primary', 'Secondary', 'Success', 'Danger'];
 
 const fieldset = {
 	channel: '<div>'
@@ -86,14 +86,14 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	channel.find('#wb-settings-channel').append(
 		$('<option class="wb-settings-channel-default defaultSelect" hidden>').val('').text(dashboardLang.get('verification.form.select_channel')),
 		...guildChannels.filter( guildChannel => {
-			return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') || guildChannel.isCategory || settings.channel.includes( '|' + guildChannel.id + '|' ) );
+			return ( hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel) || guildChannel.isCategory || settings.channel.includes( '|' + guildChannel.id + '|' ) );
 		} ).map( guildChannel => {
 			if ( guildChannel.isCategory ) {
 				curCat = $('<optgroup>').attr('label', guildChannel.name);
 				return curCat;
 			}
 			var optionChannel = $(`<option class="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – #${guildChannel.name}`);
-			if ( !hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') ) {
+			if ( !hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel) ) {
 				optionChannel.addClass('wb-settings-error');
 			}
 			if ( !curCat ) return optionChannel;
@@ -222,7 +222,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	accountage.find('#wb-settings-accountage').val(settings.accountage);
 	fields.push(accountage);
 	if ( settings.rename || guildChannels.some( guildChannel => {
-		return hasPerm(guildChannel.botPermissions, 'MANAGE_NICKNAMES');
+		return hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ManageNicknames);
 	} ) ) {
 		let rename = $('<div>').append(fieldset.rename);
 		rename.find('label').text(dashboardLang.get('verification.form.rename'));
@@ -266,7 +266,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 			res.write( body );
 			return res.end();
 		}
-		if ( !hasPerm(guild.botPermissions, 'MANAGE_ROLES') ) {
+		if ( !hasPerm(guild.botPermissions, PermissionFlagsBits.ManageRoles) ) {
 			createNotice($, 'missingperm', dashboardLang, ['Manage Roles']);
 			$('#text .description').html(dashboardLang.get('verification.explanation'));
 			$('#text code.prefix').prepend(escapeText(rows[0].prefix));
@@ -335,7 +335,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 							$('<select id="wb-settings-channel" name="channel">').append(
 								$('<option class="wb-settings-channel-default">').val('').text(dashboardLang.get('verification.form.select_channel')),
 								...guild.channels.filter( guildChannel => {
-									return ( ( hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL') ) || guildChannel.isCategory );
+									return ( ( hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) && hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel) ) || guildChannel.isCategory );
 								} ).map( guildChannel => {
 									if ( guildChannel.isCategory ) {
 										curCat = $('<optgroup>').attr('label', guildChannel.name);
@@ -408,7 +408,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 						$('<select id="wb-settings-channel" name="channel" required>').append(
 							$('<option class="wb-settings-channel-default" selected hidden>').val('').text(dashboardLang.get('verification.form.select_channel')),
 							...guild.channels.filter( guildChannel => {
-								return ( ( rows.some( row => row.channel.split('|').includes( guildChannel.id ) ) && hasPerm(guildChannel.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') || hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) || guildChannel.isCategory );
+								return ( ( rows.some( row => row.channel.split('|').includes( guildChannel.id ) ) && hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && ( hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) || hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) ) || guildChannel.isCategory );
 							} ).map( guildChannel => {
 								if ( guildChannel.isCategory ) {
 									curCat = $('<optgroup>').attr('label', guildChannel.name);
@@ -454,10 +454,10 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 					$('<div>').append(
 						$('<label for="wb-settings-button_style">').text(dashboardLang.get('verification.form.button_style')),
 						$('<select id="wb-settings-button_style" name="button_style" required>').append(
-							$('<option selected>').val('PRIMARY').text('Primary (blurple)'),
-							$('<option>').val('SECONDARY').text('Secondary (grey)'),
-							$('<option>').val('SUCCESS').text('Success (green)'),
-							$('<option>').val('DANGER').text('Danger (red)')
+							$('<option selected>').val('Primary').text(dashboardLang.get('verification.form.button_style_primary')),
+							$('<option>').val('Secondary').text(dashboardLang.get('verification.form.button_style_secondary')),
+							$('<option>').val('Success').text(dashboardLang.get('verification.form.button_style_success')),
+							$('<option>').val('Danger').text(dashboardLang.get('verification.form.button_style_danger'))
 						)
 					),
 					$('<div>').append(
@@ -599,7 +599,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res(`/guild/${guild}`, 'savefail');
 		}
-		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
@@ -668,7 +668,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 			console.log( '- Dashboard: Error while removing the verification: ' + dberror );
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		} );
-		if ( !hasPerm(response.botPermissions, 'MANAGE_ROLES') ) {
+		if ( !hasPerm(response.botPermissions, PermissionFlagsBits.ManageRoles) ) {
 			return res(`/guild/${guild}/verification`, 'savefail');
 		}
 		if ( type === 'new' ) return db.query( 'SELECT wiki, lang, ARRAY_REMOVE(ARRAY_AGG(configid ORDER BY configid), NULL) count FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = $1 AND discord.channel IS NULL GROUP BY wiki, lang', [guild] ).then( ({rows:[row]}) => {
@@ -766,7 +766,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					text += '\n' + lang.get('verification.accountage') + ' `' + settings.accountage + '` ' + lang.get('verification.indays');
 					text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( settings.rename ? 'enabled' : 'disabled')) + '`*';
 					text += `\n<${new URL(`/guild/${guild}/verification/${configid}`, process.env.dashboard).href}>`;
-					if ( settings.rename && !hasPerm(response.botPermissions, 'MANAGE_NICKNAMES') ) {
+					if ( settings.rename && !hasPerm(response.botPermissions, PermissionFlagsBits.ManageNicknames) ) {
 						text += '\n\n' + lang.get('verification.rename_no_permission', `<@${process.env.bot}>`);
 					}
 					if ( roles.some( role => {
@@ -927,7 +927,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 					var text = lang.get('verification.dashboard.updated', `<@${userSettings.user.id}>`, type);
 					text += '\n' + diff.join('\n');
 					text += `\n<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
-					if ( settings.rename && !hasPerm(response.botPermissions, 'MANAGE_NICKNAMES') ) {
+					if ( settings.rename && !hasPerm(response.botPermissions, PermissionFlagsBits.ManageNicknames) ) {
 						text += '\n\n' + lang.get('verification.rename_no_permission', `<@${process.env.bot}>`);
 					}
 					if ( roles.some( role => {
@@ -1010,11 +1010,11 @@ function update_notices(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res(`/guild/${guild}`, 'savefail');
 		}
-		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
-		if ( settings.channel && ( response.message === 'noChannel' || !( hasPerm(response.botPermissionsNew, 'VIEW_CHANNEL', 'SEND_MESSAGES') && hasPerm(response.userPermissions, 'VIEW_CHANNEL') ) ) ) {
+		if ( settings.channel && ( response.message === 'noChannel' || !( hasPerm(response.botPermissionsNew, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) && hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel) ) ) ) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		return db.connect().then( client => {
@@ -1156,11 +1156,11 @@ function send_button(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res(`/guild/${guild}`, 'sendfail');
 		}
-		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'sendfail');
 		}
-		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') || !( hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') || hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
+		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) || !( hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) || hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) ) {
 			return res(`/guild/${guild}/verification/${type}`, 'sendfail');
 		}
 		return db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {

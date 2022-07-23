@@ -469,6 +469,13 @@
 		"off": "I'm no longer paused on this server and will respond to all commands again!",
 		"on": "I'm now paused on this server and will ignore most commands!"
 	},
+	"phabricator": {
+		"comment": "Comment:",
+		"priority": "Priority:",
+		"status": "Status:",
+		"subtype": "Subtype:",
+		"tags": "Tags:"
+	},
 	"rcscript": {
 		"ad": "You want recent changes directly in Discord? Use `$1rcscript` to add a recent changes webhook based on **$2** to your Discord server!",
 		"add_more": "Add more recent changes webhooks:",

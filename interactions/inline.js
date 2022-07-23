@@ -1,4 +1,4 @@
-import { Permissions } from 'discord.js';
+import { PermissionFlagsBits } from 'discord.js';
 import logging from '../util/logging.js';
 import Wiki from '../util/wiki.js';
 import { got, limitLength, partialURIdecode, sendMessage } from '../util/functions.js';
@@ -20,13 +20,13 @@ function slash_inline(interaction, lang, wiki) {
 		parse: ['users']
 	};
 	if ( interaction.inGuild() ) {
-		if ( interaction.member.permissions.has(Permissions.FLAGS.MENTION_EVERYONE) ) {
+		if ( interaction.member.permissions.has(PermissionFlagsBits.MentionEveryone) ) {
 			allowedMentions.parse = ['users', 'roles', 'everyone'];
 		}
 		else if ( interaction.guild ) {
 			allowedMentions.roles = interaction.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		}
-		if ( interaction.guild && !interaction.member.permissions.has(Permissions.FLAGS.USE_EXTERNAL_EMOJIS) ) {
+		if ( interaction.guild && !interaction.member.permissions.has(PermissionFlagsBits.UseExternalEmojis) ) {
 			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
 				if ( interaction.guild.emojis.cache.has(id) ) {
 					return replacement;

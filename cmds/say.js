@@ -1,4 +1,4 @@
-import { Permissions } from 'discord.js';
+import { PermissionFlagsBits } from 'discord.js';
 
 /**
  * Processes the "say" command.
@@ -23,7 +23,7 @@ function cmd_say(lang, msg, args, line, wiki) {
 	}
 	if ( text.trim() || imgs.length ) {
 		let allowedMentions = {parse:['users']};
-		if ( msg.member.permissions.has(Permissions.FLAGS.MENTION_EVERYONE) ) allowedMentions.parse = ['users','roles','everyone'];
+		if ( msg.member.permissions.has(PermissionFlagsBits.MentionEveryone) ) allowedMentions.parse = ['users','roles','everyone'];
 		else allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		msg.channel.send( {
 			content: text,

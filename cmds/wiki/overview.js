@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import logging from '../../util/logging.js';
 import { got, toFormatting, toPlaintext, escapeFormatting } from '../../util/functions.js';
 import { createRequire } from 'node:module';
@@ -98,9 +98,10 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 		var title = body.query.pages['-1'].title;
 		var pagelink = wiki.toLink(title, querystring, fragment);
 		var text = '<' + pagelink + '>';
+		/** @type {EmbedBuilder?} */
 		var embed = null;
 		if ( msg.showEmbed() && !noEmbed ) {
-			embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 			if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 				let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -212,25 +213,39 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 				return;
 			} ).finally( () => {
 				if ( msg.showEmbed() && !noEmbed ) {
-					if ( vertical[1] ) embed.addField( vertical[0], vertical[1], true );
-					if ( topic[1] ) embed.addField( topic[0], topic[1], true );
-					if ( official[1] ) embed.addField( official[0], official[1], true );
-					embed.addField( version[0], version[1], true ).addField( language[0], language[1], true );
-					if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
-					embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true );
-					if ( posts[1] ) embed.addField( posts[0], posts[1], true );
-					if ( walls[1] ) embed.addField( walls[0], walls[1], true );
-					if ( comments[1] ) embed.addField( comments[0], comments[1], true );
-					embed.addField( users[0], users[1], true ).addField( admins[0], admins[1], true );
-					if ( manager[1] ) embed.addField( manager[0], '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', true );
-					if ( founder[1] ) embed.addField( founder[0], founder[1], true );
-					if ( crossover[1] ) embed.addField( crossover[0], crossover[1], true );
-					embed.addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( {
+					if ( vertical[1] ) embed.addFields( {name: vertical[0], value: vertical[1], inline: true} );
+					if ( topic[1] ) embed.addFields( {name: topic[0], value: topic[1], inline: true} );
+					if ( official[1] ) embed.addFields( {name: official[0], value: official[1], inline: true} );
+					embed.addFields(...[
+						{name: version[0], value: version[1], inline: true},
+						{name: language[0], value: language[1], inline: true}
+					]);
+					if ( rtl[1] ) embed.addFields( {name: rtl[0], value: rtl[1], inline: true} );
+					embed.addFields(...[
+						{name: created[0], value: created[1] + '\n' + created[2], inline: true},
+						{name: articles[0], value: articles[1], inline: true},
+						{name: pages[0], value: pages[1], inline: true},
+						{name: edits[0], value: edits[1], inline: true}
+					]);
+					if ( posts[1] ) embed.addFields( {name: posts[0], value: posts[1], inline: true} );
+					if ( walls[1] ) embed.addFields( {name: walls[0], value: walls[1], inline: true} );
+					if ( comments[1] ) embed.addFields( {name: comments[0], value: comments[1], inline: true} );
+					embed.addFields(...[
+						{name: users[0], value: users[1], inline: true},
+						{name: admins[0], value: admins[1], inline: true}
+					]);
+					if ( manager[1] ) embed.addFields( {name: manager[0], value: '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', inline: true} );
+					if ( founder[1] ) embed.addFields( {name: founder[0], value: founder[1], inline: true} );
+					if ( crossover[1] ) embed.addFields( {name: crossover[0], value: crossover[1], inline: true} );
+					embed.addFields(...[
+						{name: license[0], value: license[1], inline: true},
+						{name: misermode[0], value: misermode[1], inline: true}
+					]).setFooter( {
 						text: lang.get('overview.inaccurate') + ( wikiid ? ' • ' + lang.get('overview.wikiid') + ' ' + wikiid : '' )
 					} );
-					if ( description[1] ) embed.addField( description[0], description[1] );
-					if ( image[1] ) embed.addField( image[0], image[1] ).setImage( image[1] );
-					if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
+					if ( description[1] ) embed.addFields( {name: description[0], value: description[1]} );
+					if ( image[1] ) embed.addFields( {name: image[0], value: image[1]} ).setImage( image[1] );
+					if ( readonly[1] ) embed.addFields( {name: readonly[0], value: readonly[1]} );
 				}
 				else {
 					if ( vertical[1] ) text += '\n' + vertical.join(' ');
@@ -259,10 +274,22 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			} );
 		}
 		if ( msg.showEmbed() && !noEmbed ) {
-			embed.addField( version[0], version[1], true ).addField( language[0], language[1], true );
-			if ( rtl[1] ) embed.addField( rtl[0], rtl[1], true );
-			embed.addField( created[0], created[1] + '\n' + created[2], true ).addField( articles[0], articles[1], true ).addField( pages[0], pages[1], true ).addField( edits[0], edits[1], true ).addField( users[0], users[1], true ).addField( admins[0], admins[1], true ).addField( license[0], license[1], true ).addField( misermode[0], misermode[1], true ).setFooter( {text: lang.get('overview.inaccurate')} );
-			if ( readonly[1] ) embed.addField( readonly[0], readonly[1] );
+			embed.addFields(...[
+				{name: version[0], value: version[1], inline: true},
+				{name: language[0], value: language[1], inline: true}
+			]);
+			if ( rtl[1] ) embed.addFields( {name: rtl[0], value: rtl[1], inline: true} );
+			embed.addFields(...[
+				{name: created[0], value: created[1] + '\n' + created[2], inline: true},
+				{name: articles[0], value: articles[1], inline: true},
+				{name: pages[0], value: pages[1], inline: true},
+				{name: edits[0], value: edits[1], inline: true},
+				{name: users[0], value: users[1], inline: true},
+				{name: admins[0], value: admins[1], inline: true},
+				{name: license[0], value: license[1], inline: true},
+				{name: misermode[0], value: misermode[1], inline: true}
+			]).setFooter( {text: lang.get('overview.inaccurate')} );
+			if ( readonly[1] ) embed.addFields( {name: readonly[0], value: readonly[1]} );
 		}
 		else {
 			text += '\n' + version.join(' ') + '\n' + language.join(' ');

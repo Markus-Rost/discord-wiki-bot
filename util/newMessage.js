@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs';
 import { domainToASCII } from 'node:url';
-import { Util } from 'discord.js';
+import { cleanContent } from 'discord.js';
 import { inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
@@ -46,7 +46,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	msg.wikiPrefixes.set(wiki.href, '');
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
-	var cleanCont = ( content ? Util.cleanContent(content, msg) : msg.cleanContent );
+	var cleanCont = ( content ? cleanContent(content, msg.channel) : msg.cleanContent );
 	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
 		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
 		let aliasInvoke = ( lang.aliases[invoke] || invoke );

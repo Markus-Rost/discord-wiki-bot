@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
-import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import { got, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
@@ -45,16 +45,16 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new MessageButton().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle('LINK').setURL(new URL(`/guild/${msg.guildId}/rcscript`, process.env.dashboard).href);
-			components.push(new MessageActionRow().addComponents(button));
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/rcscript`, process.env.dashboard).href);
+			components.push(new ActionRowBuilder().addComponents(button));
 		}
 
 		if ( args[0] === 'add' ) {
-			if ( !msg.channel.permissionsFor(msg.client.user).has(Permissions.FLAGS.MANAGE_WEBHOOKS) ) {
-				console.log( msg.guildId + ': Missing permissions - MANAGE_WEBHOOKS' );
-				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_WEBHOOKS`' );
+			if ( !msg.channel.permissionsFor(msg.client.user).has(PermissionFlagsBits.ManageWebhooks) ) {
+				console.log( msg.guildId + ': Missing permissions - ManageWebhooks' );
+				return msg.replyMsg( lang.get('general.missingperm') + ' `ManageWebhooks`' );
 			}
-			if ( !( msg.channel.permissionsFor(msg.member).has(Permissions.FLAGS.MANAGE_WEBHOOKS) || ( msg.isOwner() && msg.evalUsed ) ) ) {
+			if ( !( msg.channel.permissionsFor(msg.member).has(PermissionFlagsBits.ManageWebhooks) || ( msg.isOwner() && msg.evalUsed ) ) ) {
 				return msg.replyMsg( lang.get('rcscript.noadmin') );
 			}
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), true );
@@ -142,7 +142,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					 * @param {Boolean} enableFeeds - If feeds based changes should be enabled.
 					 */
 					function createWebhook(enableFeeds = false) {
-						msg.channel.createWebhook( ( body.query.allmessages[1]['*'] || 'Recent changes' ), {
+						msg.channel.createWebhook( {
+							name: ( body.query.allmessages[1]['*'] || 'Recent changes' ),
 							avatar: msg.client.user.displayAvatarURL({format:'png',size:4096}),
 							reason: lang.get('rcscript.audit_reason', wikinew.href)
 						} ).then( webhook => {
@@ -208,7 +209,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 				return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 					var channel = msg.guild.channels.cache.get(webhook.channelId);
-					if ( !channel || !channel.permissionsFor(msg.member).has(Permissions.FLAGS.MANAGE_WEBHOOKS) ) {
+					if ( !channel || !channel.permissionsFor(msg.member).has(PermissionFlagsBits.ManageWebhooks) ) {
 						return msg.replyMsg( lang.get('rcscript.noadmin') );
 					}
 					db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [selected_row.webhook] ).then( () => {

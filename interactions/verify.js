@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { MessageActionRow, MessageButton, Modal, TextInputComponent, Permissions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder, PermissionFlagsBits, ButtonStyle, TextInputStyle, InteractionType } from 'discord.js';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, sendMessage } from '../util/functions.js';
@@ -14,13 +14,13 @@ function interaction_verify(interaction, lang, wiki) {
 	var loggingLang = lang;
 	var userLang = lang.uselang(interaction.locale);
 	if ( !interaction.guild ) return interaction.reply( {content: userLang.get('verify.missing'), ephemeral: true} ).catch(log_error);
-	if ( !interaction.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
-		console.log( interaction.guildId + ': Missing permissions - MANAGE_ROLES' );
-		return interaction.reply( {content: userLang.get('general.missingperm') + ' `MANAGE_ROLES`', ephemeral: true} ).catch(log_error);
+	if ( !interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) {
+		console.log( interaction.guildId + ': Missing permissions - ManageRoles' );
+		return interaction.reply( {content: userLang.get('general.missingperm') + ' `ManageRoles`', ephemeral: true} ).catch(log_error);
 	}
 	
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
-		if ( !rows.length ) return interaction.reply( {content: userLang.get('verify.missing') + ( interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD) && process.env.dashboard ? '\n' + new URL(`/guild/${interaction.guildId}/verification`, process.env.dashboard).href : '' ), ephemeral: true} ).catch(log_error);
+		if ( !rows.length ) return interaction.reply( {content: userLang.get('verify.missing') + ( interaction.member.permissions.has(PermissionFlagsBits.ManageGuild) && process.env.dashboard ? '\n' + new URL(`/guild/${interaction.guildId}/verification`, process.env.dashboard).href : '' ), ephemeral: true} ).catch(log_error);
 
 		let isEphemeral = ( (rows[0].flags & 1 << 0) === 1 << 0 );
 		if ( isEphemeral ) lang = userLang;
@@ -91,8 +91,8 @@ function interaction_verify(interaction, lang, wiki) {
 						}).toString();
 						let message = {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
-							components: [new MessageActionRow().addComponents(
-								new MessageButton().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+							components: [new ActionRowBuilder().addComponents(
+								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
 							ephemeral: true
 						};
@@ -106,8 +106,8 @@ function interaction_verify(interaction, lang, wiki) {
 		}
 		
 		var username = '';
-		if ( interaction.isCommand() ) username = interaction.options.getString('username') ?? '';
-		else if ( interaction.isModalSubmit() ) username = interaction.fields.getTextInputValue('username') ?? '';
+		if ( interaction.type === InteractionType.ApplicationCommand ) username = interaction.options.getString('username') ?? '';
+		else if ( interaction.type === InteractionType.ModalSubmit ) username = interaction.fields.getTextInputValue('username') ?? '';
 		username = username.replace( /^\s*<@!?(\d+)>\s*$/, (mention, id) => {
 			if ( id === interaction.user.id ) {
 				return interaction.member.displayName;
@@ -126,9 +126,9 @@ function interaction_verify(interaction, lang, wiki) {
 		if ( wiki.wikifarm === 'fandom' ) username = username.replace( /^userprofile\s*:\s*/i, '' );
 		
 		if ( !username.trim() ) {
-			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), ephemeral: true} ).catch(log_error);
-			return interaction.showModal( new Modal().setCustomId('verify').setTitle(userLang.get('verify.title')).addComponents(new MessageActionRow().addComponents(
-				new TextInputComponent().setCustomId('username').setLabel(userLang.get('verify.username')).setPlaceholder(userLang.get('verify.placeholder')).setStyle('SHORT').setRequired().setMinLength(1).setMaxLength(500)
+			if ( interaction.type === InteractionType.ModalSubmit ) return interaction.reply( {content: userLang.get('interaction.verify'), ephemeral: true} ).catch(log_error);
+			return interaction.showModal( new ModalBuilder().setCustomId('verify').setTitle(userLang.get('verify.title')).addComponents(new ActionRowBuilder().addComponents(
+				new TextInputBuilder().setCustomId('username').setLabel(userLang.get('verify.username')).setPlaceholder(userLang.get('verify.placeholder')).setStyle(TextInputStyle.Short).setRequired().setMinLength(1).setMaxLength(500)
 			)) ).catch(log_error);
 		}
 
@@ -195,8 +195,8 @@ function interaction_verify(interaction, lang, wiki) {
 						}).toString();
 						let message = {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
-							components: [new MessageActionRow().addComponents(
-								new MessageButton().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+							components: [new ActionRowBuilder().addComponents(
+								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
 							ephemeral: true
 						}
@@ -220,13 +220,13 @@ function interaction_verify(interaction, lang, wiki) {
 					else message.content = lang.get('verify.error_reply');
 					message.embeds = [];
 				}
-				else if ( result.add_button && !result.send_private ) message.components.push(new MessageActionRow().addComponents(
-					new MessageButton().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle('PRIMARY').setCustomId('verify_again')
+				else if ( result.add_button && !result.send_private ) message.components.push(new ActionRowBuilder().addComponents(
+					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 				));
 				return sendMessage(interaction, message, false).then( msg => {
 					if ( !result.logging.channel || !interaction.guild.channels.cache.has(result.logging.channel) ) return;
 					if ( msg && !result.send_private ) {
-						if ( result.logging.embed ) result.logging.embed.addField(msg.url, '<#' + interaction.channelId + '>');
+						if ( result.logging.embed ) result.logging.embed.addFields( {name: msg.url, value: '<#' + interaction.channelId + '>'} );
 						else result.logging.content += '\n<#' + interaction.channelId + '> – <' + msg.url + '>';
 					}
 					interaction.guild.channels.cache.get(result.logging.channel).send( {

@@ -1,19 +1,7 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder, Status } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import { got, toMarkdown } from '../util/functions.js';
 import logging from '../util/logging.js';
-
-const wsStatus = [
-	'READY',
-	'CONNECTING',
-	'RECONNECTING',
-	'IDLE',
-	'NEARLY',
-	'DISCONNECTED',
-	'WAITING_FOR_GUILDS',
-	'IDENTIFYING',
-	'RESUMING'
-];
 
 /**
  * Processes the "test" command.
@@ -37,7 +25,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 			if ( !message ) return;
 			var discordPing = message.createdTimestamp - msg.createdTimestamp;
 			if ( discordPing > 1_000 ) text = lang.get('test.slow') + ' 🐌\n' + process.env.invite;
-			var embed = new MessageEmbed().setTitle( lang.get('test.time') ).setFooter( {text: 'Shard: ' + process.env.SHARDS} ).addField( 'Discord', discordPing.toLocaleString(lang.get('dateformat')) + 'ms' );
+			var embed = new EmbedBuilder().setTitle( lang.get('test.time') ).setFooter( {text: 'Shard: ' + process.env.SHARDS} ).addFields( {name: 'Discord', value: discordPing.toLocaleString(lang.get('dateformat')) + 'ms'} );
 			var now = Date.now();
 			got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 				timeout: {
@@ -72,13 +60,13 @@ function cmd_test(lang, msg, args, line, wiki) {
 					}
 				}
 				else logging(wiki, msg.guildId, 'test');
-				embed.addField( wiki.toLink(), ping );
-				if ( notice.length ) embed.addField( lang.get('test.notice'), notice.join('\n') );
+				embed.addFields( {name: wiki.toLink(), value: ping} );
+				if ( notice.length ) embed.addFields( {name: lang.get('test.notice'), value: notice.join('\n')} );
 				if ( body?.query?.general?.readonly !== undefined ) {
 					if ( body.query.general.readonlyreason ) {
-						embed.addField( lang.get('overview.readonly'), toMarkdown(body.query.general.readonlyreason, wiki, '', true) );
+						embed.addFields( {name: lang.get('overview.readonly'), value: toMarkdown(body.query.general.readonlyreason, wiki, '', true)} );
 					}
-					else embed.addField( '\u200b', '**' + lang.get('overview.readonly') + '**' );
+					else embed.addFields( {name: '\u200b', value: '**' + lang.get('overview.readonly') + '**'} );
 				}
 			}, error => {
 				var then = Date.now();
@@ -91,7 +79,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 					console.log( '- Error while reaching the wiki: ' + error );
 					ping += ' <:error:505887261200613376>';
 				}
-				embed.addField( wiki.toLink(), ping );
+				embed.addFields( {name: wiki.toLink(), value: ping} );
 			} ).finally( () => {
 				if ( msg.isOwner() ) return msg.client.shard.broadcastEval(discordClient => {
 					return {
@@ -99,12 +87,12 @@ function cmd_test(lang, msg, args, line, wiki) {
 						guilds: discordClient.guilds.cache.size
 					};
 				}).then( values => {
-					embed.addField( 'Guilds', values.reduce( (acc, val) => acc + val.guilds, 0 ).toLocaleString(lang.get('dateformat')) );
-					return '```less\n' + values.map( (value, id) => '[' + id + ']: ' + ( wsStatus[value.status] || value.status ) ).join('\n') + '\n```';
+					embed.addFields( {name: 'Guilds', value: values.reduce( (acc, val) => acc + val.guilds, 0 ).toLocaleString(lang.get('dateformat'))} );
+					return '```less\n' + values.map( (value, id) => '[' + id + ']: ' + ( Status[value.status] ?? value.status ) ).join('\n') + '\n```';
 				}, error => {
 					return '```js\n' + error + '\n```';
 				} ).then( shards => {
-					embed.addField( 'Shards', shards );
+					embed.addFields( {name: 'Shards', value: shards} );
 					message.edit( {content: text, embeds: [embed]} ).catch(log_error);
 				} );
 				message.edit( {content: text, embeds: [embed]} ).catch(log_error);

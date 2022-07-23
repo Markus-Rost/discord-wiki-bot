@@ -2,7 +2,7 @@ import { load as cheerioLoad } from 'cheerio';
 import { wikiProjects } from 'mediawiki-projects-list';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
-import { got, db, sendMsg, createNotice, hasPerm } from './util.js';
+import { got, db, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from './util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
@@ -81,14 +81,14 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 			channel.find('#wb-settings-channel').append(
 				$(`<option id="wb-settings-channel-default" selected hidden>`).val('').text(dashboardLang.get('settings.form.select_channel')),
 				...guildChannels.filter( guildChannel => {
-					return ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') || guildChannel.isCategory );
+					return ( hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) || guildChannel.isCategory );
 				} ).map( guildChannel => {
 					if ( settings.patreon ) {
 						var optionChannel = $(`<option id="wb-settings-channel-${guildChannel.id}">`).val(guildChannel.id).text(`${guildChannel.id} – ` + ( guildChannel.isCategory ? '' : '#' ) + guildChannel.name);
 						if ( guildChannel.isCategory ) {
 							curCat = true;
 							optionChannel.addClass('wb-settings-optgroup');
-							if ( !( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && guildChannel.allowedCat ) ) {
+							if ( !( hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) && guildChannel.allowedCat ) ) {
 								optionChannel.attr('disabled', '').val('');
 							}
 						}
@@ -119,7 +119,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 				} )
 			);
 			channel.find(`#wb-settings-channel-${settings.channel}`).attr('selected', '');
-			if ( !hasPerm(guildChannels[0].userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
+			if ( !hasPerm(guildChannels[0].userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) ) {
 				readonly = true;
 			}
 		}
@@ -245,7 +245,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				).attr('title', `${channel.id} - ${channel.name}`).attr('href', `/guild/${guild.id}/settings/${channel.id}${suffix}`);
 			} ),
 			( process.env.READONLY || !guild.channels.filter( channel => {
-				return ( hasPerm(channel.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') && !rows.some( row => row.channel === ( channel.isCategory ? '#' : '' ) + channel.id ) );
+				return ( hasPerm(channel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) && !rows.some( row => row.channel === ( channel.isCategory ? '#' : '' ) + channel.id ) );
 			} ).length ? '' :
 			$('<a class="channel" id="channel-new">').append(
 				$('<img>').attr('src', '/src/channel.svg'),
@@ -351,7 +351,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res(`/guild/${guild}`, 'savefail');
 		}
-		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
@@ -363,7 +363,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			console.log( '- Dashboard: Error while removing the settings: ' + delerror );
 			return res(`/guild/${guild}/settings`, 'savefail');
 		} );
-		if ( type !== 'default' && !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'SEND_MESSAGES') ) {
+		if ( type !== 'default' && !hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.delete_settings ) return db.query( 'DELETE FROM discord WHERE guild = $1 AND channel = $2 RETURNING wiki, lang, role, inline', [guild, ( response.isCategory ? '#' : '' ) + type] ).then( ({rows:[channel]}) => {

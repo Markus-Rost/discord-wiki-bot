@@ -1,3 +1,4 @@
+import { OAuth2Scopes } from 'discord.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
@@ -16,7 +17,10 @@ function cmd_invite(lang, msg, args, line, wiki) {
 	}
 	else {
 		let invite = msg.client.generateInvite({
-			scopes: ['bot', 'applications.commands'],
+			scopes: [
+				OAuth2Scopes.Bot,
+				OAuth2Scopes.ApplicationsCommands
+			],
 			permissions: defaultPermissions
 		});
 		msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '>' );

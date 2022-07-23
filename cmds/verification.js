@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import db from '../util/database.js';
 import { got, splitMessage } from '../util/functions.js';
@@ -21,14 +21,14 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		return;
 	}
 	if ( msg.defaultSettings ) return help_setup(lang, msg);
-	if ( !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
-		console.log( msg.guildId + ': Missing permissions - MANAGE_ROLES' );
-		return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
+	if ( !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) {
+		console.log( msg.guildId + ': Missing permissions - ManageRoles' );
+		return msg.replyMsg( lang.get('general.missingperm') + ' `ManageRoles`' );
 	}
 
 	if ( args.join(' ').toLocaleLowerCase() === 'button' ) {
-		return msg.sendChannel( {components: [new MessageActionRow().addComponents(
-			new MessageButton().setCustomId('verify').setStyle('PRIMARY').setLabel(lang.get('verify.title'))
+		return msg.sendChannel( {components: [new ActionRowBuilder().addComponents(
+			new ButtonBuilder().setCustomId('verify').setStyle(ButtonStyle.Primary).setLabel(lang.get('verify.title'))
 		)]} );
 	}
 	
@@ -37,8 +37,8 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new MessageButton().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle('LINK').setURL(new URL(`/guild/${msg.guildId}/verification`, process.env.dashboard).href);
-			components.push(new MessageActionRow().addComponents(button));
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/verification`, process.env.dashboard).href);
+			components.push(new ActionRowBuilder().addComponents(button));
 		}
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
 			var limit = verificationLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
@@ -132,9 +132,9 @@ function cmd_verification(lang, msg, args, line, wiki) {
 		}
 		button?.setURL(new URL(`/guild/${msg.guildId}/verification/${row.configid}`, button.url).href);
 		if ( args[1] === 'rename' && !args.slice(2).join('') ) {
-			if ( !row.rename && !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_NICKNAMES) ) {
-				console.log( msg.guildId + ': Missing permissions - MANAGE_NICKNAMES' );
-				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_NICKNAMES`' );
+			if ( !row.rename && !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageNicknames) ) {
+				console.log( msg.guildId + ': Missing permissions - ManageNicknames' );
+				return msg.replyMsg( lang.get('general.missingperm') + ' `ManageNicknames`' );
 			}
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 			return db.query( 'UPDATE verification SET rename = $1 WHERE guild = $2 AND configid = $3', [( row.rename ? 0 : 1 ), msg.guildId, row.configid] ).then( () => {
@@ -154,9 +154,9 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				if ( channels.length > 10 ) return msg.replyMsg( {content: lang.get('verification.channel_max'), components}, true );
 				channels = channels.map( channel => {
 					var new_channel = '';
-					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( gc => gc.isText() && !gc.isThread() ).get(channel);
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isText() && !gc.isThread() ).find( gc => gc.name === channel.replace( /^#/, '' ) );
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isText() && !gc.isThread() ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
+					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( gc => gc.isTextBased() && !gc.isThread() ).get(channel);
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isTextBased() && !gc.isThread() ).find( gc => gc.name === channel.replace( /^#/, '' ) );
+					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isTextBased() && !gc.isThread() ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
 					return new_channel;
 				} );
 				if ( channels.some( channel => !channel ) ) return msg.replyMsg( {content: lang.get('verification.channel_missing'), components}, true );
@@ -307,19 +307,19 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			if ( showCommands ) verification_text += '\n`' + prefix + 'verification ' + row.configid + ' accountage ' + lang.get('verification.new_accountage') + '`\n';
 			verification_text += '\n' + lang.get('verification.rename') + ' *`' + lang.get('verification.' + ( rename ? 'enabled' : 'disabled')) + '`*';
 			if ( showCommands ) verification_text += ' ' + lang.get('verification.toggle') + '\n`' + prefix + 'verification ' + row.configid + ' rename`\n';
-			if ( !hideNotice && rename && !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_NICKNAMES) ) {
-				verification_text += '\n\n' + lang.get('verification.rename_no_permission', msg.guild.me.toString());
+			if ( !hideNotice && rename && !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageNicknames) ) {
+				verification_text += '\n\n' + lang.get('verification.rename_no_permission', msg.guild.members.me.toString());
 			}
 			if ( !hideNotice && role.replace( /-/g, '' ).split('|').some( role => {
-				return ( !msg.guild.roles.cache.has(role) || msg.guild.me.roles.highest.comparePositionTo(role) <= 0 );
+				return ( !msg.guild.roles.cache.has(role) || msg.guild.members.me.roles.highest.comparePositionTo(role) <= 0 );
 			} ) ) {
 				verification_text += '\n';
 				role.replace( /-/g, '' ).split('|').forEach( role => {
 					if ( !msg.guild.roles.cache.has(role) ) {
 						verification_text += '\n' + lang.get('verification.role_deleted', '<@&' + role + '>');
 					}
-					else if ( msg.guild.me.roles.highest.comparePositionTo(role) <= 0 ) {
-						verification_text += '\n' + lang.get('verification.role_too_high', '<@&' + role + '>', msg.guild.me.toString());
+					else if ( msg.guild.members.me.roles.highest.comparePositionTo(role) <= 0 ) {
+						verification_text += '\n' + lang.get('verification.role_too_high', '<@&' + role + '>', msg.guild.members.me.toString());
 					}
 				} );
 			}

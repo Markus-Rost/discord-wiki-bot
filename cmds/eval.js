@@ -205,7 +205,7 @@ function removePatreons(guild, msg) {
 							if ( discordClient.guilds.cache.has(evalData.guild) ) {
 								let rows = evalData.rows;
 								return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-									return ( ( channel.isText() && !channel.isThread() ) && rows.some( row => {
+									return ( ( channel.isTextBased() && !channel.isThread() ) && rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {
@@ -315,8 +315,8 @@ function removeSettings(msg) {
 			return [
 				[...discordClient.guilds.cache.keys()],
 				discordClient.channels.cache.filter( channel => {
-					return ( ( channel.isText() && channel.guildId ) || ( channel.type === 'GUILD_CATEGORY' && patreonGuildsPrefix.has(channel.guildId) ) );
-				} ).map( channel => ( channel.type === 'GUILD_CATEGORY' ? '#' : '' ) + channel.id )
+					return ( ( channel.isTextBased() && !channel.isThread() && channel.guildId ) || ( channel.type === Discord.ChannelType.GuildCategory && patreonGuildsPrefix.has(channel.guildId) ) );
+				} ).map( channel => ( channel.type === Discord.ChannelType.GuildCategory ? '#' : '' ) + channel.id )
 			];
 		} ).then( results => {
 			var all_guilds = results.map( result => result[0] ).reduce( (acc, val) => acc.concat(val), [] );

@@ -1,5 +1,5 @@
 import { Parser as HTMLParser } from 'htmlparser2';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { got, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -26,7 +26,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 			if ( reaction ) reaction.removeEmoji();
 			return;
 		}
-		var embed = new MessageEmbed().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
+		var embed = new EmbedBuilder().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
 		got.get( wiki + 'f', {
 			responseType: 'text',
 			context: {
@@ -81,7 +81,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 			}
 			else if ( body._embedded['doc:posts'].length ) {
 				var posts = body._embedded['doc:posts'];
-				var embed = new MessageEmbed().setAuthor( {name: sitename} );
+				var embed = new EmbedBuilder().setAuthor( {name: sitename} );
 				
 				if ( posts.some( post => post.id === title ) ) {
 					discussion_send(lang, msg, wiki, posts.find( post => post.id === title ), embed, spoiler, noEmbed);
@@ -187,7 +187,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 			}
 			else if ( body._embedded.threads.length ) {
 				var threads = body._embedded.threads;
-				var embed = new MessageEmbed().setAuthor( {name: sitename} );
+				var embed = new EmbedBuilder().setAuthor( {name: sitename} );
 				
 				if ( threads.some( thread => thread.id === title ) ) {
 					discussion_send(lang, msg, wiki, threads.find( thread => thread.id === title ), embed, spoiler, noEmbed);
@@ -275,7 +275,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {Object} discussion - The discussion post.
- * @param {import('discord.js').MessageEmbed} embed - The embed for the page.
+ * @param {EmbedBuilder} embed - The embed for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  */
@@ -296,7 +296,13 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 			embed.setImage( discussion._embedded.contentImages[0].url );
 			break;
 		case 'POLL':
-			discussion.poll.answers.forEach( answer => embed.addField( escapeFormatting(answer.text), ( answer.image ? '[__' + lang.get('discussion.image') + '__](' + answer.image.url + ')\n' : '' ) + lang.get('discussion.votes', answer.votes.toLocaleString(lang.get('dateformat')), answer.votes, ( ( answer.votes / discussion.poll.totalVotes ) * 100 ).toFixed(1).toLocaleString(lang.get('dateformat'))), true ) );
+			embed.addFields(...discussion.poll.answers.map( answer => {
+				return {
+					name: escapeFormatting(answer.text),
+					value: ( answer.image ? '[__' + lang.get('discussion.image') + '__](' + answer.image.url + ')\n' : '' ) + lang.get('discussion.votes', answer.votes.toLocaleString(lang.get('dateformat')), answer.votes, ( ( answer.votes / discussion.poll.totalVotes ) * 100 ).toFixed(1).toLocaleString(lang.get('dateformat'))),
+					inline: true
+				};
+			} ));
 			break;
 		case 'QUIZ':
 			description = escapeFormatting(discussion._embedded.quizzes[0].title);
@@ -339,7 +345,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 	embed.setDescription( description );
 	if ( discussion.tags?.length ) {
-		embed.addField( lang.get('discussion.tags'), splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], false );
+		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], inline: false} );
 	}
 	
 	msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );

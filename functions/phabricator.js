@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import logging from '../util/logging.js';
 import { got, escapeFormatting, limitLength } from '../util/functions.js';
 
@@ -51,8 +51,11 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 		}
 		var summary = escapeFormatting(task.fields.name);
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-		var embed = new MessageEmbed().setAuthor( {name: 'Phabricator'} ).setTitle( summary ).setURL( link ).addField( 'Status', escapeFormatting(task.fields.status.name), true ).addField( 'Priority', escapeFormatting(task.fields.priority.name), true );
-		if ( task.fields.subtype !== 'default' ) embed.addField( 'Subtype', escapeFormatting(task.fields.subtype), true );
+		var embed = new EmbedBuilder().setAuthor( {name: 'Phabricator'} ).setTitle( summary ).setURL( link ).addFields(...[
+			{name: lang.get('phabricator.status'), value: escapeFormatting(task.fields.status.name), inline: true},
+			{name: lang.get('phabricator.priority'), value: escapeFormatting(task.fields.priority.name), inline: true}
+		]);
+		if ( task.fields.subtype !== 'default' ) embed.addFields( {name: lang.get('phabricator.subtype'), value: escapeFormatting(task.fields.subtype), inline: true} );
 		var description = parse_text( task.fields.description.raw, site );
 		if ( description.length > 2000 ) description = limitLength(description, 2000, 40);
 		embed.setDescription( description );
@@ -74,7 +77,7 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 				} ).join(',\n');
 				if ( tags.length > 1000 ) tags = projects.map( project => project.fullName ).join(',\n');
 				if ( tags.length > 1000 ) tags = tags.substring(0, 1000) + '\u2026';
-				embed.addField( 'Tags', tags );
+				embed.addFields( {name: lang.get('phabricator.tags'), value: tags} );
 			}, error => {
 				console.log( '- Error while getting the projects: ' + error );
 			} ) : undefined ),
@@ -92,7 +95,7 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 				if ( comment.type === 'comment' ) {
 					var content = parse_text( comment.comments[0].content.raw, site );
 					if ( content.length > 1000 ) content = limitLength(content, 1000, 20);
-					embed.spliceFields( 0, 0, {name: 'Comment', value: content} );
+					embed.spliceFields( 0, 0, {name: lang.get('phabricator.comment'), value: content} );
 					if ( embed.description.length > 500 ) embed.setDescription( limitLength(description, 500, 250) );
 				}
 			}, error => {

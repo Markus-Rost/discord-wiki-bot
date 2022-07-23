@@ -1,5 +1,5 @@
-import { MessageEmbed } from 'discord.js';
-import { got, escapeFormatting, limitLength } from '../../util/functions.js';
+import { EmbedBuilder } from 'discord.js';
+import { got, getEmbedLength, escapeFormatting, limitLength } from '../../util/functions.js';
 
 /**
  * Sends a Minecraft issue.
@@ -53,9 +53,10 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 					var summary = escapeFormatting(body.fields.summary);
 					if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
 					var description = parse_links( ( body.fields.description || '' ).replace( /\{code\}/g, '```' ) );
+					/** @type {EmbedBuilder} */
 					var embed = null;
 					if ( msg.showEmbed() && !noEmbed ) {
-						embed = new MessageEmbed().setAuthor( {name: 'Mojira'} ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( limitLength(description, 2000, 20) );
+						embed = new EmbedBuilder().setAuthor( {name: 'Mojira'} ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( limitLength(description, 2000, 20) );
 						var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 						if ( links.length ) {
 							var linkList = lang.get('minecraft.issue_link');
@@ -66,7 +67,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 								var name = ( linkList?.[link.type.name]?.[ward]?.replaceSave( /\$1/g, issue.key ) || link.type[ward] + ' ' + issue.key );
 								var status = issue.fields.status.name;
 								var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(issue.fields.summary) + '](' + baseBrowseUrl + issue.key + ')';
-								if ( embed.fields.length < 25 && ( embed.length + name.length + value.length ) < 6000 ) embed.addField( name, value );
+								if ( ( embed.data.fields?.length ?? 0 ) < 25 && ( getEmbedLength(embed) + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );
 								else extralinks.push({name,value,inline:false});
 							} );
 							if ( extralinks.length ) embed.setFooter( {text: lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length)} );
@@ -121,13 +122,13 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 				else {
 					var embed = null;
 					if ( msg.showEmbed() && !noEmbed ) {
-						embed = new MessageEmbed().setAuthor( {name: 'Mojira'} ).setTitle( args.join(' ') ).setURL( uri );
+						embed = new EmbedBuilder().setAuthor( {name: 'Mojira'} ).setTitle( args.join(' ') ).setURL( uri );
 						if ( body.total > 0 ) {
 							var statusList = lang.get('minecraft.status');
 							body.issues.forEach( bug => {
 								var status = ( bug.fields.resolution ? bug.fields.resolution.name : bug.fields.status.name );
 								var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(bug.fields.summary) + '](https://bugs.mojang.com/browse/' + bug.key + ')';
-								embed.addField( bug.key, value );
+								embed.addFields( {name: bug.key, value} );
 							} );
 							if ( body.total > 25 ) {
 								var extrabugs = body.total - 25;
