@@ -471,10 +471,10 @@
 	},
 	"phabricator": {
 		"comment": "留言：",
-		"priority": "優先級：",
-		"status": "狀態：",
-		"subtype": "子類型：",
-		"tags": "標籤："
+		"priority": "优先级：",
+		"status": "状态：",
+		"subtype": "子类型：",
+		"tags": "标签："
 	},
 	"rcscript": {
 		"ad": "你想要在 Discord 里直接看最近更改吗？使用 `$1rcscript` 来为你的 Discord 服务器增加一个基于 **$2** 的最近更改 webhook！",
