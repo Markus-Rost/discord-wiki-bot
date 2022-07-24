@@ -469,6 +469,13 @@
 		"off": "Saya tidak lagi dijeda di server ini dan akan menanggapi semua perintah lagi!",
 		"on": "Saya sekarang dijeda di server ini dan akan mengabaikan sebagian besar perintah!"
 	},
+	"phabricator": {
+		"comment": "Komentar:",
+		"priority": "Prioritas:",
+		"status": "Status:",
+		"subtype": "Subtipe:",
+		"tags": "Label:"
+	},
 	"rcscript": {
 		"ad": "Anda ingin perubahan terbaru langsung di Discord? Gunakan `$1rcscript` untuk menambahkan webhook perubahan terbaru berdasarkan **$2** ke server Discord Anda!",
 		"add_more": "Tambahkan lebih banyak perubahan terbaru webhook:",
