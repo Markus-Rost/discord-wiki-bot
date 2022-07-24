@@ -60,7 +60,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 
-			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/new`, button.url).href);
+			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/new`, button.data.url).href);
 			var wikihelp = '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 			var input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
 			var wikinew = new Wiki(wiki);
@@ -220,13 +220,13 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						msg.replyMsg( {content: lang.get('rcscript.deleted'), components}, true );
 					}, dberror => {
 						console.log( '- Error while removing the RcGcDw: ' + dberror );
-						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 						msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					} );
 				}, error => {
 					log_error(error);
 					if ( error.name !== 'DiscordAPIError' || !['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
-						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 						return msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					}
 					db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [selected_row.webhook] ).then( () => {
@@ -234,12 +234,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						msg.replyMsg( {content: lang.get('rcscript.deleted'), components}, true );
 					}, dberror => {
 						console.log( '- Error while removing the RcGcDw: ' + dberror );
-						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 						msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					} );
 				} );
 			}
-			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 			if ( args[0] === 'wiki' ) {
 				if ( !args[1] ) {
 					return msg.replyMsg( {content: lang.get('rcscript.current_wiki') + ' <' + selected_row.wiki + '>\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki'), components}, true );
@@ -492,7 +492,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return;
 			} ).then( channel => {
 				var text = lang.get('rcscript.current_selected', selected_row.configid);
-				if ( button ) text += `\n<${button.url}>\n`;
+				if ( button ) text += `\n<${button.data.url}>\n`;
 				text += '\n' + lang.get('rcscript.channel') + ' <#' + channel + '>\n';
 				text += '\n' + lang.get('rcscript.wiki') + ' <' + selected_row.wiki + '>';
 				text += '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n';
@@ -535,7 +535,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			var text = null;
 			if ( rows.length ) {
 				text = lang.get('rcscript.current');
-				if ( button ) text += `\n<${button.url}>`;
+				if ( button ) text += `\n<${button.data.url}>`;
 				text += rows.map( row => {
 					var cmd = prefix + 'rcscript' + ( only ? '' : ' ' + row.configid );
 					var row_text = '\n';
@@ -563,7 +563,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			}
 			else {
 				text = lang.get('rcscript.missing');
-				if ( button ) text += `\n<${button.url}>`;
+				if ( button ) text += `\n<${button.data.url}>`;
 			}
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
 			splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );

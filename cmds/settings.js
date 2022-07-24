@@ -37,7 +37,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
 		if ( rows.length ) {
 			text = lang.get('settings.current');
-			if ( button ) text += `\n<${button.url}>`;
+			if ( button ) text += `\n<${button.data.url}>`;
 			text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
 			if ( patreonGuildsPrefix.has(msg.guildId) ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
 			text += '\n' + lang.get('settings.currentrole') + ' ' + ( guild.role ? `<@&${guild.role}>` : '@everyone' ) + ' - `' + prefix + 'settings role`';
@@ -64,8 +64,8 @@ function cmd_settings(lang, msg, args, line, wiki) {
 				return ( row.channel === '#' + msg.channel.parentId );
 			} ) || guild, {channel: channelId});
 			text = lang.get('settings.channel current');
-			button?.setURL(new URL(`/guild/${msg.guildId}/settings/${channelId}`, button.url).href);
-			if ( button ) text += `\n<${button.url}>`;
+			button?.setURL(new URL(`/guild/${msg.guildId}/settings/${channelId}`, button.data.url).href);
+			if ( button ) text += `\n<${button.data.url}>`;
 			if ( patreonGuildsPrefix.has(msg.guildId) ) {
 				text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[channel.lang] + '` - `' + prefix + 'settings channel lang`';
 				text += '\n' + lang.get('settings.currentrole') + ' ' + ( channel.role ? `<@&${channel.role}>` : '@everyone' ) + ' - `' + prefix + 'settings channel role`';

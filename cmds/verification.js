@@ -44,7 +44,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			var limit = verificationLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
-			button?.setURL(new URL(`/guild/${msg.guildId}/verification/new`, button.url).href);
+			button?.setURL(new URL(`/guild/${msg.guildId}/verification/new`, button.data.url).href);
 			var roles = args.slice(1).join(' ').split('|').map( role => role.replace( /^\s*<?\s*(.*?)\s*>?\s*$/, '$1' ) ).filter( role => role.length );
 			if ( !roles.length ) return msg.replyMsg( {content: lang.get('verification.no_role') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`', components}, true );
 			if ( roles.length > 10 ) return msg.replyMsg( {content: lang.get('verification.role_max'), components}, true );
@@ -97,12 +97,12 @@ function cmd_verification(lang, msg, args, line, wiki) {
 			var text = null;
 			if ( rows.length ) {
 				text = lang.get('verification.current');
-				if ( button ) text += `\n<${button.url}>`;
+				if ( button ) text += `\n<${button.data.url}>`;
 				text += rows.map( row => formatVerification(false, true, row) ).join('');
 			}
 			else {
 				text = lang.get('verification.missing');
-				if ( button ) text += `\n<${button.url}>`;
+				if ( button ) text += `\n<${button.data.url}>`;
 			}
 			text += '\n\n' + lang.get('verification.add_more') + '\n`' + prefix + 'verification add ' + lang.get('verification.new_role') + '`';
 			return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
@@ -126,11 +126,11 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				msg.replyMsg( {content: lang.get('verification.deleted'), components}, true );
 			}, dberror => {
 				console.log( '- Error while removing the verification: ' + dberror );
-				button?.setURL(new URL(`/guild/${msg.guildId}/verification/${row.configid}`, button.url).href);
+				button?.setURL(new URL(`/guild/${msg.guildId}/verification/${row.configid}`, button.data.url).href);
 				msg.replyMsg( {content: lang.get('verification.save_failed'), components}, true );
 			} );
 		}
-		button?.setURL(new URL(`/guild/${msg.guildId}/verification/${row.configid}`, button.url).href);
+		button?.setURL(new URL(`/guild/${msg.guildId}/verification/${row.configid}`, button.data.url).href);
 		if ( args[1] === 'rename' && !args.slice(2).join('') ) {
 			if ( !row.rename && !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageNicknames) ) {
 				console.log( msg.guildId + ': Missing permissions - ManageNicknames' );
@@ -271,7 +271,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 				} ) );
 			}
 		}
-		return splitMessage( lang.get('verification.current_selected', row.configid) + ( button ? `\n<${button.url}>` : '' ) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`' ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+		return splitMessage( lang.get('verification.current_selected', row.configid) + ( button ? `\n<${button.data.url}>` : '' ) + formatVerification(true) +'\n\n' + lang.get('verification.delete_current') + '\n`' + prefix + 'verification ' + row.configid + ' delete`' ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 		
 		function formatVerification(showCommands, hideNotice, {
 			configid,
