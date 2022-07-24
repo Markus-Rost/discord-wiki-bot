@@ -469,6 +469,13 @@
 		"off": "我已取消暫停，即將開始繼續服務！",
 		"on": "我已將自己暫停，從現在起我會忽略大部分的指令！"
 	},
+	"phabricator": {
+		"comment": "留言：",
+		"priority": "優先級：",
+		"status": "狀態：",
+		"subtype": "子類型：",
+		"tags": "標籤："
+	},
 	"rcscript": {
 		"ad": "你想要在 Discord 直接觀看近期變更嗎？使用 `$1rcscript` 來為你的 Discord 伺服器增加一個基於 **$2** 的近期變更webhook！",
 		"add_more": "增加更多的近期變更webhook：",
