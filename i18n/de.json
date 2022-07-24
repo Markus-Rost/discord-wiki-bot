@@ -473,7 +473,8 @@
 		"comment": "Kommentar:",
 		"priority": "Priorität:",
 		"status": "Status:",
-		"subtype": ""
+		"subtype": "Subtyp:",
+		"tags": "Markierungen:"
 	},
 	"rcscript": {
 		"ad": "Du möchtest letzte Änderungen direkt in Discord? Nutze `$1rcscript` um einen Letzte Änderungen-WebHook basierend auf **$2** zu deinen Diesocrd server hinzuzufügen!",
