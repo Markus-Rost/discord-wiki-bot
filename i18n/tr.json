@@ -469,6 +469,13 @@
 		"off": "Artık bu sunucuda duraklatılmış durumda değilim ve tüm komutlara tekrar cevap vereceğim!",
 		"on": "Şimdi bu sunucuda duraklatıldım ve çoğu komutu görmezden geleceğim!"
 	},
+	"phabricator": {
+		"comment": "Yorum:",
+		"priority": "Öncelik:",
+		"status": "Durum:",
+		"subtype": "Alt tür:",
+		"tags": "Etiketler:"
+	},
 	"rcscript": {
 		"ad": "Son değişiklikleri Discord'unda görmek mi istiyorsun? `$1rcscript` kullanarak **$2** bazında son değişiklikler webhook'u ekleyebilirsin!",
 		"add_more": "Daha fazla son değişiklikler webhook'u ekle:",
