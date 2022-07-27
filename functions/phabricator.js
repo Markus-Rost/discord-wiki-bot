@@ -51,7 +51,7 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 		}
 		var summary = escapeFormatting(task.fields.name);
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-		var embed = new EmbedBuilder().setAuthor( {name: 'Phabricator'} ).setTitle( summary ).setURL( link ).addFields(...[
+		var embed = new EmbedBuilder().setAuthor( {name: 'Phabricator'} ).setTitle( summary ).setURL( link.href ).addFields(...[
 			{name: lang.get('phabricator.status'), value: escapeFormatting(task.fields.status.name), inline: true},
 			{name: lang.get('phabricator.priority'), value: escapeFormatting(task.fields.priority.name), inline: true}
 		]);
