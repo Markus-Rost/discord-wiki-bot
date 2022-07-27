@@ -248,6 +248,7 @@
 			"button_name_default": "Verifica dell'account sulla wiki",
 			"button_style": "Stile pulsante:",
 			"button_style_danger": "Pericolo (rosso)",
+			"button_style_primary": "Primario (blurple)",
 			"button_style_secondary": "Secondario (grigio)",
 			"button_style_success": "Successo (verde)",
 			"channel": "Canale:",
