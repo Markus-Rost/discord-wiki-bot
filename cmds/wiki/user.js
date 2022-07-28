@@ -46,7 +46,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 						var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 						if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-						embed.setTitle( displaytitle );
+						if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 					}
 					if ( querypage.extract ) {
 						var extract = extract_desc(querypage.extract, fragment);
@@ -269,7 +269,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-					embed.setTitle( displaytitle );
+					if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 				}
 				if ( querypage.extract ) {
 					var extract = extract_desc(querypage.extract, fragment);

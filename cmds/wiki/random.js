@@ -49,7 +49,7 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 				if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 					let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-					embed.setTitle( displaytitle );
+					if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 				}
 				if ( body.query.allmessages?.[1]?.['*']?.trim?.() ) {
 					var description = toMarkdown(body.query.allmessages[1]['*'], wiki, title, true);
@@ -69,7 +69,7 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 		if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 			var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 			if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-			embed.setTitle( displaytitle );
+			if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 		}
 		if ( querypage.extract ) {
 			var extract = extract_desc(querypage.extract, fragment);

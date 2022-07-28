@@ -121,7 +121,7 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
  * @returns {String}
  */
 function parse_text(text, site) {
-	text = text.replace( /```lang=/g, '```' );
+	text = text.replace( /```\n?lang=/g, '```' );
 	text = text.replace( /^>>! (.+?)$/gm, '> *$1*' );
 	text = text.replace( /^>>/gm, '> >' );
 	text = text.replace( /##(.+?)##/g, '`$1`' );

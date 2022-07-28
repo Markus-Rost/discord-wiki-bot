@@ -281,7 +281,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			if ( !embed.forceTitle ) {
 				var displaytitle = htmlToDiscord( response.body.parse.displaytitle );
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-				embed.setTitle( displaytitle );
+				if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 			}
 			var $ = cheerioLoad(response.body.parse.text['*'].replace( /\n?<br(?: ?\/)?>\n?/g, '<br>' ), {baseURI: wiki.toLink(response.body.parse.title)});
 			if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {

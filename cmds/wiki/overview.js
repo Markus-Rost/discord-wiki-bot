@@ -105,7 +105,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 				let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-				embed.setTitle( displaytitle );
+				if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 			}
 		}
 		else {

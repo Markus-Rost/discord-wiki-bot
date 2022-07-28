@@ -199,7 +199,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 		if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 			let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 			if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
-			embed.setTitle( displaytitle );
+			if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 		}
 		if ( body.query.allmessages?.[1]?.['*']?.trim?.() ) {
 			var description = toMarkdown(body.query.allmessages[1]['*'], wiki, title, true);
