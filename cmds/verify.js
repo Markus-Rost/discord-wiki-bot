@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functions.js';
@@ -32,7 +33,11 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
 			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
-			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else {
+				let project = inputToWikiProject(wiki.href)
+				if ( project ) oauth.push(project.wikiProject.name);
+			}
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
 					if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {

@@ -190,7 +190,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					links.splice(links.indexOf(link), 1);
 				} ) );
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
-					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+					if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) return;
 					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
 						logging(wiki, msg.guildId, 'inline', 'interwiki');
 						var iw_parts = page.title.split(':');
@@ -242,7 +242,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				} ) );
 				var missing = [];
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
-					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
+					if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) return;
 					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) return;
 					embeds.splice(embeds.indexOf(embed), 1);
 					if ( page.ns === 0 && !embed.section ) {

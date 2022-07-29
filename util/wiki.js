@@ -4,8 +4,17 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
 
-// Remove wikis with notes
-wikiProjects.filter( project => project.note ).forEach( project => {
+/** @type {String[]} - Sites that support verification using OAuth2. */
+export const oauthSites = [];
+
+// Remove wikis with notes, add wikis to oauthSites
+wikiProjects.filter( project => {
+	if ( project.note ) return true;
+	if ( project.extensions.includes('OAuth') && !project.wikiFarm && project.fullScriptPath ) {
+		oauthSites.push(project.fullScriptPath);
+	}
+	return false;
+} ).forEach( project => {
 	if ( globalThis.isDebug ?? ( process.argv[2] === 'debug' ) ) {
 		console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
 	}
@@ -37,12 +46,13 @@ export default class Wiki extends URL {
 			articlepath = project.fullArticlePath + '$1';
 			this.spaceReplacement = project.wikiProject.urlSpaceReplacement;
 			this.wikifarm = project.wikiProject.wikiFarm;
-			this.centralauth = project.wikiProject.extensions.includes('CentralAuth');
+			this.centralauth ||= project.wikiProject.extensions.includes('CentralAuth');
+			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
 		this.articlepath = articlepath;
 		this.mainpage = '';
 		this.mainpageisdomainroot = false;
-		this.oauth2 = Wiki.oauthSites.includes( this.href );
+		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
 	}
 
 	/**
@@ -85,11 +95,12 @@ export default class Wiki extends URL {
 		this.mainpageisdomainroot = ( mainpageisdomainroot !== undefined );
 		this.centralauth = ( centralidlookupprovider === 'CentralAuth' );
 		this.gamepedia = ( gamepedia === 'true' );
-		this.oauth2 = Wiki.oauthSites.includes( this.href );
+		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
 		let project = inputToWikiProject(this.href);
 		if ( project ) {
 			this.spaceReplacement = project.wikiProject.urlSpaceReplacement;
 			this.wikifarm = project.wikiProject.wikiFarm;
+			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
 		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm = 'miraheze';
 		return this;
@@ -228,7 +239,7 @@ export default class Wiki extends URL {
 	}
 
 	/** @type {String[]} - Sites that support verification using OAuth2. */
-	static oauthSites = [];
+	static oauthSites = oauthSites;
 
 	[inspect.custom](depth, opts) {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
@@ -292,4 +303,3 @@ class articleURL extends URL {
 export const toTitle = Wiki.toTitle;
 export const toSection = Wiki.toSection;
 export const fromInput = Wiki.fromInput;
-export const oauthSites = Wiki.oauthSites;

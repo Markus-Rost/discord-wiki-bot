@@ -167,7 +167,7 @@ function slash_inline(interaction, lang, wiki) {
 						link.ns = page.ns;
 						if ( page.invalid !== undefined ) return links.splice(links.indexOf(link), 1);
 						if ( page.missing !== undefined && page.known === undefined ) {
-							if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) {
+							if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) {
 								return;
 							}
 							if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {

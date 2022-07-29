@@ -3,6 +3,7 @@ import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
 import pg from 'pg';
 import DiscordOauth2 from 'discord-oauth2';
+import { inputToWikiProject } from 'mediawiki-projects-list';
 import { oauthSites } from '../util/wiki.js';
 
 globalThis.isDebug = ( process.argv[2] === 'debug' );
@@ -39,14 +40,22 @@ const oauth = new DiscordOauth2( {
 
 const enabledOAuth2 = [
 	...oauthSites.filter( oauthSite => {
+		let project = inputToWikiProject(oauthSite);
+		if ( project ) return ( process.env[`oauth_${project.wikiProject.name}`] && process.env[`oauth_${project.wikiProject.name}_secret`] );
 		let site = new URL(oauthSite);
 		site = site.hostname + site.pathname.slice(0, -1);
 		return ( process.env[`oauth_${site}`] && process.env[`oauth_${site}_secret`] );
 	} ).map( oauthSite => {
+		let project = inputToWikiProject(oauthSite);
+		if ( project ) return {
+			id: project.wikiProject.name,
+			name: project.wikiProject.name,
+			url: oauthSite
+		};
 		let site = new URL(oauthSite);
 		return {
 			id: site.hostname + site.pathname.slice(0, -1),
-			name: oauthSite, url: oauthSite,
+			name: oauthSite, url: oauthSite
 		};
 	} )
 ];
@@ -54,14 +63,14 @@ if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
 	enabledOAuth2.unshift({
 		id: 'miraheze',
 		name: 'Miraheze',
-		url: 'https://meta.miraheze.org/w/',
+		url: 'https://meta.miraheze.org/w/'
 	});
 }
 if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikimedia',
 		name: 'Wikimedia (Wikipedia)',
-		url: 'https://meta.wikimedia.org/w/',
+		url: 'https://meta.wikimedia.org/w/'
 	});
 }
 

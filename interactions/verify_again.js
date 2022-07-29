@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
+import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, sendMessage } from '../util/functions.js';
@@ -25,7 +26,11 @@ function button_verify(interaction, lang, wiki) {
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
 			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
-			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else {
+				let project = inputToWikiProject(wiki.href)
+				if ( project ) oauth.push(project.wikiProject.name);
+			}
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				console.log( interaction.guildId + ': Button: ' + interaction.customId + ': OAuth2' );
 				return interaction.update( {components: [new ActionRowBuilder().addComponents(

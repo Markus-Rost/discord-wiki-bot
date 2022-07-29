@@ -1,5 +1,6 @@
 import { load as cheerioLoad } from 'cheerio';
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ButtonStyle } from 'discord.js';
+import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
@@ -73,7 +74,11 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
 			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
-			if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else {
+				let project = inputToWikiProject(wiki.href)
+				if ( project ) oauth.push(project.wikiProject.name);
+			}
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				result.oauth = oauth;
 				return;
@@ -757,29 +762,31 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 					verifynotice.logchannel.send( logMessage ).catch(log_error);
 				}, log_error );
 			}
-			if ( body.query.globaluserinfo.locked !== undefined ) {
-				embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-				logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-				return sendMessage( {content: lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
-					if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
-					let logMessage = {
-						embeds: []
-					};
-					if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
-						logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.tag) + ` (${member.toString()})`, inline: true} );
-						if ( msg ) logEmbed.addFields( {name: msg.url, value: '<#' + channel.id + '>'} );
-						logMessage.embeds.push(logEmbed);
-					}
-					else {
-						let logText = '🔸 ' + logLang.get('verify.user_gblocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
-						logText += '\n<' + pagelink + '>';
-						if ( msg ) logText += '\n<#' + channel.id + '> – <' + msg.url + '>';
-						logMessage.content = logText;
-					}
-					verifynotice.logchannel.send( logMessage ).catch(log_error);
-				}, log_error );
+			if ( wiki.hasCentralAuth() ) {
+				if ( body.query.globaluserinfo.locked !== undefined ) {
+					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+					return sendMessage( {content: lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
+						if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
+						let logMessage = {
+							embeds: []
+						};
+						if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
+							logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.tag) + ` (${member.toString()})`, inline: true} );
+							if ( msg ) logEmbed.addFields( {name: msg.url, value: '<#' + channel.id + '>'} );
+							logMessage.embeds.push(logEmbed);
+						}
+						else {
+							let logText = '🔸 ' + logLang.get('verify.user_gblocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
+							logText += '\n<' + pagelink + '>';
+							if ( msg ) logText += '\n<#' + channel.id + '> – <' + msg.url + '>';
+							logMessage.content = logText;
+						}
+						verifynotice.logchannel.send( logMessage ).catch(log_error);
+					}, log_error );
+				}
+				queryuser.groups.push(...body.query.globaluserinfo.groups);
 			}
-			queryuser.groups.push(...body.query.globaluserinfo.groups);
 
 			/** @type {[Set<String>,Set<String>]} */
 			var addRoles = [new Set(), new Set()];
