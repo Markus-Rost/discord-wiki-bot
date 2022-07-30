@@ -578,6 +578,7 @@
 		"media": "Zur Dateibeschreibungsseite",
 		"messagedefault": "Standardwert:",
 		"messagedefaultnone": "*keiner*",
+		"redirect": "$1 (Weiterleitung von „$2“)",
 		"results": "$1 {{PLURAL:$2|Ergebnis|Ergebnisse}} insgesamt",
 		"special": "Inhalt der Spezialseite:"
 	},
