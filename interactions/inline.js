@@ -5,7 +5,7 @@ import { got, limitLength, partialURIdecode, sendMessage } from '../util/functio
 
 /**
  * Post a message with inline wiki links.
- * @param {import('discord.js').CommandInteraction} interaction - The interaction.
+ * @param {import('discord.js').ChatInputCommandInteraction} interaction - The interaction.
  * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
@@ -20,13 +20,13 @@ function slash_inline(interaction, lang, wiki) {
 		parse: ['users']
 	};
 	if ( interaction.inGuild() ) {
-		if ( interaction.member.permissions.has(PermissionFlagsBits.MentionEveryone) ) {
+		if ( interaction.memberPermissions.has(PermissionFlagsBits.MentionEveryone) ) {
 			allowedMentions.parse = ['users', 'roles', 'everyone'];
 		}
 		else if ( interaction.guild ) {
 			allowedMentions.roles = interaction.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		}
-		if ( interaction.guild && !interaction.member.permissions.has(PermissionFlagsBits.UseExternalEmojis) ) {
+		if ( interaction.guild && !interaction.memberPermissions.has(PermissionFlagsBits.UseExternalEmojis) ) {
 			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
 				if ( interaction.guild.emojis.cache.has(id) ) {
 					return replacement;

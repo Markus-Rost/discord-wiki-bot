@@ -153,33 +153,33 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 };
 
 var interaction_commands = {
-	/** @type {{[x: string]: function(Interaction, Lang, Wiki)>}} */
+	/** @type {{[x: string]: function(Discord.AutocompleteInteraction, Lang, Wiki)>}} */
+	autocomplete: {},
+	/** @type {{[x: string]: function(Discord.ChatInputCommandInteraction, Lang, Wiki)>}} */
 	slash: {},
-	/** @type {{[x: string]: function(Interaction, Lang, Wiki)>}} */
-	modal: {},
-	/** @type {{[x: string]: function(Interaction, Lang, Wiki)>}} */
-	button: {}
+	/** @type {{[x: string]: function(Discord.ButtonInteraction, Lang, Wiki)>}} */
+	button: {},
+	/** @type {{[x: string]: function(Discord.ModalSubmitInteraction, Lang, Wiki)>}} */
+	modal: {}
 };
 readdir( './interactions', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
 		import('./interactions/' + file).then( ({default: command}) => {
+			if ( command.hasOwnProperty('autocomplete') ) interaction_commands.autocomplete[command.name] = command.autocomplete;
 			if ( command.hasOwnProperty('slash') ) interaction_commands.slash[command.name] = command.slash;
-			if ( command.hasOwnProperty('modal') ) interaction_commands.modal[command.name] = command.modal;
 			if ( command.hasOwnProperty('button') ) interaction_commands.button[command.name] = command.button;
+			if ( command.hasOwnProperty('modal') ) interaction_commands.modal[command.name] = command.modal;
 		} );
 	} );
 } );
 /*
-!test eval msg.client.api.applications(msg.client.user.id).commands.post( {
-	data: require('../interactions/commands/inline.json')
+!test eval msg.client.rest.post( Discord.Routes.applicationCommands(msg.client.user.id), {
+	body: require('../interactions/commands/inline.json')
 } )
 */
 
 client.on( 'interactionCreate', interaction => {
-	if ( interaction.inGuild() && typeof interaction.member.permissions === 'string' ) {
-		interaction.member.permissions = new Discord.PermissionsBitField(interaction.member.permissions);
-	}
 	if ( interaction.channel?.partial ) return interaction.channel.fetch().then( () => {
 		return interactionCreate(interaction);
 	}, log_error );
@@ -192,8 +192,13 @@ client.on( 'interactionCreate', interaction => {
  */
  function interactionCreate(interaction) {
 	if ( breakOnTimeoutPause(interaction) ) return;
+	/** @type {function(Discord.BaseInteraction, Lang, Wiki)} */
 	var cmd = null;
-	if ( interaction.type === Discord.InteractionType.ApplicationCommand ) {
+	if ( interaction.isAutocomplete() ) {
+		if ( !interaction_commands.autocomplete.hasOwnProperty(interaction.commandName) ) return;
+		cmd = interaction_commands.autocomplete[interaction.commandName];
+	}
+	else if ( interaction.isChatInputCommand() ) {
 		if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
 		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 			return option.name + ':' + option.value;
@@ -201,7 +206,12 @@ client.on( 'interactionCreate', interaction => {
 		if ( !interaction_commands.slash.hasOwnProperty(interaction.commandName) ) return;
 		cmd = interaction_commands.slash[interaction.commandName];
 	}
-	else if ( interaction.type === Discord.InteractionType.ModalSubmit ) {
+	else if ( interaction.isButton() ) {
+		if ( interaction.customId !== 'verify_again' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Button: ' + interaction.customId );
+		if ( !interaction_commands.button.hasOwnProperty(interaction.customId) ) return;
+		cmd = interaction_commands.button[interaction.customId];
+	}
+	else if ( interaction.isModalSubmit() ) {
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Modal: ' + interaction.customId + ' ' + interaction.fields.components.reduce( (prev, next) => {
 			return prev.concat(next.components);
 		}, [] ).map( option => {
@@ -209,11 +219,6 @@ client.on( 'interactionCreate', interaction => {
 		} ).join(' ') );
 		if ( !interaction_commands.modal.hasOwnProperty(interaction.customId) ) return;
 		cmd = interaction_commands.modal[interaction.customId];
-	}
-	else if ( interaction.isButton() ) {
-		if ( interaction.customId !== 'verify_again' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Button: ' + interaction.customId );
-		if ( !interaction_commands.button.hasOwnProperty(interaction.customId) ) return;
-		cmd = interaction_commands.button[interaction.customId];
 	}
 	else return;
 

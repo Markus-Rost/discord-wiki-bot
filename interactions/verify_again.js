@@ -21,7 +21,7 @@ function button_verify(interaction, lang, wiki) {
 		return interaction.reply( {content: userLang.get('verify.button_wrong_user', interaction.message.mentions.users.first().toString()), ephemeral: true} ).catch(log_error);
 	}
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
-		if ( !rows.length || !interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) return interaction.update( {components: []} ).catch(log_error);
+		if ( !rows.length || !interaction.appPermissions.has(PermissionFlagsBits.ManageRoles) ) return interaction.update( {components: []} ).catch(log_error);
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];

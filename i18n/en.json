@@ -578,6 +578,7 @@
 		"media": "To the file description page",
 		"messagedefault": "Default:",
 		"messagedefaultnone": "*none*",
+		"redirect": "$1 (redirected from \"$2\")",
 		"results": "$1 total {{PLURAL:$2|result|results}}",
 		"special": "Content of this special page:"
 	},

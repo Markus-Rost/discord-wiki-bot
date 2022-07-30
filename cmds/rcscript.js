@@ -107,7 +107,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( {content: lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', components}, true );
 				}
-				if ( body.query.allmessages[0]['*'] !== msg.guildId ) {
+				if ( body.query.allmessages[0]['*']?.trim() !== msg.guildId ) {
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( {content: lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guildId) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', components}, true );
 				}
@@ -289,7 +289,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( {content: lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', components}, true );
 					}
-					if ( body.query.allmessages[0]['*'] !== msg.guildId ) {
+					if ( body.query.allmessages[0]['*']?.trim() !== msg.guildId ) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( {content: lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guildId) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', components}, true );
 					}

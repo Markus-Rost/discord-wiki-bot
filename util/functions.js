@@ -563,7 +563,7 @@ function allowDelete(msg, author) {
 
 /**
  * Sends an interaction response.
- * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction|import('discord.js').ModalSubmitInteraction} interaction - The interaction.
+ * @param {import('discord.js').ChatInputCommandInteraction|import('discord.js').ButtonInteraction|import('discord.js').ModalSubmitInteraction} interaction - The interaction.
  * @param {import('discord.js').MessageOptions} message - The message.
  * @param {Boolean} [letDelete] - Let the interaction user delete the message.
  * @returns {Promise<import('discord.js').Message?>}

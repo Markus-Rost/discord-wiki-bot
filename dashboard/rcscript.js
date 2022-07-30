@@ -377,7 +377,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 					return res(`/guild/${guild}/rcscript/new`, 'mwversion', body.query.general.generator, body.query.general.sitename);
 				}
-				if ( body.query.allmessages[0]['*'] !== guild ) {
+				if ( body.query.allmessages[0]['*']?.trim() !== guild ) {
 					return res(`/guild/${guild}/rcscript/new`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 				}
 				return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {
@@ -619,7 +619,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'mwversion', body.query.general.generator, body.query.general.sitename);
 					}
-					if ( row.wiki !== wiki.href && body.query.allmessages[0]['*'] !== guild ) {
+					if ( row.wiki !== wiki.href && body.query.allmessages[0]['*']?.trim() !== guild ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 					}
 					return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {

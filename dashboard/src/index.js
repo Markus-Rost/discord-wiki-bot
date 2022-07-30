@@ -239,7 +239,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 						wikichecknotice.append(noticeTitle, noticeText, noticeLink, ...noticeExtraParts);
 						return;
 					}
-					if ( response.RcGcDw !== document.location.pathname.split('/')[2] && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
+					if ( response.RcGcDw?.trim() !== document.location.pathname.split('/')[2] && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
 						wikichecknotice.classList.add('notice-info');
 						var noticeTitle = document.createElement('b');
 						noticeTitle.textContent = lang('sysmessage.title');

@@ -83,7 +83,7 @@ if ( !globalThis.verifyOauthUser ) {
 	 * @param {import('discord.js').TextChannel} settings.channel - The channel.
 	 * @param {String} settings.user - The user id.
 	 * @param {String} settings.wiki - The OAuth2 wiki.
-	 * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction} [settings.interaction] - The interaction.
+	 * @param {import('discord.js').ChatInputCommandInteraction|import('discord.js').ButtonInteraction} [settings.interaction] - The interaction.
 	 * @param {Function} [settings.fail] - The function to call when the verifiction errors.
 	 * @param {import('discord.js').Message} [settings.sourceMessage] - The source message with the command.
 	 * @global

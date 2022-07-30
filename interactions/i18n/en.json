@@ -11,5 +11,15 @@
 		"name": "verify",
 		"options[0].description": "Your username on the wiki.",
 		"options[0].name": "username"
+	},
+	"wiki": {
+		"description": "Post a wiki link.",
+		"name": "wiki",
+		"options[0].description": "Page title to search for.",
+		"options[0].name": "title",
+		"options[1].description": "Send only the link without embed?",
+		"options[1].name": "noembed",
+		"options[2].description": "Hide the link and embed in a spoiler?",
+		"options[2].name": "spoiler"
 	}
 }
