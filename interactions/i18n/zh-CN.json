@@ -11,5 +11,15 @@
 		"name": "verify",
 		"options[0].description": "你在此wiki上的用户名。",
 		"options[0].name": "用户名"
+	},
+	"wiki": {
+		"description": "发送一条wiki链接。",
+		"name": "wiki",
+		"options[0].description": "要搜索的页面标题。",
+		"options[0].name": "标题",
+		"options[1].description": "仅发送链接而不发送嵌入内容？",
+		"options[1].name": "无嵌入内容",
+		"options[2].description": "将链接和嵌入内容标记为剧透？",
+		"options[2].name": "剧透"
 	}
 }
