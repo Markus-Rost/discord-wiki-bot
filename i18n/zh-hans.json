@@ -578,6 +578,7 @@
 		"media": "到文件描述页",
 		"messagedefault": "默认：",
 		"messagedefaultnone": "*无*",
+		"redirect": "$1（重定向自$2）",
 		"results": "共 $1 个结果",
 		"special": "此特殊页面的内容："
 	},
