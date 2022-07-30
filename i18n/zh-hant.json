@@ -578,6 +578,7 @@
 		"media": "到檔案描述頁",
 		"messagedefault": "預設：",
 		"messagedefaultnone": "*無*",
+		"redirect": "$1（重新導向自$2）",
 		"results": "共 $1 個結果",
 		"special": "此特殊頁面的內容："
 	},
