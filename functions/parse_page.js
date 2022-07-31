@@ -530,7 +530,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( !embed.data.image ) embed.setImage( extraImages.shift() );
 				extraImages.slice(0, 10).forEach( extraImage => {
 					let imageEmbed = new EmbedBuilder().setURL( embed.data.url ).setImage( extraImage );
-					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + val.length, imageEmbed.length ) <= 5500 ) embeds.push(imageEmbed);
+					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + getEmbedLength(val), getEmbedLength(imageEmbed) ) <= 5500 ) embeds.push(imageEmbed);
 				} );
 			}
 			return message.edit( {content, embeds} ).catch(log_error);
