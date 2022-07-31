@@ -11,5 +11,15 @@
 		"name": "verify",
 		"options[0].description": "विकि पर आपका सदस्यनाम।",
 		"options[0].name": "सदस्यनाम"
+	},
+	"wiki": {
+		"description": "विकि की एक कड़ी पोस्ट करें।",
+		"name": "विकि",
+		"options[0].description": "खोजने के लिए पृष्ठ का शीर्षक।",
+		"options[0].name": "शीर्षक",
+		"options[1].description": "बिना एम्बेड के सिर्फ कड़ी भेजें?",
+		"options[1].name": "noembed",
+		"options[2].description": "कड़ी और एम्बेड को स्पॉइलर में छिपाएँ?",
+		"options[2].name": "स्पॉइलर"
 	}
 }
