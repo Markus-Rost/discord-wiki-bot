@@ -12,19 +12,59 @@
 			"name": "title",
 			"description": "Page title to search for.",
 			"required": false,
-			"autocomplete": true
+			"autocomplete": true,
+			"description_localizations": {
+				"hi": "खोजने के लिए पृष्ठ का शीर्षक।",
+				"zh-CN": "要搜索的页面标题。",
+				"zh-TW": "要搜尋的頁面標題。"
+			},
+			"name_localizations": {
+				"hi": "शीर्षक",
+				"zh-CN": "标题",
+				"zh-TW": "標題"
+			}
 		},
 		{
 			"type": 5,
 			"name": "noembed",
 			"description": "Send only the link without embed?",
-			"required": false
+			"required": false,
+			"description_localizations": {
+				"hi": "बिना एम्बेड के सिर्फ कड़ी भेजें?",
+				"zh-CN": "仅发送链接而不发送嵌入内容？",
+				"zh-TW": "僅傳送連結而不傳送嵌入內容？"
+			},
+			"name_localizations": {
+				"hi": "noembed",
+				"zh-CN": "无嵌入内容",
+				"zh-TW": "無嵌入內容"
+			}
 		},
 		{
 			"type": 5,
 			"name": "spoiler",
 			"description": "Hide the link and embed in a spoiler?",
-			"required": false
+			"required": false,
+			"description_localizations": {
+				"hi": "कड़ी और एम्बेड को स्पॉइलर में छिपाएँ?",
+				"zh-CN": "将链接和嵌入内容标记为剧透？",
+				"zh-TW": "將連結和嵌入內容標記為劇透？"
+			},
+			"name_localizations": {
+				"hi": "स्पॉइलर",
+				"zh-CN": "剧透",
+				"zh-TW": "劇透"
+			}
 		}
-	]
+	],
+	"description_localizations": {
+		"hi": "विकि की एक कड़ी पोस्ट करें।",
+		"zh-CN": "发送一条wiki链接。",
+		"zh-TW": "傳送一條wiki連結。"
+	},
+	"name_localizations": {
+		"hi": "विकि",
+		"zh-CN": "wiki",
+		"zh-TW": "wiki"
+	}
 }
