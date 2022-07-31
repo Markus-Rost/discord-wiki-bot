@@ -443,7 +443,7 @@
 		"edits": "总编辑数：",
 		"founder": "创始人：",
 		"image": "图像：",
-		"inaccurate": "统计信息可能出错",
+		"inaccurate": "统计信息可能不准确",
 		"lang": "语言：",
 		"license": "许可协议：",
 		"manager": "Wiki 经理 / 主管：",
@@ -578,6 +578,7 @@
 		"media": "到文件描述页",
 		"messagedefault": "默认：",
 		"messagedefaultnone": "*无*",
+		"redirect": "$1（重定向自$2）",
 		"results": "共 $1 个结果",
 		"special": "此特殊页面的内容："
 	},
