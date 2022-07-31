@@ -578,6 +578,7 @@
 		"media": "Ke halaman deskripsi file",
 		"messagedefault": "Bawaan:",
 		"messagedefaultnone": "*tidak ada*",
+		"redirect": "$1 (dialihkan dari \"$2\")",
 		"results": "$1 total {{PLURAL:$2|hasil|hasil}}",
 		"special": "Konten halaman khusus ini:"
 	},
