@@ -578,6 +578,7 @@
 		"media": "चित्र के विवरण पृष्ठ पर",
 		"messagedefault": "डिफॉल्ट:",
 		"messagedefaultnone": "कुछ नहीं",
+		"redirect": "$1 (\"$2\" से अनुप्रेषित)",
 		"results": "कुल $1 {{PLURAL:$2|अंजाम}}",
 		"special": "इस विशेष पृष्ठ की सामग्री:"
 	},
