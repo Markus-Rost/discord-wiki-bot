@@ -13,7 +13,9 @@ const require = createRequire(import.meta.url);
 const {limit: {interwiki: interwikiLimit}} = require('../../util/default.json');
 const {wikis: mcw} = require('../minecraft/commands.json');
 
-var minecraft = {};
+var minecraft = {
+	WIKI: gamepedia_check_wiki
+};
 readdir( './cmds/minecraft', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
@@ -65,7 +67,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		return fn.overview(lang, msg, wiki, reaction, spoiler, noEmbed);
 	}
 	if ( aliasInvoke === 'test' && !args.join('') && !querystring.toString() && !fragment ) {
-		this.test(lang, msg, args, '', wiki);
+		fn.test(lang, msg, args, '', wiki);
 		if ( reaction ) reaction.removeEmoji();
 		return;
 	}
@@ -115,7 +117,6 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		}
 		if ( !msg.notMinecraft && mcw.hasOwnProperty(wiki.href) && ( minecraft.hasOwnProperty(aliasInvoke) || invoke.startsWith( '/' ) ) && !querystring.toString() && !fragment ) {
 			logging(wiki, msg.guildId, 'minecraft', ( minecraft.hasOwnProperty(aliasInvoke) ? aliasInvoke : 'command' ));
-			minecraft.WIKI = this;
 			if ( minecraft.hasOwnProperty(aliasInvoke) ) minecraft[aliasInvoke](lang, msg, wiki, args, title, cmd, reaction, spoiler, noEmbed);
 			else minecraft.SYNTAX(lang, msg, wiki, invoke.substring(1), args, title, cmd, reaction, spoiler, noEmbed);
 			return;
@@ -198,7 +199,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						let idString = urlToIdString(iw);
 						if ( idString ) cmd = msg.wikiPrefixes.get('miraheze.org') + idString + ' ';
 					}
-					return this.general(lang, msg, iw_parts.slice(2).join(':'), iw, cmd, reaction, spoiler, noEmbed, querystring, fragment, iw_link, selfcall);
+					return gamepedia_check_wiki(lang, msg, iw_parts.slice(2).join(':'), iw, cmd, reaction, spoiler, noEmbed, querystring, fragment, iw_link, selfcall);
 				}
 				msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + iw_link + ( noEmbed ? '>' : ' ' ) + spoiler ).then( message => {
 					if ( message && selfcall === maxselfcall ) message.reactEmoji('⚠️');
@@ -240,7 +241,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							var maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 							if ( selfcall < maxselfcall ) {
 								selfcall++;
-								return this.general(lang, msg, location.slice(1).join('wiki/'), new Wiki(location[0]), cmd, reaction, spoiler, noEmbed, querystring, fragment, '', selfcall);
+								return gamepedia_check_wiki(lang, msg, location.slice(1).join('wiki/'), new Wiki(location[0]), cmd, reaction, spoiler, noEmbed, querystring, fragment, '', selfcall);
 							}
 							msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + hresponse.headers.location + ( noEmbed ? '>' : ' ' ) + spoiler ).then( message => {
 								if ( message && selfcall === maxselfcall ) message.reactEmoji('⚠️');
@@ -318,7 +319,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 										let idString = urlToIdString(iwwiki);
 										if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
 									}
-									return this.general(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
+									return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 								}
 							}
 						}
@@ -518,7 +519,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							let idString = urlToIdString(iwwiki);
 							if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
 						}
-						return this.general(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
+						return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 			}

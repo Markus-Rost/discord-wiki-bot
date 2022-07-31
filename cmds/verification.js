@@ -14,7 +14,7 @@ const {limit: {verification: verificationLimit}} = require('../util/default.json
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_verification(lang, msg, args, line, wiki) {
+export default function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
 		if ( msg.inGuild() && !pausedGuilds.has(msg.guildId) ) this.verify(lang, msg, args, line, wiki);
 		else msg.reactEmoji('❌');
@@ -331,7 +331,7 @@ function cmd_verification(lang, msg, args, line, wiki) {
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'verification',
 	everyone: true,
 	pause: true,

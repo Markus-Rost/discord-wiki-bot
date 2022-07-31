@@ -8,7 +8,7 @@ import { PermissionFlagsBits } from 'discord.js';
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_say(lang, msg, args, line, wiki) {
+export default function cmd_say(lang, msg, args, line, wiki) {
 	var text = args.join(' ');
 	var imgs = [];
 	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
@@ -39,7 +39,7 @@ function cmd_say(lang, msg, args, line, wiki) {
 	} else if ( !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }
 
-export default {
+export const cmdData = {
 	name: 'say',
 	everyone: false,
 	pause: false,

@@ -5,15 +5,10 @@ import { inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
 import { got, splitMessage, partialURIdecode } from './functions.js';
-import check_wiki_general from '../cmds/wiki/general.js';
-import check_wiki_test from '../cmds/test.js';
+import check_wiki from '../cmds/wiki/general.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {command: commandLimit}, defaultSettings} = require('./default.json');
-const check_wiki = {
-	general: check_wiki_general,
-	test: check_wiki_test.run
-};
 
 var cmdmap = {};
 var pausecmdmap = {};
@@ -21,10 +16,10 @@ var ownercmdmap = {};
 readdir( './cmds', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
-		import('../cmds/' + file).then( ({default: command}) => {
-			if ( command.everyone ) cmdmap[command.name] = command.run;
-			if ( command.pause ) pausecmdmap[command.name] = command.run;
-			if ( command.owner ) ownercmdmap[command.name] = command.run;
+		import('../cmds/' + file).then( ({cmdData}) => {
+			if ( cmdData.everyone ) cmdmap[cmdData.name] = cmdData.run;
+			if ( cmdData.pause ) pausecmdmap[cmdData.name] = cmdData.run;
+			if ( cmdData.owner ) ownercmdmap[cmdData.name] = cmdData.run;
 		} );
 	} );
 } );
@@ -259,7 +254,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
 				logging(wiki, msg.guildId, 'inline', 'embed');
-				check_wiki.general(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, false, new URLSearchParams(), embed.section);
+				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, false, new URLSearchParams(), embed.section);
 			} ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {

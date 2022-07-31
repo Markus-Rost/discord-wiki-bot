@@ -11,7 +11,7 @@ const {defaultPermissions} = require('../util/default.json');
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_invite(lang, msg, args, line, wiki) {
+export default function cmd_invite(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
 		this.LINK(lang, msg, line, wiki);
 	}
@@ -27,7 +27,7 @@ function cmd_invite(lang, msg, args, line, wiki) {
 	}
 }
 
-export default {
+export const cmdData = {
 	name: 'invite',
 	everyone: true,
 	pause: false,

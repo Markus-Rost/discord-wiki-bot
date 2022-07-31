@@ -13,7 +13,7 @@ const {shardIdForGuildId} = ShardClientUtil;
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_patreon(lang, msg, args, line, wiki) {
+export default function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( !( process.env.channel.split('|').includes( msg.channelId ) && args.join('') ) ) {
 		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 		return;
@@ -370,7 +370,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }
 
-export default {
+export const cmdData = {
 	name: 'patreon',
 	everyone: true,
 	pause: true,

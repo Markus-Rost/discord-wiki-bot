@@ -20,7 +20,7 @@ inspect.defaultOptions = {compact: false, breakLength: Infinity};
  * @param {Wiki} wiki - The wiki for the message.
  * @async
  */
-async function cmd_eval(lang, msg, args, line, wiki) {
+export default async function cmd_eval(lang, msg, args, line, wiki) {
 	try {
 		var text = inspect( await eval( args.join(' ') ) );
 	} catch ( error ) {
@@ -382,7 +382,7 @@ function removeSettings(msg) {
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'eval',
 	everyone: false,
 	pause: false,

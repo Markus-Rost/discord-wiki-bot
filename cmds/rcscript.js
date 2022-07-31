@@ -28,7 +28,7 @@ const display_types = [
  * @param {String} line - The command as plain text.
  * @param {Wiki} wiki - The wiki for the message.
  */
-function cmd_rcscript(lang, msg, args, line, wiki) {
+export default function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( args[0] === 'block' && msg.isOwner() ) return blocklist(msg, args.slice(1));
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	if ( msg.defaultSettings ) return help_setup(lang, msg);
@@ -650,7 +650,7 @@ function blocklist(msg, args) {
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'rcscript',
 	everyone: rcscriptExists,
 	pause: rcscriptExists,

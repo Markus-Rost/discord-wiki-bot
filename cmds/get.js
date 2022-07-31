@@ -15,7 +15,7 @@ const {shardIdForGuildId} = ShardClientUtil;
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  * @async
  */
-async function cmd_get(lang, msg, args, line, wiki) {
+export default async function cmd_get(lang, msg, args, line, wiki) {
 	var id = args.join().replace( /^\\?<(?:@!?|#)(\d+)>$/, '$1' );
 	if ( !/^\d+$/.test(id) ) {
 		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
@@ -228,7 +228,7 @@ async function cmd_get(lang, msg, args, line, wiki) {
 	}
 }
 
-export default {
+export const cmdData = {
 	name: 'get',
 	everyone: false,
 	pause: false,

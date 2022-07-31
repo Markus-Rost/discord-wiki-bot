@@ -149,7 +149,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
+		this.WIKI(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
 	}
 }
 

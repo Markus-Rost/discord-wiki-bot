@@ -17,7 +17,7 @@ function minecraft_command(lang, msg, wiki, args, title, cmd, reaction, spoiler,
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
+		this.WIKI(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
 	}
 }
 

@@ -13,7 +13,7 @@ import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functio
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_verify(lang, msg, args, line, wiki) {
+export default function cmd_verify(lang, msg, args, line, wiki) {
 	if ( !msg.inGuild() || msg.defaultSettings ) return this.LINK(lang, msg, line, wiki);
 	if ( !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) {
 		if ( msg.isAdmin() ) {
@@ -292,7 +292,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'verify',
 	everyone: true,
 	pause: false,

@@ -11,9 +11,9 @@ import logging from '../util/logging.js';
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_test(lang, msg, args, line, wiki) {
+export default function cmd_test(lang, msg, args, line, wiki) {
 	if ( args.join('') ) {
-		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
+		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this?.LINK?.(lang, msg, line, wiki);
 	}
 	else if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) {
 		if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
@@ -105,7 +105,7 @@ function cmd_test(lang, msg, args, line, wiki) {
 	}
 }
 
-export default {
+export const cmdData = {
 	name: 'test',
 	everyone: true,
 	pause: true,

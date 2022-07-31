@@ -80,7 +80,7 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 	}
 	else {
 		msg.notMinecraft = true;
-		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
+		this.WIKI(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
 	}
 }
 

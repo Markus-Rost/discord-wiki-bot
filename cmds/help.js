@@ -79,7 +79,7 @@ const restrictions = {
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_help(lang, msg, args, line, wiki) {
+export default function cmd_help(lang, msg, args, line, wiki) {
 	if ( msg.inGuild() && pausedGuilds.has(msg.guildId) && ( args.join('') || !msg.isAdmin() ) ) return;
 	if ( msg.isAdmin() && msg.defaultSettings ) help_server(lang, msg);
 	var isMinecraft = mcw.hasOwnProperty(wiki.href);
@@ -180,7 +180,7 @@ function formathelp(messages, msg, lang, wiki) {
 	} ).join('\n');
 }
 
-export default {
+export const cmdData = {
 	name: 'help',
 	everyone: true,
 	pause: true,

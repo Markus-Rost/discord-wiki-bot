@@ -17,7 +17,7 @@ const allLangs = Lang.allLangs();
  * @param {String} line - The command as plain text.
  * @param {Wiki} wiki - The wiki for the message.
  */
-function cmd_settings(lang, msg, args, line, wiki) {
+export default function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	
 	db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [msg.guildId] ).then( ({rows}) => {
@@ -399,7 +399,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'settings',
 	everyone: true,
 	pause: true,

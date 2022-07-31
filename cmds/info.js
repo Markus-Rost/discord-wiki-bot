@@ -8,7 +8,7 @@ import help_server from '../functions/helpserver.js';
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_info(lang, msg, args, line, wiki) {
+export default function cmd_info(lang, msg, args, line, wiki) {
 	if ( args.join('') ) this.LINK(lang, msg, line, wiki);
 	else {
 		msg.sendChannel( lang.get('general.disclaimer', '*MarkusRost*') + '\n<' + process.env.patreon + '>' );
@@ -17,7 +17,7 @@ function cmd_info(lang, msg, args, line, wiki) {
 	}
 }
 
-export default {
+export const cmdData = {
 	name: 'info',
 	everyone: true,
 	pause: false,
