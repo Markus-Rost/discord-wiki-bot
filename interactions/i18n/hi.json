@@ -17,7 +17,6 @@
 		"name": "विकि",
 		"options[0].description": "खोजने के लिए पृष्ठ का शीर्षक।",
 		"options[0].name": "शीर्षक",
-		"options[2].description": "कड़ी और एम्बेड को स्पॉइलर में छिपाएँ?",
 		"options[2].name": "स्पॉइलर"
 	}
 }
