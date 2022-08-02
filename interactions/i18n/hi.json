@@ -16,7 +16,6 @@
 		"description": "विकि की एक कड़ी पोस्ट करें।",
 		"name": "विकि",
 		"options[0].description": "खोजने के लिए पृष्ठ का शीर्षक।",
-		"options[0].name": "शीर्षक",
-		"options[2].name": "स्पॉइलर"
+		"options[0].name": "शीर्षक"
 	}
 }
