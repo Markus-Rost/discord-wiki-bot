@@ -151,7 +151,7 @@
 		"experimental": "**Diese Funktion ist experimentell! Sie ist nicht garantiert richtig zu funktionieren und könnte in Zukunft eventuell entfernt werden.**",
 		"helpserver": "Bei Fragen oder Problemen besuche bitte meinen Support-Server:",
 		"limit": "🚨 **Stop, du hast ein Limit erreicht!** 🚨\n\n$1, deine Nachricht enthält zu viele Befehle!",
-		"missingperm": "mir fehlen einige Berechtigungen für diesen Befehl:",
+		"missingperm": "Mir fehlen einige Berechtigungen für diesen Befehl:",
 		"patreon": "Dies ist eine Patreon-Funktion!\nDu kannst mich auf Patreon unterstützen um Zugang zu dieser Funktion zu erhalten:",
 		"prefix": "Das Präfix für diesen Server ist `$1`. Du kannst das Präfix mit `$1settings prefix` ändern. Für eine Liste aller Befehle nutze `$1hilfe`.",
 		"readonly": "**Die Datenbank ist derzeit im Nur-Lese-Modus, du kannst aktuell keine Einstellungen ändern!**"
@@ -466,8 +466,8 @@
 		"yes": "Ja"
 	},
 	"pause": {
-		"off": "ich bin auf diesem Server nicht länger pausiert und werde wieder auf alle Befehle reagieren!",
-		"on": "ich bin auf diesem Server nun pausiert und werde die meisten Befehle ignorieren!"
+		"off": "Ich bin auf diesem Server nicht länger pausiert und werde wieder auf alle Befehle reagieren!",
+		"on": "Ich bin auf diesem Server nun pausiert und werde die meisten Befehle ignorieren!"
 	},
 	"phabricator": {
 		"comment": "Kommentar:",
@@ -629,7 +629,7 @@
 		"prefixchanged": "Du hast das Präfix für diesen Server geändert zu:",
 		"prefixhelp": "Nutze `$1 <Präfix>` um das Präfix zu ändern.\nNutze `_` am Ende um ein Leerzeichen am Ende des Präfixes anzugeben.\nDas Präfix darf keine Erwähnungen enthalten!",
 		"prefixinvalid": "Das angegebene Präfix wird nicht unterstützt!",
-		"role": "die mindestens benötigte Rolle für diesen Server ist:",
+		"role": "Die mindestens benötigte Rolle für diesen Server ist:",
 		"rolechanged": "Du hast die mindestens benötigte Rolle für diesen Server geändert zu:",
 		"rolehelp": "Nutze `$1 <Rolle>` um die mindestens benötigte Rolle zu ändern.",
 		"roleinvalid": "Die angegebene Rolle existiert nicht!",
@@ -646,7 +646,7 @@
 	"test": {
 		"MediaWiki": "Benötigt mindestens $1 für vollständige Funktionalität, fand `$2`.",
 		"notice": "Eingeschränkte Funktionalität",
-		"pause": "ich bin auf diesem Server derzeit pausiert.",
+		"pause": "Ich bin auf diesem Server derzeit pausiert.",
 		"slow": "Entschuldigung, ich scheine derzeit etwas langsam zu sein.",
 		"text": [
 			"Ich bin voll funktionsfähig!",
