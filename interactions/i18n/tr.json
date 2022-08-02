@@ -11,5 +11,15 @@
 		"name": "verify",
 		"options[0].description": "Vikideki kullanıcı adın.",
 		"options[0].name": "username"
+	},
+	"wiki": {
+		"description": "Bir wiki bağlantısı paylaş.",
+		"name": "wiki",
+		"options[0].description": "Aratılacak sayfa başlığı.",
+		"options[0].name": "title",
+		"options[1].description": "Gömülü mesaj olmadan sadece mesajı gönderme?",
+		"options[1].name": "noembed",
+		"options[2].description": "Bağlantı ve gömülü mesajı bir spoiler içerisinde gizle?",
+		"options[2].name": "spoiler"
 	}
 }
