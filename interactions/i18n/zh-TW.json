@@ -17,7 +17,6 @@
 		"name": "wiki",
 		"options[0].description": "要搜尋的頁面標題。",
 		"options[0].name": "標題",
-		"options[1].name": "無嵌入內容",
 		"options[2].description": "將連結和嵌入內容標記為劇透？",
 		"options[2].name": "劇透"
 	}
