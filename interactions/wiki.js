@@ -65,7 +65,7 @@ import check_wiki from '../cmds/wiki/general.js';
 	lang = lang.uselang(interaction.locale);
 	const title = interaction.options.getFocused();
 	if ( !title.trim() ) return interaction.respond( [] ).catch(log_error);
-	if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'wikia.php?controller=UnifiedSearchSuggestions&method=getSuggestions&scope=internal&query=' + encodeURIComponent( title ) + '&format=json', {
+	if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'api.php?action=linksuggest&get=suggestions&query=' + encodeURIComponent( title ) + '&format=json', {
 		timeout: {
 			request: 2_000
 		},
@@ -78,15 +78,15 @@ import check_wiki from '../cmds/wiki/general.js';
 	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
-		if ( response.statusCode !== 200 || !body?.suggestions ) {
+		if ( response.statusCode !== 200 || !body?.linksuggest?.result?.suggestions ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
 			else console.log( '- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
 			return;
 		}
-		if ( !body.suggestions.length ) return interaction.respond( [] ).catch(log_error);
-		var redirects = Object.keys(body.redirects);
-		return interaction.respond( body.suggestions.map( suggestion => {
-			let redirect = redirects.find( redirect => body.redirects[redirect] === suggestion );
+		if ( !body.linksuggest.result.suggestions.length ) return interaction.respond( [] ).catch(log_error);
+		var redirects = Object.keys(body.linksuggest.result.redirects);
+		return interaction.respond( body.linksuggest.result.suggestions.map( suggestion => {
+			let redirect = redirects.find( redirect => body.linksuggest.result.redirects[redirect] === suggestion );
 			let text = suggestion;
 			if ( redirect ) text = lang.get('search.redirect', suggestion, redirect);
 			return {
