@@ -16,7 +16,6 @@
 		"description": "傳送一條wiki連結。",
 		"name": "wiki",
 		"options[0].description": "要搜尋的頁面標題。",
-		"options[0].name": "標題",
-		"options[2].name": "劇透"
+		"options[0].name": "標題"
 	}
 }
