@@ -25,11 +25,13 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 		gender = 'unknown';
 	}
 	
-	if ( embed && !noEmbed ) embed.spliceFields( -1, 1 );
-	else {
-		let splittext = text.split('\n\n');
-		splittext.pop();
-		text = splittext.join('\n\n');
+	if ( isMessage ) {
+		if ( embed && !noEmbed ) embed.spliceFields( -1, 1 );
+		else {
+			let splittext = text.split('\n\n');
+			splittext.pop();
+			text = splittext.join('\n\n');
+		}
 	}
 	
 	return Promise.all([
