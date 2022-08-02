@@ -578,6 +578,7 @@
 		"media": "Dosya açıklama sayfasına",
 		"messagedefault": "Varsayılan:",
 		"messagedefaultnone": "*hiç*",
+		"redirect": "$1 (\"$2\" yönlendirmesi)",
 		"results": "Toplam $1 sonuç",
 		"special": "Bu özel sayfanın içeriği:"
 	},
