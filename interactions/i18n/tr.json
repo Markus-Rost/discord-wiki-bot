@@ -17,7 +17,6 @@
 		"name": "wiki",
 		"options[0].description": "Aratılacak sayfa başlığı.",
 		"options[0].name": "title",
-		"options[2].description": "Bağlantı ve gömülü mesajı bir spoiler içerisinde gizle?",
 		"options[2].name": "spoiler"
 	}
 }
