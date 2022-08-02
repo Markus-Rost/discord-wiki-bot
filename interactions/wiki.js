@@ -1,4 +1,7 @@
-import { got } from '../util/functions.js';
+import { Message, PermissionFlagsBits } from 'discord.js';
+import { got, sendMessage } from '../util/functions.js';
+import phabricator from '../functions/phabricator.js';
+import check_wiki from '../cmds/wiki/general.js';
 
 /**
  * Post a message with wiki links.
@@ -8,7 +11,48 @@ import { got } from '../util/functions.js';
  */
  function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
-	return interaction.reply( {content: lang.uselang(interaction.locale).get('general.experimental') + '\n' + wiki.toLink(title), ephemeral: true} ).catch(log_error);
+	var ephemeral = ( interaction.options.getBoolean('ephemeral') ?? true ) || pausedGuilds.has(interaction.guildId);
+	var noEmbed = interaction.options.getBoolean('noembed') || ( interaction.inGuild() && !interaction.appPermissions?.has(PermissionFlagsBits.EmbedLinks) );
+	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
+	if ( ephemeral ) lang = lang.uselang(interaction.locale);
+	return interaction.deferReply( {ephemeral} ).then( () => {
+		( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
+		? phabricator(lang, interaction, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
+		: check_wiki(lang, interaction, title, wiki, '</wiki:1002947514900693002> title:', undefined, spoiler, noEmbed)
+		).then( result => {
+			if ( !result || result instanceof Message ) return result;
+			if ( result.message ) {
+				if ( Array.isArray(result.message) ) return sendMessage(interaction, lang.get('general.experimental')).then( message => {
+					return result.message.map( async content => {
+						return await interaction.followUp( {content, ephemeral} ).catch(log_error);
+					} );
+				} );
+				/*
+				if ( Array.isArray(result.message) ) return result.message.map( async (content, n) => {
+					if ( n === 0 ) return await sendMessage(interaction, {content, ephemeral});
+					return await interaction.followUp( {content, ephemeral} ).catch(log_error);
+				} );
+				*/
+				if ( result.reaction === 'error' ) {
+					if ( typeof result.message === 'string' ) result.message = '<:error:440871715938238494> ' + result.message;
+					else result.message.content = '<:error:440871715938238494> ' + ( result.message.content ?? '' );
+				}
+				else if ( result.reaction === 'warning' ) {
+					if ( typeof result.message === 'string' ) result.message = '⚠️ ' + result.message;
+					else result.message.content = '⚠️ ' + ( result.message.content ?? '' );
+				}
+				if ( typeof result.message === 'string' ) result.message = lang.get('general.experimental') + '\n' + result.message;
+				else result.message.content = lang.get('general.experimental') + '\n' + ( result.message.content ?? '' );
+				return sendMessage(interaction, result.message);
+			}
+			else if ( result.reaction ) {
+				let message = lang.get('interaction.error') + '\n' + process.env.invite;
+				if ( result.reaction === 'nowiki' ) message = lang.get('interaction.nowiki');
+				if ( result.reaction === '🤷' ) message = lang.get('search.noresult');
+				return sendMessage(interaction, {content: lang.get('general.experimental') + '\n' + message});
+			}
+		} );
+	}, log_error );
 }
 
 /**

@@ -8,26 +8,23 @@ const {limit: {discussion: discussionLimit}} = require('../../util/default.json'
 /**
  * Processes discussion commands.
  * @param {import('../../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {String} title - The title of the discussion post.
  * @param {String} sitename - The sitename of the wiki.
- * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
+ * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function fandom_discussion(lang, msg, wiki, title, sitename, reaction, spoiler, noEmbed) {
+export default function fandom_discussion(lang, msg, wiki, title, sitename, spoiler, noEmbed) {
 	var limit = discussionLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 	if ( !title ) {
 		var pagelink = wiki + 'f';
-		if ( !msg.showEmbed() || noEmbed ) {
-			msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler );
-			
-			if ( reaction ) reaction.removeEmoji();
-			return;
+		if ( noEmbed ) {
+			return Promise.resolve( {message: spoiler + '<' + pagelink + '>' + spoiler} );
 		}
 		var embed = new EmbedBuilder().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
-		got.get( wiki + 'f', {
+		return got.get( wiki + 'f', {
 			responseType: 'text',
 			context: {
 				guildId: msg.guildId
@@ -35,36 +32,36 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 		} ).then( descresponse => {
 			var descbody = descresponse.body;
 			if ( descresponse.statusCode !== 200 || !descbody ) {
-				console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
-			} else {
-				var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
-				var parser = new HTMLParser( {
-					onopentag: (tagname, attribs) => {
-						if ( tagname === 'meta' && attribs.property === 'og:description' ) {
-							var description = escapeFormatting(attribs.content);
-							if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
-							embed.setDescription( description );
-						}
-						if ( tagname === 'meta' && attribs.property === 'og:image' ) {
-							thumbnail = attribs.content;
-						}
-					}
-				} );
-				parser.write( descbody );
-				parser.end();
-				embed.setThumbnail( thumbnail );
+				return console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 			}
+			var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
+			var parser = new HTMLParser( {
+				onopentag: (tagname, attribs) => {
+					if ( tagname === 'meta' && attribs.property === 'og:description' ) {
+						var description = escapeFormatting(attribs.content);
+						if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+						embed.setDescription( description );
+					}
+					if ( tagname === 'meta' && attribs.property === 'og:image' ) {
+						thumbnail = attribs.content;
+					}
+				}
+			} );
+			parser.write( descbody );
+			parser.end();
+			embed.setThumbnail( thumbnail );
 		}, error => {
 			console.log( '- Error while getting the description: ' + error );
-		} ).finally( () => {
-			msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );
-			
-			if ( reaction ) reaction.removeEmoji();
+		} ).then( () => {
+			return {message: {
+				content: spoiler + '<' + pagelink + '>' + spoiler,
+				embeds: [embed]
+			}};
 		} );
 	}
-	else if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.get('discussion.post') ) {
+	if ( title.split(' ')[0].toLowerCase() === 'post' || title.split(' ')[0].toLowerCase() === lang.get('discussion.post') ) {
 		title = title.split(' ').slice(1).join(' ');
-		got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=' + limit + '&format=json&cache=' + Date.now(), {
+		return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=' + limit + '&format=json&cache=' + Date.now(), {
 			headers: {
 				Accept: 'application/hal+json'
 			},
@@ -75,21 +72,20 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded['doc:posts'] ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the posts: ' + ( body && body.title ) );
-				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-				
-				if ( reaction ) reaction.removeEmoji();
+				return {
+					reaction: 'error',
+					message: spoiler + '<' + wiki + 'f' + '>' + spoiler
+				};
 			}
-			else if ( body._embedded['doc:posts'].length ) {
+			if ( body._embedded['doc:posts'].length ) {
 				var posts = body._embedded['doc:posts'];
 				var embed = new EmbedBuilder().setAuthor( {name: sitename} );
 				
 				if ( posts.some( post => post.id === title ) ) {
-					discussion_send(lang, msg, wiki, posts.find( post => post.id === title ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
+					return discussion_send(lang, msg, wiki, posts.find( post => post.id === title ), embed, spoiler, noEmbed);
 				}
-				else if ( /^\d+$/.test(title) ) {
-					got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPost&postId=' + title + '&format=json&cache=' + Date.now(), {
+				if ( /^\d+$/.test(title) ) {
+					return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPost&postId=' + title + '&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						},
@@ -101,23 +97,20 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 						if ( presponse.statusCode !== 200 || !pbody || pbody.id !== title ) {
 							if ( pbody && pbody.title === 'The requested resource was not found.' ) {
 								if ( posts.some( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
-									discussion_send(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
+									return discussion_send(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 								}
-								else msg.reactEmoji('🤷');
+								return {reaction: '🤷'};
 							}
-							else {
-								console.log( '- ' + presponse.statusCode + ': Error while getting the post: ' + ( pbody && pbody.title ) );
-								msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-							}
-							
-							if ( reaction ) reaction.removeEmoji();
+							console.log( '- ' + presponse.statusCode + ': Error while getting the post: ' + ( pbody && pbody.title ) );
+							return {
+								reaction: 'error',
+								message: spoiler + '<' + wiki + 'f' + '>' + spoiler
+							};
 						}
-						else if ( pbody.title ) {
-							discussion_send(lang, msg, wiki, pbody, embed, spoiler, noEmbed);
-							
-							if ( reaction ) reaction.removeEmoji();
+						if ( pbody.title ) {
+							return discussion_send(lang, msg, wiki, pbody, embed, spoiler, noEmbed);
 						}
-						else got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + pbody.threadId + '&format=json&cache=' + Date.now(), {
+						return got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + pbody.threadId + '&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
 							},
@@ -134,150 +127,121 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, reac
 						}, error => {
 							console.log( '- Error while getting the thread: ' + error );
 							embed.setTitle( '~~' + pbody.threadId + '~~' );
-						} ).finally( () => {
-							discussion_send(lang, msg, wiki, pbody, embed, spoiler, noEmbed);
-							
-							if ( reaction ) reaction.removeEmoji();
+						} ).then( () => {
+							return discussion_send(lang, msg, wiki, pbody, embed, spoiler, noEmbed);
 						} );
 					}, error => {
 						console.log( '- Error while getting the post: ' + error );
-						msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-						
-						if ( reaction ) reaction.removeEmoji();
+						return {
+							reaction: 'error',
+							message: spoiler + '<' + wiki + 'f' + '>' + spoiler
+						};
 					} );
 				}
-				else if ( posts.some( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
-					discussion_send(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else {
-					msg.reactEmoji('🤷');
-					
-					if ( reaction ) reaction.removeEmoji();
+				if ( posts.some( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
+					return discussion_send(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 				}
 			}
-			else {
-				msg.reactEmoji('🤷');
-				
-				if ( reaction ) reaction.removeEmoji();
-			}
+			return {reaction: '🤷'};
 		}, error => {
 			console.log( '- Error while getting the posts: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-			
-			if ( reaction ) reaction.removeEmoji();
+			return {
+				reaction: 'error',
+				message: spoiler + '<' + wiki + 'f' + '>' + spoiler
+			};
 		} );
 	}
-	else {
-		got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThreads&sortKey=trending&limit=' + limit + '&format=json&cache=' + Date.now(), {
-			headers: {
-				Accept: 'application/hal+json'
-			},
-			context: {
-				guildId: msg.guildId
-			}
-		} ).then( response => {
-			var body = response.body;
-			if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded.threads ) {
-				console.log( '- ' + response.statusCode + ': Error while getting the threads: ' + ( body && body.title ) );
-				msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
-				
-				if ( reaction ) reaction.removeEmoji();
-			}
-			else if ( body._embedded.threads.length ) {
-				var threads = body._embedded.threads;
-				var embed = new EmbedBuilder().setAuthor( {name: sitename} );
-				
-				if ( threads.some( thread => thread.id === title ) ) {
-					discussion_send(lang, msg, wiki, threads.find( thread => thread.id === title ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else if ( threads.some( thread => thread.title === title ) ) {
-					discussion_send(lang, msg, wiki, threads.find( thread => thread.title === title ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else if ( threads.some( thread => thread.title.toLowerCase() === title.toLowerCase() ) ) {
-					discussion_send(lang, msg, wiki, threads.find( thread => thread.title.toLowerCase() === title.toLowerCase() ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else if ( threads.some( thread => thread.title.includes( title ) ) ) {
-					discussion_send(lang, msg, wiki, threads.find( thread => thread.title.includes( title ) ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else if ( threads.some( thread => thread.title.toLowerCase().includes( title.toLowerCase() ) ) ) {
-					discussion_send(lang, msg, wiki, threads.find( thread => thread.title.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else if ( /^\d+$/.test(title) ) {
-					got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + title + '&format=json&cache=' + Date.now(), {
-						headers: {
-							Accept: 'application/hal+json'
-						},
-						context: {
-							guildId: msg.guildId
-						}
-					} ).then( thresponse => {
-						var thbody = thresponse.body;
-						if ( thresponse.statusCode !== 200 || !thbody || thbody.id !== title ) {
-							if ( thbody && thbody.status === 404 ) {
-								if (threads.some( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
-									discussion_send(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
-								}
-								else msg.reactEmoji('🤷');
-							}
-							else {
-								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
-								msg.sendChannelError( spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler );
-							}
-						}
-						else discussion_send(lang, msg, wiki, thbody, embed, spoiler, noEmbed);
-					}, error => {
-						console.log( '- Error while getting the thread: ' + error );
-						msg.sendChannelError( spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler );
-					} ).finally( () => {
-						if ( reaction ) reaction.removeEmoji();
-					} );
-				}
-				else if ( threads.some( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
-					discussion_send(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-				else {
-					msg.reactEmoji('🤷');
-					
-					if ( reaction ) reaction.removeEmoji();
-				}
-			}
-			else {
-				msg.reactEmoji('🤷');
-				
-				if ( reaction ) reaction.removeEmoji();
-			}
-		}, error => {
-			console.log( '- Error while getting the threads: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki + 'f' + '>' + spoiler );
+	return got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThreads&sortKey=trending&limit=' + limit + '&format=json&cache=' + Date.now(), {
+		headers: {
+			Accept: 'application/hal+json'
+		},
+		context: {
+			guildId: msg.guildId
+		}
+	} ).then( response => {
+		var body = response.body;
+		if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded.threads ) {
+			console.log( '- ' + response.statusCode + ': Error while getting the threads: ' + ( body && body.title ) );
+			return {
+				reaction: 'error',
+				message: spoiler + '<' + wiki + 'f' + '>' + spoiler
+			};
+		}
+		if ( body._embedded.threads.length ) {
+			var threads = body._embedded.threads;
+			var embed = new EmbedBuilder().setAuthor( {name: sitename} );
 			
-			if ( reaction ) reaction.removeEmoji();
-		} );
-	}
+			if ( threads.some( thread => thread.id === title ) ) {
+				return discussion_send(lang, msg, wiki, threads.find( thread => thread.id === title ), embed, spoiler, noEmbed);
+			}
+			if ( threads.some( thread => thread.title === title ) ) {
+				return discussion_send(lang, msg, wiki, threads.find( thread => thread.title === title ), embed, spoiler, noEmbed);
+			}
+			if ( threads.some( thread => thread.title.toLowerCase() === title.toLowerCase() ) ) {
+				return discussion_send(lang, msg, wiki, threads.find( thread => thread.title.toLowerCase() === title.toLowerCase() ), embed, spoiler, noEmbed);
+			}
+			if ( threads.some( thread => thread.title.includes( title ) ) ) {
+				return discussion_send(lang, msg, wiki, threads.find( thread => thread.title.includes( title ) ), embed, spoiler, noEmbed);
+			}
+			if ( threads.some( thread => thread.title.toLowerCase().includes( title.toLowerCase() ) ) ) {
+				return discussion_send(lang, msg, wiki, threads.find( thread => thread.title.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
+			}
+			if ( /^\d+$/.test(title) ) {
+				return got.get( wiki + 'wikia.php?controller=DiscussionThread&method=getThread&threadId=' + title + '&format=json&cache=' + Date.now(), {
+					headers: {
+						Accept: 'application/hal+json'
+					},
+					context: {
+						guildId: msg.guildId
+					}
+				} ).then( thresponse => {
+					var thbody = thresponse.body;
+					if ( thresponse.statusCode !== 200 || !thbody || thbody.id !== title ) {
+						if ( thbody && thbody.status === 404 ) {
+							if (threads.some( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
+								return discussion_send(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
+							}
+							return {reaction: '🤷'};
+						}
+						console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
+						return {
+							reaction: 'error',
+							message: spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler
+						};
+					}
+					return discussion_send(lang, msg, wiki, thbody, embed, spoiler, noEmbed);
+				}, error => {
+					console.log( '- Error while getting the thread: ' + error );
+					return {
+						reaction: 'error',
+						message: spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler
+					};
+				} );
+			}
+			if ( threads.some( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
+				return discussion_send(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
+			}
+		}
+		return {reaction: '🤷'};
+	}, error => {
+		console.log( '- Error while getting the threads: ' + error );
+		return {
+			reaction: 'error',
+			message: spoiler + '<' + wiki + 'f' + '>' + spoiler
+		};
+	} );
 }
 
 /**
  * Send discussion posts.
  * @param {import('../../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {Object} discussion - The discussion post.
  * @param {EmbedBuilder} embed - The embed for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
+ * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
 function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 	if ( discussion.title ) {
@@ -288,7 +252,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 		if ( discussion._embedded.thread ) embed.setTitle( escapeFormatting(discussion._embedded.thread[0].title) );
 		var pagelink = wiki + 'f/p/' + discussion.threadId + '/r/' + discussion.id;
 	}
-	if ( !msg.showEmbed() || noEmbed ) msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler );
+	if ( noEmbed ) return {message: spoiler + '<' + pagelink + '>' + spoiler};
 	embed.setURL( pagelink ).setFooter( {text: discussion.createdBy.name, iconURL: discussion.createdBy.avatarUrl} ).setTimestamp( discussion.creationDate.epochSecond * 1000 );
 	var description = '';
 	switch ( discussion.funnel ) {
@@ -348,7 +312,10 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], inline: false} );
 	}
 	
-	msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );
+	return {message: {
+		content: spoiler + '<' + pagelink + '>' + spoiler,
+		embeds: [embed]
+	}};
 }
 
 /**

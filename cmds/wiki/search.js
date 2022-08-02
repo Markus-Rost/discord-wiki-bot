@@ -7,28 +7,30 @@ const {limit: {search: searchLimit}} = require('../../util/default.json');
 /**
  * Searches a Gamepedia wiki.
  * @param {import('../../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {String} searchterm - The searchterm.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the search.
  * @param {Object} query - The siteinfo from the wiki.
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
+ * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler, noEmbed) {
 	if ( searchterm.length > 250 ) {
 		searchterm = searchterm.substring(0, 250);
-		msg.reactEmoji('⚠️');
+		msg?.fetchReply?.().then( message => message?.reactEmoji?.('warning'), log_error );
+		msg?.reactEmoji?.('warning');
 	}
 	if ( !searchterm.trim() ) return this.special_page(lang, msg, {title: 'Special:Search'}, 'search', query, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 	var pagelink = wiki.toLink('Special:Search', {search:searchterm,fulltext:1});
 	var resultText = '<' + pagelink + '>';
 	var embed = null;
-	if ( msg.showEmbed() && !noEmbed ) embed = new EmbedBuilder().setAuthor( {name: query.general.sitename} ).setTitle( '`' + searchterm + '`' ).setURL( pagelink );
+	if ( !noEmbed ) embed = new EmbedBuilder().setAuthor( {name: query.general.sitename} ).setTitle( '`' + searchterm + '`' ).setURL( pagelink );
 	else resultText += '\n\n**`' + searchterm + '`**';
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
 	var limit = searchLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
-	got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
+	return got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -65,7 +67,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 		if ( body.query.pages?.['-1']?.title ) {
 			pagelink = wiki.toLink(body.query.pages['-1'].title, {search:searchterm,fulltext:1});
 			resultText = '<' + pagelink + '>';
-			if ( msg.showEmbed() && !noEmbed ) embed.setURL( pagelink );
+			if ( !noEmbed ) embed.setURL( pagelink );
 			else resultText += '\n\n**`' + searchterm + '`**';
 		}
 		var hasExactMatch = false;
@@ -84,7 +86,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 				}
 			}
 			text += bold;
-			if ( msg.showEmbed() && !noEmbed ) {
+			if ( !noEmbed ) {
 				text += '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
 				if ( result.sectiontitle ) {
 					text += ' § [' + escapeFormatting(result.sectiontitle) + '](' + wiki.toLink(result.title, '', result.sectiontitle, true) + ')';
@@ -104,7 +106,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 		if ( !hasExactMatch ) {
 			if ( query.interwiki?.[0] ) {
 				let text = '• **⤷ ';
-				if ( msg.showEmbed() && !noEmbed ) {
+				if ( !noEmbed ) {
 					text += '__[' + escapeFormatting(query.interwiki[0].title) + '](' + query.interwiki[0].url.replace( /[()]/g, '\\$&' ) + ')__';
 					if ( query.redirects?.[0] ) {
 						text += ' (⤷ [' + escapeFormatting(query.redirects[0].from) + '](' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '))';
@@ -119,7 +121,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 			}
 			else if ( querypage.invalid === undefined && ( querypage.missing === undefined || querypage.known !== undefined ) ) {
 				let text = '• **';
-				if ( msg.showEmbed() && !noEmbed ) {
+				if ( !noEmbed ) {
 					text += '[' + escapeFormatting(querypage.title) + '](' + wiki.toLink(querypage.title, '', '', true) + ')';
 					if ( query.redirects?.[0] ) {
 						if ( query.redirects[0].tofragment ) {
@@ -143,7 +145,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 		if ( body.query.searchinfo ) {
 			footer = lang.get('search.results', body.query.searchinfo.totalhits.toLocaleString(lang.get('dateformat')), body.query.searchinfo.totalhits);
 		}
-		if ( msg.showEmbed() && !noEmbed ) {
+		if ( !noEmbed ) {
 			if ( description.length ) embed.setDescription( splitMessage( description.join('\n') )[0] );
 			if ( footer ) embed.setFooter( {text: footer} );
 		}
@@ -154,8 +156,9 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 	}, error => {
 		console.log( '- Error while getting the search results.' + error );
 	} ).then( () => {
-		msg.sendChannel( {content: '🔍 ' + spoiler + resultText + spoiler, embeds: [embed]} );
-		
-		if ( reaction ) reaction.removeEmoji();
+		return {message: {
+			content: '🔍 ' + spoiler + resultText + spoiler,
+			embeds: [embed]
+		}};
 	} );
 }

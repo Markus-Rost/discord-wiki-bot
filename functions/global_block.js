@@ -1,19 +1,23 @@
+import { Message, PermissionFlagsBits } from 'discord.js';
 import { load as cheerioLoad } from 'cheerio';
 import { got, escapeFormatting } from '../util/functions.js';
 
 /**
  * Add global blocks to user messages.
  * @param {import('../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {String} username - The name of the user.
  * @param {String} text - The text of the response.
  * @param {import('discord.js').EmbedBuilder} embed - The embed for the page.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {String} [gender] - The gender of the user.
+ * @returns {Promise<import('discord.js').Message|{reaction?: String, message?: String|import('discord.js').MessageOptions}>} The edited message.
  */
 export default function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 	if ( !msg || !msg.inGuild() || !patreonGuildsPrefix.has(msg.guildId) || wiki.wikifarm !== 'fandom' ) return;
+	var isMessage = msg instanceof Message;
+	var noEmbed = ( isMessage ? !msg.showEmbed() : !msg.appPermissions?.has(PermissionFlagsBits.EmbedLinks) );
 	
 	var isUser = true;
 	if ( !gender ) {
@@ -21,14 +25,14 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 		gender = 'unknown';
 	}
 	
-	if ( embed && msg.showEmbed() ) embed.spliceFields( -1, 1 );
+	if ( embed && !noEmbed ) embed.spliceFields( -1, 1 );
 	else {
 		let splittext = text.split('\n\n');
 		splittext.pop();
 		text = splittext.join('\n\n');
 	}
 	
-	Promise.all([
+	return Promise.all([
 		got.get( 'https://community.fandom.com/wiki/Special:Contributions/' + encodeURIComponent( username ) + '?limit=1', {
 			responseType: 'text',
 			context: {
@@ -42,11 +46,11 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 			else {
 				let $ = cheerioLoad(body, {baseURI: response.url});
 				if ( $('#mw-content-text .errorbox').length ) {
-					if ( embed && msg.showEmbed() ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.disabled') + '**'} );
+					if ( embed && !noEmbed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.disabled') + '**'} );
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
 				}
 				else if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
-					if ( embed && msg.showEmbed() ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**'} );
+					if ( embed && !noEmbed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**'} );
 					else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
 				}
 			}
@@ -68,7 +72,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 				var wikisedited = $('.curseprofile .rightcolumn .section.stats dd').eq(0).prop('innerText').replace( /[,\.]/g, '' );
 				if ( wikisedited ) {
 					wikisedited = parseInt(wikisedited, 10).toLocaleString(lang.get('dateformat'));
-					if ( embed && msg.showEmbed() ) embed.spliceFields(1, 0, {
+					if ( embed && !noEmbed ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.wikisedited'),
 						value: wikisedited,
 						inline: true
@@ -82,7 +86,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 				var globaledits = $('.curseprofile .rightcolumn .section.stats dd').eq(2).prop('innerText').replace( /[,\.]/g, '' );
 				if ( globaledits ) {
 					globaledits = parseInt(globaledits, 10).toLocaleString(lang.get('dateformat'));
-					if ( embed && msg.showEmbed() ) embed.spliceFields(1, 0, {
+					if ( embed && !noEmbed ) embed.spliceFields(1, 0, {
 						name: lang.get('user.info.globaleditcount'),
 						value: globaledits,
 						inline: true
@@ -93,7 +97,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 						text = splittext.join('\n');
 					}
 				}
-				if ( embed && msg.showEmbed() ) {
+				if ( embed && !noEmbed ) {
 					let avatar = $('.curseprofile .mainavatar img').prop('src');
 					if ( avatar ) {
 						embed.setThumbnail( avatar.replace( /^(?:https?:)?\/\//, 'https://' ).replace( '?d=mm&s=96', '?d=' + encodeURIComponent( embed.data.thumbnail?.url || '404' ) ) );
@@ -103,8 +107,11 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 		}, error => {
 			console.log( '- Error while getting the global edit count: ' + error );
 		} ) : undefined )
-	]).finally( () => {
-		if ( embed && msg.showEmbed() ) msg.edit( {content: spoiler + text + spoiler, embeds: [embed]} ).catch(log_error);
-		else msg.edit( {content: spoiler + text + spoiler} ).catch(log_error);
+	]).then( () => {
+		var content = spoiler + text + spoiler;
+		var embeds = [];
+		if ( embed && !noEmbed ) embeds.push(embed);
+		if ( isMessage ) return msg.edit( {content, embeds} ).catch(log_error);
+		else return {message: {content, embeds}};
 	} );
 }

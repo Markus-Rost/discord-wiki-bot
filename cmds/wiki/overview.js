@@ -8,17 +8,17 @@ const {timeoptions} = require('../../util/default.json');
 /**
  * Sends a Gamepedia wiki overview.
  * @param {import('../../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the overview.
- * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @param {URLSearchParams} [querystring] - The querystring for the link.
  * @param {String} [fragment] - The section for the link.
+ * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
+export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
 	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.wikifarm === 'fandom' ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.wikifarm === 'fandom' ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json', {
+	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.wikifarm === 'fandom' ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.wikifarm === 'fandom' ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -28,15 +28,15 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
-				msg.reactEmoji('nowiki');
+				return {reaction: 'nowiki'};
 			}
 			else {
 				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
-				msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler );
+				return {
+					reaction: 'error',
+					message: spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler
+				};
 			}
-			
-			if ( reaction ) reaction.removeEmoji();
-			return;
 		}
 		wiki.updateWiki(body.query.general);
 		logging(wiki, msg.guildId, 'overview');
@@ -75,7 +75,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			
 			if ( body.query.rightsinfo.text ) {
 				let licensetext = body.query.rightsinfo.text;
-				if ( msg.showEmbed() && !noEmbed ) {
+				if ( !noEmbed ) {
 					license[1] = '[' + toPlaintext(licensetext, true) + '](' + licenseurl + ')';
 				}
 				else license[1] = toPlaintext(licensetext, true) + ' (<' + licenseurl + '>)';
@@ -83,14 +83,14 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			else license[1] = '<' + licenseurl + '>';
 		}
 		else if ( body.query.rightsinfo.text ) {
-			license[1] = toFormatting(body.query.rightsinfo.text, ( msg.showEmbed() && !noEmbed ), wiki, '', true);
+			license[1] = toFormatting(body.query.rightsinfo.text, !noEmbed, wiki, '', true);
 		}
 		var misermode = [lang.get('overview.misermode'), lang.get('overview.' + ( body.query.general.misermode !== undefined ? 'yes' : 'no' ))];
 		var readonly = [lang.get('overview.readonly')];
 		if ( body.query.general.readonly !== undefined ) {
 			if ( body.query.general.readonlyreason ) {
 				let readonlyreason = body.query.general.readonlyreason;
-				readonly.push(toFormatting(readonlyreason, ( msg.showEmbed() && !noEmbed ), wiki, '', true));
+				readonly.push(toFormatting(readonlyreason, !noEmbed, wiki, '', true));
 			}
 			else readonly = ['\u200b', '**' + lang.get('overview.readonly') + '**'];
 		}
@@ -100,7 +100,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 		var text = '<' + pagelink + '>';
 		/** @type {EmbedBuilder?} */
 		var embed = null;
-		if ( msg.showEmbed() && !noEmbed ) {
+		if ( !noEmbed ) {
 			embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
 			if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 				let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
@@ -177,7 +177,7 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 						}
 						else {
 							var user = usbody.query.users[0].name;
-							if ( msg.showEmbed() && !noEmbed ) founder[1] = '[' + user + '](' + wiki.toLink('User:' + user, '', '', true) + ')';
+							if ( !noEmbed ) founder[1] = '[' + user + '](' + wiki.toLink('User:' + user, '', '', true) + ')';
 							else founder[1] = user;
 						}
 					}, error => {
@@ -211,8 +211,8 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			}, error => {
 				console.log( '- Error while getting the wiki details: ' + error );
 				return;
-			} ).finally( () => {
-				if ( msg.showEmbed() && !noEmbed ) {
+			} ).then( () => {
+				if ( !noEmbed ) {
 					if ( vertical[1] ) embed.addFields( {name: vertical[0], value: vertical[1], inline: true} );
 					if ( topic[1] ) embed.addFields( {name: topic[0], value: topic[1], inline: true} );
 					if ( official[1] ) embed.addFields( {name: official[0], value: official[1], inline: true} );
@@ -268,12 +268,13 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 					text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 				}
 				
-				msg.sendChannel( {content: spoiler + text + spoiler, embeds: [embed]} );
-				
-				if ( reaction ) reaction.removeEmoji();
+				return {message: {
+					content: spoiler + text + spoiler,
+					embeds: [embed]
+				}};
 			} );
 		}
-		if ( msg.showEmbed() && !noEmbed ) {
+		if ( !noEmbed ) {
 			embed.addFields(...[
 				{name: version[0], value: version[1], inline: true},
 				{name: language[0], value: language[1], inline: true}
@@ -299,19 +300,21 @@ export default function gamepedia_overview(lang, msg, wiki, reaction, spoiler, n
 			text += '\n\n*' + lang.get('overview.inaccurate') + '*';
 		}
 		
-		msg.sendChannel( {content: spoiler + text + spoiler, embeds: [embed]} );
-		
-		if ( reaction ) reaction.removeEmoji();
+		return {message: {
+			content: spoiler + text + spoiler,
+			embeds: [embed]
+		}};
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );
-			msg.reactEmoji('nowiki');
+			return {reaction: 'nowiki'};
 		}
 		else {
 			console.log( '- Error while getting the statistics: ' + error );
-			msg.sendChannelError( spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler );
+			return {
+				reaction: 'error',
+				message: spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler
+			};
 		}
-		
-		if ( reaction ) reaction.removeEmoji();
 	} );
 }

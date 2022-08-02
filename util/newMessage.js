@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs';
 import { domainToASCII } from 'node:url';
-import { cleanContent } from 'discord.js';
+import { Message, cleanContent } from 'discord.js';
 import { inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
@@ -254,7 +254,22 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
 				logging(wiki, msg.guildId, 'inline', 'embed');
-				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, false, new URLSearchParams(), embed.section);
+				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, false, new URLSearchParams(), embed.section).then( result => {
+					if ( !result || result instanceof Message ) return result;
+					if ( result.message ) {
+						if ( Array.isArray(result.message) ) result.message.map( async content => await msg.sendChannel(content) );
+						else if ( result.reaction === 'error' ) msg.sendChannelError(result.message);
+						else if ( result.reaction === 'reply' ) msg.replyMsg(result.message, true);
+						else msg.sendChannel(result.message).then( message => {
+							if ( result.reaction === 'warning' && message ) message.reactEmoji('warning');
+							return message;
+						} );
+					}
+					else if ( result.reaction ) {
+						msg.reactEmoji(result.reaction);
+					}
+					if ( reaction ) reaction.removeEmoji();
+				} );
 			} ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {

@@ -1,5 +1,5 @@
 import { load as cheerioLoad } from 'cheerio';
-import { EmbedBuilder } from 'discord.js';
+import { Message, EmbedBuilder, PermissionFlagsBits } from 'discord.js';
 import { toSection } from '../util/wiki.js';
 import { got, parse_infobox, getEmbedLength, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
 
@@ -82,7 +82,7 @@ const removeClassesExceptions = [
 /**
  * Parses a wiki page to get it's description.
  * @param {import('../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {String} content - The content for the message.
  * @param {EmbedBuilder} embed - The embed for the message.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
@@ -102,11 +102,13 @@ const removeClassesExceptions = [
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
  * @param {String} [fragment] - The section title to embed.
  * @param {String} [pagelink] - The link to the page.
- * @returns {Promise<import('discord.js').Message>} The edited message.
+ * @returns {Promise<import('discord.js').Message|{reaction?: String, message?: String|import('discord.js').MessageOptions}>} The edited message.
  */
 export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
-	if ( !msg?.showEmbed?.() || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description ) {
+	var isMessage = msg instanceof Message;
+	var noEmbed = ( isMessage ? !msg.showEmbed() : ( msg.inGuild() && !msg.appPermissions?.has(PermissionFlagsBits.EmbedLinks) ) );
+	if ( !msg || noEmbed || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description ) {
 		if ( missing !== undefined && embed ) {
 			if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
@@ -115,12 +117,13 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				embed.setDescription( embed.backupDescription );
 			}
 		}
-		return msg.sendChannel( {content: content, embeds: [embed]} );
+		if ( isMessage ) return msg.sendChannel( {content, embeds: [embed]} );
+		else return Promise.resolve( {message: {content, embeds: [embed]}} );
 	}
-	return msg.sendChannel( {
+	return ( isMessage ? msg.sendChannel( {
 		content,
 		embeds: [EmbedBuilder.from(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )]
-	} ).then( message => {
+	} ) : Promise.resolve(true) ).then( message => {
 		if ( !message ) return;
 		if ( ns === 8 ) {
 			title = title.split(':').slice(1).join(':');
@@ -190,7 +193,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					embed.setDescription( embed.backupDescription );
 				}
 			} ).then( () => {
-				return message.edit( {content, embeds: [embed]} ).catch(log_error);
+				if ( isMessage ) return message.edit( {content, embeds: [embed]} ).catch(log_error);
+				else return {message: {content, embeds: [embed]}};
 			} );
 		}
 		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
@@ -248,7 +252,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				embed.setDescription( embed.backupDescription );
 			}
 		} ).then( () => {
-			return message.edit( {content, embeds: [embed]} ).catch(log_error);
+			if ( isMessage ) return message.edit( {content, embeds: [embed]} ).catch(log_error);
+			else return {message: {content, embeds: [embed]}};
 		} );
 		if ( !fragment && !embed.data.fields?.length && infoboxes ) {
 			try {
@@ -533,7 +538,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + getEmbedLength(val), getEmbedLength(imageEmbed) ) <= 5500 ) embeds.push(imageEmbed);
 				} );
 			}
-			return message.edit( {content, embeds} ).catch(log_error);
+			if ( isMessage ) return message.edit( {content, embeds} ).catch(log_error);
+			else return {message: {content, embeds}};
 		} );
 	} );
 }

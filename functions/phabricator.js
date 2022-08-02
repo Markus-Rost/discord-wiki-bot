@@ -5,24 +5,22 @@ import { got, escapeFormatting, limitLength } from '../util/functions.js';
 /**
  * Sends a Phabricator task.
  * @param {import('../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../util/wiki.js').default} wiki - The wiki.
  * @param {URL} link - The link.
- * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} [spoiler] - If the response is in a spoiler.
  * @param {Boolean} [noEmbed] - If the response should be without an embed.
+ * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function phabricator_task(lang, msg, wiki, link, reaction, spoiler = '', noEmbed = false) {
+export default function phabricator_task(lang, msg, wiki, link, spoiler = '', noEmbed = false) {
 	var regex = /^(?:https?:)?\/\/phabricator\.(wikimedia|miraheze)\.org\/T(\d+)(?:#|$)/.exec(link.href);
 	if ( !regex || !process.env['phabricator_' + regex[1]] ) {
 		logging(wiki, msg.guildId, 'interwiki');
-		msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
-		if ( reaction ) reaction.removeEmoji();
-		return;
+		return Promise.resolve( {message: spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler} );
 	}
 	var site = 'https://phabricator.' + regex[1] + '.org/';
 	logging(site, msg.guildId, 'phabricator', regex[1]);
-	got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator_' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2], {
+	return got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator_' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2], {
 		context: {
 			guildId: msg.guildId
 		}
@@ -30,24 +28,18 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the Phabricator task: ' + body?.error_info );
-			msg.sendChannelError( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
-
-			if ( reaction ) reaction.removeEmoji();
-			return;
+			return {
+				reaction: 'error',
+				message: spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler
+			};
 		}
 		if ( !body.result.data.length ) {
-			msg.sendChannel( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
-
-			if ( reaction ) reaction.removeEmoji();
-			return;
+			return {message: spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler};
 		}
 		var task = body.result.data[0];
 		var status = '**' + task.fields.status.name + ':** ' + escapeFormatting(task.fields.name) + '\n';
-		if ( !msg.showEmbed() || noEmbed ) {
-			msg.sendChannel( spoiler + status + '<' + link + '>' + spoiler );
-			
-			if ( reaction ) reaction.removeEmoji();
-			return;
+		if ( noEmbed ) {
+			return {message: spoiler + status + '<' + link + '>' + spoiler};
 		}
 		var summary = escapeFormatting(task.fields.name);
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
@@ -60,7 +52,7 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 		if ( description.length > 2000 ) description = limitLength(description, 2000, 40);
 		embed.setDescription( description );
 
-		Promise.all([
+		return Promise.all([
 			( task.attachments.projects.projectPHIDs.length ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
 				context: {
 					guildId: msg.guildId
@@ -101,16 +93,18 @@ export default function phabricator_task(lang, msg, wiki, link, reaction, spoile
 			}, error => {
 				console.log( '- Error while getting the task transactions: ' + error );
 			} ) : undefined )
-		]).finally( () => {
-			msg.sendChannel( {content: spoiler + status + '<' + link + '>' + spoiler, embeds: [embed]} );
-			
-			if ( reaction ) reaction.removeEmoji();
+		]).then( () => {
+			return {message: {
+				content: spoiler + status + '<' + link + '>' + spoiler,
+				embeds: [embed]
+			}};
 		} );
 	}, error => {
 		console.log( '- Error while getting the Phabricator task: ' + error );
-		msg.sendChannelError( spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler );
-
-		if ( reaction ) reaction.removeEmoji();
+		return {
+			reaction: 'error',
+			message: spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler
+		};
 	} );
 }
 

@@ -95,6 +95,9 @@ Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
 		case 'error':
 			emoji = '<:error:440871715938238494>';
 			break;
+		case 'warning':
+			emoji = '⚠️';
+			break;
 		default:
 			emoji = name;
 	}
@@ -192,7 +195,7 @@ client.on( 'interactionCreate', interaction => {
  */
  function interactionCreate(interaction) {
 	if ( breakOnTimeoutPause(interaction) ) return;
-	/** @type {function(Discord.BaseInteraction, Lang, Wiki)} */
+	/** @type {function(Discord.Interaction, Lang, Wiki)} */
 	var cmd = null;
 	if ( interaction.isAutocomplete() ) {
 		if ( !interaction_commands.autocomplete.hasOwnProperty(interaction.commandName) ) return;
@@ -229,6 +232,7 @@ client.on( 'interactionCreate', interaction => {
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
 	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+		if ( !row ) interaction.defaultSettings = true;
 		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Interaction: Error while getting the wiki: ' + dberror );

@@ -85,11 +85,11 @@ export default function cmd_test(lang, msg, args, line, wiki) {
 					return {
 						status: [
 							discordClient.ws.status,
-							...( discordClient.ws.shards.every( shard => {
+							...( discordClient.ws.shards.size ? ( discordClient.ws.shards.every( shard => {
 								return ( shard.status === shard.manager.status );
 							} ) ? [] : discordClient.ws.shards.map( shard => {
 								return shard.status;
-							} ) )
+							} ) ) : ['[]'] )
 						],
 						guilds: discordClient.guilds.cache.size
 					};

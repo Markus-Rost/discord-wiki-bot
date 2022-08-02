@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
 import logging from '../../util/logging.js';
 import { got, toMarkdown, escapeFormatting, splitMessage } from '../../util/functions.js';
 import { createRequire } from 'node:module';
@@ -27,13 +27,13 @@ const overwrites = {
 			}
 			else if ( args[0] === '*' ) namespaceData = ['*', '*'];
 		}
-		fn.random(lang, msg, wiki, reaction, spoiler, noEmbed, namespaceData, querystring, fragment, embed);
+		return fn.random(lang, msg, wiki, reaction, spoiler, noEmbed, namespaceData, querystring, fragment, embed);
 	},
 	statistics: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed) => {
-		fn.overview(lang, msg, wiki, reaction, spoiler, noEmbed, querystring, fragment);
+		return fn.overview(lang, msg, wiki, spoiler, noEmbed, querystring, fragment);
 	},
 	diff: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed) => {
-		fn.diff(lang, msg, args, wiki, reaction, spoiler, noEmbed, embed);
+		return fn.diff(lang, msg, args, wiki, spoiler, noEmbed, embed);
 	}
 }
 
@@ -149,7 +149,7 @@ const descriptions = {
 /**
  * Processes special pages.
  * @param {import('../../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {Object} querypage - The details of the special page.
  * @param {String} querypage.title - The title of the special page.
  * @param {String} querypage.uselang - The language of the special page.
@@ -161,26 +161,23 @@ const descriptions = {
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
+ * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
 	var embed = new EmbedBuilder().setAuthor( {name: query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(query.general.logo, wiki).href );
 	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
-		overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query);
-		return;
+		return overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query);
 	}
 	logging(wiki, msg.guildId, 'general', 'special');
-	if ( !msg.showEmbed() || noEmbed ) {
-		msg.sendChannel( spoiler + '<' + pagelink + '>' + spoiler );
-		
-		if ( reaction ) reaction.removeEmoji();
-		return;
+	if ( noEmbed ) {
+		return Promise.resolve( {message: spoiler + '<' + pagelink + '>' + spoiler} );
 	}
-	if ( specialpage === 'recentchanges' && msg.isAdmin() ) {
+	if ( specialpage === 'recentchanges' && ( msg.isAdmin?.() || msg.memberPermissions?.has(PermissionFlagsBits.ManageGuild) ) ) {
 		embed.addFields( {name: lang.get('rcscript.title'), value: lang.get('rcscript.ad', ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)')} );
 	}
-	got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
+	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -215,9 +212,10 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 		}
 	}, error => {
 		console.log( '- Error while getting the special page: ' + error );
-	} ).finally( () => {
-		msg.sendChannel( {content: spoiler + '<' + pagelink + '>' + spoiler, embeds: [embed]} );
-		
-		if ( reaction ) reaction.removeEmoji();
+	} ).then( () => {
+		return {message: {
+			content: spoiler + '<' + pagelink + '>' + spoiler,
+			embeds: [embed]
+		}};
 	} );
 }

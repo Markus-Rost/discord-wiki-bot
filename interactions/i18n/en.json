@@ -17,9 +17,11 @@
 		"name": "wiki",
 		"options[0].description": "Page title to search for.",
 		"options[0].name": "title",
-		"options[1].description": "Send only the link without embed?",
-		"options[1].name": "noembed",
-		"options[2].description": "Hide the link and embed in a spoiler?",
-		"options[2].name": "spoiler"
+		"options[1].description": "Send a response only visible to yourself?",
+		"options[1].name": "ephemeral",
+		"options[2].description": "Send only the link without embed?",
+		"options[2].name": "noembed",
+		"options[3].description": "Hide the link and embed in a spoiler?",
+		"options[3].name": "spoiler"
 	}
 }
