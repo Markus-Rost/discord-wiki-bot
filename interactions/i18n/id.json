@@ -16,7 +16,6 @@
 		"description": "Pasang tautan wiki.",
 		"name": "wiki",
 		"options[0].description": "Judul halaman yang akan dicari.",
-		"options[0].name": "judul",
-		"options[2].name": "spoiler"
+		"options[0].name": "judul"
 	}
 }
