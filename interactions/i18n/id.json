@@ -17,7 +17,6 @@
 		"name": "wiki",
 		"options[0].description": "Judul halaman yang akan dicari.",
 		"options[0].name": "judul",
-		"options[1].description": "Kirim hanya tautan tanpa disematkan?",
 		"options[1].name": "noembed",
 		"options[2].description": "Sembunyikan tautan dan sematkan di spoiler?",
 		"options[2].name": "spoiler"
