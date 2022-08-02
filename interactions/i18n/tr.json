@@ -16,7 +16,6 @@
 		"description": "Bir wiki bağlantısı paylaş.",
 		"name": "wiki",
 		"options[0].description": "Aratılacak sayfa başlığı.",
-		"options[0].name": "title",
-		"options[2].name": "spoiler"
+		"options[0].name": "title"
 	}
 }
