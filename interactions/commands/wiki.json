@@ -39,24 +39,32 @@
 		{
 			"type": 5,
 			"name": "ephemeral",
-			"name_localizations": {},
+			"name_localizations": {
+				"hi": "noembed",
+				"zh-CN": "无嵌入内容",
+				"zh-TW": "無嵌入內容"
+			},
 			"description": "Send a response only visible to yourself?",
-			"description_localizations": {},
+			"description_localizations": {
+				"hi": "बिना एम्बेड के सिर्फ कड़ी भेजें?",
+				"zh-CN": "仅发送链接而不发送嵌入内容？",
+				"zh-TW": "僅傳送連結而不傳送嵌入內容？"
+			},
 			"required": false
 		},
 		{
 			"type": 5,
 			"name": "noembed",
 			"name_localizations": {
-				"hi": "noembed",
-				"zh-CN": "无嵌入内容",
-				"zh-TW": "無嵌入內容"
+				"hi": "स्पॉइलर",
+				"zh-CN": "剧透",
+				"zh-TW": "劇透"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
-				"hi": "बिना एम्बेड के सिर्फ कड़ी भेजें?",
-				"zh-CN": "仅发送链接而不发送嵌入内容？",
-				"zh-TW": "僅傳送連結而不傳送嵌入內容？"
+				"hi": "कड़ी और एम्बेड को स्पॉइलर में छिपाएँ?",
+				"zh-CN": "将链接和嵌入内容标记为剧透？",
+				"zh-TW": "將連結和嵌入內容標記為劇透？"
 			},
 			"required": false
 		},
