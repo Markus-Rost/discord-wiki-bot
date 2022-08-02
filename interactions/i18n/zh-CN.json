@@ -16,7 +16,6 @@
 		"description": "发送一条wiki链接。",
 		"name": "wiki",
 		"options[0].description": "要搜索的页面标题。",
-		"options[0].name": "标题",
-		"options[2].name": "剧透"
+		"options[0].name": "标题"
 	}
 }
