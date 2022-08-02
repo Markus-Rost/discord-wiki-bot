@@ -17,7 +17,6 @@
 		"name": "wiki",
 		"options[0].description": "要搜索的页面标题。",
 		"options[0].name": "标题",
-		"options[2].description": "将链接和嵌入内容标记为剧透？",
 		"options[2].name": "剧透"
 	}
 }
