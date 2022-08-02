@@ -15,7 +15,7 @@ function interaction_verify(interaction, lang, wiki) {
 	var loggingLang = lang;
 	var userLang = lang.uselang(interaction.locale);
 	if ( !interaction.guild ) return interaction.reply( {content: userLang.get('verify.missing'), ephemeral: true} ).catch(log_error);
-	if ( !interaction.appPermissions.has(PermissionFlagsBits.ManageRoles) ) {
+	if ( !interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) {
 		console.log( interaction.guildId + ': Missing permissions - ManageRoles' );
 		return interaction.reply( {content: userLang.get('general.missingperm') + ' `ManageRoles`', ephemeral: true} ).catch(log_error);
 	}

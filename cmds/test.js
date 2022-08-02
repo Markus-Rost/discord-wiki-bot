@@ -81,14 +81,23 @@ export default function cmd_test(lang, msg, args, line, wiki) {
 				}
 				embed.addFields( {name: wiki.toLink(), value: ping} );
 			} ).finally( () => {
-				if ( msg.isOwner() ) return msg.client.shard.broadcastEval(discordClient => {
+				if ( msg.isOwner() ) return msg.client.shard.broadcastEval( discordClient => {
 					return {
-						status: discordClient.ws.status,
+						status: [
+							discordClient.ws.status,
+							...( discordClient.ws.shards.every( shard => {
+								return ( shard.status === shard.manager.status );
+							} ) ? [] : discordClient.ws.shards.map( shard => {
+								return shard.status;
+							} ) )
+						],
 						guilds: discordClient.guilds.cache.size
 					};
-				}).then( values => {
+				} ).then( values => {
 					embed.addFields( {name: 'Guilds', value: values.reduce( (acc, val) => acc + val.guilds, 0 ).toLocaleString(lang.get('dateformat'))} );
-					return '```less\n' + values.map( (value, id) => '[' + id + ']: ' + ( Status[value.status] ?? value.status ) ).join('\n') + '\n```';
+					return '```less\n' + values.map( (value, id) => {
+						return '[' + id + ']: ' + value.status.map( wsStatus => Status[wsStatus] ?? wsStatus ).join(' ');
+					} ).join('\n') + '\n```';
 				}, error => {
 					return '```js\n' + error + '\n```';
 				} ).then( shards => {

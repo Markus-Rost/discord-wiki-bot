@@ -26,7 +26,7 @@ function slash_inline(interaction, lang, wiki) {
 		else if ( interaction.guild ) {
 			allowedMentions.roles = interaction.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		}
-		if ( interaction.guild && !interaction.memberPermissions.has(PermissionFlagsBits.UseExternalEmojis) ) {
+		if ( !interaction.memberPermissions.has(PermissionFlagsBits.UseExternalEmojis) && interaction.appPermissions.has(PermissionFlagsBits.UseExternalEmojis) && interaction.guild ) {
 			text = text.replace( /(?<!\\)<a?(:\w+:)\d+>/g, (replacement, emoji, id) => {
 				if ( interaction.guild.emojis.cache.has(id) ) {
 					return replacement;
