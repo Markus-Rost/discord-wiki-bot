@@ -5,13 +5,15 @@
 	"name_localizations": {
 		"hi": "विकि",
 		"zh-CN": "wiki",
-		"zh-TW": "wiki"
+		"zh-TW": "wiki",
+		"tr": "wiki"
 	},
 	"description": "Post a wiki link.",
 	"description_localizations": {
 		"hi": "विकि की एक कड़ी पोस्ट करें।",
 		"zh-CN": "发送一条wiki链接。",
-		"zh-TW": "傳送一條wiki連結。"
+		"zh-TW": "傳送一條wiki連結。",
+		"tr": "Bir wiki bağlantısı paylaş."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -23,13 +25,15 @@
 			"name_localizations": {
 				"hi": "शीर्षक",
 				"zh-CN": "标题",
-				"zh-TW": "標題"
+				"zh-TW": "標題",
+				"tr": "title"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
 				"hi": "खोजने के लिए पृष्ठ का शीर्षक।",
 				"zh-CN": "要搜索的页面标题。",
-				"zh-TW": "要搜尋的頁面標題。"
+				"zh-TW": "要搜尋的頁面標題。",
+				"tr": "Aratılacak sayfa başlığı."
 			},
 			"min_length": 0,
 			"max_length": 250,
