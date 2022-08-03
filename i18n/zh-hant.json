@@ -318,6 +318,17 @@
 					"desc": "我將變更本伺服器的預設wiki。"
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "傳送一條含有行內wiki連結的訊息。"
+				},
+				"verify": {
+					"desc": "使用此指令來驗證您Discord帳號和wiki帳號的關係，並擁有與您wiki帳號相符的身分組。"
+				},
+				"wiki": {
+					"desc": "我將傳回一個指向 wiki 中指定頁面的連結："
+				}
+			},
 			"subprefix": {
 				"cmd": "<wiki> <關鍵字>",
 				"desc": "我將傳回一個指向指定 wiki 中指定頁面的連結："
@@ -381,6 +392,7 @@
 		"pause": "**我目前處於暫停狀態！**\n僅能使用以下指令："
 	},
 	"interaction": {
+		"error": "執行指令時出現非預期的錯誤！",
 		"inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
 		"nowiki": "所使用的wiki不存在！",
 		"verify": "為了能透過您的wiki帳號驗證您的Discord帳號與並授予與您wiki帳號相符的身分組，請提供您的wiki使用者名稱以使用此指令。"
@@ -578,6 +590,7 @@
 		"media": "到檔案描述頁",
 		"messagedefault": "預設：",
 		"messagedefaultnone": "*無*",
+		"noresult": "找不到符合您查詢的結果。",
 		"redirect": "$1（重新導向自$2）",
 		"results": "共 $1 個結果",
 		"special": "此特殊頁面的內容："

@@ -399,7 +399,7 @@
 		"pause": "**I'm currently paused on this server!**\nOnly these commands can be performed:"
 	},
 	"interaction": {
-		"error": "An unexpected error occured while running the command!",
+		"error": "An unexpected error occurred while running the command!",
 		"inline": "Please provide some text with [[wikitext]] links to use this command.",
 		"interwiki": "Please provide a known wiki to search.",
 		"nowiki": "The used wiki doesn't exist!",

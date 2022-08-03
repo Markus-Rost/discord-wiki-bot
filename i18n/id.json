@@ -318,6 +318,17 @@
 					"desc": "Saya akan mengubah wiki default untuk server ini."
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "Posting pesan dengan tautan inline wiki."
+				},
+				"verify": {
+					"desc": "Gunakan perintah ini untuk memverifikasi akun Discord Anda dengan akun wiki Anda dan mendapatkan role yang cocok dengan akun wiki Anda."
+				},
+				"wiki": {
+					"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki:"
+				}
+			},
 			"subprefix": {
 				"cmd": "<wiki> <search term>",
 				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki yang bernama:"
@@ -381,6 +392,7 @@
 		"pause": "**Saat ini saya sedang dijeda di server ini!**\nHanya perintah ini yang dapat dilakukan:"
 	},
 	"interaction": {
+		"error": "Terjadi kesalahan tak terduga saat menjalankan perintah!",
 		"inline": "Harap berikan beberapa teks dengan tautan [[wikitext]] untuk menggunakan perintah ini.",
 		"nowiki": "Wiki yang dicantumkan tidak ada!",
 		"verify": "Harap berikan nama pengguna wiki kamu untuk menggunakan perintah ini untuk memverifikasi akun Discord milik kamu dengan akun wiki dan dapatkan peran yang cocok dengan akun wiki mu."
@@ -578,6 +590,7 @@
 		"media": "Ke halaman deskripsi file",
 		"messagedefault": "Bawaan:",
 		"messagedefaultnone": "*tidak ada*",
+		"noresult": "Permintaan mu tidak dapat ditemukan.",
 		"redirect": "$1 (dialihkan dari \"$2\")",
 		"results": "$1 total {{PLURAL:$2|hasil|hasil}}",
 		"special": "Konten halaman khusus ini:"

@@ -381,6 +381,7 @@
 		"pause": "**¡Actualmente estoy en pausa en este servidor!**\nSolo se pueden ejecutar estos comandos:"
 	},
 	"interaction": {
+		"error": "¡Ocurrió un error inesperado al ejecutar el comando!",
 		"inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
 		"nowiki": "¡El wiki usado no existe!",
 		"verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
@@ -578,6 +579,8 @@
 		"media": "A la página de descripción del archivo",
 		"messagedefault": "Predeterminado:",
 		"messagedefaultnone": "*ninguno*",
+		"noresult": "No se pudo encontrar ningún resultado para tu consulta.",
+		"redirect": "$1 (redireccionado de \"$2\")",
 		"results": "$1 total {{PLURAL:$2|resultado|resultados}}",
 		"special": "Contenido de esta página especial:"
 	},

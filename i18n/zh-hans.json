@@ -318,6 +318,17 @@
 					"desc": "我将更改本服务器的默认 wiki。"
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "发送一条含有行内wiki链接的消息。"
+				},
+				"verify": {
+					"desc": "使用此命令验证你Discord账号和wiki账号的关联，并获得与你wiki账号相匹配的身份组。"
+				},
+				"wiki": {
+					"desc": "我将返回一条指向 wiki 中指定页面的链接："
+				}
+			},
 			"subprefix": {
 				"cmd": "<wiki> <关键字>",
 				"desc": "我将返回一个指向指定 wiki 中指定页面的链接："
@@ -381,6 +392,7 @@
 		"pause": "**我目前处于暂停状态！**\n仅能使用以下命令："
 	},
 	"interaction": {
+		"error": "运行命令时出现了意外错误！",
 		"inline": "请提供一些有 [[wiki 文本]] 的文字来使用此命令。",
 		"nowiki": "所使用的 wiki 不存在！",
 		"verify": "为了验证您的 Discord 与您的 wiki 账号相匹配并授予与您 wiki 账号相符合的身份组，请提供您的 wiki 用户名。"
@@ -578,6 +590,7 @@
 		"media": "到文件描述页",
 		"messagedefault": "默认：",
 		"messagedefaultnone": "*无*",
+		"noresult": "找不到匹配查询的结果。",
 		"redirect": "$1（重定向自$2）",
 		"results": "共 $1 个结果",
 		"special": "此特殊页面的内容："
