@@ -318,6 +318,17 @@
 					"desc": "我将更改本服务器的默认 wiki。"
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "发送一条含有行内wiki链接的消息。"
+				},
+				"verify": {
+					"desc": "使用此命令验证你Discord账号和wiki账号的关联，并获得与你wiki账号相匹配的身份组。"
+				},
+				"wiki": {
+					"desc": "我将返回一条指向 wiki 中指定页面的链接："
+				}
+			},
 			"subprefix": {
 				"cmd": "<wiki> <关键字>",
 				"desc": "我将返回一个指向指定 wiki 中指定页面的链接："
