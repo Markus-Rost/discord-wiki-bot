@@ -6,14 +6,20 @@
 		"hi": "विकि",
 		"zh-CN": "wiki",
 		"zh-TW": "wiki",
-		"tr": "wiki"
+		"tr": "wiki",
+		"de": "wiki",
+		"es-ES": "wiki",
+		"ja": "wiki"
 	},
 	"description": "Post a wiki link.",
 	"description_localizations": {
 		"hi": "विकि की एक कड़ी पोस्ट करें।",
 		"zh-CN": "发送一条wiki链接。",
 		"zh-TW": "傳送一條wiki連結。",
-		"tr": "Bir wiki bağlantısı paylaş."
+		"tr": "Bir wiki bağlantısı paylaş.",
+		"de": "Sende einen Link zum Wiki.",
+		"es-ES": "Publica un enlace wiki.",
+		"ja": "Wikiリンクを貼る。"
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -26,14 +32,20 @@
 				"hi": "शीर्षक",
 				"zh-CN": "标题",
 				"zh-TW": "標題",
-				"tr": "title"
+				"tr": "title",
+				"de": "titel",
+				"es-ES": "título",
+				"ja": "title"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
 				"hi": "खोजने के लिए पृष्ठ का शीर्षक।",
 				"zh-CN": "要搜索的页面标题。",
 				"zh-TW": "要搜尋的頁面標題。",
-				"tr": "Aratılacak sayfa başlığı."
+				"tr": "Aratılacak sayfa başlığı.",
+				"de": "Seitenname zum Suchen.",
+				"es-ES": "Título de la página a buscar.",
+				"ja": "検索するページタイトル。"
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -43,25 +55,67 @@
 		{
 			"type": 5,
 			"name": "ephemeral",
-			"name_localizations": {},
+			"name_localizations": {
+				"de": "privat",
+				"es-ES": "efímero",
+				"hi": "ephemeral",
+				"ja": "ephemeral",
+				"zh-CN": "仅自己可见",
+				"zh-TW": "僅自己可見"
+			},
 			"description": "Send a response only visible to yourself?",
-			"description_localizations": {},
+			"description_localizations": {
+				"de": "Sende eine Antwort nur sichtbar für dich?",
+				"es-ES": "¿Enviar una respuesta que solo sea visible para ti?",
+				"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
+				"ja": "自分だけに見える応答を送信しますか？",
+				"zh-CN": "发送的消息是否仅对自己可见？",
+				"zh-TW": "傳送的訊息是否僅對自己可見？"
+			},
 			"required": false
 		},
 		{
 			"type": 5,
 			"name": "noembed",
-			"name_localizations": {},
+			"name_localizations": {
+				"de": "noembed",
+				"es-ES": "sinvistaprevia",
+				"hi": "noembed",
+				"ja": "noembed",
+				"zh-CN": "不包含嵌入内容",
+				"zh-TW": "不包含嵌入內容"
+			},
 			"description": "Send only the link without embed?",
-			"description_localizations": {},
+			"description_localizations": {
+				"de": "Sende nur den Link ohne Einbettung?",
+				"es-ES": "¿Enviar solo el enlace sin vista previa?",
+				"hi": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
+				"ja": "埋め込みなしでリンクだけを送信しますか？",
+				"zh-CN": "发送的链接是否不包含嵌入内容？",
+				"zh-TW": "傳送的連結是否不包含嵌入內容？"
+			},
 			"required": false
 		},
 		{
 			"type": 5,
 			"name": "spoiler",
-			"name_localizations": {},
+			"name_localizations": {
+				"de": "spoiler",
+				"es-ES": "spoiler",
+				"hi": "spoiler",
+				"ja": "spoiler",
+				"zh-CN": "标记为剧透",
+				"zh-TW": "標記為劇透"
+			},
 			"description": "Hide the link and embed in a spoiler?",
-			"description_localizations": {},
+			"description_localizations": {
+				"de": "Verstecke Link und Einbettung in einem Spoiler?",
+				"es-ES": "¿Ocultar el enlace y la vista previa en un spoiler?",
+				"hi": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
+				"ja": "リンクを隠して、スポイラーに埋め込む？",
+				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
+				"zh-TW": "是否將連結和嵌入內容標記為劇透？"
+			},
 			"required": false
 		}
 	]
