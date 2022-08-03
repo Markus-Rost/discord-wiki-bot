@@ -318,6 +318,17 @@
 					"desc": "Ich ändere das Standard-Wiki für diesen Server."
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "Sende eine Nachricht mit Inline-Links zum Wiki."
+				},
+				"verify": {
+					"desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
+				},
+				"wiki": {
+					"desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki:"
+				}
+			},
 			"subprefix": {
 				"cmd": "<Wiki> <Suchbegriff>",
 				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wiki:"
@@ -381,6 +392,7 @@
 		"pause": "**Ich bin auf diesem Server derzeit pausiert!**\nNur diese Befehle können ausgeführt werden:"
 	},
 	"interaction": {
+		"error": "Ein unerwarteter Fehler trat während der Ausführung des Befehls auf!",
 		"inline": "Bitte gebe einen Text mit [[Wikitext]]-Links an um diesen Befehl zu nutzen.",
 		"nowiki": "Das genutzte Wiki existiert nicht!",
 		"verify": "Bitte gebe deinen Wiki-Benutzernamen an um diesen Befehl dazu zu nutzen, deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
@@ -578,6 +590,7 @@
 		"media": "Zur Dateibeschreibungsseite",
 		"messagedefault": "Standardwert:",
 		"messagedefaultnone": "*keiner*",
+		"noresult": "Es konnten keine Ergebnisse für deine Suche gefunden werden.",
 		"redirect": "$1 (Weiterleitung von „$2“)",
 		"results": "$1 {{PLURAL:$2|Ergebnis|Ergebnisse}} insgesamt",
 		"special": "Inhalt der Spezialseite:"
