@@ -11,5 +11,17 @@
 		"name": "verify",
 		"options[0].description": "Wiki上でのユーザー名。",
 		"options[0].name": "username"
+	},
+	"wiki": {
+		"description": "Wikiリンクを貼る。",
+		"name": "wiki",
+		"options[0].description": "検索するページタイトル。",
+		"options[0].name": "title",
+		"options[1].description": "自分だけに見える応答を送信しますか？",
+		"options[1].name": "ephemeral",
+		"options[2].description": "埋め込みなしでリンクだけを送信しますか？",
+		"options[2].name": "noembed",
+		"options[3].description": "リンクを隠して、スポイラーに埋め込む？",
+		"options[3].name": "spoiler"
 	}
 }
