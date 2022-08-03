@@ -10,5 +10,17 @@
 		"name": "verifizieren",
 		"options[0].description": "Dein Benutzername im Wiki.",
 		"options[0].name": "benutzername"
+	},
+	"wiki": {
+		"description": "Sende einen Link zum Wiki.",
+		"name": "wiki",
+		"options[0].description": "Seitenname zum Suchen.",
+		"options[0].name": "titel",
+		"options[1].description": "Sende eine Antwort nur sichtbar für dich?",
+		"options[1].name": "privat",
+		"options[2].description": "Sende nur den Link ohne Einbettung?",
+		"options[2].name": "noembed",
+		"options[3].description": "Verstecke Link und Einbettung in einem Spoiler?",
+		"options[3].name": "spoiler"
 	}
 }
