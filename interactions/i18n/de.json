@@ -5,6 +5,20 @@
 		"options[0].description": "Text mit Wikitext-Links.",
 		"options[0].name": "text"
 	},
+	"interwiki": {
+		"description": "Sende einen Link zu einem anderen Wiki.",
+		"name": "interwiki",
+		"options[0].description": "Das Wiki zum Durchsuchen.",
+		"options[0].name": "wiki",
+		"options[1].description": "Seitenname zum Suchen.",
+		"options[1].name": "titel",
+		"options[2].description": "Sende eine Antwort nur sichtbar für dich?",
+		"options[2].name": "privat",
+		"options[3].description": "Sende nur den Link ohne Einbettung?",
+		"options[3].name": "noembed",
+		"options[4].description": "Verstecke Link und Einbettung in einem Spoiler?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
 		"name": "verifizieren",
