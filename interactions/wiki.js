@@ -79,7 +79,12 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body?.linksuggest?.result?.suggestions ) {
-			if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
+			if ( wiki.noWiki(response.url, response.statusCode) ) {
+				return interaction.respond( [{
+					name: lang.get('interaction.nowiki'),
+					value: ''
+				}] ).catch(log_error);
+			}
 			else console.log( '- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
 			return;
 		}
@@ -95,7 +100,12 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
-		if ( wiki.noWiki(error.message) ) console.log( '- This wiki doesn\'t exist!' );
+		if ( wiki.noWiki(error.message) ) {
+			return interaction.respond( [{
+				name: lang.get('interaction.nowiki'),
+				value: ''
+			}] ).catch(log_error);
+		}
 		else console.log( '- Error while getting the suggestions: ' + error );
 	} );
 
@@ -113,7 +123,12 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || typeof body?.[1] !== 'object' ) {
-			if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
+			if ( wiki.noWiki(response.url, response.statusCode) ) {
+				return interaction.respond( [{
+					name: lang.get('interaction.nowiki'),
+					value: ''
+				}] ).catch(log_error);
+			}
 			else console.log( '- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
 			return;
 		}
@@ -125,7 +140,12 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
-		if ( wiki.noWiki(error.message) ) console.log( '- This wiki doesn\'t exist!' );
+		if ( wiki.noWiki(error.message) ) {
+			return interaction.respond( [{
+				name: lang.get('interaction.nowiki'),
+				value: ''
+			}] ).catch(log_error);
+		}
 		else console.log( '- Error while getting the suggestions: ' + error );
 	} );
 }
