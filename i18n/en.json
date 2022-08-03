@@ -323,6 +323,10 @@
 					"cmd": "inline",
 					"desc": "Post a message with inline wiki links."
 				},
+				"interwiki": {
+					"cmd": "interwiki",
+					"desc": "I will answer with a link to a matching article in the named MediaWiki project."
+				},
 				"verify": {
 					"cmd": "verify",
 					"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
@@ -397,6 +401,7 @@
 	"interaction": {
 		"error": "An unexpected error occured while running the command!",
 		"inline": "Please provide some text with [[wikitext]] links to use this command.",
+		"interwiki": "Please provide a known wiki to search.",
 		"nowiki": "The used wiki doesn't exist!",
 		"verify": "Please provide your wiki username to use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
 	},

@@ -9,7 +9,7 @@ import check_wiki from '../cmds/wiki/general.js';
  * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
- function slash_wiki(interaction, lang, wiki) {
+function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
 	var ephemeral = ( interaction.options.getBoolean('ephemeral') ?? true ) || pausedGuilds.has(interaction.guildId);
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
@@ -56,12 +56,12 @@ import check_wiki from '../cmds/wiki/general.js';
 }
 
 /**
- * Post a message with wiki links.
+ * Autocomplete a search title.
  * @param {import('discord.js').AutocompleteInteraction} interaction - The interaction.
  * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
- function autocomplete_wiki(interaction, lang, wiki) {
+function autocomplete_wiki(interaction, lang, wiki) {
 	lang = lang.uselang(interaction.locale);
 	const title = interaction.options.getFocused();
 	if ( !title.trim() ) return interaction.respond( [] ).catch(log_error);

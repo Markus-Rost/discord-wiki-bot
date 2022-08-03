@@ -196,7 +196,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				else return {message: {content, embeds: [embed]}};
 			} );
 		}
-		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
+		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title.replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
 			timeout: {
 				request: 10_000
 			},
@@ -415,7 +415,19 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						section = section.parent();
 						if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
 							section = section.prev();
-							if ( section.children('span').first().attr('id') ) {
+							if ( section.children('span.mw-headline').first().attr('id') ) {
+								newFragment = section.children('span.mw-headline').first().attr('id');
+							}
+							else if ( section.children('span').first().attr('id') ) {
+								newFragment = section.children('span').first().attr('id');
+							}
+						}
+						else if ( ['h1','h2','h3','h4','h5','h6'].includes( section.next()[0]?.tagName ) ) {
+							section = section.next();
+							if ( section.children('span.mw-headline').first().attr('id') ) {
+								newFragment = section.children('span.mw-headline').first().attr('id');
+							}
+							else if ( section.children('span').first().attr('id') ) {
 								newFragment = section.children('span').first().attr('id');
 							}
 						}

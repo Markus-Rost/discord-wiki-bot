@@ -6,11 +6,12 @@ const require = createRequire(import.meta.url);
 const {wikis: mcw} = require('./minecraft/commands.json');
 
 const helpmap = {
-	linkHelp: ['default', 'inline.link', 'inline.template', 'subprefix', 'slash.wiki', 'slash.inline'],
-	link: ['default', 'inline.link', 'inline.template', 'subprefix', 'mwprojects', 'slash.wiki', 'slash.inline'],
+	linkHelp: ['default', 'inline.link', 'inline.template', 'subprefix', 'slash.wiki', 'slash.interwiki', 'slash.inline'],
+	link: ['default', 'inline.link', 'inline.template', 'subprefix', 'mwprojects', 'slash.wiki', 'slash.interwiki', 'slash.inline'],
 	inline: ['inline.link', 'inline.template', 'slash.inline'],
-	slash: ['slash.wiki', 'slash.inline', 'slash.verify'],
-	wiki: ['slash.wiki'],
+	slash: ['slash.wiki', 'slash.interwiki', 'slash.inline', 'slash.verify'],
+	wiki: ['slash.wiki', 'slash.interwiki'],
+	interwiki: ['slash.interwiki'],
 	user: ['user'],
 	overview: ['overview'],
 	random: ['random'],
@@ -69,9 +70,9 @@ const restrictions = {
 	minecraft: ['minecraftHelp', 'command', 'bug'],
 	admin: ['settings', 'verification', 'rcscript', 'pause'],
 	inline: ['inline.link', 'inline.template'],
-	slash: ['slash.wiki', 'slash.inline', 'slash.verify'],
+	slash: ['slash.wiki', 'slash.interwiki', 'slash.inline', 'slash.verify'],
 	patreon: ['settings.prefix'],
-	experimental: ['slash.wiki']
+	experimental: ['slash.wiki', 'slash.interwiki']
 }
 
 /**
