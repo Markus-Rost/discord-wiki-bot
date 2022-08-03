@@ -73,10 +73,6 @@ Discord.Message.prototype.isOwner = function() {
 	return process.env.owner.split('|').includes( this.author.id );
 };
 
-Discord.Message.prototype.showEmbed = function() {
-	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.PermissionFlagsBits.EmbedLinks);
-};
-
 Discord.Message.prototype.uploadFiles = function() {
 	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.PermissionFlagsBits.AttachFiles);
 };

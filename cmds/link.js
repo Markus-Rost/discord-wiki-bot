@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import phabricator from '../functions/phabricator.js';
 import check_wiki from './wiki/general.js';
-import { splitMessage } from '../util/functions.js';
+import { canShowEmbed } from '../util/functions.js';
 
 /**
  * Processes the wiki linking command.
@@ -19,7 +19,7 @@ export default function cmd_link(lang, msg, title, wiki, cmd = '') {
 		title = title.substring(2, title.length - 2);
 		spoiler = '||';
 	}
-	var noEmbed = !msg.showEmbed();
+	var noEmbed = !canShowEmbed(msg);
 	if ( /^<[^<>]+>$/.test(title) ) {
 		title = title.substring(1, title.length - 1);
 		noEmbed = true;

@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
-import { got, splitMessage } from '../util/functions.js';
+import { got, canShowEmbed, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
@@ -155,7 +155,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 								if ( new_configid === i ) new_configid++;
 								else break;
 							}
-							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES ($1, $2, $3, $4, $5, $6, $7)', [msg.guildId, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), ( enableFeeds ? null : '-1' )] ).then( () => {
+							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES ($1, $2, $3, $4, $5, $6, $7)', [msg.guildId, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( canShowEmbed(msg) ? 1 : 0 ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( '- RcGcDw successfully added.' );
 								if ( reaction ) reaction.removeEmoji();
 								msg.replyMsg( {content: lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', components}, true );

@@ -6,9 +6,11 @@ const require = createRequire(import.meta.url);
 const {wikis: mcw} = require('./minecraft/commands.json');
 
 const helpmap = {
-	linkHelp: ['default', 'inline.link', 'inline.template', 'subprefix'],
-	link: ['default', 'inline.link', 'inline.template', 'subprefix', 'mwprojects'],
-	inline: ['inline.link', 'inline.template'],
+	linkHelp: ['default', 'inline.link', 'inline.template', 'subprefix', 'slash.wiki', 'slash.inline'],
+	link: ['default', 'inline.link', 'inline.template', 'subprefix', 'mwprojects', 'slash.wiki', 'slash.inline'],
+	inline: ['inline.link', 'inline.template', 'slash.inline'],
+	slash: ['slash.wiki', 'slash.inline', 'slash.verify'],
+	wiki: ['slash.wiki'],
 	user: ['user'],
 	overview: ['overview'],
 	random: ['random'],
@@ -22,7 +24,7 @@ const helpmap = {
 	info: ['info'],
 	help: ['help.default', 'help.command', 'help.admin'],
 	settings: ['settings.default', 'settings.wiki', 'settings.lang', 'settings.role', 'settings.inline', 'settings.prefix', 'settings.channel'],
-	verify: ['verify'],
+	verify: ['verify', 'slash.verify'],
 	verification: ['verification.default', 'verification.add', 'verification.channel', 'verification.role', 'verification.editcount', 'verification.postcount', 'verification.usergroup', 'verification.accountage', 'verification.rename', 'verification.delete'],
 	rcscript: ['rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete'],
 	pause: ['pause.inactive'],
@@ -67,8 +69,9 @@ const restrictions = {
 	minecraft: ['minecraftHelp', 'command', 'bug'],
 	admin: ['settings', 'verification', 'rcscript', 'pause'],
 	inline: ['inline.link', 'inline.template'],
+	slash: ['slash.wiki', 'slash.inline', 'slash.verify'],
 	patreon: ['settings.prefix'],
-	experimental: []
+	experimental: ['slash.wiki']
 }
 
 /**
@@ -149,9 +152,14 @@ function formathelp(messages, msg, lang, wiki) {
 	var mention = '@' + ( msg.inGuild() ? msg.guild.members.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
+		if ( restrictions.slash.includes( message ) ) return msg.client.application.commands.cache.some( cmd => cmd.name === lang.get('help.list.' + message + '.cmd') );
 		if ( !restrictions.patreon.includes( message ) ) return true;
 		return ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) );
 	} ).map( message => {
+		if ( restrictions.slash.includes( message ) ) {
+			let slash = msg.client.application.commands.cache.find( cmd => cmd.name === lang.get('help.list.' + message + '.cmd') );
+			return '🔹 ' + `</${slash.name}:${slash.id}>` + '\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc') + ( message === 'slash.wiki' ? ' `' + wiki.href + '`' : '' );
+		}
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );
 		if ( message === 'subprefix' ) {

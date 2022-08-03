@@ -1,5 +1,5 @@
-import { Message, PermissionFlagsBits } from 'discord.js';
-import { got, sendMessage } from '../util/functions.js';
+import { Message } from 'discord.js';
+import { got, canShowEmbed, sendMessage } from '../util/functions.js';
 import phabricator from '../functions/phabricator.js';
 import check_wiki from '../cmds/wiki/general.js';
 
@@ -12,7 +12,7 @@ import check_wiki from '../cmds/wiki/general.js';
  function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
 	var ephemeral = ( interaction.options.getBoolean('ephemeral') ?? true ) || pausedGuilds.has(interaction.guildId);
-	var noEmbed = interaction.options.getBoolean('noembed') || ( interaction.inGuild() && !interaction.appPermissions?.has(PermissionFlagsBits.EmbedLinks) );
+	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 	if ( ephemeral ) lang = lang.uselang(interaction.locale);
 	return interaction.deferReply( {ephemeral} ).then( () => {

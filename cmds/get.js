@@ -1,5 +1,5 @@
 import { EmbedBuilder, ShardClientUtil, ChannelType, PermissionFlagsBits } from 'discord.js';
-import { escapeFormatting, splitMessage } from '../util/functions.js';
+import { canShowEmbed, escapeFormatting, splitMessage } from '../util/functions.js';
 import db from '../util/database.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -60,7 +60,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 			}, dberror => {
 				console.log( '- Error while getting the settings: ' + dberror );
 			} ).then( () => {
-				if ( msg.showEmbed() ) {
+				if ( canShowEmbed(msg) ) {
 					var embed = new EmbedBuilder().setThumbnail( guild.icon ).addFields(...[
 						{name: guildname[0], value: guildname[1]},
 						{name: guildowner[0], value: guildowner[1]},
@@ -140,7 +140,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 			} ).then( () => {
 				var text = null;
 				var embed = null;
-				if ( msg.showEmbed() ) {
+				if ( canShowEmbed(msg) ) {
 					embed = new EmbedBuilder().addFields(...[
 						{name: channelguild[0], value: channelguild[1]},
 						{name: channelname[0], value: channelname[1]},
@@ -182,7 +182,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length.toLocaleString();
 			var text = null;
 			var embed = null;
-			if ( msg.showEmbed() ) embed = new EmbedBuilder().setThumbnail( user.displayAvatarURL() ).addFields(...[
+			if ( canShowEmbed(msg) ) embed = new EmbedBuilder().setThumbnail( user.displayAvatarURL() ).addFields(...[
 				{name: username[0], value: username[1]},
 				{name: guildlist[0], value: guildlist[1]}
 			]);
@@ -193,7 +193,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 		return db.query( 'SELECT guild, channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 OR channel = $1 OR channel = $2 ORDER BY guild, channel DESC NULLS LAST LIMIT 1', [id, '#' + id] ).then( ({rows}) => {
 			if ( !rows.length ) return msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', true );
 			var result = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
-			if ( msg.showEmbed() ) {
+			if ( canShowEmbed(msg) ) {
 				var split = splitMessage( result, {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
 				if ( split.length > 5 ) {
 					splitMessage( '`' + id + '`: ' + result, {

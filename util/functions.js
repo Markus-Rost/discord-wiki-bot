@@ -1,3 +1,4 @@
+import { PermissionFlagsBits } from 'discord.js';
 import { Parser as HTMLParser } from 'htmlparser2';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
@@ -128,6 +129,15 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			break;
 	}
 }
+
+/**
+ * If the bot can show embeds.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} [msg] - The Discord message.
+ * @returns {Boolean}
+ */
+function canShowEmbed(msg) {
+	return !msg.inGuild() || ( msg.appPermissions ?? msg.channel.permissionsFor(msg.client.user) ).has(PermissionFlagsBits.EmbedLinks);
+};
 
 /**
  * Make wikitext formatting usage.
@@ -582,6 +592,7 @@ export {
 	oauthVerify,
 	getEmbedLength,
 	parse_infobox,
+	canShowEmbed,
 	toFormatting,
 	toMarkdown,
 	toPlaintext,

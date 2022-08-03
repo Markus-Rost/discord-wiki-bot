@@ -1,7 +1,7 @@
 import { load as cheerioLoad } from 'cheerio';
-import { Message, EmbedBuilder, PermissionFlagsBits } from 'discord.js';
+import { Message, EmbedBuilder } from 'discord.js';
 import { toSection } from '../util/wiki.js';
-import { got, parse_infobox, getEmbedLength, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
+import { got, parse_infobox, canShowEmbed, getEmbedLength, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
 
 const parsedContentModels = [
 	'wikitext',
@@ -107,8 +107,7 @@ const removeClassesExceptions = [
 export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
 	var isMessage = msg instanceof Message;
-	var noEmbed = ( isMessage ? !msg.showEmbed() : ( msg.inGuild() && !msg.appPermissions?.has(PermissionFlagsBits.EmbedLinks) ) );
-	if ( !msg || noEmbed || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description ) {
+	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description ) {
 		if ( missing !== undefined && embed ) {
 			if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );

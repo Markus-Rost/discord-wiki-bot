@@ -318,6 +318,20 @@
 					"desc": "I will change the default wiki for this server."
 				}
 			},
+			"slash": {
+				"inline": {
+					"cmd": "inline",
+					"desc": "Post a message with inline wiki links."
+				},
+				"verify": {
+					"cmd": "verify",
+					"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
+				},
+				"wiki": {
+					"cmd": "wiki",
+					"desc": "I will answer with a link to a matching article in the wiki:"
+				}
+			},
 			"subprefix": {
 				"cmd": "<wiki> <search term>",
 				"desc": "I will answer with a link to a matching article in the named wiki:"
