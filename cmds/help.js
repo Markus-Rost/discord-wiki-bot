@@ -72,7 +72,7 @@ const restrictions = {
 	inline: ['inline.link', 'inline.template'],
 	slash: ['slash.wiki', 'slash.interwiki', 'slash.inline', 'slash.verify'],
 	patreon: ['settings.prefix'],
-	experimental: ['slash.wiki', 'slash.interwiki']
+	experimental: []
 }
 
 /**

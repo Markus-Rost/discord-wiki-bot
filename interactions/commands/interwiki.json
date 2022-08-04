@@ -50,12 +50,12 @@
 			},
 			"min_length": 0,
 			"max_length": 250,
-			"required": false,
+			"required": true,
 			"autocomplete": true
 		},
 		{
 			"type": 5,
-			"name": "ephemeral",
+			"name": "privat",
 			"name_localizations": {
 				"de": "privat"
 			},

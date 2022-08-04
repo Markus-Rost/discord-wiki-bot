@@ -257,7 +257,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section).then( result => {
 					if ( !result || result instanceof Message ) return result;
 					if ( result.message ) {
-						if ( Array.isArray(result.message) ) result.message.map( async content => await msg.sendChannel(content) );
+						if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
 						else if ( result.reaction === 'error' ) msg.sendChannelError(result.message);
 						else if ( result.reaction === 'reply' ) msg.replyMsg(result.message, true);
 						else msg.sendChannel(result.message).then( message => {

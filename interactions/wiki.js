@@ -11,7 +11,7 @@ import check_wiki from '../cmds/wiki/general.js';
  */
 function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
-	var ephemeral = ( interaction.options.getBoolean('ephemeral') ?? true ) || pausedGuilds.has(interaction.guildId);
+	var ephemeral = ( interaction.options.getBoolean('privat') ?? false ) || pausedGuilds.has(interaction.guildId);
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 	if ( ephemeral ) lang = lang.uselang(interaction.locale);
@@ -22,17 +22,21 @@ function slash_wiki(interaction, lang, wiki) {
 		).then( result => {
 			if ( !result || result instanceof Message ) return result;
 			if ( result.message ) {
-				if ( Array.isArray(result.message) ) return sendMessage(interaction, lang.get('general.experimental')).then( message => {
-					return result.message.map( async content => {
-						return await interaction.followUp( {content, ephemeral} ).catch(log_error);
+				if ( Array.isArray(result.message) ) {
+					let list = [];
+					return result.message.slice(1).reduce( (prev, content) => {
+						return prev.then( message => {
+							list.push(message);
+							return interaction.followUp( {content, ephemeral} ).catch(log_error);
+						} );
+					}, sendMessage(interaction, {
+						content: result.message[0],
+						ephemeral
+					}) ).then( message => {
+						list.push(message);
+						return list;
 					} );
-				} );
-				/*
-				if ( Array.isArray(result.message) ) return result.message.map( async (content, n) => {
-					if ( n === 0 ) return await sendMessage(interaction, {content, ephemeral});
-					return await interaction.followUp( {content, ephemeral} ).catch(log_error);
-				} );
-				*/
+				}
 				if ( result.reaction === 'error' ) {
 					if ( typeof result.message === 'string' ) result.message = '<:error:440871715938238494> ' + result.message;
 					else result.message.content = '<:error:440871715938238494> ' + ( result.message.content ?? '' );
@@ -41,15 +45,13 @@ function slash_wiki(interaction, lang, wiki) {
 					if ( typeof result.message === 'string' ) result.message = '⚠️ ' + result.message;
 					else result.message.content = '⚠️ ' + ( result.message.content ?? '' );
 				}
-				if ( typeof result.message === 'string' ) result.message = lang.get('general.experimental') + '\n' + result.message;
-				else result.message.content = lang.get('general.experimental') + '\n' + ( result.message.content ?? '' );
 				return sendMessage(interaction, result.message);
 			}
 			else if ( result.reaction ) {
 				let message = lang.get('interaction.error') + '\n' + process.env.invite;
 				if ( result.reaction === 'nowiki' ) message = lang.get('interaction.nowiki');
 				if ( result.reaction === '🤷' ) message = lang.get('search.noresult');
-				return sendMessage(interaction, {content: lang.get('general.experimental') + '\n' + message});
+				return sendMessage(interaction, {content: message});
 			}
 		} );
 	}, log_error );
@@ -64,7 +66,56 @@ function slash_wiki(interaction, lang, wiki) {
 function autocomplete_wiki(interaction, lang, wiki) {
 	lang = lang.uselang(interaction.locale);
 	const title = interaction.options.getFocused();
-	if ( !title.trim() ) return interaction.respond( [] ).catch(log_error);
+	if ( !title.trim() ) {
+		if ( wiki.mainpage ) return interaction.respond( [{
+			name: wiki.mainpage,
+			value: wiki.mainpage
+		}] ).catch(log_error);
+		return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+			timeout: {
+				request: 2_000
+			},
+			retry: {
+				limit: 0
+			},
+			context: {
+				guildId: interaction.guildId
+			}
+		} ).then( response => {
+			var body = response.body;
+			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general?.mainpage ) {
+				if ( wiki.noWiki(response.url, response.statusCode) ) {
+					return interaction.respond( [{
+						name: lang.get('interaction.nowiki'),
+						value: ''
+					}] ).catch(log_error);
+				}
+				else console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
+				return interaction.respond( [{
+					name: wiki.mainpage || 'Main Page',
+					value: wiki.mainpage
+				}] ).catch(log_error);
+			}
+			wiki.updateWiki(body.query.general);
+			return interaction.respond( [{
+				name: body.query.general.mainpage || 'Main Page',
+				value: body.query.general.mainpage
+			}] ).catch(log_error);
+		}, error => {
+			if ( wiki.noWiki(error.message) ) {
+				return interaction.respond( [{
+					name: lang.get('interaction.nowiki'),
+					value: ''
+				}] ).catch(log_error);
+			}
+			console.log( '- Autocomplete: Error while getting the suggestions: ' + error );
+			return interaction.respond( [{
+				name: wiki.mainpage || 'Main Page',
+				value: wiki.mainpage
+			}] ).catch(log_error);
+		} );
+	}
 	if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'api.php?action=linksuggest&get=suggestions&query=' + encodeURIComponent( title ) + '&format=json', {
 		timeout: {
 			request: 2_000
@@ -85,7 +136,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			else console.log( '- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
+			console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
 			return;
 		}
 		if ( !body.linksuggest.result.suggestions.length ) return interaction.respond( [] ).catch(log_error);
@@ -106,7 +157,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		else console.log( '- Error while getting the suggestions: ' + error );
+		console.log( '- Autocomplete: Error while getting the suggestions: ' + error );
 	} );
 
 	return got.get( wiki + 'api.php?action=opensearch&redirects=resolve&limit=10&search=' + encodeURIComponent( title ) + '&format=json', {
@@ -129,7 +180,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			else console.log( '- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
+			console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
 			return;
 		}
 		if ( !body[1].length ) return interaction.respond( [] ).catch(log_error);
@@ -146,7 +197,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		else console.log( '- Error while getting the suggestions: ' + error );
+		console.log( '- Autocomplete: Error while getting the suggestions: ' + error );
 	} );
 }
 

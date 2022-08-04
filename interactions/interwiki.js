@@ -41,7 +41,7 @@ function slash_interwiki(interaction, lang, wiki) {
 		return wiki_interaction.slash(interaction, lang, newWiki);
 	}, () => {
 		return interaction.reply( {
-			content: lang.get('general.experimental') + '\n' + lang.uselang(interaction.locale).get('interaction.interwiki'),
+			content: lang.uselang(interaction.locale).get('interaction.interwiki'),
 			ephemeral: true
 		} ).catch(log_error);
 	} );
@@ -81,9 +81,14 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
-		if ( response.statusCode !== 200 || !body?.query?.interwiki?.length ) {
-			if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
-			else console.log( '- ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
+		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.interwiki?.length ) {
+			if ( wiki.noWiki(response.url, response.statusCode) ) {
+				return interaction.respond( [{
+					name: lang.get('interaction.nowiki'),
+					value: ''
+				}] ).catch(log_error);
+			}
+			else console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
 			return;
 		}
 		if ( !body.query.interwiki.length ) return interaction.respond( [] ).catch(log_error);
@@ -93,8 +98,13 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			value: project.fullScriptPath
 		}] ).catch(log_error);
 	}, error => {
-		if ( wiki.noWiki(error.message) ) console.log( '- This wiki doesn\'t exist!' );
-		else console.log( '- Error while getting the interwiki: ' + error );
+		if ( wiki.noWiki(error.message) ) {
+			return interaction.respond( [{
+				name: lang.get('interaction.nowiki'),
+				value: ''
+			}] ).catch(log_error);
+		}
+		else console.log( '- Autocomplete: Error while getting the interwiki: ' + error );
 	} );
 	/** @type {[String[], String[]]} */
 	var wikiList = [new Set([wiki.href]), new Set()];
@@ -105,7 +115,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} );
 		return [true, wikiList[1].size];
 	}, dberror => {
-		console.log( '- Error while getting the wiki list: ' + dberror );
+		console.log( '- Autocomplete: Error while getting the wiki list: ' + dberror );
 	} ) : Promise.resolve() ).then( ([hasRow, hasPrefix] = []) => {
 		if ( !hasRow ) wikiList[0].add( defaultSettings.wiki );
 		defaultSettings.subprefixes.forEach( subprefix => {
