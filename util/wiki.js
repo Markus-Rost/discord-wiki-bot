@@ -7,6 +7,9 @@ const {defaultSettings} = require('./default.json');
 /** @type {String[]} - Sites that support verification using OAuth2. */
 export const oauthSites = [];
 
+/** @type {Map<String, Wiki>} - Cache of Wikis. */
+const CACHE = new Map();
+
 // Remove wikis with notes, add wikis to oauthSites
 wikiProjects.filter( project => {
 	if ( project.note ) return true;
@@ -35,6 +38,9 @@ export default class Wiki extends URL {
 	constructor(wiki = defaultSettings.wiki, base = defaultSettings.wiki) {
 		super(wiki, base);
 		this.protocol = 'https';
+		if ( Wiki._cache.has(this.href) ) {
+			return Wiki._cache.get(this.href);
+		}
 		let articlepath = this.pathname + 'index.php?title=$1';
 		this.gamepedia = this.hostname.endsWith( '.gamepedia.com' );
 		if ( this.isGamepedia() ) articlepath = '/$1';
@@ -53,6 +59,7 @@ export default class Wiki extends URL {
 		this.mainpage = '';
 		this.mainpageisdomainroot = false;
 		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
+		Wiki._cache.set(this.href, this);
 	}
 
 	/**
@@ -103,6 +110,7 @@ export default class Wiki extends URL {
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
 		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm = 'miraheze';
+		Wiki._cache.set(this.href, this);
 		return this;
 	}
 
@@ -238,8 +246,20 @@ export default class Wiki extends URL {
 		}
 	}
 
-	/** @type {String[]} - Sites that support verification using OAuth2. */
-	static oauthSites = oauthSites;
+	/**
+	 * @type {String[]} - Sites that support verification using OAuth2.
+	 */
+	static get oauthSites() {
+		return oauthSites;
+	};
+
+	/**
+	 * @type {Map<String, Wiki>} - Cache of Wikis.
+	 * @private
+	 */
+	static get _cache() {
+		return CACHE;
+	};
 
 	[inspect.custom](depth, opts) {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
