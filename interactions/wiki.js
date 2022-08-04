@@ -11,7 +11,7 @@ import check_wiki from '../cmds/wiki/general.js';
  */
 function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
-	var ephemeral = ( interaction.options.getBoolean('privat') ?? false ) || pausedGuilds.has(interaction.guildId);
+	var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 	if ( ephemeral ) lang = lang.uselang(interaction.locale);

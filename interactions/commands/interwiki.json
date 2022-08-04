@@ -55,7 +55,7 @@
 		},
 		{
 			"type": 5,
-			"name": "privat",
+			"name": "private",
 			"name_localizations": {
 				"de": "privat"
 			},
