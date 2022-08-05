@@ -398,6 +398,7 @@
 		"error": "Ein unerwarteter Fehler trat während der Ausführung des Befehls auf!",
 		"inline": "Bitte gebe einen Text mit [[Wikitext]]-Links an um diesen Befehl zu nutzen.",
 		"interwiki": "Bitte gebe ein bekanntes Wiki zum Durchsuchen an.",
+		"notitle": "Der genutzte Seitentitel existiert nicht!",
 		"nowiki": "Das genutzte Wiki existiert nicht!",
 		"verify": "Bitte gebe deinen Wiki-Benutzernamen an um diesen Befehl dazu zu nutzen, deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
 	},
