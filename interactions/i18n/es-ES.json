@@ -6,6 +6,20 @@
 		"options[0].description": "Texto que incluye enlaces de wikitexto.",
 		"options[0].name": "texto"
 	},
+	"interwiki": {
+		"description": "Publica un enlace a un wiki diferente.",
+		"name": "interwiki",
+		"options[0].description": "El wiki en el que buscar.",
+		"options[0].name": "wiki",
+		"options[1].description": "Título de la página a buscar.",
+		"options[1].name": "título",
+		"options[2].description": "¿Enviar una respuesta que solo sea visible para ti?",
+		"options[2].name": "privado",
+		"options[3].description": "¿Enviar solo el enlace sin vista previa?",
+		"options[3].name": "sinvistaprevia",
+		"options[4].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verifica tu cuenta de Discord con tu cuenta wiki.",
 		"name": "verificar",
@@ -18,7 +32,7 @@
 		"options[0].description": "Título de la página a buscar.",
 		"options[0].name": "título",
 		"options[1].description": "¿Enviar una respuesta que solo sea visible para ti?",
-		"options[1].name": "efímero",
+		"options[1].name": "privado",
 		"options[2].description": "¿Enviar solo el enlace sin vista previa?",
 		"options[2].name": "sinvistaprevia",
 		"options[3].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
