@@ -3,7 +3,7 @@
 	"application_id": "",
 	"name": "wiki",
 	"name_localizations": {
-		"hi": "विकि",
+		"hi": "wiki",
 		"zh-CN": "wiki",
 		"zh-TW": "wiki",
 		"tr": "wiki",
@@ -56,11 +56,13 @@
 			"type": 3,
 			"name": "section",
 			"name_localizations": {
-				"de": "abschnitt"
+				"de": "abschnitt",
+				"hi": "section"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
-				"de": "Seitenabschnitt zum Verlinken."
+				"de": "Seitenabschnitt zum Verlinken.",
+				"hi": "पृष्ठ का अनुभाग जिसकी कड़ी जोड़नी है।"
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -71,11 +73,13 @@
 			"type": 3,
 			"name": "query",
 			"name_localizations": {
-				"de": "query"
+				"de": "query",
+				"hi": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
-				"de": "Query-String der zum Link hinzugefügt werden soll."
+				"de": "Query-String der zum Link hinzugefügt werden soll.",
+				"hi": "कड़ी पर जोड़ने के लिए क्वेरी तर्क।"
 			},
 			"min_length": 0,
 			"max_length": 250,

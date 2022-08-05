@@ -2,9 +2,13 @@
 	"id": "",
 	"application_id": "",
 	"name": "overview",
-	"name_localizations": {},
+	"name_localizations": {
+		"de": "übersicht"
+	},
 	"description": "Post a wiki overview.",
-	"description_localizations": {},
+	"description_localizations": {
+		"de": "Sende eine Wiki-Übersicht."
+	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
 	"dm_permission": true,
