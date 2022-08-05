@@ -17,6 +17,7 @@ const knownWikis = new Set();
 function getWiki(wiki) {
 	var newWiki = inputToWikiProject(wiki)?.fullScriptPath;
 	if ( newWiki ) return Promise.resolve(new Wiki(newWiki));
+	if ( !wiki.startsWith( 'https://' ) ) return Promise.reject();
 	if ( knownWikis.has(wiki) ) return Promise.resolve(new Wiki(wiki));
 	return db.query( '(SELECT wiki FROM discord WHERE wiki = $1 LIMIT 1) UNION (SELECT prefixwiki FROM subprefix WHERE prefixwiki = $1 LIMIT 1)', [wiki] ).then( ({rows}) => {
 		if ( rows.length ) {
@@ -56,7 +57,7 @@ function slash_interwiki(interaction, lang, wiki) {
 function autocomplete_interwiki(interaction, lang, wiki) {
 	lang = lang.uselang(interaction.locale);
 	const focused = interaction.options.getFocused(true);
-	if ( focused.name === 'title' ) {
+	if ( focused.name !== 'wiki' ) {
 		return getWiki(interaction.options.getString('wiki') ?? '').then( newWiki => {
 			return wiki_interaction.autocomplete(interaction, lang, newWiki);
 		}, () => {
@@ -66,7 +67,6 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			}] ).catch(log_error);
 		} );
 	}
-	if ( focused.name !== 'wiki' ) return;
 	const input = focused.value.trim().replace( /^(?:(?:https?:)?\/(?:$|\/)|https?:?$|ht{0,2}$)/, '' );
 	if ( input.includes( ':' ) && !input.includes( '/' ) ) return got.get( wiki + 'api.php?action=query&iwurl=1&titles=%1F' + encodeURIComponent( input.replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
 		timeout: {
