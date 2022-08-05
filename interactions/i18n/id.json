@@ -17,11 +17,11 @@
 		"name": "wiki",
 		"options[0].description": "Judul halaman yang akan dicari.",
 		"options[0].name": "judul",
-		"options[1].description": "Kirim tanggapan yang hanya dapat dilihat oleh Anda sendiri?",
-		"options[1].name": "ephemeral",
-		"options[2].description": "Kirim hanya tautan tanpa sematkan?",
-		"options[2].name": "noembed",
-		"options[3].description": "Sembunyikan tautan dan sematkan di spoiler?",
-		"options[3].name": "spoiler"
+		"options[3].description": "Kirim tanggapan yang hanya dapat dilihat oleh Anda sendiri?",
+		"options[3].name": "ephemeral",
+		"options[4].description": "Kirim hanya tautan tanpa sematkan?",
+		"options[4].name": "noembed",
+		"options[5].description": "Sembunyikan tautan dan sematkan di spoiler?",
+		"options[5].name": "spoiler"
 	}
 }

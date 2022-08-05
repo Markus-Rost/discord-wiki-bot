@@ -53,6 +53,27 @@
 			"autocomplete": true
 		},
 		{
+			"type": 3,
+			"name": "section",
+			"name_localizations": {},
+			"description": "Page section to link to.",
+			"description_localizations": {},
+			"min_length": 0,
+			"max_length": 250,
+			"required": false,
+			"autocomplete": true
+		},
+		{
+			"type": 3,
+			"name": "query",
+			"name_localizations": {},
+			"description": "Query arguments to add to the link.",
+			"description_localizations": {},
+			"min_length": 0,
+			"max_length": 250,
+			"required": false
+		},
+		{
 			"type": 5,
 			"name": "private",
 			"name_localizations": {
