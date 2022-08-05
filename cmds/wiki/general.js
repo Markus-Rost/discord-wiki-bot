@@ -375,9 +375,12 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				
 				var prefix = ( msg instanceof Message
 					? '`' + ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ) + cmd
-					: cmd.split(' ')[0] + ' `' + cmd.split(' ').slice(1).join('')
+					: cmd.split(' ')[0] + ' `' + cmd.split(' ').slice(1).join(' ')
 				);
-				var linksuffix = ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' );
+				var linksuffix = ( msg instanceof Message
+					? ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' )
+					: ( querystring.toString() ? ' query:' + querystring : '' ) + ( fragment ? ' section:' + fragment : '' )
+				);
 				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
 					text = '';
 				}

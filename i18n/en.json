@@ -327,6 +327,10 @@
 					"cmd": "interwiki",
 					"desc": "I will answer with a link to a matching article in the named MediaWiki project."
 				},
+				"overview": {
+					"cmd": "overview",
+					"desc": "I will show some information and statistics about the wiki."
+				},
 				"verify": {
 					"cmd": "verify",
 					"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."

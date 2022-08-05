@@ -15,17 +15,18 @@ const sectionCache = new Map();
 function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
 	var query = new URLSearchParams(interaction.options.getString('query') ?? '');
-	var fragment = interaction.options.getString('section') ?? '';
+	var fragment = ( interaction.options.getString('section') ?? '' ).replace( /^\s*#\s*/, '' );
 	var title = interaction.options.getString('title') ?? '';
 	var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 	sectionCache.delete(wiki.toLink(title));
+	let cmd = `</${interaction.commandName}:${interaction.commandId}> ` + ( interaction.commandName === 'interwiki' ? `wiki:${wiki.href} ` : '' ) + 'title:';
 	if ( ephemeral ) lang = lang.uselang(interaction.locale);
 	return interaction.deferReply( {ephemeral} ).then( () => {
-		( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
+		return ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
 		? phabricator(lang, interaction, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
-		: check_wiki(lang, interaction, title, wiki, '</wiki:1002947514900693002> title:', undefined, spoiler, noEmbed, query, fragment)
+		: check_wiki(lang, interaction, title, wiki, cmd, undefined, spoiler, noEmbed, query, fragment)
 		).then( result => {
 			if ( !result || result instanceof Message ) return result;
 			let noEmoji = !interaction.appPermissions?.has(PermissionFlagsBits.UseExternalEmojis);
@@ -229,9 +230,15 @@ function autocomplete_section(interaction, lang, wiki) {
 		}] ).catch(log_error);
 	}
 	if ( sectionCache.has(wiki.toLink(title)) ) {
-		return interaction.respond( sectionCache.get(wiki.toLink(title))?.filter( fragment => {
-			return fragment.line.toLowerCase().startsWith(section.toLowerCase());
-		} ).map( fragment => {
+		let fragments = sectionCache.get(wiki.toLink(title)) ?? [];
+		return interaction.respond( [...new Set([
+			...fragments.filter( fragment => {
+				return fragment.line.toLowerCase().startsWith(section.toLowerCase());
+			} ),
+			...fragments.filter( fragment => {
+				return fragment.line.toLowerCase().includes(section.toLowerCase());
+			} )
+		])].map( fragment => {
 			return {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
 				value: fragment.line.substring(0, 100)
@@ -268,9 +275,14 @@ function autocomplete_section(interaction, lang, wiki) {
 			return;
 		}
 		sectionCache.set(wiki.toLink(title), body.parse.sections);
-		return interaction.respond( body.parse.sections.filter( fragment => {
-			return fragment.line.toLowerCase().startsWith(section.toLowerCase());
-		} ).map( fragment => {
+		return interaction.respond( [...new Set([
+			...body.parse.sections.filter( fragment => {
+				return fragment.line.toLowerCase().startsWith(section.toLowerCase());
+			} ),
+			...body.parse.sections.filter( fragment => {
+				return fragment.line.toLowerCase().includes(section.toLowerCase());
+			} )
+		])].map( fragment => {
 			return {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
 				value: fragment.line

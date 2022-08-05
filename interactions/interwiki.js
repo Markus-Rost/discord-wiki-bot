@@ -11,10 +11,11 @@ const knownWikis = new Set();
 
 /**
  * Get a known wiki.
- * @param {String} wiki - The wiki.
- * @returns {Promise<import('../util/wiki.js').default>}
+ * @param {String|Wiki} wiki - The wiki.
+ * @returns {Promise<Wiki>}
  */
 function getWiki(wiki) {
+	if ( wiki instanceof Wiki ) return Promise.resolve(wiki);
 	var newWiki = inputToWikiProject(wiki)?.fullScriptPath;
 	if ( newWiki ) return Promise.resolve(new Wiki(newWiki));
 	if ( !wiki.startsWith( 'https://' ) ) return Promise.reject();
@@ -38,7 +39,7 @@ function getWiki(wiki) {
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_interwiki(interaction, lang, wiki) {
-	return getWiki(interaction.options.getString('wiki') ?? '').then( newWiki => {
+	return getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
 		return wiki_interaction.slash(interaction, lang, newWiki);
 	}, () => {
 		return interaction.reply( {
@@ -58,7 +59,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 	lang = lang.uselang(interaction.locale);
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name !== 'wiki' ) {
-		return getWiki(interaction.options.getString('wiki') ?? '').then( newWiki => {
+		return getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
 			return wiki_interaction.autocomplete(interaction, lang, newWiki);
 		}, () => {
 			return interaction.respond( [{
@@ -169,5 +170,6 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 export default {
 	name: 'interwiki',
 	slash: slash_interwiki,
-	autocomplete: autocomplete_interwiki
+	autocomplete: autocomplete_interwiki,
+	FUNCTIONS: {getWiki}
 };
