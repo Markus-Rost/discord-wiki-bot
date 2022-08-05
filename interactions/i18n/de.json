@@ -12,12 +12,12 @@
 		"options[0].name": "wiki",
 		"options[1].description": "Seitenname zum Suchen.",
 		"options[1].name": "titel",
-		"options[4].description": "Sende eine Antwort nur sichtbar für dich?",
-		"options[4].name": "privat",
-		"options[5].description": "Sende nur den Link ohne Einbettung?",
-		"options[5].name": "noembed",
-		"options[6].description": "Verstecke Link und Einbettung in einem Spoiler?",
-		"options[6].name": "spoiler"
+		"options[2].description": "Sende eine Antwort nur sichtbar für dich?",
+		"options[2].name": "privat",
+		"options[3].description": "Sende nur den Link ohne Einbettung?",
+		"options[3].name": "noembed",
+		"options[4].description": "Verstecke Link und Einbettung in einem Spoiler?",
+		"options[4].name": "spoiler"
 	},
 	"verify": {
 		"description": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
@@ -30,11 +30,11 @@
 		"name": "wiki",
 		"options[0].description": "Seitenname zum Suchen.",
 		"options[0].name": "titel",
-		"options[3].description": "Sende eine Antwort nur sichtbar für dich?",
-		"options[3].name": "privat",
-		"options[4].description": "Sende nur den Link ohne Einbettung?",
-		"options[4].name": "noembed",
-		"options[5].description": "Verstecke Link und Einbettung in einem Spoiler?",
-		"options[5].name": "spoiler"
+		"options[1].description": "Sende eine Antwort nur sichtbar für dich?",
+		"options[1].name": "privat",
+		"options[2].description": "Sende nur den Link ohne Einbettung?",
+		"options[2].name": "noembed",
+		"options[3].description": "Verstecke Link und Einbettung in einem Spoiler?",
+		"options[3].name": "spoiler"
 	}
 }

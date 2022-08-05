@@ -17,11 +17,11 @@
 		"name": "wiki",
 		"options[0].description": "Título de la página a buscar.",
 		"options[0].name": "título",
-		"options[3].description": "¿Enviar una respuesta que solo sea visible para ti?",
-		"options[3].name": "efímero",
-		"options[4].description": "¿Enviar solo el enlace sin vista previa?",
-		"options[4].name": "sinvistaprevia",
-		"options[5].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
-		"options[5].name": "spoiler"
+		"options[1].description": "¿Enviar una respuesta que solo sea visible para ti?",
+		"options[1].name": "efímero",
+		"options[2].description": "¿Enviar solo el enlace sin vista previa?",
+		"options[2].name": "sinvistaprevia",
+		"options[3].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
+		"options[3].name": "spoiler"
 	}
 }

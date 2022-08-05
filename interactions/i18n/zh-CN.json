@@ -17,11 +17,11 @@
 		"name": "wiki",
 		"options[0].description": "要搜索的页面标题。",
 		"options[0].name": "标题",
-		"options[3].description": "发送的消息是否仅对自己可见？",
-		"options[3].name": "仅自己可见",
-		"options[4].description": "发送的链接是否不包含嵌入内容？",
-		"options[4].name": "不包含嵌入内容",
-		"options[5].description": "是否将链接和嵌入内容标记为剧透？",
-		"options[5].name": "标记为剧透"
+		"options[1].description": "发送的消息是否仅对自己可见？",
+		"options[1].name": "仅自己可见",
+		"options[2].description": "发送的链接是否不包含嵌入内容？",
+		"options[2].name": "不包含嵌入内容",
+		"options[3].description": "是否将链接和嵌入内容标记为剧透？",
+		"options[3].name": "标记为剧透"
 	}
 }
