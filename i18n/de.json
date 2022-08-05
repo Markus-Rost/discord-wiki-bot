@@ -325,6 +325,9 @@
 				"interwiki": {
 					"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen MediaWiki-Projekt."
 				},
+				"overview": {
+					"desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf."
+				},
 				"verify": {
 					"desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
 				},
