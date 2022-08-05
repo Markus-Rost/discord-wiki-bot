@@ -3,15 +3,19 @@
 	"application_id": "",
 	"name": "interwiki",
 	"name_localizations": {
-		"de": "interwiki"
+		"de": "interwiki",
+		"es-ES": "interwiki",
+		"zh-CN": "interwiki",
+		"zh-TW": "interwiki"
 	},
 	"description": "Post a link to a different wiki.",
 	"description_localizations": {
 		"hi": "विकि की एक कड़ी पोस्ट करें।",
-		"zh-CN": "发送一条wiki链接。",
-		"zh-TW": "傳送一條wiki連結。",
+		"zh-CN": "发送一条指向不同wiki的链接。",
+		"zh-TW": "傳送一條指向不同wiki的連結。",
 		"tr": "Bir wiki bağlantısı paylaş.",
-		"de": "Sende einen Link zu einem anderen Wiki."
+		"de": "Sende einen Link zu einem anderen Wiki.",
+		"es-ES": "Publica un enlace a un wiki diferente."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -21,11 +25,17 @@
 			"type": 3,
 			"name": "wiki",
 			"name_localizations": {
-				"de": "wiki"
+				"de": "wiki",
+				"es-ES": "wiki",
+				"zh-CN": "wiki",
+				"zh-TW": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
-				"de": "Das Wiki zum Durchsuchen."
+				"de": "Das Wiki zum Durchsuchen.",
+				"es-ES": "El wiki en el que buscar.",
+				"zh-CN": "要搜索的wiki。",
+				"zh-TW": "要搜尋的wiki。"
 			},
 			"required": true,
 			"autocomplete": true
@@ -38,7 +48,8 @@
 				"zh-CN": "标题",
 				"zh-TW": "標題",
 				"tr": "title",
-				"de": "titel"
+				"de": "titel",
+				"es-ES": "título"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
@@ -46,7 +57,8 @@
 				"zh-CN": "要搜索的页面标题。",
 				"zh-TW": "要搜尋的頁面標題。",
 				"tr": "Aratılacak sayfa başlığı.",
-				"de": "Seitenname zum Suchen."
+				"de": "Seitenname zum Suchen.",
+				"es-ES": "Título de la página a buscar."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -57,11 +69,17 @@
 			"type": 5,
 			"name": "private",
 			"name_localizations": {
-				"de": "privat"
+				"de": "privat",
+				"es-ES": "privado",
+				"zh-CN": "仅自己可见",
+				"zh-TW": "僅自己可見"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
-				"de": "Sende eine Antwort nur sichtbar für dich?"
+				"de": "Sende eine Antwort nur sichtbar für dich?",
+				"es-ES": "¿Enviar una respuesta que solo sea visible para ti?",
+				"zh-CN": "发送的消息是否仅对自己可见？",
+				"zh-TW": "傳送的訊息是否僅對自己可見？"
 			},
 			"required": false
 		},
@@ -69,11 +87,17 @@
 			"type": 5,
 			"name": "noembed",
 			"name_localizations": {
-				"de": "noembed"
+				"de": "noembed",
+				"es-ES": "sinvistaprevia",
+				"zh-CN": "不包含嵌入内容",
+				"zh-TW": "不包含嵌入內容"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
-				"de": "Sende nur den Link ohne Einbettung?"
+				"de": "Sende nur den Link ohne Einbettung?",
+				"es-ES": "¿Enviar solo el enlace sin vista previa?",
+				"zh-CN": "发送的链接是否不包含嵌入内容？",
+				"zh-TW": "傳送的連結是否不包含嵌入內容？"
 			},
 			"required": false
 		},
@@ -81,11 +105,17 @@
 			"type": 5,
 			"name": "spoiler",
 			"name_localizations": {
-				"de": "spoiler"
+				"de": "spoiler",
+				"es-ES": "spoiler",
+				"zh-CN": "标记为剧透",
+				"zh-TW": "標記為劇透"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
-				"de": "Verstecke Link und Einbettung in einem Spoiler?"
+				"de": "Verstecke Link und Einbettung in einem Spoiler?",
+				"es-ES": "¿Ocultar el enlace y la vista previa en un spoiler?",
+				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
+				"zh-TW": "是否將連結和嵌入內容標記為劇透？"
 			},
 			"required": false
 		}

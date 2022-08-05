@@ -57,7 +57,7 @@
 			"name": "private",
 			"name_localizations": {
 				"de": "privat",
-				"es-ES": "efímero",
+				"es-ES": "privado",
 				"hi": "ephemeral",
 				"ja": "ephemeral",
 				"zh-CN": "仅自己可见",
