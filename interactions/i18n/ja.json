@@ -17,11 +17,11 @@
 		"name": "wiki",
 		"options[0].description": "検索するページタイトル。",
 		"options[0].name": "title",
-		"options[1].description": "自分だけに見える応答を送信しますか？",
-		"options[1].name": "ephemeral",
-		"options[2].description": "埋め込みなしでリンクだけを送信しますか？",
-		"options[2].name": "noembed",
-		"options[3].description": "リンクを隠して、スポイラーに埋め込む？",
-		"options[3].name": "spoiler"
+		"options[3].description": "自分だけに見える応答を送信しますか？",
+		"options[3].name": "ephemeral",
+		"options[4].description": "埋め込みなしでリンクだけを送信しますか？",
+		"options[4].name": "noembed",
+		"options[5].description": "リンクを隠して、スポイラーに埋め込む？",
+		"options[5].name": "spoiler"
 	}
 }

@@ -13,12 +13,12 @@
 		"options[0].name": "wiki",
 		"options[1].description": "要搜尋的頁面標題。",
 		"options[1].name": "標題",
-		"options[2].description": "傳送的訊息是否僅對自己可見？",
-		"options[2].name": "僅自己可見",
-		"options[3].description": "傳送的連結是否不包含嵌入內容？",
-		"options[3].name": "不包含嵌入內容",
-		"options[4].description": "是否將連結和嵌入內容標記為劇透？",
-		"options[4].name": "標記為劇透"
+		"options[4].description": "傳送的訊息是否僅對自己可見？",
+		"options[4].name": "僅自己可見",
+		"options[5].description": "傳送的連結是否不包含嵌入內容？",
+		"options[5].name": "不包含嵌入內容",
+		"options[6].description": "是否將連結和嵌入內容標記為劇透？",
+		"options[6].name": "標記為劇透"
 	},
 	"verify": {
 		"description": "使用您的wiki帳號驗證您的Discord帳號。",
@@ -31,11 +31,11 @@
 		"name": "wiki",
 		"options[0].description": "要搜尋的頁面標題。",
 		"options[0].name": "標題",
-		"options[1].description": "傳送的訊息是否僅對自己可見？",
-		"options[1].name": "僅自己可見",
-		"options[2].description": "傳送的連結是否不包含嵌入內容？",
-		"options[2].name": "不包含嵌入內容",
-		"options[3].description": "是否將連結和嵌入內容標記為劇透？",
-		"options[3].name": "標記為劇透"
+		"options[3].description": "傳送的訊息是否僅對自己可見？",
+		"options[3].name": "僅自己可見",
+		"options[4].description": "傳送的連結是否不包含嵌入內容？",
+		"options[4].name": "不包含嵌入內容",
+		"options[5].description": "是否將連結和嵌入內容標記為劇透？",
+		"options[5].name": "標記為劇透"
 	}
 }

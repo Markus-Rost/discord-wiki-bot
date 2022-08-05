@@ -13,12 +13,12 @@
 		"options[0].name": "wiki",
 		"options[1].description": "Título de la página a buscar.",
 		"options[1].name": "título",
-		"options[2].description": "¿Enviar una respuesta que solo sea visible para ti?",
-		"options[2].name": "privado",
-		"options[3].description": "¿Enviar solo el enlace sin vista previa?",
-		"options[3].name": "sinvistaprevia",
-		"options[4].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
-		"options[4].name": "spoiler"
+		"options[4].description": "¿Enviar una respuesta que solo sea visible para ti?",
+		"options[4].name": "privado",
+		"options[5].description": "¿Enviar solo el enlace sin vista previa?",
+		"options[5].name": "sinvistaprevia",
+		"options[6].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
+		"options[6].name": "spoiler"
 	},
 	"verify": {
 		"description": "Verifica tu cuenta de Discord con tu cuenta wiki.",
@@ -31,11 +31,11 @@
 		"name": "wiki",
 		"options[0].description": "Título de la página a buscar.",
 		"options[0].name": "título",
-		"options[1].description": "¿Enviar una respuesta que solo sea visible para ti?",
-		"options[1].name": "privado",
-		"options[2].description": "¿Enviar solo el enlace sin vista previa?",
-		"options[2].name": "sinvistaprevia",
-		"options[3].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
-		"options[3].name": "spoiler"
+		"options[3].description": "¿Enviar una respuesta que solo sea visible para ti?",
+		"options[3].name": "privado",
+		"options[4].description": "¿Enviar solo el enlace sin vista previa?",
+		"options[4].name": "sinvistaprevia",
+		"options[5].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
+		"options[5].name": "spoiler"
 	}
 }

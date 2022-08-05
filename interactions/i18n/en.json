@@ -13,12 +13,16 @@
 		"options[0].name": "wiki",
 		"options[1].description": "Page title to search for.",
 		"options[1].name": "title",
-		"options[2].description": "Send a response only visible to yourself?",
-		"options[2].name": "private",
-		"options[3].description": "Send only the link without embed?",
-		"options[3].name": "noembed",
-		"options[4].description": "Hide the link and embed in a spoiler?",
-		"options[4].name": "spoiler"
+		"options[2].description": "Page section to link to.",
+		"options[2].name": "section",
+		"options[3].description": "Query arguments to add to the link.",
+		"options[3].name": "query",
+		"options[4].description": "Send a response only visible to yourself?",
+		"options[4].name": "private",
+		"options[5].description": "Send only the link without embed?",
+		"options[5].name": "noembed",
+		"options[6].description": "Hide the link and embed in a spoiler?",
+		"options[6].name": "spoiler"
 	},
 	"verify": {
 		"description": "Verify your Discord account with your wiki account.",
@@ -31,11 +35,15 @@
 		"name": "wiki",
 		"options[0].description": "Page title to search for.",
 		"options[0].name": "title",
-		"options[1].description": "Send a response only visible to yourself?",
-		"options[1].name": "private",
-		"options[2].description": "Send only the link without embed?",
-		"options[2].name": "noembed",
-		"options[3].description": "Hide the link and embed in a spoiler?",
-		"options[3].name": "spoiler"
+		"options[1].description": "Page section to link to.",
+		"options[1].name": "section",
+		"options[2].description": "Query arguments to add to the link.",
+		"options[2].name": "query",
+		"options[3].description": "Send a response only visible to yourself?",
+		"options[3].name": "private",
+		"options[4].description": "Send only the link without embed?",
+		"options[4].name": "noembed",
+		"options[5].description": "Hide the link and embed in a spoiler?",
+		"options[5].name": "spoiler"
 	}
 }

@@ -17,11 +17,11 @@
 		"name": "विकि",
 		"options[0].description": "खोजने के लिए पृष्ठ का शीर्षक।",
 		"options[0].name": "शीर्षक",
-		"options[1].description": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
-		"options[1].name": "ephemeral",
-		"options[2].description": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
-		"options[2].name": "noembed",
-		"options[3].description": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
-		"options[3].name": "spoiler"
+		"options[3].description": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
+		"options[3].name": "ephemeral",
+		"options[4].description": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
+		"options[4].name": "noembed",
+		"options[5].description": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
+		"options[5].name": "spoiler"
 	}
 }
