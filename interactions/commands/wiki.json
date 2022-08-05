@@ -55,9 +55,13 @@
 		{
 			"type": 3,
 			"name": "section",
-			"name_localizations": {},
+			"name_localizations": {
+				"de": "abschnitt"
+			},
 			"description": "Page section to link to.",
-			"description_localizations": {},
+			"description_localizations": {
+				"de": "Seitenabschnitt zum Verlinken."
+			},
 			"min_length": 0,
 			"max_length": 250,
 			"required": false,
@@ -66,9 +70,13 @@
 		{
 			"type": 3,
 			"name": "query",
-			"name_localizations": {},
+			"name_localizations": {
+				"de": "query"
+			},
 			"description": "Query arguments to add to the link.",
-			"description_localizations": {},
+			"description_localizations": {
+				"de": "Query-String der zum Link hinzugefügt werden soll."
+			},
 			"min_length": 0,
 			"max_length": 250,
 			"required": false
