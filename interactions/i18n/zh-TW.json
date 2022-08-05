@@ -6,6 +6,20 @@
 		"options[0].description": "含有wikitext連結的文字。",
 		"options[0].name": "文字"
 	},
+	"interwiki": {
+		"description": "傳送一條指向不同wiki的連結。",
+		"name": "interwiki",
+		"options[0].description": "要搜尋的wiki。",
+		"options[0].name": "wiki",
+		"options[1].description": "要搜尋的頁面標題。",
+		"options[1].name": "標題",
+		"options[2].description": "傳送的訊息是否僅對自己可見？",
+		"options[2].name": "僅自己可見",
+		"options[3].description": "傳送的連結是否不包含嵌入內容？",
+		"options[3].name": "不包含嵌入內容",
+		"options[4].description": "是否將連結和嵌入內容標記為劇透？",
+		"options[4].name": "標記為劇透"
+	},
 	"verify": {
 		"description": "使用您的wiki帳號驗證您的Discord帳號。",
 		"name": "verify",

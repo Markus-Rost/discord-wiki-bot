@@ -318,6 +318,20 @@
 					"desc": "Cambiaré el wiki predeterminado de este servidor."
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "Publica un mensaje con enlaces wiki inline."
+				},
+				"interwiki": {
+					"desc": "Responderé con un enlace a un artículo correspondiente en el proyecto MediaWiki mencionado."
+				},
+				"verify": {
+					"desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
+				},
+				"wiki": {
+					"desc": "Responderé con un enlace a un artículo correspondiente en el wiki:"
+				}
+			},
 			"subprefix": {
 				"cmd": "<wiki> <término de búsqueda>",
 				"desc": "Responderé con un enlace a un artículo coincidente en el wiki nombrado:"
@@ -383,6 +397,7 @@
 	"interaction": {
 		"error": "¡Ocurrió un error inesperado al ejecutar el comando!",
 		"inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
+		"interwiki": "Por favor, proporciona un wiki conocido para buscar.",
 		"nowiki": "¡El wiki usado no existe!",
 		"verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
 	},
