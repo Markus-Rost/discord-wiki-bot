@@ -322,6 +322,9 @@
 				"inline": {
 					"desc": "发送一条含有行内wiki链接的消息。"
 				},
+				"interwiki": {
+					"desc": "我将返回一条指向指定MediaWiki项目中指定页面的链接。"
+				},
 				"verify": {
 					"desc": "使用此命令验证你Discord账号和wiki账号的关联，并获得与你wiki账号相匹配的身份组。"
 				},
@@ -394,6 +397,7 @@
 	"interaction": {
 		"error": "运行命令时出现了意外错误！",
 		"inline": "请提供一些有 [[wiki 文本]] 的文字来使用此命令。",
+		"interwiki": "请填入一个对机器人来说已知的wiki。",
 		"nowiki": "所使用的 wiki 不存在！",
 		"verify": "为了验证您的 Discord 与您的 wiki 账号相匹配并授予与您 wiki 账号相符合的身份组，请提供您的 wiki 用户名。"
 	},
