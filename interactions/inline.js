@@ -10,8 +10,8 @@ import { got, limitLength, partialURIdecode, sendMessage } from '../util/functio
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_inline(interaction, lang, wiki) {
-	var text = ( interaction.options.getString('text') || '' ).replace( /\]\(/g, ']\\(' );
-	text = text.replace( /\x1F/g, '' ).replace( /(?<!@)\u200b/g, '' ).trim();
+	var text = ( interaction.options.getString('text') || '' ).replaceAll( '](', ']\\(' );
+	text = text.replaceAll( '\x1F', '' ).replace( /(?<!@)\u200b/g, '' ).trim();
 	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
 		return interaction.reply( {content: lang.uselang(interaction.locale).get('interaction.inline'), ephemeral: true} ).catch(log_error);
 	}
@@ -74,7 +74,7 @@ function slash_inline(interaction, lang, wiki) {
 			textReplacement.push(replacement);
 			return '\x1F<replacement\x1F' + textReplacement.length + '\x1F' + replacement + '>\x1F';
 		} ).replace( /\bISBN +((?:97[89][- ]?)?(?:[0-9][- ]?){9}[0-9Xx])\b/g, (replacement, id) => {
-			let isbn = id.replace( /[- ]/g, '' ).replace( /x/g, 'X' );
+			let isbn = id.replace( /[- ]/g, '' ).replaceAll( 'x', 'X' );
 			magiclinks.push({type: 'ISBN', id, isbn, replacementId: textReplacement.length});
 			textReplacement.push(replacement);
 			return '\x1F<replacement\x1F' + textReplacement.length + '\x1F' + replacement + '>\x1F';
@@ -89,7 +89,7 @@ function slash_inline(interaction, lang, wiki) {
 			var regex = /(?<!\\|\{)\{\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?([^<>\[\]\|\{\}\x01-\x1F\x7F#]+)(?<!\\)(?:\||\}\})/g;
 			while ( ( inlineLink = regex.exec(line) ) !== null ) {
 				let title = inlineLink[1].trim();
-				if ( !title.replace( /:/g, '' ).trim().length || title.startsWith( '/' ) ) continue;
+				if ( !title.replaceAll( ':', '' ).trim().length || title.startsWith( '/' ) ) continue;
 				if ( title.startsWith( 'int:' ) ) templates.push({
 					raw: title,
 					title: title.replace( /^int:/, 'MediaWiki:' ),
@@ -103,7 +103,7 @@ function slash_inline(interaction, lang, wiki) {
 				inlineLink[1] = inlineLink[1].trim();
 				let title = inlineLink[1].split('#')[0].trim();
 				let section = inlineLink[1].split('#').slice(1).join('#');
-				if ( !title.replace( /:/g, '' ).trim().length || title.startsWith( '/' ) ) continue;
+				if ( !title.replaceAll( ':', '' ).trim().length || title.startsWith( '/' ) ) continue;
 				links.push({raw: title, title, section});
 			}
 		} );
@@ -144,7 +144,7 @@ function slash_inline(interaction, lang, wiki) {
 						link.url = decodeURI(interwiki.url)
 					} );
 					links.filter( link => link.title === interwiki.title ).forEach( link => {
-						link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section) : decodeURI(interwiki.url) );
+						link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, wiki.spaceReplacement) : decodeURI(interwiki.url) );
 					} );
 				} );
 			}
@@ -185,10 +185,10 @@ function slash_inline(interaction, lang, wiki) {
 				magiclinks = magiclinks.filter( link => body.query.general.magiclinks.hasOwnProperty(link.type) );
 				if ( magiclinks.length ) magiclinks.forEach( link => {
 					if ( link.type === 'PMID' && body.query.allmessages[0]?.['*']?.includes( '$1' ) ) {
-						link.url = new URL(body.query.allmessages[0]['*'].replace( /\$1/g, link.id ), wiki).href;
+						link.url = new URL(body.query.allmessages[0]['*'].replaceAll( '$1', link.id ), wiki).href;
 					}
 					if ( link.type === 'RFC' && body.query.allmessages[1]?.['*']?.includes( '$1' ) ) {
-						link.url = new URL(body.query.allmessages[1]['*'].replace( /\$1/g, link.id ), wiki).href;
+						link.url = new URL(body.query.allmessages[1]['*'].replaceAll( '$1', link.id ), wiki).href;
 					}
 					if ( link.type === 'ISBN' ) {
 						let title = 'Special:BookSources';

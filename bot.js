@@ -77,8 +77,12 @@ Discord.Message.prototype.uploadFiles = function() {
 	return !this.inGuild() || this.channel.permissionsFor(client.user).has(Discord.PermissionFlagsBits.AttachFiles);
 };
 
-String.prototype.replaceSave = function(pattern, replacement) {
-	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( /\$/g, '$$$$' ) : replacement ) );
+String.prototype.replaceSafe = function(pattern, replacement) {
+	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replaceAll( '$', '$$$$' ) : replacement ) );
+};
+
+String.prototype.replaceAllSafe = function(pattern, replacement) {
+	return this.replaceAll( pattern, ( typeof replacement === 'string' ? replacement.replaceAll( '$', '$$$$' ) : replacement ) );
 };
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
@@ -142,13 +146,10 @@ Discord.Message.prototype.replyMsg = function(message, ignorePause = false, letD
 };
 
 String.prototype.hasPrefix = function(prefix, flags = '') {
-	var suffix = '';
-	if ( prefix.endsWith( ' ' ) ) {
-		prefix = prefix.trim();
-		suffix = '(?: |$)';
-	}
-	var regex = new RegExp( '^' + prefix.replace( /\W/g, '\\$&' ) + suffix, flags );
-	return regex.test(this.replace( /\u200b/g, '' ).toLowerCase());
+	if ( flags === 'm' ) return this.split('\n').some( line => line.hasPrefix(prefix) );
+	let text = this.split(' ')[0].replaceAll( '\u200b', '' ).toLowerCase();
+	if ( prefix.endsWith( ' ' ) ) return text === prefix.trim();
+	return text.startsWith( prefix );
 };
 
 var interaction_commands = {

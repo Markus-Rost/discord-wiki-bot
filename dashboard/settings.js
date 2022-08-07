@@ -190,7 +190,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 	}
 	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
 	if ( settings.channel && settings.channel !== 'new' ) {
-		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('settings.form.confirm').replace( /'/g, '\\$&' )}');`));
+		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('settings.form.confirm').replaceAll( '\'', '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
@@ -527,7 +527,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					text += '\n' + lang.get('settings.currentlang') + ` \`${allLangs[settings.lang]}\``;
 					text += '\n' + lang.get('settings.currentrole') + ( settings.role ? ` <@&${settings.role}>` : ' @everyone' );
 					if ( response.patreon ) {
-						text += '\n' + lang.get('settings.currentprefix') + ` \`${settings.prefix.replace( /\\/g, '\\$&' )}\``;
+						text += '\n' + lang.get('settings.currentprefix') + ` \`${settings.prefix.replaceAll( '\\', '\\$&' )}\``;
 					}
 					text += '\n' + lang.get('settings.currentinline') + ` ${( settings.inline ? '' : '~~' )}\`[[${( lang.localNames.page || 'page' )}]]\`${( settings.inline ? '' : '~~' )}`;
 					subprefixes.forEach( subprefix => {
@@ -564,7 +564,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 				if ( response.patreon && row.prefix !== settings.prefix ) {
 					updateChannel = true;
-					diff.push(lang.get('settings.currentprefix') + ` ~~\`${row.prefix.replace( /\\/g, '\\$&' )}\`~~ → \`${settings.prefix.replace( /\\/g, '\\$&' )}\``);
+					diff.push(lang.get('settings.currentprefix') + ` ~~\`${row.prefix.replaceAll( '\\', '\\$&' )}\`~~ → \`${settings.prefix.replaceAll( '\\', '\\$&' )}\``);
 				}
 				if ( row.role !== ( settings.role || null ) ) {
 					updateChannel = true;

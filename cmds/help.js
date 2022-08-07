@@ -177,7 +177,7 @@ function formathelp(messages, msg, lang, wiki) {
 					let project = wikiProjects.find( project => prefixwiki === project.name && project.idString );
 					if ( project ) {
 						prefixmessage = 'subprefix';
-						prefixmessagewiki = project.idString.scriptPaths[0].replaceSave( /\$1/g, lang.get('help.list.' + prefixmessage + '.cmd').split(' ')[0] );
+						prefixmessagewiki = project.idString.scriptPaths[0].split('$1').join(lang.get('help.list.' + prefixmessage + '.cmd').split(' ')[0]);
 					}
 					else return;
 				}

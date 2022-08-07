@@ -167,22 +167,22 @@ export default class Wiki extends URL {
 		querystring = new URLSearchParams(querystring);
 		if ( !querystring.toString().length ) {
 			title = ( title || this.mainpage );
-			if ( this.mainpageisdomainroot && title === this.mainpage ) return this.origin + '/' + Wiki.toSection(fragment, true, this.spaceReplacement);
+			if ( this.mainpageisdomainroot && title === this.mainpage ) return this.origin + '/' + Wiki.toSection(fragment, this.spaceReplacement, true);
 		}
-		title = title.replace( / /g, this.spaceReplacement ).replace( /%/g, '%2525' );
+		title = title.replaceAll( ' ', this.spaceReplacement ).replaceAll( '%', '%2525' );
 		let link = new URL(this.articleURL);
-		link.pathname = link.pathname.replace( '$1', title.replace( /\\/g, '%5C' ) );
+		link.pathname = link.pathname.replaceSafe( '$1', title.replaceAll( '\\', '%5C' ) );
 		link.searchParams.forEach( (value, name, searchParams) => {
 			if ( value.includes( '$1' ) ) {
 				if ( !title ) searchParams.delete(name);
-				else searchParams.set(name, value.replace( '$1', title ));
+				else searchParams.set(name, value.replaceSafe( '$1', title ));
 			}
 		} );
 		querystring.forEach( (value, name) => {
 			link.searchParams.append(name, value);
 		} );
-		let output = decodeURI( link ).replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment, true, this.spaceReplacement);
-		if ( isMarkdown ) return output.replace( /\(/g, '%28' ).replace( /\)/g, '%29' );
+		let output = decodeURI( link ).replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment, this.spaceReplacement, true);
+		if ( isMarkdown ) return output.replaceAll( '(', '%28' ).replaceAll( ')', '%29' );
 		else return output;
 	}
 
@@ -194,7 +194,7 @@ export default class Wiki extends URL {
 	 * @static
 	 */
 	static toTitle(title = '', spaceReplacement = '_') {
-		return title.replace( / /g, spaceReplacement ).replace( /[?&%\\]/g, (match) => {
+		return title.replaceAll( ' ', spaceReplacement ).replace( /[?&%\\]/g, (match) => {
 			return '%' + match.charCodeAt().toString(16).toUpperCase();
 		} ).replace( /@(here|everyone)/g, '%40$1' ).replace( /[()]/g, '\\$&' );
 	};
@@ -202,18 +202,18 @@ export default class Wiki extends URL {
 	/**
 	 * Encode a link section.
 	 * @param {String} [fragment] - Fragment of the page.
-	 * @param {Boolean} [simpleEncoding] - Don't fully encode the anchor.
 	 * @param {String} [spaceReplacement] - The url replacement for spaces.
+	 * @param {Boolean} [simpleEncoding] - Don't fully encode the anchor.
 	 * @returns {String}
 	 * @static
 	 */
-	static toSection(fragment = '', simpleEncoding = true, spaceReplacement = '_') {
+	static toSection(fragment = '', spaceReplacement = '_', simpleEncoding = true) {
 		if ( !fragment ) return '';
-		fragment = fragment.replace( / /g, spaceReplacement );
+		fragment = fragment.replaceAll( ' ', spaceReplacement );
 		if ( simpleEncoding && !/['"`^{}<>|\\]|@(everyone|here)/.test(fragment) ) return '#' + fragment;
 		return '#' + encodeURIComponent( fragment ).replace( /[!'()*~]/g, (match) => {
 			return '%' + match.charCodeAt().toString(16).toUpperCase();
-		} ).replace( /%3A/g, ':' ).replace( /%/g, '.' );
+		} ).replaceAll( '%3A', ':' ).replaceAll( '%', '.' );
 	}
 
 	/**
@@ -313,7 +313,7 @@ class articleURL extends URL {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
 		if ( typeof depth === 'number' && depth < 2 ) {
 			var link = this.href;
-			var mainpage = link.replace( '$1', Wiki.toTitle(( this.mainpage || 'Main Page' ), this.spaceReplacement) );
+			var mainpage = link.replaceSafe( '$1', Wiki.toTitle(( this.mainpage || 'Main Page' ), this.spaceReplacement) );
 			return 'articleURL { ' + inspect(link, opts) + ' => ' + inspect(mainpage, opts) + ' }';
 		}
 		return super[inspect.custom](depth, opts);

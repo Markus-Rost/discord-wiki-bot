@@ -59,11 +59,11 @@ export default class Lang {
 			if ( escaped ) text = escapeText(text);
 			args.forEach( (arg, i) => {
 				if ( escaped && typeof arg !== 'string' ) {
-					text = text.replaceSave( new RegExp( `\\[([^\\]]+)\\]\\(\\$${i + 1}\\)`, 'g' ), (m, linkText) => {
+					text = text.replaceSafe( new RegExp( `\\[([^\\]]+)\\]\\(\\$${i + 1}\\)`, 'g' ), (m, linkText) => {
 						return arg.html(linkText);
 					} );
 				}
-				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
+				text = text.replaceAllSafe( `$${i + 1}`, arg );
 			} );
 			if ( text.includes( 'PLURAL:' ) ) text = text.replace( /{{\s*PLURAL:\s*[+-]?(\d+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, number, cases) => {
 				return plural(lang, parseInt(number, 10), cases.split(/\s*\|\s*/));

@@ -68,7 +68,7 @@ const server = createServer( (req, res) => {
 				var settings = {};
 				Buffer.concat(body).toString().split('&').forEach( arg => {
 					if ( arg ) {
-						let setting = decodeURIComponent(arg.replace( /\+/g, ' ' )).split('=');
+						let setting = decodeURIComponent(arg.replaceAll( '+', ' ' )).split('=');
 						if ( setting[0] && setting.slice(1).join('=').trim() ) {
 							if ( settings[setting[0]] ) {
 								settings[setting[0]] += '|' + setting.slice(1).join('=').trim();
@@ -265,8 +265,12 @@ server.listen( 8080, 'localhost', () => {
 } );
 
 
-String.prototype.replaceSave = function(pattern, replacement) {
-	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( /\$/g, '$$$$' ) : replacement ) );
+String.prototype.replaceSafe = function(pattern, replacement) {
+	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replaceAll( '$', '$$$$' ) : replacement ) );
+};
+
+String.prototype.replaceAllSafe = function(pattern, replacement) {
+	return this.replaceAll( pattern, ( typeof replacement === 'string' ? replacement.replaceAll( '$', '$$$$' ) : replacement ) );
 };
 
 /**

@@ -11,7 +11,7 @@ const overwrites = {
 		let contentNamespaces = namespaces.filter( ns => ns.content !== undefined );
 		let namespaceData = [contentNamespaces.map( ns => ns.id ).join('|'), contentNamespaces.map( ns => ( ns['*'] || '*' ) ).join(', ')];
 		if ( args[0] ) {
-			args[0] = args[0].replace( /_/g, ' ' ).toLowerCase().trim();
+			args[0] = args[0].replaceAll( wiki.spaceReplacement ?? '_', ' ' ).toLowerCase().trim();
 			let namespaceMap = {};
 			namespaces.forEach( namespace => {
 				if ( namespace.id < 0 ) return;

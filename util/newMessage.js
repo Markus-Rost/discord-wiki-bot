@@ -56,7 +56,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	var count = 0;
 	var maxcount = commandLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 	var breakLines = false;
-	cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
+	cleanCont.replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
 		if ( !line.hasPrefix(prefix) || breakLines || count > maxcount ) return;
 		if ( count === maxcount ) {
@@ -108,7 +108,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		var linkcount = 0;
 		var linkmaxcount = maxcount + 5;
 		var breakInline = false;
-		cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)``.+?``/gs, '<code>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
+		cleanCont.replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)``.+?``/gs, '<code>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
 			if ( line.startsWith( '>>> ' ) ) breakInline = true;
 			if ( line.startsWith( '> ' ) || breakInline ) return;
 			if ( line.hasPrefix(prefix) || !( line.includes( '[[' ) || line.includes( '{{' ) ) ) return;
@@ -176,7 +176,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
 					logging(wiki, msg.guildId, 'inline', 'interwiki');
-					link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section) : decodeURI(interwiki.url) );
+					link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, wiki.spaceReplacement) : decodeURI(interwiki.url) );
 				} ) );
 			}
 			if ( body.query.pages ) {

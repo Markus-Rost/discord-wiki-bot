@@ -74,7 +74,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		return;
 	}
 	if ( aliasInvoke === 'page' ) {
-		return Promise.resolve( {message: spoiler + '<' + wiki.toLink(args.join('_'), querystring, fragment) + '>' + spoiler} );
+		return Promise.resolve( {message: spoiler + '<' + wiki.toLink(args.join(' '), querystring, fragment) + '>' + spoiler} );
 	}
 	if ( aliasInvoke === 'diff' && args.join('') && !querystring.toString() && !fragment ) {
 		return fn.diff(lang, msg, args, wiki, spoiler, noEmbed);
@@ -85,7 +85,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
 		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
 	}
-	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1F' + encodeURIComponent( ( aliasInvoke === 'search' ? full_title.split(' ').slice(1).join(' ') : title ).replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
+	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases&iwurl=true' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1F' + encodeURIComponent( ( aliasInvoke === 'search' ? full_title.split(' ').slice(1).join(' ') : title ).replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -123,8 +123,8 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		if ( body.query.pages && body.query.pages?.['-1']?.title !== '%1F' ) {
 			var querypages = Object.values(body.query.pages);
 			var querypage = querypages[0];
-			if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ) ) {
-				noRedirect = ( body.query.specialpagealiases.find( sp => sp.realname === 'MyLanguage' )?.aliases?.[0] === body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ? noRedirect : true );
+			if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) {
+				noRedirect = ( body.query.specialpagealiases.find( sp => sp.realname === 'MyLanguage' )?.aliases?.[0] === body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ? noRedirect : true );
 				querypage.title = body.query.redirects[0].from;
 				delete body.query.redirects[0].tofragment;
 				delete querypage.pageprops;
@@ -232,7 +232,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					} ).then( hresponse => {
 						if ( hresponse.statusCode === 301 && /^https:\/\/[a-z\d-]{1,50}\.fandom\.com\/(?:(?!wiki\/)[a-z-]{2,12}\/)?wiki\/Help:/.test( hresponse.headers?.location ) ) {
 							var location = hresponse.headers.location.split('wiki/');
-							if ( location[0] === wiki.href && location.slice(1).join('wiki/').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /_/g, ' ' ) === querypage.title ) {
+							if ( location[0] === wiki.href && location.slice(1).join('wiki/').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replaceAll( '_', ' ' ) === querypage.title ) {
 								if ( srbody.query ) return srbody;
 								return {RETURN: {reaction: '🤷'}};
 							}
@@ -283,11 +283,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							if ( reaction ) reaction.removeEmoji();
 							return;
 						}
-						var iw = new URL(srbody.query.interwiki[0].url.replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
+						var iw = new URL(srbody.query.interwiki[0].url.replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
 						querystring.forEach( (value, name) => {
 							iw.searchParams.append(name, value);
 						} );
-						if ( fragment ) iw.hash = Wiki.toSection(fragment);
+						if ( fragment ) iw.hash = Wiki.toSection(fragment, wiki.spaceReplacement);
 						else fragment = iw.hash.substring(1);
 						if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(iw.hostname) ) {
 							return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
@@ -301,7 +301,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 								let articlePath = ( project.regexPaths ? '/' : project.articlePath );
 								let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
 								if ( regex ) {
-									let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replace( /_/g, ' ' );
+									let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );
 									let scriptPath = project.scriptPath;
 									if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 									let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
@@ -381,7 +381,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					? ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' )
 					: ( querystring.toString() ? ' query:' + querystring : '' ) + ( fragment ? ' section:' + fragment : '' )
 				);
-				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
+				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replaceAll( '-', ' ' ).toLowerCase() ) {
 					text = '';
 				}
 				else if ( !srbody.continue ) {
@@ -419,7 +419,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				};
 			} );
 			if ( querypage.ns === -1 ) {
-				var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replace( /\_/g, ' ' ) === querypage.title.split('/')[0] );
+				var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replaceAll( wiki.spaceReplacement ?? '_', ' ' ) === querypage.title.split('/')[0] );
 				specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( body.query.namespaces['-1']['*'] + ':', '' ).split('/')[0] ).toLowerCase();
 				if ( !['mylanguage'].includes( specialpage ) ) {
 					return fn.special_page(lang, msg, querypage, specialpage, body.query, wiki, querystring, fragment, reaction, spoiler, noEmbed);
@@ -502,11 +502,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
-			var iw = new URL(body.query.interwiki[0].url.replace( /\\/g, '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
+			var iw = new URL(body.query.interwiki[0].url.replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
 			querystring.forEach( (value, name) => {
 				iw.searchParams.append(name, value);
 			} );
-			if ( fragment ) iw.hash = Wiki.toSection(fragment);
+			if ( fragment ) iw.hash = Wiki.toSection(fragment, wiki.spaceReplacement);
 			else fragment = iw.hash.substring(1);
 			if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(iw.hostname) ) {
 				return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
@@ -520,7 +520,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					let articlePath = ( project.regexPaths ? '/' : project.articlePath );
 					let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
 					if ( regex ) {
-						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replace( /_/g, ' ' );
+						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );
 						let scriptPath = project.scriptPath;
 						if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 						let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
@@ -569,7 +569,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				return;
 			}
 			querypage = Object.values(mpbody.query.pages)[0];
-			if ( mpbody.query.redirects && mpbody.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( mpbody.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replace( / /g, '_' ) ) ) {
+			if ( mpbody.query.redirects && mpbody.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( mpbody.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) {
 				noRedirect = true;
 				querypage.title = mpbody.query.redirects[0].from;
 				delete mpbody.query.redirects[0].tofragment;

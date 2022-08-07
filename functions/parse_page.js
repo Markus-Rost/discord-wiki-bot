@@ -196,7 +196,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				else return {message: {content, embeds: [embed]}};
 			} );
 		}
-		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title.replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
+		if ( !parsedContentModels.includes( contentmodel ) ) return got.get( wiki + 'api.php?action=query&prop=revisions&rvprop=content&rvslots=main&converttitles=true&titles=%1F' + encodeURIComponent( title.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 			timeout: {
 				request: 10_000
 			},
@@ -379,7 +379,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 			}
 			if ( embed.data.thumbnail?.url === thumbnail ) {
-				let image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replace( / /g, '_' ) ) ) );
+				let image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) );
 				if ( !image ) {
 					let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
 						img = $(img).prop('src')?.toLowerCase();
@@ -401,15 +401,15 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( thumbnail ) embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
 			}
 			if ( fragment && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 &&
-			toSection(embed.data.fields?.[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' )) !== toSection(fragment) ) {
+			toSection(embed.data.fields?.[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' ), wiki.spaceReplacement) !== toSection(fragment, wiki.spaceReplacement) ) {
 				let newFragment = '';
 				let exactMatch = true;
 				let allSections = $('h1, h2, h3, h4, h5, h6').children('span');
 				var section = allSections.filter( (i, span) => {
-					return ( '#' + span.attribs.id === toSection(fragment) );
+					return ( '#' + span.attribs.id === toSection(fragment, wiki.spaceReplacement) );
 				} ).parent();
 				if ( !section.length ) {
-					section = $('[id="' + toSection(fragment, false).replace( '#', '' ) + '"]');
+					section = $('[id="' + toSection(fragment, wiki.spaceReplacement, false).replace( '#', '' ) + '"]');
 					newFragment = section.attr('id');
 					if ( section.is(':empty') ) {
 						section = section.parent();
@@ -435,7 +435,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 				if ( !section.length ) exactMatch = false;
 				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( '#' + span.attribs.id?.toLowerCase() === toSection(fragment).toLowerCase() );
+					return ( '#' + span.attribs.id?.toLowerCase() === toSection(fragment, wiki.spaceReplacement).toLowerCase() );
 				} );
 				if ( !section.length ) section = allSections.filter( (i, span) => {
 					return ( $(span).parent().prop('innerText').trim() === fragment );
@@ -490,8 +490,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					if ( name.length && value.length ) {
 						embed.spliceFields( 0, 0, {name, value} );
 						if ( newFragment ) {
-							embed.setURL( pagelink.replace( toSection(fragment), toSection(newFragment) ) );
-							content = content.replace( '<' + pagelink + '>', '<' + embed.data.url + '>' );
+							embed.setURL( pagelink.replaceSafe( toSection(fragment, wiki.spaceReplacement), toSection(newFragment, wiki.spaceReplacement) ) );
+							content = content.replaceSafe( '<' + pagelink + '>', '<' + embed.data.url + '>' );
 						}
 					}
 					else if ( embed.backupField ) {

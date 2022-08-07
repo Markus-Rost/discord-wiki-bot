@@ -31,7 +31,7 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
-		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
+		const selectLanguage = '${dashboardLang.get('general.language').replaceAll( '\'', '\\$&' )}';
 		const allLangs = ${JSON.stringify(allLangNames)};
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.login') + ' – ' + dashboardLang.get('general.title'));
@@ -119,7 +119,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				return {
 					id: guild.id,
 					name: guild.name,
-					acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
+					acronym: guild.name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
 					icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
 					+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
 					userPermissions: guild.permissions
@@ -207,7 +207,7 @@ function dashboard_refresh(res, userSession, returnLocation = '/') {
 			return {
 				id: guild.id,
 				name: guild.name,
-				acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
+				acronym: guild.name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
 				icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
 				+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
 				userPermissions: guild.permissions

@@ -168,20 +168,20 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 	while ( ( link = regex.exec(text) ) !== null ) {
 		var pagetitle = ( link[1] || link[2] );
 		var page = wiki.toLink(( /^[#\/]/.test(pagetitle) ? title + ( pagetitle.startsWith( '/' ) ? pagetitle : '' ) : pagetitle ), '', ( pagetitle.startsWith( '#' ) ? pagetitle.substring(1) : '' ), true);
-		text = text.replaceSave( link[0], '[' + link[2] + link[3] + '](' + page + ')' );
+		text = text.replaceSafe( link[0], '[' + link[2] + link[3] + '](' + page + ')' );
 	}
 	if ( title !== '' ) {
 		regex = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSave( link[0], '[→' + link[1] + '](' + wiki.toLink(title, '', link[1], true) + ')' + ( link[2] ? ': ' + link[2] : '' ) );
+			text = text.replaceSafe( link[0], '[→' + link[1] + '](' + wiki.toLink(title, '', link[1], true) + ')' + ( link[2] ? ': ' + link[2] : '' ) );
 		}
 	}
 	if ( fullWikitext ) {
 		regex = /\[(?:https?:)?\/\/([^ ]+) ([^\]]+)\]/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSave( link[0], '[' + link[2] + '](https://' + link[1] + ')' );
+			text = text.replaceSafe( link[0], '[' + link[2] + '](https://' + link[1] + ')' );
 		}
-		return htmlToDiscord(text, '', true, true).replaceSave( /'''/g, '**' ).replaceSave( /''/g, '*' );
+		return htmlToDiscord(text, '', true, true).replaceAll( "'''", '**' ).replaceAll( "''", '*' );
 	}
 	return escapeFormatting(text, true);
 };
@@ -331,13 +331,13 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 					let showAlt = true;
 					if ( attribs['data-image-name'] === attribs.alt ) showAlt = false;
 					else {
-						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
+						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replaceAll( ' ', '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
 						if ( attribs.src.startsWith( 'data:' ) && attribs['data-src'] ) attribs.src = attribs['data-src'];
 						if ( regex.test(attribs.src.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode )) ) showAlt = false;
 					}
 					if ( showAlt ) {
 						if ( href && !code ) attribs.alt = attribs.alt.replace( /[\[\]]/g, '\\$&' );
-						if ( code ) text += attribs.alt.replace( /`/g, 'ˋ' );
+						if ( code ) text += attribs.alt.replaceAll( '`', 'ˋ' );
 						else text += escapeFormatting(attribs.alt, ...escapeArgs);
 					}
 				}
@@ -384,7 +384,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 		ontext: (htmltext) => {
 			if ( !ignoredTag[0] ) {
 				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
-				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
+				if ( code ) text += htmltext.replaceAll( '`', 'ˋ' );
 				else {
 					htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
 					if ( /[\n ]$/.test(text) && htmltext.startsWith( ' ' ) ) {
@@ -459,10 +459,10 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
  * @returns {String}
  */
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
-	if ( !isMarkdown ) text = text.replace( /\\/g, '\\\\' ).replace( /\]\(/g, ']\\(' );
-	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replace( /\/\//g, '/\\/' );
+	if ( !isMarkdown ) text = text.replaceAll( '\\', '\\\\' ).replaceAll( '](', ']\\(' );
+	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replaceAll( '//', '/\\/' );
 	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
-		return match.replace( /\\\\/g, '/' ).replace( /\\/g, '' );
+		return match.replaceAll( '\\\\', '/' ).replaceAll( '\\', '' );
 	} );
 	return text;
 };
@@ -525,7 +525,7 @@ function splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', appe
 function partialURIdecode(m) {
 	var text = '';
 	try {
-		text = decodeURIComponent( m );
+		text = decodeURIComponent( m.replaceAll( '.', '%' ) );
 	}
 	catch ( replaceError ) {
 		if ( isDebug ) console.log( '- Failed to decode ' + m + ':' + replaceError );

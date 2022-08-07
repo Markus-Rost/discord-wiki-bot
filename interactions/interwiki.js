@@ -18,12 +18,13 @@ function getWiki(wiki) {
 	if ( wiki instanceof Wiki ) return Promise.resolve(wiki);
 	var newWiki = inputToWikiProject(wiki)?.fullScriptPath;
 	if ( newWiki ) return Promise.resolve(new Wiki(newWiki));
-	if ( !wiki.startsWith( 'https://' ) ) return Promise.reject();
-	if ( knownWikis.has(wiki) ) return Promise.resolve(new Wiki(wiki));
-	return db.query( '(SELECT wiki FROM discord WHERE wiki = $1 LIMIT 1) UNION (SELECT prefixwiki FROM subprefix WHERE prefixwiki = $1 LIMIT 1)', [wiki] ).then( ({rows}) => {
+	wiki = Wiki.fromInput(wiki);
+	if ( !wiki ) return Promise.reject();
+	if ( knownWikis.has(wiki.href) ) return Promise.resolve(wiki);
+	return db.query( '(SELECT wiki FROM discord WHERE wiki = $1 LIMIT 1) UNION (SELECT prefixwiki FROM subprefix WHERE prefixwiki = $1 LIMIT 1)', [wiki.href] ).then( ({rows}) => {
 		if ( rows.length ) {
-			knownWikis.add(wiki);
-			return new Wiki(wiki);
+			knownWikis.add(wiki.href);
+			return wiki;
 		}
 		return Promise.reject();
 	}, dberror => {
@@ -69,7 +70,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} );
 	}
 	const input = focused.value.trim().replace( /^(?:(?:https?:)?\/(?:$|\/)|https?:?$|ht{0,2}$)/, '' );
-	if ( input.includes( ':' ) && !input.includes( '/' ) ) return got.get( wiki + 'api.php?action=query&iwurl=1&titles=%1F' + encodeURIComponent( input.replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
+	if ( input.includes( ':' ) && !input.includes( '/' ) ) return got.get( wiki + 'api.php?action=query&iwurl=1&titles=%1F' + encodeURIComponent( input.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 		timeout: {
 			request: 2_000
 		},
@@ -94,8 +95,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		}
 		if ( !body.query.interwiki.length ) return interaction.respond( [] ).catch(log_error);
 		let project = inputToWikiProject(body.query.interwiki[0].url);
+		if ( !project ) return interaction.respond( [] ).catch(log_error);
 		return interaction.respond( [{
-			name: project.fullScriptPath,
+			name: project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ),
 			value: project.fullScriptPath
 		}] ).catch(log_error);
 	}, error => {
@@ -129,8 +131,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} );
 		wikiList = [[...wikiList[0]], [...wikiList[1]]];
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
+			let project = inputToWikiProject(suggestion);
 			return {
-				name: suggestion,
+				name: project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion,
 				value: suggestion
 			};
 		} ).slice(0, 25) ).catch(log_error);
@@ -159,8 +162,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			inputToWikiProject(input)?.fullScriptPath
 		].filter( suggestion => suggestion ));
 		return interaction.respond( [...new Set(suggestions)].map( suggestion => {
+			let project = inputToWikiProject(suggestion);
 			return {
-				name: suggestion,
+				name: project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion,
 				value: suggestion
 			};
 		} ).slice(0, 25) ).catch(log_error);

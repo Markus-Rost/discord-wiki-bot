@@ -99,13 +99,13 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( Date.parse(block.expiry) > Date.now() ) isBlocked = true;
 				let expiry = new Date(block.expiry);
 				let datediff = datetimeDifference(blockedtimestamp, expiry);
-				let separator = lang.get('user.block.duration.separator_last').replace( /_/g, ' ' );
+				let separator = lang.get('user.block.duration.separator_last').replaceAll( '_', ' ' );
 				let last_separator = true;
 				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes.toLocaleString(lang.get('dateformat')), datediff.minutes);
 				if ( datediff.hours ) {
 					blockduration = lang.get('user.block.duration.hours', datediff.hours.toLocaleString(lang.get('dateformat')), datediff.hours) + ( blockduration.length ? separator + blockduration : '' );
 					if ( last_separator ) {
-						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 						last_separator = false;
 					}
 				}
@@ -113,14 +113,14 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					if ( datediff.days % 7 ) {
 						blockduration = lang.get('user.block.duration.days', ( datediff.days % 7 ).toLocaleString(lang.get('dateformat')), datediff.days % 7) + ( blockduration.length ? separator + blockduration : '' );
 						if ( last_separator ) {
-							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 							last_separator = false;
 						}
 					}
 					if ( ( datediff.days / 7 ) >> 0 ) {
 						blockduration = lang.get('user.block.duration.weeks', ( ( datediff.days / 7 ) >> 0 ).toLocaleString(lang.get('dateformat')), ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? separator + blockduration : '' );
 						if ( last_separator ) {
-							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 							last_separator = false;
 						}
 					}
@@ -128,14 +128,14 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( datediff.months ) {
 					blockduration = lang.get('user.block.duration.months', datediff.months.toLocaleString(lang.get('dateformat')), datediff.months) + ( blockduration.length ? separator + blockduration : '' );
 					if ( last_separator ) {
-						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 						last_separator = false;
 					}
 				}
 				if ( datediff.years ) {
 					blockduration = lang.get('user.block.duration.years', datediff.years.toLocaleString(lang.get('dateformat')), datediff.years) + ( blockduration.length ? separator + blockduration : '' );
 					if ( last_separator ) {
-						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 						last_separator = false;
 					}
 				}
@@ -174,7 +174,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				else if ( range >= 16 ) rangeprefix = username.replace( /^((?:\d{1,3}\.){2}).+$/, '$1' );
 			}
 		}
-		return got.get( wiki.updateWiki(body.query.general) + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=%1F' + encodeURIComponent( username.replace( /\x1F/g, '\ufffd' ) ) ) + '&format=json', {
+		return got.get( wiki.updateWiki(body.query.general) + 'api.php?action=query&list=usercontribs&ucprop=&uclimit=50' + ( username.includes( '/' ) ? '&ucuserprefix=' + encodeURIComponent( rangeprefix ) : '&ucuser=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) ) + '&format=json', {
 			context: {
 				guildId: msg.guildId
 			}
@@ -248,7 +248,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 	} );
 
 	logging(wiki, msg.guildId, 'user');
-	return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replace( /\x1F/g, '\ufffd' ) ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
+	return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups|editcount|merged&guiuser=' + encodeURIComponent( username ) + '&' : '' ) + '&siprop=general&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -394,13 +394,13 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				let expiry = new Date(queryuser.blockexpiry.replace( /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2,3})/, '$1-$2-$3T$4:$5:$6Z' ));
 				if ( expiry > Date.now() ) isBlocked = true;
 				let datediff = datetimeDifference(blockedtimestamp, expiry);
-				let separator = lang.get('user.block.duration.separator_last').replace( /_/g, ' ' );
+				let separator = lang.get('user.block.duration.separator_last').replaceAll( '_', ' ' );
 				let last_separator = true;
 				if ( datediff.minutes ) blockduration = lang.get('user.block.duration.minutes', datediff.minutes.toLocaleString(lang.get('dateformat')), datediff.minutes);
 				if ( datediff.hours ) {
 					blockduration = lang.get('user.block.duration.hours', datediff.hours.toLocaleString(lang.get('dateformat')), datediff.hours) + ( blockduration.length ? separator + blockduration : '' );
 					if ( last_separator ) {
-						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 						last_separator = false;
 					}
 				}
@@ -408,14 +408,14 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					if ( datediff.days % 7 ) {
 						blockduration = lang.get('user.block.duration.days', ( datediff.days % 7 ).toLocaleString(lang.get('dateformat')), datediff.days % 7) + ( blockduration.length ? separator + blockduration : '' );
 						if ( last_separator ) {
-							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 							last_separator = false;
 						}
 					}
 					if ( ( datediff.days / 7 ) >> 0 ) {
 						blockduration = lang.get('user.block.duration.weeks', ( ( datediff.days / 7 ) >> 0 ).toLocaleString(lang.get('dateformat')), ( datediff.days / 7 ) >> 0 ) + ( blockduration.length ? separator + blockduration : '' );
 						if ( last_separator ) {
-							separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+							separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 							last_separator = false;
 						}
 					}
@@ -423,14 +423,14 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( datediff.months ) {
 					blockduration = lang.get('user.block.duration.months', datediff.months.toLocaleString(lang.get('dateformat')), datediff.months) + ( blockduration.length ? separator + blockduration : '' );
 					if ( last_separator ) {
-						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 						last_separator = false;
 					}
 				}
 				if ( datediff.years ) {
 					blockduration = lang.get('user.block.duration.years', datediff.years.toLocaleString(lang.get('dateformat')), datediff.years) + ( blockduration.length ? separator + blockduration : '' );
 					if ( last_separator ) {
-						separator = lang.get('user.block.duration.separator').replace( /_/g, ' ' );
+						separator = lang.get('user.block.duration.separator').replaceAll( '_', ' ' );
 						last_separator = false;
 					}
 				}

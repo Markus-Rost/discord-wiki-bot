@@ -137,7 +137,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	role.find('#wb-settings-role').append(
 		$('<option class="wb-settings-role-default defaultSelect" hidden>').val('').text(dashboardLang.get('verification.form.select_role')),
 		...guildRoles.filter( guildRole => {
-			return guildRole.lower || settings.role.replace( /-/g, '' ).split('|').includes( guildRole.id );
+			return guildRole.lower || settings.role.replaceAll( '-', '' ).split('|').includes( guildRole.id );
 		} ).map( guildRole => {
 			var optionRole = $(`<option class="wb-settings-role-${guildRole.id}">`).val(guildRole.id);
 			if ( !guildRole.lower ) optionRole.addClass('wb-settings-error');
@@ -231,7 +231,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
 	}
 	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
 	if ( settings.channel ) {
-		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('verification.form.confirm').replace( /'/g, '\\$&' )}');`));
+		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('verification.form.confirm').replaceAll( '\'', '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
@@ -285,7 +285,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 		$('#channellist #verification').after(
 			...rows.map( row => {
 				let text = `${row.configid} - ${( guild.roles.find( role => {
-					return role.id === row.role.replace( /-/g, '' ).split('|')[0];
+					return role.id === row.role.replaceAll( '-', '' ).split('|')[0];
 				} )?.name || guild.channels.find( channel => {
 					return channel.id === row.channel.split('|')[1];
 				} )?.name || row.usergroup.split('|')[( row.usergroup.startsWith('AND|') ? 1 : 0 )] )}`;
@@ -550,10 +550,10 @@ function update_verification(res, userSettings, guild, type, settings) {
 			return self.indexOf(channel) === i;
 		} );
 		if ( !settings.usergroup ) settings.usergroup = 'user';
-		settings.usergroup = settings.usergroup.replace( /_/g, ' ' ).trim().toLowerCase();
+		settings.usergroup = settings.usergroup.replaceAll( '_', ' ' ).trim().toLowerCase();
 		settings.usergroup = settings.usergroup.split(/\s*[,|]\s*/).map( usergroup => {
 			if ( usergroup === '*' ) return 'user';
-			return usergroup.replace( / /g, '_' );
+			return usergroup.replaceAll( ' ', '_' );
 		} ).filter( (usergroup, i, self) => {
 			return ( usergroup.length && self.indexOf(usergroup) === i );
 		} );
@@ -694,7 +694,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 				} ).map( group => {
 					return {
 						name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
-						content: group['*'].replace( / /g, '_' ).toLowerCase()
+						content: group['*'].replaceAll( ' ', '_' ).toLowerCase()
 					};
 				} );
 				settings.usergroup = settings.usergroup.map( usergroup => {
@@ -846,7 +846,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 				} ).map( group => {
 					return {
 						name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
-						content: group['*'].replace( / /g, '_' ).toLowerCase()
+						content: group['*'].replaceAll( ' ', '_' ).toLowerCase()
 					};
 				} );
 				settings.usergroup = settings.usergroup.map( usergroup => {
@@ -997,8 +997,8 @@ function update_notices(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
 	settings.channel = ( settings.channel || null );
-	settings.success = ( settings.success?.trim().replace( /`ˋ`/g, '```' ) || null );
-	settings.match = ( settings.match?.trim().replace( /`ˋ`/g, '```' ) || null );
+	settings.success = ( settings.success?.trim().replaceAll( '`ˋ`', '```' ) || null );
+	settings.match = ( settings.match?.trim().replaceAll( '`ˋ`', '```' ) || null );
 	sendMsg( {
 		type: 'getMember',
 		member: userSettings.user.id,
@@ -1033,8 +1033,8 @@ function update_notices(res, userSettings, guild, type, settings) {
 							if ( settings.channel ) text += `${lang.get('verification.logging')} <#${settings.channel}>\n`;
 							if ( settings.flag_logall ) text += `${lang.get('verification.flag_logall')} *\`${lang.get('verification.enabled')}\`*\n`;
 							if ( settings.flag_private ) text += `${lang.get('verification.flag_private')} *\`${lang.get('verification.enabled')}\`*\n`;
-							if ( settings.success ) text += `${lang.get('verification.success')} \`\`\`md\n${settings.success.replace( /```/g, '`ˋ`' )}\n\`\`\``;
-							if ( settings.match ) text += `${lang.get('verification.match')} \`\`\`md\n${settings.match.replace( /```/g, '`ˋ`' )}\n\`\`\``;
+							if ( settings.success ) text += `${lang.get('verification.success')} \`\`\`md\n${settings.success.replaceAll( '```', '`ˋ`' )}\n\`\`\``;
+							if ( settings.match ) text += `${lang.get('verification.match')} \`\`\`md\n${settings.match.replaceAll( '```', '`ˋ`' )}\n\`\`\``;
 							text += `<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
 							if ( settings.success?.includes( '](' ) || settings.match?.includes( '](' ) ) {
 								text += '\n\n' + lang.get('verification.notice_embed');
@@ -1071,10 +1071,10 @@ function update_notices(res, userSettings, guild, type, settings) {
 							text += lang.get('verification.flag_private') + ' ~~*`' + lang.get('verification.' + ( (row.flags & 1 << 0) === 1 << 0 ? 'enabled' : 'disabled')) + '`*~~ → *`' + lang.get('verification.' + ( settings.flag_private ? 'enabled' : 'disabled')) + '`*\n';
 						}
 						if ( settings.success !== row.onsuccess ) {
-							text += lang.get('verification.success') + ' ' + ( row.onsuccess ? '~~```md\n' + row.onsuccess.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```~~' : `~~*\`${lang.get('verification.disabled')}\`*~~ → ` ) + ( settings.success ? '```md\n' + settings.success.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```' : ` → *\`${lang.get('verification.disabled')}\`*\n` );
+							text += lang.get('verification.success') + ' ' + ( row.onsuccess ? '~~```md\n' + row.onsuccess.replaceAll( '\\', '\\$&' ).replaceAll( '```', '`ˋ`' ) + '\n```~~' : `~~*\`${lang.get('verification.disabled')}\`*~~ → ` ) + ( settings.success ? '```md\n' + settings.success.replaceAll( '\\', '\\$&' ).replaceAll( '```', '`ˋ`' ) + '\n```' : ` → *\`${lang.get('verification.disabled')}\`*\n` );
 						}
 						if ( settings.match !== row.onmatch ) {
-							text += lang.get('verification.match') + ' ' + ( row.onmatch ? '~~```md\n' + row.onmatch.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```~~' : `~~*\`${lang.get('verification.disabled')}\`*~~ → ` ) + ( settings.match ? '```md\n' + settings.match.replace( /\\/g, '\\$&' ).replace( /```/g, '`ˋ`' ) + '\n```' : ` → *\`${lang.get('verification.disabled')}\`*\n` );
+							text += lang.get('verification.match') + ' ' + ( row.onmatch ? '~~```md\n' + row.onmatch.replaceAll( '\\', '\\$&' ).replaceAll( '```', '`ˋ`' ) + '\n```~~' : `~~*\`${lang.get('verification.disabled')}\`*~~ → ` ) + ( settings.match ? '```md\n' + settings.match.replaceAll( '\\', '\\$&' ).replaceAll( '```', '`ˋ`' ) + '\n```' : ` → *\`${lang.get('verification.disabled')}\`*\n` );
 						}
 						text += `<${new URL(`/guild/${guild}/verification/${type}`, process.env.dashboard).href}>`;
 						if ( settings.success?.includes( '](' ) || settings.match?.includes( '](' ) ) {

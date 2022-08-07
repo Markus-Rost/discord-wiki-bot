@@ -212,7 +212,7 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 				} );
 			}
 			if ( args[1] === 'usergroup' ) {
-				var usergroups = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).replace( / /g, '_' ).toLowerCase().split('|').filter( usergroup => usergroup.length );
+				var usergroups = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).replaceAll( ' ', '_' ).toLowerCase().split('|').filter( usergroup => usergroup.length );
 				var and_or = '';
 				if ( /^\s*AND\s*\|/.test(args[2]) ) {
 					usergroups = usergroups.slice(1);
@@ -240,7 +240,7 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 					} ).map( group => {
 						return {
 							name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
-							content: group['*'].replace( / /g, '_' ).toLowerCase()
+							content: group['*'].replaceAll( ' ', '_' ).toLowerCase()
 						};
 					} );
 					usergroups = usergroups.map( usergroup => {
@@ -310,11 +310,11 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 			if ( !hideNotice && rename && !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageNicknames) ) {
 				verification_text += '\n\n' + lang.get('verification.rename_no_permission', msg.guild.members.me.toString());
 			}
-			if ( !hideNotice && role.replace( /-/g, '' ).split('|').some( role => {
+			if ( !hideNotice && role.replaceAll( '-', '' ).split('|').some( role => {
 				return ( !msg.guild.roles.cache.has(role) || msg.guild.members.me.roles.highest.comparePositionTo(role) <= 0 );
 			} ) ) {
 				verification_text += '\n';
-				role.replace( /-/g, '' ).split('|').forEach( role => {
+				role.replaceAll( '-', '' ).split('|').forEach( role => {
 					if ( !msg.guild.roles.cache.has(role) ) {
 						verification_text += '\n' + lang.get('verification.role_deleted', '<@&' + role + '>');
 					}

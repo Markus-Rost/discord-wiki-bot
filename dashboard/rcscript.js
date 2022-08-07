@@ -157,7 +157,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	fields.push(feeds);
 	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
 	if ( settings.channel && curChannel && hasPerm(curChannel.userPermissions, PermissionFlagsBits.ManageWebhooks) ) {
-		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('rcscript.form.confirm').replace( /'/g, '\\$&' )}');`));
+		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('rcscript.form.confirm').replaceAll( '\'', '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {

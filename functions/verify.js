@@ -44,7 +44,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			embed: null
 		}
 	};
-	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.wikifarm === 'fandom' ? '|usercontribs&ucprop=&uclimit=10&ucuser=%1F' + encodeURIComponent( username.replace( /\x1F/g, '\ufffd' ) ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
+	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.wikifarm === 'fandom' ? '|usercontribs&ucprop=&uclimit=10&ucuser=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 		context: {
 			guildId: channel.guildId
 		}
@@ -415,7 +415,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			result.add_button = false;
 		} );
 		
-		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replace( /\x1F/g, '\ufffd' ) ) + '/Discord&format=json', {
+		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord&format=json', {
 			context: {
 				guildId: channel.guildId
 			}
@@ -711,7 +711,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		var useLogging = ( verifynotice.logchannel ? true : false );
 		var logLang = lang;
 		if ( !state && (verifynotice.flags & 1 << 0) === 1 << 0 ) lang = lang.uselang(settings?.interaction?.locale);
-		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replace( /\x1F/g, '\ufffd' ) ) + '&format=json', {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 			context: {
 				guildId: channel.guildId
 			}

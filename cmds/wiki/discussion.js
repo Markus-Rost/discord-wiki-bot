@@ -275,7 +275,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 		default:
 			if ( discussion.jsonModel ) {
 				try {
-					description = discussion_formatting(JSON.parse(discussion.jsonModel)).replace( /(?:\*\*\*\*|(?<!\\)\_\_)/g, '' ).replace( /{@wiki}/g, wiki );
+					description = discussion_formatting(JSON.parse(discussion.jsonModel)).replace( /(?:\*\*\*\*|(?<!\\)\_\_)/g, '' ).replaceAll( '{@wiki}', wiki );
 					if ( discussion._embedded.contentImages.length ) {
 						if ( description.trim().endsWith( '{@0}' ) ) {
 							embed.setImage( discussion._embedded.contentImages[0].url );

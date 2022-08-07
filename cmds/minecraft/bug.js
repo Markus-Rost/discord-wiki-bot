@@ -50,7 +50,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			var statusList = lang.get('minecraft.status');
 			var summary = escapeFormatting(body.fields.summary);
 			if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-			var description = parse_links( ( body.fields.description || '' ).replace( /\{code\}/g, '```' ) );
+			var description = parse_links( ( body.fields.description || '' ).replaceAll( '{code}', '```' ) );
 			/** @type {EmbedBuilder} */
 			var embed = null;
 			if ( !noEmbed ) {
@@ -62,7 +62,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 					links.forEach( link => {
 						var ward = ( link.outwardIssue ? 'outward' : 'inward' );
 						var issue = link[ward + 'Issue']; // looks for property (in|out)wardIssue
-						var name = ( linkList?.[link.type.name]?.[ward]?.replaceSave( /\$1/g, issue.key ) || link.type[ward] + ' ' + issue.key );
+						var name = ( linkList?.[link.type.name]?.[ward]?.replaceAllSafe( '$1', issue.key ) || link.type[ward] + ' ' + issue.key );
 						var status = issue.fields.status.name;
 						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(issue.fields.summary) + '](' + baseBrowseUrl + issue.key + ')';
 						if ( ( embed.data.fields?.length ?? 0 ) < 25 && ( getEmbedLength(embed) + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );

@@ -75,7 +75,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 		body.query.search.forEach( result => {
 			let text = '• ';
 			let bold = '';
-			if ( result.title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replace( /-/g, ' ' ).toLowerCase() ) {
+			if ( result.title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replaceAll( '-', ' ' ).toLowerCase() ) {
 				bold = '**';
 				hasExactMatch = true;
 				if ( query.redirects?.[0] ) {

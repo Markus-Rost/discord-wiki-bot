@@ -59,7 +59,7 @@ export default function diffParser(html, more, whitespace) {
 				if ( last_ins !== null ) {
 					ins_length++;
 					if ( empty && last_ins.trim().length ) {
-						if ( last_ins.includes( '**' ) ) last_ins = last_ins.replace( /\*\*/g, '__' );
+						if ( last_ins.includes( '**' ) ) last_ins = last_ins.replaceAll( '**', '__' );
 						ins_length += 4;
 						last_ins = '**' + last_ins + '**';
 					}
@@ -70,7 +70,7 @@ export default function diffParser(html, more, whitespace) {
 				if ( last_del !== null ) {
 					del_length++;
 					if ( empty && last_del.trim().length ) {
-						if ( last_del.includes( '~~' ) ) last_del = last_del.replace( /\~\~/g, '__' );
+						if ( last_del.includes( '~~' ) ) last_del = last_del.replaceAll( '~~', '__' );
 						del_length += 4;
 						last_del = '~~' + last_del + '~~';
 					}

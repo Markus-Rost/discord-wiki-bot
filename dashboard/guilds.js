@@ -33,7 +33,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
-		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
+		const selectLanguage = '${dashboardLang.get('general.language').replaceAll( '\'', '\\$&' )}';
 		const allLangs = ${JSON.stringify(allLangs)};
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.title'));

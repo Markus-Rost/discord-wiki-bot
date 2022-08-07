@@ -1,9 +1,9 @@
 import { Message, PermissionFlagsBits } from 'discord.js';
-import { got, canShowEmbed, sendMessage } from '../util/functions.js';
+import { got, canShowEmbed, htmlToPlain, partialURIdecode, sendMessage } from '../util/functions.js';
 import phabricator from '../functions/phabricator.js';
 import check_wiki from '../cmds/wiki/general.js';
 
-/** @type {Map<String, {toclevel: Number, line: String}[]>} */
+/** @type {Map<String, {toclevel: Number, line: String, anchor: String}[]>} */
 const sectionCache = new Map();
 
 /**
@@ -21,7 +21,7 @@ function slash_wiki(interaction, lang, wiki) {
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 	sectionCache.delete(wiki.toLink(title));
-	let cmd = `</${interaction.commandName}:${interaction.commandId}> ` + ( interaction.commandName === 'interwiki' ? `wiki:${wiki.href} ` : '' ) + 'title:';
+	let cmd = `</${interaction.commandName}:${interaction.commandId}> ` + ( interaction.commandName === 'interwiki' ? `wiki:${wiki.host}${wiki.pathname.slice(0, -1)} ` : '' ) + 'title:';
 	if ( ephemeral ) lang = lang.uselang(interaction.locale);
 	return interaction.deferReply( {ephemeral} ).then( () => {
 		return ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
@@ -106,13 +106,13 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
 				return interaction.respond( [{
 					name: wiki.mainpage || 'Main Page',
-					value: wiki.mainpage
+					value: wiki.mainpage ?? ''
 				}] ).catch(log_error);
 			}
 			wiki.updateWiki(body.query.general);
 			return interaction.respond( [{
 				name: body.query.general.mainpage || 'Main Page',
-				value: body.query.general.mainpage
+				value: body.query.general.mainpage ?? ''
 			}] ).catch(log_error);
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
@@ -124,7 +124,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			console.log( '- Autocomplete: Error while getting the main page name: ' + error );
 			return interaction.respond( [{
 				name: wiki.mainpage || 'Main Page',
-				value: wiki.mainpage
+				value: wiki.mainpage ?? ''
 			}] ).catch(log_error);
 		} );
 	}
@@ -237,11 +237,14 @@ function autocomplete_section(interaction, lang, wiki) {
 			} ),
 			...fragments.filter( fragment => {
 				return fragment.line.toLowerCase().includes(section.toLowerCase());
+			} ),
+			...fragments.filter( fragment => {
+				return fragment.line.toLowerCase().includes(section.replace( /(?:[\.%][\dA-F]{2})+/g, partialURIdecode ).toLowerCase());
 			} )
 		])].map( fragment => {
 			return {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
-				value: fragment.line.substring(0, 100)
+				value: fragment.anchor.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	};
@@ -274,6 +277,10 @@ function autocomplete_section(interaction, lang, wiki) {
 			console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the page sections: ' + body?.error?.info );
 			return;
 		}
+		body.parse.sections.forEach( fragment => {
+			fragment.line = htmlToPlain(fragment.line);
+			fragment.anchor = fragment.anchor.replaceAll( wiki.spaceReplacement ?? '_', ' ' );
+		} );
 		sectionCache.set(wiki.toLink(title), body.parse.sections);
 		return interaction.respond( [...new Set([
 			...body.parse.sections.filter( fragment => {
@@ -281,11 +288,14 @@ function autocomplete_section(interaction, lang, wiki) {
 			} ),
 			...body.parse.sections.filter( fragment => {
 				return fragment.line.toLowerCase().includes(section.toLowerCase());
+			} ),
+			...body.parse.sections.filter( fragment => {
+				return fragment.line.toLowerCase().includes(section.replace( /(?:[\.%][\dA-F]{2})+/g, partialURIdecode ).toLowerCase());
 			} )
 		])].map( fragment => {
 			return {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
-				value: fragment.line
+				value: fragment.anchor
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
