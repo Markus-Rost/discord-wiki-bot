@@ -325,6 +325,9 @@
 				"interwiki": {
 					"desc": "Responderé con un enlace a un artículo correspondiente en el proyecto MediaWiki mencionado."
 				},
+				"overview": {
+					"desc": "Mostraré información y estadísticas sobre el wiki."
+				},
 				"verify": {
 					"desc": "Usa este comando para verificar tu cuenta de Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
 				},
@@ -398,6 +401,7 @@
 		"error": "¡Ocurrió un error inesperado al ejecutar el comando!",
 		"inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
 		"interwiki": "Por favor, proporciona un wiki conocido para buscar.",
+		"notitle": "¡El título de la página utilizada no existe!",
 		"nowiki": "¡El wiki usado no existe!",
 		"verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
 	},
