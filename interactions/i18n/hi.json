@@ -24,6 +24,18 @@
 		"options[6].description": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
 		"options[6].name": "spoiler"
 	},
+	"overview": {
+		"description": "विकि का अवलोकन पोस्ट करें।",
+		"name": "overview",
+		"options[0].description": "विकि जिसमें खोजना है।",
+		"options[0].name": "wiki",
+		"options[1].description": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
+		"options[1].name": "private",
+		"options[2].description": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
+		"options[2].name": "noembed",
+		"options[3].description": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
+		"options[3].name": "spoiler"
+	},
 	"verify": {
 		"description": "अपने विकि खाते के साथ अपने डिस्कॉर्ड खाते को प्रमाणित करें।",
 		"name": "verify",
