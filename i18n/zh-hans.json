@@ -326,7 +326,7 @@
 					"desc": "我将返回一条指向指定MediaWiki项目中指定页面的链接。"
 				},
 				"overview": {
-					"cmd": "overview",
+					"cmd": "",
 					"desc": "我将展示wiki的一些信息和统计数据。"
 				},
 				"verify": {
