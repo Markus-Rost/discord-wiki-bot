@@ -3,11 +3,13 @@
 	"application_id": "",
 	"name": "overview",
 	"name_localizations": {
-		"de": "übersicht"
+		"de": "übersicht",
+		"es-ES": "resumen"
 	},
 	"description": "Post a wiki overview.",
 	"description_localizations": {
-		"de": "Sende eine Wiki-Übersicht."
+		"de": "Sende eine Wiki-Übersicht.",
+		"es-ES": "Publica un resumen del wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",

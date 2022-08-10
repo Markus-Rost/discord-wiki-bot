@@ -73,12 +73,14 @@
 			"name": "section",
 			"name_localizations": {
 				"de": "abschnitt",
-				"hi": "section"
+				"hi": "section",
+				"es-ES": "sección"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
 				"de": "Seitenabschnitt zum Verlinken.",
-				"hi": "पृष्ठ का अनुभाग जिसकी कड़ी जोड़नी है।"
+				"hi": "पृष्ठ का अनुभाग जिसकी कड़ी जोड़नी है।",
+				"es-ES": "Sección de la página a enlazar."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -90,12 +92,14 @@
 			"name": "query",
 			"name_localizations": {
 				"de": "query",
-				"hi": "query"
+				"hi": "query",
+				"es-ES": "consulta"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
 				"de": "Query-String der zum Link hinzugefügt werden soll.",
-				"hi": "कड़ी पर जोड़ने के लिए क्वेरी तर्क।"
+				"hi": "कड़ी पर जोड़ने के लिए क्वेरी तर्क।",
+				"es-ES": "Consultar argumentos a agregar al enlace."
 			},
 			"min_length": 0,
 			"max_length": 250,
