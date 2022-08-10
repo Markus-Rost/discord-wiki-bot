@@ -145,7 +145,10 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				return idStringToUrl(input, suggestion)?.href;
 			} ),
 			...wikiProjects.filter( project => {
-				return project.fullScriptPath?.replace( 'https://', '' ).startsWith( input );
+				if ( !project.fullScriptPath ) return false;
+				if ( project.name.startsWith( input ) ) return true;
+				if ( project.fullScriptPath.replace( 'https://', '' ).startsWith( input ) ) return true;
+				return project.fullScriptPath.replace( 'https://www.', '' ).startsWith( input );
 			} ).map( project => project.fullScriptPath ),
 			...wikiProjects.filter( project => project.idString ).map( project => {
 				let result = [];

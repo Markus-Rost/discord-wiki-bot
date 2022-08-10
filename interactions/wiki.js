@@ -15,7 +15,7 @@ const sectionCache = new Map();
 function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
 	var query = new URLSearchParams(interaction.options.getString('query') ?? '');
-	var fragment = ( interaction.options.getString('section') ?? '' ).replace( /^\s*#\s*/, '' );
+	var fragment = ( interaction.options.getString('section') ?? '' ).replace( /^\s*#+\s*/, '' );
 	var title = interaction.options.getString('title') ?? '';
 	var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);

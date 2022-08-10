@@ -41,7 +41,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	msg.wikiPrefixes.set(wiki.href, '');
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
-	var cleanCont = ( content ? cleanContent(content, msg.channel) : msg.cleanContent );
+	var cleanCont = ( content ? cleanContent(content, msg.channel) : msg.cleanContent ).replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /<(\/[\w ]+):\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' );
 	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
 		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
 		let aliasInvoke = ( lang.aliases[invoke] || invoke );
@@ -56,7 +56,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	var count = 0;
 	var maxcount = commandLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 	var breakLines = false;
-	cleanCont.replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
+	cleanCont.split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
 		if ( !line.hasPrefix(prefix) || breakLines || count > maxcount ) return;
 		if ( count === maxcount ) {
@@ -108,7 +108,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		var linkcount = 0;
 		var linkmaxcount = maxcount + 5;
 		var breakInline = false;
-		cleanCont.replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)``.+?``/gs, '<code>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
+		cleanCont.replace( /(?<!\\)``.+?``/gs, '<code>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
 			if ( line.startsWith( '>>> ' ) ) breakInline = true;
 			if ( line.startsWith( '> ' ) || breakInline ) return;
 			if ( line.hasPrefix(prefix) || !( line.includes( '[[' ) || line.includes( '{{' ) ) ) return;

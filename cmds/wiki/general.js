@@ -200,7 +200,14 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							if ( idString ) cmd = msg.wikiPrefixes.get('miraheze.org') + idString + ' ';
 						}
 					}
-					else cmd += 'mh:' + iw_parts[1] + ':';
+					else if ( msg.commandName === 'interwiki' ) {
+						cmd = `</${msg.commandName}:${msg.commandId}> wiki:${iw.hostname} title:`;
+					}
+					else {
+						let command = msg.client.application.commands.cache.find( cmd => cmd.name === 'interwiki' );
+						if ( command ) cmd = `</${command.name}:${command.id}> wiki:${iw.hostname} title:`;
+						else cmd += 'mh:' + iw_parts[1] + ':';
+					}
 					return gamepedia_check_wiki(lang, msg, iw_parts.slice(2).join(':'), iw, cmd, reaction, spoiler, noEmbed, querystring, fragment, iw_link, selfcall);
 				}
 				return {
@@ -313,13 +320,13 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 											if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
 										}
 									}
+									else if ( msg.commandName === 'interwiki' ) {
+										cmd = `</${msg.commandName}:${msg.commandId}> wiki:${regex[1]} title:`;
+									}
 									else {
-										let iwPrefix = srbody.query.interwiki[0].iw;
-										if ( iwPrefix === 'w' && wiki.wikifarm === 'fandom' ) {
-											let idString = urlToIdString(iwwiki);
-											if ( idString && idString !== 'community' ) cmd += 'w:c:' + idString + ':';
-										}
-										else cmd += iwPrefix + ':';
+										let command = msg.client.application.commands.cache.find( cmd => cmd.name === 'interwiki' );
+										if ( command ) cmd = `</${command.name}:${command.id}> wiki:${regex[1]} title:`;
+										else cmd += srbody.query.interwiki[0].iw + ':';
 									}
 									return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 								}
@@ -532,13 +539,13 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 								if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
 							}
 						}
+						else if ( msg.commandName === 'interwiki' ) {
+							cmd = `</${msg.commandName}:${msg.commandId}> wiki:${regex[1]} title:`;
+						}
 						else {
-							let iwPrefix = body.query.interwiki[0].iw;
-							if ( iwPrefix === 'w' && wiki.wikifarm === 'fandom' ) {
-								let idString = urlToIdString(iwwiki);
-								if ( idString && idString !== 'community' ) cmd += 'w:c:' + idString + ':';
-							}
-							else cmd += iwPrefix + ':';
+							let command = msg.client.application.commands.cache.find( cmd => cmd.name === 'interwiki' );
+							if ( command ) cmd = `</${command.name}:${command.id}> wiki:${regex[1]} title:`;
+							else cmd += body.query.interwiki[0].iw + ':';
 						}
 						return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 					}

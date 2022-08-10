@@ -278,7 +278,7 @@ function messageCreate(msg) {
 			Discord.PermissionFlagsBits.AddReactions,
 			Discord.PermissionFlagsBits.UseExternalEmojis,
 			Discord.PermissionFlagsBits.ReadMessageHistory
-		]).remove(msg.channel.permissionsFor(msg.client.user));
+		]).remove(msg.channel.permissionsFor(msg.client.user) ?? 0n);
 		if ( missing > 0n ) {
 			if ( ( msg.isAdmin() || msg.isOwner() ) && msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
 				console.log( msg.guildId + ': Missing permissions - ' + missing.toArray().join(', ') );
