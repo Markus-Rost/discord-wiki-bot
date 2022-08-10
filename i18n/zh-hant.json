@@ -326,7 +326,7 @@
 					"desc": "我將回傳一個指向指定 MediaWiki 專案中指定頁面的連結。"
 				},
 				"overview": {
-					"cmd": "overview",
+					"cmd": "",
 					"desc": "我將展示wiki的一些資訊和統計資料。"
 				},
 				"verify": {
