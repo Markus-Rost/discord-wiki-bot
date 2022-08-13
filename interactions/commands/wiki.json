@@ -58,13 +58,17 @@
 			"name_localizations": {
 				"de": "abschnitt",
 				"hi": "section",
-				"es-ES": "sección"
+				"es-ES": "sección",
+				"zh-CN": "章节",
+				"zh-TW": "章節"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
 				"de": "Seitenabschnitt zum Verlinken.",
 				"hi": "पृष्ठ का अनुभाग जिसकी कड़ी जोड़नी है।",
-				"es-ES": "Sección de la página a enlazar."
+				"es-ES": "Sección de la página a enlazar.",
+				"zh-CN": "要链接到的页面章节。",
+				"zh-TW": "要連結到的頁面章節。"
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -77,13 +81,17 @@
 			"name_localizations": {
 				"de": "query",
 				"hi": "query",
-				"es-ES": "consulta"
+				"es-ES": "consulta",
+				"zh-CN": "查询参数",
+				"zh-TW": "查詢字串"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
 				"de": "Query-String der zum Link hinzugefügt werden soll.",
 				"hi": "कड़ी पर जोड़ने के लिए क्वेरी तर्क।",
-				"es-ES": "Consultar argumentos a agregar al enlace."
+				"es-ES": "Consultar argumentos a agregar al enlace.",
+				"zh-CN": "要添加到链接的查询参数。",
+				"zh-TW": "要加入到連結的查詢字串。"
 			},
 			"min_length": 0,
 			"max_length": 250,

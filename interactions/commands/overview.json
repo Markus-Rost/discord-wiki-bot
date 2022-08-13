@@ -4,12 +4,18 @@
 	"name": "overview",
 	"name_localizations": {
 		"de": "übersicht",
-		"es-ES": "resumen"
+		"es-ES": "resumen",
+		"hi": "overview",
+		"zh-CN": "overview",
+		"zh-TW": "overview"
 	},
 	"description": "Post a wiki overview.",
 	"description_localizations": {
 		"de": "Sende eine Wiki-Übersicht.",
-		"es-ES": "Publica un resumen del wiki."
+		"es-ES": "Publica un resumen del wiki.",
+		"hi": "विकि का अवलोकन पोस्ट करें।",
+		"zh-CN": "发送wiki概览。",
+		"zh-TW": "傳送wiki概覽。"
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -22,14 +28,16 @@
 				"de": "wiki",
 				"es-ES": "wiki",
 				"zh-CN": "wiki",
-				"zh-TW": "wiki"
+				"zh-TW": "wiki",
+				"hi": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
 				"de": "Das Wiki zum Durchsuchen.",
 				"es-ES": "El wiki en el que buscar.",
 				"zh-CN": "要搜索的wiki。",
-				"zh-TW": "要搜尋的wiki。"
+				"zh-TW": "要搜尋的wiki。",
+				"hi": "विकि जिसमें खोजना है।"
 			},
 			"required": false,
 			"autocomplete": true
@@ -40,7 +48,7 @@
 			"name_localizations": {
 				"de": "privat",
 				"es-ES": "privado",
-				"hi": "ephemeral",
+				"hi": "private",
 				"ja": "ephemeral",
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見"
