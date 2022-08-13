@@ -103,7 +103,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 						value: ''
 					}] ).catch(log_error);
 				}
-				console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+					return option.name + ':' + option.value;
+				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
 				return interaction.respond( [{
 					name: wiki.mainpage || 'Main Page',
 					value: wiki.mainpage ?? ''
@@ -121,7 +123,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( '- Autocomplete: Error while getting the main page name: ' + error );
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- Error while getting the main page name: ' + error );
 			return interaction.respond( [{
 				name: wiki.mainpage || 'Main Page',
 				value: wiki.mainpage ?? ''
@@ -148,7 +152,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
 			return;
 		}
 		if ( !body.linksuggest.result.suggestions.length ) return interaction.respond( [] ).catch(log_error);
@@ -169,7 +175,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( '- Autocomplete: Error while getting the suggestions: ' + error );
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			return option.name + ':' + option.value;
+		} ).join(' ') + '\n- Error while getting the suggestions: ' + error );
 	} );
 
 	return got.get( wiki + 'api.php?action=opensearch&redirects=resolve&limit=10&search=' + encodeURIComponent( title ) + '&format=json', {
@@ -192,7 +200,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
 			return;
 		}
 		if ( !body[1].length ) return interaction.respond( [] ).catch(log_error);
@@ -209,7 +219,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( '- Autocomplete: Error while getting the suggestions: ' + error );
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			return option.name + ':' + option.value;
+		} ).join(' ') + '\n- Error while getting the suggestions: ' + error );
 	} );
 }
 
@@ -274,7 +286,9 @@ function autocomplete_section(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the page sections: ' + body?.error?.info );
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the page sections: ' + body?.error?.info );
 			return;
 		}
 		body.parse.sections.forEach( fragment => {
@@ -305,7 +319,9 @@ function autocomplete_section(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( '- Autocomplete: Error while getting the page sections: ' + error );
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			return option.name + ':' + option.value;
+		} ).join(' ') + '\n- Error while getting the page sections: ' + error );
 		return;
 	} );
 }

@@ -42,6 +42,50 @@ readdir( './cmds/minecraft', (error, files) => {
  * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', noEmbed = false, querystring = new URLSearchParams(), fragment = '', interwiki = '', selfcall = 0) {
+	if ( selfcall === 0 && title.startsWith('https://') && title.split('/').length > 3 ) {
+		try {
+			let iw = new URL(title.replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
+			querystring.forEach( (value, name) => {
+				iw.searchParams.append(name, value);
+			} );
+			if ( fragment ) iw.hash = Wiki.toSection(fragment, wiki.spaceReplacement);
+			else fragment = iw.hash.substring(1);
+			if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(iw.hostname) ) {
+				return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
+			}
+			if ( ['http:','https:'].includes( iw.protocol ) ) {
+				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
+				if ( project ) {
+					let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+					let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
+					if ( regex ) {
+						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );
+						let scriptPath = project.scriptPath;
+						if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
+						let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
+						if ( msg instanceof Message ) {
+							cmd = '!!' + regex[1] + ' ';
+							if ( msg.wikiPrefixes.has(iwwiki.href) ) cmd = msg.wikiPrefixes.get(iwwiki.href);
+							else if ( msg.wikiPrefixes.has(project.name) ) {
+								let idString = urlToIdString(iwwiki);
+								if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
+							}
+						}
+						else if ( msg.commandName === 'interwiki' ) {
+							cmd = `</${msg.commandName}:${msg.commandId}> wiki:${regex[1]} title:`;
+						}
+						else {
+							let command = msg.client.application.commands.cache.find( cmd => cmd.name === 'interwiki' );
+							if ( command ) cmd = `</${command.name}:${command.id}> wiki:${regex[1]} title:`;
+							else cmd += body.query.interwiki[0].iw + ':';
+						}
+						return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, ++selfcall);
+					}
+				}
+			}
+		}
+		catch {}
+	}
 	var full_title = title;
 	if ( title.includes( '#' ) ) {
 		fragment = title.split('#').slice(1).join('#').trim().replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );

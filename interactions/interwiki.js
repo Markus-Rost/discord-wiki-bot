@@ -57,6 +57,7 @@ function slash_interwiki(interaction, lang, wiki) {
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function autocomplete_interwiki(interaction, lang, wiki) {
+	let baseWikis = [lang.lang, interaction.guildLocale, interaction.locale].filter( locale => locale ).map( locale => `https://${locale.split('-')[0]}.wikipedia.org/w/` );
 	lang = lang.uselang(interaction.locale);
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name !== 'wiki' ) {
@@ -90,7 +91,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			else console.log( '- Autocomplete: ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
 			return;
 		}
 		if ( !body.query.interwiki.length ) return interaction.respond( [] ).catch(log_error);
@@ -107,7 +110,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		else console.log( '- Autocomplete: Error while getting the interwiki: ' + error );
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			return option.name + ':' + option.value;
+		} ).join(' ') + '\n- Error while getting the interwiki: ' + error );
 	} );
 	/** @type {[String[], String[]]} */
 	var wikiList = [new Set([wiki.href]), new Set()];
@@ -118,7 +123,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} );
 		return [true, wikiList[1].size];
 	}, dberror => {
-		console.log( '- Autocomplete: Error while getting the wiki list: ' + dberror );
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			return option.name + ':' + option.value;
+		} ).join(' ') + '\n- Error while getting the wiki list: ' + dberror );
 	} ) : Promise.resolve() ).then( ([hasRow, hasPrefix] = []) => {
 		if ( !hasRow ) wikiList[0].add( defaultSettings.wiki );
 		defaultSettings.subprefixes.forEach( subprefix => {
@@ -129,6 +136,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				if ( !hasPrefix ) wikiList[1].add( subprefix[1] );
 			}
 		} );
+		baseWikis.forEach( baseWiki => wikiList[0].add( baseWiki ) );
 		wikiList = [[...wikiList[0]], [...wikiList[1]]];
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
 			let project = inputToWikiProject(suggestion);
@@ -139,7 +147,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} ).slice(0, 25) ).catch(log_error);
 		var suggestions = new Set([
 			...wikiList[0].filter( suggestion => {
-				return suggestion.replace( 'https://', '' ).startsWith( input );
+				if ( suggestion.replace( 'https://', '' ).startsWith( input ) ) return true;
+				return suggestion.replace( 'https://www.', '' ).startsWith( input );
 			} ),
 			...wikiList[1].map( suggestion => {
 				return idStringToUrl(input, suggestion)?.href;
