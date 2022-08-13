@@ -6,10 +6,56 @@
 		"options[0].description": "Testo che include link in wikitext.",
 		"options[0].name": "testo"
 	},
+	"interwiki": {
+		"description": "Posta un link ad un wiki diversa.",
+		"name": "interwiki",
+		"options[0].description": "La wiki in cui cercare.",
+		"options[0].name": "wiki",
+		"options[1].description": "Titolo della pagina da cercare.",
+		"options[1].name": "titolo",
+		"options[2].description": "Sezione della pagina da linkare.",
+		"options[2].name": "sezione",
+		"options[3].description": "Argomenti della query da aggiungere al link.",
+		"options[3].name": "query",
+		"options[4].description": "Invia una risposta visibile solo per te?",
+		"options[4].name": "privato",
+		"options[5].description": "Invia solo il link senza embed?",
+		"options[5].name": "noembed",
+		"options[6].description": "Nascondi il link e l'embed in uno spoiler?",
+		"options[6].name": "spoiler"
+	},
+	"overview": {
+		"description": "Posta la panoramica di una wiki.",
+		"name": "panoramica",
+		"options[0].description": "La wiki in cui cercare.",
+		"options[0].name": "wiki",
+		"options[1].description": "Invia una risposta visibile solo per te?",
+		"options[1].name": "privato",
+		"options[2].description": "Invia solo il link senza embed?",
+		"options[2].name": "noembed",
+		"options[3].description": "Nascondi il link e l'embed in uno spoiler?",
+		"options[3].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verifica il tuo account Discord tramite il tuo account sulla wiki.",
 		"name": "verifica",
 		"options[0].description": "Il tuo nome utente sulla wiki.",
 		"options[0].name": "username"
+	},
+	"wiki": {
+		"description": "Posta un link alla wiki.",
+		"name": "wiki",
+		"options[0].description": "Titolo della pagina da cercare.",
+		"options[0].name": "titolo",
+		"options[1].description": "Sezione della pagina da linkare.",
+		"options[1].name": "sezione",
+		"options[2].description": "Argomenti della query da aggiungere al link.",
+		"options[2].name": "query",
+		"options[3].description": "Invia una risposta visibile solo per te?",
+		"options[3].name": "privato",
+		"options[4].description": "Invia solo il link senza embed?",
+		"options[4].name": "noembed",
+		"options[5].description": "Nascondi il link e l'embed in uno spoiler?",
+		"options[5].name": "spoiler"
 	}
 }
