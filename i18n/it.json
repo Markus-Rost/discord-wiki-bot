@@ -164,26 +164,26 @@
 		"list": {
 			"default": {
 				"cmd": "<termine di ricerca>",
-				"desc": "Ti risponderò con un collegamento all'articolo corrispondente sulla wiki:"
+				"desc": "Risponderò con un collegamento all'articolo corrispondente sulla wiki:"
 			},
 			"diff": {
 				"id": {
 					"cmd": "diff <diff> [<oldid>]",
-					"desc": "Ti risponderò con un collegamento alla diff sulla wiki."
+					"desc": "Risponderò con un collegamento alla diff sulla wiki."
 				},
 				"name": {
 					"cmd": "diff <nome pagina>",
-					"desc": "Ti risponderò con un collegamento all'ultima diff dell'articolo sulla wiki."
+					"desc": "Risponderò con un collegamento all'ultima diff dell'articolo sulla wiki."
 				}
 			},
 			"discussion": {
 				"post": {
 					"cmd": "discussion post <termine di ricerca>",
-					"desc": "Ti risponderò con un collegamento al post della discussione corrispondente sulla wiki di Fandom."
+					"desc": "Risponderò con un collegamento al post della discussione corrispondente sulla wiki di Fandom."
 				},
 				"thread": {
 					"cmd": "discussion <termine di ricerca>",
-					"desc": "Ti risponderò con un collegamento al thread della discussione corrispondente sulla wiki di Fandom."
+					"desc": "Risponderò con un collegamento al thread della discussione corrispondente sulla wiki di Fandom."
 				}
 			},
 			"help": {
@@ -207,38 +207,38 @@
 			"inline": {
 				"link": {
 					"cmd": "[[<nome pagina>]]",
-					"desc": "Ti risponderò con un collegamento diretto all'articolo sulla wiki."
+					"desc": "Risponderò con un collegamento diretto all'articolo sulla wiki."
 				},
 				"template": {
 					"cmd": "{{<nome pagina>}}",
-					"desc": "Ti risponderò con un collegamento all'articolo sulla wiki."
+					"desc": "Risponderò con un collegamento all'articolo sulla wiki."
 				}
 			},
 			"minecraft": {
 				"bug": {
 					"cmd": "bug <bug di Minecraft>",
-					"desc": "Ti risponderò con un collegamento al bug nel tracciatore dei bug di Minecraft."
+					"desc": "Risponderò con un collegamento al bug nel tracciatore dei bug di Minecraft."
 				},
 				"command": {
 					"cmd": "command <comando di Minecraft>",
-					"desc": "Ti risponderò con la sintassi del comando di Minecraft ed un collegamento all'articolo del comando sulla Minecraft Wiki."
+					"desc": "Risponderò con la sintassi del comando di Minecraft ed un collegamento all'articolo del comando sulla Minecraft Wiki."
 				},
 				"default": {
 					"cmd": "/<comando di Minecraft>",
-					"desc": "Ti risponderò con la sintassi del comando di Minecraft ed un collegamento all'articolo del comando sulla Minecraft Wiki."
+					"desc": "Risponderò con la sintassi del comando di Minecraft ed un collegamento all'articolo del comando sulla Minecraft Wiki."
 				}
 			},
 			"mwprojects": {
 				"cmd": "!!<wiki> <termine di ricerca>",
-				"desc": "Ti risponderò con un collegamento all'articolo corrispondente nel progetto MediaWiki richiesto. Esempio: `$1!!it.wikipedia.org Cookie`"
+				"desc": "Risponderò con un collegamento all'articolo corrispondente nel progetto MediaWiki richiesto. Esempio: `$1!!it.wikipedia.org Cookie`"
 			},
 			"overview": {
 				"cmd": "overview",
-				"desc": "Ti mostrerò qualche informazione e statistica sulla wiki."
+				"desc": "Mostrerò qualche informazione e statistica sulla wiki."
 			},
 			"page": {
 				"cmd": "page <nome pagina>",
-				"desc": "Ti risponderò con un collegamento diretto all'articolo sulla wiki."
+				"desc": "Risponderò con un collegamento diretto all'articolo sulla wiki."
 			},
 			"pause": {
 				"active": {
@@ -252,7 +252,7 @@
 			},
 			"random": {
 				"cmd": "random",
-				"desc": "Ti risponderò con un collegamento ad una pagina casuale sulla wiki."
+				"desc": "Risponderò con un collegamento ad una pagina casuale sulla wiki."
 			},
 			"rcscript": {
 				"add": {
@@ -286,7 +286,7 @@
 			},
 			"search": {
 				"cmd": "search <termine di ricerca>",
-				"desc": "Ti risponderò con un collegamento diretto alla pagina di ricerca per l'articolo sulla wiki."
+				"desc": "Risponderò con un collegamento diretto alla pagina di ricerca per l'articolo sulla wiki."
 			},
 			"settings": {
 				"channel": {
@@ -316,6 +316,23 @@
 				"wiki": {
 					"cmd": "settings wiki <wiki>",
 					"desc": "Cambierò la wiki predefinita per questo server."
+				}
+			},
+			"slash": {
+				"inline": {
+					"desc": "Posta un messaggio con collegamenti in linea alla wiki."
+				},
+				"interwiki": {
+					"desc": "Risponderò con un collegamento all'articolo corrispondente nel progetto MediaWiki richiesto."
+				},
+				"overview": {
+					"desc": "Mostrerò qualche informazione e statistica sulla wiki."
+				},
+				"verify": {
+					"desc": "Usa questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
+				},
+				"wiki": {
+					"desc": "Risponderò con un link all'articolo corrispondente nella wiki:"
 				}
 			},
 			"subprefix": {
@@ -381,7 +398,10 @@
 		"pause": "**Sono attualmente in pausa su questo server!**\nPosso eseguire solo questi comandi:"
 	},
 	"interaction": {
+		"error": "Si è verificato un errore imprevisto durante l'esecuzione del comando!",
 		"inline": "Per favore fornisci del testo con link [[wikitext]] per usare questo comando.",
+		"interwiki": "Per favore fornisci una wiki nota per la ricerca.",
+		"notitle": "Il titolo della pagina utilizzato non esiste!",
 		"nowiki": "La wiki utilizzata non esiste!",
 		"verify": "Per favore fornisci il tuo nome utente sulla wiki per usare questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
 	},
@@ -468,6 +488,13 @@
 	"pause": {
 		"off": "Non sono più in pausa su questo server e risponderò di nuovo a tutti i comandi!",
 		"on": "Sono ora in pausa su questo server e ignorerò la maggior parte dei comandi!"
+	},
+	"phabricator": {
+		"comment": "Commento:",
+		"priority": "Priorità:",
+		"status": "Stato:",
+		"subtype": "Sottotipo:",
+		"tags": "Tag:"
 	},
 	"rcscript": {
 		"ad": "Vuoi le ultime modifiche direttamente su Discord? Usa `$1rcscript` per aggiungere un webhook delle ultime modifiche basato su **$2** al tuo server Discord!",
@@ -571,6 +598,8 @@
 		"media": "Alla pagina di descrizione del file",
 		"messagedefault": "Default:",
 		"messagedefaultnone": "*nessuno*",
+		"noresult": "Nessun risultato trovato per la tua ricerca.",
+		"redirect": "$1 (reindirizzamento da \"$2\")",
 		"results": "$1 {{PLURAL:$2|risultato totale|risultati totali}}",
 		"special": "Contenuto di questa pagina speciale:"
 	},
