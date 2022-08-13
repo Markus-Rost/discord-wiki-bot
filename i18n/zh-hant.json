@@ -325,6 +325,10 @@
 				"interwiki": {
 					"desc": "我將回傳一個指向指定 MediaWiki 專案中指定頁面的連結。"
 				},
+				"overview": {
+					"cmd": "",
+					"desc": "我將展示wiki的一些資訊和統計資料。"
+				},
 				"verify": {
 					"desc": "使用此指令來驗證您Discord帳號和wiki帳號的關係，並擁有與您wiki帳號相符的身分組。"
 				},
@@ -398,6 +402,7 @@
 		"error": "執行指令時出現非預期的錯誤！",
 		"inline": "請提供一些有 [[wikitext]] 的文字來使用此指令。",
 		"interwiki": "請填入一個對機器人來說已知的 wiki。",
+		"notitle": "所使用的頁面標題不存在！",
 		"nowiki": "所使用的wiki不存在！",
 		"verify": "為了能透過您的wiki帳號驗證您的Discord帳號與並授予與您wiki帳號相符的身分組，請提供您的wiki使用者名稱以使用此指令。"
 	},
