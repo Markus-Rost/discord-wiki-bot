@@ -7,7 +7,8 @@
 		"es-ES": "interwiki",
 		"zh-CN": "interwiki",
 		"zh-TW": "interwiki",
-		"hi": "interwiki"
+		"hi": "interwiki",
+		"it": "interwiki"
 	},
 	"description": "Post a link to a different wiki.",
 	"description_localizations": {
@@ -16,7 +17,8 @@
 		"zh-TW": "傳送一條指向不同wiki的連結。",
 		"tr": "Bir wiki bağlantısı paylaş.",
 		"de": "Sende einen Link zu einem anderen Wiki.",
-		"es-ES": "Publica un enlace a un wiki diferente."
+		"es-ES": "Publica un enlace a un wiki diferente.",
+		"it": "Posta un link ad un wiki diversa."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -30,7 +32,8 @@
 				"es-ES": "wiki",
 				"zh-CN": "wiki",
 				"zh-TW": "wiki",
-				"hi": "wiki"
+				"hi": "wiki",
+				"it": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -38,7 +41,8 @@
 				"es-ES": "El wiki en el que buscar.",
 				"zh-CN": "要搜索的wiki。",
 				"zh-TW": "要搜尋的wiki。",
-				"hi": "विकि जिसमें खोजना है।"
+				"hi": "विकि जिसमें खोजना है।",
+				"it": "La wiki in cui cercare."
 			},
 			"required": true,
 			"autocomplete": true
@@ -52,7 +56,8 @@
 				"zh-TW": "標題",
 				"tr": "title",
 				"de": "titel",
-				"es-ES": "título"
+				"es-ES": "título",
+				"it": "titolo"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
@@ -61,7 +66,8 @@
 				"zh-TW": "要搜尋的頁面標題。",
 				"tr": "Aratılacak sayfa başlığı.",
 				"de": "Seitenname zum Suchen.",
-				"es-ES": "Título de la página a buscar."
+				"es-ES": "Título de la página a buscar.",
+				"it": "Titolo della pagina da cercare."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -76,7 +82,8 @@
 				"hi": "section",
 				"es-ES": "sección",
 				"zh-CN": "章节",
-				"zh-TW": "章節"
+				"zh-TW": "章節",
+				"it": "sezione"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -84,7 +91,8 @@
 				"hi": "पृष्ठ का अनुभाग जिसकी कड़ी जोड़नी है।",
 				"es-ES": "Sección de la página a enlazar.",
 				"zh-CN": "要链接到的页面章节。",
-				"zh-TW": "要連結到的頁面章節。"
+				"zh-TW": "要連結到的頁面章節。",
+				"it": "Sezione della pagina da linkare."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -99,7 +107,8 @@
 				"hi": "query",
 				"es-ES": "consulta",
 				"zh-CN": "查询参数",
-				"zh-TW": "查詢字串"
+				"zh-TW": "查詢字串",
+				"it": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -107,7 +116,8 @@
 				"hi": "कड़ी पर जोड़ने के लिए क्वेरी तर्क।",
 				"es-ES": "Consultar argumentos a agregar al enlace.",
 				"zh-CN": "要添加到链接的查询参数。",
-				"zh-TW": "要加入到連結的查詢字串。"
+				"zh-TW": "要加入到連結的查詢字串。",
+				"it": "Argomenti della query da aggiungere al link."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -121,7 +131,8 @@
 				"es-ES": "privado",
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見",
-				"hi": "private"
+				"hi": "private",
+				"it": "privato"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -129,7 +140,8 @@
 				"es-ES": "¿Enviar una respuesta que solo sea visible para ti?",
 				"zh-CN": "发送的消息是否仅对自己可见？",
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
-				"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?"
+				"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
+				"it": "Invia una risposta visibile solo per te?"
 			},
 			"required": false
 		},
@@ -141,7 +153,8 @@
 				"es-ES": "sinvistaprevia",
 				"zh-CN": "不包含嵌入内容",
 				"zh-TW": "不包含嵌入內容",
-				"hi": "noembed"
+				"hi": "noembed",
+				"it": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -149,7 +162,8 @@
 				"es-ES": "¿Enviar solo el enlace sin vista previa?",
 				"zh-CN": "发送的链接是否不包含嵌入内容？",
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
-				"hi": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?"
+				"hi": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
+				"it": "Invia solo il link senza embed?"
 			},
 			"required": false
 		},
@@ -161,7 +175,8 @@
 				"es-ES": "spoiler",
 				"zh-CN": "标记为剧透",
 				"zh-TW": "標記為劇透",
-				"hi": "spoiler"
+				"hi": "spoiler",
+				"it": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -169,7 +184,8 @@
 				"es-ES": "¿Ocultar el enlace y la vista previa en un spoiler?",
 				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
-				"hi": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?"
+				"hi": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
+				"it": "Nascondi il link e l'embed in uno spoiler?"
 			},
 			"required": false
 		}
