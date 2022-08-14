@@ -110,7 +110,14 @@ export default class Wiki extends URL {
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
 		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm = 'miraheze';
-		Wiki._cache.set(this.href, this);
+		if ( this !== Wiki._cache.get(this.href) ) {
+			if ( !Wiki._cache.has(this.href) ) Wiki._cache.set(this.href, this);
+			else Wiki._cache.forEach( (wiki, href) => {
+				if ( wiki.href === this.href && wiki !== this ) {
+					Wiki._cache.set(href, this);
+				}
+			} );
+		}
 		return this;
 	}
 

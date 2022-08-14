@@ -44,7 +44,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			embed: null
 		}
 	};
-	return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=users' + ( wiki.wikifarm === 'fandom' ? '|usercontribs&ucprop=&uclimit=10&ucuser=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) : '' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
+	return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.wikifarm === 'fandom' ? '|allmessages&siprop=general&ammessages=importJS&list=users|usercontribs&ucprop=&uclimit=10&ucuser=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) : '&siprop=general&list=users' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 		context: {
 			guildId: channel.guildId
 		}
@@ -226,10 +226,29 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 							result.logging.content = logText;
 						}
 					}
-					let prefix = ( patreonGuildsPrefix.get(channel.guildId) ?? process.env.prefix );
+					let query = new URLSearchParams([
+						['c', 'wb'],
+						['ch', channel.name],
+						['user', member.user.username],
+						['tag', member.user.discriminator],
+						['useskin', 'fandomdesktop']
+					]);
 					var help_link = '';
-					if ( wiki.isGamepedia() ) help_link = lang.get('verify.help_gamepedia') + '?c=' + ( prefix !== '!wiki ' ? encodeURIComponent( prefix + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + Wiki.toTitle(username) + '&discord=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
-					else if ( wiki.wikifarm === 'fandom' ) help_link = lang.get('verify.help_fandom') + '/' + Wiki.toTitle(username) + '?c=' + ( prefix !== '!wiki ' ? encodeURIComponent( prefix + 'verify' ) : 'wb' ) + ( channel.name !== 'verification' ? '&ch=' + encodeURIComponent( channel.name ) : '' ) + '&user=' + encodeURIComponent( member.user.username ) + '&tag=' + member.user.discriminator + '&useskin=fandomdesktop';
+					if ( wiki.isGamepedia() ) {
+						query.set('user', username);
+						query.set('discord', member.user.username);
+						if ( channel.name === 'verification' ) query.delete('ch');
+						help_link = lang.get('verify.help_gamepedia') + '?' + query.toString();
+					}
+					else if ( wiki.wikifarm === 'fandom' ) {
+						if ( body.query.allmessages?.[0]?.['*']?.split('\n').includes( 'dev:VerifyUser.js' ) ) {
+							help_link = wiki.toLink('Special:VerifyUser/' + username, query, '', true);
+						}
+						else {
+							if ( channel.name === 'verification' ) query.delete('ch');
+							help_link = lang.get('verify.help_fandom') + '/' + Wiki.toTitle(username, wiki.spaceReplacement) + '?' + query.toString();
+						}
+					}
 					if ( help_link.length ) embed.addFields( {name: lang.get('verify.notice'), value: lang.get('verify.help_guide', help_link, queryuser.gender) + '\n' + help_link} );
 					result.content = lang.get('verify.user_failed_reply', escapeFormatting(username), queryuser.gender);
 					return;
