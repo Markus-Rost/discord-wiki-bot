@@ -188,7 +188,7 @@ export default class Wiki extends URL {
 		querystring.forEach( (value, name) => {
 			link.searchParams.append(name, value);
 		} );
-		let output = decodeURI( link ).replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment, this.spaceReplacement, true);
+		let output = decodeURI( link ).replace( /%(?:3B|2F|3A|40|21|7E|27|28|29)/g, decodeURIComponent ).replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment, this.spaceReplacement, true);
 		if ( isMarkdown ) return output.replaceAll( '(', '%28' ).replaceAll( ')', '%29' );
 		else return output;
 	}

@@ -4,7 +4,7 @@ import { wikiProjects, urlToIdString } from 'mediawiki-projects-list';
 import parse_page from '../../functions/parse_page.js';
 import phabricator from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
-import { got, htmlToDiscord, escapeFormatting, partialURIdecode, breakOnTimeoutPause } from '../../util/functions.js';
+import { got, htmlToDiscord, escapeFormatting, escapeRegExp, partialURIdecode, breakOnTimeoutPause } from '../../util/functions.js';
 import extract_desc from '../../util/extract_desc.js';
 import Wiki from '../../util/wiki.js';
 import * as fn from './functions.js'
@@ -56,7 +56,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			if ( ['http:','https:'].includes( iw.protocol ) ) {
 				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
 				if ( project ) {
-					let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+					let articlePath = escapeRegExp( project.regexPaths ? '/' : project.articlePath.split('?')[0] );
 					let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
 					if ( regex ) {
 						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );
@@ -95,6 +95,17 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		let querystart = title.search(/\?\w+=/);
 		querystring = new URLSearchParams(querystring + '&' + title.substring(querystart + 1));
 		title = title.substring(0, querystart);
+	}
+	if ( !title ) {
+		wiki.articleURL.searchParams.forEach( (value, name) => {
+			if ( value.includes( '$1' ) && querystring.has(name) ) {
+				title = querystring.get(name);
+				querystring.delete(name);
+				if ( value !== '$1' ) {
+					title = title.replace( new RegExp( '^' + escapeRegExp(value).replaceAll( '$1', '(.*?)' ) + '$' ), '$1' );
+				}
+			}
+		} );
 	}
 	title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
 	if ( title.length > 250 ) {
@@ -349,7 +360,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							selfcall++;
 							let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
 							if ( project ) {
-								let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+								let articlePath = escapeRegExp( project.regexPaths ? '/' : project.articlePath.split('?')[0] );
 								let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
 								if ( regex ) {
 									let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );
@@ -568,7 +579,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				selfcall++;
 				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
 				if ( project ) {
-					let articlePath = ( project.regexPaths ? '/' : project.articlePath );
+					let articlePath = escapeRegExp( project.regexPaths ? '/' : project.articlePath.split('?')[0] );
 					let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
 					if ( regex ) {
 						let iwtitle = decodeURIComponent( ( iw.host + iw.pathname ).replace( regex[0], '' ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );
