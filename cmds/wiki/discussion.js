@@ -307,7 +307,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 			}
 	}
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
-	embed.setDescription( description );
+	if ( description ) embed.setDescription( description );
 	if ( discussion.tags?.length ) {
 		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], inline: false} );
 	}
