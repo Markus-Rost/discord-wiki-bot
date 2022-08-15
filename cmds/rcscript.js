@@ -50,6 +50,9 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 		}
 
 		if ( args[0] === 'add' ) {
+			if ( msg.channel.isThread() ) {
+				return msg.replyMsg( lang.get('rcscript.nothreads') );
+			}
 			if ( !msg.channel.permissionsFor(msg.client.user).has(PermissionFlagsBits.ManageWebhooks) ) {
 				console.log( msg.guildId + ': Missing permissions - ManageWebhooks' );
 				return msg.replyMsg( lang.get('general.missingperm') + ' `ManageWebhooks`' );

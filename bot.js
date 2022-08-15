@@ -253,7 +253,7 @@ function messageCreate(msg) {
 	if ( msg.member?.isCommunicationDisabled() || msg.guild?.members?.me?.isCommunicationDisabled() ) return;
 	if ( !msg.content.hasPrefix(( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), 'm') ) {
 		if ( ( msg.content === process.env.prefix + 'help' || msg.content === process.env.prefix + 'test' ) && ( msg.isAdmin() || msg.isOwner() ) ) {
-			if ( msg.channel.permissionsFor(msg.client.user).has(( msg.channel.isThread() ? Discord.PermissionFlagsBits.SendMessagesInThreads : Discord.PermissionFlagsBits.SendMessages )) ) {
+			if ( msg.channel.permissionsFor(msg.client.user)?.has(( msg.channel.isThread() ? Discord.PermissionFlagsBits.SendMessagesInThreads : Discord.PermissionFlagsBits.SendMessages )) ) {
 				console.log( msg.guildId + ': ' + msg.content );
 				let sqlargs = [msg.guildId];
 				if ( msg.channel?.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
