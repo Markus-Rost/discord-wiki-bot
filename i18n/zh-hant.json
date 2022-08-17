@@ -542,6 +542,7 @@
 		"new_wiki": "<連結>",
 		"no_feeds": "此webhook的wiki沒有如討論版、留言牆和條目評論等基於推送頁的變更，已啟用。",
 		"noadmin": "你需要 `管理webhook` 權限來運行此指令！",
+		"notheads": "近期變更webhook不支援討論串，請在討論串所屬的頻道使用指令！",
 		"rc": "wiki變更：",
 		"sysmessage": "要增加近期變更webhook，系統訊息 `$1` 必須是伺服器 ID `$2`。",
 		"title": "近期變更webhook",
