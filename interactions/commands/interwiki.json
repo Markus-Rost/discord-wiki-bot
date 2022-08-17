@@ -8,17 +8,18 @@
 		"zh-CN": "interwiki",
 		"zh-TW": "interwiki",
 		"hi": "interwiki",
-		"it": "interwiki"
+		"it": "interwiki",
+		"tr": "interwiki"
 	},
 	"description": "Post a link to a different wiki.",
 	"description_localizations": {
 		"hi": "किसी दूसरे विकि की कड़ी पोस्ट करें।",
 		"zh-CN": "发送一条指向不同wiki的链接。",
 		"zh-TW": "傳送一條指向不同wiki的連結。",
-		"tr": "Bir wiki bağlantısı paylaş.",
+		"tr": "Farklı bir vikiye bağlantı ver.",
 		"de": "Sende einen Link zu einem anderen Wiki.",
 		"es-ES": "Publica un enlace a un wiki diferente.",
-		"it": "Posta un link ad un wiki diversa."
+		"it": "Posta un link ad una wiki diversa."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -33,7 +34,8 @@
 				"zh-CN": "wiki",
 				"zh-TW": "wiki",
 				"hi": "wiki",
-				"it": "wiki"
+				"it": "wiki",
+				"tr": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -42,7 +44,8 @@
 				"zh-CN": "要搜索的wiki。",
 				"zh-TW": "要搜尋的wiki。",
 				"hi": "विकि जिसमें खोजना है।",
-				"it": "La wiki in cui cercare."
+				"it": "La wiki in cui cercare.",
+				"tr": "Aratma yapılacak viki."
 			},
 			"required": true,
 			"autocomplete": true
@@ -64,7 +67,7 @@
 				"hi": "खोजने के लिए पृष्ठ का शीर्षक।",
 				"zh-CN": "要搜索的页面标题。",
 				"zh-TW": "要搜尋的頁面標題。",
-				"tr": "Aratılacak sayfa başlığı.",
+				"tr": "Aranılacak sayfa başlığı.",
 				"de": "Seitenname zum Suchen.",
 				"es-ES": "Título de la página a buscar.",
 				"it": "Titolo della pagina da cercare."
@@ -83,7 +86,8 @@
 				"es-ES": "sección",
 				"zh-CN": "章节",
 				"zh-TW": "章節",
-				"it": "sezione"
+				"it": "sezione",
+				"tr": "section"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -92,7 +96,8 @@
 				"es-ES": "Sección de la página a enlazar.",
 				"zh-CN": "要链接到的页面章节。",
 				"zh-TW": "要連結到的頁面章節。",
-				"it": "Sezione della pagina da linkare."
+				"it": "Sezione della pagina da linkare.",
+				"tr": "Bağlantı verilecek sayfa bölümü."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -108,7 +113,8 @@
 				"es-ES": "consulta",
 				"zh-CN": "查询参数",
 				"zh-TW": "查詢字串",
-				"it": "query"
+				"it": "query",
+				"tr": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -117,7 +123,8 @@
 				"es-ES": "Consultar argumentos a agregar al enlace.",
 				"zh-CN": "要添加到链接的查询参数。",
 				"zh-TW": "要加入到連結的查詢字串。",
-				"it": "Argomenti della query da aggiungere al link."
+				"it": "Argomenti della query da aggiungere al link.",
+				"tr": "Bağlantıya eklenecek arama argümanları."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -132,7 +139,8 @@
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見",
 				"hi": "private",
-				"it": "privato"
+				"it": "privato",
+				"tr": "private"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -141,7 +149,8 @@
 				"zh-CN": "发送的消息是否仅对自己可见？",
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
 				"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
-				"it": "Invia una risposta visibile solo per te?"
+				"it": "Invia una risposta visibile solo per te?",
+				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?"
 			},
 			"required": false
 		},
@@ -154,7 +163,8 @@
 				"zh-CN": "不包含嵌入内容",
 				"zh-TW": "不包含嵌入內容",
 				"hi": "noembed",
-				"it": "noembed"
+				"it": "noembed",
+				"tr": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -163,7 +173,8 @@
 				"zh-CN": "发送的链接是否不包含嵌入内容？",
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
 				"hi": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
-				"it": "Invia solo il link senza embed?"
+				"it": "Invia solo il link senza embed?",
+				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?"
 			},
 			"required": false
 		},
@@ -176,7 +187,8 @@
 				"zh-CN": "标记为剧透",
 				"zh-TW": "標記為劇透",
 				"hi": "spoiler",
-				"it": "spoiler"
+				"it": "spoiler",
+				"tr": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -185,7 +197,8 @@
 				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 				"hi": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
-				"it": "Nascondi il link e l'embed in uno spoiler?"
+				"it": "Nascondi il link e l'embed in uno spoiler?",
+				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?"
 			},
 			"required": false
 		}

@@ -8,7 +8,8 @@
 		"hi": "overview",
 		"zh-CN": "overview",
 		"zh-TW": "overview",
-		"it": "panoramica"
+		"it": "panoramica",
+		"tr": "overview"
 	},
 	"description": "Post a wiki overview.",
 	"description_localizations": {
@@ -17,7 +18,8 @@
 		"hi": "विकि का अवलोकन पोस्ट करें।",
 		"zh-CN": "发送wiki概览。",
 		"zh-TW": "傳送wiki概覽。",
-		"it": "Posta la panoramica di una wiki."
+		"it": "Posta la panoramica di una wiki.",
+		"tr": "Viki ön izlemesi paylaş."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -32,7 +34,8 @@
 				"zh-CN": "wiki",
 				"zh-TW": "wiki",
 				"hi": "wiki",
-				"it": "wiki"
+				"it": "wiki",
+				"tr": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -41,7 +44,8 @@
 				"zh-CN": "要搜索的wiki。",
 				"zh-TW": "要搜尋的wiki。",
 				"hi": "विकि जिसमें खोजना है।",
-				"it": "La wiki in cui cercare."
+				"it": "La wiki in cui cercare.",
+				"tr": "Aratma yapılacak viki."
 			},
 			"required": false,
 			"autocomplete": true
@@ -56,7 +60,8 @@
 				"ja": "ephemeral",
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見",
-				"it": "privato"
+				"it": "privato",
+				"tr": "private"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -66,7 +71,8 @@
 				"ja": "自分だけに見える応答を送信しますか？",
 				"zh-CN": "发送的消息是否仅对自己可见？",
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
-				"it": "Invia una risposta visibile solo per te?"
+				"it": "Invia una risposta visibile solo per te?",
+				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?"
 			},
 			"required": false
 		},
@@ -80,7 +86,8 @@
 				"ja": "noembed",
 				"zh-CN": "不包含嵌入内容",
 				"zh-TW": "不包含嵌入內容",
-				"it": "noembed"
+				"it": "noembed",
+				"tr": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -90,7 +97,8 @@
 				"ja": "埋め込みなしでリンクだけを送信しますか？",
 				"zh-CN": "发送的链接是否不包含嵌入内容？",
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
-				"it": "Invia solo il link senza embed?"
+				"it": "Invia solo il link senza embed?",
+				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?"
 			},
 			"required": false
 		},
@@ -104,7 +112,8 @@
 				"ja": "spoiler",
 				"zh-CN": "标记为剧透",
 				"zh-TW": "標記為劇透",
-				"it": "spoiler"
+				"it": "spoiler",
+				"tr": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -114,7 +123,8 @@
 				"ja": "リンクを隠して、スポイラーに埋め込む？",
 				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
-				"it": "Nascondi il link e l'embed in uno spoiler?"
+				"it": "Nascondi il link e l'embed in uno spoiler?",
+				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?"
 			},
 			"required": false
 		}

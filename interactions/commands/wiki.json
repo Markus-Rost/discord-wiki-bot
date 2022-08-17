@@ -65,7 +65,8 @@
 				"es-ES": "sección",
 				"zh-CN": "章节",
 				"zh-TW": "章節",
-				"it": "sezione"
+				"it": "sezione",
+				"tr": "section"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -74,7 +75,8 @@
 				"es-ES": "Sección de la página a enlazar.",
 				"zh-CN": "要链接到的页面章节。",
 				"zh-TW": "要連結到的頁面章節。",
-				"it": "Sezione della pagina da linkare."
+				"it": "Sezione della pagina da linkare.",
+				"tr": "Bağlantı verilecek sayfa bölümü."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -90,7 +92,8 @@
 				"es-ES": "consulta",
 				"zh-CN": "查询参数",
 				"zh-TW": "查詢字串",
-				"it": "query"
+				"it": "query",
+				"tr": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -99,7 +102,8 @@
 				"es-ES": "Consultar argumentos a agregar al enlace.",
 				"zh-CN": "要添加到链接的查询参数。",
 				"zh-TW": "要加入到連結的查詢字串。",
-				"it": "Argomenti della query da aggiungere al link."
+				"it": "Argomenti della query da aggiungere al link.",
+				"tr": "Bağlantıya eklenecek arama argümanları."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -115,7 +119,8 @@
 				"ja": "ephemeral",
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見",
-				"it": "privato"
+				"it": "privato",
+				"tr": "private"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -125,7 +130,8 @@
 				"ja": "自分だけに見える応答を送信しますか？",
 				"zh-CN": "发送的消息是否仅对自己可见？",
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
-				"it": "Invia una risposta visibile solo per te?"
+				"it": "Invia una risposta visibile solo per te?",
+				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?"
 			},
 			"required": false
 		},
@@ -139,7 +145,8 @@
 				"ja": "noembed",
 				"zh-CN": "不包含嵌入内容",
 				"zh-TW": "不包含嵌入內容",
-				"it": "noembed"
+				"it": "noembed",
+				"tr": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -149,7 +156,8 @@
 				"ja": "埋め込みなしでリンクだけを送信しますか？",
 				"zh-CN": "发送的链接是否不包含嵌入内容？",
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
-				"it": "Invia solo il link senza embed?"
+				"it": "Invia solo il link senza embed?",
+				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?"
 			},
 			"required": false
 		},
@@ -173,7 +181,8 @@
 				"ja": "リンクを隠して、スポイラーに埋め込む？",
 				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
-				"it": "Nascondi il link e l'embed in uno spoiler?"
+				"it": "Nascondi il link e l'embed in uno spoiler?",
+				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?"
 			},
 			"required": false
 		}
