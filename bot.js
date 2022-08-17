@@ -201,6 +201,7 @@ client.on( 'interactionCreate', interaction => {
 	else if ( interaction.isChatInputCommand() ) {
 		if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
 		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') );
 		if ( !interaction_commands.slash.hasOwnProperty(interaction.commandName) ) return;

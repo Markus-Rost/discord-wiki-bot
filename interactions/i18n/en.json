@@ -36,6 +36,20 @@
 		"options[3].description": "Hide the link and embed in a spoiler?",
 		"options[3].name": "spoiler"
 	},
+	"patreon": {
+		"description": "Check or change your servers with patreon features enabled.",
+		"name": "patreon",
+		"options[0].description": "Check your current list of servers with patreon features enabled.",
+		"options[0].name": "check",
+		"options[1].description": "Enable the patreon features for a server.",
+		"options[1].name": "enable",
+		"options[1].options[0].description": "The server to enable patreon features for.",
+		"options[1].options[0].name": "guild",
+		"options[2].description": "Disable the patreon features for a server.",
+		"options[2].name": "disable",
+		"options[2].options[0].description": "The server to disable patreon features for.",
+		"options[2].options[0].name": "guild"
+	},
 	"verify": {
 		"description": "Verify your Discord account with your wiki account.",
 		"name": "verify",

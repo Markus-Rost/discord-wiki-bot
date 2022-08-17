@@ -197,10 +197,10 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					link.url = wiki.toLink(link.title, 'action=edit&redlink=1');
 				} ) );
 			}
-			if ( links.length ) splitMessage( links.map( link => {
+			if ( links.length ) splitMessage( [...new Set(links.map( link => {
 				if ( !link.url ) logging(wiki, msg.guildId, 'inline');
 				return link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section) ) + '>' + link.spoiler;
-			} ).join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
+			} ))].join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -246,13 +246,15 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					}
 					if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 				} ) );
-				if ( missing.length ) splitMessage( missing.map( embed => {
+				if ( missing.length ) splitMessage( [...new Set(missing.map( embed => {
 					if ( embed.template ) logging(wiki, msg.guildId, 'inline', 'template');
 					else logging(wiki, msg.guildId, 'inline', 'redlink');
 					return embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler;
-				} ).join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
+				} ))].join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
 			}
-			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
+			if ( embeds.length ) [...new Map(embeds.map( embed => {
+				return [JSON.stringify(embed), embed];
+			} )).values()].forEach( embed => msg.reactEmoji('⏳').then( reaction => {
 				logging(wiki, msg.guildId, 'inline', 'embed');
 				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section).then( result => {
 					if ( !result || result instanceof Message ) return result;

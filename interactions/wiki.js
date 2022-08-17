@@ -104,6 +104,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					}] ).catch(log_error);
 				}
 				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
 				return interaction.respond( [{
@@ -124,6 +125,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				}] ).catch(log_error);
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- Error while getting the main page name: ' + error );
 			return interaction.respond( [{
@@ -153,6 +155,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				}] ).catch(log_error);
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
 			return;
@@ -176,6 +179,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}] ).catch(log_error);
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the suggestions: ' + error );
 	} );
@@ -201,6 +205,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				}] ).catch(log_error);
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
 			return;
@@ -220,6 +225,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}] ).catch(log_error);
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the suggestions: ' + error );
 	} );
@@ -259,7 +265,7 @@ function autocomplete_section(interaction, lang, wiki) {
 				value: fragment.anchor.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
-	};
+	}
 	return got.get( wiki + 'api.php?action=parse&prop=sections&page=' + encodeURIComponent( title ) + '&format=json', {
 		timeout: {
 			request: 2_000
@@ -287,6 +293,7 @@ function autocomplete_section(interaction, lang, wiki) {
 				}] ).catch(log_error);
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the page sections: ' + body?.error?.info );
 			return;
@@ -320,6 +327,7 @@ function autocomplete_section(interaction, lang, wiki) {
 			}] ).catch(log_error);
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the page sections: ' + error );
 		return;

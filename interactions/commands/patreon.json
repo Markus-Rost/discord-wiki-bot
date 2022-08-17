@@ -1,0 +1,61 @@
+{
+	"id": "",
+	"application_id": "",
+	"name": "patreon",
+	"name_localizations": {},
+	"description": "Check or change your servers with patreon features enabled.",
+	"description_localizations": {},
+	"default_permission": false,
+	"default_member_permissions": "68608",
+	"dm_permission": false,
+	"options": [
+		{
+			"type": 1,
+			"name": "check",
+			"name_localizations": {},
+			"description": "Check your current list of servers with patreon features enabled.",
+			"description_localizations": {},
+			"options": []
+		},
+		{
+			"type": 1,
+			"name": "enable",
+			"name_localizations": {},
+			"description": "Enable the patreon features for a server.",
+			"description_localizations": {},
+			"options": [
+				{
+					"type": 3,
+					"name": "guild",
+					"name_localizations": {},
+					"description": "The server to enable patreon features for.",
+					"description_localizations": {},
+					"min_length": 17,
+					"max_length": 20,
+					"required": true,
+					"autocomplete": true
+				}
+			]
+		},
+		{
+			"type": 1,
+			"name": "disable",
+			"name_localizations": {},
+			"description": "Disable the patreon features for a server.",
+			"description_localizations": {},
+			"options": [
+				{
+					"type": 3,
+					"name": "guild",
+					"name_localizations": {},
+					"description": "The server to disable patreon features for.",
+					"description_localizations": {},
+					"min_length": 17,
+					"max_length": 20,
+					"required": true,
+					"autocomplete": true
+				}
+			]
+		}
+	]
+}

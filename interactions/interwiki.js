@@ -92,6 +92,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				}] ).catch(log_error);
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
 			return;
@@ -111,6 +112,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			}] ).catch(log_error);
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the interwiki: ' + error );
 	} );
@@ -124,6 +126,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		return [true, wikiList[1].size];
 	}, dberror => {
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the wiki list: ' + dberror );
 	} ) : Promise.resolve() ).then( ([hasRow, hasPrefix] = []) => {
@@ -145,7 +148,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				value: suggestion
 			};
 		} ).slice(0, 25) ).catch(log_error);
-		var suggestions = new Set([
+		var suggestions = [
 			...wikiList[0].filter( suggestion => {
 				if ( suggestion.replace( 'https://', '' ).startsWith( input ) ) return true;
 				return suggestion.replace( 'https://www.', '' ).startsWith( input );
@@ -172,7 +175,10 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				return result;
 			} ).flat(),
 			inputToWikiProject(input)?.fullScriptPath
-		].filter( suggestion => suggestion ));
+		].filter( suggestion => suggestion ).map( suggestion => {
+			if ( Wiki._cache.has(suggestion) ) return Wiki._cache.get(suggestion).href;
+			return suggestion;
+		} );
 		return interaction.respond( [...new Set(suggestions)].map( suggestion => {
 			let project = inputToWikiProject(suggestion);
 			return {
