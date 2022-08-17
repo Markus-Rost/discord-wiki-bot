@@ -36,6 +36,20 @@
 		"options[3].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
 		"options[3].name": "spoiler"
 	},
+	"patreon": {
+		"description": "Comprueba o cambia tus servidores con las funciones de Patreon habilitadas.",
+		"name": "patreon",
+		"options[0].description": "Comprueba tu lista actual de servidores con funciones de Patreon habilitadas.",
+		"options[0].name": "comprobar",
+		"options[1].description": "Habilita las funciones de Patreon para un servidor.",
+		"options[1].name": "habilitar",
+		"options[1].options[0].description": "El servidor en el que habilitar las funciones de Patreon.",
+		"options[1].options[0].name": "gremio",
+		"options[2].description": "Deshabilita las funciones de Patreon para un servidor.",
+		"options[2].name": "deshabilitar",
+		"options[2].options[0].description": "El servidor en el que deshabilitar las funciones de Patreon.",
+		"options[2].options[0].name": "gremio"
+	},
 	"verify": {
 		"description": "Verifica tu cuenta de Discord con tu cuenta wiki.",
 		"name": "verificar",
