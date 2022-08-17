@@ -7,7 +7,7 @@
 		"options[0].name": "testo"
 	},
 	"interwiki": {
-		"description": "Posta un link ad un wiki diversa.",
+		"description": "Posta un link ad una wiki diversa.",
 		"name": "interwiki",
 		"options[0].description": "La wiki in cui cercare.",
 		"options[0].name": "wiki",

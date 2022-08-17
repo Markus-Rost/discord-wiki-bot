@@ -318,6 +318,23 @@
 					"desc": "Bu sunucunun varsayılan vikisini değiştireceğim."
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "Satır içi viki bağlantıları ile mesaj paylaş."
+				},
+				"interwiki": {
+					"desc": "Sağlanan MediaWiki projesinde eşleşen makale bağlantısı ile cevap vereceğim."
+				},
+				"overview": {
+					"desc": "Viki hakkında birkaç bilgi ve istatistik göstereceğim."
+				},
+				"verify": {
+					"desc": "Discord hesabını viki hesabın ile doğrulamak ve viki hesabınla eşleşen rolleri almak için bu komutu kullan."
+				},
+				"wiki": {
+					"desc": "Şu vikide eşleşen makale bağlantısı ile cevap vereceğim:"
+				}
+			},
 			"subprefix": {
 				"cmd": "<viki> <aranacak terim>",
 				"desc": "Vikide eşleşen isme sahip bir bağlantı ile cevap vereceğim:"
@@ -381,7 +398,10 @@
 		"pause": "**Şu an bu sunucuda duraklatılmış durumdayım!**\nSadece bu komutlar gerçekleştirilebilir:"
 	},
 	"interaction": {
+		"error": "Komutu kullanırken beklenmedik bir hata yaşandı!",
 		"inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin.",
+		"interwiki": "Lütfen arama yapılacak bilinen bir viki sağlayın.",
+		"notitle": "Kullanılan sayfa başlığı mevcut değil!",
 		"nowiki": "Kullanılan viki mevcut değil!",
 		"verify": "Discord hesabını viki hesabın ile doğrulamak ve hesabın ile uyumlu rolleri almak için viki kullanıcı adını sağlayarak bu komutu kullan."
 	},
@@ -521,6 +541,7 @@
 		"new_wiki": "<vikiye bağlantı>",
 		"no_feeds": "Bu webhook'un vikide tartışmalar, mesaj duvarları ya da makale yorumları gibi yayın bazlı özellikler etkin değil.",
 		"noadmin": "Bu komut için `Webhook'ları Yönet` iznine ihtiyacın var!",
+		"notheads": "Son değişiklikler webhook'ları başlıklarda desteklenmiyor. Lütfen komutu kanalın kendisinde kullanın!",
 		"rc": "Viki düzenlemeleri:",
 		"sysmessage": "Son değişiklikler webhook'u ekleyebilmek için sistem mesajı `$1`, sunucu ID'si `$2` olmalı.",
 		"title": "Son değişiklikler webhook'u",
@@ -578,6 +599,7 @@
 		"media": "Dosya açıklama sayfasına",
 		"messagedefault": "Varsayılan:",
 		"messagedefaultnone": "*hiç*",
+		"noresult": "Aratmaya bir sonuç bulunamadı.",
 		"redirect": "$1 (\"$2\" yönlendirmesi)",
 		"results": "Toplam $1 sonuç",
 		"special": "Bu özel sayfanın içeriği:"

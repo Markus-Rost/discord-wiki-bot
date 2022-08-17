@@ -541,6 +541,7 @@
 		"new_wiki": "<Link zum Wiki>",
 		"no_feeds": "Das Wiki für diesen WebHook hat keine Feeds-basierten Funktionen, wie Diskussionen, Nachrichtenseiten oder Artikelkommentare, aktiviert.",
 		"noadmin": "Du benötigst die `WebHooks verwalten`-Berechtigung für diesen Befehl!",
+		"notheads": "Letzte Änderungen-WebHooks werden in Threads nicht unterstützt, bitte nutze den Befehl im Hauptkanal!",
 		"rc": "Wiki-Änderungen:",
 		"sysmessage": "Die Systemnachricht `$1` muss die Server-ID `$2` sein um einen Letzte Änderungen-WebHook hinzuzufügen.",
 		"title": "Letzte Änderungen-WebHook",
