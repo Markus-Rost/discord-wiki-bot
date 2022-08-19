@@ -1,5 +1,6 @@
 
 
 export default {
-	name: 'admin'
+	name: 'admin',
+	allowDelete: false
 };

@@ -587,7 +587,7 @@ function allowDelete(msg, author) {
  * @param {Boolean} [letDelete] - Let the interaction user delete the message.
  * @returns {Promise<import('discord.js').Message?>}
  */
-function sendMessage(interaction, message, letDelete = true) {
+function sendMessage(interaction, message, letDelete = false) {
 	if ( !interaction.ephemeral && letDelete && breakOnTimeoutPause(interaction) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return interaction.editReply( message ).then( msg => {

@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { fork as forkChildProcess } from 'node:child_process';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
-import { ShardingManager, ShardClientUtil } from 'discord.js';
+import { ShardingManager, ShardClientUtil, ShardEvents } from 'discord.js';
 const {shardIdForGuildId} = ShardClientUtil;
 
 var isDebug = ( process.argv[2] === 'debug' );
@@ -38,11 +38,11 @@ var diedShards = 0;
 manager.on( 'shardCreate', shard => {
 	console.log( `- Shard[${shard.id}]: Launched` );
 	
-	shard.on( 'spawn', () => {
+	shard.on( ShardEvents.Spawn, () => {
 		console.log( `- Shard[${shard.id}]: Spawned` );
 	} );
 	
-	shard.on( 'message', message => {
+	shard.on( ShardEvents.Message, message => {
 		if ( message?.id === 'verifyUser' && server ) {
 			return server.send( message );
 		}
@@ -62,7 +62,7 @@ manager.on( 'shardCreate', shard => {
 		if ( message === 'postStats' && process.env.botlist ) postStats();
 	} );
 	
-	shard.on( 'death', message => {
+	shard.on( ShardEvents.Death, message => {
 		if ( manager.respawn === false ) diedShards++;
 		if ( message.exitCode ) {
 			if ( !shard.ready ) {
@@ -73,7 +73,7 @@ manager.on( 'shardCreate', shard => {
 		}
 	} );
 
-	shard.on( 'error', error => {
+	shard.on( ShardEvents.Error, error => {
 		console.log( `- Shard[${shard.id}]: Error received!`, error );
 	} );
 } );
@@ -227,7 +227,10 @@ if ( process.env.dashboard ) {
 					embeds: evalData.embeds ?? [],
 					files: evalData.file,
 					allowedMentions: {parse: []}
-				} ).catch(globalThis.log_error);
+				} ).catch( error => {
+					if ( error?.code === 50001 ) return; // Missing Access
+					globalThis.log_error(error);
+				} );
 			}
 		},
 		createWebhook: (discordClient, evalData) => {
@@ -252,7 +255,7 @@ if ( process.env.dashboard ) {
 				let channel = guild.channels.cache.get(evalData.channel);
 				if ( channel ) return channel.createWebhook( {
 					name: evalData.name,
-					avatar: discordClient.user.displayAvatarURL({format:'png',size:4096}),
+					avatar: discordClient.user.displayAvatarURL({extension:'png',size:4096}),
 					reason: evalData.reason
 				} ).then( webhook => {
 					console.log( `- Dashboard: Webhook successfully created: ${evalData.guild}#${evalData.channel}` );

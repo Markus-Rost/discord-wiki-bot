@@ -292,6 +292,10 @@ function autocomplete_section(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
+			if ( body?.error?.code === 'pagecannotexist' ) {
+				sectionCache.set(wiki.toLink(title), []);
+				return interaction.respond( [] ).catch(log_error);
+			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
@@ -337,5 +341,6 @@ function autocomplete_section(interaction, lang, wiki) {
 export default {
 	name: 'wiki',
 	slash: slash_wiki,
-	autocomplete: autocomplete_wiki
+	autocomplete: autocomplete_wiki,
+	allowDelete: true
 };

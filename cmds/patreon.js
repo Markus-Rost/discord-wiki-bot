@@ -46,7 +46,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES ($1, $1, $2)', [args[1], msg.author.id] ).then( () => {
 					console.log( '- Guild successfully added.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
-						patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+						globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 					}, {context: {guild: args[1], prefix: process.env.prefix}} );
 					msg.replyMsg( 'The patreon features are now enabled on "' + guild + '".', true );
 				}, dberror => {
@@ -55,7 +55,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 				} );
 				console.log( '- Guild successfully updated.' );
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+					globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 				}, {context: {guild: args[1], prefix: process.env.prefix}} );
 				msg.replyMsg( 'The patreon features are now enabled on "' + guild + '".', true );
 			}, dberror => {
@@ -89,7 +89,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, args[1]] ).then( () => {
 					console.log( '- Guild successfully updated.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
-						patreonGuildsPrefix.delete(evalData);
+						globalThis.patreonGuildsPrefix.delete(evalData);
 					}, {context: args[1]} );
 					msg.replyMsg( 'The patreon features are now disabled on "' + guild + '".', true );
 				}, dberror => {
@@ -243,7 +243,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 				if ( !guilds.length ) return Promise.reject();
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
 					return evalData.map( guild => {
-						patreonGuildsPrefix.delete(guild);
+						globalThis.patreonGuildsPrefix.delete(guild);
 					} );
 				}, {context: row.guilds} );
 			}, dberror => {

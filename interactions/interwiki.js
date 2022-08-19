@@ -193,5 +193,6 @@ export default {
 	name: 'interwiki',
 	slash: slash_interwiki,
 	autocomplete: autocomplete_interwiki,
+	allowDelete: true,
 	FUNCTIONS: {getWiki}
 };

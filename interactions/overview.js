@@ -64,5 +64,6 @@ function slash_overview(interaction, lang, wiki) {
 export default {
 	name: 'overview',
 	slash: slash_overview,
-	autocomplete: interwiki_interaction.autocomplete
+	autocomplete: interwiki_interaction.autocomplete,
+	allowDelete: true
 };

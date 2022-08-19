@@ -62,7 +62,7 @@ function button_verify(interaction, lang, wiki) {
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
-								fail: () => sendMessage(interaction, {components: []}, false)
+								fail: () => sendMessage(interaction, {components: []})
 							});
 						}, error => {
 							console.log( '- Error while refreshing the mediawiki token: ' + error );
@@ -94,7 +94,7 @@ function button_verify(interaction, lang, wiki) {
 							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )], state
 						}).toString();
-						sendMessage(interaction, {components: []}, false);
+						sendMessage(interaction, {components: []});
 						return interaction.followUp( {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
 							components: [new ActionRowBuilder().addComponents(
@@ -139,7 +139,7 @@ function button_verify(interaction, lang, wiki) {
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
-								fail: () => sendMessage(interaction, {components: []}, false)
+								fail: () => sendMessage(interaction, {components: []})
 							});
 						}, error => {
 							console.log( '- Error while refreshing the mediawiki token: ' + error );
@@ -171,7 +171,7 @@ function button_verify(interaction, lang, wiki) {
 							response_type: 'code', redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )], state
 						}).toString();
-						sendMessage(interaction, {components: []}, false);
+						sendMessage(interaction, {components: []});
 						return interaction.followUp( {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
 							components: [new ActionRowBuilder().addComponents(
@@ -198,7 +198,7 @@ function button_verify(interaction, lang, wiki) {
 				else if ( result.add_button ) message.components.push(new ActionRowBuilder().addComponents(
 					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 				));
-				sendMessage(interaction, message, false);
+				sendMessage(interaction, message);
 				if ( result.logging.channel && interaction.guild.channels.cache.has(result.logging.channel) ) {
 					if ( result.logging.embed ) result.logging.embed.addFields( {name: interaction.message.url, value: '<#' + interaction.channelId + '>'} );
 					else result.logging.content += '\n<#' + interaction.channelId + '> – <' + interaction.message.url + '>';
@@ -226,5 +226,6 @@ function button_verify(interaction, lang, wiki) {
 
 export default {
 	name: 'verify_again',
-	button: button_verify
+	button: button_verify,
+	allowDelete: false
 };

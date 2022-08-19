@@ -54,7 +54,7 @@ const client = new Discord.Client( {
 } );
 
 var isStop = false;
-client.on( 'ready', () => {
+client.on( Discord.Events.ClientReady, () => {
 	console.log( '\n- ' + process.env.SHARDS + ': Successfully logged in as ' + client.user.username + '!\n' );
 	client.application.commands.fetch();
 } );
@@ -101,11 +101,17 @@ Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
 		default:
 			emoji = name;
 	}
-	return this.react(emoji).catch(log_error);
+	return this.react(emoji).catch( error => {
+		if ( error?.code === 10008 ) return; // Unknown Message
+		log_error(error);
+	} );
 };
 
 Discord.MessageReaction.prototype.removeEmoji = function() {
-	return this.users.remove().catch(log_error);
+	return this.users.remove().catch( error => {
+		if ( error?.code === 10008 ) return; // Unknown Message
+		log_error(error);
+	} );
 };
 
 Discord.Message.prototype.sendChannel = function(message, ignorePause = false) {
@@ -160,7 +166,9 @@ var interaction_commands = {
 	/** @type {{[x: string]: function(Discord.ButtonInteraction, Lang, Wiki)>}} */
 	button: {},
 	/** @type {{[x: string]: function(Discord.ModalSubmitInteraction, Lang, Wiki)>}} */
-	modal: {}
+	modal: {},
+	/** @type {String[]} */
+	allowDelete: []
 };
 readdir( './interactions', (error, files) => {
 	if ( error ) return error;
@@ -170,6 +178,7 @@ readdir( './interactions', (error, files) => {
 			if ( command.hasOwnProperty('slash') ) interaction_commands.slash[command.name] = command.slash;
 			if ( command.hasOwnProperty('button') ) interaction_commands.button[command.name] = command.button;
 			if ( command.hasOwnProperty('modal') ) interaction_commands.modal[command.name] = command.modal;
+			if ( command.allowDelete ) interaction_commands.allowDelete.push(command.name);
 		} );
 	} );
 } );
@@ -179,7 +188,7 @@ readdir( './interactions', (error, files) => {
 } )
 */
 
-client.on( 'interactionCreate', interaction => {
+client.on( Discord.Events.InteractionCreate, interaction => {
 	if ( interaction.channel?.partial ) return interaction.channel.fetch().then( () => {
 		return interactionCreate(interaction);
 	}, log_error );
@@ -238,7 +247,7 @@ client.on( 'interactionCreate', interaction => {
 	} );
 }
 
-client.on( 'messageCreate', msg => {
+client.on( Discord.Events.MessageCreate, msg => {
 	if ( msg.channel.partial ) return msg.channel.fetch().then( () => {
 		return messageCreate(msg);
 	}, log_error );
@@ -318,10 +327,18 @@ function messageCreate(msg) {
 	else newMessage(msg, new Lang());
 };
 
+client.on( Discord.Events.MessageReactionAdd, (reaction, user) => {
+	var msg = reaction.message;
+	if ( msg.applicationId !== client.user.id || !msg.interaction ) return;
+	if ( !interaction_commands.allowDelete.includes(msg.interaction.commandName) ) return;
+	if ( reaction.emoji.name !== '🗑️' || msg.interaction.user.id !== user.id ) return;
+	msg.delete().catch(log_error);
+} );
+
 
 const leftGuilds = new Map();
 
-client.on( 'guildCreate', guild => {
+client.on( Discord.Events.GuildCreate, guild => {
 	console.log( '- ' + guild.id + ': I\'ve been added to a server.' );
 	if ( leftGuilds.has(guild.id) ) {
 		clearTimeout(leftGuilds.get(guild.id));
@@ -329,7 +346,7 @@ client.on( 'guildCreate', guild => {
 	}
 } );
 
-client.on( 'guildDelete', guild => {
+client.on( Discord.Events.GuildDelete, guild => {
 	if ( !guild.available ) {
 		console.log( '- ' + guild.id + ': This server isn\'t responding.' );
 		return;
@@ -343,7 +360,7 @@ function removeSettings(guild) {
 	if ( client.guilds.cache.has(guild) ) return;
 	db.query( 'DELETE FROM discord WHERE main = $1', [guild] ).then( ({rowCount}) => {
 		if ( patreonGuildsPrefix.has(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
-			patreonGuildsPrefix.delete(evalData);
+			globalThis.patreonGuildsPrefix.delete(evalData);
 		}, {context: guild} );
 		if ( rowCount ) console.log( '- ' + guild + ': Settings successfully removed.' );
 	}, dberror => {
@@ -352,8 +369,8 @@ function removeSettings(guild) {
 }
 
 
-client.on( 'error', error => log_error(error, true) );
-client.on( 'warn', warning => log_warning(warning, false) );
+client.on( Discord.Events.Error, error => log_error(error, true) );
+client.on( Discord.Events.Warn, warning => log_warning(warning, false) );
 
 client.login(process.env.token).catch( error => {
 	log_error(error, true, 'LOGIN-');
@@ -366,7 +383,7 @@ client.login(process.env.token).catch( error => {
 	} );
 } );
 
-if ( isDebug ) client.on( 'debug', debug => {
+if ( isDebug ) client.on( Discord.Events.Debug, debug => {
 	if ( isDebug ) console.log( '- ' + process.env.SHARDS + ': Debug: ' + debug );
 } );
 

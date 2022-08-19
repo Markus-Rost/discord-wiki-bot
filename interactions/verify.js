@@ -62,7 +62,7 @@ function interaction_verify(interaction, lang, wiki) {
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
-								fail: () => sendMessage(interaction, lang.get('verify.error_reply'))
+								fail: () => sendMessage(interaction, lang.get('verify.error_reply'), true)
 							});
 						}, error => {
 							console.log( '- Error while refreshing the mediawiki token: ' + error );
@@ -101,7 +101,7 @@ function interaction_verify(interaction, lang, wiki) {
 							)],
 							ephemeral: true
 						};
-						if ( (rows[0].flags & 1 << 0) === 1 << 0 ) return sendMessage(interaction, message, false);
+						if ( (rows[0].flags & 1 << 0) === 1 << 0 ) return sendMessage(interaction, message);
 						return interaction.deleteReply().then( () => {
 							return interaction.followUp( message ).catch(log_error);
 						}, log_error );
@@ -166,7 +166,7 @@ function interaction_verify(interaction, lang, wiki) {
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
 								user: interaction.user.id, interaction,
-								fail: () => sendMessage(interaction, lang.get('verify.error_reply'))
+								fail: () => sendMessage(interaction, lang.get('verify.error_reply'), true)
 							});
 						}, error => {
 							console.log( '- Error while refreshing the mediawiki token: ' + error );
@@ -205,7 +205,7 @@ function interaction_verify(interaction, lang, wiki) {
 							)],
 							ephemeral: true
 						}
-						if ( result.send_private ) return sendMessage(interaction, message, false);
+						if ( result.send_private ) return sendMessage(interaction, message);
 						return interaction.deleteReply().then( () => {
 							return interaction.followUp( message ).catch(log_error);
 						}, log_error );
@@ -228,7 +228,7 @@ function interaction_verify(interaction, lang, wiki) {
 				else if ( result.add_button && !result.send_private ) message.components.push(new ActionRowBuilder().addComponents(
 					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 				));
-				return sendMessage(interaction, message, false).then( msg => {
+				return sendMessage(interaction, message).then( msg => {
 					if ( !result.logging.channel || !interaction.guild.channels.cache.has(result.logging.channel) ) return;
 					if ( msg && !result.send_private ) {
 						if ( result.logging.embed ) result.logging.embed.addFields( {name: msg.url, value: '<#' + interaction.channelId + '>'} );
@@ -241,7 +241,7 @@ function interaction_verify(interaction, lang, wiki) {
 				} );
 			}, error => {
 				console.log( '- Error during the verifications: ' + error );
-				return sendMessage(interaction, lang.get('verify.error_reply'));
+				return sendMessage(interaction, lang.get('verify.error_reply'), true);
 			} );
 		}, log_error );
 	}, dberror => {
@@ -254,5 +254,6 @@ export default {
 	name: 'verify',
 	slash: interaction_verify,
 	modal: interaction_verify,
-	button: interaction_verify
+	button: interaction_verify,
+	allowDelete: false
 };

@@ -18,9 +18,7 @@ wikiProjects.filter( project => {
 	}
 	return false;
 } ).forEach( project => {
-	if ( globalThis.isDebug ?? ( process.argv[2] === 'debug' ) ) {
-		console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
-	}
+	if ( isDebug ) console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
 	wikiProjects.splice( wikiProjects.indexOf( project ), 1 );
 } );
 

@@ -1,3 +1,4 @@
+import './globals.js';
 import { createServer, STATUS_CODES } from 'node:http';
 import { createReadStream, readdirSync, existsSync } from 'node:fs';
 import { extname } from 'node:path';

@@ -98,7 +98,7 @@ function slash_patreon(interaction, lang, wiki) {
 				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES ($1, $1, $2)', [guildId, interaction.user.id] ).then( () => {
 					console.log( '- Guild successfully added.' );
 					interaction.client.shard.broadcastEval( (discordClient, evalData) => {
-						patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+						globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 					}, {context: {guild: guildId, prefix: process.env.prefix}} );
 					return interaction.reply( {
 						content: 'The patreon features are now enabled on "' + guild + '".',
@@ -113,7 +113,7 @@ function slash_patreon(interaction, lang, wiki) {
 				} );
 				console.log( '- Guild successfully updated.' );
 				interaction.client.shard.broadcastEval( (discordClient, evalData) => {
-					patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+					globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 				}, {context: {guild: guildId, prefix: process.env.prefix}} );
 				return interaction.reply( {
 					content: 'The patreon features are now enabled on "' + guild + '".',
@@ -158,7 +158,7 @@ function slash_patreon(interaction, lang, wiki) {
 				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, guildId] ).then( () => {
 					console.log( '- Guild successfully updated.' );
 					interaction.client.shard.broadcastEval( (discordClient, evalData) => {
-						patreonGuildsPrefix.delete(evalData);
+						globalThis.patreonGuildsPrefix.delete(evalData);
 					}, {context: guildId} );
 					return Promise.all([
 						client.query( 'DELETE FROM discord WHERE guild = $1 AND channel LIKE $2 RETURNING channel, wiki', [guildId, '#%'] ).then( ({rows}) => {
@@ -309,7 +309,7 @@ function autocomplete_patreon(interaction, lang, wiki) {
 			return discordClient.guilds.cache.filter( guild => evalData.guilds.includes(guild.id) || guild.members.cache.has(evalData.user) ).map( guild => {
 				return {
 					id: guild.id, name: guild.name,
-					patreon: patreonGuildsPrefix.has(guild.id)
+					patreon: globalThis.patreonGuildsPrefix.has(guild.id)
 				};
 			} );
 		}, {context: {user: interaction.user.id, guilds: rows}} ).then( results => {
@@ -339,5 +339,6 @@ function autocomplete_patreon(interaction, lang, wiki) {
 export default {
 	name: 'patreon',
 	slash: slash_patreon,
-	autocomplete: autocomplete_patreon
+	autocomplete: autocomplete_patreon,
+	allowDelete: false
 };

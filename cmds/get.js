@@ -30,7 +30,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 					ownerId: guild.ownerId, owner: discordClient.users.cache.get(guild.ownerId)?.tag,
 					channel: guild.publicUpdatesChannelId, icon: guild.iconURL(),
 					permissions: guild.members.me.permissions.missing(evalData.defaultPermissions),
-					pause: pausedGuilds.has(guild.id), shardId: process.env.SHARDS
+					pause: globalThis.pausedGuilds.has(guild.id), shardId: process.env.SHARDS
 				};
 			}
 		}, {
@@ -104,7 +104,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 					isThread: channel.isThread(), threadParentId: channel.parent?.parentId,
 					guild: channel.guild.name, guildId: channel.guildId,
 					permissions: channel.guild.members.me.permissionsIn(channel.id).missing(evalData.defaultPermissions),
-					pause: pausedGuilds.has(channel.guildId),
+					pause: globalThis.pausedGuilds.has(channel.guildId),
 					shardId: process.env.SHARDS
 				};
 			}

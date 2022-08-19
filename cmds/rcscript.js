@@ -147,7 +147,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 					function createWebhook(enableFeeds = false) {
 						msg.channel.createWebhook( {
 							name: ( body.query.allmessages[1]['*'] || 'Recent changes' ),
-							avatar: msg.client.user.displayAvatarURL({format:'png',size:4096}),
+							avatar: msg.client.user.displayAvatarURL({extension:'png',size:4096}),
 							reason: lang.get('rcscript.audit_reason', wikinew.href)
 						} ).then( webhook => {
 							console.log( '- Webhook successfully created.' );

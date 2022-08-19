@@ -269,5 +269,6 @@ function slash_inline(interaction, lang, wiki) {
 
 export default {
 	name: 'inline',
-	slash: slash_inline
+	slash: slash_inline,
+	allowDelete: true
 };

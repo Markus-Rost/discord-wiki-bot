@@ -190,7 +190,7 @@ function removePatreons(guild, msg) {
 					messages.push('Guild successfully updated.');
 				}
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					patreonGuildsPrefix.delete(evalData);
+					globalThis.patreonGuildsPrefix.delete(evalData);
 				}, {context: guild} );
 			}, dberror => {
 				console.log( '- Error while updating the guild: ' + dberror );
@@ -329,7 +329,7 @@ function removeSettings(msg) {
 						if ( !row.channel ) {
 							if ( patreonGuildsPrefix.has(row.guild) ) {
 								msg.client.shard.broadcastEval( (discordClient, evalData) => {
-									patreonGuildsPrefix.delete(evalData);
+									globalThis.patreonGuildsPrefix.delete(evalData);
 								}, {context: row.guild} );
 							}
 							return guilds.push(row.guild);

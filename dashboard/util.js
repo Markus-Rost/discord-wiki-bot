@@ -6,8 +6,6 @@ import DiscordOauth2 from 'discord-oauth2';
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import { oauthSites } from '../util/wiki.js';
 
-globalThis.isDebug = ( process.argv[2] === 'debug' );
-
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
 	timeout: {

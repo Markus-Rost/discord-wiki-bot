@@ -1,0 +1,1 @@
+globalThis.isDebug = ( process.argv[2] === 'debug' );

@@ -336,7 +336,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 				console.log( '- Settings successfully updated.' );
 				guild.prefix = args[1];
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+					globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 				}, {context: {guild: msg.guildId, prefix: args[1]}} );
 				msg.replyMsg( {content: lang.get('settings.prefixchanged') + ' `' + args[1] + '`\n' + lang.get('settings.prefixhelp', args[1] + 'settings prefix'), components}, true );
 			}, dberror => {
