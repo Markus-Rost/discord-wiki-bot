@@ -2,9 +2,13 @@
 	"id": "",
 	"application_id": "",
 	"name": "patreon",
-	"name_localizations": {},
+	"name_localizations": {
+		"es-ES": "patreon"
+	},
 	"description": "Check or change your servers with patreon features enabled.",
-	"description_localizations": {},
+	"description_localizations": {
+		"es-ES": "Comprueba o cambia tus servidores con las funciones de Patreon habilitadas."
+	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
 	"dm_permission": false,
@@ -12,24 +16,36 @@
 		{
 			"type": 1,
 			"name": "check",
-			"name_localizations": {},
+			"name_localizations": {
+				"es-ES": "comprobar"
+			},
 			"description": "Check your current list of servers with patreon features enabled.",
-			"description_localizations": {},
+			"description_localizations": {
+				"es-ES": "Comprueba tu lista actual de servidores con funciones de Patreon habilitadas."
+			},
 			"options": []
 		},
 		{
 			"type": 1,
 			"name": "enable",
-			"name_localizations": {},
+			"name_localizations": {
+				"es-ES": "habilitar"
+			},
 			"description": "Enable the patreon features for a server.",
-			"description_localizations": {},
+			"description_localizations": {
+				"es-ES": "Habilita las funciones de Patreon para un servidor."
+			},
 			"options": [
 				{
 					"type": 3,
 					"name": "guild",
-					"name_localizations": {},
+					"name_localizations": {
+						"es-ES": "gremio"
+					},
 					"description": "The server to enable patreon features for.",
-					"description_localizations": {},
+					"description_localizations": {
+						"es-ES": "El servidor en el que habilitar las funciones de Patreon."
+					},
 					"min_length": 17,
 					"max_length": 20,
 					"required": true,
@@ -40,16 +56,24 @@
 		{
 			"type": 1,
 			"name": "disable",
-			"name_localizations": {},
+			"name_localizations": {
+				"es-ES": "deshabilitar"
+			},
 			"description": "Disable the patreon features for a server.",
-			"description_localizations": {},
+			"description_localizations": {
+				"es-ES": "Deshabilita las funciones de Patreon para un servidor."
+			},
 			"options": [
 				{
 					"type": 3,
 					"name": "guild",
-					"name_localizations": {},
+					"name_localizations": {
+						"es-ES": "gremio"
+					},
 					"description": "The server to disable patreon features for.",
-					"description_localizations": {},
+					"description_localizations": {
+						"es-ES": "El servidor en el que deshabilitar las funciones de Patreon."
+					},
 					"min_length": 17,
 					"max_length": 20,
 					"required": true,
