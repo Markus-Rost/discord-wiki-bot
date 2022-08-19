@@ -1,6 +1,5 @@
-import { Message } from 'discord.js';
 import { load as cheerioLoad } from 'cheerio';
-import { got, canShowEmbed, escapeFormatting } from '../util/functions.js';
+import { got, isMessage, canShowEmbed, escapeFormatting } from '../util/functions.js';
 
 /**
  * Add global blocks to user messages.
@@ -16,7 +15,6 @@ import { got, canShowEmbed, escapeFormatting } from '../util/functions.js';
  */
 export default function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 	if ( !msg || !msg.inGuild() || !patreonGuildsPrefix.has(msg.guildId) || wiki.wikifarm !== 'fandom' ) return;
-	var isMessage = msg instanceof Message;
 	if ( embed && !canShowEmbed(msg) ) embed = null;
 	
 	var isUser = true;
@@ -25,7 +23,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 		gender = 'unknown';
 	}
 	
-	if ( isMessage ) {
+	if ( isMessage(msg) ) {
 		if ( embed ) embed.spliceFields( -1, 1 );
 		else {
 			let splittext = text.split('\n\n');
@@ -113,7 +111,7 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 		var content = spoiler + text + spoiler;
 		var embeds = [];
 		if ( embed ) embeds.push(embed);
-		if ( isMessage ) return msg.edit( {content, embeds} ).catch(log_error);
+		if ( isMessage(msg) ) return msg.edit( {content, embeds} ).catch(log_error);
 		else return {message: {content, embeds}};
 	} );
 }

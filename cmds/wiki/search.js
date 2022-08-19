@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { got, escapeFormatting, splitMessage } from '../../util/functions.js';
+import { got, canUseMaskedLinks, escapeFormatting, splitMessage } from '../../util/functions.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {search: searchLimit}} = require('../../util/default.json');
@@ -86,13 +86,13 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 				}
 			}
 			text += bold;
-			if ( !noEmbed ) {
-				text += '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
+			if ( canUseMaskedLinks(msg, noEmbed) ) {
+				text += '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 				if ( result.sectiontitle ) {
-					text += ' § [' + escapeFormatting(result.sectiontitle) + '](' + wiki.toLink(result.title, '', result.sectiontitle, true) + ')';
+					text += ' § [' + escapeFormatting(result.sectiontitle) + '](<' + wiki.toLink(result.title, '', result.sectiontitle, true) + '>)';
 				}
 				if ( result.redirecttitle ) {
-					text += ' (⤷ [' + escapeFormatting(result.redirecttitle) + '](' + wiki.toLink(result.redirecttitle, 'redirect=no', '', true) + '))';
+					text += ' (⤷ [' + escapeFormatting(result.redirecttitle) + '](<' + wiki.toLink(result.redirecttitle, 'redirect=no', '', true) + '>))';
 				}
 			}
 			else {
@@ -106,10 +106,10 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 		if ( !hasExactMatch ) {
 			if ( query.interwiki?.[0] ) {
 				let text = '• **⤷ ';
-				if ( !noEmbed ) {
-					text += '__[' + escapeFormatting(query.interwiki[0].title) + '](' + query.interwiki[0].url.replace( /[()]/g, '\\$&' ) + ')__';
+				if ( canUseMaskedLinks(msg, noEmbed) ) {
+					text += '__[' + escapeFormatting(query.interwiki[0].title) + '](<' + query.interwiki[0].url.replace( /[()]/g, '\\$&' ) + '>)__';
 					if ( query.redirects?.[0] ) {
-						text += ' (⤷ [' + escapeFormatting(query.redirects[0].from) + '](' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '))';
+						text += ' (⤷ [' + escapeFormatting(query.redirects[0].from) + '](<' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '>))';
 					}
 				}
 				else {
@@ -121,13 +121,13 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 			}
 			else if ( querypage.invalid === undefined && ( querypage.missing === undefined || querypage.known !== undefined ) ) {
 				let text = '• **';
-				if ( !noEmbed ) {
-					text += '[' + escapeFormatting(querypage.title) + '](' + wiki.toLink(querypage.title, '', '', true) + ')';
+				if ( canUseMaskedLinks(msg, noEmbed) ) {
+					text += '[' + escapeFormatting(querypage.title) + '](<' + wiki.toLink(querypage.title, '', '', true) + '>)';
 					if ( query.redirects?.[0] ) {
 						if ( query.redirects[0].tofragment ) {
-							text += ' § [' + escapeFormatting(query.redirects[0].tofragment) + '](' + wiki.toLink(querypage.title, '', query.redirects[0].tofragment, true) + ')';
+							text += ' § [' + escapeFormatting(query.redirects[0].tofragment) + '](<' + wiki.toLink(querypage.title, '', query.redirects[0].tofragment, true) + '>)';
 						}
-						text += ' (⤷ [' + escapeFormatting(query.redirects[0].from) + '](' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '))';
+						text += ' (⤷ [' + escapeFormatting(query.redirects[0].from) + '](<' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '>))';
 					}
 				}
 				else {

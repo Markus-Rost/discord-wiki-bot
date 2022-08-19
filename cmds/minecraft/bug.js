@@ -64,7 +64,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 						var issue = link[ward + 'Issue']; // looks for property (in|out)wardIssue
 						var name = ( linkList?.[link.type.name]?.[ward]?.replaceAllSafe( '$1', issue.key ) || link.type[ward] + ' ' + issue.key );
 						var status = issue.fields.status.name;
-						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(issue.fields.summary) + '](' + baseBrowseUrl + issue.key + ')';
+						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(issue.fields.summary) + '](<' + baseBrowseUrl + issue.key + '>)';
 						if ( ( embed.data.fields?.length ?? 0 ) < 25 && ( getEmbedLength(embed) + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );
 						else extralinks.push({name,value,inline:false});
 					} );
@@ -124,7 +124,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 					var statusList = lang.get('minecraft.status');
 					body.issues.forEach( bug => {
 						var status = ( bug.fields.resolution ? bug.fields.resolution.name : bug.fields.status.name );
-						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(bug.fields.summary) + '](https://bugs.mojang.com/browse/' + bug.key + ')';
+						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(bug.fields.summary) + '](<https://bugs.mojang.com/browse/' + bug.key + '>)';
 						embed.addFields( {name: bug.key, value} );
 					} );
 					if ( body.total > 25 ) {
@@ -156,8 +156,8 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
  * @returns {String}
  */
 function parse_links(text) {
-	text = text.replace( /\[~([^\]]+)\]/g, '[$1](https://bugs.mojang.com/secure/ViewProfile.jspa?name=$1)' );
-	text = text.replace( /\[([^\|]+)\|([^\]]+)\]/g, '[$1]($2)' );
+	text = text.replace( /\[~([^\]]+)\]/g, '[$1](<https://bugs.mojang.com/secure/ViewProfile.jspa?name=$1>)' );
+	text = text.replace( /\[([^\|]+)\|([^\]]+)\]/g, '[$1](<$2>)' );
 	text = text.replace( /{panel(?::title=([^|}]+))?[^}]*}/g, (panel, title) => {
 		return ( title ? '**' + title + '**' : '' );
 	} );

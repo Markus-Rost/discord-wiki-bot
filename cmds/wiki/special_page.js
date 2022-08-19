@@ -39,19 +39,19 @@ const overwrites = {
 
 const queryfunctions = {
 	title: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	times: (query, wiki, lang) => query.querypage.results.map( result => {
-		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	size: (query, wiki, lang) => query.querypage.results.map( result => {
-		return lang.get('diff.info.bytes', parseInt(result.value, 10).toLocaleString(lang.get('dateformat')), result.value) + ': [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return lang.get('diff.info.bytes', parseInt(result.value, 10).toLocaleString(lang.get('dateformat')), result.value) + ': [' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	redirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + escapeFormatting(result.databaseResult.rd_title) : '' );
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + escapeFormatting(result.databaseResult.rd_title) : '' );
 	} ).join('\n'),
 	doubleredirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, 'redirect=no', '', true) + ')' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + escapeFormatting(result.databaseResult.b_title) + ' → ' + escapeFormatting(result.databaseResult.c_title) : '' );
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + escapeFormatting(result.databaseResult.b_title) + ' → ' + escapeFormatting(result.databaseResult.c_title) : '' );
 	} ).join('\n'),
 	timestamp: (query, wiki, lang) => query.querypage.results.map( result => {
 		try {
@@ -65,21 +65,21 @@ const queryfunctions = {
 			}, timeoptions));
 		}
 		let lastEditDate = new Date(result.timestamp);
-		return dateformat.format(lastEditDate) + ' <t:' + Math.trunc(lastEditDate.getTime() / 1000) + ':R>: [' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, '', '', true) + ')';
+		return dateformat.format(lastEditDate) + ' <t:' + Math.trunc(lastEditDate.getTime() / 1000) + ':R>: [' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	media: (query, wiki, lang) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');
 		return '**' + ms[1] + '**: ' + lang.get('search.category.files', parseInt(ms[2], 10).toLocaleString(lang.get('dateformat')), parseInt(ms[2], 10)) + ' (' + lang.get('diff.info.bytes', parseInt(ms[3], 10).toLocaleString(lang.get('dateformat')), parseInt(ms[3], 10)) + ')';
 	} ).join('\n'),
 	category: (query, wiki, lang) => query.querypage.results.map( result => {
-		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + escapeFormatting(result.title) + '](' + wiki.toLink('Category:' + result.title, '', '', true) + ')';
+		return parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + '× [' + escapeFormatting(result.title) + '](<' + wiki.toLink('Category:' + result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	gadget: (query, wiki, lang) => query.querypage.results.map( result => {
 		result.title = result.title.replace( /^(?:.*:)?gadget-/, '' );
 		return '**' + escapeFormatting(result.title) + '**: ' + parseInt(result.value, 10).toLocaleString(lang.get('dateformat')) + ' users (' + result.ns.toLocaleString(lang.get('dateformat')) + ' active)';
 	} ).join('\n'),
 	recentchanges: (query, wiki) => query.recentchanges.map( result => {
-		return '[' + escapeFormatting(result.title) + '](' + wiki.toLink(result.title, ( result.type === 'edit' ? {diff:result.revid,oldid:result.old_revid} : '' ), '', true) + ')';
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, ( result.type === 'edit' ? {diff:result.revid,oldid:result.old_revid} : '' ), '', true) + '>)';
 	} ).join('\n')
 }
 
@@ -175,7 +175,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 		return Promise.resolve( {message: spoiler + '<' + pagelink + '>' + spoiler} );
 	}
 	if ( specialpage === 'recentchanges' && ( msg.isAdmin?.() || msg.memberPermissions?.has(PermissionFlagsBits.ManageGuild) ) ) {
-		embed.addFields( {name: lang.get('rcscript.title'), value: lang.get('rcscript.ad', ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), '[RcGcDw](https://gitlab.com/piotrex43/RcGcDw)')} );
+		embed.addFields( {name: lang.get('rcscript.title'), value: lang.get('rcscript.ad', ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), '[RcGcDw](<https://gitlab.com/piotrex43/RcGcDw>)')} );
 	}
 	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
 		context: {

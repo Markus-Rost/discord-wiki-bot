@@ -1,5 +1,5 @@
-import { Message, PermissionFlagsBits } from 'discord.js';
-import { canShowEmbed, sendMessage } from '../util/functions.js';
+import { PermissionFlagsBits } from 'discord.js';
+import { isMessage, canShowEmbed, sendMessage } from '../util/functions.js';
 import interwiki_interaction from './interwiki.js';
 import wiki_overview from '../cmds/wiki/overview.js';
 
@@ -17,7 +17,7 @@ function slash_overview(interaction, lang, wiki) {
 		if ( ephemeral ) lang = lang.uselang(interaction.locale);
 		return interaction.deferReply( {ephemeral} ).then( () => {
 			return wiki_overview(lang, interaction, newWiki, spoiler, noEmbed).then( result => {
-				if ( !result || result instanceof Message ) return result;
+				if ( !result || isMessage(result) ) return result;
 				let noEmoji = !interaction.appPermissions?.has(PermissionFlagsBits.UseExternalEmojis);
 				if ( result.message ) {
 					if ( Array.isArray(result.message) ) {

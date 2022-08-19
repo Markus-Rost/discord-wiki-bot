@@ -56,7 +56,7 @@ export default function cmd_test(lang, msg, args, line, wiki) {
 					logging(wiki, msg.guildId, 'test');
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
-						notice.push(lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator));
+						notice.push(lang.get('test.MediaWiki', '[MediaWiki 1.30](<https://www.mediawiki.org/wiki/MediaWiki_1.30>)', body.query.general.generator));
 					}
 				}
 				else logging(wiki, msg.guildId, 'test');

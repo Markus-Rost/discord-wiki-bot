@@ -1,4 +1,4 @@
-import { PermissionFlagsBits } from 'discord.js';
+import { Message, PermissionFlagsBits } from 'discord.js';
 import { Parser as HTMLParser } from 'htmlparser2';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
@@ -131,12 +131,31 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 }
 
 /**
+ * If the message is an instance of Discord.Message.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
+ * @returns {Boolean}
+ */
+function isMessage(msg) {
+	return msg instanceof Message;
+};
+
+/**
  * If the bot can show embeds.
- * @param {import('discord.js').Message|import('discord.js').Interaction} [msg] - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
  * @returns {Boolean}
  */
 function canShowEmbed(msg) {
 	return !msg.inGuild() || ( msg.appPermissions ?? msg.channel.permissionsFor(msg.client.user) ).has(PermissionFlagsBits.EmbedLinks);
+};
+
+/**
+ * If the bot can use masked links.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
+ * @param {Boolean} [noEmbed] - If the response should be without an embed.
+ * @returns {Boolean}
+ */
+function canUseMaskedLinks(msg, noEmbed = canShowEmbed(msg)) {
+	return !isMessage(msg) || !noEmbed;
 };
 
 /**
@@ -168,18 +187,18 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 	while ( ( link = regex.exec(text) ) !== null ) {
 		var pagetitle = ( link[1] || link[2] );
 		var page = wiki.toLink(( /^[#\/]/.test(pagetitle) ? title + ( pagetitle.startsWith( '/' ) ? pagetitle : '' ) : pagetitle ), '', ( pagetitle.startsWith( '#' ) ? pagetitle.substring(1) : '' ), true);
-		text = text.replaceSafe( link[0], '[' + link[2] + link[3] + '](' + page + ')' );
+		text = text.replaceSafe( link[0], '[' + link[2] + link[3] + '](<' + page + '>)' );
 	}
-	if ( title !== '' ) {
+	if ( title ) {
 		regex = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSafe( link[0], '[→' + link[1] + '](' + wiki.toLink(title, '', link[1], true) + ')' + ( link[2] ? ': ' + link[2] : '' ) );
+			text = text.replaceSafe( link[0], '[→' + link[1] + '](<' + wiki.toLink(title, '', link[1], true) + '>)' + ( link[2] ? ': ' + link[2] : '' ) );
 		}
 	}
 	if ( fullWikitext ) {
 		regex = /\[(?:https?:)?\/\/([^ ]+) ([^\]]+)\]/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSafe( link[0], '[' + link[2] + '](https://' + link[1] + ')' );
+			text = text.replaceSafe( link[0], '[' + link[2] + '](<https://' + link[1] + '>)' );
 		}
 		return htmlToDiscord(text, '', true, true).replaceAll( "'''", '**' ).replaceAll( "''", '*' );
 	}
@@ -461,6 +480,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 	if ( !isMarkdown ) text = text.replaceAll( '\\', '\\\\' ).replaceAll( '](', ']\\(' );
 	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replaceAll( '//', '/\\/' );
+	if ( isMarkdown ) text = text.replace( /\]\(\\<([^\(\)<>\s]+?)\\>\)/g, '](<$1>)' );
 	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
 		return match.replaceAll( '\\\\', '/' ).replaceAll( '\\', '' );
 	} );
@@ -601,7 +621,9 @@ export {
 	oauthVerify,
 	getEmbedLength,
 	parse_infobox,
+	isMessage,
 	canShowEmbed,
+	canUseMaskedLinks,
 	toFormatting,
 	toMarkdown,
 	toPlaintext,

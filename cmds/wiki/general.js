@@ -1,10 +1,10 @@
 import { readdir } from 'node:fs';
-import { Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { wikiProjects, urlToIdString } from 'mediawiki-projects-list';
 import parse_page from '../../functions/parse_page.js';
 import phabricator from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
-import { got, htmlToDiscord, escapeFormatting, escapeRegExp, partialURIdecode, breakOnTimeoutPause } from '../../util/functions.js';
+import { got, isMessage, htmlToDiscord, escapeFormatting, escapeRegExp, partialURIdecode, breakOnTimeoutPause } from '../../util/functions.js';
 import extract_desc from '../../util/extract_desc.js';
 import Wiki from '../../util/wiki.js';
 import * as fn from './functions.js'
@@ -63,7 +63,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						let scriptPath = project.scriptPath;
 						if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 						let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
-						if ( msg instanceof Message ) {
+						if ( isMessage(msg) ) {
 							cmd = '!!' + regex[1] + ' ';
 							if ( msg.wikiPrefixes.has(iwwiki.href) ) cmd = msg.wikiPrefixes.get(iwwiki.href);
 							else if ( msg.wikiPrefixes.has(project.name) ) {
@@ -123,7 +123,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 	if ( aliasInvoke === 'overview' && !args.join('') && !querystring.toString() && !fragment ) {
 		return fn.overview(lang, msg, wiki, spoiler, noEmbed);
 	}
-	if ( aliasInvoke === 'test' && !args.join('') && !querystring.toString() && !fragment && msg instanceof Message ) {
+	if ( aliasInvoke === 'test' && !args.join('') && !querystring.toString() && !fragment && isMessage(msg) ) {
 		fn.test(lang, msg, [], '', wiki);
 		if ( reaction ) reaction.removeEmoji();
 		return;
@@ -236,7 +236,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				} );
 			}
 			if ( wiki.wikifarm === 'miraheze' && querypage.ns === 0 && /^Mh:[a-z\d]+:/.test(querypage.title) ) {
-				if ( breakOnTimeoutPause(msg) && msg instanceof Message ) {
+				if ( breakOnTimeoutPause(msg) && isMessage(msg) ) {
 					if ( reaction ) reaction.removeEmoji();
 					return;
 				}
@@ -247,7 +247,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				var maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 				if ( selfcall < maxselfcall ) {
 					selfcall++;
-					if ( msg instanceof Message ) {
+					if ( isMessage(msg) ) {
 						cmd = '!!' + iw.hostname + ' ';
 						if ( msg.wikiPrefixes.has(iw.href) ) cmd = msg.wikiPrefixes.get(iw.href);
 						else if ( msg.wikiPrefixes.has('miraheze.org') ) {
@@ -341,7 +341,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				if ( srbody?.RETURN ) return srbody.RETURN;
 				if ( !srbody?.query?.pages ) {
 					if ( srbody?.query?.interwiki ) {
-						if ( breakOnTimeoutPause(msg) && msg instanceof Message ) {
+						if ( breakOnTimeoutPause(msg) && isMessage(msg) ) {
 							if ( reaction ) reaction.removeEmoji();
 							return;
 						}
@@ -367,7 +367,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 									let scriptPath = project.scriptPath;
 									if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 									let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
-									if ( msg instanceof Message ) {
+									if ( isMessage(msg) ) {
 										cmd = '!!' + regex[1] + ' ';
 										if ( msg.wikiPrefixes.has(iwwiki.href) ) cmd = msg.wikiPrefixes.get(iwwiki.href);
 										else if ( msg.wikiPrefixes.has(project.name) ) {
@@ -435,11 +435,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				}
 				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 				
-				var prefix = ( msg instanceof Message
+				var prefix = ( isMessage(msg)
 					? '`' + ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ) + cmd
 					: cmd.split(' ')[0] + ' `' + cmd.split(' ').slice(1).join(' ')
 				);
-				var linksuffix = ( msg instanceof Message
+				var linksuffix = ( isMessage(msg)
 					? ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' )
 					: ( querystring.toString() ? ' query:' + querystring : '' ) + ( fragment ? ' section:' + fragment : '' )
 				);
@@ -493,7 +493,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				var pagelink = wiki.toLink(body.query.namespaces['-1']['*'] + ':' + ( filepath?.aliases?.[0] || 'FilePath' ) + querypage.title.replace( body.query.namespaces['-2']['*'] + ':', '/' ), querystring, fragment);
 				var embed = null;
 				if ( !noEmbed ) {
-					embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](' + wiki.toLink(querypage.title, '', '', true) + ')' );
+					embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](<' + wiki.toLink(querypage.title, '', '', true) + '>)' );
 					if ( /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pagelink );
 				}
 				return {message: {
@@ -560,7 +560,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ), pagelink);
 		}
 		if ( body.query.interwiki ) {
-			if ( breakOnTimeoutPause(msg) && msg instanceof Message ) {
+			if ( breakOnTimeoutPause(msg) && isMessage(msg) ) {
 				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
@@ -586,7 +586,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						let scriptPath = project.scriptPath;
 						if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 						let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
-						if ( msg instanceof Message ) {
+						if ( isMessage(msg) ) {
 							cmd = '!!' + regex[1] + ' ';
 							if ( msg.wikiPrefixes.has(iwwiki.href) ) cmd = msg.wikiPrefixes.get(iwwiki.href);
 							else if ( msg.wikiPrefixes.has(project.name) ) {

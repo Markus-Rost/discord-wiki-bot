@@ -1,7 +1,7 @@
 import { inspect } from 'node:util';
 import { load as cheerioLoad } from 'cheerio';
 import Discord from 'discord.js';
-import { got } from '../util/functions.js';
+import { got, isMessage } from '../util/functions.js';
 import newMessage from '../util/newMessage.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
@@ -174,7 +174,7 @@ function checkWiki(wiki) {
  * @param {Discord.Message} msg - The Discord message.
  */
 function removePatreons(guild, msg) {
-	if ( !( typeof guild === 'string' || msg instanceof Discord.Message ) ) {
+	if ( typeof guild !== 'string' || !isMessage(msg) ) {
 		return 'removePatreons(guild, msg) – No guild or message provided!';
 	}
 	return db.connect().then( client => {
@@ -308,7 +308,7 @@ function removePatreons(guild, msg) {
  * @param {Discord.Message} msg - The Discord message.
  */
 function removeSettings(msg) {
-	if ( !( msg instanceof Discord.Message ) ) return 'removeSettings(msg) – No message provided!';
+	if ( !isMessage(msg) ) return 'removeSettings(msg) – No message provided!';
 	return db.connect().then( client => {
 		var messages = [];
 		return msg.client.shard.broadcastEval( discordClient => {

@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import logging from '../../util/logging.js';
-import { got, toFormatting, toPlaintext, escapeFormatting } from '../../util/functions.js';
+import { got, canUseMaskedLinks, toFormatting, toPlaintext, escapeFormatting } from '../../util/functions.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
@@ -75,22 +75,22 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 			
 			if ( body.query.rightsinfo.text ) {
 				let licensetext = body.query.rightsinfo.text;
-				if ( !noEmbed ) {
-					license[1] = '[' + toPlaintext(licensetext, true) + '](' + licenseurl + ')';
+				if ( canUseMaskedLinks(msg, noEmbed) ) {
+					license[1] = '[' + toPlaintext(licensetext, true) + '](<' + licenseurl + '>)';
 				}
 				else license[1] = toPlaintext(licensetext, true) + ' (<' + licenseurl + '>)';
 			}
 			else license[1] = '<' + licenseurl + '>';
 		}
 		else if ( body.query.rightsinfo.text ) {
-			license[1] = toFormatting(body.query.rightsinfo.text, !noEmbed, wiki, '', true);
+			license[1] = toFormatting(body.query.rightsinfo.text, canUseMaskedLinks(msg, noEmbed), wiki, '', true);
 		}
 		var misermode = [lang.get('overview.misermode'), lang.get('overview.' + ( body.query.general.misermode !== undefined ? 'yes' : 'no' ))];
 		var readonly = [lang.get('overview.readonly')];
 		if ( body.query.general.readonly !== undefined ) {
 			if ( body.query.general.readonlyreason ) {
 				let readonlyreason = body.query.general.readonlyreason;
-				readonly.push(toFormatting(readonlyreason, !noEmbed, wiki, '', true));
+				readonly.push(toFormatting(readonlyreason, canUseMaskedLinks(msg, noEmbed), wiki, '', true));
 			}
 			else readonly = ['\u200b', '**' + lang.get('overview.readonly') + '**'];
 		}
@@ -177,7 +177,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 						}
 						else {
 							var user = usbody.query.users[0].name;
-							if ( !noEmbed ) founder[1] = '[' + user + '](' + wiki.toLink('User:' + user, '', '', true) + ')';
+							if ( canUseMaskedLinks(msg, noEmbed) ) founder[1] = '[' + user + '](<' + wiki.toLink('User:' + user, '', '', true) + '>)';
 							else founder[1] = user;
 						}
 					}, error => {
@@ -234,7 +234,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 						{name: users[0], value: users[1], inline: true},
 						{name: admins[0], value: admins[1], inline: true}
 					]);
-					if ( manager[1] ) embed.addFields( {name: manager[0], value: '[' + manager[1] + '](' + wiki.toLink('User:' + manager[1], '', '', true) + ') ([' + lang.get('overview.talk') + '](' + wiki.toLink('User talk:' + manager[1], '', '', true) + '))', inline: true} );
+					if ( manager[1] ) embed.addFields( {name: manager[0], value: manager[1], inline: true} );
 					if ( founder[1] ) embed.addFields( {name: founder[0], value: founder[1], inline: true} );
 					if ( crossover[1] ) embed.addFields( {name: crossover[0], value: crossover[1], inline: true} );
 					embed.addFields(...[

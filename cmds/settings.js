@@ -136,7 +136,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						notice.push({
 							name: 'MediaWiki',
-							value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator)
+							value: lang.get('test.MediaWiki', '[MediaWiki 1.30](<https://www.mediawiki.org/wiki/MediaWiki_1.30>)', body.query.general.generator)
 						});
 					}
 					if ( notice.length ) {

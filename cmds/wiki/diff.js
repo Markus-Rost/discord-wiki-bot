@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import logging from '../../util/logging.js';
-import { got, htmlToPlain, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
+import { got, canUseMaskedLinks, htmlToPlain, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
 import diffParser from '../../util/edit_diff.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -205,7 +205,16 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 			var revisions = pages[0].revisions.sort( (first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp) );
 			var diff = revisions[0].revid;
 			var oldid = ( revisions[1] ? revisions[1].revid : 0 );
-			var editor = [lang.get('diff.info.editor'), ( revisions[0].userhidden !== undefined ? lang.get('diff.hidden') : ( !noEmbed ? '[' + escapeFormatting(revisions[0].user) + '](' + wiki.toLink(( revisions[0].anon !== undefined ? 'Special:Contributions/' : 'User:' ) + revisions[0].user, '', '', true) + ')' : escapeFormatting(revisions[0].user) ) )];
+			var editor = [
+				lang.get('diff.info.editor'),
+				( revisions[0].userhidden !== undefined
+					? lang.get('diff.hidden')
+					: ( canUseMaskedLinks(msg, noEmbed)
+						? '[' + escapeFormatting(revisions[0].user) + '](<' + wiki.toLink(( revisions[0].anon !== undefined ? 'Special:Contributions/' : 'User:' ) + revisions[0].user, '', '', true) + '>)'
+						: escapeFormatting(revisions[0].user)
+					)
+				)
+			];
 			try {
 				var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
 					timeZone: body.query.general.timezone
@@ -220,7 +229,19 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 			var timestamp = [lang.get('diff.info.timestamp'), dateformat.format(editDate), '<t:' + Math.trunc(editDate.getTime() / 1000) + ':R>'];
 			var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
 			var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes', ( difference > 0 ? '+' : '' ) + difference.toLocaleString(lang.get('dateformat')), difference) + ( revisions[0].minor !== undefined ? lang.get('diff.info.minor').replaceAll( '_', ' ' ) : '' )];
-			var comment = [lang.get('diff.info.comment'), ( revisions[0].commenthidden !== undefined ? lang.get('diff.hidden') : ( revisions[0].parsedcomment ? ( !noEmbed ? htmlToDiscord(revisions[0].parsedcomment, wiki.toLink(title), true) : htmlToPlain(revisions[0].parsedcomment) ) : lang.get('diff.nocomment') ) )];
+			var comment = [
+				lang.get('diff.info.comment'),
+				( revisions[0].commenthidden !== undefined
+					? lang.get('diff.hidden')
+					: ( revisions[0].parsedcomment
+						? ( canUseMaskedLinks(msg, noEmbed)
+							? htmlToDiscord(revisions[0].parsedcomment, wiki.toLink(title), true)
+							: htmlToPlain(revisions[0].parsedcomment)
+						)
+						: lang.get('diff.nocomment')
+					)
+				)
+			];
 			if ( revisions[0].tags.length ) var tags = [lang.get('diff.info.tags'), body.query.tags.filter( tag => tag.displayname && revisions[0].tags.includes( tag.name ) ).map( tag => tag.displayname || tag.name ).join(', ')];
 			
 			var pagelink = wiki.toLink(title, {diff,oldid});
@@ -306,7 +327,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 				}};
 			}
 			text += '\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ');
-			if ( tags?.[1] ) text += htmlToDiscord( '\n' + tags.join(' ') );
+			if ( tags?.[1] ) text += htmlToDiscord('\n' + tags.join(' '), ( canUseMaskedLinks(msg, noEmbed) ? pagelink : undefined ));
 			
 			return {message: spoiler + text + spoiler};
 		}

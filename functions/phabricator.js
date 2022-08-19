@@ -65,7 +65,7 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 				}
 				var projects = Object.values(pbody.result);
 				var tags = projects.map( project => {
-					return '[' + escapeFormatting(project.fullName) + '](' + project.uri + ')';
+					return '[' + escapeFormatting(project.fullName) + '](<' + project.uri + '>)';
 				} ).join(',\n');
 				if ( tags.length > 1000 ) tags = projects.map( project => project.fullName ).join(',\n');
 				if ( tags.length > 1000 ) tags = tags.substring(0, 1000) + '\u2026';
@@ -125,11 +125,11 @@ function parse_text(text, site) {
 		var link = target;
 		if ( /^(?:(?:https?:)?\/\/|\/|#)/.test(target) ) link = new URL(target, site).href;
 		else link = site + 'w/' + target;
-		return '[' + ( display || target ) + '](' + link + ')';
+		return '[' + ( display || target ) + '](<' + link + '>)';
 	} );
-	text = text.replace( /(?<!\w)@([\w-]+)\b/g, '[@$1](' + site + 'p/$1)' );
-	text = text.replace( /(?<!https?:\/\/[^\s]+)\b\{?(r[A-Z]+[a-f\d]+)\}?\b/g, '[$1](' + site + '$1)' );
-	text = text.replace( /(?<!https?:\/\/[^\s]+)\b\{?([CDFHLMPQTV]\d+(?:#\d+)?)\}?\b/g, '[$1](' + site + '$1)' );
-	text = text.replace( /(?<!https?:\/\/[^\s]+)#([a-z0-9_-]+)\b/g, '[#$1](' + site + 'tag/$1)' );
+	text = text.replace( /(?<!\w)@([\w-]+)\b/g, '[@$1](<' + site + 'p/$1>)' );
+	text = text.replace( /(?<!https?:\/\/[^\s]+)\b\{?(r[A-Z]+[a-f\d]+)\}?\b/g, '[$1](<' + site + '$1>)' );
+	text = text.replace( /(?<!https?:\/\/[^\s]+)\b\{?([CDFHLMPQTV]\d+(?:#\d+)?)\}?\b/g, '[$1](<' + site + '$1>)' );
+	text = text.replace( /(?<!https?:\/\/[^\s]+)#([a-z0-9_-]+)\b/g, '[#$1](<' + site + 'tag/$1>)' );
 	return text;
 }

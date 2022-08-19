@@ -114,8 +114,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 		embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 		logEmbed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 		if ( queryuser.blockexpiry ) {
-			embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-			logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+			embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+			logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 			result.content = lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender);
 			if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 				result.logging.channel = verifynotice.logchannel.id;
@@ -148,15 +148,15 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				let $ = cheerioLoad(gbresponse.body, {baseURI: gbresponse.url});
 				if ( $('#mw-content-text .errorbox').length ) {
 					return Promise.reject({
-						desc: lang.get('verify.user_disabled', '[' + escapeFormatting(username) + '](' + pagelink + ')'),
-						logDesc: logLang.get('verify.user_disabled', '[' + escapeFormatting(username) + '](' + pagelink + ')'),
+						desc: lang.get('verify.user_disabled', '[' + escapeFormatting(username) + '](<' + pagelink + '>)'),
+						logDesc: logLang.get('verify.user_disabled', '[' + escapeFormatting(username) + '](<' + pagelink + '>)'),
 						reply: lang.get('verify.user_disabled_reply', escapeFormatting(username))
 					});
 				}
 				else if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
 					return Promise.reject({
-						desc: lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender),
-						logDesc: logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender),
+						desc: lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender),
+						logDesc: logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender),
 						reply: lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender)
 					});
 				}
@@ -213,8 +213,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					{name: logLang.get('verify.wiki', queryuser.gender), value: ( discordname || logLang.get('verify.empty') ), inline: true}
 				]);
 				if ( authortag !== discordname ) {
-					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-					logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+					logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 					if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 						result.logging.channel = verifynotice.logchannel.id;
 						if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
@@ -292,8 +292,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					}
 				} );
 				if ( verified ) {
-					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
-					logEmbed.setColor('#00FF00').setDescription( logLang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + logLang.get('verify.user_renamed', queryuser.gender) : '' ) );
+					embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
+					logEmbed.setColor('#00FF00').setDescription( logLang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) + ( rename ? '\n' + logLang.get('verify.user_renamed', queryuser.gender) : '' ) );
 					var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
 					/** @type {Promise[]} */
 					var verifyPromise = [];
@@ -383,8 +383,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					}, log_error );
 				}
 				
-				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-				logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+				logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 				result.content = lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender);
 
 				if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
@@ -449,9 +449,9 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			}
 			if ( wiki.hasCentralAuth() ) {
 				if ( mwbody.query.globaluserinfo.locked !== undefined ) {
-					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 					result.content = lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender);
-					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 					result.content = lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender);
 					if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 						result.logging.channel = verifynotice.logchannel.id;
@@ -487,8 +487,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				{name: logLang.get('verify.wiki', queryuser.gender), value: ( discordname || logLang.get('verify.empty') ), inline: true}
 			]);
 			if ( authortag !== discordname ) {
-				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-				logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+				logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 				if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 					result.logging.channel = verifynotice.logchannel.id;
 					if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
@@ -535,8 +535,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				}
 			} );
 			if ( verified ) {
-				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
-				logEmbed.setColor('#00FF00').setDescription( logLang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + logLang.get('verify.user_renamed', queryuser.gender) : '' ) );
+				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
+				logEmbed.setColor('#00FF00').setDescription( logLang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) + ( rename ? '\n' + logLang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
 				/** @type {Promise[]} */
 				var verifyPromise = [];
@@ -625,8 +625,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				}, log_error );
 			}
 			
-			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-			logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+			logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 			result.content = lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender);
 
 			if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
@@ -760,8 +760,8 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 				{name: logLang.get('verify.wiki', queryuser.gender), value: logLang.get('verify.oauth_used'), inline: true}
 			]);
 			if ( queryuser.blockexpiry ) {
-				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-				logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+				logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 				return sendMessage( {content: lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
 					if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
 					let logMessage = {
@@ -783,8 +783,8 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			}
 			if ( wiki.hasCentralAuth() ) {
 				if ( body.query.globaluserinfo.locked !== undefined ) {
-					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 					return sendMessage( {content: lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
 						if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
 						let logMessage = {
@@ -837,8 +837,8 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 				}
 			} );
 			if ( verified ) {
-				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
-				logEmbed.setColor('#00FF00').setDescription( logLang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) + ( rename ? '\n' + logLang.get('verify.user_renamed', queryuser.gender) : '' ) );
+				embed.setColor('#00FF00').setDescription( lang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) + ( rename ? '\n' + lang.get('verify.user_renamed', queryuser.gender) : '' ) );
+				logEmbed.setColor('#00FF00').setDescription( logLang.get('verify.user_verified', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) + ( rename ? '\n' + logLang.get('verify.user_renamed', queryuser.gender) : '' ) );
 				var text = lang.get('verify.user_verified_reply', escapeFormatting(username), queryuser.gender);
 				var comment = [];
 				/** @type {Promise[]} */
@@ -937,8 +937,8 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 				}, log_error );
 			}
 			
-			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
-			logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](' + pagelink + ')', queryuser.gender) );
+			embed.setColor('#FFFF00').setDescription( lang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+			logEmbed.setColor('#FFFF00').setDescription( logLang.get('verify.user_matches', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 
 			let logMessage = {
 				embeds: []

@@ -1,8 +1,7 @@
-import { Message } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import phabricator from '../functions/phabricator.js';
 import check_wiki from './wiki/general.js';
-import { canShowEmbed } from '../util/functions.js';
+import { isMessage, canShowEmbed } from '../util/functions.js';
 
 /**
  * Processes the wiki linking command.
@@ -29,7 +28,7 @@ export default function cmd_link(lang, msg, title, wiki, cmd = '') {
 		? phabricator(lang, msg, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed)
 		).then( result => {
-			if ( !result || result instanceof Message ) return result;
+			if ( !result || isMessage(result) ) return result;
 			if ( result.message ) {
 				if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
 				else if ( result.reaction === 'error' ) msg.sendChannelError(result.message);

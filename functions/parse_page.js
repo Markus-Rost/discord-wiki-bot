@@ -1,7 +1,7 @@
 import { load as cheerioLoad } from 'cheerio';
-import { Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { toSection } from '../util/wiki.js';
-import { got, parse_infobox, canShowEmbed, getEmbedLength, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
+import { got, parse_infobox, isMessage, canShowEmbed, getEmbedLength, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
 
 const parsedContentModels = [
 	'wikitext',
@@ -106,7 +106,6 @@ const removeClassesExceptions = [
  */
 export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
-	var isMessage = msg instanceof Message;
 	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description ) {
 		if ( missing !== undefined && embed ) {
 			if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
@@ -116,10 +115,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				embed.setDescription( embed.backupDescription );
 			}
 		}
-		if ( isMessage ) return msg.sendChannel( {content, embeds: [embed]} );
+		if ( isMessage(msg) ) return msg.sendChannel( {content, embeds: [embed]} );
 		else return Promise.resolve( {message: {content, embeds: [embed]}} );
 	}
-	return ( isMessage ? msg.sendChannel( {
+	return ( isMessage(msg) ? msg.sendChannel( {
 		content,
 		embeds: [EmbedBuilder.from(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )]
 	} ) : Promise.resolve(true) ).then( message => {
@@ -192,7 +191,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					embed.setDescription( embed.backupDescription );
 				}
 			} ).then( () => {
-				if ( isMessage ) return message.edit( {content, embeds: [embed]} ).catch(log_error);
+				if ( isMessage(msg) ) return message.edit( {content, embeds: [embed]} ).catch(log_error);
 				else return {message: {content, embeds: [embed]}};
 			} );
 		}
@@ -251,7 +250,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				embed.setDescription( embed.backupDescription );
 			}
 		} ).then( () => {
-			if ( isMessage ) return message.edit( {content, embeds: [embed]} ).catch(log_error);
+			if ( isMessage(msg) ) return message.edit( {content, embeds: [embed]} ).catch(log_error);
 			else return {message: {content, embeds: [embed]}};
 		} );
 		if ( !fragment && !embed.data.fields?.length && infoboxes ) {
@@ -549,7 +548,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + getEmbedLength(val), getEmbedLength(imageEmbed) ) <= 5500 ) embeds.push(imageEmbed);
 				} );
 			}
-			if ( isMessage ) return message.edit( {content, embeds} ).catch(log_error);
+			if ( isMessage(msg) ) return message.edit( {content, embeds} ).catch(log_error);
 			else return {message: {content, embeds}};
 		} );
 	} );

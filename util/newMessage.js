@@ -1,10 +1,10 @@
 import { readdir } from 'node:fs';
 import { domainToASCII } from 'node:url';
-import { Message, cleanContent } from 'discord.js';
+import { cleanContent } from 'discord.js';
 import { inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
-import { got, splitMessage, partialURIdecode, canShowEmbed } from './functions.js';
+import { got, isMessage, splitMessage, partialURIdecode, canShowEmbed } from './functions.js';
 import check_wiki from '../cmds/wiki/general.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -257,7 +257,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			} )).values()].forEach( embed => msg.reactEmoji('⏳').then( reaction => {
 				logging(wiki, msg.guildId, 'inline', 'embed');
 				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section).then( result => {
-					if ( !result || result instanceof Message ) return result;
+					if ( !result || isMessage(result) ) return result;
 					if ( result.message ) {
 						if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
 						else if ( result.reaction === 'error' ) msg.sendChannelError(result.message);

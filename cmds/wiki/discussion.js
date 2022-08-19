@@ -263,7 +263,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 			embed.addFields(...discussion.poll.answers.map( answer => {
 				return {
 					name: escapeFormatting(answer.text),
-					value: ( answer.image ? '[__' + lang.get('discussion.image') + '__](' + answer.image.url + ')\n' : '' ) + lang.get('discussion.votes', answer.votes.toLocaleString(lang.get('dateformat')), answer.votes, ( ( answer.votes / discussion.poll.totalVotes ) * 100 ).toFixed(1).toLocaleString(lang.get('dateformat'))),
+					value: ( answer.image ? '[__' + lang.get('discussion.image') + '__](<' + answer.image.url + '>)\n' : '' ) + lang.get('discussion.votes', answer.votes.toLocaleString(lang.get('dateformat')), answer.votes, ( ( answer.votes / discussion.poll.totalVotes ) * 100 ).toFixed(1).toLocaleString(lang.get('dateformat'))),
 					inline: true
 				};
 			} ));
@@ -284,7 +284,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 						else {
 							description = description.replace( /\{\@(\d+)\}/g, (match, n) => {
 								if ( n >= discussion._embedded.contentImages.length ) return '';
-								else return '[__' + lang.get('discussion.image') + '__](' + discussion._embedded.contentImages[n].url + ')';
+								else return '[__' + lang.get('discussion.image') + '__](<' + discussion._embedded.contentImages[n].url + '>)';
 							} );
 							embed.setThumbnail( discussion._embedded.contentImages[0].url );
 						}
@@ -309,7 +309,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
 	if ( description ) embed.setDescription( description );
 	if ( discussion.tags?.length ) {
-		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](' + wiki.toLink(tag.articleTitle, '', '', true) + ')' ).join(', '), {char:', ',maxLength:1000} )[0], inline: false} );
+		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](<' + wiki.toLink(tag.articleTitle, '', '', true) + '>)' ).join(', '), {char:', ',maxLength:1000} )[0], inline: false} );
 	}
 	
 	return {message: {
@@ -344,11 +344,11 @@ function discussion_formatting(jsonModel) {
 					switch ( mark.type ) {
 						case 'mention':
 							prepend += '[';
-							append = ']({@wiki}f/u/' + mark.attrs.userId + ')' + append;
+							append = '](<{@wiki}f/u/' + mark.attrs.userId + '>)' + append;
 							break;
 						case 'link':
 							prepend += '[';
-							append = '](' + mark.attrs.href + ')' + append;
+							append = '](<' + mark.attrs.href + '>)' + append;
 							break;
 						case 'strong':
 							prepend += '**';

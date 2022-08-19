@@ -1,5 +1,5 @@
-import { Message, PermissionFlagsBits } from 'discord.js';
-import { got, canShowEmbed, htmlToPlain, partialURIdecode, sendMessage } from '../util/functions.js';
+import { PermissionFlagsBits } from 'discord.js';
+import { got, isMessage, canShowEmbed, htmlToPlain, partialURIdecode, sendMessage } from '../util/functions.js';
 import phabricator from '../functions/phabricator.js';
 import check_wiki from '../cmds/wiki/general.js';
 
@@ -28,7 +28,7 @@ function slash_wiki(interaction, lang, wiki) {
 		? phabricator(lang, interaction, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, interaction, title, wiki, cmd, undefined, spoiler, noEmbed, query, fragment)
 		).then( result => {
-			if ( !result || result instanceof Message ) return result;
+			if ( !result || isMessage(result) ) return result;
 			let noEmoji = !interaction.appPermissions?.has(PermissionFlagsBits.UseExternalEmojis);
 			if ( result.message ) {
 				if ( Array.isArray(result.message) ) {

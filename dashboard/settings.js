@@ -465,7 +465,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						console.log( '- Dashboard: This wiki is using ' + body.query.general.generator + '.' );
 						notice.push({
 							name: 'MediaWiki',
-							value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator)
+							value: lang.get('test.MediaWiki', '[MediaWiki 1.30](<https://www.mediawiki.org/wiki/MediaWiki_1.30>)', body.query.general.generator)
 						});
 					}
 					if ( notice.length ) {
