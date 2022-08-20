@@ -41,7 +41,11 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				var embed = new EmbedBuilder().setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 				if ( body?.query?.general ) {
 					wiki.updateWiki(body.query.general);
-					embed.setAuthor( {name: body.query.general.sitename} ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+					embed.setAuthor( {name: body.query.general.sitename} );
+					try {
+						embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+					}
+					catch {}
 				}
 				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
@@ -67,7 +71,12 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
 				}
 				
-				return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment, pagelink);
+				try {
+					return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment, pagelink);
+				}
+				catch {
+					return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, '', fragment, pagelink);
+				}
 			}
 			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 			return {
@@ -286,15 +295,20 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 				embed.backupDescription = description;
 			}
-			if ( querypage.pageimage && querypage.original ) {
-				embed.setThumbnail( querypage.original.source );
+			try {
+				if ( querypage.pageimage && querypage.original ) {
+					embed.setThumbnail( querypage.original.source );
+				}
+				else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
+					embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
+				}
+				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+				
+				return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment, pagelink);
 			}
-			else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
-				embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
+			catch {
+				return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, '', fragment, pagelink);
 			}
-			else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
-			
-			return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment, pagelink);
 		}
 		username = queryuser.name;
 		var gender = [lang.get('user.info.gender')];

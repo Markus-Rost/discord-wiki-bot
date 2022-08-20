@@ -122,10 +122,15 @@ function parse_text(text, site) {
 	text = text.replace( /!!(.+?)!!/g, '`$1`' );
 	text = text.replace( /(?<!https?:)\/\/(.+?)(?<!https?:)\/\//g, '*$1*' );
 	text = text.replace( /\[\[ ?(.+?) ?(?:\| ?(.+?) ?)?\]\]/g, (match, target, display) => {
-		var link = target;
-		if ( /^(?:(?:https?:)?\/\/|\/|#)/.test(target) ) link = new URL(target, site).href;
-		else link = site + 'w/' + target;
-		return '[' + ( display || target ) + '](<' + link + '>)';
+		try {
+			var link = target;
+			if ( /^(?:(?:https?:)?\/\/|\/|#)/.test(target) ) link = new URL(target, site).href;
+			else link = site + 'w/' + target;
+			return '[' + ( display || target ) + '](<' + link + '>)';
+		}
+		catch {
+			return ( display || target );
+		}
 	} );
 	text = text.replace( /(?<!\w)@([\w-]+)\b/g, '[@$1](<' + site + 'p/$1>)' );
 	text = text.replace( /(?<!https?:\/\/[^\s]+)\b\{?(r[A-Z]+[a-f\d]+)\}?\b/g, '[$1](<' + site + '$1>)' );

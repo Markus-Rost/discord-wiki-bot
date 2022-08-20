@@ -184,12 +184,15 @@ function slash_inline(interaction, lang, wiki) {
 			if ( magiclinks.length && body.query?.allmessages?.length === 2 ) {
 				magiclinks = magiclinks.filter( link => body.query.general.magiclinks.hasOwnProperty(link.type) );
 				if ( magiclinks.length ) magiclinks.forEach( link => {
-					if ( link.type === 'PMID' && body.query.allmessages[0]?.['*']?.includes( '$1' ) ) {
-						link.url = new URL(body.query.allmessages[0]['*'].replaceAll( '$1', link.id ), wiki).href;
+					try {
+						if ( link.type === 'PMID' && body.query.allmessages[0]?.['*']?.includes( '$1' ) ) {
+							link.url = new URL(body.query.allmessages[0]['*'].replaceAll( '$1', link.id ), wiki).href;
+						}
+						if ( link.type === 'RFC' && body.query.allmessages[1]?.['*']?.includes( '$1' ) ) {
+							link.url = new URL(body.query.allmessages[1]['*'].replaceAll( '$1', link.id ), wiki).href;
+						}
 					}
-					if ( link.type === 'RFC' && body.query.allmessages[1]?.['*']?.includes( '$1' ) ) {
-						link.url = new URL(body.query.allmessages[1]['*'].replaceAll( '$1', link.id ), wiki).href;
-					}
+					catch {}
 					if ( link.type === 'ISBN' ) {
 						let title = 'Special:BookSources';
 						title = ( body.query.normalized?.find( title => title.from === title )?.to || title );

@@ -47,7 +47,11 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 			var pagelink = wiki.toLink(title, querystring, fragment);
 			var embed = null;
 			if ( !noEmbed ) {
-				embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+				embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink );
+				try {
+					embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+				}
+				catch {}
 				if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 					let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -85,23 +89,26 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 			if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
 			embed.backupDescription = description;
 		}
-		if ( querypage.ns === 6 ) {
-			var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
-			if ( !noEmbed && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
-			else if ( !noEmbed && querypage.title.toLowerCase().endsWith( '.svg' ) && querypage?.original?.width ) {
-				embed.setImage( wiki.toLink('Special:FilePath/' + querypage.title, {width:querypage.original.width,version:Date.now()}) );
+		try {
+			if ( querypage.ns === 6 ) {
+				var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
+				if ( !noEmbed && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
+				else if ( !noEmbed && querypage.title.toLowerCase().endsWith( '.svg' ) && querypage?.original?.width ) {
+					embed.setImage( wiki.toLink('Special:FilePath/' + querypage.title, {width:querypage.original.width,version:Date.now()}) );
+				}
 			}
+			else if ( querypage.title === body.query.general.mainpage ) {
+				embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+			}
+			else if ( querypage.pageimage && querypage.original ) {
+				embed.setThumbnail( querypage.original.source );
+			}
+			else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
+				embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
+			}
+			else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 		}
-		else if ( querypage.title === body.query.general.mainpage ) {
-			embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
-		}
-		else if ( querypage.pageimage && querypage.original ) {
-			embed.setThumbnail( querypage.original.source );
-		}
-		else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
-			embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
-		}
-		else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+		catch {}
 		if ( querypage.categoryinfo ) {
 			var category = [lang.get('search.category.content')];
 			if ( querypage.categoryinfo.size === 0 ) {
@@ -120,7 +127,12 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 			else text += '\n\n' + category.join('\n');
 		}
 		
-		return parse_page(lang, msg, '🎲 ' + spoiler + '<' + pagelink + '>' + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment, pagelink);
+		try {
+			return parse_page(lang, msg, '🎲 ' + spoiler + '<' + pagelink + '>' + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, ( querypage.title === body.query.general.mainpage ? '' : new URL(body.query.general.logo, wiki).href ), fragment, pagelink);
+		}
+		catch {
+			return parse_page(lang, msg, '🎲 ' + spoiler + '<' + pagelink + '>' + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, '', fragment, pagelink);
+		}
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );

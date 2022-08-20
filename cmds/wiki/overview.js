@@ -70,8 +70,11 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 		var license = [lang.get('overview.license'), lang.get('overview.unknown')];
 		if ( body.query.rightsinfo.url ) {
 			let licenseurl = body.query.rightsinfo.url
-			if ( /^(?:https?:\/)?\//.test(licenseurl) ) licenseurl = new URL(licenseurl, wiki).href;
-			else licenseurl = wiki.toLink(licenseurl, '', '', true);
+			try {
+				if ( /^(?:https?:\/)?\//.test(licenseurl) ) licenseurl = new URL(licenseurl, wiki).href;
+				else licenseurl = wiki.toLink(licenseurl, '', '', true);
+			}
+			catch {}
 			
 			if ( body.query.rightsinfo.text ) {
 				let licensetext = body.query.rightsinfo.text;
@@ -101,7 +104,11 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 		/** @type {EmbedBuilder?} */
 		var embed = null;
 		if ( !noEmbed ) {
-			embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(body.query.general.logo, wiki).href );
+			embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink );
+			try {
+				embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+			}
+			catch {}
 			if ( body.query.allmessages?.[0]?.['*']?.trim?.() ) {
 				let displaytitle = escapeFormatting(body.query.allmessages[0]['*'].trim());
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
@@ -161,7 +168,12 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 						description[1] = description[1].substring(0, 1000) + '\u2026';
 					}
 				}
-				if ( site.image ) image[1] = new URL(site.image, wiki).href;
+				if ( site.image ) {
+					try {
+						image[1] = new URL(site.image, wiki).href;
+					}
+					catch {}
+				}
 				
 				return Promise.all([
 					( founder[1] > 0 ? got.get( wiki + 'api.php?action=query&list=users&usprop=&ususerids=' + founder[1] + '&format=json', {

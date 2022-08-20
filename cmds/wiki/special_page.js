@@ -165,7 +165,11 @@ const descriptions = {
  */
 export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
-	var embed = new EmbedBuilder().setAuthor( {name: query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink ).setThumbnail( new URL(query.general.logo, wiki).href );
+	var embed = new EmbedBuilder().setAuthor( {name: query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink );
+	try {
+		embed.setThumbnail( new URL(query.general.logo, wiki).href );
+	}
+	catch {}
 	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
 		return overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query);

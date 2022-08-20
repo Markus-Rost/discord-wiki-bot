@@ -315,17 +315,20 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				let infobox = $(infoboxList.join(', ')).first();
 				infobox.find('[class*="va-infobox-spacing"]').remove();
 				if ( embed.data.thumbnail?.url === thumbnail ) {
-					let image = infobox.find([
-						'tr:eq(1) img',
-						'div.images img',
-						'figure.pi-image img',
-						'div.infobox-imagearea img'
-					].join(', ')).toArray().find( img => {
-						let imgURL = img.attribs.src;
-						if ( !imgURL ) return false;
-						return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
-					} )?.attribs.src?.replace( /^(?:https?:)?\/\//, 'https://' );
-					if ( image ) embed.setThumbnail( new URL(image, wiki).href );
+					try {
+						let image = infobox.find([
+							'tr:eq(1) img',
+							'div.images img',
+							'figure.pi-image img',
+							'div.infobox-imagearea img'
+						].join(', ')).toArray().find( img => {
+							let imgURL = img.attribs.src;
+							if ( !imgURL ) return false;
+							return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						} )?.attribs.src?.replace( /^(?:https?:)?\/\//, 'https://' );
+						if ( image ) embed.setThumbnail( new URL(image, wiki).href );
+					}
+					catch {}
 				}
 				let rows = infobox.find([
 					'> tbody > tr',
@@ -475,10 +478,15 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
 					} ).map( img => {
 						if ( img.attribs['data-image-name']?.endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
-						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
-						imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
-						return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
-					} )));
+						try {
+							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+							imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
+							return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
+						}
+						catch {
+							return null;
+						}
+					} ).filter( img => img )));
 					sectionContent.find(infoboxList.join(', ')).remove();
 					sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
 					var name = htmlToPlain(section).trim();
@@ -506,7 +514,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassesExceptions.join(', ')).remove();
 				let backupDescription = null;
 				if ( contentmodel !== 'wikitext' || disambiguation === undefined || fragment ) {
-					if ( !fragment ) {
+					if ( !fragment && ns % 2 === 0 ) {
 						backupDescription = $('h1, h2, h3, h4, h5, h6').eq(0);
 						if ( backupDescription.length ) {
 							let backupDescriptionLevel = ['h1','h2','h3','h4','h5','h6'].slice(0, backupDescription[0].tagName.replace('h', '')).join(', ');

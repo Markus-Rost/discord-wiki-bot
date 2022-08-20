@@ -393,11 +393,14 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
-				href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
-				if ( text.endsWith( '](<' + href + '>)' ) ) {
-					text = text.substring(0, text.length - ( href.length + 5 ));
+				try {
+					href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
+					if ( text.endsWith( '](<' + href + '>)' ) ) {
+						text = text.substring(0, text.length - ( href.length + 5 ));
+					}
+					else text += '[';
 				}
-				else text += '[';
+				catch {}
 			}
 		},
 		ontext: (htmltext) => {
