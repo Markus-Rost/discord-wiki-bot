@@ -289,6 +289,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
 				return;
 			}
+			if ( text.length > 5000 ) parser.pause(); // Prevent the parser from running too long
 			let classes = ( attribs.class?.split(' ') ?? [] );
 			if ( classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
