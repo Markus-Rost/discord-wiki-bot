@@ -19,6 +19,7 @@ export default function diffParser(html, more, whitespace) {
 	var del_length = more.length;
 	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
+			if ( ins_length > 1000 && del_length > 1000 ) parser.pause(); // Prevent the parser from running too long
 			if ( tagname === 'ins' || tagname == 'del' ) current_tag = tagname;
 			if ( tagname === 'td' ) {
 				let classes = ( attribs.class?.split(' ') || [] );

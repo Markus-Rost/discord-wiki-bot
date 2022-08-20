@@ -37,6 +37,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 			var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
 			var parser = new HTMLParser( {
 				onopentag: (tagname, attribs) => {
+					if ( tagname === 'body' ) parser.pause(); // Prevent the parser from running too long
 					if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 						var description = escapeFormatting(attribs.content);
 						if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';

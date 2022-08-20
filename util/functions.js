@@ -229,6 +229,7 @@ function htmlToPlain(html, includeComments = false) {
 	var ignoredTag = ['', 0];
 	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
+			if ( text.length > 5000 ) parser.pause(); // Prevent the parser from running too long
 			if ( ignoredTag[0] ) {
 				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
 				return;
@@ -285,11 +286,11 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var horizontalList = '';
 	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
+			if ( text.length > 5000 ) parser.pause(); // Prevent the parser from running too long
 			if ( ignoredTag[0] || code ) {
 				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
 				return;
 			}
-			if ( text.length > 5000 ) parser.pause(); // Prevent the parser from running too long
 			let classes = ( attribs.class?.split(' ') ?? [] );
 			if ( classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
