@@ -36,6 +36,14 @@
 		"options[3].description": "Sembunyikan tautan dan sematkan di spoiler?",
 		"options[3].name": "spoiler"
 	},
+	"patreon": {
+		"description": "Periksa atau ubah server Anda dengan mengaktifkan fitur patreon.",
+		"name": "patreon",
+		"options[0].description": "Periksa daftar server Anda saat ini dengan fitur patreon diaktifkan.",
+		"options[0].name": "periksa",
+		"options[1].description": "Aktifkan fitur patreon untuk server.",
+		"options[1].name": "aktifkan"
+	},
 	"verify": {
 		"description": "Verifikasi akun Discord kamu dengan akun wiki.",
 		"name": "verifikasi",
