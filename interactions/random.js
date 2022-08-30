@@ -12,12 +12,16 @@ import wiki_random from '../cmds/wiki/random.js';
 function slash_random(interaction, lang, wiki) {
 	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
 		var namespace = interaction.options.getString('namespace')?.trim().toLowerCase().replaceAll( wiki.spaceReplacement ?? '_', ' ' ).split(/\s*[,|]\s*/g) || [];
+		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
+		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
+		var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
+		if ( ephemeral ) lang = lang.uselang(interaction.locale);
 		var namespaces;
 		if ( namespace.length ) {
 			let nsMatch = wiki.namespaces.all.filter( ns => {
 				if ( ns.id < 0 ) return false;
 				if ( namespace.includes( ns.id.toString() ) ) return true;
-				if ( namespace.includes( ns.name.toLowerCase() ) ) return true;
+				if ( namespace.includes( ( ns.name || lang.uselang(interaction.locale).get('interaction.namespace') ).toLowerCase() ) ) return true;
 				return ns.aliases.some( alias => namespace.includes( alias.toLowerCase() ) );
 			} );
 			if ( nsMatch.length ) namespaces = [
@@ -25,10 +29,6 @@ function slash_random(interaction, lang, wiki) {
 				nsMatch.map( ns => ns.name || lang.get('interaction.namespace') ).join(', ') || lang.get('interaction.namespace')
 			];
 		}
-		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
-		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
-		var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
-		if ( ephemeral ) lang = lang.uselang(interaction.locale);
 		return interaction.deferReply( {ephemeral} ).then( () => {
 			return wiki_random(lang, interaction, newWiki, undefined, spoiler, noEmbed, namespaces).then( result => {
 				if ( !result || isMessage(result) ) return result;
@@ -92,10 +92,9 @@ function autocomplete_random(interaction, lang, wiki) {
 			if ( !prefix.every( pre => newWiki.namespaces.all.some( ns => {
 				if ( ns.id < 0 ) return false;
 				if ( ns.id.toString() === pre ) return true;
-				if ( ns.name.toLowerCase() === pre ) return true;
+				if ( ( ns.name || lang.get('interaction.namespace') ).toLowerCase() === pre ) return true;
 				return ns.aliases.some( alias => alias.toLowerCase() === pre );
 			} ) ) ) {
-				console.log('error')
 				input = focused.value.toLowerCase();
 				prefix = [];
 			}
@@ -185,7 +184,7 @@ function autocomplete_random(interaction, lang, wiki) {
 			if ( !prefix.every( pre => newWiki.namespaces.all.some( ns => {
 				if ( ns.id < 0 ) return false;
 				if ( ns.id.toString() === pre ) return true;
-				if ( ns.name.toLowerCase() === pre ) return true;
+				if ( ( ns.name || lang.get('interaction.namespace') ).toLowerCase() === pre ) return true;
 				return ns.aliases.some( alias => alias.toLowerCase() === pre );
 			} ) ) ) {
 				input = focused.value.toLowerCase();
