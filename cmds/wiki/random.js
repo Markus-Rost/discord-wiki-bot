@@ -12,13 +12,21 @@ import extract_desc from '../../util/extract_desc.js';
  * @param {import('discord.js').MessageReaction} [reaction] - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
- * @param {String[]} [namespace] - The namespace to get a random page of.
+ * @param {[String, String]} [namespace] - The namespace to get a random page of.
  * @param {URLSearchParams} [querystring] - The querystring for the link.
  * @param {String} [fragment] - The section for the link.
  * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace = ['0', '*'], querystring = new URLSearchParams(), fragment = '') {
-	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
+export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace, querystring = new URLSearchParams(), fragment = '') {
+	var uselang = lang.lang;
+	if ( querystring.has('variant') || querystring.has('uselang') ) {
+		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
+		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
+	}
+	if ( !namespace ) namespace = [
+		wiki.namespaces.content.map( ns => ns.id ).join('|') || '0',
+		wiki.namespaces.content.map( ns => ns.name || lang.get('interaction.namespace') ).join(', ') || lang.get('interaction.namespace')
+	];
 	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Random&ammessages=randompage|randompage-nopages&amargs=%1F' + encodeURIComponent( namespace[1] ) + '%1F' + namespace[0].split('|').length + '&siprop=general&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&generator=random&grnfilterredir=nonredirects&grnlimit=1&grnnamespace=' + encodeURIComponent( namespace[0] ) + '&format=json', {
 		context: {
 			guildId: msg.guildId

@@ -50,6 +50,20 @@
 		"options[2].options[0].description": "The server to disable patreon features for.",
 		"options[2].options[0].name": "guild"
 	},
+	"random": {
+		"description": "Post a random wiki link.",
+		"name": "random",
+		"options[0].description": "The wiki to search in.",
+		"options[0].name": "wiki",
+		"options[1].description": "The namespaces to search in.",
+		"options[1].name": "namespace",
+		"options[2].description": "Send a response only visible to yourself?",
+		"options[2].name": "private",
+		"options[3].description": "Send only the link without embed?",
+		"options[3].name": "noembed",
+		"options[4].description": "Hide the link and embed in a spoiler?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verify your Discord account with your wiki account.",
 		"name": "verify",

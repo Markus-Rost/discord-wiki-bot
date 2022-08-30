@@ -406,8 +406,10 @@
 		"error": "An unexpected error occurred while running the command!",
 		"inline": "Please provide some text with [[wikitext]] links to use this command.",
 		"interwiki": "Please provide a known wiki to search.",
+		"namespace": "(Main)",
 		"notitle": "The used page title doesn't exist!",
 		"nowiki": "The used wiki doesn't exist!",
+		"random": "(All content namespaces)",
 		"verify": "Please provide your wiki username to use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
 	},
 	"invite": {

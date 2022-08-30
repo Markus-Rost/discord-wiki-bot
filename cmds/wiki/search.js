@@ -30,7 +30,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 	else resultText += '\n\n**`' + searchterm + '`**';
 	var querypage = ( Object.values(( query.pages || {} ))?.[0] || {title:'',ns:0,invalid:''} );
 	var limit = searchLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
-	return got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
+	return got.get( wiki + 'api.php?action=query&titles=Special:Search&list=search&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + wiki.namespaces.content.map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -41,7 +41,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 			return console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 		}
 		if ( body.query.search.length < limit ) {
-			return got.get( wiki + 'api.php?action=query&list=search&srwhat=text&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
+			return got.get( wiki + 'api.php?action=query&list=search&srwhat=text&srinfo=totalhits&srprop=redirecttitle|sectiontitle&srnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + wiki.namespaces.content.map( ns => ns.id ).join('|') + '&srlimit=' + limit + '&srsearch=' + encodeURIComponent( searchterm ) + '&format=json', {
 				context: {
 					guildId: msg.guildId
 				}

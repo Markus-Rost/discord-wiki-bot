@@ -23,6 +23,20 @@ wikiProjects.filter( project => {
 } );
 
 /**
+ * A MediaWiki namespace
+ * @typedef {Object} mwNamespace
+ * @property {Number} id
+ * @property {String} name
+ * @property {String[]} aliases
+ * @property {Boolean} content
+ */
+
+/**
+ * A MediaWiki namespace list
+ * @typedef {Map<Number, mwNamespace> & {all: mwNamespace[], content: mwNamespace[]}} mwNamespaceList
+ */
+
+/**
  * A wiki.
  * @class Wiki
  */
@@ -56,6 +70,20 @@ export default class Wiki extends URL {
 		this.articlepath = articlepath;
 		this.mainpage = '';
 		this.mainpageisdomainroot = false;
+		/** @type {mwNamespaceList} */
+		this.namespaces = new Map();
+		Object.defineProperties( this.namespaces, {
+			all: {
+				get: function() {
+					return [...this.values()];
+				}
+			},
+			content: {
+				get: function() {
+					return this.all.filter( ns => ns.content );
+				}
+			}
+		} );
 		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
 		Wiki._cache.set(this.href, this);
 	}
@@ -90,9 +118,11 @@ export default class Wiki extends URL {
 	 * @param {String} siteinfo.centralidlookupprovider - Central auth of the wiki.
 	 * @param {String} siteinfo.logo - Logo of the wiki.
 	 * @param {String} [siteinfo.gamepedia] - If the wiki is a Gamepedia wiki.
+	 * @param {{id: Number, canonical: String, content?: "", '*': String}[]} [namespaces] - Namespaces from the wiki API.
+	 * @param {{id: Number, '*': String}[]} [namespacealiases] - Namespace aliases from the wiki API.
 	 * @returns {Wiki}
 	 */
-	updateWiki({servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, gamepedia = 'false'}) {
+	updateWiki({servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, gamepedia = 'false'}, namespaces, namespacealiases) {
 		this.hostname = servername;
 		this.pathname = scriptpath + '/';
 		this.articlepath = articlepath;
@@ -108,6 +138,21 @@ export default class Wiki extends URL {
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
 		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm = 'miraheze';
+		if ( namespaces && namespacealiases ) {
+			namespaces.forEach( namespace => {
+				/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
+				let ns = {
+					id: +namespace.id,
+					name: namespace['*'],
+					aliases: [
+						namespace.canonical ?? namespace['*'],
+						...namespacealiases.filter( alias => +namespace.id === +alias.id ).map( alias => alias['*'] )
+					],
+					content: namespace.content !== undefined
+				};
+				this.namespaces.set(ns.id, ns);
+			} );
+		}
 		if ( this !== Wiki._cache.get(this.href) ) {
 			if ( !Wiki._cache.has(this.href) ) Wiki._cache.set(this.href, this);
 			else Wiki._cache.forEach( (wiki, href) => {
@@ -186,7 +231,7 @@ export default class Wiki extends URL {
 		querystring.forEach( (value, name) => {
 			link.searchParams.append(name, value);
 		} );
-		let output = decodeURI( link ).replace( /%(?:3B|2F|3A|40|21|7E|27|28|29)/g, decodeURIComponent ).replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ) + Wiki.toSection(fragment, this.spaceReplacement, true);
+		let output = decodeURI( link ).replace( /%(?:3B|2F|3A|40|21|7E|27|28|29)/g, decodeURIComponent ).replace( /\\|<|>|@(?:here|everyone)/g, encodeURIComponent ) + Wiki.toSection(fragment, this.spaceReplacement, true);
 		if ( isMarkdown ) return output.replaceAll( '(', '%28' ).replaceAll( ')', '%29' );
 		else return output;
 	}
@@ -285,6 +330,8 @@ export default class Wiki extends URL {
 			articleURL: this.articleURL,
 			spaceReplacement: this.spaceReplacement,
 			mainpage: this.mainpage,
+			mainpageisdomainroot: this.mainpageisdomainroot,
+			namespaces: this.namespaces.size,
 			centralauth: this.centralauth,
 			oauth2: this.oauth2,
 			wikifarm: this.wikifarm,

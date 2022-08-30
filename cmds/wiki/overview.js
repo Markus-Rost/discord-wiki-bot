@@ -17,7 +17,11 @@ const {timeoptions} = require('../../util/default.json');
  * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
-	var uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || lang.lang );
+	var uselang = lang.lang;
+	if ( querystring.has('variant') || querystring.has('uselang') ) {
+		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
+		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
+	}
 	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.wikifarm === 'fandom' ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.wikifarm === 'fandom' ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json', {
 		context: {
 			guildId: msg.guildId

@@ -161,7 +161,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				};
 			}
 		}
-		wiki.updateWiki(body.query.general);
+		wiki.updateWiki(body.query.general, Object.values(body.query.namespaces), body.query.namespacealiases);
 		if ( aliasInvoke === 'search' ) {
 			logging(wiki, msg.guildId, 'search');
 			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler, noEmbed);
@@ -178,7 +178,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		if ( body.query.pages && body.query.pages?.['-1']?.title !== '%1F' ) {
 			var querypages = Object.values(body.query.pages);
 			var querypage = querypages[0];
-			if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) {
+			if ( body.query.redirects && body.query.redirects[0].from.split(':')[0] === wiki.namespaces.get(-1).name && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk','MyLanguage'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) {
 				noRedirect = ( body.query.specialpagealiases.find( sp => sp.realname === 'MyLanguage' )?.aliases?.[0] === body.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ? noRedirect : true );
 				querypage.title = body.query.redirects[0].from;
 				delete body.query.redirects[0].tofragment;
@@ -194,7 +194,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			querypage.uselang = uselang;
 			querypage.noRedirect = noRedirect;
 			
-			var contribs = body.query.namespaces['-1']['*'] + ':' + body.query.specialpagealiases.find( sp => sp.realname === 'Contributions' ).aliases[0] + '/';
+			var contribs = wiki.namespaces.get(-1).name + ':' + body.query.specialpagealiases.find( sp => sp.realname === 'Contributions' ).aliases[0] + '/';
 			if ( ( querypage.ns === 2 || querypage.ns === 200 || querypage.ns === 202 || querypage.ns === 1200 ) && ( !querypage.title.includes( '/' ) || /^[^:]+:(?:(?:\d{1,3}\.){3}\d{1,3}\/\d{2}|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}\/\d{2,3})$/.test(querypage.title) ) ) {
 				var userparts = querypage.title.split(':');
 				querypage.noRedirect = noRedirect;
@@ -270,7 +270,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					message: spoiler + ( noEmbed ? '<' : ' ' ) + iw_link + ( noEmbed ? '>' : ' ' ) + spoiler
 				};
 			}
-			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrprop=sectiontitle&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
+			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrprop=sectiontitle&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + wiki.namespaces.content.map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
 				context: {
 					guildId: msg.guildId
 				}
@@ -319,7 +319,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					} );
 				}
 				if ( !srbody.query ) {
-					return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrwhat=text&gsrprop=sectiontitle&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + Object.values(body.query.namespaces).filter( ns => ns.content !== undefined ).map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
+					return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrwhat=text&gsrprop=sectiontitle&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + wiki.namespaces.content.map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
 						context: {
 							guildId: msg.guildId
 						}
@@ -497,8 +497,8 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				};
 			} );
 			if ( querypage.ns === -1 ) {
-				var specialpage = body.query.specialpagealiases.find( sp => body.query.namespaces['-1']['*'] + ':' + sp.aliases[0].replaceAll( wiki.spaceReplacement ?? '_', ' ' ) === querypage.title.split('/')[0] );
-				specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( body.query.namespaces['-1']['*'] + ':', '' ).split('/')[0] ).toLowerCase();
+				var specialpage = body.query.specialpagealiases.find( sp => wiki.namespaces.get(-1).name + ':' + sp.aliases[0].replaceAll( wiki.spaceReplacement ?? '_', ' ' ) === querypage.title.split('/')[0] );
+				specialpage = ( specialpage ? specialpage.realname : querypage.title.replace( wiki.namespaces.get(-1).name + ':', '' ).split('/')[0] ).toLowerCase();
 				if ( !['mylanguage'].includes( specialpage ) ) {
 					return fn.special_page(lang, msg, querypage, specialpage, body.query, wiki, querystring, fragment, reaction, spoiler, noEmbed);
 				}
@@ -506,7 +506,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			if ( querypage.ns === -2 ) {
 				logging(wiki, msg.guildId, 'general', 'media');
 				var filepath = body.query.specialpagealiases.find( sp => sp.realname === 'Filepath' );
-				var pagelink = wiki.toLink(body.query.namespaces['-1']['*'] + ':' + ( filepath?.aliases?.[0] || 'FilePath' ) + querypage.title.replace( body.query.namespaces['-2']['*'] + ':', '/' ), querystring, fragment);
+				var pagelink = wiki.toLink(wiki.namespaces.get(-1).name + ':' + ( filepath?.aliases?.[0] || 'FilePath' ) + querypage.title.replace( wiki.namespaces.get(-2).name + ':', '/' ), querystring, fragment);
 				var embed = null;
 				if ( !noEmbed ) {
 					embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](<' + wiki.toLink(querypage.title, '', '', true) + '>)' );
@@ -667,7 +667,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				return;
 			}
 			querypage = Object.values(mpbody.query.pages)[0];
-			if ( mpbody.query.redirects && mpbody.query.redirects[0].from.split(':')[0] === body.query.namespaces['-1']['*'] && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( mpbody.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) {
+			if ( mpbody.query.redirects && mpbody.query.redirects[0].from.split(':')[0] === wiki.namespaces.get(-1).name && body.query.specialpagealiases.filter( sp => ['Mypage','Mytalk'].includes( sp.realname ) ).map( sp => sp.aliases[0] ).includes( mpbody.query.redirects[0].from.split(':').slice(1).join(':').split('/')[0].replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) {
 				noRedirect = true;
 				querypage.title = mpbody.query.redirects[0].from;
 				delete mpbody.query.redirects[0].tofragment;

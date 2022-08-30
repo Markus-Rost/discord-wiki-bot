@@ -6,25 +6,16 @@ const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
 
 const overwrites = {
-	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query) => {
-		let namespaces = Object.values(query.namespaces);
-		let contentNamespaces = namespaces.filter( ns => ns.content !== undefined );
-		let namespaceData = [contentNamespaces.map( ns => ns.id ).join('|'), contentNamespaces.map( ns => ( ns['*'] || '*' ) ).join(', ')];
+	/** @param {import('../../util/wiki.js').default} wiki */
+	randompage: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed) => {
+		let namespaceData = [wiki.namespaces.content.map( ns => ns.id ).join('|') || '0', wiki.namespaces.content.map( ns => ns.name || '*' ).join(', ') || '*'];
 		if ( args[0] ) {
 			args[0] = args[0].replaceAll( wiki.spaceReplacement ?? '_', ' ' ).toLowerCase().trim();
-			let namespaceMap = {};
-			namespaces.forEach( namespace => {
-				if ( namespace.id < 0 ) return;
-				if ( namespace.canonical ) namespaceMap[namespace.canonical.toLowerCase()] = namespace.id;
-				namespaceMap[namespace['*'].toLowerCase()] = namespace.id;
+			let namespace = wiki.namespaces.all.find( ns => {
+				if ( ns.id < 0 ) return false;
+				return ns.name.toLowerCase() === args[0] || ns.aliases.some( alias => alias.toLowerCase() === args[0] );
 			} );
-			query.namespacealiases.forEach( namespace => {
-				if ( namespace.id < 0 ) return;
-				namespaceMap[namespace['*'].toLowerCase()] = namespace.id;
-			} );
-			if ( namespaceMap.hasOwnProperty(args[0]) ) {
-				namespaceData = [namespaceMap[args[0]].toString(), ( namespaces.find( namespace => namespace.id === namespaceMap[args[0]] )?.['*'] || '*' )];
-			}
+			if ( namespace ) namespaceData = [namespace.id.toString(), namespace.name || '*'];
 			else if ( args[0] === '*' ) namespaceData = ['*', '*'];
 		}
 		return fn.random(lang, msg, wiki, reaction, spoiler, noEmbed, namespaceData, querystring, fragment, embed);
@@ -172,7 +163,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 	catch {}
 	if ( overwrites.hasOwnProperty(specialpage) ) {
 		var args = title.split('/').slice(1,3);
-		return overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed, query);
+		return overwrites[specialpage](this, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed);
 	}
 	logging(wiki, msg.guildId, 'general', 'special');
 	if ( noEmbed ) {
