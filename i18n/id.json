@@ -138,7 +138,7 @@
 		"votes": "$1 {{PLURAL:$2|pilih|suara}} ($3%)"
 	},
 	"fallback": [
-		"id",
+		"en",
 		" ",
 		" ",
 		" ",
