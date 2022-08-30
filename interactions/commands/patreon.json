@@ -3,11 +3,17 @@
 	"application_id": "",
 	"name": "patreon",
 	"name_localizations": {
-		"es-ES": "patreon"
+		"es-ES": "patreon",
+		"de": "patreon",
+		"ja": "patreon",
+		"zh-CN": "patreon",
+		"zh-TW": "patreon"
 	},
 	"description": "Check or change your servers with patreon features enabled.",
 	"description_localizations": {
-		"es-ES": "Comprueba o cambia tus servidores con las funciones de Patreon habilitadas."
+		"es-ES": "Comprueba o cambia tus servidores con las funciones de Patreon habilitadas.",
+		"de": "Prüfe oder bearbeite deine Server mit Patreon-Funktionen aktiviert.",
+		"ja": "パトロン機能が有効になっているサーバーを確認・変更する。"
 	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
@@ -17,11 +23,17 @@
 			"type": 1,
 			"name": "check",
 			"name_localizations": {
-				"es-ES": "comprobar"
+				"es-ES": "comprobar",
+				"de": "prüfe",
+				"ja": "check",
+				"zh-CN": "检查",
+				"zh-TW": "檢查"
 			},
 			"description": "Check your current list of servers with patreon features enabled.",
 			"description_localizations": {
-				"es-ES": "Comprueba tu lista actual de servidores con funciones de Patreon habilitadas."
+				"es-ES": "Comprueba tu lista actual de servidores con funciones de Patreon habilitadas.",
+				"de": "Prüfe deine aktuelle Liste von Servern mit Patreon-Funktionen aktiviert.",
+				"ja": "現在、パトロン機能が有効になっているサーバーのリストを確認してください。"
 			},
 			"options": []
 		},
@@ -29,22 +41,34 @@
 			"type": 1,
 			"name": "enable",
 			"name_localizations": {
-				"es-ES": "habilitar"
+				"es-ES": "habilitar",
+				"de": "aktiviere",
+				"ja": "enable",
+				"zh-CN": "启用",
+				"zh-TW": "啟用"
 			},
 			"description": "Enable the patreon features for a server.",
 			"description_localizations": {
-				"es-ES": "Habilita las funciones de Patreon para un servidor."
+				"es-ES": "Habilita las funciones de Patreon para un servidor.",
+				"de": "Aktiviere die Patreon-Funktionen für einen Server.",
+				"ja": "サーバーのパトロン機能を有効にする。"
 			},
 			"options": [
 				{
 					"type": 3,
 					"name": "guild",
 					"name_localizations": {
-						"es-ES": "gremio"
+						"es-ES": "gremio",
+						"de": "server",
+						"ja": "guild",
+						"zh-CN": "服务器",
+						"zh-TW": "伺服器"
 					},
 					"description": "The server to enable patreon features for.",
 					"description_localizations": {
-						"es-ES": "El servidor en el que habilitar las funciones de Patreon."
+						"es-ES": "El servidor en el que habilitar las funciones de Patreon.",
+						"de": "Der Server für den Patreon-Funktionen aktiviert werden sollen.",
+						"ja": "patreonの機能を有効にするためのサーバー。"
 					},
 					"min_length": 17,
 					"max_length": 20,
@@ -57,22 +81,34 @@
 			"type": 1,
 			"name": "disable",
 			"name_localizations": {
-				"es-ES": "deshabilitar"
+				"es-ES": "deshabilitar",
+				"de": "deaktiviere",
+				"ja": "disable",
+				"zh-CN": "禁用",
+				"zh-TW": "停用"
 			},
 			"description": "Disable the patreon features for a server.",
 			"description_localizations": {
-				"es-ES": "Deshabilita las funciones de Patreon para un servidor."
+				"es-ES": "Deshabilita las funciones de Patreon para un servidor.",
+				"de": "Deaktiviere die Patreon-Funktionen für einen Server.",
+				"ja": "サーバーのpatreon機能を無効にする。"
 			},
 			"options": [
 				{
 					"type": 3,
 					"name": "guild",
 					"name_localizations": {
-						"es-ES": "gremio"
+						"es-ES": "gremio",
+						"de": "server",
+						"ja": "guild",
+						"zh-CN": "服务器",
+						"zh-TW": "伺服器"
 					},
 					"description": "The server to disable patreon features for.",
 					"description_localizations": {
-						"es-ES": "El servidor en el que deshabilitar las funciones de Patreon."
+						"es-ES": "El servidor en el que deshabilitar las funciones de Patreon.",
+						"de": "Der Server für den Patreon-Funktionen deaktiviert werden sollen.",
+						"ja": "patreonの機能を無効にするためのサーバー。"
 					},
 					"min_length": 17,
 					"max_length": 20,

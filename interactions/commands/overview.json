@@ -9,7 +9,8 @@
 		"zh-CN": "overview",
 		"zh-TW": "overview",
 		"it": "panoramica",
-		"tr": "overview"
+		"tr": "overview",
+		"ja": "overview"
 	},
 	"description": "Post a wiki overview.",
 	"description_localizations": {
@@ -19,7 +20,8 @@
 		"zh-CN": "发送wiki概览。",
 		"zh-TW": "傳送wiki概覽。",
 		"it": "Posta la panoramica di una wiki.",
-		"tr": "Viki ön izlemesi paylaş."
+		"tr": "Viki ön izlemesi paylaş.",
+		"ja": "Post a wiki overview."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -35,7 +37,8 @@
 				"zh-TW": "wiki",
 				"hi": "wiki",
 				"it": "wiki",
-				"tr": "wiki"
+				"tr": "wiki",
+				"ja": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -45,7 +48,8 @@
 				"zh-TW": "要搜尋的wiki。",
 				"hi": "विकि जिसमें खोजना है।",
 				"it": "La wiki in cui cercare.",
-				"tr": "Aratma yapılacak viki."
+				"tr": "Aratma yapılacak viki.",
+				"ja": "検索対象となるWiki。"
 			},
 			"required": false,
 			"autocomplete": true
@@ -57,7 +61,7 @@
 				"de": "privat",
 				"es-ES": "privado",
 				"hi": "private",
-				"ja": "ephemeral",
+				"ja": "private",
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見",
 				"it": "privato",
@@ -94,7 +98,7 @@
 				"de": "Sende nur den Link ohne Einbettung?",
 				"es-ES": "¿Enviar solo el enlace sin vista previa?",
 				"hi": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
-				"ja": "埋め込みなしでリンクだけを送信しますか？",
+				"ja": "埋め込みなしでリンクだけを送る？",
 				"zh-CN": "发送的链接是否不包含嵌入内容？",
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
 				"it": "Invia solo il link senza embed?",
@@ -120,7 +124,7 @@
 				"de": "Verstecke Link und Einbettung in einem Spoiler?",
 				"es-ES": "¿Ocultar el enlace y la vista previa en un spoiler?",
 				"hi": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
-				"ja": "リンクを隠して、スポイラーに埋め込む？",
+				"ja": "リンクを隠してスポイラーで埋め込む？",
 				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 				"it": "Nascondi il link e l'embed in uno spoiler?",

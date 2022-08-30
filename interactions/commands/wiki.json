@@ -66,7 +66,8 @@
 				"zh-CN": "章节",
 				"zh-TW": "章節",
 				"it": "sezione",
-				"tr": "section"
+				"tr": "section",
+				"ja": "section"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -76,7 +77,8 @@
 				"zh-CN": "要链接到的页面章节。",
 				"zh-TW": "要連結到的頁面章節。",
 				"it": "Sezione della pagina da linkare.",
-				"tr": "Bağlantı verilecek sayfa bölümü."
+				"tr": "Bağlantı verilecek sayfa bölümü.",
+				"ja": "リンク先のページ部分。"
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -93,7 +95,8 @@
 				"zh-CN": "查询参数",
 				"zh-TW": "查詢字串",
 				"it": "query",
-				"tr": "query"
+				"tr": "query",
+				"ja": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -103,7 +106,8 @@
 				"zh-CN": "要添加到链接的查询参数。",
 				"zh-TW": "要加入到連結的查詢字串。",
 				"it": "Argomenti della query da aggiungere al link.",
-				"tr": "Bağlantıya eklenecek arama argümanları."
+				"tr": "Bağlantıya eklenecek arama argümanları.",
+				"ja": "リンクに追加するクエリ引数。"
 			},
 			"min_length": 0,
 			"max_length": 250,

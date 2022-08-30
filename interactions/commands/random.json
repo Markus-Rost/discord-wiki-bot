@@ -2,9 +2,13 @@
 	"id": "",
 	"application_id": "",
 	"name": "random",
-	"name_localizations": {},
+	"name_localizations": {
+		"de": "zufall"
+	},
 	"description": "Post a random wiki link.",
-	"description_localizations": {},
+	"description_localizations": {
+		"de": "Sende einen zufälligen Link zum Wiki."
+	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
 	"dm_permission": true,
@@ -37,9 +41,13 @@
 		{
 			"type": 3,
 			"name": "namespace",
-			"name_localizations": {},
+			"name_localizations": {
+				"de": "namensraum"
+			},
 			"description": "The namespaces to search in.",
-			"description_localizations": {},
+			"description_localizations": {
+				"de": "Die Namesräume zum Durchsuchen."
+			},
 			"required": false,
 			"autocomplete": true
 		},
