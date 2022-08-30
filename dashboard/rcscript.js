@@ -532,7 +532,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						} ).finally( () => {
 							got.delete( 'https://discord.com/api/webhooks/' + row.webhook, {
 								headers: {
-									'X-Audit-Log-Reason': lang.get('rcscript.audit_reason_delete')
+									'X-Audit-Log-Reason': encodeURIComponent(lang.get('rcscript.audit_reason_delete'))
 								}
 							} ).then( delresponse => {
 								if ( delresponse.statusCode !== 204 ) {

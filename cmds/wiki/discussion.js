@@ -337,9 +337,9 @@ function discussion_formatting(jsonModel) {
 		case 'openGraph':
 			if ( !jsonModel.attrs.wasAddedWithInlineLink ) description += jsonModel.attrs.url + '\n';
 			break;
-		case 'text':
-			var prepend = '';
-			var append = '';
+		case 'text': {
+			let prepend = '';
+			let append = '';
 			if ( jsonModel.marks ) {
 				jsonModel.marks.forEach( mark => {
 					switch ( mark.type ) {
@@ -364,6 +364,7 @@ function discussion_formatting(jsonModel) {
 			}
 			description += prepend + escapeFormatting(jsonModel.text) + append;
 			break;
+		}
 		case 'image':
 			if ( jsonModel.attrs.id !== null ) description += '{@' + jsonModel.attrs.id + '}\n';
 			break;
@@ -378,14 +379,15 @@ function discussion_formatting(jsonModel) {
 				if ( listItem.content ) listItem.content.forEach( content => description += discussion_formatting(content) );
 			} );
 			break;
-		case 'orderedList':
-			var n = 1;
+		case 'orderedList': {
+			let n = 1;
 			jsonModel.content.forEach( listItem => {
 				description += '\t' + n + '. ';
 				n++;
 				if ( listItem.content ) listItem.content.forEach( content => description += discussion_formatting(content) );
 			} );
 			break;
+		}
 	}
 	return description;
 }

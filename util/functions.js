@@ -69,8 +69,8 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 		return embed;
 	}
 	switch ( infobox.type ) {
-		case 'data':
-			var {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
+		case 'data': {
+			let {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
 			label = htmlToPlain(label, true).trim();
 			value = htmlToDiscord(value, pagelink).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
@@ -87,8 +87,9 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			if ( value.length > 500 ) value = limitLength(value, 500, 250);
 			if ( label && value ) embed.addFields( {name: label, value, inline: true} );
 			break;
-		case 'panel':
-			var embedLength = embed.data.fields?.length ?? 0;
+		}
+		case 'panel': {
+			let embedLength = embed.data.fields?.length ?? 0;
 			infobox.data.value.forEach( group => {
 				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
@@ -104,29 +105,33 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || fields[i + 1].value.startsWith( '__**' ) ) );
 			} ) ?? [];
 			break;
-		case 'section':
-			var {label = ''} = infobox.data;
+		}
+		case 'section': {
+			let {label = ''} = infobox.data;
 			label = htmlToPlain(label).trim();
 			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 			if ( label ) embed.addFields( {name: '\u200b', value: '**' + label + '**'} );
+		}
 		case 'group':
 			infobox.data.value.forEach( group => {
 				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
 			break;
-		case 'header':
-			var {value = ''} = infobox.data;
+		case 'header': {
+			let {value = ''} = infobox.data;
 			value = htmlToPlain(value).trim();
 			if ( value.length > 100 ) value = value.substring(0, 100) + '\u2026';
 			if ( value ) embed.addFields( {name: '\u200b', value: '__**' + value + '**__'} );
 			break;
-		case 'image':
+		}
+		case 'image': {
 			if ( embed.data.thumbnail?.url !== thumbnail ) return;
-			var image = infobox.data.find( img => {
+			let image = infobox.data.find( img => {
 				return ( /^(?:https?:)?\/\//.test(img.url) && /\.(?:png|jpg|jpeg|gif)$/.test(img.name) );
 			} );
 			if ( image ) embed.setThumbnail( image.url.replace( /^(?:https?:)?\/\//, 'https://' ) );
 			break;
+		}
 	}
 }
 

@@ -229,6 +229,7 @@ if ( process.env.dashboard ) {
 					allowedMentions: {parse: []}
 				} ).catch( error => {
 					if ( error?.code === 50001 ) return; // Missing Access
+					if ( error?.code === 50013 ) return; // Missing Permissions
 					globalThis.log_error(error);
 				} );
 			}
