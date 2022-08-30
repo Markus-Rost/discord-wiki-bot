@@ -35,6 +35,34 @@
 		"options[3].description": "Verstecke Link und Einbettung in einem Spoiler?",
 		"options[3].name": "spoiler"
 	},
+	"patreon": {
+		"description": "Prüfe oder bearbeite deine Server mit Patreon-Funktionen aktiviert.",
+		"name": "patreon",
+		"options[0].description": "Prüfe deine aktuelle Liste von Servern mit Patreon-Funktionen aktiviert.",
+		"options[0].name": "prüfe",
+		"options[1].description": "Aktiviere die Patreon-Funktionen für einen Server.",
+		"options[1].name": "aktiviere",
+		"options[1].options[0].description": "Der Server für den Patreon-Funktionen aktiviert werden sollen.",
+		"options[1].options[0].name": "server",
+		"options[2].description": "Deaktiviere die Patreon-Funktionen für einen Server.",
+		"options[2].name": "deaktiviere",
+		"options[2].options[0].description": "Der Server für den Patreon-Funktionen deaktiviert werden sollen.",
+		"options[2].options[0].name": "server"
+	},
+	"random": {
+		"description": "Sende einen zufälligen Link zum Wiki.",
+		"name": "zufall",
+		"options[0].description": "Das Wiki zum Durchsuchen.",
+		"options[0].name": "wiki",
+		"options[1].description": "Die Namesräume zum Durchsuchen.",
+		"options[1].name": "namensraum",
+		"options[2].description": "Sende eine Antwort nur sichtbar für dich?",
+		"options[2].name": "privat",
+		"options[3].description": "Sende nur den Link ohne Einbettung?",
+		"options[3].name": "noembed",
+		"options[4].description": "Verstecke Link und Einbettung in einem Spoiler?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verifiziere deinen Discord-Account mit deinem Wiki-Account.",
 		"name": "verifizieren",

@@ -113,7 +113,7 @@
 	},
 	"dateformat": "id-ID",
 	"diff": {
-		"badrev": "Setidaknya satu revisi tidak ada!",
+		"badrev": "Setidaknya satu revisi tidak ditemukan!",
 		"hidden": "*tersembunyi*",
 		"info": {
 			"added": "Ditambahkan:",
@@ -541,6 +541,7 @@
 		"new_wiki": "<tautan ke wiki>",
 		"no_feeds": "Wiki untuk webhook ini tidak mengaktifkan fitur berbasis umpan, seperti diskusi, dinding pesan, atau komentar artikel.",
 		"noadmin": "Kamu memerlukan izin `Kelola Webhooks` untuk perintah ini!",
+		"notheads": "Perubahan terbaru webhook tidak didukung di utas, harap gunakan perintah di saluran induk!",
 		"rc": "Perubahan Wiki:",
 		"sysmessage": "Pesan sistem `$1` harus berupa id server `$2` untuk menambahkan webhook perubahan terbaru.",
 		"title": "Perubahan terbaru webhook",

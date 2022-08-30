@@ -36,6 +36,14 @@
 		"options[3].description": "是否将链接和嵌入内容标记为剧透？",
 		"options[3].name": "标记为剧透"
 	},
+	"patreon": {
+		"name": "patreon",
+		"options[0].name": "检查",
+		"options[1].name": "启用",
+		"options[1].options[0].name": "服务器",
+		"options[2].name": "禁用",
+		"options[2].options[0].name": "服务器"
+	},
 	"verify": {
 		"description": "使用你的wiki账号来验证你的Discord账号。",
 		"name": "verify",

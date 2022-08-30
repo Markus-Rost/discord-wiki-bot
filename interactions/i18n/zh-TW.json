@@ -36,6 +36,14 @@
 		"options[3].description": "是否將連結和嵌入內容標記為劇透？",
 		"options[3].name": "標記為劇透"
 	},
+	"patreon": {
+		"name": "patreon",
+		"options[0].name": "檢查",
+		"options[1].name": "啟用",
+		"options[1].options[0].name": "伺服器",
+		"options[2].name": "停用",
+		"options[2].options[0].name": "伺服器"
+	},
 	"verify": {
 		"description": "使用您的wiki帳號驗證您的Discord帳號。",
 		"name": "verify",
