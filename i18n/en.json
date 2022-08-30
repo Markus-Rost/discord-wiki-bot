@@ -331,6 +331,10 @@
 					"cmd": "overview",
 					"desc": "I will show some information and statistics about the wiki."
 				},
+				"random": {
+					"cmd": "random",
+					"desc": "I will answer with a link to a random page in the wiki."
+				},
 				"verify": {
 					"cmd": "verify",
 					"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
