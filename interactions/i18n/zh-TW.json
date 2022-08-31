@@ -37,12 +37,32 @@
 		"options[3].name": "標記為劇透"
 	},
 	"patreon": {
+		"description": "檢查或變更伺服器上 Patreon 支持者專屬功能的開啟情況。",
 		"name": "patreon",
-		"options[0].name": "檢查",
-		"options[1].name": "啟用",
+		"options[0].description": "檢查目前已啟用 Patreon 支持者專屬功能的伺服器清單。",
+		"options[0].name": "check",
+		"options[1].description": "為伺服器啟用 Patreon 支持者專屬功能。",
+		"options[1].name": "enable",
+		"options[1].options[0].description": "要啟用 Patreon 支持者專屬功能的伺服器。",
 		"options[1].options[0].name": "伺服器",
-		"options[2].name": "停用",
+		"options[2].description": "為伺服器停用 Patreon 支持者專屬功能。",
+		"options[2].name": "disable",
+		"options[2].options[0].description": "要停用 Patreon 支持者專屬功能的伺服器。",
 		"options[2].options[0].name": "伺服器"
+	},
+	"random": {
+		"description": "傳送一條指向隨機頁面的 wiki 連結。",
+		"name": "random",
+		"options[0].description": "要搜尋的wiki。",
+		"options[0].name": "wiki",
+		"options[1].description": "要搜尋的命名空間。",
+		"options[1].name": "命名空間",
+		"options[2].description": "傳送的訊息是否僅對自己可見？",
+		"options[2].name": "僅自己可見",
+		"options[3].description": "傳送的連結是否不包含嵌入內容？",
+		"options[3].name": "不包含嵌入內容",
+		"options[4].description": "是否將連結和嵌入內容標記為劇透？",
+		"options[4].name": "標記為劇透"
 	},
 	"verify": {
 		"description": "使用您的wiki帳號驗證您的Discord帳號。",
