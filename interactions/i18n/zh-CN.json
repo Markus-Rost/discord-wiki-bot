@@ -37,12 +37,32 @@
 		"options[3].name": "标记为剧透"
 	},
 	"patreon": {
+		"description": "检查或更改服务器上 Patreon 支持者专属功能的开启情况。",
 		"name": "patreon",
-		"options[0].name": "检查",
-		"options[1].name": "启用",
+		"options[0].description": "检查目前已启用 Patreon 支持者专属功能的服务器列表。",
+		"options[0].name": "check",
+		"options[1].description": "为某服务器启用 Patreon 支持者专属功能。",
+		"options[1].name": "enable",
+		"options[1].options[0].description": "要启用 Patreon 支持者专属功能的服务器。",
 		"options[1].options[0].name": "服务器",
-		"options[2].name": "禁用",
+		"options[2].description": "为某服务器禁用 Patreon 支持者专属功能。",
+		"options[2].name": "disable",
+		"options[2].options[0].description": "要禁用 Patreon 支持者专属功能的服务器。",
 		"options[2].options[0].name": "服务器"
+	},
+	"random": {
+		"description": "发送一条指向随机页面的wiki链接。",
+		"name": "random",
+		"options[0].description": "要搜索的wiki。",
+		"options[0].name": "wiki",
+		"options[1].description": "要搜索的命名空间。",
+		"options[1].name": "命名空间",
+		"options[2].description": "发送的消息是否仅对自己可见？",
+		"options[2].name": "仅自己可见",
+		"options[3].description": "发送的链接是否不包含嵌入内容？",
+		"options[3].name": "不包含嵌入内容",
+		"options[4].description": "是否将链接和嵌入内容标记为剧透？",
+		"options[4].name": "标记为剧透"
 	},
 	"verify": {
 		"description": "使用你的wiki账号来验证你的Discord账号。",

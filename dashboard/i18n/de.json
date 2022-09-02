@@ -26,7 +26,7 @@
 		"theme-light": "Nutze das helle Design",
 		"title": "Wiki-Bot Einstellungen",
 		"verification": "Verifizierungen",
-		"welcome": "<h2>Willkommen auf dem Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot ist ein Discord-Bot der dazu dient Discord-Server und MediaWiki-Wikis zu verbinden. Er hilft durch das Verlinken von Wiki-Artikeln, Verifizieren von Wiki-Benutzern, informiert über die neusten Änderungen auf dem Wiki und mehr. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mehr Information]</a></p>\n<p>Hier kannst du die Bot-Einstellungen für Server ändern auf denen du die Server verwalten Berechtigung besitzt. Dafür musst du dich mit deinem Discord-Account anmelden, was du über diesen Knopf tuen kannst:</p>"
+		"welcome": "<h2>Willkommen auf dem Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot ist ein Discord-Bot der dazu dient Discord-Server und MediaWiki-Wikis zu verbinden. Er hilft durch das Verlinken von Wiki-Artikeln, Verifizieren von Wiki-Benutzern, informiert über die neusten Änderungen auf dem Wiki und mehr. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mehr Information]</a></p>\n<p>Hier kannst du die Bot-Einstellungen für Server ändern auf denen du die Server verwalten Berechtigung besitzt. Dafür musst du dich mit deinem Discord-Account anmelden, was du über diese Knöpfe tuen kannst:</p>"
 	},
 	"indexjs": {
 		"avatar": {
