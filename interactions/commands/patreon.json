@@ -13,7 +13,9 @@
 	"description_localizations": {
 		"es-ES": "Comprueba o cambia tus servidores con las funciones de Patreon habilitadas.",
 		"de": "Prüfe oder bearbeite deine Server mit Patreon-Funktionen aktiviert.",
-		"ja": "パトロン機能が有効になっているサーバーを確認・変更する。"
+		"ja": "パトロン機能が有効になっているサーバーを確認・変更する。",
+		"zh-CN": "检查或更改服务器上 Patreon 支持者专属功能的开启情况。",
+		"zh-TW": "檢查或變更伺服器上 Patreon 支持者專屬功能的開啟情況。"
 	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
@@ -26,14 +28,16 @@
 				"es-ES": "comprobar",
 				"de": "prüfe",
 				"ja": "check",
-				"zh-CN": "检查",
-				"zh-TW": "檢查"
+				"zh-CN": "check",
+				"zh-TW": "check"
 			},
 			"description": "Check your current list of servers with patreon features enabled.",
 			"description_localizations": {
 				"es-ES": "Comprueba tu lista actual de servidores con funciones de Patreon habilitadas.",
 				"de": "Prüfe deine aktuelle Liste von Servern mit Patreon-Funktionen aktiviert.",
-				"ja": "現在、パトロン機能が有効になっているサーバーのリストを確認してください。"
+				"ja": "現在、パトロン機能が有効になっているサーバーのリストを確認してください。",
+				"zh-CN": "检查目前已启用 Patreon 支持者专属功能的服务器列表。",
+				"zh-TW": "檢查目前已啟用 Patreon 支持者專屬功能的伺服器清單。"
 			},
 			"options": []
 		},
@@ -44,14 +48,16 @@
 				"es-ES": "habilitar",
 				"de": "aktiviere",
 				"ja": "enable",
-				"zh-CN": "启用",
-				"zh-TW": "啟用"
+				"zh-CN": "enable",
+				"zh-TW": "enable"
 			},
 			"description": "Enable the patreon features for a server.",
 			"description_localizations": {
 				"es-ES": "Habilita las funciones de Patreon para un servidor.",
 				"de": "Aktiviere die Patreon-Funktionen für einen Server.",
-				"ja": "サーバーのパトロン機能を有効にする。"
+				"ja": "サーバーのパトロン機能を有効にする。",
+				"zh-CN": "为某服务器启用 Patreon 支持者专属功能。",
+				"zh-TW": "為伺服器啟用 Patreon 支持者專屬功能。"
 			},
 			"options": [
 				{
@@ -68,7 +74,9 @@
 					"description_localizations": {
 						"es-ES": "El servidor en el que habilitar las funciones de Patreon.",
 						"de": "Der Server für den Patreon-Funktionen aktiviert werden sollen.",
-						"ja": "patreonの機能を有効にするためのサーバー。"
+						"ja": "patreonの機能を有効にするためのサーバー。",
+						"zh-CN": "要启用 Patreon 支持者专属功能的服务器。",
+						"zh-TW": "要啟用 Patreon 支持者專屬功能的伺服器。"
 					},
 					"min_length": 17,
 					"max_length": 20,
@@ -84,14 +92,16 @@
 				"es-ES": "deshabilitar",
 				"de": "deaktiviere",
 				"ja": "disable",
-				"zh-CN": "禁用",
-				"zh-TW": "停用"
+				"zh-CN": "disable",
+				"zh-TW": "disable"
 			},
 			"description": "Disable the patreon features for a server.",
 			"description_localizations": {
 				"es-ES": "Deshabilita las funciones de Patreon para un servidor.",
 				"de": "Deaktiviere die Patreon-Funktionen für einen Server.",
-				"ja": "サーバーのpatreon機能を無効にする。"
+				"ja": "サーバーのpatreon機能を無効にする。",
+				"zh-CN": "为某服务器禁用 Patreon 支持者专属功能。",
+				"zh-TW": "為伺服器停用 Patreon 支持者專屬功能。"
 			},
 			"options": [
 				{
@@ -108,7 +118,9 @@
 					"description_localizations": {
 						"es-ES": "El servidor en el que deshabilitar las funciones de Patreon.",
 						"de": "Der Server für den Patreon-Funktionen deaktiviert werden sollen.",
-						"ja": "patreonの機能を無効にするためのサーバー。"
+						"ja": "patreonの機能を無効にするためのサーバー。",
+						"zh-CN": "要禁用 Patreon 支持者专属功能的服务器。",
+						"zh-TW": "要停用 Patreon 支持者專屬功能的伺服器。"
 					},
 					"min_length": 17,
 					"max_length": 20,
