@@ -100,8 +100,10 @@ export default function cmd_help(lang, msg, args, line, wiki) {
 				var cmdlist = lang.get('help.admin') + '\n';
 				if ( process.env.READONLY ) cmdlist = msg.author.toString() + ', ' + lang.get('general.readonly') + '\n' + process.env.invite + '\n\n' + cmdlist;
 				cmdlist += formathelp(helplist.admin, msg, lang, wiki);
-				cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
-				if ( process.env.dashboard ) cmdlist += '\n\t\t' + new URL(( msg.inGuild() ? `/guild/${msg.guildId}/settings` : '/' ), process.env.dashboard).href;
+				if ( process.env.dashboard ) {
+					cmdlist += '\n\n🔸 ' + lang.get('help.adminfooter');
+					cmdlist += '\n\t\t' + new URL(( msg.inGuild() ? `/guild/${msg.guildId}/settings` : '/' ), process.env.dashboard).href;
+				}
 				splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 			}
 			else {
