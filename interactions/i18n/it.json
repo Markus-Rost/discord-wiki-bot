@@ -36,6 +36,34 @@
 		"options[3].description": "Nascondi il link e l'embed in uno spoiler?",
 		"options[3].name": "spoiler"
 	},
+	"patreon": {
+		"description": "Controlla o modifica i tuoi server con le funzionalità patreon attive.",
+		"name": "patreon",
+		"options[0].description": "Controlla la lista corrente dei tuoi server con le funzionalità patreon attive.",
+		"options[0].name": "controlla",
+		"options[1].description": "Attiva le funzionalità patreon per un server.",
+		"options[1].name": "attiva",
+		"options[1].options[0].description": "Il server per cui attivare le funzionalità patreon.",
+		"options[1].options[0].name": "gilda",
+		"options[2].description": "Disattiva le funzionalità patreon per un server.",
+		"options[2].name": "disattiva",
+		"options[2].options[0].description": "Il server per cui disattivare le funzionalità patreon.",
+		"options[2].options[0].name": "gilda"
+	},
+	"random": {
+		"description": "Posta un link casuale alla wiki.",
+		"name": "casuale",
+		"options[0].description": "La wiki in cui cercare.",
+		"options[0].name": "wiki",
+		"options[1].description": "I namespace in cui cercare.",
+		"options[1].name": "namespace",
+		"options[2].description": "Invia una risposta visibile solo per te?",
+		"options[2].name": "privato",
+		"options[3].description": "Invia solo il link senza embed?",
+		"options[3].name": "noembed",
+		"options[4].description": "Nascondi il link e l'embed in uno spoiler?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verifica il tuo account Discord tramite il tuo account sulla wiki.",
 		"name": "verifica",
