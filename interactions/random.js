@@ -246,6 +246,7 @@ function autocomplete_random(interaction, lang, wiki) {
 				};
 			} ).slice(0, 25) ).catch(log_error);
 		}, error => {
+			if ( error.name === 'TimeoutError' ) return;
 			if ( newWiki.noWiki(error.message) ) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),

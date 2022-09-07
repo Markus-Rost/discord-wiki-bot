@@ -118,6 +118,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: body.query.general.mainpage ?? ''
 			}] ).catch(log_error);
 		}, error => {
+			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
@@ -172,6 +173,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
+		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),
@@ -218,6 +220,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
+		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),
@@ -324,6 +327,7 @@ function autocomplete_section(interaction, lang, wiki) {
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
+		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),

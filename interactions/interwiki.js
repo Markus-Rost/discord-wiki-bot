@@ -105,6 +105,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			value: project.fullScriptPath
 		}] ).catch(log_error);
 	}, error => {
+		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),
