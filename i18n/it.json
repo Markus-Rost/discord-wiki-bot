@@ -328,6 +328,9 @@
 				"overview": {
 					"desc": "Mostrerò qualche informazione e statistica sulla wiki."
 				},
+				"random": {
+					"desc": "Risponderò con un link ad una pagina casuale sulla wiki."
+				},
 				"verify": {
 					"desc": "Usa questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
 				},
@@ -401,8 +404,10 @@
 		"error": "Si è verificato un errore imprevisto durante l'esecuzione del comando!",
 		"inline": "Per favore fornisci del testo con link [[wikitext]] per usare questo comando.",
 		"interwiki": "Per favore fornisci una wiki nota per la ricerca.",
+		"namespace": "(Principale)",
 		"notitle": "Il titolo della pagina utilizzato non esiste!",
 		"nowiki": "La wiki utilizzata non esiste!",
+		"random": "(Tutti i namespace di contenuto)",
 		"verify": "Per favore fornisci il tuo nome utente sulla wiki per usare questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
 	},
 	"invite": {
@@ -541,6 +546,7 @@
 		"new_wiki": "<link alla wiki>",
 		"no_feeds": "La wiki di questo webhook non ha nessuna funzione feed, come discussioni, bacheche o commenti agli articoli, abilitata.",
 		"noadmin": "Hai bisogno del permesso `Gestire i webhook` per questo comando!",
+		"notheads": "I webhook delle ultime modifiche non sono supportati nei thread, per favore usa il comando nel canale di origine!",
 		"rc": "Modifiche sulla wiki:",
 		"sysmessage": "Il messaggio di sistema `$1` deve contenere il server id `$2` per aggiungere un webhook delle ultime modifiche.",
 		"title": "Webhook ultime modifiche",

@@ -817,6 +817,7 @@
 		"audit_reason": "Verifziert als „$1“",
 		"button_again": "Erneut prüfen",
 		"button_wrong_user": "Du kannst diese Verifizierung nicht erneut prüfen, dies ist eine Verifizierung von $1!",
+		"compromised": "*verändert durch anderen Benutzer*",
 		"discord": "{{GENDER:$1|Discord-Benutzer|Discord-Benutzerin}}:",
 		"empty": "*leer*",
 		"error": "Die Verifizierung schlug fehl aufgrund eines Fehlers.",

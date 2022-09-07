@@ -36,6 +36,34 @@
 		"options[3].description": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
 		"options[3].name": "spoiler"
 	},
+	"patreon": {
+		"description": "सक्षम Patreon सुविधाों वाले अपने सर्वर देखें या बदलें।",
+		"name": "patreon",
+		"options[0].description": "सक्षम Patreon सुविधाओं अपने वर्तमान सर्वरों की सूची देखें।",
+		"options[0].name": "जाँच",
+		"options[1].description": "किसी सर्वर के लिए ‍Patreon सुविधाएँ सक्षम करें।",
+		"options[1].name": "सक्षम",
+		"options[1].options[0].description": "सर्वर जिसके लिए Patreon सुविधाओं को सक्षम करना है।",
+		"options[1].options[0].name": "गिल्ड",
+		"options[2].description": "किसी सर्वर के‌ लिए Patreon सुविधाएँ अक्षम करें।",
+		"options[2].name": "अक्षम",
+		"options[2].options[0].description": "सर्वर जिसके लिए Patreon सुविधाओं‌ को अक्षम करना है।",
+		"options[2].options[0].name": "गिल्ड"
+	},
+	"random": {
+		"description": "एक बेतरतीब विकि कड़ी पोस्ट करें।",
+		"name": "बेतरतीब",
+		"options[0].description": "विकि जिसमें खेजना है।",
+		"options[0].name": "विकि",
+		"options[1].description": "नामस्थान जिनमें खोजना है।",
+		"options[1].name": "नामस्थान",
+		"options[2].description": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
+		"options[2].name": "निजी",
+		"options[3].description": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
+		"options[3].name": "noembed",
+		"options[4].description": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "अपने विकि खाते के साथ अपने डिस्कॉर्ड खाते को प्रमाणित करें।",
 		"name": "verify",
