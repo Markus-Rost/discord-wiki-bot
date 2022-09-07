@@ -819,6 +819,7 @@
 		"audit_reason": "已以“$1”的身份验证",
 		"button_again": "再次检查",
 		"button_wrong_user": "您不可以再次检查此验证，此验证用于$1的验证！",
+		"compromised": "*被其他用户修改*",
 		"discord": "Discord 用户：",
 		"empty": "*空白*",
 		"error": "由于一个错误，验证失败。",
