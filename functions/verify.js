@@ -110,7 +110,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			return;
 		}
 		username = queryuser.name;
-		var pagelink = wiki.toLink('User:' + username, '', '', true);
+		var pagelink = wiki.toLink(( wiki.namespaces.has(2) ? wiki.namespaces.get(2).name : 'User' ) + ':' + username, '', '', true);
 		embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 		logEmbed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 		if ( queryuser.blockexpiry ) {
@@ -206,11 +206,11 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				var authortag = escapeFormatting(member.user.tag);
 				embed.addFields(...[
 					{name: lang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), value: authortag, inline: true},
-					{name: lang.get('verify.wiki', queryuser.gender), value: ( discordname || lang.get('verify.empty') ), inline: true}
+					{name: lang.get('verify.wiki', queryuser.gender), value: ( ( discordname ?? lang.get('verify.compromised') ) || lang.get('verify.empty') ), inline: true}
 				]);
 				logEmbed.addFields(...[
 					{name: logLang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), value: authortag, inline: true},
-					{name: logLang.get('verify.wiki', queryuser.gender), value: ( discordname || logLang.get('verify.empty') ), inline: true}
+					{name: logLang.get('verify.wiki', queryuser.gender), value: ( ( discordname ?? logLang.get('verify.compromised') ) || logLang.get('verify.empty') ), inline: true}
 				]);
 				if ( authortag !== discordname ) {
 					embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
@@ -242,7 +242,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					}
 					else if ( wiki.wikifarm === 'fandom' ) {
 						if ( body.query.allmessages?.[0]?.['*']?.split('\n').includes( 'dev:VerifyUser.js' ) ) {
-							help_link = wiki.toLink('Special:VerifyUser/' + username, query, '', true);
+							help_link = wiki.toLink(( wiki.namespaces.has(-1) ? wiki.namespaces.get(-1).name : 'Special' ) + ':VerifyUser/' + username, query, '', true);
 						}
 						else {
 							if ( channel.name === 'verification' ) query.delete('ch');
@@ -434,7 +434,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			result.add_button = false;
 		} );
 		
-		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord&format=json', {
+		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord%1FSpecial:MyPage/Discord&format=json', {
 			context: {
 				guildId: channel.guildId
 			}
@@ -470,7 +470,13 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				}
 				queryuser.groups.push(...mwbody.query.globaluserinfo.groups);
 			}
-			var revision = Object.values(mwbody.query.pages)[0]?.revisions?.[0];
+			var {
+				'-1': {title: mypage} = {},
+				'2': {revisions: [revision] = []} = {}
+			} = Object.values(mwbody.query.pages).reduce( (prev, page) => {
+				prev[page.ns] = page;
+				return prev;
+			}, {} );
 			
 			var discordname = '';
 			if ( revision) {
@@ -505,7 +511,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 						result.logging.content = logText;
 					}
 				}
-				embed.addFields( {name: lang.get('verify.notice'), value: lang.get('verify.help_subpage', '**`' + member.user.tag + '`**', queryuser.gender) + '\n' + wiki.toLink('Special:MyPage/Discord', 'action=edit')} );
+				embed.addFields( {name: lang.get('verify.notice'), value: lang.get('verify.help_subpage', '**`' + member.user.tag + '`**', queryuser.gender) + '\n' + wiki.toLink(mypage || 'Special:MyPage/Discord', 'action=edit')} );
 				result.content = lang.get('verify.user_failed_reply', escapeFormatting(username), queryuser.gender);
 				return;
 			}
@@ -755,7 +761,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			logging(wiki, channel.guildId, 'verification');
 			var queryuser = body.query.users[0];
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.fail?.();
-			var pagelink = wiki.toLink('User:' + username, '', '', true);
+			var pagelink = wiki.toLink(( wiki.namespaces.has(2) ? wiki.namespaces.get(2).name : 'User' ) + ':' + username, '', '', true);
 			var embed = new EmbedBuilder().setFooter( {text: lang.get('verify.title')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addFields(...[
 				{name: lang.get('verify.discord', queryuser.gender), value: escapeFormatting(member.user.tag), inline: true},
 				{name: lang.get('verify.wiki', queryuser.gender), value: lang.get('verify.oauth_used'), inline: true}
