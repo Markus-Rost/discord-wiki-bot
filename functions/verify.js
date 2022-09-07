@@ -202,7 +202,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				console.log( '- Error while getting the user profile: ' + ucerror );
 				return Promise.reject();
 			} ).then( () => {
-				if ( discordname.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
+				if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 				var authortag = escapeFormatting(member.user.tag);
 				embed.addFields(...[
 					{name: lang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), value: authortag, inline: true},
@@ -473,18 +473,23 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			var revision = Object.values(mwbody.query.pages)[0]?.revisions?.[0];
 			
 			var discordname = '';
-			if ( revision && revision.user === username ) {
-				discordname = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+			if ( revision) {
+				if ( revision.user === username ) {
+					discordname = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+				}
+				else {
+					discordname = null;
+				}
 			}
-			if ( discordname.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
+			if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 			var authortag = escapeFormatting(member.user.tag);
 			embed.addFields(...[
 				{name: lang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), value: authortag, inline: true},
-				{name: lang.get('verify.wiki', queryuser.gender), value: ( discordname || lang.get('verify.empty') ), inline: true}
+				{name: lang.get('verify.wiki', queryuser.gender), value: ( ( discordname ?? lang.get('verify.compromised') ) || lang.get('verify.empty') ), inline: true}
 			]);
 			logEmbed.addFields(...[
 				{name: logLang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), value: authortag, inline: true},
-				{name: logLang.get('verify.wiki', queryuser.gender), value: ( discordname || logLang.get('verify.empty') ), inline: true}
+				{name: logLang.get('verify.wiki', queryuser.gender), value: ( ( discordname ?? logLang.get('verify.compromised') ) || logLang.get('verify.empty') ), inline: true}
 			]);
 			if ( authortag !== discordname ) {
 				embed.setColor('#FFFF00').setDescription( lang.get('verify.user_failed', member.toString(), '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );

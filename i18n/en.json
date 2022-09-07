@@ -823,6 +823,7 @@
 		"audit_reason": "Verified as \"$1\"",
 		"button_again": "Check again",
 		"button_wrong_user": "You can't check this verification again, this is a verification of $1!",
+		"compromised": "*modified by different user*",
 		"discord": "Discord user:",
 		"empty": "*empty*",
 		"error": "The verification failed due to an error.",
