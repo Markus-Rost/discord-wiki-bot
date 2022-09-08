@@ -26,7 +26,7 @@
 		"theme-light": "Gunakan tema terang",
 		"title": "Pengaturan Wiki-Bot",
 		"verification": "Verifikasi",
-		"welcome": "<h2>Selamat datang di Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot adalah bot Discord yang dibuat untuk menyatukan server Discord dan wiki MediaWiki. Ini membantu dengan menghubungkan halaman wiki, memverifikasi pengguna wiki, menginformasikan tentang perubahan terbaru di wiki dan banyak lagi. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Informasi selengkapnya]</a></p>\n<p>Di sini Kamu dapat mengubah pengaturan bot yang berbeda untuk server tempat Kamu memiliki izin Kelola Server. Untuk memulai, Kamu harus mengautentikasi akun Discord Kamu yang dapat Kamu lakukan dengan tombol ini:</p>"
+		"welcome": "<h2>Selamat datang di Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot adalah bot Discord yang dibuat untuk menyatukan server Discord dan wiki MediaWiki. Ini membantu dengan menghubungkan halaman wiki, memverifikasi pengguna wiki, menginformasikan tentang perubahan terbaru di wiki dan banyak lagi. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Informasi selengkapnya]</a></p>\n<p>Di sini Kamu dapat mengubah pengaturan bot yang berbeda untuk server tempat Kamu memiliki izin Kelola Server. Untuk memulai, Kamu harus mengautentikasi akun Discord mu yang dapat Kamu lakukan dengan tombol ini:</p>"
 	},
 	"indexjs": {
 		"avatar": {
