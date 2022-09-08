@@ -328,6 +328,9 @@
 				"overview": {
 					"desc": "Saya akan menunjukkan beberapa informasi dan statistik tentang wiki."
 				},
+				"random": {
+					"desc": "Saya akan menjawab dengan tautan ke halaman acak di wiki."
+				},
 				"verify": {
 					"desc": "Gunakan perintah ini untuk memverifikasi akun Discord Anda dengan akun wiki Anda dan mendapatkan role yang cocok dengan akun wiki Anda."
 				},
@@ -401,8 +404,10 @@
 		"error": "Terjadi kesalahan tak terduga saat menjalankan perintah!",
 		"inline": "Harap berikan beberapa teks dengan tautan [[wikitext]] untuk menggunakan perintah ini.",
 		"interwiki": "Harap berikan wiki yang dikenal untuk ditelusuri.",
+		"namespace": "(Utama)",
 		"notitle": "Judul halaman yang digunakan tidak ada!",
 		"nowiki": "Wiki yang dicantumkan tidak ada!",
+		"random": "(Semua namespaces konten)",
 		"verify": "Harap berikan nama pengguna wiki kamu untuk menggunakan perintah ini untuk memverifikasi akun Discord milik kamu dengan akun wiki dan dapatkan peran yang cocok dengan akun wiki mu."
 	},
 	"invite": {
@@ -812,6 +817,7 @@
 		"audit_reason": "Diverifikasi sebagai \"$1\"",
 		"button_again": "Periksa lagi",
 		"button_wrong_user": "Kamu tidak dapat memeriksa verifikasi ini lagi, ini adalah verifikasi $1!",
+		"compromised": "*dimodifikasi oleh pengguna lain*",
 		"discord": "Pengguna Discord:",
 		"empty": "*kosong*",
 		"error": "Verifikasi gagal karena kesalahan.",
