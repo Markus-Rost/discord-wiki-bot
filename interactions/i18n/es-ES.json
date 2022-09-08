@@ -50,6 +50,20 @@
 		"options[2].options[0].description": "El servidor en el que deshabilitar las funciones de Patreon.",
 		"options[2].options[0].name": "gremio"
 	},
+	"random": {
+		"description": "Publica un enlace wiki aleatorio.",
+		"name": "aleatorio",
+		"options[0].description": "El wiki en el que buscar.",
+		"options[0].name": "wiki",
+		"options[1].description": "Los espacios de nombres en los que buscar.",
+		"options[1].name": "espacio de nombre",
+		"options[2].description": "¿Enviar una respuesta que solo sea visible para ti?",
+		"options[2].name": "privado",
+		"options[3].description": "¿Enviar solo el enlace sin vista previa?",
+		"options[3].name": "sinvistaprevia",
+		"options[4].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verifica tu cuenta de Discord con tu cuenta wiki.",
 		"name": "verificar",
