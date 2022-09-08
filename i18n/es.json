@@ -404,8 +404,10 @@
 		"error": "¡Ocurrió un error inesperado al ejecutar el comando!",
 		"inline": "Por favor proporciona un texto con enlaces de [[wikitexto]] para usar este comando.",
 		"interwiki": "Por favor, proporciona un wiki conocido para buscar.",
+		"namespace": "(Principal)",
 		"notitle": "¡El título de la página utilizada no existe!",
 		"nowiki": "¡El wiki usado no existe!",
+		"random": "(Todos los espacios de nombres)",
 		"verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
 	},
 	"invite": {
@@ -815,6 +817,7 @@
 		"audit_reason": "Verificado como \"$1\"",
 		"button_again": "Revisar otra vez",
 		"button_wrong_user": "No puedes volver a comprobar esta verificación, ¡es la verificación de $1!",
+		"compromised": "*modificado por otro usuario*",
 		"discord": "Usuario de Discord:",
 		"empty": "*vacío*",
 		"error": "La verificación falló debido a un error.",
