@@ -62,7 +62,7 @@
 				"hi": "नामस्थान",
 				"it": "namespace",
 				"el": "ονοματοχώρος",
-				"es-ES": "espacio de nombre"
+				"es-ES": "namespace"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {
