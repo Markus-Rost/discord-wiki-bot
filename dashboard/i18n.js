@@ -138,6 +138,7 @@ function plural(lang, number, args) {
 			break;
 		case 'bn':
 		case 'de':
+		case 'el':
 		case 'en':
 		case 'es':
 		case 'id':
