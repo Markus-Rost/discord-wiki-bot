@@ -10,7 +10,8 @@
 		"de": "wiki",
 		"es-ES": "wiki",
 		"ja": "wiki",
-		"it": "wiki"
+		"it": "wiki",
+		"el": "wiki"
 	},
 	"description": "Post a wiki link.",
 	"description_localizations": {
@@ -21,7 +22,8 @@
 		"de": "Sende einen Link zum Wiki.",
 		"es-ES": "Publica un enlace wiki.",
 		"ja": "Wikiリンクを貼る。",
-		"it": "Posta un link alla wiki."
+		"it": "Posta un link alla wiki.",
+		"el": "Δημοσίευση ενός συνδέσμου wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -38,7 +40,8 @@
 				"de": "titel",
 				"es-ES": "título",
 				"ja": "title",
-				"it": "titolo"
+				"it": "titolo",
+				"el": "τίτλος"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
@@ -49,7 +52,8 @@
 				"de": "Seitenname zum Suchen.",
 				"es-ES": "Título de la página a buscar.",
 				"ja": "検索するページタイトル。",
-				"it": "Titolo della pagina da cercare."
+				"it": "Titolo della pagina da cercare.",
+				"el": "Τίτλος σελίδας προς αναζήτηση."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -67,7 +71,8 @@
 				"zh-TW": "章節",
 				"it": "sezione",
 				"tr": "section",
-				"ja": "section"
+				"ja": "section",
+				"el": "τομέας"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -78,7 +83,8 @@
 				"zh-TW": "要連結到的頁面章節。",
 				"it": "Sezione della pagina da linkare.",
 				"tr": "Bağlantı verilecek sayfa bölümü.",
-				"ja": "リンク先のページ部分。"
+				"ja": "リンク先のページ部分。",
+				"el": "Τομέας σελίδας προς σύνδεση."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -96,7 +102,8 @@
 				"zh-TW": "查詢字串",
 				"it": "query",
 				"tr": "query",
-				"ja": "query"
+				"ja": "query",
+				"el": "ερώτημα"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -107,7 +114,8 @@
 				"zh-TW": "要加入到連結的查詢字串。",
 				"it": "Argomenti della query da aggiungere al link.",
 				"tr": "Bağlantıya eklenecek arama argümanları.",
-				"ja": "リンクに追加するクエリ引数。"
+				"ja": "リンクに追加するクエリ引数。",
+				"el": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -124,7 +132,8 @@
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見",
 				"it": "privato",
-				"tr": "private"
+				"tr": "private",
+				"el": "ιδιωτικό"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -135,7 +144,8 @@
 				"zh-CN": "发送的消息是否仅对自己可见？",
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
 				"it": "Invia una risposta visibile solo per te?",
-				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?"
+				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
+				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;"
 			},
 			"required": false
 		},
@@ -150,7 +160,8 @@
 				"zh-CN": "不包含嵌入内容",
 				"zh-TW": "不包含嵌入內容",
 				"it": "noembed",
-				"tr": "noembed"
+				"tr": "noembed",
+				"el": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -161,7 +172,8 @@
 				"zh-CN": "发送的链接是否不包含嵌入内容？",
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
 				"it": "Invia solo il link senza embed?",
-				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?"
+				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
+				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;"
 			},
 			"required": false
 		},
@@ -175,7 +187,8 @@
 				"ja": "spoiler",
 				"zh-CN": "标记为剧透",
 				"zh-TW": "標記為劇透",
-				"it": "spoiler"
+				"it": "spoiler",
+				"el": "σπόιλερ"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -186,7 +199,8 @@
 				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 				"it": "Nascondi il link e l'embed in uno spoiler?",
-				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?"
+				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
+				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;"
 			},
 			"required": false
 		}
