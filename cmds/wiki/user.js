@@ -539,15 +539,15 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						value: postcount[1],
 						inline: true
 					});
-					if ( pbody.userData.avatar && pbody.userData.avatar !== 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400' ) {
+					if ( pbody.userData.avatar?.trim() && pbody.userData.avatar !== 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400' ) {
 						embed.setThumbnail( pbody.userData.avatar.replace( '/thumbnail/width/400/height/400', '' ) );
 					}
-					if ( pbody.userData.bio && !embed.description ) {
+					if ( pbody.userData.bio?.trim() && !embed.description ) {
 						let bio = escapeFormatting(pbody.userData.bio);
 						if ( bio.length > 1000 ) bio = bio.substring(0, 1000) + '\u2026';
 						embed.backupDescription = bio;
 					}
-					if ( pbody.userData.name ) {
+					if ( pbody.userData.name?.trim() ) {
 						let aka = escapeFormatting(pbody.userData.name);
 						if ( aka.length > 100 ) aka = aka.substring(0, 100) + '\u2026';
 						embed.addFields( {name: lang.get('user.info.aka'), value: aka, inline: true} );
@@ -557,7 +557,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					let splittext = text.split('\n');
 					splittext.splice(4, 1, editcount.join(' '));
 					if ( pbody.userData.posts ) splittext.splice(5, 0, postcount.join(' '));
-					if ( pbody.userData.name ) {
+					if ( pbody.userData.name?.trim() ) {
 						let aka = escapeFormatting(pbody.userData.name);
 						if ( aka.length > 100 ) aka = aka.substring(0, 100) + '\u2026';
 						splittext.push(lang.get('user.info.aka') + ' ' + aka);
@@ -565,7 +565,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					text = splittext.join('\n');
 				}
 				var discord = '';
-				if ( pbody.userData.discordHandle ) {
+				if ( pbody.userData.discordHandle?.trim() ) {
 					discord = escapeFormatting(pbody.userData.discordHandle).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 				}
@@ -579,7 +579,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						console.log( '- ' + cpresponse.statusCode + ': Error while getting the user profile: ' + ( cpbody && ( cpbody.error && cpbody.error.info || cpbody.errormsg ) ) );
 						return;
 					}
-					if ( cpbody.profile['link-discord'] ) {
+					if ( cpbody.profile['link-discord']?.trim() ) {
 						discord = escapeFormatting(cpbody.profile['link-discord']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
 						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 					}
@@ -589,7 +589,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 								return escapeFormatting(member.user.tag) === discord;
 							} );
 						}
-						var discordname = [lang.get('user.info.discord'),discord];
+						var discordname = [lang.get('user.info.discord'), discord];
 						if ( discordmember ) discordname[1] = discordmember.toString();
 						
 						if ( !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
@@ -622,7 +622,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 							return escapeFormatting(member.user.tag) === discord;
 						} );
 					}
-					let discordname = [lang.get('user.info.discord'),discord];
+					let discordname = [lang.get('user.info.discord'), discord];
 					if ( discordmember ) discordname[1] = discordmember.toString();
 					
 					if ( !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
@@ -652,16 +652,23 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			if ( body.query.pages ) {
 				let revision = Object.values(body.query.pages)[0]?.revisions?.[0];
 				if ( revision?.user === username ) {
-					let discord = ( revision?.slots?.main || revision )['*'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
-					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
-					if ( msg.inGuild() ) var discordmember = msg.guild?.members.cache.find( member => {
-						return member.user.tag === discord;
-					} );
-					let discordname = [lang.get('user.info.discord'),escapeFormatting(discord)];
-					if ( discordmember ) discordname[1] = discordmember.toString();
-					
-					if ( !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
-					else text += '\n' + discordname.join(' ');
+					let discord = '';
+					if ( ( revision?.slots?.main || revision )?.['*']?.trim() ) {
+						discord = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
+					}
+					if ( discord ) {
+						if ( msg.inGuild() ) {
+							var discordmember = msg.guild?.members.cache.find( member => {
+								return escapeFormatting(member.user.tag) === discord;
+							} );
+						}
+						let discordname = [lang.get('user.info.discord'), discord];
+						if ( discordmember ) discordname[1] = discordmember.toString();
+						
+						if ( !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
+						else text += '\n' + discordname.join(' ');
+					}
 				}
 			}
 			if ( isBlocked ) {
