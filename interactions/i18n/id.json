@@ -42,7 +42,27 @@
 		"options[0].description": "Periksa daftar server Anda saat ini dengan fitur patreon diaktifkan.",
 		"options[0].name": "periksa",
 		"options[1].description": "Aktifkan fitur patreon untuk server.",
-		"options[1].name": "aktifkan"
+		"options[1].name": "aktifkan",
+		"options[1].options[0].description": "Server untuk mengaktifkan fitur patreon.",
+		"options[1].options[0].name": "serikat",
+		"options[2].description": "Nonaktifkan fitur patreon untuk server.",
+		"options[2].name": "menonaktifkan",
+		"options[2].options[0].description": "Server untuk menonaktifkan fitur patreon.",
+		"options[2].options[0].name": "serikat"
+	},
+	"random": {
+		"description": "Posting tautan wiki acak.",
+		"name": "acak",
+		"options[0].description": "Wiki untuk mencari.",
+		"options[0].name": "wiki",
+		"options[1].description": "Ruang nama untuk mencari.",
+		"options[1].name": "namespace",
+		"options[2].description": "Kirim tanggapan yang hanya dapat dilihat oleh Anda sendiri?",
+		"options[2].name": "privasi",
+		"options[3].description": "Kirim hanya tautan tanpa sematkan?",
+		"options[3].name": "disematkan",
+		"options[4].description": "Sembunyikan tautan dan sematkan di spoiler?",
+		"options[4].name": "spoiler"
 	},
 	"verify": {
 		"description": "Verifikasi akun Discord kamu dengan akun wiki.",
