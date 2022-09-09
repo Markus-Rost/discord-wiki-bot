@@ -7,7 +7,9 @@
 		"de": "patreon",
 		"ja": "patreon",
 		"zh-CN": "patreon",
-		"zh-TW": "patreon"
+		"zh-TW": "patreon",
+		"hi": "patreon",
+		"it": "patreon"
 	},
 	"description": "Check or change your servers with patreon features enabled.",
 	"description_localizations": {
@@ -15,7 +17,9 @@
 		"de": "Prüfe oder bearbeite deine Server mit Patreon-Funktionen aktiviert.",
 		"ja": "パトロン機能が有効になっているサーバーを確認・変更する。",
 		"zh-CN": "检查或更改服务器上 Patreon 支持者专属功能的开启情况。",
-		"zh-TW": "檢查或變更伺服器上 Patreon 支持者專屬功能的開啟情況。"
+		"zh-TW": "檢查或變更伺服器上 Patreon 支持者專屬功能的開啟情況。",
+		"hi": "सक्षम Patreon सुविधाों वाले अपने सर्वर देखें या बदलें।",
+		"it": "Controlla o modifica i tuoi server con le funzionalità patreon attive."
 	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
@@ -29,7 +33,9 @@
 				"de": "prüfe",
 				"ja": "check",
 				"zh-CN": "check",
-				"zh-TW": "check"
+				"zh-TW": "check",
+				"hi": "जाँच",
+				"it": "controlla"
 			},
 			"description": "Check your current list of servers with patreon features enabled.",
 			"description_localizations": {
@@ -37,7 +43,9 @@
 				"de": "Prüfe deine aktuelle Liste von Servern mit Patreon-Funktionen aktiviert.",
 				"ja": "現在、パトロン機能が有効になっているサーバーのリストを確認してください。",
 				"zh-CN": "检查目前已启用 Patreon 支持者专属功能的服务器列表。",
-				"zh-TW": "檢查目前已啟用 Patreon 支持者專屬功能的伺服器清單。"
+				"zh-TW": "檢查目前已啟用 Patreon 支持者專屬功能的伺服器清單。",
+				"hi": "सक्षम Patreon सुविधाओं अपने वर्तमान सर्वरों की सूची देखें।",
+				"it": "Controlla la lista corrente dei tuoi server con le funzionalità patreon attive."
 			},
 			"options": []
 		},
@@ -49,7 +57,9 @@
 				"de": "aktiviere",
 				"ja": "enable",
 				"zh-CN": "enable",
-				"zh-TW": "enable"
+				"zh-TW": "enable",
+				"hi": "सक्षम",
+				"it": "attiva"
 			},
 			"description": "Enable the patreon features for a server.",
 			"description_localizations": {
@@ -57,7 +67,9 @@
 				"de": "Aktiviere die Patreon-Funktionen für einen Server.",
 				"ja": "サーバーのパトロン機能を有効にする。",
 				"zh-CN": "为某服务器启用 Patreon 支持者专属功能。",
-				"zh-TW": "為伺服器啟用 Patreon 支持者專屬功能。"
+				"zh-TW": "為伺服器啟用 Patreon 支持者專屬功能。",
+				"hi": "किसी सर्वर के लिए ‍Patreon सुविधाएँ सक्षम करें।",
+				"it": "Attiva le funzionalità patreon per un server."
 			},
 			"options": [
 				{
@@ -68,7 +80,9 @@
 						"de": "server",
 						"ja": "guild",
 						"zh-CN": "服务器",
-						"zh-TW": "伺服器"
+						"zh-TW": "伺服器",
+						"hi": "गिल्ड",
+						"it": "gilda"
 					},
 					"description": "The server to enable patreon features for.",
 					"description_localizations": {
@@ -76,7 +90,9 @@
 						"de": "Der Server für den Patreon-Funktionen aktiviert werden sollen.",
 						"ja": "patreonの機能を有効にするためのサーバー。",
 						"zh-CN": "要启用 Patreon 支持者专属功能的服务器。",
-						"zh-TW": "要啟用 Patreon 支持者專屬功能的伺服器。"
+						"zh-TW": "要啟用 Patreon 支持者專屬功能的伺服器。",
+						"hi": "सर्वर जिसके लिए Patreon सुविधाओं को सक्षम करना है।",
+						"it": "Il server per cui attivare le funzionalità patreon."
 					},
 					"min_length": 17,
 					"max_length": 20,
@@ -93,7 +109,9 @@
 				"de": "deaktiviere",
 				"ja": "disable",
 				"zh-CN": "disable",
-				"zh-TW": "disable"
+				"zh-TW": "disable",
+				"hi": "अक्षम",
+				"it": "disattiva"
 			},
 			"description": "Disable the patreon features for a server.",
 			"description_localizations": {
@@ -101,7 +119,9 @@
 				"de": "Deaktiviere die Patreon-Funktionen für einen Server.",
 				"ja": "サーバーのpatreon機能を無効にする。",
 				"zh-CN": "为某服务器禁用 Patreon 支持者专属功能。",
-				"zh-TW": "為伺服器停用 Patreon 支持者專屬功能。"
+				"zh-TW": "為伺服器停用 Patreon 支持者專屬功能。",
+				"hi": "किसी सर्वर के‌ लिए Patreon सुविधाएँ अक्षम करें।",
+				"it": "Disattiva le funzionalità patreon per un server."
 			},
 			"options": [
 				{
@@ -112,7 +132,9 @@
 						"de": "server",
 						"ja": "guild",
 						"zh-CN": "服务器",
-						"zh-TW": "伺服器"
+						"zh-TW": "伺服器",
+						"hi": "गिल्ड",
+						"it": "gilda"
 					},
 					"description": "The server to disable patreon features for.",
 					"description_localizations": {
@@ -120,7 +142,9 @@
 						"de": "Der Server für den Patreon-Funktionen deaktiviert werden sollen.",
 						"ja": "patreonの機能を無効にするためのサーバー。",
 						"zh-CN": "要禁用 Patreon 支持者专属功能的服务器。",
-						"zh-TW": "要停用 Patreon 支持者專屬功能的伺服器。"
+						"zh-TW": "要停用 Patreon 支持者專屬功能的伺服器。",
+						"hi": "सर्वर जिसके लिए Patreon सुविधाओं‌ को अक्षम करना है।",
+						"it": "Il server per cui disattivare le funzionalità patreon."
 					},
 					"min_length": 17,
 					"max_length": 20,
