@@ -84,7 +84,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 	} ).then( response => {
 		var body = response.body;
 		if ( body && body.warnings ) log_warning(body.warnings);
-		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.interwiki?.length ) {
+		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
@@ -97,7 +97,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
 			return;
 		}
-		if ( !body.query.interwiki.length ) return interaction.respond( [] ).catch(log_error);
+		if ( !body.query.interwiki?.length ) return interaction.respond( [] ).catch(log_error);
 		let project = inputToWikiProject(body.query.interwiki[0].url);
 		if ( !project ) return interaction.respond( [] ).catch(log_error);
 		return interaction.respond( [{

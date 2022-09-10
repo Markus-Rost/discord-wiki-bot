@@ -221,7 +221,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				var description = revision['*'];
 				var regex = /^L-?(\d+)(?:-(?:L-?)?(\d+))?$/.exec(fragment);
 				if ( regex ) {
-					let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || regex[1] ));
+					let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || +regex[1] + 10 ));
 					if ( descArray.length ) {
 						description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
 						if ( description ) {
