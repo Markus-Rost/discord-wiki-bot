@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<termo de pesquisa>",
-				"desc": "Vou responder com um link para um artigo correspondente na wiki."
+				"desc": "Vou responder com um link para um artigo correspondente na wiki:"
 			},
 			"diff": {
 				"id": {
@@ -318,6 +318,30 @@
 					"desc": "Vou alterar a wiki padrão para esse servidor."
 				}
 			},
+			"slash": {
+				"inline": {
+					"desc": "Poste uma mensagem com links da wiki embutidos na linha."
+				},
+				"interwiki": {
+					"desc": "Vou responder com um link para o artigo correspondente em um projeto MediaWiki específico."
+				},
+				"overview": {
+					"desc": "Vou mostrar algumas informações e estatísticas sobre a wiki."
+				},
+				"random": {
+					"desc": "Vou responder com um link para uma página aleatória na wiki."
+				},
+				"verify": {
+					"desc": "Use este comando para verificar sua conta do Discord com a sua conta da wiki e obter cargos correspondentes à sua conta da wiki."
+				},
+				"wiki": {
+					"desc": "Vou responder com um link para um artigo correspondente na wiki:"
+				}
+			},
+			"subprefix": {
+				"cmd": "<wiki> <termo de pesquisa>",
+				"desc": "Vou responder com um link para um artigo correspondente na wiki:"
+			},
 			"test": {
 				"cmd": "test",
 				"desc": "Se eu estiver ativo, vou responder! Caso contrário, não."
@@ -377,8 +401,13 @@
 		"pause": "**Estou atualmente em pausa neste servidor!**\nSom estes comandos podem ser executados:"
 	},
 	"interaction": {
+		"error": "Houve um erro inesperado ao executar o comando.",
 		"inline": "Forneça algum texto com links de [[wikitexto]] para usar este comando.",
+		"interwiki": "Por favor, indique uma wiki válida para pesquisar.",
+		"namespace": "(Principal)",
+		"notitle": "Esse título de página não existe!",
 		"nowiki": "A wiki utilizada não existe!",
+		"random": "(Todos os espaços nominais de conteúdo)",
 		"verify": "Por favor, forneça o seu nome de usuário na wiki para usar este comando e verificar a sua conta do Discord com a sua conta da wiki e obter cargos correspondentes à sua conta da wiki."
 	},
 	"invite": {
@@ -465,6 +494,13 @@
 		"off": "Não estou mais pausado neste servidor e responderei a todos os comandos novamente!",
 		"on": "Agora estou pausado neste servidor e ignorarei a maioria dos comandos!"
 	},
+	"phabricator": {
+		"comment": "Resumo:",
+		"priority": "Prioridade:",
+		"status": "Status:",
+		"subtype": "Subtipo:",
+		"tags": "Etiquetas:"
+	},
 	"rcscript": {
 		"ad": "Deseja alterações recentes diretamente no Discord? Usar `$1rcscript` para adicionar um webhook de alterações recentes com base em **$2** para o seu servidor no Discord!",
 		"add_more": "Adicione webhooks de mudanças recentes:",
@@ -510,6 +546,7 @@
 		"new_wiki": "<link para a wiki>",
 		"no_feeds": "A wiki deste webhook não possui recursos baseados em feeds, como discussões, murais de mensagens ou comentários de artigos, ativados.",
 		"noadmin": "Você precisa da permissão `Gerenciar Webhooks` para este comando!",
+		"notheads": "Mudanças recentes nos webhooks não são suportados em threads! Por favor, use o comando no canal principal.",
 		"rc": "Mudanças da wiki:",
 		"sysmessage": "A mensagem do sistema `$1` deve ser a identificação do servidor `$2` para adicionar um webhook de mudanças recentes.",
 		"title": "Mudanças recentes no webhook",
@@ -567,6 +604,8 @@
 		"media": "Para a página de descrição do arquivo",
 		"messagedefault": "Padrão:",
 		"messagedefaultnone": "*ninguém*",
+		"noresult": "Sua solicitação não retornou nenhum resultado.",
+		"redirect": "$1 (redirecionado de \"$2\")",
 		"results": "$1 total {{PLURAL:$2|resultado|resultados}}",
 		"special": "Conteúdo desta página especial:"
 	},
@@ -585,6 +624,7 @@
 		"currentlang": "Idioma:",
 		"currentprefix": "Prefixo:",
 		"currentrole": "Cargo mínimo:",
+		"currentsubprefix": "Subprefixo `$1`:",
 		"currentwiki": "Wiki padrão:",
 		"dashboard": {
 			"channel": "$1 atualizou as configurações para $2.",
@@ -716,6 +756,7 @@
 		"add_more": "Para adicionar mais verificações:",
 		"added": "A verificação foi adicionada:",
 		"and": "e",
+		"audit_reason": "Enviando mensagem com o botão de verificar",
 		"channel": "Canal:",
 		"channel_max": "Muitos canais fornecidos.",
 		"channel_missing": "O canal fornecido não existe.",
@@ -724,6 +765,7 @@
 		"dashboard": {
 			"added": "$1 adicionou a verificação com id `$2`.",
 			"added_notice": "$1 adicionou alguns avisos de verificação.",
+			"button": "$1 enviou uma mensagem com o botão de verificar.",
 			"removed": "$1 removeu a verificação com id `$2`.",
 			"updated": "$1 atualizou a verificação com id `$2`.",
 			"updated_notice": "$1 atualizou alguns avisos de verificação."
@@ -775,6 +817,7 @@
 		"audit_reason": "Verificado como \"$1\"",
 		"button_again": "Verificar novamente",
 		"button_wrong_user": "Você não pode verificar esta verificação novamente, esta é uma verificação de $1!",
+		"compromised": "*modificado por outro usuário*",
 		"discord": "{{GENDER:$1|Usuário do Discord|Usuária do Discord}}:",
 		"empty": "*vazio*",
 		"error": "Ocorreu um erro ao verificar o usuário.",
@@ -794,6 +837,7 @@
 		"oauth_message_dm": "Por favor, use este link para autenticar sua conta de wiki para $1.",
 		"oauth_private": "A wiki usa OAuth2 para verificação. Ative as mensagens diretas deste servidor ou use o comando `/verify` para que eu possa enviar um link de autenticação de forma privada.",
 		"oauth_used": "*Verificado usando OAuth2 *",
+		"placeholder": "Seu nome de usuário na wiki, considerando maiúsculas e minúsculas.",
 		"qualified_add": "Adicionar para:",
 		"qualified_add_error": "Não pode ser adicionado a:",
 		"qualified_remove": "Removido de:",
@@ -814,6 +858,7 @@
 		"user_renamed": "Seus apelidos do Discord foram alterados para os nomes de usuário da wiki.",
 		"user_verified": "O usuário $1 do Discord foi verificado com sucesso como o usuário $2 da wiki.",
 		"user_verified_reply": "você foi verificado com sucesso como o usuário \"$1\" da wiki.",
+		"username": "Nome de usuário na wiki:",
 		"wiki": "{{GENDER:$1|Usuário da wiki|Usuária da wiki}}:"
 	}
 }
