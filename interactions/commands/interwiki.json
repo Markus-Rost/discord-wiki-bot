@@ -11,7 +11,8 @@
 		"it": "interwiki",
 		"tr": "interwiki",
 		"ja": "interwiki",
-		"el": "interwiki"
+		"el": "interwiki",
+		"pt-BR": "interwiki"
 	},
 	"description": "Post a link to a different wiki.",
 	"description_localizations": {
@@ -23,7 +24,8 @@
 		"es-ES": "Publica un enlace a un wiki diferente.",
 		"it": "Posta un link ad una wiki diversa.",
 		"ja": "別のWikiにリンクを貼る。",
-		"el": "Δημοσίευση ενός συνδέσμου σε διαφορετικό wiki."
+		"el": "Δημοσίευση ενός συνδέσμου σε διαφορετικό wiki.",
+		"pt-BR": "Postar um link a uma wiki diferente."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -41,7 +43,8 @@
 				"it": "wiki",
 				"tr": "wiki",
 				"ja": "wiki",
-				"el": "wiki"
+				"el": "wiki",
+				"pt-BR": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -53,7 +56,8 @@
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
 				"ja": "検索対象となるWiki。",
-				"el": "To wiki προς αναζήτηση."
+				"el": "To wiki προς αναζήτηση.",
+				"pt-BR": "A wiki a ser pesquisada."
 			},
 			"required": true,
 			"autocomplete": true
@@ -70,7 +74,8 @@
 				"es-ES": "título",
 				"it": "titolo",
 				"ja": "title",
-				"el": "τίτλος"
+				"el": "τίτλος",
+				"pt-BR": "título"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
@@ -82,7 +87,8 @@
 				"es-ES": "Título de la página a buscar.",
 				"it": "Titolo della pagina da cercare.",
 				"ja": "検索するページタイトル。",
-				"el": "Τίτλος σελίδας προς αναζήτηση."
+				"el": "Τίτλος σελίδας προς αναζήτηση.",
+				"pt-BR": "O título da página a ser pesquisada."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -101,7 +107,8 @@
 				"it": "sezione",
 				"tr": "section",
 				"ja": "section",
-				"el": "τομέας"
+				"el": "τομέας",
+				"pt-BR": "seção"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -113,7 +120,8 @@
 				"it": "Sezione della pagina da linkare.",
 				"tr": "Bağlantı verilecek sayfa bölümü.",
 				"ja": "リンク先のページセクション。",
-				"el": "Τομέας σελίδας προς σύνδεση."
+				"el": "Τομέας σελίδας προς σύνδεση.",
+				"pt-BR": "Seção da página que o link deve abrir."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -132,7 +140,8 @@
 				"it": "query",
 				"tr": "query",
 				"ja": "query",
-				"el": "ερώτημα"
+				"el": "ερώτημα",
+				"pt-BR": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -144,7 +153,8 @@
 				"it": "Argomenti della query da aggiungere al link.",
 				"tr": "Bağlantıya eklenecek arama argümanları.",
 				"ja": "リンクに追加するクエリ引数。",
-				"el": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο."
+				"el": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο.",
+				"pt-BR": "Parâmetros a serem adicionados à URL."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -162,7 +172,8 @@
 				"it": "privato",
 				"tr": "private",
 				"ja": "private",
-				"el": "ιδιωτικό"
+				"el": "ιδιωτικό",
+				"pt-BR": "privado"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -174,7 +185,8 @@
 				"it": "Invia una risposta visibile solo per te?",
 				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
 				"ja": "自分だけに見える応答を送信しますか？",
-				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;"
+				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+				"pt-BR": "Deseja que a resposta seja privada?"
 			},
 			"required": false
 		},
@@ -190,7 +202,8 @@
 				"it": "noembed",
 				"tr": "noembed",
 				"ja": "noembed",
-				"el": "noembed"
+				"el": "noembed",
+				"pt-BR": "sem_embed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -202,7 +215,8 @@
 				"it": "Invia solo il link senza embed?",
 				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
 				"ja": "埋め込みなしでリンクだけを送信しますか？",
-				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;"
+				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+				"pt-BR": "Enviar o link sem a pré-visualização?"
 			},
 			"required": false
 		},
@@ -218,7 +232,8 @@
 				"it": "spoiler",
 				"tr": "spoiler",
 				"ja": "spoiler",
-				"el": "σπόιλερ"
+				"el": "σπόιλερ",
+				"pt-BR": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -230,7 +245,8 @@
 				"it": "Nascondi il link e l'embed in uno spoiler?",
 				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
 				"ja": "リンクを隠してスポイラーで埋め込みますか？",
-				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;"
+				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+				"pt-BR": "Ocultar o link como spoiler?"
 			},
 			"required": false
 		}

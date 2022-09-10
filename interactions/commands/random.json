@@ -9,7 +9,8 @@
 		"hi": "बेतरतीब",
 		"it": "casuale",
 		"el": "τυχαίος",
-		"es-ES": "aleatorio"
+		"es-ES": "aleatorio",
+		"pt-BR": "aleatório"
 	},
 	"description": "Post a random wiki link.",
 	"description_localizations": {
@@ -19,7 +20,8 @@
 		"hi": "एक बेतरतीब विकि कड़ी पोस्ट करें।",
 		"it": "Posta un link casuale alla wiki.",
 		"el": "Δημοσίευση ενός τυχαίου συνδέσμου wiki.",
-		"es-ES": "Publica un enlace wiki aleatorio."
+		"es-ES": "Publica un enlace wiki aleatorio.",
+		"pt-BR": "Poste um link aleatório da wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -36,7 +38,8 @@
 				"hi": "विकि",
 				"it": "wiki",
 				"tr": "wiki",
-				"el": "wiki"
+				"el": "wiki",
+				"pt-BR": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -47,7 +50,8 @@
 				"hi": "विकि जिसमें खेजना है।",
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
-				"el": "Το wiki προς αναζήτηση."
+				"el": "Το wiki προς αναζήτηση.",
+				"pt-BR": "A wiki a ser pesquisada."
 			},
 			"required": false,
 			"autocomplete": true
@@ -62,7 +66,8 @@
 				"hi": "नामस्थान",
 				"it": "namespace",
 				"el": "ονοματοχώρος",
-				"es-ES": "namespace"
+				"es-ES": "namespace",
+				"pt-BR": "espaço_nominal"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {
@@ -72,7 +77,8 @@
 				"hi": "नामस्थान जिनमें खोजना है।",
 				"it": "I namespace in cui cercare.",
 				"el": "Οι ονοματοχώροι προς αναζήτηση.",
-				"es-ES": "Los espacios de nombres en los que buscar."
+				"es-ES": "Los espacios de nombres en los que buscar.",
+				"pt-BR": "Os espaços nominais a serem pesquisados."
 			},
 			"required": false,
 			"autocomplete": true
@@ -89,7 +95,8 @@
 				"zh-TW": "僅自己可見",
 				"it": "privato",
 				"tr": "private",
-				"el": "ιδιωτικό"
+				"el": "ιδιωτικό",
+				"pt-BR": "privado"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -101,7 +108,8 @@
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
 				"it": "Invia una risposta visibile solo per te?",
 				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
-				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;"
+				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+				"pt-BR": "Deseja que a resposta seja privada?"
 			},
 			"required": false
 		},
@@ -117,7 +125,8 @@
 				"zh-TW": "不包含嵌入內容",
 				"it": "noembed",
 				"tr": "noembed",
-				"el": "noembed"
+				"el": "noembed",
+				"pt-BR": "sem_embed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -129,7 +138,8 @@
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
 				"it": "Invia solo il link senza embed?",
 				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
-				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;"
+				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+				"pt-BR": "Enviar o link sem a pré-visualização?"
 			},
 			"required": false
 		},
@@ -145,7 +155,8 @@
 				"zh-TW": "標記為劇透",
 				"it": "spoiler",
 				"tr": "spoiler",
-				"el": "σπόιλερ"
+				"el": "σπόιλερ",
+				"pt-BR": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -157,7 +168,8 @@
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 				"it": "Nascondi il link e l'embed in uno spoiler?",
 				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
-				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;"
+				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+				"pt-BR": "Ocultar o link como spoiler?"
 			},
 			"required": false
 		}

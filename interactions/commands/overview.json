@@ -11,7 +11,8 @@
 		"it": "panoramica",
 		"tr": "overview",
 		"ja": "overview",
-		"el": "ανασκόπηση"
+		"el": "ανασκόπηση",
+		"pt-BR": "visão_geral"
 	},
 	"description": "Post a wiki overview.",
 	"description_localizations": {
@@ -23,7 +24,8 @@
 		"it": "Posta la panoramica di una wiki.",
 		"tr": "Viki ön izlemesi paylaş.",
 		"ja": "Post a wiki overview.",
-		"el": "Δημοσίευση ανασκόπησης wiki."
+		"el": "Δημοσίευση ανασκόπησης wiki.",
+		"pt-BR": "Postar uma visualização geral da wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -41,7 +43,8 @@
 				"it": "wiki",
 				"tr": "wiki",
 				"ja": "wiki",
-				"el": "wiki"
+				"el": "wiki",
+				"pt-BR": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -53,7 +56,8 @@
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
 				"ja": "検索対象となるWiki。",
-				"el": "Το wiki προς αναζήτηση."
+				"el": "Το wiki προς αναζήτηση.",
+				"pt-BR": "A wiki a ser pesquisada."
 			},
 			"required": false,
 			"autocomplete": true
@@ -70,7 +74,8 @@
 				"zh-TW": "僅自己可見",
 				"it": "privato",
 				"tr": "private",
-				"el": "ιδιωτικό"
+				"el": "ιδιωτικό",
+				"pt-BR": "privado"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -82,7 +87,8 @@
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
 				"it": "Invia una risposta visibile solo per te?",
 				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
-				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;"
+				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+				"pt-BR": "Deseja que a resposta seja privada?"
 			},
 			"required": false
 		},
@@ -98,7 +104,8 @@
 				"zh-TW": "不包含嵌入內容",
 				"it": "noembed",
 				"tr": "noembed",
-				"el": "noembed"
+				"el": "noembed",
+				"pt-BR": "sem_embed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -110,7 +117,8 @@
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
 				"it": "Invia solo il link senza embed?",
 				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
-				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;"
+				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+				"pt-BR": "Enviar o link sem a pré-visualização?"
 			},
 			"required": false
 		},
@@ -126,7 +134,8 @@
 				"zh-TW": "標記為劇透",
 				"it": "spoiler",
 				"tr": "spoiler",
-				"el": "σπόιλερ"
+				"el": "σπόιλερ",
+				"pt-BR": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -138,7 +147,8 @@
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 				"it": "Nascondi il link e l'embed in uno spoiler?",
 				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
-				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;"
+				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+				"pt-BR": "Ocultar o link como spoiler?"
 			},
 			"required": false
 		}

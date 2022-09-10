@@ -11,7 +11,8 @@
 		"es-ES": "wiki",
 		"ja": "wiki",
 		"it": "wiki",
-		"el": "wiki"
+		"el": "wiki",
+		"pt-BR": "wiki"
 	},
 	"description": "Post a wiki link.",
 	"description_localizations": {
@@ -23,7 +24,8 @@
 		"es-ES": "Publica un enlace wiki.",
 		"ja": "Wikiリンクを貼る。",
 		"it": "Posta un link alla wiki.",
-		"el": "Δημοσίευση ενός συνδέσμου wiki."
+		"el": "Δημοσίευση ενός συνδέσμου wiki.",
+		"pt-BR": "Poste um link da wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -41,7 +43,8 @@
 				"es-ES": "título",
 				"ja": "title",
 				"it": "titolo",
-				"el": "τίτλος"
+				"el": "τίτλος",
+				"pt-BR": "título"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
@@ -53,7 +56,8 @@
 				"es-ES": "Título de la página a buscar.",
 				"ja": "検索するページタイトル。",
 				"it": "Titolo della pagina da cercare.",
-				"el": "Τίτλος σελίδας προς αναζήτηση."
+				"el": "Τίτλος σελίδας προς αναζήτηση.",
+				"pt-BR": "O título da página a ser pesquisada."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -72,7 +76,8 @@
 				"it": "sezione",
 				"tr": "section",
 				"ja": "section",
-				"el": "τομέας"
+				"el": "τομέας",
+				"pt-BR": "seção"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -84,7 +89,8 @@
 				"it": "Sezione della pagina da linkare.",
 				"tr": "Bağlantı verilecek sayfa bölümü.",
 				"ja": "リンク先のページ部分。",
-				"el": "Τομέας σελίδας προς σύνδεση."
+				"el": "Τομέας σελίδας προς σύνδεση.",
+				"pt-BR": "Seção da página que o link deve abrir."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -103,7 +109,8 @@
 				"it": "query",
 				"tr": "query",
 				"ja": "query",
-				"el": "ερώτημα"
+				"el": "ερώτημα",
+				"pt-BR": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -115,7 +122,8 @@
 				"it": "Argomenti della query da aggiungere al link.",
 				"tr": "Bağlantıya eklenecek arama argümanları.",
 				"ja": "リンクに追加するクエリ引数。",
-				"el": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο."
+				"el": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο.",
+				"pt-BR": "Parâmetros a serem adicionados à URL."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -133,7 +141,8 @@
 				"zh-TW": "僅自己可見",
 				"it": "privato",
 				"tr": "private",
-				"el": "ιδιωτικό"
+				"el": "ιδιωτικό",
+				"pt-BR": "privado"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -145,7 +154,8 @@
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
 				"it": "Invia una risposta visibile solo per te?",
 				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
-				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;"
+				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+				"pt-BR": "Deseja que a resposta seja privada?"
 			},
 			"required": false
 		},
@@ -161,7 +171,8 @@
 				"zh-TW": "不包含嵌入內容",
 				"it": "noembed",
 				"tr": "noembed",
-				"el": "noembed"
+				"el": "noembed",
+				"pt-BR": "sem_embed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -173,7 +184,8 @@
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
 				"it": "Invia solo il link senza embed?",
 				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
-				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;"
+				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+				"pt-BR": "Enviar o link sem a pré-visualização?"
 			},
 			"required": false
 		},
@@ -188,7 +200,8 @@
 				"zh-CN": "标记为剧透",
 				"zh-TW": "標記為劇透",
 				"it": "spoiler",
-				"el": "σπόιλερ"
+				"el": "σπόιλερ",
+				"pt-BR": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -200,7 +213,8 @@
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 				"it": "Nascondi il link e l'embed in uno spoiler?",
 				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
-				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;"
+				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+				"pt-BR": "Ocultar o link como spoiler?"
 			},
 			"required": false
 		}
