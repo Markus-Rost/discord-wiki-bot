@@ -97,6 +97,6 @@ Help other users find Wiki-Bot by voting on bot lists:
 [<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)
 
 ## Other
-Credits to [Encredechine](https://community.fandom.com/wiki/User:Encredechine) for the **Wiki-Bot** logo.
+The **Wiki-Bot** logo has been AI generated using [Midjourney](https://www.midjourney.com/home/) and cleaned up by [Shaun Ryken](https://shaunryken.art/).
 
 [Privacy Policy](PRIVACY.md#privacy-policy)
