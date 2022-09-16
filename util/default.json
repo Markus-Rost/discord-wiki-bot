@@ -50,6 +50,7 @@
 			"util",
 			"content-reviewer",
 			"imagereviewer",
+			"notifications-cms-user",
 			"restricted-login",
 			"restricted-login-auto",
 			"restricted-login-exempt",
