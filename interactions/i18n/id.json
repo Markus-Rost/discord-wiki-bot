@@ -30,9 +30,9 @@
 		"options[0].description": "Wiki untuk mencari.",
 		"options[0].name": "wiki",
 		"options[1].description": "Kirim tanggapan yang hanya dapat dilihat oleh Anda sendiri?",
-		"options[1].name": "pribadi",
-		"options[2].description": "Kirim hanya tautan tanpa disematkan?",
-		"options[2].name": "noembed",
+		"options[1].name": "privasi",
+		"options[2].description": "Kirim hanya tautan tanpa disemat?",
+		"options[2].name": "disematkan",
 		"options[3].description": "Sembunyikan tautan dan sematkan di spoiler?",
 		"options[3].name": "spoiler"
 	},
@@ -51,7 +51,7 @@
 		"options[2].options[0].name": "serikat"
 	},
 	"random": {
-		"description": "Posting tautan wiki acak.",
+		"description": "Posting tautan wiki yang acak.",
 		"name": "acak",
 		"options[0].description": "Wiki untuk mencari.",
 		"options[0].name": "wiki",
