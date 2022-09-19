@@ -128,6 +128,7 @@ const descriptions = {
 	expandtemplates: 'expand_templates_intro',
 	apisandbox: 'apisandbox-intro',
 	abusefilter: 'abusefilter-intro',
+	abuselog: 'abusefilter-log-summary',
 	gadgets: 'gadgets-pagetext',
 	categorytree: 'categorytree-header',
 	drafts: 'drafts-view-summary&amargs=30',

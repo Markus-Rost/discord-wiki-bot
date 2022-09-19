@@ -511,7 +511,7 @@ li {
 .big-button img {
 	width: 60px;
 	height: 60px;
-	padding-right: 25px;
+	margin-right: 25px;
 }
 .server-selector {
 	display: flex;

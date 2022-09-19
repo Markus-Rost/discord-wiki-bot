@@ -27,7 +27,7 @@ export default function cmd_link(lang, msg, title, wiki, cmd = '') {
 		( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
 		? phabricator(lang, msg, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed)
-		).then( result => {
+		)?.then( result => {
 			if ( !result || isMessage(result) ) return result;
 			if ( result.message ) {
 				if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );

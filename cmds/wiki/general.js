@@ -126,7 +126,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 	if ( aliasInvoke === 'test' && !args.join('') && !querystring.toString() && !fragment && isMessage(msg) ) {
 		fn.test(lang, msg, [], '', wiki);
 		if ( reaction ) reaction.removeEmoji();
-		return;
+		return Promise.resolve();
 	}
 	if ( aliasInvoke === 'page' ) {
 		return Promise.resolve( {message: spoiler + '<' + wiki.toLink(args.join(' '), querystring, fragment) + '>' + spoiler} );
@@ -404,9 +404,28 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				}
 				querypage = Object.values(srbody.query.pages)[0];
 				querypage.uselang = uselang;
+				
+				var text = '';
+				var prefix = ( isMessage(msg)
+					? '`' + ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ) + cmd
+					: cmd.split(' ')[0] + ' `' + cmd.split(' ').slice(1).join(' ')
+				);
+				var linksuffix = ( isMessage(msg)
+					? ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' )
+					: ( querystring.toString() ? ' query:' + querystring : '' ) + ( fragment ? ' section:' + fragment : '' )
+				);
+				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replaceAll( '-', ' ' ).toLowerCase() ) {
+					text = '';
+				}
+				else if ( !srbody.continue ) {
+					text = '\n' + lang.get('search.infopage', prefix + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`');
+				}
+				else {
+					text = '\n' + lang.get('search.infosearch', prefix + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`', prefix + ( lang.localNames.search || 'search' ) + ' ' + title + linksuffix + '`');
+				}
+
 				if ( querypage.sectiontitle && !fragment ) fragment = querypage.sectiontitle;
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
-				var text = '';
 				var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
@@ -445,24 +464,6 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
 				}
 				catch {}
-				
-				var prefix = ( isMessage(msg)
-					? '`' + ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ) + cmd
-					: cmd.split(' ')[0] + ' `' + cmd.split(' ').slice(1).join(' ')
-				);
-				var linksuffix = ( isMessage(msg)
-					? ( querystring.toString() ? '?' + querystring : '' ) + ( fragment ? '#' + fragment : '' )
-					: ( querystring.toString() ? ' query:' + querystring : '' ) + ( fragment ? ' section:' + fragment : '' )
-				);
-				if ( title.replace( /[_-]/g, ' ' ).toLowerCase() === querypage.title.replaceAll( '-', ' ' ).toLowerCase() ) {
-					text = '';
-				}
-				else if ( !srbody.continue ) {
-					text = '\n' + lang.get('search.infopage', prefix + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`');
-				}
-				else {
-					text = '\n' + lang.get('search.infosearch', prefix + ( lang.localNames.page || 'page' ) + ' ' + title + linksuffix + '`', prefix + ( lang.localNames.search || 'search' ) + ' ' + title + linksuffix + '`');
-				}
 				
 				if ( querypage.categoryinfo ) {
 					var category = [lang.get('search.category.content')];

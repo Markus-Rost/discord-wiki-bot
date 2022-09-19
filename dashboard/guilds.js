@@ -167,7 +167,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 			$('<p>').html(dashboardLang.get('selector.invite', true, $('<code>').text(guild.name), $('<a>').attr('href', url))),
 			$('<div id="big-buttons">').append(
 				$('<a class="big-button" id="invite-button">').attr('href', url).text(dashboardLang.get('general.invite')).prepend(
-					$('<img alt="Wiki-Bot">').attr('src', '/src/icon.png')
+					$('<img class="avatar" alt="Wiki-Bot">').attr('src', '/src/icon.png')
 				)
 			)
 		);
@@ -252,7 +252,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 						$('<img alt="Discord">').attr('src', '/src/discord.svg')
 					),
 					$('<a class="big-button" id="invite-button">').attr('href', $('.guild#invite a').attr('href')).text(dashboardLang.get('general.invite')).prepend(
-						$('<img alt="Wiki-Bot">').attr('src', '/src/icon.png')
+						$('<img class="avatar" alt="Wiki-Bot">').attr('src', '/src/icon.png')
 					)
 				)
 			);

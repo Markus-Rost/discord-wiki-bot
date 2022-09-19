@@ -27,7 +27,7 @@ function slash_wiki(interaction, lang, wiki) {
 		return ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
 		? phabricator(lang, interaction, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, interaction, title, wiki, cmd, undefined, spoiler, noEmbed, query, fragment)
-		).then( result => {
+		)?.then( result => {
 			if ( !result || isMessage(result) ) return result;
 			let noEmoji = !interaction.appPermissions?.has(PermissionFlagsBits.UseExternalEmojis);
 			if ( result.message ) {

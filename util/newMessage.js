@@ -256,7 +256,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				return [JSON.stringify(embed), embed];
 			} )).values()].forEach( embed => msg.reactEmoji('⏳').then( reaction => {
 				logging(wiki, msg.guildId, 'inline', 'embed');
-				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section).then( result => {
+				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section)?.then( result => {
 					if ( !result || isMessage(result) ) return result;
 					if ( result.message ) {
 						if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
