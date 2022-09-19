@@ -79,10 +79,45 @@ function autocomplete_wiki(interaction, lang, wiki) {
 	if ( focused.name !== 'title' ) return;
 	const title = focused.value;
 	if ( !title.trim() ) {
-		if ( wiki.mainpage ) return interaction.respond( [{
-			name: wiki.mainpage,
-			value: wiki.mainpage
-		}] ).catch(log_error);
+		if ( wiki.wikifarm === 'fandom' && !Array.isArray(wiki.commonSearches) ) {
+			got.get( wiki + 'wikia.php?controller=SearchSeeding&method=getLocalSearchInfo&format=json', {
+				context: {
+					guildId: interaction.guildId
+				}
+			} ).then( response => {
+				var body = response.body;
+				if ( response.statusCode !== 200 || !Array.isArray(body?.search_phrases) ) {
+					if ( wiki.noWiki(response.url, response.statusCode) ) return;
+					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+						if ( option.options !== undefined ) return option.name;
+						return option.name + ':' + option.value;
+					} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + ( body?.details || body?.error ) );
+					return;
+				}
+				wiki.commonSearches = body.search_phrases.map( phrase => {
+					let term = phrase.term[0].toUpperCase() + phrase.term.slice(1);
+					return {
+						name: term,
+						value: term
+					};
+				} );
+			}, error => {
+				if ( error.name === 'TimeoutError' ) return;
+				if ( wiki.noWiki(error.message) ) return;
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+					if ( option.options !== undefined ) return option.name;
+					return option.name + ':' + option.value;
+				} ).join(' ') + '\n- Error while getting the common searches: ' + error );
+				return;
+			} );
+		}
+		if ( wiki.mainpage ) return interaction.respond( [
+			{
+				name: wiki.mainpage,
+				value: wiki.mainpage
+			},
+			...( wiki.commonSearches?.slice(0, 24) || [] )
+		] ).catch(log_error);
 		return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 			timeout: {
 				request: 2_000
@@ -107,16 +142,22 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
-				return interaction.respond( [{
-					name: wiki.mainpage || 'Main Page',
-					value: wiki.mainpage ?? ''
-				}] ).catch(log_error);
+				return interaction.respond( [
+					{
+						name: wiki.mainpage || 'Main Page',
+						value: wiki.mainpage ?? ''
+					},
+					...( wiki.commonSearches?.slice(0, 24) || [] )
+				] ).catch(log_error);
 			}
 			wiki.updateWiki(body.query.general);
-			return interaction.respond( [{
-				name: body.query.general.mainpage || 'Main Page',
-				value: body.query.general.mainpage ?? ''
-			}] ).catch(log_error);
+			return interaction.respond( [
+				{
+					name: body.query.general.mainpage || 'Main Page',
+					value: body.query.general.mainpage ?? ''
+				},
+				...( wiki.commonSearches?.slice(0, 24) || [] )
+			] ).catch(log_error);
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) {
@@ -129,10 +170,13 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- Error while getting the main page name: ' + error );
-			return interaction.respond( [{
-				name: wiki.mainpage || 'Main Page',
-				value: wiki.mainpage ?? ''
-			}] ).catch(log_error);
+			return interaction.respond( [
+				{
+					name: wiki.mainpage || 'Main Page',
+					value: wiki.mainpage ?? ''
+				},
+				...( wiki.commonSearches?.slice(0, 24) || [] )
+			] ).catch(log_error);
 		} );
 	}
 	if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'api.php?action=linksuggest&get=suggestions&query=' + encodeURIComponent( title ) + '&format=json', {

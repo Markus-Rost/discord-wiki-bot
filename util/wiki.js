@@ -84,6 +84,8 @@ export default class Wiki extends URL {
 				}
 			}
 		} );
+		/** @type {{name: String, value: String}[]?} */
+		this.commonSearches = null;
 		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
 		Wiki._cache.set(this.href, this);
 	}
