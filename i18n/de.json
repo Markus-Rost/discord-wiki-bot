@@ -859,6 +859,6 @@
 		"user_verified": "{{GENDER:$3|Discord-Benutzer|Discord-Benutzerin}} $1 wurde erfolgreich als {{GENDER:$3|Wiki-Benutzer|Wiki-Benutzerin}} $2 verifiziert.",
 		"user_verified_reply": "du wurdest erfolgreich als {{GENDER:$2|Wiki-Benutzer|Wiki-Benutzerin}} „$1“ verifiziert.",
 		"username": "Wiki-Benutzername:",
-		"wiki": "{{GENDER:$1|Wiki-Benutzer|Wiki-Benutzerin}}:"
+		"wiki": "{{GENDER:$1|Vom Wiki-Benutzer|Von der Wiki-Benutzerin}} angegeben:"
 	}
 }

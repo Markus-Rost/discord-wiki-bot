@@ -26,7 +26,7 @@
 		"theme-light": "ライトテーマを使う",
 		"title": "Wiki-Botの設定",
 		"verification": "認証",
-		"welcome": "<h2>Wiki-Bot ダッシュボードへようこそ。</h2>\n<p>Wiki-Botは、DiscordサーバーとMediaWikiで作られたWikiを連携させるために作られたDiscord Botです。Wikiページへのリンク、Wiki利用者の確認、Wikiの最新の変更についての情報提供などを行います。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[詳しく見る]</a></p>\n<p>ここでは、あなたがDiscordで「サーバー管理」権限を持っているサーバーの様々なBotの設定を変更することができます。まず、Discordアカウントを認証する必要がありますが、このボタンで認証できます。</p>"
+		"welcome": "<h2>Wiki-Bot ダッシュボードへようこそ。</h2>\n<p>Wiki-Botは、DiscordサーバーとMediaWikiで作られたWikiを連携させるために作られたDiscord Botです。Wikiページへのリンク、Wiki利用者の確認、Wikiの最新の変更についての情報提供などを行います。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[詳しく見る]</a></p>\n<p>ここでは、あなたがDiscordで「サーバー管理」権限を持っているサーバーの様々なBotの設定を変更することができます。まず、Discordアカウントを認証する必要がありますが、これらのボタンで認証できます。</p>"
 	},
 	"indexjs": {
 		"avatar": {
