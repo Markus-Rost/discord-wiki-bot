@@ -859,6 +859,6 @@
 		"user_verified": "El usuario de Discord $1 ha sido verificado con éxito como el usuario wiki $2.",
 		"user_verified_reply": "has sido verificado con éxito como el usuario wiki \"$1\".",
 		"username": "Nombre de usuario wiki:",
-		"wiki": "Usuario wiki:"
+		"wiki": "Proporcionado por el usuario wiki:"
 	}
 }
