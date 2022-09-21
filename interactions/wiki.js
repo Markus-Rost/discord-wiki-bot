@@ -94,8 +94,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + ( body?.details || body?.error ) );
 					return;
 				}
-				wiki.commonSearches = body.search_phrases.filter( phrase => phrase.term ).map( phrase => {
-					let term = phrase.term[0].toUpperCase() + phrase.term.slice(1);
+				wiki.commonSearches = body.search_phrases.map( phrase => phrase.term.toString() ).map( phrase => {
+					let term = phrase[0].toUpperCase() + phrase.slice(1);
 					return {
 						name: term,
 						value: term
