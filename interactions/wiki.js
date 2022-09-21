@@ -94,7 +94,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + ( body?.details || body?.error ) );
 					return;
 				}
-				wiki.commonSearches = body.search_phrases.map( phrase => {
+				wiki.commonSearches = body.search_phrases.filter( phrase => phrase.term ).map( phrase => {
 					let term = phrase.term[0].toUpperCase() + phrase.term.slice(1);
 					return {
 						name: term,
@@ -349,8 +349,14 @@ function autocomplete_section(interaction, lang, wiki) {
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the page sections: ' + body?.error?.info );
 			return;
 		}
-		body.parse.sections.forEach( fragment => {
+		body.parse.sections.forEach( (fragment, i) => {
 			fragment.line = htmlToPlain(fragment.line);
+			if ( /_\d+$/.test(fragment.anchor) && body.parse.sections.some( (testFragment, n) => {
+				if ( n >= i ) return false;
+				return testFragment.line === fragment.line;
+			} ) ) {
+				fragment.line += ' ' + fragment.anchor.split('_').pop();
+			}
 			fragment.anchor = fragment.anchor.replaceAll( wiki.spaceReplacement ?? '_', ' ' );
 		} );
 		sectionCache.set(wiki.toLink(title), body.parse.sections);

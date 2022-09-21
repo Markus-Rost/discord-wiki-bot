@@ -333,7 +333,8 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
 			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
-				if ( ++listlevel ) text += ' (';
+				if ( listlevel && horizontalList ) text += ' (';
+				listlevel++;
 			}
 			if ( tagname === 'li' && !horizontalList ) {
 				text = text.replace( /[ \u200b]+$/, '' );
@@ -447,8 +448,11 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'u' ) text += '__';
 			if ( tagname === 'dl' && horizontalList ) text = text.replace( /: $/, '' );
 			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
-				if ( horizontalList ) text = text.replace( / • $/, '' );
-				if ( listlevel-- ) text += ')';
+				listlevel--;
+				if ( horizontalList ) {
+					text = text.replace( / • $/, '' );
+					if ( listlevel ) text += ')';
+				}
 			}
 			if ( ( tagname === 'li' || tagname === 'dd' ) && horizontalList ) text += ' • ';
 			if ( tagname === 'dt' ) {

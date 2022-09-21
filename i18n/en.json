@@ -865,6 +865,6 @@
 		"user_verified": "Discord user $1 has been successfully verified as wiki user $2.",
 		"user_verified_reply": "you have been successfully verified as wiki user \"$1\".",
 		"username": "Wiki username:",
-		"wiki": "Wiki user:"
+		"wiki": "Provided by wiki user:"
 	}
 }
