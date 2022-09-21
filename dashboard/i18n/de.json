@@ -141,6 +141,7 @@
 			"title": "Nachricht gesendet!"
 		},
 		"sendfail": {
+			"note_nothread": "Der Thread konnte nicht gefunden werden, bitte gebe einen aktiven Thread an.",
 			"text": "Die Nachricht konnte nicht gesendet werden, bitte versuche es erneut.",
 			"title": "Senden fehlgeschlagen!"
 		},
