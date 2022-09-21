@@ -1,4 +1,4 @@
-import { ShardClientUtil, OAuth2Scopes } from 'discord.js';
+import { ShardClientUtil, OAuth2Scopes, ChannelType } from 'discord.js';
 import db from '../util/database.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -167,7 +167,7 @@ function slash_patreon(interaction, lang, wiki) {
 								return interaction.client.shard.broadcastEval( (discordClient, evalData) => {
 									if ( discordClient.guilds.cache.has(evalData.guild) ) {
 										return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-											return ( ( channel.isTextBased() && !channel.isThread() ) && evalData.rows.some( row => {
+											return ( ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === ChannelType.GuildForum ) && evalData.rows.some( row => {
 												return ( row.channel === '#' + channel.parentId );
 											} ) );
 										} ).map( channel => {

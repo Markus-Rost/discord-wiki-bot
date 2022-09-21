@@ -1,4 +1,4 @@
-import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ChannelType } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
 import db from '../util/database.js';
 import { got, splitMessage } from '../util/functions.js';
@@ -152,11 +152,12 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 			if ( args[1] === 'channel' ) {
 				var channels = args[2].replace( /\s*>?\s*[,|]\s*<?\s*/g, '|' ).split('|').filter( channel => channel.length );
 				if ( channels.length > 10 ) return msg.replyMsg( {content: lang.get('verification.channel_max'), components}, true );
+				let channelList = msg.guild.channels.cache.filter( gc => ( gc.isTextBased() && !gc.isThread() ) || gc.type === ChannelType.GuildForum );
 				channels = channels.map( channel => {
 					var new_channel = '';
-					if ( /^\d+$/.test(channel) ) new_channel = msg.guild.channels.cache.filter( gc => gc.isTextBased() && !gc.isThread() ).get(channel);
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isTextBased() && !gc.isThread() ).find( gc => gc.name === channel.replace( /^#/, '' ) );
-					if ( !new_channel ) new_channel = msg.guild.channels.cache.filter( gc => gc.isTextBased() && !gc.isThread() ).find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
+					if ( /^\d+$/.test(channel) ) new_channel = channelList.get(channel);
+					if ( !new_channel ) new_channel = channelList.find( gc => gc.name === channel.replace( /^#/, '' ) );
+					if ( !new_channel ) new_channel = channelList.find( gc => gc.name.toLowerCase() === channel.toLowerCase().replace( /^#/, '' ) );
 					return new_channel;
 				} );
 				if ( channels.some( channel => !channel ) ) return msg.replyMsg( {content: lang.get('verification.channel_missing'), components}, true );

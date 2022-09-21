@@ -344,6 +344,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 		member: userSettings.user.id,
 		guild: guild,
 		channel: ( type !== 'default' ? settings.channel : undefined ),
+		allowForum: true,
 		allowCategory: true
 	} ).then( response => {
 		if ( !response ) {

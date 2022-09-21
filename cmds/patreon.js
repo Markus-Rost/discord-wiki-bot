@@ -1,4 +1,4 @@
-import { ShardClientUtil, OAuth2Scopes } from 'discord.js';
+import { ShardClientUtil, OAuth2Scopes, ChannelType } from 'discord.js';
 import db from '../util/database.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -103,7 +103,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 							return msg.client.shard.broadcastEval( (discordClient, evalData) => {
 								if ( discordClient.guilds.cache.has(evalData.guild) ) {
 									return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-										return ( ( channel.isTextBased() && !channel.isThread() ) && evalData.rows.some( row => {
+										return ( ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === ChannelType.GuildForum ) && evalData.rows.some( row => {
 											return ( row.channel === '#' + channel.parentId );
 										} ) );
 									} ).map( channel => {
@@ -271,7 +271,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 								return discordClient.guilds.cache.has(guild);
 							} ).map( guild => {
 								return discordClient.guilds.cache.get(guild).channels.cache.filter( channel => {
-									return ( ( channel.isTextBased() && !channel.isThread() ) && evalData.rows.some( row => {
+									return ( ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === ChannelType.GuildForum ) && evalData.rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {

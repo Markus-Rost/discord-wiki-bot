@@ -205,7 +205,7 @@ function removePatreons(guild, msg) {
 							if ( discordClient.guilds.cache.has(evalData.guild) ) {
 								let rows = evalData.rows;
 								return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-									return ( ( channel.isTextBased() && !channel.isThread() ) && rows.some( row => {
+									return ( ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === Discord.ChannelType.GuildForum ) && rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {
@@ -311,14 +311,17 @@ function removeSettings(msg) {
 	if ( !isMessage(msg) ) return 'removeSettings(msg) – No message provided!';
 	return db.connect().then( client => {
 		var messages = [];
-		return msg.client.shard.broadcastEval( discordClient => {
+		return msg.client.shard.broadcastEval( (discordClient, evalData) => {
 			return [
 				[...discordClient.guilds.cache.keys()],
 				discordClient.channels.cache.filter( channel => {
-					return ( ( channel.isTextBased() && !channel.isThread() && channel.guildId ) || ( channel.type === Discord.ChannelType.GuildCategory && patreonGuildsPrefix.has(channel.guildId) ) );
-				} ).map( channel => ( channel.type === Discord.ChannelType.GuildCategory ? '#' : '' ) + channel.id )
+					return ( ( channel.isTextBased() && !channel.isThread() && channel.guildId ) || channel.type === evalData.GuildForum || ( channel.type === evalData.GuildCategory && patreonGuildsPrefix.has(channel.guildId) ) );
+				} ).map( channel => ( channel.type === evalData.GuildCategory ? '#' : '' ) + channel.id )
 			];
-		} ).then( results => {
+		}, {context: {
+			GuildForum: Discord.ChannelType.GuildForum,
+			GuildCategory: Discord.ChannelType.GuildCategory
+		}} ).then( results => {
 			var all_guilds = results.map( result => result[0] ).reduce( (acc, val) => acc.concat(val), [] );
 			var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
 			var guilds = [];

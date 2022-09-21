@@ -335,7 +335,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 							$('<select id="wb-settings-channel" name="channel">').append(
 								$('<option class="wb-settings-channel-default">').val('').text(dashboardLang.get('verification.form.select_channel')),
 								...guild.channels.filter( guildChannel => {
-									return ( ( hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) && hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel) ) || guildChannel.isCategory );
+									return ( ( hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) && hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel) && !guildChannel.isForum ) || guildChannel.isCategory );
 								} ).map( guildChannel => {
 									if ( guildChannel.isCategory ) {
 										curCat = $('<optgroup>').attr('label', guildChannel.name);
@@ -1149,7 +1149,8 @@ function send_button(res, userSettings, guild, type, settings) {
 		member: userSettings.user.id,
 		guild: guild,
 		channel: settings.channel,
-		thread: settings.thread
+		thread: settings.thread,
+		allowForum: true
 	} ).then( response => {
 		if ( !response ) {
 			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
@@ -1162,6 +1163,9 @@ function send_button(res, userSettings, guild, type, settings) {
 		}
 		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) || !( hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages) || hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) ) {
 			return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+		}
+		if ( ( settings.thread?.trim?.() || response.isForum ) && !response.thread ) {
+			return res(`/guild/${guild}/verification/${type}`, 'sendfail', 'nothread');
 		}
 		return db.query( 'SELECT lang FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {
 			var lang = new Lang(row?.lang);

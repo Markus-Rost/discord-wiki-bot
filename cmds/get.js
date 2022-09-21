@@ -97,7 +97,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 		}
 		
 		var channel = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
-			if ( discordClient.channels.cache.filter( channel => ( channel.isTextBased() && channel.guildId ) || channel.type === evalData.GuildCategory ).has(evalData.id) ) {
+			if ( discordClient.channels.cache.filter( channel => ( channel.isTextBased() && channel.guildId ) || channel.type === evalData.GuildForum || channel.type === evalData.GuildCategory ).has(evalData.id) ) {
 				var channel = discordClient.channels.cache.get(evalData.id);
 				return {
 					name: channel.name, id: channel.id, type: channel.type, parentId: channel.parentId,
@@ -108,7 +108,11 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 					shardId: process.env.SHARDS
 				};
 			}
-		}, {context: {id, defaultPermissions, GuildCategory: ChannelType.GuildCategory}} ).then( results => results.find( result => result ) );
+		}, {context: {
+			id, defaultPermissions,
+			GuildForum: ChannelType.GuildForum,
+			GuildCategory: ChannelType.GuildCategory
+		}} ).then( results => results.find( result => result ) );
 		if ( channel ) {
 			var channelguild = ['Guild:', escapeFormatting(channel.guild) + ' `' + channel.guildId + '`' + ( channel.pause ? '\\*' : '' )];
 			var channelname = ['Channel:', '#' + escapeFormatting(channel.name) + ' `' + channel.id + '` <#' + channel.id + '>'];

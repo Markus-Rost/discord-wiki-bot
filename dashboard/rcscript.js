@@ -83,7 +83,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	if ( !settings.channel || ( curChannel && hasPerm(curChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && hasPerm(curChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) ) {
 		channel.find('#wb-settings-channel').append(
 			...guildChannels.filter( guildChannel => {
-				return ( ( hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) || guildChannel.isCategory );
+				return ( ( hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && !guildChannel.isForum ) || guildChannel.isCategory );
 			} ).map( guildChannel => {
 				if ( guildChannel.isCategory ) {
 					curCat = $('<optgroup>').attr('label', guildChannel.name);
@@ -307,7 +307,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		}
 		settings.display = parseInt(settings.display, 10);
 		if ( type === 'new' && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-			return ( channel.id === settings.channel && !channel.isCategory );
+			return ( channel.id === settings.channel && !channel.isForum && !channel.isCategory );
 		} ) ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	}
 	if ( settings.delete_settings && type === 'new' ) {
@@ -487,7 +487,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			var newChannel = false;
 			if ( settings.save_settings && row.channel !== settings.channel ) {
 				if ( !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-					return ( channel.id === settings.channel && !channel.isCategory );
+					return ( channel.id === settings.channel && !channel.isForum && !channel.isCategory );
 				} ) ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				newChannel = true;
 			}

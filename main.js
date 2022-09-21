@@ -119,6 +119,8 @@ if ( process.env.dashboard ) {
 	/** @type {Object.<string, function(import('discord.js').Client, Object)>} */
 	const evalFunctions = {
 		getGuilds: (discordClient, evalData) => {
+			/** @type {import('discord.js').ChannelType.GuildForum} */
+			const GuildForum = 15;
 			/** @type {import('discord.js').ChannelType.GuildCategory} */
 			const GuildCategory = 4;
 			return Promise.all(
@@ -131,7 +133,7 @@ if ( process.env.dashboard ) {
 								memberCount: guild.memberCount,
 								botPermissions: guild.members.me.permissions.bitfield.toString(),
 								channels: guild.channels.cache.filter( channel => {
-									return ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === GuildCategory );
+									return ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === GuildForum || channel.type === GuildCategory );
 								} ).sort( (a, b) => {
 									let aVal = a.rawPosition + 1;
 									if ( a.isVoiceBased() ) aVal *= 1_000;
@@ -148,6 +150,7 @@ if ( process.env.dashboard ) {
 									return {
 										id: channel.id,
 										name: channel.name,
+										isForum: ( channel.type === GuildForum ),
 										isCategory: ( channel.type === GuildCategory ),
 										userPermissions: member.permissionsIn(channel).bitfield.toString(),
 										botPermissions: guild.members.me.permissionsIn(channel).bitfield.toString()
@@ -175,6 +178,8 @@ if ( process.env.dashboard ) {
 		},
 		getMember: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				/** @type {import('discord.js').ChannelType.GuildForum} */
+				const GuildForum = 15;
 				/** @type {import('discord.js').ChannelType.GuildCategory} */
 				const GuildCategory = 4;
 				let guild = discordClient.guilds.cache.get(evalData.guild);
@@ -187,9 +192,10 @@ if ( process.env.dashboard ) {
 					if ( evalData.channel ) {
 						/** @type {import('discord.js').BaseGuildTextChannel} */
 						let channel = guild.channels.cache.get(evalData.channel);
-						if ( ( channel?.isTextBased() && !channel.isThread() ) || ( response.patreon && evalData.allowCategory && channel?.type === GuildCategory ) ) {
+						if ( ( channel?.isTextBased() && !channel.isThread() ) || ( evalData.allowForum && channel?.type === GuildForum ) || ( response.patreon && evalData.allowCategory && channel?.type === GuildCategory ) ) {
 							response.userPermissions = channel.permissionsFor(member).bitfield.toString();
 							response.botPermissions = channel.permissionsFor(guild.members.me).bitfield.toString();
+							response.isForum = ( channel.type === GuildForum );
 							response.isCategory = ( channel.type === GuildCategory );
 							response.parentId = channel.parentId;
 							if ( evalData.thread ) {
@@ -204,7 +210,7 @@ if ( process.env.dashboard ) {
 					}
 					if ( evalData.newchannel ) {
 						let newchannel = guild.channels.cache.get(evalData.newchannel);
-						if ( newchannel?.isTextBased() && !newchannel.isThread() ) {
+						if ( ( newchannel?.isTextBased() && !newchannel.isThread() ) || ( evalData.allowForum && channel?.type === GuildForum ) ) {
 							response.userPermissionsNew = newchannel.permissionsFor(member).bitfield.toString();
 							response.botPermissionsNew = newchannel.permissionsFor(guild.members.me).bitfield.toString();
 						}

@@ -141,6 +141,7 @@
 			"title": "Message sent!"
 		},
 		"sendfail": {
+			"note_nothread": "The thread couldn't be found, please provide an active thread.",
 			"text": "The message could not be send, please try again.",
 			"title": "Sending failed!"
 		},

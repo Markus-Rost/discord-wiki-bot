@@ -116,6 +116,7 @@ if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
  * @typedef Channel
  * @property {String} id
  * @property {String} name
+ * @property {Boolean} isForum
  * @property {Boolean} isCategory
  * @property {Number} userPermissions
  * @property {Number} botPermissions
@@ -362,6 +363,9 @@ function createNotice($, notice, dashboardLang, args = []) {
 			type = 'error';
 			title.text(dashboardLang.get('notice.sendfail.title'));
 			text.text(dashboardLang.get('notice.sendfail.text'));
+			if ( typeof args[0] === 'string' ) {
+				note = $('<div>').text(dashboardLang.get('notice.sendfail.note_' + args[0]));
+			}
 			break;
 		case 'webhookfail':
 			type = 'info';
