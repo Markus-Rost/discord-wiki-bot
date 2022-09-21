@@ -141,6 +141,7 @@
 			"title": "¡Mensaje enviado!"
 		},
 		"sendfail": {
+			"note_nothread": "El hilo no se pudo encontrar, por favor proporciona un hilo activo.",
 			"text": "No se pudo enviar el mensaje, inténtalo de nuevo.",
 			"title": "¡Envío fallido!"
 		},
