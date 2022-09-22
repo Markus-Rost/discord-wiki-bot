@@ -861,6 +861,6 @@
 		"user_verified": "Discord使用者 $1 已成功以wiki使用者 $2 的身分通過驗證。",
 		"user_verified_reply": "您已成功以wiki使用者 $1 的身分通過驗證。",
 		"username": "Wiki使用者名稱：",
-		"wiki": "Wiki使用者："
+		"wiki": "Wiki使用者提供的："
 	}
 }
