@@ -861,6 +861,6 @@
 		"user_verified": "Discord 用户 $1 已成功验证为 wiki 用户 $2。",
 		"user_verified_reply": "您已成功验证为 wiki 用户“$1”。",
 		"username": "Wiki 用户名：",
-		"wiki": "Wiki 用户："
+		"wiki": "Wiki 用户提供的："
 	}
 }
