@@ -245,6 +245,7 @@
 			"avatar_preview": "Vorschau",
 			"button": "Nachricht mit Verifizierungsknopf senden",
 			"button_emoji": "Emoji des Knopfes (optional):",
+			"button_emoji_title": "Gebe ein personalisiertes Server-Emoji oder die Unicode-Darstellung eines Standard-Emojis an.",
 			"button_name": "Text des Knopfes:",
 			"button_name_default": "Wiki-Account-Verifizierung",
 			"button_style": "Aussehen des Knopfes:",
