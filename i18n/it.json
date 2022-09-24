@@ -817,6 +817,7 @@
 		"audit_reason": "Verificato come \"$1\"",
 		"button_again": "Controlla di nuovo",
 		"button_wrong_user": "Non puoi controllare di nuovo questa verifica, questa è una verifica di $1!",
+		"compromised": "*modificato da un utente diverso*",
 		"discord": "Utente Discord:",
 		"empty": "*vuoto*",
 		"error": "La verifica è fallita a causa di un errore.",
@@ -858,6 +859,6 @@
 		"user_verified": "L'utente Discord $1 è {{GENDER:$3|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki $2.",
 		"user_verified_reply": "sei {{GENDER:$2|stato verificato|stata verificata|statə verificatə}} con successo come l'utente della wiki \"$1\".",
 		"username": "Nome utente sulla wiki:",
-		"wiki": "Utente wiki:"
+		"wiki": "Fornito dall'utente wiki:"
 	}
 }
