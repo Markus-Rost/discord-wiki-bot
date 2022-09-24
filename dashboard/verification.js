@@ -462,7 +462,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 					),
 					$('<div>').append(
 						$('<label for="wb-settings-button_emoji">').text(dashboardLang.get('verification.form.button_emoji')),
-						$('<input type="text" id="wb-settings-button_emoji" name="button_emoji" pattern="^\\s*[^\\s`\\\\]{1,80}\\s*$" minlength="1" maxlength="80" inputmode="text" autocomplete="on">')
+						$('<input type="text" id="wb-settings-button_emoji" name="button_emoji" pattern="^\\s*[^\\s`\\\\]{1,80}\\s*$" minlength="1" maxlength="80" inputmode="text" autocomplete="on">').attr('title', dashboardLang.get('verification.form.button_emoji_title'))
 					),
 					$('<input type="submit" id="wb-settings-save" name="save_settings">').val(dashboardLang.get('verification.form.send_message'))
 				)

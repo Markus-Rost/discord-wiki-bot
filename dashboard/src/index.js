@@ -509,17 +509,17 @@ const prefix = document.getElementById('wb-settings-prefix');
 if ( prefix ) prefix.addEventListener( 'input', function() {
 	if ( prefix.validity.patternMismatch ) {
 		if ( prefix.value.trim().includes( ' ' ) ) {
-			prefix.setCustomValidity(lang('prefix.space'));
+			prefix.title = lang('prefix.space');
 		}
 		else if ( prefix.value.includes( '`' ) ) {
-			prefix.setCustomValidity(lang('prefix.code'));
+			prefix.title = lang('prefix.code');
 		}
 		else if ( prefix.value.includes( '\\' ) ) {
-			prefix.setCustomValidity(lang('prefix.backslash'));
+			prefix.title = lang('prefix.backslash');
 		}
-		else prefix.setCustomValidity('');
+		else prefix.title = '';
 	}
-	else prefix.setCustomValidity('');
+	else prefix.title = '';
 } );
 
 var textAreas = document.getElementsByTagName('textarea');

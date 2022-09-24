@@ -88,6 +88,10 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				var body = response.body;
 				if ( response.statusCode !== 200 || !Array.isArray(body?.search_phrases) ) {
 					if ( wiki.noWiki(response.url, response.statusCode) ) return;
+					if ( response.statusCode === 200 && Array.isArray(body) && body?.length === 0 ) {
+						wiki.commonSearches ??= [];
+						return;
+					}
 					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 						if ( option.options !== undefined ) return option.name;
 						return option.name + ':' + option.value;
