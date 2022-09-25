@@ -85,22 +85,15 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( response.statusCode !== 200 || !Array.isArray(body?.search_phrases) ) {
+			if ( response.statusCode !== 200 ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
-				if ( response.statusCode === 200 && Array.isArray(body) && body?.length === 0 ) {
-					wiki.commonSearches ??= [];
-					setTimeout( () => {
-						if ( wiki?.commonSearches?.length === 0 ) wiki.commonSearches = null;
-					}, 10_800_000 ).unref();
-					return;
-				}
 				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + ( body?.details || body?.error ) );
 				return;
 			}
-			if ( !body.search_phrases.length ) {
+			if ( !body?.search_phrases?.length ) {
 				wiki.commonSearches ??= [];
 				setTimeout( () => {
 					if ( wiki?.commonSearches?.length === 0 ) wiki.commonSearches = null;
