@@ -153,10 +153,14 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 	wiki.addEventListener( 'input', function() {
 		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
 			if ( this.validity.valid ) {
+				this.title = validationMessageInvalidURL;
 				this.setCustomValidity(validationMessageInvalidURL);
 			}
 		}
-		else this.setCustomValidity('');
+		else {
+			this.title = '';
+			this.setCustomValidity('');
+		}
 	} );
 	/** @type {HTMLButtonElement} */
 	const wikicheck = wiki.parentElement.children[wiki.id + '-check'];
@@ -209,6 +213,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 					noticeExtraParts.push(document.createElement('hr'), wikiEmbed);
 				}
 				if ( response.error ) {
+					wiki.title = lang('invalid.title');
 					wiki.setCustomValidity(lang('invalid.title'));
 					wikichecknotice.classList.add('notice-error');
 					var noticeTitle = document.createElement('b');
@@ -226,6 +231,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 				if ( !readonly ) wiki.value = response.wiki;
 				if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
 					if ( !response.MediaWiki ) {
+						wiki.title = lang('outdated.title');
 						wiki.setCustomValidity(lang('outdated.title'));
 						wikichecknotice.classList.add('notice-error');
 						var noticeTitle = document.createElement('b');
@@ -341,10 +347,14 @@ if ( avatar ) {
 	avatar.addEventListener( 'input', function() {
 		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
 			if ( this.validity.valid ) {
+				this.title = validationMessageInvalidURL;
 				this.setCustomValidity(validationMessageInvalidURL);
 			}
 		}
-		else this.setCustomValidity('');
+		else {
+			this.title = '';
+			this.setCustomValidity('');
+		}
 	} );
 	/** @type {HTMLButtonElement} */
 	const avatarbutton = document.getElementById('wb-settings-avatar-preview');
@@ -380,7 +390,8 @@ if ( avatar ) {
 				if ( !validContentTypes.includes( response.headers.get('content-type') ) ) {
 					avatarpreview.remove();
 					var invalidContentType = lang('avatar.content_type').replace( /\$1/g, response.headers.get('content-type') );
-					avatar.setCustomValidity(invalidContentType + '\n' + validContentTypes.join(', ') );
+					avatar.title = invalidContentType + '\n' + validContentTypes.join(', ');
+					avatar.setCustomValidity(invalidContentType + '\n' + validContentTypes.join(', '));
 					avatar.reportValidity();
 					return console.log( 'Invalid content type:', response.headers.get('content-type') );
 				}
@@ -389,6 +400,7 @@ if ( avatar ) {
 			}, function(error) {
 				console.log(error);
 				avatarpreview.remove();
+				avatar.title = lang('avatar.invalid_url');
 				avatar.setCustomValidity(lang('avatar.invalid_url'));
 				avatar.reportValidity();
 			} );

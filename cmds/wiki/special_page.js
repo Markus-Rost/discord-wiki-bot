@@ -121,21 +121,22 @@ const querypages = {
 }
 
 const descriptions = {
-	block: 'blockiptext&amargs=16|19',
-	checkuser: 'checkuser-summary&amargs=16|19',
-	resettokens: 'resettokens-text',
-	allmessages: 'allmessagestext',
-	expandtemplates: 'expand_templates_intro',
-	apisandbox: 'apisandbox-intro',
 	abusefilter: 'abusefilter-intro',
 	abuselog: 'abusefilter-log-summary',
-	gadgets: 'gadgets-pagetext',
-	categorytree: 'categorytree-header',
-	drafts: 'drafts-view-summary&amargs=30',
+	allmessages: 'allmessagestext',
 	analytics: 'analytics_confidential',
+	apisandbox: 'apisandbox-intro',
+	block: 'blockiptext&amargs=16|19',
+	categorytree: 'categorytree-header',
+	checkuser: 'checkuser-summary&amargs=16|19',
+	drafts: 'drafts-view-summary&amargs=30',
+	expandtemplates: 'expand_templates_intro',
+	gadgets: 'gadgets-pagetext',
+	interwiki: 'interwiki_intro',
 	jspages: 'content-review-special-js-description',
 	mostlinkedfilesincontent: 'mostimagesincontent-summary',
-	popularpages: 'insights-list-description-popularpages'
+	popularpages: 'insights-list-description-popularpages',
+	resettokens: 'resettokens-text'
 }
 
 /**

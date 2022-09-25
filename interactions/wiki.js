@@ -79,42 +79,128 @@ function autocomplete_wiki(interaction, lang, wiki) {
 	if ( focused.name !== 'title' ) return;
 	const title = focused.value;
 	if ( !title.trim() ) {
-		if ( wiki.wikifarm === 'fandom' && !Array.isArray(wiki.commonSearches) ) {
-			got.get( wiki + 'wikia.php?controller=SearchSeeding&method=getLocalSearchInfo&format=json', {
-				context: {
-					guildId: interaction.guildId
-				}
-			} ).then( response => {
-				var body = response.body;
-				if ( response.statusCode !== 200 || !Array.isArray(body?.search_phrases) ) {
-					if ( wiki.noWiki(response.url, response.statusCode) ) return;
-					if ( response.statusCode === 200 && Array.isArray(body) && body?.length === 0 ) {
-						wiki.commonSearches ??= [];
-						return;
-					}
-					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
-						if ( option.options !== undefined ) return option.name;
-						return option.name + ':' + option.value;
-					} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + ( body?.details || body?.error ) );
+		if ( wiki.commonSearches === null && wiki.wikifarm === 'fandom' ) got.get( wiki + 'wikia.php?controller=SearchSeeding&method=getLocalSearchInfo&format=json', {
+			context: {
+				guildId: interaction.guildId
+			}
+		} ).then( response => {
+			var body = response.body;
+			if ( response.statusCode !== 200 || !Array.isArray(body?.search_phrases) ) {
+				if ( wiki.noWiki(response.url, response.statusCode) ) return;
+				if ( response.statusCode === 200 && Array.isArray(body) && body?.length === 0 ) {
+					wiki.commonSearches ??= [];
+					setTimeout( () => {
+						if ( wiki?.commonSearches?.length === 0 ) wiki.commonSearches = null;
+					}, 10_800_000 ).unref();
 					return;
 				}
-				wiki.commonSearches = body.search_phrases.map( phrase => phrase.term.toString() ).map( phrase => {
-					let term = phrase[0].toUpperCase() + phrase.slice(1);
-					return {
-						name: term,
-						value: term
-					};
-				} );
-			}, error => {
-				if ( error.name === 'TimeoutError' ) return;
-				if ( wiki.noWiki(error.message) ) return;
 				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
-				} ).join(' ') + '\n- Error while getting the common searches: ' + error );
+				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + ( body?.details || body?.error ) );
 				return;
+			}
+			if ( !body.search_phrases.length ) {
+				wiki.commonSearches ??= [];
+				setTimeout( () => {
+					if ( wiki?.commonSearches?.length === 0 ) wiki.commonSearches = null;
+				}, 10_800_000 ).unref();
+				return;
+			}
+			wiki.commonSearches = body.search_phrases.map( phrase => phrase.term.toString() ).map( phrase => {
+				let term = phrase[0].toUpperCase() + phrase.slice(1);
+				return {
+					name: term,
+					value: term
+				};
 			} );
-		}
+		}, error => {
+			if ( error.name === 'TimeoutError' ) return;
+			if ( wiki.noWiki(error.message) ) return;
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- Error while getting the common searches: ' + error );
+			return;
+		} );
+		else if ( wiki.commonSearches === null && wiki.wikifarm === 'wikimedia' ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases&list=mostviewed&pvimlimit=50&format=json', {
+			context: {
+				guildId: interaction.guildId
+			}
+		} ).then( response => {
+			var body = response.body;
+			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
+				if ( wiki.noWiki(response.url, response.statusCode) ) return;
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+					if ( option.options !== undefined ) return option.name;
+					return option.name + ':' + option.value;
+				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + body?.error?.info );
+				return;
+			}
+			wiki.updateWiki(body.query.general, Object.values(body.query.namespaces), body.query.namespacealiases);
+			if ( !body.query.mostviewed?.length ) {
+				wiki.commonSearches ??= [];
+				setTimeout( () => {
+					if ( wiki?.commonSearches?.length === 0 ) wiki.commonSearches = null;
+				}, 10_800_000 ).unref();
+				return;
+			}
+			wiki.commonSearches = body.query.mostviewed.filter( phrase => {
+				if ( wiki.mainpage === phrase.title ) return false;
+				if ( phrase.ns === 4 || phrase.ns === 12 ) return true;
+				return wiki.namespaces.get(phrase.ns)?.content;
+			} ).map( phrase => {
+				return {
+					name: phrase.title,
+					value: phrase.title
+				};
+			} );
+		}, error => {
+			if ( error.name === 'TimeoutError' ) return;
+			if ( wiki.noWiki(error.message) ) return;
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- Error while getting the common searches: ' + error );
+			return;
+		} );
+		else if ( !wiki.commonSearches?.length ) got.get( wiki + 'api.php?action=query&list=random&rnnamespace=' + ( wiki.namespaces.content.map( ns => ns.id ).join('|') || '0' ) + '&rnfilterredir=nonredirects&rnlimit=50&format=json', {
+			context: {
+				guildId: interaction.guildId
+			}
+		} ).then( response => {
+			var body = response.body;
+			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.random ) {
+				if ( wiki.noWiki(response.url, response.statusCode) ) return;
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+					if ( option.options !== undefined ) return option.name;
+					return option.name + ':' + option.value;
+				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + body?.error?.info );
+				return;
+			}
+			wiki.commonSearches = body.query.random.filter( phrase => {
+				if ( wiki.mainpage === phrase.title ) return false;
+				return !phrase.title.includes('/');
+			} ).map( phrase => {
+				return {
+					name: phrase.title,
+					value: phrase.title
+				};
+			} );
+			setTimeout( () => {
+				if ( wiki?.commonSearches ) wiki.commonSearches = null;
+			}, 10_800_000 ).unref();
+		}, error => {
+			if ( error.name === 'TimeoutError' ) return;
+			if ( wiki.noWiki(error.message) ) return;
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				if ( option.options !== undefined ) return option.name;
+				return option.name + ':' + option.value;
+			} ).join(' ') + '\n- Error while getting the common searches: ' + error );
+			return;
+		} );
 		if ( wiki.mainpage ) return interaction.respond( [
 			{
 				name: wiki.mainpage,
