@@ -11,7 +11,9 @@
 		"hi": "patreon",
 		"it": "patreon",
 		"el": "patreon",
-		"pt-BR": "patreon"
+		"pt-BR": "patreon",
+		"en-GB": "patreon",
+		"en-US": "patreon"
 	},
 	"description": "Check or change your servers with patreon features enabled.",
 	"description_localizations": {
@@ -23,7 +25,9 @@
 		"hi": "सक्षम Patreon सुविधाों वाले अपने सर्वर देखें या बदलें।",
 		"it": "Controlla o modifica i tuoi server con le funzionalità patreon attive.",
 		"el": "Έλεγχος ή αλλαγή των διακομιστών σας με ενεργά τα χαρακτηριστικά patreon.",
-		"pt-BR": "Consulte ou modifique seus servidores que possuem ferramentas do Patreon ativadas."
+		"pt-BR": "Consulte ou modifique seus servidores que possuem ferramentas do Patreon ativadas.",
+		"en-GB": "Check or change your servers with patreon features enabled.",
+		"en-US": "Check or change your servers with patreon features enabled."
 	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
@@ -41,7 +45,9 @@
 				"hi": "जाँच",
 				"it": "controlla",
 				"el": "έλεγχος",
-				"pt-BR": "verificar"
+				"pt-BR": "verificar",
+				"en-GB": "check",
+				"en-US": "check"
 			},
 			"description": "Check your current list of servers with patreon features enabled.",
 			"description_localizations": {
@@ -53,7 +59,9 @@
 				"hi": "सक्षम Patreon सुविधाओं अपने वर्तमान सर्वरों की सूची देखें।",
 				"it": "Controlla la lista corrente dei tuoi server con le funzionalità patreon attive.",
 				"el": "Έλεγχος της τρέχουσας λίστας διακομιστών σας με ενεργοποιημένα τα χαρακτηριστικά patreon.",
-				"pt-BR": "Consulte a lista dos seus servidores que possuem ferramentas do Patreon ativadas."
+				"pt-BR": "Consulte a lista dos seus servidores que possuem ferramentas do Patreon ativadas.",
+				"en-GB": "Check your current list of servers with patreon features enabled.",
+				"en-US": "Check your current list of servers with patreon features enabled."
 			},
 			"options": []
 		},
@@ -69,7 +77,9 @@
 				"hi": "सक्षम",
 				"it": "attiva",
 				"el": "ενεργοποίηση",
-				"pt-BR": "ativar"
+				"pt-BR": "ativar",
+				"en-GB": "enable",
+				"en-US": "enable"
 			},
 			"description": "Enable the patreon features for a server.",
 			"description_localizations": {
@@ -81,7 +91,9 @@
 				"hi": "किसी सर्वर के लिए ‍Patreon सुविधाएँ सक्षम करें।",
 				"it": "Attiva le funzionalità patreon per un server.",
 				"el": "Ενεργοποίηση των χαρακτηριστικών patreon για ένα διακομιστή.",
-				"pt-BR": "Ativar as ferramentas do Patreon para um servidor."
+				"pt-BR": "Ativar as ferramentas do Patreon para um servidor.",
+				"en-GB": "Enable the patreon features for a server.",
+				"en-US": "Enable the patreon features for a server."
 			},
 			"options": [
 				{
@@ -96,7 +108,9 @@
 						"hi": "गिल्ड",
 						"it": "gilda",
 						"el": "συντεχνία",
-						"pt-BR": "servidor"
+						"pt-BR": "servidor",
+						"en-GB": "guild",
+						"en-US": "guild"
 					},
 					"description": "The server to enable patreon features for.",
 					"description_localizations": {
@@ -108,7 +122,9 @@
 						"hi": "सर्वर जिसके लिए Patreon सुविधाओं को सक्षम करना है।",
 						"it": "Il server per cui attivare le funzionalità patreon.",
 						"el": "Ο διακομιστής για ενεργοποίηση των χαρακτηριστικών patreon.",
-						"pt-BR": "O servidor que deve receber as ferramentas do Patreon."
+						"pt-BR": "O servidor que deve receber as ferramentas do Patreon.",
+						"en-GB": "The server to enable patreon features for.",
+						"en-US": "The server to enable patreon features for."
 					},
 					"min_length": 17,
 					"max_length": 20,
@@ -129,7 +145,9 @@
 				"hi": "अक्षम",
 				"it": "disattiva",
 				"el": "απενεργοποίηση",
-				"pt-BR": "desativar"
+				"pt-BR": "desativar",
+				"en-GB": "disable",
+				"en-US": "disable"
 			},
 			"description": "Disable the patreon features for a server.",
 			"description_localizations": {
@@ -141,7 +159,9 @@
 				"hi": "किसी सर्वर के‌ लिए Patreon सुविधाएँ अक्षम करें।",
 				"it": "Disattiva le funzionalità patreon per un server.",
 				"el": "Απενεργοποίηση των χαρακτηριστικών patreon για διακομιστή.",
-				"pt-BR": "Desativar as ferramentas do Patreon para um servidor."
+				"pt-BR": "Desativar as ferramentas do Patreon para um servidor.",
+				"en-GB": "Disable the patreon features for a server.",
+				"en-US": "Disable the patreon features for a server."
 			},
 			"options": [
 				{
@@ -156,7 +176,9 @@
 						"hi": "गिल्ड",
 						"it": "gilda",
 						"el": "συντεχνία",
-						"pt-BR": "servidor"
+						"pt-BR": "servidor",
+						"en-GB": "guild",
+						"en-US": "guild"
 					},
 					"description": "The server to disable patreon features for.",
 					"description_localizations": {
@@ -168,7 +190,9 @@
 						"hi": "सर्वर जिसके लिए Patreon सुविधाओं‌ को अक्षम करना है।",
 						"it": "Il server per cui disattivare le funzionalità patreon.",
 						"el": "Ο διακομιστής για απενεργοποίηση των χαρακτηριστικών patreon.",
-						"pt-BR": "O servidor que deve ter as ferramentas do Patreon desativadas."
+						"pt-BR": "O servidor que deve ter as ferramentas do Patreon desativadas.",
+						"en-GB": "The server to disable patreon features for.",
+						"en-US": "The server to disable patreon features for."
 					},
 					"min_length": 17,
 					"max_length": 20,

@@ -10,7 +10,9 @@
 		"it": "casuale",
 		"el": "τυχαίος",
 		"es-ES": "aleatorio",
-		"pt-BR": "aleatório"
+		"pt-BR": "aleatório",
+		"en-GB": "random",
+		"en-US": "random"
 	},
 	"description": "Post a random wiki link.",
 	"description_localizations": {
@@ -21,7 +23,9 @@
 		"it": "Posta un link casuale alla wiki.",
 		"el": "Δημοσίευση ενός τυχαίου συνδέσμου wiki.",
 		"es-ES": "Publica un enlace wiki aleatorio.",
-		"pt-BR": "Poste um link aleatório da wiki."
+		"pt-BR": "Poste um link aleatório da wiki.",
+		"en-GB": "Post a random wiki link.",
+		"en-US": "Post a random wiki link."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -39,7 +43,9 @@
 				"it": "wiki",
 				"tr": "wiki",
 				"el": "wiki",
-				"pt-BR": "wiki"
+				"pt-BR": "wiki",
+				"en-GB": "wiki",
+				"en-US": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -51,7 +57,9 @@
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
 				"el": "Το wiki προς αναζήτηση.",
-				"pt-BR": "A wiki a ser pesquisada."
+				"pt-BR": "A wiki a ser pesquisada.",
+				"en-GB": "The wiki to search in.",
+				"en-US": "The wiki to search in."
 			},
 			"required": false,
 			"autocomplete": true
@@ -67,7 +75,9 @@
 				"it": "namespace",
 				"el": "ονοματοχώρος",
 				"es-ES": "namespace",
-				"pt-BR": "espaço_nominal"
+				"pt-BR": "espaço_nominal",
+				"en-GB": "namespace",
+				"en-US": "namespace"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {
@@ -78,7 +88,9 @@
 				"it": "I namespace in cui cercare.",
 				"el": "Οι ονοματοχώροι προς αναζήτηση.",
 				"es-ES": "Los espacios de nombres en los que buscar.",
-				"pt-BR": "Os espaços nominais a serem pesquisados."
+				"pt-BR": "Os espaços nominais a serem pesquisados.",
+				"en-GB": "The namespaces to search in.",
+				"en-US": "The namespaces to search in."
 			},
 			"required": false,
 			"autocomplete": true
@@ -96,7 +108,9 @@
 				"it": "privato",
 				"tr": "private",
 				"el": "ιδιωτικό",
-				"pt-BR": "privado"
+				"pt-BR": "privado",
+				"en-GB": "private",
+				"en-US": "private"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -109,7 +123,9 @@
 				"it": "Invia una risposta visibile solo per te?",
 				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
 				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
-				"pt-BR": "Deseja que a resposta seja privada?"
+				"pt-BR": "Deseja que a resposta seja privada?",
+				"en-GB": "Send a response only visible to yourself?",
+				"en-US": "Send a response only visible to yourself?"
 			},
 			"required": false
 		},
@@ -126,7 +142,9 @@
 				"it": "noembed",
 				"tr": "noembed",
 				"el": "noembed",
-				"pt-BR": "sem_embed"
+				"pt-BR": "sem_embed",
+				"en-GB": "noembed",
+				"en-US": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -139,7 +157,9 @@
 				"it": "Invia solo il link senza embed?",
 				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
 				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
-				"pt-BR": "Enviar o link sem a pré-visualização?"
+				"pt-BR": "Enviar o link sem a pré-visualização?",
+				"en-GB": "Send only the link without embed?",
+				"en-US": "Send only the link without embed?"
 			},
 			"required": false
 		},
@@ -156,7 +176,9 @@
 				"it": "spoiler",
 				"tr": "spoiler",
 				"el": "σπόιλερ",
-				"pt-BR": "spoiler"
+				"pt-BR": "spoiler",
+				"en-GB": "spoiler",
+				"en-US": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -169,7 +191,9 @@
 				"it": "Nascondi il link e l'embed in uno spoiler?",
 				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
 				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
-				"pt-BR": "Ocultar o link como spoiler?"
+				"pt-BR": "Ocultar o link como spoiler?",
+				"en-GB": "Hide the link and embed in a spoiler?",
+				"en-US": "Hide the link and embed in a spoiler?"
 			},
 			"required": false
 		}
