@@ -18,7 +18,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "datetime-difference": "^1.0.2",
-    "discord-oauth2": "^2.10.0",
+    "discord-oauth2": "^2.10.1",
     "discord.js": "^14.5.0",
     "dotenv": "^16.0.2",
     "full-icu": "^1.5.0",
