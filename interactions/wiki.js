@@ -141,6 +141,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}
 			wiki.commonSearches = body.query.mostviewed.filter( phrase => {
 				if ( wiki.mainpage === phrase.title ) return false;
+				if ( phrase.title.includes('/') ) return false;
 				if ( phrase.ns === 4 || phrase.ns === 12 ) return true;
 				return wiki.namespaces.get(phrase.ns)?.content;
 			} ).map( phrase => {
