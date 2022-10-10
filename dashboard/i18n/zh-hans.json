@@ -245,6 +245,7 @@
 			"avatar_preview": "预览",
 			"button": "发送带有验证按钮的消息",
 			"button_emoji": "按钮的Emoji（可选）：",
+			"button_emoji_title": "提供自定义的服务器Emoji或Emoji的Unicode字符。",
 			"button_name": "按钮文本：",
 			"button_name_default": "wiki 账号验证",
 			"button_style": "按钮样式：",

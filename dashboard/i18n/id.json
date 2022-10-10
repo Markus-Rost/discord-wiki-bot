@@ -141,6 +141,7 @@
 			"title": "Pesan terkirim!"
 		},
 		"sendfail": {
+			"note_nothread": "Thread tidak ditemukan, harap berikan thread yang aktif.",
 			"text": "Pesan tidak dapat terkirim, harap coba lagi.",
 			"title": "Pengiriman gagal!"
 		},
@@ -244,6 +245,7 @@
 			"avatar_preview": "Pratinjau",
 			"button": "Kirim Pesan dengan Tombol Verifikasi",
 			"button_emoji": "Tombol emoji (opsional):",
+			"button_emoji_title": "Berikan emoji server khusus atau representasi Unicode dari emoji.",
 			"button_name": "Tombol teks:",
 			"button_name_default": "Verifikasi Akun Wiki",
 			"button_style": "Gaya tombol:",

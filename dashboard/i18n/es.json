@@ -245,6 +245,7 @@
 			"avatar_preview": "Vista previa",
 			"button": "Enviar Mensaje con Botón de Verificación",
 			"button_emoji": "Emoji del botón (opcional):",
+			"button_emoji_title": "Proporciona un emoji de servidor personalizado o la representación Unicode de un emoji.",
 			"button_name": "Texto del botón:",
 			"button_name_default": "Verificación de Cuenta Wiki",
 			"button_style": "Estilo del botón:",
