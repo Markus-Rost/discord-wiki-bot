@@ -102,7 +102,7 @@ export default class Wiki extends URL {
 			this.centralauth ||= project.wikiProject.extensions.includes('CentralAuth');
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
-		this.articlepath ??= articlepath;
+		if ( !this.proxyName ) this.articlepath = articlepath;
 		this.mainpage = '';
 		this.mainpageisdomainroot = false;
 		/** @type {mwNamespaceList} */
