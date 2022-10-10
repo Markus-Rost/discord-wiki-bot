@@ -7,28 +7,37 @@ const {defaultSettings} = require('./default.json');
 /** @type {String[]} - Sites that support verification using OAuth2. */
 export const oauthSites = [];
 
-/** @type {{name:String,regex:String,namePath:String,scriptPath:String,articlePath:String}[]} - Frontend proxy sites. */
-const proxySites = [
+/** @type {{name:String,regex:String,namePath:String,scriptPath:String,articlePath:String,relativeFix:(href:String,pagelink:String)=>String}[]} - Frontend proxy sites. */
+export const proxySites = [
 	{
 		name: '.breezewiki.com',
 		regex: '^https://([a-z\\d-]{1,50})\\.breezewiki\\.com(?:/.*)?$',
 		namePath: 'https://breezewiki.com/$1/',
 		scriptPath: 'https://$1.fandom.com/',
-		articlePath: 'https://breezewiki.com/$1/wiki/'
+		articlePath: 'https://breezewiki.com/$1/wiki/',
+		relativeFix: (href, pagelink) => {
+			return '/' + pagelink.split('/')[3] + href;
+		}
 	},
 	{
 		name: 'breezewiki.com',
 		regex: '^https://breezewiki\\.com/([a-z\\d-]{1,50})(?:/.*)?$',
 		namePath: 'https://breezewiki.com/$1/',
 		scriptPath: 'https://$1.fandom.com/',
-		articlePath: 'https://breezewiki.com/$1/wiki/'
+		articlePath: 'https://breezewiki.com/$1/wiki/',
+		relativeFix: (href, pagelink) => {
+			return '/' + pagelink.split('/')[3] + href;
+		}
 	},
 	{
 		name: 'breezewiki.pussthecat.org',
 		regex: '^https://breezewiki\\.pussthecat\\.org/([a-z\\d-]{1,50})(?:/.*)?$',
 		namePath: 'https://breezewiki.pussthecat.org/$1/',
 		scriptPath: 'https://$1.fandom.com/',
-		articlePath: 'https://breezewiki.com/$1/wiki/'
+		articlePath: 'https://breezewiki.com/$1/wiki/',
+		relativeFix: (href, pagelink) => {
+			return '/' + pagelink.split('/')[3] + href;
+		}
 	}
 ];
 
