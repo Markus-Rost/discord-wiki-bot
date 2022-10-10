@@ -7,8 +7,8 @@ const {defaultSettings} = require('./default.json');
 /** @type {String[]} - Sites that support verification using OAuth2. */
 export const oauthSites = [];
 
-/** @type {{name:String,regex:String,namePath:String,scriptPath:String,articlePath:String}[]} - Sites that support verification using OAuth2. */
-export const proxySites = [
+/** @type {{name:String,regex:String,namePath:String,scriptPath:String,articlePath:String}[]} - Frontend proxy sites. */
+const proxySites = [
 	{
 		name: '.breezewiki.com',
 		regex: '^https://([a-z\\d-]{1,50})\\.breezewiki\\.com(?:/.*)?$',
@@ -80,7 +80,9 @@ export default class Wiki extends URL {
 		}
 		this.proxyName = null;
 		let proxySite = proxySites.find( proxySite => proxySite.name.endsWith( this.hostname ) );
+		console.log(proxySite)
 		if ( proxySite ) {
+			console.log(this.href, new RegExp( proxySite.regex ))
 			let regex = this.href.match( new RegExp( proxySite.regex ) );
 			if ( regex ) {
 				this.proxyName = proxySite.namePath.replace( /\$(\d)/g, (match, n) => regex[n] );
@@ -360,6 +362,7 @@ export default class Wiki extends URL {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
 		const wiki = {
 			href: this.href,
+			name: this.name,
 			origin: this.origin,
 			protocol: this.protocol,
 			username: this.username,
@@ -371,6 +374,7 @@ export default class Wiki extends URL {
 			search: this.search,
 			searchParams: this.searchParams,
 			hash: this.hash,
+			proxyName: this.proxyName,
 			articlepath: this.articlepath,
 			articleURL: this.articleURL,
 			spaceReplacement: this.spaceReplacement,
