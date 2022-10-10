@@ -141,6 +141,7 @@
 			"title": "Messaggio inviato!"
 		},
 		"sendfail": {
+			"note_nothread": "Non è stato possibile trovare il thread, per favore fornisci un thread attivo.",
 			"text": "Non è stato possibile inviare il messaggio, riprova di nuovo.",
 			"title": "Invio fallito!"
 		},
@@ -244,6 +245,7 @@
 			"avatar_preview": "Anteprima",
 			"button": "Invia un messaggio con il Pulsante di Verifica",
 			"button_emoji": "Emoji pulsante (opzionale):",
+			"button_emoji_title": "Fornisci una emoji personalizzata dal server o il codice Unicode di una emoji.",
 			"button_name": "Testo pulsante:",
 			"button_name_default": "Verifica dell'account sulla wiki",
 			"button_style": "Stile pulsante:",
