@@ -2,6 +2,7 @@ name: Node.js CI
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
 jobs:
   runner-job:
     runs-on: ubuntu-latest
