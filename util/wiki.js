@@ -34,7 +34,7 @@ export const proxySites = [
 		regex: '^https://breezewiki\\.pussthecat\\.org/([a-z\\d-]{1,50})(?:/.*)?$',
 		namePath: 'https://breezewiki.pussthecat.org/$1/',
 		scriptPath: 'https://$1.fandom.com/',
-		articlePath: 'https://breezewiki.com/$1/wiki/',
+		articlePath: 'https://breezewiki.pussthecat.org/$1/wiki/',
 		relativeFix: (href, pagelink) => {
 			return '/' + pagelink.split('/')[3] + href;
 		}
