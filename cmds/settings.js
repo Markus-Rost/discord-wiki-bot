@@ -171,7 +171,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						}
 						if ( channel || !rows.some( row => row.channel === channelId ) ) wiki = new Wiki(wikinew);
 						if ( reaction ) reaction.removeEmoji();
-						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew + wikihelp, embeds: [embed], components}, true );
+						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew.name + wikihelp, embeds: [embed], components}, true );
 						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
 						if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 							console.log( '- Settings successfully removed.' );
