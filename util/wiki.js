@@ -7,6 +7,31 @@ const {defaultSettings} = require('./default.json');
 /** @type {String[]} - Sites that support verification using OAuth2. */
 export const oauthSites = [];
 
+/** @type {{name:String,regex:String,namePath:String,scriptPath:String,articlePath:String}[]} - Sites that support verification using OAuth2. */
+export const proxySites = [
+	{
+		name: '.breezewiki.com',
+		regex: '^https://([a-z\\d-]{1,50})\\.breezewiki\\.com(?:/.*)?$',
+		namePath: 'https://breezewiki.com/$1/',
+		scriptPath: 'https://$1.fandom.com/',
+		articlePath: 'https://breezewiki.com/$1/wiki/'
+	},
+	{
+		name: 'breezewiki.com',
+		regex: '^https://breezewiki\\.com/([a-z\\d-]{1,50})(?:/.*)?$',
+		namePath: 'https://breezewiki.com/$1/',
+		scriptPath: 'https://$1.fandom.com/',
+		articlePath: 'https://breezewiki.com/$1/wiki/'
+	},
+	{
+		name: 'breezewiki.pussthecat.org',
+		regex: '^https://breezewiki\\.pussthecat\\.org/([a-z\\d-]{1,50})(?:/.*)?$',
+		namePath: 'https://breezewiki.pussthecat.org/$1/',
+		scriptPath: 'https://$1.fandom.com/',
+		articlePath: 'https://breezewiki.com/$1/wiki/'
+	}
+];
+
 /** @type {Map<String, Wiki>} - Cache of Wikis. */
 const CACHE = new Map();
 
@@ -50,8 +75,18 @@ export default class Wiki extends URL {
 	constructor(wiki = defaultSettings.wiki, base = defaultSettings.wiki) {
 		super(wiki, base);
 		this.protocol = 'https';
-		if ( Wiki._cache.has(this.href) ) {
-			return Wiki._cache.get(this.href);
+		if ( Wiki._cache.has(this.name) ) {
+			return Wiki._cache.get(this.name);
+		}
+		this.proxyName = null;
+		let proxySite = proxySites.find( proxySite => proxySite.name.endsWith( this.hostname ) );
+		if ( proxySite ) {
+			let regex = this.href.match( new RegExp( proxySite.regex ) );
+			if ( regex ) {
+				this.proxyName = proxySite.namePath.replace( /\$(\d)/g, (match, n) => regex[n] );
+				this.href = proxySite.scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
+				this.articlepath = proxySite.articlePath.replace( /\$(\d)/g, (match, n) => regex[n] ) + '$1';
+			}
 		}
 		let articlepath = this.pathname + 'index.php?title=$1';
 		this.gamepedia = this.hostname.endsWith( '.gamepedia.com' );
@@ -67,7 +102,7 @@ export default class Wiki extends URL {
 			this.centralauth ||= project.wikiProject.extensions.includes('CentralAuth');
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
-		this.articlepath = articlepath;
+		this.articlepath ??= articlepath;
 		this.mainpage = '';
 		this.mainpageisdomainroot = false;
 		/** @type {mwNamespaceList} */
@@ -87,7 +122,15 @@ export default class Wiki extends URL {
 		/** @type {{name: String, value: String}[]?} */
 		this.commonSearches = null;
 		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
-		Wiki._cache.set(this.href, this);
+		Wiki._cache.set(this.name, this);
+	}
+
+	/**
+	 * Proxy name or script path of the Wiki.
+	 * @type {String}
+	 */
+	get name() {
+		return this.proxyName || this.href;
 	}
 
 	/**
@@ -127,7 +170,7 @@ export default class Wiki extends URL {
 	updateWiki({servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, gamepedia = 'false'}, namespaces, namespacealiases) {
 		this.hostname = servername;
 		this.pathname = scriptpath + '/';
-		this.articlepath = articlepath;
+		if ( !this.proxyName ) this.articlepath = articlepath;
 		this.mainpage = mainpage;
 		this.mainpageisdomainroot = ( mainpageisdomainroot !== undefined );
 		this.centralauth = ( centralidlookupprovider === 'CentralAuth' );
@@ -155,10 +198,10 @@ export default class Wiki extends URL {
 				this.namespaces.set(ns.id, ns);
 			} );
 		}
-		if ( this !== Wiki._cache.get(this.href) ) {
-			if ( !Wiki._cache.has(this.href) ) Wiki._cache.set(this.href, this);
+		if ( this !== Wiki._cache.get(this.name) ) {
+			if ( !Wiki._cache.has(this.name) ) Wiki._cache.set(this.name, this);
 			else Wiki._cache.forEach( (wiki, href) => {
-				if ( wiki.href === this.href && wiki !== this ) {
+				if ( wiki.name === this.name && wiki !== this ) {
 					Wiki._cache.set(href, this);
 				}
 			} );

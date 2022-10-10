@@ -20,10 +20,10 @@ function getWiki(wiki) {
 	if ( newWiki ) return Promise.resolve(new Wiki(newWiki));
 	wiki = Wiki.fromInput(wiki);
 	if ( !wiki ) return Promise.reject();
-	if ( knownWikis.has(wiki.href) ) return Promise.resolve(wiki);
-	return db.query( '(SELECT wiki FROM discord WHERE wiki = $1 LIMIT 1) UNION (SELECT prefixwiki FROM subprefix WHERE prefixwiki = $1 LIMIT 1)', [wiki.href] ).then( ({rows}) => {
+	if ( knownWikis.has(wiki.name) ) return Promise.resolve(wiki);
+	return db.query( '(SELECT wiki FROM discord WHERE wiki = $1 LIMIT 1) UNION (SELECT prefixwiki FROM subprefix WHERE prefixwiki = $1 LIMIT 1)', [wiki.name] ).then( ({rows}) => {
 		if ( rows.length ) {
-			knownWikis.add(wiki.href);
+			knownWikis.add(wiki.name);
 			return wiki;
 		}
 		return Promise.reject();
@@ -118,7 +118,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} ).join(' ') + '\n- Error while getting the interwiki: ' + error );
 	} );
 	/** @type {[String[], String[]]} */
-	var wikiList = [new Set([wiki.href]), new Set()];
+	var wikiList = [new Set([wiki.name]), new Set()];
 	return ( interaction.inGuild() ? db.query( '(SELECT wiki FROM discord WHERE guild = $1) UNION (SELECT prefixwiki FROM subprefix WHERE guild = $1)', [interaction.guildId] ).then( ({rows}) => {
 		rows.forEach( row => {
 			if ( row.wiki.startsWith( 'https://' ) ) wikiList[0].add( row.wiki );
@@ -177,7 +177,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			} ).flat(),
 			inputToWikiProject(input)?.fullScriptPath
 		].filter( suggestion => suggestion ).map( suggestion => {
-			if ( Wiki._cache.has(suggestion) ) return Wiki._cache.get(suggestion).href;
+			if ( Wiki._cache.has(suggestion) ) return Wiki._cache.get(suggestion).name;
 			return suggestion;
 		} );
 		return interaction.respond( [...new Set(suggestions)].map( suggestion => {

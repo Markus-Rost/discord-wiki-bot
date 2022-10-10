@@ -161,7 +161,7 @@ function formathelp(messages, msg, lang, wiki) {
 	} ).map( message => {
 		if ( restrictions.slash.includes( message ) ) {
 			let slash = msg.client.application.commands.cache.find( cmd => cmd.name === lang.get('help.list.' + message + '.cmd') );
-			return '🔹 ' + `</${slash.name}:${slash.id}>` + '\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc') + ( message === 'slash.wiki' ? ' `' + wiki.href + '`' : '' );
+			return '🔹 ' + `</${slash.name}:${slash.id}>` + '\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc') + ( message === 'slash.wiki' ? ' `' + wiki.toLink() + '`' : '' );
 		}
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );
@@ -187,7 +187,7 @@ function formathelp(messages, msg, lang, wiki) {
 			} );
 			return text.join('\n');
 		}
-		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '`\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc', prefix) + ( message === 'default' ? ' `' + wiki.href + '`' : '' );
+		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '`\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc', prefix) + ( message === 'default' ? ' `' + wiki.toLink() + '`' : '' );
 	} ).join('\n');
 }
 

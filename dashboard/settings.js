@@ -399,9 +399,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 		wikiSubprefixes.forEach( (subprefix, s) => {
 			subprefix[1] = Wiki.fromInput(subprefix[1]);
 			if ( !subprefix[1] ) return;
-			if ( subprefix[1].href === wiki.href ) subprefix[1] = wiki;
+			if ( subprefix[1].name === wiki.name ) subprefix[1] = wiki;
 			else for (let sp = 0; sp < s; sp++) {
-				if ( subprefix[1].href === wikiSubprefixes[sp][1]?.href ) subprefix[1] = wikiSubprefixes[sp][1];
+				if ( subprefix[1].name === wikiSubprefixes[sp][1]?.name ) subprefix[1] = wikiSubprefixes[sp][1];
 			}
 		} );
 		if ( !wiki || wikiSubprefixes.some( subprefix => !subprefix[1] ) ) return res(`/guild/${guild}/settings`, 'savefail');
@@ -448,9 +448,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 					if ( statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {
 						console.log( '- Dashboard: ' + statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						let ignoreError = true;
-						if ( testWiki === wiki && testWiki.href !== row?.wiki ) ignoreError = false;
+						if ( testWiki === wiki && testWiki.name !== row?.wiki ) ignoreError = false;
 						wikiSubprefixes.forEach( subprefix => {
-							if ( subprefix[1] === testWiki && subprefix[1].href !== row?.subprefix.get(subprefix[0]) ) ignoreError = false;
+							if ( subprefix[1] === testWiki && subprefix[1].name !== row?.subprefix.get(subprefix[0]) ) ignoreError = false;
 						} );
 						if ( ignoreError ) return;
 						if ( body?.error?.info === 'You need read permission to use this module.' ) {
@@ -497,7 +497,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			}
 			return Promise.reject();
 		} ).then( row => {
-			wikiSubprefixes.forEach( subprefix => subprefix[1] = subprefix[1].href );
+			wikiSubprefixes.forEach( subprefix => subprefix[1] = subprefix[1].name );
 			var lang = new Lang(( type === 'default' && settings.lang || row?.guildlang ));
 			if ( type === 'default' ) {
 				if ( settings.channel || !settings.lang || ( !response.patreon !== !settings.prefix ) ) {
@@ -511,7 +511,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					if ( settings.prefix_space ) settings.prefix += ' ';
 				}
 				let defaultSubprefixes = new Map(defaultSettings.subprefixes);
-				if ( !row ) return db.query( 'INSERT INTO discord(wiki, lang, role, inline, prefix, guild, main) VALUES ($1, $2, $3, $4, $5, $6, $6)', [wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild] ).then( () => {
+				if ( !row ) return db.query( 'INSERT INTO discord(wiki, lang, role, inline, prefix, guild, main) VALUES ($1, $2, $3, $4, $5, $6, $6)', [wiki.name, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild] ).then( () => {
 					let updateSubprefix = false;
 					subprefixes.forEach( subprefix => {
 						if ( defaultSubprefixes.get(subprefix[0]) !== subprefix[1] ) updateSubprefix = true;
@@ -524,7 +524,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					console.log( '- Dashboard: Settings successfully saved: ' + guild );
 					res(`/guild/${guild}/settings`, 'save');
 					var text = lang.get('settings.dashboard.updated', `<@${userSettings.user.id}>`);
-					text += '\n' + lang.get('settings.currentwiki') + ` <${wiki.href}>`;
+					text += '\n' + lang.get('settings.currentwiki') + ` <${wiki.name}>`;
 					text += '\n' + lang.get('settings.currentlang') + ` \`${allLangs[settings.lang]}\``;
 					text += '\n' + lang.get('settings.currentrole') + ( settings.role ? ` <@&${settings.role}>` : ' @everyone' );
 					if ( response.patreon ) {
@@ -554,9 +554,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 				var updateGuild = false;
 				var updateChannel = false;
 				var updateSubprefix = false;
-				if ( row.wiki !== wiki.href ) {
+				if ( row.wiki !== wiki.name ) {
 					updateGuild = true;
-					diff.push(lang.get('settings.currentwiki') + ` ~~<${row.wiki}>~~ → <${wiki.href}>`);
+					diff.push(lang.get('settings.currentwiki') + ` ~~<${row.wiki}>~~ → <${wiki.name}>`);
 				}
 				if ( row.lang !== settings.lang ) {
 					updateChannel = true;
@@ -594,7 +594,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						if ( updateGuild || updateChannel ) {
 							dbupdate.push([
 								'UPDATE discord SET wiki = $1, lang = $2, role = $3, inline = $4, prefix = $5 WHERE guild = $6 AND channel IS NULL',
-								[wiki.href, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild]
+								[wiki.name, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.prefix || process.env.prefix ), guild]
 							]);
 						}
 					}
@@ -602,7 +602,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 						if ( updateGuild ) {
 							dbupdate.push([
 								'UPDATE discord SET wiki = $1 WHERE guild = $2 AND channel IS NULL',
-								[wiki.href, guild]
+								[wiki.name, guild]
 							]);
 						}
 						if ( updateChannel ) {
@@ -647,7 +647,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 			( !response.patreon && ( settings.lang || settings.role || settings.inline ) ) ) {
 				return res(`/guild/${guild}/settings`, 'savefail');
 			}
-			if ( row.wiki === wiki.href && ( !response.patreon || 
+			if ( row.wiki === wiki.name && ( !response.patreon || 
 			( row.lang === settings.lang && row.inline === ( settings.inline ? null : 1 ) && row.role === ( settings.role || null ) ) ) ) {
 				if ( type === 'new' ) {
 					return res(`/guild/${guild}/settings/${type}`, 'nochange');
@@ -678,9 +678,9 @@ function update_settings(res, userSettings, guild, type, settings) {
 				var diff = [];
 				var file = [];
 				var useEmbed = false;
-				if ( channel.wiki !== wiki.href ) {
+				if ( channel.wiki !== wiki.name ) {
 					useEmbed = true;
-					diff.push(lang.get('settings.currentwiki') + ` ~~<${channel.wiki}>~~ → <${wiki.href}>`);
+					diff.push(lang.get('settings.currentwiki') + ` ~~<${channel.wiki}>~~ → <${wiki.name}>`);
 				}
 				if ( response.patreon && channel.lang !== settings.lang ) {
 					file.push(`./i18n/widgets/${settings.lang}.png`);
@@ -697,7 +697,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					return res(`/guild/${guild}/settings/${settings.channel}`, 'save');
 				}
 				let sql = 'UPDATE discord SET wiki = $1, lang = $2, role = $3, inline = $4 WHERE guild = $5 AND channel = $6';
-				let sqlargs = [wiki.href, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, ( response.isCategory ? '#' : '' ) + settings.channel];
+				let sqlargs = [wiki.name, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), guild, ( response.isCategory ? '#' : '' ) + settings.channel];
 				if ( channel === row ) {
 					sql = 'INSERT INTO discord(wiki, lang, role, inline, guild, channel, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(row.prefix);
