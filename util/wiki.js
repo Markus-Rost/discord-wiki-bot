@@ -79,10 +79,8 @@ export default class Wiki extends URL {
 			return Wiki._cache.get(this.name);
 		}
 		this.proxyName = null;
-		let proxySite = proxySites.find( proxySite => proxySite.name.endsWith( this.hostname ) );
-		console.log(proxySite)
+		let proxySite = proxySites.find( proxySite => this.hostname.endsWith( proxySite.name ) );
 		if ( proxySite ) {
-			console.log(this.href, new RegExp( proxySite.regex ))
 			let regex = this.href.match( new RegExp( proxySite.regex ) );
 			if ( regex ) {
 				this.proxyName = proxySite.namePath.replace( /\$(\d)/g, (match, n) => regex[n] );
