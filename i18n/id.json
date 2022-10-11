@@ -306,11 +306,11 @@
 					"desc": "Saya akan mengubah bahasa untuk server ini."
 				},
 				"prefix": {
-					"cmd": "settings prefix <prefix>",
+					"cmd": "settings prefix <awalan>",
 					"desc": "Saya akan mengubah awalan untuk server ini."
 				},
 				"role": {
-					"cmd": "settings role <role>",
+					"cmd": "settings role <kedudukan>",
 					"desc": "Saya akan mengubah peran minimal yang diperlukan untuk menggunakan perintah untuk server ini."
 				},
 				"wiki": {
@@ -356,7 +356,7 @@
 					"desc": "Saya akan mengubah usia akun minimal (dalam hari) untuk verifikasi wiki."
 				},
 				"add": {
-					"cmd": "verification add <role>",
+					"cmd": "verification add <kedudukan>",
 					"desc": "Saya akan menambahkan verifikasi wiki baru. Menerima `|` daftar terpisah."
 				},
 				"channel": {
