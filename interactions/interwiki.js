@@ -91,7 +91,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
@@ -112,7 +114,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the interwiki: ' + error );
@@ -126,7 +130,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} );
 		return [true, wikiList[1].size];
 	}, dberror => {
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the wiki list: ' + dberror );

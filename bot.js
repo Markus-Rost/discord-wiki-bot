@@ -209,7 +209,9 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 	}
 	else if ( interaction.isChatInputCommand() ) {
 		if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
-		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') );
