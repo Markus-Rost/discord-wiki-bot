@@ -113,6 +113,20 @@
 		"options[4].description": "Hide the link and embed in a spoiler?",
 		"options[4].name": "spoiler"
 	},
+	"user": {
+		"description": "Post information about a wiki user.",
+		"name": "user",
+		"options[0].description": "The user to show information of.",
+		"options[0].name": "username",
+		"options[1].description": "The wiki to search in.",
+		"options[1].name": "wiki",
+		"options[2].description": "Send a response only visible to yourself?",
+		"options[2].name": "private",
+		"options[3].description": "Send only the link without embed?",
+		"options[3].name": "noembed",
+		"options[4].description": "Hide the link and embed in a spoiler?",
+		"options[4].name": "spoiler"
+	},
 	"verify": {
 		"description": "Verify your Discord account with your wiki account.",
 		"name": "verify",

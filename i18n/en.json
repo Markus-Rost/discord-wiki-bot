@@ -414,6 +414,7 @@
 		"notitle": "The used page title doesn't exist!",
 		"nowiki": "The used wiki doesn't exist!",
 		"random": "(All content namespaces)",
+		"user": "Please provide a username or valid IP.",
 		"verify": "Please provide your wiki username to use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
 	},
 	"invite": {
