@@ -279,6 +279,7 @@ if ( process.env.dashboard ) {
 								emoji: ( evalData.button_emoji ? ( guild.emojis.cache.find( emoji => emoji.name === evalData.button_emoji ) ?? evalData.button_emoji ) : null )
 							}]
 						}] : [] ),
+						embeds: evalData.embeds ?? [],
 						threadId: evalData.thread,
 						allowedMentions: {parse: []}
 					} ).then( message => message?.id, globalThis.log_error ).then( message => {

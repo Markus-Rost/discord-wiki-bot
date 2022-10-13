@@ -33,6 +33,9 @@
 			"content_type": "The provided link has the content type $1, but only the following content types are allowed:",
 			"invalid_url": "The URL couldn't be resolved to a valid image file."
 		},
+		"embeds": {
+			"json": "The embeds object is not valid, please provide a valid JSON array with Discord embed objects."
+		},
 		"invalid": {
 			"note_http": "The provided website doesn't have a valid TLS/SSL certificate! For security reasons only wikis using HTTPS are supported.",
 			"note_private": "The provided wiki is private!",
@@ -141,6 +144,7 @@
 			"title": "Message sent!"
 		},
 		"sendfail": {
+			"note_embeds": "The embeds object was not valid, please provide a valid JSON array with Discord embed objects.",
 			"note_nothread": "The thread couldn't be found, please provide an active thread.",
 			"text": "The message could not be send, please try again.",
 			"title": "Sending failed!"
@@ -258,6 +262,9 @@
 			"content": "Message content (optional):",
 			"content_placeholder": "Markdown text of the message, supports masked links.",
 			"editcount": "Minimal edit count:",
+			"embeds": "Message Embeds (optional):",
+			"embeds_help": "Help: [Embed Visualizer]($1)",
+			"embeds_placeholder": "JSON array of Discord message embeds.",
 			"entry": "Verification #$1",
 			"flag_logall": "Log unsuccessful verifications:",
 			"flag_private": "Private command responses:",
