@@ -128,7 +128,7 @@ function interaction_verify(interaction, lang, wiki) {
 		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
 			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
 		}
-		if ( wiki.wikifarm === 'fandom' ) username = username.replace( /^userprofile\s*:\s*/i, '' );
+		if ( wiki.wikifarm === 'fandom' ) username = username.replace( /^(?:\/verify username|userprofile\s*):\s*/i, '' );
 		
 		if ( !username.trim() ) {
 			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), ephemeral: true} ).catch(log_error);

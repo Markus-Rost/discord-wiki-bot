@@ -10,15 +10,24 @@ import wiki_diff from '../cmds/wiki/diff.js';
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_diff(interaction, lang, wiki) {
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
-		var args = [];
-		let subcommand = interaction.options.getSubcommand();
-		if ( subcommand === 'page' ) args.push(interaction.options.getString('title'));
-		else {
-			args.push(interaction.options.getInteger('diffid').toString());
-			if ( subcommand === 'relative' ) args.push(interaction.options.getString('compare') ?? 'prev');
-			else if ( subcommand === 'multiple' ) args.push(interaction.options.getInteger('oldid').toString());
+	var args = [];
+	let subcommand = interaction.options.getSubcommand();
+	if ( subcommand === 'page' ) {
+		let title = interaction.options.getString('title')?.trim();
+		if ( !title ) {
+			return interaction.reply( {
+				content: lang.uselang(interaction.locale).get('interaction.notitle'),
+				ephemeral: true
+			} ).catch(log_error);
 		}
+		args.push(title);
+	}
+	else {
+		args.push(interaction.options.getInteger('diffid').toString());
+		if ( subcommand === 'relative' ) args.push(interaction.options.getString('compare') ?? 'prev');
+		else if ( subcommand === 'multiple' ) args.push(interaction.options.getInteger('oldid').toString());
+	}
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
 		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 		var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';

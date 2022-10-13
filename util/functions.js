@@ -1,5 +1,6 @@
 import { Message, PermissionFlagsBits } from 'discord.js';
 import { Parser as HTMLParser } from 'htmlparser2';
+import { embedLength } from '@discordjs/builders';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
 const got = gotDefault.extend( {
@@ -28,17 +29,11 @@ const oauthVerify = new Map();
 
 /**
 * The accumulated length for the embed title, description, fields, footer text, and author name.
-* @param {EmbedBuilder} embed
+* @param {import('discord.js').EmbedBuilder} embed
 * @returns {number}
 */
 function getEmbedLength(embed) {
-	return (
-		(embed.data.title?.length ?? 0) +
-		(embed.data.description?.length ?? 0) +
-		(embed.data.fields?.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) ?? 0) +
-		(embed.data.footer?.text.length ?? 0) +
-		(embed.data.author?.name.length ?? 0)
-	);
+	return embedLength(embed.data);
 }
 
 /**
@@ -89,17 +84,17 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			break;
 		}
 		case 'panel': {
-			let embedLength = embed.data.fields?.length ?? 0;
+			let fieldsLength = embed.data.fields?.length ?? 0;
 			infobox.data.value.forEach( group => {
 				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
 			embed.data.fields = embed.data.fields?.filter( (field, i, fields) => {
-				if ( i < embedLength ) return true;
+				if ( i < fieldsLength ) return true;
 				// remove header followed by header or section
 				if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 				return ( fields[i + 1]?.name && fields[i + 1].name !== '\u200b' );
 			} ).filter( (field, i, fields) => {
-				if ( i < embedLength ) return true;
+				if ( i < fieldsLength ) return true;
 				// remove section followed by section
 				if ( field.name !== '\u200b' || field.value.startsWith( '__**' ) ) return true;
 				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || fields[i + 1].value.startsWith( '__**' ) ) );
