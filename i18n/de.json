@@ -319,20 +319,11 @@
 				}
 			},
 			"slash": {
-				"inline": {
-					"desc": "Sende eine Nachricht mit Inline-Links zum Wiki."
-				},
 				"interwiki": {
 					"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen MediaWiki-Projekt."
 				},
-				"overview": {
-					"desc": "Ich liste ein paar Informationen und Statistiken über das Wiki auf."
-				},
 				"random": {
 					"desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki."
-				},
-				"verify": {
-					"desc": "Nutze diesen Befehl um deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
 				},
 				"wiki": {
 					"desc": "Ich antworte mit einem Link auf einen passenden Artikel im Wiki:"

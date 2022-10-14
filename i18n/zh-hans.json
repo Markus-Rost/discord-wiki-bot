@@ -319,22 +319,14 @@
 				}
 			},
 			"slash": {
-				"inline": {
-					"desc": "发送一条含有行内wiki链接的消息。"
-				},
 				"interwiki": {
 					"desc": "我将返回一条指向指定MediaWiki项目中指定页面的链接。"
 				},
 				"overview": {
-					"cmd": "",
 					"desc": "我将展示wiki的一些信息和统计数据。"
 				},
 				"random": {
-					"cmd": "random",
 					"desc": "我将返回 wiki 上一个随机页面的链接。"
-				},
-				"verify": {
-					"desc": "使用此命令验证你Discord账号和wiki账号的关联，并获得与你wiki账号相匹配的身份组。"
 				},
 				"wiki": {
 					"desc": "我将返回一条指向 wiki 中指定页面的链接："

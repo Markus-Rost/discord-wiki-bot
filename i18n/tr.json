@@ -319,20 +319,11 @@
 				}
 			},
 			"slash": {
-				"inline": {
-					"desc": "Satır içi viki bağlantıları ile mesaj paylaş."
-				},
 				"interwiki": {
 					"desc": "Sağlanan MediaWiki projesinde eşleşen makale bağlantısı ile cevap vereceğim."
 				},
-				"overview": {
-					"desc": "Viki hakkında birkaç bilgi ve istatistik göstereceğim."
-				},
 				"verify": {
 					"desc": "Discord hesabını viki hesabın ile doğrulamak ve viki hesabınla eşleşen rolleri almak için bu komutu kullan."
-				},
-				"wiki": {
-					"desc": "Şu vikide eşleşen makale bağlantısı ile cevap vereceğim:"
 				}
 			},
 			"subprefix": {

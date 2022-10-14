@@ -319,20 +319,11 @@
 				}
 			},
 			"slash": {
-				"inline": {
-					"desc": "Posting pesan dengan tautan inline wiki."
-				},
 				"interwiki": {
 					"desc": "Saya akan menjawab dengan tautan artikel yang cocok di proyek MediaWiki bernama."
 				},
-				"overview": {
-					"desc": "Saya akan menunjukkan beberapa informasi dan statistik tentang wiki."
-				},
 				"random": {
 					"desc": "Saya akan menjawab dengan tautan ke halaman acak di wiki."
-				},
-				"verify": {
-					"desc": "Gunakan perintah ini untuk memverifikasi akun Discord Anda dengan akun wiki Anda dan mendapatkan role yang cocok dengan akun wiki Anda."
 				},
 				"wiki": {
 					"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki:"
