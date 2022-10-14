@@ -118,11 +118,16 @@ function autocomplete_user(interaction, lang, wiki) {
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name !== 'username' ) return interwiki_interaction.autocomplete(interaction, lang, wiki);
 	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
-		const username = focused.value.trim() + ( focused.value.endsWith( ' ' ) ? ' ' : '' );
+		var includeIPs = true;
+		var username = focused.value.trim() + ( focused.value.endsWith( ' ' ) ? ' ' : '' );
+		if ( interaction.commandName === 'verify' ) {
+			includeIPs = false;
+			if ( !username.trim() ) username = interaction.member?.displayName || interaction.user.username;
+		}
 		return Promise.all([
 			( newWiki.wikifarm === 'fandom' && username.trim() ? got.get( newWiki + 'wikia.php?controller=UserApiController&method=getUsersByName&limit=25&query=' + encodeURIComponent( username ) + '&format=json', {
 				timeout: {
-					request: 1_500
+					request: ( includeIPs ? 1_500 : 2_000 )
 				},
 				retry: {
 					limit: 0
@@ -153,9 +158,9 @@ function autocomplete_user(interaction, lang, wiki) {
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- Error while searching for users: ' + error );
 			} ) : undefined ),
-			got.get( newWiki + 'api.php?action=query&list=' + ( username.trim() ? ( newWiki.wikifarm === 'fandom'
+			( newWiki.wikifarm !== 'fandom' || includeIPs ? got.get( newWiki + 'api.php?action=query&list=' + ( username.trim() ? ( newWiki.wikifarm === 'fandom'
 				? 'usercontribs&ucprop=&uclimit=100&ucuserprefix='
-				: 'allusers|usercontribs&aulimit=25&auprefix=' + encodeURIComponent( username ) + '&ucprop=&uclimit=100&ucuserprefix='
+				: 'allusers' + ( includeIPs ? '|usercontribs&ucprop=&uclimit=100&ucuserprefix=' + encodeURIComponent( username ) : '' ) + '&aulimit=25&auprefix='
 			) : 'allusers&auwitheditsonly=1&auactiveusers=1&aulimit=25&auprefix=' ) + encodeURIComponent( username ) + '&format=json', {
 				timeout: {
 					request: ( username.trim() && newWiki.wikifarm === 'fandom' ? 1_500 : 2_000 )
@@ -192,7 +197,7 @@ function autocomplete_user(interaction, lang, wiki) {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- Error while searching for users: ' + error );
-			} )
+			} ) : undefined )
 		]).then( ([users, ips]) => {
 			if ( !users && !ips ) return;
 			return interaction.respond( [...new Set([

@@ -568,14 +568,11 @@ if ( textAreas.length ) {
 		else {
 			try {
 				var apiEmbeds = JSON.parse(messageEmbeds.value);
-				if ( Array.isArray(apiEmbeds.embeds || apiEmbeds) ) {
-					messageEmbeds.title = '';
-					messageEmbeds.setCustomValidity('');
-				}
-				else {
-					messageEmbeds.title = lang('embeds.json');
-					messageEmbeds.setCustomValidity(lang('embeds.json'));
-				}
+				if ( apiEmbeds && apiEmbeds.embeds ) apiEmbeds = embeds.embeds;
+				if ( !Array.isArray(apiEmbeds) ) apiEmbeds = [apiEmbeds];
+				if ( apiEmbeds.length > 10 || apiEmbeds.some( apiEmbed => !apiEmbed ) ) throw lang('embeds.json');
+				messageEmbeds.title = '';
+				messageEmbeds.setCustomValidity('');
 			}
 			catch (error) {
 				messageEmbeds.title = error.toString();

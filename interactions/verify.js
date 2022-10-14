@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder, PermissionFlagsBits, ButtonStyle, TextInputStyle } from 'discord.js';
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
+import user_interaction from './user.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, sendMessage } from '../util/functions.js';
 
@@ -255,5 +256,6 @@ export default {
 	slash: interaction_verify,
 	modal: interaction_verify,
 	button: interaction_verify,
+	autocomplete: user_interaction.autocomplete,
 	allowDelete: false
 };

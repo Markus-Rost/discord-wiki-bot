@@ -1,9 +1,9 @@
 import { wikiProjects, inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
+import db from '../util/database.js';
+import Wiki from '../util/wiki.js';
 import { got } from '../util/functions.js';
 import wiki_interaction from './wiki.js';
-import db from '../util/database.js';
 import { createRequire } from 'node:module';
-import Wiki from '../util/wiki.js';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 

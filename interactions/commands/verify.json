@@ -79,7 +79,8 @@
 				"ja": "Wiki上でのユーザー名。",
 				"el": "Το όνομα χρήστη σας στο wiki."
 			},
-			"required": false
+			"required": false,
+			"autocomplete": true
 		}
 	]
 }
