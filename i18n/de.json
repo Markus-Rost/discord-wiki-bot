@@ -318,11 +318,6 @@
 					"desc": "Ich ändere das Standard-Wiki für diesen Server."
 				}
 			},
-			"slash": {
-				"random": {
-					"desc": "Ich antworte mit einem Link auf eine zufällige Seite im Wiki."
-				}
-			},
 			"subprefix": {
 				"cmd": "<Wiki> <Suchbegriff>",
 				"desc": "Ich antworte mit einem Link auf einen passenden Artikel im angegebenen Wiki:"
@@ -393,6 +388,7 @@
 		"notitle": "Der genutzte Seitentitel existiert nicht!",
 		"nowiki": "Das genutzte Wiki existiert nicht!",
 		"random": "(Alle Inhaltsseiten)",
+		"user": "Bitte geben einen Benutzernamen oder eine IP-Adresse ein.",
 		"verify": "Bitte gebe deinen Wiki-Benutzernamen an um diesen Befehl dazu zu nutzen, deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
 	},
 	"invite": {
