@@ -547,7 +547,7 @@ if ( textAreas.length ) {
 		updateTextLength.call(textAreas[ta]);
 		textAreas[ta].addEventListener('keyup', updateTextLength);
 		textAreas[ta].addEventListener('keydown', function(e) {
-			return allowTabs(e, textAreas[ta].name === 'embeds');
+			return allowTabs.call(this, e, this.name === 'embeds');
 		});
 		textAreas[ta].onclick = function() {
 			if ( !textArea ) {
