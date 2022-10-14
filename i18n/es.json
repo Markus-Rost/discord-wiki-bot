@@ -318,11 +318,6 @@
 					"desc": "Cambiaré el wiki predeterminado de este servidor."
 				}
 			},
-			"slash": {
-				"random": {
-					"desc": "Responderé con un enlace a una página aleatoria en el wiki."
-				}
-			},
 			"subprefix": {
 				"cmd": "<wiki> <término de búsqueda>",
 				"desc": "Responderé con un enlace a un artículo coincidente en el wiki nombrado:"

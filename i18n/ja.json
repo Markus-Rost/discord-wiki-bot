@@ -318,11 +318,6 @@
 					"desc": "このサーバーのWiki-BotのデフォルトのWikiを設定します。"
 				}
 			},
-			"slash": {
-				"random": {
-					"desc": "Wikiのランダムなページへのリンクでお答えします。"
-				}
-			},
 			"subprefix": {
 				"cmd": "<wiki> <search term>",
 				"desc": "名前付きWikiの一致する記事へのリンクでお答えします。："

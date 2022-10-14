@@ -318,11 +318,6 @@
 					"desc": "Saya akan mengubah wiki default untuk server ini."
 				}
 			},
-			"slash": {
-				"random": {
-					"desc": "Saya akan menjawab dengan tautan ke halaman acak di wiki."
-				}
-			},
 			"subprefix": {
 				"cmd": "<wiki> <search term>",
 				"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki yang bernama:"

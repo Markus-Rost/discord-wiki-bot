@@ -318,11 +318,6 @@
 					"desc": "Bu sunucunun varsayılan vikisini değiştireceğim."
 				}
 			},
-			"slash": {
-				"verify": {
-					"desc": "Discord hesabını viki hesabın ile doğrulamak ve viki hesabınla eşleşen rolleri almak için bu komutu kullan."
-				}
-			},
 			"subprefix": {
 				"cmd": "<viki> <aranacak terim>",
 				"desc": "Vikide eşleşen isme sahip bir bağlantı ile cevap vereceğim:"
