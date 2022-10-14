@@ -568,7 +568,7 @@ if ( textAreas.length ) {
 		else {
 			try {
 				var apiEmbeds = JSON.parse(messageEmbeds.value);
-				if ( apiEmbeds && apiEmbeds.embeds ) apiEmbeds = embeds.embeds;
+				if ( apiEmbeds && apiEmbeds.embeds ) apiEmbeds = apiEmbeds.embeds;
 				if ( !Array.isArray(apiEmbeds) ) apiEmbeds = [apiEmbeds];
 				if ( apiEmbeds.length > 10 || apiEmbeds.some( apiEmbed => !apiEmbed ) ) throw lang('embeds.json');
 				messageEmbeds.title = '';
