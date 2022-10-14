@@ -319,14 +319,8 @@
 				}
 			},
 			"slash": {
-				"interwiki": {
-					"desc": "Responderé con un enlace a un artículo correspondiente en el proyecto MediaWiki mencionado."
-				},
 				"random": {
 					"desc": "Responderé con un enlace a una página aleatoria en el wiki."
-				},
-				"wiki": {
-					"desc": "Responderé con un enlace a un artículo correspondiente en el wiki:"
 				}
 			},
 			"subprefix": {

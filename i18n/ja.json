@@ -319,14 +319,8 @@
 				}
 			},
 			"slash": {
-				"interwiki": {
-					"desc": "名前付きMediaWikiプロジェクトの一致する記事へのリンクで回答します。"
-				},
 				"random": {
 					"desc": "Wikiのランダムなページへのリンクでお答えします。"
-				},
-				"wiki": {
-					"desc": "Wikiの一致する記事へのリンクでお答えします："
 				}
 			},
 			"subprefix": {

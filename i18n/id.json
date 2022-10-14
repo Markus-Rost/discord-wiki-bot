@@ -319,14 +319,8 @@
 				}
 			},
 			"slash": {
-				"interwiki": {
-					"desc": "Saya akan menjawab dengan tautan artikel yang cocok di proyek MediaWiki bernama."
-				},
 				"random": {
 					"desc": "Saya akan menjawab dengan tautan ke halaman acak di wiki."
-				},
-				"wiki": {
-					"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki:"
 				}
 			},
 			"subprefix": {

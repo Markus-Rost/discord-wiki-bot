@@ -319,9 +319,6 @@
 				}
 			},
 			"slash": {
-				"interwiki": {
-					"desc": "Sağlanan MediaWiki projesinde eşleşen makale bağlantısı ile cevap vereceğim."
-				},
 				"verify": {
 					"desc": "Discord hesabını viki hesabın ile doğrulamak ve viki hesabınla eşleşen rolleri almak için bu komutu kullan."
 				}

@@ -319,14 +319,8 @@
 				}
 			},
 			"slash": {
-				"interwiki": {
-					"desc": "我将返回一条指向指定MediaWiki项目中指定页面的链接。"
-				},
 				"overview": {
 					"desc": "我将展示wiki的一些信息和统计数据。"
-				},
-				"random": {
-					"desc": "我将返回 wiki 上一个随机页面的链接。"
 				},
 				"wiki": {
 					"desc": "我将返回一条指向 wiki 中指定页面的链接："
