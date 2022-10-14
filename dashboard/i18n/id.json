@@ -115,7 +115,7 @@
 		},
 		"readonly": {
 			"text": "Saat ini kamu hanya dapat melihat pengaturan anda, tetapi tidak dapat mengubahnya.",
-			"title": "Read-only database!"
+			"title": "Database dalam hanya baca!"
 		},
 		"refresh": {
 			"text": "Daftar server kamu telah berhasil di-refresh.",

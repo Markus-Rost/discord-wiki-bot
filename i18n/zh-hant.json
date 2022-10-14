@@ -318,28 +318,6 @@
 					"desc": "我將變更本伺服器的預設wiki。"
 				}
 			},
-			"slash": {
-				"inline": {
-					"desc": "傳送一條含有行內wiki連結的訊息。"
-				},
-				"interwiki": {
-					"desc": "我將回傳一個指向指定 MediaWiki 專案中指定頁面的連結。"
-				},
-				"overview": {
-					"cmd": "",
-					"desc": "我將展示wiki的一些資訊和統計資料。"
-				},
-				"random": {
-					"cmd": "random",
-					"desc": "我將傳回 wiki 上一個隨機頁面的連結。"
-				},
-				"verify": {
-					"desc": "使用此指令來驗證您Discord帳號和wiki帳號的關係，並擁有與您wiki帳號相符的身分組。"
-				},
-				"wiki": {
-					"desc": "我將傳回一個指向 wiki 中指定頁面的連結："
-				}
-			},
 			"subprefix": {
 				"cmd": "<wiki> <關鍵字>",
 				"desc": "我將傳回一個指向指定 wiki 中指定頁面的連結："

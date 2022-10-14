@@ -318,26 +318,6 @@
 					"desc": "Cambierò la wiki predefinita per questo server."
 				}
 			},
-			"slash": {
-				"inline": {
-					"desc": "Posta un messaggio con collegamenti in linea alla wiki."
-				},
-				"interwiki": {
-					"desc": "Risponderò con un collegamento all'articolo corrispondente nel progetto MediaWiki richiesto."
-				},
-				"overview": {
-					"desc": "Mostrerò qualche informazione e statistica sulla wiki."
-				},
-				"random": {
-					"desc": "Risponderò con un link ad una pagina casuale sulla wiki."
-				},
-				"verify": {
-					"desc": "Usa questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
-				},
-				"wiki": {
-					"desc": "Risponderò con un link all'articolo corrispondente nella wiki:"
-				}
-			},
 			"subprefix": {
 				"cmd": "<wiki> <termine di ricerca>",
 				"desc": "Risponderò con un link all'articolo corrispondente nella wiki richiesta:"
