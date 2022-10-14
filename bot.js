@@ -56,7 +56,7 @@ const client = new Discord.Client( {
 var isStop = false;
 client.on( Discord.Events.ClientReady, () => {
 	console.log( '\n- ' + process.env.SHARDS + ': Successfully logged in as ' + client.user.username + '!\n' );
-	client.application.commands.fetch();
+	client.application.commands.fetch({withLocalizations: true});
 } );
 
 

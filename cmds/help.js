@@ -2,20 +2,18 @@ import { wikiProjects } from 'mediawiki-projects-list';
 import help_server from '../functions/helpserver.js';
 import { splitMessage } from '../util/functions.js';
 import { createRequire } from 'node:module';
+import { ApplicationCommandOptionType } from 'discord.js';
 const require = createRequire(import.meta.url);
 const {wikis: mcw} = require('./minecraft/commands.json');
 
 const helpmap = {
-	linkHelp: ['default', 'inline.link', 'inline.template', 'subprefix', 'slash.wiki', 'slash.interwiki', 'slash.inline'],
-	link: ['default', 'inline.link', 'inline.template', 'subprefix', 'mwprojects', 'slash.wiki', 'slash.interwiki', 'slash.inline'],
-	inline: ['inline.link', 'inline.template', 'slash.inline'],
-	slash: ['slash.wiki', 'slash.interwiki', 'slash.random', 'slash.overview', 'slash.inline', 'slash.verify'],
-	wiki: ['slash.wiki', 'slash.interwiki'],
-	interwiki: ['slash.interwiki'],
-	user: ['user'],
-	overview: ['overview', 'slash.overview'],
-	random: ['random', 'slash.random'],
-	diff: ['diff.name', 'diff.id'],
+	linkHelp: ['slash.wiki', 'default', 'slash.inline', 'inline.link', 'inline.template', 'subprefix', 'slash.interwiki', 'mwprojects'],
+	link: ['slash.wiki', 'default', 'slash.inline', 'inline.link', 'inline.template', 'subprefix', 'slash.interwiki', 'mwprojects'],
+	inline: ['slash.inline', 'inline.link', 'inline.template'],
+	user: ['slash.user', 'user'],
+	overview: ['slash.overview', 'overview'],
+	random: ['slash.random', 'random'],
+	diff: ['slash.diff.page', 'diff.name', 'slash.diff.ids.relative', 'slash.diff.ids.multiple', 'diff.id'],
 	page: ['page'],
 	search: ['search'],
 	minecraftHelp: ['minecraft.default', 'minecraft.bug'],
@@ -25,7 +23,7 @@ const helpmap = {
 	info: ['info'],
 	help: ['help.default', 'help.command', 'help.admin'],
 	settings: ['settings.default', 'settings.wiki', 'settings.lang', 'settings.role', 'settings.inline', 'settings.prefix', 'settings.channel'],
-	verify: ['verify', 'slash.verify'],
+	verify: ['slash.verify', 'verify'],
 	verification: ['verification.default', 'verification.add', 'verification.channel', 'verification.role', 'verification.editcount', 'verification.postcount', 'verification.usergroup', 'verification.accountage', 'verification.rename', 'verification.delete'],
 	rcscript: ['rcscript.default', 'rcscript.add', 'rcscript.wiki', 'rcscript.lang', 'rcscript.display', 'rcscript.feeds', 'rcscript.delete'],
 	pause: ['pause.inactive'],
@@ -70,7 +68,7 @@ const restrictions = {
 	minecraft: ['minecraftHelp', 'command', 'bug'],
 	admin: ['settings', 'verification', 'rcscript', 'pause'],
 	inline: ['inline.link', 'inline.template'],
-	slash: ['slash.wiki', 'slash.interwiki', 'slash.random', 'slash.overview', 'slash.inline', 'slash.verify'],
+	slash: ['slash.wiki', 'slash.interwiki', 'slash.random', 'slash.user', 'slash.overview', 'slash.diff.page', 'slash.diff.ids.relative', 'slash.diff.ids.multiple', 'slash.inline', 'slash.verify'],
 	patreon: ['settings.prefix'],
 	experimental: []
 }
@@ -140,6 +138,30 @@ export default function cmd_help(lang, msg, args, line, wiki) {
 		} );
 		cmdlist += '\n🔸 ' + lang.get('help.footer');
 		splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
+		/*
+		var sortCommands = ['wiki', 'interwiki', 'random', 'user', 'overview', 'inline', 'diff', 'verify'].reverse();
+		splitMessage( lang.get('help.all') + '\n' + msg.client.application.commands.cache.sort( (a, b) => {
+			return sortCommands.indexOf(b.name) - sortCommands.indexOf(a.name);
+		} ).map( cmd => {
+			let result = [
+				...cmd.options.filter( option => option.type === ApplicationCommandOptionType.Subcommand ).map( option => {
+					let desc = option.descriptionLocalizations?.[msg.guild.preferredLocale] || option.description;
+					return `🔹 </${cmd.name} ${option.name}:${cmd.id}>\n\t${desc}`;
+				} ),
+				...cmd.options.filter( option => option.type === ApplicationCommandOptionType.SubcommandGroup ).flatMap( subcommand => {
+					return subcommand.options.map( option => {
+						let desc = option.descriptionLocalizations?.[msg.guild.preferredLocale] || option.description;
+						return `🔹 </${cmd.name} ${subcommand.name} ${option.name}:${cmd.id}>\n\t${desc}`;
+					} );
+				} )
+			];
+			if ( !result.length ) {
+				let desc = cmd.descriptionLocalizations?.[msg.guild.preferredLocale] || cmd.description;
+				return `🔹 </${cmd.name}:${cmd.id}>\n\t${desc}`;
+			}
+			return result.join('\n');
+		} ).join('\n') + '\n\n🔸 ' + lang.get('help.footer'), {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
+		*/
 	}
 }
 
@@ -155,13 +177,13 @@ function formathelp(messages, msg, lang, wiki) {
 	var mention = '@' + ( msg.inGuild() ? msg.guild.members.me.displayName : msg.client.user.username );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
-		if ( restrictions.slash.includes( message ) ) return msg.client.application.commands.cache.some( cmd => cmd.name === lang.get('help.list.' + message + '.cmd') );
+		if ( restrictions.slash.includes( message ) ) return msg.client.application.commands.cache.some( cmd => cmd.name === message.split('.')[1] );
 		if ( !restrictions.patreon.includes( message ) ) return true;
 		return ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) );
 	} ).map( message => {
 		if ( restrictions.slash.includes( message ) ) {
-			let slash = msg.client.application.commands.cache.find( cmd => cmd.name === lang.get('help.list.' + message + '.cmd') );
-			return '🔹 ' + `</${slash.name}:${slash.id}>` + '\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc') + ( message === 'slash.wiki' ? ' `' + wiki.href + '`' : '' );
+			let slash = msg.client.application.commands.cache.find( cmd => cmd.name === message.split('.')[1] );
+			return '🔹 ' + `</${message.split('.').slice(1).join(' ')}:${slash.id}>`;
 		}
 		var cmd = message.split('.')[0];
 		var intro = ( restrictions.inline.includes( message ) ? '' : prefix );

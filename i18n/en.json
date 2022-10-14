@@ -318,32 +318,6 @@
 					"desc": "I will change the default wiki for this server."
 				}
 			},
-			"slash": {
-				"inline": {
-					"cmd": "inline",
-					"desc": "Post a message with inline wiki links."
-				},
-				"interwiki": {
-					"cmd": "interwiki",
-					"desc": "I will answer with a link to a matching article in the named MediaWiki project."
-				},
-				"overview": {
-					"cmd": "overview",
-					"desc": "I will show some information and statistics about the wiki."
-				},
-				"random": {
-					"cmd": "random",
-					"desc": "I will answer with a link to a random page in the wiki."
-				},
-				"verify": {
-					"cmd": "verify",
-					"desc": "Use this command to verify your Discord account with your wiki account and get roles matching your wiki account."
-				},
-				"wiki": {
-					"cmd": "wiki",
-					"desc": "I will answer with a link to a matching article in the wiki:"
-				}
-			},
 			"subprefix": {
 				"cmd": "<wiki> <search term>",
 				"desc": "I will answer with a link to a matching article in the named wiki:"

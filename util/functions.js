@@ -545,11 +545,14 @@ function splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', appe
 	let msg = '';
 	for ( let part of text.split(char) ) {
 		if ( part.length > maxLength ) part = limitLength(part, maxLength);
-		if ( msg && (msg + char + part + append).length > maxLength ) {
-			messages.push(msg + append);
-			msg = prepend + part;
+		if ( msg ) {
+			if ( (msg + char + part + append).length > maxLength ) {
+				messages.push(msg + append);
+				msg = prepend + part;
+			}
+			else msg += char + part;
 		}
-		else msg += char + part;
+		else msg += part;
 	}
 	messages.push(msg);
 	return messages.filter( part => part );
