@@ -4,12 +4,16 @@
 	"name": "diff",
 	"name_localizations": {
 		"en-GB": "diff",
-		"en-US": "diff"
+		"en-US": "diff",
+		"de": "diff",
+		"es-ES": "diff"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
 		"en-GB": "Show a wiki edit diff.",
-		"en-US": "Show a wiki edit diff."
+		"en-US": "Show a wiki edit diff.",
+		"de": "Zeige eine Wiki-Bearbeitung.",
+		"es-ES": "Mostrar una diff de edición del wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -20,12 +24,16 @@
 			"name": "page",
 			"name_localizations": {
 				"en-GB": "page",
-				"en-US": "page"
+				"en-US": "page",
+				"de": "seite",
+				"es-ES": "página"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
 				"en-GB": "Show the last edit diff of a wiki page.",
-				"en-US": "Show the last edit diff of a wiki page."
+				"en-US": "Show the last edit diff of a wiki page.",
+				"de": "Zeige die letzte Bearbeitung einer Wiki-Seite.",
+				"es-ES": "Muestra la última diff de edición de una página wiki."
 			},
 			"options": [
 				{
@@ -48,7 +56,9 @@
 					"description": "Page title to show the last edit diff of.",
 					"description_localizations": {
 						"en-GB": "Page title to show the last edit diff of.",
-						"en-US": "Page title to show the last edit diff of."
+						"en-US": "Page title to show the last edit diff of.",
+						"de": "Seitenname von dem die letzte Bearbeitung gezeigt werden soll.",
+						"es-ES": "Título de la página a mostrar la última diff de edición."
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -196,12 +206,16 @@
 			"name": "ids",
 			"name_localizations": {
 				"en-GB": "ids",
-				"en-US": "ids"
+				"en-US": "ids",
+				"de": "ids",
+				"es-ES": "ids"
 			},
 			"description": "Show the a wiki edit diff based on the ID.",
 			"description_localizations": {
 				"en-GB": "Show the a wiki edit diff based on the ID.",
-				"en-US": "Show the a wiki edit diff based on the ID."
+				"en-US": "Show the a wiki edit diff based on the ID.",
+				"de": "Zeige eine Wiki-Bearbeitung basierend auf einer ID.",
+				"es-ES": "Mostrar la diff de edición del wiki basado en el ID."
 			},
 			"options": [
 				{
@@ -209,12 +223,16 @@
 					"name": "relative",
 					"name_localizations": {
 						"en-GB": "relative",
-						"en-US": "relative"
+						"en-US": "relative",
+						"de": "relativ",
+						"es-ES": "relativa"
 					},
 					"description": "Show a relative wiki edit diff based on the ID.",
 					"description_localizations": {
 						"en-GB": "Show a relative wiki edit diff based on the ID.",
-						"en-US": "Show a relative wiki edit diff based on the ID."
+						"en-US": "Show a relative wiki edit diff based on the ID.",
+						"de": "Zeige eine relative Wiki-Bearbeitung basierend auf einer ID.",
+						"es-ES": "Mostrar una diff de edición del wiki relativa basada en el ID."
 					},
 					"options": [
 						{
@@ -222,12 +240,16 @@
 							"name": "diffid",
 							"name_localizations": {
 								"en-GB": "diffid",
-								"en-US": "diffid"
+								"en-US": "diffid",
+								"de": "diffid",
+								"es-ES": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
 								"en-GB": "Diff ID of the edit diff to show.",
-								"en-US": "Diff ID of the edit diff to show."
+								"en-US": "Diff ID of the edit diff to show.",
+								"de": "Änderungs-ID der zu zeigenden Bearbeitung.",
+								"es-ES": "ID de diff de la diff de edición que se va a mostrar."
 							},
 							"min_value": 0,
 							"required": true
@@ -237,19 +259,25 @@
 							"name": "compare",
 							"name_localizations": {
 								"en-GB": "compare",
-								"en-US": "compare"
+								"en-US": "compare",
+								"de": "vergleich",
+								"es-ES": "comparar"
 							},
 							"description": "Relative revision of the edit diff to show.",
 							"description_localizations": {
 								"en-GB": "Relative revision of the edit diff to show.",
-								"en-US": "Relative revision of the edit diff to show."
+								"en-US": "Relative revision of the edit diff to show.",
+								"de": "Relative Version der zu zeigenden Bearbeitung.",
+								"es-ES": "Revisión relativa de la diff de edición a mostrar."
 							},
 							"choices": [
 								{
 									"name": "Compare to previous revision. (default)",
 									"name_localizations": {
 										"en-GB": "Compare to previous revision. (default)",
-										"en-US": "Compare to previous revision. (default)"
+										"en-US": "Compare to previous revision. (default)",
+										"de": "Vergleiche mit der vorherigen Version. (Standard)",
+										"es-ES": "Comparar con la revisión anterior. (predeterminado)"
 									},
 									"value": "prev"
 								},
@@ -257,7 +285,9 @@
 									"name": "Compare to next revision.",
 									"name_localizations": {
 										"en-GB": "Compare to next revision.",
-										"en-US": "Compare to next revision."
+										"en-US": "Compare to next revision.",
+										"de": "Vergleiche mit der nächsten Version.",
+										"es-ES": "Compare con la siguiente revisión."
 									},
 									"value": "next"
 								},
@@ -265,7 +295,9 @@
 									"name": "Compare to current revision.",
 									"name_localizations": {
 										"en-GB": "Compare to current revision.",
-										"en-US": "Compare to current revision."
+										"en-US": "Compare to current revision.",
+										"de": "Vergleiche mit der aktuellen Version.",
+										"es-ES": "Comparar con la revisión actual."
 									},
 									"value": "cur"
 								}
@@ -413,12 +445,16 @@
 					"name": "multiple",
 					"name_localizations": {
 						"en-GB": "multiple",
-						"en-US": "multiple"
+						"en-US": "multiple",
+						"de": "mehrere",
+						"es-ES": "múltiple"
 					},
 					"description": "Show a wiki edit diff over multiple revisions based on the IDs.",
 					"description_localizations": {
 						"en-GB": "Show a wiki edit diff over multiple revisions based on the IDs.",
-						"en-US": "Show a wiki edit diff over multiple revisions based on the IDs."
+						"en-US": "Show a wiki edit diff over multiple revisions based on the IDs.",
+						"de": "Zeige eine Wiki-Bearbeitung über mehrere Versionen basierend auf IDs.",
+						"es-ES": "Mostrar una diff de edición del wiki en varias revisiones según los ID."
 					},
 					"options": [
 						{
@@ -426,12 +462,16 @@
 							"name": "diffid",
 							"name_localizations": {
 								"en-GB": "diffid",
-								"en-US": "diffid"
+								"en-US": "diffid",
+								"de": "diffid",
+								"es-ES": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
 								"en-GB": "Diff ID of the edit diff to show.",
-								"en-US": "Diff ID of the edit diff to show."
+								"en-US": "Diff ID of the edit diff to show.",
+								"de": "Änderungs-ID der zu zeigenden Bearbeitung.",
+								"es-ES": "ID de diff de la diff de edición que se va a mostrar."
 							},
 							"min_value": 0,
 							"required": true
@@ -441,12 +481,16 @@
 							"name": "oldid",
 							"name_localizations": {
 								"en-GB": "oldid",
-								"en-US": "oldid"
+								"en-US": "oldid",
+								"de": "oldid",
+								"es-ES": "oldid"
 							},
 							"description": "Old revision ID of the edit diff to show.",
 							"description_localizations": {
 								"en-GB": "Old revision ID of the edit diff to show.",
-								"en-US": "Old revision ID of the edit diff to show."
+								"en-US": "Old revision ID of the edit diff to show.",
+								"de": "Alte Versions-ID der zu zeigenden Bearbeitung.",
+								"es-ES": "ID de revisión anterior de la diff de edición a mostrar."
 							},
 							"min_value": 0,
 							"required": true

@@ -4,12 +4,14 @@
 	"name": "user",
 	"name_localizations": {
 		"en-GB": "user",
-		"en-US": "user"
+		"en-US": "user",
+		"de": "benutzer"
 	},
 	"description": "Post information about a wiki user.",
 	"description_localizations": {
 		"en-GB": "Post information about a wiki user.",
-		"en-US": "Post information about a wiki user."
+		"en-US": "Post information about a wiki user.",
+		"de": "Sende Informationen über einen Wiki-Benutzer."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -20,12 +22,14 @@
 			"name": "username",
 			"name_localizations": {
 				"en-GB": "username",
-				"en-US": "username"
+				"en-US": "username",
+				"de": "benutzername"
 			},
 			"description": "The user to show information of.",
 			"description_localizations": {
 				"en-GB": "The user to show information of.",
-				"en-US": "The user to show information of."
+				"en-US": "The user to show information of.",
+				"de": "Der Benutzer über den Informationen gezeigt werden sollen."
 			},
 			"required": true,
 			"autocomplete": true
