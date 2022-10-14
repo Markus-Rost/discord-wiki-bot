@@ -388,6 +388,7 @@
 		"notitle": "Judul halaman yang digunakan tidak ada!",
 		"nowiki": "Wiki yang dicantumkan tidak ada!",
 		"random": "(Semua namespaces konten)",
+		"user": "Harap berikan nama pengguna atau IP yang valid.",
 		"verify": "Harap berikan nama pengguna wiki kamu untuk menggunakan perintah ini untuk memverifikasi akun Discord milik kamu dengan akun wiki dan dapatkan peran yang cocok dengan akun wiki mu."
 	},
 	"invite": {
