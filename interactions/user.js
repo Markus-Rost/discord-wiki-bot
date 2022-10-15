@@ -118,12 +118,8 @@ function autocomplete_user(interaction, lang, wiki) {
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name !== 'username' ) return interwiki_interaction.autocomplete(interaction, lang, wiki);
 	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
-		var includeIPs = true;
-		var username = focused.value.trim() + ( focused.value.endsWith( ' ' ) ? ' ' : '' );
-		if ( interaction.commandName === 'verify' ) {
-			includeIPs = false;
-			if ( !username.trim() ) username = interaction.member?.displayName || interaction.user.username;
-		}
+		const includeIPs = interaction.commandName !== 'verify';
+		const username = focused.value.trim() + ( focused.value.endsWith( ' ' ) ? ' ' : '' );
 		return Promise.all([
 			( newWiki.wikifarm === 'fandom' && username.trim() ? got.get( newWiki + 'wikia.php?controller=UserApiController&method=getUsersByName&limit=25&query=' + encodeURIComponent( username ) + '&format=json', {
 				timeout: {
@@ -157,13 +153,45 @@ function autocomplete_user(interaction, lang, wiki) {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- Error while searching for users: ' + error );
-			} ) : undefined ),
-			( newWiki.wikifarm !== 'fandom' || includeIPs ? got.get( newWiki + 'api.php?action=query&list=' + ( username.trim() ? ( newWiki.wikifarm === 'fandom'
-				? 'usercontribs&ucprop=&uclimit=100&ucuserprefix='
-				: 'allusers' + ( includeIPs ? '|usercontribs&ucprop=&uclimit=100&ucuserprefix=' + encodeURIComponent( username ) : '' ) + '&aulimit=25&auprefix='
-			) : 'allusers&auwitheditsonly=1&auactiveusers=1&aulimit=25&auprefix=' ) + encodeURIComponent( username ) + '&format=json', {
+			} ) : ( !username.trim() ? got.get( newWiki + 'api.php?action=query&list=users&ususers=%1F' + encodeURIComponent( ( interaction.member?.displayName || interaction.user.username ).replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 				timeout: {
-					request: ( username.trim() && newWiki.wikifarm === 'fandom' ? 1_500 : 2_000 )
+					request: ( includeIPs ? 1_500 : 2_000 )
+				},
+				retry: {
+					limit: 0
+				},
+				context: {
+					guildId: interaction.guildId
+				}
+			} ).then( response => {
+				var body = response.body;
+				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users?.[0] ) {
+					if ( newWiki.noWiki(response.url, response.statusCode) ) return Promise.reject('nowiki');
+					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+						return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+					} ).map( option => {
+						if ( option.options !== undefined ) return option.name;
+						return option.name + ':' + option.value;
+					} ).join(' ') + '\n- ' + response.statusCode + ': Error while searching for the nickname: ' + body?.error?.info );
+					return;
+				}
+				let queryuser = body.query.users[0];
+				if ( queryuser.missing !== undefined || queryuser.invalid !== undefined ) return;
+				return [queryuser.name];
+			}, error => {
+				if ( error.name === 'TimeoutError' ) return;
+				if ( newWiki.noWiki(error.message) ) return Promise.reject('nowiki');
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+				} ).map( option => {
+					if ( option.options !== undefined ) return option.name;
+					return option.name + ':' + option.value;
+				} ).join(' ') + '\n- Error while searching for the nickname: ' + error );
+			} ) : undefined ) ),
+			( includeIPs || ( username.trim() && newWiki.wikifarm !== 'fandom' ) ? got.get( newWiki + 'api.php?action=query&list=' + ( username.trim() ? ( newWiki.wikifarm === 'fandom' ? 'usercontribs&ucprop=&uclimit=100&ucuserprefix=' : 'allusers' + ( includeIPs ? '|usercontribs&ucprop=&uclimit=100&ucuserprefix=' + encodeURIComponent( username ) : '' ) + '&aulimit=25&auprefix=' ) : 'allusers&auwitheditsonly=1&auactiveusers=1&aulimit=25&auprefix=' ) + encodeURIComponent( username ) + '&format=json', {
+				timeout: {
+					request: ( !username.trim() || newWiki.wikifarm === 'fandom' ? 1_500 : 2_000 )
 				},
 				retry: {
 					limit: 0
