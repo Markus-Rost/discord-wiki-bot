@@ -388,6 +388,7 @@
 		"notitle": "所使用的页面标题不存在！",
 		"nowiki": "所使用的 wiki 不存在！",
 		"random": "（所有内容命名空间）",
+		"user": "请提供用户名或有效的IP地址。",
 		"verify": "为了验证您的 Discord 与您的 wiki 账号相匹配并授予与您 wiki 账号相符合的身份组，请提供您的 wiki 用户名。"
 	},
 	"invite": {
