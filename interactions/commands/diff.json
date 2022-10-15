@@ -31,8 +31,8 @@
 				"en-US": "page",
 				"de": "seite",
 				"es-ES": "página",
-				"zh-CN": "页面",
-				"zh-TW": "頁面"
+				"zh-CN": "page",
+				"zh-TW": "page"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
