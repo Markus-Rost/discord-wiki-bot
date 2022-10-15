@@ -4,7 +4,7 @@
 		"description": "展示wiki编辑差异。",
 		"name": "diff",
 		"options[0].description": "显示wiki页面最近一次编辑的差异。",
-		"options[0].name": "页面",
+		"options[0].name": "page",
 		"options[0].options[0].description": "要展示最近一次编辑差异的页面标题。",
 		"options[0].options[0].name": "标题",
 		"options[0].options[1].description": "要搜索的wiki。",
