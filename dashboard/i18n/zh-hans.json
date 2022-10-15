@@ -33,6 +33,9 @@
 			"content_type": "所提供的链接的内容类型是$1，但仅允许以下内容类型：",
 			"invalid_url": "无法将URL解析为有效的图像文件。"
 		},
+		"embeds": {
+			"json": "嵌入对象无效，请提供含有Discord嵌入对象的有效JSON数组。"
+		},
 		"invalid": {
 			"note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
 			"note_private": "所提供的 wiki 是非公开的！",
@@ -141,6 +144,7 @@
 			"title": "消息已发送！"
 		},
 		"sendfail": {
+			"note_embeds": "嵌入对象无效，请提供含有Discord嵌入对象的有效JSON数组。",
 			"note_nothread": "无法找到子区，请指定活跃子区。",
 			"text": "无法发送消息，请再试一次。",
 			"title": "发送失败！"
@@ -258,6 +262,9 @@
 			"content": "消息内容（可选）：",
 			"content_placeholder": "消息的Markdown文本，支持更改显示文本的链接。",
 			"editcount": "最少编辑次数：",
+			"embeds": "消息嵌入（可选）：",
+			"embeds_help": "帮助：[嵌入可视化]($1)",
+			"embeds_placeholder": "Discord消息嵌入组成的JSON数组。",
 			"entry": "验证方式 #$1",
 			"flag_logall": "记录不成功的验证：",
 			"flag_private": "私信命令回复：",
