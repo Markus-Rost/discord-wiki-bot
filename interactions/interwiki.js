@@ -103,8 +103,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		let project = inputToWikiProject(body.query.interwiki[0].url);
 		if ( !project ) return interaction.respond( [] ).catch(log_error);
 		return interaction.respond( [{
-			name: project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ),
-			value: project.fullScriptPath
+			name: project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ).substring(0, 100),
+			value: project.fullScriptPath.substring(0, 100)
 		}] ).catch(log_error);
 	}, error => {
 		if ( error.name === 'TimeoutError' ) return;
@@ -151,8 +151,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
 			let project = inputToWikiProject(suggestion);
 			return {
-				name: project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion,
-				value: suggestion
+				name: ( project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion ).substring(0, 100),
+				value: suggestion.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
 		var suggestions = [
@@ -189,8 +189,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		return interaction.respond( [...new Set(suggestions)].map( suggestion => {
 			let project = inputToWikiProject(suggestion);
 			return {
-				name: project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion,
-				value: suggestion
+				name: ( project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion ).substring(0, 100),
+				value: suggestion.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	} );

@@ -177,7 +177,9 @@ function autocomplete_user(interaction, lang, wiki) {
 					return;
 				}
 				let queryuser = body.query.users[0];
-				if ( queryuser.missing !== undefined || queryuser.invalid !== undefined ) return;
+				if ( queryuser.missing !== undefined || queryuser.invalid !== undefined ) {
+					return ( includeIPs ? undefined : [] );
+				}
 				return [queryuser.name];
 			}, error => {
 				if ( error.name === 'TimeoutError' ) return;
@@ -233,8 +235,8 @@ function autocomplete_user(interaction, lang, wiki) {
 				...( ips ?? [] )
 			])].map( user => {
 				return {
-					name: user,
-					value: user
+					name: user.substring(0, 100),
+					value: user.substring(0, 100)
 				};
 			} ).slice(0, 25) ).catch(log_error);
 		}, error => {

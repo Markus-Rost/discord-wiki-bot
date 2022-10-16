@@ -104,8 +104,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			wiki.commonSearches = body.search_phrases.map( phrase => phrase.term.toString() ).map( phrase => {
 				let term = phrase[0].toUpperCase() + phrase.slice(1);
 				return {
-					name: term,
-					value: term
+					name: term.substring(0, 100),
+					value: term.substring(0, 100)
 				};
 			} );
 		}, error => {
@@ -151,8 +151,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				return wiki.namespaces.get(phrase.ns)?.content;
 			} ).map( phrase => {
 				return {
-					name: phrase.title,
-					value: phrase.title
+					name: phrase.title.substring(0, 100),
+					value: phrase.title.substring(0, 100)
 				};
 			} );
 		}, error => {
@@ -188,8 +188,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				return !phrase.title.includes('/');
 			} ).map( phrase => {
 				return {
-					name: phrase.title,
-					value: phrase.title
+					name: phrase.title.substring(0, 100),
+					value: phrase.title.substring(0, 100)
 				};
 			} );
 			setTimeout( () => {
@@ -208,8 +208,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		} );
 		if ( wiki.mainpage ) return interaction.respond( [
 			{
-				name: wiki.mainpage,
-				value: wiki.mainpage
+				name: wiki.mainpage.substring(0, 100),
+				value: wiki.mainpage.substring(0, 100)
 			},
 			...( wiki.commonSearches?.slice(0, 24) || [] )
 		] ).catch(log_error);
@@ -241,8 +241,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
 				return interaction.respond( [
 					{
-						name: wiki.mainpage || 'Main Page',
-						value: wiki.mainpage ?? ''
+						name: ( wiki.mainpage || 'Main Page' ).substring(0, 100),
+						value: ( wiki.mainpage ?? '' ).substring(0, 100)
 					},
 					...( wiki.commonSearches?.slice(0, 24) || [] )
 				] ).catch(log_error);
@@ -250,8 +250,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			wiki.updateWiki(body.query.general);
 			return interaction.respond( [
 				{
-					name: body.query.general.mainpage || 'Main Page',
-					value: body.query.general.mainpage ?? ''
+					name: ( body.query.general.mainpage || 'Main Page' ).substring(0, 100),
+					value: ( body.query.general.mainpage ?? '' ).substring(0, 100)
 				},
 				...( wiki.commonSearches?.slice(0, 24) || [] )
 			] ).catch(log_error);
@@ -271,8 +271,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			} ).join(' ') + '\n- Error while getting the main page name: ' + error );
 			return interaction.respond( [
 				{
-					name: wiki.mainpage || 'Main Page',
-					value: wiki.mainpage ?? ''
+					name: ( wiki.mainpage || 'Main Page' ).substring(0, 100),
+					value: ( wiki.mainpage ?? '' ).substring(0, 100)
 				},
 				...( wiki.commonSearches?.slice(0, 24) || [] )
 			] ).catch(log_error);
@@ -482,7 +482,7 @@ function autocomplete_section(interaction, lang, wiki) {
 		])].map( fragment => {
 			return {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
-				value: fragment.anchor
+				value: fragment.anchor.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
