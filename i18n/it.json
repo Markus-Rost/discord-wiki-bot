@@ -388,6 +388,7 @@
 		"notitle": "Il titolo della pagina utilizzato non esiste!",
 		"nowiki": "La wiki utilizzata non esiste!",
 		"random": "(Tutti i namespace di contenuto)",
+		"user": "Per favore fornisci un nome utente o IP valido.",
 		"verify": "Per favore fornisci il tuo nome utente sulla wiki per usare questo comando per verificare il tuo account Discord tramite il tuo account sulla wiki e ottenere i ruoli corrispondenti al tuo account sulla wiki."
 	},
 	"invite": {
