@@ -1,5 +1,5 @@
 import { load as cheerioLoad } from 'cheerio';
-import { wikiProjects } from 'mediawiki-projects-list';
+import { wikiProjects, frontendProxies } from 'mediawiki-projects-list';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import { got, db, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from './util.js';
@@ -7,7 +7,10 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 const allLangs = Lang.allLangs().names;
-const wikiProjectNames = wikiProjects.filter( wikiProject => wikiProject.idString ).map( wikiProject => wikiProject.name );
+const wikiProjectNames = [
+	...wikiProjects.filter( wikiProject => wikiProject.idString ).map( wikiProject => wikiProject.name ),
+	...frontendProxies.filter( frontendProxy => frontendProxy.idString ).map( frontendProxy => frontendProxy.name )
+];
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'

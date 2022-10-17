@@ -1,4 +1,4 @@
-import { wikiProjects } from 'mediawiki-projects-list';
+import { wikiProjects, frontendProxies } from 'mediawiki-projects-list';
 import help_server from '../functions/helpserver.js';
 import { splitMessage } from '../util/functions.js';
 import { createRequire } from 'node:module';
@@ -199,6 +199,7 @@ function formathelp(messages, msg, lang, wiki) {
 				}
 				else {
 					let project = wikiProjects.find( project => prefixwiki === project.name && project.idString );
+					if ( !project ) project = frontendProxies.find( proxy => prefixwiki === proxy.name && proxy.idString );
 					if ( project ) {
 						prefixmessage = 'subprefix';
 						prefixmessagewiki = project.idString.scriptPaths[0].split('$1').join(lang.get('help.list.' + prefixmessage + '.cmd').split(' ')[0]);
