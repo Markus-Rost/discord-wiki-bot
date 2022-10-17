@@ -155,7 +155,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			if ( project ) suggestionName = project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length ));
 			else {
 				let proxy = inputToFrontendProxy(suggestion);
-				if ( proxy ) suggestionName = proxy.fullNamePath.slice(8, ( proxy.fullNamePath.endsWith('/') ? -1 : 0 ));
+				if ( proxy ) suggestionName = proxy.fullNamePath.slice(8, ( proxy.fullNamePath.endsWith('/') ? -1 : undefined ));
 			}
 			return {
 				name: suggestionName.substring(0, 100),
@@ -200,7 +200,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			if ( project ) suggestionName = project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length ));
 			else {
 				let proxy = inputToFrontendProxy(suggestion);
-				if ( proxy ) suggestionName = proxy.fullNamePath.slice(8, ( proxy.fullNamePath.endsWith('/') ? -1 : 0 ));
+				if ( proxy ) suggestionName = proxy.fullNamePath.slice(8, ( proxy.fullNamePath.endsWith('/') ? -1 : undefined ));
 			}
 			return {
 				name: suggestionName.substring(0, 100),
