@@ -1,4 +1,4 @@
-import { wikiProjects, inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
+import { wikiProjects, inputToWikiProject, idStringToUrl, inputToFrontendProxy } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import Wiki from '../util/wiki.js';
 import { got } from '../util/functions.js';
@@ -17,6 +17,7 @@ const knownWikis = new Set();
 function getWiki(wiki) {
 	if ( wiki instanceof Wiki ) return Promise.resolve(wiki);
 	var newWiki = inputToWikiProject(wiki)?.fullScriptPath;
+	if ( !newWiki ) newWiki = inputToFrontendProxy(wiki)?.fullScriptPath;
 	if ( newWiki ) return Promise.resolve(new Wiki(newWiki));
 	wiki = Wiki.fromInput(wiki);
 	if ( !wiki ) return Promise.reject();
@@ -149,9 +150,15 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		baseWikis.forEach( baseWiki => wikiList[0].add( baseWiki ) );
 		wikiList = [[...wikiList[0]], [...wikiList[1]]];
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
+			let suggestionName = suggestion;
 			let project = inputToWikiProject(suggestion);
+			if ( project ) suggestionName = project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length ));
+			else {
+				let proxy = inputToFrontendProxy(suggestion);
+				if ( proxy ) suggestionName = proxy.fullNamePath.slice(8, ( proxy.fullNamePath.endsWith('/') ? -1 : 0 ));
+			}
 			return {
-				name: ( project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion ).substring(0, 100),
+				name: suggestionName.substring(0, 100),
 				value: suggestion.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
@@ -169,7 +176,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				if ( project.fullScriptPath.replace( 'https://', '' ).startsWith( input ) ) return true;
 				return project.fullScriptPath.replace( 'https://www.', '' ).startsWith( input );
 			} ).map( project => project.fullScriptPath ),
-			...wikiProjects.filter( project => project.idString ).map( project => {
+			...wikiProjects.filter( project => project.idString ).flatMap( project => {
 				let result = [];
 				let newInput = input;
 				let newWiki = idStringToUrl(newInput, project.name);
@@ -180,16 +187,23 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 					if ( newWiki?.href.replace( 'https://', '' ).startsWith( input ) ) result.push( newWiki.href );
 				}
 				return result;
-			} ).flat(),
-			inputToWikiProject(input)?.fullScriptPath
+			} ),
+			inputToWikiProject(input)?.fullScriptPath,
+			inputToFrontendProxy(input)?.fullNamePath
 		].filter( suggestion => suggestion ).map( suggestion => {
 			if ( Wiki._cache.has(suggestion) ) return Wiki._cache.get(suggestion).name;
 			return suggestion;
 		} );
 		return interaction.respond( [...new Set(suggestions)].map( suggestion => {
+			let suggestionName = suggestion;
 			let project = inputToWikiProject(suggestion);
+			if ( project ) suggestionName = project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length ));
+			else {
+				let proxy = inputToFrontendProxy(suggestion);
+				if ( proxy ) suggestionName = proxy.fullNamePath.slice(8, ( proxy.fullNamePath.endsWith('/') ? -1 : 0 ));
+			}
 			return {
-				name: ( project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion ).substring(0, 100),
+				name: suggestionName.substring(0, 100),
 				value: suggestion.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);

@@ -1,7 +1,7 @@
 import { readdir } from 'node:fs';
 import { domainToASCII } from 'node:url';
 import { cleanContent } from 'discord.js';
-import { inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
+import { inputToWikiProject, idStringToUrl, inputToFrontendProxy } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
 import { got, isMessage, splitMessage, partialURIdecode, canShowEmbed } from './functions.js';
@@ -97,6 +97,8 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}$/.test(domainToASCII(invoke.split('/')[0])) ) {
 			let project = inputToWikiProject(invoke.slice(2));
 			if ( project ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(project.fullScriptPath), ( project.fullScriptPath === wiki.name ? '' : invoke + ' ' ));
+			let proxy = inputToFrontendProxy(invoke.slice(2));
+			if ( proxy ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(proxy.fullNamePath), ( proxy.fullNamePath === wiki.name ? '' : invoke + ' ' ));
 		}
 		return cmdmap.LINK(lang, msg, line, wiki);
 	} );
