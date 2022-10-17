@@ -1,5 +1,5 @@
 import { inspect } from 'node:util';
-import { wikiProjects, inputToWikiProject, inputToFrontendProxy } from 'mediawiki-projects-list';
+import { wikiProjects, frontendProxies, inputToWikiProject, inputToFrontendProxy } from 'mediawiki-projects-list';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
@@ -20,6 +20,10 @@ wikiProjects.filter( project => {
 } ).forEach( project => {
 	if ( isDebug ) console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
 	wikiProjects.splice( wikiProjects.indexOf( project ), 1 );
+} );
+frontendProxies.filter( proxy => proxy.note ).forEach( proxy => {
+	if ( isDebug ) console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing proxy: ' + proxy.name + ' - ' + proxy.note );
+	frontendProxies.splice( frontendProxies.indexOf( proxy ), 1 );
 } );
 
 /**
@@ -68,7 +72,7 @@ export default class Wiki extends URL {
 		this.spaceReplacement = '_';
 		let project = inputToWikiProject(this.href);
 		if ( project ) {
-			articlepath = project.fullArticlePath + '$1';
+			articlepath = project.fullArticlePath;
 			this.spaceReplacement = project.wikiProject.urlSpaceReplacement;
 			this.wikifarm = project.wikiProject.wikiFarm;
 			this.centralauth ||= project.wikiProject.extensions.includes('CentralAuth');
