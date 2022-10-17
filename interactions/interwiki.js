@@ -1,9 +1,9 @@
 import { wikiProjects, inputToWikiProject, idStringToUrl } from 'mediawiki-projects-list';
+import db from '../util/database.js';
+import Wiki from '../util/wiki.js';
 import { got } from '../util/functions.js';
 import wiki_interaction from './wiki.js';
-import db from '../util/database.js';
 import { createRequire } from 'node:module';
-import Wiki from '../util/wiki.js';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 
@@ -91,7 +91,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
@@ -101,8 +103,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		let project = inputToWikiProject(body.query.interwiki[0].url);
 		if ( !project ) return interaction.respond( [] ).catch(log_error);
 		return interaction.respond( [{
-			name: project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ),
-			value: project.fullScriptPath
+			name: project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ).substring(0, 100),
+			value: project.fullScriptPath.substring(0, 100)
 		}] ).catch(log_error);
 	}, error => {
 		if ( error.name === 'TimeoutError' ) return;
@@ -112,7 +114,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the interwiki: ' + error );
@@ -126,7 +130,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} );
 		return [true, wikiList[1].size];
 	}, dberror => {
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the wiki list: ' + dberror );
@@ -145,8 +151,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
 			let project = inputToWikiProject(suggestion);
 			return {
-				name: project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion,
-				value: suggestion
+				name: ( project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion ).substring(0, 100),
+				value: suggestion.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
 		var suggestions = [
@@ -183,8 +189,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		return interaction.respond( [...new Set(suggestions)].map( suggestion => {
 			let project = inputToWikiProject(suggestion);
 			return {
-				name: project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion,
-				value: suggestion
+				name: ( project?.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ) || suggestion ).substring(0, 100),
+				value: suggestion.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	} );

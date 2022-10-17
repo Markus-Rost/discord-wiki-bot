@@ -33,6 +33,9 @@
 			"content_type": "Der angegebene Link hat den Inhaltstyp $1, aber nur die folgenden Inhaltstypen sind erlaubt:",
 			"invalid_url": "Die URL konnte nicht in eine gültige Bilddatei aufgelöst werden."
 		},
+		"embeds": {
+			"json": "Das Einbindungen-Objekt ist fehlerhaft, bitte gebe ein korrektes JSON-Array mit Discord Einbindungs-Objekten an."
+		},
 		"invalid": {
 			"note_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.",
 			"note_private": "Das angegebene Wiki ist privat!",
@@ -141,6 +144,7 @@
 			"title": "Nachricht gesendet!"
 		},
 		"sendfail": {
+			"note_embeds": "Das Einbindungen-Objekt war fehlerhaft, bitte gebe ein korrektes JSON-Array mit Discord Einbindungs-Objekten an.",
 			"note_nothread": "Der Thread konnte nicht gefunden werden, bitte gebe einen aktiven Thread an.",
 			"text": "Die Nachricht konnte nicht gesendet werden, bitte versuche es erneut.",
 			"title": "Senden fehlgeschlagen!"
@@ -258,6 +262,9 @@
 			"content": "Inhalt der Nachricht (optional):",
 			"content_placeholder": "Markdown-Text der Nachricht, unterstützt maskierte Links.",
 			"editcount": "Bearbeitungen:",
+			"embeds": "Einbindungen der Nachricht (optional):",
+			"embeds_help": "Hilfe: [Einbindungs-Visualisierer]($1)",
+			"embeds_placeholder": "JSON-Array mit Discord Einbindungen.",
 			"entry": "$1. Verifizierung",
 			"flag_logall": "Protokolliere nicht erfolgreiche Verifizierungen:",
 			"flag_private": "Private Antworten zu Befehlen:",

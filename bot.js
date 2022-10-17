@@ -56,7 +56,7 @@ const client = new Discord.Client( {
 var isStop = false;
 client.on( Discord.Events.ClientReady, () => {
 	console.log( '\n- ' + process.env.SHARDS + ': Successfully logged in as ' + client.user.username + '!\n' );
-	client.application.commands.fetch();
+	client.application.commands.fetch({withLocalizations: true});
 } );
 
 
@@ -209,7 +209,9 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 	}
 	else if ( interaction.isChatInputCommand() ) {
 		if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
-		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') );

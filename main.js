@@ -276,9 +276,12 @@ if ( process.env.dashboard ) {
 								style: ButtonStyle[evalData.button_style],
 								customId: evalData.button_id,
 								label: evalData.button_text,
-								emoji: ( evalData.button_emoji ? ( guild.emojis.cache.find( emoji => emoji.name === evalData.button_emoji ) ?? evalData.button_emoji ) : null )
+								emoji: ( evalData.button_emoji ? ( guild.emojis.cache.find( emoji => {
+									return emoji.name === evalData.button_emoji;
+								} )?.toString() ?? evalData.button_emoji ) : null )
 							}]
 						}] : [] ),
+						embeds: evalData.embeds ?? [],
 						threadId: evalData.thread,
 						allowedMentions: {parse: []}
 					} ).then( message => message?.id, globalThis.log_error ).then( message => {

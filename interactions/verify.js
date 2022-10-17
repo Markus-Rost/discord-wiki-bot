@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder, PermissionFlagsBits, ButtonStyle, TextInputStyle } from 'discord.js';
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
+import user_interaction from './user.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, sendMessage } from '../util/functions.js';
 
@@ -128,7 +129,7 @@ function interaction_verify(interaction, lang, wiki) {
 		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
 			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
 		}
-		if ( wiki.wikifarm === 'fandom' ) username = username.replace( /^userprofile\s*:\s*/i, '' );
+		if ( wiki.wikifarm === 'fandom' ) username = username.replace( /^(?:\/verify username|userprofile\s*):\s*/i, '' );
 		
 		if ( !username.trim() ) {
 			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), ephemeral: true} ).catch(log_error);
@@ -255,5 +256,6 @@ export default {
 	slash: interaction_verify,
 	modal: interaction_verify,
 	button: interaction_verify,
+	autocomplete: user_interaction.autocomplete,
 	allowDelete: false
 };

@@ -16,7 +16,6 @@ function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
 	var query = new URLSearchParams(interaction.options.getString('query') ?? '');
 	var fragment = ( interaction.options.getString('section') ?? '' ).replace( /^\s*#+\s*/, '' );
-	var title = interaction.options.getString('title') ?? '';
 	var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
@@ -87,7 +86,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			var body = response.body;
 			if ( response.statusCode !== 200 ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + ( body?.details || body?.error ) );
@@ -103,14 +104,16 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			wiki.commonSearches = body.search_phrases.map( phrase => phrase.term.toString() ).map( phrase => {
 				let term = phrase[0].toUpperCase() + phrase.slice(1);
 				return {
-					name: term,
-					value: term
+					name: term.substring(0, 100),
+					value: term.substring(0, 100)
 				};
 			} );
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) return;
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- Error while getting the common searches: ' + error );
@@ -125,7 +128,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			if ( body && body.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + body?.error?.info );
@@ -141,18 +146,21 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}
 			wiki.commonSearches = body.query.mostviewed.filter( phrase => {
 				if ( wiki.mainpage === phrase.title ) return false;
+				if ( phrase.title.includes('/') ) return false;
 				if ( phrase.ns === 4 || phrase.ns === 12 ) return true;
 				return wiki.namespaces.get(phrase.ns)?.content;
 			} ).map( phrase => {
 				return {
-					name: phrase.title,
-					value: phrase.title
+					name: phrase.title.substring(0, 100),
+					value: phrase.title.substring(0, 100)
 				};
 			} );
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) return;
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- Error while getting the common searches: ' + error );
@@ -167,7 +175,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			if ( body && body.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.random ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the common searches: ' + body?.error?.info );
@@ -178,8 +188,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				return !phrase.title.includes('/');
 			} ).map( phrase => {
 				return {
-					name: phrase.title,
-					value: phrase.title
+					name: phrase.title.substring(0, 100),
+					value: phrase.title.substring(0, 100)
 				};
 			} );
 			setTimeout( () => {
@@ -188,7 +198,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) return;
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- Error while getting the common searches: ' + error );
@@ -196,8 +208,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		} );
 		if ( wiki.mainpage ) return interaction.respond( [
 			{
-				name: wiki.mainpage,
-				value: wiki.mainpage
+				name: wiki.mainpage.substring(0, 100),
+				value: wiki.mainpage.substring(0, 100)
 			},
 			...( wiki.commonSearches?.slice(0, 24) || [] )
 		] ).catch(log_error);
@@ -221,14 +233,16 @@ function autocomplete_wiki(interaction, lang, wiki) {
 						value: ''
 					}] ).catch(log_error);
 				}
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the main page name: ' + body?.error?.info );
 				return interaction.respond( [
 					{
-						name: wiki.mainpage || 'Main Page',
-						value: wiki.mainpage ?? ''
+						name: ( wiki.mainpage || 'Main Page' ).substring(0, 100),
+						value: ( wiki.mainpage ?? '' ).substring(0, 100)
 					},
 					...( wiki.commonSearches?.slice(0, 24) || [] )
 				] ).catch(log_error);
@@ -236,8 +250,8 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			wiki.updateWiki(body.query.general);
 			return interaction.respond( [
 				{
-					name: body.query.general.mainpage || 'Main Page',
-					value: body.query.general.mainpage ?? ''
+					name: ( body.query.general.mainpage || 'Main Page' ).substring(0, 100),
+					value: ( body.query.general.mainpage ?? '' ).substring(0, 100)
 				},
 				...( wiki.commonSearches?.slice(0, 24) || [] )
 			] ).catch(log_error);
@@ -249,14 +263,16 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- Error while getting the main page name: ' + error );
 			return interaction.respond( [
 				{
-					name: wiki.mainpage || 'Main Page',
-					value: wiki.mainpage ?? ''
+					name: ( wiki.mainpage || 'Main Page' ).substring(0, 100),
+					value: ( wiki.mainpage ?? '' ).substring(0, 100)
 				},
 				...( wiki.commonSearches?.slice(0, 24) || [] )
 			] ).catch(log_error);
@@ -282,7 +298,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
@@ -307,7 +325,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the suggestions: ' + error );
@@ -333,7 +353,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
@@ -354,7 +376,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the suggestions: ' + error );
@@ -426,7 +450,9 @@ function autocomplete_section(interaction, lang, wiki) {
 				sectionCache.set(wiki.toLink(title), []);
 				return interaction.respond( [] ).catch(log_error);
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the page sections: ' + body?.error?.info );
@@ -456,7 +482,7 @@ function autocomplete_section(interaction, lang, wiki) {
 		])].map( fragment => {
 			return {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
-				value: fragment.anchor
+				value: fragment.anchor.substring(0, 100)
 			};
 		} ).slice(0, 25) ).catch(log_error);
 	}, error => {
@@ -467,7 +493,9 @@ function autocomplete_section(interaction, lang, wiki) {
 				value: ''
 			}] ).catch(log_error);
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the page sections: ' + error );

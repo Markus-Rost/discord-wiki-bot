@@ -33,6 +33,9 @@
 			"content_type": "所提供的連結的內容類型是$1，但僅允許以下內容類型：",
 			"invalid_url": "無法將URL解析為有效的圖檔。"
 		},
+		"embeds": {
+			"json": "嵌入物件無效，請提供含有Discord嵌入物件的有效JSON陣列。"
+		},
 		"invalid": {
 			"note_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。",
 			"note_private": "所提供的 wiki 是私人 wiki！",
@@ -141,6 +144,7 @@
 			"title": "已傳送訊息！"
 		},
 		"sendfail": {
+			"note_embeds": "嵌入物件無效，請提供含有Discord嵌入物件的有效JSON陣列。",
 			"note_nothread": "無法找到討論串，請指定進行中的討論串。",
 			"text": "無法傳送訊息，請再試一次。",
 			"title": "傳送失敗！"
@@ -258,6 +262,9 @@
 			"content": "訊息內容（選擇性）：",
 			"content_placeholder": "訊息的Markdown文字，支援變更過顯示文字的連結。",
 			"editcount": "最少編輯次數：",
+			"embeds": "訊息嵌入（選擇性）：",
+			"embeds_help": "有關工具：[嵌入視覺化]($1)",
+			"embeds_placeholder": "Discord訊息嵌入組成的JSON陣列。",
 			"entry": "驗證方式 #$1",
 			"flag_logall": "記錄不成功的驗證：",
 			"flag_private": "用私訊回覆指令：",

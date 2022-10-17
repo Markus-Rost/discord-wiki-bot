@@ -99,8 +99,8 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				}
 			} ).then( wsresponse => {
 				var wsbody = wsresponse.body;
-				if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.users?.[0]?.name?.length !== username.length ) {
-					if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + wsbody?.exception?.details );
+				if ( wsresponse.statusCode !== 200 || wsbody?.exception || wsbody?.error || wsbody?.users?.[0]?.name?.length !== username.length ) {
+					if ( !wsbody?.users ) console.log( '- ' + wsresponse.statusCode + ': Error while searching the user: ' + ( wsbody?.exception?.details || wsbody?.details || wsbody?.error ) );
 					return;
 				}
 				return wsbody.users[0].name;

@@ -546,7 +546,9 @@ if ( textAreas.length ) {
 	for ( var ta = 0; ta < textAreas.length; ta++ ) {
 		updateTextLength.call(textAreas[ta]);
 		textAreas[ta].addEventListener('keyup', updateTextLength);
-		textAreas[ta].addEventListener('keydown', allowTabs);
+		textAreas[ta].addEventListener('keydown', function(e) {
+			return allowTabs.call(this, e, this.name === 'embeds');
+		});
 		textAreas[ta].onclick = function() {
 			if ( !textArea ) {
 				for ( var us = 0; us < codeButtons.length; us++ ) {
@@ -556,6 +558,28 @@ if ( textAreas.length ) {
 			textArea = this;
 		};
 	}
+
+	var messageEmbeds = textAreas.namedItem('embeds');
+	if ( messageEmbeds ) messageEmbeds.addEventListener( 'input', function() {
+		if ( !messageEmbeds.value.trim() ) {
+			messageEmbeds.title = '';
+			messageEmbeds.setCustomValidity('');
+		}
+		else {
+			try {
+				var apiEmbeds = JSON.parse(messageEmbeds.value);
+				if ( apiEmbeds && apiEmbeds.embeds ) apiEmbeds = apiEmbeds.embeds;
+				if ( !Array.isArray(apiEmbeds) ) apiEmbeds = [apiEmbeds];
+				if ( apiEmbeds.length > 10 || apiEmbeds.some( apiEmbed => !apiEmbed ) ) throw lang('embeds.json');
+				messageEmbeds.title = '';
+				messageEmbeds.setCustomValidity('');
+			}
+			catch (error) {
+				messageEmbeds.title = error.toString();
+				messageEmbeds.setCustomValidity(error.toString());
+			}
+		}
+	} );
 
 	/**
 	 * @this HTMLElement
@@ -584,13 +608,14 @@ if ( textAreas.length ) {
 	/**
 	 * @this HTMLTextAreaElement
 	 * @param {KeyboardEvent} e
+	 * @param {Boolean} always
 	 */
-	function allowTabs(e) {
+	function allowTabs(e, always) {
 		if ( e.key !== 'Tab' ) return;
 		if ( this.value.includes( '`ˋ`' ) ) this.value = this.value.replace( /`ˋ`/g, '```' );
 		var start = this.selectionStart;
 		var end = this.selectionEnd;
-		if ( this.value.substring(0, start).includes( '```' ) && this.value.substring(end).includes( '```' ) ) {
+		if ( always || ( this.value.substring(0, start).includes( '```' ) && this.value.substring(end).includes( '```' ) ) ) {
 			e.preventDefault();
 			if ( this.textLength > this.maxLength ) return;
 			this.value = this.value.substring(0, start) + '\t' + this.value.substring(end);
@@ -600,6 +625,7 @@ if ( textAreas.length ) {
 
 	/** @this HTMLTextAreaElement */
 	function updateTextLength() {
+		if ( this.maxLength === -1 ) return;
 		this.labels.item(0).children.item(0).textContent = this.textLength + ' / ' + this.maxLength;
 	}
 }

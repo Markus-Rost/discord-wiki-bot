@@ -318,26 +318,6 @@
 					"desc": "このサーバーのWiki-BotのデフォルトのWikiを設定します。"
 				}
 			},
-			"slash": {
-				"inline": {
-					"desc": "Wikiの埋め込みリンクを含むメッセージを投稿する。"
-				},
-				"interwiki": {
-					"desc": "名前付きMediaWikiプロジェクトの一致する記事へのリンクで回答します。"
-				},
-				"overview": {
-					"desc": "Wikiに関する情報や統計を紹介します。"
-				},
-				"random": {
-					"desc": "Wikiのランダムなページへのリンクでお答えします。"
-				},
-				"verify": {
-					"desc": "このコマンドは、あなたのDiscordアカウントとWikiアカウントを検証し、Wikiアカウントに一致するロールを取得するために使用します。"
-				},
-				"wiki": {
-					"desc": "Wikiの一致する記事へのリンクでお答えします："
-				}
-			},
 			"subprefix": {
 				"cmd": "<wiki> <search term>",
 				"desc": "名前付きWikiの一致する記事へのリンクでお答えします。："

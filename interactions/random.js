@@ -174,7 +174,9 @@ function autocomplete_random(interaction, lang, wiki) {
 						value: ''
 					}] ).catch(log_error);
 				}
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the namespaces: ' + body?.error?.info );
@@ -253,7 +255,9 @@ function autocomplete_random(interaction, lang, wiki) {
 					value: ''
 				}] ).catch(log_error);
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.map( option => {
+			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
+			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
 			} ).join(' ') + '\n- Error while getting the namespaces: ' + error );

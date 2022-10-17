@@ -33,6 +33,9 @@
 			"content_type": "Tautan yang disediakan memiliki tipe konten $1, tetapi hanya tipe konten berikut yang diizinkan:",
 			"invalid_url": "URL tidak dapat diselesaikan menjadi file gambar yang valid."
 		},
+		"embeds": {
+			"json": "Objek penyematan tidak valid, berikan array JSON yang valid dengan objek penyematan Discord."
+		},
 		"invalid": {
 			"note_http": "Situs web yang disediakan tidak memiliki sertifikat TLS/SSL yang valid! Untuk alasan keamanan, hanya wiki yang menggunakan HTTPS yang didukung.",
 			"note_private": "Wiki yang disediakan bersifat pribadi!",
@@ -115,7 +118,7 @@
 		},
 		"readonly": {
 			"text": "Saat ini kamu hanya dapat melihat pengaturan anda, tetapi tidak dapat mengubahnya.",
-			"title": "Read-only database!"
+			"title": "Database dalam hanya baca!"
 		},
 		"refresh": {
 			"text": "Daftar server kamu telah berhasil di-refresh.",
@@ -141,6 +144,7 @@
 			"title": "Pesan terkirim!"
 		},
 		"sendfail": {
+			"note_embeds": "Objek sematan tidak valid, berikan array JSON yang valid dengan objek penyematan Discord.",
 			"note_nothread": "Thread tidak ditemukan, harap berikan thread yang aktif.",
 			"text": "Pesan tidak dapat terkirim, harap coba lagi.",
 			"title": "Pengiriman gagal!"
@@ -258,6 +262,9 @@
 			"content": "Isi pesan (opsional):",
 			"content_placeholder": "Teks markdown pesan, mendukung tautan mask.",
 			"editcount": "Jumlah edit minimal:",
+			"embeds": "Sematan Pesan (opsional):",
+			"embeds_help": "Bantuan: [Sematkan Visualizer]($1)",
+			"embeds_placeholder": "Array JSON dari penyematan pesan Discord.",
 			"entry": "Verifikasi #$1",
 			"flag_logall": "Log verifikasi yang gagal:",
 			"flag_private": "Tanggapan perintah pribadi:",

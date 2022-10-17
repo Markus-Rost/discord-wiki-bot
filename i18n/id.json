@@ -306,36 +306,16 @@
 					"desc": "Saya akan mengubah bahasa untuk server ini."
 				},
 				"prefix": {
-					"cmd": "settings prefix <prefix>",
+					"cmd": "settings prefix <awalan>",
 					"desc": "Saya akan mengubah awalan untuk server ini."
 				},
 				"role": {
-					"cmd": "settings role <role>",
+					"cmd": "settings role <kedudukan>",
 					"desc": "Saya akan mengubah peran minimal yang diperlukan untuk menggunakan perintah untuk server ini."
 				},
 				"wiki": {
 					"cmd": "settings wiki <wiki>",
 					"desc": "Saya akan mengubah wiki default untuk server ini."
-				}
-			},
-			"slash": {
-				"inline": {
-					"desc": "Posting pesan dengan tautan inline wiki."
-				},
-				"interwiki": {
-					"desc": "Saya akan menjawab dengan tautan artikel yang cocok di proyek MediaWiki bernama."
-				},
-				"overview": {
-					"desc": "Saya akan menunjukkan beberapa informasi dan statistik tentang wiki."
-				},
-				"random": {
-					"desc": "Saya akan menjawab dengan tautan ke halaman acak di wiki."
-				},
-				"verify": {
-					"desc": "Gunakan perintah ini untuk memverifikasi akun Discord Anda dengan akun wiki Anda dan mendapatkan role yang cocok dengan akun wiki Anda."
-				},
-				"wiki": {
-					"desc": "Saya akan menjawab dengan tautan ke artikel yang cocok di wiki:"
 				}
 			},
 			"subprefix": {
@@ -356,7 +336,7 @@
 					"desc": "Saya akan mengubah usia akun minimal (dalam hari) untuk verifikasi wiki."
 				},
 				"add": {
-					"cmd": "verification add <role>",
+					"cmd": "verification add <kedudukan>",
 					"desc": "Saya akan menambahkan verifikasi wiki baru. Menerima `|` daftar terpisah."
 				},
 				"channel": {
@@ -408,6 +388,7 @@
 		"notitle": "Judul halaman yang digunakan tidak ada!",
 		"nowiki": "Wiki yang dicantumkan tidak ada!",
 		"random": "(Semua namespaces konten)",
+		"user": "Harap berikan nama pengguna atau IP yang valid.",
 		"verify": "Harap berikan nama pengguna wiki kamu untuk menggunakan perintah ini untuk memverifikasi akun Discord milik kamu dengan akun wiki dan dapatkan peran yang cocok dengan akun wiki mu."
 	},
 	"invite": {

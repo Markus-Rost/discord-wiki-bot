@@ -1,3 +1,5 @@
+import { embedLength } from '@discordjs/builders';
+import { EmbedBuilder } from 'discord.js';
 import Lang from '../util/i18n.js';
 import { got, db, sendMsg, createNotice, escapeText, hasPerm, PermissionFlagsBits } from './util.js';
 import { createRequire } from 'node:module';
@@ -463,6 +465,12 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 					$('<div>').append(
 						$('<label for="wb-settings-button_emoji">').text(dashboardLang.get('verification.form.button_emoji')),
 						$('<input type="text" id="wb-settings-button_emoji" name="button_emoji" pattern="^\\s*[^\\s`\\\\]{1,80}\\s*$" minlength="1" maxlength="80" inputmode="text" autocomplete="on">').attr('title', dashboardLang.get('verification.form.button_emoji_title'))
+					),
+					$('<div>').append(
+						$('<label for="wb-settings-embeds">').text(dashboardLang.get('verification.form.embeds')).append(
+							$('<div class="description">').html(dashboardLang.get('verification.form.embeds_help', true, $('<a target="_blank">').attr('href', 'https://eb.nadeko.bot/')))
+						),
+						$('<textarea id="wb-settings-embeds" name="embeds" spellcheck="true" cols="65" rows="4">').attr('placeholder', dashboardLang.get('verification.form.embeds_placeholder')).text('[]')
 					),
 					$('<input type="submit" id="wb-settings-save" name="save_settings">').val(dashboardLang.get('verification.form.send_message'))
 				)
@@ -1120,6 +1128,7 @@ function update_notices(res, userSettings, guild, type, settings) {
  * @param {String} settings.webhook_name
  * @param {String} settings.avatar
  * @param {String} [settings.content]
+ * @param {String} [settings.embeds]
  * @param {String} settings.button_name
  * @param {String} settings.button_style
  * @param {String} [settings.button_emoji]
@@ -1137,6 +1146,56 @@ function send_button(res, userSettings, guild, type, settings) {
 	}
 	if ( !( settings.webhook_name?.length >= 2 && settings.webhook_name?.length <= 32 ) ) {
 		return res(`/guild/${guild}/verification/${type}`, 'sendfail');
+	}
+	var embeds = [];
+	if ( settings.embeds?.trim?.() ) {
+		try {
+			embeds = JSON.parse(settings.embeds);
+			if ( embeds?.embeds ) {
+				if ( typeof embeds.content === 'string' && embeds.content.trim() && !settings.content ) {
+					settings.content = embeds.content.trim();
+				}
+				embeds = embeds.embeds;
+			}
+			if ( !Array.isArray(embeds) ) embeds = [embeds];
+			if ( embeds.length > 10 ) throw undefined;
+			let totalEmbedLength = 0;
+			embeds = embeds.map( apiEmbed => {
+				let embed = new EmbedBuilder();
+				if ( apiEmbed?.title ) embed.setTitle(apiEmbed.title);
+				if ( apiEmbed?.url ) embed.setURL(apiEmbed.url);
+				if ( apiEmbed?.description ) embed.setDescription(apiEmbed.description);
+				if ( apiEmbed?.color ) embed.setColor(apiEmbed.color);
+				if ( apiEmbed?.thumbnail?.url ) embed.setThumbnail(apiEmbed.thumbnail.url);
+				if ( apiEmbed?.image?.url ) embed.setImage(apiEmbed.image.url);
+				if ( apiEmbed?.timestamp ) embed.setTimestamp(apiEmbed.timestamp);
+				if ( apiEmbed?.author?.name ) embed.setAuthor({
+					name: apiEmbed.author.name,
+					url: apiEmbed.author.url,
+					iconURL: apiEmbed.author.icon_url
+				});
+				if ( apiEmbed?.footer?.text ) embed.setFooter({
+					text: apiEmbed.footer.text,
+					iconURL: apiEmbed.footer.icon_url
+				});
+				if ( Array.isArray(apiEmbed?.fields) ) embed.setFields(apiEmbed.fields.map( apiField => {
+					let field = {
+						name: apiField?.name,
+						value: apiField?.value
+					};
+					if ( apiField.inline !== undefined ) field.inline = apiField.inline;
+					return field;
+				} ));
+				if ( JSON.stringify(embed.data) === '{}' ) throw undefined;
+				totalEmbedLength += embedLength(embed.data);
+				return embed.toJSON();
+			} );
+			if ( totalEmbedLength > 6_000 ) throw undefined;
+		}
+		catch (error) {
+			console.log(error)
+			return res(`/guild/${guild}/verification/${type}`, 'sendfail', 'embeds');
+		}
 	}
 	if ( !/^https?:\/\//.test(settings.avatar) || settings.content?.length > 2000 ) {
 		return res(`/guild/${guild}/verification/${type}`, 'sendfail');
@@ -1177,6 +1236,7 @@ function send_button(res, userSettings, guild, type, settings) {
 				name: settings.webhook_name,
 				reason: lang.get('verification.audit_reason'),
 				text: settings.content,
+				embeds: embeds,
 				avatar: settings.avatar,
 				button_text: settings.button_name,
 				button_style: settings.button_style,
