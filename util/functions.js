@@ -1,6 +1,6 @@
 import { Message, PermissionFlagsBits } from 'discord.js';
 import { Parser as HTMLParser } from 'htmlparser2';
-import { proxySites } from './wiki.js';
+import { urlToFix } from 'mediawiki-projects-list';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
 const got = gotDefault.extend( {
@@ -284,12 +284,7 @@ function htmlToPlain(html, includeComments = false) {
  */
 function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	var relativeFix = null;
-	if ( pagelink ) {
-		let proxySite = proxySites.find( proxySite => pagelink.split('/')[2].endsWith( proxySite.name ) );
-		if ( proxySite ) {
-			relativeFix = proxySite.relativeFix;
-		}
-	}
+	if ( pagelink ) relativeFix = urlToFix(pagelink);
 	var text = '';
 	var code = false;
 	var href = '';

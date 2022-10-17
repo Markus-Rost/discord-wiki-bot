@@ -1,45 +1,11 @@
 import { inspect } from 'node:util';
-import { wikiProjects, inputToWikiProject } from 'mediawiki-projects-list';
+import { wikiProjects, inputToWikiProject, inputToFrontendProxy } from 'mediawiki-projects-list';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
 
 /** @type {String[]} - Sites that support verification using OAuth2. */
 export const oauthSites = [];
-
-/** @type {{name:String,regex:String,namePath:String,scriptPath:String,articlePath:String,relativeFix:(href:String,pagelink:String)=>String}[]} - Frontend proxy sites. */
-export const proxySites = [
-	{
-		name: '.breezewiki.com',
-		regex: '^https://([a-z\\d-]{1,50})\\.breezewiki\\.com(?:/.*)?$',
-		namePath: 'https://breezewiki.com/$1/',
-		scriptPath: 'https://$1.fandom.com/',
-		articlePath: 'https://breezewiki.com/$1/wiki/',
-		relativeFix: (href, pagelink) => {
-			return '/' + pagelink.split('/')[3] + href;
-		}
-	},
-	{
-		name: 'breezewiki.com',
-		regex: '^https://breezewiki\\.com/([a-z\\d-]{1,50})(?:/.*)?$',
-		namePath: 'https://breezewiki.com/$1/',
-		scriptPath: 'https://$1.fandom.com/',
-		articlePath: 'https://breezewiki.com/$1/wiki/',
-		relativeFix: (href, pagelink) => {
-			return '/' + pagelink.split('/')[3] + href;
-		}
-	},
-	{
-		name: 'breezewiki.pussthecat.org',
-		regex: '^https://breezewiki\\.pussthecat\\.org/([a-z\\d-]{1,50})(?:/.*)?$',
-		namePath: 'https://breezewiki.pussthecat.org/$1/',
-		scriptPath: 'https://$1.fandom.com/',
-		articlePath: 'https://breezewiki.pussthecat.org/$1/wiki/',
-		relativeFix: (href, pagelink) => {
-			return '/' + pagelink.split('/')[3] + href;
-		}
-	}
-];
 
 /** @type {Map<String, Wiki>} - Cache of Wikis. */
 const CACHE = new Map();
@@ -88,14 +54,11 @@ export default class Wiki extends URL {
 			return Wiki._cache.get(this.name);
 		}
 		this.proxyName = null;
-		let proxySite = proxySites.find( proxySite => this.hostname.endsWith( proxySite.name ) );
-		if ( proxySite ) {
-			let regex = this.href.match( new RegExp( proxySite.regex ) );
-			if ( regex ) {
-				this.proxyName = proxySite.namePath.replace( /\$(\d)/g, (match, n) => regex[n] );
-				this.href = proxySite.scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
-				this.articlepath = proxySite.articlePath.replace( /\$(\d)/g, (match, n) => regex[n] ) + '$1';
-			}
+		let frontendProxy = inputToFrontendProxy(this.href);
+		if ( frontendProxy ) {
+			this.proxyName = frontendProxy.fullNamePath;
+			this.href = frontendProxy.fullScriptPath;
+			this.articlepath = frontendProxy.fullArticlePath;
 		}
 		let articlepath = this.pathname + 'index.php?title=$1';
 		this.gamepedia = this.hostname.endsWith( '.gamepedia.com' );
@@ -334,6 +297,8 @@ export default class Wiki extends URL {
 			if ( regex ) return new Wiki('https://' + regex[1] + '/');
 			let project = inputToWikiProject(input);
 			if ( project ) return new Wiki(project.fullScriptPath);
+			let proxy = inputToFrontendProxy(input);
+			if ( proxy ) return new Wiki(proxy.fullNamePath);
 			if ( input.startsWith( 'https://' ) ) {
 				let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|[\?\/#].*)$/, '/' );
 				if ( !wiki.endsWith( '/' ) ) wiki += '/';
