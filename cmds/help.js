@@ -209,7 +209,7 @@ function formathelp(messages, msg, lang, wiki) {
 			} );
 			return text.join('\n');
 		}
-		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '`\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc', prefix) + ( message === 'default' ? ' `' + wiki.href + '`' : '' );
+		return '🔹 `' + intro + lang.get('help.list.' + message + '.cmd', mention).replace( new RegExp( '^' + cmd ), ( lang.localNames[cmd] || cmd ) ) + '`\n\t' + ( restrictions.experimental.includes( message ) ? lang.get('general.experimental') + '\n\t' : '' ) + lang.get('help.list.' + message + '.desc', prefix) + ( message === 'default' ? ' `' + wiki.toLink() + '`' : '' );
 	} ).join('\n');
 }
 

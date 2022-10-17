@@ -143,7 +143,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
 					}
 					var sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND wiki = $3';
-					var sqlargs = [wikinew.href, msg.guildId, guild.wiki];
+					var sqlargs = [wikinew.name, msg.guildId, guild.wiki];
 					if ( !rows.length ) {
 						sql = 'INSERT INTO discord(wiki, guild, main, lang) VALUES ($1, $2, $2, $3)';
 						sqlargs[2] = lang.lang;
@@ -152,7 +152,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND channel = $3';
 						sqlargs[2] = channelId;
 						if ( !rows.includes( channel ) ) {
-							if ( channel.wiki === wikinew.href ) {
+							if ( channel.wiki === wikinew.name ) {
 								if ( reaction ) reaction.removeEmoji();
 								return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, embeds: [embed], components}, true );
 							}
@@ -162,16 +162,16 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 					}
 					return db.query( sql, sqlargs ).then( () => {
 						console.log( '- Settings successfully updated.' );
-						if ( channel ) channel.wiki = wikinew.href;
+						if ( channel ) channel.wiki = wikinew.name;
 						else {
 							rows.forEach( row => {
-								if ( row.channel && row.wiki === guild.wiki ) row.wiki = wikinew.href;
+								if ( row.channel && row.wiki === guild.wiki ) row.wiki = wikinew.name;
 							} );
-							guild.wiki = wikinew.href;
+							guild.wiki = wikinew.name;
 						}
 						if ( channel || !rows.some( row => row.channel === channelId ) ) wiki = new Wiki(wikinew);
 						if ( reaction ) reaction.removeEmoji();
-						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew + wikihelp, embeds: [embed], components}, true );
+						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew.name + wikihelp, embeds: [embed], components}, true );
 						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
 						if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 							console.log( '- Settings successfully removed.' );

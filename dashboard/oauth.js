@@ -261,7 +261,7 @@ function dashboard_api(res, input, guild = null) {
 		api: true,
 		error: false,
 		error_code: '',
-		wiki: wiki?.href,
+		wiki: wiki?.name,
 		base: '',
 		sitename: '',
 		logo: '',
@@ -313,7 +313,7 @@ function dashboard_api(res, input, guild = null) {
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		result.wiki = wiki.href;
+		result.wiki = wiki.name;
 		result.base = body.query.general.base;
 		result.sitename = body.query.general.sitename;
 		result.logo = body.query.general.logo;

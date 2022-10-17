@@ -1,6 +1,7 @@
 import { Message, PermissionFlagsBits } from 'discord.js';
 import { Parser as HTMLParser } from 'htmlparser2';
 import { embedLength } from '@discordjs/builders';
+import { urlToFix } from 'mediawiki-projects-list';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
 const got = gotDefault.extend( {
@@ -277,6 +278,8 @@ function htmlToPlain(html, includeComments = false) {
  * @returns {String}
  */
 function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
+	var relativeFix = null;
+	if ( pagelink ) relativeFix = urlToFix(pagelink);
 	var text = '';
 	var code = false;
 	var href = '';
@@ -397,6 +400,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
 				try {
+					if ( relativeFix && /^\/(?!\/)/.test(attribs.href) ) attribs.href = relativeFix(attribs.href, pagelink);
 					href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
 					if ( text.endsWith( '](<' + href + '>)' ) ) {
 						text = text.substring(0, text.length - ( href.length + 5 ));

@@ -38,7 +38,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	wiki = new Wiki(wiki);
 	msg.wikiPrefixes = new Map();
 	subprefixes.forEach( (prefixwiki, prefixchar) => msg.wikiPrefixes.set(prefixwiki, prefixchar) );
-	msg.wikiPrefixes.set(wiki.href, '');
+	msg.wikiPrefixes.set(wiki.name, '');
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
 	var cleanCont = ( content ? cleanContent(content, msg.channel) : msg.cleanContent ).replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /<(\/[\w ]+):\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' );
@@ -90,13 +90,13 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( subprefixes.has(invoke[0]) ) {
 			let subprefix = subprefixes.get(invoke[0]);
-			if ( subprefix.startsWith( 'https://' ) ) return cmdmap.LINK(lang, msg, line.substring(1), new Wiki(subprefix), ( subprefix === wiki.href ? '' : invoke[0] ));
+			if ( subprefix.startsWith( 'https://' ) ) return cmdmap.LINK(lang, msg, line.substring(1), new Wiki(subprefix), ( subprefix === wiki.name ? '' : invoke[0] ));
 			let subprefixUrl = idStringToUrl(invoke.substring(1), subprefix);
-			if ( subprefixUrl ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(subprefixUrl), ( subprefixUrl === wiki.href ? '' : invoke + ' ' ));
+			if ( subprefixUrl ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(subprefixUrl), ( subprefixUrl === wiki.name ? '' : invoke + ' ' ));
 		}
 		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}$/.test(domainToASCII(invoke.split('/')[0])) ) {
 			let project = inputToWikiProject(invoke.slice(2));
-			if ( project ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(project.fullScriptPath), ( project.fullScriptPath === wiki.href ? '' : invoke + ' ' ));
+			if ( project ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(project.fullScriptPath), ( project.fullScriptPath === wiki.name ? '' : invoke + ' ' ));
 		}
 		return cmdmap.LINK(lang, msg, line, wiki);
 	} );

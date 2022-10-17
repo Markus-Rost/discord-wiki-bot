@@ -1,5 +1,5 @@
 import { inspect } from 'node:util';
-import { wikiProjects, inputToWikiProject } from 'mediawiki-projects-list';
+import { wikiProjects, frontendProxies, inputToWikiProject, inputToFrontendProxy } from 'mediawiki-projects-list';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
@@ -20,6 +20,10 @@ wikiProjects.filter( project => {
 } ).forEach( project => {
 	if ( isDebug ) console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
 	wikiProjects.splice( wikiProjects.indexOf( project ), 1 );
+} );
+frontendProxies.filter( proxy => proxy.note ).forEach( proxy => {
+	if ( isDebug ) console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing proxy: ' + proxy.name + ' - ' + proxy.note );
+	frontendProxies.splice( frontendProxies.indexOf( proxy ), 1 );
 } );
 
 /**
@@ -50,8 +54,15 @@ export default class Wiki extends URL {
 	constructor(wiki = defaultSettings.wiki, base = defaultSettings.wiki) {
 		super(wiki, base);
 		this.protocol = 'https';
-		if ( Wiki._cache.has(this.href) ) {
-			return Wiki._cache.get(this.href);
+		if ( Wiki._cache.has(this.name) ) {
+			return Wiki._cache.get(this.name);
+		}
+		this.proxyName = null;
+		let frontendProxy = inputToFrontendProxy(this.href);
+		if ( frontendProxy ) {
+			this.proxyName = frontendProxy.fullNamePath;
+			this.href = frontendProxy.fullScriptPath;
+			this.articlepath = frontendProxy.fullArticlePath;
 		}
 		let articlepath = this.pathname + 'index.php?title=$1';
 		this.gamepedia = this.hostname.endsWith( '.gamepedia.com' );
@@ -61,13 +72,13 @@ export default class Wiki extends URL {
 		this.spaceReplacement = '_';
 		let project = inputToWikiProject(this.href);
 		if ( project ) {
-			articlepath = project.fullArticlePath + '$1';
+			articlepath = project.fullArticlePath;
 			this.spaceReplacement = project.wikiProject.urlSpaceReplacement;
 			this.wikifarm = project.wikiProject.wikiFarm;
 			this.centralauth ||= project.wikiProject.extensions.includes('CentralAuth');
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
-		this.articlepath = articlepath;
+		if ( !this.proxyName ) this.articlepath = articlepath;
 		this.mainpage = '';
 		this.mainpageisdomainroot = false;
 		/** @type {mwNamespaceList} */
@@ -87,7 +98,15 @@ export default class Wiki extends URL {
 		/** @type {{name: String, value: String}[]?} */
 		this.commonSearches = null;
 		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
-		Wiki._cache.set(this.href, this);
+		Wiki._cache.set(this.name, this);
+	}
+
+	/**
+	 * Proxy name or script path of the Wiki.
+	 * @type {String}
+	 */
+	get name() {
+		return this.proxyName || this.href;
 	}
 
 	/**
@@ -127,7 +146,7 @@ export default class Wiki extends URL {
 	updateWiki({servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, gamepedia = 'false'}, namespaces, namespacealiases) {
 		this.hostname = servername;
 		this.pathname = scriptpath + '/';
-		this.articlepath = articlepath;
+		if ( !this.proxyName ) this.articlepath = articlepath;
 		this.mainpage = mainpage;
 		this.mainpageisdomainroot = ( mainpageisdomainroot !== undefined );
 		this.centralauth = ( centralidlookupprovider === 'CentralAuth' );
@@ -155,10 +174,10 @@ export default class Wiki extends URL {
 				this.namespaces.set(ns.id, ns);
 			} );
 		}
-		if ( this !== Wiki._cache.get(this.href) ) {
-			if ( !Wiki._cache.has(this.href) ) Wiki._cache.set(this.href, this);
+		if ( this !== Wiki._cache.get(this.name) ) {
+			if ( !Wiki._cache.has(this.name) ) Wiki._cache.set(this.name, this);
 			else Wiki._cache.forEach( (wiki, href) => {
-				if ( wiki.href === this.href && wiki !== this ) {
+				if ( wiki.name === this.name && wiki !== this ) {
 					Wiki._cache.set(href, this);
 				}
 			} );
@@ -282,6 +301,8 @@ export default class Wiki extends URL {
 			if ( regex ) return new Wiki('https://' + regex[1] + '/');
 			let project = inputToWikiProject(input);
 			if ( project ) return new Wiki(project.fullScriptPath);
+			let proxy = inputToFrontendProxy(input);
+			if ( proxy ) return new Wiki(proxy.fullNamePath);
 			if ( input.startsWith( 'https://' ) ) {
 				let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|[\?\/#].*)$/, '/' );
 				if ( !wiki.endsWith( '/' ) ) wiki += '/';
@@ -317,6 +338,7 @@ export default class Wiki extends URL {
 		if ( typeof depth === 'number' && depth < 0 ) return this;
 		const wiki = {
 			href: this.href,
+			name: this.name,
 			origin: this.origin,
 			protocol: this.protocol,
 			username: this.username,
@@ -328,6 +350,7 @@ export default class Wiki extends URL {
 			search: this.search,
 			searchParams: this.searchParams,
 			hash: this.hash,
+			proxyName: this.proxyName,
 			articlepath: this.articlepath,
 			articleURL: this.articleURL,
 			spaceReplacement: this.spaceReplacement,

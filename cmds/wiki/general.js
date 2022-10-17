@@ -65,7 +65,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
 						if ( isMessage(msg) ) {
 							cmd = '!!' + regex[1] + ' ';
-							if ( msg.wikiPrefixes.has(iwwiki.href) ) cmd = msg.wikiPrefixes.get(iwwiki.href);
+							if ( msg.wikiPrefixes.has(iwwiki.name) ) cmd = msg.wikiPrefixes.get(iwwiki.name);
 							else if ( msg.wikiPrefixes.has(project.name) ) {
 								let idString = urlToIdString(iwwiki);
 								if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
@@ -248,7 +248,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					selfcall++;
 					if ( isMessage(msg) ) {
 						cmd = '!!' + iw.hostname + ' ';
-						if ( msg.wikiPrefixes.has(iw.href) ) cmd = msg.wikiPrefixes.get(iw.href);
+						if ( msg.wikiPrefixes.has(iw.name) ) cmd = msg.wikiPrefixes.get(iw.name);
 						else if ( msg.wikiPrefixes.has('miraheze.org') ) {
 							let idString = urlToIdString(iw);
 							if ( idString ) cmd = msg.wikiPrefixes.get('miraheze.org') + idString + ' ';
@@ -285,7 +285,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					}};
 				}
 				if ( querypage.ns === 12 && wiki.wikifarm === 'fandom' ) {
-					return got.head( wiki.articleURL.href.replace( '$1', encodeURIComponent( querypage.title ).replace( /%3A/g, ':' ) ), {
+					return got.head( wiki + '/wiki/' + encodeURIComponent( querypage.title ).replace( /%3A/g, ':' ), {
 						followRedirect: false,
 						context: {
 							guildId: msg.guildId
@@ -369,7 +369,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 										let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
 										if ( isMessage(msg) ) {
 											cmd = '!!' + regex[1] + ' ';
-											if ( msg.wikiPrefixes.has(iwwiki.href) ) cmd = msg.wikiPrefixes.get(iwwiki.href);
+											if ( msg.wikiPrefixes.has(iwwiki.name) ) cmd = msg.wikiPrefixes.get(iwwiki.name);
 											else if ( msg.wikiPrefixes.has(project.name) ) {
 												let idString = urlToIdString(iwwiki);
 												if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
@@ -613,7 +613,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
 							if ( isMessage(msg) ) {
 								cmd = '!!' + regex[1] + ' ';
-								if ( msg.wikiPrefixes.has(iwwiki.href) ) cmd = msg.wikiPrefixes.get(iwwiki.href);
+								if ( msg.wikiPrefixes.has(iwwiki.name) ) cmd = msg.wikiPrefixes.get(iwwiki.name);
 								else if ( msg.wikiPrefixes.has(project.name) ) {
 									let idString = urlToIdString(iwwiki);
 									if ( idString ) cmd = msg.wikiPrefixes.get(project.name) + idString + ' ';
