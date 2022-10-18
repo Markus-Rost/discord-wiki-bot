@@ -7,7 +7,8 @@
 		"en-US": "user",
 		"de": "benutzer",
 		"zh-CN": "user",
-		"zh-TW": "user"
+		"zh-TW": "user",
+		"it": "utente"
 	},
 	"description": "Post information about a wiki user.",
 	"description_localizations": {
@@ -15,7 +16,8 @@
 		"en-US": "Post information about a wiki user.",
 		"de": "Sende Informationen über einen Wiki-Benutzer.",
 		"zh-CN": "发送关于wiki用户的信息。",
-		"zh-TW": "傳送關於wiki使用者的資訊。"
+		"zh-TW": "傳送關於wiki使用者的資訊。",
+		"it": "Posta informazioni su un utente della wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -29,7 +31,8 @@
 				"en-US": "username",
 				"de": "benutzername",
 				"zh-CN": "用户名",
-				"zh-TW": "使用者名稱"
+				"zh-TW": "使用者名稱",
+				"it": "username"
 			},
 			"description": "The user to show information of.",
 			"description_localizations": {
@@ -37,7 +40,8 @@
 				"en-US": "The user to show information of.",
 				"de": "Der Benutzer über den Informationen gezeigt werden sollen.",
 				"zh-CN": "要展示信息的用户。",
-				"zh-TW": "要展示其資訊的使用者。"
+				"zh-TW": "要展示其資訊的使用者。",
+				"it": "L'utente di cui mostrare informazioni."
 			},
 			"required": true,
 			"autocomplete": true

@@ -8,7 +8,8 @@
 		"de": "diff",
 		"es-ES": "diff",
 		"zh-CN": "diff",
-		"zh-TW": "diff"
+		"zh-TW": "diff",
+		"it": "diff"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
@@ -17,7 +18,8 @@
 		"de": "Zeige eine Wiki-Bearbeitung.",
 		"es-ES": "Mostrar una diff de edición del wiki.",
 		"zh-CN": "展示wiki编辑差异。",
-		"zh-TW": "展示wiki編輯差異。"
+		"zh-TW": "展示wiki編輯差異。",
+		"it": "Mostra il diff di una modifica alla wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -32,7 +34,8 @@
 				"de": "seite",
 				"es-ES": "página",
 				"zh-CN": "page",
-				"zh-TW": "page"
+				"zh-TW": "page",
+				"it": "pagina"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
@@ -41,7 +44,8 @@
 				"de": "Zeige die letzte Bearbeitung einer Wiki-Seite.",
 				"es-ES": "Muestra la última diff de edición de una página wiki.",
 				"zh-CN": "显示wiki页面最近一次编辑的差异。",
-				"zh-TW": "顯示wiki頁面最近一次的編輯差異。"
+				"zh-TW": "顯示wiki頁面最近一次的編輯差異。",
+				"it": "Mostra il diff dell'ultima modifica a una pagina della wiki."
 			},
 			"options": [
 				{
@@ -68,7 +72,8 @@
 						"de": "Seitenname von dem die letzte Bearbeitung gezeigt werden soll.",
 						"es-ES": "Título de la página a mostrar la última diff de edición.",
 						"zh-CN": "要展示最近一次编辑差异的页面标题。",
-						"zh-TW": "要展示最近一次編輯差異的頁面標題。"
+						"zh-TW": "要展示最近一次編輯差異的頁面標題。",
+						"it": "Titolo della pagina di cui mostrare il diff dell'ultima modifica."
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -220,7 +225,8 @@
 				"de": "ids",
 				"es-ES": "ids",
 				"zh-CN": "ids",
-				"zh-TW": "ids"
+				"zh-TW": "ids",
+				"it": "id"
 			},
 			"description": "Show the a wiki edit diff based on the ID.",
 			"description_localizations": {
@@ -229,7 +235,8 @@
 				"de": "Zeige eine Wiki-Bearbeitung basierend auf einer ID.",
 				"es-ES": "Mostrar la diff de edición del wiki basado en el ID.",
 				"zh-CN": "通过ID展示wiki编辑差异。",
-				"zh-TW": "透過ID展示wiki編輯差異。"
+				"zh-TW": "透過ID展示wiki編輯差異。",
+				"it": "Mostra il diff di una modifica sulla wiki in base all'ID."
 			},
 			"options": [
 				{
@@ -241,7 +248,8 @@
 						"de": "relativ",
 						"es-ES": "relativa",
 						"zh-CN": "relative",
-						"zh-TW": "relative"
+						"zh-TW": "relative",
+						"it": "relativo"
 					},
 					"description": "Show a relative wiki edit diff based on the ID.",
 					"description_localizations": {
@@ -250,7 +258,8 @@
 						"de": "Zeige eine relative Wiki-Bearbeitung basierend auf einer ID.",
 						"es-ES": "Mostrar una diff de edición del wiki relativa basada en el ID.",
 						"zh-CN": "通过ID展示相关的wiki编辑差异。",
-						"zh-TW": "透過ID展示相關的wiki編輯差異。"
+						"zh-TW": "透過ID展示相關的wiki編輯差異。",
+						"it": "Mostra il diff relativo di una modifica sulla wiki in base all'ID."
 					},
 					"options": [
 						{
@@ -262,7 +271,8 @@
 								"de": "diffid",
 								"es-ES": "diffid",
 								"zh-CN": "diffid",
-								"zh-TW": "diffid"
+								"zh-TW": "diffid",
+								"it": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -271,7 +281,8 @@
 								"de": "Änderungs-ID der zu zeigenden Bearbeitung.",
 								"es-ES": "ID de diff de la diff de edición que se va a mostrar.",
 								"zh-CN": "要展示的编辑差异的差异ID。",
-								"zh-TW": "要展示的編輯差異的差異ID。"
+								"zh-TW": "要展示的編輯差異的差異ID。",
+								"it": "ID del diff della modifica da mostrare."
 							},
 							"min_value": 0,
 							"required": true
@@ -285,7 +296,8 @@
 								"de": "vergleich",
 								"es-ES": "comparar",
 								"zh-CN": "比较模式",
-								"zh-TW": "比較模式"
+								"zh-TW": "比較模式",
+								"it": "confronta"
 							},
 							"description": "Relative revision of the edit diff to show.",
 							"description_localizations": {
@@ -294,7 +306,8 @@
 								"de": "Relative Version der zu zeigenden Bearbeitung.",
 								"es-ES": "Revisión relativa de la diff de edición a mostrar.",
 								"zh-CN": "要展示的编辑差异的相关修订版本。",
-								"zh-TW": "要展示的編輯差異的相關修訂版本。"
+								"zh-TW": "要展示的編輯差異的相關修訂版本。",
+								"it": "Versione relativa del diff di modifica da mostrare."
 							},
 							"choices": [
 								{
@@ -305,7 +318,8 @@
 										"de": "Vergleiche mit der vorherigen Version. (Standard)",
 										"es-ES": "Comparar con la revisión anterior. (predeterminado)",
 										"zh-CN": "与之前的修订版本比较（默认）",
-										"zh-TW": "與前一筆修訂版本比較（預設）"
+										"zh-TW": "與前一筆修訂版本比較（預設）",
+										"it": "Confronta con la versione precedente. (default)"
 									},
 									"value": "prev"
 								},
@@ -317,7 +331,8 @@
 										"de": "Vergleiche mit der nächsten Version.",
 										"es-ES": "Compare con la siguiente revisión.",
 										"zh-CN": "与之后的修订版本比较",
-										"zh-TW": "與後一筆修訂版本比較"
+										"zh-TW": "與後一筆修訂版本比較",
+										"it": "Confronta con la versione successiva."
 									},
 									"value": "next"
 								},
@@ -329,7 +344,8 @@
 										"de": "Vergleiche mit der aktuellen Version.",
 										"es-ES": "Comparar con la revisión actual.",
 										"zh-CN": "与当前的修订版本比较",
-										"zh-TW": "與目前的修訂版本比較"
+										"zh-TW": "與目前的修訂版本比較",
+										"it": "Confronta con la versione attuale."
 									},
 									"value": "cur"
 								}
@@ -481,7 +497,8 @@
 						"de": "mehrere",
 						"es-ES": "múltiple",
 						"zh-CN": "multiple",
-						"zh-TW": "multiple"
+						"zh-TW": "multiple",
+						"it": "multiple"
 					},
 					"description": "Show a wiki edit diff over multiple revisions based on the IDs.",
 					"description_localizations": {
@@ -490,7 +507,8 @@
 						"de": "Zeige eine Wiki-Bearbeitung über mehrere Versionen basierend auf IDs.",
 						"es-ES": "Mostrar una diff de edición del wiki en varias revisiones según los ID.",
 						"zh-CN": "通过ID展示多个修订版本的wiki编辑差异。",
-						"zh-TW": "透過ID展示多個修訂版本的wiki編輯差異。"
+						"zh-TW": "透過ID展示多個修訂版本的wiki編輯差異。",
+						"it": "Mostra il diff di una modifica sulla wiki tra versioni multiple in base agli ID."
 					},
 					"options": [
 						{
@@ -502,7 +520,8 @@
 								"de": "diffid",
 								"es-ES": "diffid",
 								"zh-CN": "diffid",
-								"zh-TW": "diffid"
+								"zh-TW": "diffid",
+								"it": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -511,7 +530,8 @@
 								"de": "Änderungs-ID der zu zeigenden Bearbeitung.",
 								"es-ES": "ID de diff de la diff de edición que se va a mostrar.",
 								"zh-CN": "要展示的编辑差异的差异ID。",
-								"zh-TW": "要展示的編輯差異的差異ID。"
+								"zh-TW": "要展示的編輯差異的差異ID。",
+								"it": "ID del diff della modifica da mostrare."
 							},
 							"min_value": 0,
 							"required": true
@@ -525,7 +545,8 @@
 								"de": "oldid",
 								"es-ES": "oldid",
 								"zh-CN": "oldid",
-								"zh-TW": "oldid"
+								"zh-TW": "oldid",
+								"it": "oldid"
 							},
 							"description": "Old revision ID of the edit diff to show.",
 							"description_localizations": {
@@ -534,7 +555,8 @@
 								"de": "Alte Versions-ID der zu zeigenden Bearbeitung.",
 								"es-ES": "ID de revisión anterior de la diff de edición a mostrar.",
 								"zh-CN": "要展示的编辑差异的旧修订版本ID。",
-								"zh-TW": "要展示的編輯差異的舊修訂版本ID。"
+								"zh-TW": "要展示的編輯差異的舊修訂版本ID。",
+								"it": "ID della vecchia versione del diff da mostrare."
 							},
 							"min_value": 0,
 							"required": true
