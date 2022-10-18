@@ -33,6 +33,9 @@
 			"content_type": "Il contenuto del link fornito è in formato $1, ma sono permessi solo i seguenti formati:",
 			"invalid_url": "Non è stato possibile risolvere l'URL ad un file immagine valido."
 		},
+		"embeds": {
+			"json": "L'oggetto embed non è valido, per favore fornisci un array JSON valido di oggetti Discord embed."
+		},
 		"invalid": {
 			"note_http": "Il sito web fornito non ha un certificato TLS/SSL valido! Per motivi di sicurezza, sono supportate solo wiki che usano HTTPS.",
 			"note_private": "La wiki fornita è privata!",
@@ -141,6 +144,7 @@
 			"title": "Messaggio inviato!"
 		},
 		"sendfail": {
+			"note_embeds": "L'oggetto embed non è valido, per favore fornisci un array JSON valido di oggetti Discord embed.",
 			"note_nothread": "Non è stato possibile trovare il thread, per favore fornisci un thread attivo.",
 			"text": "Non è stato possibile inviare il messaggio, riprova di nuovo.",
 			"title": "Invio fallito!"
@@ -207,7 +211,7 @@
 		"none": "Attualmente non hai il permesso [Gestire Server]($1) su alcun server, sei loggato con l'account corretto?",
 		"switch": "Cambia account",
 		"title": "Selettore server",
-		"user": "Account della wiki",
+		"user": "Account Wiki",
 		"with": "Server con Wiki-Bot",
 		"without": "Server senza Wiki-Bot"
 	},
@@ -247,10 +251,10 @@
 			"button_emoji": "Emoji pulsante (opzionale):",
 			"button_emoji_title": "Fornisci una emoji personalizzata dal server o il codice Unicode di una emoji.",
 			"button_name": "Testo pulsante:",
-			"button_name_default": "Verifica dell'account sulla wiki",
+			"button_name_default": "Verifica Account Wiki",
 			"button_style": "Stile pulsante:",
 			"button_style_danger": "Pericolo (rosso)",
-			"button_style_primary": "Primario (blurple)",
+			"button_style_primary": "Primario (Blu violaceo)",
 			"button_style_secondary": "Secondario (grigio)",
 			"button_style_success": "Successo (verde)",
 			"channel": "Canale:",
@@ -258,6 +262,9 @@
 			"content": "Contenuto del messaggio (opzionale):",
 			"content_placeholder": "Testo del messaggio in markdown, supporta i link.",
 			"editcount": "Conteggio delle modifiche minimo:",
+			"embeds": "Embed del messaggio (opzionale):",
+			"embeds_help": "Aiuto: [Embed Visualizer]($1)",
+			"embeds_placeholder": "Array JSON di embed Discord per il messaggio.",
 			"entry": "Verifica #$1",
 			"flag_logall": "Registra le verifiche senza successo:",
 			"flag_private": "Risposte al comando private:",
