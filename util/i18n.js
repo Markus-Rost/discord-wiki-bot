@@ -1,4 +1,4 @@
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./default.json');
 const i18n = require('../i18n/allLangs.json');
@@ -104,7 +104,7 @@ export default class Lang {
 		}
 		if ( typeof text === 'string' ) {
 			args.forEach( (arg, i) => {
-				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
+				text = text.replaceAllSafe( `$${i + 1}`, arg );
 			} );
 			if ( text.includes( 'GENDER:' ) ) text = text.replace( /{{\s*GENDER:\s*([a-z]+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, type, cases) => {
 				return gender(type, cases.split(/\s*\|\s*/));
@@ -137,7 +137,7 @@ export default class Lang {
 //		}
 //		if ( typeof text === 'string' ) {
 //			args.forEach( (arg, i) => {
-//				text = text.replaceSave( new RegExp( `\\$${i + 1}`, 'g' ), arg );
+//				text = text.replaceAllSafe( `$${i + 1}`, arg );
 //			} );
 //			if ( text.includes( 'GENDER:' ) ) text = text.replace( /{{\s*GENDER:\s*([a-z]+)\s*\|\s*([^\{\}]*?)\s*}}/g, (m, type, cases) => {
 //				return gender(type, cases.split(/\s*\|\s*/));
@@ -222,8 +222,10 @@ function plural(lang, number, args) {
 			break;
 		case 'bn':
 		case 'de':
+		case 'el':
 		case 'en':
 		case 'es':
+		case 'id':
 		case 'it':
 		case 'ja':
 		case 'ko':

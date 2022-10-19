@@ -1,1 +1,74 @@
-{}
+{
+	"inline": {
+		"description": "埋め込み形式のWikiリンクを含むメッセージを投稿する。",
+		"name": "inline",
+		"options[0].description": "wikitextのリンクを含むテキスト。",
+		"options[0].name": "text"
+	},
+	"interwiki": {
+		"description": "別のWikiにリンクを貼る。",
+		"name": "interwiki",
+		"options[0].description": "検索対象となるWiki。",
+		"options[0].name": "wiki",
+		"options[1].description": "検索するページタイトル。",
+		"options[1].name": "title",
+		"options[2].description": "リンク先のページセクション。",
+		"options[2].name": "section",
+		"options[3].description": "リンクに追加するクエリ引数。",
+		"options[3].name": "query",
+		"options[4].description": "自分だけに見える応答を送信しますか？",
+		"options[4].name": "private",
+		"options[5].description": "埋め込みなしでリンクだけを送信しますか？",
+		"options[5].name": "noembed",
+		"options[6].description": "リンクを隠してスポイラーで埋め込みますか？",
+		"options[6].name": "spoiler"
+	},
+	"overview": {
+		"description": "Post a wiki overview.",
+		"name": "overview",
+		"options[0].description": "検索対象となるWiki。",
+		"options[0].name": "wiki",
+		"options[1].description": "自分だけに見える応答を送信しますか？",
+		"options[1].name": "private",
+		"options[2].description": "埋め込みなしでリンクだけを送る？",
+		"options[2].name": "noembed",
+		"options[3].description": "リンクを隠してスポイラーで埋め込む？",
+		"options[3].name": "spoiler"
+	},
+	"patreon": {
+		"description": "パトロン機能が有効になっているサーバーを確認・変更する。",
+		"name": "patreon",
+		"options[0].description": "現在、パトロン機能が有効になっているサーバーのリストを確認してください。",
+		"options[0].name": "check",
+		"options[1].description": "サーバーのパトロン機能を有効にする。",
+		"options[1].name": "enable",
+		"options[1].options[0].description": "patreonの機能を有効にするためのサーバー。",
+		"options[1].options[0].name": "guild",
+		"options[2].description": "サーバーのpatreon機能を無効にする。",
+		"options[2].name": "disable",
+		"options[2].options[0].description": "patreonの機能を無効にするためのサーバー。",
+		"options[2].options[0].name": "guild"
+	},
+	"verify": {
+		"description": "DiscordのアカウントとWikiのアカウントを連携してください。",
+		"name": "verify",
+		"options[0].description": "Wiki上でのユーザー名。",
+		"options[0].name": "username"
+	},
+	"wiki": {
+		"description": "Wikiリンクを貼る。",
+		"name": "wiki",
+		"options[0].description": "検索するページタイトル。",
+		"options[0].name": "title",
+		"options[1].description": "リンク先のページ部分。",
+		"options[1].name": "section",
+		"options[2].description": "リンクに追加するクエリ引数。",
+		"options[2].name": "query",
+		"options[3].description": "自分だけに見える応答を送信しますか？",
+		"options[3].name": "ephemeral",
+		"options[4].description": "埋め込みなしでリンクだけを送信しますか？",
+		"options[4].name": "noembed",
+		"options[5].description": "リンクを隠して、スポイラーに埋め込む？",
+		"options[5].name": "spoiler"
+	}
+}

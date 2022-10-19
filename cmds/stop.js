@@ -7,7 +7,7 @@
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  * @async
  */
-async function cmd_stop(lang, msg, args, line, wiki) {
+export default async function cmd_stop(lang, msg, args, line, wiki) {
 	if ( args[0] === 'force' && args.slice(1).join(' ').split('\n')[0].isMention(msg.guild) ) {
 		await msg.replyMsg( 'I\'ll destroy myself now!', true );
 		await msg.client.shard.send('SIGKILL');
@@ -24,7 +24,7 @@ async function cmd_stop(lang, msg, args, line, wiki) {
 	}
 }
 
-export default {
+export const cmdData = {
 	name: 'stop',
 	everyone: false,
 	pause: false,

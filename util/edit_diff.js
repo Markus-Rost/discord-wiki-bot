@@ -1,4 +1,4 @@
-import htmlparser from 'htmlparser2';
+import { Parser as HTMLParser } from 'htmlparser2';
 import { escapeFormatting } from './functions.js';
 
 /**
@@ -17,8 +17,9 @@ export default function diffParser(html, more, whitespace) {
 	var small_prev_del = '';
 	var ins_length = more.length;
 	var del_length = more.length;
-	var parser = new htmlparser.Parser( {
+	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
+			if ( ins_length > 1000 && del_length > 1000 ) parser.pause(); // Prevent the parser from running too long
 			if ( tagname === 'ins' || tagname == 'del' ) current_tag = tagname;
 			if ( tagname === 'td' ) {
 				let classes = ( attribs.class?.split(' ') || [] );
@@ -59,7 +60,7 @@ export default function diffParser(html, more, whitespace) {
 				if ( last_ins !== null ) {
 					ins_length++;
 					if ( empty && last_ins.trim().length ) {
-						if ( last_ins.includes( '**' ) ) last_ins = last_ins.replace( /\*\*/g, '__' );
+						if ( last_ins.includes( '**' ) ) last_ins = last_ins.replaceAll( '**', '__' );
 						ins_length += 4;
 						last_ins = '**' + last_ins + '**';
 					}
@@ -70,7 +71,7 @@ export default function diffParser(html, more, whitespace) {
 				if ( last_del !== null ) {
 					del_length++;
 					if ( empty && last_del.trim().length ) {
-						if ( last_del.includes( '~~' ) ) last_del = last_del.replace( /\~\~/g, '__' );
+						if ( last_del.includes( '~~' ) ) last_del = last_del.replaceAll( '~~', '__' );
 						del_length += 4;
 						last_del = '~~' + last_del + '~~';
 					}

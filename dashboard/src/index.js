@@ -39,6 +39,25 @@ for ( var b = 0; b < baseSelect.length; b++ ) {
 			} );
 		}
 	}
+	if ( baseSelect[b].classList.contains( 'wb-settings-project-subprefix' ) ) {
+		baseSelect[b].addEventListener( 'input', function() {
+			let idTemplate = 'wb-settings-wiki-subprefix-' + this.name.replace( 'subprefix_', '' );
+			if ( this.value ) {
+				this.parentElement.children[idTemplate].disabled = true;
+				this.parentElement.children[idTemplate].style.display = 'none';
+				this.parentElement.children[idTemplate + '-check'].disabled = true;
+				this.parentElement.children[idTemplate + '-check'].style.display = 'none';
+				this.parentElement.children[idTemplate + '-check-notice'].innerHTML = '';
+				this.parentElement.children[idTemplate + '-check-notice'].className = 'wb-settings-wiki-check-notice';
+			}
+			else {
+				this.parentElement.children[idTemplate].disabled = false;
+				this.parentElement.children[idTemplate].style.display = null;
+				this.parentElement.children[idTemplate + '-check'].disabled = false;
+				this.parentElement.children[idTemplate + '-check'].style.display = null;
+			}
+		} );
+	}
 	if ( baseSelect[b].parentElement.parentElement.querySelector('button.addmore') ) {
 		baseSelect[b].addEventListener( 'input', toggleOption );
 		toggleOption.call(baseSelect[b]);
@@ -128,21 +147,25 @@ var divTemp = document.createElement('div');
 divTemp.innerHTML = '<input type="url" value="invalid">';
 const validationMessageInvalidURL = divTemp.firstChild.validationMessage;
 
-/** @type {HTMLInputElement} */
-const wiki = document.getElementById('wb-settings-wiki');
-if ( wiki ) {
+/** @type {HTMLCollectionOf<HTMLInputElement>} */
+const wikis = document.getElementsByClassName('wb-settings-wiki');
+for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 	wiki.addEventListener( 'input', function() {
 		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
 			if ( this.validity.valid ) {
+				this.title = validationMessageInvalidURL;
 				this.setCustomValidity(validationMessageInvalidURL);
 			}
 		}
-		else this.setCustomValidity('');
+		else {
+			this.title = '';
+			this.setCustomValidity('');
+		}
 	} );
 	/** @type {HTMLButtonElement} */
-	const wikicheck = document.getElementById('wb-settings-wiki-check');
+	const wikicheck = wiki.parentElement.children[wiki.id + '-check'];
 	/** @type {HTMLDivElement} */
-	const wikichecknotice = document.getElementById('wb-settings-wiki-check-notice');
+	const wikichecknotice = wiki.parentElement.children[wiki.id + '-check-notice'];
 	if ( wikicheck && wikichecknotice ) {
 		wikicheck.onclick = function() {
 			var wikinew = wiki.value.replace( /^(?:https?:)?\/\//, '' );
@@ -170,7 +193,7 @@ if ( wiki ) {
 					console.log('Error: The server did not respond correctly.');
 					return;
 				}
-				wikichecknotice.className = 'notice';
+				wikichecknotice.className = ['wb-settings-wiki-check-notice', 'notice'].join(' ');
 				wikichecknotice.innerHTML = '';
 				var noticeExtraParts = [];
 				if ( response.sitename ) {
@@ -190,6 +213,7 @@ if ( wiki ) {
 					noticeExtraParts.push(document.createElement('hr'), wikiEmbed);
 				}
 				if ( response.error ) {
+					wiki.title = lang('invalid.title');
 					wiki.setCustomValidity(lang('invalid.title'));
 					wikichecknotice.classList.add('notice-error');
 					var noticeTitle = document.createElement('b');
@@ -207,6 +231,7 @@ if ( wiki ) {
 				if ( !readonly ) wiki.value = response.wiki;
 				if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
 					if ( !response.MediaWiki ) {
+						wiki.title = lang('outdated.title');
 						wiki.setCustomValidity(lang('outdated.title'));
 						wikichecknotice.classList.add('notice-error');
 						var noticeTitle = document.createElement('b');
@@ -220,7 +245,7 @@ if ( wiki ) {
 						wikichecknotice.append(noticeTitle, noticeText, noticeLink, ...noticeExtraParts);
 						return;
 					}
-					if ( response.RcGcDw !== document.location.pathname.split('/')[2] && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
+					if ( response.RcGcDw?.trim() !== document.location.pathname.split('/')[2] && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
 						wikichecknotice.classList.add('notice-info');
 						var noticeTitle = document.createElement('b');
 						noticeTitle.textContent = lang('sysmessage.title');
@@ -257,21 +282,19 @@ if ( wiki ) {
 				var noticeTitle = document.createElement('b');
 				noticeTitle.textContent = lang('valid.title');
 				wikichecknotice.append(noticeTitle);
-				if ( !/\.(?:gamepedia\.com|fandom\.com|wikia\.org)$/.test(wiki.value.split('/')[2]) ) {
-					if ( !response.MediaWiki ) {
-						var noticeLink = document.createElement('a');
-						noticeLink.target = '_blank';
-						noticeLink.href = 'https://www.mediawiki.org/wiki/MediaWiki_1.30';
-						noticeLink.textContent = 'MediaWiki 1.30';
-						var noticeText = document.createElement('div');
-						var textSnippets = lang('valid.MediaWiki').split(/\$\d/);
-						noticeText.append(
-							document.createTextNode(textSnippets[0]),
-							noticeLink,
-							document.createTextNode(textSnippets[1])
-						);
-						wikichecknotice.append(noticeText);
-					}
+				if ( !response.MediaWiki ) {
+					var noticeLink = document.createElement('a');
+					noticeLink.target = '_blank';
+					noticeLink.href = 'https://www.mediawiki.org/wiki/MediaWiki_1.30';
+					noticeLink.textContent = 'MediaWiki 1.30';
+					var noticeText = document.createElement('div');
+					var textSnippets = lang('valid.MediaWiki').split(/\$\d/);
+					noticeText.append(
+						document.createTextNode(textSnippets[0]),
+						noticeLink,
+						document.createTextNode(textSnippets[1])
+					);
+					wikichecknotice.append(noticeText);
 				}
 				if ( noticeExtraParts.length ) wikichecknotice.append(...noticeExtraParts);
 			}, function(error) {
@@ -282,39 +305,41 @@ if ( wiki ) {
 			} );
 		};
 	}
-	/** @type {HTMLInputElement} */
-	const feeds = document.getElementById('wb-settings-feeds');
-	if ( feeds ) {
-		/** @type {HTMLDivElement} */
-		const hidefeeds = document.getElementById('wb-settings-feeds-hide');
+	if ( wiki.id === 'wb-settings-wiki' ) {
 		/** @type {HTMLInputElement} */
-		const feedsonly = document.getElementById('wb-settings-feeds-only');
-		/** @type {HTMLDivElement} */
-		const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
-		feeds.addEventListener( 'change', function() {
-			if ( this.checked ) {
-				hidefeedsonly.style.visibility = '';
-				if ( !hidefeeds.style.visibility ) feedsonly.disabled = false;
-			}
-			else {
-				hidefeedsonly.style.visibility = 'hidden';
-				feedsonly.disabled = true;
-			}
-		} );
-		wiki.addEventListener( 'input', function() {
-			if ( this.validity.valid && /\.(?:fandom\.com|wikia\.org)$/.test(this.value.split('/')[2]) ) {
-				hidefeeds.style.visibility = '';
-				feeds.disabled = false;
-				if ( !hidefeedsonly.style.visibility ) feedsonly.disabled = false;
-			}
-			else {
-				hidefeeds.style.visibility = 'hidden';
-				feeds.disabled = true;
-				feedsonly.disabled = true;
-			}
-		} );
+		const feeds = document.getElementById('wb-settings-feeds');
+		if ( feeds ) {
+			/** @type {HTMLDivElement} */
+			const hidefeeds = document.getElementById('wb-settings-feeds-hide');
+			/** @type {HTMLInputElement} */
+			const feedsonly = document.getElementById('wb-settings-feeds-only');
+			/** @type {HTMLDivElement} */
+			const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
+			feeds.addEventListener( 'change', function() {
+				if ( this.checked ) {
+					hidefeedsonly.style.visibility = '';
+					if ( !hidefeeds.style.visibility ) feedsonly.disabled = false;
+				}
+				else {
+					hidefeedsonly.style.visibility = 'hidden';
+					feedsonly.disabled = true;
+				}
+			} );
+			wiki.addEventListener( 'input', function() {
+				if ( this.validity.valid && this.value.split('/')[2].endsWith( '.fandom.com' ) ) {
+					hidefeeds.style.visibility = '';
+					feeds.disabled = false;
+					if ( !hidefeedsonly.style.visibility ) feedsonly.disabled = false;
+				}
+				else {
+					hidefeeds.style.visibility = 'hidden';
+					feeds.disabled = true;
+					feedsonly.disabled = true;
+				}
+			} );
+		}
 	}
-}
+})(wikis[w]);
 
 /** @type {HTMLInputElement} */
 const avatar = document.getElementById('wb-settings-avatar');
@@ -322,10 +347,14 @@ if ( avatar ) {
 	avatar.addEventListener( 'input', function() {
 		if ( !/^(?:https?:)?\/\//.test(this.value) ) {
 			if ( this.validity.valid ) {
+				this.title = validationMessageInvalidURL;
 				this.setCustomValidity(validationMessageInvalidURL);
 			}
 		}
-		else this.setCustomValidity('');
+		else {
+			this.title = '';
+			this.setCustomValidity('');
+		}
 	} );
 	/** @type {HTMLButtonElement} */
 	const avatarbutton = document.getElementById('wb-settings-avatar-preview');
@@ -335,8 +364,11 @@ if ( avatar ) {
 		avatarpreview.classList.add('avatar');
 		const validContentTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 		avatarbutton.onclick = function() {
-			if ( !avatar.value ) return;
-			if ( !avatar.validity.valid ) return avatar.reportValidity();
+			if ( !avatar.value ) return avatarpreview.remove();
+			if ( !avatar.validity.valid ) {
+				avatarpreview.remove();
+				return avatar.reportValidity();
+			}
 			if ( avatar.value === avatar.defaultValue ) {
 				avatarpreview.src = avatar.value;
 				avatarbutton.after(avatarpreview);
@@ -356,16 +388,19 @@ if ( avatar ) {
 			} ).then( function(response) {
 				avatar.value = response.url;
 				if ( !validContentTypes.includes( response.headers.get('content-type') ) ) {
+					avatarpreview.remove();
 					var invalidContentType = lang('avatar.content_type').replace( /\$1/g, response.headers.get('content-type') );
-					avatar.setCustomValidity(invalidContentType + '\n' + validContentTypes.join(', ') );
+					avatar.title = invalidContentType + '\n' + validContentTypes.join(', ');
+					avatar.setCustomValidity(invalidContentType + '\n' + validContentTypes.join(', '));
 					avatar.reportValidity();
 					return console.log( 'Invalid content type:', response.headers.get('content-type') );
 				}
 				avatarpreview.src = avatar.value;
 				avatarbutton.after(avatarpreview);
-				
 			}, function(error) {
 				console.log(error);
+				avatarpreview.remove();
+				avatar.title = lang('avatar.invalid_url');
 				avatar.setCustomValidity(lang('avatar.invalid_url'));
 				avatar.reportValidity();
 			} );
@@ -486,64 +521,18 @@ const prefix = document.getElementById('wb-settings-prefix');
 if ( prefix ) prefix.addEventListener( 'input', function() {
 	if ( prefix.validity.patternMismatch ) {
 		if ( prefix.value.trim().includes( ' ' ) ) {
-			prefix.setCustomValidity(lang('prefix.space'));
+			prefix.title = lang('prefix.space');
 		}
 		else if ( prefix.value.includes( '`' ) ) {
-			prefix.setCustomValidity(lang('prefix.code'));
+			prefix.title = lang('prefix.code');
 		}
 		else if ( prefix.value.includes( '\\' ) ) {
-			prefix.setCustomValidity(lang('prefix.backslash'));
+			prefix.title = lang('prefix.backslash');
 		}
-		else prefix.setCustomValidity('');
+		else prefix.title = '';
 	}
-	else prefix.setCustomValidity('');
+	else prefix.title = '';
 } );
-
-/** @type {HTMLSelectElement} */
-const addRole = document.getElementById('wb-settings-addrole');
-/** @type {HTMLButtonElement} */
-const addRoleButton = document.getElementById('wb-settings-addrole-add');
-if ( addRole && addRoleButton ) addRoleButton.onclick = function() {
-	if ( addRole.value ) {
-		var selectedRole = addRole.selectedOptions.item(0);
-		var newPermission = document.createElement('div');
-		var selectedRoleInfo = selectedRole.textContent.split(' – ');
-		var newPermissionSpan = document.createElement('span');
-		newPermissionSpan.textContent = ( selectedRoleInfo[1] || selectedRoleInfo[0] );
-		newPermissionSpan.title = selectedRoleInfo[0];
-		var newPermissionDiv0 = document.createElement('div');
-		newPermissionDiv0.classList.add('wb-settings-permission');
-		var newPermissionInput = document.createElement('input');
-		newPermissionInput.type = 'radio';
-		newPermissionInput.name = 'permission-' +  addRole.value;
-		newPermissionInput.required = true;
-		newPermissionDiv0.append(newPermissionInput, document.createElement('label'));
-		/** @type {HTMLDivElement} */
-		var newPermissionDiv1 = newPermissionDiv0.cloneNode(true);
-		/** @type {HTMLDivElement} */
-		var newPermissionDiv2 = newPermissionDiv0.cloneNode(true);
-		newPermissionDiv0.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-0';
-		newPermissionDiv1.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-1';
-		newPermissionDiv2.firstElementChild.id = 'wb-settings-permission-' + addRole.value + '-default';
-		newPermissionDiv0.firstElementChild.value = '0';
-		newPermissionDiv1.firstElementChild.value = '1';
-		newPermissionDiv2.firstElementChild.value = '';
-		newPermissionDiv0.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-0';
-		newPermissionDiv1.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-1';
-		newPermissionDiv2.lastElementChild.htmlFor = 'wb-settings-permission-' + addRole.value + '-default';
-		newPermissionDiv0.lastElementChild.classList.add('wb-settings-permission-deny', 'radio-label');
-		newPermissionDiv1.lastElementChild.classList.add('wb-settings-permission-allow', 'radio-label');
-		newPermissionDiv2.lastElementChild.classList.add('wb-settings-permission-default', 'radio-label');
-		newPermissionDiv0.lastElementChild.textContent = i18nSlashPermission.deny;
-		newPermissionDiv1.lastElementChild.textContent = i18nSlashPermission.allow;
-		newPermissionDiv2.lastElementChild.textContent = i18nSlashPermission.default;
-		newPermissionDiv2.firstElementChild.defaultChecked = true;
-		newPermission.append(newPermissionSpan, newPermissionDiv0, newPermissionDiv1, newPermissionDiv2);
-		addRole.parentElement.after(newPermission);
-		selectedRole.remove();
-		addRole.firstElementChild.selected = true;
-	}
-};
 
 var textAreas = document.getElementsByTagName('textarea');
 if ( textAreas.length ) {
@@ -557,7 +546,9 @@ if ( textAreas.length ) {
 	for ( var ta = 0; ta < textAreas.length; ta++ ) {
 		updateTextLength.call(textAreas[ta]);
 		textAreas[ta].addEventListener('keyup', updateTextLength);
-		textAreas[ta].addEventListener('keydown', allowTabs);
+		textAreas[ta].addEventListener('keydown', function(e) {
+			return allowTabs.call(this, e, this.name === 'embeds');
+		});
 		textAreas[ta].onclick = function() {
 			if ( !textArea ) {
 				for ( var us = 0; us < codeButtons.length; us++ ) {
@@ -567,6 +558,28 @@ if ( textAreas.length ) {
 			textArea = this;
 		};
 	}
+
+	var messageEmbeds = textAreas.namedItem('embeds');
+	if ( messageEmbeds ) messageEmbeds.addEventListener( 'input', function() {
+		if ( !messageEmbeds.value.trim() ) {
+			messageEmbeds.title = '';
+			messageEmbeds.setCustomValidity('');
+		}
+		else {
+			try {
+				var apiEmbeds = JSON.parse(messageEmbeds.value);
+				if ( apiEmbeds && apiEmbeds.embeds ) apiEmbeds = apiEmbeds.embeds;
+				if ( !Array.isArray(apiEmbeds) ) apiEmbeds = [apiEmbeds];
+				if ( apiEmbeds.length > 10 || apiEmbeds.some( apiEmbed => !apiEmbed ) ) throw lang('embeds.json');
+				messageEmbeds.title = '';
+				messageEmbeds.setCustomValidity('');
+			}
+			catch (error) {
+				messageEmbeds.title = error.toString();
+				messageEmbeds.setCustomValidity(error.toString());
+			}
+		}
+	} );
 
 	/**
 	 * @this HTMLElement
@@ -595,13 +608,14 @@ if ( textAreas.length ) {
 	/**
 	 * @this HTMLTextAreaElement
 	 * @param {KeyboardEvent} e
+	 * @param {Boolean} always
 	 */
-	function allowTabs(e) {
+	function allowTabs(e, always) {
 		if ( e.key !== 'Tab' ) return;
 		if ( this.value.includes( '`ˋ`' ) ) this.value = this.value.replace( /`ˋ`/g, '```' );
 		var start = this.selectionStart;
 		var end = this.selectionEnd;
-		if ( this.value.substring(0, start).includes( '```' ) && this.value.substring(end).includes( '```' ) ) {
+		if ( always || ( this.value.substring(0, start).includes( '```' ) && this.value.substring(end).includes( '```' ) ) ) {
 			e.preventDefault();
 			if ( this.textLength > this.maxLength ) return;
 			this.value = this.value.substring(0, start) + '\t' + this.value.substring(end);
@@ -611,6 +625,7 @@ if ( textAreas.length ) {
 
 	/** @this HTMLTextAreaElement */
 	function updateTextLength() {
+		if ( this.maxLength === -1 ) return;
 		this.labels.item(0).children.item(0).textContent = this.textLength + ' / ' + this.maxLength;
 	}
 }

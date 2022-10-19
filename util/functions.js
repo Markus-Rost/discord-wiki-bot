@@ -1,15 +1,27 @@
-import htmlparser from 'htmlparser2';
+import { Message, PermissionFlagsBits } from 'discord.js';
+import { Parser as HTMLParser } from 'htmlparser2';
+import { embedLength } from '@discordjs/builders';
+import { urlToFix } from 'mediawiki-projects-list';
 import gotDefault from 'got';
+import { gotSsrf } from 'got-ssrf';
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
 	timeout: {
 		request: 5_000
 	},
 	headers: {
-		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
+		'user-agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
-	responseType: 'json'
-} );
+	responseType: 'json',
+	hooks: ( process.env.x_origin_guild ? {
+		beforeRequest: [
+			options => {
+				if ( options.context?.guildId ) options.headers['x-origin-guild'] = options.context.guildId;
+				else if ( options.context?.guildId === null ) options.headers['x-origin-guild'] = 'DM';
+			}
+		]
+	} : {} )
+}, gotSsrf );
 
 /**
  * @type {Map<String, {state: String, wiki: String, channel: import('discord.js').TextChannel, user: String}>}
@@ -17,28 +29,44 @@ const got = gotDefault.extend( {
 const oauthVerify = new Map();
 
 /**
+* The accumulated length for the embed title, description, fields, footer text, and author name.
+* @param {import('discord.js').EmbedBuilder} embed
+* @returns {number}
+*/
+function getEmbedLength(embed) {
+	return embedLength(embed.data);
+}
+
+/**
  * Parse infobox content
  * @param {Object} infobox - The content of the infobox.
- * @param {import('discord.js').MessageEmbed} embed - The message embed.
+ * @param {import('discord.js').EmbedBuilder} embed - The message embed.
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
  * @param {String} [pagelink] - The article path for relative links.
- * @returns {import('discord.js').MessageEmbed?}
+ * @returns {import('discord.js').EmbedBuilder?}
  */
 function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
-	if ( !infobox || embed.fields.length >= 25 || embed.length > 5400 ) return;
-	if ( infobox.parser_tag_version === 5 ) {
+	if ( !infobox || ( embed.data.fields?.length ?? 0 ) >= 25 || getEmbedLength(embed) > 5400 ) return;
+	if ( infobox.parser_tag_version === 2 || infobox.parser_tag_version === 5 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, thumbnail, pagelink);
 		} );
-		embed.fields = embed.fields.filter( (field, i, fields) => {
+		embed.data.fields = embed.data.fields?.filter( (field, i, fields) => {
+			// remove header followed by header
 			if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 			return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
-		} );
+		} ).filter( (field, i, fields) => {
+			// combine header followed by section
+			if ( field.name !== '\u200b' || fields[i - 1]?.name !== '\u200b' ) return true;
+			fields[i - 1].value += '\n' + field.value;
+			fields[i] = fields[i - 1];
+			return false;
+		} ) ?? [];
 		return embed;
 	}
 	switch ( infobox.type ) {
-		case 'data':
-			var {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
+		case 'data': {
+			let {label = '', value = '', source = '', 'item-name': name = ''} = infobox.data;
 			label = htmlToPlain(label, true).trim();
 			value = htmlToDiscord(value, pagelink).trim();
 			if ( label.includes( '*UNKNOWN LINK*' ) ) {
@@ -53,48 +81,83 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 			}
 			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 			if ( value.length > 500 ) value = limitLength(value, 500, 250);
-			if ( label && value ) embed.addField( label, value, true );
+			if ( label && value ) embed.addFields( {name: label, value, inline: true} );
 			break;
-		case 'panel':
-			var embedLength = embed.fields.length;
+		}
+		case 'panel': {
+			let fieldsLength = embed.data.fields?.length ?? 0;
 			infobox.data.value.forEach( group => {
 				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
-			embed.fields = embed.fields.filter( (field, i, fields) => {
-				if ( i < embedLength || field.name !== '\u200b' ) return true;
-				if ( !field.value.startsWith( '__**' ) ) return true;
+			embed.data.fields = embed.data.fields?.filter( (field, i, fields) => {
+				if ( i < fieldsLength ) return true;
+				// remove header followed by header or section
+				if ( field.name !== '\u200b' || !field.value.startsWith( '__**' ) ) return true;
 				return ( fields[i + 1]?.name && fields[i + 1].name !== '\u200b' );
 			} ).filter( (field, i, fields) => {
-				if ( i < embedLength || field.name !== '\u200b' ) return true;
-				if ( field.value.startsWith( '__**' ) ) return true;
-				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || !fields[i + 1].value.startsWith( '__**' ) ) );
-			} );
+				if ( i < fieldsLength ) return true;
+				// remove section followed by section
+				if ( field.name !== '\u200b' || field.value.startsWith( '__**' ) ) return true;
+				return ( fields[i + 1]?.name && ( fields[i + 1].name !== '\u200b' || fields[i + 1].value.startsWith( '__**' ) ) );
+			} ) ?? [];
 			break;
-		case 'section':
-			var {label = ''} = infobox.data;
+		}
+		case 'section': {
+			let {label = ''} = infobox.data;
 			label = htmlToPlain(label).trim();
 			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
-			if ( label ) embed.addField( '\u200b', '**' + label + '**', false );
+			if ( label ) embed.addFields( {name: '\u200b', value: '**' + label + '**'} );
+		}
 		case 'group':
 			infobox.data.value.forEach( group => {
 				parse_infobox(group, embed, thumbnail, pagelink);
 			} );
 			break;
-		case 'header':
-			var {value = ''} = infobox.data;
+		case 'header': {
+			let {value = ''} = infobox.data;
 			value = htmlToPlain(value).trim();
 			if ( value.length > 100 ) value = value.substring(0, 100) + '\u2026';
-			if ( value ) embed.addField( '\u200b', '__**' + value + '**__', false );
+			if ( value ) embed.addFields( {name: '\u200b', value: '__**' + value + '**__'} );
 			break;
-		case 'image':
-			if ( embed.thumbnail?.url !== thumbnail ) return;
-			var image = infobox.data.find( img => {
+		}
+		case 'image': {
+			if ( embed.data.thumbnail?.url !== thumbnail ) return;
+			let image = infobox.data.find( img => {
 				return ( /^(?:https?:)?\/\//.test(img.url) && /\.(?:png|jpg|jpeg|gif)$/.test(img.name) );
 			} );
 			if ( image ) embed.setThumbnail( image.url.replace( /^(?:https?:)?\/\//, 'https://' ) );
 			break;
+		}
 	}
 }
+
+/**
+ * If the message is an instance of Discord.Message.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
+ * @returns {Boolean}
+ */
+function isMessage(msg) {
+	return msg instanceof Message;
+};
+
+/**
+ * If the bot can show embeds.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
+ * @returns {Boolean}
+ */
+function canShowEmbed(msg) {
+	return !msg.inGuild() || ( msg.appPermissions ?? msg.channel.permissionsFor(msg.client.user) ).has(PermissionFlagsBits.EmbedLinks);
+};
+
+/**
+ * If the bot can use masked links.
+ * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
+ * @param {Boolean} [noEmbed] - If the response should be without an embed.
+ * @returns {Boolean}
+ */
+function canUseMaskedLinks(msg, noEmbed = canShowEmbed(msg)) {
+	return !isMessage(msg) || !noEmbed;
+};
 
 /**
  * Make wikitext formatting usage.
@@ -125,20 +188,20 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 	while ( ( link = regex.exec(text) ) !== null ) {
 		var pagetitle = ( link[1] || link[2] );
 		var page = wiki.toLink(( /^[#\/]/.test(pagetitle) ? title + ( pagetitle.startsWith( '/' ) ? pagetitle : '' ) : pagetitle ), '', ( pagetitle.startsWith( '#' ) ? pagetitle.substring(1) : '' ), true);
-		text = text.replaceSave( link[0], '[' + link[2] + link[3] + '](' + page + ')' );
+		text = text.replaceSafe( link[0], '[' + link[2] + link[3] + '](<' + page + '>)' );
 	}
-	if ( title !== '' ) {
+	if ( title ) {
 		regex = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSave( link[0], '[→' + link[1] + '](' + wiki.toLink(title, '', link[1], true) + ')' + ( link[2] ? ': ' + link[2] : '' ) );
+			text = text.replaceSafe( link[0], '[→' + link[1] + '](<' + wiki.toLink(title, '', link[1], true) + '>)' + ( link[2] ? ': ' + link[2] : '' ) );
 		}
 	}
 	if ( fullWikitext ) {
 		regex = /\[(?:https?:)?\/\/([^ ]+) ([^\]]+)\]/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSave( link[0], '[' + link[2] + '](https://' + link[1] + ')' );
+			text = text.replaceSafe( link[0], '[' + link[2] + '](<https://' + link[1] + '>)' );
 		}
-		return htmlToDiscord(text, '', true, true).replaceSave( /'''/g, '**' ).replaceSave( /''/g, '*' );
+		return htmlToDiscord(text, '', true, true).replaceAll( "'''", '**' ).replaceAll( "''", '*' );
 	}
 	return escapeFormatting(text, true);
 };
@@ -164,28 +227,37 @@ function toPlaintext(text = '', fullWikitext = false) {
  */
 function htmlToPlain(html, includeComments = false) {
 	var text = '';
-	var ignoredTag = '';
-	var parser = new htmlparser.Parser( {
+	var ignoredTag = ['', 0];
+	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
+			if ( text.length > 5000 ) parser.pause(); // Prevent the parser from running too long
+			if ( ignoredTag[0] ) {
+				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
+				return;
+			}
 			let classes = ( attribs.class?.split(' ') ?? [] );
 			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
-				ignoredTag = tagname;
+				ignoredTag[0] = tagname;
 				return;
 			}
-			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
-			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag[0] = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag[0] = 'span';
 			if ( tagname === 'br' ) text += ' ';
 		},
 		ontext: (htmltext) => {
-			if ( !ignoredTag ) {
+			if ( !ignoredTag[0] ) {
 				htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
 				if ( /[\n ]$/.test(text) && htmltext.startsWith( ' ' ) ) htmltext = htmltext.replace( /^ +/, '' );
 				text += escapeFormatting(htmltext);
 			}
 		},
 		onclosetag: (tagname) => {
-			if ( tagname === ignoredTag ) ignoredTag = '';
+			if ( tagname === ignoredTag[0] ) {
+				if ( ignoredTag[1] ) ignoredTag[1]--;
+				else ignoredTag[0] = '';
+				return;
+			}
 		},
 		oncomment: (commenttext) => {
 			if ( includeComments && /^(?:IW)?LINK'" \d+(?::\d+)?$/.test(commenttext) ) {
@@ -206,25 +278,31 @@ function htmlToPlain(html, includeComments = false) {
  * @returns {String}
  */
 function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
+	var relativeFix = null;
+	if ( pagelink ) relativeFix = urlToFix(pagelink);
 	var text = '';
 	var code = false;
 	var href = '';
-	var ignoredTag = '';
+	var ignoredTag = ['', 0];
 	var syntaxhighlight = '';
 	var listlevel = -1;
 	var horizontalList = '';
-	var parser = new htmlparser.Parser( {
+	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
-			if ( ignoredTag || code ) return;
+			if ( text.length > 5000 ) parser.pause(); // Prevent the parser from running too long
+			if ( ignoredTag[0] || code ) {
+				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
+				return;
+			}
 			let classes = ( attribs.class?.split(' ') ?? [] );
 			if ( classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
-				ignoredTag = tagname;
+				ignoredTag[0] = tagname;
 				return;
 			}
 			if ( classes.includes( 'hlist' ) ) horizontalList = tagname;
-			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag = 'sup';
-			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag = 'span';
+			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag[0] = 'sup';
+			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag[0] = 'span';
 			if ( tagname === 'code' ) {
 				code = true;
 				text += '`';
@@ -253,7 +331,8 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
 			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
-				if ( ++listlevel ) text += ' (';
+				if ( listlevel && horizontalList ) text += ' (';
+				listlevel++;
 			}
 			if ( tagname === 'li' && !horizontalList ) {
 				text = text.replace( /[ \u200b]+$/, '' );
@@ -277,13 +356,13 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 					let showAlt = true;
 					if ( attribs['data-image-name'] === attribs.alt ) showAlt = false;
 					else {
-						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + attribs.alt.replace( / /g, '_' ).replace( /\W/g, '\\$&' ) + '(?:/|\\?|$)' );
+						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + escapeRegExp(attribs.alt.replaceAll( ' ', '_' )) + '(?:/|\\?|$)' );
 						if ( attribs.src.startsWith( 'data:' ) && attribs['data-src'] ) attribs.src = attribs['data-src'];
 						if ( regex.test(attribs.src.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode )) ) showAlt = false;
 					}
 					if ( showAlt ) {
 						if ( href && !code ) attribs.alt = attribs.alt.replace( /[\[\]]/g, '\\$&' );
-						if ( code ) text += attribs.alt.replace( /`/g, 'ˋ' );
+						if ( code ) text += attribs.alt.replaceAll( '`', 'ˋ' );
 						else text += escapeFormatting(attribs.alt, ...escapeArgs);
 					}
 				}
@@ -320,17 +399,21 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
-				href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
-				if ( text.endsWith( '](<' + href + '>)' ) ) {
-					text = text.substring(0, text.length - ( href.length + 5 ));
+				try {
+					if ( relativeFix && /^\/(?!\/)/.test(attribs.href) ) attribs.href = relativeFix(attribs.href, pagelink);
+					href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
+					if ( text.endsWith( '](<' + href + '>)' ) ) {
+						text = text.substring(0, text.length - ( href.length + 5 ));
+					}
+					else text += '[';
 				}
-				else text += '[';
+				catch {}
 			}
 		},
 		ontext: (htmltext) => {
-			if ( !ignoredTag ) {
+			if ( !ignoredTag[0] ) {
 				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
-				if ( code ) text += htmltext.replace( /`/g, 'ˋ' );
+				if ( code ) text += htmltext.replaceAll( '`', 'ˋ' );
 				else {
 					htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
 					if ( /[\n ]$/.test(text) && htmltext.startsWith( ' ' ) ) {
@@ -341,8 +424,9 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 		},
 		onclosetag: (tagname) => {
-			if ( tagname === ignoredTag ) {
-				ignoredTag = '';
+			if ( tagname === ignoredTag[0] ) {
+				if ( ignoredTag[1] ) ignoredTag[1]--;
+				else ignoredTag[0] = '';
 				return;
 			}
 			if ( code ) {
@@ -363,8 +447,11 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'u' ) text += '__';
 			if ( tagname === 'dl' && horizontalList ) text = text.replace( /: $/, '' );
 			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
-				if ( horizontalList ) text = text.replace( / • $/, '' );
-				if ( listlevel-- ) text += ')';
+				listlevel--;
+				if ( horizontalList ) {
+					text = text.replace( / • $/, '' );
+					if ( listlevel ) text += ')';
+				}
 			}
 			if ( ( tagname === 'li' || tagname === 'dd' ) && horizontalList ) text += ' • ';
 			if ( tagname === 'dt' ) {
@@ -404,12 +491,22 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
  * @returns {String}
  */
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
-	if ( !isMarkdown ) text = text.replace( /\\/g, '\\\\' ).replace( /\]\(/g, ']\\(' );
-	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replace( /\/\//g, '/\\/' );
+	if ( !isMarkdown ) text = text.replaceAll( '\\', '\\\\' ).replaceAll( '](', ']\\(' );
+	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replaceAll( '//', '/\\/' );
+	if ( isMarkdown ) text = text.replace( /\]\(\\<([^\(\)<>\s]+?)\\>\)/g, '](<$1>)' );
 	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
-		return match.replace( /\\\\/g, '/' ).replace( /\\/g, '' );
+		return match.replaceAll( '\\\\', '/' ).replaceAll( '\\', '' );
 	} );
 	return text;
+};
+
+/**
+ * Escapes RegExp formatting.
+ * @param {String} [text] - The text to modify.
+ * @returns {String}
+ */
+function escapeRegExp(text = '') {
+	return text.replace(/[.*+?^${}()|\[\]\\]/g, '\\$&');
 };
 
 /**
@@ -437,6 +534,35 @@ function limitLength(text = '', limit = 1000, maxExtra = 20) {
 };
 
 /**
+ * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
+ * @param {string} text Content to split
+ * @param {object} [options] Options controlling the behavior of the split
+ * @param {number} [options.maxLength] Maximum character length per message piece
+ * @param {string} [options.char] Character to split the message with
+ * @param {string} [options.prepend] Text to prepend to every piece except the first
+ * @param {string} [options.append] Text to append to every piece except the last
+ * @returns {string[]}
+ */
+function splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
+	if ( text.length <= maxLength ) return [text];
+	let messages = [];
+	let msg = '';
+	for ( let part of text.split(char) ) {
+		if ( part.length > maxLength ) part = limitLength(part, maxLength);
+		if ( msg ) {
+			if ( (msg + char + part + append).length > maxLength ) {
+				messages.push(msg + append);
+				msg = prepend + part;
+			}
+			else msg += char + part;
+		}
+		else msg += part;
+	}
+	messages.push(msg);
+	return messages.filter( part => part );
+};
+
+/**
  * Try to URI decode.
  * @param {String} m - The character to decode.
  * @returns {String}
@@ -444,7 +570,7 @@ function limitLength(text = '', limit = 1000, maxExtra = 20) {
 function partialURIdecode(m) {
 	var text = '';
 	try {
-		text = decodeURIComponent( m );
+		text = decodeURIComponent( m.replaceAll( '.', '%' ) );
 	}
 	catch ( replaceError ) {
 		if ( isDebug ) console.log( '- Failed to decode ' + m + ':' + replaceError );
@@ -461,15 +587,15 @@ function partialURIdecode(m) {
  */
 function breakOnTimeoutPause(msg, ignorePause = false) {
 	if ( !msg.inGuild() ) return false;
-	if ( msg.member?.isCommunicationDisabled() ) {
+	if ( msg.member?.isCommunicationDisabled?.() ) {
 		console.log( '- Aborted, communication disabled for User.' );
 		return true;
 	}
-	if ( msg.guild?.me.isCommunicationDisabled() ) {
+	if ( msg.guild?.members?.me?.isCommunicationDisabled() ) {
 		console.log( '- Aborted, communication disabled for Wiki-Bot.' );
 		return true;
 	}
-	if ( pausedGuilds.has(msg.guildId) && !( ignorePause && ( msg.isAdmin() || msg.isOwner() ) ) ) {
+	if ( pausedGuilds.has(msg.guildId) && !( ignorePause && ( msg.isAdmin?.() || msg.isOwner?.() ) ) ) {
 		console.log( '- Aborted, guild paused.' );
 		return true;
 	};
@@ -492,12 +618,12 @@ function allowDelete(msg, author) {
 
 /**
  * Sends an interaction response.
- * @param {import('discord.js').CommandInteraction|import('discord.js').ButtonInteraction} interaction - The interaction.
- * @param {import('discord.js').MessageOptions} message - The message.
+ * @param {import('discord.js').ChatInputCommandInteraction|import('discord.js').ButtonInteraction|import('discord.js').ModalSubmitInteraction} interaction - The interaction.
+ * @param {String|import('discord.js').MessageOptions} message - The message.
  * @param {Boolean} [letDelete] - Let the interaction user delete the message.
  * @returns {Promise<import('discord.js').Message?>}
  */
-function sendMessage(interaction, message, letDelete = true) {
+function sendMessage(interaction, message, letDelete = false) {
 	if ( !interaction.ephemeral && letDelete && breakOnTimeoutPause(interaction) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return interaction.editReply( message ).then( msg => {
@@ -509,14 +635,20 @@ function sendMessage(interaction, message, letDelete = true) {
 export {
 	got,
 	oauthVerify,
+	getEmbedLength,
 	parse_infobox,
+	isMessage,
+	canShowEmbed,
+	canUseMaskedLinks,
 	toFormatting,
 	toMarkdown,
 	toPlaintext,
 	htmlToPlain,
 	htmlToDiscord,
 	escapeFormatting,
+	escapeRegExp,
 	limitLength,
+	splitMessage,
 	partialURIdecode,
 	breakOnTimeoutPause,
 	allowDelete,

@@ -1,290 +1,301 @@
 {
-    "fallback": [
-        "zh-hant",
-        "en",
-        " ",
-        " ",
-        " "
-    ],
-    "general": {
-        "botlist": {
-            "text": "让其他用户也知道 Wiki-Bot，就在这些机器人列表上投票吧：",
-            "title": "机器人列表"
-        },
-        "delete": "删除",
-        "invite": "邀请 Wiki-Bot",
-        "language": "更改语言",
-        "login": "登录",
-        "logout": "注销",
-        "rcscript": "最近更改",
-        "refresh": "刷新服务器列表",
-        "save": "保存",
-        "selector": "选择服务器",
-        "settings": "设置",
-        "slash": "斜杠命令",
-        "support": "支持服务器",
-        "theme-dark": "使用酷黑主题",
-        "theme-light": "使用明亮主题",
-        "title": "Wiki-Bot 设置",
-        "verification": "验证",
-        "welcome": "<h2>欢迎来到 Wiki-Bot 控制面板。</h2>\n<p>Wiki-Bot 是一个 Discord 机器人，旨在将 MediaWiki 驱动的 wiki 站点与 Discord 服务器整合在一起。它可以帮忙链接到 wiki 页面，验证 wiki 用户，通知 wiki 上最近的更改，等等。 <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多信息]</a></p>\n<p>在此，你可以为每个你拥有“管理服务器”权限的服务器管理并使用不同的机器人设置。但首先，你需要通过这个按钮验证你的 Discord 账号：</p>"
-    },
-    "indexjs": {
-        "avatar": {
-            "content_type": "所提供的链接的内容类型（Content-Type）为$1，但仅允许以下内容类型：",
-            "invalid_url": "此 URL 无法解析到有效的图像文件。"
-        },
-        "invalid": {
-            "note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
-            "note_private": "所提供的 wiki 是非公开的！",
-            "note_timeout": "所提供的链接花费了过多时间响应！",
-            "text": "此 URL 无法解析到有效的 MediaWiki 网站！",
-            "title": "无效的 wiki！"
-        },
-        "outdated": {
-            "text": "最近更改 webhook 最少需要 MediaWiki 1.30！",
-            "title": "过时的 MediaWiki 版本！"
-        },
-        "prefix": {
-            "backslash": "前缀不得包含反斜杠！",
-            "code": "前缀不得包含代码 markdown！",
-            "space": "前缀不得包含空格！"
-        },
-        "sysmessage": {
-            "text": "此页面 $1 需要与服务器 ID $2 对应。",
-            "title": "系统信息不对应！"
-        },
-        "valid": {
-            "MediaWiki": "警告：至少需要 $1 以使用所有功能。",
-            "title": "此 wiki 有效且可使用！"
-        }
-    },
-    "notice": {
-        "error": {
-            "text": "发生了未知错误，请再试一次。",
-            "title": "未知错误！"
-        },
-        "invalidusergroup": {
-            "text": "用户组名称过长或您提交了太多用户组。",
-            "title": "无效的用户组！"
-        },
-        "loginfail": {
-            "text": "在您登录时发生了错误，请再试一次。",
-            "title": "登录失败！"
-        },
-        "logout": {
-            "text": "您已成功注销。若要更改任何设置，您需要重新登录。",
-            "title": "已成功注销！"
-        },
-        "missingperm": {
-            "text": "您或 Wiki-Bot 缺少此功能所需的 $1 权限。",
-            "title": "缺少权限！"
-        },
-        "mwversion": {
-            "text": "至少需要 MediaWiki 1.30，但 $2 为 $1。",
-            "title": "过时的 MediaWiki 版本！"
-        },
-        "nochange": {
-            "text": "设置与当前的默认设置一致。",
-            "title": "保存失败！"
-        },
-        "nosettings": {
-            "note": "更改设置。",
-            "text": "请先定义服务器的设置。",
-            "title": "尚未配置服务器！"
-        },
-        "noslash": {
-            "note": "启用斜杠命令。",
-            "text": "Wiki-Bot 的斜杠命令在本服务器上未启用。",
-            "title": "斜杠命令未启用！"
-        },
-        "noverify": {
-            "text": "在没有设置验证方式的情况下，无法对命令$1设置使用限制。",
-            "title": "未配置验证方式！"
-        },
-        "oauth": {
-            "text": "您的wiki账号已成功连接到 Wiki-Bot。",
-            "title": "账号成功连接！"
-        },
-        "oauthfail": {
-            "text": "无法连接到您的wiki账号，请再试一次。",
-            "title": "连接失败！"
-        },
-        "oauthlogin": {
-            "text": "若不希望 Wiki-Bot 记住您的wiki账号，请登录。",
-            "title": "已保存连接到的wiki账号！"
-        },
-        "oauthother": {
-            "note": "切换账号。",
-            "text": "请注意，您的wiki账号连接到的Discord账号与当前登录的不同。",
-            "title": "账号成功连接！"
-        },
-        "oauthverify": {
-            "text": "已成功验证您的wiki账号。",
-            "title": "账号验证成功！"
-        },
-        "readonly": {
-            "text": "你现在只能查看你的设置，而不能更改。",
-            "title": "只读的数据库！"
-        },
-        "refresh": {
-            "text": "你的服务器列表已成功刷新。",
-            "title": "刷新成功！"
-        },
-        "refreshfail": {
-            "text": "你的服务器列表无法刷新，请再试一次。",
-            "title": "刷新失败！"
-        },
-        "save": {
-            "text": "已成功更新设置。",
-            "title": "已保存设置！"
-        },
-        "savefail": {
-            "note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
-            "note_private": "所提供的 wiki 是非公开的！",
-            "note_timeout": "所提供的链接花费了太长时间来响应！",
-            "text": "无法保存设置，请再试一次。",
-            "title": "保存失败！"
-        },
-        "sysmessage": {
-            "text": "页面 $1 应与服务器 ID $2 相匹配。",
-            "title": "系统消息不匹配！"
-        },
-        "unauthorized": {
-            "text": "在更改设置前，请先登录。",
-            "title": "未登录！"
-        },
-        "webhookfail": {
-            "note": "无法更改Discord Webhook！",
-            "text": "仅更新了一部分设置。",
-            "title": "已保存部分设置！"
-        },
-        "wikiblocked": {
-            "note": "原因：",
-            "text": "$1 已被阻止添加为最近更改 webhook。",
-            "title": "wiki 已被屏蔽！"
-        }
-    },
-    "oauth": {
-        "desc": "以下是您连接的wiki账号的 OAuth2 设置：",
-        "failed": "加载 OAuth2 设置失败！",
-        "form": {
-            "connect": "连接账号。",
-            "connected": "已连接",
-            "current": "当前状态：",
-            "default": "wiki账号连接",
-            "disable": "不要记住我的账号！",
-            "disabled": "已禁用",
-            "disconnect": "断开账号连接。",
-            "enable": "记住我的账号。",
-            "unconnected": "未连接"
-        }
-    },
-    "rcscript": {
-        "desc": "以下是 $1 的最近更改 webhook：",
-        "explanation": "<h2>最近更改 webhook</h2>\n<p>Wiki-Bot可以运行基于<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的最近更改 webhook。最近更改可以以多种显示模式显示：有行内链接的紧凑型文字信息或有编辑标签和分类更改的嵌入式消息。</p>\n<p>添加最近更改 webhook 的基本要求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本运行的 wiki。</li>\n<li>系统消息<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>需要设置为 Discord 服务器的服务器 ID <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
-        "form": {
-            "avatar": "Webhook 头像：",
-            "avatar_preview": "预览",
-            "channel": "频道：",
-            "confirm": "你真的想删除最近更改 webhook 吗？",
-            "display": "显示模式：",
-            "display_compact": "有行内链接的紧凑文字型信息。",
-            "display_diff": "带有图像预览和编辑差异的嵌入式消息。",
-            "display_embed": "带有编辑标签和分类更改的嵌入式消息。",
-            "display_image": "带有图像预览的嵌入式消息。",
-            "entry": "最近更改 webhook #$1",
-            "feeds": "基于推送页的更改：",
-            "feeds_only": "仅启用基于推送页的更改：",
-            "lang": "语言：",
-            "name": "Webhook 名称：",
-            "new": "新的最近更改 webhook",
-            "select_channel": "-- 选择频道 --",
-            "wiki": "wiki：",
-            "wiki_check": "检查 wiki"
-        },
-        "new": "新 webhook"
-    },
-    "selector": {
-        "desc": "此为所有你可以更改设置的服务器列表，因为你拥有[管理服务器]($1)权限。请选择一个服务器：",
-        "invite": "Wiki-Bot 尚未加入 $1，但是你可以[邀请 Wiki-Bot]($2)。",
-        "none": "你目前并没有任何服务器的[管理服务器]($1)权限，你是否已使用正确的账号登录？",
-        "switch": "切换账号",
-        "title": "选择服务器",
-        "user": "wiki账号",
-        "with": "有 Wiki-Bot 的服务器",
-        "without": "没有 Wiki-Bot 的服务器"
-    },
-    "settings": {
-        "desc": "以下是 $1 的设置：",
-        "failed": "加载设置失败！",
-        "form": {
-            "channel": "频道：",
-            "confirm": "你真的想删除该频道覆写设置吗？",
-            "default": "服务器范围的设置",
-            "inline": "行内命令：",
-            "lang": "语言：",
-            "new": "新的频道覆写设置",
-            "overwrite": "$1 设置",
-            "prefix": "前缀：",
-            "prefix_space": "以空格结尾的前缀：",
-            "role": "最小身份组：",
-            "select_channel": "-- 选择频道 --",
-            "wiki": "默认 wiki：",
-            "wiki_check": "检查 wiki"
-        },
-        "new": "新的频道覆写设置"
-    },
-    "slash": {
-        "desc": "以下是$1的斜杠命令：",
-        "explanation": "<h2>斜杠命令</h2>\n<p>可以为每个身份组设置特定斜杠命令的使用限制。在此你可以设置 Wiki-Bot 斜杠命令的使用限制。</p>",
-        "form": {
-            "add": "添加",
-            "allow": "允许",
-            "default": "默认",
-            "default_allow": "默认情况下，此命令可被任何人使用。",
-            "default_deny": "默认情况下，此命令不允许任何人使用。",
-            "deny": "拒绝",
-            "entry": "命令 $1",
-            "role": "身份组：",
-            "select_role": "-- 选择身份组 --"
-        }
-    },
-    "verification": {
-        "desc": "以下是 $1 的验证方式：",
-        "explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 wiki 用户，只需要他们在 wiki 个人资料的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时授予的身份组。</li>\n<li>匹配该验证项所需的编辑次数。</li>\n<li>匹配该验证项所需的 wiki 用户组。</li>\n<li>匹配该验证项所需的账号注册时长（单位为天）。</li>\n<li>匹配该验证项时是否将 Discord 用户的昵称设置为他们的 wiki 用户名。</li>\n</ul>",
-        "form": {
-            "accountage": "账号注册时长（天）：",
-            "channel": "频道：",
-            "confirm": "你真的想删除此验证方式吗？",
-            "editcount": "最少编辑次数：",
-            "entry": "验证方式 #$1",
-            "flag_logall": "记录不成功的验证：",
-            "flag_private": "私信命令回复：",
-            "logging": "日志记录频道：",
-            "match": "缺少验证条件提示：",
-            "match_placeholder": "在匹配到 Discord ID 但不符合任何身份组验证条件时显示的 Markdown 文本。",
-            "more": "添加更多",
-            "new": "新的验证方式",
-            "notice": "验证提示",
-            "postcount": "最小帖子数：",
-            "postcount_and": "同时要求编辑数和帖子数。",
-            "postcount_both": "要求编辑数和帖子数的总和。",
-            "postcount_fandom": "仅Fandom wiki：",
-            "postcount_or": "要求编辑数或帖子数。",
-            "rename": "重命名用户：",
-            "role": "身份组：",
-            "role_add": "添加",
-            "role_remove": "移除",
-            "select_channel": "-- 选择频道 --",
-            "select_role": "-- 选择身份组 --",
-            "success": "成功提示：",
-            "success_placeholder": "验证成功时显示的 Markdown 文本。",
-            "usergroup": "wiki 用户组：",
-            "usergroup_and": "所有所需的用户组："
-        },
-        "help_notice": "<p>自定义提示也支持一些简单的函数与变量。</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – 用户的当前编辑次数。</li>\n<li><code class=\"form-button user-select\">$accountage</code> – 以天为单位的用户当前注册时长。</li>\n<li><code class=\"form-button user-select\">$postcount</code> – 用户当前讨论板帖子数（仅Fandom wiki可用）。</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – 返回表达式的运算结果。\n<ul>\n<li>仅支持加法<code class=\"form-button user-select\">+</code>和减法<code class=\"form-button user-select\">-</code>。</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>为真时显示的字符串</i> | <i>为假时显示的字符串</i> }}</code> – 根据表达式的运算结果返回不同的文本。\n<ul>\n<li>支持<code class=\"form-button user-select\">&lt;</code>、<code class=\"form-button user-select\">&gt;</code>、<code class=\"form-button user-select\">=</code>、<code class=\"form-button user-select\">&lt;=</code>、<code class=\"form-button user-select\">&gt;=</code>、<code class=\"form-button user-select\">!=</code>、<code class=\"form-button user-select\">&lt;&gt;</code>以及<code class=\"form-button user-select\">and</code>、<code class=\"form-button user-select\">or</code>。</li>\n</ul></li>\n</ul>",
-        "new": "新的验证方式",
-        "notice": "验证提示"
-    }
+	"fallback": [
+		"zh-hant",
+		"en",
+		" ",
+		" ",
+		" "
+	],
+	"general": {
+		"botlist": {
+			"text": "要让其他用户也知道 Wiki-Bot，就在这些机器人列表上投票吧：",
+			"title": "机器人列表"
+		},
+		"delete": "删除",
+		"invite": "邀请 Wiki-Bot",
+		"language": "更改语言",
+		"login": "登录",
+		"logout": "注销",
+		"rcscript": "最近更改",
+		"refresh": "刷新服务器列表",
+		"save": "保存",
+		"selector": "选择服务器",
+		"settings": "设置",
+		"support": "支持服务器",
+		"theme-dark": "使用酷黑主题",
+		"theme-light": "使用明亮主题",
+		"title": "Wiki-Bot 设置",
+		"verification": "验证",
+		"welcome": "<h2>欢迎来到 Wiki-Bot 控制面板。</h2>\n<p>Wiki-Bot 是一个 Discord 机器人，旨在将 MediaWiki 驱动的 wiki 站点与 Discord 服务器整合在一起。它可以帮忙链接到 wiki 页面，验证 wiki 用户，通知 wiki 上最近的更改，等等。 <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多信息]</a></p>\n<p>在此，你可以为每个你拥有“管理服务器”权限的服务器管理并使用不同的机器人设置。但首先，你需要通过以下按钮验证你的 Discord 账号：</p>"
+	},
+	"indexjs": {
+		"avatar": {
+			"content_type": "所提供的链接的内容类型是$1，但仅允许以下内容类型：",
+			"invalid_url": "无法将URL解析为有效的图像文件。"
+		},
+		"embeds": {
+			"json": "嵌入对象无效，请提供含有Discord嵌入对象的有效JSON数组。"
+		},
+		"invalid": {
+			"note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
+			"note_private": "所提供的 wiki 是非公开的！",
+			"note_timeout": "所提供的链接花费了过多时间响应！",
+			"text": "此 URL 无法解析到有效的 MediaWiki 网站！",
+			"title": "无效的 wiki！"
+		},
+		"outdated": {
+			"text": "最近更改 webhook 最少需要 MediaWiki 1.30！",
+			"title": "过时的 MediaWiki 版本！"
+		},
+		"prefix": {
+			"backslash": "前缀不得包含反斜杠！",
+			"code": "前缀不得包含代码 markdown！",
+			"space": "前缀不得包含空格！"
+		},
+		"sysmessage": {
+			"text": "此页面 $1 需要与服务器 ID $2 对应。",
+			"title": "系统信息不对应！"
+		},
+		"valid": {
+			"MediaWiki": "警告：至少需要 $1 以使用所有功能。",
+			"title": "此 wiki 有效且可使用！"
+		}
+	},
+	"notice": {
+		"error": {
+			"text": "发生了未知错误，请再试一次。",
+			"title": "未知错误！"
+		},
+		"invalidusergroup": {
+			"text": "用户组名称过长或您提交了太多用户组。",
+			"title": "无效的用户组！"
+		},
+		"loginfail": {
+			"text": "在您登录时发生了错误，请再试一次。",
+			"title": "登录失败！"
+		},
+		"logout": {
+			"text": "您已成功注销。若要更改任何设置，您需要重新登录。",
+			"title": "已成功注销！"
+		},
+		"missingperm": {
+			"text": "您或 Wiki-Bot 缺少此功能所需的 $1 权限。",
+			"title": "缺少权限！"
+		},
+		"mwversion": {
+			"text": "至少需要 MediaWiki 1.30，但 $2 为 $1。",
+			"title": "过时的 MediaWiki 版本！"
+		},
+		"nochange": {
+			"text": "设置与当前的默认设置一致。",
+			"title": "保存失败！"
+		},
+		"nosettings": {
+			"note": "更改设置。",
+			"text": "请先定义服务器的设置。",
+			"title": "尚未配置服务器！"
+		},
+		"oauth": {
+			"text": "您的wiki账号已成功连接到 Wiki-Bot。",
+			"title": "账号成功连接！"
+		},
+		"oauthfail": {
+			"text": "无法连接到您的wiki账号，请再试一次。",
+			"title": "连接失败！"
+		},
+		"oauthlogin": {
+			"text": "若不希望 Wiki-Bot 记住您的wiki账号，请登录。",
+			"title": "已保存连接到的wiki账号！"
+		},
+		"oauthother": {
+			"note": "切换账号。",
+			"text": "请注意，您的wiki账号连接到的Discord账号与当前登录的不同。",
+			"title": "账号成功连接！"
+		},
+		"oauthverify": {
+			"text": "已成功验证您的wiki账号。",
+			"title": "账号验证成功！"
+		},
+		"readonly": {
+			"text": "你现在只能查看你的设置，而不能更改。",
+			"title": "只读的数据库！"
+		},
+		"refresh": {
+			"text": "你的服务器列表已成功刷新。",
+			"title": "刷新成功！"
+		},
+		"refreshfail": {
+			"text": "你的服务器列表无法刷新，请再试一次。",
+			"title": "刷新失败！"
+		},
+		"save": {
+			"text": "已成功更新设置。",
+			"title": "已保存设置！"
+		},
+		"savefail": {
+			"note_http": "所提供的网站没有合法的TLS/SSL证书！由于安全原因，仅支持使用HTTPS的wiki。",
+			"note_private": "所提供的 wiki 是非公开的！",
+			"note_timeout": "所提供的链接花费了太长时间来响应！",
+			"text": "无法保存设置，请再试一次。",
+			"title": "保存失败！"
+		},
+		"send": {
+			"text": "消息已成功发送。",
+			"title": "消息已发送！"
+		},
+		"sendfail": {
+			"note_embeds": "嵌入对象无效，请提供含有Discord嵌入对象的有效JSON数组。",
+			"note_nothread": "无法找到子区，请指定活跃子区。",
+			"text": "无法发送消息，请再试一次。",
+			"title": "发送失败！"
+		},
+		"sysmessage": {
+			"text": "页面 $1 应与服务器 ID $2 相匹配。",
+			"title": "系统消息不匹配！"
+		},
+		"unauthorized": {
+			"text": "在更改设置前，请先登录。",
+			"title": "未登录！"
+		},
+		"webhookfail": {
+			"note": "无法更改Discord Webhook！",
+			"text": "仅更新了一部分设置。",
+			"title": "已保存部分设置！"
+		},
+		"wikiblocked": {
+			"note": "原因：",
+			"text": "$1 已被阻止添加为最近更改 webhook。",
+			"title": "wiki 已被屏蔽！"
+		}
+	},
+	"oauth": {
+		"desc": "以下是您连接的wiki账号的 OAuth2 设置：",
+		"failed": "加载 OAuth2 设置失败！",
+		"form": {
+			"connect": "连接账号。",
+			"connected": "已连接",
+			"current": "当前状态：",
+			"default": "wiki账号连接",
+			"disable": "不要记住我的账号！",
+			"disabled": "已禁用",
+			"disconnect": "断开账号连接。",
+			"enable": "记住我的账号。",
+			"unconnected": "未连接"
+		}
+	},
+	"rcscript": {
+		"desc": "以下是 $1 的最近更改 webhook：",
+		"explanation": "<h2>最近更改 webhook</h2>\n<p>Wiki-Bot可以运行基于<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的最近更改 webhook。最近更改可以以多种显示模式显示：有行内链接的紧凑型文字信息或有编辑标签和分类更改的嵌入式消息。</p>\n<p>添加最近更改 webhook 的基本要求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本运行的 wiki。</li>\n<li>系统消息<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>需要设置为 Discord 服务器的服务器 ID <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
+		"form": {
+			"channel": "频道：",
+			"confirm": "你真的想删除最近更改 webhook 吗？",
+			"display": "显示模式：",
+			"display_compact": "有行内链接的紧凑文字型信息。",
+			"display_diff": "带有图像预览和编辑差异的嵌入式消息。",
+			"display_embed": "带有编辑标签和分类更改的嵌入式消息。",
+			"display_image": "带有图像预览的嵌入式消息。",
+			"entry": "最近更改 webhook #$1",
+			"feeds": "基于推送页的更改：",
+			"feeds_only": "仅启用基于推送页的更改：",
+			"lang": "语言：",
+			"new": "新的最近更改 webhook",
+			"select_channel": "-- 选择频道 --",
+			"wiki": "wiki：",
+			"wiki_check": "检查 wiki"
+		},
+		"new": "新 webhook"
+	},
+	"selector": {
+		"desc": "此为所有你拥有[管理服务器]($1)权限的服务器列表。你可以更改列表中的服务器的设置。请选择一个服务器：",
+		"invite": "Wiki-Bot 尚未加入 $1，但是你可以[邀请 Wiki-Bot]($2)。",
+		"none": "你目前并没有任何服务器的[管理服务器]($1)权限，你是否已使用正确的账号登录？",
+		"switch": "切换账号",
+		"title": "选择服务器",
+		"user": "wiki账号",
+		"with": "有 Wiki-Bot 的服务器",
+		"without": "没有 Wiki-Bot 的服务器"
+	},
+	"settings": {
+		"desc": "以下是 $1 的设置：",
+		"failed": "加载设置失败！",
+		"form": {
+			"channel": "频道：",
+			"confirm": "你真的想删除该频道覆写设置吗？",
+			"default": "服务器范围的设置",
+			"inline": "行内命令：",
+			"lang": "语言：",
+			"new": "新的频道覆写设置",
+			"overwrite": "$1 设置",
+			"prefix": "前缀：",
+			"prefix_space": "以空格结尾的前缀：",
+			"role": "最小身份组：",
+			"select_channel": "-- 选择频道 --",
+			"select_subprefix": "设置一个指定的wiki →",
+			"subprefix": "子命令wiki前缀：",
+			"wiki": "默认 wiki：",
+			"wiki_check": "检查 wiki"
+		},
+		"new": "新的频道覆写设置"
+	},
+	"verification": {
+		"button": "验证按钮",
+		"desc": "以下是 $1 的验证方式：",
+		"explanation": "<h2>用户验证</h2>\n<p>使用<code class=\"prefix\">verify &lt;wiki用户名&gt;</code>命令，用户可以将他们验证为特定的 wiki 用户，只需要他们在 wiki 个人资料的 Discord 栏位中填入自己的 Discord 即可。若验证结果匹配并且服务器设置了用户验证，那么 Wiki-Bot 就会对应所有与他们相匹配的验证项，给予相应的用户组。</p>\n<p>每条验证项都允许填入多条匹配条件：</p>\n<ul>\n<li>允许使用 <code class=\"prefix\">verify</code> 命令的频道。</li>\n<li>匹配该验证项时授予的身份组。</li>\n<li>匹配该验证项所需的编辑次数。</li>\n<li>匹配该验证项所需的 wiki 用户组。</li>\n<li>匹配该验证项所需的账号注册时长（单位为天）。</li>\n<li>匹配该验证项时是否将 Discord 用户的昵称设置为他们的 wiki 用户名。</li>\n</ul>",
+		"form": {
+			"accountage": "账号注册时长（天）：",
+			"avatar": "作者头像：",
+			"avatar_bot": "机器人头像",
+			"avatar_guild": "服务器图标",
+			"avatar_preview": "预览",
+			"button": "发送带有验证按钮的消息",
+			"button_emoji": "按钮的Emoji（可选）：",
+			"button_emoji_title": "提供自定义的服务器Emoji或Emoji的Unicode字符。",
+			"button_name": "按钮文本：",
+			"button_name_default": "wiki 账号验证",
+			"button_style": "按钮样式：",
+			"button_style_danger": "危险色（红色）",
+			"button_style_primary": "主要色（Blurple，Discord蓝紫色）",
+			"button_style_secondary": "次要色（灰色）",
+			"button_style_success": "成功色（绿色）",
+			"channel": "频道：",
+			"confirm": "你真的想删除此验证方式吗？",
+			"content": "消息内容（可选）：",
+			"content_placeholder": "消息的Markdown文本，支持更改显示文本的链接。",
+			"editcount": "最少编辑次数：",
+			"embeds": "消息嵌入（可选）：",
+			"embeds_help": "帮助：[嵌入可视化]($1)",
+			"embeds_placeholder": "Discord消息嵌入组成的JSON数组。",
+			"entry": "验证方式 #$1",
+			"flag_logall": "记录不成功的验证：",
+			"flag_private": "私信命令回复：",
+			"logging": "日志记录频道：",
+			"match": "缺少验证条件提示：",
+			"match_placeholder": "在匹配到 Discord ID 但不符合任何身份组验证条件时显示的 Markdown 文本。",
+			"more": "添加更多",
+			"new": "新的验证方式",
+			"notice": "验证提示",
+			"postcount": "最小帖子数：",
+			"postcount_and": "同时要求编辑数和帖子数。",
+			"postcount_both": "要求编辑数和帖子数的总和。",
+			"postcount_fandom": "仅Fandom wiki：",
+			"postcount_or": "要求编辑数或帖子数。",
+			"rename": "重命名用户：",
+			"role": "身份组：",
+			"role_add": "添加",
+			"role_remove": "移除",
+			"select_channel": "-- 选择频道 --",
+			"select_role": "-- 选择身份组 --",
+			"send_message": "发送消息",
+			"success": "成功提示：",
+			"success_placeholder": "验证成功时显示的 Markdown 文本。",
+			"thread": "子区（可选）：",
+			"usergroup": "wiki 用户组：",
+			"usergroup_and": "所有所需的用户组：",
+			"webhook_name": "作者名称："
+		},
+		"help_button": "<p>验证按钮功能与<b>私信命令回复</b>、<b>日志记录频道</b>选项搭配使用更佳。</p>\n<p>以上搭配功能是<a href=\"/guild/$1/verification/notice$2\">验证提示</a>的一部分，可以在那里启用。</p>",
+		"help_notice": "<p>自定义提示也支持一些简单的函数与变量。</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> – 用户的当前编辑次数。</li>\n<li><code class=\"form-button user-select\">$accountage</code> – 以天为单位的用户当前注册时长。</li>\n<li><code class=\"form-button user-select\">$postcount</code> – 用户当前讨论板帖子数（仅Fandom wiki可用）。</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – 返回表达式的运算结果。\n<ul>\n<li>仅支持加法<code class=\"form-button user-select\">+</code>和减法<code class=\"form-button user-select\">-</code>。</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>为真时显示的字符串</i> | <i>为假时显示的字符串</i> }}</code> – 根据表达式的运算结果返回不同的文本。\n<ul>\n<li>支持<code class=\"form-button user-select\">&lt;</code>、<code class=\"form-button user-select\">&gt;</code>、<code class=\"form-button user-select\">=</code>、<code class=\"form-button user-select\">&lt;=</code>、<code class=\"form-button user-select\">&gt;=</code>、<code class=\"form-button user-select\">!=</code>、<code class=\"form-button user-select\">&lt;&gt;</code>以及<code class=\"form-button user-select\">and</code>、<code class=\"form-button user-select\">or</code>。</li>\n</ul></li>\n</ul>",
+		"new": "新的验证方式",
+		"notice": "验证提示"
+	}
 }

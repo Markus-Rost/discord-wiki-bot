@@ -1,6 +1,7 @@
-import http from 'http';
-import fs from 'fs';
-import { extname } from 'path';
+import './globals.js';
+import { createServer, STATUS_CODES } from 'node:http';
+import { createReadStream, readdirSync, existsSync } from 'node:fs';
+import { extname } from 'node:path';
 import * as pages from './oauth.js';
 import dashboard from './guilds.js';
 import { posts } from './functions.js';
@@ -9,13 +10,13 @@ import Lang from './i18n.js';
 const allLangs = Lang.allLangs();
 
 const files = new Map([
-	...fs.readdirSync( './dashboard/src' ).map( file => {
+	...readdirSync( './dashboard/src' ).map( file => {
 		return [`/src/${file}`, `./dashboard/src/${file}`];
 	} ),
-	...fs.readdirSync( './i18n/widgets' ).map( file => {
+	...readdirSync( './i18n/widgets' ).map( file => {
 		return [`/src/widgets/${file}`, `./i18n/widgets/${file}`];
 	} ),
-	...( fs.existsSync('./RcGcDb/start.py') ? fs.readdirSync( './RcGcDb/locale/widgets' ).map( file => {
+	...( existsSync('./RcGcDb/start.py') ? readdirSync( './RcGcDb/locale/widgets' ).map( file => {
 		return [`/src/widgets/RcGcDb/${file}`, `./RcGcDb/locale/widgets/${file}`];
 	} ) : [] )
 ].map( ([file, filepath]) => {
@@ -43,16 +44,17 @@ const files = new Map([
 	return [file, {path: filepath, contentType}];
 } ));
 
-const server = http.createServer( (req, res) => {
+const server = createServer( (req, res) => {
 	res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( req.url.startsWith( '/guild/' ) || req.url === '/user' ) ) {
+		/** @type {String[]} */
 		let args = req.url.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot' && /^"([\da-f]+(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
 		} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
 		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id) &&
-		( ( args.length === 5 && ['settings', 'verification', 'rcscript', 'slash'].includes( args[3] ) && /^(?:default|new|notice|\d+)$/.test(args[4])
+		( ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] ) && /^(?:default|new|notice|button|\d+)$/.test(args[4])
 		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || req.url === '/user' ) ) {
 			let body = [];
 			req.on( 'data', chunk => {
@@ -63,11 +65,11 @@ const server = http.createServer( (req, res) => {
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
-				if ( process.env.READONLY ) return save_response(`${req.url}?save=failed`);
+				if ( process.env.READONLY && args.slice(3).join('/') !== 'verification/button' ) return save_response(`${req.url}?save=failed`);
 				var settings = {};
 				Buffer.concat(body).toString().split('&').forEach( arg => {
 					if ( arg ) {
-						let setting = decodeURIComponent(arg.replace( /\+/g, ' ' )).split('=');
+						let setting = decodeURIComponent(arg.replaceAll( '+', ' ' )).split('=');
 						if ( setting[0] && setting.slice(1).join('=').trim() ) {
 							if ( settings[setting[0]] ) {
 								settings[setting[0]] += '|' + setting.slice(1).join('=').trim();
@@ -126,7 +128,7 @@ const server = http.createServer( (req, res) => {
 		return res.end();
 	}
 	if ( req.method !== 'GET' ) {
-		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + http.STATUS_CODES[418] + '</strong>';
+		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + STATUS_CODES[418] + '</strong>';
 		res.writeHead(418, {
 			'Content-Type': 'text/html',
 			'Content-Length': Buffer.byteLength(body)
@@ -139,7 +141,7 @@ const server = http.createServer( (req, res) => {
 	if ( files.has(reqURL.pathname) ) {
 		let file = files.get(reqURL.pathname);
 		res.writeHead(200, {'Content-Type': file.contentType});
-		return fs.createReadStream(file.path).pipe(res);
+		return createReadStream(file.path).pipe(res);
 	}
 
 	res.setHeader('Content-Type', 'text/html');
@@ -164,8 +166,8 @@ const server = http.createServer( (req, res) => {
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)"$/.test(( cookie.split('=')[1] || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; SameSite=Lax; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -196,7 +198,7 @@ const server = http.createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -219,7 +221,7 @@ const server = http.createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(pathGuild) ) {
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -235,7 +237,7 @@ const server = http.createServer( (req, res) => {
 
 	if ( reqURL.pathname === '/refresh' ) {
 		let returnLocation = reqURL.searchParams.get('return');
-		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)$/.test(returnLocation) ) {
+		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, sessionData.get(state), returnLocation);
@@ -243,13 +245,13 @@ const server = http.createServer( (req, res) => {
 
 	if ( reqURL.pathname === '/api' ) {
 		let wiki = reqURL.searchParams.get('wiki');
-		if ( wiki ) return pages.api(res, wiki);
+		let [, guild] = req.headers.referer.match( /\/guild\/(\d+)\// );
+		if ( wiki ) return pages.api(res, wiki, guild || null);
 	}
 
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
-	if ( reqURL.searchParams.get('slash') === 'noverify' && reqURL.pathname.split('/')[3] === 'slash' ) action = 'noverify';
 	if ( reqURL.pathname === '/user' ) {
 		if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
 		if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';
@@ -264,8 +266,12 @@ server.listen( 8080, 'localhost', () => {
 } );
 
 
-String.prototype.replaceSave = function(pattern, replacement) {
-	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replace( /\$/g, '$$$$' ) : replacement ) );
+String.prototype.replaceSafe = function(pattern, replacement) {
+	return this.replace( pattern, ( typeof replacement === 'string' ? replacement.replaceAll( '$', '$$$$' ) : replacement ) );
+};
+
+String.prototype.replaceAllSafe = function(pattern, replacement) {
+	return this.replaceAll( pattern, ( typeof replacement === 'string' ? replacement.replaceAll( '$', '$$$$' ) : replacement ) );
 };
 
 /**

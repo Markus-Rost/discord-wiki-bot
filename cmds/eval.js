@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 import { load as cheerioLoad } from 'cheerio';
 import Discord from 'discord.js';
-import { got } from '../util/functions.js';
+import { got, isMessage } from '../util/functions.js';
 import newMessage from '../util/newMessage.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 
@@ -20,7 +20,7 @@ inspect.defaultOptions = {compact: false, breakLength: Infinity};
  * @param {Wiki} wiki - The wiki for the message.
  * @async
  */
-async function cmd_eval(lang, msg, args, line, wiki) {
+export default async function cmd_eval(lang, msg, args, line, wiki) {
 	try {
 		var text = inspect( await eval( args.join(' ') ) );
 	} catch ( error ) {
@@ -37,7 +37,11 @@ async function cmd_eval(lang, msg, args, line, wiki) {
 	function backdoor(cmdline) {
 		msg.evalUsed = true;
 		msg.onlyVerifyCommand = false;
-		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, cmdline);
+		let subprefixes = new Map();
+		msg.wikiPrefixes.forEach( (prefixchar, prefixwiki) => {
+			if ( prefixchar ) subprefixes.set(prefixchar, prefixwiki);
+		} );
+		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, cmdline);
 		return cmdline;
 	}
 }
@@ -62,7 +66,7 @@ function checkWiki(wiki) {
 	if ( !wiki ) return `Couldn't resolve "${wiki}" into a valid url.`;
 	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' ).then( response => {
 		if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-			let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+			let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 			if ( api ) {
 				wiki = new Wiki(api.split('api.php?')[0], wiki);
 				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' );
@@ -115,7 +119,7 @@ function checkWiki(wiki) {
 			}, dberror => {
 				result.rcgcdb = dberror.toString();
 			} ),
-			( wiki.isFandom() ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
+			( wiki.wikifarm === 'fandom' ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'
 				}
@@ -170,7 +174,7 @@ function checkWiki(wiki) {
  * @param {Discord.Message} msg - The Discord message.
  */
 function removePatreons(guild, msg) {
-	if ( !( typeof guild === 'string' || msg instanceof Discord.Message ) ) {
+	if ( typeof guild !== 'string' || !isMessage(msg) ) {
 		return 'removePatreons(guild, msg) – No guild or message provided!';
 	}
 	return db.connect().then( client => {
@@ -186,7 +190,7 @@ function removePatreons(guild, msg) {
 					messages.push('Guild successfully updated.');
 				}
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					patreonGuildsPrefix.delete(evalData);
+					globalThis.patreonGuildsPrefix.delete(evalData);
 				}, {context: guild} );
 			}, dberror => {
 				console.log( '- Error while updating the guild: ' + dberror );
@@ -201,7 +205,7 @@ function removePatreons(guild, msg) {
 							if ( discordClient.guilds.cache.has(evalData.guild) ) {
 								let rows = evalData.rows;
 								return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-									return ( ( channel.isText() && !channel.isThread() ) && rows.some( row => {
+									return ( ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === Discord.ChannelType.GuildForum ) && rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {
@@ -218,7 +222,7 @@ function removePatreons(guild, msg) {
 							shard: Discord.ShardClientUtil.shardIdForGuildId(guild, msg.client.shard.count)
 						} ).then( channels => {
 							if ( channels.length ) return Promise.all(channels.map( channel => {
-								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, guild, channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
+								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, guild, channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
 									if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
 										console.log( '- Error while adding category settings to channels: ' + dberror );
 									}
@@ -304,17 +308,20 @@ function removePatreons(guild, msg) {
  * @param {Discord.Message} msg - The Discord message.
  */
 function removeSettings(msg) {
-	if ( !( msg instanceof Discord.Message ) ) return 'removeSettings(msg) – No message provided!';
+	if ( !isMessage(msg) ) return 'removeSettings(msg) – No message provided!';
 	return db.connect().then( client => {
 		var messages = [];
-		return msg.client.shard.broadcastEval( discordClient => {
+		return msg.client.shard.broadcastEval( (discordClient, evalData) => {
 			return [
 				[...discordClient.guilds.cache.keys()],
 				discordClient.channels.cache.filter( channel => {
-					return ( ( channel.isText() && channel.guildId ) || ( channel.type === 'GUILD_CATEGORY' && patreonGuildsPrefix.has(channel.guildId) ) );
-				} ).map( channel => ( channel.type === 'GUILD_CATEGORY' ? '#' : '' ) + channel.id )
+					return ( ( channel.isTextBased() && !channel.isThread() && channel.guildId ) || channel.type === evalData.GuildForum || ( channel.type === evalData.GuildCategory && patreonGuildsPrefix.has(channel.guildId) ) );
+				} ).map( channel => ( channel.type === evalData.GuildCategory ? '#' : '' ) + channel.id )
 			];
-		} ).then( results => {
+		}, {context: {
+			GuildForum: Discord.ChannelType.GuildForum,
+			GuildCategory: Discord.ChannelType.GuildCategory
+		}} ).then( results => {
 			var all_guilds = results.map( result => result[0] ).reduce( (acc, val) => acc.concat(val), [] );
 			var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
 			var guilds = [];
@@ -323,10 +330,9 @@ function removeSettings(msg) {
 				return rows.forEach( row => {
 					if ( !all_guilds.includes(row.guild) ) {
 						if ( !row.channel ) {
-							if ( patreonGuildsPrefix.has(row.guild) || voiceGuildsLang.has(row.guild) ) {
+							if ( patreonGuildsPrefix.has(row.guild) ) {
 								msg.client.shard.broadcastEval( (discordClient, evalData) => {
-									patreonGuildsPrefix.delete(evalData);
-									voiceGuildsLang.delete(evalData);
+									globalThis.patreonGuildsPrefix.delete(evalData);
 								}, {context: row.guild} );
 							}
 							return guilds.push(row.guild);
@@ -379,7 +385,7 @@ function removeSettings(msg) {
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'eval',
 	everyone: false,
 	pause: false,

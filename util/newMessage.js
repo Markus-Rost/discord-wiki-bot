@@ -1,18 +1,14 @@
-import { readdir } from 'fs';
-import { domainToASCII } from 'url';
-import { Util } from 'discord.js';
+import { readdir } from 'node:fs';
+import { domainToASCII } from 'node:url';
+import { cleanContent } from 'discord.js';
+import { inputToWikiProject, idStringToUrl, inputToFrontendProxy } from 'mediawiki-projects-list';
 import Wiki from './wiki.js';
 import logging from './logging.js';
-import { got, partialURIdecode } from './functions.js';
-import check_wiki_general from '../cmds/wiki/general.js';
-import check_wiki_test from '../cmds/test.js';
-import { createRequire } from 'module';
+import { got, isMessage, splitMessage, partialURIdecode, canShowEmbed } from './functions.js';
+import check_wiki from '../cmds/wiki/general.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const {limit: {command: commandLimit}, defaultSettings, wikiProjects} = require('./default.json');
-const check_wiki = {
-	general: check_wiki_general,
-	test: check_wiki_test.run
-};
+const {limit: {command: commandLimit}, defaultSettings} = require('./default.json');
 
 var cmdmap = {};
 var pausecmdmap = {};
@@ -20,10 +16,10 @@ var ownercmdmap = {};
 readdir( './cmds', (error, files) => {
 	if ( error ) return error;
 	files.filter( file => file.endsWith('.js') ).forEach( file => {
-		import('../cmds/' + file).then( ({default: command}) => {
-			if ( command.everyone ) cmdmap[command.name] = command.run;
-			if ( command.pause ) pausecmdmap[command.name] = command.run;
-			if ( command.owner ) ownercmdmap[command.name] = command.run;
+		import('../cmds/' + file).then( ({cmdData}) => {
+			if ( cmdData.everyone ) cmdmap[cmdData.name] = cmdData.run;
+			if ( cmdData.pause ) pausecmdmap[cmdData.name] = cmdData.run;
+			if ( cmdData.owner ) ownercmdmap[cmdData.name] = cmdData.run;
 		} );
 	} );
 } );
@@ -35,13 +31,17 @@ readdir( './cmds', (error, files) => {
  * @param {Wiki} [wiki] - The default wiki.
  * @param {String} [prefix] - The prefix for the message.
  * @param {Boolean} [noInline] - Parse inline commands?
+ * @param {Map<String, String>} [subprefixes] - Parse inline commands?
  * @param {String} [content] - Overwrite for the message content.
  */
-export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, content = '') {
+export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), content = '') {
 	wiki = new Wiki(wiki);
+	msg.wikiPrefixes = new Map();
+	subprefixes.forEach( (prefixwiki, prefixchar) => msg.wikiPrefixes.set(prefixwiki, prefixchar) );
+	msg.wikiPrefixes.set(wiki.name, '');
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
-	var cleanCont = ( content ? Util.cleanContent(content, msg) : msg.cleanContent );
+	var cleanCont = ( content ? cleanContent(content, msg.channel) : msg.cleanContent ).replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /<(\/[\w ]+):\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' );
 	if ( msg.isOwner() && cont.hasPrefix(prefix) ) {
 		let invoke = cont.substring(prefix.length).split(' ')[0].split('\n')[0].toLowerCase();
 		let aliasInvoke = ( lang.aliases[invoke] || invoke );
@@ -56,7 +56,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 	var count = 0;
 	var maxcount = commandLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 	var breakLines = false;
-	cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).split('\n').forEach( line => {
+	cleanCont.split('\n').forEach( line => {
 		if ( line.startsWith( '>>> ' ) ) breakLines = true;
 		if ( !line.hasPrefix(prefix) || breakLines || count > maxcount ) return;
 		if ( count === maxcount ) {
@@ -88,27 +88,17 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		if ( ownercmd ) return ownercmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( pausecmd ) return pausecmdmap[aliasInvoke](lang, msg, args, line, wiki);
 		if ( cmdmap.hasOwnProperty(aliasInvoke) ) return cmdmap[aliasInvoke](lang, msg, args, line, wiki);
-		if ( invoke.startsWith( '!' ) && /^![a-z\d-]{1,50}$/.test(invoke) ) {
-			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + invoke.substring(1) + '.gamepedia.com/'), invoke + ' ');
+		if ( subprefixes.has(invoke[0]) ) {
+			let subprefix = subprefixes.get(invoke[0]);
+			if ( subprefix.startsWith( 'https://' ) ) return cmdmap.LINK(lang, msg, line.substring(1), new Wiki(subprefix), ( subprefix === wiki.name ? '' : invoke[0] ));
+			let subprefixUrl = idStringToUrl(invoke.substring(1), subprefix);
+			if ( subprefixUrl ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(subprefixUrl), ( subprefixUrl === wiki.name ? '' : invoke + ' ' ));
 		}
-		if ( invoke.startsWith( '?' ) && /^\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-			let invokeWiki = wiki;
-			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.fandom.com/' + invoke.substring(1).split('.')[0] + '/';
-			else invokeWiki = 'https://' + invoke.substring(1) + '.fandom.com/';
-			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
-		}
-		if ( invoke.startsWith( '??' ) && /^\?\?(?:[a-z-]{2,12}\.)?[a-z\d-]{1,50}$/.test(invoke) ) {
-			let invokeWiki = wiki;
-			if ( invoke.includes( '.' ) ) invokeWiki = 'https://' + invoke.split('.')[1] + '.wikia.org/' + invoke.substring(2).split('.')[0] + '/';
-			else invokeWiki = 'https://' + invoke.substring(2) + '.wikia.org/';
-			return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(invokeWiki), invoke + ' ');
-		}
-		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}$/.test(domainToASCII(invoke.split('/')[0])) ) {
-			let project = wikiProjects.find( project => invoke.split('/')[0].endsWith( project.name ) );
-			if ( project ) {
-				let regex = invoke.match( new RegExp( '^' + project.regex + '$' ) );
-				if ( regex && invoke === '!!' + regex[1] ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki('https://' + regex[1] + project.scriptPath), invoke + ' ');
-			}
+		if ( invoke.startsWith( '!!' ) && /^!!(?:[a-z\d-]{1,50}\.)?(?:[a-z\d-]{1,50}\.)?[a-z\d-]{1,50}\.[a-z\d-]{1,10}$/.test(domainToASCII(invoke.split('/')[0])) ) {
+			let project = inputToWikiProject(invoke.slice(2));
+			if ( project ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(project.fullScriptPath), ( project.fullScriptPath === wiki.name ? '' : invoke + ' ' ));
+			let proxy = inputToFrontendProxy(invoke.slice(2));
+			if ( proxy ) return cmdmap.LINK(lang, msg, args.join(' '), new Wiki(proxy.fullNamePath), ( proxy.fullNamePath === wiki.name ? '' : invoke + ' ' ));
 		}
 		return cmdmap.LINK(lang, msg, line, wiki);
 	} );
@@ -120,7 +110,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		var linkcount = 0;
 		var linkmaxcount = maxcount + 5;
 		var breakInline = false;
-		cleanCont.replace( /\u200b/g, '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' ).replace( /(?<!\\)``.+?``/gs, '<code>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
+		cleanCont.replace( /(?<!\\)``.+?``/gs, '<code>' ).replace( /(?<!\\)`.+?`/gs, '<code>' ).split('\n').forEach( line => {
 			if ( line.startsWith( '>>> ' ) ) breakInline = true;
 			if ( line.startsWith( '> ' ) || breakInline ) return;
 			if ( line.hasPrefix(prefix) || !( line.includes( '[[' ) || line.includes( '{{' ) ) ) return;
@@ -166,7 +156,11 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 		} );
 	
-		if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json' ).then( response => {
+		if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
@@ -184,7 +178,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
 					logging(wiki, msg.guildId, 'inline', 'interwiki');
-					link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section) : decodeURI(interwiki.url) );
+					link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, wiki.spaceReplacement) : decodeURI(interwiki.url) );
 				} ) );
 			}
 			if ( body.query.pages ) {
@@ -193,8 +187,8 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					links.splice(links.indexOf(link), 1);
 				} ) );
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
-					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
+					if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) return;
+					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
 						logging(wiki, msg.guildId, 'inline', 'interwiki');
 						var iw_parts = page.title.split(':');
 						var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
@@ -205,10 +199,10 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					link.url = wiki.toLink(link.title, 'action=edit&redlink=1');
 				} ) );
 			}
-			if ( links.length ) Util.splitMessage( links.map( link => {
+			if ( links.length ) splitMessage( [...new Set(links.map( link => {
 				if ( !link.url ) logging(wiki, msg.guildId, 'inline');
 				return link.spoiler + '<' + ( link.url || wiki.toLink(link.title, '', link.section) ) + '>' + link.spoiler;
-			} ).join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
+			} ))].join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -219,7 +213,11 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 		} );
 		
-		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.isFandom() ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json' ).then( response => {
+		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.wikifarm === 'fandom' ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
@@ -241,8 +239,8 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				} ) );
 				var missing = [];
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
-					if ( ( page.ns === 2 || page.ns === 202 ) && !page.title.includes( '/' ) ) return;
-					if ( wiki.isMiraheze() && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) return;
+					if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) return;
+					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) return;
 					embeds.splice(embeds.indexOf(embed), 1);
 					if ( page.ns === 0 && !embed.section ) {
 						var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );
@@ -250,15 +248,32 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					}
 					if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 				} ) );
-				if ( missing.length ) Util.splitMessage( missing.map( embed => {
+				if ( missing.length ) splitMessage( [...new Set(missing.map( embed => {
 					if ( embed.template ) logging(wiki, msg.guildId, 'inline', 'template');
 					else logging(wiki, msg.guildId, 'inline', 'redlink');
 					return embed.spoiler + '<' + ( embed.template || wiki.toLink(embed.title, 'action=edit&redlink=1') ) + '>' + embed.spoiler;
-				} ).join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
+				} ))].join('\n') ).forEach( textpart => msg.sendChannel( textpart ) );
 			}
-			if ( embeds.length ) embeds.forEach( embed => msg.reactEmoji('⏳').then( reaction => {
+			if ( embeds.length ) [...new Map(embeds.map( embed => {
+				return [JSON.stringify(embed), embed];
+			} )).values()].forEach( embed => msg.reactEmoji('⏳').then( reaction => {
 				logging(wiki, msg.guildId, 'inline', 'embed');
-				check_wiki.general(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, false, new URLSearchParams(), embed.section);
+				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section)?.then( result => {
+					if ( !result || isMessage(result) ) return result;
+					if ( result.message ) {
+						if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
+						else if ( result.reaction === 'error' ) msg.sendChannelError(result.message);
+						else if ( result.reaction === 'reply' ) msg.replyMsg(result.message, true);
+						else msg.sendChannel(result.message).then( message => {
+							if ( result.reaction === 'warning' && message ) message.reactEmoji('warning');
+							return message;
+						} );
+					}
+					else if ( result.reaction ) {
+						msg.reactEmoji(result.reaction);
+					}
+					if ( reaction ) reaction.removeEmoji();
+				} );
 			} ) );
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {

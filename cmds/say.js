@@ -1,4 +1,4 @@
-import { Permissions } from 'discord.js';
+import { PermissionFlagsBits } from 'discord.js';
 
 /**
  * Processes the "say" command.
@@ -8,7 +8,7 @@ import { Permissions } from 'discord.js';
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_say(lang, msg, args, line, wiki) {
+export default function cmd_say(lang, msg, args, line, wiki) {
 	var text = args.join(' ');
 	var imgs = [];
 	if ( msg.uploadFiles() ) imgs = msg.attachments.map( function(img) {
@@ -23,7 +23,7 @@ function cmd_say(lang, msg, args, line, wiki) {
 	}
 	if ( text.trim() || imgs.length ) {
 		let allowedMentions = {parse:['users']};
-		if ( msg.member.permissions.has(Permissions.FLAGS.MENTION_EVERYONE) ) allowedMentions.parse = ['users','roles','everyone'];
+		if ( msg.member.permissions.has(PermissionFlagsBits.MentionEveryone) ) allowedMentions.parse = ['users','roles','everyone'];
 		else allowedMentions.roles = msg.guild.roles.cache.filter( role => role.mentionable ).map( role => role.id ).slice(0, 100);
 		msg.channel.send( {
 			content: text,
@@ -39,7 +39,7 @@ function cmd_say(lang, msg, args, line, wiki) {
 	} else if ( !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }
 
-export default {
+export const cmdData = {
 	name: 'say',
 	everyone: false,
 	pause: false,

@@ -1,4 +1,4 @@
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 import pg from 'pg';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./util/default.json');
@@ -9,6 +9,13 @@ db.on( 'error', dberror => {
 
 const schema = [`
 BEGIN TRANSACTION;
+
+CREATE TABLE versions (
+    type    TEXT    PRIMARY KEY
+                    UNIQUE
+                    NOT NULL,
+    version INTEGER NOT NULL
+);
 
 CREATE TABLE patreons (
     patreon TEXT    PRIMARY KEY
@@ -36,7 +43,6 @@ CREATE TABLE discord (
     prefix  TEXT    NOT NULL
                     DEFAULT '${process.env.prefix}',
     patreon TEXT    REFERENCES patreons (patreon) ON DELETE SET NULL,
-    voice   INTEGER,
     UNIQUE (
         guild,
         channel
@@ -54,10 +60,20 @@ CREATE INDEX idx_discord_patreon ON discord (
 )
 WHERE patreon IS NOT NULL;
 
-CREATE INDEX idx_discord_voice ON discord (
-    voice
-)
-WHERE voice IS NOT NULL;
+CREATE TABLE subprefix (
+    guild      TEXT NOT NULL
+                    REFERENCES discord (main) ON DELETE CASCADE,
+    prefixchar TEXT NOT NULL,
+    prefixwiki TEXT NOT NULL,
+    UNIQUE (
+        guild,
+        prefixchar
+    )
+);
+
+CREATE INDEX idx_subprefix_guild ON subprefix (
+    guild
+);
 
 CREATE TABLE verification (
     guild      TEXT    NOT NULL
@@ -158,8 +174,10 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
     wiki
 );
 
+INSERT INTO versions(type, version) VALUES ('discord', 6)
+ON CONFLICT (type) DO UPDATE SET version = excluded.version;
+
 COMMIT TRANSACTION;
-ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 4;
 `,`
 BEGIN TRANSACTION;
 
@@ -176,16 +194,18 @@ CREATE INDEX idx_verifynotice_guild ON verifynotice (
     guild
 );
 
-COMMIT TRANSACTION;
 ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 2;
+
+COMMIT TRANSACTION;
 `,`
 BEGIN TRANSACTION;
 
 ALTER TABLE verifynotice
 ADD COLUMN flags INTEGER NOT NULL DEFAULT 0;
 
-COMMIT TRANSACTION;
 ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 3;
+
+COMMIT TRANSACTION;
 `,`
 BEGIN TRANSACTION;
 
@@ -204,13 +224,62 @@ CREATE INDEX idx_oauthusers_userid ON oauthusers (
     site
 );
 
-COMMIT TRANSACTION;
 ALTER DATABASE "${process.env.PGDATABASE}" SET my.version TO 4;
+
+COMMIT TRANSACTION;
+`,`
+BEGIN TRANSACTION;
+
+CREATE TABLE versions (
+    type    TEXT    PRIMARY KEY
+                    UNIQUE
+                    NOT NULL,
+    version INTEGER NOT NULL
+);
+
+DROP INDEX idx_discord_voice;
+
+ALTER TABLE discord
+DROP COLUMN voice;
+
+INSERT INTO versions(type, version) VALUES ('discord', 5)
+ON CONFLICT (type) DO UPDATE SET version = excluded.version;
+
+COMMIT TRANSACTION;
+`,`
+BEGIN TRANSACTION;
+
+CREATE TABLE subprefix (
+    guild      TEXT NOT NULL
+                    REFERENCES discord (main) ON DELETE CASCADE,
+    prefixchar TEXT NOT NULL,
+    prefixwiki TEXT NOT NULL,
+    UNIQUE (
+        guild,
+        prefixchar
+    )
+);
+
+CREATE INDEX idx_subprefix_guild ON subprefix (
+    guild
+);
+
+INSERT INTO versions(type, version) VALUES ('discord', 6)
+ON CONFLICT (type) DO UPDATE SET version = excluded.version;
+
+COMMIT TRANSACTION;
 `];
 
 export default await db.connect().then( () => {
-	return db.query( 'SELECT CURRENT_SETTING($1, $2) AS version', ['my.version', true] ).then( ({rows:[row]}) => {
+	return db.query( 'SELECT version FROM versions WHERE type = $1', ['discord'] ).then( result => {
+		if ( result.rows.length ) return result;
+		return db.query( 'SELECT CURRENT_SETTING($1, $2) AS version', ['my.version', true] );
+	}, dberror => {
+		if ( dberror?.code !== '42P01' ) return Promise.reject(dberror);
+		return db.query( 'SELECT CURRENT_SETTING($1, $2) AS version', ['my.version', true] );
+	} ).then( ({rows:[row]}) => {
 		if ( row.version === null ) {
+			if ( process.env.READONLY ) return Promise.reject();
 			return db.query( schema[0] ).then( () => {
 				console.log( '- The database has been updated to: v' + schema.length );
 			}, dberror => {

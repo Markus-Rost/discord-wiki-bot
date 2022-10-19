@@ -1,9 +1,9 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
 import { forms } from './functions.js';
 import Lang from './i18n.js';
-import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice } from './util.js';
-import { createRequire } from 'module';
+import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice, OAuth2Scopes } from './util.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
 const allLangs = Lang.allLangs().names;
@@ -21,7 +21,7 @@ const file = readFileSync('./dashboard/index.html');
  * @param {String[]} [actionArgs] - The arguments for the action
  */
 export default function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
-	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:user|guild\/\d+(?:\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?)?)?)(?:\/.*)?$/, '$1' );
+	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:user|guild\/\d+(?:\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)?)?)(?:\/.*)?$/, '$1' );
 	var args = reqURL.pathname.split('/');
 	var settings = settingsData.get(userSession.user_id);
 	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(userSession.user_id) ) {
@@ -29,11 +29,11 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	}
 	dashboardLang = new Lang(...dashboardLang.fromCookie, settings.user.locale, dashboardLang.lang);
 	res.setHeader('Content-Language', [dashboardLang.lang]);
-	var $ = cheerioLoad(file);
+	var $ = cheerioLoad(file, {baseURI: reqURL});
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
-		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
+		const selectLanguage = '${dashboardLang.get('general.language').replaceAll( '\'', '\\$&' )}';
 		const allLangs = ${JSON.stringify(allLangs)};
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.title'));
@@ -43,8 +43,6 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	$('.channel#verification').attr('title', dashboardLang.get('general.verification'));
 	$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
 	$('.channel#rcscript').attr('title', dashboardLang.get('general.rcscript'));
-	$('.channel#slash div').text(dashboardLang.get('general.slash'));
-	$('.channel#slash').attr('title', dashboardLang.get('general.slash'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
@@ -68,7 +66,12 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	$('#logout img').attr('src', settings.user.avatar);
 	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
+		scope: [
+			OAuth2Scopes.Identify,
+			OAuth2Scopes.Guilds,
+			OAuth2Scopes.Bot,
+			OAuth2Scopes.ApplicationsCommands
+		],
 		permissions: defaultPermissions, state: userSession.state
 	} ));
 	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
@@ -136,11 +139,9 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
-		$('.channel#slash').attr('href', `/guild/${guild.id}/slash`);
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'slash' ) return forms.slash(res, $, guild, args, dashboardLang);
 		return forms.settings(res, $, guild, args, dashboardLang);
 	}
 	else if ( settings.guilds.notMember.has(id) ) {
@@ -148,7 +149,12 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('head title').text(`${guild.name} – ` + $('head title').text());
 		res.setHeader('Set-Cookie', [`guild="${guild.id}/settings"; SameSite=Lax; Path=/`]);
 		let url = oauth.generateAuthUrl( {
-			scope: ['identify', 'guilds', 'bot', 'applications.commands'],
+			scope: [
+				OAuth2Scopes.Identify,
+				OAuth2Scopes.Guilds,
+				OAuth2Scopes.Bot,
+				OAuth2Scopes.ApplicationsCommands
+			],
 			permissions: defaultPermissions, guildId: guild.id,
 			disableGuildSelect: true, state: userSession.state
 		} );
@@ -159,8 +165,10 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		).attr('title', dashboardLang.get('general.invite')).appendTo('#channellist');
 		$('#text .description').append(
 			$('<p>').html(dashboardLang.get('selector.invite', true, $('<code>').text(guild.name), $('<a>').attr('href', url))),
-			$('<a id="login-button">').attr('href', url).text(dashboardLang.get('general.invite')).prepend(
-				$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
+			$('<div id="big-buttons">').append(
+				$('<a class="big-button" id="invite-button">').attr('href', url).text(dashboardLang.get('general.invite')).prepend(
+					$('<img class="avatar" alt="Wiki-Bot">').attr('src', '/src/icon.png')
+				)
 			)
 		);
 		addWidgets($, dashboardLang);
@@ -180,11 +188,9 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings?owner=true`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification?owner=true`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript?owner=true`);
-		$('.channel#slash').attr('href', `/guild/${guild.id}/slash?owner=true`);
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'slash' ) return forms.slash(res, $, guild, args, dashboardLang);
 		return forms.settings(res, $, guild, args, dashboardLang);
 	}
 	else {
@@ -229,7 +235,10 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		}
 		if ( !settings.guilds.count ) {
 			let url = oauth.generateAuthUrl( {
-				scope: ['identify', 'guilds'],
+				scope: [
+					OAuth2Scopes.Identify,
+					OAuth2Scopes.Guilds
+				],
 				prompt: 'consent', state: userSession.state
 			} );
 			$('<a class="channel">').attr('href', url).append(
@@ -238,8 +247,13 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 			).attr('title', dashboardLang.get('selector.switch')).appendTo('#channellist');
 			$('#text .description').append(
 				$('<p>').html(dashboardLang.get('selector.none', true, $('<code>'))),
-				$('<a id="login-button">').attr('href', url).text(dashboardLang.get('selector.switch')).prepend(
-					$('<img alt="Discord">').attr('src', 'https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg')
+				$('<div id="big-buttons">').append(
+					$('<a class="big-button" id="login-button">').attr('href', url).text(dashboardLang.get('selector.switch')).prepend(
+						$('<img alt="Discord">').attr('src', '/src/discord.svg')
+					),
+					$('<a class="big-button" id="invite-button">').attr('href', $('.guild#invite a').attr('href')).text(dashboardLang.get('general.invite')).prepend(
+						$('<img class="avatar" alt="Wiki-Bot">').attr('src', '/src/icon.png')
+					)
 				)
 			);
 		}

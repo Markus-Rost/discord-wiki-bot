@@ -1,8 +1,8 @@
 import { load as cheerioLoad } from 'cheerio';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
-import { got, db, sendMsg, createNotice, hasPerm } from './util.js';
-import { createRequire } from 'module';
+import { got, db, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from './util.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const allLangs = Lang.allLangs(true).names;
@@ -13,22 +13,15 @@ const display_types = [
 	'image',
 	'diff'
 ];
-const avatar_content_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
-	name: '<label for="wb-settings-name">Webhook name:</label>'
-	+ '<input type="text" id="wb-settings-name" name="name" minlength="2" maxlength="32" autocomplete="on">',
-	avatar: '<label for="wb-settings-avatar">Webhook avatar:</label>'
-	+ '<input type="url" id="wb-settings-avatar" name="avatar" list="wb-settings-avatar-list" autocomplete="url">'
-	+ '<datalist id="wb-settings-avatar-list"></datalist>'
-	+ '<button type="button" id="wb-settings-avatar-preview">Preview</button>',
 	wiki: '<label for="wb-settings-wiki">Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required autocomplete="url">'
-	+ '<datalist id="wb-settings-wiki-list"></datalist>'
-	+ '<button type="button" id="wb-settings-wiki-check">Check wiki</button>'
-	+ '<div id="wb-settings-wiki-check-notice"></div>',
+	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required inputmode="url" autocomplete="url">'
+	+ '<datalist id="wb-settings-wiki-list" class="wb-settings-wiki-list"></datalist>'
+	+ '<button type="button" id="wb-settings-wiki-check" class="wb-settings-wiki-check">Check wiki</button>'
+	+ '<div id="wb-settings-wiki-check-notice" class="wb-settings-wiki-check-notice"></div>',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
 	//+ '<fieldset style="display: none;">'
 	//+ '<legend>Wiki search</legend>'
@@ -72,8 +65,6 @@ const fieldset = {
  * @param {Object} settings - The current settings
  * @param {Boolean} settings.patreon
  * @param {String} [settings.channel]
- * @param {String} [settings.name]
- * @param {String} [settings.avatar]
  * @param {String} settings.wiki
  * @param {String} settings.lang
  * @param {Number} settings.display
@@ -89,10 +80,10 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	let channel = $('<div>').append(fieldset.channel);
 	channel.find('label').text(dashboardLang.get('rcscript.form.channel'));
 	let curCat = null;
-	if ( !settings.channel || ( curChannel && hasPerm(curChannel.botPermissions, 'MANAGE_WEBHOOKS') && hasPerm(curChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) ) {
+	if ( !settings.channel || ( curChannel && hasPerm(curChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && hasPerm(curChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) ) {
 		channel.find('#wb-settings-channel').append(
 			...guildChannels.filter( guildChannel => {
-				return ( ( hasPerm(guildChannel.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') && hasPerm(guildChannel.botPermissions, 'MANAGE_WEBHOOKS') ) || guildChannel.isCategory );
+				return ( ( hasPerm(guildChannel.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && hasPerm(guildChannel.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) && !guildChannel.isForum ) || guildChannel.isCategory );
 			} ).map( guildChannel => {
 				if ( guildChannel.isCategory ) {
 					curCat = $('<optgroup>').attr('label', guildChannel.name);
@@ -126,20 +117,6 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 		$(`<option id="wb-settings-channel-${settings.channel}">`).val(settings.channel).attr('selected', '').text(settings.channel)
 	);
 	fields.push(channel);
-	let webhook_name = $('<div>').append(fieldset.name);
-	webhook_name.find('label').text(dashboardLang.get('rcscript.form.name'));
-	webhook_name.find('#wb-settings-name').val(settings.name);
-	fields.push(webhook_name);
-	let avatar = $('<div>').append(fieldset.avatar);
-	avatar.find('label').text(dashboardLang.get('rcscript.form.avatar'));
-	avatar.find('#wb-settings-avatar-preview').text(dashboardLang.get('rcscript.form.avatar_preview'));
-	avatar.find('#wb-settings-avatar').val(( settings.avatar || '' ));
-	if ( settings.avatar ) avatar.find('#wb-settings-avatar').attr('size', settings.avatar.length + 10);
-	avatar.find('#wb-settings-avatar-list').append(
-		$(`<option>`).val(new URL('/src/icon.png', process.env.dashboard).href),
-		( settings.avatar ? $(`<option>`).val(settings.avatar) : null )
-	);
-	fields.push(avatar);
 	let wiki = $('<div>').append(fieldset.wiki);
 	wiki.find('label').text(dashboardLang.get('rcscript.form.wiki'));
 	wiki.find('#wb-settings-wiki-check').text(dashboardLang.get('rcscript.form.wiki_check'));
@@ -179,8 +156,8 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	}
 	fields.push(feeds);
 	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
-	if ( settings.channel && curChannel && hasPerm(curChannel.userPermissions, 'MANAGE_WEBHOOKS') ) {
-		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('rcscript.form.confirm').replace( /'/g, '\\$&' )}');`));
+	if ( settings.channel && curChannel && hasPerm(curChannel.userPermissions, PermissionFlagsBits.ManageWebhooks) ) {
+		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('rcscript.form.confirm').replaceAll( '\'', '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
 	if ( readonly ) {
@@ -227,22 +204,12 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 					|| ( response.body?.message === 'Invalid Webhook Token' && response.body?.code === 50027 ) ) {
 						row.DELETED = true;
 					}
-					else {
-						row.channel = 'UNKNOWN';
-						row.name = 'UNKNOWN';
-						row.avatar = '';
-					}
+					else row.channel = 'UNKNOWN';
 				}
-				else {
-					row.channel = response.body.channel_id;
-					row.name = response.body.name;
-					row.avatar = ( response.body.avatar ? `https://cdn.discordapp.com/avatars/${response.body.id}/${response.body.avatar}` : '' );
-				}
+				else row.channel = response.body.channel_id;
 			}, error => {
 				console.log( '- Dashboard: Error while getting the webhook: ' + error );
 				row.channel = 'UNKNOWN';
-				row.name = 'UNKNOWN';
-				row.avatar = '';
 			} );
 		} )).finally( () => {
 			if ( rows.some( row => row.DELETED ) ) {
@@ -316,8 +283,6 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
  * @param {String|Number} type - The setting to change
  * @param {Object} settings - The new settings
  * @param {String} settings.channel
- * @param {String} [settings.name]
- * @param {String} [settings.avatar]
  * @param {String} settings.wiki
  * @param {String} settings.lang
  * @param {Number} settings.display
@@ -327,7 +292,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
  * @param {String} [settings.delete_settings]
  */
 function update_rcscript(res, userSettings, guild, type, settings) {
-	if ( type === 'default' || type === 'notice' ) {
+	if ( type === 'default' || type === 'notice' || type === 'button' ) {
 		return res(`/guild/${guild}/rcscript`, 'savefail');
 	}
 	if ( !settings.save_settings === !settings.delete_settings ) {
@@ -342,11 +307,8 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		}
 		settings.display = parseInt(settings.display, 10);
 		if ( type === 'new' && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-			return ( channel.id === settings.channel && !channel.isCategory );
+			return ( channel.id === settings.channel && !channel.isForum && !channel.isCategory );
 		} ) ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
-		settings.name = ( settings.name || '' ).trim();
-		if ( settings.name.length < 2 ) settings.name = '';
-		if ( !settings.avatar || !/^https?:\/\//.test(settings.avatar) ) settings.avatar = '';
 	}
 	if ( settings.delete_settings && type === 'new' ) {
 		return res(`/guild/${guild}/rcscript/new`, 'savefail');
@@ -362,11 +324,11 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			userSettings.guilds.isMember.delete(guild);
 			return res(`/guild/${guild}`, 'savefail');
 		}
-		if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
 			userSettings.guilds.isMember.delete(guild);
 			return res('/', 'savefail');
 		}
-		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, 'MANAGE_WEBHOOKS') || !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) {
+		if ( response.message === 'noChannel' || !hasPerm(response.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) || !hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) {
 			return res(`/guild/${guild}/rcscript/new`, 'savefail');
 		}
 		if ( settings.display > rcgcdwLimit.display && !response.patreon ) {
@@ -380,17 +342,24 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			var wiki = Wiki.fromInput(settings.wiki);
 			if ( !wiki ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 			return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
-				responseType: 'text'
+				responseType: 'text',
+				context: {
+					guildId: guild
+				}
 			} ).then( fresponse => {
 				try {
 					fresponse.body = JSON.parse(fresponse.body);
 				}
 				catch (error) {
 					if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-						let api = cheerioLoad(fresponse.body)('head link[rel="EditURI"]').prop('href');
+						let api = cheerioLoad(fresponse.body, {baseURI: fresponse.url})('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wiki = new Wiki(api.split('api.php?')[0], wiki);
-							return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+							return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+								context: {
+									guildId: guild
+								}
+							} );
 						}
 					}
 				}
@@ -408,26 +377,20 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 					return res(`/guild/${guild}/rcscript/new`, 'mwversion', body.query.general.generator, body.query.general.sitename);
 				}
-				if ( body.query.allmessages[0]['*'] !== guild ) {
+				if ( body.query.allmessages[0]['*']?.trim() !== guild ) {
 					return res(`/guild/${guild}/rcscript/new`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 				}
-				return Promise.all([
-					db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ),
-					( settings.avatar ? got.head( settings.avatar ).then( headresponse => {
-						if ( avatar_content_types.includes( headresponse.headers?.['content-type'] ) ) return;
-						settings.avatar = '';
-					}, error => {
-						console.log( '- Dashboard: Error while checking for the HEAD: ' + error );
-						settings.avatar = '';
-					} ) : null )
-				]).then( ([{rows:[block]}]) => {
+				return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {
 					if ( block ) {
 						console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 						return res(`/guild/${guild}/rcscript/new`, 'wikiblocked', body.query.general.sitename, block.reason);
 					}
-					if ( settings.feeds && wiki.isFandom(false) ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+					if ( settings.feeds && wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
+						},
+						context: {
+							guildId: guild
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
@@ -453,29 +416,26 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							type: 'createWebhook',
 							guild: guild,
 							channel: settings.channel,
-							name: ( settings.name || body.query.allmessages[1]['*'] || 'Recent changes' ),
-							avatar: settings.avatar,
+							name: ( body.query.allmessages[1]['*'] || 'Recent changes' ),
 							reason: lang.get('rcscript.audit_reason', wiki.href),
 							text: webhook_lang.get('created', body.query.general.sitename) + ( enableFeeds && settings.feeds_only ? '' : `\n<${wiki.toLink(body.query.pages['-1'].title)}>` ) + ( enableFeeds ? `\n<${wiki.href}f>` : '' )
-						} ).then( webhook => {
+						} ).then( ({webhook} = {}) => {
 							if ( !webhook ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
 							var configid = 1;
 							for ( let i of row.count ) {
 								if ( configid === i ) configid++;
 								else break;
 							}
-							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, rcid, postid) VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
+							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, rcid, postid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( `- Dashboard: RcGcDw successfully added: ${guild}#${configid}` );
 								res(`/guild/${guild}/rcscript/${configid}`, 'save');
 								var text = lang.get('rcscript.dashboard.added', `<@${userSettings.user.id}>`, configid);
 								text += `\n${lang.get('rcscript.channel')} <#${settings.channel}>`;
-								text += `\n${lang.get('rcscript.name')} \`${( settings.name || body.query.allmessages[1]['*'] || 'Recent changes' )}\``;
-								if ( settings.avatar ) text += `\n${lang.get('rcscript.avatar')} <${settings.avatar}>`;
 								text += `\n${lang.get('rcscript.wiki')} <${wiki.href}>`;
 								text += `\n${lang.get('rcscript.lang')} \`${allLangs[settings.lang]}\``;
 								text += `\n${lang.get('rcscript.display')} \`${display_types[settings.display]}\``;
 								if ( enableFeeds && settings.feeds_only ) text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
-								if ( wiki.isFandom(false) ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
+								if ( wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
 								text += `\n<${new URL(`/guild/${guild}/rcscript/${configid}`, process.env.dashboard).href}>`;
 								sendMsg( {
 									type: 'notifyGuild', guild, text,
@@ -524,12 +484,10 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 			}
 			row.channel = wresponse.body.channel_id;
-			row.name = wresponse.body.name;
-			row.avatar = ( wresponse.body.avatar ? `https://cdn.discordapp.com/avatars/${wresponse.body.id}/${wresponse.body.avatar}` : '' );
 			var newChannel = false;
 			if ( settings.save_settings && row.channel !== settings.channel ) {
 				if ( !userSettings.guilds.isMember.get(guild).channels.some( channel => {
-					return ( channel.id === settings.channel && !channel.isCategory );
+					return ( channel.id === settings.channel && !channel.isForum && !channel.isCategory );
 				} ) ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				newChannel = true;
 			}
@@ -545,7 +503,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					userSettings.guilds.isMember.delete(guild);
 					return res(`/guild/${guild}`, 'savefail');
 				}
-				if ( response === 'noMember' || !hasPerm(response.userPermissions, 'MANAGE_GUILD') ) {
+				if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
 					userSettings.guilds.isMember.delete(guild);
 					return res('/', 'savefail');
 				}
@@ -553,7 +511,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				}
 				if ( settings.delete_settings ) {
-					if ( !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') ) {
+					if ( !hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					}
 					return db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [row.webhook] ).then( () => {
@@ -574,7 +532,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						} ).finally( () => {
 							got.delete( 'https://discord.com/api/webhooks/' + row.webhook, {
 								headers: {
-									'X-Audit-Log-Reason': lang.get('rcscript.audit_reason_delete')
+									'X-Audit-Log-Reason': encodeURIComponent(lang.get('rcscript.audit_reason_delete'))
 								}
 							} ).then( delresponse => {
 								if ( delresponse.statusCode !== 204 ) {
@@ -587,14 +545,14 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						} );
 						var text = lang.get('rcscript.dashboard.removed', `<@${userSettings.user.id}>`, type);
 						text += `\n${lang.get('rcscript.channel')} <#${row.channel}>`;
-						text += `\n${lang.get('rcscript.name')} \`${row.name}\``;
 						text += `\n${lang.get('rcscript.wiki')} <${row.wiki}>`;
 						text += `\n${lang.get('rcscript.lang')} \`${allLangs[row.lang]}\``;
 						text += `\n${lang.get('rcscript.display')} \`${display_types[row.display]}\``;
 						if ( row.rcid === -1 ) {
 							text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
 						}
-						if ( new Wiki(row.wiki).isFandom(false) ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
+						let rowwiki = new Wiki(row.wiki);
+						if ( rowwiki.wikifarm === 'fandom' && !rowwiki.isGamepedia() ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
 						text += `\n<${new URL(`/guild/${guild}/rcscript`, process.env.dashboard).href}>`;
 						sendMsg( {
 							type: 'notifyGuild', guild, text
@@ -606,16 +564,17 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					} );
 				}
-				if ( newChannel && ( !hasPerm(response.botPermissions, 'MANAGE_WEBHOOKS') 
-				|| !hasPerm(response.userPermissions, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') 
-				|| !hasPerm(response.userPermissionsNew, 'VIEW_CHANNEL', 'MANAGE_WEBHOOKS') 
-				|| !hasPerm(response.botPermissionsNew, 'MANAGE_WEBHOOKS') ) ) {
+				if ( newChannel && ( !hasPerm(response.botPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) 
+				|| !hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) 
+				|| !hasPerm(response.userPermissionsNew, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) 
+				|| !hasPerm(response.botPermissionsNew, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) ) {
 					return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
+				}
+				if ( settings.display > rcgcdwLimit.display && !response.patreon ) {
+					if ( row.display !== settings.display ) settings.display = rcgcdwLimit.display;
 				}
 				var hasDiff = false;
 				if ( newChannel ) hasDiff = true;
-				if ( settings.name && row.name !== settings.name ) hasDiff = true;
-				if ( settings.avatar && row.avatar !== settings.avatar ) hasDiff = true;
 				if ( row.wiki !== settings.wiki ) hasDiff = true;
 				if ( row.lang !== settings.lang ) hasDiff = true;
 				if ( row.display !== settings.display ) hasDiff = true;
@@ -625,17 +584,24 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				var wiki = Wiki.fromInput(settings.wiki);
 				if ( !wiki ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 				return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
-					responseType: 'text'
+					responseType: 'text',
+					context: {
+						guildId: guild
+					}
 				} ).then( fresponse => {
 					try {
 						fresponse.body = JSON.parse(fresponse.body);
 					}
 					catch (error) {
 						if ( fresponse.statusCode === 404 && typeof fresponse.body === 'string' ) {
-							let api = cheerioLoad(fresponse.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(fresponse.body, {baseURI: fresponse.url})('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wiki = new Wiki(api.split('api.php?')[0], wiki);
-								return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
+								return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
+									context: {
+										guildId: guild
+									}
+								} );
 							}
 						}
 					}
@@ -653,26 +619,20 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'mwversion', body.query.general.generator, body.query.general.sitename);
 					}
-					if ( row.wiki !== wiki.href && body.query.allmessages[0]['*'] !== guild ) {
+					if ( row.wiki !== wiki.href && body.query.allmessages[0]['*']?.trim() !== guild ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'sysmessage', guild, wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit'));
 					}
-					return Promise.all([
-						db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ),
-						( settings.avatar && row.avatar !== settings.avatar ? got.head( settings.avatar ).then( headresponse => {
-							if ( avatar_content_types.includes( headresponse.headers?.['content-type'] ) ) return;
-							settings.avatar = '';
-						}, error => {
-							console.log( '- Dashboard: Error while checking for the HEAD: ' + error );
-							settings.avatar = '';
-						} ) : null )
-					]).then( ([{rows:[block]}]) => {
+					return db.query( 'SELECT reason FROM blocklist WHERE wiki = $1', [wiki.href] ).then( ({rows:[block]}) => {
 						if ( block ) {
 							console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 							return res(`/guild/${guild}/rcscript/${type}`, 'wikiblocked', body.query.general.sitename, block.reason);
 						}
-						if ( settings.feeds && wiki.isFandom(false) ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+						if ( settings.feeds && wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
+							},
+							context: {
+								guildId: guild
 							}
 						} ).then( dsresponse => {
 							var dsbody = dsresponse.body;
@@ -729,16 +689,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									webhook_diff.push(webhook_lang.get('dashboard.channel'));
 									webhook_changes.channel = settings.channel;
 								}
-								if ( settings.name && row.name !== settings.name ) {
-									diff.push(lang.get('rcscript.name') + ` ~~\`${row.name}\`~~ → \`${settings.name}\``);
-									webhook_diff.push(webhook_lang.get('dashboard.name', settings.name));
-									webhook_changes.name = settings.name;
-								}
-								if ( settings.avatar && row.avatar !== settings.avatar ) {
-									diff.push(lang.get('rcscript.avatar') + ` <${settings.avatar}>`);
-									webhook_diff.push(webhook_lang.get('dashboard.avatar'));
-									webhook_changes.avatar = settings.avatar;
-								}
 								if ( row.wiki !== wiki.href ) {
 									diff.push(lang.get('rcscript.wiki') + ` ~~<${row.wiki}>~~ → <${wiki.href}>`);
 									webhook_diff.push(webhook_lang.get('dashboard.wiki', `[${body.query.general.sitename}](<${wiki.href}>)`));
@@ -765,8 +715,6 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									guild: guild,
 									webhook: row.webhook,
 									channel: webhook_changes.channel,
-									name: webhook_changes.name,
-									avatar: webhook_changes.avatar,
 									reason: lang.get('rcscript.audit_reason_edit'),
 									text: webhook_lang.get('dashboard.updated') + '\n' + webhook_diff.join('\n')
 								} ).then( webhook => {

@@ -1,12 +1,10 @@
+import { PermissionFlagsBits, OAuth2Scopes } from 'discord.js';
 import gotDefault from 'got';
+import { gotSsrf } from 'got-ssrf';
 import pg from 'pg';
 import DiscordOauth2 from 'discord-oauth2';
+import { inputToWikiProject } from 'mediawiki-projects-list';
 import { oauthSites } from '../util/wiki.js';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const slashCommands = require('../interactions/commands.json');
-
-globalThis.isDebug = ( process.argv[2] === 'debug' );
 
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
@@ -14,10 +12,18 @@ const got = gotDefault.extend( {
 		request: 5000
 	},
 	headers: {
-		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + '/dashboard (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
+		'user-agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + '/dashboard (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
-	responseType: 'json'
-} );
+	responseType: 'json',
+	hooks: ( process.env.x_origin_guild ? {
+		beforeRequest: [
+			options => {
+				if ( options.context?.guildId ) options.headers['x-origin-guild'] = options.context.guildId;
+				else if ( options.context?.guildId === null ) options.headers['x-origin-guild'] = 'DM';
+			}
+		]
+	} : {} )
+}, gotSsrf );
 
 const db = new pg.Pool();
 db.on( 'error', dberror => {
@@ -32,14 +38,22 @@ const oauth = new DiscordOauth2( {
 
 const enabledOAuth2 = [
 	...oauthSites.filter( oauthSite => {
+		let project = inputToWikiProject(oauthSite);
+		if ( project ) return ( process.env[`oauth_${project.wikiProject.name}`] && process.env[`oauth_${project.wikiProject.name}_secret`] );
 		let site = new URL(oauthSite);
 		site = site.hostname + site.pathname.slice(0, -1);
 		return ( process.env[`oauth_${site}`] && process.env[`oauth_${site}_secret`] );
 	} ).map( oauthSite => {
+		let project = inputToWikiProject(oauthSite);
+		if ( project ) return {
+			id: project.wikiProject.name,
+			name: project.wikiProject.name,
+			url: oauthSite
+		};
 		let site = new URL(oauthSite);
 		return {
 			id: site.hostname + site.pathname.slice(0, -1),
-			name: oauthSite, url: oauthSite,
+			name: oauthSite, url: oauthSite
 		};
 	} )
 ];
@@ -47,41 +61,16 @@ if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
 	enabledOAuth2.unshift({
 		id: 'miraheze',
 		name: 'Miraheze',
-		url: 'https://meta.miraheze.org/w/',
+		url: 'https://meta.miraheze.org/w/'
 	});
 }
 if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikimedia',
 		name: 'Wikimedia (Wikipedia)',
-		url: 'https://meta.wikimedia.org/w/',
+		url: 'https://meta.wikimedia.org/w/'
 	});
 }
-
-got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, {
-	headers: {
-		Authorization: `Bot ${process.env.token}`
-	},
-	timeout: {
-		request: 10000
-	}
-} ).then( response=> {
-	if ( response.statusCode !== 200 || !response.body ) {
-		console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the global slash commands: ' + response.body?.message );
-		return;
-	}
-	console.log( '- Dashboard: Slash commands successfully loaded.' );
-	response.body.forEach( command => {
-		var slashCommand = slashCommands.find( slashCommand => slashCommand.name === command.name );
-		if ( slashCommand ) {
-			slashCommand.id = command.id;
-			slashCommand.application_id = command.application_id;
-		}
-		else slashCommands.push(slashCommand);
-	} );
-}, error => {
-	console.log( '- Dashboard: Error while getting the global slash commands: ' + error );
-} );
 
 /**
  * @typedef UserSession
@@ -127,6 +116,7 @@ got.get( `https://discord.com/api/v8/applications/${process.env.bot}/commands`, 
  * @typedef Channel
  * @property {String} id
  * @property {String} name
+ * @property {Boolean} isForum
  * @property {Boolean} isCategory
  * @property {Number} userPermissions
  * @property {Number} botPermissions
@@ -277,6 +267,11 @@ function createNotice($, notice, dashboardLang, args = []) {
 			text.text(dashboardLang.get('notice.nosettings.text'));
 			if ( args[0] ) note = $('<a>').text(dashboardLang.get('notice.nosettings.note')).attr('href', `/guild/${args[0]}/settings`);
 			break;
+		case 'send':
+			type = 'success';
+			title.text(dashboardLang.get('notice.send.title'));
+			text.text(dashboardLang.get('notice.send.text'));
+			break;
 		case 'logout':
 			type = 'success';
 			title.text(dashboardLang.get('notice.logout.title'));
@@ -347,17 +342,6 @@ function createNotice($, notice, dashboardLang, args = []) {
 			title.text(dashboardLang.get('notice.invalidusergroup.title'));
 			text.text(dashboardLang.get('notice.invalidusergroup.text'));
 			break;
-		case 'noverify':
-			type = 'info';
-			title.text(dashboardLang.get('notice.noverify.title'));
-			text.html(dashboardLang.get('notice.noverify.text', true, $('<code>').text('/verify')));
-			break;
-		case 'noslash':
-			type = 'error';
-			title.text(dashboardLang.get('notice.noslash.title'));
-			text.text(dashboardLang.get('notice.noslash.text'));
-			note = $('<a target="_blank">').text(dashboardLang.get('notice.noslash.note')).attr('href', `https://discord.com/api/oauth2/authorize?client_id=${process.env.bot}&scope=applications.commands&guild_id=${args[0]}&disable_guild_select=true`);
-			break;
 		case 'wikiblocked':
 			type = 'error';
 			title.text(dashboardLang.get('notice.wikiblocked.title'));
@@ -373,6 +357,14 @@ function createNotice($, notice, dashboardLang, args = []) {
 			text.text(dashboardLang.get('notice.savefail.text'));
 			if ( typeof args[0] === 'string' ) {
 				note = $('<div>').text(dashboardLang.get('notice.savefail.note_' + args[0]));
+			}
+			break;
+		case 'sendfail':
+			type = 'error';
+			title.text(dashboardLang.get('notice.sendfail.title'));
+			text.text(dashboardLang.get('notice.sendfail.text'));
+			if ( typeof args[0] === 'string' ) {
+				note = $('<div>').text(dashboardLang.get('notice.sendfail.note_' + args[0]));
 			}
 			break;
 		case 'webhookfail':
@@ -412,39 +404,20 @@ function createNotice($, notice, dashboardLang, args = []) {
  * @returns {String}
  */
 function escapeText(text) {
-	return text.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
-}
-
-const permissions = {
-	ADMINISTRATOR: 1n << 3n,
-	MANAGE_CHANNELS: 1n << 4n,
-	MANAGE_GUILD: 1n << 5n,
-	ADD_REACTIONS: 1n << 6n,
-	VIEW_CHANNEL: 1n << 10n,
-	SEND_MESSAGES: 1n << 11n,
-	MANAGE_MESSAGES: 1n << 13n,
-	EMBED_LINKS: 1n << 14n,
-	ATTACH_FILES: 1n << 15n,
-	READ_MESSAGE_HISTORY: 1n << 16n,
-	MENTION_EVERYONE: 1n << 17n,
-	USE_EXTERNAL_EMOJIS: 1n << 18n,
-	MANAGE_NICKNAMES: 1n << 27n,
-	MANAGE_ROLES: 1n << 28n,
-	MANAGE_WEBHOOKS: 1n << 29n,
-	SEND_MESSAGES_IN_THREADS: 1n << 38n
+	return text.replaceAll( '&', '&amp;' ).replaceAll( '<', '&lt;' ).replaceAll( '>', '&gt;' );
 }
 
 /**
  * Check if a permission is included in the BitField
  * @param {String|Number|BigInt} all - BitField of multiple permissions
- * @param {String[]} permission - Name of the permission to check for
+ * @param {(String|BigInt)[]} permission - Name of the permission to check for
  * @returns {Boolean}
  */
 function hasPerm(all = 0n, ...permission) {
 	all = BigInt(all);
-	if ( (all & permissions.ADMINISTRATOR) === permissions.ADMINISTRATOR ) return true;
+	if ( (all & PermissionFlagsBits.Administrator) === PermissionFlagsBits.Administrator ) return true;
 	return permission.every( perm => {
-		let bit = permissions[perm];
+		let bit = ( typeof perm === 'bigint' ? perm : PermissionFlagsBits[perm] );
 		return ( (all & bit) === bit );
 	} );
 }
@@ -454,7 +427,6 @@ export {
 	db,
 	oauth,
 	enabledOAuth2,
-	slashCommands,
 	sessionData,
 	settingsData,
 	oauthVerify,
@@ -462,5 +434,7 @@ export {
 	addWidgets,
 	createNotice,
 	escapeText,
-	hasPerm
+	hasPerm,
+	PermissionFlagsBits,
+	OAuth2Scopes
 };

@@ -1,14 +1,13 @@
-import { Util } from 'discord.js';
-import { got } from '../../util/functions.js';
+import { got, splitMessage } from '../../util/functions.js';
 import Wiki from '../../util/wiki.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const commands = require('./commands.json');
 
 /**
  * Sends a Minecraft command.
  * @param {import('../../util/i18n.js').default} lang - The user language.
- * @param {import('discord.js').Message} msg - The Discord message.
+ * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki.
  * @param {String} mccmd - The Minecraft command argument.
  * @param {String[]} args - The command arguments.
@@ -17,6 +16,7 @@ const commands = require('./commands.json');
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
+ * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
  */
 function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, spoiler, noEmbed) {
 	mccmd = mccmd.toLowerCase();
@@ -37,9 +37,12 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 		} );
 		var lastIndex = Math.max(...cmdSyntaxMap.map( command => command[0] ));
 		var matchCount = Math.max(...cmdSyntaxMap.filter( command => command[0] === lastIndex ).map( command => command[1] ));
-		var regex = new RegExp('/' + aliasCmd, 'g');
-		var cmdSyntax = commands.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceSave( regex, '/' + mccmd );
-		got.get( wiki + ( cmdpage.endsWith( '/' ) ? 'api.php?action=query&redirects=true&converttitles=true&titles=%1F' + encodeURIComponent( cmdpage + aliasCmd ) : 'api.php?action=parse&redirects=true&prop=sections&page=' + encodeURIComponent( cmdpage ) ) + '&format=json' ).then( response => {
+		var cmdSyntax = commands.list[aliasCmd].filter( (command, i) => ( lastIndex === -1 || cmdSyntaxMap[i][0] === lastIndex ) && cmdSyntaxMap[i][1] === matchCount ).join('\n').replaceAllSafe( '/' + aliasCmd, '/' + mccmd );
+		return got.get( wiki + ( cmdpage.endsWith( '/' ) ? 'api.php?action=query&redirects=true&converttitles=true&titles=%1F' + encodeURIComponent( cmdpage + aliasCmd ) : 'api.php?action=parse&redirects=true&prop=sections&page=' + encodeURIComponent( cmdpage ) ) + '&format=json', {
+			context: {
+				guildId: msg.guildId
+			}
+		} ).then( response => {
 			var body = response.body;
 			if ( body && body.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !( body?.query?.pages || body?.parse?.sections?.length ) ) {
@@ -69,16 +72,12 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 			}
 		}, error => {
 			console.log( '- Error while getting the command page: ' + error );
-		} ).finally( () => {
-			Util.splitMessage( spoiler + '```md\n' + cmdSyntax + '```<' + wiki.toLink(( cmdpage.endsWith( '/' ) ? cmdpage + aliasCmd : cmdpage ), '', ( cmdpage.endsWith( '/' ) ? '' : aliasCmd )) + '>' + spoiler, {maxLength: 2000, prepend: spoiler + '```md\n', append: '```' + spoiler} ).forEach( textpart => msg.sendChannel( textpart ) );
-
-			if ( reaction ) reaction.removeEmoji();
+		} ).then( () => {
+			return {message: splitMessage( spoiler + '```md\n' + cmdSyntax + '```<' + wiki.toLink(( cmdpage.endsWith( '/' ) ? cmdpage + aliasCmd : cmdpage ), '', ( cmdpage.endsWith( '/' ) ? '' : aliasCmd )) + '>' + spoiler, {maxLength: 2000, prepend: spoiler + '```md\n', append: '```' + spoiler} )};
 		} );
 	}
-	else {
-		msg.notMinecraft = true;
-		this.WIKI.general(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
-	}
+	msg.notMinecraft = true;
+	return this.WIKI(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed);
 }
 
 export default {

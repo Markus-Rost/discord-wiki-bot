@@ -15,7 +15,7 @@ export default function extract_desc(text = '', fragment = '') {
 	var sectionHeader = '';
 	var sectionText = '';
 	while ( fragment && ( section = regex.exec(text) ) !== null ) {
-		if ( section[2].replace( / /g, '_' ) !== fragment.replace( / /g, '_' ) ) continue;
+		if ( section[2].replaceAll( ' ', '_' ) !== fragment.replaceAll( ' ', '_' ) ) continue;
 		sectionHeader = escapeFormatting(section[2]);
 		if ( sectionHeader.length > 240 ) sectionHeader = sectionHeader.substring(0, 240) + '\u2026';
 		sectionHeader = section_formatting(sectionHeader, section[1]);

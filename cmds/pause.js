@@ -6,7 +6,7 @@
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_pause(lang, msg, args, line, wiki) {
+export default function cmd_pause(lang, msg, args, line, wiki) {
 	if ( msg.inGuild() && args.join(' ').split('\n')[0].isMention(msg.guild) && ( msg.isAdmin() || msg.isOwner() ) ) {
 		if ( pausedGuilds.has(msg.guildId) ) {
 			pausedGuilds.delete(msg.guildId);
@@ -22,7 +22,7 @@ function cmd_pause(lang, msg, args, line, wiki) {
 	}
 }
 
-export default {
+export const cmdData = {
 	name: 'pause',
 	everyone: true,
 	pause: true,

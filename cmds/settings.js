@@ -1,10 +1,10 @@
 import { load as cheerioLoad } from 'cheerio';
-import { MessageEmbed, Util, MessageActionRow, MessageButton } from 'discord.js';
-import { got } from '../util/functions.js';
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { got, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 const allLangs = Lang.allLangs();
@@ -17,7 +17,7 @@ const allLangs = Lang.allLangs();
  * @param {String} line - The command as plain text.
  * @param {Wiki} wiki - The wiki for the message.
  */
-function cmd_settings(lang, msg, args, line, wiki) {
+export default function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	
 	db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [msg.guildId] ).then( ({rows}) => {
@@ -31,13 +31,13 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new MessageButton().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle('LINK').setURL(new URL(`/guild/${msg.guildId}/settings`, process.env.dashboard).href);
-			components.push(new MessageActionRow().addComponents(button));
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/settings`, process.env.dashboard).href);
+			components.push(new ActionRowBuilder().addComponents(button));
 		}
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
 		if ( rows.length ) {
 			text = lang.get('settings.current');
-			if ( button ) text += `\n<${button.url}>`;
+			if ( button ) text += `\n<${button.data.url}>`;
 			text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
 			if ( patreonGuildsPrefix.has(msg.guildId) ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
 			text += '\n' + lang.get('settings.currentrole') + ' ' + ( guild.role ? `<@&${guild.role}>` : '@everyone' ) + ' - `' + prefix + 'settings role`';
@@ -49,7 +49,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		}
 		
 		if ( !args.length ) {
-			return Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+			return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 		}
 		var channelId = ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId );
 		
@@ -57,15 +57,15 @@ function cmd_settings(lang, msg, args, line, wiki) {
 		args[0] = args[0].toLowerCase();
 		if ( args[0] === 'channel' ) {
 			prelang = 'channel ';
-			if ( !rows.length ) return Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+			if ( !rows.length ) return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 			
 			var channel = rows.find( row => row.channel === channelId );
 			if ( !channel ) channel = Object.assign({}, rows.find( row => {
 				return ( row.channel === '#' + msg.channel.parentId );
 			} ) || guild, {channel: channelId});
 			text = lang.get('settings.channel current');
-			button?.setURL(new URL(`/guild/${msg.guildId}/settings/${channelId}`, button.url).href);
-			if ( button ) text += `\n<${button.url}>`;
+			button?.setURL(new URL(`/guild/${msg.guildId}/settings/${channelId}`, button.data.url).href);
+			if ( button ) text += `\n<${button.data.url}>`;
 			if ( patreonGuildsPrefix.has(msg.guildId) ) {
 				text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[channel.lang] + '` - `' + prefix + 'settings channel lang`';
 				text += '\n' + lang.get('settings.currentrole') + ' ' + ( channel.role ? `<@&${channel.role}>` : '@everyone' ) + ' - `' + prefix + 'settings channel role`';
@@ -92,21 +92,28 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			if ( !wikinew ) {
 				let wikisuggest = lang.get('settings.wikiinvalid') + wikihelp;
 				//wikisuggest += '\n\n' + lang.get('settings.foundwikis') + '\n' + sites.map( site => site.wiki_display_name + ': `' + site.wiki_domain + '`' ).join('\n');
-				return Util.splitMessage( wikisuggest ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+				return splitMessage( wikisuggest ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => {
 				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
-					responseType: 'text'
+					responseType: 'text',
+					context: {
+						guildId: msg.guildId
+					}
 				} ).then( response => {
 					try {
 						response.body = JSON.parse(response.body);
 					}
 					catch (error) {
 						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-							let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general&format=json' );
+								return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+									context: {
+										guildId: msg.guildId
+									}
+								} );
 							}
 						}
 					}
@@ -124,49 +131,47 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					}
 					wikinew.updateWiki(body.query.general);
 					var embed;
-					if ( !wikinew.isFandom() ) {
-						var notice = [];
-						if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
-							console.log( '- This wiki is using ' + body.query.general.generator + '.' );
-							notice.push({
-								name: 'MediaWiki',
-								value: lang.get('test.MediaWiki', '[MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30)', body.query.general.generator)
-							});
-						}
-						if ( notice.length ) {
-							embed = new MessageEmbed().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
-						}
+					var notice = [];
+					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
+						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
+						notice.push({
+							name: 'MediaWiki',
+							value: lang.get('test.MediaWiki', '[MediaWiki 1.30](<https://www.mediawiki.org/wiki/MediaWiki_1.30>)', body.query.general.generator)
+						});
+					}
+					if ( notice.length ) {
+						embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
 					}
 					var sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND wiki = $3';
-					var sqlargs = [wikinew.href, msg.guildId, guild.wiki];
+					var sqlargs = [wikinew.name, msg.guildId, guild.wiki];
 					if ( !rows.length ) {
-						sql = 'INSERT INTO discord(wiki, guild, main, lang) VALUES($1, $2, $2, $3)';
+						sql = 'INSERT INTO discord(wiki, guild, main, lang) VALUES ($1, $2, $2, $3)';
 						sqlargs[2] = lang.lang;
 					}
 					else if ( channel ) {
 						sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND channel = $3';
 						sqlargs[2] = channelId;
 						if ( !rows.includes( channel ) ) {
-							if ( channel.wiki === wikinew.href ) {
+							if ( channel.wiki === wikinew.name ) {
 								if ( reaction ) reaction.removeEmoji();
 								return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, embeds: [embed], components}, true );
 							}
-							sql = 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+							sql = 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 							sqlargs.push(guild.lang, guild.role, guild.inline, guild.prefix);
 						}
 					}
 					return db.query( sql, sqlargs ).then( () => {
 						console.log( '- Settings successfully updated.' );
-						if ( channel ) channel.wiki = wikinew.href;
+						if ( channel ) channel.wiki = wikinew.name;
 						else {
 							rows.forEach( row => {
-								if ( row.channel && row.wiki === guild.wiki ) row.wiki = wikinew.href;
+								if ( row.channel && row.wiki === guild.wiki ) row.wiki = wikinew.name;
 							} );
-							guild.wiki = wikinew.href;
+							guild.wiki = wikinew.name;
 						}
 						if ( channel || !rows.some( row => row.channel === channelId ) ) wiki = new Wiki(wikinew);
 						if ( reaction ) reaction.removeEmoji();
-						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew + wikihelp, embeds: [embed], components}, true );
+						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew.name + wikihelp, embeds: [embed], components}, true );
 						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
 						if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 							console.log( '- Settings successfully removed.' );
@@ -208,7 +213,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET lang = $1 WHERE guild = $2 AND lang = $3';
 			var sqlargs = [allLangs.map[args[1]], msg.guildId, guild.lang];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(lang, guild, main) VALUES($1, $2, $2)';
+				sql = 'INSERT INTO discord(lang, guild, main) VALUES ($1, $2, $2)';
 				sqlargs.pop();
 			}
 			else if ( channel ) {
@@ -218,7 +223,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					if ( channel.lang === allLangs.map[args[1]] ) {
 						return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang] + '`' + langhelp, files: ( msg.uploadFiles() ? [`./i18n/widgets/${channel.lang}.png`] : [] ), components}, true );
 					}
-					sql = 'INSERT INTO discord(lang, guild, channel, wiki, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+					sql = 'INSERT INTO discord(lang, guild, channel, wiki, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(guild.wiki, guild.role, guild.inline, guild.prefix);
 				}
 			}
@@ -230,7 +235,6 @@ function cmd_settings(lang, msg, args, line, wiki) {
 						if ( row.channel && row.lang === guild.lang ) row.lang = allLangs.map[args[1]];
 					} );
 					guild.lang = allLangs.map[args[1]];
-					if ( voiceGuildsLang.has(msg.guildId) ) voiceGuildsLang.set(msg.guildId, guild.lang);
 				}
 				if ( channel || !patreonGuildsPrefix.has(msg.guildId) || !rows.some( row => row.channel === channelId ) ) lang = new Lang(allLangs.map[args[1]]);
 				msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`', files: ( msg.uploadFiles() ? [`./i18n/widgets/${allLangs.map[args[1]]}.png`] : [] ), components}, true );
@@ -267,7 +271,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET role = $1 WHERE guild = $2';
 			var sqlargs = [role, msg.guildId];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(role, guild, main, lang) VALUES($1, $2, $2, $3)';
+				sql = 'INSERT INTO discord(role, guild, main, lang) VALUES ($1, $2, $2, $3)';
 				sqlargs.push(lang.lang);
 			}
 			else if ( channel ) {
@@ -277,7 +281,7 @@ function cmd_settings(lang, msg, args, line, wiki) {
 					if ( channel.role === role ) {
 						return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + ( channel.role ? `<@&${channel.role}>` : '@everyone' ) + rolehelp, components}, true );
 					}
-					sql = 'INSERT INTO discord(role, guild, channel, wiki, lang, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+					sql = 'INSERT INTO discord(role, guild, channel, wiki, lang, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(guild.wiki, guild.lang, guild.inline, guild.prefix);
 				}
 			}
@@ -325,14 +329,14 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET prefix = $1 WHERE guild = $2';
 			var sqlargs = [args[1], msg.guildId];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(prefix, guild, main, lang) VALUES($1, $2, $2, $3)';
+				sql = 'INSERT INTO discord(prefix, guild, main, lang) VALUES ($1, $2, $2, $3)';
 				sqlargs.push(lang.lang);
 			}
 			return db.query( sql, sqlargs ).then( () => {
 				console.log( '- Settings successfully updated.' );
 				guild.prefix = args[1];
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+					globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 				}, {context: {guild: msg.guildId, prefix: args[1]}} );
 				msg.replyMsg( {content: lang.get('settings.prefixchanged') + ' `' + args[1] + '`\n' + lang.get('settings.prefixhelp', args[1] + 'settings prefix'), components}, true );
 			}, dberror => {
@@ -354,14 +358,14 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			var sql = 'UPDATE discord SET inline = $1 WHERE guild = $2';
 			var sqlargs = [value, msg.guildId];
 			if ( !rows.length ) {
-				sql = 'INSERT INTO discord(inline, guild, main, lang) VALUES($1, $2, $2, $3)';
+				sql = 'INSERT INTO discord(inline, guild, main, lang) VALUES ($1, $2, $2, $3)';
 				sqlargs.push(lang.lang);
 			}
 			else if ( channel ) {
 				sql = 'UPDATE discord SET inline = $1 WHERE guild = $2 AND channel = $3';
 				sqlargs.push(channelId);
 				if ( !rows.includes( channel ) ) {
-					sql = 'INSERT INTO discord(inline, guild, channel, wiki, lang, role, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)';
+					sql = 'INSERT INTO discord(inline, guild, channel, wiki, lang, role, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(guild.wiki, guild.lang, guild.role, guild.prefix);
 				}
 			}
@@ -388,14 +392,14 @@ function cmd_settings(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		return Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+		return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 	}, dberror => {
 		console.log( '- Error while getting the settings: ' + dberror );
 		msg.reactEmoji('error', true);
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'settings',
 	everyone: true,
 	pause: true,

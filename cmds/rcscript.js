@@ -1,12 +1,12 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
-import { Util, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
 import help_setup from '../functions/helpsetup.js';
-import { got } from '../util/functions.js';
+import { got, canShowEmbed, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const allLangs = Lang.allLangs(true);
@@ -28,7 +28,7 @@ const display_types = [
  * @param {String} line - The command as plain text.
  * @param {Wiki} wiki - The wiki for the message.
  */
-function cmd_rcscript(lang, msg, args, line, wiki) {
+export default function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( args[0] === 'block' && msg.isOwner() ) return blocklist(msg, args.slice(1));
 	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
 	if ( msg.defaultSettings ) return help_setup(lang, msg);
@@ -45,22 +45,25 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new MessageButton().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle('LINK').setURL(new URL(`/guild/${msg.guildId}/rcscript`, process.env.dashboard).href);
-			components.push(new MessageActionRow().addComponents(button));
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/rcscript`, process.env.dashboard).href);
+			components.push(new ActionRowBuilder().addComponents(button));
 		}
 
 		if ( args[0] === 'add' ) {
-			if ( !msg.channel.permissionsFor(msg.client.user).has(Permissions.FLAGS.MANAGE_WEBHOOKS) ) {
-				console.log( msg.guildId + ': Missing permissions - MANAGE_WEBHOOKS' );
-				return msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_WEBHOOKS`' );
+			if ( msg.channel.isThread() ) {
+				return msg.replyMsg( lang.get('rcscript.nothreads') );
 			}
-			if ( !( msg.channel.permissionsFor(msg.member).has(Permissions.FLAGS.MANAGE_WEBHOOKS) || ( msg.isOwner() && msg.evalUsed ) ) ) {
+			if ( !msg.channel.permissionsFor(msg.client.user).has(PermissionFlagsBits.ManageWebhooks) ) {
+				console.log( msg.guildId + ': Missing permissions - ManageWebhooks' );
+				return msg.replyMsg( lang.get('general.missingperm') + ' `ManageWebhooks`' );
+			}
+			if ( !( msg.channel.permissionsFor(msg.member).has(PermissionFlagsBits.ManageWebhooks) || ( msg.isOwner() && msg.evalUsed ) ) ) {
 				return msg.replyMsg( lang.get('rcscript.noadmin') );
 			}
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('rcscript.max_entries'), true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 
-			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/new`, button.url).href);
+			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/new`, button.data.url).href);
 			var wikihelp = '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 			var input = args.slice(1).join(' ').toLowerCase().trim().replace( /^<\s*(.*?)\s*>$/, '$1' );
 			var wikinew = new Wiki(wiki);
@@ -69,17 +72,24 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( !wikinew ) return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 			}
 			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
-				responseType: 'text'
+				responseType: 'text',
+				context: {
+					guildId: msg.guildId
+				}
 			} ).then( response => {
 				try {
 					response.body = JSON.parse(response.body);
 				}
 				catch (error) {
 					if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-						let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+						let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 						if ( api ) {
 							wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+							return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+								context: {
+									guildId: msg.guildId
+								}
+							} );
 						}
 					}
 				}
@@ -100,7 +110,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( {content: lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', components}, true );
 				}
-				if ( body.query.allmessages[0]['*'] !== msg.guildId ) {
+				if ( body.query.allmessages[0]['*']?.trim() !== msg.guildId ) {
 					if ( reaction ) reaction.removeEmoji();
 					return msg.replyMsg( {content: lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guildId) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', components}, true );
 				}
@@ -110,9 +120,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( {content: ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), components}, true );
 					}
-					if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+					if ( wikinew.wikifarm === 'fandom' && !wikinew.isGamepedia() ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
+						},
+						context: {
+							guildId: msg.guildId
 						}
 					} ).then( dsresponse => {
 						var dsbody = dsresponse.body;
@@ -132,8 +145,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					 * @param {Boolean} enableFeeds - If feeds based changes should be enabled.
 					 */
 					function createWebhook(enableFeeds = false) {
-						msg.channel.createWebhook( ( body.query.allmessages[1]['*'] || 'Recent changes' ), {
-							avatar: msg.client.user.displayAvatarURL({format:'png',size:4096}),
+						msg.channel.createWebhook( {
+							name: ( body.query.allmessages[1]['*'] || 'Recent changes' ),
+							avatar: msg.client.user.displayAvatarURL({extension:'png',size:4096}),
 							reason: lang.get('rcscript.audit_reason', wikinew.href)
 						} ).then( webhook => {
 							console.log( '- Webhook successfully created.' );
@@ -144,7 +158,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 								if ( new_configid === i ) new_configid++;
 								else break;
 							}
-							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES($1, $2, $3, $4, $5, $6, $7)', [msg.guildId, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( msg.showEmbed() ? 1 : 0 ), ( enableFeeds ? null : '-1' )] ).then( () => {
+							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, postid) VALUES ($1, $2, $3, $4, $5, $6, $7)', [msg.guildId, new_configid, webhook.id + '/' + webhook.token, wikinew.href, webhook_lang.lang, ( canShowEmbed(msg) ? 1 : 0 ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( '- RcGcDw successfully added.' );
 								if ( reaction ) reaction.removeEmoji();
 								msg.replyMsg( {content: lang.get('rcscript.added') + ' <' + wikinew + '>\n`' + prefix + 'rcscript' + ( rows.length ? ' ' + new_configid : '' ) + '`', components}, true );
@@ -198,7 +212,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 				return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 					var channel = msg.guild.channels.cache.get(webhook.channelId);
-					if ( !channel || !channel.permissionsFor(msg.member).has(Permissions.FLAGS.MANAGE_WEBHOOKS) ) {
+					if ( !channel || !channel.permissionsFor(msg.member).has(PermissionFlagsBits.ManageWebhooks) ) {
 						return msg.replyMsg( lang.get('rcscript.noadmin') );
 					}
 					db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [selected_row.webhook] ).then( () => {
@@ -209,13 +223,13 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						msg.replyMsg( {content: lang.get('rcscript.deleted'), components}, true );
 					}, dberror => {
 						console.log( '- Error while removing the RcGcDw: ' + dberror );
-						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 						msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					} );
 				}, error => {
 					log_error(error);
 					if ( error.name !== 'DiscordAPIError' || !['Unknown Webhook', 'Invalid Webhook Token'].includes( error.message ) ) {
-						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 						return msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					}
 					db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [selected_row.webhook] ).then( () => {
@@ -223,12 +237,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						msg.replyMsg( {content: lang.get('rcscript.deleted'), components}, true );
 					}, dberror => {
 						console.log( '- Error while removing the RcGcDw: ' + dberror );
-						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+						button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 						msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 					} );
 				} );
 			}
-			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.url).href);
+			button?.setURL(new URL(`/guild/${msg.guildId}/rcscript/${selected_row.configid}`, button.data.url).href);
 			if ( args[0] === 'wiki' ) {
 				if ( !args[1] ) {
 					return msg.replyMsg( {content: lang.get('rcscript.current_wiki') + ' <' + selected_row.wiki + '>\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki'), components}, true );
@@ -239,17 +253,24 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikinew = Wiki.fromInput(args[1]);
 				if ( !wikinew ) return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
-					responseType: 'text'
+					responseType: 'text',
+					context: {
+						guildId: msg.guildId
+					}
 				} ).then( response => {
 					try {
 						response.body = JSON.parse(response.body);
 					}
 					catch (error) {
 						if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-							let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+							let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 							if ( api ) {
 								wikinew = new Wiki(api.split('api.php?')[0], wikinew);
-								return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json' );
+								return got.get( wikinew + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+									context: {
+										guildId: msg.guildId
+									}
+								} );
 							}
 						}
 					}
@@ -266,12 +287,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 					}
 					wikinew.updateWiki(body.query.general);
-					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) <= 30 ) {
+					if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
 						console.log( '- This wiki is using ' + body.query.general.generator + '.' );
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( {content: lang.get('test.MediaWiki', 'MediaWiki 1.30', body.query.general.generator) + '\nhttps://www.mediawiki.org/wiki/MediaWiki_1.30', components}, true );
 					}
-					if ( body.query.allmessages[0]['*'] !== msg.guildId ) {
+					if ( body.query.allmessages[0]['*']?.trim() !== msg.guildId ) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( {content: lang.get('rcscript.sysmessage', 'MediaWiki:Custom-RcGcDw', msg.guildId) + '\n<' + wikinew.toLink('MediaWiki:Custom-RcGcDw', 'action=edit') + '>', components}, true );
 					}
@@ -281,9 +302,12 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 							if ( reaction ) reaction.removeEmoji();
 							return msg.replyMsg( {content: ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), components}, true );
 						}
-						if ( wikinew.isFandom(false) ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+						if ( wikinew.wikifarm === 'fandom' && !wikinew.isGamepedia() ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
+							},
+							context: {
+								guildId: msg.guildId
 							}
 						} ).then( dsresponse => {
 							var dsbody = dsresponse.body;
@@ -375,7 +399,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					msg.replyMsg( {content: lang.get('settings.save_failed'), components}, true );
 				} );
 			}
-			if ( new Wiki(selected_row.wiki).isFandom(false) && args[0] === 'feeds' ) {
+			var selectedwiki = new Wiki(selected_row.wiki);
+			if ( selectedwiki.wikifarm === 'fandom' && !selectedwiki.isGamepedia() && args[0] === 'feeds' ) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 				if ( args[1] === 'only' ) {
 					if ( selected_row.rcid === -1 ) {
@@ -425,6 +450,9 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return msg.reactEmoji('⏳', true).then( reaction => got.get( selected_row.wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 					headers: {
 						Accept: 'application/hal+json'
+					},
+					context: {
+						guildId: msg.guildId
 					}
 				} ).then( dsresponse => {
 					var dsbody = dsresponse.body;
@@ -467,7 +495,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 				return;
 			} ).then( channel => {
 				var text = lang.get('rcscript.current_selected', selected_row.configid);
-				if ( button ) text += `\n<${button.url}>\n`;
+				if ( button ) text += `\n<${button.data.url}>\n`;
 				text += '\n' + lang.get('rcscript.channel') + ' <#' + channel + '>\n';
 				text += '\n' + lang.get('rcscript.wiki') + ' <' + selected_row.wiki + '>';
 				text += '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n';
@@ -479,7 +507,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 					text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled') + '`*';
 					text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
-				if ( new Wiki(selected_row.wiki).isFandom(false) ) {
+				if ( selectedwiki.wikifarm === 'fandom' && !selectedwiki.isGamepedia() ) {
 					text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( selected_row.postid === '-1' ? 'disabled' : 'enabled' )) + '`*';
 					text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}
@@ -510,7 +538,7 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			var text = null;
 			if ( rows.length ) {
 				text = lang.get('rcscript.current');
-				if ( button ) text += `\n<${button.url}>`;
+				if ( button ) text += `\n<${button.data.url}>`;
 				text += rows.map( row => {
 					var cmd = prefix + 'rcscript' + ( only ? '' : ' ' + row.configid );
 					var row_text = '\n';
@@ -527,7 +555,8 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 						row_text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled' ) + '`*';
 						if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 					}
-					if ( new Wiki(row.wiki).isFandom(false) ) {
+					let rowwiki = new Wiki(row.wiki);
+					if ( rowwiki.wikifarm === 'fandom' && !rowwiki.isGamepedia() ) {
 						row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' )) + '`*';
 						if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 					}
@@ -537,10 +566,10 @@ function cmd_rcscript(lang, msg, args, line, wiki) {
 			}
 			else {
 				text = lang.get('rcscript.missing');
-				if ( button ) text += `\n<${button.url}>`;
+				if ( button ) text += `\n<${button.data.url}>`;
 			}
 			if ( rows.length < limit ) text += '\n\n' + lang.get('rcscript.add_more') + '\n`' + prefix + 'rcscript add ' + lang.get('rcscript.new_wiki') + '`';
-			Util.splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
+			splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 		} );
 	}, dberror => {
 		console.log( '- Error while getting the RcGcDw: ' + dberror );
@@ -562,7 +591,7 @@ function blocklist(msg, args) {
 		let wiki = Wiki.fromInput(input);
 		if ( !wiki ) return msg.replyMsg( '`' + prefix + 'rcscript block add <wiki> [<reason>]`', true );
 		let reason = ( args.slice(2).join(' ').trim() || null );
-		return db.query( 'INSERT INTO blocklist(wiki, reason) VALUES($1, $2)', [wiki.href, reason] ).then( () => {
+		return db.query( 'INSERT INTO blocklist(wiki, reason) VALUES ($1, $2)', [wiki.href, reason] ).then( () => {
 			console.log( '- Successfully added to the blocklist.' );
 			db.query( 'DELETE FROM rcgcdw WHERE wiki = $1 RETURNING webhook, lang', [wiki.href] ).then( ({rows}) => {
 				console.log( '- Successfully removed ' + rows.length + ' webhooks.' );
@@ -617,14 +646,14 @@ function blocklist(msg, args) {
 	}
 	db.query( 'SELECT wiki, reason FROM blocklist' ).then( ({rows}) => {
 		if ( !rows.length ) return msg.replyMsg( 'There are currently no wikis on the blocklist.\n`' + prefix + 'rcscript block add <wiki> [<reason>]`', true );
-		Util.splitMessage( 'There are currently ' + row.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`' ).forEach( textpart => msg.replyMsg( textpart, true ) );
+		splitMessage( 'There are currently ' + rows.length + ' wikis the blocklist:\n' + rows.map( row => '`' + row.wiki + '` – ' + ( row.reason ? '`' + row.reason + '`' : 'No reason provided.' ) ).join('\n') + '\n`' + prefix + 'rcscript block remove <wiki>`' ).forEach( textpart => msg.replyMsg( textpart, true ) );
 	}, dberror => {
 		console.log( '- Error while checking the blocklist: ' + dberror );
 		msg.replyMsg( 'I got an error while checking the blocklist: ' + dberror, true );
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'rcscript',
 	everyone: rcscriptExists,
 	pause: rcscriptExists,

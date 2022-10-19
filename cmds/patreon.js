@@ -1,6 +1,6 @@
-import { ShardClientUtil } from 'discord.js';
+import { ShardClientUtil, OAuth2Scopes, ChannelType } from 'discord.js';
 import db from '../util/database.js';
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions, limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 const {shardIdForGuildId} = ShardClientUtil;
@@ -13,7 +13,7 @@ const {shardIdForGuildId} = ShardClientUtil;
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_patreon(lang, msg, args, line, wiki) {
+export default function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( !( process.env.channel.split('|').includes( msg.channelId ) && args.join('') ) ) {
 		if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 		return;
@@ -27,7 +27,10 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	} ).then( guild => {
 		if ( !guild ) {
 			let invite = msg.client.generateInvite({
-				scopes: ['bot', 'applications.commands'],
+				scopes: [
+					OAuth2Scopes.Bot,
+					OAuth2Scopes.ApplicationsCommands
+				],
 				permissions: defaultPermissions,
 				guild: args[1],
 				disableGuildSelect: true
@@ -40,10 +43,10 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			if ( row.count <= row.guilds ) return msg.replyMsg( 'You already reached your maximal server count.', true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 			db.query( 'UPDATE discord SET patreon = $1 WHERE guild = $2 AND channel IS NULL', [msg.author.id, args[1]] ).then( ({rowCount}) => {
-				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES($1, $1, $2)', [args[1], msg.author.id] ).then( () => {
+				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES ($1, $1, $2)', [args[1], msg.author.id] ).then( () => {
 					console.log( '- Guild successfully added.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
-						patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+						globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 					}, {context: {guild: args[1], prefix: process.env.prefix}} );
 					msg.replyMsg( 'The patreon features are now enabled on "' + guild + '".', true );
 				}, dberror => {
@@ -52,7 +55,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				} );
 				console.log( '- Guild successfully updated.' );
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
-					patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
+					globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 				}, {context: {guild: args[1], prefix: process.env.prefix}} );
 				msg.replyMsg( 'The patreon features are now enabled on "' + guild + '".', true );
 			}, dberror => {
@@ -86,7 +89,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, args[1]] ).then( () => {
 					console.log( '- Guild successfully updated.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
-						patreonGuildsPrefix.delete(evalData);
+						globalThis.patreonGuildsPrefix.delete(evalData);
 					}, {context: args[1]} );
 					msg.replyMsg( 'The patreon features are now disabled on "' + guild + '".', true );
 				}, dberror => {
@@ -100,7 +103,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 							return msg.client.shard.broadcastEval( (discordClient, evalData) => {
 								if ( discordClient.guilds.cache.has(evalData.guild) ) {
 									return discordClient.guilds.cache.get(evalData.guild).channels.cache.filter( channel => {
-										return ( ( channel.isText() && !channel.isThread() ) && evalData.rows.some( row => {
+										return ( ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === ChannelType.GuildForum ) && evalData.rows.some( row => {
 											return ( row.channel === '#' + channel.parentId );
 										} ) );
 									} ).map( channel => {
@@ -117,7 +120,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 								shard: shardIdForGuildId(args[1], msg.client.shard.count)
 							} ).then( channels => {
 								if ( channels.length ) return Promise.all(channels.map( channel => {
-									return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, args[1], channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
+									return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, args[1], channel.id, row.lang, row.role, row.inline, process.env.prefix] ).catch( dberror => {
 										if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
 											console.log( '- Error while adding category settings to channels: ' + dberror );
 										}
@@ -240,7 +243,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 				if ( !guilds.length ) return Promise.reject();
 				msg.client.shard.broadcastEval( (discordClient, evalData) => {
 					return evalData.map( guild => {
-						patreonGuildsPrefix.delete(guild);
+						globalThis.patreonGuildsPrefix.delete(guild);
 					} );
 				}, {context: row.guilds} );
 			}, dberror => {
@@ -268,7 +271,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 								return discordClient.guilds.cache.has(guild);
 							} ).map( guild => {
 								return discordClient.guilds.cache.get(guild).channels.cache.filter( channel => {
-									return ( ( channel.isText() && !channel.isThread() ) && evalData.rows.some( row => {
+									return ( ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === ChannelType.GuildForum ) && evalData.rows.some( row => {
 										return ( row.channel === '#' + channel.parentId );
 									} ) );
 								} ).map( channel => {
@@ -284,7 +287,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 						}, {context: {rows, guilds}} ).then( response => {
 							var channels = [].concat(...response);
 							if ( channels.length ) return Promise.all(channels.map( channel => {
-								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, channel.guild, channel.id, channel.lang, channel.role, channel.inline, process.env.prefix] ).catch( dberror => {
+								return client.query( 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)', [channel.wiki, channel.guild, channel.id, channel.lang, channel.role, channel.inline, process.env.prefix] ).catch( dberror => {
 									if ( dberror.message !== 'duplicate key value violates unique constraint "discord_guild_channel_key"' ) {
 										console.log( '- Error while adding category settings to channels: ' + dberror );
 									}
@@ -343,7 +346,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 			console.log( '- Error while connecting to the database client: ' + dberror );
 			msg.replyMsg( 'I got an error while updating <@' + args[1] + '>, please try again later.', true );
 		} );
-		if ( !row ) return db.query( 'INSERT INTO patreons(patreon, count) VALUES($1, $2)', [args[1], count] ).then( () => {
+		if ( !row ) return db.query( 'INSERT INTO patreons(patreon, count) VALUES ($1, $2)', [args[1], count] ).then( () => {
 			console.log( '- Patreon successfully added.' );
 			msg.replyMsg( '<@' + args[1] + '> can now have up to ' + count + ' servers.', true );
 		}, dberror => {
@@ -367,7 +370,7 @@ function cmd_patreon(lang, msg, args, line, wiki) {
 	if ( !msg.inGuild() || !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }
 
-export default {
+export const cmdData = {
 	name: 'patreon',
 	everyone: true,
 	pause: true,

@@ -1,0 +1,60 @@
+{
+	"id": "",
+	"application_id": "",
+	"name": "admin",
+	"name_localizations": {},
+	"description": "Post a message with inline wiki links.",
+	"description_localizations": {},
+	"default_permission": false,
+	"default_member_permissions": "0",
+	"dm_permission": false,
+	"options": [
+		{
+			"type": 2,
+			"name": "patreon",
+			"name_localizations": {},
+			"description": "Text including wikitext links.",
+			"description_localizations": {},
+			"options": [
+				{
+					"type": 1,
+					"name": "check",
+					"name_localizations": {},
+					"description": "Check the current list of servers with patreon features enabled by a user.",
+					"description_localizations": {},
+					"options": [
+						{
+							"type": 6,
+							"name": "user",
+							"name_localizations": {},
+							"description": "The user to check the current list of servers with patreon features enabled for.",
+							"description_localizations": {},
+							"required": true,
+							"autocomplete": true
+						}
+					]
+				},
+				{
+					"type": 1,
+					"name": "disable",
+					"name_localizations": {},
+					"description": "Disable the patreon features for a server.",
+					"description_localizations": {},
+					"options": [
+						{
+							"type": 3,
+							"name": "guild",
+							"name_localizations": {},
+							"description": "The server to disable patreon features for.",
+							"description_localizations": {},
+							"min_length": 17,
+							"max_length": 20,
+							"required": true,
+							"autocomplete": true
+						}
+					]
+				}
+			]
+		}
+	]
+}

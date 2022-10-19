@@ -1,5 +1,5 @@
 # Wiki-Bot[<img src="https://translate.wikibot.de/widgets/wiki-bot/-/svg-badge.svg" alt="Translation status" align="right" />](#translations)[<img src="https://github.com/Markus-Rost/discord-wiki-bot/workflows/Node.js CI/badge.svg" alt="Node.js CI" align="right" />](https://github.com/Markus-Rost/discord-wiki-bot/actions)
-[<img src="/dashboard/src/icon.png" alt="Wiki-Bot" align="right" />](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands)
+[<img src="/dashboard/src/icon.png" alt="Wiki-Bot" align="right" width="200" />](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands)
 
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Wikipedia](https://www.wikipedia.org/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
 
@@ -17,7 +17,6 @@ Support server: [https://discord.gg/v77RTk5](https://discord.gg/v77RTk5)
   * [Admin](#admin)
 * [User Verification](#user-verification)
 * [Recent Changes Webhook](#recent-changes-webhook)
-* [Voice Channel](#voice-channel)
 
 ## Setup
 After [inviting](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands) **Wiki-Bot** to your server you need to set the wiki you want to search by default. You do this with the `!wiki settings` command or by using the [dashboard](https://settings.wikibot.de/).
@@ -32,9 +31,8 @@ For a full list with all commands use `!wiki help`
 | Command | Description |
 | ------- | ----------- |
 | `!wiki <search term>` | **Wiki-Bot** will answer with a link to a matching article in the wiki. |
-| `!wiki !<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Gamepedia wiki: `https://<wiki>.gamepedia.com/` |
+| `!wiki !<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Wikipedia: `https://<wiki>.wikipedia.org/w/` |
 | `!wiki ?<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Fandom wiki: `https://<wiki>.fandom.com/` |
-| `!wiki ??<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named Wikia wiki: `https://<wiki>.wikia.org/` |
 | `!wiki !!<wiki> <search term>` | **Wiki-Bot** will answer with a link to a matching article in the named MediaWiki project. Example: `!wiki !!en.wikipedia.org Cookie` |
 | `!wiki User:<username>` | **Wiki-Bot** will show some information about the user. |
 | `!wiki diff <diff> [<oldid>]` | **Wiki-Bot** will answer with a link to the diff in the wiki. |
@@ -60,7 +58,6 @@ For a full list with all administrator commands use `!wiki help admin`
 | `!wiki settings` | **Wiki-Bot** will change the settings for the server. |
 | `!wiki verification` | **Wiki-Bot** will change the wiki verifications used by the `!wiki verify` command. |
 | `!wiki rcscript` | **Wiki-Bot** will change the recent changes webhook. |
-| `!wiki voice` | **Wiki-Bot** will try to give everyone in a voice channel a specific role. |
 | `!wiki pause @Wiki-Bot` | **Wiki-Bot** will ignore all commands on this server, except a few admin commands. |
 
 Administators can also use the [dashboard](https://settings.wikibot.de/) to change the bot settings.
@@ -85,11 +82,6 @@ Requirements to add a recent changes webhook:
 * The wiki needs to run on [MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30) or higher.
 * The system message `MediaWiki:Custom-RcGcDw` needs to be set to the Discord server id.
 
-## Voice Channel
-**Wiki-Bot** is able to give everyone in a voice channel a specific role. This allows for the creation of channels only visible or writable when in a specific voice channel.
-
-Use `!wiki voice` to get the format for the role name.
-
 ## Translations
 [<img src="https://translate.wikibot.de/widgets/wiki-bot/-/multi-auto.svg" alt="Translation status" width="100%" />](https://translate.wikibot.de/engage/wiki-bot/?utm_source=widget)
 
@@ -105,6 +97,6 @@ Help other users find Wiki-Bot by voting on bot lists:
 [<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)
 
 ## Other
-Credits to [Encredechine](https://community.fandom.com/wiki/User:Encredechine) for the **Wiki-Bot** logo.
+The **Wiki-Bot** logo has been AI generated using [Midjourney](https://www.midjourney.com/home/) and cleaned up by [Shaun Ryken](https://shaunryken.art/).
 
 [Privacy Policy](PRIVACY.md#privacy-policy)

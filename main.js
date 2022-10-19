@@ -1,12 +1,13 @@
 import 'dotenv/config';
-import './database.js';
-import { fork as forkChildProcess } from 'child_process';
+import { fork as forkChildProcess } from 'node:child_process';
 import gotDefault from 'got';
-import { ShardingManager, ShardClientUtil } from 'discord.js';
+import { gotSsrf } from 'got-ssrf';
+import { ShardingManager, ShardClientUtil, ShardEvents } from 'discord.js';
 const {shardIdForGuildId} = ShardClientUtil;
 
 var isDebug = ( process.argv[2] === 'debug' );
-if ( process.argv[2] === 'readonly' ) process.env.READONLY = true;
+if ( process.argv[2] === 'readonly' ) process.env.READONLY = 'true';
+import './database.js';
 
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
@@ -14,10 +15,18 @@ const got = gotDefault.extend( {
 		request: 30_000
 	},
 	headers: {
-		'User-Agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
+		'user-agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
 	},
-	responseType: 'json'
-} );
+	responseType: 'json',
+	hooks: ( process.env.x_origin_guild ? {
+		beforeRequest: [
+			options => {
+				if ( options.context?.guildId ) options.headers['x-origin-guild'] = options.context.guildId;
+				else if ( options.context?.guildId === null ) options.headers['x-origin-guild'] = 'DM';
+			}
+		]
+	} : {} )
+}, gotSsrf );
 
 const manager = new ShardingManager( './bot.js', {
 	execArgv: ['--icu-data-dir=node_modules/full-icu'],
@@ -29,11 +38,11 @@ var diedShards = 0;
 manager.on( 'shardCreate', shard => {
 	console.log( `- Shard[${shard.id}]: Launched` );
 	
-	shard.on( 'spawn', () => {
+	shard.on( ShardEvents.Spawn, () => {
 		console.log( `- Shard[${shard.id}]: Spawned` );
 	} );
 	
-	shard.on( 'message', message => {
+	shard.on( ShardEvents.Message, message => {
 		if ( message?.id === 'verifyUser' && server ) {
 			return server.send( message );
 		}
@@ -53,7 +62,7 @@ manager.on( 'shardCreate', shard => {
 		if ( message === 'postStats' && process.env.botlist ) postStats();
 	} );
 	
-	shard.on( 'death', message => {
+	shard.on( ShardEvents.Death, message => {
 		if ( manager.respawn === false ) diedShards++;
 		if ( message.exitCode ) {
 			if ( !shard.ready ) {
@@ -64,7 +73,7 @@ manager.on( 'shardCreate', shard => {
 		}
 	} );
 
-	shard.on( 'error', error => {
+	shard.on( ShardEvents.Error, error => {
 		console.log( `- Shard[${shard.id}]: Error received!`, error );
 	} );
 } );
@@ -110,6 +119,10 @@ if ( process.env.dashboard ) {
 	/** @type {Object.<string, function(import('discord.js').Client, Object)>} */
 	const evalFunctions = {
 		getGuilds: (discordClient, evalData) => {
+			/** @type {import('discord.js').ChannelType.GuildForum} */
+			const GuildForum = 15;
+			/** @type {import('discord.js').ChannelType.GuildCategory} */
+			const GuildCategory = 4;
 			return Promise.all(
 				evalData.guilds.map( id => {
 					if ( discordClient.guilds.cache.has(id) ) {
@@ -118,26 +131,29 @@ if ( process.env.dashboard ) {
 							return {
 								patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 								memberCount: guild.memberCount,
-								botPermissions: guild.me.permissions.bitfield.toString(),
+								botPermissions: guild.members.me.permissions.bitfield.toString(),
 								channels: guild.channels.cache.filter( channel => {
-									return ( ( channel.isText() && !channel.isThread() ) || channel.type === 'GUILD_CATEGORY' );
+									return ( ( channel.isTextBased() && !channel.isThread() ) || channel.type === GuildForum || channel.type === GuildCategory );
 								} ).sort( (a, b) => {
 									let aVal = a.rawPosition + 1;
-									if ( a.type === 'GUILD_CATEGORY' ) aVal *= 1000;
-									else if ( !a.parent ) aVal -= 1000;
-									else aVal += ( a.parent.rawPosition + 1 ) * 1000;
+									if ( a.isVoiceBased() ) aVal *= 1_000;
+									if ( a.type === GuildCategory ) aVal *= 1_000_000;
+									else if ( !a.parent ) aVal -= 1_000_000;
+									else aVal += ( a.parent.rawPosition + 1 ) * 1_000_000;
 									let bVal = b.rawPosition + 1;
-									if ( b.type === 'GUILD_CATEGORY' ) bVal *= 1000;
-									else if ( !b.parent ) bVal -= 1000;
-									else bVal += ( b.parent.rawPosition + 1 ) * 1000;
+									if ( b.isVoiceBased() ) bVal *= 1_000;
+									if ( b.type === GuildCategory ) bVal *= 1_000_000;
+									else if ( !b.parent ) bVal -= 1_000_000;
+									else bVal += ( b.parent.rawPosition + 1 ) * 1_000_000;
 									return aVal - bVal;
 								} ).map( channel => {
 									return {
 										id: channel.id,
 										name: channel.name,
-										isCategory: ( channel.type === 'GUILD_CATEGORY' ),
+										isForum: ( channel.type === GuildForum ),
+										isCategory: ( channel.type === GuildCategory ),
 										userPermissions: member.permissionsIn(channel).bitfield.toString(),
-										botPermissions: guild.me.permissionsIn(channel).bitfield.toString()
+										botPermissions: guild.members.me.permissionsIn(channel).bitfield.toString()
 									};
 								} ),
 								roles: guild.roles.cache.filter( role => {
@@ -148,7 +164,7 @@ if ( process.env.dashboard ) {
 									return {
 										id: role.id,
 										name: role.name,
-										lower: ( guild.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
+										lower: ( guild.members.me.roles.highest.comparePositionTo(role) > 0 && !role.managed )
 									};
 								} ),
 								locale: guild.preferredLocale
@@ -162,28 +178,41 @@ if ( process.env.dashboard ) {
 		},
 		getMember: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
+				/** @type {import('discord.js').ChannelType.GuildForum} */
+				const GuildForum = 15;
+				/** @type {import('discord.js').ChannelType.GuildCategory} */
+				const GuildCategory = 4;
 				let guild = discordClient.guilds.cache.get(evalData.guild);
-				return guild.members.fetch(evalData.member).then( member => {
+				return guild.members.fetch(evalData.member).then( async member => {
 					var response = {
 						patreon: globalThis.patreonGuildsPrefix.has(guild.id),
 						userPermissions: member.permissions.bitfield.toString(),
-						botPermissions: guild.me.permissions.bitfield.toString()
+						botPermissions: guild.members.me.permissions.bitfield.toString()
 					};
 					if ( evalData.channel ) {
+						/** @type {import('discord.js').BaseGuildTextChannel} */
 						let channel = guild.channels.cache.get(evalData.channel);
-						if ( ( channel?.isText() && !channel.isThread() ) || ( response.patreon && evalData.allowCategory && channel?.type === 'GUILD_CATEGORY' ) ) {
+						if ( ( channel?.isTextBased() && !channel.isThread() ) || ( evalData.allowForum && channel?.type === GuildForum ) || ( response.patreon && evalData.allowCategory && channel?.type === GuildCategory ) ) {
 							response.userPermissions = channel.permissionsFor(member).bitfield.toString();
-							response.botPermissions = channel.permissionsFor(guild.me).bitfield.toString();
-							response.isCategory = ( channel.type === 'GUILD_CATEGORY' );
+							response.botPermissions = channel.permissionsFor(guild.members.me).bitfield.toString();
+							response.isForum = ( channel.type === GuildForum );
+							response.isCategory = ( channel.type === GuildCategory );
 							response.parentId = channel.parentId;
+							if ( evalData.thread ) {
+								let thread = await channel.threads?.fetchActive().then( ({threads}) => {
+									if ( threads.has(evalData.thread) ) return threads.get(evalData.thread);
+									return threads.find( thread => thread.name.toLowerCase() === evalData.thread.toLowerCase() );
+								}, () => {} );
+								response.thread = thread?.id || null;
+							}
 						}
 						else response.message = 'noChannel';
 					}
 					if ( evalData.newchannel ) {
 						let newchannel = guild.channels.cache.get(evalData.newchannel);
-						if ( newchannel?.isText() && !newchannel.isThread() ) {
+						if ( ( newchannel?.isTextBased() && !newchannel.isThread() ) || ( evalData.allowForum && channel?.type === GuildForum ) ) {
 							response.userPermissionsNew = newchannel.permissionsFor(member).bitfield.toString();
-							response.botPermissionsNew = newchannel.permissionsFor(guild.me).bitfield.toString();
+							response.botPermissionsNew = newchannel.permissionsFor(guild.members.me).bitfield.toString();
 						}
 						else response.message = 'noChannel';
 					}
@@ -197,29 +226,68 @@ if ( process.env.dashboard ) {
 			if ( evalData.prefix ) {
 				globalThis.patreonGuildsPrefix.set(evalData.guild, evalData.prefix);
 			}
-			if ( evalData.voice && globalThis.voiceGuildsLang.has(evalData.guild) ) {
-				globalThis.voiceGuildsLang.set(evalData.guild, evalData.voice);
-			}
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				let channel = discordClient.guilds.cache.get(evalData.guild).publicUpdatesChannel;
 				if ( channel ) channel.send( {
 					content: evalData.text,
-					embeds: ( evalData.embed ? [evalData.embed] : [] ),
+					embeds: evalData.embeds ?? [],
 					files: evalData.file,
 					allowedMentions: {parse: []}
-				} ).catch(globalThis.log_error);
+				} ).catch( error => {
+					if ( error?.code === 50001 ) return; // Missing Access
+					if ( error?.code === 50013 ) return; // Missing Permissions
+					globalThis.log_error(error);
+				} );
 			}
 		},
 		createWebhook: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
-				let channel = discordClient.guilds.cache.get(evalData.guild).channels.cache.get(evalData.channel);
-				if ( channel ) return channel.createWebhook( evalData.name, {
-					avatar: ( evalData.avatar || discordClient.user.displayAvatarURL({format:'png',size:4096}) ),
+				/** @type {import('discord.js').ComponentType.ActionRow} */
+				const ActionRow = 1;
+				/** @type {import('discord.js').ComponentType.Button} */
+				const Button = 2;
+				/** @enum {import('discord.js').ButtonStyle} */
+				const ButtonStyle = {
+					/** @type {import('discord.js').ButtonStyle.Primary} */
+					Primary: 1,
+					/** @type {import('discord.js').ButtonStyle.Secondary} */
+					Secondary: 2,
+					/** @type {import('discord.js').ButtonStyle.Success} */
+					Success: 3,
+					/** @type {import('discord.js').ButtonStyle.Danger} */
+					Danger: 4,
+				};
+				let guild = discordClient.guilds.cache.get(evalData.guild);
+				/** @type {import('discord.js').BaseGuildTextChannel} */
+				let channel = guild.channels.cache.get(evalData.channel);
+				if ( channel ) return channel.createWebhook( {
+					name: evalData.name,
+					avatar: discordClient.user.displayAvatarURL({extension:'png',size:4096}),
 					reason: evalData.reason
 				} ).then( webhook => {
 					console.log( `- Dashboard: Webhook successfully created: ${evalData.guild}#${evalData.channel}` );
-					webhook.send( evalData.text ).catch(globalThis.log_error);
-					return webhook.id + '/' + webhook.token;
+					return webhook.send( {
+						avatarURL: evalData.avatar,
+						content: evalData.text,
+						components: ( evalData.button_text && evalData.button_id && ButtonStyle.hasOwnProperty(evalData.button_style) ? [{
+							type: ActionRow,
+							components: [{
+								type: Button,
+								style: ButtonStyle[evalData.button_style],
+								customId: evalData.button_id,
+								label: evalData.button_text,
+								emoji: ( evalData.button_emoji ? ( guild.emojis.cache.find( emoji => {
+									return emoji.name === evalData.button_emoji;
+								} )?.toString() ?? evalData.button_emoji ) : null )
+							}]
+						}] : [] ),
+						embeds: evalData.embeds ?? [],
+						threadId: evalData.thread,
+						allowedMentions: {parse: []}
+					} ).then( message => message?.id, globalThis.log_error ).then( message => {
+						if ( evalData.deleteWebhook ) webhook.delete(evalData.reason).catch(globalThis.log_error);
+						return {message, webhook: webhook.id + '/' + webhook.token};
+					} );
 				}, error => {
 					console.log( '- Dashboard: Error while creating the webhook: ' + error );
 				} );
@@ -229,12 +297,11 @@ if ( process.env.dashboard ) {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				return discordClient.fetchWebhook(...evalData.webhook.split('/')).then( webhook => {
 					var changes = {};
+					if ( evalData.reason ) changes.reason = evalData.reason;
 					if ( evalData.channel ) changes.channel = evalData.channel;
-					if ( evalData.name ) changes.name = evalData.name;
-					if ( evalData.avatar ) changes.avatar = evalData.avatar;
-					return webhook.edit( changes, evalData.reason ).then( newwebhook => {
+					return webhook.edit( changes ).then( newWebhook => {
 						console.log( `- Dashboard: Webhook successfully edited: ${evalData.guild}#` + ( evalData.channel || webhook.channelId ) );
-						webhook.send( evalData.text ).catch(globalThis.log_error);
+						newWebhook.send( evalData.text ).catch(globalThis.log_error);
 						return true;
 					}, error => {
 						console.log( '- Dashboard: Error while editing the webhook: ' + error );
@@ -346,7 +413,7 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 				return;
 			}
 			for ( let [key, value] of Object.entries(body.failure) ) {
-				console.log( '- ' + value[0] + ': Error while posting statistics to ' + key + ': ' + value[1]?.substring?.(0, 500) );
+				console.log( '- ' + value[0] + ': Error while posting statistics to ' + key + ': ' + value[1]?.trim?.()?.substring?.(0, 500) );
 			}
 		}, error => {
 			console.log( '- Error while posting statistics to BotBlock.org: ' + error );

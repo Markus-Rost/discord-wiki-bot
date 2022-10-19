@@ -1,0 +1,88 @@
+{
+	"inline": {
+		"description": "Δημοσίευση ενός μηνύματος με συνδέσμους wiki εντός κειμένου.",
+		"name": "inline",
+		"options[0].description": "Κείμενο που περιέχει συνδέσμους wikitext.",
+		"options[0].name": "κείμενο"
+	},
+	"interwiki": {
+		"description": "Δημοσίευση ενός συνδέσμου σε διαφορετικό wiki.",
+		"name": "interwiki",
+		"options[0].description": "To wiki προς αναζήτηση.",
+		"options[0].name": "wiki",
+		"options[1].description": "Τίτλος σελίδας προς αναζήτηση.",
+		"options[1].name": "τίτλος",
+		"options[2].description": "Τομέας σελίδας προς σύνδεση.",
+		"options[2].name": "τομέας",
+		"options[3].description": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο.",
+		"options[3].name": "ερώτημα",
+		"options[4].description": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+		"options[4].name": "ιδιωτικό",
+		"options[5].description": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+		"options[5].name": "noembed",
+		"options[6].description": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+		"options[6].name": "σπόιλερ"
+	},
+	"overview": {
+		"description": "Δημοσίευση ανασκόπησης wiki.",
+		"name": "ανασκόπηση",
+		"options[0].description": "Το wiki προς αναζήτηση.",
+		"options[0].name": "wiki",
+		"options[1].description": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+		"options[1].name": "ιδιωτικό",
+		"options[2].description": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+		"options[2].name": "noembed",
+		"options[3].description": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+		"options[3].name": "σπόιλερ"
+	},
+	"patreon": {
+		"description": "Έλεγχος ή αλλαγή των διακομιστών σας με ενεργά τα χαρακτηριστικά patreon.",
+		"name": "patreon",
+		"options[0].description": "Έλεγχος της τρέχουσας λίστας διακομιστών σας με ενεργοποιημένα τα χαρακτηριστικά patreon.",
+		"options[0].name": "έλεγχος",
+		"options[1].description": "Ενεργοποίηση των χαρακτηριστικών patreon για ένα διακομιστή.",
+		"options[1].name": "ενεργοποίηση",
+		"options[1].options[0].description": "Ο διακομιστής για ενεργοποίηση των χαρακτηριστικών patreon.",
+		"options[1].options[0].name": "συντεχνία",
+		"options[2].description": "Απενεργοποίηση των χαρακτηριστικών patreon για διακομιστή.",
+		"options[2].name": "απενεργοποίηση",
+		"options[2].options[0].description": "Ο διακομιστής για απενεργοποίηση των χαρακτηριστικών patreon.",
+		"options[2].options[0].name": "συντεχνία"
+	},
+	"random": {
+		"description": "Δημοσίευση ενός τυχαίου συνδέσμου wiki.",
+		"name": "τυχαίος",
+		"options[0].description": "Το wiki προς αναζήτηση.",
+		"options[0].name": "wiki",
+		"options[1].description": "Οι ονοματοχώροι προς αναζήτηση.",
+		"options[1].name": "ονοματοχώρος",
+		"options[2].description": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+		"options[2].name": "ιδιωτικό",
+		"options[3].description": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+		"options[3].name": "noembed",
+		"options[4].description": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+		"options[4].name": "σπόιλερ"
+	},
+	"verify": {
+		"description": "Επιβεβαίωση του λογαριασμού Discord με τον λογαριασμό wiki.",
+		"name": "επιβεβαίωση",
+		"options[0].description": "Το όνομα χρήστη σας στο wiki.",
+		"options[0].name": "username"
+	},
+	"wiki": {
+		"description": "Δημοσίευση ενός συνδέσμου wiki.",
+		"name": "wiki",
+		"options[0].description": "Τίτλος σελίδας προς αναζήτηση.",
+		"options[0].name": "τίτλος",
+		"options[1].description": "Τομέας σελίδας προς σύνδεση.",
+		"options[1].name": "τομέας",
+		"options[2].description": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο.",
+		"options[2].name": "ερώτημα",
+		"options[3].description": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+		"options[3].name": "ιδιωτικό",
+		"options[4].description": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+		"options[4].name": "noembed",
+		"options[5].description": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+		"options[5].name": "σπόιλερ"
+	}
+}

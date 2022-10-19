@@ -1,1 +1,88 @@
-{}
+{
+	"inline": {
+		"description": "Poste uma mensagem com links da wiki embutidos na linha.",
+		"name": "inline",
+		"options[0].description": "Texto incluindo links no estilo wikitexto.",
+		"options[0].name": "texto"
+	},
+	"interwiki": {
+		"description": "Postar um link a uma wiki diferente.",
+		"name": "interwiki",
+		"options[0].description": "A wiki a ser pesquisada.",
+		"options[0].name": "wiki",
+		"options[1].description": "O título da página a ser pesquisada.",
+		"options[1].name": "título",
+		"options[2].description": "Seção da página que o link deve abrir.",
+		"options[2].name": "seção",
+		"options[3].description": "Parâmetros a serem adicionados à URL.",
+		"options[3].name": "query",
+		"options[4].description": "Deseja que a resposta seja privada?",
+		"options[4].name": "privado",
+		"options[5].description": "Enviar o link sem a pré-visualização?",
+		"options[5].name": "sem_embed",
+		"options[6].description": "Ocultar o link como spoiler?",
+		"options[6].name": "spoiler"
+	},
+	"overview": {
+		"description": "Postar uma visualização geral da wiki.",
+		"name": "visão_geral",
+		"options[0].description": "A wiki a ser pesquisada.",
+		"options[0].name": "wiki",
+		"options[1].description": "Deseja que a resposta seja privada?",
+		"options[1].name": "privado",
+		"options[2].description": "Enviar o link sem a pré-visualização?",
+		"options[2].name": "sem_embed",
+		"options[3].description": "Ocultar o link como spoiler?",
+		"options[3].name": "spoiler"
+	},
+	"patreon": {
+		"description": "Consulte ou modifique seus servidores que possuem ferramentas do Patreon ativadas.",
+		"name": "patreon",
+		"options[0].description": "Consulte a lista dos seus servidores que possuem ferramentas do Patreon ativadas.",
+		"options[0].name": "verificar",
+		"options[1].description": "Ativar as ferramentas do Patreon para um servidor.",
+		"options[1].name": "ativar",
+		"options[1].options[0].description": "O servidor que deve receber as ferramentas do Patreon.",
+		"options[1].options[0].name": "servidor",
+		"options[2].description": "Desativar as ferramentas do Patreon para um servidor.",
+		"options[2].name": "desativar",
+		"options[2].options[0].description": "O servidor que deve ter as ferramentas do Patreon desativadas.",
+		"options[2].options[0].name": "servidor"
+	},
+	"random": {
+		"description": "Poste um link aleatório da wiki.",
+		"name": "aleatório",
+		"options[0].description": "A wiki a ser pesquisada.",
+		"options[0].name": "wiki",
+		"options[1].description": "Os espaços nominais a serem pesquisados.",
+		"options[1].name": "espaço_nominal",
+		"options[2].description": "Deseja que a resposta seja privada?",
+		"options[2].name": "privado",
+		"options[3].description": "Enviar o link sem a pré-visualização?",
+		"options[3].name": "sem_embed",
+		"options[4].description": "Ocultar o link como spoiler?",
+		"options[4].name": "spoiler"
+	},
+	"verify": {
+		"description": "Verifique a sua conta do Discord na sua conta da wiki.",
+		"name": "verificar",
+		"options[0].description": "Seu nome de usuário na wiki.",
+		"options[0].name": "nomedeusuario"
+	},
+	"wiki": {
+		"description": "Poste um link da wiki.",
+		"name": "wiki",
+		"options[0].description": "O título da página a ser pesquisada.",
+		"options[0].name": "título",
+		"options[1].description": "Seção da página que o link deve abrir.",
+		"options[1].name": "seção",
+		"options[2].description": "Parâmetros a serem adicionados à URL.",
+		"options[2].name": "query",
+		"options[3].description": "Deseja que a resposta seja privada?",
+		"options[3].name": "privado",
+		"options[4].description": "Enviar o link sem a pré-visualização?",
+		"options[4].name": "sem_embed",
+		"options[5].description": "Ocultar o link como spoiler?",
+		"options[5].name": "spoiler"
+	}
+}

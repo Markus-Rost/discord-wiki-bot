@@ -1,5 +1,6 @@
-import { randomBytes } from 'crypto';
-import { MessageEmbed, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { randomBytes } from 'node:crypto';
+import { ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
 import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functions.js';
@@ -12,12 +13,12 @@ import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functio
  * @param {String} line - The command as plain text.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the message.
  */
-function cmd_verify(lang, msg, args, line, wiki) {
+export default function cmd_verify(lang, msg, args, line, wiki) {
 	if ( !msg.inGuild() || msg.defaultSettings ) return this.LINK(lang, msg, line, wiki);
-	if ( !msg.guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES) ) {
+	if ( !msg.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) {
 		if ( msg.isAdmin() ) {
-			console.log( msg.guildId + ': Missing permissions - MANAGE_ROLES' );
-			msg.replyMsg( lang.get('general.missingperm') + ' `MANAGE_ROLES`' );
+			console.log( msg.guildId + ': Missing permissions - ManageRoles' );
+			msg.replyMsg( lang.get('general.missingperm') + ' `ManageRoles`' );
 		}
 		else if ( !msg.onlyVerifyCommand ) this.LINK(lang, msg, line, wiki);
 		return;
@@ -31,16 +32,24 @@ function cmd_verify(lang, msg, args, line, wiki) {
 		
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
-			if ( wiki.isWikimedia() ) oauth.push('wikimedia');
-			if ( wiki.isMiraheze() ) oauth.push('miraheze');
+			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
+			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else {
+				let project = inputToWikiProject(wiki.href)
+				if ( project ) oauth.push(project.wikiProject.name);
+			}
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
 					if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
 						form: {
-							grant_type: 'refresh_token', refresh_token: row.token,
+							grant_type: 'refresh_token',
+							refresh_token: row.token,
 							redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 							client_id: process.env['oauth_' + ( oauth[1] || oauth[0] )],
 							client_secret: process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret']
+						},
+						context: {
+							guildId: msg.guildId
 						}
 					} ).then( response => {
 						var body = response.body;
@@ -49,9 +58,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							return Promise.reject(row);
 						}
 						if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, msg.author.id, ( oauth[1] || oauth[0] )] ).then( () => {
-							console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully updated.' );
+							console.log( '- OAuth2 token for ' + msg.author.id + ' successfully updated.' );
 						}, dberror => {
-							console.log( '- Dashboard: Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+							console.log( '- Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 						} );
 						return verifyOauthUser('', body.access_token, {
 							wiki: wiki.href, channel: msg.channel,
@@ -72,9 +81,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					if ( row ) {
 						if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 						else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( oauth[1] || oauth[0] )] ).then( () => {
-							console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
+							console.log( '- OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
 						}, dberror => {
-							console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+							console.log( '- Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 						} );
 					}
 					let state = `${oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
@@ -93,8 +102,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					}).toString();
 					return msg.member.send( {
 						content: lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>',
-						components: [new MessageActionRow().addComponents(
-							new MessageButton().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+						components: [new ActionRowBuilder().addComponents(
+							new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 						)]
 					} ).then( message => {
 						msg.reactEmoji('📩');
@@ -111,7 +120,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			}
 		}
 		
-		var username = args.join(' ').replace( /_/g, ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0].substring(0, 250).trim();
+		var username = args.join(' ').replaceAll( wiki.spaceReplacement ?? '_', ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0].substring(0, 250).trim();
 		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
 			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
 		}
@@ -123,15 +132,19 @@ function cmd_verify(lang, msg, args, line, wiki) {
 			return this.help(lang, msg, args, line, wiki);
 		}
 		msg.reactEmoji('⏳').then( reaction => {
-			verify(lang, msg.channel, msg.member, username, wiki, rows).then( result => {
+			verify(lang, lang, msg.channel, msg.member, username, wiki, rows).then( result => {
 				if ( result.oauth.length ) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
 							form: {
-								grant_type: 'refresh_token', refresh_token: row.token,
+								grant_type: 'refresh_token',
+								refresh_token: row.token,
 								redirect_uri: new URL('/oauth/mw', process.env.dashboard).href,
 								client_id: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] )],
 								client_secret: process.env['oauth_' + ( result.oauth[1] || result.oauth[0] ) + '_secret']
+							},
+							context: {
+								guildId: msg.guildId
 							}
 						} ).then( response => {
 							var body = response.body;
@@ -140,9 +153,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 								return Promise.reject(row);
 							}
 							if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully updated.' );
+								console.log( '- OAuth2 token for ' + msg.author.id + ' successfully updated.' );
 							}, dberror => {
-								console.log( '- Dashboard: Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+								console.log( '- Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 							} );
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: msg.channel,
@@ -163,9 +176,9 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						if ( row ) {
 							if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 							else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- Dashboard: OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
+								console.log( '- OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
 							}, dberror => {
-								console.log( '- Dashboard: Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+								console.log( '- Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
 							} );
 						}
 						let state = `${result.oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
@@ -184,8 +197,8 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						}).toString();
 						msg.member.send( {
 							content: lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>',
-							components: [new MessageActionRow().addComponents(
-								new MessageButton().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle('LINK').setURL(oauthURL)
+							components: [new ActionRowBuilder().addComponents(
+								new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)]
 						} ).then( message => {
 							msg.reactEmoji('📩');
@@ -211,21 +224,25 @@ function cmd_verify(lang, msg, args, line, wiki) {
 							repliedUser: true
 						}
 					};
-					if ( result.add_button ) options.components.push(new MessageActionRow().addComponents(
-						new MessageButton().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle('PRIMARY').setCustomId('verify_again')
+					if ( result.add_button ) options.components.push(new ActionRowBuilder().addComponents(
+						new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 					));
 					if ( result.send_private ) {
-						let dmEmbeds = [new MessageEmbed(result.embed)];
+						let dmEmbeds = [];
 						if ( options.embeds[0] ) {
-							dmEmbeds.push(new MessageEmbed(options.embeds[0]));
-							dmEmbeds[0].fields.forEach( field => {
+							dmEmbeds.push(EmbedBuilder.from(options.embeds[0]));
+							dmEmbeds[0].data.fields?.forEach( field => {
 								field.value = field.value.replace( /<@&(\d+)>/g, (mention, id) => {
 									if ( !msg.guild.roles.cache.has(id) ) return mention;
 									return escapeFormatting('@' + msg.guild.roles.cache.get(id)?.name);
 								} );
 							} );
 						}
-						msg.member.send( {content: msg.channel.toString() + '; ' + result.content, embeds: dmEmbeds, components: []} ).then( message => {
+						msg.member.send( {
+							content: msg.channel.toString() + '; ' + result.content,
+							embeds: dmEmbeds,
+							components: []
+						} ).then( message => {
 							msg.reactEmoji('📩');
 							allowDelete(message, msg.author.id);
 							setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
@@ -238,7 +255,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 						} ).then( message => {
 							if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
 							if ( message ) {
-								if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channelId + '>');
+								if ( result.logging.embed ) result.logging.embed.addFields( {name: message.url, value: '<#' + msg.channelId + '>'} );
 								else result.logging.content += '\n<#' + msg.channelId + '> – <' + message.url + '>';
 							}
 							msg.guild.channels.cache.get(result.logging.channel).send( {
@@ -250,7 +267,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 					else msg.replyMsg( options, false, false ).then( message => {
 						if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
 						if ( message ) {
-							if ( result.logging.embed ) result.logging.embed.addField(message.url, '<#' + msg.channelId + '>');
+							if ( result.logging.embed ) result.logging.embed.addFields( {name: message.url, value: '<#' + msg.channelId + '>'} );
 							else result.logging.content += '\n<#' + msg.channelId + '> – <' + message.url + '>';
 						}
 						msg.guild.channels.cache.get(result.logging.channel).send( {
@@ -275,7 +292,7 @@ function cmd_verify(lang, msg, args, line, wiki) {
 	} );
 }
 
-export default {
+export const cmdData = {
 	name: 'verify',
 	everyone: true,
 	pause: false,

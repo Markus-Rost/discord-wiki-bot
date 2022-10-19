@@ -9,32 +9,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Load Repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         token: ${{ secrets.WIKIBOT_TOKEN }}
     - name: Update slash commands
       run: |
+        validlang=("en" "ja" "fr" "zh-TW" "no" "ro" "da" "ko" "nl" "ru" "uk" "el" "sv-SE" "hr" "pl" "tr" "vi" "hi" "zh-CN" "es-ES" "hu" "en-GB" "pt-BR" "de" "lt" "en-US" "cs" "fi" "bg" "th" "it")
         for language in interactions/i18n/*.json
         do
           language=$(basename $language .json)
+          if [[ ! " ${validlang[*]} " =~ " ${language} " ]]
+          then
+            echo $language
+            continue
+          fi
           for file in `jq -r 'keys[]' interactions/i18n/$language.json`
           do
+            if [[ "$file" =~ ^_ ]]
+            then
+              continue
+            fi
             echo $file
             for key in `jq -r ".$file | keys[]" interactions/i18n/$language.json`
             do
               echo $key
               content="`jq \".$file.\\\"$key\\\"\" interactions/i18n/$language.json`"
+              if ! [[ "$key" =~ description$ || "$key" =~ choices\[[0-9]+\]\.name$ ]]
+              then
+                content=${content,,}
+              fi
               echo $content
               if [[ "$language" = "en" ]]
               then
                 if [[ "$key" =~ description$ || "$key" =~ choices\[[0-9]+\]\.name$ ]]
                 then
-                  echo "`jq \".$key=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                  echo "`jq \".$key=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
                 fi
-                echo "`jq \".${key}_localizations.\\\"en-GB\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
-                echo "`jq \".${key}_localizations.\\\"en-US\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"en-GB\\\"=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"en-US\\\"=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
               else
-                echo "`jq \".${key}_localizations.\\\"$language\\\"=$content\" interactions/commands/$file.json`" > interactions/commands/$file.json
+                echo "`jq \".${key}_localizations.\\\"$language\\\"=$content\" interactions/commands/$file.json --tab`" > interactions/commands/$file.json
               fi
             done
           done

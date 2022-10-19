@@ -1,10 +1,10 @@
-import { readFileSync } from 'fs';
-import { randomBytes } from 'crypto';
+import { readFileSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
 import { load as cheerioLoad } from 'cheerio';
 import Wiki from '../util/wiki.js';
 import { allLangs } from './i18n.js';
-import { got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm } from './util.js';
-import { createRequire } from 'module';
+import { got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm, PermissionFlagsBits, OAuth2Scopes } from './util.js';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
 const allLangNames = allLangs().names;
@@ -27,17 +27,17 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		}
 		sessionData.delete(state);
 	}
-	var $ = cheerioLoad(file);
+	var $ = cheerioLoad(file, {baseURI: new URL('/login', process.env.dashboard)});
 	$('html').attr('lang', dashboardLang.lang);
 	if ( theme === 'light' ) $('html').addClass('theme-light');
 	$('<script>').text(`
-		const selectLanguage = '${dashboardLang.get('general.language').replace( /'/g, '\\$&' )}';
+		const selectLanguage = '${dashboardLang.get('general.language').replaceAll( '\'', '\\$&' )}';
 		const allLangs = ${JSON.stringify(allLangNames)};
 	`).insertBefore('script#langjs');
 	$('head title').text(dashboardLang.get('general.login') + ' – ' + dashboardLang.get('general.title'));
 	$('#login-button span, .channel#login div').text(dashboardLang.get('general.login'));
 	$('.channel#login').attr('title', dashboardLang.get('general.login'));
-	$('.channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
+	$('#invite-button span, .channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
 	$('.channel#invite-wikibot').attr('title', dashboardLang.get('general.invite'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
@@ -60,10 +60,15 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		state = Date.now().toString(16) + randomBytes(16).toString('hex');
 	}
 	let invite = oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds', 'bot', 'applications.commands'],
+		scope: [
+			OAuth2Scopes.Identify,
+			OAuth2Scopes.Guilds,
+			OAuth2Scopes.Bot,
+			OAuth2Scopes.ApplicationsCommands
+		],
 		permissions: defaultPermissions, state
 	} );
-	$('.guild#invite a, .channel#invite-wikibot').attr('href', invite);
+	$('.guild#invite a, .channel#invite-wikibot, #invite-button').attr('href', invite);
 	let url = oauth.generateAuthUrl( {
 		scope: ['identify', 'guilds'],
 		prompt, state
@@ -109,12 +114,12 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 			oauth.getUserGuilds(access_token)
 		]).then( ([user, guilds]) => {
 			guilds = guilds.filter( guild => {
-				return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
+				return ( guild.owner || hasPerm(guild.permissions, PermissionFlagsBits.ManageGuild) );
 			} ).map( guild => {
 				return {
 					id: guild.id,
 					name: guild.name,
-					acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
+					acronym: guild.name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
 					icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
 					+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
 					userPermissions: guild.permissions
@@ -164,7 +169,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				let returnLocation = '/';
 				if ( lastGuild ) {
 					if ( lastGuild === 'user' ) returnLocation += lastGuild;
-					else if ( /^\d+\/(?:settings|verification|rcscript|slash)(?:\/(?:\d+|new|notice))?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
+					else if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
 				}
 				res.writeHead(302, {
 					Location: returnLocation,
@@ -197,12 +202,12 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 function dashboard_refresh(res, userSession, returnLocation = '/') {
 	return oauth.getUserGuilds(userSession.access_token).then( guilds => {
 		guilds = guilds.filter( guild => {
-			return ( guild.owner || hasPerm(guild.permissions, 'MANAGE_GUILD') );
+			return ( guild.owner || hasPerm(guild.permissions, PermissionFlagsBits.ManageGuild) );
 		} ).map( guild => {
 			return {
 				id: guild.id,
 				name: guild.name,
-				acronym: guild.name.replace( /'s /g, ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
+				acronym: guild.name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
 				icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
 				+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
 				userPermissions: guild.permissions
@@ -248,14 +253,15 @@ function dashboard_refresh(res, userSession, returnLocation = '/') {
  * Check if a wiki is availabe
  * @param {import('http').ServerResponse} res - The server response
  * @param {String} input - The wiki to check
+ * @param {String} [guild] - The guild the check is for
  */
-function dashboard_api(res, input) {
+function dashboard_api(res, input, guild = null) {
 	var wiki = Wiki.fromInput('https://' + input + '/');
 	var result = {
 		api: true,
 		error: false,
 		error_code: '',
-		wiki: wiki?.href,
+		wiki: wiki?.name,
 		base: '',
 		sitename: '',
 		logo: '',
@@ -274,17 +280,24 @@ function dashboard_api(res, input) {
 		return res.end();
 	}
 	return got.get( wiki + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
-		responseType: 'text'
+		responseType: 'text',
+		context: {
+			guildId: guild
+		}
 	} ).then( response => {
 		try {
 			response.body = JSON.parse(response.body);
 		}
 		catch (error) {
 			if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-				let api = cheerioLoad(response.body)('head link[rel="EditURI"]').prop('href');
+				let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
 				if ( api ) {
 					wiki = new Wiki(api.split('api.php?')[0], wiki);
-					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json' );
+					return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
+						context: {
+							guildId: guild
+						}
+					} );
 				}
 			}
 		}
@@ -300,7 +313,7 @@ function dashboard_api(res, input) {
 			return;
 		}
 		wiki.updateWiki(body.query.general);
-		result.wiki = wiki.href;
+		result.wiki = wiki.name;
 		result.base = body.query.general.base;
 		result.sitename = body.query.general.sitename;
 		result.logo = body.query.general.logo;
@@ -311,7 +324,7 @@ function dashboard_api(res, input) {
 			result.RcGcDw = body.query.allmessages[0]['*'];
 		}
 		result.customRcGcDw = wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit');
-		if ( wiki.isFandom() ) return;
+		if ( wiki.wikifarm === 'fandom' ) return;
 	}, error => {
 		if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
 			console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
@@ -375,7 +388,7 @@ function mediawiki_oauth(res, searchParams, user_id) {
 				res.writeHead(302, {Location: '/user?oauth=failed'});
 				return res.end();
 			}
-			return db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES($1, $2, $3)', [user_id, oauthSite.id, body.refresh_token] ).then( () => {
+			return db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES ($1, $2, $3)', [user_id, oauthSite.id, body.refresh_token] ).then( () => {
 				console.log( '- Dashboard: OAuth2 token for ' + user_id + ' successfully saved.' );
 				res.writeHead(302, {Location: '/user?oauth=success'});
 				return res.end();
@@ -390,7 +403,7 @@ function mediawiki_oauth(res, searchParams, user_id) {
 			access_token: body.access_token
 		} ).then( () => {
 			let userid = oauthVerify.get(state);
-			if ( userid && body?.refresh_token ) db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES($1, $2, $3)', [userid, oauthSite.id, body.refresh_token] ).then( () => {
+			if ( userid && body?.refresh_token ) db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES ($1, $2, $3)', [userid, oauthSite.id, body.refresh_token] ).then( () => {
 				console.log( '- Dashboard: OAuth2 token for ' + userid + ' successfully saved.' );
 			}, dberror => {
 				console.log( '- Dashboard: Error while saving the OAuth2 token for ' + userid + ': ' + dberror );

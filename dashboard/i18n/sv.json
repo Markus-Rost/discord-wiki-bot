@@ -1,72 +1,68 @@
 {
-    "fallback": [
-        "en",
-        " ",
-        " ",
-        " ",
-        " "
-    ],
-    "general": {
-        "botlist": {
-            "text": "Hjälp andra att hitta Wiki-Bot genom att rösta på den i dessa bot-listor:",
-            "title": "Bot-listor"
-        },
-        "delete": "Radera",
-        "invite": "Bjud in Wiki-Bot",
-        "language": "Ändra Språk",
-        "login": "Logga in",
-        "logout": "Logga ut",
-        "rcscript": "Senaste ändringarna",
-        "refresh": "Uppdatera serverlistan",
-        "save": "Spara",
-        "selector": "Serverväljare",
-        "settings": "Inställningar",
-        "slash": "Slash-kommandon",
-        "support": "Support-server",
-        "theme-dark": "Använd mörkt tema",
-        "theme-light": "Använd ljust tema",
-        "title": "Wiki Bot-inställningar",
-        "verification": "Verifieringar"
-    },
-    "indexjs": {
-        "avatar": {
-            "invalid_url": "Det gick inte att hämta en giltig bildfil från webbadressen."
-        },
-        "invalid": {
-            "title": "Ogiltig wiki!"
-        },
-        "outdated": {
-            "text": "Webhooken för de senaste ändringarna kräver minst MediaWiki 1.30!",
-            "title": "En gammal MediaWiki version används!"
-        },
-        "prefix": {
-            "backslash": "Prefixet får inte innehålla snedstreck!",
-            "code": "Prefixet får inte innehålla kodmarkering!",
-            "space": "Prefixet får inte innehålla mellanslag!"
-        },
-        "sysmessage": {
-            "text": "Sidan $1 måste matcha server-id:t $2.",
-            "title": "Systemmeddelandet matchar inte!"
-        },
-        "valid": {
-            "MediaWiki": "Varning: Kräver minst $1 för full funktionalitet.",
-            "title": "Wikin är giltig och kan användas!"
-        }
-    },
-    "notice": {
-        "error": {
-            "text": "Ett okänt fel uppstod, försök igen.",
-            "title": "Okänt fel!"
-        }
-    },
-    "rcscript": {
-        "form": {
-            "lang": "Språk:"
-        }
-    },
-    "settings": {
-        "form": {
-            "lang": "Språk:"
-        }
-    }
+	"fallback": [
+		"en",
+		" ",
+		" ",
+		" ",
+		" "
+	],
+	"general": {
+		"botlist": {
+			"text": "Hjälp andra att hitta Wiki-Bot genom att rösta på den i dessa bot-listor:",
+			"title": "Bot-listor"
+		},
+		"delete": "Radera",
+		"invite": "Bjud in Wiki-Bot",
+		"language": "Ändra Språk",
+		"login": "Logga in",
+		"logout": "Logga ut",
+		"rcscript": "Senaste ändringarna",
+		"refresh": "Uppdatera serverlistan",
+		"save": "Spara",
+		"selector": "Serverväljare",
+		"settings": "Inställningar",
+		"support": "Support-server",
+		"theme-dark": "Använd mörkt tema",
+		"theme-light": "Använd ljust tema",
+		"title": "Wiki Bot-inställningar",
+		"verification": "Verifieringar"
+	},
+	"indexjs": {
+		"invalid": {
+			"title": "Ogiltig wiki!"
+		},
+		"outdated": {
+			"text": "Webhooken för de senaste ändringarna kräver minst MediaWiki 1.30!",
+			"title": "En gammal MediaWiki version används!"
+		},
+		"prefix": {
+			"backslash": "Prefixet får inte innehålla snedstreck!",
+			"code": "Prefixet får inte innehålla kodmarkering!",
+			"space": "Prefixet får inte innehålla mellanslag!"
+		},
+		"sysmessage": {
+			"text": "Sidan $1 måste matcha server-id:t $2.",
+			"title": "Systemmeddelandet matchar inte!"
+		},
+		"valid": {
+			"MediaWiki": "Varning: Kräver minst $1 för full funktionalitet.",
+			"title": "Wikin är giltig och kan användas!"
+		}
+	},
+	"notice": {
+		"error": {
+			"text": "Ett okänt fel uppstod, försök igen.",
+			"title": "Okänt fel!"
+		}
+	},
+	"rcscript": {
+		"form": {
+			"lang": "Språk:"
+		}
+	},
+	"settings": {
+		"form": {
+			"lang": "Språk:"
+		}
+	}
 }
