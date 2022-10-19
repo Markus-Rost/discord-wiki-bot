@@ -1,4 +1,13 @@
 {
+	"diff": {
+		"description": "Visa skillnad av en wiki redigeringar.",
+		"options[0].description": "Visa skillnaden för den senaste redigeringen för en wiki sida.",
+		"options[0].options[0].description": "Titeln på sidan du vill se den senaste skillnaden för.",
+		"options[0].options[1].description": "Wikin att söka i.",
+		"options[0].options[2].description": "Vill du endast visa svaret för dig själv?",
+		"options[0].options[3].description": "Skicka endast länken, utan inbäddning?",
+		"options[0].options[4].description": "Dölj länken och inbäddningen som en \"spoiler\"?"
+	},
 	"inline": {
 		"description": "Skicka ett meddelande med wikilänkar på samma rad.",
 		"name": "inline",
