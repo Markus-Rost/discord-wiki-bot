@@ -164,7 +164,7 @@
 		"list": {
 			"default": {
 				"cmd": "<sökterm>",
-				"desc": "Jag kommer att svara med en länk till en passande artikel på wikin."
+				"desc": "Jag kommer att svara med en länk till en passande artikel på wikin:"
 			},
 			"diff": {
 				"id": {
@@ -560,14 +560,14 @@
 	},
 	"settings": {
 		"button": "Använd kontrollpanelen",
-		"channel current": "dessa är de nuvarande inställningarna för den här kanalen:",
+		"channel current": "Dessa är de nuvarande inställningarna för den här kanalen:",
 		"channel lang": "den här kanalens språk är:",
 		"channel langchanged": "du ändrade den här kanalens språk till:",
 		"channel role": "den lägsta rollen som krävs för den här kanalen är:",
 		"channel rolechanged": "du har ändrat den lägsta rollen som krävs för denna kanal till:",
 		"channel wiki": "standardwikin för den här kanalen är:",
 		"channel wikichanged": "du har ändrat standardwikin för den här kanalen till:",
-		"current": "det här är de nuvarande inställningarna för den här servern:",
+		"current": "Det här är de nuvarande inställningarna för den här servern:",
 		"currentinline": "\"Inline\"-kommandon:",
 		"currentlang": "Språk:",
 		"currentprefix": "Prefix:",
@@ -621,7 +621,7 @@
 		"notice": "Begränsad funktionalitet",
 		"pause": "Jag är för tillfället pausad på denna server.",
 		"text": [
-			"",
+			"Jag är fullt fungerande!",
 			" ",
 			" ",
 			" ",

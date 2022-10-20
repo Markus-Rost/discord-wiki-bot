@@ -1,4 +1,7 @@
 {
+	"_app-directory": {
+		"short_description": "Wiki-Bot'un amacı viki sayfalarını kolayca aratıp bağlantı vermek ve bunu yaparken kısa açıklamalar ile ek bilgi sağlamaktır. Ayrıca viki hesabı doğrulama ve son değişiklikler akışı da sağlamaktadır."
+	},
 	"inline": {
 		"description": "Satır içi viki bağlantıları ile mesaj paylaş.",
 		"name": "inline",
