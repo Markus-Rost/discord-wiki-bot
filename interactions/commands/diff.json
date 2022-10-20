@@ -9,7 +9,8 @@
 		"es-ES": "diff",
 		"zh-CN": "diff",
 		"zh-TW": "diff",
-		"it": "diff"
+		"it": "diff",
+		"sv-SE": "diff"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
@@ -19,7 +20,8 @@
 		"es-ES": "Mostrar una diff de edición del wiki.",
 		"zh-CN": "展示wiki编辑差异。",
 		"zh-TW": "展示wiki編輯差異。",
-		"it": "Mostra il diff di una modifica alla wiki."
+		"it": "Mostra il diff di una modifica alla wiki.",
+		"sv-SE": "Visa skillnad av en wiki redigeringar."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -35,7 +37,8 @@
 				"es-ES": "página",
 				"zh-CN": "page",
 				"zh-TW": "page",
-				"it": "pagina"
+				"it": "pagina",
+				"sv-SE": "sida"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
@@ -45,7 +48,8 @@
 				"es-ES": "Muestra la última diff de edición de una página wiki.",
 				"zh-CN": "显示wiki页面最近一次编辑的差异。",
 				"zh-TW": "顯示wiki頁面最近一次的編輯差異。",
-				"it": "Mostra il diff dell'ultima modifica a una pagina della wiki."
+				"it": "Mostra il diff dell'ultima modifica a una pagina della wiki.",
+				"sv-SE": "Visa skillnaden för den senaste redigeringen för en wiki sida."
 			},
 			"options": [
 				{
@@ -63,7 +67,8 @@
 						"el": "τίτλος",
 						"pt-BR": "título",
 						"en-GB": "title",
-						"en-US": "title"
+						"en-US": "title",
+						"sv-SE": "titel"
 					},
 					"description": "Page title to show the last edit diff of.",
 					"description_localizations": {
@@ -73,7 +78,8 @@
 						"es-ES": "Título de la página a mostrar la última diff de edición.",
 						"zh-CN": "要展示最近一次编辑差异的页面标题。",
 						"zh-TW": "要展示最近一次編輯差異的頁面標題。",
-						"it": "Titolo della pagina di cui mostrare il diff dell'ultima modifica."
+						"it": "Titolo della pagina di cui mostrare il diff dell'ultima modifica.",
+						"sv-SE": "Titeln på sidan du vill se den senaste skillnaden för."
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -94,7 +100,8 @@
 						"el": "wiki",
 						"pt-BR": "wiki",
 						"en-GB": "wiki",
-						"en-US": "wiki"
+						"en-US": "wiki",
+						"sv-SE": "wiki"
 					},
 					"description": "The wiki to search in.",
 					"description_localizations": {
@@ -108,7 +115,8 @@
 						"el": "Το wiki προς αναζήτηση.",
 						"pt-BR": "A wiki a ser pesquisada.",
 						"en-GB": "The wiki to search in.",
-						"en-US": "The wiki to search in."
+						"en-US": "The wiki to search in.",
+						"sv-SE": "Wikin att söka i."
 					},
 					"required": false,
 					"autocomplete": true
@@ -128,7 +136,8 @@
 						"el": "ιδιωτικό",
 						"pt-BR": "privado",
 						"en-GB": "private",
-						"en-US": "private"
+						"en-US": "private",
+						"sv-SE": "privat"
 					},
 					"description": "Send a response only visible to yourself?",
 					"description_localizations": {
@@ -143,7 +152,8 @@
 						"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
 						"pt-BR": "Deseja que a resposta seja privada?",
 						"en-GB": "Send a response only visible to yourself?",
-						"en-US": "Send a response only visible to yourself?"
+						"en-US": "Send a response only visible to yourself?",
+						"sv-SE": "Vill du endast visa svaret för dig själv?"
 					},
 					"required": false
 				},
@@ -177,7 +187,8 @@
 						"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
 						"pt-BR": "Enviar o link sem a pré-visualização?",
 						"en-GB": "Send only the link without embed?",
-						"en-US": "Send only the link without embed?"
+						"en-US": "Send only the link without embed?",
+						"sv-SE": "Skicka endast länken, utan inbäddning?"
 					},
 					"required": false
 				},
@@ -195,7 +206,8 @@
 						"el": "σπόιλερ",
 						"pt-BR": "spoiler",
 						"en-GB": "spoiler",
-						"en-US": "spoiler"
+						"en-US": "spoiler",
+						"sv-SE": "spoiler"
 					},
 					"description": "Hide the link and embed in a spoiler?",
 					"description_localizations": {
@@ -210,7 +222,8 @@
 						"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
 						"pt-BR": "Ocultar o link como spoiler?",
 						"en-GB": "Hide the link and embed in a spoiler?",
-						"en-US": "Hide the link and embed in a spoiler?"
+						"en-US": "Hide the link and embed in a spoiler?",
+						"sv-SE": "Dölj länken och inbäddningen som en \"spoiler\"?"
 					},
 					"required": false
 				}
@@ -226,7 +239,8 @@
 				"es-ES": "ids",
 				"zh-CN": "ids",
 				"zh-TW": "ids",
-				"it": "id"
+				"it": "id",
+				"sv-SE": "ids"
 			},
 			"description": "Show the a wiki edit diff based on the ID.",
 			"description_localizations": {
@@ -236,7 +250,8 @@
 				"es-ES": "Mostrar la diff de edición del wiki basado en el ID.",
 				"zh-CN": "通过ID展示wiki编辑差异。",
 				"zh-TW": "透過ID展示wiki編輯差異。",
-				"it": "Mostra il diff di una modifica sulla wiki in base all'ID."
+				"it": "Mostra il diff di una modifica sulla wiki in base all'ID.",
+				"sv-SE": "Visa en wiki-redigeringsdiff baserat på ID:et."
 			},
 			"options": [
 				{
@@ -249,7 +264,8 @@
 						"es-ES": "relativa",
 						"zh-CN": "relative",
 						"zh-TW": "relative",
-						"it": "relativo"
+						"it": "relativo",
+						"sv-SE": "relativ"
 					},
 					"description": "Show a relative wiki edit diff based on the ID.",
 					"description_localizations": {
@@ -259,7 +275,8 @@
 						"es-ES": "Mostrar una diff de edición del wiki relativa basada en el ID.",
 						"zh-CN": "通过ID展示相关的wiki编辑差异。",
 						"zh-TW": "透過ID展示相關的wiki編輯差異。",
-						"it": "Mostra il diff relativo di una modifica sulla wiki in base all'ID."
+						"it": "Mostra il diff relativo di una modifica sulla wiki in base all'ID.",
+						"sv-SE": "Visa en relativ wiki-redigeringsdiff baserat på ID:et."
 					},
 					"options": [
 						{
