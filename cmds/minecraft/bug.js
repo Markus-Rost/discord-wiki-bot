@@ -20,7 +20,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 	if ( invoke && /\d+$/.test(invoke) && !args.length ) {
 		if ( /^\d+$/.test(invoke) ) invoke = 'MC-' + invoke;
 		var baseBrowseUrl = 'https://bugs.mojang.com/browse/';
-		return got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,description,issuelinks,fixVersions,resolution,status', {
+		return got.get( 'https://bugs.mojang.com/rest/api/2/issue/' + encodeURIComponent( invoke ) + '?fields=summary,description,issuelinks,fixVersions,resolution,status,versions', {
 			context: {
 				guildId: msg.guildId
 			}
@@ -50,11 +50,29 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			var statusList = lang.get('minecraft.status');
 			var summary = escapeFormatting(body.fields.summary);
 			if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-			var description = parse_links( ( body.fields.description || '' ).replaceAll( '{code}', '```' ) );
+			var description = parse_description( body.fields.description || '' );
 			/** @type {EmbedBuilder} */
 			var embed = null;
 			if ( !noEmbed ) {
 				embed = new EmbedBuilder().setAuthor( {name: 'Mojira'} ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( limitLength(description, 2000, 20) );
+
+				var affected = '';
+				var affectedcount = 1;
+				body.fields.versions.every( version => {
+					if ( affectedcount === 8 ) {
+						extraaffected = body.fields.versions.length - 8;
+						affected += '\n\n' + lang.get('minecraft.more', extraaffected.toLocaleString(lang.get('dateformat')), extraaffected);
+						return false;
+					}
+					affectedcount++;
+					affected += '\n' + version.name;
+					return true;
+				})
+				embed.addField( 'Affected versions', limitLength(affected, 300, 20) );
+
+				var fixversion = body.fields.fixVersions[body.fields.fixVersions.length - 1];
+				if ( fixversion ) embed.addField( 'Fixed in version', fixversion.name );
+
 				var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 				if ( links.length ) {
 					var linkList = lang.get('minecraft.issue_link');
@@ -66,7 +84,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 						var status = issue.fields.status.name;
 						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(issue.fields.summary) + '](<' + baseBrowseUrl + issue.key + '>)';
 						if ( ( embed.data.fields?.length ?? 0 ) < 25 && ( getEmbedLength(embed) + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );
-						else extralinks.push({name,value,inline:false});
+						else extralinks.push({name, value, inline:false});
 					} );
 					if ( extralinks.length ) embed.setFooter( {text: lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length)} );
 				}
@@ -75,7 +93,8 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			var fixed = '';
 			if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
 				fixed = '\n' + lang.get('minecraft.fixed', body.fields.fixVersions.length) + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
-			}
+			};
+			
 			return {message: {
 				content: spoiler + '**' + ( statusList?.[status] || status ) + '**: ' + escapeFormatting(body.fields.summary) + '\n<' + baseBrowseUrl + body.key + '>' + fixed + spoiler,
 				embeds: [embed]
@@ -151,13 +170,17 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 }
 
 /**
- * Parse Mojira links.
+ * Parse Mojira descriptions.
  * @param {String} text - The text to parse.
  * @returns {String}
  */
-function parse_links(text) {
+function parse_description(text) {
 	text = text.replace( /\[~([^\]]+)\]/g, '[$1](<https://bugs.mojang.com/secure/ViewProfile.jspa?name=$1>)' );
 	text = text.replace( /\[([^\|]+)\|([^\]]+)\]/g, '[$1](<$2>)' );
+	text = text.replace( /h\d. ?([\w ]+)/g, '**$1**' );
+	text = text.replace( /{noformat}([\w \[\],.=@~-]+){noformat}/g, '`$1`' );
+	text = text.replace( /{code(:(\w+))?}/g, '```$2');
+	text = text.replace( /\n# /g, '• ');
 	text = text.replace( /{panel(?::title=([^|}]+))?[^}]*}/g, (panel, title) => {
 		return ( title ? '**' + title + '**' : '' );
 	} );
