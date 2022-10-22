@@ -235,14 +235,17 @@ function htmlToPlain(html, includeComments = false) {
 				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
 				return;
 			}
+			if ( tagname === 'style' || tagname === 'script' ) {
+				ignoredTag[0] = tagname;
+				return;
+			}
 			let classes = ( attribs.class?.split(' ') ?? [] );
-			if ( classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
+			if ( ( tagname === 'sup' && classes.includes( 'reference' ) ) || ( tagname === 'span' && classes.includes( 'smwttcontent' ) )
+			|| classes.includes( 'noexcerpt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
 				ignoredTag[0] = tagname;
 				return;
 			}
-			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag[0] = 'sup';
-			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag[0] = 'span';
 			if ( tagname === 'br' ) text += ' ';
 		},
 		ontext: (htmltext) => {
@@ -294,15 +297,18 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				if ( tagname === ignoredTag[0] ) ignoredTag[1]++;
 				return;
 			}
+			if ( tagname === 'style' || tagname === 'script' ) {
+				ignoredTag[0] = tagname;
+				return;
+			}
 			let classes = ( attribs.class?.split(' ') ?? [] );
-			if ( classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
+			if ( ( tagname === 'sup' && classes.includes( 'reference' ) ) || ( tagname === 'span' && classes.includes( 'smwttcontent' ) )
+			|| classes.includes( 'noexcerpt' ) || classes.includes( 'mw-empty-elt' ) || ( classes.includes( 'mw-collapsible' ) && classes.includes( 'mw-collapsed' ) )
 			|| ( attribs.style?.includes( 'display' ) && /(^|;)\s*display\s*:\s*none\s*(;|$)/.test(attribs.style) ) ) {
 				ignoredTag[0] = tagname;
 				return;
 			}
 			if ( classes.includes( 'hlist' ) ) horizontalList = tagname;
-			if ( tagname === 'sup' && classes.includes( 'reference' ) ) ignoredTag[0] = 'sup';
-			if ( tagname === 'span' && classes.includes( 'smwttcontent' ) ) ignoredTag[0] = 'span';
 			if ( tagname === 'code' ) {
 				code = true;
 				text += '`';
