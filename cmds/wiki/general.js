@@ -82,6 +82,10 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, ++selfcall);
 					}
 				}
+				else if ( iw.host === wiki.host && iw.pathname.startsWith( wiki.articlepath.split('?')[0].replace( '$1', '' ) ) ) {
+					let iwtitle = decodeURIComponent( iw.pathname.replace( wiki.articlepath.split('?')[0].replace( '$1', '' ) ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );
+					return gamepedia_check_wiki(lang, msg, iwtitle, wiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, ++selfcall);
+				}
 			}
 		}
 		catch {}
@@ -386,6 +390,10 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 										return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 									}
 								}
+								else if ( iw.host === wiki.host && iw.pathname.startsWith( wiki.articlepath.split('?')[0].replace( '$1', '' ) ) ) {
+									let iwtitle = decodeURIComponent( iw.pathname.replace( wiki.articlepath.split('?')[0].replace( '$1', '' ) ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );;
+									return gamepedia_check_wiki(lang, msg, iwtitle, wiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
+								}
 							}
 							return {
 								reaction: ( selfcall === maxselfcall ? 'warning' : undefined ),
@@ -629,6 +637,10 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							}
 							return gamepedia_check_wiki(lang, msg, iwtitle, iwwiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 						}
+					}
+					else if ( iw.host === wiki.host && iw.pathname.startsWith( wiki.articlepath.split('?')[0].replace( '$1', '' ) ) ) {
+						let iwtitle = decodeURIComponent( iw.pathname.replace( wiki.articlepath.split('?')[0].replace( '$1', '' ) ) ).replaceAll( wiki.spaceReplacement ?? '_', ' ' );;
+						return gamepedia_check_wiki(lang, msg, iwtitle, wiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
 				return {
