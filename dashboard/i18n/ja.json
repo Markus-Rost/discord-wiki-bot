@@ -33,6 +33,9 @@
 			"content_type": "提供されたリンクのコンテンツタイプは$1ですが、以下のコンテンツタイプのみ許可されます：",
 			"invalid_url": "URLが有効な画像ファイルに解決されませんでした。"
 		},
+		"embeds": {
+			"json": "埋め込みオブジェクトが有効ではありません。Discordの埋め込みオブジェクトを含む有効なJSON配列を指定してください。"
+		},
 		"invalid": {
 			"note_http": "提供されたWebサイトに有効なTLS/SSL証明書がありません。セキュリティ上の理由から、HTTPSを使用したWikiのみがサポートされています。",
 			"note_private": "提供されたWikiはプライベートなものです！",
@@ -141,6 +144,8 @@
 			"title": "メッセージを送信！"
 		},
 		"sendfail": {
+			"note_embeds": "埋め込みオブジェクトが有効ではありません。Discordの埋め込みオブジェクトを含む有効なJSON配列を指定してください。",
+			"note_nothread": "スレッドが見つかりませんでした。アクティブなスレッドを選択してください。",
 			"text": "メッセージを送信できませんでした。もう一度やり直してください。",
 			"title": "送信に失敗！"
 		},
@@ -244,6 +249,7 @@
 			"avatar_preview": "プレビュー",
 			"button": "認証メッセージ送信ボタン",
 			"button_emoji": "ボタンの絵文字（オプション）：",
+			"button_emoji_title": "カスタムサーバーの絵文字または絵文字のUnicode表現で指示してください。",
 			"button_name": "ボタンテキスト：",
 			"button_name_default": "Wikiアカウント認証",
 			"button_style": "ボタンスタイル：",
@@ -256,6 +262,9 @@
 			"content": "メッセージの内容（オプション）：",
 			"content_placeholder": "メッセージのMarkdownテキスト、マスクされたリンクをサポートします。",
 			"editcount": "最低編集回数：",
+			"embeds": "埋め込みメッセージ（オプション）：",
+			"embeds_help": "ヘルプ: [Embed Visualizer]($1)",
+			"embeds_placeholder": "Discordの埋め込みメッセージを表すJSON 配列。",
 			"entry": "認証 #$1",
 			"flag_logall": "認証に失敗したことを記録する：",
 			"flag_private": "プライベートコマンドの応答：",
