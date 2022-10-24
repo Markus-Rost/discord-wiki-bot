@@ -12,7 +12,8 @@
 		"es-ES": "aleatorio",
 		"pt-BR": "aleatório",
 		"en-GB": "random",
-		"en-US": "random"
+		"en-US": "random",
+		"ja": "random"
 	},
 	"description": "Post a random wiki link.",
 	"description_localizations": {
@@ -25,7 +26,8 @@
 		"es-ES": "Publica un enlace wiki aleatorio.",
 		"pt-BR": "Poste um link aleatório da wiki.",
 		"en-GB": "Post a random wiki link.",
-		"en-US": "Post a random wiki link."
+		"en-US": "Post a random wiki link.",
+		"ja": "ランダムなWikiのリンクを貼ります。"
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -45,7 +47,8 @@
 				"el": "wiki",
 				"pt-BR": "wiki",
 				"en-GB": "wiki",
-				"en-US": "wiki"
+				"en-US": "wiki",
+				"ja": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -53,13 +56,14 @@
 				"es-ES": "El wiki en el que buscar.",
 				"zh-CN": "要搜索的wiki。",
 				"zh-TW": "要搜尋的wiki。",
-				"hi": "विकि जिसमें खेजना है।",
+				"hi": "विकि जिसमें खोजना है।",
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
 				"el": "Το wiki προς αναζήτηση.",
 				"pt-BR": "A wiki a ser pesquisada.",
 				"en-GB": "The wiki to search in.",
-				"en-US": "The wiki to search in."
+				"en-US": "The wiki to search in.",
+				"ja": "検索対象となるWiki。"
 			},
 			"required": false,
 			"autocomplete": true
@@ -77,7 +81,8 @@
 				"es-ES": "namespace",
 				"pt-BR": "espaço_nominal",
 				"en-GB": "namespace",
-				"en-US": "namespace"
+				"en-US": "namespace",
+				"ja": "namespace"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {
@@ -90,7 +95,8 @@
 				"es-ES": "Los espacios de nombres en los que buscar.",
 				"pt-BR": "Os espaços nominais a serem pesquisados.",
 				"en-GB": "The namespaces to search in.",
-				"en-US": "The namespaces to search in."
+				"en-US": "The namespaces to search in.",
+				"ja": "検索対象となる名前空間。"
 			},
 			"required": false,
 			"autocomplete": true
@@ -102,7 +108,7 @@
 				"de": "privat",
 				"es-ES": "privado",
 				"hi": "निजी",
-				"ja": "ephemeral",
+				"ja": "private",
 				"zh-CN": "仅自己可见",
 				"zh-TW": "僅自己可見",
 				"it": "privato",
@@ -117,7 +123,7 @@
 				"de": "Sende eine Antwort nur sichtbar für dich?",
 				"es-ES": "¿Enviar una respuesta que solo sea visible para ti?",
 				"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
-				"ja": "自分だけに見える応答を送信しますか？",
+				"ja": "自分だけに見える応答で送信しますか？",
 				"zh-CN": "发送的消息是否仅对自己可见？",
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
 				"it": "Invia una risposta visibile solo per te?",

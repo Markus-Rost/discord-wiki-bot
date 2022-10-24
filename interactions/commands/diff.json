@@ -10,7 +10,9 @@
 		"zh-CN": "diff",
 		"zh-TW": "diff",
 		"it": "diff",
-		"sv-SE": "diff"
+		"sv-SE": "diff",
+		"hi": "diff",
+		"ja": "diff"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
@@ -21,7 +23,9 @@
 		"zh-CN": "展示wiki编辑差异。",
 		"zh-TW": "展示wiki編輯差異。",
 		"it": "Mostra il diff di una modifica alla wiki.",
-		"sv-SE": "Visa skillnad av en wiki redigeringar."
+		"sv-SE": "Visa skillnad av en wiki redigeringar.",
+		"hi": "एक विकि सम्पादन अंतर दिखाएँ।",
+		"ja": "Wikiで編集された差分を表示します。"
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -38,7 +42,9 @@
 				"zh-CN": "page",
 				"zh-TW": "page",
 				"it": "pagina",
-				"sv-SE": "sida"
+				"sv-SE": "sida",
+				"hi": "page",
+				"ja": "page"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
@@ -49,14 +55,16 @@
 				"zh-CN": "显示wiki页面最近一次编辑的差异。",
 				"zh-TW": "顯示wiki頁面最近一次的編輯差異。",
 				"it": "Mostra il diff dell'ultima modifica a una pagina della wiki.",
-				"sv-SE": "Visa skillnaden för den senaste redigeringen för en wiki sida."
+				"sv-SE": "Visa skillnaden för den senaste redigeringen för en wiki sida.",
+				"hi": "एक विकि पृष्ठ का आखिरी सम्पादन अंतर दिखाएँ।",
+				"ja": "Wikiページの最終編集された差分を表示します。"
 			},
 			"options": [
 				{
 					"type": 3,
 					"name": "title",
 					"name_localizations": {
-						"hi": "शीर्षक",
+						"hi": "title",
 						"zh-CN": "标题",
 						"zh-TW": "標題",
 						"tr": "title",
@@ -79,7 +87,9 @@
 						"zh-CN": "要展示最近一次编辑差异的页面标题。",
 						"zh-TW": "要展示最近一次編輯差異的頁面標題。",
 						"it": "Titolo della pagina di cui mostrare il diff dell'ultima modifica.",
-						"sv-SE": "Titeln på sidan du vill se den senaste skillnaden för."
+						"sv-SE": "Titeln på sidan du vill se den senaste skillnaden för.",
+						"hi": "पृष्ठ का शीर्षक जिसका आखिरी सम्पादन अंतर दिखाना है।",
+						"ja": "最終編集の差分を表示するページタイトル。"
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -94,14 +104,15 @@
 						"es-ES": "wiki",
 						"zh-CN": "wiki",
 						"zh-TW": "wiki",
-						"hi": "विकि",
+						"hi": "wiki",
 						"it": "wiki",
 						"tr": "wiki",
 						"el": "wiki",
 						"pt-BR": "wiki",
 						"en-GB": "wiki",
 						"en-US": "wiki",
-						"sv-SE": "wiki"
+						"sv-SE": "wiki",
+						"ja": "wiki"
 					},
 					"description": "The wiki to search in.",
 					"description_localizations": {
@@ -109,14 +120,15 @@
 						"es-ES": "El wiki en el que buscar.",
 						"zh-CN": "要搜索的wiki。",
 						"zh-TW": "要搜尋的wiki。",
-						"hi": "विकि जिसमें खेजना है।",
+						"hi": "विकि जिसमें खोजना है।",
 						"it": "La wiki in cui cercare.",
 						"tr": "Aratma yapılacak viki.",
 						"el": "Το wiki προς αναζήτηση.",
 						"pt-BR": "A wiki a ser pesquisada.",
 						"en-GB": "The wiki to search in.",
 						"en-US": "The wiki to search in.",
-						"sv-SE": "Wikin att söka i."
+						"sv-SE": "Wikin att söka i.",
+						"ja": "検索対象となるWiki。"
 					},
 					"required": false,
 					"autocomplete": true
@@ -127,8 +139,8 @@
 					"name_localizations": {
 						"de": "privat",
 						"es-ES": "privado",
-						"hi": "ephemeral",
-						"ja": "ephemeral",
+						"hi": "private",
+						"ja": "private",
 						"zh-CN": "仅自己可见",
 						"zh-TW": "僅自己可見",
 						"it": "privato",
@@ -144,7 +156,7 @@
 						"de": "Sende eine Antwort nur sichtbar für dich?",
 						"es-ES": "¿Enviar una respuesta que solo sea visible para ti?",
 						"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
-						"ja": "自分だけに見える応答を送信しますか？",
+						"ja": "自分だけに見える応答で送信しますか？",
 						"zh-CN": "发送的消息是否仅对自己可见？",
 						"zh-TW": "傳送的訊息是否僅對自己可見？",
 						"it": "Invia una risposta visibile solo per te?",
@@ -240,7 +252,9 @@
 				"zh-CN": "ids",
 				"zh-TW": "ids",
 				"it": "id",
-				"sv-SE": "ids"
+				"sv-SE": "ids",
+				"hi": "ids",
+				"ja": "ids"
 			},
 			"description": "Show the a wiki edit diff based on the ID.",
 			"description_localizations": {
@@ -251,7 +265,9 @@
 				"zh-CN": "通过ID展示wiki编辑差异。",
 				"zh-TW": "透過ID展示wiki編輯差異。",
 				"it": "Mostra il diff di una modifica sulla wiki in base all'ID.",
-				"sv-SE": "Visa en wiki-redigeringsdiff baserat på ID:et."
+				"sv-SE": "Visa en wiki-redigeringsdiff baserat på ID:et.",
+				"hi": "ID के आधार पर विकि पर एक सम्पादन अंतर दिखाएँ।",
+				"ja": "IDに基づいたWiki編集の差分を表示します。"
 			},
 			"options": [
 				{
@@ -265,7 +281,9 @@
 						"zh-CN": "relative",
 						"zh-TW": "relative",
 						"it": "relativo",
-						"sv-SE": "relativ"
+						"sv-SE": "relativ",
+						"hi": "relative",
+						"ja": "relative"
 					},
 					"description": "Show a relative wiki edit diff based on the ID.",
 					"description_localizations": {
@@ -276,7 +294,9 @@
 						"zh-CN": "通过ID展示相关的wiki编辑差异。",
 						"zh-TW": "透過ID展示相關的wiki編輯差異。",
 						"it": "Mostra il diff relativo di una modifica sulla wiki in base all'ID.",
-						"sv-SE": "Visa en relativ wiki-redigeringsdiff baserat på ID:et."
+						"sv-SE": "Visa en relativ wiki-redigeringsdiff baserat på ID:et.",
+						"hi": "ID के आधार पर विकि पर एक सापेक्ष सम्पादन अंतर दिखाएँ।",
+						"ja": "IDに基づいた相対的なWiki編集の差分を表示します。"
 					},
 					"options": [
 						{
@@ -289,7 +309,9 @@
 								"es-ES": "diffid",
 								"zh-CN": "diffid",
 								"zh-TW": "diffid",
-								"it": "diffid"
+								"it": "diffid",
+								"hi": "diffid",
+								"ja": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -299,7 +321,9 @@
 								"es-ES": "ID de diff de la diff de edición que se va a mostrar.",
 								"zh-CN": "要展示的编辑差异的差异ID。",
 								"zh-TW": "要展示的編輯差異的差異ID。",
-								"it": "ID del diff della modifica da mostrare."
+								"it": "ID del diff della modifica da mostrare.",
+								"hi": "दिखाने के लिए सम्पादन अंतर का अंतर ID।",
+								"ja": "表示する編集DiffのDiff ID。"
 							},
 							"min_value": 0,
 							"required": true
@@ -314,7 +338,9 @@
 								"es-ES": "comparar",
 								"zh-CN": "比较模式",
 								"zh-TW": "比較模式",
-								"it": "confronta"
+								"it": "confronta",
+								"hi": "compare",
+								"ja": "compare"
 							},
 							"description": "Relative revision of the edit diff to show.",
 							"description_localizations": {
@@ -324,7 +350,9 @@
 								"es-ES": "Revisión relativa de la diff de edición a mostrar.",
 								"zh-CN": "要展示的编辑差异的相关修订版本。",
 								"zh-TW": "要展示的編輯差異的相關修訂版本。",
-								"it": "Versione relativa del diff di modifica da mostrare."
+								"it": "Versione relativa del diff di modifica da mostrare.",
+								"hi": "दिखाने के लिए सम्पादन अंतर का सापेक्ष अवतरण।",
+								"ja": "表示する編集差分の相対リビジョン。"
 							},
 							"choices": [
 								{
@@ -336,7 +364,9 @@
 										"es-ES": "Comparar con la revisión anterior. (predeterminado)",
 										"zh-CN": "与之前的修订版本比较（默认）",
 										"zh-TW": "與前一筆修訂版本比較（預設）",
-										"it": "Confronta con la versione precedente. (default)"
+										"it": "Confronta con la versione precedente. (default)",
+										"hi": "पिछले अवतरण से तुलना करें। (डिफ़ॉल्ट)",
+										"ja": "前のリビジョンと比較します。(既定)"
 									},
 									"value": "prev"
 								},
@@ -349,7 +379,9 @@
 										"es-ES": "Compare con la siguiente revisión.",
 										"zh-CN": "与之后的修订版本比较",
 										"zh-TW": "與後一筆修訂版本比較",
-										"it": "Confronta con la versione successiva."
+										"it": "Confronta con la versione successiva.",
+										"hi": "अगले अवतरण से तुलना करें।",
+										"ja": "次のリビジョンと比較します。"
 									},
 									"value": "next"
 								},
@@ -362,7 +394,9 @@
 										"es-ES": "Comparar con la revisión actual.",
 										"zh-CN": "与当前的修订版本比较",
 										"zh-TW": "與目前的修訂版本比較",
-										"it": "Confronta con la versione attuale."
+										"it": "Confronta con la versione attuale.",
+										"hi": "वर्तमान अवतरण से तुलना करें।",
+										"ja": "現在のリビジョンと比較します。"
 									},
 									"value": "cur"
 								}
@@ -377,13 +411,14 @@
 								"es-ES": "wiki",
 								"zh-CN": "wiki",
 								"zh-TW": "wiki",
-								"hi": "विकि",
+								"hi": "wiki",
 								"it": "wiki",
 								"tr": "wiki",
 								"el": "wiki",
 								"pt-BR": "wiki",
 								"en-GB": "wiki",
-								"en-US": "wiki"
+								"en-US": "wiki",
+								"ja": "wiki"
 							},
 							"description": "The wiki to search in.",
 							"description_localizations": {
@@ -391,13 +426,14 @@
 								"es-ES": "El wiki en el que buscar.",
 								"zh-CN": "要搜索的wiki。",
 								"zh-TW": "要搜尋的wiki。",
-								"hi": "विकि जिसमें खेजना है।",
+								"hi": "विकि जिसमें खोजना है।",
 								"it": "La wiki in cui cercare.",
 								"tr": "Aratma yapılacak viki.",
 								"el": "Το wiki προς αναζήτηση.",
 								"pt-BR": "A wiki a ser pesquisada.",
 								"en-GB": "The wiki to search in.",
-								"en-US": "The wiki to search in."
+								"en-US": "The wiki to search in.",
+								"ja": "検索対象となるWiki。"
 							},
 							"required": false,
 							"autocomplete": true
@@ -408,8 +444,8 @@
 							"name_localizations": {
 								"de": "privat",
 								"es-ES": "privado",
-								"hi": "ephemeral",
-								"ja": "ephemeral",
+								"hi": "private",
+								"ja": "private",
 								"zh-CN": "仅自己可见",
 								"zh-TW": "僅自己可見",
 								"it": "privato",
@@ -424,7 +460,7 @@
 								"de": "Sende eine Antwort nur sichtbar für dich?",
 								"es-ES": "¿Enviar una respuesta que solo sea visible para ti?",
 								"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
-								"ja": "自分だけに見える応答を送信しますか？",
+								"ja": "自分だけに見える応答で送信しますか？",
 								"zh-CN": "发送的消息是否仅对自己可见？",
 								"zh-TW": "傳送的訊息是否僅對自己可見？",
 								"it": "Invia una risposta visibile solo per te?",
@@ -515,7 +551,9 @@
 						"es-ES": "múltiple",
 						"zh-CN": "multiple",
 						"zh-TW": "multiple",
-						"it": "multiple"
+						"it": "multiple",
+						"hi": "multiple",
+						"ja": "multiple"
 					},
 					"description": "Show a wiki edit diff over multiple revisions based on the IDs.",
 					"description_localizations": {
@@ -525,7 +563,9 @@
 						"es-ES": "Mostrar una diff de edición del wiki en varias revisiones según los ID.",
 						"zh-CN": "通过ID展示多个修订版本的wiki编辑差异。",
 						"zh-TW": "透過ID展示多個修訂版本的wiki編輯差異。",
-						"it": "Mostra il diff di una modifica sulla wiki tra versioni multiple in base agli ID."
+						"it": "Mostra il diff di una modifica sulla wiki tra versioni multiple in base agli ID.",
+						"hi": "ID-ओं के आधार पर विकि पर कई बदलावों के दौरान एक सम्पादन अंतर दिखाएँ।",
+						"ja": "IDに基づき、複数のリビジョンに渡るWiki編集の差分を表示します。"
 					},
 					"options": [
 						{
@@ -538,7 +578,9 @@
 								"es-ES": "diffid",
 								"zh-CN": "diffid",
 								"zh-TW": "diffid",
-								"it": "diffid"
+								"it": "diffid",
+								"hi": "diffid",
+								"ja": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -548,7 +590,9 @@
 								"es-ES": "ID de diff de la diff de edición que se va a mostrar.",
 								"zh-CN": "要展示的编辑差异的差异ID。",
 								"zh-TW": "要展示的編輯差異的差異ID。",
-								"it": "ID del diff della modifica da mostrare."
+								"it": "ID del diff della modifica da mostrare.",
+								"hi": "दिखाने के लिए सम्पादन अंतर का अंतर ID।",
+								"ja": "表示する編集の差分ID。"
 							},
 							"min_value": 0,
 							"required": true
@@ -563,7 +607,9 @@
 								"es-ES": "oldid",
 								"zh-CN": "oldid",
 								"zh-TW": "oldid",
-								"it": "oldid"
+								"it": "oldid",
+								"hi": "oldid",
+								"ja": "oldid"
 							},
 							"description": "Old revision ID of the edit diff to show.",
 							"description_localizations": {
@@ -573,7 +619,9 @@
 								"es-ES": "ID de revisión anterior de la diff de edición a mostrar.",
 								"zh-CN": "要展示的编辑差异的旧修订版本ID。",
 								"zh-TW": "要展示的編輯差異的舊修訂版本ID。",
-								"it": "ID della vecchia versione del diff da mostrare."
+								"it": "ID della vecchia versione del diff da mostrare.",
+								"hi": "दिखाने के लिए सम्पादन अंतर का पुराना अवतरण ID।",
+								"ja": "表示する編集差分の旧リビジョンID。"
 							},
 							"min_value": 0,
 							"required": true
@@ -586,13 +634,14 @@
 								"es-ES": "wiki",
 								"zh-CN": "wiki",
 								"zh-TW": "wiki",
-								"hi": "विकि",
+								"hi": "wiki",
 								"it": "wiki",
 								"tr": "wiki",
 								"el": "wiki",
 								"pt-BR": "wiki",
 								"en-GB": "wiki",
-								"en-US": "wiki"
+								"en-US": "wiki",
+								"ja": "wiki"
 							},
 							"description": "The wiki to search in.",
 							"description_localizations": {
@@ -600,13 +649,14 @@
 								"es-ES": "El wiki en el que buscar.",
 								"zh-CN": "要搜索的wiki。",
 								"zh-TW": "要搜尋的wiki。",
-								"hi": "विकि जिसमें खेजना है।",
+								"hi": "विकि जिसमें खोजना है।",
 								"it": "La wiki in cui cercare.",
 								"tr": "Aratma yapılacak viki.",
 								"el": "Το wiki προς αναζήτηση.",
 								"pt-BR": "A wiki a ser pesquisada.",
 								"en-GB": "The wiki to search in.",
-								"en-US": "The wiki to search in."
+								"en-US": "The wiki to search in.",
+								"ja": "検索対象となるWiki。"
 							},
 							"required": false,
 							"autocomplete": true
@@ -617,8 +667,8 @@
 							"name_localizations": {
 								"de": "privat",
 								"es-ES": "privado",
-								"hi": "ephemeral",
-								"ja": "ephemeral",
+								"hi": "private",
+								"ja": "private",
 								"zh-CN": "仅自己可见",
 								"zh-TW": "僅自己可見",
 								"it": "privato",
@@ -633,7 +683,7 @@
 								"de": "Sende eine Antwort nur sichtbar für dich?",
 								"es-ES": "¿Enviar una respuesta que solo sea visible para ti?",
 								"hi": "सिर्फ आपको दिखने वाला एक जवाब भेजना है?",
-								"ja": "自分だけに見える応答を送信しますか？",
+								"ja": "自分だけに見える応答で送信する？",
 								"zh-CN": "发送的消息是否仅对自己可见？",
 								"zh-TW": "傳送的訊息是否僅對自己可見？",
 								"it": "Invia una risposta visibile solo per te?",
