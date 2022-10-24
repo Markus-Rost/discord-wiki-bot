@@ -115,6 +115,16 @@
 		"options[4].description": "¿Ocultar el enlace y la vista previa en un spoiler?",
 		"options[4].name": "spoiler"
 	},
+	"user": {
+		"description": "Publicar información sobre un usuario wiki.",
+		"name": "usuario",
+		"options[0].description": "El usuario a mostrar información de.",
+		"options[0].name": "nombredeusuario",
+		"options[1].description": "El wiki en el que buscar.",
+		"options[1].name": "wiki",
+		"options[2].description": "¿Enviar una respuesta que solo sea visible para ti?",
+		"options[2].name": "privado"
+	},
 	"verify": {
 		"description": "Verifica tu cuenta de Discord con tu cuenta wiki.",
 		"name": "verificar",
