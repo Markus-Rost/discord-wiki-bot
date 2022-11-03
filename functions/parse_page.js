@@ -256,7 +256,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		if ( !fragment && !embed.data.fields?.length && infoboxes ) {
 			try {
 				var infobox = JSON.parse(infoboxes)?.[0];
-				parse_infobox(infobox, embed, thumbnail, embed.url);
+				parse_infobox(infobox, embed, thumbnail, embed.data.url);
 			}
 			catch ( error ) {
 				console.log( '- Failed to parse the infobox: ' + error );

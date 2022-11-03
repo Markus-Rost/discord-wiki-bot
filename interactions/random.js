@@ -18,7 +18,7 @@ function slash_random(interaction, lang, wiki) {
 		if ( ephemeral ) lang = lang.uselang(interaction.locale);
 		var namespaces;
 		if ( namespace.length ) {
-			let nsMatch = wiki.namespaces.all.filter( ns => {
+			let nsMatch = newWiki.namespaces.all.filter( ns => {
 				if ( ns.id < 0 ) return false;
 				if ( namespace.includes( ns.id.toString() ) ) return true;
 				if ( namespace.includes( ( ns.name || lang.uselang(interaction.locale).get('interaction.namespace') ).toLowerCase() ) ) return true;
