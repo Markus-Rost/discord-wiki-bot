@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "BETA",
+		"betadesc": "Experimentelle Beta-Funktion",
 		"botlist": {
 			"text": "Hilf anderen Nutzern Wiki-Bot zu finden durch abstimmen auf Bot-Listen:",
 			"title": "Bot-Listen"
@@ -62,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "Diese Funktion ist experimentell! Sie ist nicht garantiert richtig zu funktionieren und könnte in Zukunft eventuell entfernt werden.",
+			"title": "Experimentelle Beta-Funktion"
+		},
 		"error": {
 			"text": "Ein unbekannter Fehler ist aufgetreten, bitte versuche es erneut.",
 			"title": "Unbekannter Fehler!"
