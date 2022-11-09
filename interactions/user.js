@@ -191,7 +191,7 @@ function autocomplete_user(interaction, lang, wiki) {
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- Error while searching for the nickname: ' + error );
 			} ) : undefined ) ),
-			( includeIPs || ( username.trim() && newWiki.wikifarm !== 'fandom' ) ? got.get( newWiki + 'api.php?action=query&list=' + ( username.trim() ? ( newWiki.wikifarm === 'fandom' ? 'usercontribs&ucprop=&uclimit=100&ucuserprefix=' : 'allusers' + ( includeIPs ? '|usercontribs&ucprop=&uclimit=100&ucuserprefix=' + encodeURIComponent( username ) : '' ) + '&aulimit=25&auprefix=' ) : 'allusers&auwitheditsonly=1&auactiveusers=1&aulimit=25&auprefix=' ) + encodeURIComponent( username ) + '&format=json', {
+			( includeIPs || ( username.trim() && newWiki.wikifarm !== 'fandom' ) ? got.get( newWiki + 'api.php?action=query&list=' + ( username.trim() ? ( newWiki.wikifarm === 'fandom' ? 'usercontribs&ucprop=&uclimit=100&ucuserprefix=' : 'allusers' + ( includeIPs ? '|usercontribs&ucprop=&uclimit=100&ucuserprefix=' + encodeURIComponent( username ) : '' ) + '&auprop=editcount&aulimit=25&auprefix=' ) : 'allusers&auwitheditsonly=1&auactiveusers=1&auprop=editcount&aulimit=25&auprefix=' ) + encodeURIComponent( username ) + '&format=json', {
 				timeout: {
 					request: ( !username.trim() || newWiki.wikifarm === 'fandom' ? 1_500 : 2_000 )
 				},
@@ -215,7 +215,9 @@ function autocomplete_user(interaction, lang, wiki) {
 					return;
 				}
 				return [
-					...( body.query.allusers?.map( user => user.name ) ?? [] ),
+					...( body.query.allusers?.sort( (a, b) => {
+						return b.recentactions - a.recentactions || b.editcount - a.editcount;
+					} ).map( user => user.name ) ?? [] ),
 					...( body.query.usercontribs?.map( contrib => contrib.user ) ?? [] )
 				];
 			}, error => {
