@@ -63,7 +63,7 @@ const common_warnings = {
  */
 globalThis.log_warning = function(warning, api = true) {
 	if ( isDebug ) {
-		console.warn( '--- Warning start ---\n' + inspect( warning ) + '\n--- Warning end ---' );
+		console.warn( '--- Warning Start ---\n' + inspect( warning ) + '\n--- Warning End ---' );
 	}
 	else if ( api ) {
 		if ( common_warnings.main.includes( warning?.main?.['*'] ) ) delete warning.main;

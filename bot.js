@@ -390,6 +390,8 @@ if ( isDebug ) client.on( Discord.Events.Debug, debug => {
 } );
 
 
+process.on( 'warning', warning => log_warning(warning, false) );
+
 /**
  * End the process gracefully.
  * @param {NodeJS.Signals} signal - The signal received.
