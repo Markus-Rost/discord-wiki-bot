@@ -1,10 +1,10 @@
 import { embedLength } from '@discordjs/builders';
 import { EmbedBuilder } from 'discord.js';
-import Lang from '../util/i18n.js';
-import { got, db, sendMsg, createNotice, escapeText, hasPerm, PermissionFlagsBits } from './util.js';
+import Lang from '../../util/i18n.js';
+import { got, db, sendMsg, createNotice, escapeText, hasPerm, PermissionFlagsBits } from '../util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const {limit: {verification: verificationLimit}, usergroups} = require('../util/default.json');
+const {limit: {verification: verificationLimit}, usergroups} = require('../../util/default.json');
 
 const buttonStyles = ['Primary', 'Secondary', 'Success', 'Danger'];
 

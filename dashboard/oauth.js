@@ -169,7 +169,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				let returnLocation = '/';
 				if ( lastGuild ) {
 					if ( lastGuild === 'user' ) returnLocation += lastGuild;
-					else if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
+					else if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
 				}
 				res.writeHead(302, {
 					Location: returnLocation,
@@ -198,8 +198,9 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('./util.js').UserSession} userSession - The user session
  * @param {String} [returnLocation] - The return location
+ * @param {String} [beta] - The beta feature
  */
-function dashboard_refresh(res, userSession, returnLocation = '/') {
+function dashboard_refresh(res, userSession, returnLocation = '/', beta = '') {
 	return oauth.getUserGuilds(userSession.access_token).then( guilds => {
 		guilds = guilds.filter( guild => {
 			return ( guild.owner || hasPerm(guild.permissions, PermissionFlagsBits.ManageGuild) );
@@ -235,16 +236,16 @@ function dashboard_refresh(res, userSession, returnLocation = '/') {
 			} ).map( guild => {
 				return [guild.id, guild];
 			} ));
-			res.writeHead(302, {Location: returnLocation + '?refresh=success'});
+			res.writeHead(302, {Location: returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=success'});
 			return res.end();
 		}, error => {
 			console.log( '- Dashboard: Error while getting the refreshed guilds:', error );
-			res.writeHead(302, {Location: returnLocation + '?refresh=failed'});
+			res.writeHead(302, {Location: returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=failed'});
 			return res.end();
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while refreshing guilds: ' + error );
-		res.writeHead(302, {Location: returnLocation + '?refresh=failed'});
+		res.writeHead(302, {Location: returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=failed'});
 		return res.end();
 	} );
 }

@@ -1,10 +1,10 @@
 import { load as cheerioLoad } from 'cheerio';
-import Lang from '../util/i18n.js';
-import Wiki from '../util/wiki.js';
-import { got, db, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from './util.js';
+import Lang from '../../util/i18n.js';
+import Wiki from '../../util/wiki.js';
+import { got, db, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from '../util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
+const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../../util/default.json');
 const allLangs = Lang.allLangs(true).names;
 
 const display_types = [
@@ -61,7 +61,7 @@ const fieldset = {
  * Create a settings form
  * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {String} header - The form header
- * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @param {import('../i18n.js').default} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {Boolean} settings.patreon
  * @param {String} [settings.channel]
@@ -70,7 +70,7 @@ const fieldset = {
  * @param {Number} settings.display
  * @param {Number} [settings.rcid]
  * @param {String} [settings.postid]
- * @param {import('./util.js').Channel[]} guildChannels - The guild channels
+ * @param {import('../util.js').Channel[]} guildChannels - The guild channels
  * @param {String[]} allWikis - The guild wikis
  */
 function createForm($, header, dashboardLang, settings, guildChannels, allWikis) {
@@ -175,9 +175,9 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
  * Let a user change recent changes scripts
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('cheerio').CheerioAPI} $ - The response body
- * @param {import('./util.js').Guild} guild - The current guild
+ * @param {import('../util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
- * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @param {import('../i18n.js').default} dashboardLang - The user language
  */
 function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
@@ -278,7 +278,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 /**
  * Change recent changes scripts
  * @param {Function} res - The server response
- * @param {import('./util.js').Settings} userSettings - The settings of the user
+ * @param {import('../util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
  * @param {String|Number} type - The setting to change
  * @param {Object} settings - The new settings

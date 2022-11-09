@@ -383,6 +383,11 @@ function createNotice($, notice, dashboardLang, args = []) {
 			title.text(dashboardLang.get('notice.error.title'));
 			text.text(dashboardLang.get('notice.error.text'));
 			break;
+		case 'beta':
+			type = 'info';
+			title.text(dashboardLang.get('notice.beta.title'));
+			text.text(dashboardLang.get('notice.beta.text'));
+			break;
 		case 'readonly':
 			type = 'info';
 			title.text(dashboardLang.get('notice.readonly.title'));

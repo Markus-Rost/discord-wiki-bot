@@ -1,4 +1,5 @@
 node_modules/
+dashboard/beta/
 *.env
 *.db
 *.sql

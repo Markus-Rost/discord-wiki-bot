@@ -4,11 +4,12 @@ import { createReadStream, readdirSync, existsSync } from 'node:fs';
 import { extname } from 'node:path';
 import * as pages from './oauth.js';
 import dashboard from './guilds.js';
-import { posts } from './functions.js';
+import { posts, beta } from './functions.js';
 import { db, sessionData, settingsData } from './util.js';
 import Lang from './i18n.js';
 const allLangs = Lang.allLangs();
 
+const rcscriptExists = ( isDebug || existsSync('./RcGcDb/start.py') );
 const files = new Map([
 	...readdirSync( './dashboard/src' ).map( file => {
 		return [`/src/${file}`, `./dashboard/src/${file}`];
@@ -43,19 +44,23 @@ const files = new Map([
 	}
 	return [file, {path: filepath, contentType}];
 } ));
+const postTypes = ['settings', 'verification'];
+if ( rcscriptExists ) postTypes.push('rcscript');
 
 const server = createServer( (req, res) => {
 	res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( req.url.startsWith( '/guild/' ) || req.url === '/user' ) ) {
-		/** @type {String[]} */
-		let args = req.url.split('/');
+
+	var reqURL = new URL(req.url, process.env.dashboard);
+
+	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( reqURL.pathname.startsWith( '/guild/' ) || reqURL.pathname === '/user' ) ) {
+		let args = reqURL.pathname.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot' && /^"([\da-f]+(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
 		} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
-		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id) &&
-		( ( args.length === 5 && ['settings', 'verification', 'rcscript'].includes( args[3] ) && /^(?:default|new|notice|button|\d+)$/.test(args[4])
-		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || req.url === '/user' ) ) {
+		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id)
+		&& ( ( args.length === 5 && postTypes.includes( args[3] ) && /^(?:default|new|notice|button|\d+)$/.test(args[4])
+		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || reqURL.pathname === '/user' ) ) {
 			let body = [];
 			req.on( 'data', chunk => {
 				body.push(chunk);
@@ -65,7 +70,7 @@ const server = createServer( (req, res) => {
 				res.end('error');
 			} );
 			return req.on( 'end', () => {
-				if ( process.env.READONLY && args.slice(3).join('/') !== 'verification/button' ) return save_response(`${req.url}?save=failed`);
+				if ( process.env.READONLY && args.slice(3).join('/') !== 'verification/button' ) return save_response(`${reqURL.pathname}?save=failed`);
 				var settings = {};
 				Buffer.concat(body).toString().split('&').forEach( arg => {
 					if ( arg ) {
@@ -79,14 +84,27 @@ const server = createServer( (req, res) => {
 					}
 				} );
 				if ( isDebug ) console.log( '- Dashboard:', req.url, settings, sessionData.get(state).user_id );
-				if ( req.url === '/user' ) {
+				if ( reqURL.pathname === '/user' ) {
 					let setting = Object.keys(settings);
 					if ( setting.length === 1 && setting[0].startsWith( 'oauth_' ) && setting[0].split('_').length >= 3 ) {
 						setting = setting[0].split('_');
 						return posts.user(save_response, sessionData.get(state).user_id, setting[1], setting.slice(2).join('_'));
 					}
 				}
-				else return posts[args[3]](save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
+				else {
+					if ( reqURL.searchParams.has('beta') ) {
+						let betaName = reqURL.searchParams.get('beta');
+						if ( beta.get(args[3])?.has(betaName) ) {
+							let betaFeature = beta.get(args[3]).get(betaName);
+							let isPatreon = settingsData.get(sessionData.get(state).user_id).guilds.isMember.get(args[2]).patreon;
+							let isOwner = process.env.owner.split('|').includes(sessionData.get(state).user_id);
+							if ( betaFeature.access === 'public' || ( betaFeature.access === 'patreon' && isPatreon ) || isOwner ) {
+								return betaFeature.post(save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
+							}
+						}
+					}
+					return posts[args[3]](save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
+				}
 
 				/**
 				 * @param {String} [resURL]
@@ -119,8 +137,6 @@ const server = createServer( (req, res) => {
 			} );
 		}
 	}
-
-	var reqURL = new URL(req.url, process.env.dashboard);
 
 	if ( req.method === 'HEAD' && files.has(reqURL.pathname) ) {
 		let file = files.get(reqURL.pathname);
@@ -166,8 +182,8 @@ const server = createServer( (req, res) => {
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)"$/.test(( cookie.split('=')[1] || '' ));
-	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?)"$/.test(( cookie.split('=').slice(1).join('=') || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; SameSite=Lax; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -198,7 +214,8 @@ const server = createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(pathGuild) ) {
+			if ( reqURL.searchParams.has('beta') ) pathGuild += '?beta=' + reqURL.searchParams.get('beta');
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -221,7 +238,8 @@ const server = createServer( (req, res) => {
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
 		if ( reqURL.pathname.startsWith( '/guild/' ) ) {
 			let pathGuild = reqURL.pathname.split('/').slice(2, 5).join('/');
-			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?$/.test(pathGuild) ) {
+			if ( reqURL.searchParams.has('beta') ) pathGuild += '?beta=' + reqURL.searchParams.get('beta');
+			if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?$/.test(pathGuild) ) {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
@@ -240,7 +258,7 @@ const server = createServer( (req, res) => {
 		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
-		return pages.refresh(res, sessionData.get(state), returnLocation);
+		return pages.refresh(res, sessionData.get(state), returnLocation, reqURL.searchParams.get('beta'));
 	}
 
 	if ( reqURL.pathname === '/api' ) {

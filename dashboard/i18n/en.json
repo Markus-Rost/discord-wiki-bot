@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "BETA",
+		"betadesc": "Experimental Beta Feature",
 		"botlist": {
 			"text": "Help other users find Wiki-Bot by voting on bot lists:",
 			"title": "Bot Lists"
@@ -62,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "This feature is experimental! It is not guaranteed to work correctly and may be removed in the future.",
+			"title": "Experimental Beta Feature"
+		},
 		"error": {
 			"text": "An unknown error occurred, please try again.",
 			"title": "Unknown error!"

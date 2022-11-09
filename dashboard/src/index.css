@@ -324,6 +324,23 @@ a[alt]:hover:after {
 	font-weight: bold;
 	text-shadow: none;
 }
+.beta-flag {
+	background-color: hsl(235, 85.6%, 64.7%);
+	padding: 2px 6px;
+	border-radius: 8px;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+}
+.channel-header .beta-flag {
+	margin-right: 10px;
+}
+.channel.channel-header:hover .beta-flag {
+	color: white;
+}
+.channel-header .beta-name {
+	font-size: small;
+}
 #lang-selector {
 	background: #2f3136;
 	position: fixed;

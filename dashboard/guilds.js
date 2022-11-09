@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
-import { forms } from './functions.js';
+import { forms, beta } from './functions.js';
 import Lang from './i18n.js';
 import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice, OAuth2Scopes } from './util.js';
 import { createRequire } from 'node:module';
@@ -8,6 +8,7 @@ const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
 const allLangs = Lang.allLangs().names;
 
+const rcscriptExists = ( isDebug || existsSync('./RcGcDb/start.py') );
 const file = readFileSync('./dashboard/index.html');
 
 /**
@@ -22,6 +23,9 @@ const file = readFileSync('./dashboard/index.html');
  */
 export default function dashboard_guilds(res, dashboardLang, theme, userSession, reqURL, action, actionArgs) {
 	reqURL.pathname = reqURL.pathname.replace( /^(\/(?:user|guild\/\d+(?:\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)?)?)(?:\/.*)?$/, '$1' );
+	if ( !rcscriptExists && reqURL.pathname.split('/')[3] === 'rcscript' ) {
+		reqURL.pathname = reqURL.pathname.split('/').slice(0, 3);
+	}
 	var args = reqURL.pathname.split('/');
 	var settings = settingsData.get(userSession.user_id);
 	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(userSession.user_id) ) {
@@ -41,8 +45,13 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	$('.channel#settings').attr('title', dashboardLang.get('general.settings'));
 	$('.channel#verification div').text(dashboardLang.get('general.verification'));
 	$('.channel#verification').attr('title', dashboardLang.get('general.verification'));
-	$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
-	$('.channel#rcscript').attr('title', dashboardLang.get('general.rcscript'));
+	if ( rcscriptExists ) {
+		$('.channel#rcscript div').text(dashboardLang.get('general.rcscript'));
+		$('.channel#rcscript').attr('title', dashboardLang.get('general.rcscript'));
+	}
+	else {
+		$('.channel#rcscript').remove();
+	}
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#refresh a').attr('alt', dashboardLang.get('general.refresh'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
@@ -61,7 +70,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		createNotice($, action, dashboardLang, actionArgs);
 	}
 	$('head').append(
-		$('<script>').text(`history.replaceState(null, null, '${reqURL.pathname}');`)
+		$('<script id="replaceHistoryState">').text(`history.replaceState(null, null, '${reqURL.pathname}');`)
 	);
 	$('#logout img').attr('src', settings.user.avatar);
 	$('#logout span').text(`${settings.user.username} #${settings.user.discriminator}`);
@@ -74,7 +83,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		],
 		permissions: defaultPermissions, state: userSession.state
 	} ));
-	$('.guild#refresh a').attr('href', '/refresh?return=' + reqURL.pathname);
+	$('.guild#refresh a').attr('href', `/refresh?return=${reqURL.pathname}`);
 	if ( settings.guilds.isMember.size ) {
 		$('<div class="guild">').append(
 			$('<div class="separator">')
@@ -131,14 +140,46 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	if ( id ) $(`.guild#${id}`).addClass('selected');
 	if ( settings.guilds.isMember.has(id) ) {
 		let guild = settings.guilds.isMember.get(id);
+		let suffix = ( args[0] === 'owner' ? '?owner=true' : '' );
 		$('head title').text(`${guild.name} – ` + $('head title').text());
 		$('<script>').text(`
 			const isPatreon = ${guild.patreon};
 			const i18n = ${JSON.stringify(dashboardLang.getWithFallback('indexjs'))};
 		`).insertBefore('script#indexjs');
-		$('.channel#settings').attr('href', `/guild/${guild.id}/settings`);
-		$('.channel#verification').attr('href', `/guild/${guild.id}/verification`);
-		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript`);
+		$('.channel#settings').attr('href', `/guild/${guild.id}/settings${suffix}`);
+		$('.channel#verification').attr('href', `/guild/${guild.id}/verification${suffix}`);
+		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript${suffix}`);
+		if ( suffix ) suffix = '&owner=true';
+		beta.forEach( (betaFeatures, betaType) => betaFeatures.forEach( (betaFeature, betaName) => {
+			if ( betaFeature.show === 'public' || ( betaFeature.show === 'patreon' && guild.patreon ) || args[0] === 'owner' ) {
+				let clone = $(`.channel#${betaType}`).clone();
+				clone.attr('id', `${betaType}-beta-${betaName}`).attr('href', `/guild/${guild.id}/${betaType}?beta=${betaName}${suffix}`);
+				clone.find('div').prepend($('<div class="beta-name">').text(betaName).prepend(
+					$('<small class="beta-flag">').text(dashboardLang.get('general.beta'))
+				).attr('title', dashboardLang.get('general.betadesc')));
+				clone.appendTo('#channellist');
+			}
+		} ) );
+		if ( reqURL.searchParams.has('beta') ) {
+			let betaName = reqURL.searchParams.get('beta');
+			if ( beta.get(args[3])?.has(betaName) ) {
+				let betaFeature = beta.get(args[3]).get(betaName);
+				if ( betaFeature.access === 'public' || ( betaFeature.access === 'patreon' && guild.patreon ) || args[0] === 'owner' ) {
+					createNotice($, 'beta', dashboardLang);
+					$('head script#replaceHistoryState').text(`history.replaceState(null, null, '${reqURL.pathname}?beta=${betaName}');`);
+					$('.guild#refresh a').attr('href', `/refresh?return=${reqURL.pathname}&beta=${betaName}`);
+					if ( !$(`.channel#${args[3]}-beta-${betaName}`).length ) {
+						let clone = $(`.channel#${args[3]}`).clone();
+						clone.attr('id', `${args[3]}-beta-${betaName}`).attr('href', `/guild/${guild.id}/${args[3]}?beta=${betaName}${suffix}`);
+						clone.find('div').prepend($('<div class="beta-name">').text(betaName).prepend(
+							$('<small class="beta-flag">').text(dashboardLang.get('general.beta'))
+						).attr('title', dashboardLang.get('general.betadesc')));
+						clone.appendTo('#channellist');
+					}
+					return betaFeature.form(res, $, guild, args, dashboardLang);
+				}
+			}
+		}
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
@@ -188,6 +229,36 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('.channel#settings').attr('href', `/guild/${guild.id}/settings?owner=true`);
 		$('.channel#verification').attr('href', `/guild/${guild.id}/verification?owner=true`);
 		$('.channel#rcscript').attr('href', `/guild/${guild.id}/rcscript?owner=true`);
+		beta.forEach( (betaFeatures, betaType) => betaFeatures.forEach( (betaFeature, betaName) => {
+			if ( betaFeature.show === 'public' || ( betaFeature.show === 'patreon' && guild.patreon ) ) {
+				let clone = $(`.channel#${betaType}`).clone();
+				clone.attr('id', `${betaType}-beta-${betaName}`).attr('href', `/guild/${guild.id}/${betaType}?beta=${betaName}&owner=true`);
+				clone.find('div').prepend($('<div class="beta-name">').text(betaName).prepend(
+					$('<small class="beta-flag">').text(dashboardLang.get('general.beta'))
+				).attr('title', dashboardLang.get('general.betadesc')));
+				clone.appendTo('#channellist');
+			}
+		} ) );
+		if ( reqURL.searchParams.has('beta') ) {
+			let betaName = reqURL.searchParams.get('beta');
+			if ( beta.get(args[3])?.has(betaName) ) {
+				let betaFeature = beta.get(args[3]).get(betaName);
+				if ( betaFeature.access === 'public' || ( betaFeature.access === 'patreon' && guild.patreon ) ) {
+					createNotice($, 'beta', dashboardLang);
+					$('head script#replaceHistoryState').text(`history.replaceState(null, null, '${reqURL.pathname}?beta=${betaName}');`);
+					$('.guild#refresh a').attr('href', `/refresh?return=${reqURL.pathname}&beta=${betaName}`);
+					if ( !$(`.channel#${args[3]}-beta-${betaName}`).length ) {
+						let clone = $(`.channel#${args[3]}`).clone();
+						clone.attr('id', `${args[3]}-beta-${betaName}`).attr('href', `/guild/${guild.id}/${args[3]}?beta=${betaName}&owner=true`);
+						clone.find('div').prepend($('<div class="beta-name">').text(betaName).prepend(
+							$('<small class="beta-flag">').text(dashboardLang.get('general.beta'))
+						).attr('title', dashboardLang.get('general.betadesc')));
+						clone.appendTo('#channellist');
+					}
+					return betaFeature.form(res, $, guild, args, dashboardLang);
+				}
+			}
+		}
 		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
 		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
