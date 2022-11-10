@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "BETA",
+		"betadesc": "Eksperymentalna funkcja w Beta",
 		"botlist": {
 			"text": "Pomóż innym użytkownikom znaleźć Wiki-Bota przez głosowanie na listach botów:",
 			"title": "Listy botów"
