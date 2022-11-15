@@ -30,7 +30,7 @@ const display_types = [
  */
 export default function cmd_rcscript(lang, msg, args, line, wiki) {
 	if ( args[0] === 'block' && msg.isOwner() ) return blocklist(msg, args.slice(1));
-	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
+	if ( !msg.isAdmin() ) return msg.reactEmoji(WB_EMOJI.no);
 	if ( msg.defaultSettings ) return help_setup(lang, msg);
 	
 	db.query( 'SELECT configid, webhook, wiki, lang, display, rcid, postid FROM rcgcdw WHERE guild = $1 ORDER BY configid ASC', [msg.guildId] ).then( ({rows}) => {
@@ -45,7 +45,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/rcscript`, process.env.dashboard).href);
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji(WB_EMOJI.wikibot).setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/rcscript`, process.env.dashboard).href);
 			components.push(new ActionRowBuilder().addComponents(button));
 		}
 
@@ -71,7 +71,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 				wikinew = Wiki.fromInput(input);
 				if ( !wikinew ) return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+			return msg.reactEmoji(WB_EMOJI.waiting, true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
 				responseType: 'text',
 				context: {
 					guildId: msg.guildId
@@ -102,7 +102,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( body?.error?.info === 'You need read permission to use this module.' ) {
 						return msg.replyMsg( {content: lang.get('settings.wikiinvalid_private') + wikihelp, components}, true );
 					}
-					msg.reactEmoji('nowiki', true);
+					msg.reactEmoji(WB_EMOJI.nowiki, true);
 					return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 				}
 				wikinew.updateWiki(body.query.general);
@@ -176,7 +176,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 				}, dberror => {
 					console.log( '- Error while getting the blocklist: ' + dberror );
 					if ( reaction ) reaction.removeEmoji();
-					msg.reactEmoji('error', true);
+					msg.reactEmoji(WB_EMOJI.error, true);
 				} );
 			}, error => {
 				if ( reaction ) reaction.removeEmoji();
@@ -188,7 +188,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
 					return msg.replyMsg( {content: lang.get('settings.wikiinvalid_timeout') + wikihelp, components}, true );
 				}
-				msg.reactEmoji('nowiki', true);
+				msg.reactEmoji(WB_EMOJI.nowiki, true);
 				return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 			} ) );
 		}
@@ -252,7 +252,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 				var wikihelp = '\n`' + cmd + ' wiki ' + lang.get('rcscript.new_wiki') + '`\n' + lang.get('rcscript.help_wiki');
 				var wikinew = Wiki.fromInput(args[1]);
 				if ( !wikinew ) return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+				return msg.reactEmoji(WB_EMOJI.waiting, true).then( reaction => got.get( wikinew + 'api.php?&action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
 					responseType: 'text',
 					context: {
 						guildId: msg.guildId
@@ -283,7 +283,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( body?.error?.info === 'You need read permission to use this module.' ) {
 							return msg.replyMsg( {content: lang.get('settings.wikiinvalid_private') + wikihelp, components}, true );
 						}
-						msg.reactEmoji('nowiki', true);
+						msg.reactEmoji(WB_EMOJI.nowiki, true);
 						return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 					}
 					wikinew.updateWiki(body.query.general);
@@ -343,7 +343,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 					}, dberror => {
 						console.log( '- Error while getting the blocklist: ' + dberror );
 						if ( reaction ) reaction.removeEmoji();
-						msg.reactEmoji('error', true);
+						msg.reactEmoji(WB_EMOJI.error, true);
 					} );
 				}, error => {
 					if ( reaction ) reaction.removeEmoji();
@@ -355,7 +355,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 					if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
 						return msg.replyMsg( {content: lang.get('settings.wikiinvalid_timeout') + wikihelp, components}, true );
 					}
-					msg.reactEmoji('nowiki', true);
+					msg.reactEmoji(WB_EMOJI.nowiki, true);
 					return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 				} ) );
 			}
@@ -447,7 +447,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 					} );
 				}
 
-				return msg.reactEmoji('⏳', true).then( reaction => got.get( selected_row.wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+				return msg.reactEmoji(WB_EMOJI.waiting, true).then( reaction => got.get( selected_row.wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 					headers: {
 						Accept: 'application/hal+json'
 					},
@@ -573,7 +573,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 		} );
 	}, dberror => {
 		console.log( '- Error while getting the RcGcDw: ' + dberror );
-		msg.reactEmoji('error', true);
+		msg.reactEmoji(WB_EMOJI.error, true);
 	} );
 }
 

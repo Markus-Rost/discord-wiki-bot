@@ -15,7 +15,7 @@ const {timeoptions} = require('../../util/default.json');
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @param {EmbedBuilder} [embed] - The embed for the page.
- * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
+ * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, embed) {
 	if ( !args[0] ) {
@@ -101,7 +101,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
 			}
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
-				return {reaction: 'nowiki'};
+				return {reaction: WB_EMOJI.nowiki};
 			}
 			if ( noerror ) {
 				return {
@@ -114,12 +114,12 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
 			}
 			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(title, ( title ? {diff} : {diff,oldid:revision} )) + '>' + spoiler
 			};
 		}
 		if ( body.compare.fromarchive !== undefined || body.compare.toarchive !== undefined ) {
-			return {reaction: 'error'};
+			return {reaction: WB_EMOJI.error};
 		}
 		var argids = [];
 		var ids = body.compare;
@@ -140,12 +140,12 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );
-			return {reaction: 'nowiki'};
+			return {reaction: WB_EMOJI.nowiki};
 		}
 		else {
 			console.log( '- Error while getting the search results: ' + error );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(title, 'diff=' + relative + ( title ? '' : '&oldid=' + revision )) + '>' + spoiler
 			};
 		}
@@ -162,7 +162,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @param {String[]} [compare] - The edit difference.
- * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
+ * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 	return got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
@@ -175,12 +175,12 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
-				return {reaction: 'nowiki'};
+				return {reaction: WB_EMOJI.nowiki};
 			}
 			else {
 				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 				return {
-					reaction: 'error',
+					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler
 				};
 			}
@@ -331,16 +331,16 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 			
 			return {message: spoiler + text + spoiler};
 		}
-		return {reaction: 'error'};
+		return {reaction: WB_EMOJI.error};
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );
-			return {reaction: 'nowiki'};
+			return {reaction: WB_EMOJI.nowiki};
 		}
 		else {
 			console.log( '- Error while getting the search results: ' + error );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler
 			};
 		}

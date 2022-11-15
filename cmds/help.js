@@ -118,10 +118,10 @@ export default function cmd_help(lang, msg, args, line, wiki) {
 		( !restrictions.minecraft.includes( cmd ) || isMinecraft ) && 
 		( !restrictions.admin.includes( cmd ) || msg.isAdmin() ) ) {
 			var cmdlist = formathelp(helpmap[cmd], msg, lang, wiki);
-			if ( !cmdlist.length ) msg.reactEmoji('❓');
+			if ( !cmdlist.length ) msg.reactEmoji(WB_EMOJI.question);
 			else splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 		}
-		else msg.reactEmoji('❓');
+		else msg.reactEmoji(WB_EMOJI.question);
 	}
 	else if ( msg.isAdmin() && pausedGuilds.has(msg.guildId) ) {
 		var cmdlist = lang.get('help.pause') + '\n';

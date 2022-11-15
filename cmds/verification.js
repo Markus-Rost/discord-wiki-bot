@@ -17,7 +17,7 @@ const {limit: {verification: verificationLimit}} = require('../util/default.json
 export default function cmd_verification(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) {
 		if ( msg.inGuild() && !pausedGuilds.has(msg.guildId) ) this.verify(lang, msg, args, line, wiki);
-		else msg.reactEmoji('❌');
+		else msg.reactEmoji(WB_EMOJI.no);
 		return;
 	}
 	if ( msg.defaultSettings ) return help_setup(lang, msg);
@@ -37,7 +37,7 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/verification`, process.env.dashboard).href);
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji(WB_EMOJI.wikibot).setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/verification`, process.env.dashboard).href);
 			components.push(new ActionRowBuilder().addComponents(button));
 		}
 		if ( args[0] && args[0].toLowerCase() === 'add' ) {
@@ -221,7 +221,7 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 				}
 				if ( usergroups.length > 10 ) return msg.replyMsg( {content: lang.get('verification.usergroup_max'), components}, true );
 				if ( usergroups.some( usergroup => usergroup.length > 100 ) ) return msg.replyMsg( {content: lang.get('verification.usergroup_too_long'), components}, true );
-				if ( usergroups.length ) return msg.reactEmoji('⏳').then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json', {
+				if ( usergroups.length ) return msg.reactEmoji(WB_EMOJI.waiting).then( reaction => got.get( wiki + 'api.php?action=query&meta=allmessages&amprefix=group-&amincludelocal=true&amenableparser=true&format=json', {
 					context: {
 						guildId: msg.guildId
 					}
@@ -328,7 +328,7 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 		}
 	}, dberror => {
 		console.log( '- Error while getting the verifications: ' + dberror );
-		msg.reactEmoji('error', true);
+		msg.reactEmoji(WB_EMOJI.error, true);
 	} );
 }
 

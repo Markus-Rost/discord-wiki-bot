@@ -98,7 +98,7 @@ function interaction_verify(interaction, lang, wiki) {
 						let message = {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
 							components: [new ActionRowBuilder().addComponents(
-								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
+								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
 							ephemeral: true
 						};
@@ -202,7 +202,7 @@ function interaction_verify(interaction, lang, wiki) {
 						let message = {
 							content: userLang.get('verify.oauth_message', '<' + oauthURL + '>'),
 							components: [new ActionRowBuilder().addComponents(
-								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
+								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
 							ephemeral: true
 						}
@@ -222,12 +222,12 @@ function interaction_verify(interaction, lang, wiki) {
 					}
 				};
 				if ( result.reaction ) {
-					if ( result.reaction === 'nowiki' ) message.content = lang.get('interaction.nowiki');
+					if ( result.reaction === WB_EMOJI.nowiki ) message.content = lang.get('interaction.nowiki');
 					else message.content = lang.get('verify.error_reply');
 					message.embeds = [];
 				}
 				else if ( result.add_button && !result.send_private ) message.components.push(new ActionRowBuilder().addComponents(
-					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
+					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji(WB_EMOJI.again).setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 				));
 				return sendMessage(interaction, message).then( msg => {
 					if ( !result.logging.channel || !interaction.guild.channels.cache.has(result.logging.channel) ) return;

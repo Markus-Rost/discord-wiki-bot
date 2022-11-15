@@ -17,7 +17,7 @@ import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functio
  * @param {Wiki} wiki - The wiki for the message.
  * @param {Object[]} rows - The verification settings.
  * @param {String} [old_username] - The username before the search.
- * @returns {Promise<{content:String,embed:EmbedBuilder,add_button:Boolean,send_private:Boolean,reaction:String,oauth:String[],logging:{channel:String,content:String,embed?:EmbedBuilder}}>}
+ * @returns {Promise<{content:String,embed:EmbedBuilder,add_button:Boolean,send_private:Boolean,reaction:WB_EMOJI,oauth:String[],logging:{channel:String,content:String,embed?:EmbedBuilder}}>}
  */
 export default function verify(lang, logLang, channel, member, username, wiki, rows, old_username = '') {
 	/** @type {{logchannel:import('discord.js').TextChannel,flags:Number,onsuccess:String,onmatch:String}} */
@@ -54,7 +54,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
-				result.reaction = 'nowiki';
+				result.reaction = WB_EMOJI.nowiki;
 			}
 			else if ( body?.error?.code === 'us400' || body?.error?.code === 'baduser_ucuser' || body?.error?.code === 'baduser' ) {
 				// special catch for Fandom
@@ -980,7 +980,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			return sendMessage( {
 				content: lang.get('verify.user_matches_reply', escapeFormatting(username), queryuser.gender) + noticeContent,
 				embeds: [embed], components: [new ActionRowBuilder().addComponents(
-					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
+					new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji(WB_EMOJI.again).setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 				)]
 			} ).then( msg => {
 				if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
@@ -1031,7 +1031,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 						return member.send( {content: channel.toString() + '; ' + options.content, embeds: dmEmbeds} ).then( msg => {
 							allowDelete(msg, member.id);
 							if ( settings.sourceMessage ) {
-								settings.sourceMessage.reactEmoji('📩');
+								settings.sourceMessage.reactEmoji(WB_EMOJI.message);
 								setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60_000 ).unref();
 							}
 						}, error => {
@@ -1057,7 +1057,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 					return member.send( {content: channel.toString() + '; ' + options.content, embeds: dmEmbeds} ).then( msg => {
 						allowDelete(msg, member.id);
 						if ( settings.sourceMessage ) {
-							settings.sourceMessage.reactEmoji('📩');
+							settings.sourceMessage.reactEmoji(WB_EMOJI.message);
 							setTimeout( () => settings.sourceMessage.delete().catch(log_error), 60_000 ).unref();
 						}
 					}, error => {

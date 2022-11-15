@@ -39,7 +39,7 @@ readdir( './cmds/minecraft', (error, files) => {
  * @param {String} [fragment] - The section for the link.
  * @param {String} [interwiki] - The fallback interwiki link.
  * @param {Number} [selfcall] - The amount of followed interwiki links.
- * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
+ * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler = '', noEmbed = false, querystring = new URLSearchParams(), fragment = '', interwiki = '', selfcall = 0) {
 	if ( selfcall === 0 && title.startsWith('https://') && title.split('/').length > 3 ) {
@@ -155,12 +155,12 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			if ( interwiki ) return {message: spoiler + ( noEmbed ? '<' : ' ' ) + interwiki + ( noEmbed ? '>' : ' ' ) + spoiler};
 			else if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
-				return {reaction: 'nowiki'};
+				return {reaction: WB_EMOJI.nowiki};
 			}
 			else {
 				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 				return {
-					reaction: 'error',
+					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink( ( querystring.toString() || fragment || !title ? title : 'Special:Search' ), ( querystring.toString() || fragment || !title ? querystring : {search:title} ), fragment) + '>' + spoiler
 				};
 			}
@@ -214,7 +214,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					if ( uresponse.statusCode !== 200 || !ubody || ubody.batchcomplete === undefined || !ubody.query ) {
 						console.log( '- ' + uresponse.statusCode + ': Error while getting the user: ' + ( ubody && ubody.error && ubody.error.info ) );
 						return {
-							reaction: 'error',
+							reaction: WB_EMOJI.error,
 							message: spoiler + '<' + wiki.toLink(contribs + username, querystring, fragment) + '>' + spoiler
 						};
 					}
@@ -229,11 +229,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						querypage.noRedirect = noRedirect;
 						return fn.user(lang, msg, contribs, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed);
 					}
-					return {reaction: 'error'};
+					return {reaction: WB_EMOJI.error};
 				}, error => {
 					console.log( '- Error while getting the user: ' + error );
 					return {
-						reaction: 'error',
+						reaction: WB_EMOJI.error,
 						message: spoiler + '<' + wiki.toLink(contribs + username, querystring, fragment) + '>' + spoiler
 					};
 				} );
@@ -269,7 +269,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					return gamepedia_check_wiki(lang, msg, iw_parts.slice(2).join(':'), iw, cmd, reaction, spoiler, noEmbed, querystring, fragment, iw_link, selfcall);
 				}
 				return {
-					reaction: ( selfcall === maxselfcall ? 'warning' : undefined ),
+					reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 					message: spoiler + ( noEmbed ? '<' : ' ' ) + iw_link + ( noEmbed ? '>' : ' ' ) + spoiler
 				};
 			}
@@ -284,7 +284,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				if ( srresponse.statusCode !== 200 || !srbody || srbody.batchcomplete === undefined ) {
 					console.log( '- ' + srresponse.statusCode + ': Error while getting the search results: ' + srbody?.error?.info );
 					return {RETURN: {
-						reaction: 'error',
+						reaction: WB_EMOJI.error,
 						message: spoiler + '<' + wiki.toLink('Special:Search', {search:title}) + '>' + spoiler
 					}};
 				}
@@ -299,7 +299,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							var location = hresponse.headers.location.split('wiki/');
 							if ( location[0] === wiki.href && location.slice(1).join('wiki/').replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replaceAll( '_', ' ' ) === querypage.title ) {
 								if ( srbody.query ) return srbody;
-								return {RETURN: {reaction: '🤷'}};
+								return {RETURN: {reaction: WB_EMOJI.shrug}};
 							}
 							var maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 							if ( selfcall < maxselfcall ) {
@@ -309,16 +309,16 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 								} );
 							}
 							return {RETURN: {
-								reaction: ( selfcall === maxselfcall ? 'warning' : undefined ),
+								reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 								message: spoiler + ( noEmbed ? '<' : ' ' ) + hresponse.headers.location + ( noEmbed ? '>' : ' ' ) + spoiler
 							}};
 						}
 						if ( srbody.query ) return srbody;
-						return {RETURN: {reaction: '🤷'}};
+						return {RETURN: {reaction: WB_EMOJI.shrug}};
 					}, error => {
 						console.log( '- Error while checking the help redirect: ' + error );
 						if ( srbody.query ) return srbody;
-						return {RETURN: {reaction: '🤷'}};
+						return {RETURN: {reaction: WB_EMOJI.shrug}};
 					} );
 				}
 				if ( !srbody.query ) {
@@ -333,10 +333,10 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							if ( tsrbody?.error?.code !== 'search-text-disabled' ) console.log( '- ' + tsrresponse.statusCode + ': Error while getting the text search results: ' + tsrbody?.error?.info );
 						}
 						else if ( tsrbody.query ) return tsrbody;
-						return {RETURN: {reaction: '🤷'}};
+						return {RETURN: {reaction: WB_EMOJI.shrug}};
 					}, error => {
 						console.log( '- Error while getting the text search results: ' + error );
-						return {RETURN: {reaction: '🤷'}};
+						return {RETURN: {reaction: WB_EMOJI.shrug}};
 					} );
 				}
 				return srbody;
@@ -396,18 +396,18 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 								}
 							}
 							return {
-								reaction: ( selfcall === maxselfcall ? 'warning' : undefined ),
+								reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 								message: spoiler + ( noEmbed ? '<' : ' ' ) + iw + ( noEmbed ? '>' : ' ' ) + spoiler
 							};
 						}
 						catch {
 							return {
-								reaction: ( selfcall === maxselfcall ? 'warning' : undefined ),
+								reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 								message: spoiler + ( noEmbed ? '<' : ' ' ) + srbody.query.interwiki[0].url + ( noEmbed ? '>' : ' ' ) + spoiler
 							};
 						}
 					}
-					return {reaction: 'error'};
+					return {reaction: WB_EMOJI.error};
 				}
 				querypage = Object.values(srbody.query.pages)[0];
 				querypage.uselang = uselang;
@@ -500,7 +500,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				logging(wiki, msg.guildId, 'general', 'search');
 				console.log( '- Error while getting the search results: ' + error );
 				return {
-					reaction: 'error',
+					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink('Special:Search', {search:title}) + '>' + spoiler
 				};
 			} );
@@ -644,13 +644,13 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					}
 				}
 				return {
-					reaction: ( selfcall === maxselfcall ? 'warning' : undefined ),
+					reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 					message: spoiler + ( noEmbed ? '<' : ' ' ) + iw + ( noEmbed ? '>' : ' ' ) + spoiler
 				};
 			}
 			catch {
 				return {
-					reaction: ( selfcall === maxselfcall ? 'warning' : undefined ),
+					reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 					message: spoiler + ( noEmbed ? '<' : ' ' ) + body.query.interwiki[0].url + ( noEmbed ? '>' : ' ' ) + spoiler
 				};
 			}
@@ -718,12 +718,12 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 		if ( interwiki ) return {message: spoiler + ( noEmbed ? '<' : ' ' ) + interwiki + ( noEmbed ? '>' : ' ' ) + spoiler};
 		else if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );
-			return {reaction: 'nowiki'};
+			return {reaction: WB_EMOJI.nowiki};
 		}
 		else {
 			console.log( '- Error while getting the search results: ' + error );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink( ( querystring.toString() || fragment || !title ? title : 'Special:Search' ), ( querystring.toString() || fragment || !title ? querystring : {search:title} ), fragment) + '>' + spoiler
 			};
 		}

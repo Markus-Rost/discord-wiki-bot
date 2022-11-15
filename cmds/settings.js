@@ -18,7 +18,7 @@ const allLangs = Lang.allLangs();
  * @param {Wiki} wiki - The wiki for the message.
  */
 export default function cmd_settings(lang, msg, args, line, wiki) {
-	if ( !msg.isAdmin() ) return msg.reactEmoji('❌');
+	if ( !msg.isAdmin() ) return msg.reactEmoji(WB_EMOJI.no);
 	
 	db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [msg.guildId] ).then( ({rows}) => {
 		var guild = rows.find( row => !row.channel );
@@ -31,7 +31,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji('<:wikibot:588723255972593672>').setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/settings`, process.env.dashboard).href);
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji(WB_EMOJI.wikibot).setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/settings`, process.env.dashboard).href);
 			components.push(new ActionRowBuilder().addComponents(button));
 		}
 		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
@@ -94,7 +94,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 				//wikisuggest += '\n\n' + lang.get('settings.foundwikis') + '\n' + sites.map( site => site.wiki_display_name + ': `' + site.wiki_domain + '`' ).join('\n');
 				return splitMessage( wikisuggest ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 			}
-			return msg.reactEmoji('⏳', true).then( reaction => {
+			return msg.reactEmoji(WB_EMOJI.waiting, true).then( reaction => {
 				got.get( wikinew + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
 					responseType: 'text',
 					context: {
@@ -126,7 +126,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						if ( body?.error?.info === 'You need read permission to use this module.' ) {
 							return msg.replyMsg( {content: lang.get('settings.wikiinvalid_private') + wikihelp, components}, true );
 						}
-						msg.reactEmoji('nowiki', true);
+						msg.reactEmoji(WB_EMOJI.nowiki, true);
 						return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 					}
 					wikinew.updateWiki(body.query.general);
@@ -193,7 +193,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 					if ( ferror.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
 						return msg.replyMsg( {content: lang.get('settings.wikiinvalid_timeout') + wikihelp, components}, true );
 					}
-					msg.reactEmoji('nowiki', true);
+					msg.reactEmoji(WB_EMOJI.nowiki, true);
 					return msg.replyMsg( {content: lang.get('settings.wikiinvalid') + wikihelp, components}, true );
 				} );
 			} );
@@ -395,7 +395,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 		return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 	}, dberror => {
 		console.log( '- Error while getting the settings: ' + dberror );
-		msg.reactEmoji('error', true);
+		msg.reactEmoji(WB_EMOJI.error, true);
 	} );
 }
 

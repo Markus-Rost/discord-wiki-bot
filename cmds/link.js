@@ -23,7 +23,7 @@ export default function cmd_link(lang, msg, title, wiki, cmd = '') {
 		title = title.substring(1, title.length - 1);
 		noEmbed = true;
 	}
-	msg.reactEmoji('⏳').then( reaction => {
+	msg.reactEmoji(WB_EMOJI.waiting).then( reaction => {
 		( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
 		? phabricator(lang, msg, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed)
@@ -31,10 +31,10 @@ export default function cmd_link(lang, msg, title, wiki, cmd = '') {
 			if ( !result || isMessage(result) ) return result;
 			if ( result.message ) {
 				if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
-				else if ( result.reaction === 'error' ) msg.sendChannelError(result.message);
+				else if ( result.reaction === WB_EMOJI.error ) msg.sendChannelError(result.message);
 				else if ( result.reaction === 'reply' ) msg.replyMsg(result.message, true);
 				else msg.sendChannel(result.message).then( message => {
-					if ( result.reaction === 'warning' && message ) message.reactEmoji('warning');
+					if ( result.reaction === WB_EMOJI.warning && message ) message.reactEmoji(WB_EMOJI.warning);
 					return message;
 				} );
 			}

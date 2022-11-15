@@ -35,11 +35,11 @@ function slash_user(interaction, lang, wiki) {
 				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query.pages ) {
 					if ( newWiki.noWiki(response.url, response.statusCode) ) {
 						console.log( '- This wiki doesn\'t exist!' );
-						return {reaction: 'nowiki'};
+						return {reaction: WB_EMOJI.nowiki};
 					}
 					console.log( '- ' + response.statusCode + ': Error while getting the user page: ' + body?.error?.info );
 					return {
-						reaction: 'error',
+						reaction: WB_EMOJI.error,
 						message: spoiler + '<' + newWiki.toLink( ( newWiki.namespaces.get(2)?.name ?? 'User' ) + ':' + username ) + '>' + spoiler
 					};
 				}
@@ -55,11 +55,11 @@ function slash_user(interaction, lang, wiki) {
 			}, error => {
 				if ( newWiki.noWiki(error.message) ) {
 					console.log( '- This wiki doesn\'t exist!' );
-					return {reaction: 'nowiki'};
+					return {reaction: WB_EMOJI.nowiki};
 				}
 				console.log( '- Error while getting the user page: ' + error );
 				return {
-					reaction: 'error',
+					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + newWiki.toLink( ( newWiki.namespaces.get(2)?.name ?? 'User' ) + ':' + username ) + '>' + spoiler
 				};
 			} ).then( result => {
@@ -81,20 +81,20 @@ function slash_user(interaction, lang, wiki) {
 							return list;
 						} );
 					}
-					if ( result.reaction === 'error' ) {
-						if ( typeof result.message === 'string' ) result.message = ( noEmoji ? '⚠️ ' : '<:error:440871715938238494> ' ) + result.message;
-						else result.message.content = ( noEmoji ? '⚠️ ' : '<:error:440871715938238494> ' ) + ( result.message.content ?? '' );
+					if ( result.reaction === WB_EMOJI.error ) {
+						if ( typeof result.message === 'string' ) result.message = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.error ) + ' ' + result.message;
+						else result.message.content = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.error ) + ' ' + ( result.message.content ?? '' );
 					}
-					else if ( result.reaction === 'warning' ) {
-						if ( typeof result.message === 'string' ) result.message = '⚠️ ' + result.message;
-						else result.message.content = '⚠️ ' + ( result.message.content ?? '' );
+					else if ( result.reaction === WB_EMOJI.warning ) {
+						if ( typeof result.message === 'string' ) result.message = WB_EMOJI.warning + ' ' + result.message;
+						else result.message.content = WB_EMOJI.warning + ' ' + ( result.message.content ?? '' );
 					}
 					return sendMessage(interaction, result.message);
 				}
 				else if ( result.reaction ) {
-					let message = ( noEmoji ? '⚠️ ' : '<:error:440871715938238494> ' ) + lang.get('interaction.error') + '\n' + process.env.invite;
-					if ( result.reaction === 'nowiki' ) message = ( noEmoji ? '⚠️ ' : '<:unknown_wiki:505884572001763348> ' ) + lang.get('interaction.nowiki');
-					if ( result.reaction === '🤷' ) message = '🤷 ' + lang.get('search.noresult');
+					let message = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.error ) + ' ' + lang.get('interaction.error') + '\n' + process.env.invite;
+					if ( result.reaction === WB_EMOJI.nowiki ) message = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.nowiki ) + ' ' + lang.get('interaction.nowiki');
+					if ( result.reaction === WB_EMOJI.shrug ) message = WB_EMOJI.shrug + ' ' + lang.get('search.noresult');
 					return sendMessage(interaction, {content: message});
 				}
 			} );

@@ -14,7 +14,7 @@ const {limit: {discussion: discussionLimit}} = require('../../util/default.json'
  * @param {String} sitename - The sitename of the wiki.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
- * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
+ * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function fandom_discussion(lang, msg, wiki, title, sitename, spoiler, noEmbed) {
 	var limit = discussionLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
@@ -74,7 +74,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 			if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded['doc:posts'] ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the posts: ' + ( body && body.title ) );
 				return {
-					reaction: 'error',
+					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki + 'f' + '>' + spoiler
 				};
 			}
@@ -100,11 +100,11 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 								if ( posts.some( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
 									return discussion_send(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 								}
-								return {reaction: '🤷'};
+								return {reaction: WB_EMOJI.shrug};
 							}
 							console.log( '- ' + presponse.statusCode + ': Error while getting the post: ' + ( pbody && pbody.title ) );
 							return {
-								reaction: 'error',
+								reaction: WB_EMOJI.error,
 								message: spoiler + '<' + wiki + 'f' + '>' + spoiler
 							};
 						}
@@ -134,7 +134,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 					}, error => {
 						console.log( '- Error while getting the post: ' + error );
 						return {
-							reaction: 'error',
+							reaction: WB_EMOJI.error,
 							message: spoiler + '<' + wiki + 'f' + '>' + spoiler
 						};
 					} );
@@ -143,11 +143,11 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 					return discussion_send(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 				}
 			}
-			return {reaction: '🤷'};
+			return {reaction: WB_EMOJI.shrug};
 		}, error => {
 			console.log( '- Error while getting the posts: ' + error );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki + 'f' + '>' + spoiler
 			};
 		} );
@@ -164,7 +164,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 		if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded.threads ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the threads: ' + ( body && body.title ) );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki + 'f' + '>' + spoiler
 			};
 		}
@@ -202,11 +202,11 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 							if (threads.some( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
 								return discussion_send(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 							}
-							return {reaction: '🤷'};
+							return {reaction: WB_EMOJI.shrug};
 						}
 						console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
 						return {
-							reaction: 'error',
+							reaction: WB_EMOJI.error,
 							message: spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler
 						};
 					}
@@ -214,7 +214,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 				}, error => {
 					console.log( '- Error while getting the thread: ' + error );
 					return {
-						reaction: 'error',
+						reaction: WB_EMOJI.error,
 						message: spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler
 					};
 				} );
@@ -223,11 +223,11 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 				return discussion_send(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 			}
 		}
-		return {reaction: '🤷'};
+		return {reaction: WB_EMOJI.shrug};
 	}, error => {
 		console.log( '- Error while getting the threads: ' + error );
 		return {
-			reaction: 'error',
+			reaction: WB_EMOJI.error,
 			message: spoiler + '<' + wiki + 'f' + '>' + spoiler
 		};
 	} );
@@ -242,7 +242,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
  * @param {EmbedBuilder} embed - The embed for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
- * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
+ * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 	if ( discussion.title ) {

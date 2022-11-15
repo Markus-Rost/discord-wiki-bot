@@ -102,7 +102,7 @@ const removeClassesExceptions = [
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
  * @param {String} [fragment] - The section title to embed.
  * @param {String} [pagelink] - The link to the page.
- * @returns {Promise<import('discord.js').Message|{reaction?: String, message?: String|import('discord.js').MessageOptions}>} The edited message.
+ * @returns {Promise<import('discord.js').Message|{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>} The edited message.
  */
 export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
@@ -120,7 +120,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 	}
 	return ( isMessage(msg) ? msg.sendChannel( {
 		content,
-		embeds: [EmbedBuilder.from(embed).setDescription( '<a:loading:641343250661113886> **' + lang.get('search.loading') + '**' )]
+		embeds: [EmbedBuilder.from(embed).setDescription( WB_EMOJI.loading + ' **' + lang.get('search.loading') + '**' )]
 	} ) : Promise.resolve(true) ).then( message => {
 		if ( !message ) return;
 		if ( ns === 8 ) {

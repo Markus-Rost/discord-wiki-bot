@@ -224,11 +224,11 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 			}
 		}, dberror => {
 			console.log( '- Error while getting the settings: ' + dberror );
-			msg.reactEmoji('error');
+			msg.reactEmoji(WB_EMOJI.error);
 		} );
 	} catch ( error ) {
 		log_error(error);
-		msg.reactEmoji('error');
+		msg.reactEmoji(WB_EMOJI.error);
 	}
 }
 

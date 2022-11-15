@@ -10,7 +10,7 @@ import { got, escapeFormatting, limitLength } from '../util/functions.js';
  * @param {URL} link - The link.
  * @param {String} [spoiler] - If the response is in a spoiler.
  * @param {Boolean} [noEmbed] - If the response should be without an embed.
- * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
+ * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function phabricator_task(lang, msg, wiki, link, spoiler = '', noEmbed = false) {
 	var regex = /^(?:https?:)?\/\/phabricator\.(wikimedia|miraheze)\.org\/T(\d+)(?:#|$)/.exec(link.href);
@@ -29,7 +29,7 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 		if ( response.statusCode !== 200 || !body?.result?.data || body.error_code ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the Phabricator task: ' + body?.error_info );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler
 			};
 		}
@@ -102,7 +102,7 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 	}, error => {
 		console.log( '- Error while getting the Phabricator task: ' + error );
 		return {
-			reaction: 'error',
+			reaction: WB_EMOJI.error,
 			message: spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler
 		};
 	} );

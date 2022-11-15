@@ -66,7 +66,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 							wiki: wiki.href, channel: msg.channel,
 							user: msg.author.id, sourceMessage: msg,
 							fail: () => msg.replyMsg( lang.get('verify.error_reply'), false, false ).then( message => {
-								if ( message ) message.reactEmoji('error');
+								if ( message ) message.reactEmoji(WB_EMOJI.error);
 							} )
 						});
 					}, error => {
@@ -103,10 +103,10 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 					return msg.member.send( {
 						content: lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>',
 						components: [new ActionRowBuilder().addComponents(
-							new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
+							new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 						)]
 					} ).then( message => {
-						msg.reactEmoji('📩');
+						msg.reactEmoji(WB_EMOJI.message);
 						allowDelete(message, msg.author.id);
 						setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 					}, error => {
@@ -114,7 +114,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 							return msg.replyMsg( lang.get('verify.oauth_private') );
 						}
 						log_error(error);
-						msg.reactEmoji('error');
+						msg.reactEmoji(WB_EMOJI.error);
 					} );
 				} );
 			}
@@ -131,7 +131,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 			if ( args[0] === 'verification' ) args[0] = ( lang.localNames.verify || 'verify' );
 			return this.help(lang, msg, args, line, wiki);
 		}
-		msg.reactEmoji('⏳').then( reaction => {
+		msg.reactEmoji(WB_EMOJI.waiting).then( reaction => {
 			verify(lang, lang, msg.channel, msg.member, username, wiki, rows).then( result => {
 				if ( result.oauth.length ) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
@@ -161,7 +161,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 								wiki: wiki.href, channel: msg.channel,
 								user: msg.author.id, sourceMessage: msg,
 								fail: () => msg.replyMsg( lang.get('verify.error_reply'), false, false ).then( message => {
-									if ( message ) message.reactEmoji('error');
+									if ( message ) message.reactEmoji(WB_EMOJI.error);
 								} )
 							});
 						}, error => {
@@ -198,10 +198,10 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 						msg.member.send( {
 							content: lang.get('verify.oauth_message_dm', escapeFormatting(msg.guild.name)) + '\n<' + oauthURL + '>',
 							components: [new ActionRowBuilder().addComponents(
-								new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji('🔗').setStyle(ButtonStyle.Link).setURL(oauthURL)
+								new ButtonBuilder().setLabel(lang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)]
 						} ).then( message => {
-							msg.reactEmoji('📩');
+							msg.reactEmoji(WB_EMOJI.message);
 							allowDelete(message, msg.author.id);
 							setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 						}, error => {
@@ -209,7 +209,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 								return msg.replyMsg( lang.get('verify.oauth_private') );
 							}
 							log_error(error);
-							msg.reactEmoji('error');
+							msg.reactEmoji(WB_EMOJI.error);
 						} );
 					} );
 				}
@@ -225,7 +225,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 						}
 					};
 					if ( result.add_button ) options.components.push(new ActionRowBuilder().addComponents(
-						new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji('🔂').setStyle(ButtonStyle.Primary).setCustomId('verify_again')
+						new ButtonBuilder().setLabel(lang.get('verify.button_again')).setEmoji(WB_EMOJI.again).setStyle(ButtonStyle.Primary).setCustomId('verify_again')
 					));
 					if ( result.send_private ) {
 						let dmEmbeds = [];
@@ -243,7 +243,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 							embeds: dmEmbeds,
 							components: []
 						} ).then( message => {
-							msg.reactEmoji('📩');
+							msg.reactEmoji(WB_EMOJI.message);
 							allowDelete(message, msg.author.id);
 							setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 						}, error => {
@@ -251,7 +251,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 								return msg.replyMsg( options, false, false );
 							}
 							log_error(error);
-							msg.reactEmoji('error');
+							msg.reactEmoji(WB_EMOJI.error);
 						} ).then( message => {
 							if ( !result.logging.channel || !msg.guild.channels.cache.has(result.logging.channel) ) return;
 							if ( message ) {
@@ -280,14 +280,14 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 			}, error => {
 				console.log( '- Error during the verifications: ' + error );
 				msg.replyMsg( lang.get('verify.error_reply'), false, false ).then( message => {
-					if ( message ) message.reactEmoji('error');
+					if ( message ) message.reactEmoji(WB_EMOJI.error);
 				} );
 			} );
 		} );
 	}, dberror => {
 		console.log( '- Error while getting the verifications: ' + dberror );
 		msg.replyMsg( lang.get('verify.error_reply'), false, false ).then( message => {
-			if ( message ) message.reactEmoji('error');
+			if ( message ) message.reactEmoji(WB_EMOJI.error);
 		} );
 	} );
 }

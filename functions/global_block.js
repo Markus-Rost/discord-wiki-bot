@@ -11,7 +11,7 @@ import { got, isMessage, canShowEmbed, escapeFormatting } from '../util/function
  * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {String} [gender] - The gender of the user.
- * @returns {Promise<import('discord.js').Message|{reaction?: String, message?: String|import('discord.js').MessageOptions}>} The edited message.
+ * @returns {Promise<import('discord.js').Message|{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>} The edited message.
  */
 export default function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
 	if ( !msg || !msg.inGuild() || !patreonGuildsPrefix.has(msg.guildId) || wiki.wikifarm !== 'fandom' ) return;

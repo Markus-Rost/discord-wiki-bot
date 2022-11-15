@@ -615,7 +615,7 @@ function breakOnTimeoutPause(msg, ignorePause = false) {
  */
 function allowDelete(msg, author) {
 	msg?.awaitReactions?.( {
-		filter: (reaction, user) => ( reaction.emoji.name === '🗑️' && user.id === author ),
+		filter: (reaction, user) => ( reaction.emoji.name === WB_EMOJI.delete && user.id === author ),
 		max: 1, time: 300_000
 	} ).then( reaction => {
 		if ( reaction.size ) msg.delete().catch(log_error);

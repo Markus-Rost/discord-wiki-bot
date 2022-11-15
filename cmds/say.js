@@ -34,7 +34,7 @@ export default function cmd_say(lang, msg, args, line, wiki) {
 			}
 		} ).then( () => msg.delete().catch(log_error), error => {
 			log_error(error);
-			msg.reactEmoji('error', true);
+			msg.reactEmoji(WB_EMOJI.error, true);
 		} );
 	} else if ( !pausedGuilds.has(msg.guildId) ) this.LINK(lang, msg, line, wiki);
 }

@@ -87,20 +87,7 @@ String.prototype.replaceAllSafe = function(pattern, replacement) {
 
 Discord.Message.prototype.reactEmoji = function(name, ignorePause = false) {
 	if ( breakOnTimeoutPause(this, ignorePause) ) return Promise.resolve();
-	var emoji = '<:error:440871715938238494>';
-	switch ( name ) {
-		case 'nowiki':
-			emoji = '<:unknown_wiki:505884572001763348>';
-			break;
-		case 'error':
-			emoji = '<:error:440871715938238494>';
-			break;
-		case 'warning':
-			emoji = '⚠️';
-			break;
-		default:
-			emoji = name;
-	}
+	var emoji = ( WB_EMOJI.hasOwnProperty(name) ? WB_EMOJI[name] : name );
 	return this.react(emoji).catch( error => {
 		if ( error?.code === 10008 ) return; // Unknown Message
 		log_error(error);
@@ -122,7 +109,7 @@ Discord.Message.prototype.sendChannel = function(message, ignorePause = false) {
 		return msg;
 	}, error => {
 		log_error(error);
-		this.reactEmoji('error');
+		this.reactEmoji(WB_EMOJI.error);
 	} );
 };
 
@@ -130,12 +117,12 @@ Discord.Message.prototype.sendChannelError = function(message) {
 	if ( breakOnTimeoutPause(this) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return this.channel.send( message ).then( msg => {
-		msg.reactEmoji('error');
+		msg.reactEmoji(WB_EMOJI.error);
 		allowDelete(msg, this.author.id);
 		return msg;
 	}, error => {
 		log_error(error);
-		this.reactEmoji('error');
+		this.reactEmoji(WB_EMOJI.error);
 	} );
 };
 
@@ -147,7 +134,7 @@ Discord.Message.prototype.replyMsg = function(message, ignorePause = false, letD
 		return msg;
 	}, error => {
 		log_error(error);
-		this.reactEmoji('error');
+		this.reactEmoji(WB_EMOJI.error);
 	} );
 };
 
@@ -333,7 +320,7 @@ client.on( Discord.Events.MessageReactionAdd, (reaction, user) => {
 	var msg = reaction.message;
 	if ( msg.applicationId !== client.user.id || !msg.interaction ) return;
 	if ( !interaction_commands.allowDelete.includes(msg.interaction.commandName) ) return;
-	if ( reaction.emoji.name !== '🗑️' || msg.interaction.user.id !== user.id ) return;
+	if ( reaction.emoji.name !== WB_EMOJI.delete || msg.interaction.user.id !== user.id ) return;
 	msg.delete().catch(log_error);
 } );
 

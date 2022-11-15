@@ -62,7 +62,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		if ( count === maxcount ) {
 			count++;
 			console.log( '- Message contains too many commands!' );
-			msg.reactEmoji('⚠️');
+			msg.reactEmoji(WB_EMOJI.warning);
 			msg.sendChannelError( {
 				content: lang.get('general.limit', msg.author.toString()),
 				reply: {messageReference: msg.id},
@@ -129,7 +129,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					else if ( linkcount === linkmaxcount ) {
 						linkcount++;
 						console.log( '- Message contains too many links!' );
-						msg.reactEmoji('⚠️');
+						msg.reactEmoji(WB_EMOJI.warning);
 						break;
 					}
 				}
@@ -149,7 +149,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					else if ( count === maxcount ) {
 						count++;
 						console.log( '- Message contains too many links!' );
-						msg.reactEmoji('⚠️');
+						msg.reactEmoji(WB_EMOJI.warning);
 						break;
 					}
 				}
@@ -165,7 +165,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
+					msg.reactEmoji(WB_EMOJI.nowiki);
 					return;
 				}
 				console.log( '- ' + response.statusCode + ': Error while following the links: ' + ( body && body.error && body.error.info ) );
@@ -206,7 +206,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
-				msg.reactEmoji('nowiki');
+				msg.reactEmoji(WB_EMOJI.nowiki);
 			}
 			else {
 				console.log( '- Error while following the links: ' + error );
@@ -222,7 +222,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
-					msg.reactEmoji('nowiki');
+					msg.reactEmoji(WB_EMOJI.nowiki);
 					return;
 				}
 				console.log( '- ' + response.statusCode + ': Error while following the links: ' + ( body && body.error && body.error.info ) );
@@ -256,16 +256,16 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 			if ( embeds.length ) [...new Map(embeds.map( embed => {
 				return [JSON.stringify(embed), embed];
-			} )).values()].forEach( embed => msg.reactEmoji('⏳').then( reaction => {
+			} )).values()].forEach( embed => msg.reactEmoji(WB_EMOJI.waiting).then( reaction => {
 				logging(wiki, msg.guildId, 'inline', 'embed');
 				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section)?.then( result => {
 					if ( !result || isMessage(result) ) return result;
 					if ( result.message ) {
 						if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
-						else if ( result.reaction === 'error' ) msg.sendChannelError(result.message);
+						else if ( result.reaction === WB_EMOJI.error ) msg.sendChannelError(result.message);
 						else if ( result.reaction === 'reply' ) msg.replyMsg(result.message, true);
 						else msg.sendChannel(result.message).then( message => {
-							if ( result.reaction === 'warning' && message ) message.reactEmoji('warning');
+							if ( result.reaction === WB_EMOJI.warning && message ) message.reactEmoji(WB_EMOJI.warning);
 							return message;
 						} );
 					}
@@ -278,7 +278,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 		}, error => {
 			if ( wiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
-				msg.reactEmoji('nowiki');
+				msg.reactEmoji(WB_EMOJI.nowiki);
 			}
 			else {
 				console.log( '- Error while following the links: ' + error );

@@ -23,7 +23,7 @@ const {timeoptions, usergroups} = require('../../util/default.json');
  * @param {import('discord.js').MessageReaction} reaction - The reaction on the message.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {Boolean} noEmbed - If the response should be without an embed.
- * @returns {Promise<{reaction?: String, message?: String|import('discord.js').MessageOptions}>}
+ * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
@@ -36,7 +36,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 		if ( body && body.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.blocks || fragment ) {
 			if ( body && body.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) || fragment ) {
-				if ( querypage.missing !== undefined || querypage.ns === -1 ) return {reaction: 'error'};
+				if ( querypage.missing !== undefined || querypage.ns === -1 ) return {reaction: WB_EMOJI.error};
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 				var embed = new EmbedBuilder().setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 				if ( body?.query?.general ) {
@@ -80,7 +80,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			}
 			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring, fragment) + '>' + spoiler
 			};
 		}
@@ -192,10 +192,10 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 			if ( ucbody && ucbody.warnings ) log_warning(ucbody.warnings);
 			if ( ucresponse.statusCode !== 200 || !ucbody || ucbody.batchcomplete === undefined || !ucbody.query || !ucbody.query.usercontribs ) {
-				if ( ucbody && ucbody.error && ucbody.error.code === 'baduser_ucuser' ) return {reaction: 'error'};
+				if ( ucbody && ucbody.error && ucbody.error.code === 'baduser_ucuser' ) return {reaction: WB_EMOJI.error};
 				console.log( '- ' + ucresponse.statusCode + ': Error while getting the search results: ' + ( ucbody && ucbody.error && ucbody.error.info ) );
 				return {
-					reaction: 'error',
+					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler
 				};
 			}
@@ -230,8 +230,8 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			
 			if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && wiki.wikifarm === 'fandom' ) {
 				if ( isMessage(msg) ) {
-					if ( !noEmbed ) embed.addFields( {name: '\u200b', value: '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**'} );
-					else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
+					if ( !noEmbed ) embed.addFields( {name: '\u200b', value: WB_EMOJI.loading + ' **' + lang.get('user.info.loading') + '**'} );
+					else text += '\n\n' + WB_EMOJI.loading + ' **' + lang.get('user.info.loading') + '**';
 				}
 
 				return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage).then( message => {
@@ -244,7 +244,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
 			console.log( '- Error while getting the search results: ' + error );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler
 			};
 		} );
@@ -252,7 +252,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 		logging(wiki, msg.guildId, 'user', 'ip');
 		console.log( '- Error while getting the search results: ' + error );
 		return {
-			reaction: 'error',
+			reaction: WB_EMOJI.error,
 			message: spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring, fragment) + '>' + spoiler
 		};
 	} );
@@ -268,14 +268,14 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users || !body.query.users[0] ) {
 			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
 			return {
-				reaction: 'error',
+				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler
 			}
 		}
 		wiki.updateWiki(body.query.general);
 		var queryuser = body.query.users[0];
 		if ( queryuser.missing !== undefined || queryuser.invalid !== undefined || fragment ) {
-			if ( querypage.missing !== undefined || querypage.ns === -1 ) return {reaction: '🤷'};
+			if ( querypage.missing !== undefined || querypage.ns === -1 ) return {reaction: WB_EMOJI.shrug};
 			var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 			var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 			if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
@@ -638,8 +638,8 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				
 				if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) ) {
 					if ( isMessage(msg) ) {
-						if ( !noEmbed ) embed.addFields( {name: '\u200b', value: '<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**'} );
-						else text += '\n\n<a:loading:641343250661113886> **' + lang.get('user.info.loading') + '**';
+						if ( !noEmbed ) embed.addFields( {name: '\u200b', value: WB_EMOJI.loading + ' **' + lang.get('user.info.loading') + '**'} );
+						else text += '\n\n' + WB_EMOJI.loading + ' **' + lang.get('user.info.loading') + '**';
 					}
 					
 					return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage).then( message => {
@@ -685,7 +685,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 	}, error => {
 		console.log( '- Error while getting the search results: ' + error );
 		return {
-			reaction: 'error',
+			reaction: WB_EMOJI.error,
 			message: spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler
 		};
 	} );

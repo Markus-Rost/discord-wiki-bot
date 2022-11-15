@@ -52,20 +52,20 @@ function slash_diff(interaction, lang, wiki) {
 							return list;
 						} );
 					}
-					if ( result.reaction === 'error' ) {
-						if ( typeof result.message === 'string' ) result.message = ( noEmoji ? '⚠️ ' : '<:error:440871715938238494> ' ) + result.message;
-						else result.message.content = ( noEmoji ? '⚠️ ' : '<:error:440871715938238494> ' ) + ( result.message.content ?? '' );
+					if ( result.reaction === WB_EMOJI.error ) {
+						if ( typeof result.message === 'string' ) result.message = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.error ) + ' ' + result.message;
+						else result.message.content = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.error ) + ' ' + ( result.message.content ?? '' );
 					}
-					else if ( result.reaction === 'warning' ) {
-						if ( typeof result.message === 'string' ) result.message = '⚠️ ' + result.message;
-						else result.message.content = '⚠️ ' + ( result.message.content ?? '' );
+					else if ( result.reaction === WB_EMOJI.warning ) {
+						if ( typeof result.message === 'string' ) result.message = WB_EMOJI.warning + ' ' + result.message;
+						else result.message.content = WB_EMOJI.warning + ' ' + ( result.message.content ?? '' );
 					}
 					return sendMessage(interaction, result.message);
 				}
 				else if ( result.reaction ) {
-					let message = ( noEmoji ? '⚠️ ' : '<:error:440871715938238494> ' ) + lang.get('interaction.error') + '\n' + process.env.invite;
-					if ( result.reaction === 'nowiki' ) message = ( noEmoji ? '⚠️ ' : '<:unknown_wiki:505884572001763348> ' ) + lang.get('interaction.nowiki');
-					if ( result.reaction === '🤷' ) message = '🤷 ' + lang.get('search.noresult');
+					let message = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.error ) + ' ' + lang.get('interaction.error') + '\n' + process.env.invite;
+					if ( result.reaction === WB_EMOJI.nowiki ) message = ( noEmoji ? WB_EMOJI.warning : WB_EMOJI.nowiki ) + ' ' + lang.get('interaction.nowiki');
+					if ( result.reaction === WB_EMOJI.shrug ) message = WB_EMOJI.shrug + ' ' + lang.get('search.noresult');
 					return sendMessage(interaction, {content: message});
 				}
 			} );
