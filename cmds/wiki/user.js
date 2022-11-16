@@ -59,7 +59,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						embed.backupField = {name: extract[1], value: extract[2]};
 					}
 				}
-				if ( querypage.pageprops && querypage.pageprops.description ) {
+				if ( querypage.pageprops && querypage.pageprops.description && DESC_LENGTH ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 					embed.backupDescription = description;
@@ -208,14 +208,16 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			if ( !noEmbed ) {
 				embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( username ).setURL( pagelink ).addFields( {name: editcount[0], value: editcount[1], inline: true} );
 				embed.forceTitle = true;
-				if ( querypage.pageprops && querypage.pageprops.description ) {
-					var description = htmlToDiscord( querypage.pageprops.description );
-					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
-					embed.backupDescription = description;
-				}
-				else if ( querypage.extract ) {
-					var extract = extract_desc(querypage.extract);
-					embed.backupDescription = extract[0];
+				if ( DESC_LENGTH ) {
+					if ( querypage.pageprops && querypage.pageprops.description ) {
+						var description = htmlToDiscord( querypage.pageprops.description );
+						if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
+						embed.backupDescription = description;
+					}
+					else if ( querypage.extract ) {
+						var extract = extract_desc(querypage.extract);
+						embed.backupDescription = extract[0];
+					}
 				}
 				if ( blocks.length ) blocks.forEach( block => {
 					embed.addFields( {name: block.header, value: block.text} );
@@ -290,7 +292,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					embed.backupField = {name: extract[1], value: extract[2]};
 				}
 			}
-			if ( querypage.pageprops && querypage.pageprops.description ) {
+			if ( querypage.pageprops && querypage.pageprops.description && DESC_LENGTH ) {
 				var description = htmlToDiscord( querypage.pageprops.description );
 				if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 				embed.backupDescription = description;
@@ -498,14 +500,16 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					{name: registration[0], value: registration[1] + '\n' + registration[2], inline: true}
 				]);
 				
-				if ( querypage.pageprops && querypage.pageprops.description ) {
-					var description = htmlToDiscord( querypage.pageprops.description );
-					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
-					embed.backupDescription = description;
-				}
-				else if ( querypage.extract ) {
-					var extract = extract_desc(querypage.extract);
-					embed.backupDescription = extract[0];
+				if ( DESC_LENGTH ) {
+					if ( querypage.pageprops && querypage.pageprops.description ) {
+						var description = htmlToDiscord( querypage.pageprops.description );
+						if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
+						embed.backupDescription = description;
+					}
+					else if ( querypage.extract ) {
+						var extract = extract_desc(querypage.extract);
+						embed.backupDescription = extract[0];
+					}
 				}
 			}
 			else {
@@ -542,7 +546,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					if ( pbody.userData.avatar?.trim() && pbody.userData.avatar !== 'https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/thumbnail/width/400/height/400' ) {
 						embed.setThumbnail( pbody.userData.avatar.replace( '/thumbnail/width/400/height/400', '' ) );
 					}
-					if ( pbody.userData.bio?.trim() && !embed.description ) {
+					if ( pbody.userData.bio?.trim() && !embed.description && DESC_LENGTH ) {
 						let bio = escapeFormatting(pbody.userData.bio);
 						if ( bio.length > DESC_LENGTH ) bio = bio.substring(0, DESC_LENGTH) + '\u2026';
 						embed.backupDescription = bio;

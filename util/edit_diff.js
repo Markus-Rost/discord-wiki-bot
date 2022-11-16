@@ -9,6 +9,7 @@ import { escapeFormatting } from './functions.js';
  * @returns {[String, String]}
  */
 export default function diffParser(html, more, whitespace) {
+	if ( !SECTION_LENGTH ) return ['', ''];
 	var current_tag = '';
 	var last_ins = null;
 	var last_del = null;

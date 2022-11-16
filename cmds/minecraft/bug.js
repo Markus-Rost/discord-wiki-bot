@@ -54,7 +54,8 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			/** @type {EmbedBuilder} */
 			var embed = null;
 			if ( !noEmbed ) {
-				embed = new EmbedBuilder().setAuthor( {name: 'Mojira'} ).setTitle( summary ).setURL( baseBrowseUrl + body.key ).setDescription( limitLength(description, DESC_LENGTH, 20) );
+				embed = new EmbedBuilder().setAuthor( {name: 'Mojira'} ).setTitle( summary ).setURL( baseBrowseUrl + body.key );
+				if ( DESC_LENGTH ) embed.setDescription( limitLength(description, DESC_LENGTH, 20) );
 				var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 				if ( links.length ) {
 					var linkList = lang.get('minecraft.issue_link');

@@ -446,7 +446,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						embed.backupField = {name: extract[1], value: extract[2]};
 					}
 				}
-				if ( querypage.pageprops && querypage.pageprops.description ) {
+				if ( querypage.pageprops && querypage.pageprops.description && DESC_LENGTH ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 					embed.backupDescription = description;
@@ -541,7 +541,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					embed.backupField = {name: extract[1], value: extract[2]};
 				}
 			}
-			if ( querypage.pageprops && querypage.pageprops.description ) {
+			if ( querypage.pageprops && querypage.pageprops.description && DESC_LENGTH ) {
 				var description = htmlToDiscord( querypage.pageprops.description );
 				if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 				embed.backupDescription = description;
@@ -704,7 +704,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					embed.backupField = {name: extract[1], value: extract[2]};
 				}
 			}
-			if ( querypage.pageprops && querypage.pageprops.description ) {
+			if ( querypage.pageprops && querypage.pageprops.description && DESC_LENGTH ) {
 				var description = htmlToDiscord( querypage.pageprops.description );
 				if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 				embed.backupDescription = description;

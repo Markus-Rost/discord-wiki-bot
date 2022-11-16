@@ -48,12 +48,14 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 			{name: lang.get('phabricator.priority'), value: escapeFormatting(task.fields.priority.name), inline: true}
 		]);
 		if ( task.fields.subtype !== 'default' ) embed.addFields( {name: lang.get('phabricator.subtype'), value: escapeFormatting(task.fields.subtype), inline: true} );
-		var description = parse_text( task.fields.description.raw, site );
-		if ( description.length > DESC_LENGTH ) description = limitLength(description, DESC_LENGTH, 40);
-		embed.setDescription( description );
+		if ( DESC_LENGTH ) {
+			var description = parse_text( task.fields.description.raw, site );
+			if ( description.length > DESC_LENGTH ) description = limitLength(description, DESC_LENGTH, 40);
+			embed.setDescription( description );
+		}
 
 		return Promise.all([
-			( task.attachments.projects.projectPHIDs.length ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
+			( task.attachments.projects.projectPHIDs.length && FIELD_LENGTH ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
 				context: {
 					guildId: msg.guildId
 				}
@@ -73,7 +75,7 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 			}, error => {
 				console.log( '- Error while getting the projects: ' + error );
 			} ) : undefined ),
-			( /^#\d+$/.test( link.hash ) ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator_' + regex[1]] + '&objectIdentifier=' + task.phid, {
+			( /^#\d+$/.test( link.hash ) && SECTION_LENGTH ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator_' + regex[1]] + '&objectIdentifier=' + task.phid, {
 				context: {
 					guildId: msg.guildId
 				}
@@ -88,7 +90,8 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 					var content = parse_text( comment.comments[0].content.raw, site );
 					if ( content.length > SECTION_LENGTH ) content = limitLength(content, SECTION_LENGTH, 20);
 					embed.spliceFields( 0, 0, {name: lang.get('phabricator.comment'), value: content} );
-					if ( embed.data.description.length > SECTION_DESC_LENGTH ) embed.setDescription( limitLength(description, SECTION_DESC_LENGTH, 50) );
+					if ( !SECTION_DESC_LENGTH ) embed.setDescription( null );
+					else if ( ( embed.data.description?.length ?? 0 ) > SECTION_DESC_LENGTH ) embed.setDescription( limitLength(description, SECTION_DESC_LENGTH, 50) );
 				}
 			}, error => {
 				console.log( '- Error while getting the task transactions: ' + error );

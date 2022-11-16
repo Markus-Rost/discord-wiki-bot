@@ -24,6 +24,10 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 			return Promise.resolve( {message: spoiler + '<' + pagelink + '>' + spoiler} );
 		}
 		var embed = new EmbedBuilder().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
+		if ( !DESC_LENGTH ) return {message: {
+			content: spoiler + '<' + pagelink + '>' + spoiler,
+			embeds: [embed]
+		}};
 		return got.get( wiki + 'f', {
 			responseType: 'text',
 			context: {
@@ -307,9 +311,11 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 				if ( discussion._embedded.contentImages.length ) embed.setThumbnail( discussion._embedded.contentImages[0].url );
 			}
 	}
-	if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
-	if ( description ) embed.setDescription( description );
-	if ( discussion.tags?.length ) {
+	if ( DESC_LENGTH ) {
+		if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
+		if ( description ) embed.setDescription( description );
+	}
+	if ( discussion.tags?.length && FIELD_LENGTH ) {
 		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](<' + wiki.toLink(tag.articleTitle, '', '', true) + '>)' ).join(', '), {char: ', ', maxLength: FIELD_LENGTH} )[0], inline: false} );
 	}
 	
