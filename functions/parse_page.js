@@ -108,10 +108,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 	if ( reaction ) reaction.removeEmoji();
 	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description ) {
 		if ( missing !== undefined && embed ) {
-			if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
+			if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
-			if ( embed.backupDescription && getEmbedLength(embed) < 5000 ) {
+			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 				embed.setDescription( embed.backupDescription );
 			}
 		}
@@ -138,15 +138,15 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( body && body.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.allmessages?.[0] ) {
 					console.log( '- ' + response.statusCode + ': Error while getting the system message: ' + body?.error?.info );
-					if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
+					if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 						embed.spliceFields( 0, 0, embed.backupField );
 					}
-					if ( embed.backupDescription && getEmbedLength(embed) < 5000 ) {
+					if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 						embed.setDescription( embed.backupDescription );
 					}
 					return;
 				}
-				if ( !embed.data.description && getEmbedLength(embed) < 4000 ) {
+				if ( !embed.data.description && getEmbedLength(embed) < ( 5_990 - ( fragment ? 4_000 : 750 ) ) ) {
 					var description = body.query.allmessages[0]['*'];
 					var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
 					if ( regex ) {
@@ -154,7 +154,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						if ( descArray.length ) {
 							description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
 							if ( description ) {
-								if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+								if ( description.length > 4_000 ) description = description.substring(0, 4_000) + '\u2026';
 								description = '```' + ( contentModels[contentmodel] || '' ) + '\n' + description + '\n```';
 								embed.setDescription( description );
 							}
@@ -164,7 +164,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						let defaultDescription = body.query.allmessages[0].default;
 						if ( description.trim() ) {
 							description = description.replace( /^\n+/, '' ).replace( /\n+$/, '' );
-							if ( description.length > 500 ) description = description.substring(0, 500) + '\u2026';
+							if ( description.length > Math.min(500, SECTION_DESC_LENGTH) ) description = description.substring(0, Math.min(500, SECTION_DESC_LENGTH)) + '\u2026';
 							description = '```' + ( contentModels[contentmodel] || '' ) + '\n' + description + '\n```';
 							embed.setDescription( description );
 						}
@@ -173,7 +173,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						}
 						if ( defaultDescription?.trim() ) {
 							defaultDescription = defaultDescription.replace( /^\n+/, '' ).replace( /\n+$/, '' );
-							if ( defaultDescription.length > 250 ) defaultDescription = defaultDescription.substring(0, 250) + '\u2026';
+							if ( defaultDescription.length > Math.min(250, SECTION_DESC_LENGTH) ) defaultDescription = defaultDescription.substring(0, Math.min(250, SECTION_DESC_LENGTH)) + '\u2026';
 							defaultDescription = '```' + ( contentModels[contentmodel] || '' ) + '\n' + defaultDescription + '\n```';
 							embed.addFields( {name: lang.get('search.messagedefault'), value: defaultDescription} );
 						}
@@ -184,10 +184,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 			}, error => {
 				console.log( '- Error while getting the system message: ' + error );
-				if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
+				if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 					embed.spliceFields( 0, 0, embed.backupField );
 				}
-				if ( embed.backupDescription && getEmbedLength(embed) < 5000 ) {
+				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
 			} ).then( () => {
@@ -209,15 +209,15 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			revision = ( revision?.slots?.main || revision );
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the page content: ' + ( body && body.error && body.error.info ) );
-				if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
+				if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 					embed.spliceFields( 0, 0, embed.backupField );
 				}
-				if ( embed.backupDescription && getEmbedLength(embed) < 5000 ) {
+				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
 				return;
 			}
-			if ( !embed.data.description && getEmbedLength(embed) < 4000 ) {
+			if ( !embed.data.description && getEmbedLength(embed) < ( 5_990 - ( fragment ? 4_000 : SECTION_DESC_LENGTH ) ) ) {
 				var description = revision['*'];
 				var regex = /^L-?(\d+)(?:-(?:L-?)?(\d+))?$/.exec(fragment);
 				if ( regex ) {
@@ -225,7 +225,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					if ( descArray.length ) {
 						description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
 						if ( description ) {
-							if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+							if ( description.length > 4_000 ) description = description.substring(0, 4_000) + '\u2026';
 							description = '```' + ( contentModels[revision.contentmodel] || contentFormats[revision.contentformat] || '' ) + '\n' + description + '\n```';
 							embed.setDescription( description );
 						}
@@ -233,7 +233,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 				else if ( description.trim() ) {
 					description = description.replace( /^\n+/, '' ).replace( /\n+$/, '' );
-					if ( description.length > 500 ) description = description.substring(0, 500) + '\u2026';
+					if ( description.length > SECTION_DESC_LENGTH ) description = description.substring(0, SECTION_DESC_LENGTH) + '\u2026';
 					description = '```' + ( contentModels[revision.contentmodel] || contentFormats[revision.contentformat] || '' ) + '\n' + description + '\n```';
 					embed.setDescription( description );
 				}
@@ -243,10 +243,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}, error => {
 			console.log( '- Error while getting the page content: ' + error );
-			if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields.length ?? 0 ) < 25 ) {
+			if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
 			}
-			if ( embed.backupDescription && getEmbedLength(embed) < 5000 ) {
+			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 				embed.setDescription( embed.backupDescription );
 			}
 		} ).then( () => {
@@ -273,11 +273,11 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 				console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
-				if ( embed.backupDescription && getEmbedLength(embed) < 5000 ) {
-					embed.setDescription( embed.backupDescription );
-				}
-				if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
+				if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 					embed.spliceFields( 0, 0, embed.backupField );
+				}
+				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+					embed.setDescription( embed.backupDescription );
 				}
 				return;
 			}
@@ -290,7 +290,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
 				let infobox = $('aside.portable-infobox');
 				embed.data.fields?.forEach( field => {
-					if ( getEmbedLength(embed) > 5400 ) return;
+					if ( getEmbedLength(embed) > ( 5_870 - FIELD_LENGTH ) ) return;
 					if ( /^`.+`$/.test(field.name) ) {
 						let label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-label, .pi-data-label[data-source="$1"]' )).html();
 						if ( !label ) label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-label, .pi-data-label[data-item-name="$1"]' )).html();
@@ -305,7 +305,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						if ( !value ) value = infobox.find(field.value.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-value, .pi-data-value[data-item-name="$1"]' )).html();
 						if ( value ) {
 							value = htmlToDiscord(value, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
-							if ( value.length > 500 ) value = limitLength(value, 500, 250);
+							if ( value.length > FIELD_LENGTH ) value = limitLength(value, FIELD_LENGTH, 20);
 							if ( value ) field.value = value;
 						}
 					}
@@ -346,12 +346,12 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				].join(', '));
 				let tdLabel = true;
 				for ( let i = 0; i < rows.length; i++ ) {
-					if ( ( embed.data.fields?.length ?? 0 ) >= 25 || getEmbedLength(embed) > 5400 ) break;
+					if ( ( embed.data.fields?.length ?? 0 ) >= FIELD_COUNT || getEmbedLength(embed) > ( 5_870 - FIELD_LENGTH ) ) break;
 					let row = rows.eq(i);
 					if ( row.is('th.mainheader, th.infobox-header, th.va-infobox-header, div.title, h2.pi-header') ) {
 						row.find(removeClasses.join(', ')).remove();
 						let label = htmlToDiscord(row, embed.data.url).trim();
-						if ( label.length > 100 ) label = limitLength(label, 100, 100);
+						if ( label.length > 100 ) label = limitLength(label, 100, 20);
 						if ( label ) {
 							if ( !label.includes( '**' ) ) label = '**' + label + '**';
 							if ( embed.data.fields?.length && embed.data.fields[embed.data.fields.length - 1].name === '\u200b' ) {
@@ -372,7 +372,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						label = htmlToPlain(label).trim().split('\n')[0];
 						value = htmlToDiscord(value, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 						if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
-						if ( value.length > 500 ) value = limitLength(value, 500, 250);
+						if ( value.length > FIELD_LENGTH ) value = limitLength(value, FIELD_LENGTH, 20);
 						if ( label && value ) embed.addFields( {name: label, value, inline: true} );
 					}
 				}
@@ -402,7 +402,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
 				if ( thumbnail ) embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
 			}
-			if ( fragment && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 &&
+			if ( fragment && getEmbedLength(embed) < ( 5_720 - SECTION_LENGTH ) && ( embed.data.fields?.length ?? 0 ) < 25 &&
 			toSection(embed.data.fields?.[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' ), wiki.spaceReplacement) !== toSection(fragment, wiki.spaceReplacement) ) {
 				let newFragment = '';
 				let exactMatch = true;
@@ -493,7 +493,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					if ( !name.length ) name = escapeFormatting(fragment);
 					if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
 					var value = htmlToDiscord(sectionContent, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
-					if ( value.length > 1000 ) value = limitLength(value, 1000, 20);
+					if ( value.length > SECTION_LENGTH ) value = limitLength(value, SECTION_LENGTH, 20);
 					if ( name.length && value.length ) {
 						embed.spliceFields( 0, 0, {name, value} );
 						if ( newFragment ) {
@@ -509,7 +509,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					embed.spliceFields( 0, 0, embed.backupField );
 				}
 			}
-			if ( !embed.data.description && getEmbedLength(embed) < 5000 ) {
+			if ( !embed.data.description && getEmbedLength(embed) < ( 5_950 - Math.max(( fragment ? SECTION_DESC_LENGTH : DESC_LENGTH ), ( embed.backupDescription ? embed.backupDescription?.length ?? 4_000 : 0 )) ) ) {
 				$(infoboxList.join(', ')).remove();
 				$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassesExceptions.join(', ')).remove();
 				let backupDescription = null;
@@ -528,11 +528,11 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				var description = htmlToDiscord($.html(), embed.data.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 				if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 				if ( description ) {
-					if ( disambiguation !== undefined && !fragment && getEmbedLength(embed) < 4250 ) {
-						if ( description.length > 1500 ) description = limitLength(description, 1500, 250);
+					if ( disambiguation !== undefined && !fragment && DESC_LENGTH < 1_500 && getEmbedLength(embed) < 4_450 ) {
+						if ( description.length > 1_500 ) description = limitLength(description, 1_500, 50);
 					}
-					else if ( fragment && description.length > 500 ) description = limitLength(description, 500, 250);
-					else if ( description.length > 1000 ) description = limitLength(description, 1000, 500);
+					else if ( fragment && description.length > SECTION_DESC_LENGTH ) description = limitLength(description, SECTION_DESC_LENGTH, 50);
+					else if ( description.length > DESC_LENGTH ) description = limitLength(description, DESC_LENGTH, 50);
 					embed.setDescription( description );
 				}
 				else if ( embed.backupDescription ) {
@@ -541,11 +541,11 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}, error => {
 			console.log( '- Error while parsing the page: ' + error );
-			if ( embed.backupDescription && getEmbedLength(embed) < 5000 ) {
-				embed.setDescription( embed.backupDescription );
-			}
-			if ( embed.backupField && getEmbedLength(embed) < 4750 && ( embed.data.fields?.length ?? 0 ) < 25 ) {
+			if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
+			}
+			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+				embed.setDescription( embed.backupDescription );
 			}
 		} ).then( () => {
 			let embeds = [embed];

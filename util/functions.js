@@ -46,7 +46,7 @@ function getEmbedLength(embed) {
  * @returns {import('discord.js').EmbedBuilder?}
  */
 function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
-	if ( !infobox || ( embed.data.fields?.length ?? 0 ) >= 25 || getEmbedLength(embed) > 5400 ) return;
+	if ( !infobox || ( embed.data.fields?.length ?? 0 ) >= FIELD_COUNT || getEmbedLength(embed) > ( 5_870 - FIELD_LENGTH ) ) return;
 	if ( infobox.parser_tag_version === 2 || infobox.parser_tag_version === 5 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, thumbnail, pagelink);
@@ -80,7 +80,7 @@ function parse_infobox(infobox, embed, thumbnail, pagelink = '') {
 				embed.brokenInfobox = true;
 			}
 			if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
-			if ( value.length > 500 ) value = limitLength(value, 500, 250);
+			if ( value.length > FIELD_LENGTH ) value = limitLength(value, FIELD_LENGTH, 20);
 			if ( label && value ) embed.addFields( {name: label, value, inline: true} );
 			break;
 		}
@@ -522,7 +522,7 @@ function escapeRegExp(text = '') {
  * @param {Number} [maxExtra] - The maximal allowed character limit if needed.
  * @returns {String}
  */
-function limitLength(text = '', limit = 1000, maxExtra = 20) {
+function limitLength(text = '', limit = 1_000, maxExtra = 20) {
 	var suffix = '\u2026';
 	var link = null;
 	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])*?[^\\])\]\(<?(?:[^()]|\\[()])+?[^\\]>?\)/g;

@@ -67,7 +67,7 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 				}
 				if ( body.query.allmessages?.[1]?.['*']?.trim?.() ) {
 					var description = toMarkdown(body.query.allmessages[1]['*'], wiki, title, true);
-					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 					embed.setDescription( description );
 				}
 			}
@@ -94,7 +94,7 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 		}
 		if ( querypage.pageprops && querypage.pageprops.description ) {
 			var description = htmlToDiscord( querypage.pageprops.description );
-			if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+			if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 			embed.backupDescription = description;
 		}
 		try {

@@ -49,7 +49,7 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 		]);
 		if ( task.fields.subtype !== 'default' ) embed.addFields( {name: lang.get('phabricator.subtype'), value: escapeFormatting(task.fields.subtype), inline: true} );
 		var description = parse_text( task.fields.description.raw, site );
-		if ( description.length > 2000 ) description = limitLength(description, 2000, 40);
+		if ( description.length > DESC_LENGTH ) description = limitLength(description, DESC_LENGTH, 40);
 		embed.setDescription( description );
 
 		return Promise.all([
@@ -67,8 +67,8 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 				var tags = projects.map( project => {
 					return '[' + escapeFormatting(project.fullName) + '](<' + project.uri + '>)';
 				} ).join(',\n');
-				if ( tags.length > 1000 ) tags = projects.map( project => project.fullName ).join(',\n');
-				if ( tags.length > 1000 ) tags = tags.substring(0, 1000) + '\u2026';
+				if ( tags.length > FIELD_LENGTH ) tags = projects.map( project => project.fullName ).join(',\n');
+				if ( tags.length > FIELD_LENGTH ) tags = tags.substring(0, FIELD_LENGTH) + '\u2026';
 				embed.addFields( {name: lang.get('phabricator.tags'), value: tags} );
 			}, error => {
 				console.log( '- Error while getting the projects: ' + error );
@@ -86,9 +86,9 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 				var comment = tbody.result.data.find( transaction => '#' + transaction.id === link.hash );
 				if ( comment.type === 'comment' ) {
 					var content = parse_text( comment.comments[0].content.raw, site );
-					if ( content.length > 1000 ) content = limitLength(content, 1000, 20);
+					if ( content.length > SECTION_LENGTH ) content = limitLength(content, SECTION_LENGTH, 20);
 					embed.spliceFields( 0, 0, {name: lang.get('phabricator.comment'), value: content} );
-					if ( embed.description.length > 500 ) embed.setDescription( limitLength(description, 500, 250) );
+					if ( embed.data.description.length > SECTION_DESC_LENGTH ) embed.setDescription( limitLength(description, SECTION_DESC_LENGTH, 50) );
 				}
 			}, error => {
 				console.log( '- Error while getting the task transactions: ' + error );

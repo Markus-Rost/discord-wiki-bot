@@ -165,7 +165,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
-	return got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general&list=tags&tglimit=500&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
+	return got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general&list=tags&tglimit=max&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -311,9 +311,9 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 				else if ( ( revisions[0]?.slots?.main || revisions[0] )['*'] ) {
 					var content = escapeFormatting( ( revisions[0]?.slots?.main || revisions[0] )['*'] );
 					if ( content.trim().length ) {
-						if ( content.length <= 1000 ) content = '**' + content + '**';
+						if ( content.length <= SECTION_LENGTH ) content = '**' + content + '**';
 						else {
-							content = content.substring(0, 1000 - more.length);
+							content = content.substring(0, SECTION_LENGTH - more.length);
 							content = '**' + content.substring(0, content.lastIndexOf('\n')) + '**' + more;
 						}
 						embed.addFields( {name: lang.get('diff.info.added'), value: content, inline: true} );

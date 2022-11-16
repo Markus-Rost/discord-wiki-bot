@@ -150,7 +150,7 @@ export default function gamepedia_search(lang, msg, searchterm, wiki, query, rea
 			if ( footer ) embed.setFooter( {text: footer} );
 		}
 		else {
-			if ( description.length ) resultText += '\n' + splitMessage( description.join('\n'), {maxLength: 1995 - resultText.length - footer.length} )[0];
+			if ( description.length ) resultText += '\n' + splitMessage( description.join('\n'), {maxLength: 1990 - resultText.length - footer.length} )[0];
 			if ( footer ) resultText += '\n' + footer;
 		}
 	}, error => {

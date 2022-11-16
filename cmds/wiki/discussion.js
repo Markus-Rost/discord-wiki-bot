@@ -40,7 +40,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 					if ( tagname === 'body' ) parser.pause(); // Prevent the parser from running too long
 					if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 						var description = escapeFormatting(attribs.content);
-						if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+						if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 						embed.setDescription( description );
 					}
 					if ( tagname === 'meta' && attribs.property === 'og:image' ) {
@@ -307,10 +307,10 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 				if ( discussion._embedded.contentImages.length ) embed.setThumbnail( discussion._embedded.contentImages[0].url );
 			}
 	}
-	if ( description.length > 2000 ) description = description.substring(0, 2000) + '\u2026';
+	if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 	if ( description ) embed.setDescription( description );
 	if ( discussion.tags?.length ) {
-		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](<' + wiki.toLink(tag.articleTitle, '', '', true) + '>)' ).join(', '), {char:', ',maxLength:1000} )[0], inline: false} );
+		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](<' + wiki.toLink(tag.articleTitle, '', '', true) + '>)' ).join(', '), {char: ', ', maxLength: FIELD_LENGTH} )[0], inline: false} );
 	}
 	
 	return {message: {

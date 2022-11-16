@@ -61,7 +61,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				}
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
-					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 					embed.backupDescription = description;
 				}
 				if ( querypage.pageimage && querypage.original ) {
@@ -210,7 +210,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				embed.forceTitle = true;
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
-					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 					embed.backupDescription = description;
 				}
 				else if ( querypage.extract ) {
@@ -292,7 +292,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			}
 			if ( querypage.pageprops && querypage.pageprops.description ) {
 				var description = htmlToDiscord( querypage.pageprops.description );
-				if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+				if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 				embed.backupDescription = description;
 			}
 			try {
@@ -500,7 +500,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				
 				if ( querypage.pageprops && querypage.pageprops.description ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
-					if ( description.length > 1000 ) description = description.substring(0, 1000) + '\u2026';
+					if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
 					embed.backupDescription = description;
 				}
 				else if ( querypage.extract ) {
@@ -544,7 +544,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					}
 					if ( pbody.userData.bio?.trim() && !embed.description ) {
 						let bio = escapeFormatting(pbody.userData.bio);
-						if ( bio.length > 1000 ) bio = bio.substring(0, 1000) + '\u2026';
+						if ( bio.length > DESC_LENGTH ) bio = bio.substring(0, DESC_LENGTH) + '\u2026';
 						embed.backupDescription = bio;
 					}
 					if ( pbody.userData.name?.trim() ) {

@@ -9,7 +9,7 @@ import { escapeFormatting } from './functions.js';
 export default function extract_desc(text = '', fragment = '') {
 	var sectionIndex = text.indexOf('\ufffd\ufffd');
 	var extract = escapeFormatting(( sectionIndex !== -1 ? text.substring(0, sectionIndex) : text ).trim());
-	if ( extract.length > 1000 ) extract = extract.substring(0, 1000) + '\u2026';
+	if ( extract.length > DESC_LENGTH ) extract = extract.substring(0, DESC_LENGTH) + '\u2026';
 	var section = null;
 	var regex = /\ufffd{2}(\d)\ufffd{2}([^\n]+)/g;
 	var sectionHeader = '';
@@ -43,9 +43,10 @@ export default function extract_desc(text = '', fragment = '') {
 		sectionText = escapeFormatting(sectionText.trim()).replace( /\ufffd{2}(\d)\ufffd{2}([^\n]+)/g, (match, n, sectionTitle) => {
 			return section_formatting(sectionTitle, n);
 		} );
-		if ( sectionText.length > 1000 ) sectionText = sectionText.substring(0, 1000) + '\u2026';
+		if ( sectionText.length > SECTION_LENGTH ) sectionText = sectionText.substring(0, SECTION_LENGTH) + '\u2026';
 		break;
 	}
+	if ( sectionText && extract.length > SECTION_DESC_LENGTH ) extract = extract.substring(0, SECTION_DESC_LENGTH) + '\u2026';
 	return [extract, sectionHeader, sectionText];
 }
 
