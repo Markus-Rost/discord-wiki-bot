@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "UJI COBA",
+		"betadesc": "Fitur Uji Coba Eksperimental",
 		"botlist": {
 			"text": "Bantu pengguna lain menemukan Wiki-Bot dengan memberikan suara pada daftar bot:",
 			"title": "Daftar Bot"
@@ -62,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "Fitur ini eksperimental! Itu tidak dijamin berfungsi dengan benar dan dapat dihapus di masa mendatang.",
+			"title": "Fitur Uji coba Eksperimental"
+		},
 		"error": {
 			"text": "Terjadi kesalahan yang tidak diketahui, harap coba lagi.",
 			"title": "Kesalahan yang tidak diketahui!"

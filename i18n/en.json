@@ -608,8 +608,8 @@
 		"currentlang": "Language:",
 		"currentprefix": "Prefix:",
 		"currentrole": "Minimal role:",
-		"currentsectionlength": "Section length:",
 		"currentsectiondesclength": "Description length before section:",
+		"currentsectionlength": "Section length:",
 		"currentsubprefix": "Subprefix `$1`:",
 		"currentwiki": "Default wiki:",
 		"dashboard": {
