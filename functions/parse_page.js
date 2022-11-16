@@ -106,7 +106,7 @@ const removeClassesExceptions = [
  */
 export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
-	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description ) {
+	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description || ( !DESC_LENGTH && !FIELD_COUNT && !( fragment ? SECTION_LENGTH : 0 ) ) ) {
 		if ( missing !== undefined && embed ) {
 			if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
 				embed.spliceFields( 0, 0, embed.backupField );
@@ -146,7 +146,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					}
 					return;
 				}
-				if ( !embed.data.description && getEmbedLength(embed) < ( 5_990 - ( fragment ? 4_000 : 750 ) ) ) {
+				if ( !embed.data.description && getEmbedLength(embed) < ( 5_990 - ( fragment ? 4_000 : ( SECTION_DESC_LENGTH || DESC_LENGTH ) + FIELD_LENGTH ) ) ) {
 					var description = body.query.allmessages[0]['*'];
 					var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
 					if ( regex && SECTION_LENGTH ) {
@@ -164,16 +164,16 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						let defaultDescription = body.query.allmessages[0].default;
 						if ( description.trim() ) {
 							description = description.replace( /^\n+/, '' ).replace( /\n+$/, '' );
-							if ( description.length > Math.min(500, ( SECTION_DESC_LENGTH || DESC_LENGTH )) ) description = description.substring(0, Math.min(500, ( SECTION_DESC_LENGTH || DESC_LENGTH ))) + '\u2026';
+							if ( description.length > ( SECTION_DESC_LENGTH || DESC_LENGTH ) ) description = description.substring(0, ( SECTION_DESC_LENGTH || DESC_LENGTH )) + '\u2026';
 							description = '```' + ( contentModels[contentmodel] || '' ) + '\n' + description + '\n```';
 							embed.setDescription( description );
 						}
 						else if ( embed.backupDescription ) {
 							embed.setDescription( embed.backupDescription );
 						}
-						if ( defaultDescription?.trim() ) {
+						if ( defaultDescription?.trim() && FIELD_LENGTH ) {
 							defaultDescription = defaultDescription.replace( /^\n+/, '' ).replace( /\n+$/, '' );
-							if ( defaultDescription.length > Math.min(250, ( SECTION_DESC_LENGTH || DESC_LENGTH )) ) defaultDescription = defaultDescription.substring(0, Math.min(250, ( SECTION_DESC_LENGTH || DESC_LENGTH ))) + '\u2026';
+							if ( defaultDescription.length > FIELD_LENGTH ) defaultDescription = defaultDescription.substring(0, FIELD_LENGTH) + '\u2026';
 							defaultDescription = '```' + ( contentModels[contentmodel] || '' ) + '\n' + defaultDescription + '\n```';
 							embed.addFields( {name: lang.get('search.messagedefault'), value: defaultDescription} );
 						}
@@ -511,7 +511,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					embed.spliceFields( 0, 0, embed.backupField );
 				}
 			}
-			if ( !embed.data.description && DESC_LENGTH && getEmbedLength(embed) < ( 5_950 - Math.max(( fragment ? SECTION_DESC_LENGTH : DESC_LENGTH ), ( embed.backupDescription ? embed.backupDescription?.length ?? 4_000 : 0 )) ) ) {
+			if ( !embed.data.description && DESC_LENGTH ) {
 				$(infoboxList.join(', ')).remove();
 				$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassesExceptions.join(', ')).remove();
 				let backupDescription = null;
@@ -530,17 +530,18 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				var description = htmlToDiscord($.html(), embed.data.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 				if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url, true).trim().replace( /\n{3,}/g, '\n\n' );
 				if ( description ) {
-					if ( disambiguation !== undefined && !fragment && DESC_LENGTH < 1_500 && getEmbedLength(embed) < 4_450 ) {
-						if ( description.length > 1_500 ) description = limitLength(description, 1_500, 50);
+					let embedLength = 5_950 - getEmbedLength(embed);
+					if ( disambiguation !== undefined && !fragment && DESC_LENGTH < 1_500 ) {
+						if ( description.length > Math.min(1_500, embedLength) ) description = limitLength(description, Math.min(1_500, embedLength), 50);
 					}
 					else if ( fragment ) {
 						if ( !SECTION_DESC_LENGTH ) description = '';
-						else if ( description.length > SECTION_DESC_LENGTH ) description = limitLength(description, SECTION_DESC_LENGTH, 50);
+						else if ( description.length > Math.min(SECTION_DESC_LENGTH, embedLength) ) description = limitLength(description, Math.min(SECTION_DESC_LENGTH, embedLength), 50);
 					}
-					else if ( description.length > DESC_LENGTH ) description = limitLength(description, DESC_LENGTH, 50);
+					else if ( description.length > Math.min(DESC_LENGTH, embedLength) ) description = limitLength(description, Math.min(DESC_LENGTH, embedLength), 50);
 					if ( description ) embed.setDescription( description );
 				}
-				else if ( embed.backupDescription ) {
+				else if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
 			}
