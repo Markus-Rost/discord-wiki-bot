@@ -4,7 +4,7 @@ import Discord from 'discord.js';
 import db from './util/database.js';
 import Lang from './util/i18n.js';
 import Wiki from './util/wiki.js';
-import newMessage from './util/newMessage.js';
+import { default as newMessage, defaultSettings } from './util/newMessage.js';
 import { breakOnTimeoutPause, allowDelete } from './util/functions.js';
 
 const client = new Discord.Client( {
@@ -222,13 +222,21 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 	else return;
 
 	if ( !interaction.inGuild() ) {
-		return cmd(interaction, new Lang(interaction.guildLocale), new Wiki());
+		interaction.embedLimits = {...defaultSettings.embedLimits};
+		return cmd(interaction, new Lang(interaction.locale), new Wiki());
 	}
 	let sqlargs = [interaction.guildId];
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
-	db.query( 'SELECT wiki, lang FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+	db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 		if ( !row ) interaction.defaultSettings = true;
+		interaction.embedLimits = {
+			descLength: row.desclength ?? defaultSettings.embedLimits.descLength,
+			fieldCount: row.fieldcount ?? defaultSettings.embedLimits.fieldCount,
+			fieldLength: row.fieldlength ?? defaultSettings.embedLimits.fieldLength,
+			sectionLength: row.sectionlength ?? defaultSettings.embedLimits.sectionLength,
+			sectionDescLength: row.sectiondesclength ?? Math.min(row.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
+		};
 		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Interaction: Error while getting the wiki: ' + dberror );
@@ -296,13 +304,20 @@ function messageCreate(msg) {
 			}
 			return;
 		}
-		db.query( 'SELECT wiki, lang, role, inline, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+		db.query( 'SELECT wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 			if ( row ) {
 				if ( msg.guild.roles.cache.has(row.role) && msg.guild.roles.cache.get(row.role).comparePositionTo(msg.member.roles.highest) > 0 && !msg.isAdmin() ) {
 					msg.onlyVerifyCommand = true;
 				}
 				let subprefixes = ( row.subprefixes?.length ? new Map(row.subprefixes) : undefined );
-				newMessage(msg, new Lang(row.lang), row.wiki, patreonGuildsPrefix.get(msg.guildId), row.inline, subprefixes);
+				let embedLimits = {
+					descLength: row.desclength ?? defaultSettings.embedLimits.descLength,
+					fieldCount: row.fieldcount ?? defaultSettings.embedLimits.fieldCount,
+					fieldLength: row.fieldlength ?? defaultSettings.embedLimits.fieldLength,
+					sectionLength: row.sectionlength ?? defaultSettings.embedLimits.sectionLength,
+					sectionDescLength: row.sectiondesclength ?? Math.min(row.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
+				};
+				newMessage(msg, new Lang(row.lang), row.wiki, patreonGuildsPrefix.get(msg.guildId), row.inline, subprefixes, embedLimits);
 			}
 			else {
 				msg.defaultSettings = true;

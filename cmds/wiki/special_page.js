@@ -195,13 +195,13 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 			if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
 			if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 		}
-		if ( body.query.allmessages?.[1]?.['*']?.trim?.() && DESC_LENGTH ) {
+		if ( body.query.allmessages?.[1]?.['*']?.trim?.() && msg.embedLimits.descLength ) {
 			var description = toMarkdown(body.query.allmessages[1]['*'], wiki, title, true);
-			if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
+			if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 			embed.setDescription( description );
 		}
-		if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) && SECTION_LENGTH ) {
-			var text = splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength: SECTION_LENGTH} )[0];
+		if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) && msg.embedLimits.fieldLength ) {
+			var text = splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength: msg.embedLimits.fieldLength} )[0];
 			embed.addFields( {name: lang.get('search.special'), value: ( text || lang.get('search.empty') )} );
 			if ( body.query.querypage?.cached !== undefined ) {
 				embed.setFooter( {text: lang.get('search.cached')} ).setTimestamp(new Date(body.query.querypage.cachedtimestamp));

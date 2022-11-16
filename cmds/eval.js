@@ -41,7 +41,7 @@ export default async function cmd_eval(lang, msg, args, line, wiki) {
 		msg.wikiPrefixes.forEach( (prefixchar, prefixwiki) => {
 			if ( prefixchar ) subprefixes.set(prefixchar, prefixwiki);
 		} );
-		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, cmdline);
+		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, {...msg.embedLimits}, cmdline);
 		return cmdline;
 	}
 }
@@ -179,12 +179,12 @@ function removePatreons(guild, msg) {
 	}
 	return db.connect().then( client => {
 		var messages = [];
-		return client.query( 'SELECT lang, role, inline FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {
+		return client.query( 'SELECT lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND channel IS NULL', [guild] ).then( ({rows:[row]}) => {
 			if ( !row ) {
 				messages.push('The guild doesn\'t exist!');
 				return Promise.reject();
 			}
-			return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, guild] ).then( ({rowCount}) => {
+			return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, desclength = $4, fieldcount = $5, fieldlength = $6, sectionlength = $7, sectiondesclength = $8, prefix = $9, patreon = NULL WHERE guild = $10', [row.lang, row.role, row.inline, row.desclength, row.fieldcount, row.fieldlength, row.sectionlength, row.sectiondesclength, process.env.prefix, guild] ).then( ({rowCount}) => {
 				if ( rowCount ) {
 					console.log( '- Guild successfully updated.' );
 					messages.push('Guild successfully updated.');

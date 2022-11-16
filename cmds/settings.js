@@ -20,7 +20,7 @@ const allLangs = Lang.allLangs();
 export default function cmd_settings(lang, msg, args, line, wiki) {
 	if ( !msg.isAdmin() ) return msg.reactEmoji(WB_EMOJI.no);
 	
-	db.query( 'SELECT channel, wiki, lang, role, inline, prefix FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [msg.guildId] ).then( ({rows}) => {
+	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [msg.guildId] ).then( ({rows}) => {
 		var guild = rows.find( row => !row.channel );
 		if ( !guild ) guild = Object.assign({
 			role: null, inline: null,
@@ -172,7 +172,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						if ( channel || !rows.some( row => row.channel === channelId ) ) wiki = new Wiki(wikinew);
 						if ( reaction ) reaction.removeEmoji();
 						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew.name + wikihelp, embeds: [embed], components}, true );
-						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
+						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline && row.desclength === guild.desclength && row.fieldcount === guild.fieldcount && row.fieldlength === guild.fieldlength && row.sectionlength === guild.sectionlength && row.sectiondesclength === guild.sectiondesclength ).map( row => row.channel );
 						if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 							console.log( '- Settings successfully removed.' );
 						}, dberror => {
@@ -238,7 +238,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				if ( channel || !patreonGuildsPrefix.has(msg.guildId) || !rows.some( row => row.channel === channelId ) ) lang = new Lang(allLangs.map[args[1]]);
 				msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`', files: ( msg.uploadFiles() ? [`./i18n/widgets/${allLangs.map[args[1]]}.png`] : [] ), components}, true );
-				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline && row.desclength === guild.desclength && row.fieldcount === guild.fieldcount && row.fieldlength === guild.fieldlength && row.sectionlength === guild.sectionlength && row.sectiondesclength === guild.sectiondesclength ).map( row => row.channel );
 				if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 					console.log( '- Settings successfully removed.' );
 				}, dberror => {
@@ -300,7 +300,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 					guild.role = role;
 				}
 				msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + ( role ? `<@&${role}>` : '@everyone' ) + rolehelp, components}, true );
-				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline && row.desclength === guild.desclength && row.fieldcount === guild.fieldcount && row.fieldlength === guild.fieldlength && row.sectionlength === guild.sectionlength && row.sectiondesclength === guild.sectiondesclength ).map( row => row.channel );
 				if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 					console.log( '- Settings successfully removed.' );
 				}, dberror => {
@@ -380,7 +380,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 				}
 				toggle = 'inline ' + ( ( channel || guild ).inline ? 'disabled' : 'enabled' );
 				msg.replyMsg( {content: lang.get('settings.' + toggle + '.' + prelang + 'changed') + '\n' + lang.get('settings.' + toggle + '.help', prefix + 'settings ' + prelang + ' toggle', inlinepage), components}, true );
-				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline ).map( row => row.channel );
+				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline && row.desclength === guild.desclength && row.fieldcount === guild.fieldcount && row.fieldlength === guild.fieldlength && row.sectionlength === guild.sectionlength && row.sectiondesclength === guild.sectiondesclength ).map( row => row.channel );
 				if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 					console.log( '- Settings successfully removed.' );
 				}, dberror => {

@@ -571,13 +571,13 @@ function update_verification(res, userSettings, guild, type, settings) {
 		} ) ) return res(`/guild/${guild}/verification/${type}`, 'invalidusergroup');
 		settings.editcount = parseInt(settings.editcount, 10);
 		settings.accountage = parseInt(settings.accountage, 10);
-		if ( settings.editcount > 1000000 || settings.accountage > 1000000 ) {
+		if ( settings.editcount > 1_000_000 || settings.accountage > 1_000_000 ) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		if ( settings.posteditcount === 'both' ) settings.postcount = null;
 		else settings.postcount = parseInt(settings.postcount, 10);
 		if ( settings.posteditcount === 'or' ) settings.postcount = settings.postcount * -1;
-		if ( settings.postcount > 1000000 || settings.postcount < -1000000 ) {
+		if ( settings.postcount > 1_000_000 || settings.postcount < -1_000_000 ) {
 			return res(`/guild/${guild}/verification/${type}`, 'savefail');
 		}
 		if ( type === 'new' ) {

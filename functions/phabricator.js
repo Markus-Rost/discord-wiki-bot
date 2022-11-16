@@ -48,14 +48,14 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 			{name: lang.get('phabricator.priority'), value: escapeFormatting(task.fields.priority.name), inline: true}
 		]);
 		if ( task.fields.subtype !== 'default' ) embed.addFields( {name: lang.get('phabricator.subtype'), value: escapeFormatting(task.fields.subtype), inline: true} );
-		if ( DESC_LENGTH ) {
+		if ( msg.embedLimits.descLength ) {
 			var description = parse_text( task.fields.description.raw, site );
-			if ( description.length > DESC_LENGTH ) description = limitLength(description, DESC_LENGTH, 40);
+			if ( description.length > msg.embedLimits.descLength ) description = limitLength(description, msg.embedLimits.descLength, 40);
 			embed.setDescription( description );
 		}
 
 		return Promise.all([
-			( task.attachments.projects.projectPHIDs.length && FIELD_LENGTH ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
+			( task.attachments.projects.projectPHIDs.length && msg.embedLimits.fieldLength ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
 				context: {
 					guildId: msg.guildId
 				}
@@ -69,13 +69,13 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 				var tags = projects.map( project => {
 					return '[' + escapeFormatting(project.fullName) + '](<' + project.uri + '>)';
 				} ).join(',\n');
-				if ( tags.length > FIELD_LENGTH ) tags = projects.map( project => project.fullName ).join(',\n');
-				if ( tags.length > FIELD_LENGTH ) tags = tags.substring(0, FIELD_LENGTH) + '\u2026';
+				if ( tags.length > msg.embedLimits.fieldLength ) tags = projects.map( project => project.fullName ).join(',\n');
+				if ( tags.length > msg.embedLimits.fieldLength ) tags = tags.substring(0, msg.embedLimits.fieldLength) + '\u2026';
 				embed.addFields( {name: lang.get('phabricator.tags'), value: tags} );
 			}, error => {
 				console.log( '- Error while getting the projects: ' + error );
 			} ) : undefined ),
-			( /^#\d+$/.test( link.hash ) && SECTION_LENGTH ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator_' + regex[1]] + '&objectIdentifier=' + task.phid, {
+			( /^#\d+$/.test( link.hash ) && msg.embedLimits.sectionLength ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator_' + regex[1]] + '&objectIdentifier=' + task.phid, {
 				context: {
 					guildId: msg.guildId
 				}
@@ -88,10 +88,10 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 				var comment = tbody.result.data.find( transaction => '#' + transaction.id === link.hash );
 				if ( comment.type === 'comment' ) {
 					var content = parse_text( comment.comments[0].content.raw, site );
-					if ( content.length > SECTION_LENGTH ) content = limitLength(content, SECTION_LENGTH, 20);
+					if ( content.length > msg.embedLimits.sectionLength ) content = limitLength(content, msg.embedLimits.sectionLength, 20);
 					embed.spliceFields( 0, 0, {name: lang.get('phabricator.comment'), value: content} );
-					if ( !SECTION_DESC_LENGTH ) embed.setDescription( null );
-					else if ( ( embed.data.description?.length ?? 0 ) > SECTION_DESC_LENGTH ) embed.setDescription( limitLength(description, SECTION_DESC_LENGTH, 50) );
+					if ( !msg.embedLimits.sectionDescLength ) embed.setDescription( null );
+					else if ( ( embed.data.description?.length ?? 0 ) > msg.embedLimits.sectionDescLength ) embed.setDescription( limitLength(description, msg.embedLimits.sectionDescLength, 50) );
 				}
 			}, error => {
 				console.log( '- Error while getting the task transactions: ' + error );

@@ -24,6 +24,8 @@ readdir( './cmds', (error, files) => {
 	} );
 } );
 
+export { defaultSettings };
+
 /**
  * Processes new messages.
  * @param {import('discord.js').Message} msg - The Discord message.
@@ -31,14 +33,16 @@ readdir( './cmds', (error, files) => {
  * @param {Wiki} [wiki] - The default wiki.
  * @param {String} [prefix] - The prefix for the message.
  * @param {Boolean} [noInline] - Parse inline commands?
- * @param {Map<String, String>} [subprefixes] - Parse inline commands?
+ * @param {Map<String, String>} [subprefixes] - The subprefixes for the message.
+ * @param {{descLength: Number, fieldCount: Number, fieldLength: Number, sectionLength: Number, sectionDescLength: Number}} [embedLimits] - The limits for the embed.
  * @param {String} [content] - Overwrite for the message content.
  */
-export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), content = '') {
+export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), embedLimits = defaultSettings.embedLimits, content = '') {
 	wiki = new Wiki(wiki);
 	msg.wikiPrefixes = new Map();
 	subprefixes.forEach( (prefixwiki, prefixchar) => msg.wikiPrefixes.set(prefixwiki, prefixchar) );
 	msg.wikiPrefixes.set(wiki.name, '');
+	msg.embedLimits = {...embedLimits};
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
 	var cleanCont = ( content ? cleanContent(content, msg.channel) : msg.cleanContent ).replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /<(\/[\w ]+):\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' );

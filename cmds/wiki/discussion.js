@@ -24,7 +24,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 			return Promise.resolve( {message: spoiler + '<' + pagelink + '>' + spoiler} );
 		}
 		var embed = new EmbedBuilder().setAuthor( {name: sitename} ).setTitle( lang.get('discussion.main') ).setURL( pagelink );
-		if ( !DESC_LENGTH ) return {message: {
+		if ( !msg.embedLimits.descLength ) return {message: {
 			content: spoiler + '<' + pagelink + '>' + spoiler,
 			embeds: [embed]
 		}};
@@ -44,7 +44,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 					if ( tagname === 'body' ) parser.pause(); // Prevent the parser from running too long
 					if ( tagname === 'meta' && attribs.property === 'og:description' ) {
 						var description = escapeFormatting(attribs.content);
-						if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
+						if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 						embed.setDescription( description );
 					}
 					if ( tagname === 'meta' && attribs.property === 'og:image' ) {
@@ -311,12 +311,12 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 				if ( discussion._embedded.contentImages.length ) embed.setThumbnail( discussion._embedded.contentImages[0].url );
 			}
 	}
-	if ( DESC_LENGTH ) {
-		if ( description.length > DESC_LENGTH ) description = description.substring(0, DESC_LENGTH) + '\u2026';
+	if ( msg.embedLimits.descLength ) {
+		if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 		if ( description ) embed.setDescription( description );
 	}
-	if ( discussion.tags?.length && FIELD_LENGTH ) {
-		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](<' + wiki.toLink(tag.articleTitle, '', '', true) + '>)' ).join(', '), {char: ', ', maxLength: FIELD_LENGTH} )[0], inline: false} );
+	if ( discussion.tags?.length && msg.embedLimits.fieldLength ) {
+		embed.addFields( {name: lang.get('discussion.tags'), value: splitMessage( discussion.tags.map( tag => '[' + escapeFormatting(tag.articleTitle) + '](<' + wiki.toLink(tag.articleTitle, '', '', true) + '>)' ).join(', '), {char: ', ', maxLength: msg.embedLimits.fieldLength} )[0], inline: false} );
 	}
 	
 	return {message: {

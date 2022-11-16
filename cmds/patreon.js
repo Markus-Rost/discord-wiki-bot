@@ -77,7 +77,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 		if ( !guild ) return msg.replyMsg( 'I\'m not on a server with the id `' + args[1] + '`.', true );
 		if ( !patreonGuildsPrefix.has(args[1]) ) return msg.replyMsg( '"' + guild + '" doesn\'t have the patreon features enabled.', true );
 		return db.connect().then( client => {
-			return client.query( 'SELECT lang, role, inline FROM discord WHERE guild = $1 AND patreon = $2', [args[1], msg.author.id] ).then( ({rows:[row]}) => {
+			return client.query( 'SELECT lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND patreon = $2', [args[1], msg.author.id] ).then( ({rows:[row]}) => {
 				if ( !row ) {
 					msg.replyMsg( 'You didn\'t enable the patreon features for "' + guild + '"!', true );
 					return Promise.reject();
@@ -86,7 +86,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 					msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 					return Promise.reject();
 				}
-				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, args[1]] ).then( () => {
+				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, desclength = $4, fieldcount = $5, fieldlength = $6, sectionlength = $7, sectiondesclength = $8, prefix = $9, patreon = NULL WHERE guild = $10', [row.lang, row.role, row.inline, row.desclength, row.fieldcount, row.fieldlength, row.sectionlength, row.sectiondesclength, process.env.prefix, args[1]] ).then( () => {
 					console.log( '- Guild successfully updated.' );
 					msg.client.shard.broadcastEval( (discordClient, evalData) => {
 						globalThis.patreonGuildsPrefix.delete(evalData);
@@ -251,9 +251,9 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 				msg.replyMsg( 'I got an error while deleting <@' + args[1] + '>, please try again later.', true );
 				return Promise.reject();
 			} ).then( () => {
-				return client.query( 'SELECT guild, lang, role, inline FROM discord WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ') AND channel IS NULL', guilds ).then( ({rows}) => {
+				return client.query( 'SELECT guild, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ') AND channel IS NULL', guilds ).then( ({rows}) => {
 					return Promise.all(rows.map( row => {
-						return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, row.guild] ).then( () => {
+						return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, desclength = $4, fieldcount = $5, fieldlength = $6, sectionlength = $7, sectiondesclength = $8, prefix = $9, patreon = NULL WHERE guild = $10', [row.lang, row.role, row.inline, row.desclength, row.fieldcount, row.fieldlength, row.sectionlength, row.sectiondesclength, process.env.prefix, row.guild] ).then( () => {
 							console.log( '- Guild successfully updated.' );
 						}, dberror => {
 							console.log( '- Error while updating the guild: ' + dberror );

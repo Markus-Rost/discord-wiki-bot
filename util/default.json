@@ -33,7 +33,14 @@
 		"subprefixes": [
 			["!", "wikipedia.org"],
 			["?", "fandom.com"]
-		]
+		],
+		"embedLimits": {
+			"descLength": 1000,
+			"fieldCount": 25,
+			"fieldLength": 500,
+			"sectionLength": 1000,
+			"sectionDescLength": 500
+		}
 	},
 	"timeoptions": {
 		"year": "numeric",

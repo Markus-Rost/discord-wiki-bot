@@ -29,20 +29,25 @@ CREATE INDEX idx_patreons_patreon ON patreons (
 );
 
 CREATE TABLE discord (
-    main    TEXT    UNIQUE
-                    CHECK (main = guild),
-    guild   TEXT    NOT NULL
-                    REFERENCES discord (main) ON DELETE CASCADE,
-    channel TEXT,
-    wiki    TEXT    NOT NULL
-                    DEFAULT '${defaultSettings.wiki}',
-    lang    TEXT    NOT NULL
-                    DEFAULT '${defaultSettings.lang}',
-    role    TEXT,
-    inline  INTEGER,
-    prefix  TEXT    NOT NULL
-                    DEFAULT '${process.env.prefix}',
-    patreon TEXT    REFERENCES patreons (patreon) ON DELETE SET NULL,
+    main              TEXT    UNIQUE
+                              CHECK (main = guild),
+    guild             TEXT    NOT NULL
+                              REFERENCES discord (main) ON DELETE CASCADE,
+    channel           TEXT,
+    wiki              TEXT    NOT NULL
+                              DEFAULT '${defaultSettings.wiki}',
+    lang              TEXT    NOT NULL
+                              DEFAULT '${defaultSettings.lang}',
+    role              TEXT,
+    inline            INTEGER,
+    desclength        INTEGER,
+    fieldcount        INTEGER,
+    fieldlength       INTEGER,
+    sectionlength     INTEGER,
+    sectiondesclength INTEGER,
+    prefix            TEXT    NOT NULL
+                              DEFAULT '${process.env.prefix}',
+    patreon           TEXT    REFERENCES patreons (patreon) ON DELETE SET NULL,
     UNIQUE (
         guild,
         channel
@@ -265,6 +270,20 @@ CREATE INDEX idx_subprefix_guild ON subprefix (
 );
 
 INSERT INTO versions(type, version) VALUES ('discord', 6)
+ON CONFLICT (type) DO UPDATE SET version = excluded.version;
+
+COMMIT TRANSACTION;
+`,`
+BEGIN TRANSACTION;
+
+ALTER TABLE discord
+ADD COLUMN desclength INTEGER,
+ADD COLUMN fieldcount INTEGER,
+ADD COLUMN fieldlength INTEGER,
+ADD COLUMN sectionlength INTEGER,
+ADD COLUMN sectiondesclength INTEGER;
+
+INSERT INTO versions(type, version) VALUES ('discord', 7)
 ON CONFLICT (type) DO UPDATE SET version = excluded.version;
 
 COMMIT TRANSACTION;

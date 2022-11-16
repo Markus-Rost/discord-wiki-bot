@@ -34,17 +34,6 @@ globalThis.WB_EMOJI = {
 	/** @type {'⚠️'} */ warning: '⚠️'
 };
 
-/** @type {1_000} */
-globalThis.DESC_LENGTH = 1_000;
-/** @type {25} */
-globalThis.FIELD_COUNT = 25;
-/** @type {500} */
-globalThis.FIELD_LENGTH = 500;
-/** @type {1_000} */
-globalThis.SECTION_LENGTH = 1_000;
-/** @type {500} */
-globalThis.SECTION_DESC_LENGTH = 500;
-
 /**
  * Prefix of guilds with patreon features enabled.
  * @type {Map<String, String>}

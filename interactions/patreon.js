@@ -150,12 +150,12 @@ function slash_patreon(interaction, lang, wiki) {
 			ephemeral: true
 		} ).catch(log_error);
 		return db.connect().then( client => {
-			return client.query( 'SELECT lang, role, inline FROM discord WHERE guild = $1 AND patreon = $2', [guildId, interaction.user.id] ).then( ({rows:[row]}) => {
+			return client.query( 'SELECT lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND patreon = $2', [guildId, interaction.user.id] ).then( ({rows:[row]}) => {
 				if ( !row ) return interaction.reply( {
 					content: 'You didn\'t enable the patreon features for "' + guild + '"!',
 					ephemeral: true
 				} ).catch(log_error);
-				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, prefix = $4, patreon = NULL WHERE guild = $5', [row.lang, row.role, row.inline, process.env.prefix, guildId] ).then( () => {
+				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, desclength = $4, fieldcount = $5, fieldlength = $6, sectionlength = $7, sectiondesclength = $8, prefix = $9, patreon = NULL WHERE guild = $10', [row.lang, row.role, row.inline, row.desclength, row.fieldcount, row.fieldlength, row.sectionlength, row.sectiondesclength, process.env.prefix, guildId] ).then( () => {
 					console.log( '- Guild successfully updated.' );
 					interaction.client.shard.broadcastEval( (discordClient, evalData) => {
 						globalThis.patreonGuildsPrefix.delete(evalData);

@@ -55,7 +55,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			var embed = null;
 			if ( !noEmbed ) {
 				embed = new EmbedBuilder().setAuthor( {name: 'Mojira'} ).setTitle( summary ).setURL( baseBrowseUrl + body.key );
-				if ( DESC_LENGTH ) embed.setDescription( limitLength(description, DESC_LENGTH, 20) );
+				if ( msg.embedLimits.descLength ) embed.setDescription( limitLength(description, msg.embedLimits.descLength, 20) );
 				var links = body.fields.issuelinks.filter( link => link.outwardIssue || ( link.inwardIssue && link.type.name !== 'Duplicate' ) );
 				if ( links.length ) {
 					var linkList = lang.get('minecraft.issue_link');
@@ -66,7 +66,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 						var name = ( linkList?.[link.type.name]?.[ward]?.replaceAllSafe( '$1', issue.key ) || link.type[ward] + ' ' + issue.key );
 						var status = issue.fields.status.name;
 						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(issue.fields.summary) + '](<' + baseBrowseUrl + issue.key + '>)';
-						if ( ( embed.data.fields?.length ?? 0 ) < FIELD_COUNT && ( getEmbedLength(embed) + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );
+						if ( ( embed.data.fields?.length ?? 0 ) < msg.embedLimits.fieldCount && ( getEmbedLength(embed) + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );
 						else extralinks.push({name,value,inline:false});
 					} );
 					if ( extralinks.length ) embed.setFooter( {text: lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length)} );
@@ -94,7 +94,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			jql: 'fixVersion="' + args.join(' ').replace( /["\\]/g, '\\$&' ) + '" order by key'
 		});
 		var uri = 'https://bugs.mojang.com/issues/?' + jql;
-		return got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&' + jql + '&maxResults=' + FIELD_COUNT, {
+		return got.get( 'https://bugs.mojang.com/rest/api/2/search?fields=summary,resolution,status&' + jql + '&maxResults=' + msg.embedLimits.fieldCount, {
 			context: {
 				guildId: msg.guildId
 			}
@@ -128,8 +128,8 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(bug.fields.summary) + '](<https://bugs.mojang.com/browse/' + bug.key + '>)';
 						embed.addFields( {name: bug.key, value} );
 					} );
-					if ( body.total > FIELD_COUNT ) {
-						var extrabugs = body.total - FIELD_COUNT;
+					if ( body.total > msg.embedLimits.fieldCount ) {
+						var extrabugs = body.total - msg.embedLimits.fieldCount;
 						embed.setFooter( {text: lang.get('minecraft.more', extrabugs.toLocaleString(lang.get('dateformat')), extrabugs)} );
 					}
 				}
