@@ -231,11 +231,11 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 	db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 		if ( !row ) interaction.defaultSettings = true;
 		interaction.embedLimits = {
-			descLength: row.desclength ?? defaultSettings.embedLimits.descLength,
-			fieldCount: row.fieldcount ?? defaultSettings.embedLimits.fieldCount,
-			fieldLength: row.fieldlength ?? defaultSettings.embedLimits.fieldLength,
-			sectionLength: row.sectionlength ?? defaultSettings.embedLimits.sectionLength,
-			sectionDescLength: row.sectiondesclength ?? Math.min(row.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
+			descLength: row?.desclength ?? defaultSettings.embedLimits.descLength,
+			fieldCount: row?.fieldcount ?? defaultSettings.embedLimits.fieldCount,
+			fieldLength: row?.fieldlength ?? defaultSettings.embedLimits.fieldLength,
+			sectionLength: row?.sectionlength ?? defaultSettings.embedLimits.sectionLength,
+			sectionDescLength: row?.sectiondesclength ?? Math.min(row?.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
 		};
 		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
