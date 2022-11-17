@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import logging from '../../util/logging.js';
-import { got, canUseMaskedLinks, htmlToPlain, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
+import { got, canUseMaskedLinks, htmlToPlain, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
 import diffParser from '../../util/edit_diff.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
