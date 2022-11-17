@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "测试",
+		"betadesc": "实验性测试功能",
 		"botlist": {
 			"text": "要让其他用户也知道 Wiki-Bot，就在这些机器人列表上投票吧：",
 			"title": "机器人列表"
@@ -62,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "该功能为实验性功能！不保证能够正常使用，且可能会在未来移除。",
+			"title": "实验性测试功能"
+		},
 		"error": {
 			"text": "发生了未知错误，请再试一次。",
 			"title": "未知错误！"
@@ -222,6 +228,10 @@
 			"channel": "频道：",
 			"confirm": "你真的想删除该频道覆写设置吗？",
 			"default": "服务器范围的设置",
+			"desclength": "描述长度：",
+			"embedlimits": "嵌入大小限制：",
+			"fieldcount": "信息框字段数：",
+			"fieldlength": "信息框字段长度：",
 			"inline": "行内命令：",
 			"lang": "语言：",
 			"new": "新的频道覆写设置",
@@ -229,6 +239,8 @@
 			"prefix": "前缀：",
 			"prefix_space": "以空格结尾的前缀：",
 			"role": "最小身份组：",
+			"sectiondesclength": "章节前描述长度：",
+			"sectionlength": "章节长度：",
 			"select_channel": "-- 选择频道 --",
 			"select_subprefix": "设置一个指定的wiki →",
 			"subprefix": "子命令wiki前缀：",
