@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "BETA",
+		"betadesc": "Funzionalità sperimentale Beta",
 		"botlist": {
 			"text": "Aiuta altri utenti a trovare Wiki-Bot votandolo nelle liste di bot:",
 			"title": "Liste di bot"
@@ -62,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "Questa funzionalità è sperimentale! Non è garantito che funzioni correttamente e potrebbe essere rimossa in futuro.",
+			"title": "Funzionalità sperimentale Beta"
+		},
 		"error": {
 			"text": "Si è riscontrato un errore, per favore riprova di nuovo.",
 			"title": "Errore sconosciuto!"
@@ -222,6 +228,10 @@
 			"channel": "Canale:",
 			"confirm": "Vuoi davvero eliminare la sovrascrittura del canale?",
 			"default": "Impostazioni globali del server",
+			"desclength": "Lunghezza descrizione:",
+			"embedlimits": "Limiti dimensioni embed:",
+			"fieldcount": "Numero campi infobox:",
+			"fieldlength": "Lunghezza campi infobox:",
 			"inline": "Comandi in linea:",
 			"lang": "Lingua:",
 			"new": "Nuova sovrascrittura canale",
@@ -229,6 +239,8 @@
 			"prefix": "Prefisso:",
 			"prefix_space": "Prefisso finisce con uno spazio:",
 			"role": "Ruolo minimo:",
+			"sectiondesclength": "Lunghezza descrizione pre-sezione:",
+			"sectionlength": "Lunghezza sezione:",
 			"select_channel": "-- Seleziona un canale --",
 			"select_subprefix": "Imposta una wiki specifica →",
 			"subprefix": "Prefisso sottocomando wiki:",
