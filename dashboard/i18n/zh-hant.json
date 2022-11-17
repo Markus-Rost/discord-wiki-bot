@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "搶鮮",
+		"betadesc": "實驗性搶鮮功能",
 		"botlist": {
 			"text": "透過在機器人清單上投票，讓更多使用者瞭解Wiki-Bot：",
 			"title": "機器人清單"
@@ -62,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "此功能是實驗性的！不保證能夠正常使用，且可能會在未來被移除。",
+			"title": "實驗性搶鮮功能"
+		},
 		"error": {
 			"text": "發生未知錯誤，請再試一次。",
 			"title": "未知錯誤！"
@@ -222,6 +228,10 @@
 			"channel": "頻道：",
 			"confirm": "您確定要刪除此頻道覆寫設定嗎？",
 			"default": "伺服器範圍的設定",
+			"desclength": "描述長度：",
+			"embedlimits": "嵌入大小限制：",
+			"fieldcount": "資訊框欄位數：",
+			"fieldlength": "資訊框欄位長度：",
 			"inline": "行內指令：",
 			"lang": "語言：",
 			"new": "新的頻道覆寫設定",
@@ -229,6 +239,8 @@
 			"prefix": "前綴：",
 			"prefix_space": "以空格結尾的前綴：",
 			"role": "最小身分組：",
+			"sectiondesclength": "章節前描述長度：",
+			"sectionlength": "章節長度：",
 			"select_channel": "-- 選擇頻道 --",
 			"select_subprefix": "設定一個指定的 wiki →",
 			"subprefix": "子指令 wiki 前綴：",
