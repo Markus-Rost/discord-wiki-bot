@@ -215,7 +215,8 @@
 			"/fill <from> <to> <block> replace <filter>"
 		],
 		"fillbiome": [
-			"/fillbiome <from> <to> <biome>"
+			"/fillbiome <from> <to> <biome>",
+			"/fillbiome <from> <to> <biome> replace <filter>"
 		],
 		"forceload": [
 			"/forceload add <from>",
