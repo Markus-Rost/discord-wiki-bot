@@ -39,7 +39,7 @@
 			"type": 3,
 			"name": "title",
 			"name_localizations": {
-				"hi": "शीर्षक",
+				"hi": "title",
 				"zh-CN": "标题",
 				"zh-TW": "標題",
 				"tr": "title",
