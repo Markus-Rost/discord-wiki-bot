@@ -120,7 +120,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( reaction ) reaction.removeEmoji();
 						return msg.replyMsg( {content: ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), components}, true );
 					}
-					if ( wikinew.wikifarm === 'fandom' && !wikinew.isGamepedia() ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+					if ( wikinew.wikifarm === 'fandom' ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						},
@@ -302,7 +302,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 							if ( reaction ) reaction.removeEmoji();
 							return msg.replyMsg( {content: ( block.reason ? lang.get('rcscript.blocked_reason', block.reason) : lang.get('rcscript.blocked') ), components}, true );
 						}
-						if ( wikinew.wikifarm === 'fandom' && !wikinew.isGamepedia() ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+						if ( wikinew.wikifarm === 'fandom' ) return got.get( wikinew + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
 							},
@@ -400,7 +400,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 				} );
 			}
 			var selectedwiki = new Wiki(selected_row.wiki);
-			if ( selectedwiki.wikifarm === 'fandom' && !selectedwiki.isGamepedia() && args[0] === 'feeds' ) {
+			if ( selectedwiki.wikifarm === 'fandom' && args[0] === 'feeds' ) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 				if ( args[1] === 'only' ) {
 					if ( selected_row.rcid === -1 ) {
@@ -507,7 +507,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 					text += '\n' + lang.get('rcscript.rc') + ' *`' + lang.get('rcscript.disabled') + '`*';
 					text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 				}
-				if ( selectedwiki.wikifarm === 'fandom' && !selectedwiki.isGamepedia() ) {
+				if ( selectedwiki.wikifarm === 'fandom' ) {
 					text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( selected_row.postid === '-1' ? 'disabled' : 'enabled' )) + '`*';
 					text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 				}
@@ -556,7 +556,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 						if ( only ) row_text += '\n`' + cmd + ' feeds only` ' + lang.get('rcscript.toggle') + '\n';
 					}
 					let rowwiki = new Wiki(row.wiki);
-					if ( rowwiki.wikifarm === 'fandom' && !rowwiki.isGamepedia() ) {
+					if ( rowwiki.wikifarm === 'fandom' ) {
 						row_text += '\n' + lang.get('rcscript.feeds') + ' *`' + lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' )) + '`*';
 						if ( only ) row_text += '\n' + lang.get('rcscript.help_feeds') + '\n`' + cmd + ' feeds` ' + lang.get('rcscript.toggle') + '\n';
 					}

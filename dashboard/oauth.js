@@ -380,6 +380,7 @@ function mediawiki_oauth(res, searchParams, user_id) {
 	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body?.access_token ) {
+			console.log(body)
 			console.log( '- Dashboard: ' + response.statusCode + ': Error while getting the mediawiki token: ' + ( body?.message || body?.error ) );
 			res.writeHead(302, {Location: '/user?oauth=failed'});
 			return res.end();

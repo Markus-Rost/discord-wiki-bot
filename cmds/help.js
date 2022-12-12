@@ -114,7 +114,7 @@ export default function cmd_help(lang, msg, args, line, wiki) {
 			splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 		}
 		else if ( helpmap.hasOwnProperty(cmd) && 
-		( !restrictions.fandom.includes( cmd ) || ( wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) ) && 
+		( !restrictions.fandom.includes( cmd ) || wiki.wikifarm === 'fandom' ) && 
 		( !restrictions.minecraft.includes( cmd ) || isMinecraft ) && 
 		( !restrictions.admin.includes( cmd ) || msg.isAdmin() ) ) {
 			var cmdlist = formathelp(helpmap[cmd], msg, lang, wiki);
@@ -131,7 +131,7 @@ export default function cmd_help(lang, msg, args, line, wiki) {
 	else {
 		var cmdlist = lang.get('help.all') + '\n';
 		helplist.default.forEach( cmd => {
-			if ( ( !restrictions.fandom.includes( cmd ) ||( wiki.wikifarm === 'fandom' && !wiki.isGamepedia() ) ) && 
+			if ( ( !restrictions.fandom.includes( cmd ) || wiki.wikifarm === 'fandom' ) && 
 			( !restrictions.minecraft.includes( cmd ) || isMinecraft ) ) {
 				cmdlist += formathelp(helpmap[cmd], msg, lang, wiki) + '\n';
 			}

@@ -170,7 +170,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			logging(wiki, msg.guildId, 'search');
 			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler, noEmbed);
 		}
-		if ( aliasInvoke === 'discussion' && wiki.wikifarm === 'fandom' && !wiki.isGamepedia() && !querystring.toString() && !fragment ) {
+		if ( aliasInvoke === 'discussion' && wiki.wikifarm === 'fandom' && !querystring.toString() && !fragment ) {
 			logging(wiki, msg.guildId, 'discussion');
 			return fn.discussion(lang, msg, wiki, args.join(' '), body.query.general.sitename, spoiler, noEmbed);
 		}
