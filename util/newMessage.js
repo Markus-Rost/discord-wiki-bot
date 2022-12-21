@@ -140,7 +140,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 			
 			if ( line.includes( '{{' ) && line.includes( '}}' ) && count <= maxcount ) {
-				let regex = new RegExp( '(?<!\\\\)(|\\|\\|)(?<!\\{)\\{\\{([^' + "<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\}\\}\\1', 'g' );
+				let regex = new RegExp( '(?<!\\\\)(|\\|\\|)(?<!\\{)\\{\\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?([^' + "<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\}\\}\\1', 'g' );
 				let entry = null;
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( count < maxcount ) {
@@ -217,7 +217,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 		} );
 		
-		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general' + ( wiki.wikifarm === 'fandom' ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
+		if ( embeds.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general|functionhooks' + ( wiki.wikifarm === 'fandom' ? '' : '|variables' ) + '&titles=' + encodeURIComponent( embeds.map( embed => embed.title + '|Template:' + embed.title ).join('|') ) + '&format=json', {
 			context: {
 				guildId: msg.guildId
 			}
@@ -250,7 +250,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 						var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );
 						if ( template && template.missing === undefined ) embed.template = wiki.toLink(template.title);
 					}
-					if ( embed.template || !body.query.variables || !body.query.variables.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
+					if ( embed.template || !body.query.functionhooks?.some( functionhook => embed.title.toLowerCase().startsWith( functionhook + ':' ) ) || !body.query.variables?.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
 				} ) );
 				if ( missing.length ) splitMessage( [...new Set(missing.map( embed => {
 					if ( embed.template ) logging(wiki, msg.guildId, 'inline', 'template');
