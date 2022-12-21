@@ -140,7 +140,7 @@
 			"name": "noembed",
 			"name_localizations": {
 				"de": "noembed",
-				"es-ES": "sinvistaprevia",
+				"es-ES": "noembed",
 				"hi": "noembed",
 				"ja": "noembed",
 				"zh-CN": "不包含嵌入内容",
@@ -155,7 +155,7 @@
 			"description": "Send only the link without embed?",
 			"description_localizations": {
 				"de": "Sende nur den Link ohne Einbettung?",
-				"es-ES": "¿Enviar solo el enlace sin vista previa?",
+				"es-ES": "¿Enviar solo el enlace sin embed?",
 				"hi": "बिना एम्बेड के सिर्फ कड़ी को भेजना है?",
 				"ja": "埋め込みなしでリンクだけを送信しますか？",
 				"zh-CN": "发送的链接是否不包含嵌入内容？",
@@ -189,7 +189,7 @@
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
 				"de": "Verstecke Link und Einbettung in einem Spoiler?",
-				"es-ES": "¿Ocultar el enlace y la vista previa en un spoiler?",
+				"es-ES": "¿Ocultar el enlace y el embed en un spoiler?",
 				"hi": "कड़ी और एम्बेड को एक स्पॉइलर में छिपाना है?",
 				"ja": "リンクを隠して、スポイラーに埋め込む？",
 				"zh-CN": "是否将链接和嵌入内容标记为剧透？",
