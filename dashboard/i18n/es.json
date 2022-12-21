@@ -35,6 +35,9 @@
 			"content_type": "El enlace proporcionado tiene el tipo de contenido $1, pero solo se permiten los siguientes tipos de contenido:",
 			"invalid_url": "La URL no se pudo resolver en un archivo de imagen válido."
 		},
+		"embeds": {
+			"json": "El objeto embed no es válido, por favor proporciona una matriz JSON válida con objetos embed de Discord."
+		},
 		"invalid": {
 			"note_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.",
 			"note_private": "¡El wiki proporcionado es privado!",
@@ -61,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "¡Esta función es experimental! No se garantiza que funcione correctamente y puede eliminarse en el futuro.",
+			"title": "Función Beta Experimental"
+		},
 		"error": {
 			"text": "Se produjo un error desconocido, por favor inténtalo de nuevo.",
 			"title": "¡Error desconocido!"
@@ -143,6 +150,7 @@
 			"title": "¡Mensaje enviado!"
 		},
 		"sendfail": {
+			"note_embeds": "El objeto embed no era válido, proporcione una matriz JSON válida con objetos embed de Discord.",
 			"note_nothread": "El hilo no se pudo encontrar, por favor proporciona un hilo activo.",
 			"text": "No se pudo enviar el mensaje, inténtalo de nuevo.",
 			"title": "¡Envío fallido!"
@@ -220,6 +228,10 @@
 			"channel": "Canal:",
 			"confirm": "¿Realmente deseas eliminar la sobrescritura del canal?",
 			"default": "Configuración de todo el Servidor",
+			"desclength": "Largo de la descripción:",
+			"embedlimits": "Tamaño límite del embed:",
+			"fieldcount": "Recuento de campos del infobox:",
+			"fieldlength": "Largo del campo del infobox:",
 			"inline": "Comandos inline:",
 			"lang": "Idioma:",
 			"new": "Nueva Sobrescritura de Canal",
@@ -227,6 +239,8 @@
 			"prefix": "Prefijo:",
 			"prefix_space": "El prefijo termina con un espacio:",
 			"role": "Rol Mínimo:",
+			"sectiondesclength": "Largo de la descripción antes de la sección:",
+			"sectionlength": "Largo de la sección:",
 			"select_channel": "-- Selecciona un Canal --",
 			"select_subprefix": "Establecer un wiki específico →",
 			"subprefix": "Prefijo de subcomando wiki:",
@@ -260,6 +274,8 @@
 			"content": "Contenido del mensaje (opcional):",
 			"content_placeholder": "El texto markdown del mensaje, admite enlaces enmascarados.",
 			"editcount": "Número mínimo ediciones:",
+			"embeds": "mensajes embeds (opcional):",
+			"embeds_help": "Ayuda: [Embed Visualizer]($1)",
 			"entry": "Verificación #$1",
 			"flag_logall": "Registrar verificaciones fallidas:",
 			"flag_private": "Respuestas de comando privadas:",
