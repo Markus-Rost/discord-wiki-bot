@@ -140,7 +140,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			}
 			
 			if ( line.includes( '{{' ) && line.includes( '}}' ) && count <= maxcount ) {
-				let regex = new RegExp( '(?<!\\\\)(|\\|\\|)(?<!\\{)\\{\\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?([^' + "<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\}\\}\\1', 'g' );
+				let regex = new RegExp( '(?<!\\\\)(|\\|\\|)(?<!\\{)\\{\\{(?:\\s*(?:subst|safesubst|raw|msg|msgnw):)?([^' + "<>\\[\\]\\|{}\\x01-\\x1F\\x7F" + ']+)(?<!\\\\)\\}\\}\\1', 'g' );
 				let entry = null;
 				while ( ( entry = regex.exec(line) ) !== null ) {
 					if ( count < maxcount ) {
