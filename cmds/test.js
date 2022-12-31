@@ -49,7 +49,9 @@ export default function cmd_test(lang, msg, args, line, wiki) {
 					else {
 						console.log( '- ' + response.statusCode + ': Error while reaching the wiki: ' + body?.error?.info );
 						ping += ' <:error:505887261200613376>';
-						if ( body?.error?.info === 'You need read permission to use this module.' ) notice.push(lang.get('settings.wikiinvalid_private'));
+						if ( body?.error?.code === 'readapidenied' || body?.error?.info === 'You need read permission to use this module.' ) {
+							notice.push(lang.get('settings.wikiinvalid_private'));
+						}
 					}
 				}
 				else if ( msg.isAdmin() || msg.isOwner() ) {

@@ -526,7 +526,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 							if ( subprefix[1] === testWiki && subprefix[1].name !== row?.subprefix.get(subprefix[0]) ) ignoreError = false;
 						} );
 						if ( ignoreError ) return;
-						if ( body?.error?.info === 'You need read permission to use this module.' ) {
+						if ( body?.error?.code === 'readapidenied' || body?.error?.info === 'You need read permission to use this module.' ) {
 							responseError = 'private';
 							return;
 						}

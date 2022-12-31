@@ -307,7 +307,7 @@ function dashboard_api(res, input, guild = null) {
 		var body = response.body;
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages || !body?.query?.general ) {
 			console.log( '- Dashboard: ' + response.statusCode + ': Error while checking the wiki: ' + body?.error?.info );
-			if ( body?.error?.info === 'You need read permission to use this module.' ) {
+			if ( body?.error?.code === 'readapidenied' || body?.error?.info === 'You need read permission to use this module.' ) {
 				result.error_code = 'private';
 			}
 			result.error = true;

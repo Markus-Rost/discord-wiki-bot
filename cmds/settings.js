@@ -123,7 +123,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {
 						console.log( '- ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
 						if ( reaction ) reaction.removeEmoji();
-						if ( body?.error?.info === 'You need read permission to use this module.' ) {
+						if ( body?.error?.code === 'readapidenied' || body?.error?.info === 'You need read permission to use this module.' ) {
 							return msg.replyMsg( {content: lang.get('settings.wikiinvalid_private') + wikihelp, components}, true );
 						}
 						msg.reactEmoji(WB_EMOJI.nowiki, true);
