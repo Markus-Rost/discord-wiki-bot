@@ -97,6 +97,8 @@ Help other users find Wiki-Bot by voting on bot lists:
 [<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)
 
 ## Other
+**Wiki-Bot** is developed by [Markus Rost](https://github.com/Markus-Rost) on [GitHub](https://github.com/Markus-Rost/discord-wiki-bot).
+
 The **Wiki-Bot** logo has been AI generated using [Midjourney](https://www.midjourney.com/home/) and cleaned up by [Shaun Ryken](https://shaunryken.art/).
 
 [Privacy Policy](PRIVACY.md#privacy-policy)
