@@ -384,8 +384,11 @@
 		"error": "Komutu kullanırken beklenmedik bir hata yaşandı!",
 		"inline": "Bu komutu kullanmak için [[wikitext]] ile bir metin girin.",
 		"interwiki": "Lütfen arama yapılacak bilinen bir viki sağlayın.",
+		"namespace": "(Ana)",
 		"notitle": "Kullanılan sayfa başlığı mevcut değil!",
 		"nowiki": "Kullanılan viki mevcut değil!",
+		"random": "(Bütün içerik alan adları)",
+		"user": "Lütfen kullanıcı adı ya da geçerli bir IP belirtin.",
 		"verify": "Discord hesabını viki hesabın ile doğrulamak ve hesabın ile uyumlu rolleri almak için viki kullanıcı adını sağlayarak bu komutu kullan."
 	},
 	"invite": {
@@ -598,10 +601,15 @@
 		"channel wikichanged": "Bu kanalın varsayılan vikisini şuna değiştirdiniz:",
 		"current": "Sunucunun mevcut ayarları:",
 		"currentchannel": "Kanal özel ayarları:",
+		"currentdesclength": "Açıklama uzunluğu:",
+		"currentfieldcount": "Bilgi kutusu alan sayısı:",
+		"currentfieldlength": "Bilgi kutusu alan uzunluğu:",
 		"currentinline": "Satır içi komutlar:",
 		"currentlang": "Dil:",
 		"currentprefix": "Önek:",
 		"currentrole": "Minimal rol:",
+		"currentsectiondesclength": "Bölümden önce açıklama uzunluğu:",
+		"currentsectionlength": "Bölüm uzunluğu:",
 		"currentsubprefix": "Alt önek`$1`:",
 		"currentwiki": "Varsayılan viki:",
 		"dashboard": {
@@ -795,6 +803,7 @@
 		"audit_reason": "\"$1\" olarak doğrulandı",
 		"button_again": "Tekrar dene",
 		"button_wrong_user": "Bu doğrulamayı tekrar deneyemezsin. Doğrulama $1 kullanıcısına ait!",
+		"compromised": "*başka bir kullanıcı tarafından değiştirildi*",
 		"discord": "Discord kullanıcısı:",
 		"empty": "*boş*",
 		"error": "Doğrulama bir hata sonucu başarısız oldu.",
@@ -836,6 +845,6 @@
 		"user_verified": "Discord kullanıcısı $1 başarıyla viki kullanıcısı $2 olarak doğrulandı.",
 		"user_verified_reply": "başarıyla viki kullanıcısı \"$1\" olarak doğrulandın.",
 		"username": "Viki kullanıcı adı:",
-		"wiki": "Viki kullanıcısı:"
+		"wiki": "Şu viki kullanıcısı tarafından sağlandı:"
 	}
 }
