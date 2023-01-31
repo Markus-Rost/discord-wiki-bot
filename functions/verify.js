@@ -299,7 +299,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					var verifyPromise = [];
 					var editMember = {reason: logLang.get('verify.audit_reason', username)};
 					if ( rename && member.displayName !== username.substring(0, 32) ) {
-						if ( channel.guild.members.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) editMember.nick = username.substring(0, 32);
+						if ( member.manageable ) editMember.nick = username.substring(0, 32);
 						else comment.push(( useLogging ? logLang : lang ).get('verify.failed_rename', queryuser.gender));
 					}
 					removeRoles[0].forEach( role => addRoles[0].delete(role) );
@@ -553,7 +553,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				var verifyPromise = [];
 				var editMember = {reason: logLang.get('verify.audit_reason', username)};
 				if ( rename && member.displayName !== username.substring(0, 32) ) {
-					if ( channel.guild.members.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) editMember.nick = username.substring(0, 32);
+					if ( member.manageable ) editMember.nick = username.substring(0, 32);
 					else comment.push(( useLogging ? logLang : lang ).get('verify.failed_rename', queryuser.gender));
 				}
 				removeRoles[0].forEach( role => addRoles[0].delete(role) );
@@ -856,7 +856,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 				var verifyPromise = [];
 				var editMember = {reason: logLang.get('verify.audit_reason', username)};
 				if ( rename && member.displayName !== username.substring(0, 32) ) {
-					if ( channel.guild.members.me.roles.highest.comparePositionTo(member.roles.highest) > 0 ) editMember.nick = username.substring(0, 32);
+					if ( member.manageable ) editMember.nick = username.substring(0, 32);
 					else comment.push(( useLogging ? logLang : lang ).get('verify.failed_rename', queryuser.gender));
 				}
 				removeRoles[0].forEach( role => addRoles[0].delete(role) );
