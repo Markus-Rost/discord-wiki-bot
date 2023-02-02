@@ -244,6 +244,10 @@
 			"select_channel": "-- Wähle einen Kanal --",
 			"select_subprefix": "Setze ein bestimmtes Wiki →",
 			"subprefix": "Präfixe für Wiki-Unterbefehle:",
+			"whitelist": "Erlaubte Wikis:",
+			"whitelist_enabled": "Erlaube nur bestimmte Wikis:",
+			"whitelist_note": "Eins pro Zeile",
+			"whitelist_placeholder": "Liste von erlaubten Wikis",
 			"wiki": "Standard-Wiki:",
 			"wiki_check": "Wiki testen"
 		},
