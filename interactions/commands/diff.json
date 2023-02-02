@@ -12,7 +12,8 @@
 		"it": "diff",
 		"sv-SE": "diff",
 		"hi": "diff",
-		"ja": "diff"
+		"ja": "diff",
+		"tr": "diff"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
@@ -25,7 +26,8 @@
 		"it": "Mostra il diff di una modifica alla wiki.",
 		"sv-SE": "Visa skillnad av en wiki redigeringar.",
 		"hi": "एक विकि सम्पादन अंतर दिखाएँ।",
-		"ja": "Wikiで編集された差分を表示します。"
+		"ja": "Wikiで編集された差分を表示します。",
+		"tr": "Bir viki düzenlemesi değişikliklerini göster."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
