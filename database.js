@@ -47,6 +47,7 @@ CREATE TABLE discord (
     sectiondesclength INTEGER,
     prefix            TEXT    NOT NULL
                               DEFAULT '${process.env.prefix}',
+    whitelist         TEXT,
     patreon           TEXT    REFERENCES patreons (patreon) ON DELETE SET NULL,
     UNIQUE (
         guild,
@@ -179,7 +180,7 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
     wiki
 );
 
-INSERT INTO versions(type, version) VALUES ('discord', 6)
+INSERT INTO versions(type, version) VALUES ('discord', 8)
 ON CONFLICT (type) DO UPDATE SET version = excluded.version;
 
 COMMIT TRANSACTION;
@@ -284,6 +285,16 @@ ADD COLUMN sectionlength INTEGER,
 ADD COLUMN sectiondesclength INTEGER;
 
 INSERT INTO versions(type, version) VALUES ('discord', 7)
+ON CONFLICT (type) DO UPDATE SET version = excluded.version;
+
+COMMIT TRANSACTION;
+`,`
+BEGIN TRANSACTION;
+
+ALTER TABLE discord
+ADD COLUMN whitelist TEXT;
+
+INSERT INTO versions(type, version) VALUES ('discord', 8)
 ON CONFLICT (type) DO UPDATE SET version = excluded.version;
 
 COMMIT TRANSACTION;

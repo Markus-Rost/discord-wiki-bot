@@ -39,16 +39,12 @@ const fieldset = {
 	+ '<input type="checkbox" id="wb-settings-prefix-space" name="prefix_space">',
 	inline: '<label for="wb-settings-inline">Inline commands:</label>'
 	+ '<input type="checkbox" id="wb-settings-inline" name="inline">',
-	subprefix: '<label class="wb-settings-subprefix-label" for="wb-settings-project-subprefix-"><kbd></kbd></label>'
-	+ '<select id="wb-settings-project-subprefix-" class="wb-settings-project-subprefix" name="subprefix_">'
-	+ '<option id="wb-settings-project-subprefix--none" value="">Set a specific wiki --&gt;</option>'
-	+ wikiProjectNames.map( wikiProject => {
-		return `<option id="wb-settings-project-subprefix--${wikiProject}" value="${wikiProject}">${wikiProject}</option>`
-	} ).join('')
-	+ '</select>'
-	+ '<input type="url" id="wb-settings-wiki-subprefix-" class="wb-settings-wiki" name="subprefix_" required inputmode="url" autocomplete="url">'
-	+ '<button type="button" id="wb-settings-wiki-subprefix--check" class="wb-settings-wiki-check">Check wiki</button>'
-	+ '<div id="wb-settings-wiki-subprefix--check-notice" class="wb-settings-wiki-check-notice"></div>',
+	whitelist: '<label for="wb-settings-whitelist-enabled">Allow only specific wikis:</label>'
+	+ '<input type="checkbox" id="wb-settings-whitelist-enabled" name="whitelist_enabled">'
+	+ '<div id="wb-settings-whitelist-hide">'
+	+ '<label for="wb-settings-whitelist">Allowed wikis:<div>One per line</div></label>'
+	+ '<textarea id="wb-settings-whitelist" name="whitelist" cols="65" rows="4" placeholder="List of allowed wikis"></textarea>'
+	+ '</div>',
 	desclength: '<label for="wb-settings-desclength">Description length:</label>'
 	+ '<input type="number" id="wb-settings-desclength" name="desclength" min="0" max="4000" inputmode="numeric">',
 	fieldcount: '<label for="wb-settings-fieldcount">Infobox field count:</label>'
@@ -59,6 +55,16 @@ const fieldset = {
 	+ '<input type="number" id="wb-settings-sectionlength" name="sectionlength" min="0" max="1000" inputmode="numeric">',
 	sectiondesclength: '<label for="wb-settings-sectiondesclength">Description length before section:</label>'
 	+ '<input type="number" id="wb-settings-sectiondesclength" name="sectiondesclength" min="0" max="4000" inputmode="numeric">',
+	subprefix: '<label class="wb-settings-subprefix-label" for="wb-settings-project-subprefix-"><kbd></kbd></label>'
+	+ '<select id="wb-settings-project-subprefix-" class="wb-settings-project-subprefix" name="subprefix_">'
+	+ '<option id="wb-settings-project-subprefix--none" value="">Set a specific wiki --&gt;</option>'
+	+ wikiProjectNames.map( wikiProject => {
+		return `<option id="wb-settings-project-subprefix--${wikiProject}" value="${wikiProject}">${wikiProject}</option>`
+	} ).join('')
+	+ '</select>'
+	+ '<input type="url" id="wb-settings-wiki-subprefix-" class="wb-settings-wiki" name="subprefix_" required inputmode="url" autocomplete="url">'
+	+ '<button type="button" id="wb-settings-wiki-subprefix--check" class="wb-settings-wiki-check">Check wiki</button>'
+	+ '<div id="wb-settings-wiki-subprefix--check-notice" class="wb-settings-wiki-check-notice"></div>',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
 	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings" formnovalidate>'
 };
@@ -76,6 +82,7 @@ const fieldset = {
  * @param {String} [settings.role]
  * @param {Boolean} [settings.inline]
  * @param {String} settings.prefix
+ * @param {String} [settings.whitelist]
  * @param {Number} [settings.desclength]
  * @param {Number} [settings.fieldcount]
  * @param {Number} [settings.fieldlength]
@@ -83,9 +90,10 @@ const fieldset = {
  * @param {Number} [settings.sectiondesclength]
  * @param {String[][]} [settings.subprefixes]
  * @param {import('./util.js').Role[]} guildRoles - The guild roles
+ * @param {String} [allWikis] - All wikis set for the guild
  * @param {import('./util.js').Channel[]} guildChannels - The guild channels
  */
-function createForm($, header, dashboardLang, settings, guildRoles, guildChannels = []) {
+function createForm($, header, dashboardLang, settings, guildRoles, allWikis, guildChannels = []) {
 	var readonly = ( process.env.READONLY ? true : false );
 	if ( settings.channel && guildChannels.length === 1 && guildChannels[0].userPermissions === 0 && guildChannels[0].name === 'UNKNOWN' ) {
 		readonly = true;
@@ -179,6 +187,23 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
 		}
 		fields.push(prefix);
 	}
+	if ( !settings.channel ) {
+		let whitelist = $('<div>').append(fieldset.whitelist);
+		whitelist.find('label').eq(0).text(dashboardLang.get('settings.form.whitelist_enabled'))
+		whitelist.find('label').eq(1).text(dashboardLang.get('settings.form.whitelist')).append(
+			$('<div>').text(dashboardLang.get('settings.form.whitelist_note'))
+		);
+		whitelist.find('#wb-settings-whitelist').attr('placeholder', dashboardLang.get('settings.form.whitelist_placeholder'));
+		if ( settings.whitelist ) {
+			whitelist.find('#wb-settings-whitelist-enabled').attr('checked', '');
+			whitelist.find('#wb-settings-whitelist').text(settings.whitelist + '\n');
+		}
+		else {
+			whitelist.find('#wb-settings-whitelist-hide').attr('style', 'display: none;');
+			whitelist.find('#wb-settings-whitelist').attr('disabled', '').text(( allWikis || settings.wiki ) + '\n');
+		}
+		fields.push(whitelist);
+	}
 	if ( !settings.channel || settings.patreon ) {
 		fields.push($('<h3>').text(dashboardLang.get('settings.form.embedlimits')));
 		let desclength = $('<div>').append(fieldset.desclength);
@@ -254,7 +279,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, guildChannel
  * @param {import('./i18n.js').default} dashboardLang - The user language
  */
 function dashboard_settings(res, $, guild, args, dashboardLang) {
-	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, patreon, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [guild.id] ).then( ({rows}) => {
+	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist, patreon, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [guild.id] ).then( ({rows}) => {
 		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		if ( !rows.length ) {
 			createNotice($, 'nosettings', dashboardLang);
@@ -293,12 +318,17 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				$('<div>').text(dashboardLang.get('settings.new'))
 			).attr('title', dashboardLang.get('settings.new')).attr('href', `/guild/${guild.id}/settings/new${suffix}`) )
 		);
+		let allWikis = new Set(rows.map( row => row.wiki ).reverse());
+		if ( rows[0].subprefixes?.length ) rows[0].subprefixes.forEach( subprefix => {
+			if ( subprefix[1].startsWith('https://') ) allWikis.add(subprefix[1]);
+		} );
+		allWikis = [...allWikis].join('\n');
 		if ( args[4] === 'new' && !process.env.READONLY ) {
 			$('.channel#channel-new').addClass('selected');
 			createForm($, dashboardLang.get('settings.form.new'), dashboardLang, Object.assign({}, rows.find( row => !row.channel ), {
 				patreon: isPatreon,
 				channel: 'new'
-			}), guild.roles, guild.channels.filter( channel => {
+			}), guild.roles, allWikis, guild.channels.filter( channel => {
 				return ( channel.isCategory || !rows.some( row => row.channel === ( channel.isCategory ? '#' : '' ) + channel.id ) );
 			} ).map( channel => {
 				if ( !channel.isCategory ) return channel;
@@ -316,11 +346,11 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				return row.channel === ( channel.isCategory ? '#' : '' ) + channel.id;
 			} ), {
 				patreon: isPatreon
-			}), guild.roles, [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
+			}), guild.roles, allWikis, [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
 		}
 		else {
 			$('.channel#settings').addClass('selected');
-			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles, allWikis).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 		}
 	}, dberror => {
 		console.log( '- Dashboard: Error while getting the settings: ' + dberror );
@@ -349,6 +379,8 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
  * @param {String} [settings.inline]
  * @param {String} [settings.prefix]
  * @param {String} [settings.prefix_space]
+ * @param {String} [settings.whitelist_enabled]
+ * @param {String} [settings.whitelist]
  * @param {Number} [settings.desclength]
  * @param {Number} [settings.fieldcount]
  * @param {Number} [settings.fieldlength]
@@ -369,6 +401,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 	var subprefixes = Object.keys(settings).filter( subprefix => /^subprefix_[!?]$/.test(subprefix) ).map( subprefix => {
 		return [subprefix.replace( 'subprefix_', '' ), settings[subprefix]];
 	} );
+	/** @type {String?} */
+	var wikiWhitelist = null;
 	if ( settings.save_settings ) {
 		if ( type !== 'default' && subprefixes.length ) subprefixes = [];
 		if ( !settings.wiki || ( settings.lang && !allLangs.hasOwnProperty(settings.lang) ) ) {
@@ -380,6 +414,20 @@ function update_settings(res, userSettings, guild, type, settings) {
 		if ( settings.role && !userSettings.guilds.isMember.get(guild).roles.some( role => {
 			return ( role.id === settings.role );
 		} ) ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
+		if ( settings.whitelist && settings.whitelist_enabled && type === 'default' ) {
+			wikiWhitelist = [...new Set(settings.whitelist.trim().split(/[\s,;\|]+/).filter( whiteWiki => {
+				if ( !whiteWiki.trim() || whiteWiki.length > 200 ) return false;
+				if ( !whiteWiki.startsWith('https://') || !whiteWiki.endsWith('/') ) return false;
+				try {
+					let href = new URL(whiteWiki).href;
+					return whiteWiki === href;
+				}
+				catch {
+					return false;
+				}
+			} ))].slice(0, 100).join('\n').trim();
+			if ( !wikiWhitelist.length ) wikiWhitelist = null;
+		}
 		if ( !/^\d+ \d+ \d+ \d+ \d+$/.test(`${settings.desclength ?? '0'} ${settings.fieldcount ?? '0'} ${settings.fieldlength ?? '0'} ${settings.sectionlength ?? '0'} ${settings.sectiondesclength ?? '0'}`) ) {
 			return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
@@ -510,7 +558,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				return [testWiki, fresponse];
 			} )
 		} )).then( /** @param {[Wiki, import('got').Response<String>][]} fresponses */ fresponses => {
-			return db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentId] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
+			return db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentId] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
 				if ( row ) {
 					row.guildlang = ( guildlang || row.lang );
 					row.subprefixes = new Map(( row.subprefixes?.length ? row.subprefixes : defaultSettings.subprefixes ));
@@ -584,7 +632,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					if ( settings.prefix_space ) settings.prefix += ' ';
 				}
 				let defaultSubprefixes = new Map(defaultSettings.subprefixes);
-				if ( !row ) return db.query( 'INSERT INTO discord(wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, guild, main) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $11)', [wiki.name, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( settings.prefix || process.env.prefix ), guild] ).then( () => {
+				if ( !row ) return db.query( 'INSERT INTO discord(wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist, guild, main) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $12)', [wiki.name, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( settings.prefix || process.env.prefix ), wikiWhitelist, guild] ).then( () => {
 					let updateSubprefix = false;
 					subprefixes.forEach( subprefix => {
 						if ( defaultSubprefixes.get(subprefix[0]) !== subprefix[1] ) updateSubprefix = true;
@@ -616,6 +664,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 							else text += ` \`${subprefix[1]}\``;
 						}
 					} );
+					if ( wikiWhitelist ) text += '\n' + lang.get('settings.whitelist_added');
 					text += `\n<${new URL(`/guild/${guild}/settings`, process.env.dashboard).href}>`;
 					sendMsg( {
 						type: 'notifyGuild', guild, text, embeds,
@@ -631,6 +680,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				var file = [];
 				var updateGuild = false;
 				var updateChannel = false;
+				var updateChannelPatreon = false;
 				var updateSubprefix = false;
 				if ( row.wiki !== wiki.name ) {
 					updateGuild = true;
@@ -643,6 +693,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 				if ( response.patreon && row.prefix !== settings.prefix ) {
 					updateChannel = true;
+					updateChannelPatreon = true;
 					diff.push(lang.get('settings.currentprefix') + ` ~~\`${row.prefix.replaceAll( '\\', '\\$&' )}\`~~ → \`${settings.prefix.replaceAll( '\\', '\\$&' )}\``);
 				}
 				if ( row.role !== ( settings.role || null ) ) {
@@ -686,13 +737,26 @@ function update_settings(res, userSettings, guild, type, settings) {
 						diff.push(text);
 					}
 				} );
+				if ( row.whitelist !== wikiWhitelist ) {
+					updateChannel = true;
+					updateChannelPatreon = true;
+					if ( !row.whitelist ) diff.push(lang.get('settings.whitelist_added'));
+					else if ( !wikiWhitelist ) diff.push(lang.get('settings.whitelist_removed'));
+					else diff.push(lang.get('settings.whitelist_modified'));
+				}
 				if ( diff.length ) {
 					var dbupdate = [];
 					if ( response.patreon ) {
 						if ( updateGuild || updateChannel ) {
 							dbupdate.push([
-								'UPDATE discord SET wiki = $1, lang = $2, role = $3, inline = $4, desclength = $5, fieldcount = $6, fieldlength = $7, sectionlength = $8, sectiondesclength = $9, prefix = $10 WHERE guild = $11 AND channel IS NULL',
-								[wiki.name, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( settings.prefix || process.env.prefix ), guild]
+								'UPDATE discord SET wiki = $1, lang = $2, role = $3, inline = $4, desclength = $5, fieldcount = $6, fieldlength = $7, sectionlength = $8, sectiondesclength = $9 WHERE guild = $10 AND channel IS NULL',
+								[wiki.name, settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), guild]
+							]);
+						}
+						if ( updateChannelPatreon ) {
+							dbupdate.push([
+								'UPDATE discord SET prefix = $1, whitelist = $2 WHERE guild = $3',
+								[( settings.prefix || process.env.prefix ), wikiWhitelist, guild]
 							]);
 						}
 					}
@@ -705,8 +769,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 						}
 						if ( updateChannel ) {
 							dbupdate.push([
-								'UPDATE discord SET lang = $1, role =  $2, inline =  $3, desclength = $4, fieldcount = $5, fieldlength = $6, sectionlength = $7, sectiondesclength = $8, prefix = $9 WHERE guild = $10',
-								[settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( settings.prefix || process.env.prefix ), guild]
+								'UPDATE discord SET lang = $1, role =  $2, inline =  $3, desclength = $4, fieldcount = $5, fieldlength = $6, sectionlength = $7, sectiondesclength = $8, prefix = $9, whitelist = $10 WHERE guild = $11',
+								[settings.lang, ( settings.role || null ), ( settings.inline ? null : 1 ), ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( settings.prefix || process.env.prefix ), wikiWhitelist, guild]
 							]);
 						}
 					}
@@ -741,7 +805,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				}
 				return res(`/guild/${guild}/settings`, 'save');
 			}
-			if ( !row || !settings.channel || settings.prefix || ( !response.patreon && ( settings.lang || settings.role || settings.inline || settings.desclength || settings.fieldcount || settings.fieldlength || settings.sectionlength || settings.sectiondesclength ) ) ) {
+			if ( !row || !settings.channel || settings.prefix || wikiWhitelist || ( !response.patreon && ( settings.lang || settings.role || settings.inline || settings.desclength || settings.fieldcount || settings.fieldlength || settings.sectionlength || settings.sectiondesclength ) ) ) {
 				return res(`/guild/${guild}/settings`, 'savefail');
 			}
 			if ( row.wiki === wiki.name && ( !response.patreon || 
@@ -816,8 +880,8 @@ function update_settings(res, userSettings, guild, type, settings) {
 				let sql = 'UPDATE discord SET wiki = $1, lang = $2, role = $3, inline = $4, desclength = $5, fieldcount = $6, fieldlength = $7, sectionlength = $8, sectiondesclength = $9 WHERE guild = $10 AND channel = $11';
 				let sqlargs = [wiki.name, ( settings.lang || channel.lang ), ( response.patreon ? ( settings.role || null ) : channel.role ), ( response.patreon ? ( settings.inline ? null : 1 ) : channel.inline ), ( settings.desclength ?? channel.desclength ), ( settings.fieldcount ?? channel.fieldcount ), ( settings.fieldlength ?? channel.fieldlength ), ( settings.sectionlength ?? channel.sectionlength ), ( settings.sectiondesclength ?? channel.sectiondesclength ), guild, ( response.isCategory ? '#' : '' ) + settings.channel];
 				if ( channel === row ) {
-					sql = 'INSERT INTO discord(wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, guild, channel, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)';
-					sqlargs.push(row.prefix);
+					sql = 'INSERT INTO discord(wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, guild, channel, prefix, whitelist) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)';
+					sqlargs.push(row.prefix, row.whitelist);
 				}
 				return db.query( sql, sqlargs ).then( () => {
 					console.log( `- Dashboard: Settings successfully saved: ${guild}#${settings.channel}` );

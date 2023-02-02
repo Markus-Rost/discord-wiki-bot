@@ -186,25 +186,27 @@ function toFormatting(text = '', showEmbed = false, wiki, title = '', fullWikite
  */
 function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 	text = text.replace( /[()\\]/g, '\\$&' );
+	let lt = fullWikitext ? '&lt;' : '<';
+	let gt = fullWikitext ? '&gt;' : '>';
 	var link = null;
-	var regex = /\[\[(?:([^\|\]]+)\|)?([^\]]+)\]\]([a-z]*)/g;
+	var regex = /\[\[(?:([^\[\|\]]+)\|)?([^\[\]]+)\]\]([a-z]*)/g;
 	while ( ( link = regex.exec(text) ) !== null ) {
 		var pagetitle = ( link[1] || link[2] );
 		var page = wiki.toLink(( /^[#\/]/.test(pagetitle) ? title + ( pagetitle.startsWith( '/' ) ? pagetitle : '' ) : pagetitle ), '', ( pagetitle.startsWith( '#' ) ? pagetitle.substring(1) : '' ), true);
-		text = text.replaceSafe( link[0], '[' + link[2] + link[3] + '](<' + page + '>)' );
+		text = text.replaceSafe( link[0], '[' + link[2] + link[3] + '](' + lt + page + gt + ')' );
 	}
 	if ( title ) {
 		regex = /\/\*\s*([^\*]+?)\s*\*\/\s*(.)?/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSafe( link[0], '[→' + link[1] + '](<' + wiki.toLink(title, '', link[1], true) + '>)' + ( link[2] ? ': ' + link[2] : '' ) );
+			text = text.replaceSafe( link[0], '[→' + link[1] + '](' + lt + wiki.toLink(title, '', link[1], true) + gt + ')' + ( link[2] ? ': ' + link[2] : '' ) );
 		}
 	}
 	if ( fullWikitext ) {
 		regex = /\[(?:https?:)?\/\/([^ ]+) ([^\]]+)\]/g;
 		while ( ( link = regex.exec(text) ) !== null ) {
-			text = text.replaceSafe( link[0], '[' + link[2] + '](<https://' + link[1] + '>)' );
+			text = text.replaceSafe( link[0], '[' + link[2] + '](' + lt + 'https://' + link[1] + gt + ')' );
 		}
-		return htmlToDiscord(text, '', true, true).replaceAll( "'''", '**' ).replaceAll( "''", '*' );
+		return htmlToDiscord(text.replaceAll( '\n\n', '<br><br>' ), '', true, true).replaceAll( "'''", '**' ).replaceAll( "''", '*' ).replaceAll( '](\\<', '](<' ).replaceAll( '\\>)', '>)' );
 	}
 	return escapeFormatting(text, true);
 };

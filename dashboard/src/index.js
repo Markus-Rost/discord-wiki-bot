@@ -1,3 +1,5 @@
+const guild = document.location.pathname?.match?.( /^\/guild\/(\d+)\/?/ )?.[1] || null;
+
 function lang(message = '') {
 	var keys = ( message.length ? message.split('.') : [] );
 	var text = i18n[0];
@@ -178,7 +180,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 			var readonly = wiki.readOnly;
 			wiki.readOnly = true;
 			wikicheck.disabled = true;
-			fetch( '/api?wiki=' + encodeURIComponent( wikinew ), {
+			fetch( '/api?wiki=' + encodeURIComponent( wikinew ) + ( guild ? '&guild=' + encodeURIComponent( guild ) : '' ), {
 				method: 'GET',
 				cache: 'no-cache',
 				mode: 'same-origin',
@@ -245,7 +247,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 						wikichecknotice.append(noticeTitle, noticeText, noticeLink, ...noticeExtraParts);
 						return;
 					}
-					if ( response.RcGcDw?.trim() !== document.location.pathname.split('/')[2] && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
+					if ( response.RcGcDw?.trim() !== guild && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
 						wikichecknotice.classList.add('notice-info');
 						var noticeTitle = document.createElement('b');
 						noticeTitle.textContent = lang('sysmessage.title');
@@ -257,7 +259,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 						sysmessageLink.append(sysmessageCode);
 						var guildCode = document.createElement('code');
 						guildCode.className = 'user-select';
-						guildCode.textContent = document.location.pathname.split('/')[2];
+						guildCode.textContent = guild;
 						var noticeText = document.createElement('div');
 						var textSnippets = lang('sysmessage.text').split(/\$\d/);
 						noticeText.append(
@@ -410,6 +412,25 @@ if ( avatar ) {
 			avatarbutton.after(avatarpreview);
 		}
 	}
+}
+
+/** @type {HTMLTextAreaElement} */
+const whitelist = document.getElementById('wb-settings-whitelist');
+if ( whitelist ) {
+	/** @type {HTMLDivElement} */
+	const hidewhitelist = document.getElementById('wb-settings-whitelist-hide');
+	/** @type {HTMLInputElement} */
+	const whitelist_enabled = document.getElementById('wb-settings-whitelist-enabled');
+	if ( whitelist_enabled ) whitelist_enabled.addEventListener( 'change', function() {
+		if ( this.checked ) {
+			hidewhitelist.style.display = '';
+			whitelist.disabled = false;
+		}
+		else {
+			hidewhitelist.style.display = 'none';
+			whitelist.disabled = true;
+		}
+	} );
 }
 
 /** @type {HTMLInputElement} */

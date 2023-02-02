@@ -132,6 +132,7 @@ const descriptions = {
 	drafts: 'drafts-view-summary&amargs=30',
 	expandtemplates: 'expand_templates_intro',
 	gadgets: 'gadgets-pagetext',
+	gotointerwiki: 'gotointerwiki-external|gotointerwiki-invalid&amargs=%1F' + encodeURIComponent( '{{fullurl:{{#titleparts:{{PAGENAME}}||2}}_}}' ) + '%1F' + encodeURIComponent( '{{#titleparts:{{PAGENAME}}||2}}' ),
 	interwiki: 'interwiki_intro',
 	jspages: 'content-review-special-js-description',
 	mostlinkedfilesincontent: 'mostimagesincontent-summary',
@@ -147,7 +148,8 @@ const descriptions = {
  * @param {String} querypage.title - The title of the special page.
  * @param {String} querypage.uselang - The language of the special page.
  * @param {String} specialpage - The canonical name of the special page.
- * @param {Object} query - The siteinfo from the wiki.
+ * @param {Object} query - The query from the wiki.
+ * @param {Object} query.general - The siteinfo from the wiki.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
  * @param {URLSearchParams} querystring - The querystring for the link.
  * @param {String} fragment - The section for the link.
@@ -156,11 +158,11 @@ const descriptions = {
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, query, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
+export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, {general}, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
-	var embed = new EmbedBuilder().setAuthor( {name: query.general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink );
+	var embed = new EmbedBuilder().setAuthor( {name: general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink );
 	try {
-		embed.setThumbnail( new URL(query.general.logo, wiki).href );
+		embed.setThumbnail( new URL(general.logo, wiki).href );
 	}
 	catch {}
 	if ( overwrites.hasOwnProperty(specialpage) ) {
@@ -197,6 +199,12 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 		}
 		if ( body.query.allmessages?.[1]?.['*']?.trim?.() && msg.embedLimits.descLength ) {
 			var description = toMarkdown(body.query.allmessages[1]['*'], wiki, title, true);
+			if ( specialpage === 'gotointerwiki' ) {
+				if ( description.includes( '\\{\\{#titleparts\\:' ) ) description = ' ';
+				if ( !title.includes( '/' ) || description.includes( '[[]]' ) ) {
+					description = toMarkdown(body.query.allmessages[2]['*'], wiki, title, true);
+				}
+			}
 			if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 			embed.setDescription( description );
 		}

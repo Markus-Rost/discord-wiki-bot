@@ -154,7 +154,8 @@
 		"missingperm": "I'm missing some permissions for this command:",
 		"patreon": "This is a Patreon only feature!\nYou can support me on Patreon to get access to this feature:",
 		"prefix": "The prefix for this server is `$1`. You can change the prefix with `$1settings prefix`. For a list of all commands see `$1help`.",
-		"readonly": "**The database is currently in read-only mode, you can't change any settings right now!**"
+		"readonly": "**The database is currently in read-only mode, you can't change any settings right now!**",
+		"whitelist": "The used wiki is not allowed on this server."
 	},
 	"help": {
 		"admin": "These commands can only be performed by administrators:",
@@ -647,6 +648,9 @@
 		"rolehelp": "Use `$1 <role>` to change the minimal required role.",
 		"roleinvalid": "The specified role does not exist!",
 		"save_failed": "Sadly the settings couldn't be saved, please try again later.",
+		"whitelist_added": "A list of allowed wikis has been added.",
+		"whitelist_modified": "The list of allowed wikis has been modified.",
+		"whitelist_removed": "The list of allowed wikis has been removed.",
 		"wiki": "The default wiki for this server is:",
 		"wikichanged": "You changed the default wiki for this server to:",
 		"wikihelp": "Use `$1 <link>` to change the default wiki.\nLink to a MediaWiki site like `https://<wiki>.fandom.com/`",

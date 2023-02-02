@@ -12,6 +12,7 @@ import { isMessage, canShowEmbed } from '../util/functions.js';
  * @param {String} [cmd] - The command at this point.
  */
 export default function cmd_link(lang, msg, title, wiki, cmd = '') {
+	if ( msg.wikiWhitelist.length && !msg.wikiWhitelist.includes( wiki.href ) ) return msg.sendChannel(lang.get('general.whitelist'));
 	if ( msg.isAdmin() && msg.defaultSettings ) help_setup(lang, msg);
 	var spoiler = '';
 	if ( /^\|\|(?:(?!\|\|).)+\|\|$/.test(title) ) {

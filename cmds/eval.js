@@ -41,7 +41,7 @@ export default async function cmd_eval(lang, msg, args, line, wiki) {
 		msg.wikiPrefixes.forEach( (prefixchar, prefixwiki) => {
 			if ( prefixchar ) subprefixes.set(prefixchar, prefixwiki);
 		} );
-		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, {...msg.embedLimits}, cmdline);
+		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, {...msg.embedLimits}, [...msg.wikiWhitelist], cmdline);
 		return cmdline;
 	}
 }

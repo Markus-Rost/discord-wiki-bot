@@ -35,14 +35,16 @@ export { defaultSettings };
  * @param {Boolean} [noInline] - Parse inline commands?
  * @param {Map<String, String>} [subprefixes] - The subprefixes for the message.
  * @param {{descLength: Number, fieldCount: Number, fieldLength: Number, sectionLength: Number, sectionDescLength: Number}} [embedLimits] - The limits for the embed.
+ * @param {String[]} [wikiWhitelist] - Whitelist of allowed wikis.
  * @param {String} [content] - Overwrite for the message content.
  */
-export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), embedLimits = defaultSettings.embedLimits, content = '') {
+export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), embedLimits = defaultSettings.embedLimits, wikiWhitelist = [], content = '') {
 	wiki = new Wiki(wiki);
 	msg.wikiPrefixes = new Map();
 	subprefixes.forEach( (prefixwiki, prefixchar) => msg.wikiPrefixes.set(prefixwiki, prefixchar) );
 	msg.wikiPrefixes.set(wiki.name, '');
 	msg.embedLimits = {...embedLimits};
+	msg.wikiWhitelist = [...wikiWhitelist];
 	msg.noInline = noInline;
 	var cont = ( content || msg.content );
 	var cleanCont = ( content ? cleanContent(content, msg.channel) : msg.cleanContent ).replaceAll( '\u200b', '' ).replace( /<a?(:\w+:)\d+>/g, '$1' ).replace( /<(\/[\w ]+):\d+>/g, '$1' ).replace( /(?<!\\)```.+?```/gs, '<codeblock>' );
@@ -182,7 +184,8 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
 					logging(wiki, msg.guildId, 'inline', 'interwiki');
-					link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, wiki.spaceReplacement) : decodeURI(interwiki.url) );
+					if ( interaction.wikiWhitelist.length ) link.url = wiki.toLink('Special:GoToInterwiki/' + interwiki.title, '', link.section);
+					else link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, wiki.spaceReplacement) : decodeURI(interwiki.url) );
 				} ) );
 			}
 			if ( body.query.pages ) {
@@ -196,7 +199,8 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 						logging(wiki, msg.guildId, 'inline', 'interwiki');
 						var iw_parts = page.title.split(':');
 						var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
-						link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section);
+						if ( wikiWhitelist.length && !wikiWhitelist.includes( iw.href ) ) link.url = wiki.toLink('Special:GoToInterwiki/' + page.title, '', link.section);
+						else link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section);
 						return;
 					}
 					logging(wiki, msg.guildId, 'inline', 'redlink');

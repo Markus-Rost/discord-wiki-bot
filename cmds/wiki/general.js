@@ -63,6 +63,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						let scriptPath = project.scriptPath;
 						if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 						let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
+						if ( msg.wikiWhitelist.length && !msg.wikiWhitelist.includes( iwwiki.href ) ) return Promise.resolve( {message: lang.get('general.whitelist')} );
 						if ( isMessage(msg) ) {
 							cmd = '!!' + regex[1] + ' ';
 							if ( msg.wikiPrefixes.has(iwwiki.name) ) cmd = msg.wikiPrefixes.get(iwwiki.name);
@@ -244,10 +245,11 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 					return;
 				}
 				logging(wiki, msg.guildId, 'interwiki', 'miraheze');
-				var iw_parts = querypage.title.split(':');
-				var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
-				var iw_link = iw.toLink(iw_parts.slice(2).join(':'), querystring, fragment);
-				var maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
+				let iw_parts = querypage.title.split(':');
+				let iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
+				if ( msg.wikiWhitelist.length && !msg.wikiWhitelist.includes( iw.href ) ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + querypage.title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
+				let iw_link = iw.toLink(iw_parts.slice(2).join(':'), querystring, fragment);
+				let maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 				if ( selfcall < maxselfcall ) {
 					selfcall++;
 					if ( isMessage(msg) ) {
@@ -301,6 +303,9 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 								if ( srbody.query ) return srbody;
 								return {RETURN: {reaction: WB_EMOJI.shrug}};
 							}
+							if ( msg.wikiWhitelist.length && !msg.wikiWhitelist.includes( location[0] ) ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + querypage.title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed).then( result => {
+								return {RETURN: result};
+							} );
 							var maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 							if ( selfcall < maxselfcall ) {
 								selfcall++;
@@ -371,6 +376,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 										let scriptPath = project.scriptPath;
 										if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 										let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
+										if ( msg.wikiWhitelist.length && !msg.wikiWhitelist.includes( iwwiki.href ) ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + srbody.query.interwiki[0].title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 										if ( isMessage(msg) ) {
 											cmd = '!!' + regex[1] + ' ';
 											if ( msg.wikiPrefixes.has(iwwiki.name) ) cmd = msg.wikiPrefixes.get(iwwiki.name);
@@ -395,12 +401,14 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 									return gamepedia_check_wiki(lang, msg, iwtitle, wiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 								}
 							}
+							if ( msg.wikiWhitelist.length ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + srbody.query.interwiki[0].title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 							return {
 								reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 								message: spoiler + ( noEmbed ? '<' : ' ' ) + iw + ( noEmbed ? '>' : ' ' ) + spoiler
 							};
 						}
 						catch {
+							if ( msg.wikiWhitelist.length ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + srbody.query.interwiki[0].title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 							return {
 								reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 								message: spoiler + ( noEmbed ? '<' : ' ' ) + srbody.query.interwiki[0].url + ( noEmbed ? '>' : ' ' ) + spoiler
@@ -596,9 +604,9 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				if ( reaction ) reaction.removeEmoji();
 				return;
 			}
-			var maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
+			let maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 			try {
-				var iw = new URL(body.query.interwiki[0].url.replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
+				let iw = new URL(body.query.interwiki[0].url.replaceAll( '\\', '%5C' ).replace( /@(here|everyone)/g, '%40$1' ), wiki);
 				querystring.forEach( (value, name) => {
 					iw.searchParams.append(name, value);
 				} );
@@ -619,6 +627,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							let scriptPath = project.scriptPath;
 							if ( project.regexPaths ) scriptPath = scriptPath.replace( /\$(\d)/g, (match, n) => regex[n] );
 							let iwwiki = new Wiki('https://' + regex[1] + scriptPath);
+							if ( msg.wikiWhitelist.length && !msg.wikiWhitelist.includes( iwwiki.href ) ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + body.query.interwiki[0].title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 							if ( isMessage(msg) ) {
 								cmd = '!!' + regex[1] + ' ';
 								if ( msg.wikiPrefixes.has(iwwiki.name) ) cmd = msg.wikiPrefixes.get(iwwiki.name);
@@ -643,12 +652,14 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 						return gamepedia_check_wiki(lang, msg, iwtitle, wiki, cmd, reaction, spoiler, noEmbed, iw.searchParams, fragment, iw.href, selfcall);
 					}
 				}
+				if ( msg.wikiWhitelist.length ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + body.query.interwiki[0].title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 				return {
 					reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 					message: spoiler + ( noEmbed ? '<' : ' ' ) + iw + ( noEmbed ? '>' : ' ' ) + spoiler
 				};
 			}
 			catch {
+				if ( msg.wikiWhitelist.length ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + body.query.interwiki[0].title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 				return {
 					reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
 					message: spoiler + ( noEmbed ? '<' : ' ' ) + body.query.interwiki[0].url + ( noEmbed ? '>' : ' ' ) + spoiler

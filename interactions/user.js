@@ -19,6 +19,7 @@ function slash_user(interaction, lang, wiki) {
 	}
 	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
 		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
+		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 		var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 		if ( ephemeral ) lang = lang.uselang(interaction.locale);

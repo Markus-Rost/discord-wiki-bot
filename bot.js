@@ -223,12 +223,13 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 
 	if ( !interaction.inGuild() ) {
 		interaction.embedLimits = {...defaultSettings.embedLimits};
+		interaction.wikiWhitelist = [];
 		return cmd(interaction, new Lang(interaction.locale), new Wiki());
 	}
 	let sqlargs = [interaction.guildId];
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
-	db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+	db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 		if ( !row ) interaction.defaultSettings = true;
 		interaction.embedLimits = {
 			descLength: row?.desclength ?? defaultSettings.embedLimits.descLength,
@@ -237,6 +238,7 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 			sectionLength: row?.sectionlength ?? defaultSettings.embedLimits.sectionLength,
 			sectionDescLength: row?.sectiondesclength ?? Math.min(row?.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
 		};
+		interaction.wikiWhitelist = row?.whitelist?.split?.('\n') ?? [];
 		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Interaction: Error while getting the wiki: ' + dberror );
@@ -304,7 +306,7 @@ function messageCreate(msg) {
 			}
 			return;
 		}
-		db.query( 'SELECT wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+		db.query( 'SELECT wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 			if ( row ) {
 				if ( msg.guild.roles.cache.has(row.role) && msg.guild.roles.cache.get(row.role).comparePositionTo(msg.member.roles.highest) > 0 && !msg.isAdmin() ) {
 					msg.onlyVerifyCommand = true;
@@ -317,7 +319,8 @@ function messageCreate(msg) {
 					sectionLength: row.sectionlength ?? defaultSettings.embedLimits.sectionLength,
 					sectionDescLength: row.sectiondesclength ?? Math.min(row.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
 				};
-				newMessage(msg, new Lang(row.lang), row.wiki, patreonGuildsPrefix.get(msg.guildId), row.inline, subprefixes, embedLimits);
+				let wikiWhitelist = row.whitelist?.split?.('\n') ?? [];
+				newMessage(msg, new Lang(row.lang), row.wiki, patreonGuildsPrefix.get(msg.guildId), row.inline, subprefixes, embedLimits, wikiWhitelist);
 			}
 			else {
 				msg.defaultSettings = true;

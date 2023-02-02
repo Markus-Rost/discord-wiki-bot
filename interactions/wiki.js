@@ -17,6 +17,7 @@ function slash_wiki(interaction, lang, wiki) {
 	var query = new URLSearchParams(interaction.options.getString('query') ?? '');
 	var fragment = ( interaction.options.getString('section') ?? '' ).replace( /^\s*#+\s*/, '' );
 	var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
+	if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( wiki.href ) ) ephemeral = true;
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 	sectionCache.delete(wiki.toLink(title));
