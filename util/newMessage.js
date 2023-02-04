@@ -184,7 +184,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => links.filter( link => link.title === interwiki.title ).forEach( link => {
 					logging(wiki, msg.guildId, 'inline', 'interwiki');
-					if ( interaction.wikiWhitelist.length ) link.url = wiki.toLink('Special:GoToInterwiki/' + interwiki.title, '', link.section);
+					if ( wikiWhitelist.length ) link.url = wiki.toLink('Special:GoToInterwiki/' + interwiki.title, '', link.section);
 					else link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, wiki.spaceReplacement) : decodeURI(interwiki.url) );
 				} ) );
 			}
