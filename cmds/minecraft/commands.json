@@ -82,14 +82,20 @@
 			"/clear <targets> <item> <maxCount>"
 		],
 		"clone": [
-			"/clone <begin> <end> <destination>",
-			"/clone <begin> <end> <destination> filtered <filter>",
-			"/clone <begin> <end> <destination> filtered <filter> <mode>",
-			"/clone <begin> <end> <destination> masked",
-			"/clone <begin> <end> <destination> masked <mode>",
-			"/clone <begin> <end> <destination> replace",
-			"/clone <begin> <end> <destination> replace <mode>",
-			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination>"
+			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination>",
+			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> filtered <filter>",
+			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> filtered <filter> <mode>",
+			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> masked",
+			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> masked <mode>",
+			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> replace",
+			"/clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> replace <mode>"
+		],
+		"damage": [
+			"/damage <target> <amount>",
+			"/damage <target> <amount> <damageType>",
+			"/damage <target> <amount> <damageType> at <location>",
+			"/damage <target> <amount> <damageType> by <entity>",
+			"/damage <target> <amount> <damageType> by <entity> from <cause>"
 		],
 		"data": [
 			"/data get (block <targetPos>|entity <target>|storage <target>)",
@@ -145,6 +151,9 @@
 			"/effect clear <targets>",
 			"/effect clear <targets> <effect>",
 			"/effect give <targets> <effect>",
+			"/effect give <targets> <effect> infinite",
+			"/effect give <targets> <effect> infinite <amplifier>",
+			"/effect give <targets> <effect> infinite <amplifier> <hideParticles>",
 			"/effect give <targets> <effect> <seconds>",
 			"/effect give <targets> <effect> <seconds> <amplifier>",
 			"/effect give <targets> <effect> <seconds> <amplifier> <hideParticles>"
@@ -161,7 +170,7 @@
 			"anchored <anchor> < subcommand >",
 			"as <targets> < subcommand >",
 			"at <targets> < subcommand >",
-			"on (attacker|controller|leasher|owner|passengers|target|vehicle) < subcommand >",
+			"on (attacker|controller|leasher|origin|owner|passengers|target|vehicle) < subcommand >",
 			"facing entity <targets> <anchor> < subcommand >",
 			"facing <pos> < subcommand >",
 			"if biome <pos> <biome> < subcommand >",
@@ -202,7 +211,8 @@
 			"store success bossbar <id> value < subcommand >",
 			"store success entity <targets> <path> <dataType> <scale> < subcommand >",
 			"store success storage <storage> <path> <dataType> <scale> < subcommand >",
-			"store success score <targets> <objective> < subcommand >"
+			"store success score <targets> <objective> < subcommand >",
+			"summon <entity> < subcommand >"
 		],
 		"experience": [
 			"/experience add <targets> <amount>",
