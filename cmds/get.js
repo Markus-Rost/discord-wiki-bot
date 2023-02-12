@@ -46,7 +46,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 			var guildchannel = ['Updates channel:', '`' + guild.channel + '`'];
 			var guildsettings = ['Settings:', '*unknown*'];
 			
-			return db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel ASC NULLS FIRST', [guild.id] ).then( ({rows}) => {
+			return db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, prefix, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel ASC NULLS FIRST', [guild.id] ).then( ({rows}) => {
 				if ( rows.length ) {
 					let mainRow = rows.find( row => !row.channel );
 					mainRow.patreon = patreonGuildsPrefix.has(guild.id);
@@ -55,6 +55,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 					mainRow.subprefixes = subprefixes;
 					rows.filter( row => row.channel ).forEach( row => {
 						delete row.subprefixes;
+						delete row.whitelist;
 						if ( !mainRow.patreon ) {
 							if ( row.lang === mainRow.lang ) delete row.lang;
 							if ( row.role === mainRow.role ) delete row.role;
