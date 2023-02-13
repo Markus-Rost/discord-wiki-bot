@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "ベータ",
+		"betadesc": "実験的なベータ版機能",
 		"botlist": {
 			"text": "Botリストに投票することにより、他の利用者がWiki-Botを見つけやすくなります：",
 			"title": "Botリスト"
@@ -62,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "この機能は実験的なものです！正しく動作することは保証されておらず、将来的に削除される可能性があります。",
+			"title": "実験的なベータ版機能"
+		},
 		"error": {
 			"text": "不明なエラーが発生しました。もう一度お試しください。",
 			"title": "不明なエラーが発生！"
@@ -222,6 +228,10 @@
 			"channel": "チャンネル：",
 			"confirm": "本当にチャンネルの上書きを削除しますか？",
 			"default": "サーバー全体の設定",
+			"desclength": "説明の長さ：",
+			"embedlimits": "埋めこみサイズの制限：",
+			"fieldcount": "埋めこみのサイズ制限：",
+			"fieldlength": "インフォボックスの長さ：",
 			"inline": "埋め込みコマンド：",
 			"lang": "言語：",
 			"new": "別のWikiの通知を追加",
@@ -229,9 +239,15 @@
 			"prefix": "接頭辞：",
 			"prefix_space": "接頭辞はスペースで終わります：",
 			"role": "最小のロール：",
+			"sectiondesclength": "セクションの前の説明の長さ：",
+			"sectionlength": "セクションの長さ：",
 			"select_channel": "-- チャンネルを選択 --",
 			"select_subprefix": "特定のWikiを設定する →",
 			"subprefix": "Wiki接頭辞のサブコマンド：",
+			"whitelist": "許可したWiki：",
+			"whitelist_enabled": "特定のWikiのみ許可：",
+			"whitelist_note": "1行に1つ",
+			"whitelist_placeholder": "許可されたWikiの一覧",
 			"wiki": "通知するWiki：",
 			"wiki_check": "Wikiを確認"
 		},
