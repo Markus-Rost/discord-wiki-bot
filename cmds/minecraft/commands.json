@@ -197,6 +197,7 @@
 			"unless score <target> <targetObjective> matches <range> < subcommand >",
 			"in <dimension> < subcommand >",
 			"positioned as <targets> < subcommand >",
+			"positioned over <heightmap> < subcommand >",
 			"positioned <pos> < subcommand >",
 			"rotated as <targets> < subcommand >",
 			"rotated <rot> < subcommand >",
