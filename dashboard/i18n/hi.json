@@ -244,6 +244,10 @@
 			"select_channel": "-- एक चैनल चुनें --",
 			"select_subprefix": "एक विशिष्ट विकि सेट करें →",
 			"subprefix": "विकि उप-कमांड के लिए उपसर्ग:",
+			"whitelist": "अनुमोदित विकियाँ:",
+			"whitelist_enabled": "सिर्फ विशिष्ट विकियों को अनुमति दें:",
+			"whitelist_note": "एक पंक्ति पर एक",
+			"whitelist_placeholder": "अनुमोदित विकियों की सूची",
 			"wiki": "डिफॉल्ट विकि:",
 			"wiki_check": "विकि को जाँचें"
 		},
