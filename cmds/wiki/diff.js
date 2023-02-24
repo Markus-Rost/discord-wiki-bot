@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import logging from '../../util/logging.js';
 import { got, canUseMaskedLinks, htmlToPlain, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
 import diffParser from '../../util/edit_diff.js';
@@ -226,7 +226,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 				}, timeoptions));
 			}
 			var editDate = new Date(revisions[0].timestamp);
-			var timestamp = [lang.get('diff.info.timestamp'), dateformat.format(editDate), '<t:' + Math.trunc(editDate.getTime() / 1000) + ':R>'];
+			var timestamp = [lang.get('diff.info.timestamp'), dateformat.format(editDate), timeMarkdown(editDate, TimestampStyles.RelativeTime)];
 			var difference = revisions[0].size - ( revisions[1] ? revisions[1].size : 0 );
 			var size = [lang.get('diff.info.size'), lang.get('diff.info.bytes', ( difference > 0 ? '+' : '' ) + difference.toLocaleString(lang.get('dateformat')), difference) + ( revisions[0].minor !== undefined ? lang.get('diff.info.minor').replaceAll( '_', ' ' ) : '' )];
 			var comment = [

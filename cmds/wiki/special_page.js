@@ -1,4 +1,4 @@
-import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
+import { EmbedBuilder, PermissionFlagsBits, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import logging from '../../util/logging.js';
 import { got, toMarkdown, escapeFormatting, splitMessage } from '../../util/functions.js';
 import { createRequire } from 'node:module';
@@ -56,7 +56,7 @@ const queryfunctions = {
 			}, timeoptions));
 		}
 		let lastEditDate = new Date(result.timestamp);
-		return dateformat.format(lastEditDate) + ' <t:' + Math.trunc(lastEditDate.getTime() / 1000) + ':R>: [' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
+		return dateformat.format(lastEditDate) + ' ' + timeMarkdown(lastEditDate, TimestampStyles.RelativeTime) + ': [' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	media: (query, wiki, lang) => query.querypage.results.map( result => {
 		var ms = result.title.split(';');

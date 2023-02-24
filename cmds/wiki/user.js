@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import datetimeDifference from 'datetime-difference';
 import global_block from '../../functions/global_block.js';
 import parse_page from '../../functions/parse_page.js';
@@ -336,7 +336,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 			}, timeoptions));
 		}
 		let registrationDate = new Date(queryuser.registration);
-		var registration = [lang.get('user.info.registration'), dateformat.format(registrationDate), '<t:' + Math.trunc(registrationDate.getTime() / 1000) + ':R>'];
+		var registration = [lang.get('user.info.registration'), dateformat.format(registrationDate), timeMarkdown(registrationDate, TimestampStyles.RelativeTime)];
 		var editcount = [
 			lang.get('user.info.editcount'),
 			( canUseMaskedLinks(msg, noEmbed)

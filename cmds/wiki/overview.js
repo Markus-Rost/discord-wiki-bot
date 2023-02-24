@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import logging from '../../util/logging.js';
 import { got, canUseMaskedLinks, toFormatting, toPlaintext, escapeFormatting } from '../../util/functions.js';
 import { createRequire } from 'node:module';
@@ -60,7 +60,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 		if ( body.query.logevents?.[0]?.timestamp ) {
 			creation_date = new Date(body.query.logevents[0].timestamp);
 			created[1] = dateformat.format(creation_date);
-			created[2] = '<t:' + Math.trunc(creation_date.getTime() / 1000) + ':R>';
+			created[2] = timeMarkdown(creation_date, TimestampStyles.RelativeTime);
 		}
 		var language = [lang.get('overview.lang'), body.query.languages.find( language => {
 			return language.code === body.query.general.lang;
@@ -164,7 +164,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 				if ( site.creation_date && creation_date > new Date(site.creation_date) ) {
 					creation_date = new Date(site.creation_date);
 					created[1] = dateformat.format(creation_date);
-					created[2] = '<t:' + Math.trunc(creation_date.getTime() / 1000) + ':R>';
+					created[2] = timeMarkdown(creation_date, TimestampStyles.RelativeTime);
 				}
 				if ( site.desc ) {
 					description[1] = escapeFormatting(site.desc);
