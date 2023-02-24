@@ -149,7 +149,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		} );
 		baseWikis.forEach( baseWiki => wikiList[0].add( baseWiki ) );
 		interaction.wikiWhitelist.forEach( whiteWiki => wikiList[0].add( whiteWiki ) );
-		wikiList = [[...wikiList[0]], [...wikiList[1]]];
+		wikiList = [[...wikiList[0]].filter( suggestion => !suggestion.includes( '@' ) ), [...wikiList[1]]];
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
 			let suggestionName = suggestion;
 			let project = inputToWikiProject(suggestion);
