@@ -27,7 +27,7 @@
     "htmlparser2": "^8.0.1",
     "mediawiki-projects-list": "^3.0.0",
     "npm": "^9.6.0",
-    "pg": "^8.9.0"
+    "pg": "^8.10.0"
   },
   "repository": {
     "type": "git",
