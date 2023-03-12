@@ -121,10 +121,19 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 		}
 		
 		var username = args.join(' ').replaceAll( wiki.spaceReplacement ?? '_', ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).replace( /^@/, '' ).split('#')[0].substring(0, 250).trim();
-		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
-			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
+		if ( /^(?:https?:)?\/\//.test(username) ) {
+			try {
+				let link = new URL(username, wiki);
+				if ( wiki.articleURL.search.includes( '$1' ) ) wiki.articleURL.searchParams.forEach( (value, key) => {
+					if ( value === '$1' && link.searchParams.has(key) ) username = link.searchParams.get(key);
+				} );
+				else username = decodeURIComponent( link.pathname.replace( wiki.articleURL.pathname.split('$1')[0], '' ) );
+			}
+			catch {}
 		}
-		if ( wiki.isGamepedia() ) username = username.replace( /^userprofile\s*:\s*/i, '' );
+		if ( wiki.wikifarm === 'fandom' ) {
+			username = username.replace( /^(?:userprofile\s*:\s*|special:verifyuser\/)/i, '' );
+		}
 		
 		if ( !username.trim() ) {
 			args[0] = line.split(' ')[0];

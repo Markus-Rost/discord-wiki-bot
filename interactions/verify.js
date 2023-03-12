@@ -126,10 +126,20 @@ function interaction_verify(interaction, lang, wiki) {
 			}
 			return mention;
 		} ).replaceAll( wiki.spaceReplacement ?? '_', ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).split('#')[0].substring(0, 250).trim();
-		if ( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/.test(username) ) {
-			username = decodeURIComponent( username.replace( /^(?:https?:)?\/\/([a-z\d-]{1,50})\.(?:gamepedia\.com\/|(?:fandom\.com|wikia\.org)\/(?:[a-z-]{1,8}\/)?(?:wiki\/)?)/, '' ) );
+		
+		if ( /^(?:https?:)?\/\//.test(username) ) {
+			try {
+				let link = new URL(username, wiki);
+				if ( wiki.articleURL.search.includes( '$1' ) ) wiki.articleURL.searchParams.forEach( (value, key) => {
+					if ( value === '$1' && link.searchParams.has(key) ) username = link.searchParams.get(key);
+				} );
+				else username = decodeURIComponent( link.pathname.replace( wiki.articleURL.pathname.split('$1')[0], '' ) );
+			}
+			catch {}
 		}
-		if ( wiki.wikifarm === 'fandom' ) username = username.replace( /^(?:\/verify username|userprofile\s*):\s*/i, '' );
+		if ( wiki.wikifarm === 'fandom' ) {
+			username = username.replace( /^(?:\/verify username:\s*|userprofile\s*:\s*|special:verifyuser\/)/i, '' );
+		}
 		
 		if ( !username.trim() ) {
 			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), ephemeral: true} ).catch(log_error);
