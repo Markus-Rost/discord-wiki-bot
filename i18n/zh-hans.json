@@ -154,7 +154,8 @@
 		"missingperm": "我缺少一些权限来运行此命令：",
 		"patreon": "这是 Patreon 支持者专属功能！\n你可以在 Patreon 支持我来使用这个功能：",
 		"prefix": "此服务器的命令前缀是 `$1`。你可以使用 `$1settings prefix` 更改前缀。关于全部命令，请见 `$1help`。",
-		"readonly": "**数据库目前处于只读模式，你现在无法更改任何设置！**"
+		"readonly": "**数据库目前处于只读模式，你现在无法更改任何设置！**",
+		"whitelist": "本服务器不允许指定的wiki。"
 	},
 	"help": {
 		"admin": "这些命令仅限管理员使用：",
@@ -647,6 +648,9 @@
 		"rolehelp": "使用 `$1 <身份组>` 以更改所需的最小身份组。",
 		"roleinvalid": "指定的身份组不存在！",
 		"save_failed": "很遗憾，设置保存失败了，请稍后再试。",
+		"whitelist_added": "已添加wiki白名单。",
+		"whitelist_modified": "已修改wiki白名单。",
+		"whitelist_removed": "已移除wiki白名单。",
 		"wiki": "本服务器的默认 wiki 是：",
 		"wikichanged": "你已将服务器 wiki 更改为：",
 		"wikihelp": "使用 `$1 <link>` 来更改默认 wiki。\nMediaWiki 网站的链接，如 `https://<wiki>.fandom.com/`",
