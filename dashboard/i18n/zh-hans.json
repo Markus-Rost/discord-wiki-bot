@@ -244,6 +244,10 @@
 			"select_channel": "-- 选择频道 --",
 			"select_subprefix": "设置一个指定的wiki →",
 			"subprefix": "子命令wiki前缀：",
+			"whitelist": "允许的wiki：",
+			"whitelist_enabled": "仅允许指定的wiki：",
+			"whitelist_note": "每行一个",
+			"whitelist_placeholder": "wiki白名单",
 			"wiki": "默认 wiki：",
 			"wiki_check": "检查 wiki"
 		},
