@@ -154,7 +154,8 @@
 		"missingperm": "我缺少一些權限來執行此指令：",
 		"patreon": "這是 Patreon 支持者專屬功能！\n你可以在 Patreon 支持我來使用這個功能：",
 		"prefix": "此伺服器的指令前綴是 `$1`。您可以使用 `$1settings prefix` 變更前綴。關於全部指令，請見 `$1help`。",
-		"readonly": "**目前資料庫處於唯獨模式，您無法變更任何設定！**"
+		"readonly": "**目前資料庫處於唯獨模式，您無法變更任何設定！**",
+		"whitelist": "使用的wiki在本伺服器不允許。"
 	},
 	"help": {
 		"admin": "這些指令僅限管理員使用：",
@@ -647,6 +648,9 @@
 		"rolehelp": "使用 `$1 <身分組>` 以變更所需的最小身分組。",
 		"roleinvalid": "指定的身分組不存在！",
 		"save_failed": "啊喔，設定儲存失敗了，請稍後再試。",
+		"whitelist_added": "已被新增為允許wiki的清單。",
+		"whitelist_modified": "已修改允許wiki的清單。",
+		"whitelist_removed": "已移除允許wiki的清單。",
 		"wiki": "本伺服器的預設wiki為：",
 		"wikichanged": "你已將本伺服器的預設wiki變更為：",
 		"wikihelp": "使用 `$1 <link>` 以變更預設wiki。\nMediaWiki網站的連結，如`https://<wiki>.fandom.com/`",

@@ -244,6 +244,10 @@
 			"select_channel": "-- 選擇頻道 --",
 			"select_subprefix": "設定一個指定的 wiki →",
 			"subprefix": "子指令 wiki 前綴：",
+			"whitelist": "允許的wiki：",
+			"whitelist_enabled": "只允許指定的wiki：",
+			"whitelist_note": "每行一個",
+			"whitelist_placeholder": "允許wiki的清單",
 			"wiki": "預設wiki：",
 			"wiki_check": "檢查wiki"
 		},
