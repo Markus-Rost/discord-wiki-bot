@@ -196,11 +196,13 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
 		whitelist.find('#wb-settings-whitelist').attr('placeholder', dashboardLang.get('settings.form.whitelist_placeholder'));
 		if ( settings.whitelist ) {
 			whitelist.find('#wb-settings-whitelist-enabled').attr('checked', '');
-			whitelist.find('#wb-settings-whitelist').text(settings.whitelist + '\n');
+			whitelist.find('#wb-settings-whitelist').attr('rows', settings.whitelist.split('\n').length + 3).text(settings.whitelist + '\n');
+			
 		}
 		else {
+			let whitelistText = ( allWikis || settings.wiki );
 			whitelist.find('#wb-settings-whitelist-hide').attr('style', 'display: none;');
-			whitelist.find('#wb-settings-whitelist').attr('disabled', '').text(( allWikis || settings.wiki ) + '\n');
+			whitelist.find('#wb-settings-whitelist').attr('disabled', '').attr('rows', whitelistText.split('\n').length + 3).text(whitelistText + '\n');
 		}
 		fields.push(whitelist);
 	}

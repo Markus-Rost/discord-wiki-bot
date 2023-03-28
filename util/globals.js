@@ -67,6 +67,7 @@ globalThis.log_error = function(error, isBig = false, type = '') {
 
 const common_warnings = {
 	main: [
+		'Unrecognized parameters: exlimit, explaintext, exsectionformat, piprop.',
 		'Unrecognized parameters: piprop, explaintext, exsectionformat, exlimit.',
 		'Unrecognized parameters: explaintext, exsectionformat, exlimit.',
 		'Unrecognized parameter: piprop.'
