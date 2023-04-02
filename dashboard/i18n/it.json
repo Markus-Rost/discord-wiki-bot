@@ -244,6 +244,10 @@
 			"select_channel": "-- Seleziona un canale --",
 			"select_subprefix": "Imposta una wiki specifica →",
 			"subprefix": "Prefisso sottocomando wiki:",
+			"whitelist": "Wiki consentite:",
+			"whitelist_enabled": "Consenti solo wiki specifiche:",
+			"whitelist_note": "Una per riga",
+			"whitelist_placeholder": "Lista di wiki consentite",
 			"wiki": "Wiki di default:",
 			"wiki_check": "Controlla la wiki"
 		},
