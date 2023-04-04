@@ -2,7 +2,7 @@ import { inspect } from 'node:util';
 import { wikiProjects, frontendProxies, inputToWikiProject, inputToFrontendProxy } from 'mediawiki-projects-list';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const {defaultSettings} = require('./default.json');
+const {defaultSettings, defaultNamespaces} = require('./default.json');
 
 /** @type {String[]} - Sites that support verification using OAuth2. */
 export const oauthSites = [];
@@ -11,7 +11,7 @@ export const oauthSites = [];
 const CACHE = new Map();
 
 // Remove wikis with notes, add wikis to oauthSites
-wikiProjects.filter( project => {
+[...wikiProjects.values()].filter( project => {
 	if ( project.note ) return true;
 	if ( project.extensions.includes('OAuth') && !project.wikiFarm && project.fullScriptPath ) {
 		oauthSites.push(project.fullScriptPath);
@@ -19,11 +19,11 @@ wikiProjects.filter( project => {
 	return false;
 } ).forEach( project => {
 	if ( isDebug ) console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing wiki: ' + project.name + ' - ' + project.note );
-	wikiProjects.splice( wikiProjects.indexOf( project ), 1 );
+	wikiProjects.delete(project.name);
 } );
-frontendProxies.filter( proxy => proxy.note ).forEach( proxy => {
+[...frontendProxies.values()].filter( proxy => proxy.note ).forEach( proxy => {
 	if ( isDebug ) console.log( '- ' + ( process.env.SHARDS ?? 'Dashboard' ) + ': Debug: Removing proxy: ' + proxy.name + ' - ' + proxy.note );
-	frontendProxies.splice( frontendProxies.indexOf( proxy ), 1 );
+	frontendProxies.delete(proxy.name);
 } );
 
 /**
@@ -82,7 +82,7 @@ export default class Wiki extends URL {
 		this.mainpage = '';
 		this.mainpageisdomainroot = false;
 		/** @type {mwNamespaceList} */
-		this.namespaces = new Map();
+		this.namespaces = new Map(defaultNamespaces.map( namespace => [namespace.id, structuredClone(namespace)] ));
 		Object.defineProperties( this.namespaces, {
 			all: {
 				get: function() {
@@ -304,6 +304,17 @@ export default class Wiki extends URL {
 			let proxy = inputToFrontendProxy(input);
 			if ( proxy ) return new Wiki(proxy.fullNamePath);
 			if ( input.startsWith( 'https://' ) ) {
+				if ( /^https:\/\/(?:www\.)?google\.(?:com?\.)?[a-z]{2,3}\/url\?/.test(input) ) {
+					try {
+						let googleUrl = new URL(input).searchParams.get('url');
+						if ( /^(?:https?:)?\/\/(?!(?:www\.)?google\.)/.test(googleUrl) ) {
+							return fromInput(googleUrl);
+						}
+						return null;
+					}
+					catch {
+					}
+				}
 				let wiki = input.replace( /\/(?:index|api|load|rest)\.php(?:|[\?\/#].*)$/, '/' );
 				if ( !wiki.endsWith( '/' ) ) wiki += '/';
 				return new Wiki(wiki);

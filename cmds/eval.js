@@ -24,7 +24,7 @@ export default async function cmd_eval(lang, msg, args, line, wiki) {
 	try {
 		var text = inspect( await eval( args.join(' ') ) );
 	} catch ( error ) {
-		var text = error.toString();
+		var text = String(error);
 	}
 	if ( isDebug ) console.log( '--- EVAL START ---\n' + text + '\n--- EVAL END ---' );
 	if ( text.length > 1990 ) msg.reactEmoji(WB_EMOJI.done, true);

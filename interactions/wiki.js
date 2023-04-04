@@ -77,7 +77,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name === 'section' ) return autocomplete_section(interaction, lang, wiki);
 	if ( focused.name !== 'title' ) return;
-	const title = focused.value;
+	var title = focused.value;
 	if ( !title.trim() ) {
 		if ( wiki.commonSearches === null && wiki.wikifarm === 'fandom' ) got.get( wiki + 'wikia.php?controller=SearchSeeding&method=getLocalSearchInfo&format=json', {
 			context: {
@@ -278,6 +278,15 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				...( wiki.commonSearches?.slice(0, 24) || [] )
 			] ).catch(log_error);
 		} );
+	}
+	if ( title.includes( ':' ) ) {
+		let [namespace, ...parts] = title.split(':');
+		namespace = namespace.toLowerCase().trim();
+		let ns = wiki.namespaces.all.find( ns => {
+			if ( ns.name.toLowerCase() === namespace ) return true;
+			return ns.aliases.some( alias => alias.toLowerCase() === namespace );
+		} );
+		if ( ns ) title = ns.name + ':' + parts.join(':');
 	}
 	if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'api.php?action=linksuggest&get=suggestions&query=' + encodeURIComponent( title ) + '&format=json', {
 		timeout: {

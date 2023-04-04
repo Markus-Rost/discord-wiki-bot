@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs';
 import { EmbedBuilder } from 'discord.js';
-import { wikiProjects, urlToIdString } from 'mediawiki-projects-list';
+import { getWikiProject, urlToIdString } from 'mediawiki-projects-list';
 import parse_page from '../../functions/parse_page.js';
 import phabricator from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
@@ -54,7 +54,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
 			}
 			if ( ['http:','https:'].includes( iw.protocol ) ) {
-				let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
+				let project = getWikiProject(iw.hostname);
 				if ( project ) {
 					let articlePath = escapeRegExp( project.regexPaths ? '/' : project.articlePath.split('?')[0] );
 					let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
@@ -367,7 +367,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							logging(wiki, msg.guildId, 'interwiki');
 							if ( selfcall < maxselfcall && ['http:','https:'].includes( iw.protocol ) ) {
 								selfcall++;
-								let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
+								let project = getWikiProject(iw.hostname);
 								if ( project ) {
 									let articlePath = escapeRegExp( project.regexPaths ? '/' : project.articlePath.split('?')[0] );
 									let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );
@@ -618,7 +618,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				logging(wiki, msg.guildId, 'interwiki');
 				if ( selfcall < maxselfcall && ['http:','https:'].includes( iw.protocol ) ) {
 					selfcall++;
-					let project = wikiProjects.find( project => iw.hostname.endsWith( project.name ) );
+					let project = getWikiProject(iw.hostname);
 					if ( project ) {
 						let articlePath = escapeRegExp( project.regexPaths ? '/' : project.articlePath.split('?')[0] );
 						let regex = ( iw.host + iw.pathname ).match( new RegExp( '^' + project.regex + '(?:' + articlePath + '|/?$)' ) );

@@ -198,11 +198,11 @@ function formathelp(messages, msg, lang, wiki) {
 					prefixmessagewiki = prefixwiki;
 				}
 				else {
-					let project = wikiProjects.find( project => prefixwiki === project.name && project.idString );
-					if ( !project ) project = frontendProxies.find( proxy => prefixwiki === proxy.name && proxy.idString );
+					let project = wikiProjects.get(prefixwiki)?.idString;
+					if ( !project ) project = frontendProxies.get(prefixwiki)?.idString;
 					if ( project ) {
 						prefixmessage = 'subprefix';
-						prefixmessagewiki = project.idString.scriptPaths[0].split('$1').join(lang.get('help.list.' + prefixmessage + '.cmd').split(' ')[0]);
+						prefixmessagewiki = project.scriptPaths[0].split('$1').join(lang.get('help.list.' + prefixmessage + '.cmd').split(' ')[0]);
 					}
 					else return;
 				}

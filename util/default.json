@@ -113,5 +113,119 @@
 			"fandom-star",
 			"voldev"
 		]
-	}
+	},
+	"defaultNamespaces": [
+		{
+			"id": 0,
+			"name": "",
+			"aliases": [],
+			"content": true
+		},
+		{
+			"id": 1,
+			"name": "Talk",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 2,
+			"name": "User",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 3,
+			"name": "User talk",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 4,
+			"name": "Project",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 5,
+			"name": "Project talk",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 6,
+			"name": "File",
+			"aliases": [
+				"Image"
+			],
+			"content": false
+		},
+		{
+			"id": 7,
+			"name": "File talk",
+			"aliases": [
+				"Image talk"
+			],
+			"content": false
+		},
+		{
+			"id": 8,
+			"name": "MediaWiki",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 9,
+			"name": "MediaWiki talk",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 10,
+			"name": "Template",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 11,
+			"name": "Template talk",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 12,
+			"name": "Help",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 13,
+			"name": "Help talk",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 14,
+			"name": "Category",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": 15,
+			"name": "Category talk",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": -2,
+			"name": "Media",
+			"aliases": [],
+			"content": false
+		},
+		{
+			"id": -1,
+			"name": "Special",
+			"aliases": [],
+			"content": false
+		}
+	]
 }

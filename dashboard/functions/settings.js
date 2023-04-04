@@ -7,10 +7,13 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../../util/default.json');
 const allLangs = Lang.allLangs().names;
-const wikiProjectNames = [
-	...wikiProjects.filter( wikiProject => wikiProject.idString ).map( wikiProject => wikiProject.name ),
-	...frontendProxies.filter( frontendProxy => frontendProxy.idString ).map( frontendProxy => frontendProxy.name )
-];
+const wikiProjectNames = [];
+wikiProjects.forEach( wikiProject => {
+	if ( wikiProject.idString ) wikiProjectNames.push(wikiProject.name);
+} )
+frontendProxies.forEach( frontendProxy => {
+	if ( frontendProxy.idString ) wikiProjectNames.push(frontendProxy.name);
+} )
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'

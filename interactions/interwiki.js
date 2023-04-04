@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 
+const allWikiProjects = [...wikiProjects.values()];
 const knownWikis = new Set();
 
 /**
@@ -171,13 +172,13 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			...wikiList[1].map( suggestion => {
 				return idStringToUrl(input, suggestion)?.href;
 			} ),
-			...wikiProjects.filter( project => {
+			...allWikiProjects.filter( project => {
 				if ( !project.fullScriptPath ) return false;
 				if ( project.name.startsWith( input ) ) return true;
 				if ( project.fullScriptPath.replace( 'https://', '' ).startsWith( input ) ) return true;
 				return project.fullScriptPath.replace( 'https://www.', '' ).startsWith( input );
 			} ).map( project => project.fullScriptPath ),
-			...wikiProjects.filter( project => project.idString ).flatMap( project => {
+			...allWikiProjects.filter( project => project.idString ).flatMap( project => {
 				let result = [];
 				let newInput = input;
 				let newWiki = idStringToUrl(newInput, project.name);
