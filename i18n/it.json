@@ -154,7 +154,8 @@
 		"missingperm": "Mi mancano alcuni permessi per questo comando:",
 		"patreon": "Questa è una funzione esclusiva per i Patreon!\nPuoi supportarmi su Patreon per avere accesso a questa funzione:",
 		"prefix": "Il prefisso per questo server è `$1`. Puoi cambiare il prefisso con `$1settings prefix`. Per un elenco di tutti i comandi vedi `$1help`.",
-		"readonly": "**Il database è attualmente in modalità di sola lettura, non puoi cambiare nessuna impostazione per adesso!**"
+		"readonly": "**Il database è attualmente in modalità di sola lettura, non puoi cambiare nessuna impostazione per adesso!**",
+		"whitelist": "La wiki utilizzata non è consentita su questo server."
 	},
 	"help": {
 		"admin": "Questi comandi possono essere eseguiti solo dagli amministratori:",
@@ -647,6 +648,9 @@
 		"rolehelp": "Usa `$1 <role>` per cambiare il ruolo minimo richiesto.",
 		"roleinvalid": "Il ruolo specificato non esiste!",
 		"save_failed": "Sfortunatamente non è stato possibile salvare le impostazioni, per favore riprova più tardi.",
+		"whitelist_added": "La lista di wiki consentite è stata aggiunta.",
+		"whitelist_modified": "La lista di wiki consentite è stata modificata.",
+		"whitelist_removed": "La lista di wiki consentite è stata rimossa.",
 		"wiki": "La wiki di default per questo server è:",
 		"wikichanged": "Hai cambiato la wiki di default per questo server in:",
 		"wikihelp": "Usa `$1 <link>` per cambiare la wiki di default.\nLinka ad un sito MediaWiki come `https://<wiki>.fandom.com/`",
