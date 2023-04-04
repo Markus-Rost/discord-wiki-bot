@@ -244,6 +244,10 @@
 			"select_channel": "-- Pilih Saluran --",
 			"select_subprefix": "Setel wiki tertentu →",
 			"subprefix": "Awalan/prefix wiki subperintah:",
+			"whitelist": "Wiki yang diizinkan:",
+			"whitelist_enabled": "Izinkan hanya wiki tertentu:",
+			"whitelist_note": "Satu per baris",
+			"whitelist_placeholder": "Daftar wiki yang diizinkan",
 			"wiki": "Wiki Utama:",
 			"wiki_check": "Cek wiki"
 		},
