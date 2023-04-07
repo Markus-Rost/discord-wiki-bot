@@ -149,9 +149,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 				if ( !embed.data.description && getEmbedLength(embed) < ( 5_990 - ( fragment ? 4_000 : ( sectionDescLength || descLength ) + fieldLength ) ) ) {
 					var description = body.query.allmessages[0]['*'];
-					var regex = /^L(\d+)(?:-L?(\d+))?$/.exec(fragment);
+					var regex = /^L-?(\d+)(?:-(?:L-?)?(\d+))?$/.exec(fragment);
 					if ( regex && sectionLength ) {
-						let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || regex[1] ));
+						let descArray = description.split('\n').slice(regex[1] - 1, ( regex[2] || +regex[1] + 10 ));
 						if ( descArray.length ) {
 							description = descArray.join('\n').replace( /^\n+/, '' ).replace( /\n+$/, '' );
 							if ( description ) {
