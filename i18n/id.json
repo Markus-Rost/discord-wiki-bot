@@ -154,7 +154,8 @@
 		"missingperm": "Saya kehilangan beberapa izin untuk perintah ini:",
 		"patreon": "Ini adalah satu-satunya fitur Patreon!\nKamu dapat mendukung saya di Patreon untuk mendapatkan akses ke fitur ini:",
 		"prefix": "Prefix untuk server ini adalah `$1`. Kamu dapat mengubah awalan dengan `$1settings prefix`. Untuk melihat semua daftar perintah, ketik dan lihat `$1help`.",
-		"readonly": "**Basis data saat ini dalam mode read-only, Kamu tidak dapat mengubah pengaturan apa pun sekarang!**"
+		"readonly": "**Basis data saat ini dalam mode read-only, Kamu tidak dapat mengubah pengaturan apa pun sekarang!**",
+		"whitelist": "Wiki yang digunakan tidak diperbolehkan di server ini."
 	},
 	"help": {
 		"admin": "Perintah ini hanya dapat dilakukan oleh administrator:",
@@ -647,6 +648,9 @@
 		"rolehelp": "Gunakan `$1 <role>` untuk mengubah peran minimal yang diperlukan.",
 		"roleinvalid": "Peran yang ditentukan tidak ada!",
 		"save_failed": "Sayangnya pengaturannys tidak dapat disimpan, coba lagi nanti.",
+		"whitelist_added": "Daftar wiki yang diizinkan telah ditambahkan.",
+		"whitelist_modified": "Daftar wiki yang diizinkan telah diubah.",
+		"whitelist_removed": "Daftar wiki yang diizinkan telah dihapus.",
 		"wiki": "Wiki default untuk server ini adalah:",
 		"wikichanged": "Kamu mengubah wiki default untuk server ini menjadi:",
 		"wikihelp": "Gunakan `$1 <link>` untuk mengubah wiki default.\nTautan ke situs MediaWiki seperti `https://<wiki>.fandom.com/`",
