@@ -126,6 +126,7 @@ const querypages = {
 const descriptions = {
 	abusefilter: 'abusefilter-intro',
 	abuselog: 'abusefilter-log-summary',
+	allmaps: 'all-maps-dashboard-description',
 	allmessages: 'allmessagestext',
 	analytics: 'analytics_confidential',
 	apisandbox: 'apisandbox-intro',
