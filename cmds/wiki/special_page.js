@@ -23,6 +23,9 @@ const overwrites = {
 	statistics: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed) => {
 		return fn.overview(lang, msg, wiki, spoiler, noEmbed, querystring, fragment);
 	},
+	version: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed) => {
+		return fn.overview(lang, msg, wiki, spoiler, noEmbed, querystring, fragment);
+	},
 	diff: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed) => {
 		return fn.diff(lang, msg, args, wiki, spoiler, noEmbed, embed);
 	}

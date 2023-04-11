@@ -23,7 +23,11 @@ export default function cmd_invite(lang, msg, args, line, wiki) {
 			],
 			permissions: defaultPermissions
 		});
-		msg.sendChannel( lang.get('invite.bot') + '\n<' + invite + '>' );
+		let text = lang.get('invite.bot') + '\n<' + invite + '>';
+		if ( msg.client.application.id === '461189216198590464' ) {
+			text += '\n' + lang.get('invite.directory') + '\nhttps://discord.com/application-directory/' + msg.client.application.id;
+		}
+		msg.sendChannel( text );
 	}
 }
 

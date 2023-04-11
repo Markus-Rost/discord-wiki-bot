@@ -5,6 +5,7 @@ import { got, parse_infobox, isMessage, canShowEmbed, getEmbedLength, htmlToPlai
 
 const parsedContentModels = [
 	'wikitext',
+	'interactivemap',
 	'wikibase-item',
 	'wikibase-lexeme',
 	'wikibase-property'
@@ -61,6 +62,7 @@ const removeClasses = [
 ];
 
 const removeClassesExceptions = [
+	'div.mw-parser-output',
 	'div.main-page-tag-lcs',
 	'div.lcs-container',
 	'div.mw-highlight',
@@ -68,6 +70,7 @@ const removeClassesExceptions = [
 	'div.hlist',
 	'div.treeview',
 	'div.redirectMsg',
+	'div.interactive-maps-description',
 	'div.introduction',
 	'div.wikibase-entityview',
 	'div.wikibase-entityview-main',
@@ -404,6 +407,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 				if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
 				if ( thumbnail ) embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
+			}
+			if ( contentmodel === 'interactivemap' && response.body.parse.images.length ) {
+				embed.setThumbnail( wiki.toLink('Special:FilePath/' + response.body.parse.images[response.body.parse.images.length - 1]) );
 			}
 			if ( fragment && sectionLength && getEmbedLength(embed) < ( 5_720 - sectionLength ) && ( embed.data.fields?.length ?? 0 ) < 25 &&
 			toSection(embed.data.fields?.[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' ), wiki.spaceReplacement) !== toSection(fragment, wiki.spaceReplacement) ) {
