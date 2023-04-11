@@ -393,7 +393,8 @@
 		"verify": "Bitte gebe deinen Wiki-Benutzernamen an um diesen Befehl dazu zu nutzen, deinen Discord-Account mit deinem Wiki-Account zu verifizieren und Rollen passend zu deinem Wiki-Account zu erhalten."
 	},
 	"invite": {
-		"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:"
+		"bot": "Du kannst mich mit diesem Link auf einen anderen Server einladen:",
+		"directory": "Siehe auch meine Seite im Discord App-Verzeichnis für mehr Details:"
 	},
 	"minecraft": {
 		"fixed": "{{PLURAL:$1|Lösungsversion|Lösungsversionen}}:",
