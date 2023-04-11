@@ -91,11 +91,11 @@ function slash_inline(interaction, lang, wiki) {
 				let title = inlineLink[1].trim();
 				if ( !title.replaceAll( ':', '' ).trim().length || title.startsWith( '/' ) ) continue;
 				if ( title.startsWith( 'int:' ) ) templates.push({
-					raw: title,
+					raw: inlineLink[1],
 					title: title.replace( /^int:/, 'MediaWiki:' ),
 					template: title.replace( /^int:/, 'MediaWiki:' )
 				});
-				else templates.push({raw: title, title, template: 'Template:' + title});
+				else templates.push({raw: inlineLink[1], title, template: 'Template:' + title});
 			}
 			inlineLink = null;
 			regex = /(?<!\\)\[\[([^<>\[\]\|\{\}\x01-\x1F\x7F]+)(?:\|(?:(?!\[\[|\]\\\]).)*?)?(?<!\\)\]\]/g;
@@ -104,7 +104,7 @@ function slash_inline(interaction, lang, wiki) {
 				let title = inlineLink[1].split('#')[0].trim();
 				let section = inlineLink[1].split('#').slice(1).join('#');
 				if ( !title.replaceAll( ':', '' ).trim().length || title.startsWith( '/' ) ) continue;
-				links.push({raw: title, title, section});
+				links.push({raw: inlineLink[1], title, section});
 			}
 		} );
 		if ( !templates.length && !links.length && !magiclinks.length ) {
@@ -217,9 +217,9 @@ function slash_inline(interaction, lang, wiki) {
 					if ( line.includes( '{{' ) ) {
 						regex = /(?<!\\|\{)(\{\{(?:\s*(?:subst|safesubst|raw|msg|msgnw):)?\s*)((?:[^<>\[\]\|\{\}\x01-\x1F\x7F#]|\x1F<replacement\x1F\d+\x1F.+?>\x1F)+?)(\s*(?<!\\)\||\}\})/g;
 						line = line.replace( regex, (fullLink, linkprefix, title, linktrail) => {
-							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).trim();
-							let link = templates.find( link => link.raw === title );
+							let link = templates.find( link => link.raw === title.trim() );
 							if ( !link ) return fullLink;
+							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).trim();
 							console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
 							if ( title.startsWith( 'int:' ) ) {
 								title = title.replace( /^int:\s*/, replacement => {
@@ -233,9 +233,9 @@ function slash_inline(interaction, lang, wiki) {
 					if ( line.includes( '[[' ) && line.includes( ']]' ) ) {
 						regex = new RegExp( '([' + body.query.general.linkprefixcharset.replace( /\\x([a-fA-F0-9]{4,6}|\{[a-fA-F0-9]{4,6}\})/g, '\\u$1' ) + ']+)?' + '(?<!\\\\)\\[\\[' + '((?:[^' + '<>\\[\\]\\|\\{\\}\\x01-\\x1F\\x7F' + ']|' + '\\x1F<replacement\\x1F\\d+\\x1F.+?>\\x1F' + ')+)' + '(?:\\|((?:(?!\\[\\[|\\]\\(|\\]\\\\\\]).)*?))?' + '(?<!\\\\)\\]\\]' + body.query.general.linktrail.replace( /\\x([a-fA-F0-9]{4,6}|\{[a-fA-F0-9]{4,6}\})/g, '\\u$1' ).replace( /^\/\^(\(\[.+?\]\+\))\(\.\*\)\$\/sDu?$/, '$1?' ), 'gu' );
 						line = line.replace( regex, (fullLink, linkprefix = '', title, display, linktrail = '') => {
-							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).split('#')[0].trim();
-							let link = links.find( link => link.raw === title );
+							let link = links.find( link => link.raw === title.trim() );
 							if ( !link ) return fullLink;
+							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).split('#')[0].trim();
 							console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
 							if ( display === undefined ) display = title.replace( /^\s*:?/, '' );
 							if ( !display.trim() ) {
