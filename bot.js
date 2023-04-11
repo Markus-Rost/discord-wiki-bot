@@ -395,7 +395,10 @@ if ( isDebug ) client.on( Discord.Events.Debug, debug => {
 } );
 
 
-process.on( 'warning', warning => log_warning(warning, false) );
+process.on( 'warning', warning => {
+	if ( warning?.name === 'ExperimentalWarning' ) return;
+	log_warning(warning, false);
+} );
 
 /**
  * End the process gracefully.
