@@ -152,9 +152,10 @@
 		"helpserver": "Om du har frågor eller problem, vänligen besök min support server:",
 		"limit": "🚨 **Sluta, du nådde en gräns!**🚨 \n\n$1, ditt meddelande innehöll för många kommandon!",
 		"missingperm": "Jag saknar behörigheter för detta kommando:",
-		"patreon": "denna funktion är endast för Patreons!\nDu kan stödja mig på Patreon för att få tillgång till funktionen:",
-		"prefix": "den här serverns prefix är `$1`. Du kan byta prefix med `$1settings prefix`. För en lista på alla kommandon, använd `$1help`.",
-		"readonly": "**just nu är databasen i skrivskyddat läge, du kan inte ändra några inställningar just nu!**"
+		"patreon": "Denna funktion är endast för Patreons!\nDu kan stödja mig på Patreon för att få tillgång till funktionen:",
+		"prefix": "Den här serverns prefix är `$1`. Du kan byta prefix med `$1settings prefix`. För en lista på alla kommandon, använd `$1help`.",
+		"readonly": "**Just nu är databasen i skrivskyddat läge, du kan inte ändra några inställningar just nu!**",
+		"whitelist": "Wikin du använder är inte tillåten på denna server."
 	},
 	"help": {
 		"admin": "Dessa kommandon kan endast utföras av administratörer:",
@@ -289,7 +290,8 @@
 			},
 			"settings": {
 				"channel": {
-					"cmd": "settings channel"
+					"cmd": "settings channel",
+					"desc": "Jag kommer att ändra överskrivningarna för den aktuella kanalen."
 				},
 				"default": {
 					"cmd": "settings",
