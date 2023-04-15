@@ -5,6 +5,7 @@ import { got, parse_infobox, isMessage, canShowEmbed, getEmbedLength, htmlToPlai
 
 const parsedContentModels = [
 	'wikitext',
+	'datamap',
 	'interactivemap',
 	'wikibase-item',
 	'wikibase-lexeme',
@@ -16,8 +17,7 @@ const contentModels = {
 	Scribunto: 'lua',
 	javascript: 'js',
 	css: 'css',
-	json: 'json',
-	interactivemap: 'json'
+	json: 'json'
 };
 
 const contentFormats = {
@@ -35,6 +35,7 @@ const infoboxList = [
 	'.tpl-infobox',
 	'.va-infobox',
 	'.side-infobox',
+	'.info-framework',
 	'table[class*="infobox"]'
 ];
 
@@ -63,6 +64,9 @@ const removeClasses = [
 
 const removeClassesExceptions = [
 	'div.mw-parser-output',
+	'div.mw-body-content',
+	'div.mw-content-ltr',
+	'div.mw-content-rtl',
 	'div.main-page-tag-lcs',
 	'div.lcs-container',
 	'div.mw-highlight',
@@ -70,6 +74,8 @@ const removeClassesExceptions = [
 	'div.hlist',
 	'div.treeview',
 	'div.redirectMsg',
+	'div.doc',
+	'div.documentation',
 	'div.interactive-maps-description',
 	'div.introduction',
 	'div.wikibase-entityview',
@@ -100,8 +106,8 @@ const removeClassesExceptions = [
  * @param {Object} [querypage.pageprops] - The properties of the page.
  * @param {String} [querypage.pageprops.infoboxes] - The JSON data for portable infoboxes on the page.
  * @param {String} [querypage.pageprops.disambiguation] - The disambiguation property of the page.
- * @param {String} [querypage.pageprops.uselang] - The language of the page description.
- * @param {Boolean} [querypage.pageprops.noRedirect] - If the page is allowed to be redirected.
+ * @param {String} [querypage.uselang] - The language of the page description.
+ * @param {Boolean} [querypage.noRedirect] - If the page is allowed to be redirected.
  * @param {String} [thumbnail] - The default thumbnail for the wiki.
  * @param {String} [fragment] - The section title to embed.
  * @param {String} [pagelink] - The link to the page.
@@ -269,6 +275,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}
 		let extraImages = [];
+		if ( embed.data.thumbnail?.url && !/\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(embed.data.thumbnail?.url) ) embed.setThumbnail( thumbnail );
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle&disablelimitreport=true&disableeditsection=true&disabletoc=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
 				request: 10_000
@@ -326,13 +333,22 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							'tr:eq(1) img',
 							'div.images img',
 							'figure.pi-image img',
-							'div.infobox-imagearea img'
+							'div.infobox-imagearea img',
+							'div.info-column.info-X1-100 a.image > img'
 						].join(', ')).toArray().find( img => {
-							let imgURL = img.attribs.src;
+							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 							if ( !imgURL ) return false;
-							return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
-						} )?.attribs.src?.replace( /^(?:https?:)?\/\//, 'https://' );
-						if ( image ) embed.setThumbnail( new URL(image, wiki).href );
+							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						} );
+						if ( image ) {
+							let imgURL = ( image.attribs.src?.startsWith?.( 'data:' ) ? image.attribs['data-src'] : image.attribs.src );
+							if ( image.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) {
+								imgURL = wiki.toLink('Special:FilePath/' + image.attribs['data-image-name']);
+							}
+							imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
+							embed.setThumbnail( new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href );
+						}
 					}
 					catch {}
 				}
@@ -348,13 +364,15 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					'table.infobox-rows > tbody > tr',
 					'div.infobox-rows:not(.subinfobox) > div.infobox-row',
 					'.va-infobox-cont tr',
-					'.va-infobox-cont th.va-infobox-header'
+					'.va-infobox-cont th.va-infobox-header',
+					'div.info-unit > div.info-unit-caption',
+					'div.info-unit-row'
 				].join(', '));
 				let tdLabel = true;
 				for ( let i = 0; i < rows.length; i++ ) {
 					if ( ( embed.data.fields?.length ?? 0 ) >= fieldCount || getEmbedLength(embed) > ( 5_870 - fieldLength ) ) break;
 					let row = rows.eq(i);
-					if ( row.is('th.mainheader, th.infobox-header, th.va-infobox-header, div.title, h2.pi-header') ) {
+					if ( row.is('th.mainheader, th.infobox-header, th.va-infobox-header, div.title, h2.pi-header, div.info-unit-caption') ) {
 						row.find(removeClasses.join(', ')).remove();
 						let label = htmlToDiscord(row, embed.data.url).trim();
 						if ( label.length > 100 ) label = limitLength(label, 100, 20);
@@ -369,10 +387,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							else embed.addFields( {name: '\u200b', value: label} );
 						}
 					}
-					else if ( row.is('tr, div.pi-data, div.infobox-row') ) {
-						let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.infobox-cell-header').eq(0);
+					else if ( row.is('tr, div.pi-data, div.infobox-row, div.info-unit-row') ) {
+						let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.infobox-cell-header, div.info-arkitex-left.info-X2-40').eq(0);
 						label.find(removeClasses.join(', ')).remove();
-						let value = row.children('td, div.pi-data-value, div.infobox-cell-data').eq(( label.is('td') ? 1 : 0 ));
+						let value = row.children('td, div.pi-data-value, div.infobox-cell-data, div.info-arkitex-right.info-X2-60').eq(( label.is('td') ? 1 : 0 ));
 						value.find(removeClasses.join(', ')).remove();
 						if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
 						label = htmlToPlain(label).trim().split('\n')[0];
@@ -386,30 +404,38 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					embed.spliceFields( -1, 1 );
 				}
 			}
-			if ( embed.data.thumbnail?.url === thumbnail ) {
+			if ( contentmodel === 'datamap' && response.body.parse.images.length ) {
+				embed.setThumbnail( wiki.toLink('Special:FilePath/' + response.body.parse.images[0]) );
+			}
+			else if ( contentmodel === 'interactivemap' && response.body.parse.images.length ) {
+				embed.setThumbnail( wiki.toLink('Special:FilePath/' + response.body.parse.images[response.body.parse.images.length - 1]) );
+			}
+			else if ( embed.data.thumbnail?.url === thumbnail ) {
 				let image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) );
 				if ( !image ) {
 					let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
-						img = $(img).prop('src')?.toLowerCase();
-						return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
+						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+						if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
+						return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
 					} ).first();
-					thumbnail = ( first.length ? first.prop('src') : null );
-					if ( !thumbnail ) {
-						first = $('img').filter( (i, img) => {
-							img = $(img).prop('src')?.toLowerCase();
-							return ( /^(?:https?:)?\/\//.test(img) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/.test(img) );
-						} ).first();
-						thumbnail = ( first.length ? first.prop('src') : null );
+					if ( !first.length ) first = $('img').filter( (i, img) => {
+						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+						if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
+						return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+					} ).first();
+					if ( first.length ) {
+						if ( first.attr('data-image-name')?.toLowerCase().endsWith( '.gif' ) ) image = first.attr('data-image-name');
+						else thumbnail = ( first.attr('src')?.startsWith?.( 'data:' ) ? first.attr('data-src') : first.prop('src') );
 					}
-					if ( !thumbnail ) image = response.body.parse.images.find( pageimage => {
+					else image = response.body.parse.images.find( pageimage => {
 						return /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase());
 					} );
 				}
 				if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
-				if ( thumbnail ) embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
-			}
-			if ( contentmodel === 'interactivemap' && response.body.parse.images.length ) {
-				embed.setThumbnail( wiki.toLink('Special:FilePath/' + response.body.parse.images[response.body.parse.images.length - 1]) );
+				if ( thumbnail ) {
+					thumbnail = thumbnail.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
+					embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
+				}
 			}
 			if ( fragment && sectionLength && getEmbedLength(embed) < ( 5_720 - sectionLength ) && ( embed.data.fields?.length ?? 0 ) < 25 &&
 			toSection(embed.data.fields?.[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' ), wiki.spaceReplacement) !== toSection(fragment, wiki.spaceReplacement) ) {
@@ -484,9 +510,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					].filter( img => {
 						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 						if ( !imgURL ) return false;
-						return ( /^(?:https?:)?\/\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
 					} ).map( img => {
-						if ( img.attribs['data-image-name']?.endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
+						if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
 						try {
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 							imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );

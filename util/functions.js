@@ -335,7 +335,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel + 3);
 			}
-			if ( tagname === 'hr' ) {
+			if ( tagname === 'hr' && text.trim() ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
 				text += '─'.repeat(10) + '\n';
