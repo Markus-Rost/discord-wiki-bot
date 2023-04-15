@@ -393,7 +393,8 @@
 		"verify": "Harap berikan nama pengguna wiki kamu untuk menggunakan perintah ini untuk memverifikasi akun Discord milik kamu dengan akun wiki dan dapatkan peran yang cocok dengan akun wiki mu."
 	},
 	"invite": {
-		"bot": "Gunakan tautan ini untuk mengundang saya ke server lain:"
+		"bot": "Gunakan tautan ini untuk mengundang saya ke server lain:",
+		"directory": "Atau lihat halaman direktori Discord app saya untuk detail lebih lanjut:"
 	},
 	"minecraft": {
 		"fixed": "Gunakan tautan ini untuk mengundang saya ke server lain: {{PLURAL:$1|Versi|Versi}} telah diperbaiki:",
