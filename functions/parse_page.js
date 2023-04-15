@@ -275,7 +275,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}
 		let extraImages = [];
-		if ( embed.data.thumbnail?.url && !/\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(embed.data.thumbnail?.url) ) embed.setThumbnail( thumbnail );
+		if ( thumbnail && embed.data.thumbnail?.url && !/\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(embed.data.thumbnail?.url) ) embed.setThumbnail( thumbnail );
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle&disablelimitreport=true&disableeditsection=true&disabletoc=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
 				request: 10_000

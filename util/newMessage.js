@@ -161,6 +161,39 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				}
 			}
 		} );
+
+		var inline = null //disabled
+		inline = 0 % 3 // ignore
+		inline = 1 % 3 // redlink
+		inline = 2 % 3 // search
+		inline = 0 - ( 0 % 3 ) //none          Math.floor(0 / 3) === 0
+		inline = 3 - ( 3 % 3 ) //no template   Math.floor(3 / 3) === 1
+		inline = 6 - ( 6 % 3 ) //embed         Math.floor(6 / 3) === 2
+
+		if ( links.length ) {
+			if ( inline % 3 === 2 && inline - 2 === 6 )
+			if ( embeds.length ) [...new Map(embeds.map( embed => {
+				return [JSON.stringify(embed), embed];
+			} )).values()].forEach( embed => msg.reactEmoji(WB_EMOJI.waiting).then( reaction => {
+				logging(wiki, msg.guildId, 'inline', 'embed');
+				check_wiki(lang, msg, embed.title, wiki, '', reaction, embed.spoiler, !canShowEmbed(msg), new URLSearchParams(), embed.section)?.then( result => {
+					if ( !result || isMessage(result) ) return result;
+					if ( result.message ) {
+						if ( Array.isArray(result.message) ) result.message.forEach( content => msg.sendChannel(content) );
+						else if ( result.reaction === WB_EMOJI.error ) msg.sendChannelError(result.message);
+						else if ( result.reaction === 'reply' ) msg.replyMsg(result.message, true);
+						else msg.sendChannel(result.message).then( message => {
+							if ( result.reaction === WB_EMOJI.warning && message ) message.reactEmoji(WB_EMOJI.warning);
+							return message;
+						} );
+					}
+					else if ( result.reaction ) {
+						msg.reactEmoji(result.reaction);
+					}
+					if ( reaction ) reaction.removeEmoji();
+				} );
+			} ) );
+		}
 	
 		if ( links.length ) got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&iwurl=true&titles=' + encodeURIComponent( links.map( link => link.title ).join('|') ) + '&format=json', {
 			context: {
