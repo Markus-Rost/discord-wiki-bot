@@ -393,7 +393,8 @@
 		"verify": "为了验证您的 Discord 与您的 wiki 账号相匹配并授予与您 wiki 账号相符合的身份组，请提供您的 wiki 用户名。"
 	},
 	"invite": {
-		"bot": "使用这个链接把我添加到其他服务器："
+		"bot": "使用这个链接把我添加到其他服务器：",
+		"directory": "或者看看我在 Discord App 目录中的介绍页面，获取更多信息："
 	},
 	"minecraft": {
 		"fixed": "修复版本：",
