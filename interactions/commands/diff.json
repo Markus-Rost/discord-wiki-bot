@@ -13,7 +13,8 @@
 		"sv-SE": "diff",
 		"hi": "diff",
 		"ja": "diff",
-		"tr": "diff"
+		"tr": "diff",
+		"el": "διαφορά"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
@@ -27,7 +28,8 @@
 		"sv-SE": "Visa skillnad av en wiki redigeringar.",
 		"hi": "एक विकि सम्पादन अंतर दिखाएँ।",
 		"ja": "Wikiで編集された差分を表示します。",
-		"tr": "Bir viki düzenlemesi değişikliklerini göster."
+		"tr": "Bir viki düzenlemesi değişikliklerini göster.",
+		"el": "Εμφανίζει μια διαφορά επεξεργασίας του wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -46,7 +48,8 @@
 				"it": "pagina",
 				"sv-SE": "sida",
 				"hi": "page",
-				"ja": "page"
+				"ja": "page",
+				"el": "σελίδα"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
@@ -59,7 +62,8 @@
 				"it": "Mostra il diff dell'ultima modifica a una pagina della wiki.",
 				"sv-SE": "Visa skillnaden för den senaste redigeringen för en wiki sida.",
 				"hi": "एक विकि पृष्ठ का आखिरी सम्पादन अंतर दिखाएँ।",
-				"ja": "Wikiページの最終編集された差分を表示します。"
+				"ja": "Wikiページの最終編集された差分を表示します。",
+				"el": "Εμφανίζει την τελευταία διαφορά επεξεργασίας μιας σελίδας wiki."
 			},
 			"options": [
 				{
@@ -91,7 +95,8 @@
 						"it": "Titolo della pagina di cui mostrare il diff dell'ultima modifica.",
 						"sv-SE": "Titeln på sidan du vill se den senaste skillnaden för.",
 						"hi": "पृष्ठ का शीर्षक जिसका आखिरी सम्पादन अंतर दिखाना है।",
-						"ja": "最終編集の差分を表示するページタイトル。"
+						"ja": "最終編集の差分を表示するページタイトル。",
+						"el": "Τίτλος σελίδας για την οποία θα δείξει την τελευταία διαφορά επεξεργασίας."
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -163,7 +168,7 @@
 						"zh-TW": "傳送的訊息是否僅對自己可見？",
 						"it": "Invia una risposta visibile solo per te?",
 						"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
-						"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+						"el": "Αποστέλλει μια απόκριση ορατή μόνο σε σας;",
 						"pt-BR": "Deseja que a resposta seja privada?",
 						"en-GB": "Send a response only visible to yourself?",
 						"en-US": "Send a response only visible to yourself?",
@@ -183,7 +188,7 @@
 						"zh-TW": "不包含嵌入內容",
 						"it": "noembed",
 						"tr": "noembed",
-						"el": "noembed",
+						"el": "αποενσωμάτωση",
 						"pt-BR": "sem_embed",
 						"en-GB": "noembed",
 						"en-US": "noembed"
@@ -217,7 +222,7 @@
 						"zh-CN": "标记为剧透",
 						"zh-TW": "標記為劇透",
 						"it": "spoiler",
-						"el": "σπόιλερ",
+						"el": "spoiler",
 						"pt-BR": "spoiler",
 						"en-GB": "spoiler",
 						"en-US": "spoiler",
@@ -233,7 +238,7 @@
 						"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 						"it": "Nascondi il link e l'embed in uno spoiler?",
 						"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
-						"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+						"el": "Αποκρύπτει τον σύνδεσμο και ενσωματώνει σε spoiler;",
 						"pt-BR": "Ocultar o link como spoiler?",
 						"en-GB": "Hide the link and embed in a spoiler?",
 						"en-US": "Hide the link and embed in a spoiler?",
@@ -256,7 +261,8 @@
 				"it": "id",
 				"sv-SE": "ids",
 				"hi": "ids",
-				"ja": "ids"
+				"ja": "ids",
+				"el": "ταυτότητες"
 			},
 			"description": "Show the a wiki edit diff based on the ID.",
 			"description_localizations": {
@@ -269,7 +275,8 @@
 				"it": "Mostra il diff di una modifica sulla wiki in base all'ID.",
 				"sv-SE": "Visa en wiki-redigeringsdiff baserat på ID:et.",
 				"hi": "ID के आधार पर विकि पर एक सम्पादन अंतर दिखाएँ।",
-				"ja": "IDに基づいたWiki編集の差分を表示します。"
+				"ja": "IDに基づいたWiki編集の差分を表示します。",
+				"el": "Εμφανίζει τη διαφορά επεξεργασιών του wiki με βάση την ταυτότητα."
 			},
 			"options": [
 				{
@@ -285,7 +292,8 @@
 						"it": "relativo",
 						"sv-SE": "relativ",
 						"hi": "relative",
-						"ja": "relative"
+						"ja": "relative",
+						"el": "σχετικό"
 					},
 					"description": "Show a relative wiki edit diff based on the ID.",
 					"description_localizations": {
@@ -298,7 +306,8 @@
 						"it": "Mostra il diff relativo di una modifica sulla wiki in base all'ID.",
 						"sv-SE": "Visa en relativ wiki-redigeringsdiff baserat på ID:et.",
 						"hi": "ID के आधार पर विकि पर एक सापेक्ष सम्पादन अंतर दिखाएँ।",
-						"ja": "IDに基づいた相対的なWiki編集の差分を表示します。"
+						"ja": "IDに基づいた相対的なWiki編集の差分を表示します。",
+						"el": "Εμφανίζει σχετική διαφορά επεξεργασίας wiki με βάση την ταυτότητα."
 					},
 					"options": [
 						{
@@ -313,7 +322,8 @@
 								"zh-TW": "diffid",
 								"it": "diffid",
 								"hi": "diffid",
-								"ja": "diffid"
+								"ja": "diffid",
+								"el": "ταυτότητα_διαφοράς"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -325,7 +335,8 @@
 								"zh-TW": "要展示的編輯差異的差異ID。",
 								"it": "ID del diff della modifica da mostrare.",
 								"hi": "दिखाने के लिए सम्पादन अंतर का अंतर ID।",
-								"ja": "表示する編集DiffのDiff ID。"
+								"ja": "表示する編集DiffのDiff ID。",
+								"el": "Ταυτότητα διαφοράς της διαφοράς επεξεργασίας προς εμφάνιση."
 							},
 							"min_value": 0,
 							"required": true
@@ -342,7 +353,8 @@
 								"zh-TW": "比較模式",
 								"it": "confronta",
 								"hi": "compare",
-								"ja": "compare"
+								"ja": "compare",
+								"el": "σύγκριση"
 							},
 							"description": "Relative revision of the edit diff to show.",
 							"description_localizations": {
@@ -354,7 +366,8 @@
 								"zh-TW": "要展示的編輯差異的相關修訂版本。",
 								"it": "Versione relativa del diff di modifica da mostrare.",
 								"hi": "दिखाने के लिए सम्पादन अंतर का सापेक्ष अवतरण।",
-								"ja": "表示する編集差分の相対リビジョン。"
+								"ja": "表示する編集差分の相対リビジョン。",
+								"el": "Σχετική έκδοση της διαφοράς επεξεργασίας για εμφάνιση."
 							},
 							"choices": [
 								{
@@ -368,7 +381,8 @@
 										"zh-TW": "與前一筆修訂版本比較（預設）",
 										"it": "Confronta con la versione precedente. (default)",
 										"hi": "पिछले अवतरण से तुलना करें। (डिफ़ॉल्ट)",
-										"ja": "前のリビジョンと比較します。(既定)"
+										"ja": "前のリビジョンと比較します。(既定)",
+										"el": "Σύγκριση με προηγούμενη έκδοση. (προεπιλογή)"
 									},
 									"value": "prev"
 								},
@@ -383,7 +397,8 @@
 										"zh-TW": "與後一筆修訂版本比較",
 										"it": "Confronta con la versione successiva.",
 										"hi": "अगले अवतरण से तुलना करें।",
-										"ja": "次のリビジョンと比較します。"
+										"ja": "次のリビジョンと比較します。",
+										"el": "Σύγκριση με την επόμενη έκδοση."
 									},
 									"value": "next"
 								},
@@ -398,7 +413,8 @@
 										"zh-TW": "與目前的修訂版本比較",
 										"it": "Confronta con la versione attuale.",
 										"hi": "वर्तमान अवतरण से तुलना करें।",
-										"ja": "現在のリビジョンと比較します。"
+										"ja": "現在のリビジョンと比較します。",
+										"el": "Σύγκριση με την τρέχουσα έκδοση."
 									},
 									"value": "cur"
 								}
@@ -467,7 +483,7 @@
 								"zh-TW": "傳送的訊息是否僅對自己可見？",
 								"it": "Invia una risposta visibile solo per te?",
 								"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
-								"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+								"el": "Αποστέλλει μια απόκριση ορατή μόνο σε σας;",
 								"pt-BR": "Deseja que a resposta seja privada?",
 								"en-GB": "Send a response only visible to yourself?",
 								"en-US": "Send a response only visible to yourself?"
@@ -486,7 +502,7 @@
 								"zh-TW": "不包含嵌入內容",
 								"it": "noembed",
 								"tr": "noembed",
-								"el": "noembed",
+								"el": "αποενσωμάτωση",
 								"pt-BR": "sem_embed",
 								"en-GB": "noembed",
 								"en-US": "noembed"
@@ -519,7 +535,7 @@
 								"zh-CN": "标记为剧透",
 								"zh-TW": "標記為劇透",
 								"it": "spoiler",
-								"el": "σπόιλερ",
+								"el": "spoiler",
 								"pt-BR": "spoiler",
 								"en-GB": "spoiler",
 								"en-US": "spoiler"
@@ -534,7 +550,7 @@
 								"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 								"it": "Nascondi il link e l'embed in uno spoiler?",
 								"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
-								"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+								"el": "Απόκρυψη του συνδέσμου και ενσωμάτωση σε spoiler;",
 								"pt-BR": "Ocultar o link como spoiler?",
 								"en-GB": "Hide the link and embed in a spoiler?",
 								"en-US": "Hide the link and embed in a spoiler?"
@@ -555,7 +571,8 @@
 						"zh-TW": "multiple",
 						"it": "multiple",
 						"hi": "multiple",
-						"ja": "multiple"
+						"ja": "multiple",
+						"el": "πολλαπλές"
 					},
 					"description": "Show a wiki edit diff over multiple revisions based on the IDs.",
 					"description_localizations": {
@@ -567,7 +584,8 @@
 						"zh-TW": "透過ID展示多個修訂版本的wiki編輯差異。",
 						"it": "Mostra il diff di una modifica sulla wiki tra versioni multiple in base agli ID.",
 						"hi": "ID-ओं के आधार पर विकि पर कई बदलावों के दौरान एक सम्पादन अंतर दिखाएँ।",
-						"ja": "IDに基づき、複数のリビジョンに渡るWiki編集の差分を表示します。"
+						"ja": "IDに基づき、複数のリビジョンに渡るWiki編集の差分を表示します。",
+						"el": "Εμφάνιση μιας διαφοράς επεξεργασίας του wiki με πολλαπλές εκδόσεις με βάση τις ταυτότητές τους."
 					},
 					"options": [
 						{
@@ -582,7 +600,8 @@
 								"zh-TW": "diffid",
 								"it": "diffid",
 								"hi": "diffid",
-								"ja": "diffid"
+								"ja": "diffid",
+								"el": "ταυτότητα_διαφοράς"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -594,7 +613,8 @@
 								"zh-TW": "要展示的編輯差異的差異ID。",
 								"it": "ID del diff della modifica da mostrare.",
 								"hi": "दिखाने के लिए सम्पादन अंतर का अंतर ID।",
-								"ja": "表示する編集の差分ID。"
+								"ja": "表示する編集の差分ID。",
+								"el": "Ταυτότητα διαφοράς της διαφοράς επεξεργασίας προς εμφάνιση."
 							},
 							"min_value": 0,
 							"required": true
@@ -611,7 +631,8 @@
 								"zh-TW": "oldid",
 								"it": "oldid",
 								"hi": "oldid",
-								"ja": "oldid"
+								"ja": "oldid",
+								"el": "παλαιά_ταυτότητα"
 							},
 							"description": "Old revision ID of the edit diff to show.",
 							"description_localizations": {
@@ -623,7 +644,8 @@
 								"zh-TW": "要展示的編輯差異的舊修訂版本ID。",
 								"it": "ID della vecchia versione del diff da mostrare.",
 								"hi": "दिखाने के लिए सम्पादन अंतर का पुराना अवतरण ID।",
-								"ja": "表示する編集差分の旧リビジョンID。"
+								"ja": "表示する編集差分の旧リビジョンID。",
+								"el": "Ταυτότητα παλαιάς έκδοσης διαφοράς επεξεργασίας για προβολή."
 							},
 							"min_value": 0,
 							"required": true
@@ -654,7 +676,7 @@
 								"hi": "विकि जिसमें खोजना है।",
 								"it": "La wiki in cui cercare.",
 								"tr": "Aratma yapılacak viki.",
-								"el": "Το wiki προς αναζήτηση.",
+								"el": "To wiki προς αναζήτηση.",
 								"pt-BR": "A wiki a ser pesquisada.",
 								"en-GB": "The wiki to search in.",
 								"en-US": "The wiki to search in.",
@@ -690,7 +712,7 @@
 								"zh-TW": "傳送的訊息是否僅對自己可見？",
 								"it": "Invia una risposta visibile solo per te?",
 								"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
-								"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+								"el": "Αποστολή απόκρισης ορατή μόνο σε εσάς;",
 								"pt-BR": "Deseja que a resposta seja privada?",
 								"en-GB": "Send a response only visible to yourself?",
 								"en-US": "Send a response only visible to yourself?"
@@ -709,7 +731,7 @@
 								"zh-TW": "不包含嵌入內容",
 								"it": "noembed",
 								"tr": "noembed",
-								"el": "noembed",
+								"el": "αποενσωμάτωση",
 								"pt-BR": "sem_embed",
 								"en-GB": "noembed",
 								"en-US": "noembed"
@@ -742,7 +764,7 @@
 								"zh-CN": "标记为剧透",
 								"zh-TW": "標記為劇透",
 								"it": "spoiler",
-								"el": "σπόιλερ",
+								"el": "spoiler",
 								"pt-BR": "spoiler",
 								"en-GB": "spoiler",
 								"en-US": "spoiler"
@@ -757,7 +779,7 @@
 								"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 								"it": "Nascondi il link e l'embed in uno spoiler?",
 								"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
-								"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+								"el": "Απόκρυψη του συνδέσμου και ενσωμάτωση σε spoiler;",
 								"pt-BR": "Ocultar o link como spoiler?",
 								"en-GB": "Hide the link and embed in a spoiler?",
 								"en-US": "Hide the link and embed in a spoiler?"

@@ -11,7 +11,8 @@
 		"it": "utente",
 		"es-ES": "usuario",
 		"hi": "user",
-		"ja": "user"
+		"ja": "user",
+		"el": "χρήστης"
 	},
 	"description": "Post information about a wiki user.",
 	"description_localizations": {
@@ -23,7 +24,8 @@
 		"it": "Posta informazioni su un utente della wiki.",
 		"es-ES": "Publicar información sobre un usuario wiki.",
 		"hi": "एक विकि सदस्य के बारे में जानकारी पोस्ट करें।",
-		"ja": "Wikiユーザーに関する情報を投稿する。"
+		"ja": "Wikiユーザーに関する情報を投稿する。",
+		"el": "Πληροφορίες δημοσίευσης για έναν χρήστη του wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -41,7 +43,8 @@
 				"it": "username",
 				"es-ES": "nombredeusuario",
 				"hi": "username",
-				"ja": "username"
+				"ja": "username",
+				"el": "όνομα_χρήστη"
 			},
 			"description": "The user to show information of.",
 			"description_localizations": {
@@ -53,7 +56,8 @@
 				"it": "L'utente di cui mostrare informazioni.",
 				"es-ES": "El usuario a mostrar información de.",
 				"hi": "सदस्य जिसके बारे में जानकारी पोस्ट करनी है।",
-				"ja": "この情報を表示するユーザー。"
+				"ja": "この情報を表示するユーザー。",
+				"el": "Ο χρήστης του οποίου οι πληροφορίες θα εμφανιστούν."
 			},
 			"required": true,
 			"autocomplete": true
@@ -84,7 +88,7 @@
 				"hi": "विकि जिसमें खोजना है।",
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
-				"el": "Το wiki προς αναζήτηση.",
+				"el": "To wiki προς αναζήτηση.",
 				"pt-BR": "A wiki a ser pesquisada.",
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
@@ -120,7 +124,7 @@
 				"zh-TW": "傳送的訊息是否僅對自己可見？",
 				"it": "Invia una risposta visibile solo per te?",
 				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
-				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
+				"el": "Αποστολή απόκρισης ορατή μόνο σε εσάς;",
 				"pt-BR": "Deseja que a resposta seja privada?",
 				"en-GB": "Send a response only visible to yourself?",
 				"en-US": "Send a response only visible to yourself?"
@@ -139,7 +143,7 @@
 				"zh-TW": "不包含嵌入內容",
 				"it": "noembed",
 				"tr": "noembed",
-				"el": "noembed",
+				"el": "αποενσωμάτωση",
 				"pt-BR": "sem_embed",
 				"en-GB": "noembed",
 				"en-US": "noembed"
@@ -154,7 +158,7 @@
 				"zh-TW": "傳送的連結是否不包含嵌入內容？",
 				"it": "Invia solo il link senza embed?",
 				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
-				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
+				"el": "Αποστολή μόνο συνδέσμου χωρίς ενσωμάτωση;",
 				"pt-BR": "Enviar o link sem a pré-visualização?",
 				"en-GB": "Send only the link without embed?",
 				"en-US": "Send only the link without embed?"
@@ -173,7 +177,7 @@
 				"zh-TW": "標記為劇透",
 				"it": "spoiler",
 				"tr": "spoiler",
-				"el": "σπόιλερ",
+				"el": "spoiler",
 				"pt-BR": "spoiler",
 				"en-GB": "spoiler",
 				"en-US": "spoiler"
@@ -188,7 +192,7 @@
 				"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 				"it": "Nascondi il link e l'embed in uno spoiler?",
 				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
-				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
+				"el": "Απόκρυψη του συνδέσμου και ενσωμάτωση σε spoiler;",
 				"pt-BR": "Ocultar o link como spoiler?",
 				"en-GB": "Hide the link and embed in a spoiler?",
 				"en-US": "Hide the link and embed in a spoiler?"
