@@ -1,6 +1,6 @@
 import { PermissionFlagsBits } from 'discord.js';
 import { got, isMessage, canShowEmbed, htmlToPlain, partialURIdecode, sendMessage } from '../util/functions.js';
-import phabricator from '../functions/phabricator.js';
+import phabricator, { phabricatorSites } from '../functions/phabricator.js';
 import check_wiki from '../cmds/wiki/general.js';
 
 /** @type {Map<String, {toclevel: Number, line: String, anchor: String}[]>} */
@@ -24,7 +24,7 @@ function slash_wiki(interaction, lang, wiki) {
 	let cmd = `</${interaction.commandName}:${interaction.commandId}> ` + ( interaction.commandName === 'interwiki' ? `wiki:${wiki.host}${wiki.pathname.slice(0, -1)} ` : '' ) + 'title:';
 	if ( ephemeral ) lang = lang.uselang(interaction.locale);
 	return interaction.deferReply( {ephemeral} ).then( () => {
-		return ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
+		return ( phabricatorSites.has(wiki.hostname)
 		? phabricator(lang, interaction, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, interaction, title, wiki, cmd, undefined, spoiler, noEmbed, query, fragment)
 		)?.then( result => {

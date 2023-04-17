@@ -159,21 +159,20 @@ export default class Wiki extends URL {
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
 		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm = 'miraheze';
-		if ( namespaces && namespacealiases ) {
-			namespaces.forEach( namespace => {
-				/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
-				let ns = {
-					id: +namespace.id,
-					name: namespace['*'],
-					aliases: [
-						namespace.canonical ?? namespace['*'],
-						...namespacealiases.filter( alias => +namespace.id === +alias.id ).map( alias => alias['*'] )
-					],
-					content: namespace.content !== undefined
-				};
-				this.namespaces.set(ns.id, ns);
-			} );
-		}
+		if ( /^(?:https?:)?\/\/static\.wikiforge\.net\//.test(logo) ) this.wikifarm = 'wikiforge';
+		if ( namespaces && namespacealiases ) namespaces.forEach( namespace => {
+			/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
+			let ns = {
+				id: +namespace.id,
+				name: namespace['*'],
+				aliases: [
+					namespace.canonical ?? namespace['*'],
+					...namespacealiases.filter( alias => +namespace.id === +alias.id ).map( alias => alias['*'] )
+				],
+				content: namespace.content !== undefined
+			};
+			this.namespaces.set(ns.id, ns);
+		} );
 		if ( this !== Wiki._cache.get(this.name) ) {
 			if ( !Wiki._cache.has(this.name) ) Wiki._cache.set(this.name, this);
 			else Wiki._cache.forEach( (wiki, href) => {
@@ -206,7 +205,7 @@ export default class Wiki extends URL {
 	 * @returns {Boolean}
 	 */
 	hasOAuth2() {
-		return ( this.oauth2 || this.wikifarm === 'miraheze' || this.wikifarm === 'wikimedia' );
+		return ( this.oauth2 || this.wikifarm === 'miraheze' || this.wikifarm === 'wikimedia' || this.wikifarm === 'wikiforge' );
 	}
 
 	/**

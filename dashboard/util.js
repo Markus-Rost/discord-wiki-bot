@@ -57,6 +57,13 @@ const enabledOAuth2 = [
 		};
 	} )
 ];
+if ( process.env.oauth_wikiforge && process.env.oauth_wikiforge_secret ) {
+	enabledOAuth2.unshift({
+		id: 'wikiforge',
+		name: 'WikiForge',
+		url: 'https://meta.wikiforge.net/w/'
+	});
+}
 if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
 	enabledOAuth2.unshift({
 		id: 'miraheze',

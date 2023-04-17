@@ -1,5 +1,5 @@
 import help_setup from '../functions/helpsetup.js';
-import phabricator from '../functions/phabricator.js';
+import phabricator, { phabricatorSites } from '../functions/phabricator.js';
 import check_wiki from './wiki/general.js';
 import { isMessage, canShowEmbed } from '../util/functions.js';
 
@@ -25,7 +25,7 @@ export default function cmd_link(lang, msg, title, wiki, cmd = '') {
 		noEmbed = true;
 	}
 	msg.reactEmoji(WB_EMOJI.waiting).then( reaction => {
-		( /^phabricator\.(wikimedia|miraheze)\.org$/.test(wiki.hostname)
+		( phabricatorSites.has(wiki.hostname)
 		? phabricator(lang, msg, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, msg, title, wiki, cmd, reaction, spoiler, noEmbed)
 		)?.then( result => {

@@ -2,6 +2,27 @@ import { EmbedBuilder } from 'discord.js';
 import logging from '../util/logging.js';
 import { got, escapeFormatting, limitLength } from '../util/functions.js';
 
+export const phabricatorSites = new Map([
+	['phabricator.wikimedia.org', {
+		id: 'wikimedia',
+		name: 'Wikimedia Phabricator',
+		href: 'https://phabricator.wikimedia.org/',
+		apikey: 'phabricator_wikimedia'
+	}],
+	['phabricator.miraheze.org', {
+		id: 'miraheze',
+		name: 'Miraheze Phabricator',
+		href: 'https://phabricator.miraheze.org/',
+		apikey: 'phabricator_miraheze'
+	}],
+	['support.wikiforge.net', {
+		id: 'wikiforge',
+		name: 'WikiForge Phorge',
+		href: 'https://support.wikiforge.net/',
+		apikey: 'phabricator_wikiforge'
+	}]
+]);
+
 /**
  * Sends a Phabricator task.
  * @param {import('../util/i18n.js').default} lang - The user language.
@@ -13,14 +34,14 @@ import { got, escapeFormatting, limitLength } from '../util/functions.js';
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function phabricator_task(lang, msg, wiki, link, spoiler = '', noEmbed = false) {
-	var regex = /^(?:https?:)?\/\/phabricator\.(wikimedia|miraheze)\.org\/T(\d+)(?:#|$)/.exec(link.href);
-	if ( !regex || !process.env['phabricator_' + regex[1]] ) {
+	const site = phabricatorSites.get(link.hostname);
+	const taskname = /^\/T(\d+)$/.exec(link.pathname)?.[1];
+	if ( !site || !taskname || !process.env[site.apikey] ) {
 		logging(wiki, msg.guildId, 'interwiki');
 		return Promise.resolve( {message: spoiler + ( noEmbed ? '<' : ' ' ) + link + ( noEmbed ? '>' : ' ' ) + spoiler} );
 	}
-	var site = 'https://phabricator.' + regex[1] + '.org/';
-	logging(site, msg.guildId, 'phabricator', regex[1]);
-	return got.get( site + 'api/maniphest.search?api.token=' + process.env['phabricator_' + regex[1]] + '&attachments[projects]=1&constraints[ids][0]=' + regex[2], {
+	logging(site.href, msg.guildId, 'phabricator', site.id);
+	return got.get( site.href + 'api/maniphest.search?api.token=' + process.env[site.apikey] + '&attachments[projects]=1&constraints[ids][0]=' + taskname, {
 		context: {
 			guildId: msg.guildId
 		}
@@ -43,19 +64,19 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 		}
 		var summary = escapeFormatting(task.fields.name);
 		if ( summary.length > 250 ) summary = summary.substring(0, 250) + '\u2026';
-		var embed = new EmbedBuilder().setAuthor( {name: 'Phabricator'} ).setTitle( summary ).setURL( link.href ).addFields(...[
+		var embed = new EmbedBuilder().setAuthor( {name: site.name} ).setTitle( summary ).setURL( link.href ).addFields(...[
 			{name: lang.get('phabricator.status'), value: escapeFormatting(task.fields.status.name), inline: true},
 			{name: lang.get('phabricator.priority'), value: escapeFormatting(task.fields.priority.name), inline: true}
 		]);
 		if ( task.fields.subtype !== 'default' ) embed.addFields( {name: lang.get('phabricator.subtype'), value: escapeFormatting(task.fields.subtype), inline: true} );
 		if ( msg.embedLimits.descLength ) {
-			var description = parse_text( task.fields.description.raw, site );
+			var description = parse_text( task.fields.description.raw, site.href );
 			if ( description.length > msg.embedLimits.descLength ) description = limitLength(description, msg.embedLimits.descLength, 40);
 			embed.setDescription( description );
 		}
 
 		return Promise.all([
-			( task.attachments.projects.projectPHIDs.length && msg.embedLimits.fieldLength ? got.get( site + 'api/phid.lookup?api.token=' + process.env['phabricator_' + regex[1]] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
+			( task.attachments.projects.projectPHIDs.length && msg.embedLimits.fieldLength ? got.get( site.href + 'api/phid.lookup?api.token=' + process.env[site.apikey] + '&' + task.attachments.projects.projectPHIDs.map( (project, i) => 'names[' + i + ']=' + project ).join('&'), {
 				context: {
 					guildId: msg.guildId
 				}
@@ -75,7 +96,7 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 			}, error => {
 				console.log( '- Error while getting the projects: ' + error );
 			} ) : undefined ),
-			( /^#\d+$/.test( link.hash ) && msg.embedLimits.sectionLength ? got.get( site + 'api/transaction.search?api.token=' + process.env['phabricator_' + regex[1]] + '&objectIdentifier=' + task.phid, {
+			( /^#\d+$/.test( link.hash ) && msg.embedLimits.sectionLength ? got.get( site.href + 'api/transaction.search?api.token=' + process.env[site.apikey] + '&objectIdentifier=' + task.phid, {
 				context: {
 					guildId: msg.guildId
 				}
@@ -87,7 +108,7 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 				}
 				var comment = tbody.result.data.find( transaction => '#' + transaction.id === link.hash );
 				if ( comment.type === 'comment' ) {
-					var content = parse_text( comment.comments[0].content.raw, site );
+					var content = parse_text( comment.comments[0].content.raw, site.href );
 					if ( content.length > msg.embedLimits.sectionLength ) content = limitLength(content, msg.embedLimits.sectionLength, 20);
 					embed.spliceFields( 0, 0, {name: lang.get('phabricator.comment'), value: content} );
 					if ( !msg.embedLimits.sectionDescLength ) embed.setDescription( null );

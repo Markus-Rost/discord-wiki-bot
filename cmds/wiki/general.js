@@ -2,7 +2,7 @@ import { readdir } from 'node:fs';
 import { EmbedBuilder } from 'discord.js';
 import { getWikiProject, urlToIdString } from 'mediawiki-projects-list';
 import parse_page from '../../functions/parse_page.js';
-import phabricator from '../../functions/phabricator.js';
+import phabricator, { phabricatorSites } from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
 import { got, isMessage, htmlToDiscord, escapeFormatting, escapeRegExp, partialURIdecode, breakOnTimeoutPause } from '../../util/functions.js';
 import extract_desc from '../../util/extract_desc.js';
@@ -50,7 +50,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 			} );
 			if ( fragment ) iw.hash = Wiki.toSection(fragment, wiki.spaceReplacement);
 			else fragment = iw.hash.substring(1);
-			if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(iw.hostname) ) {
+			if ( phabricatorSites.has(iw.hostname) ) {
 				return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
 			}
 			if ( ['http:','https:'].includes( iw.protocol ) ) {
@@ -361,7 +361,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 							} );
 							if ( fragment ) iw.hash = Wiki.toSection(fragment, wiki.spaceReplacement);
 							else fragment = iw.hash.substring(1);
-							if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(iw.hostname) ) {
+							if ( phabricatorSites.has(iw.hostname) ) {
 								return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
 							}
 							logging(wiki, msg.guildId, 'interwiki');
@@ -612,7 +612,7 @@ export default function gamepedia_check_wiki(lang, msg, title, wiki, cmd, reacti
 				} );
 				if ( fragment ) iw.hash = Wiki.toSection(fragment, wiki.spaceReplacement);
 				else fragment = iw.hash.substring(1);
-				if ( /^phabricator\.(wikimedia|miraheze)\.org$/.test(iw.hostname) ) {
+				if ( phabricatorSites.has(iw.hostname) ) {
 					return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
 				}
 				logging(wiki, msg.guildId, 'interwiki');

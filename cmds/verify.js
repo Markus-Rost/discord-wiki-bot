@@ -34,6 +34,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
 			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
 			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
+			else if ( wiki.wikifarm === 'wikiforge' ) oauth.push('wikiforge');
 			else {
 				let project = inputToWikiProject(wiki.href)
 				if ( project ) oauth.push(project.wikiProject.name);
