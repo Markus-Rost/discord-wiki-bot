@@ -560,8 +560,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					$('h1, h2, h3, h4, h5, h6').nextAll().remove();
 					$('h1, h2, h3, h4, h5, h6').remove();
 				}
-				var description = htmlToDiscord($.html(), embed.data.url, true).trim().replace( /\n{3,}/g, '\n\n' );
-				if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url, true).trim().replace( /\n{3,}/g, '\n\n' );
+				var description = htmlToDiscord($.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
+				if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 				if ( description ) {
 					let embedLength = 5_950 - getEmbedLength(embed);
 					if ( disambiguation !== undefined && !fragment && descLength < 1_500 ) {

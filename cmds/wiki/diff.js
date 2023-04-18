@@ -1,6 +1,6 @@
 import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import logging from '../../util/logging.js';
-import { got, canUseMaskedLinks, htmlToPlain, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
+import { got, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
 import diffParser from '../../util/edit_diff.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -207,13 +207,8 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 			var oldid = ( revisions[1] ? revisions[1].revid : 0 );
 			var editor = [
 				lang.get('diff.info.editor'),
-				( revisions[0].userhidden !== undefined
-					? lang.get('diff.hidden')
-					: ( canUseMaskedLinks(msg, noEmbed)
-						? '[' + escapeFormatting(revisions[0].user) + '](<' + wiki.toLink(( revisions[0].anon !== undefined ? 'Special:Contributions/' : 'User:' ) + revisions[0].user, '', '', true) + '>)'
-						: escapeFormatting(revisions[0].user)
-					)
-				)
+				( revisions[0].userhidden !== undefined ? lang.get('diff.hidden')
+				: '[' + escapeFormatting(revisions[0].user) + '](<' + wiki.toLink(( revisions[0].anon !== undefined ? 'Special:Contributions/' : 'User:' ) + revisions[0].user, '', '', true) + '>)' )
 			];
 			try {
 				var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({
@@ -234,10 +229,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 				( revisions[0].commenthidden !== undefined
 					? lang.get('diff.hidden')
 					: ( revisions[0].parsedcomment
-						? ( canUseMaskedLinks(msg, noEmbed)
-							? htmlToDiscord(revisions[0].parsedcomment, wiki.toLink(title), true)
-							: htmlToPlain(revisions[0].parsedcomment)
-						)
+						? htmlToDiscord(revisions[0].parsedcomment, wiki.toLink(title))
 						: lang.get('diff.nocomment')
 					)
 				)
@@ -329,7 +321,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 				}};
 			}
 			text += '\n\n' + editor.join(' ') + '\n' + timestamp.join(' ') + '\n' + size.join(' ') + '\n' + comment.join(' ');
-			if ( tags?.[1] ) text += htmlToDiscord('\n' + tags.join(' '), ( canUseMaskedLinks(msg, noEmbed) ? pagelink : undefined ));
+			if ( tags?.[1] ) text += htmlToDiscord('\n' + tags.join(' '), pagelink);
 			
 			return {message: spoiler + text + spoiler};
 		}

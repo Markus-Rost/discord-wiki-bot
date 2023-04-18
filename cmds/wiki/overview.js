@@ -1,6 +1,6 @@
 import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import logging from '../../util/logging.js';
-import { got, canUseMaskedLinks, toFormatting, toPlaintext, escapeFormatting } from '../../util/functions.js';
+import { got, toMarkdown, escapeFormatting, limitLength } from '../../util/functions.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
@@ -71,7 +71,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 		var edits = [lang.get('overview.edits'), body.query.statistics.edits.toLocaleString(lang.get('dateformat'))];
 		var users = [lang.get('overview.users'), body.query.statistics.activeusers.toLocaleString(lang.get('dateformat'))];
 		var admins = [lang.get('overview.admins'), body.query.statistics.admins.toLocaleString(lang.get('dateformat'))];
-		var license = [lang.get('overview.license'), lang.get('overview.unknown')];
+		var license = [lang.get('overview.license'), ( body.query.rightsinfo.text ? toMarkdown(body.query.rightsinfo.text, wiki, '', true) : '' )];
 		if ( body.query.rightsinfo.url ) {
 			let licenseurl = body.query.rightsinfo.url
 			try {
@@ -80,24 +80,22 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 			}
 			catch {}
 			
-			if ( body.query.rightsinfo.text ) {
-				let licensetext = body.query.rightsinfo.text;
-				if ( canUseMaskedLinks(msg, noEmbed) ) {
-					license[1] = '[' + toPlaintext(licensetext, true) + '](<' + licenseurl + '>)';
-				}
-				else license[1] = toPlaintext(licensetext, true) + ' (<' + licenseurl + '>)';
+			if ( license[1].trim() ) {
+				if ( license[1].includes( '//' ) ) license[1] += '\n\n(\\~ <' + licenseurl + '>)';
+				else license[1] = '[' + license[1] + '](<' + licenseurl + '>)';
 			}
 			else license[1] = '<' + licenseurl + '>';
 		}
-		else if ( body.query.rightsinfo.text ) {
-			license[1] = toFormatting(body.query.rightsinfo.text, canUseMaskedLinks(msg, noEmbed), wiki, '', true);
+		if ( !license[1].trim() ) {
+			license[1] = lang.get('overview.unknown');
 		}
+		else if ( license[1].length > 1000 ) license[1] = limitLength(license[1], 1000);
 		var misermode = [lang.get('overview.misermode'), lang.get('overview.' + ( body.query.general.misermode !== undefined ? 'yes' : 'no' ))];
 		var readonly = [lang.get('overview.readonly')];
 		if ( body.query.general.readonly !== undefined ) {
 			if ( body.query.general.readonlyreason ) {
 				let readonlyreason = body.query.general.readonlyreason;
-				readonly.push(toFormatting(readonlyreason, canUseMaskedLinks(msg, noEmbed), wiki, '', true));
+				readonly.push(toMarkdown(readonlyreason, wiki, '', true));
 			}
 			else readonly = ['\u200b', '**' + lang.get('overview.readonly') + '**'];
 		}
@@ -158,8 +156,8 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 				}
 				var site = ovbody.items[wikiid];
 				
-				vertical[1] = site.hub;
-				topic[1] = site.topic;
+				vertical[1] = escapeFormatting(site.hub);
+				topic[1] = escapeFormatting(site.topic);
 				founder[1] = site.founding_user_id;
 				if ( site.creation_date && creation_date > new Date(site.creation_date) ) {
 					creation_date = new Date(site.creation_date);
@@ -189,16 +187,15 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 						if ( usbody && usbody.warnings ) log_warning(usbody.warnings);
 						if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
 							console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + ( usbody && usbody.error && usbody.error.info ) );
-							founder[1] = 'ID: ' + founder[1];
+							founder[1] = escapeFormatting('ID: ' + founder[1]);
 						}
 						else {
 							var user = usbody.query.users[0].name;
-							if ( canUseMaskedLinks(msg, noEmbed) ) founder[1] = '[' + user + '](<' + wiki.toLink('User:' + user, '', '', true) + '>)';
-							else founder[1] = user;
+							founder[1] = '[' + escapeFormatting(user) + '](<' + wiki.toLink('User:' + user, '', '', true) + '>)';
 						}
 					}, error => {
 						console.log( '- Error while getting the wiki founder: ' + error );
-						founder[1] = 'ID: ' + founder[1];
+						founder[1] = escapeFormatting('ID: ' + founder[1]);
 					} ) : founder[1] = ( founder[1] === undefined || wiki.isGamepedia() ? null : lang.get('overview.none') ) ),
 					got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&limit=1&format=json&cache=' + Date.now(), {
 						headers: {

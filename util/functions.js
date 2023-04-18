@@ -153,30 +153,6 @@ function canShowEmbed(msg) {
 };
 
 /**
- * If the bot can use masked links.
- * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
- * @param {Boolean} [noEmbed] - If the response should be without an embed.
- * @returns {Boolean}
- */
-function canUseMaskedLinks(msg, noEmbed = canShowEmbed(msg)) {
-	return !isMessage(msg) || !noEmbed;
-};
-
-/**
- * Make wikitext formatting usage.
- * @param {String} [text] - The text to modify.
- * @param {Boolean} [showEmbed] - If the text is used in an embed.
- * @param {import('./wiki.js').default} [wiki] - The wiki.
- * @param {String} [title] - The page title.
- * @param {Boolean} [fullWikitext] - If the text can contain full wikitext.
- * @returns {String}
- */
-function toFormatting(text = '', showEmbed = false, wiki, title = '', fullWikitext = false) {
-	if ( showEmbed ) return toMarkdown(text, wiki, title, fullWikitext);
-	else return toPlaintext(text, fullWikitext);
-};
-
-/**
  * Turns wikitext formatting into markdown.
  * @param {String} [text] - The text to modify.
  * @param {import('./wiki.js').default} wiki - The wiki.
@@ -209,20 +185,6 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 		return htmlToDiscord(text.replaceAll( '\n\n', '<br><br>' ), '', true, true).replaceAll( "'''", '**' ).replaceAll( "''", '*' ).replaceAll( '](\\<', '](<' ).replaceAll( '\\>)', '>)' );
 	}
 	return escapeFormatting(text, true);
-};
-
-/**
- * Removes wikitext formatting.
- * @param {String} [text] - The text to modify.
- * @param {Boolean} [fullWikitext] - If the text can contain full wikitext.
- * @returns {String}
- */
-function toPlaintext(text = '', fullWikitext = false) {
-	text = text.replace( /\[\[(?:[^\|\]]+\|)?([^\]]+)\]\]/g, '$1' ).replace( /\/\*\s*([^\*]+?)\s*\*\//g, '→$1:' );
-	if ( fullWikitext ) {
-		return htmlToDiscord( text.replace( /\[(?:https?:)?\/\/(?:[^ ]+) ([^\]]+)\]/g, '$1' ) );
-	}
-	else return escapeFormatting(text);
 };
 
 /**
@@ -503,7 +465,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
  */
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 	if ( !isMarkdown ) text = text.replaceAll( '\\', '\\\\' ).replaceAll( '](', ']\\(' );
-	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replaceAll( '//', '/\\/' );
+	text = text.replace( /[`_*~:<>{}@|#\-\.]/g, '\\$&' ).replaceAll( '//', '/\\/' );
 	if ( isMarkdown ) text = text.replace( /\]\(\\<([^\(\)<>\s]+?)\\>\)/g, '](<$1>)' );
 	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
 		return match.replaceAll( '\\\\', '/' ).replaceAll( '\\', '' );
@@ -650,10 +612,7 @@ export {
 	parse_infobox,
 	isMessage,
 	canShowEmbed,
-	canUseMaskedLinks,
-	toFormatting,
 	toMarkdown,
-	toPlaintext,
 	htmlToPlain,
 	htmlToDiscord,
 	escapeFormatting,
