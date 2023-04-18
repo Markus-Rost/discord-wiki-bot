@@ -1,0 +1,9 @@
+{
+	"fallback": [
+		"zh-hant",
+		"zh-hans",
+		"en",
+		" ",
+		" "
+	]
+}
