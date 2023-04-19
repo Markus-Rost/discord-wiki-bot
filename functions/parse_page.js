@@ -36,6 +36,7 @@ const infoboxList = [
 	'.va-infobox',
 	'.side-infobox',
 	'.info-framework',
+	'.iteminfobox',
 	'table[class*="infobox"]'
 ];
 
@@ -267,7 +268,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		} );
 		if ( !fragment && !embed.data.fields?.length && infoboxes ) {
 			try {
-				var infobox = JSON.parse(infoboxes)?.[0];
+				let infobox = JSON.parse(infoboxes)?.[0];
 				parse_infobox(infobox, embed, {fieldCount, fieldLength}, thumbnail, embed.data.url);
 			}
 			catch ( error ) {
@@ -352,6 +353,14 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					}
 					catch {}
 				}
+				if ( infobox.has('.descriptionbox') ) {
+					let backupDescription = htmlToDiscord(infobox.find('.descriptionbox').html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
+					let embedLength = 5_950 - getEmbedLength(embed);
+					if ( backupDescription.length > Math.min(descLength, embedLength) ) {
+						backupDescription = limitLength(backupDescription, Math.min(descLength, embedLength), 50);
+					}
+					if ( backupDescription ) embed.backupDescription = backupDescription;
+				}
 				let rows = infobox.find([
 					'> tbody > tr',
 					'> tbody > tr > th.mainheader',
@@ -366,7 +375,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					'.va-infobox-cont tr',
 					'.va-infobox-cont th.va-infobox-header',
 					'div.info-unit > div.info-unit-caption',
-					'div.info-unit-row'
+					'div.info-unit-row',
+					'> tbody > tr > td > table > tbody > tr',
+					'table.attributeinfo span.icon-tooltip'
 				].join(', '));
 				let tdLabel = true;
 				for ( let i = 0; i < rows.length; i++ ) {
@@ -387,11 +398,21 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							else embed.addFields( {name: '\u200b', value: label} );
 						}
 					}
-					else if ( row.is('tr, div.pi-data, div.infobox-row, div.info-unit-row') ) {
+					else if ( row.is('tr, div.pi-data, div.infobox-row, div.info-unit-row, span.icon-tooltip') ) {
 						let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.infobox-cell-header, div.info-arkitex-left.info-X2-40').eq(0);
 						label.find(removeClasses.join(', ')).remove();
 						let value = row.children('td, div.pi-data-value, div.infobox-cell-data, div.info-arkitex-right.info-X2-60').eq(( label.is('td') ? 1 : 0 ));
 						value.find(removeClasses.join(', ')).remove();
+						if ( value.is('td') && !value.html()?.trim() ) {
+							value = row.children('td').eq(( label.is('td') ? 1 : 0 ) + 1);
+							value.find(removeClasses.join(', ')).remove();
+						}
+						if ( row.is('span.icon-tooltip') && !label.length && !value.length ) {
+							label = row.children('a').eq(0);
+							label.find(removeClasses.join(', ')).remove();
+							value = row.children('a').eq(1);
+							value.find(removeClasses.join(', ')).remove();
+						}
 						if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
 						label = htmlToPlain(label).trim().split('\n')[0];
 						value = htmlToDiscord(value, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
