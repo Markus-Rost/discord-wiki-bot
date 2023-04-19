@@ -194,6 +194,7 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
  */
 function htmlToPlain(html, includeComments = false) {
 	var text = '';
+	var altText = '';
 	var ignoredTag = ['', 0];
 	var parser = new HTMLParser( {
 		onopentag: (tagname, attribs) => {
@@ -214,6 +215,18 @@ function htmlToPlain(html, includeComments = false) {
 				return;
 			}
 			if ( tagname === 'br' ) text += ' ';
+			if ( tagname === 'img' ) {
+				if ( attribs.alt && attribs.src ) {
+					let showAlt = true;
+					if ( attribs['data-image-name'] === attribs.alt ) showAlt = false;
+					else {
+						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + escapeRegExp(attribs.alt.replaceAll( ' ', '_' )) + '(?:/|\\?|$)' );
+						if ( attribs.src.startsWith( 'data:' ) && attribs['data-src'] ) attribs.src = attribs['data-src'];
+						if ( regex.test(attribs.src.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode )) ) showAlt = false;
+					}
+					if ( showAlt ) altText += escapeFormatting(attribs.alt);
+				}
+			}
 		},
 		ontext: (htmltext) => {
 			if ( !ignoredTag[0] ) {
@@ -237,7 +250,7 @@ function htmlToPlain(html, includeComments = false) {
 	} );
 	parser.write( String(html) );
 	parser.end();
-	return text;
+	return ( !text.trim() && altText ? altText : text );
 };
 
 /**
@@ -336,7 +349,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 					if ( showAlt ) {
 						if ( href && !code ) attribs.alt = attribs.alt.replace( /[\[\]]/g, '\\$&' );
 						if ( code ) text += attribs.alt.replaceAll( '`', 'ˋ' );
-						else text += escapeFormatting(attribs.alt, ...escapeArgs);
+						else text += '\x1F' + escapeFormatting(attribs.alt, ...escapeArgs) + '\x1F';
 					}
 				}
 			}
@@ -375,8 +388,9 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				try {
 					if ( relativeFix && /^\/(?!\/)/.test(attribs.href) ) attribs.href = relativeFix(attribs.href, pagelink);
 					href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
-					if ( text.endsWith( '](<' + href + '>)' ) ) {
-						text = text.substring(0, text.length - ( href.length + 5 ));
+					if ( text.trim().endsWith( '](<' + href + '>)' ) ) {
+						let whitespace = text.match( /(?<=>\))\s*$/ )?.[0] ?? '';
+						text = text.substring(0, text.length - ( href.length + 5 + whitespace.length )) + whitespace;
 					}
 					else text += '[';
 				}
@@ -453,7 +467,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 	} );
 	parser.write( String(html) );
 	parser.end();
-	return text;
+	return text.replace( /\x1F([^\x1F\n]+)\x1F[ \u00A0\u200b]{0,3}(\[?)\1/g, '$2$1' ).replaceAll( '\x1F', '' );
 };
 
 /**
