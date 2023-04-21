@@ -383,6 +383,9 @@
 			"/replaceitem entity <targets> <slot> <item>",
 			"/replaceitem entity <targets> <slot> <item> <count>"
 		],
+		"return": [
+			"/return <value>"
+		],
 		"ride": [
 			"/ride <target> mount <vehicle>",
 			"/ride [<target>] dismount"
