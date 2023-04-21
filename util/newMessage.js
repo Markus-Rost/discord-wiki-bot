@@ -254,7 +254,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 						var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );
 						if ( template && template.missing === undefined ) embed.template = wiki.toLink(template.title);
 					}
-					if ( embed.template || !body.query.functionhooks?.some( functionhook => embed.title.toLowerCase().startsWith( functionhook + ':' ) ) || !body.query.variables?.some( variable => variable.toUpperCase() === embed.title ) ) missing.push(embed);
+					if ( embed.template || ( !body.query.functionhooks?.some( functionhook => embed.title.toLowerCase().startsWith( functionhook + ':' ) ) && !body.query.variables?.some( variable => variable.toUpperCase() === embed.title ) ) ) missing.push(embed);
 				} ) );
 				if ( missing.length ) splitMessage( [...new Set(missing.map( embed => {
 					if ( embed.template ) logging(wiki, msg.guildId, 'inline', 'template');
