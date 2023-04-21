@@ -373,6 +373,10 @@
 			"/recipe take <targets> *",
 			"/recipe take <targets> <recipe>"
 		],
+		"ride": [
+			"/ride <target> mount <vehicle>",
+			"/ride [<target>] dismount"
+		],
 		"reload": [
 			"/reload"
 		],
@@ -383,9 +387,8 @@
 			"/replaceitem entity <targets> <slot> <item>",
 			"/replaceitem entity <targets> <slot> <item> <count>"
 		],
-		"ride": [
-			"/ride <target> mount <vehicle>",
-			"/ride [<target>] dismount"
+		"return": [
+			"/return <value>"
 		],
 		"save-all": [
 			"/save-all",
