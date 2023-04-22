@@ -60,6 +60,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 							if ( row.lang === mainRow.lang ) delete row.lang;
 							if ( row.role === mainRow.role ) delete row.role;
 							if ( row.inline === mainRow.inline ) delete row.inline;
+							if ( row.prefix === mainRow.prefix ) delete row.prefix;
 							if ( row.desclength === mainRow.desclength ) delete row.desclength;
 							if ( row.fieldcount === mainRow.fieldcount ) delete row.fieldcount;
 							if ( row.fieldlength === mainRow.fieldlength ) delete row.fieldlength;

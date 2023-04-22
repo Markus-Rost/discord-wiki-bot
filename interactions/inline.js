@@ -10,7 +10,7 @@ import { got, limitLength, partialURIdecode, sendMessage } from '../util/functio
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_inline(interaction, lang, wiki) {
-	var text = ( interaction.options.getString('text') || '' ).replaceAll( '](', ']\\(' );
+	var text = interaction.options.getString('text') || '';
 	text = text.replaceAll( '\x1F', '' ).replace( /(?<!@)\u200b/g, '' ).trim();
 	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
 		return interaction.reply( {content: lang.uselang(interaction.locale).get('interaction.inline'), ephemeral: true} ).catch(log_error);
