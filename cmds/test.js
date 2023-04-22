@@ -97,8 +97,15 @@ export default function cmd_test(lang, msg, args, line, wiki) {
 					};
 				} ).then( values => {
 					embed.addFields( {name: 'Guilds', value: values.reduce( (acc, val) => acc + val.guilds, 0 ).toLocaleString(lang.get('dateformat'))} );
-					return '```less\n' + values.map( (value, id) => {
-						return '[' + id + ']: ' + value.status.map( wsStatus => Status[wsStatus] ?? wsStatus ).join(' ');
+					let shardData = [];
+					let lastShardData = {};
+					values.forEach( (value, id) => {
+						let status = value.status.map( wsStatus => Status[wsStatus] ?? wsStatus ).join(' ');
+						if ( status === lastShardData.status ) return lastShardData.count++;
+						shardData.push(lastShardData = {id, status, count: 0});
+					} );
+					return '```less\n' + shardData.map( value => {
+						return '[' + value.id + ( value.count ? '-' + ( value.id + value.count ) : '' ) + ']: ' + value.status;
 					} ).join('\n') + '\n```';
 				}, error => {
 					return '```js\n' + error + '\n```';
