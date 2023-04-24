@@ -154,7 +154,8 @@
 		"missingperm": "Eu não tenho permissão para executar este comando:",
 		"patreon": "Esse é um recurso exclusivo do Patreon!\nVocê pode me apoiar no Patreon para obter acesso a esse recurso:",
 		"prefix": "O prefixo para este servidor é `$1`. Você pode alterar o prefixo com `$1settings prefix`. Para uma lista de todos os comandos, veja `$1help`.",
-		"readonly": "**A base de dados está temporariamente no modo somente leitura, você não pode alterar as configurações agora!**"
+		"readonly": "**A base de dados está temporariamente no modo somente leitura, você não pode alterar as configurações agora!**",
+		"whitelist": "A wiki usada não é permitida neste servidor."
 	},
 	"help": {
 		"admin": "Esses comandos só podem ser executados por administradores:",
@@ -388,10 +389,12 @@
 		"notitle": "Esse título de página não existe!",
 		"nowiki": "A wiki utilizada não existe!",
 		"random": "(Todos os espaços nominais de conteúdo)",
+		"user": "Por favor, forneça um nome de usuário ou IP válido.",
 		"verify": "Por favor, forneça o seu nome de usuário na wiki para usar este comando e verificar a sua conta do Discord com a sua conta da wiki e obter cargos correspondentes à sua conta da wiki."
 	},
 	"invite": {
-		"bot": "Use este link para me convidar para outro servidor:"
+		"bot": "Use este link para me convidar para outro servidor:",
+		"directory": "Ou confira minha página do diretório do aplicativo do Discord para obter mais detalhes:"
 	},
 	"minecraft": {
 		"fixed": "{{PLURAL:$1|Versão corrigida|Versões corrigidas}}:",
@@ -600,10 +603,15 @@
 		"channel wikichanged": "Você mudou a wiki padrão para este canal para:",
 		"current": "Estas são as configurações atuais para este servidor:",
 		"currentchannel": "Substituições de canal:",
+		"currentdesclength": "Comprimento da descrição:",
+		"currentfieldcount": "Contagem de campos da infobox:",
+		"currentfieldlength": "Tamanho do campo do infobox:",
 		"currentinline": "Comandos em linha:",
 		"currentlang": "Idioma:",
 		"currentprefix": "Prefixo:",
 		"currentrole": "Cargo mínimo:",
+		"currentsectiondesclength": "Comprimento da descrição antes da seção:",
+		"currentsectionlength": "Comprimento da seção:",
 		"currentsubprefix": "Subprefixo `$1`:",
 		"currentwiki": "Wiki padrão:",
 		"dashboard": {
@@ -641,6 +649,9 @@
 		"rolehelp": "Use `$1 <role>` para alterar o cargo mínimo necessário.",
 		"roleinvalid": "O cargo especificado não existe!",
 		"save_failed": "Infelizmente as configurações não puderam ser salvas, por favor, tente novamente mais tarde.",
+		"whitelist_added": "Uma lista de wikis permitidas foi adicionada.",
+		"whitelist_modified": "A lista de wikis permitidas foi modificada.",
+		"whitelist_removed": "A lista de wikis permitidas foi removida.",
 		"wiki": "A wiki padrão para este servidor é:",
 		"wikichanged": "Você mudou a wiki padrão para este servidor para:",
 		"wikihelp": "Use `$1 <link>` para alterar a wiki padrão.\nLink para um site MediaWiki como: `https://<wiki>.fandom.com/`",
@@ -839,6 +850,6 @@
 		"user_verified": "O usuário $1 do Discord foi verificado com sucesso como o usuário $2 da wiki.",
 		"user_verified_reply": "você foi verificado com sucesso como o usuário \"$1\" da wiki.",
 		"username": "Nome de usuário na wiki:",
-		"wiki": "{{GENDER:$1|Usuário da wiki|Usuária da wiki}}:"
+		"wiki": "Fornecido pelo usuário da wiki:"
 	}
 }
