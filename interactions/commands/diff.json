@@ -29,7 +29,8 @@
 		"hi": "एक विकि सम्पादन अंतर दिखाएँ।",
 		"ja": "Wikiで編集された差分を表示します。",
 		"tr": "Bir viki düzenlemesi değişikliklerini göster.",
-		"el": "Εμφανίζει μια διαφορά επεξεργασίας του wiki."
+		"el": "Εμφανίζει μια διαφορά επεξεργασίας του wiki.",
+		"pt-BR": "Mostra uma diferença de edição da wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -49,7 +50,8 @@
 				"sv-SE": "sida",
 				"hi": "page",
 				"ja": "page",
-				"el": "σελίδα"
+				"el": "σελίδα",
+				"pt-BR": "página"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
@@ -63,7 +65,8 @@
 				"sv-SE": "Visa skillnaden för den senaste redigeringen för en wiki sida.",
 				"hi": "एक विकि पृष्ठ का आखिरी सम्पादन अंतर दिखाएँ।",
 				"ja": "Wikiページの最終編集された差分を表示します。",
-				"el": "Εμφανίζει την τελευταία διαφορά επεξεργασίας μιας σελίδας wiki."
+				"el": "Εμφανίζει την τελευταία διαφορά επεξεργασίας μιας σελίδας wiki.",
+				"pt-BR": "Mostra a última diferença de edição de uma página da wiki."
 			},
 			"options": [
 				{
@@ -96,7 +99,8 @@
 						"sv-SE": "Titeln på sidan du vill se den senaste skillnaden för.",
 						"hi": "पृष्ठ का शीर्षक जिसका आखिरी सम्पादन अंतर दिखाना है।",
 						"ja": "最終編集の差分を表示するページタイトル。",
-						"el": "Τίτλος σελίδας για την οποία θα δείξει την τελευταία διαφορά επεξεργασίας."
+						"el": "Τίτλος σελίδας για την οποία θα δείξει την τελευταία διαφορά επεξεργασίας.",
+						"pt-BR": "Título da página para mostrar a última diff de edição."
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -131,7 +135,7 @@
 						"it": "La wiki in cui cercare.",
 						"tr": "Aratma yapılacak viki.",
 						"el": "Το wiki προς αναζήτηση.",
-						"pt-BR": "A wiki a ser pesquisada.",
+						"pt-BR": "A wiki para pesquisar.",
 						"en-GB": "The wiki to search in.",
 						"en-US": "The wiki to search in.",
 						"sv-SE": "Wikin att söka i.",
@@ -169,7 +173,7 @@
 						"it": "Invia una risposta visibile solo per te?",
 						"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
 						"el": "Αποστέλλει μια απόκριση ορατή μόνο σε σας;",
-						"pt-BR": "Deseja que a resposta seja privada?",
+						"pt-BR": "Enviar uma resposta visível apenas para você?",
 						"en-GB": "Send a response only visible to yourself?",
 						"en-US": "Send a response only visible to yourself?",
 						"sv-SE": "Vill du endast visa svaret för dig själv?"
@@ -204,7 +208,7 @@
 						"it": "Invia solo il link senza embed?",
 						"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
 						"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
-						"pt-BR": "Enviar o link sem a pré-visualização?",
+						"pt-BR": "Enviar apenas o link sem incorporar?",
 						"en-GB": "Send only the link without embed?",
 						"en-US": "Send only the link without embed?",
 						"sv-SE": "Skicka endast länken, utan inbäddning?"
@@ -239,7 +243,7 @@
 						"it": "Nascondi il link e l'embed in uno spoiler?",
 						"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
 						"el": "Αποκρύπτει τον σύνδεσμο και ενσωματώνει σε spoiler;",
-						"pt-BR": "Ocultar o link como spoiler?",
+						"pt-BR": "Ocultar o link e incorporar em um spoiler?",
 						"en-GB": "Hide the link and embed in a spoiler?",
 						"en-US": "Hide the link and embed in a spoiler?",
 						"sv-SE": "Dölj länken och inbäddningen som en \"spoiler\"?"
@@ -276,7 +280,8 @@
 				"sv-SE": "Visa en wiki-redigeringsdiff baserat på ID:et.",
 				"hi": "ID के आधार पर विकि पर एक सम्पादन अंतर दिखाएँ।",
 				"ja": "IDに基づいたWiki編集の差分を表示します。",
-				"el": "Εμφανίζει τη διαφορά επεξεργασιών του wiki με βάση την ταυτότητα."
+				"el": "Εμφανίζει τη διαφορά επεξεργασιών του wiki με βάση την ταυτότητα.",
+				"pt-BR": "Mostre a diferença de edição de uma wiki com base no ID."
 			},
 			"options": [
 				{
@@ -307,7 +312,8 @@
 						"sv-SE": "Visa en relativ wiki-redigeringsdiff baserat på ID:et.",
 						"hi": "ID के आधार पर विकि पर एक सापेक्ष सम्पादन अंतर दिखाएँ।",
 						"ja": "IDに基づいた相対的なWiki編集の差分を表示します。",
-						"el": "Εμφανίζει σχετική διαφορά επεξεργασίας wiki με βάση την ταυτότητα."
+						"el": "Εμφανίζει σχετική διαφορά επεξεργασίας wiki με βάση την ταυτότητα.",
+						"pt-BR": "Mostra uma diferença relativa de edição da wiki com base no ID."
 					},
 					"options": [
 						{
