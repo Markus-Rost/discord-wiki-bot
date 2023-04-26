@@ -21,10 +21,10 @@ const overwrites = {
 		return fn.random(lang, msg, wiki, reaction, spoiler, noEmbed, namespaceData, querystring, fragment, embed);
 	},
 	statistics: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed) => {
-		return fn.overview(lang, msg, wiki, spoiler, noEmbed, querystring, fragment);
+		return fn.overview(lang, msg, wiki, spoiler, noEmbed, querystring, fragment, 'Statistics');
 	},
 	version: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed) => {
-		return fn.overview(lang, msg, wiki, spoiler, noEmbed, querystring, fragment);
+		return fn.overview(lang, msg, wiki, spoiler, noEmbed, querystring, fragment, 'Version');
 	},
 	diff: (fn, lang, msg, wiki, querystring, fragment, reaction, spoiler, noEmbed, args, embed) => {
 		return fn.diff(lang, msg, args, wiki, spoiler, noEmbed, embed);

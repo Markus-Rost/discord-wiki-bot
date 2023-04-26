@@ -14,15 +14,16 @@ const {timeoptions} = require('../../util/default.json');
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @param {URLSearchParams} [querystring] - The querystring for the link.
  * @param {String} [fragment] - The section for the link.
+ * @param {String} [specialpage] - The special page for the link.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '') {
+export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '', specialpage = 'Statistics') {
 	var uselang = lang.lang;
 	if ( querystring.has('variant') || querystring.has('uselang') ) {
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
 		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
 	}
-	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:Statistics&ammessages=statistics' + ( wiki.wikifarm === 'fandom' ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.wikifarm === 'fandom' ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:Statistics&format=json', {
+	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&amenableparser=true&amtitle=Special:' + specialpage + '&ammessages=' + specialpage + ( wiki.wikifarm === 'fandom' ? '|custom-GamepediaNotice|custom-FandomMergeNotice' : '' ) + '&siprop=general|statistics|languages|rightsinfo' + ( wiki.wikifarm === 'fandom' ? '|variables' : '' ) + '&siinlanguagecode=' + uselang + '&list=logevents&ledir=newer&lelimit=1&leprop=timestamp&titles=Special:' + specialpage + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -38,7 +39,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
 				return {
 					reaction: WB_EMOJI.error,
-					message: spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler
+					message: spoiler + '<' + wiki.toLink('Special:' + specialpage, querystring, fragment) + '>' + spoiler
 				};
 			}
 		}
@@ -326,7 +327,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 			console.log( '- Error while getting the statistics: ' + error );
 			return {
 				reaction: WB_EMOJI.error,
-				message: spoiler + '<' + wiki.toLink('Special:Statistics', querystring, fragment) + '>' + spoiler
+				message: spoiler + '<' + wiki.toLink('Special:' + specialpage, querystring, fragment) + '>' + spoiler
 			};
 		}
 	} );
