@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "BETA",
+		"betadesc": "Recurso beta experimental",
 		"botlist": {
 			"text": "Ajude outros usuários a encontrar o Wiki-Bot votando em listas de bots:",
 			"title": "Lista de bots"
@@ -32,6 +34,9 @@
 		"avatar": {
 			"content_type": "O link fornecido tem o tipo de conteúdo $1, mas apenas os seguintes tipos de conteúdo são permitidos:",
 			"invalid_url": "A URL não retornou um arquivo válido de imagem."
+		},
+		"embeds": {
+			"json": "O objeto de incorporação não é válido. Forneça uma matriz JSON válida com objetos de incorporação do Discord."
 		},
 		"invalid": {
 			"note_http": "O site fornecido não possui um certificado TLS/SSL válido! Por razões de segurança, apenas wikis que usam HTTPS são suportados.",
@@ -59,6 +64,10 @@
 		}
 	},
 	"notice": {
+		"beta": {
+			"text": "Este recurso é experimental! Não é garantido que funcione corretamente e pode ser removido no futuro.",
+			"title": "Recurso beta experimental"
+		},
 		"error": {
 			"text": "Ocorreu um erro desconhecido, tente novamente.",
 			"title": "Erro desconhecido!"
@@ -141,6 +150,8 @@
 			"title": "Mensagem enviada!"
 		},
 		"sendfail": {
+			"note_embeds": "O objeto de incorporação não era válido. Forneça uma matriz JSON válida com objetos de incorporação do Discord.",
+			"note_nothread": "O tópico não foi encontrado, forneça um tópico ativo.",
 			"text": "Não foi possível enviar a mensagem, tente novamente.",
 			"title": "Falha no envio!"
 		},
@@ -217,6 +228,10 @@
 			"channel": "Canal:",
 			"confirm": "Tem certeza de que deseja excluir a sobreposição de canal?",
 			"default": "Configurações de todo o servidor",
+			"desclength": "Comprimento da descrição:",
+			"embedlimits": "Limites de tamanho incorporado:",
+			"fieldcount": "Contagem de campos da infobox:",
+			"fieldlength": "Tamanho do campo do infobox:",
 			"inline": "Comandos em linha:",
 			"lang": "Idioma:",
 			"new": "Nova sobreposição de canal",
@@ -224,9 +239,15 @@
 			"prefix": "Prefixo:",
 			"prefix_space": "Prefixo termina com espaço:",
 			"role": "Cargo mínimo:",
+			"sectiondesclength": "Comprimento da descrição antes da seção:",
+			"sectionlength": "Comprimento da seção:",
 			"select_channel": "-- Selecionar canal --",
 			"select_subprefix": "Definir uma wiki específica →",
 			"subprefix": "Prefixo de subcomando wiki:",
+			"whitelist": "Wikis permitidas:",
+			"whitelist_enabled": "Permitir apenas em wikis específicas:",
+			"whitelist_note": "Um por linha",
+			"whitelist_placeholder": "Lista de wikis permitidas",
 			"wiki": "Wiki padrão:",
 			"wiki_check": "Verificar wiki"
 		},
@@ -244,6 +265,7 @@
 			"avatar_preview": "Pré-visualização",
 			"button": "Enviar mensagem com o botão de verificação",
 			"button_emoji": "Botão de emojis (opcional):",
+			"button_emoji_title": "Forneça um emoji de servidor personalizado ou a representação Unicode de um emoji.",
 			"button_name": "Texto do botão:",
 			"button_name_default": "Verificação de conta da wiki",
 			"button_style": "Estilo do botão:",
@@ -256,6 +278,9 @@
 			"content": "Conteúdo da mensagem (opcional):",
 			"content_placeholder": "Texto da mensagem em Markdown. Suporta links mascarados.",
 			"editcount": "Contagem mínima de edições:",
+			"embeds": "Incorporações de mensagens (opcional):",
+			"embeds_help": "Ajuda: [Incorporar Visualizador]($1)",
+			"embeds_placeholder": "Matriz JSON de incorporações de mensagens do Discord.",
 			"entry": "Verificação #$1",
 			"flag_logall": "Registrar verificações malsucedidas:",
 			"flag_private": "Respostas de comando privadas:",
