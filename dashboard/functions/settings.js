@@ -55,7 +55,7 @@ const fieldset = {
 	fieldlength: '<label for="wb-settings-fieldlength">Infobox field length:</label>'
 	+ '<input type="number" id="wb-settings-fieldlength" name="fieldlength" min="0" max="1000" inputmode="numeric">',
 	sectionlength: '<label for="wb-settings-sectionlength">Section length:</label>'
-	+ '<input type="number" id="wb-settings-sectionlength" name="sectionlength" min="0" max="1000" inputmode="numeric">',
+	+ '<input type="number" id="wb-settings-sectionlength" name="sectionlength" min="0" max="4000" inputmode="numeric">',
 	sectiondesclength: '<label for="wb-settings-sectiondesclength">Description length before section:</label>'
 	+ '<input type="number" id="wb-settings-sectiondesclength" name="sectiondesclength" min="0" max="4000" inputmode="numeric">',
 	subprefix: '<label class="wb-settings-subprefix-label" for="wb-settings-project-subprefix-"><kbd></kbd></label>'
@@ -199,13 +199,13 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
 		whitelist.find('#wb-settings-whitelist').attr('placeholder', dashboardLang.get('settings.form.whitelist_placeholder'));
 		if ( settings.whitelist ) {
 			whitelist.find('#wb-settings-whitelist-enabled').attr('checked', '');
-			whitelist.find('#wb-settings-whitelist').attr('rows', settings.whitelist.split('\n').length + 3).text(settings.whitelist + '\n');
+			whitelist.find('#wb-settings-whitelist').attr('rows', Math.max(settings.whitelist.split('\n').length + 2, 4)).text(settings.whitelist + '\n');
 			
 		}
 		else {
 			let whitelistText = ( allWikis || settings.wiki );
 			whitelist.find('#wb-settings-whitelist-hide').attr('style', 'display: none;');
-			whitelist.find('#wb-settings-whitelist').attr('disabled', '').attr('rows', whitelistText.split('\n').length + 3).text(whitelistText + '\n');
+			whitelist.find('#wb-settings-whitelist').attr('disabled', '').attr('rows', Math.max(whitelistText.split('\n').length + 2, 4)).text(whitelistText + '\n');
 		}
 		fields.push(whitelist);
 	}
@@ -442,11 +442,11 @@ function update_settings(res, userSettings, guild, type, settings) {
 		}
 		if ( settings.fieldcount ) {
 			settings.fieldcount = parseInt(settings.fieldcount, 10);
-			if ( settings.fieldcount > 4_000 ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
+			if ( settings.fieldcount > 25 ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.fieldlength ) {
 			settings.fieldlength = parseInt(settings.fieldlength, 10);
-			if ( settings.fieldlength > 4_000 ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
+			if ( settings.fieldlength > 1_000 ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		}
 		if ( settings.sectionlength ) {
 			settings.sectionlength = parseInt(settings.sectionlength, 10);

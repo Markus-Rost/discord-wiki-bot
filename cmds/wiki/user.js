@@ -52,13 +52,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
 					if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 				}
-				if ( querypage.extract ) {
-					var extract = extract_desc(querypage.extract, msg.embedLimits, fragment);
-					embed.backupDescription = extract[0];
-					if ( extract[1].length && extract[2].length ) {
-						embed.backupField = {name: extract[1], value: extract[2]};
-					}
-				}
+				if ( querypage.extract ) embed.backupDescription = extract_desc(querypage.extract, msg.embedLimits, fragment);
 				if ( querypage.pageprops && querypage.pageprops.description && msg.embedLimits.descLength ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
@@ -211,10 +205,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 						embed.backupDescription = description;
 					}
-					else if ( querypage.extract ) {
-						var extract = extract_desc(querypage.extract, msg.embedLimits);
-						embed.backupDescription = extract[0];
-					}
+					else if ( querypage.extract ) embed.backupDescription = extract_desc(querypage.extract, msg.embedLimits);
 				}
 				if ( blocks.length ) blocks.forEach( block => {
 					embed.addFields( {name: block.header, value: block.text} );
@@ -282,13 +273,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
 				if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 			}
-			if ( querypage.extract ) {
-				var extract = extract_desc(querypage.extract, msg.embedLimits, fragment);
-				embed.backupDescription = extract[0];
-				if ( extract[1].length && extract[2].length ) {
-					embed.backupField = {name: extract[1], value: extract[2]};
-				}
-			}
+			if ( querypage.extract ) embed.backupDescription = extract_desc(querypage.extract, msg.embedLimits, fragment);
 			if ( querypage.pageprops && querypage.pageprops.description && msg.embedLimits.descLength ) {
 				var description = htmlToDiscord( querypage.pageprops.description );
 				if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
@@ -494,10 +479,7 @@ export default function gamepedia_user(lang, msg, namespace, username, wiki, que
 						if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 						embed.backupDescription = description;
 					}
-					else if ( querypage.extract ) {
-						var extract = extract_desc(querypage.extract, msg.embedLimits);
-						embed.backupDescription = extract[0];
-					}
+					else if ( querypage.extract ) embed.backupDescription = extract_desc(querypage.extract, msg.embedLimits);
 				}
 			}
 			else {

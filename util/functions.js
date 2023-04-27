@@ -356,32 +356,32 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'h1' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				text += '***__';
+				text += '# ';
 			}
 			if ( tagname === 'h2' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				text += '**__';
+				text += '## ';
 			}
 			if ( tagname === 'h3' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				text += '**';
+				text += '### ';
 			}
 			if ( tagname === 'h4' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				text += '__';
+				text += '***__';
 			}
 			if ( tagname === 'h5' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				text += '*';
+				text += '**__';
 			}
 			if ( tagname === 'h6' ) {
 				text = text.replace( / +$/, '' );
 				if ( !text.endsWith( '\n' ) ) text += '\n';
-				text += '';
+				text += '**';
 			}
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
@@ -446,12 +446,12 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				if ( horizontalList ) text += ': ';
 			}
 			if ( tagname === horizontalList ) horizontalList = '';
-			if ( tagname === 'h1' ) text += '__***';
-			if ( tagname === 'h2' ) text += '__**';
-			if ( tagname === 'h3' ) text += '**';
-			if ( tagname === 'h4' ) text += '__';
-			if ( tagname === 'h5' ) text += '*';
-			if ( tagname === 'h6' ) text += '';
+			if ( tagname === 'h1' ) text += '';
+			if ( tagname === 'h2' ) text += '';
+			if ( tagname === 'h3' ) text += '';
+			if ( tagname === 'h4' ) text += '__***';
+			if ( tagname === 'h5' ) text += '__**';
+			if ( tagname === 'h6' ) text += '**';
 			if ( !pagelink ) return;
 			if ( tagname === 'a' && href ) {
 				if ( text.endsWith( '[' ) ) text = text.substring(0, text.length - 1);

@@ -118,13 +118,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 	if ( reaction ) reaction.removeEmoji();
 	var {descLength, fieldCount, fieldLength, sectionLength, sectionDescLength} = msg.embedLimits;
 	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description || ( !descLength && !fieldCount && !( fragment ? sectionLength : 0 ) ) ) {
-		if ( missing !== undefined && embed ) {
-			if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
-				embed.spliceFields( 0, 0, embed.backupField );
-			}
-			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
-				embed.setDescription( embed.backupDescription );
-			}
+		if ( missing !== undefined && embed?.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+			embed.setDescription( embed.backupDescription );
 		}
 		if ( isMessage(msg) ) return msg.sendChannel( {content, embeds: [embed]} );
 		else return Promise.resolve( {message: {content, embeds: [embed]}} );
@@ -149,9 +144,6 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( body && body.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.allmessages?.[0] ) {
 					console.log( '- ' + response.statusCode + ': Error while getting the system message: ' + body?.error?.info );
-					if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
-						embed.spliceFields( 0, 0, embed.backupField );
-					}
 					if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 						embed.setDescription( embed.backupDescription );
 					}
@@ -195,9 +187,6 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 			}, error => {
 				console.log( '- Error while getting the system message: ' + error );
-				if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
-					embed.spliceFields( 0, 0, embed.backupField );
-				}
 				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
@@ -220,9 +209,6 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			revision = ( revision?.slots?.main || revision );
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the page content: ' + ( body && body.error && body.error.info ) );
-				if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
-					embed.spliceFields( 0, 0, embed.backupField );
-				}
 				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
@@ -256,9 +242,6 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}, error => {
 			console.log( '- Error while getting the page content: ' + error );
-			if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
-				embed.spliceFields( 0, 0, embed.backupField );
-			}
 			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 				embed.setDescription( embed.backupDescription );
 			}
@@ -287,9 +270,6 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 				console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
-				if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
-					embed.spliceFields( 0, 0, embed.backupField );
-				}
 				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
@@ -458,152 +438,154 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
 				}
 			}
-			if ( fragment && sectionLength && getEmbedLength(embed) < ( 5_720 - sectionLength ) && ( embed.data.fields?.length ?? 0 ) < 25 &&
-			toSection(embed.data.fields?.[0]?.name.replace( /^\**_*(.*?)_*\**$/g, '$1' ), wiki.spaceReplacement) !== toSection(fragment, wiki.spaceReplacement) ) {
-				let newFragment = '';
-				let exactMatch = true;
-				let allSections = $('h1, h2, h3, h4, h5, h6').children('span');
-				var section = allSections.filter( (i, span) => {
-					return ( '#' + span.attribs.id === toSection(fragment, wiki.spaceReplacement) );
-				} ).parent();
-				if ( !section.length ) {
-					section = $('[id="' + toSection(fragment, wiki.spaceReplacement, false).replace( '#', '' ) + '"]');
-					newFragment = section.attr('id');
-					if ( section.is(':empty') ) {
+			if ( !embed.data.description ) {
+				var sectionDescription = '';
+				if ( fragment && sectionLength && getEmbedLength(embed) < ( 5_990 - sectionLength ) ) {
+					let newFragment = '';
+					let exactMatch = true;
+					let allSections = $('h1, h2, h3, h4, h5, h6').children('span');
+					var section = allSections.filter( (i, span) => {
+						return ( '#' + span.attribs.id === toSection(fragment, wiki.spaceReplacement) );
+					} ).parent();
+					if ( !section.length ) {
+						section = $('[id="' + toSection(fragment, wiki.spaceReplacement, false).replace( '#', '' ) + '"]');
+						newFragment = section.attr('id');
+						if ( section.is(':empty') ) {
+							section = section.parent();
+							if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
+								section = section.prev();
+								if ( section.children('span.mw-headline').first().attr('id') ) {
+									newFragment = section.children('span.mw-headline').first().attr('id');
+								}
+								else if ( section.children('span').first().attr('id') ) {
+									newFragment = section.children('span').first().attr('id');
+								}
+							}
+							else if ( ['h1','h2','h3','h4','h5','h6'].includes( section.next()[0]?.tagName ) ) {
+								section = section.next();
+								if ( section.children('span.mw-headline').first().attr('id') ) {
+									newFragment = section.children('span.mw-headline').first().attr('id');
+								}
+								else if ( section.children('span').first().attr('id') ) {
+									newFragment = section.children('span').first().attr('id');
+								}
+							}
+						}
+					}
+					if ( !section.length ) exactMatch = false;
+					if ( !section.length ) section = allSections.filter( (i, span) => {
+						return ( '#' + span.attribs.id?.toLowerCase() === toSection(fragment, wiki.spaceReplacement).toLowerCase() );
+					} );
+					if ( !section.length ) section = allSections.filter( (i, span) => {
+						return ( $(span).parent().prop('innerText').trim() === fragment );
+					} );
+					if ( !section.length ) section = allSections.filter( (i, span) => {
+						return ( $(span).parent().prop('innerText').trim().toLowerCase() === fragment.toLowerCase() );
+					} );
+					if ( !section.length ) section = allSections.filter( (i, span) => {
+						return $(span).parent().prop('innerText').toLowerCase().includes( fragment.toLowerCase() );
+					} );
+					if ( !exactMatch && section.length ) {
+						newFragment = section.attr('id');
 						section = section.parent();
-						if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
-							section = section.prev();
-							if ( section.children('span.mw-headline').first().attr('id') ) {
-								newFragment = section.children('span.mw-headline').first().attr('id');
-							}
-							else if ( section.children('span').first().attr('id') ) {
-								newFragment = section.children('span').first().attr('id');
-							}
-						}
-						else if ( ['h1','h2','h3','h4','h5','h6'].includes( section.next()[0]?.tagName ) ) {
-							section = section.next();
-							if ( section.children('span.mw-headline').first().attr('id') ) {
-								newFragment = section.children('span.mw-headline').first().attr('id');
-							}
-							else if ( section.children('span').first().attr('id') ) {
-								newFragment = section.children('span').first().attr('id');
-							}
-						}
 					}
-				}
-				if ( !section.length ) exactMatch = false;
-				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( '#' + span.attribs.id?.toLowerCase() === toSection(fragment, wiki.spaceReplacement).toLowerCase() );
-				} );
-				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( $(span).parent().prop('innerText').trim() === fragment );
-				} );
-				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return ( $(span).parent().prop('innerText').trim().toLowerCase() === fragment.toLowerCase() );
-				} );
-				if ( !section.length ) section = allSections.filter( (i, span) => {
-					return $(span).parent().prop('innerText').toLowerCase().includes( fragment.toLowerCase() );
-				} );
-				if ( !exactMatch && section.length ) {
-					newFragment = section.attr('id');
-					section = section.parent();
-				}
-				if ( section.length ) {
-					section = section.first();
-					var sectionLevel = section[0].tagName.replace('h', '');
-					if ( !['1','2','3','4','5','6'].includes( sectionLevel ) ) sectionLevel = '10';
-					var sectionContent = $('<div>').append(
-						section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
-					);
-					section.find('div, ' + removeClasses.join(', ')).remove();
-					extraImages.push(...new Set([
-						...sectionContent.find(infoboxList.join(', ')).find([
-							'tr:eq(1) img',
-							'div.images img',
-							'figure.pi-image img',
-							'div.infobox-imagearea img'
-						].join(', ')).toArray(),
-						...sectionContent.find([
-							'ul.gallery > li.gallerybox img',
-							'div.wikia-gallery > div.wikia-gallery-item img',
-							'div.ogv-gallery > div.ogv-gallery-item img'
-						].join(', ')).toArray()
-					].filter( img => {
-						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
-						if ( !imgURL ) return false;
-						return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
-					} ).map( img => {
-						if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
-						try {
+					if ( section.length ) {
+						section = section.first();
+						var sectionLevel = section[0].tagName.replace('h', '');
+						if ( !['1','2','3','4','5','6'].includes( sectionLevel ) ) sectionLevel = '10';
+						var sectionContent = $('<div>').append(
+							section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
+						);
+						section.find('div, ' + removeClasses.join(', ')).remove();
+						extraImages.push(...new Set([
+							...sectionContent.find(infoboxList.join(', ')).find([
+								'tr:eq(1) img',
+								'div.images img',
+								'figure.pi-image img',
+								'div.infobox-imagearea img'
+							].join(', ')).toArray(),
+							...sectionContent.find([
+								'ul.gallery > li.gallerybox img',
+								'div.wikia-gallery > div.wikia-gallery-item img',
+								'div.ogv-gallery > div.ogv-gallery-item img'
+							].join(', ')).toArray()
+						].filter( img => {
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
-							imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
-							return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
+							if ( !imgURL ) return false;
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						} ).map( img => {
+							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
+							try {
+								let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+								imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
+								return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
+							}
+							catch {
+								return null;
+							}
+						} ).filter( img => img )));
+						sectionContent.find(infoboxList.join(', ')).remove();
+						sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
+						var name = htmlToDiscord(section, embed.data.url).trim().replace( /\n+/g, ' ' );
+						if ( !name.length ) name = '### ' + escapeFormatting(fragment);
+						var value = htmlToDiscord(sectionContent, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
+						if ( value.length > sectionLength ) value = limitLength(value, sectionLength, 50);
+						if ( name.length && value.length ) {
+							sectionDescription = name + '\n' + value;
+							if ( sectionDescription.length > 4_000 ) sectionDescription = limitLength(sectionDescription, 4_000, 50);
+							embed.setDescription( sectionDescription );
+							if ( newFragment ) {
+								embed.setURL( pagelink.replaceSafe( toSection(fragment, wiki.spaceReplacement), toSection(newFragment, wiki.spaceReplacement) ) );
+								content = content.replaceSafe( '<' + pagelink + '>', '<' + embed.data.url + '>' );
+							}
 						}
-						catch {
-							return null;
-						}
-					} ).filter( img => img )));
-					sectionContent.find(infoboxList.join(', ')).remove();
-					sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
-					var name = htmlToPlain(section).trim();
-					if ( !name.length ) name = escapeFormatting(fragment);
-					if ( name.length > 250 ) name = name.substring(0, 250) + '\u2026';
-					var value = htmlToDiscord(sectionContent, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
-					if ( value.length > sectionLength ) value = limitLength(value, sectionLength, 20);
-					if ( name.length && value.length ) {
-						embed.spliceFields( 0, 0, {name, value} );
-						if ( newFragment ) {
-							embed.setURL( pagelink.replaceSafe( toSection(fragment, wiki.spaceReplacement), toSection(newFragment, wiki.spaceReplacement) ) );
-							content = content.replaceSafe( '<' + pagelink + '>', '<' + embed.data.url + '>' );
-						}
-					}
-					else if ( embed.backupField ) {
-						embed.spliceFields( 0, 0, embed.backupField );
 					}
 				}
-				else if ( embed.backupField ) {
-					embed.spliceFields( 0, 0, embed.backupField );
-				}
-			}
-			if ( !embed.data.description && descLength ) {
-				$(infoboxList.join(', ')).remove();
-				$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassesExceptions.join(', ')).remove();
-				let backupDescription = null;
-				if ( contentmodel !== 'wikitext' || disambiguation === undefined || fragment ) {
-					if ( !fragment && ns % 2 === 0 ) {
-						backupDescription = $('h1, h2, h3, h4, h5, h6').eq(0);
-						if ( backupDescription.length ) {
-							let backupDescriptionLevel = ['h1','h2','h3','h4','h5','h6'].slice(0, backupDescription[0].tagName.replace('h', '')).join(', ');
-							backupDescription = $('<div>').append(backupDescription, backupDescription.nextUntil(backupDescriptionLevel));
+				if ( descLength && ( !fragment || sectionDescLength ) ) {
+					$(infoboxList.join(', ')).remove();
+					$('div, ' + removeClasses.join(', '), $('.mw-parser-output')).not(removeClassesExceptions.join(', ')).remove();
+					let backupDescription = null;
+					if ( contentmodel !== 'wikitext' || disambiguation === undefined || fragment ) {
+						if ( !fragment && ns % 2 === 0 ) {
+							backupDescription = $('h1, h2, h3, h4, h5, h6').eq(0);
+							if ( backupDescription.length ) {
+								let backupDescriptionLevel = ['h1','h2','h3','h4','h5','h6'].slice(0, backupDescription[0].tagName.replace('h', '')).join(', ');
+								backupDescription = $('<div>').append(backupDescription, backupDescription.nextUntil(backupDescriptionLevel));
+							}
+							else backupDescription = null;
 						}
-						else backupDescription = null;
+						$('h1, h2, h3, h4, h5, h6').nextAll().remove();
+						$('h1, h2, h3, h4, h5, h6').remove();
 					}
-					$('h1, h2, h3, h4, h5, h6').nextAll().remove();
-					$('h1, h2, h3, h4, h5, h6').remove();
-				}
-				var description = htmlToDiscord($.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
-				if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
-				if ( description ) {
-					let embedLength = 5_950 - getEmbedLength(embed);
-					if ( disambiguation !== undefined && !fragment && descLength < 1_500 ) {
-						if ( description.length > Math.min(1_500, embedLength) ) description = limitLength(description, Math.min(1_500, embedLength), 50);
+					var description = htmlToDiscord($.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
+					if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
+					if ( description ) {
+						let freeEmbedLength = Math.min(5_950 - getEmbedLength(embed), 4_000 - sectionDescription.length);
+						if ( freeEmbedLength > 100 ) {
+							if ( disambiguation !== undefined && !fragment && descLength < 1_500 ) {
+								if ( description.length > Math.min(1_500, freeEmbedLength) ) {
+									description = limitLength(description, Math.min(1_500, freeEmbedLength), 50);
+								}
+							}
+							else if ( fragment ) {
+								if ( !sectionDescLength ) description = '';
+								else if ( description.length > Math.min(sectionDescLength, freeEmbedLength) ) {
+									description = limitLength(description, Math.min(sectionDescLength, freeEmbedLength), 50);
+								}
+							}
+							else if ( description.length > Math.min(descLength, freeEmbedLength) ) {
+								description = limitLength(description, Math.min(descLength, freeEmbedLength), 50);
+							}
+							if ( description ) embed.setDescription( description + '\n' + sectionDescription );
+						}
 					}
-					else if ( fragment ) {
-						if ( !sectionDescLength ) description = '';
-						else if ( description.length > Math.min(sectionDescLength, embedLength) ) description = limitLength(description, Math.min(sectionDescLength, embedLength), 50);
+					else if ( !sectionDescription && embed.backupDescription && getEmbedLength(embed) < ( 6_000 - embed.backupDescription.length ) ) {
+						embed.setDescription( embed.backupDescription );
 					}
-					else if ( description.length > Math.min(descLength, embedLength) ) description = limitLength(description, Math.min(descLength, embedLength), 50);
-					if ( description ) embed.setDescription( description );
-				}
-				else if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
-					embed.setDescription( embed.backupDescription );
 				}
 			}
 		}, error => {
 			console.log( '- Error while parsing the page: ' + error );
-			if ( embed.backupField && getEmbedLength(embed) < ( 6_000 - ( embed.backupField?.name ?? 250 ) - ( embed.backupField?.value ?? 1_000 ) ) && ( embed.data.fields?.length ?? 0 ) < 25 ) {
-				embed.spliceFields( 0, 0, embed.backupField );
-			}
 			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 				embed.setDescription( embed.backupDescription );
 			}

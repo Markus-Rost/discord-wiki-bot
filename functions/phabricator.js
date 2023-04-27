@@ -109,7 +109,9 @@ export default function phabricator_task(lang, msg, wiki, link, spoiler = '', no
 				var comment = tbody.result.data.find( transaction => '#' + transaction.id === link.hash );
 				if ( comment.type === 'comment' ) {
 					var content = parse_text( comment.comments[0].content.raw, site.href );
-					if ( content.length > msg.embedLimits.sectionLength ) content = limitLength(content, msg.embedLimits.sectionLength, 20);
+					if ( content.length > Math.min(msg.embedLimits.sectionLength, 1_000) ) {
+						content = limitLength(content, Math.min(msg.embedLimits.sectionLength, 1_000), 20);
+					}
 					embed.spliceFields( 0, 0, {name: lang.get('phabricator.comment'), value: content} );
 					if ( !msg.embedLimits.sectionDescLength ) embed.setDescription( null );
 					else if ( ( embed.data.description?.length ?? 0 ) > msg.embedLimits.sectionDescLength ) embed.setDescription( limitLength(description, msg.embedLimits.sectionDescLength, 50) );

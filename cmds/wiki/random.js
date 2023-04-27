@@ -85,13 +85,7 @@ export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noE
 			if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
 			if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 		}
-		if ( querypage.extract ) {
-			var extract = extract_desc(querypage.extract, msg.embedLimits, fragment);
-			embed.backupDescription = extract[0];
-			if ( extract[1].length && extract[2].length ) {
-				embed.backupField = {name: extract[1], value: extract[2]};
-			}
-		}
+		if ( querypage.extract ) embed.backupDescription = extract_desc(querypage.extract, msg.embedLimits, fragment);
 		if ( querypage.pageprops && querypage.pageprops.description && msg.embedLimits.descLength ) {
 			var description = htmlToDiscord( querypage.pageprops.description );
 			if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';

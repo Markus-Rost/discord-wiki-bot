@@ -131,7 +131,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
 			if ( ids.fromtexthidden === undefined && ids.totexthidden === undefined && ids['*'] !== undefined ) {
 				let more = '\n__' + lang.get('diff.info.more') + '__';
 				let whitespace = '__' + lang.get('diff.info.whitespace') + '__';
-				compare = diffParser( ids['*'], msg.embedLimits.sectionLength, more, whitespace );
+				compare = diffParser( ids['*'], Math.min(msg.embedLimits.sectionLength, 1_000), more, whitespace );
 			}
 			else if ( ids.fromtexthidden !== undefined ) compare[0] = '__' + lang.get('diff.hidden') + '__';
 			else if ( ids.totexthidden !== undefined ) compare[1] = '__' + lang.get('diff.hidden') + '__';
@@ -273,7 +273,7 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 							if ( !noerror ) console.log( '- ' + cpresponse.statusCode + ': Error while getting the diff: ' + ( cpbody && cpbody.error && cpbody.error.info ) );
 						}
 						else if ( cpbody.compare.fromtexthidden === undefined && cpbody.compare.totexthidden === undefined && cpbody.compare.fromarchive === undefined && cpbody.compare.toarchive === undefined ) {
-							let edit_diff = diffParser( cpbody.compare['*'], msg.embedLimits.sectionLength, more, whitespace )
+							let edit_diff = diffParser( cpbody.compare['*'], Math.min(msg.embedLimits.sectionLength, 1_000), more, whitespace )
 							if ( edit_diff[0].length ) {
 								embed.addFields( {name: lang.get('diff.info.removed'), value: edit_diff[0], inline: true} );
 							}
@@ -304,9 +304,9 @@ function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 					else if ( ( revisions[0]?.slots?.main || revisions[0] )['*'] ) {
 						var content = escapeFormatting( ( revisions[0]?.slots?.main || revisions[0] )['*'] );
 						if ( content.trim().length ) {
-							if ( content.length <= msg.embedLimits.sectionLength ) content = '**' + content + '**';
+							if ( content.length <= Math.min(msg.embedLimits.sectionLength, 1_000) ) content = '**' + content + '**';
 							else {
-								content = content.substring(0, msg.embedLimits.sectionLength - more.length);
+								content = content.substring(0, Math.min(msg.embedLimits.sectionLength, 1_000) - more.length);
 								content = '**' + content.substring(0, content.lastIndexOf('\n')) + '**' + more;
 							}
 							embed.addFields( {name: lang.get('diff.info.added'), value: content, inline: true} );

@@ -50,25 +50,34 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 				if ( rows.length ) {
 					let mainRow = rows.find( row => !row.channel );
 					mainRow.patreon = patreonGuildsPrefix.has(guild.id);
-					let subprefixes = {};
-					mainRow.subprefixes?.forEach( subprefix => subprefixes[subprefix[0]] = subprefix[1] );
-					mainRow.subprefixes = subprefixes;
+					if ( mainRow.subprefixes ) {
+						let subprefixes = {};
+						mainRow.subprefixes?.forEach( subprefix => subprefixes[subprefix[0]] = subprefix[1] );
+						mainRow.subprefixes = subprefixes;
+					}
+					else delete mainRow.subprefixes;
+					if ( mainRow.whitelist ) mainRow.whitelist = mainRow.whitelist.split('\n');
 					rows.filter( row => row.channel ).forEach( row => {
 						delete row.subprefixes;
 						delete row.whitelist;
+						if ( row.desclength === mainRow.desclength ) delete row.desclength;
+						if ( row.fieldcount === mainRow.fieldcount ) delete row.fieldcount;
+						if ( row.fieldlength === mainRow.fieldlength ) delete row.fieldlength;
+						if ( row.sectionlength === mainRow.sectionlength ) delete row.sectionlength;
+						if ( row.sectiondesclength === mainRow.sectiondesclength ) delete row.sectiondesclength;
 						if ( !mainRow.patreon ) {
 							if ( row.lang === mainRow.lang ) delete row.lang;
 							if ( row.role === mainRow.role ) delete row.role;
 							if ( row.inline === mainRow.inline ) delete row.inline;
 							if ( row.prefix === mainRow.prefix ) delete row.prefix;
-							if ( row.desclength === mainRow.desclength ) delete row.desclength;
-							if ( row.fieldcount === mainRow.fieldcount ) delete row.fieldcount;
-							if ( row.fieldlength === mainRow.fieldlength ) delete row.fieldlength;
-							if ( row.sectionlength === mainRow.sectionlength ) delete row.sectionlength;
-							if ( row.sectiondesclength === mainRow.sectiondesclength ) delete row.sectiondesclength;
 						}
 					} );
-					guildsettings[1] = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
+					if ( mainRow.desclength === null ) delete mainRow.desclength;
+					if ( mainRow.fieldcount === null ) delete mainRow.fieldcount;
+					if ( mainRow.fieldlength === null ) delete mainRow.fieldlength;
+					if ( mainRow.sectionlength === null ) delete mainRow.sectionlength;
+					if ( mainRow.sectiondesclength === null ) delete mainRow.sectiondesclength;
+					guildsettings[1] = '```json\n' + JSON.stringify( ( rows.length > 1 ? rows : mainRow ), null, '  ' ) + '\n```';
 				}
 				else guildsettings[1] = '*default*';
 			}, dberror => {
