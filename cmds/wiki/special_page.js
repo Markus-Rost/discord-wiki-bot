@@ -162,7 +162,7 @@ const descriptions = {
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, {general}, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
+export default function mw_special_page(lang, msg, {title, uselang = lang.lang}, specialpage, {general}, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
 	var embed = new EmbedBuilder().setAuthor( {name: general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink );
 	try {
@@ -212,7 +212,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 			if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 			embed.setDescription( description );
 		}
-		if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) && msg.embedLimits.fieldLength ) {
+		if ( msg.inGuild() && querypages.hasOwnProperty(specialpage) && msg.embedLimits.fieldLength ) {
 			var text = splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength: msg.embedLimits.fieldLength} )[0];
 			embed.addFields( {name: lang.get('search.special'), value: ( text || lang.get('search.empty') )} );
 			if ( body.query.querypage?.cached !== undefined ) {

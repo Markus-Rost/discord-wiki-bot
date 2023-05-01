@@ -5,7 +5,7 @@ import { got, toMarkdown, htmlToDiscord, escapeFormatting } from '../../util/fun
 import extract_desc from '../../util/extract_desc.js';
 
 /**
- * Sends a random Gamepedia page.
+ * Sends a random wiki page.
  * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the page.
@@ -17,7 +17,7 @@ import extract_desc from '../../util/extract_desc.js';
  * @param {String} [fragment] - The section for the link.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace, querystring = new URLSearchParams(), fragment = '') {
+export default function mw_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace, querystring = new URLSearchParams(), fragment = '') {
 	var uselang = lang.lang;
 	if ( querystring.has('variant') || querystring.has('uselang') ) {
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );

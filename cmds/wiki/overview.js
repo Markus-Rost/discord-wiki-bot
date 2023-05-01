@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
 
 /**
- * Sends a Gamepedia wiki overview.
+ * Sends a wiki overview.
  * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the overview.
@@ -17,7 +17,7 @@ const {timeoptions} = require('../../util/default.json');
  * @param {String} [specialpage] - The special page for the link.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '', specialpage = 'Statistics') {
+export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '', specialpage = 'Statistics') {
 	var uselang = lang.lang;
 	if ( querystring.has('variant') || querystring.has('uselang') ) {
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );

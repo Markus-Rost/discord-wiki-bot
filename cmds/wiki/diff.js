@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
 
 /**
- * Processes a Gamepedia edit.
+ * Processes a wiki edit.
  * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {String[]} args - The command arguments.
@@ -17,7 +17,7 @@ const {timeoptions} = require('../../util/default.json');
  * @param {EmbedBuilder} [embed] - The embed for the page.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, embed) {
+export default function mw_diff(lang, msg, args, wiki, spoiler, noEmbed, embed) {
 	if ( !args[0] ) {
 		if ( embed ) return Promise.resolve( {message: {
 			content: spoiler + '<' + embed.data.url + '>' + spoiler,
@@ -70,7 +70,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
 		} );
 	}
 	if ( diff ) {
-		return gamepedia_diff_send(lang, msg, [diff, revision], wiki, spoiler, noEmbed);
+		return mw_diff_send(lang, msg, [diff, revision], wiki, spoiler, noEmbed);
 	}
 	return got.get( wiki + 'api.php?action=compare&prop=ids|diff' + ( title ? '&fromtitle=' + encodeURIComponent( title ) : '&fromrev=' + revision ) + '&torelative=' + relative + '&format=json', {
 		context: {
@@ -136,7 +136,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
 			else if ( ids.fromtexthidden !== undefined ) compare[0] = '__' + lang.get('diff.hidden') + '__';
 			else if ( ids.totexthidden !== undefined ) compare[1] = '__' + lang.get('diff.hidden') + '__';
 		}
-		return gamepedia_diff_send(lang, msg, argids, wiki, spoiler, noEmbed, compare);
+		return mw_diff_send(lang, msg, argids, wiki, spoiler, noEmbed, compare);
 	}, error => {
 		if ( wiki.noWiki(error.message) ) {
 			console.log( '- This wiki doesn\'t exist!' );
@@ -153,7 +153,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
 }
 
 /**
- * Sends a Gamepedia edit.
+ * Sends a wiki edit.
  * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {String[]} args - The command arguments.
@@ -164,7 +164,7 @@ export default function gamepedia_diff(lang, msg, args, wiki, spoiler, noEmbed, 
  * @param {String[]} [compare] - The edit difference.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-function gamepedia_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
+function mw_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 	return got.get( wiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general&list=tags&tglimit=max&tgprop=displayname&prop=revisions&rvslots=main&rvprop=ids|timestamp|flags|user|size|parsedcomment|tags' + ( args.length === 1 || args[0] === args[1] ? '|content' : '' ) + '&revids=' + args.join('|') + '&format=json', {
 		context: {
 			guildId: msg.guildId

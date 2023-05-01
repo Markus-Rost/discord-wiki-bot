@@ -5,7 +5,7 @@ const require = createRequire(import.meta.url);
 const {limit: {search: searchLimit}} = require('../../util/default.json');
 
 /**
- * Searches a Gamepedia wiki.
+ * Searches a wiki.
  * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {String} searchterm - The searchterm.
@@ -16,7 +16,7 @@ const {limit: {search: searchLimit}} = require('../../util/default.json');
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_search(lang, msg, searchterm, wiki, query, reaction, spoiler, noEmbed) {
+export default function mw_search(lang, msg, searchterm, wiki, query, reaction, spoiler, noEmbed) {
 	if ( searchterm.length > 250 ) {
 		searchterm = searchterm.substring(0, 250);
 		msg?.fetchReply?.().then( message => message?.reactEmoji?.(WB_EMOJI.warning), log_error );

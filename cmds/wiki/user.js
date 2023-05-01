@@ -10,7 +10,7 @@ const require = createRequire(import.meta.url);
 const {timeoptions, usergroups} = require('../../util/default.json');
 
 /**
- * Processes a Gamepedia user.
+ * Processes a wiki user.
  * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {String} namespace - The user namespace on the wiki.
@@ -25,7 +25,7 @@ const {timeoptions, usergroups} = require('../../util/default.json');
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
+export default function mw_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
 	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
 		context: {
 			guildId: msg.guildId
