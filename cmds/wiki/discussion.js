@@ -38,7 +38,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 			if ( descresponse.statusCode !== 200 || !descbody ) {
 				return console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 			}
-			var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
+			var thumbnail = wiki.toLink('Special:FilePath/Site-community-image');
 			var parser = new HTMLParser( {
 				onopentag: (tagname, attribs) => {
 					if ( tagname === 'body' ) parser.pause(); // Prevent the parser from running too long
@@ -294,7 +294,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 							embed.setThumbnail( discussion._embedded.contentImages[0].url );
 						}
 					}
-					else embed.setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png') );
+					else embed.setThumbnail( wiki.toLink('Special:FilePath/Site-community-image') );
 				}
 				catch ( jsonerror ) {
 					console.log( '- Error while getting the formatting: ' + jsonerror );

@@ -2,3 +2,7 @@
 	path = RcGcDb
 	url = https://gitlab.com/chicken-riders/RcGcDb.git
 	branch = master
+[submodule "rcgcdw-buttons"]
+	path = RcGcDw_buttons
+	url = https://github.com/Markus-Rost/rcgcdw-buttons.git
+	branch = master

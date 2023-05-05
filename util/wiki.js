@@ -296,8 +296,6 @@ export default class Wiki extends URL {
 		try {
 			if ( input instanceof URL ) return new Wiki(input);
 			input = input.replace( /^(?:https?:)?\/\//, 'https://' );
-			let regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-			if ( regex ) return new Wiki('https://' + regex[1] + '/');
 			let project = inputToWikiProject(input);
 			if ( project ) return new Wiki(project.fullScriptPath);
 			let proxy = inputToFrontendProxy(input);

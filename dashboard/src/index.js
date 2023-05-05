@@ -171,7 +171,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 	if ( wikicheck && wikichecknotice ) {
 		wikicheck.onclick = function() {
 			var wikinew = wiki.value.replace( /^(?:https?:)?\/\//, '' );
-			var regex = wikinew.match( /^([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
+			var regex = wikinew.match( /^([a-z\d-]{1,50}\.fandom\.com(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?)(?:\/|$)/ );
 			if ( regex ) wikinew = regex[1];
 			else if ( !wiki.validity.valid ) return wiki.reportValidity();
 			else {

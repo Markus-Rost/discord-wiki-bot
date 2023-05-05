@@ -143,7 +143,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	let feeds = $('<div id="wb-settings-feeds-hide">').append(fieldset.feeds);
 	feeds.find('label').eq(0).text(dashboardLang.get('rcscript.form.feeds'));
 	feeds.find('label').eq(1).text(dashboardLang.get('rcscript.form.feeds_only'));
-	if ( /\.(?:fandom\.com|wikia\.org)$/.test(new URL(settings.wiki).hostname) ) {
+	if ( new URL(settings.wiki)?.hostname?.endsWith( '.fandom.com' ) ) {
 		if ( settings.postid !== '-1' ) {
 			feeds.find('#wb-settings-feeds').attr('checked', '');
 			if ( settings.rcid === -1 ) feeds.find('#wb-settings-feeds-only').attr('checked', '');
