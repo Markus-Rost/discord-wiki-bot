@@ -3,10 +3,10 @@ import gotDefault from 'got';
 const got = gotDefault.extend( {
 	throwHttpErrors: true,
 	timeout: {
-		request: 5_000
+		request: 3_000
 	},
 	headers: {
-		'user-agent': 'Wiki-Bot/' + ( isDebug ? 'testing' : process.env.npm_package_version ) + ' (Discord; ' + process.env.npm_package_name + ( process.env.invite ? '; ' + process.env.invite : '' ) + ')'
+		'user-agent': 'Wiki-Bot/internal'
 	},
 	responseType: 'json'
 } );
@@ -14,7 +14,7 @@ const got = gotDefault.extend( {
 const buttonsExists = existsSync('./RcGcDw_buttons/main.js');
 
 /**
- * @param {import('discord.js').ButtonInteraction<'cached'|'raw'>} interaction
+ * @param {import('discord.js').ButtonInteraction<'cached'|'raw'>|import('discord.js').ModalSubmitInteraction<'cached'|'raw'>} interaction
 */
 function rcscript_buttons(interaction) {
 	got.post( 'http://localhost:8000/interactions', {
@@ -31,7 +31,19 @@ function rcscript_buttons(interaction) {
 			guild_locale: interaction.guildLocale,
 			data: {
 				custom_id: interaction.customId.replace( 'rc_', '' ),
-				component_type: interaction.componentType
+				component_type: interaction.componentType,
+				components: interaction.components?.map( row => {
+					return {
+						type: row.type,
+						components: row.components.map( component => {
+							return {
+								type: component.type,
+								value: component.value,
+								custom_id: component.customId
+							};
+						} )
+					};
+				} )
 			},
 			message: ( interaction.message ? {
 				id: interaction.message.id,

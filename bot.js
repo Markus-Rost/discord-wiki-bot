@@ -220,7 +220,10 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 		}, [] ).map( option => {
 			return option.customId + ':' + option.value;
 		} ).join(' ') );
-		if ( !interaction_commands.modal.hasOwnProperty(interaction.customId) ) return;
+		if ( !interaction_commands.modal.hasOwnProperty(interaction.customId) ) {
+			if ( interaction.inGuild() && interaction.customId.startsWith( 'rc_' ) ) rcscriptButtons(interaction);
+			return;
+		}
 		cmd = interaction_commands.modal[interaction.customId];
 	}
 	else return;
