@@ -38,7 +38,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 			if ( descresponse.statusCode !== 200 || !descbody ) {
 				return console.log( '- ' + descresponse.statusCode + ': Error while getting the description.' );
 			}
-			var thumbnail = wiki.toLink('Special:FilePath/Wiki-wordmark.png');
+			var thumbnail = wiki.toLink('Special:FilePath/Site-community-image');
 			var parser = new HTMLParser( {
 				onopentag: (tagname, attribs) => {
 					if ( tagname === 'body' ) parser.pause(); // Prevent the parser from running too long
@@ -76,7 +76,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded['doc:posts'] ) {
-				console.log( '- ' + response.statusCode + ': Error while getting the posts: ' + ( body && body.title ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the posts: ' + body?.title );
 				return {
 					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki + 'f' + '>' + spoiler
@@ -100,13 +100,13 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 					} ).then( presponse => {
 						var pbody = presponse.body;
 						if ( presponse.statusCode !== 200 || !pbody || pbody.id !== title ) {
-							if ( pbody && pbody.title === 'The requested resource was not found.' ) {
+							if ( pbody?.title === 'The requested resource was not found.' ) {
 								if ( posts.some( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
 									return discussion_send(lang, msg, wiki, posts.find( post => post.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 								}
 								return {reaction: WB_EMOJI.shrug};
 							}
-							console.log( '- ' + presponse.statusCode + ': Error while getting the post: ' + ( pbody && pbody.title ) );
+							console.log( '- ' + presponse.statusCode + ': Error while getting the post: ' + pbody?.title );
 							return {
 								reaction: WB_EMOJI.error,
 								message: spoiler + '<' + wiki + 'f' + '>' + spoiler
@@ -125,7 +125,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 						} ).then( thresponse => {
 							var thbody = thresponse.body;
 							if ( thresponse.statusCode !== 200 || !thbody || thbody.id !== pbody.threadId ) {
-								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
+								console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + thbody?.title );
 								embed.setTitle( '~~' + pbody.threadId + '~~' );
 							}
 							else embed.setTitle( escapeFormatting(thbody.title) );
@@ -166,7 +166,7 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 	} ).then( response => {
 		var body = response.body;
 		if ( response.statusCode !== 200 || !body || body.title || !body._embedded || !body._embedded.threads ) {
-			console.log( '- ' + response.statusCode + ': Error while getting the threads: ' + ( body && body.title ) );
+			console.log( '- ' + response.statusCode + ': Error while getting the threads: ' + body?.title );
 			return {
 				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki + 'f' + '>' + spoiler
@@ -202,13 +202,13 @@ export default function fandom_discussion(lang, msg, wiki, title, sitename, spoi
 				} ).then( thresponse => {
 					var thbody = thresponse.body;
 					if ( thresponse.statusCode !== 200 || !thbody || thbody.id !== title ) {
-						if ( thbody && thbody.status === 404 ) {
+						if ( thbody?.status === 404 ) {
 							if (threads.some( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ) ) {
 								return discussion_send(lang, msg, wiki, threads.find( thread => thread.rawContent.toLowerCase().includes( title.toLowerCase() ) ), embed, spoiler, noEmbed);
 							}
 							return {reaction: WB_EMOJI.shrug};
 						}
-						console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + ( thbody && thbody.title ) );
+						console.log( '- ' + thresponse.statusCode + ': Error while getting the thread: ' + thbody?.title );
 						return {
 							reaction: WB_EMOJI.error,
 							message: spoiler + '<' + wiki + 'f/p/' + title + '>' + spoiler
@@ -294,7 +294,7 @@ function discussion_send(lang, msg, wiki, discussion, embed, spoiler, noEmbed) {
 							embed.setThumbnail( discussion._embedded.contentImages[0].url );
 						}
 					}
-					else embed.setThumbnail( wiki.toLink('Special:FilePath/Wiki-wordmark.png') );
+					else embed.setThumbnail( wiki.toLink('Special:FilePath/Site-community-image') );
 				}
 				catch ( jsonerror ) {
 					console.log( '- Error while getting the formatting: ' + jsonerror );

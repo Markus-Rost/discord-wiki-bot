@@ -42,10 +42,10 @@ const queryfunctions = {
 		return lang.get('diff.info.bytes', parseInt(result.value, 10).toLocaleString(lang.get('dateformat')), result.value) + ': [' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	redirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + escapeFormatting(result.databaseResult.rd_title) : '' );
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult?.rd_title ? ' → ' + escapeFormatting(result.databaseResult.rd_title) : '' );
 	} ).join('\n'),
 	doubleredirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + escapeFormatting(result.databaseResult.b_title) + ' → ' + escapeFormatting(result.databaseResult.c_title) : '' );
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult?.b_title && result.databaseResult?.c_title ? ' → ' + escapeFormatting(result.databaseResult.b_title) + ' → ' + escapeFormatting(result.databaseResult.c_title) : '' );
 	} ).join('\n'),
 	timestamp: (query, wiki, lang) => query.querypage.results.map( result => {
 		try {
@@ -162,7 +162,7 @@ const descriptions = {
  * @param {Boolean} noEmbed - If the response should be without an embed.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function special_page(lang, msg, {title, uselang = lang.lang}, specialpage, {general}, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
+export default function mw_special_page(lang, msg, {title, uselang = lang.lang}, specialpage, {general}, wiki, querystring, fragment, reaction, spoiler, noEmbed) {
 	var pagelink = wiki.toLink(title, querystring, fragment);
 	var embed = new EmbedBuilder().setAuthor( {name: general.sitename} ).setTitle( escapeFormatting(title) ).setURL( pagelink );
 	try {
@@ -186,9 +186,9 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {
-			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + ( body && body.error && body.error.info ) );
+			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + body?.error?.info );
 			return;
 		}
 		if ( body.query.pages?.['-1']?.title ) {
@@ -212,7 +212,7 @@ export default function special_page(lang, msg, {title, uselang = lang.lang}, sp
 			if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 			embed.setDescription( description );
 		}
-		if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) && querypages.hasOwnProperty(specialpage) && msg.embedLimits.fieldLength ) {
+		if ( msg.inGuild() && querypages.hasOwnProperty(specialpage) && msg.embedLimits.fieldLength ) {
 			var text = splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength: msg.embedLimits.fieldLength} )[0];
 			embed.addFields( {name: lang.get('search.special'), value: ( text || lang.get('search.empty') )} );
 			if ( body.query.querypage?.cached !== undefined ) {

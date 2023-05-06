@@ -37,7 +37,7 @@ export default function cmd_test(lang, msg, args, line, wiki) {
 			} ).then( response => {
 				var then = Date.now();
 				var body = response.body;
-				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( body?.warnings ) log_warning(body.warnings);
 				var ping = ( then - now ).toLocaleString(lang.get('dateformat')) + 'ms';
 				if ( body?.query?.general ) wiki.updateWiki(body.query.general);
 				var notice = [];

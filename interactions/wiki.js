@@ -126,7 +126,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
 				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
@@ -173,7 +173,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.random ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
 				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
@@ -226,7 +226,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general?.mainpage ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					return interaction.respond( [{
@@ -300,7 +300,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body?.linksuggest?.result?.suggestions ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				return interaction.respond( [{
@@ -355,7 +355,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || typeof body?.[1] !== 'object' ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				return interaction.respond( [{
@@ -368,7 +368,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
 				return option.name + ':' + option.value;
-			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body && body.error && body.error.info ) );
+			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + body?.error?.info );
 			return;
 		}
 		if ( !body[1].length ) return interaction.respond( [] ).catch(log_error);
@@ -442,7 +442,7 @@ function autocomplete_section(interaction, lang, wiki) {
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body?.parse?.sections ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				return interaction.respond( [{

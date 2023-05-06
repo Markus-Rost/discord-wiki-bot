@@ -167,7 +167,7 @@ function autocomplete_random(interaction, lang, wiki) {
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.namespaces ) {
 				if ( newWiki.noWiki(response.url, response.statusCode) ) {
 					return interaction.respond( [{

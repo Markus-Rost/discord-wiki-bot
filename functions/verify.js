@@ -50,7 +50,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
@@ -63,7 +63,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				result.content = lang.get('verify.user_missing_reply', escapeFormatting( old_username || username ));
 			}
 			else {
-				console.log( '- ' + response.statusCode + ': Error while getting the user: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the user: ' + body?.error?.info );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
 			}
@@ -441,9 +441,9 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			}
 		} ).then( mwresponse => {
 			var mwbody = mwresponse.body;
-			if ( mwbody && mwbody.warnings ) log_warning(mwbody.warnings);
+			if ( mwbody?.warnings ) log_warning(mwbody.warnings);
 			if ( mwresponse.statusCode !== 200 || mwbody?.batchcomplete === undefined || !mwbody?.query?.pages ) {
-				console.log( '- ' + mwresponse.statusCode + ': Error while getting the Discord tag: ' + ( mwbody && mwbody.error && mwbody.error.info ) );
+				console.log( '- ' + mwresponse.statusCode + ': Error while getting the Discord tag: ' + mwbody?.error?.info );
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
 				return;
@@ -748,7 +748,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users?.[0] ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );

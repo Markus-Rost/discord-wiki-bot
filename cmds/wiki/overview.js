@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
 
 /**
- * Sends a Gamepedia wiki overview.
+ * Sends a wiki overview.
  * @param {import('../../util/i18n.js').default} lang - The user language.
  * @param {import('discord.js').Message|import('discord.js').ChatInputCommandInteraction} msg - The Discord message.
  * @param {import('../../util/wiki.js').default} wiki - The wiki for the overview.
@@ -17,7 +17,7 @@ const {timeoptions} = require('../../util/default.json');
  * @param {String} [specialpage] - The special page for the link.
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
-export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '', specialpage = 'Statistics') {
+export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '', specialpage = 'Statistics') {
 	var uselang = lang.lang;
 	if ( querystring.has('variant') || querystring.has('uselang') ) {
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
@@ -29,14 +29,14 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				return {reaction: WB_EMOJI.nowiki};
 			}
 			else {
-				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + body?.error?.info );
 				return {
 					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink('Special:' + specialpage, querystring, fragment) + '>' + spoiler
@@ -130,6 +130,8 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 			var posts = [lang.get('overview.posts')];
 			var walls = [lang.get('overview.walls')];
 			var comments = [lang.get('overview.comments')];
+			var gamepedia = [lang.get('overview.gamepedia'), lang.get('overview.' + ( wiki.isGamepedia() ? 'yes' : 'no' ))];
+			var directedatchildren = [lang.get('overview.directedatchildren'), ( body.query.general.directedatchildren !== undefined ? lang.get('overview.yes') : '' )];
 			var manager = [lang.get('overview.manager'), ''];
 			var founder = [lang.get('overview.founder')];
 			var crossover = [lang.get('overview.crossover')];
@@ -152,7 +154,7 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 			} ).then( ovresponse => {
 				var ovbody = ovresponse.body;
 				if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[wikiid] ) {
-					console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
+					console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ovbody?.exception?.details );
 					return;
 				}
 				var site = ovbody.items[wikiid];
@@ -185,9 +187,9 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 						}
 					} ).then( usresponse => {
 						var usbody = usresponse.body;
-						if ( usbody && usbody.warnings ) log_warning(usbody.warnings);
+						if ( usbody?.warnings ) log_warning(usbody.warnings);
 						if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
-							console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + ( usbody && usbody.error && usbody.error.info ) );
+							console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + usbody?.error?.info );
 							founder[1] = escapeFormatting('ID: ' + founder[1]);
 						}
 						else {
@@ -250,8 +252,10 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 					]);
 					if ( manager[1] ) embed.addFields( {name: manager[0], value: manager[1], inline: true} );
 					if ( founder[1] ) embed.addFields( {name: founder[0], value: founder[1], inline: true} );
+					if ( directedatchildren[1] ) embed.addFields( {name: directedatchildren[0], value: directedatchildren[1], inline: true} );
 					if ( crossover[1] ) embed.addFields( {name: crossover[0], value: crossover[1], inline: true} );
 					embed.addFields(...[
+						{name: gamepedia[0], value: gamepedia[1], inline: true},
 						{name: license[0], value: license[1], inline: true},
 						{name: misermode[0], value: misermode[1], inline: true}
 					]).setFooter( {
@@ -274,8 +278,9 @@ export default function gamepedia_overview(lang, msg, wiki, spoiler, noEmbed, qu
 					text += '\n' + users.join(' ') + '\n' + admins.join(' ');
 					if ( manager[1] ) text += '\n' + manager.join(' ');
 					if ( founder[1] ) text += '\n' + founder.join(' ');
+					if ( directedatchildren[1] ) text += '\n' + directedatchildren.join(' ');
 					if ( crossover[1] ) text += '\n' + crossover.join(' ');
-					text += '\n' + license.join(' ') + '\n' + misermode.join(' ');
+					text += '\n' + gamepedia.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
 					if ( description[1] ) text += '\n' + description.join(' ');
 					if ( image[1] ) text += '\n' + image.join(' ');
 					if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );

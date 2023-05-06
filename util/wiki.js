@@ -4,6 +4,12 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, defaultNamespaces} = require('./default.json');
 
+/** @type {Map<String, String>} - Source wikis for global user pages. */
+const globalUserPage = new Map([
+	['wikimedia', 'https://meta.wikimedia.org/w/'],
+	['miraheze', 'https://login.miraheze.org/w/']
+]);
+
 /** @type {String[]} - Sites that support verification using OAuth2. */
 export const oauthSites = [];
 
@@ -127,6 +133,19 @@ export default class Wiki extends URL {
 	}
 	set mainpage(title) {
 		this.articleURL.mainpage = title;
+	}
+
+	/**
+	 * @type {Wiki?}
+	 */
+	#globalUserPage = null;
+	/**
+	 * @type {Wiki?}
+	 */
+	get globaluserpage() {
+		if ( !globalUserPage.has(this.wikifarm) ) return null;
+		if ( this.#globalUserPage ) return this.#globalUserPage;
+		return this.#globalUserPage = new Wiki(globalUserPage.get(this.wikifarm));
 	}
 
 	/**
@@ -296,8 +315,6 @@ export default class Wiki extends URL {
 		try {
 			if ( input instanceof URL ) return new Wiki(input);
 			input = input.replace( /^(?:https?:)?\/\//, 'https://' );
-			let regex = input.match( /^(?:https:\/\/)?([a-z\d-]{1,50}\.(?:gamepedia\.com|(?:fandom\.com|wikia\.org)(?:(?!\/(?:wiki|api)\/)\/[a-z-]{2,12})?))(?:\/|$)/ );
-			if ( regex ) return new Wiki('https://' + regex[1] + '/');
 			let project = inputToWikiProject(input);
 			if ( project ) return new Wiki(project.fullScriptPath);
 			let proxy = inputToFrontendProxy(input);

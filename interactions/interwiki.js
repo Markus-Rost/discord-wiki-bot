@@ -85,7 +85,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				return interaction.respond( [{

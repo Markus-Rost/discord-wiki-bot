@@ -6,6 +6,7 @@ import Lang from './util/i18n.js';
 import Wiki from './util/wiki.js';
 import { default as newMessage, defaultSettings } from './util/newMessage.js';
 import { breakOnTimeoutPause, allowDelete } from './util/functions.js';
+import rcscriptButtons from './functions/rcscript_buttons.js';
 
 const client = new Discord.Client( {
 	makeCache: Discord.Options.cacheWithLimits( {
@@ -207,7 +208,10 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 	}
 	else if ( interaction.isButton() ) {
 		if ( interaction.customId !== 'verify_again' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Button: ' + interaction.customId );
-		if ( !interaction_commands.button.hasOwnProperty(interaction.customId) ) return;
+		if ( !interaction_commands.button.hasOwnProperty(interaction.customId) ) {
+			if ( interaction.inGuild() && interaction.customId.startsWith( 'rc_' ) ) rcscriptButtons(interaction);
+			return;
+		}
 		cmd = interaction_commands.button[interaction.customId];
 	}
 	else if ( interaction.isModalSubmit() ) {
@@ -216,7 +220,10 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 		}, [] ).map( option => {
 			return option.customId + ':' + option.value;
 		} ).join(' ') );
-		if ( !interaction_commands.modal.hasOwnProperty(interaction.customId) ) return;
+		if ( !interaction_commands.modal.hasOwnProperty(interaction.customId) ) {
+			if ( interaction.inGuild() && interaction.customId.startsWith( 'rc_' ) ) rcscriptButtons(interaction);
+			return;
+		}
 		cmd = interaction_commands.modal[interaction.customId];
 	}
 	else return;

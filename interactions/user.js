@@ -32,7 +32,7 @@ function slash_user(interaction, lang, wiki) {
 				}
 			} ).then( response => {
 				var body = response.body;
-				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( body?.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query.pages ) {
 					if ( newWiki.noWiki(response.url, response.statusCode) ) {
 						console.log( '- This wiki doesn\'t exist!' );
@@ -166,7 +166,7 @@ function autocomplete_user(interaction, lang, wiki) {
 				}
 			} ).then( response => {
 				var body = response.body;
-				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( body?.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users?.[0] ) {
 					if ( newWiki.noWiki(response.url, response.statusCode) ) return Promise.reject('nowiki');
 					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
@@ -204,7 +204,7 @@ function autocomplete_user(interaction, lang, wiki) {
 				}
 			} ).then( response => {
 				var body = response.body;
-				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( body?.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 					if ( newWiki.noWiki(response.url, response.statusCode) ) return Promise.reject('nowiki');
 					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {

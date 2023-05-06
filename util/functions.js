@@ -399,14 +399,15 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 		},
 		ontext: (htmltext) => {
 			if ( !ignoredTag[0] ) {
-				if ( href && !code ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
 				if ( code ) text += htmltext.replaceAll( '`', 'ˋ' );
 				else {
 					htmltext = htmltext.replace( /[\r\n\t ]+/g, ' ' );
 					if ( /[\n ]$/.test(text) && htmltext.startsWith( ' ' ) ) {
 						htmltext = htmltext.replace( /^ +/, '' );
 					}
-					text += escapeFormatting(htmltext, ...escapeArgs);
+					htmltext = escapeFormatting(htmltext, ...escapeArgs);
+					if ( href ) htmltext = htmltext.replace( /[\[\]]/g, '\\$&' );
+					text += htmltext;
 				}
 			}
 		},
