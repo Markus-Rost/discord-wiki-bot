@@ -117,7 +117,7 @@ const removeClassesExceptions = [
 export default function parse_page(lang, msg, content, embed, wiki, reaction, {ns, title, contentmodel, pagelanguage, missing, known, pageprops: {infoboxes, disambiguation} = {}, uselang = lang.lang, noRedirect = false}, thumbnail = '', fragment = '', pagelink = '') {
 	if ( reaction ) reaction.removeEmoji();
 	var {descLength, fieldCount, fieldLength, sectionLength, sectionDescLength} = msg.embedLimits;
-	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( ns !== 8 || known === undefined ) ) || !embed || embed.data.description || ( !descLength && !fieldCount && !( fragment ? sectionLength : 0 ) ) ) {
+	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( known === undefined || ( ns !== 8 && !( ns === 2 && wiki === wiki.globaluserpage ) ) ) ) || !embed || embed.data.description || ( !descLength && !fieldCount && !( fragment ? sectionLength : 0 ) ) ) {
 		if ( missing !== undefined && embed?.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 			embed.setDescription( embed.backupDescription );
 		}

@@ -265,7 +265,21 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 		wiki.updateWiki(body.query.general);
 		var queryuser = body.query.users[0];
 		if ( queryuser.missing !== undefined || queryuser.invalid !== undefined || fragment ) {
-			if ( querypage.missing !== undefined || querypage.ns === -1 ) return {reaction: WB_EMOJI.shrug};
+			if ( querypage.missing !== undefined || querypage.ns === -1 ) {
+				if ( fragment && querypage.ns === 2 && querypage.known !== undefined && wiki.globaluserpage ) {
+					var pagelink = wiki.toLink(querypage.title, querystring, fragment);
+					var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
+					try {
+						embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
+
+						return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki.globaluserpage, reaction, querypage, new URL(body.query.general.logo, wiki).href, fragment, pagelink);
+					}
+					catch {
+						return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki.globaluserpage, reaction, querypage, '', fragment, pagelink);
+					}
+				}
+				return {reaction: WB_EMOJI.shrug};
+			}
 			var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 			var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
 			if ( querypage.pageprops?.displaytitle ) {
@@ -622,12 +636,12 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 						else text += '\n\n' + WB_EMOJI.loading + ' **' + lang.get('user.info.loading') + '**';
 					}
 					
-					return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage).then( message => {
+					return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), ( querypage.ns === 2 && querypage.known !== undefined && wiki.globaluserpage ) || wiki, reaction, querypage).then( message => {
 						if ( !message ) return;
 						return global_block(lang, ( isMessage(msg) ? message : msg ), username, text, ( noEmbed ? null : embed ), wiki, spoiler, queryuser.gender);
 					} );
 				}
-				else return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage);
+				else return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), ( querypage.ns === 2 && querypage.known !== undefined && wiki.globaluserpage ) || wiki, reaction, querypage);
 			} );
 			if ( body.query.pages ) {
 				let revision = Object.values(body.query.pages)[0]?.revisions?.[0];
@@ -660,7 +674,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
 			}
 			
-			return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage);
+			return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), ( querypage.ns === 2 && querypage.known !== undefined && wiki.globaluserpage ) || wiki, reaction, querypage);
 		} );
 	}, error => {
 		console.log( '- Error while getting the search results: ' + error );
