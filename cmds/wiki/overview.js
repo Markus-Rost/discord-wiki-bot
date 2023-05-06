@@ -130,6 +130,8 @@ export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystri
 			var posts = [lang.get('overview.posts')];
 			var walls = [lang.get('overview.walls')];
 			var comments = [lang.get('overview.comments')];
+			var gamepedia = [lang.get('overview.gamepedia'), lang.get('overview.' + ( wiki.isGamepedia() ? 'yes' : 'no' ))];
+			var directedatchildren = [lang.get('overview.directedatchildren'), ( body.query.general.directedatchildren !== undefined ? lang.get('overview.yes') : '' )];
 			var manager = [lang.get('overview.manager'), ''];
 			var founder = [lang.get('overview.founder')];
 			var crossover = [lang.get('overview.crossover')];
@@ -250,8 +252,10 @@ export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystri
 					]);
 					if ( manager[1] ) embed.addFields( {name: manager[0], value: manager[1], inline: true} );
 					if ( founder[1] ) embed.addFields( {name: founder[0], value: founder[1], inline: true} );
+					if ( directedatchildren[1] ) embed.addFields( {name: directedatchildren[0], value: directedatchildren[1], inline: true} );
 					if ( crossover[1] ) embed.addFields( {name: crossover[0], value: crossover[1], inline: true} );
 					embed.addFields(...[
+						{name: gamepedia[0], value: gamepedia[1], inline: true},
 						{name: license[0], value: license[1], inline: true},
 						{name: misermode[0], value: misermode[1], inline: true}
 					]).setFooter( {
@@ -274,8 +278,9 @@ export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystri
 					text += '\n' + users.join(' ') + '\n' + admins.join(' ');
 					if ( manager[1] ) text += '\n' + manager.join(' ');
 					if ( founder[1] ) text += '\n' + founder.join(' ');
+					if ( directedatchildren[1] ) text += '\n' + directedatchildren.join(' ');
 					if ( crossover[1] ) text += '\n' + crossover.join(' ');
-					text += '\n' + license.join(' ') + '\n' + misermode.join(' ');
+					text += '\n' + gamepedia.join(' ') + '\n' + license.join(' ') + '\n' + misermode.join(' ');
 					if ( description[1] ) text += '\n' + description.join(' ');
 					if ( image[1] ) text += '\n' + image.join(' ');
 					if ( readonly[1] ) text += '\n\n' + ( readonly[0] === '\u200b' ? readonly[1] : readonly.join('\n') );
