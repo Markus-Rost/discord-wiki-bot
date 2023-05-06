@@ -33,9 +33,9 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 	} ).then( response => {
 		logging(wiki, msg.guildId, 'user', 'ip');
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.blocks || fragment ) {
-			if ( body && body.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) || fragment ) {
+			if ( body?.error && ( body.error.code === 'param_ip' || body.error.code === 'cidrtoobroad' ) || fragment ) {
 				if ( querypage.missing !== undefined || querypage.ns === -1 ) return {reaction: WB_EMOJI.error};
 				var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 				var embed = new EmbedBuilder().setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
@@ -47,13 +47,13 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					}
 					catch {}
 				}
-				if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
+				if ( querypage.pageprops?.displaytitle ) {
 					var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 					if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
 					if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 				}
 				if ( querypage.extract ) embed.backupDescription = extract_desc(querypage.extract, msg.embedLimits, fragment);
-				if ( querypage.pageprops && querypage.pageprops.description && msg.embedLimits.descLength ) {
+				if ( querypage.pageprops?.description && msg.embedLimits.descLength ) {
 					var description = htmlToDiscord( querypage.pageprops.description );
 					if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 					embed.backupDescription = description;
@@ -61,7 +61,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				if ( querypage.pageimage && querypage.original ) {
 					embed.setThumbnail( querypage.original.source );
 				}
-				else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
+				else if ( querypage.pageprops?.page_image_free ) {
 					embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
 				}
 				
@@ -72,7 +72,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					return parse_page(lang, msg, spoiler + '<' + pagelink + '>' + spoiler, ( noEmbed ? null : embed ), wiki, reaction, querypage, '', fragment, pagelink);
 				}
 			}
-			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
+			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 			return {
 				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(( querypage.noRedirect ? namespace : contribs ) + username, querystring, fragment) + '>' + spoiler
@@ -179,10 +179,10 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 		} ).then( ucresponse => {
 			var ucbody = ucresponse.body;
 			if ( rangeprefix && !username.includes( '/' ) ) username = rangeprefix;
-			if ( ucbody && ucbody.warnings ) log_warning(ucbody.warnings);
+			if ( ucbody?.warnings ) log_warning(ucbody.warnings);
 			if ( ucresponse.statusCode !== 200 || !ucbody || ucbody.batchcomplete === undefined || !ucbody.query || !ucbody.query.usercontribs ) {
-				if ( ucbody && ucbody.error && ucbody.error.code === 'baduser_ucuser' ) return {reaction: WB_EMOJI.error};
-				console.log( '- ' + ucresponse.statusCode + ': Error while getting the search results: ' + ( ucbody && ucbody.error && ucbody.error.info ) );
+				if ( ucbody?.error?.code === 'baduser_ucuser' ) return {reaction: WB_EMOJI.error};
+				console.log( '- ' + ucresponse.statusCode + ': Error while getting the search results: ' + ucbody?.error?.info );
 				return {
 					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler
@@ -200,7 +200,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( username ).setURL( pagelink ).addFields( {name: editcount[0], value: editcount[1], inline: true} );
 				embed.forceTitle = true;
 				if ( msg.embedLimits.descLength ) {
-					if ( querypage.pageprops && querypage.pageprops.description ) {
+					if ( querypage.pageprops?.description ) {
 						var description = htmlToDiscord( querypage.pageprops.description );
 						if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 						embed.backupDescription = description;
@@ -254,9 +254,9 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.users || !body.query.users[0] ) {
-			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
+			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 			return {
 				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(namespace + username, querystring, fragment) + '>' + spoiler
@@ -268,13 +268,13 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 			if ( querypage.missing !== undefined || querypage.ns === -1 ) return {reaction: WB_EMOJI.shrug};
 			var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 			var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
-			if ( querypage.pageprops && querypage.pageprops.displaytitle ) {
+			if ( querypage.pageprops?.displaytitle ) {
 				var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';
 				if ( displaytitle.trim() ) embed.setTitle( displaytitle );
 			}
 			if ( querypage.extract ) embed.backupDescription = extract_desc(querypage.extract, msg.embedLimits, fragment);
-			if ( querypage.pageprops && querypage.pageprops.description && msg.embedLimits.descLength ) {
+			if ( querypage.pageprops?.description && msg.embedLimits.descLength ) {
 				var description = htmlToDiscord( querypage.pageprops.description );
 				if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 				embed.backupDescription = description;
@@ -283,7 +283,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				if ( querypage.pageimage && querypage.original ) {
 					embed.setThumbnail( querypage.original.source );
 				}
-				else if ( querypage.pageprops && querypage.pageprops.page_image_free ) {
+				else if ( querypage.pageprops?.page_image_free ) {
 					embed.setThumbnail( wiki.toLink('Special:FilePath/' + querypage.pageprops.page_image_free, {version:Date.now()}) );
 				}
 				else embed.setThumbnail( new URL(body.query.general.logo, wiki).href );
@@ -351,7 +351,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 			}
 		} ).then( gresponse => {
 			var gbody = gresponse.body;
-			if ( gbody && gbody.warnings ) log_warning(gbody.warnings);
+			if ( gbody?.warnings ) log_warning(gbody.warnings);
 			if ( gresponse.statusCode !== 200 || !gbody || gbody.batchcomplete === undefined || !gbody?.query?.allmessages?.length ) {
 				console.log( '- ' + gresponse.statusCode + ': Error while getting the group names: ' + gbody?.error?.info );
 				return;
@@ -474,7 +474,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				]);
 				
 				if ( msg.embedLimits.descLength ) {
-					if ( querypage.pageprops && querypage.pageprops.description ) {
+					if ( querypage.pageprops?.description ) {
 						var description = htmlToDiscord( querypage.pageprops.description );
 						if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 						embed.backupDescription = description;
@@ -553,7 +553,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				} ).then( cpresponse => {
 					var cpbody = cpresponse.body;
 					if ( cpresponse.statusCode !== 200 || !cpbody || cpbody.error || cpbody.errormsg || !cpbody.profile ) {
-						console.log( '- ' + cpresponse.statusCode + ': Error while getting the user profile: ' + ( cpbody && ( cpbody.error && cpbody.error.info || cpbody.errormsg ) ) );
+						console.log( '- ' + cpresponse.statusCode + ': Error while getting the user profile: ' + ( cpbody?.error?.info || cpbody?.errormsg ) );
 						return;
 					}
 					if ( cpbody.profile['link-discord']?.trim() ) {
@@ -580,7 +580,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 						} ).then( favresponse => {
 							var favbody = favresponse.body;
 							if ( favresponse.statusCode !== 200 || !favbody?.result === 'success' || !favbody.data ) {
-								console.log( '- ' + favresponse.statusCode + ': Error while getting the favorite wiki: ' + ( favbody && ( favbody.error && favbody.error.info || favbody.errormsg ) ) );
+								console.log( '- ' + favresponse.statusCode + ': Error while getting the favorite wiki: ' + ( favbody?.error?.info || favbody?.errormsg ) );
 								return;
 							}
 							var favwiki = [

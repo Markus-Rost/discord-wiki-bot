@@ -27,17 +27,17 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
-				if ( body && body.errorMessages ) {
+				if ( body?.errorMessages ) {
 					if ( body.errorMessages.includes( 'Issue Does Not Exist' ) ) {
 						return {reaction: WB_EMOJI.shrug};
 					}
 					if ( body.errorMessages.includes( 'You do not have the permission to see the specified issue.' ) ) {
 						return {message: spoiler + lang.get('minecraft.private') + '\n<' + baseBrowseUrl + invoke + '>' + spoiler};
 					}
-					console.log( '- ' + ( response && response.statusCode ) + ': Error while getting the issue: ' + body.errorMessages.join(' - ') );
+					console.log( '- ' + response.statusCode + ': Error while getting the issue: ' + body.errorMessages.join(' - ') );
 					return {reaction: WB_EMOJI.error};
 				}
-				console.log( '- ' + response.statusCode + ': Error while getting the issue: ' + ( body && body.message ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the issue: ' + body?.message );
 				if ( body && body['status-code'] === 404 ) return {reaction: WB_EMOJI.error};
 				return {
 					reaction: WB_EMOJI.error,
@@ -74,7 +74,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			}
 			var status = ( body.fields.resolution ? body.fields.resolution.name : body.fields.status.name );
 			var fixed = '';
-			if ( body.fields.resolution && body.fields.fixVersions && body.fields.fixVersions.length ) {
+			if ( body.fields.resolution && body.fields.fixVersions?.length ) {
 				fixed = '\n' + lang.get('minecraft.fixed', body.fields.fixVersions.length) + ' ' + body.fields.fixVersions.map( v => v.name ).join(', ');
 			}
 			return {message: {
@@ -89,7 +89,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 			};
 		} );
 	}
-	if ( invoke && invoke.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
+	if ( invoke?.toLowerCase() === 'version' && args.length && args.join(' ').length < 100 ) {
 		var jql = new URLSearchParams({
 			jql: 'fixVersion="' + args.join(' ').replace( /["\\]/g, '\\$&' ) + '" order by key'
 		});
@@ -101,14 +101,14 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body['status-code'] === 404 || body.errorMessages || body.errors ) {
-				if ( body && body.errorMessages ) {
+				if ( body?.errorMessages ) {
 					if ( body.errorMessages.includes( 'The value \'' + args.join(' ') + '\' does not exist for the field \'fixVersion\'.' ) ) {
 						return {reaction: WB_EMOJI.shrug};
 					}
 					console.log( '- ' + response.statusCode + ': Error while getting the issues: ' + body.errorMessages.join(' - ') );
 					return {reaction: WB_EMOJI.error};
 				}
-				console.log( '- ' + response.statusCode + ': Error while getting the issues: ' + ( body && body.message ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the issues: ' + body?.message );
 				if ( body && body['status-code'] === 404 ) return {reaction: WB_EMOJI.error};
 				return {
 					reaction: WB_EMOJI.error,

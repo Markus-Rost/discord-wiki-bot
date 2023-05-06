@@ -29,14 +29,14 @@ export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystri
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query || !body.query.pages ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				return {reaction: WB_EMOJI.nowiki};
 			}
 			else {
-				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the statistics: ' + body?.error?.info );
 				return {
 					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink('Special:' + specialpage, querystring, fragment) + '>' + spoiler
@@ -152,7 +152,7 @@ export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystri
 			} ).then( ovresponse => {
 				var ovbody = ovresponse.body;
 				if ( ovresponse.statusCode !== 200 || !ovbody || ovbody.exception || !ovbody.items || !ovbody.items[wikiid] ) {
-					console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ( ovbody && ovbody.exception && ovbody.exception.details ) );
+					console.log( '- ' + ovresponse.statusCode + ': Error while getting the wiki details: ' + ovbody?.exception?.details );
 					return;
 				}
 				var site = ovbody.items[wikiid];
@@ -185,9 +185,9 @@ export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystri
 						}
 					} ).then( usresponse => {
 						var usbody = usresponse.body;
-						if ( usbody && usbody.warnings ) log_warning(usbody.warnings);
+						if ( usbody?.warnings ) log_warning(usbody.warnings);
 						if ( usresponse.statusCode !== 200 || !usbody || !usbody.query || !usbody.query.users || !usbody.query.users[0] ) {
-							console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + ( usbody && usbody.error && usbody.error.info ) );
+							console.log( '- ' + usresponse.statusCode + ': Error while getting the wiki founder: ' + usbody?.error?.info );
 							founder[1] = escapeFormatting('ID: ' + founder[1]);
 						}
 						else {

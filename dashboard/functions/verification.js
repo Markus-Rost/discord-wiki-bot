@@ -998,10 +998,10 @@ function update_notices(res, userSettings, guild, type, settings) {
 	if ( settings.channel && !/^\d+$/.test(settings.channel) ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
-	if ( settings.success && settings.success.trim().length > 1000 ) {
+	if ( settings.success?.trim().length > 1000 ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
-	if ( settings.match && settings.match.trim().length > 1000 ) {
+	if ( settings.match?.trim().length > 1000 ) {
 		return res(`/guild/${guild}/verification/${type}`, 'savefail');
 	}
 	settings.channel = ( settings.channel || null );

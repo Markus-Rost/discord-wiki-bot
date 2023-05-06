@@ -78,10 +78,10 @@ export default function mw_diff(lang, msg, args, wiki, spoiler, noEmbed, embed) 
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || !body.compare ) {
 			var noerror = false;
-			if ( body && body.error ) {
+			if ( body?.error ) {
 				switch ( body.error.code ) {
 					case 'nosuchrevid':
 						noerror = true;
@@ -112,7 +112,7 @@ export default function mw_diff(lang, msg, args, wiki, spoiler, noEmbed, embed) 
 					}
 				};
 			}
-			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
+			console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 			return {
 				reaction: WB_EMOJI.error,
 				message: spoiler + '<' + wiki.toLink(title, ( title ? {diff} : {diff,oldid:revision} )) + '>' + spoiler
@@ -171,14 +171,14 @@ function mw_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
 			if ( wiki.noWiki(response.url, response.statusCode) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 				return {reaction: WB_EMOJI.nowiki};
 			}
 			else {
-				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the search results: ' + body?.error?.info );
 				return {
 					reaction: WB_EMOJI.error,
 					message: spoiler + '<' + wiki.toLink('Special:Diff/' + ( args[1] ? args[1] + '/' : '' ) + args[0]) + '>' + spoiler
@@ -255,10 +255,10 @@ function mw_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 						}
 					} ).then( cpresponse => {
 						var cpbody = cpresponse.body;
-						if ( cpbody && cpbody.warnings ) log_warning(cpbody.warnings);
+						if ( cpbody?.warnings ) log_warning(cpbody.warnings);
 						if ( cpresponse.statusCode !== 200 || !cpbody || !cpbody.compare || cpbody.compare['*'] === undefined ) {
 							var noerror = false;
-							if ( cpbody && cpbody.error ) {
+							if ( cpbody?.error ) {
 								switch ( cpbody.error.code ) {
 									case 'nosuchrevid':
 										noerror = true;
@@ -270,7 +270,7 @@ function mw_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 										noerror = false;
 								}
 							}
-							if ( !noerror ) console.log( '- ' + cpresponse.statusCode + ': Error while getting the diff: ' + ( cpbody && cpbody.error && cpbody.error.info ) );
+							if ( !noerror ) console.log( '- ' + cpresponse.statusCode + ': Error while getting the diff: ' + cpbody?.error?.info );
 						}
 						else if ( cpbody.compare.fromtexthidden === undefined && cpbody.compare.totexthidden === undefined && cpbody.compare.fromarchive === undefined && cpbody.compare.toarchive === undefined ) {
 							let edit_diff = diffParser( cpbody.compare['*'], Math.min(msg.embedLimits.sectionLength, 1_000), more, whitespace )

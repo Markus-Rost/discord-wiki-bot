@@ -409,7 +409,7 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || !body || body.error ) {
-				console.log( '- ' + response.statusCode + ': Error while posting statistics to BotBlock.org: ' + ( body && body.message ) );
+				console.log( '- ' + response.statusCode + ': Error while posting statistics to BotBlock.org: ' + body?.message );
 				return;
 			}
 			for ( let [key, value] of Object.entries(body.failure) ) {

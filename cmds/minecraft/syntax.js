@@ -44,9 +44,9 @@ function minecraft_syntax(lang, msg, wiki, mccmd, args, title, cmd, reaction, sp
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !( body?.query?.pages || body?.parse?.sections?.length ) ) {
-				console.log( '- ' + response.statusCode + ': Error while getting the command page: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the command page: ' + body?.error?.info );
 			}
 			else if ( cmdpage.endsWith( '/' ) ) {
 				if ( body.query.pages['-1'] ) {

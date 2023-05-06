@@ -141,7 +141,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 			} ).then( response => {
 				var body = response.body;
-				if ( body && body.warnings ) log_warning(body.warnings);
+				if ( body?.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.allmessages?.[0] ) {
 					console.log( '- ' + response.statusCode + ': Error while getting the system message: ' + body?.error?.info );
 					if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
@@ -204,11 +204,11 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		} ).then( response => {
 			var body = response.body;
-			if ( body && body.warnings ) log_warning(body.warnings);
+			if ( body?.warnings ) log_warning(body.warnings);
 			var revision = Object.values(( body?.query?.pages || {} ))?.[0]?.revisions?.[0];
 			revision = ( revision?.slots?.main || revision );
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
-				console.log( '- ' + response.statusCode + ': Error while getting the page content: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while getting the page content: ' + body?.error?.info );
 				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}

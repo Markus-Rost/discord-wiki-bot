@@ -174,7 +174,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					msg.reactEmoji(WB_EMOJI.nowiki);
 					return;
 				}
-				console.log( '- ' + response.statusCode + ': Error while following the links: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while following the links: ' + body?.error?.info );
 				return;
 			}
 			wiki.updateWiki(body.query.general);
@@ -233,7 +233,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 					msg.reactEmoji(WB_EMOJI.nowiki);
 					return;
 				}
-				console.log( '- ' + response.statusCode + ': Error while following the links: ' + ( body && body.error && body.error.info ) );
+				console.log( '- ' + response.statusCode + ': Error while following the links: ' + body?.error?.info );
 				return;
 			}
 			wiki.updateWiki(body.query.general);

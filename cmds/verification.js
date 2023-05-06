@@ -40,7 +40,7 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji(WB_EMOJI.wikibot).setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/verification`, process.env.dashboard).href);
 			components.push(new ActionRowBuilder().addComponents(button));
 		}
-		if ( args[0] && args[0].toLowerCase() === 'add' ) {
+		if ( args[0]?.toLowerCase() === 'add' ) {
 			var limit = verificationLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
 			if ( rows.length >= limit ) return msg.replyMsg( lang.get('verification.max_entries'), true );
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
@@ -227,10 +227,10 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 					}
 				} ).then( response => {
 					var body = response.body;
-					if ( body && body.warnings ) log_warning(body.warnings);
+					if ( body?.warnings ) log_warning(body.warnings);
 					if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.allmessages ) {
 						if ( wiki.noWiki(response.url, response.statusCode) ) console.log( '- This wiki doesn\'t exist!' );
-						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + ( body && body.error && body.error.info ) );
+						else console.log( '- ' + response.statusCode + ': Error while getting the usergroups: ' + body?.error?.info );
 						return;
 					}
 					var groups = body.query.allmessages.filter( group => {

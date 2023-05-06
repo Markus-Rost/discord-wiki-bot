@@ -42,10 +42,10 @@ const queryfunctions = {
 		return lang.get('diff.info.bytes', parseInt(result.value, 10).toLocaleString(lang.get('dateformat')), result.value) + ': [' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, '', '', true) + '>)';
 	} ).join('\n'),
 	redirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult && result.databaseResult.rd_title ? ' → ' + escapeFormatting(result.databaseResult.rd_title) : '' );
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult?.rd_title ? ' → ' + escapeFormatting(result.databaseResult.rd_title) : '' );
 	} ).join('\n'),
 	doubleredirect: (query, wiki) => query.querypage.results.map( result => {
-		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult && result.databaseResult.b_title && result.databaseResult.c_title ? ' → ' + escapeFormatting(result.databaseResult.b_title) + ' → ' + escapeFormatting(result.databaseResult.c_title) : '' );
+		return '[' + escapeFormatting(result.title) + '](<' + wiki.toLink(result.title, 'redirect=no', '', true) + '>)' + ( result.databaseResult?.b_title && result.databaseResult?.c_title ? ' → ' + escapeFormatting(result.databaseResult.b_title) + ' → ' + escapeFormatting(result.databaseResult.c_title) : '' );
 	} ).join('\n'),
 	timestamp: (query, wiki, lang) => query.querypage.results.map( result => {
 		try {
@@ -186,9 +186,9 @@ export default function mw_special_page(lang, msg, {title, uselang = lang.lang},
 		}
 	} ).then( response => {
 		var body = response.body;
-		if ( body && body.warnings ) log_warning(body.warnings);
+		if ( body?.warnings ) log_warning(body.warnings);
 		if ( response.statusCode !== 200 || body?.batchcomplete === undefined ) {
-			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + ( body && body.error && body.error.info ) );
+			console.log( '- ' + response.statusCode + ': Error while getting the special page: ' + body?.error?.info );
 			return;
 		}
 		if ( body.query.pages?.['-1']?.title ) {
