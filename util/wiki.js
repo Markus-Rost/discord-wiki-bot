@@ -4,10 +4,10 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, defaultNamespaces} = require('./default.json');
 
-/** @type {Map<String, Wiki>} - Source wikis for global user pages. */
-export const globalUserPage = new Map([
-	['wikimedia', new Wiki('https://meta.wikimedia.org/w/')],
-	['miraheze', new Wiki('https://login.miraheze.org/w/')]
+/** @type {Map<String, String>} - Source wikis for global user pages. */
+const globalUserPage = new Map([
+	['wikimedia', 'https://meta.wikimedia.org/w/'],
+	['miraheze', 'https://login.miraheze.org/w/']
 ]);
 
 /** @type {String[]} - Sites that support verification using OAuth2. */
@@ -138,9 +138,14 @@ export default class Wiki extends URL {
 	/**
 	 * @type {Wiki?}
 	 */
+	#globalUserPage = null;
+	/**
+	 * @type {Wiki?}
+	 */
 	get globaluserpage() {
 		if ( !globalUserPage.has(this.wikifarm) ) return null;
-		return globalUserPage.get(this.wikifarm);
+		if ( this.#globalUserPage ) return this.#globalUserPage;
+		return this.#globalUserPage = new Wiki(globalUserPage.get(this.wikifarm));
 	}
 
 	/**
