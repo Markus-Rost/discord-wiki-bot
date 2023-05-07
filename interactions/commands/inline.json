@@ -17,7 +17,8 @@
 		"es-ES": "inline",
 		"pt-BR": "inline",
 		"ja": "inline",
-		"el": "inline"
+		"el": "inline",
+		"fr": "inline"
 	},
 	"description": "Post a message with inline wiki links.",
 	"description_localizations": {
@@ -59,7 +60,8 @@
 				"es-ES": "texto",
 				"pt-BR": "texto",
 				"ja": "text",
-				"el": "κείμενο"
+				"el": "κείμενο",
+				"fr": "text"
 			},
 			"description": "Text including wikitext links.",
 			"description_localizations": {

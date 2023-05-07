@@ -13,7 +13,8 @@
 		"el": "patreon",
 		"pt-BR": "patreon",
 		"en-GB": "patreon",
-		"en-US": "patreon"
+		"en-US": "patreon",
+		"fr": "patreon"
 	},
 	"description": "Check or change your servers with patreon features enabled.",
 	"description_localizations": {
@@ -47,7 +48,8 @@
 				"el": "έλεγχος",
 				"pt-BR": "verificar",
 				"en-GB": "check",
-				"en-US": "check"
+				"en-US": "check",
+				"fr": "check"
 			},
 			"description": "Check your current list of servers with patreon features enabled.",
 			"description_localizations": {
@@ -79,7 +81,8 @@
 				"el": "ενεργοποίηση",
 				"pt-BR": "ativar",
 				"en-GB": "enable",
-				"en-US": "enable"
+				"en-US": "enable",
+				"fr": "enable"
 			},
 			"description": "Enable the patreon features for a server.",
 			"description_localizations": {
@@ -110,7 +113,8 @@
 						"el": "συντεχνία",
 						"pt-BR": "servidor",
 						"en-GB": "guild",
-						"en-US": "guild"
+						"en-US": "guild",
+						"fr": "guild"
 					},
 					"description": "The server to enable patreon features for.",
 					"description_localizations": {
@@ -147,7 +151,8 @@
 				"el": "απενεργοποίηση",
 				"pt-BR": "desativar",
 				"en-GB": "disable",
-				"en-US": "disable"
+				"en-US": "disable",
+				"fr": "disable"
 			},
 			"description": "Disable the patreon features for a server.",
 			"description_localizations": {
@@ -178,7 +183,8 @@
 						"el": "συντεχνία",
 						"pt-BR": "servidor",
 						"en-GB": "guild",
-						"en-US": "guild"
+						"en-US": "guild",
+						"fr": "guild"
 					},
 					"description": "The server to disable patreon features for.",
 					"description_localizations": {

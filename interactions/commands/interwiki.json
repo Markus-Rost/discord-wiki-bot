@@ -14,7 +14,8 @@
 		"el": "interwiki",
 		"pt-BR": "interwiki",
 		"en-GB": "interwiki",
-		"en-US": "interwiki"
+		"en-US": "interwiki",
+		"fr": "interwiki"
 	},
 	"description": "Post a link to a different wiki.",
 	"description_localizations": {
@@ -50,7 +51,8 @@
 				"el": "wiki",
 				"pt-BR": "wiki",
 				"en-GB": "wiki",
-				"en-US": "wiki"
+				"en-US": "wiki",
+				"fr": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -65,7 +67,8 @@
 				"el": "To wiki προς αναζήτηση.",
 				"pt-BR": "A wiki a ser pesquisada.",
 				"en-GB": "The wiki to search in.",
-				"en-US": "The wiki to search in."
+				"en-US": "The wiki to search in.",
+				"fr": "Le wiki dans lequel chercher."
 			},
 			"required": true,
 			"autocomplete": true
@@ -85,7 +88,8 @@
 				"el": "τίτλος",
 				"pt-BR": "título",
 				"en-GB": "title",
-				"en-US": "title"
+				"en-US": "title",
+				"fr": "title"
 			},
 			"description": "Page title to search for.",
 			"description_localizations": {
@@ -122,7 +126,8 @@
 				"el": "τομέας",
 				"pt-BR": "seção",
 				"en-GB": "section",
-				"en-US": "section"
+				"en-US": "section",
+				"fr": "section"
 			},
 			"description": "Page section to link to.",
 			"description_localizations": {
@@ -159,7 +164,8 @@
 				"el": "ερώτημα",
 				"pt-BR": "query",
 				"en-GB": "query",
-				"en-US": "query"
+				"en-US": "query",
+				"fr": "query"
 			},
 			"description": "Query arguments to add to the link.",
 			"description_localizations": {
@@ -195,7 +201,8 @@
 				"el": "ιδιωτικό",
 				"pt-BR": "privado",
 				"en-GB": "private",
-				"en-US": "private"
+				"en-US": "private",
+				"fr": "private"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -229,7 +236,8 @@
 				"el": "noembed",
 				"pt-BR": "sem_embed",
 				"en-GB": "noembed",
-				"en-US": "noembed"
+				"en-US": "noembed",
+				"fr": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -263,7 +271,8 @@
 				"el": "σπόιλερ",
 				"pt-BR": "spoiler",
 				"en-GB": "spoiler",
-				"en-US": "spoiler"
+				"en-US": "spoiler",
+				"fr": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {

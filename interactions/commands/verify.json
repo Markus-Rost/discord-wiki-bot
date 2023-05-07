@@ -17,7 +17,8 @@
 		"es-ES": "verificar",
 		"pt-BR": "verificar",
 		"ja": "verify",
-		"el": "επιβεβαίωση"
+		"el": "επιβεβαίωση",
+		"fr": "verify"
 	},
 	"description": "Verify your Discord account with your wiki account.",
 	"description_localizations": {
@@ -59,7 +60,8 @@
 				"es-ES": "nombre_de_usuario",
 				"pt-BR": "nomedeusuario",
 				"ja": "username",
-				"el": "username"
+				"el": "username",
+				"fr": "username"
 			},
 			"description": "Your username on the wiki.",
 			"description_localizations": {

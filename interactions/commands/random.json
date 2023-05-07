@@ -13,7 +13,8 @@
 		"pt-BR": "aleatório",
 		"en-GB": "random",
 		"en-US": "random",
-		"ja": "random"
+		"ja": "random",
+		"fr": "random"
 	},
 	"description": "Post a random wiki link.",
 	"description_localizations": {
@@ -48,7 +49,8 @@
 				"pt-BR": "wiki",
 				"en-GB": "wiki",
 				"en-US": "wiki",
-				"ja": "wiki"
+				"ja": "wiki",
+				"fr": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -63,7 +65,8 @@
 				"pt-BR": "A wiki a ser pesquisada.",
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
-				"ja": "検索対象となるWiki。"
+				"ja": "検索対象となるWiki。",
+				"fr": "Le wiki dans lequel chercher."
 			},
 			"required": false,
 			"autocomplete": true
@@ -82,7 +85,8 @@
 				"pt-BR": "espaço_nominal",
 				"en-GB": "namespace",
 				"en-US": "namespace",
-				"ja": "namespace"
+				"ja": "namespace",
+				"fr": "namespace"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {
@@ -96,7 +100,8 @@
 				"pt-BR": "Os espaços nominais a serem pesquisados.",
 				"en-GB": "The namespaces to search in.",
 				"en-US": "The namespaces to search in.",
-				"ja": "検索対象となる名前空間。"
+				"ja": "検索対象となる名前空間。",
+				"fr": "L'espace de noms dans lequel la recherche doit être effectuée."
 			},
 			"required": false,
 			"autocomplete": true
@@ -116,7 +121,8 @@
 				"el": "ιδιωτικό",
 				"pt-BR": "privado",
 				"en-GB": "private",
-				"en-US": "private"
+				"en-US": "private",
+				"fr": "private"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -131,7 +137,8 @@
 				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
 				"pt-BR": "Deseja que a resposta seja privada?",
 				"en-GB": "Send a response only visible to yourself?",
-				"en-US": "Send a response only visible to yourself?"
+				"en-US": "Send a response only visible to yourself?",
+				"fr": "Envoyer une réponse uniquement visible par vous-même ?"
 			},
 			"required": false
 		},
@@ -150,7 +157,8 @@
 				"el": "noembed",
 				"pt-BR": "sem_embed",
 				"en-GB": "noembed",
-				"en-US": "noembed"
+				"en-US": "noembed",
+				"fr": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -165,7 +173,8 @@
 				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
 				"pt-BR": "Enviar o link sem a pré-visualização?",
 				"en-GB": "Send only the link without embed?",
-				"en-US": "Send only the link without embed?"
+				"en-US": "Send only the link without embed?",
+				"fr": "Envoyer uniquement le lien sans inclusion ?"
 			},
 			"required": false
 		},
@@ -184,7 +193,8 @@
 				"el": "σπόιλερ",
 				"pt-BR": "spoiler",
 				"en-GB": "spoiler",
-				"en-US": "spoiler"
+				"en-US": "spoiler",
+				"fr": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -199,7 +209,8 @@
 				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
 				"pt-BR": "Ocultar o link como spoiler?",
 				"en-GB": "Hide the link and embed in a spoiler?",
-				"en-US": "Hide the link and embed in a spoiler?"
+				"en-US": "Hide the link and embed in a spoiler?",
+				"fr": "Cacher le lien et l'inclure dans un spoiler ?"
 			},
 			"required": false
 		}

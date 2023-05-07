@@ -14,7 +14,8 @@
 		"el": "ανασκόπηση",
 		"pt-BR": "visão_geral",
 		"en-GB": "overview",
-		"en-US": "overview"
+		"en-US": "overview",
+		"fr": "overview"
 	},
 	"description": "Post a wiki overview.",
 	"description_localizations": {
@@ -50,7 +51,8 @@
 				"el": "wiki",
 				"pt-BR": "wiki",
 				"en-GB": "wiki",
-				"en-US": "wiki"
+				"en-US": "wiki",
+				"fr": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -85,7 +87,8 @@
 				"el": "ιδιωτικό",
 				"pt-BR": "privado",
 				"en-GB": "private",
-				"en-US": "private"
+				"en-US": "private",
+				"fr": "private"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -119,7 +122,8 @@
 				"el": "noembed",
 				"pt-BR": "sem_embed",
 				"en-GB": "noembed",
-				"en-US": "noembed"
+				"en-US": "noembed",
+				"fr": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -153,7 +157,8 @@
 				"el": "σπόιλερ",
 				"pt-BR": "spoiler",
 				"en-GB": "spoiler",
-				"en-US": "spoiler"
+				"en-US": "spoiler",
+				"fr": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
