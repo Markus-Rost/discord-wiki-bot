@@ -496,6 +496,7 @@
 		"audit_reason_edit": "Webhook perubahan terbaru yang diperbarui",
 		"blocked": "Wiki ini telah diblokir agar tidak ditambahkan sebagai webhook perubahan terbaru!",
 		"blocked_reason": "Wiki ini telah diblokir agar tidak ditambahkan sebagai webhook perubahan terbaru untuk `$1`!",
+		"buttons": "Tombol tindakan:",
 		"channel": "Saluran:",
 		"current": "Ini adalah webhook perubahan terbaru saat ini untuk server ini:",
 		"current_display": "Mode tampilan untuk webhook ini adalah:",
@@ -545,6 +546,9 @@
 			"blocked_reason": "Webhook perubahan terbaru ini akan dihapus karena wiki telah diblokir untuk `$1`!",
 			"created": "Webhook perubahan terbaru untuk $1 telah ditambahkan ke saluran ini.",
 			"dashboard": {
+				"buttons_changed": "• Tindakan tombol telah diubah menjadi $1.",
+				"buttons_disabled": "• Tindakan tombol telah dinonaktifkan.",
+				"buttons_enabled": "• Tindakan tombol telah diaktifkan untuk $1.",
 				"channel": "• Webhook telah dipindahkan ke saluran ini.",
 				"disabled_feeds": "• Perubahan berbasis feed, seperti diskusi, dinding pesan, dan komentar artikel, telah dinonaktifkan.",
 				"disabled_rc": "• Perubahan wiki telah dinonaktifkan.",
