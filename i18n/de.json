@@ -496,6 +496,7 @@
 		"audit_reason_edit": "Letzte Änderungen-WebHook aktualisiert",
 		"blocked": "Diese Wiki wurde davon gesperrt als Letzte Änderungen-WebHook hinzugefügt zu werden!",
 		"blocked_reason": "Diese Wiki wurde wegen `$1` davon gesperrt als Letzte Änderungen-WebHook hinzugefügt zu werden!",
+		"buttons": "Knopf-Aktionen:",
 		"channel": "Kanal:",
 		"current": "Dies sind die aktuellen Letzte Änderungen-WebHooks für diesen Server:",
 		"current_display": "Der Anzeigemodus für diesen WebHook ist:",
@@ -545,6 +546,9 @@
 			"blocked_reason": "Dieser Letzte Änderungen-WebHook wird gelöscht, da das Wiki wegen `$1` gesperrt wurde!",
 			"created": "Ein Letzte Änderungen-WebHook für $1 wurde zu diesem Kanal hinzugefügt.",
 			"dashboard": {
+				"buttons_changed": "• Die Knopf-Aktionen wurden zu $1 geändert.",
+				"buttons_disabled": "• Die Knopf-Aktionen wurden deaktiviert.",
+				"buttons_enabled": "• Die Knopf-Aktionen wurden für $1 aktiviert.",
 				"channel": "• Der WebHook wurde in diesen Kanal verschoben.",
 				"disabled_feeds": "• Die Feeds-basierten Änderungen, wie Diskussionen, Nachrichtenseiten und Artikelkommentare, wurden deaktiviert.",
 				"disabled_rc": "• Die Wiki-Änderungen wurden deaktiviert.",
