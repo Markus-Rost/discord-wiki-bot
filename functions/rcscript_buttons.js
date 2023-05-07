@@ -11,7 +11,7 @@ const got = gotDefault.extend( {
 	responseType: 'json'
 } );
 
-const buttonsExists = existsSync('./RcGcDw_buttons/main.js');
+const buttonsExists = ( process.env.buttons_token && existsSync('./RcGcDw_buttons/main.js') );
 
 /**
  * @param {import('discord.js').ButtonInteraction<'cached'|'raw'>|import('discord.js').ModalSubmitInteraction<'cached'|'raw'>} interaction
