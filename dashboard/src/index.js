@@ -317,6 +317,10 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 			const feedsonly = document.getElementById('wb-settings-feeds-only');
 			/** @type {HTMLDivElement} */
 			const hidefeedsonly = document.getElementById('wb-settings-feeds-only-hide');
+			/** @type {HTMLDivElement} */
+			const hidebuttons = document.getElementById('wb-settings-buttons-hide');
+			/** @type {HTMLCollectionOf<HTMLInputElement>} */
+			const buttons = document.getElementsByClassName('wb-settings-buttons-input');
 			feeds.addEventListener( 'change', function() {
 				if ( this.checked ) {
 					hidefeedsonly.style.visibility = '';
@@ -329,6 +333,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 			} );
 			wiki.addEventListener( 'input', function() {
 				if ( this.validity.valid && this.value.split('/')[2].endsWith( '.fandom.com' ) ) {
+					hidefeeds.style.display = '';
 					hidefeeds.style.visibility = '';
 					feeds.disabled = false;
 					if ( !hidefeedsonly.style.visibility ) feedsonly.disabled = false;
@@ -337,6 +342,15 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 					hidefeeds.style.visibility = 'hidden';
 					feeds.disabled = true;
 					feedsonly.disabled = true;
+				}
+				if ( this.validity.valid && this.value.split('/')[2].endsWith( '.miraheze.org' ) ) {
+					hidebuttons.style.display = '';
+					hidebuttons.style.visibility = '';
+					for ( var b = 0; b < buttons.length; b++ ) buttons[b].disabled = false;
+				}
+				else {
+					hidebuttons.style.visibility = 'hidden';
+					for ( var b = 0; b < buttons.length; b++ ) buttons[b].disabled = true;
 				}
 			} );
 		}

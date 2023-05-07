@@ -330,7 +330,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 							msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 								webhook.send( webhook_lang.get('updated_wiki', body.query.general.sitename) + '\n<' + wikinew.toLink(body.query.pages['-1'].title) + ( enableFeeds ? '>\n<' + wikinew + 'f' : '' ) + '>' ).catch(log_error);
 							}, log_error );
-							db.query( 'UPDATE rcgcdw SET wiki = $1, rcid = $2, postid = $3 WHERE webhook = $4', [wikinew.href, null, ( enableFeeds ? null : '-1' ), selected_row.webhook] ).then( () => {
+							db.query( 'UPDATE rcgcdw SET wiki = $1, rcid = $2, postid = $3, buttons = $4 WHERE webhook = $5', [wikinew.href, null, ( enableFeeds ? null : '-1' ), null, selected_row.webhook] ).then( () => {
 								console.log( '- RcGcDw successfully updated.' );
 								if ( reaction ) reaction.removeEmoji();
 								msg.replyMsg( {content: lang.get('rcscript.updated_wiki') + ' <' + wikinew + '>\n`' + cmd + '`', components}, true );

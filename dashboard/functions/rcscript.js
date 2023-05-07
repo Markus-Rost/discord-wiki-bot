@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
 import Lang from '../../util/i18n.js';
 import Wiki from '../../util/wiki.js';
@@ -7,12 +8,37 @@ const require = createRequire(import.meta.url);
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../../util/default.json');
 const allLangs = Lang.allLangs(true).names;
 
+const buttonsExists = existsSync('./RcGcDw_buttons/main.js');
+
 const display_types = [
 	'compact',
 	'embed',
 	'image',
 	'diff'
 ];
+
+const button_types = [
+	'block',
+	'delete',
+	'filerevert',
+	'move',
+	'rollback',
+	'undo'
+];
+
+/**
+ * @param {String} wiki
+ * @returns {Boolean}
+ */
+function canButtons(wiki) {
+	if ( !buttonsExists ) return false;
+	try {
+		return new URL(wiki)?.hostname?.endsWith( '.miraheze.org' );
+	}
+	catch {
+		return false;
+	}
+}
 
 const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
@@ -36,22 +62,42 @@ const fieldset = {
 	display: '<span>Display mode:</span>'
 	+ '<div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-0" name="display" value="0" required>'
-	+ '<label for="wb-settings-display-0" class="radio-label">Compact text messages with inline links.</label>'
+	+ '<label for="wb-settings-display-0" class="button-label">Compact text messages with inline links.</label>'
 	+ '</div><div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-1" name="display" value="1" required>'
-	+ '<label for="wb-settings-display-1" class="radio-label">Embed messages with edit tags and category changes.</label>'
+	+ '<label for="wb-settings-display-1" class="button-label">Embed messages with edit tags and category changes.</label>'
 	+ '</div><div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-2" name="display" value="2" required>'
-	+ '<label for="wb-settings-display-2" class="radio-label">Embed messages with image previews.</label>'
+	+ '<label for="wb-settings-display-2" class="button-label">Embed messages with image previews.</label>'
 	+ '</div><div class="wb-settings-display">'
 	+ '<input type="radio" id="wb-settings-display-3" name="display" value="3" required>'
-	+ '<label for="wb-settings-display-3" class="radio-label">Embed messages with image previews and edit differences.</label>'
+	+ '<label for="wb-settings-display-3" class="button-label">Embed messages with image previews and edit differences.</label>'
 	+ '</div>',
 	feeds: '<label for="wb-settings-feeds">Feeds based changes:</label>'
 	+ '<input type="checkbox" id="wb-settings-feeds" name="feeds">'
 	+ '<div id="wb-settings-feeds-only-hide">'
 	+ '<label for="wb-settings-feeds-only">Only feeds based changes:</label>'
 	+ '<input type="checkbox" id="wb-settings-feeds-only" name="feeds_only">'
+	+ '</div>',
+	buttons: '<span>Button actions:</span>'
+	+ '<div class="wb-settings-buttons">'
+	+ '<input type="checkbox" id="wb-settings-buttons-block" class="wb-settings-buttons-input" name="buttons" value="block">'
+	+ '<label for="wb-settings-buttons-block" class="button-label">Block the user.</label>'
+	+ '</div><div class="wb-settings-buttons">'
+	+ '<input type="checkbox" id="wb-settings-buttons-delete" class="wb-settings-buttons-input" name="buttons" value="delete">'
+	+ '<label for="wb-settings-buttons-delete" class="button-label">Delete the page.</label>'
+	+ '</div><div class="wb-settings-buttons">'
+	+ '<input type="checkbox" id="wb-settings-buttons-filerevert" class="wb-settings-buttons-input" name="buttons" value="filerevert">'
+	+ '<label for="wb-settings-buttons-filerevert" class="button-label">Revert to the last file version.</label>'
+	+ '</div><div class="wb-settings-buttons">'
+	+ '<input type="checkbox" id="wb-settings-buttons-move" class="wb-settings-buttons-input" name="buttons" value="move">'
+	+ '<label for="wb-settings-buttons-move" class="button-label">Revert the move.</label>'
+	+ '</div><div class="wb-settings-buttons">'
+	+ '<input type="checkbox" id="wb-settings-buttons-rollback" class="wb-settings-buttons-input" name="buttons" value="rollback">'
+	+ '<label for="wb-settings-buttons-rollback" class="button-label">Rollback the last edits on the page by the user.</label>'
+	+ '</div><div class="wb-settings-buttons">'
+	+ '<input type="checkbox" id="wb-settings-buttons-undo" class="wb-settings-buttons-input" name="buttons" value="undo">'
+	+ '<label for="wb-settings-buttons-undo" class="button-label">Undo the page edit.</label>'
 	+ '</div>',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
 	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings" formnovalidate>'
@@ -68,6 +114,7 @@ const fieldset = {
  * @param {String} settings.wiki
  * @param {String} settings.lang
  * @param {Number} settings.display
+ * @param {String} [settings.buttons]
  * @param {Number} [settings.rcid]
  * @param {String} [settings.postid]
  * @param {import('../util.js').Channel[]} guildChannels - The guild channels
@@ -155,6 +202,25 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 		feeds.find('#wb-settings-feeds-only-hide').attr('style', 'visibility: hidden;');
 	}
 	fields.push(feeds);
+	if ( buttonsExists ) {
+		let buttons = $('<div id="wb-settings-buttons-hide">').append(fieldset.buttons);
+		buttons.find('span').text(dashboardLang.get('rcscript.form.buttons')).prepend(
+			$('<small class="beta-flag">').text(dashboardLang.get('general.beta')), ' '
+		).attr('title', dashboardLang.get('general.betadesc'));
+		buttons.find('label').eq(0).text(dashboardLang.get('rcscript.form.buttons_block'));
+		buttons.find('label').eq(1).text(dashboardLang.get('rcscript.form.buttons_delete'));
+		buttons.find('label').eq(2).text(dashboardLang.get('rcscript.form.buttons_filerevert'));
+		buttons.find('label').eq(3).text(dashboardLang.get('rcscript.form.buttons_move'));
+		buttons.find('label').eq(4).text(dashboardLang.get('rcscript.form.buttons_rollback'));
+		buttons.find('label').eq(5).text(dashboardLang.get('rcscript.form.buttons_undo'));
+		if ( settings.buttons ) settings.buttons.split('|').forEach( button => {
+			buttons.find(`#wb-settings-buttons-${button}`).attr('checked', '');
+		} );
+		if ( !canButtons(settings.wiki) ) {
+			buttons.attr('style', 'display: none;');
+		}
+		fields.push(buttons);
+	}
 	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
 	if ( settings.channel && curChannel && hasPerm(curChannel.userPermissions, PermissionFlagsBits.ManageWebhooks) ) {
 		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('rcscript.form.confirm').replaceAll( '\'', '\\$&' )}');`));
@@ -180,7 +246,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
  * @param {import('../i18n.js').default} dashboardLang - The user language
  */
 function dashboard_rcscript(res, $, guild, args, dashboardLang) {
-	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
+	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, buttons, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
 			$('#text .description').html(dashboardLang.get('rcscript.explanation'));
@@ -288,6 +354,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
  * @param {Number} settings.display
  * @param {String} [settings.feeds]
  * @param {String} [settings.feeds_only]
+ * @param {String?} settings.buttons
  * @param {String} [settings.save_settings]
  * @param {String} [settings.delete_settings]
  */
@@ -306,6 +373,9 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 			return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 		}
 		settings.display = parseInt(settings.display, 10);
+		settings.buttons = settings.buttons?.split('|').filter( button => {
+			return ( buttonsExists && button_types.includes( button ) );
+		} ).sort().join('|') || null;
 		if ( type === 'new' && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
 			return ( channel.id === settings.channel && !channel.isForum && !channel.isCategory );
 		} ) ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
@@ -426,7 +496,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								if ( configid === i ) configid++;
 								else break;
 							}
-							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, rcid, postid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
+							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, buttons, rcid, postid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( canButtons(wiki) ? settings.buttons : null ), ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( `- Dashboard: RcGcDw successfully added: ${guild}#${configid}` );
 								res(`/guild/${guild}/rcscript/${configid}`, 'save');
 								var text = lang.get('rcscript.dashboard.added', `<@${userSettings.user.id}>`, configid);
@@ -436,6 +506,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								text += `\n${lang.get('rcscript.display')} \`${display_types[settings.display]}\``;
 								if ( enableFeeds && settings.feeds_only ) text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
 								if ( wiki.wikifarm === 'fandom' ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
+								if ( canButtons(wiki) && settings.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${settings.buttons.split('|').join('`, `')}\``;
 								text += `\n<${new URL(`/guild/${guild}/rcscript/${configid}`, process.env.dashboard).href}>`;
 								sendMsg( {
 									type: 'notifyGuild', guild, text,
@@ -476,7 +547,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	} );
 	type = parseInt(type, 10);
-	return db.query( 'SELECT discord.lang mainlang, webhook, rcgcdw.wiki, rcgcdw.lang, display, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild AND configid = $1 WHERE discord.guild = $2 AND discord.channel IS NULL', [type, guild] ).then( ({rows:[row]}) => {
+	return db.query( 'SELECT discord.lang mainlang, webhook, rcgcdw.wiki, rcgcdw.lang, display, buttons, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild AND configid = $1 WHERE discord.guild = $2 AND discord.channel IS NULL', [type, guild] ).then( ({rows:[row]}) => {
 		if ( !row?.webhook ) return res(`/guild/${guild}/rcscript`, 'savefail');
 		return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( wresponse => {
 			if ( !wresponse.body?.channel_id ) {
@@ -553,6 +624,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						}
 						let rowwiki = new Wiki(row.wiki);
 						if ( rowwiki.wikifarm === 'fandom' ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
+						if ( canButtons(rowwiki) && row.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${row.buttons.join('`, `')}\``;
 						text += `\n<${new URL(`/guild/${guild}/rcscript`, process.env.dashboard).href}>`;
 						sendMsg( {
 							type: 'notifyGuild', guild, text
@@ -580,6 +652,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				if ( row.display !== settings.display ) hasDiff = true;
 				if ( ( row.rcid !== -1 ) !== !( settings.feeds && settings.feeds_only ) ) hasDiff = true;
 				if ( ( row.postid === '-1' ) !== !settings.feeds ) hasDiff = true;
+				if ( row.buttons !== settings.buttons ) hasDiff = true;
 				if ( !hasDiff ) return res(`/guild/${guild}/rcscript/${type}`, 'save');
 				var wiki = Wiki.fromInput(settings.wiki);
 				if ( !wiki ) return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
@@ -652,11 +725,11 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						 * @param {Boolean} enableFeeds - If feeds based changes should be enabled.
 						 */
 						function updateWebhook(enableFeeds = null) {
-							var sqlargs = [row.webhook, wiki.href, settings.lang, settings.display];
-							var sql = 'UPDATE rcgcdw SET wiki = $2, lang = $3, display = $4';
+							var sqlargs = [row.webhook, wiki.href, settings.lang, settings.display, ( canButtons(wiki) ? settings.buttons : null )];
+							var sql = 'UPDATE rcgcdw SET wiki = $2, lang = $3, display = $4, buttons = $5';
 							if ( row.wiki !== wiki.href ) {
 								sqlargs.push(( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' ));
-								sql += ', rcid = $5, postid = $6';
+								sql += ', rcid = $6, postid = $7';
 							}
 							else {
 								if ( enableFeeds && settings.feeds_only ) {
@@ -709,6 +782,27 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								if ( ( row.postid === '-1' ) !== !enableFeeds ) {
 									diff.push(lang.get('rcscript.feeds') + ` ~~*\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*~~ → *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`);
 									webhook_diff.push(webhook_lang.get('dashboard.' + ( enableFeeds ? 'enabled_feeds' : 'disabled_feeds' )));
+								}
+								if ( canButtons(wiki) && row.buttons !== settings.buttons ) {
+									if ( !row.buttons ) {
+										diff.push(lang.get('rcscript.buttons') + ` \`${settings.buttons.split('|').join('`, `')}\``);
+										webhook_diff.push(webhook_lang.get('dashboard.buttons_enabled', `\`${settings.buttons.split('|').join('`, `')}\``));
+									}
+									else if ( !settings.buttons ) {
+										diff.push(lang.get('rcscript.buttons') + ` ~~\`${row.buttons.split('|').join('`~~, ~~`')}\`~~`);
+										webhook_diff.push(webhook_lang.get('dashboard.buttons_disabled'));
+									}
+									else {
+										let rowButtons = row.buttons.split('|');
+										let settingButtons = settings.buttons.split('|');
+										let buttonDiffText = [];
+										button_types.forEach( button => {
+											if ( rowButtons.includes( button ) && !settingButtons.includes( button ) ) buttonDiffText.push(`~~\`${button}\`~~`);
+											if ( settingButtons.includes( button ) ) buttonDiffText.push(`\`${button}\``);
+										} )
+										diff.push(lang.get('rcscript.buttons') + ' ' + buttonDiffText.join(', ') );
+										webhook_diff.push(webhook_lang.get('dashboard.buttons_changed', `\`${settings.buttons.split('|').join('`, `')}\``));
+									}
 								}
 								if ( Object.keys(webhook_changes).length ) return sendMsg( {
 									type: 'editWebhook',

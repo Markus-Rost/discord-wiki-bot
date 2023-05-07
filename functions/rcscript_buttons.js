@@ -17,7 +17,7 @@ const buttonsExists = existsSync('./RcGcDw_buttons/main.js');
  * @param {import('discord.js').ButtonInteraction<'cached'|'raw'>|import('discord.js').ModalSubmitInteraction<'cached'|'raw'>} interaction
 */
 function rcscript_buttons(interaction) {
-	got.post( 'http://localhost:8000/interactions', {
+	got.post( 'http://localhost:8800/interactions', {
 		json: {
 			version: interaction.version,
 			type: interaction.type,

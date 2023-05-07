@@ -18,9 +18,9 @@ const fieldset = {
 	+ '<label for="wb-settings-role">Role:</label>'
 	+ '<select id="wb-settings-role" name="role-0" required></select>'
 	+ '<input type="radio" id="wb-settings-role-0-add" name="role-0-change" value="+">'
-	+ '<label for="wb-settings-role-0-add" class="radio-label">Add</label>'
+	+ '<label for="wb-settings-role-0-add" class="button-label">Add</label>'
 	+ '<input type="radio" id="wb-settings-role-0-remove" name="role-0-change" value="-">'
-	+ '<label for="wb-settings-role-0-remove" class="radio-label">Remove</label>'
+	+ '<label for="wb-settings-role-0-remove" class="button-label">Remove</label>'
 	+ '</div>'
 	+ '<button type="button" id="wb-settings-role-more" class="addmore">Add more</button>',
 	usergroup: '<label for="wb-settings-usergroup">Wiki user group:</label>'
@@ -45,13 +45,13 @@ const fieldset = {
 	+ '</div><div class="wb-settings-postcount">'
 	+ '<span>Only Fandom wikis:</span>'
 	+ '<input type="radio" id="wb-settings-postcount-and" name="posteditcount" value="and" required>'
-	+ '<label for="wb-settings-postcount-and" class="radio-label">Require both edit and post count.</label>'
+	+ '<label for="wb-settings-postcount-and" class="button-label">Require both edit and post count.</label>'
 	+ '</div><div class="wb-settings-postcount">'
 	+ '<input type="radio" id="wb-settings-postcount-or" name="posteditcount" value="or" required>'
-	+ '<label for="wb-settings-postcount-or" class="radio-label">Require either edit or post count.</label>'
+	+ '<label for="wb-settings-postcount-or" class="button-label">Require either edit or post count.</label>'
 	+ '</div><div class="wb-settings-postcount">'
 	+ '<input type="radio" id="wb-settings-postcount-both" name="posteditcount" value="both" required>'
-	+ '<label for="wb-settings-postcount-both" class="radio-label">Require combined edit and post count.</label>'
+	+ '<label for="wb-settings-postcount-both" class="button-label">Require combined edit and post count.</label>'
 	+ '</div>',
 	accountage: '<label for="wb-settings-accountage">Account age (in days):</label>'
 	+ '<input type="number" id="wb-settings-accountage" name="accountage" min="0" max="1000000" required inputmode="numeric">',

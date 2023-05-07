@@ -149,6 +149,7 @@ CREATE TABLE rcgcdw (
                      DEFAULT '${defaultSettings.lang}',
     display  INTEGER NOT NULL
                      DEFAULT 1,
+    buttons  TEXT,
     rcid     INTEGER,
     postid   TEXT    DEFAULT '-1',
     UNIQUE (
@@ -180,7 +181,23 @@ CREATE INDEX idx_blocklist_wiki ON blocklist (
     wiki
 );
 
-INSERT INTO versions(type, version) VALUES ('discord', 8)
+CREATE TABLE oauthrevert (
+    userid  TEXT NOT NULL,
+    site    TEXT NOT NULL,
+    access  TEXT NOT NULL,
+    refresh TEXT NOT NULL,
+    UNIQUE (
+        userid,
+        site
+    )
+);
+
+CREATE INDEX idx_oauthrevert_userid ON oauthrevert (
+    userid,
+    site
+);
+
+INSERT INTO versions(type, version) VALUES ('discord', 9)
 ON CONFLICT (type) DO UPDATE SET version = excluded.version;
 
 COMMIT TRANSACTION;
@@ -295,6 +312,32 @@ ALTER TABLE discord
 ADD COLUMN whitelist TEXT;
 
 INSERT INTO versions(type, version) VALUES ('discord', 8)
+ON CONFLICT (type) DO UPDATE SET version = excluded.version;
+
+COMMIT TRANSACTION;
+`,`
+BEGIN TRANSACTION;
+
+CREATE TABLE oauthrevert (
+    userid  TEXT NOT NULL,
+    site    TEXT NOT NULL,
+    access  TEXT NOT NULL,
+    refresh TEXT NOT NULL,
+    UNIQUE (
+        userid,
+        site
+    )
+);
+
+CREATE INDEX idx_oauthrevert_userid ON oauthrevert (
+    userid,
+    site
+);
+
+ALTER TABLE rcgcdw
+ADD COLUMN buttons TEXT;
+
+INSERT INTO versions(type, version) VALUES ('discord', 9)
 ON CONFLICT (type) DO UPDATE SET version = excluded.version;
 
 COMMIT TRANSACTION;

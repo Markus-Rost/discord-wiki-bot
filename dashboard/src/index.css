@@ -587,12 +587,12 @@ legend {
 fieldset > div {
 	margin: 10px 0;
 }
-fieldset label:not(.radio-label),
+fieldset label:not(.button-label),
 fieldset span {
 	display: inline-block;
 	min-width: 20%;
 }
-fieldset label.radio-label {
+fieldset label.button-label {
 	padding-right: 5px;
 }
 fieldset label div {
@@ -628,11 +628,13 @@ fieldset textarea {
 	background-color: #fafafa;
 }
 .wb-settings-display:first-of-type,
+.wb-settings-buttons:first-of-type,
 .wb-settings-permission:first-of-type {
 	display: inline-block;
 }
 #wb-settings-avatar-preview-img,
 .wb-settings-display:not(:first-of-type),
+.wb-settings-buttons:not(:first-of-type),
 .wb-settings-permission:not(:first-of-type),
 .wb-settings-additional-select,
 .wb-settings-postcount:not(:nth-of-type(2)),

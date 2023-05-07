@@ -496,6 +496,7 @@
 		"audit_reason_edit": "Updated recent changes webhook",
 		"blocked": "This wiki has been blocked from being added as a recent changes webhook!",
 		"blocked_reason": "This wiki has been blocked from being added as a recent changes webhook for `$1`!",
+		"buttons": "Button actions:",
 		"channel": "Channel:",
 		"current": "These are the current recent changes webhooks for this server:",
 		"current_display": "The display mode for this webhook is:",
@@ -545,6 +546,9 @@
 			"blocked_reason": "This recent changes webhook will be deleted because the wiki has been blocked for `$1`!",
 			"created": "A recent changes webhook for $1 has been added to this channel.",
 			"dashboard": {
+				"buttons_changed": "• The button actions have been changed to $1.",
+				"buttons_disabled": "• The button actions have been disabled.",
+				"buttons_enabled": "• The button actions have been enabled for $1.",
 				"channel": "• The webhook has been moved to this channel.",
 				"disabled_feeds": "• The feeds based changes, like discussions, message walls and article comments, have been disabled.",
 				"disabled_rc": "• The wiki changes have been disabled.",
