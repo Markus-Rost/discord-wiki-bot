@@ -149,6 +149,8 @@ var divTemp = document.createElement('div');
 divTemp.innerHTML = '<input type="url" value="invalid">';
 const validationMessageInvalidURL = divTemp.firstChild.validationMessage;
 
+const OAuthWikis = [];
+
 /** @type {HTMLCollectionOf<HTMLInputElement>} */
 const wikis = document.getElementsByClassName('wb-settings-wiki');
 for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
@@ -232,6 +234,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 				}
 				if ( !readonly ) wiki.value = response.wiki;
 				if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
+					if ( response.oauth && !OAuthWikis.includes( response.wiki ) ) OAuthWikis.push(response.wiki);
 					if ( !response.MediaWiki ) {
 						wiki.title = lang('outdated.title');
 						wiki.setCustomValidity(lang('outdated.title'));
@@ -345,7 +348,8 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 					feedsonly.disabled = true;
 				}
 				if ( hidebuttons && buttons ) {
-					if ( this.validity.valid && this.value.split('/')[2].endsWith( '.miraheze.org' ) ) {
+					if ( this.validity.valid && ( OAuthWikis.includes( this.value )
+					 || this.value.split('/')[2].endsWith( '.miraheze.org' ) ) ) {
 						hidebuttons.style.display = '';
 						hidebuttons.style.visibility = '';
 						for ( var b = 0; b < buttons.length; b++ ) buttons[b].disabled = false;
@@ -357,6 +361,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 					}
 				}
 			} );
+			if ( hidebuttons && !hidebuttons.style.display ) OAuthWikis.push(wiki.value);
 		}
 	}
 })(wikis[w]);

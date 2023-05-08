@@ -27,13 +27,15 @@ const button_types = [
 ];
 
 /**
- * @param {String} wiki
+ * @param {String|Wiki} wiki
  * @returns {Boolean}
  */
 function canButtons(wiki) {
 	if ( !buttonsExists ) return false;
+	if ( wiki instanceof Wiki ) return wiki.hasOAuth2() && wiki.wikifarm === 'miraheze';
 	try {
-		return new URL(wiki)?.hostname?.endsWith( '.miraheze.org' );
+		wiki = new Wiki(wiki);
+		return wiki.hasOAuth2() && wiki.wikifarm === 'miraheze';
 	}
 	catch {
 		return false;
@@ -216,7 +218,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 		if ( settings.buttons ) settings.buttons.split('|').forEach( button => {
 			buttons.find(`#wb-settings-buttons-${button}`).attr('checked', '');
 		} );
-		if ( !canButtons(settings.wiki) ) {
+		else if ( !canButtons(settings.wiki) ) {
 			buttons.attr('style', 'display: none;');
 		}
 		fields.push(buttons);
@@ -624,7 +626,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						}
 						let rowwiki = new Wiki(row.wiki);
 						if ( rowwiki.wikifarm === 'fandom' ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
-						if ( canButtons(rowwiki) && row.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${row.buttons.join('`, `')}\``;
+						if ( row.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${row.buttons.join('`, `')}\``;
 						text += `\n<${new URL(`/guild/${guild}/rcscript`, process.env.dashboard).href}>`;
 						sendMsg( {
 							type: 'notifyGuild', guild, text

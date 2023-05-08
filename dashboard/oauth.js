@@ -266,6 +266,7 @@ function dashboard_api(res, input, guild = null) {
 		base: '',
 		sitename: '',
 		logo: '',
+		oauth: false,
 		MediaWiki: false,
 		RcGcDw: '',
 		customRcGcDw: wiki?.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
@@ -318,6 +319,7 @@ function dashboard_api(res, input, guild = null) {
 		result.base = body.query.general.base;
 		result.sitename = body.query.general.sitename;
 		result.logo = body.query.general.logo;
+		result.oauth = wiki.hasOAuth2();
 		if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) >= 30 ) {
 			result.MediaWiki = true;
 		}
