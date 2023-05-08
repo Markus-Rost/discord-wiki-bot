@@ -232,9 +232,12 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 					wikichecknotice.append(noticeTitle, noticeText, noticeNote, ...noticeExtraParts);
 					return;
 				}
-				if ( !readonly ) wiki.value = response.wiki;
+				if ( response.oauth && !OAuthWikis.includes( response.wiki ) ) OAuthWikis.push(response.wiki);
+				if ( !readonly ) {
+					wiki.value = response.wiki;
+					wiki.dispatchEvent(new Event('input'));
+				}
 				if ( document.location.pathname.split('/')[3] === 'rcscript' ) {
-					if ( response.oauth && !OAuthWikis.includes( response.wiki ) ) OAuthWikis.push(response.wiki);
 					if ( !response.MediaWiki ) {
 						wiki.title = lang('outdated.title');
 						wiki.setCustomValidity(lang('outdated.title'));
