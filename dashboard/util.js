@@ -4,7 +4,7 @@ import { gotSsrf } from 'got-ssrf';
 import pg from 'pg';
 import DiscordOauth2 from 'discord-oauth2';
 import { inputToWikiProject } from 'mediawiki-projects-list';
-import { oauthSites } from '../util/wiki.js';
+import Wiki from '../util/wiki.js';
 
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
@@ -37,7 +37,7 @@ const oauth = new DiscordOauth2( {
 } );
 
 const enabledOAuth2 = [
-	...oauthSites.filter( oauthSite => {
+	...Wiki.oauthSites.filter( oauthSite => {
 		let project = inputToWikiProject(oauthSite);
 		if ( project ) return ( process.env[`oauth_${project.wikiProject.name}`] && process.env[`oauth_${project.wikiProject.name}_secret`] );
 		let site = new URL(oauthSite);
@@ -80,11 +80,10 @@ if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 }
 
 /**
- * @param {String|import('../util/wiki.js').default} wiki
+ * @param {String|Wiki} wiki
  * @returns {Boolean}
  */
 function canRcGcDwButtons(wiki) {
-	if ( !buttonsExists ) return false;
 	try {
 		if ( !( wiki instanceof Wiki ) ) wiki = new Wiki(wiki);
 	}
