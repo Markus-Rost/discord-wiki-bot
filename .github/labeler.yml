@@ -2,3 +2,4 @@
 translation:
   - 'i18n/*.json'
   - 'dashboard/i18n/*.json'
+  - 'interactions/i18n/*.json'
