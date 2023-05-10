@@ -193,6 +193,13 @@
 		"desc": "以下為 $1 的近期變更webhook：",
 		"explanation": "<h2>近期變更webhook</h2>\n<p>Wiki-Bot能運行基於<a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>的近期變更webhook。近期變更可以以多種顯示模式顯示：包含行內連結的精簡文字訊息或包含圖片預覽及編輯差異的嵌入式訊息。</p>\n<p>加入近期變更webhook的基本需求：</p>\n<ul>\n<li>需要以<a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a>或更高版本運行的wiki。</li>\n<li>系統訊息<code class=\"user-select\">MediaWiki:Custom-RcGcDw</code>需要設為Discord伺服器的伺服器id <code class=\"user-select\" id=\"server-id\"></code>。</li>\n</ul>",
 		"form": {
+			"buttons": "按鈕操作：",
+			"buttons_block": "封鎖使用者。",
+			"buttons_delete": "刪除頁面。",
+			"buttons_filerevert": "回退至先前的檔案版本。",
+			"buttons_move": "回退頁面移動。",
+			"buttons_rollback": "復原頁面上由使用者作出的最後一筆編輯。",
+			"buttons_undo": "還原頁面編輯。",
 			"channel": "頻道：",
 			"confirm": "您確定要刪除近期變更webhook嗎？",
 			"display": "顯示模式：",
