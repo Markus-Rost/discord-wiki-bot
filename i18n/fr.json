@@ -113,7 +113,7 @@
 	},
 	"dateformat": "fr-FR",
 	"diff": {
-		"badrev": "au moins une des révisions n'existe pas !",
+		"badrev": "Au moins une des révisions n'existe pas !",
 		"hidden": "*masqué*",
 		"info": {
 			"added": "Ajoutés :",
@@ -152,9 +152,10 @@
 		"helpserver": "Pour tout problème ou question, merci de visiter mon serveur de support :",
 		"limit": "🚨 **Halte ! Vous avez dépassé la limite !** 🚨\n\n$1, votre message contient beaucoup trop de commandes !",
 		"missingperm": "Il me manque certaines permissions pour cette commande :",
-		"patreon": "c'est une fonctionnalité réservée au Patreon !\nVous pouver me supporter sur Patreon pour avoir accès à cette fonctionnalité :",
+		"patreon": "C'est une fonctionnalité réservée au Patreon !\nVous pouvez me supporter sur Patreon pour avoir accès à cette fonctionnalité :",
 		"prefix": "le préfixe pour ce serveur est `$1`. Vous pouvez changer le préfixe avec `$1settings prefix`. Pour une liste de toutes les commandes, voir `$1help`.",
-		"readonly": "**la base de données est actuellement en lecture-seule, vous ne pouvez pas changer de paramètres pour l'instant !**"
+		"readonly": "**la base de données est actuellement en lecture-seule, vous ne pouvez pas changer de paramètres pour l'instant !**",
+		"whitelist": "Le wiki utilisé n'est pas autorisé sur ce serveur."
 	},
 	"help": {
 		"admin": "Ces commandes ne peuvent être effectuées que par des administrateurs :",
@@ -164,7 +165,7 @@
 		"list": {
 			"default": {
 				"cmd": "<terme de recherche>",
-				"desc": "Je vais répondre avec un lien vers un article correspondant sur Wiki."
+				"desc": "Je vais répondre avec un lien vers un article correspondant sur Wiki :"
 			},
 			"diff": {
 				"id": {
@@ -318,6 +319,10 @@
 					"desc": "Je vais modifier le Wiki par défaut de ce serveur."
 				}
 			},
+			"subprefix": {
+				"cmd": "<wiki> <search term>",
+				"desc": "Je répondrai par un lien vers un article correspondant dans le wiki nommé :"
+			},
 			"test": {
 				"cmd": "test",
 				"desc": "Si je suis actif, je répondrai ! Autrement non."
@@ -373,10 +378,11 @@
 				"desc": "Utilisez cette commande pour lier votre compte Discord avec votre compte wiki et obtenir les rôles correspondants."
 			}
 		},
-		"noadmin": "vous devez avoir la permission `Gérer le serveur` pour utiliser ces commandes !",
+		"noadmin": "Vous devez avoir la permission `Manage Server` pour utiliser ces commandes !",
 		"pause": "**Je suis actuellement en pause sur ce serveur !**\n Seuls ces commandes sont disponibles :"
 	},
 	"interaction": {
+		"error": "Une erreur inattendue s'est produite lors de l'exécution de la commande !",
 		"inline": "Veuillez fournir un texte avec des liens [[wikitext]] pour utiliser cette commande.",
 		"nowiki": "Le wiki utilisé n'existe pas !",
 		"verify": "Veuillez fournir votre nom d'utilisateur wiki pour utiliser cette commande afin de vérifier votre compte Discord avec votre compte wiki et obtenir les rôles correspondant à votre compte wiki."
