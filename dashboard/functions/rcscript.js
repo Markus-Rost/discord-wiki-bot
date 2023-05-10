@@ -8,7 +8,7 @@ const require = createRequire(import.meta.url);
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../../util/default.json');
 const allLangs = Lang.allLangs(true).names;
 
-const buttonsExists = ( process.env.buttons_token && existsSync('./RcGcDw_buttons/main.js') );
+const buttonsExists = ( process.env.buttons_token && process.env.buttons_url && existsSync('./RcGcDw_buttons/main.js') );
 
 const display_types = [
 	'compact',

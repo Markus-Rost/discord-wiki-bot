@@ -11,13 +11,13 @@ const got = gotDefault.extend( {
 	responseType: 'json'
 } );
 
-const buttonsExists = ( process.env.buttons_token && existsSync('./RcGcDw_buttons/main.js') );
+const buttonsExists = ( process.env.buttons_token && process.env.buttons_url && existsSync('./RcGcDw_buttons/main.js') );
 
 /**
  * @param {import('discord.js').ButtonInteraction<'cached'|'raw'>|import('discord.js').ModalSubmitInteraction<'cached'|'raw'>} interaction
 */
 function rcscript_buttons(interaction) {
-	got.post( 'http://localhost:8800/interactions', {
+	got.post( process.env.buttons_url, {
 		json: {
 			version: interaction.version,
 			type: interaction.type,
