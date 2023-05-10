@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
 import Lang from '../../util/i18n.js';
 import Wiki from '../../util/wiki.js';
-import { got, db, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from '../util.js';
+import { got, db, canRcGcDwButtons, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from '../util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../../util/default.json');
@@ -32,14 +32,7 @@ const button_types = [
  */
 function canButtons(wiki) {
 	if ( !buttonsExists ) return false;
-	if ( wiki instanceof Wiki ) return wiki.hasOAuth2() && wiki.wikifarm === 'miraheze';
-	try {
-		wiki = new Wiki(wiki);
-		return wiki.hasOAuth2() && wiki.wikifarm === 'miraheze';
-	}
-	catch {
-		return false;
-	}
+	return canRcGcDwButtons(wiki);
 }
 
 const fieldset = {

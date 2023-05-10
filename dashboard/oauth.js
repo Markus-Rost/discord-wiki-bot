@@ -3,7 +3,7 @@ import { randomBytes } from 'node:crypto';
 import { load as cheerioLoad } from 'cheerio';
 import Wiki from '../util/wiki.js';
 import { allLangs } from './i18n.js';
-import { got, db, oauth, enabledOAuth2, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm, PermissionFlagsBits, OAuth2Scopes } from './util.js';
+import { got, db, oauth, enabledOAuth2, canRcGcDwButtons, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm, PermissionFlagsBits, OAuth2Scopes } from './util.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {defaultPermissions} = require('../util/default.json');
@@ -319,7 +319,7 @@ function dashboard_api(res, input, guild = null) {
 		result.base = body.query.general.base;
 		result.sitename = body.query.general.sitename;
 		result.logo = body.query.general.logo;
-		result.oauth = wiki.hasOAuth2();
+		result.oauth = canRcGcDwButtons(wiki);
 		if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) >= 30 ) {
 			result.MediaWiki = true;
 		}

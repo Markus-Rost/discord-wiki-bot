@@ -80,6 +80,24 @@ if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 }
 
 /**
+ * @param {String|import('../util/wiki.js').default} wiki
+ * @returns {Boolean}
+ */
+function canRcGcDwButtons(wiki) {
+	if ( !buttonsExists ) return false;
+	try {
+		if ( !( wiki instanceof Wiki ) ) wiki = new Wiki(wiki);
+	}
+	catch {
+		return false;
+	}
+	if ( !wiki.hasOAuth2() ) return false;
+	if ( wiki.wikifarm === 'miraheze' ) return true;
+	if ( wiki.href === 'https://lakeus.xyz/' ) return true;
+	return false;
+}
+
+/**
  * @typedef UserSession
  * @property {String} state
  * @property {String} access_token
@@ -439,6 +457,7 @@ export {
 	db,
 	oauth,
 	enabledOAuth2,
+	canRcGcDwButtons,
 	sessionData,
 	settingsData,
 	oauthVerify,
