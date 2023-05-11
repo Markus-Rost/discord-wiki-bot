@@ -36,7 +36,8 @@
 		"zh-TW": "傳送含有行內wiki連結的訊息。",
 		"pt-BR": "Poste uma mensagem com links da wiki embutidos na linha.",
 		"ja": "埋め込み形式のWikiリンクを含むメッセージを投稿する。",
-		"el": "Δημοσίευση ενός μηνύματος με συνδέσμους wiki εντός κειμένου."
+		"el": "Δημοσίευση ενός μηνύματος με συνδέσμους wiki εντός κειμένου.",
+		"fr": "Publiez un message avec des liens wiki intégrés."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -79,7 +80,8 @@
 				"es-ES": "Texto que incluye enlaces de wikitexto.",
 				"pt-BR": "Texto incluindo links no estilo wikitexto.",
 				"ja": "wikitextのリンクを含むテキスト。",
-				"el": "Κείμενο που περιέχει συνδέσμους wikitext."
+				"el": "Κείμενο που περιέχει συνδέσμους wikitext.",
+				"fr": "Texte incluant des liens wikitexte."
 			},
 			"required": true
 		}

@@ -687,7 +687,8 @@
 								"it": "ID della vecchia versione del diff da mostrare.",
 								"hi": "दिखाने के लिए सम्पादन अंतर का पुराना अवतरण ID।",
 								"ja": "表示する編集差分の旧リビジョンID。",
-								"el": "Ταυτότητα παλαιάς έκδοσης διαφοράς επεξεργασίας για προβολή."
+								"el": "Ταυτότητα παλαιάς έκδοσης διαφοράς επεξεργασίας για προβολή.",
+								"fr": "Ancien ID de révision de la différence d'édition à afficher."
 							},
 							"min_value": 0,
 							"required": true
@@ -723,7 +724,8 @@
 								"pt-BR": "A wiki a ser pesquisada.",
 								"en-GB": "The wiki to search in.",
 								"en-US": "The wiki to search in.",
-								"ja": "検索対象となるWiki。"
+								"ja": "検索対象となるWiki。",
+								"fr": "Wiki dans lequel chercher."
 							},
 							"required": false,
 							"autocomplete": true
@@ -759,7 +761,8 @@
 								"el": "Αποστολή απόκρισης ορατή μόνο σε εσάς;",
 								"pt-BR": "Deseja que a resposta seja privada?",
 								"en-GB": "Send a response only visible to yourself?",
-								"en-US": "Send a response only visible to yourself?"
+								"en-US": "Send a response only visible to yourself?",
+								"fr": "Envoyer une réponse uniquement visible par vous-même ?"
 							},
 							"required": false
 						},
@@ -794,7 +797,8 @@
 								"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
 								"pt-BR": "Enviar o link sem a pré-visualização?",
 								"en-GB": "Send only the link without embed?",
-								"en-US": "Send only the link without embed?"
+								"en-US": "Send only the link without embed?",
+								"fr": "Envoyer uniquement le lien sans inclusion ?"
 							},
 							"required": false
 						},
@@ -828,7 +832,8 @@
 								"el": "Απόκρυψη του συνδέσμου και ενσωμάτωση σε spoiler;",
 								"pt-BR": "Ocultar o link como spoiler?",
 								"en-GB": "Hide the link and embed in a spoiler?",
-								"en-US": "Hide the link and embed in a spoiler?"
+								"en-US": "Hide the link and embed in a spoiler?",
+								"fr": "Cacher le lien et l’inclure dans un spoiler ?"
 							},
 							"required": false
 						}
