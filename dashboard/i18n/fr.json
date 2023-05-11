@@ -28,12 +28,15 @@
 		"theme-light": "Utiliser le thème clair",
 		"title": "Paramètres du bot",
 		"verification": "Vérifications",
-		"welcome": "<h2>Bienvenue au tableau de bord de Wiki-Bot</h2>\n<p>Wiki-Bot est un bot discord fait pour lier les serveurs Discord aux MediaWikis. Il permet de lier les pages wiki, vérifier les utilisateurs wiki, vous informe des modifications récentes et plus.<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Plus d'informations]</a></p>\n<p>Ici, vous pouvez modifier les différents paramètres du bot pour les serveurs dans lesquels vous avez la permission \"Gérer le serveur.\" Tout d'abord, vous devez vous connecter avec votre compte Discord via ce bouton:</p>"
+		"welcome": "<h2>Bienvenue sur le tableau de bord de Wiki-Bot</h2>\n<p>Wiki-Bot est un bot discord fait pour lier les serveurs Discord aux wikis MediaWiki. Il permet de lier les pages du wiki, de vérifier les utilisateurs du wiki, de vous informer des modifications récentes apportées au wiki, etc.<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Plus d'informations]</a></p>\n<p>Ici, vous pouvez modifier les différents paramètres du robot pour les serveurs dans lesquels vous avez la permission \"Gérer le serveur.\" Tout d'abord, vous devez vous connecter avec votre compte Discord via ces boutons :</p>"
 	},
 	"indexjs": {
 		"avatar": {
 			"content_type": "Le lien fourni a le type de contenu $1, mais seuls les types de contenu suivants sont autorisés :",
 			"invalid_url": "L'URL n'a pas pu être résolue en un fichier image valide."
+		},
+		"embeds": {
+			"json": "L'objet inclus n'est pas valide, veuillez fournir un tableau JSON valide avec les objets incorporés de Discord."
 		},
 		"invalid": {
 			"note_http": "Le site web fourni n'a pas de certificat TLS/SSL valide ! Pour des raisons de sécurité, seuls les wikis utilisant HTTPS sont pris en charge.",
@@ -116,6 +119,7 @@
 			"title": "Compte connecté avec succès !"
 		},
 		"oauthverify": {
+			"text": "Votre compte wiki a été vérifié avec succès.",
 			"title": "Compte vérifié avec succès !"
 		},
 		"readonly": {
@@ -146,6 +150,7 @@
 			"title": "Message envoyé !"
 		},
 		"sendfail": {
+			"note_embeds": "L'objet inclus n'est pas valide, veuillez fournir un tableau JSON valide avec les objets incorporés de Discord.",
 			"note_nothread": "La discussion n'a pas pu être trouvée, veuillez fournir une discussion active.",
 			"text": "Le message n'a pas pu être envoyé, veuillez réessayer.",
 			"title": "L'envoi a échoué !"
@@ -188,6 +193,13 @@
 		"desc": "Voici les intégrations de modifications récentes pour $1 :",
 		"explanation": "<h2>Intégration des modifications récentes</h2>\n<p>Wiki-Bot peut ajouter une intégration des modifications récentes basée sur <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Les modifications récentes peuvent être affichées en paragraphes de texte, avec des liens inter-textes ou avec les changements de balises et de catégories intégrés.</p>\n<p>Prérequis pour rajouter une intégration de modifications récentes :</p>\n<ul>\n<li>Le wiki doit utiliser la version <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">1.30 de MediaWiki</a> ou plus haut.</li>\n<li>Le message système <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> doit correspondre à l'id du serveur Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
 		"form": {
+			"buttons": "Actions sur les boutons :",
+			"buttons_block": "Bloquer l'utilisateur.",
+			"buttons_delete": "Supprimer la page.",
+			"buttons_filerevert": "Revenir à la version précédente du fichier.",
+			"buttons_move": "Annuler le renommage de la page.",
+			"buttons_rollback": "Réinitialise les dernières modifications de l'utilisateur sur la page.",
+			"buttons_undo": "Annuler la modification de la page.",
 			"channel": "Salon :",
 			"confirm": "Voulez-vous vraiment supprimer l'intégration de modifications récentes ?",
 			"display": "Mode d'affichage :",
@@ -258,24 +270,55 @@
 			"avatar_bot": "Avatar robot",
 			"avatar_guild": "Icône serveur",
 			"avatar_preview": "Prévisualiser",
+			"button": "Envoyer un message avec le bouton de vérification",
+			"button_emoji": "Emoji bouton (facultatif) :",
+			"button_emoji_title": "Fournir un emoji personnalisé du serveur ou la représentation Unicode d'un emoji.",
+			"button_name": "Texte du bouton :",
+			"button_name_default": "Vérification du compte wiki",
+			"button_style": "Style du bouton :",
+			"button_style_danger": "Danger (rouge)",
+			"button_style_primary": "Primaire (violet/bleu)",
+			"button_style_secondary": "Secondaire (gris)",
+			"button_style_success": "Succès (vert)",
 			"channel": "Salon :",
 			"confirm": "Voulez-vous vraiment supprimer la vérification ?",
+			"content": "Contenu du message (facultatif) :",
+			"content_placeholder": "Texte Markdown du message, prend en charge les liens masqués.",
 			"editcount": "Nombre minimal de modifications :",
+			"embeds": "Inclusion de messages (facultatif) :",
+			"embeds_help": "Aide : [Embed Visualize]($1)",
+			"embeds_placeholder": "Tableau JSON des inclusions de messages Discord.",
 			"entry": "Vérification #$1",
+			"flag_logall": "Enregistrer les vérifications qui n'ont pas abouti :",
+			"flag_private": "Réponses aux commandes privées :",
+			"logging": "Canal de connexion :",
+			"match": "Notification d'exigences manquantes :",
+			"match_placeholder": "Texte en Markdown sur le fait de correspondre aux tags Discord mais de ne pas remplir les conditions requises pour les rôles.",
 			"more": "Ajouter plus",
 			"new": "Nouvelle vérification",
+			"notice": "Notification de vérification",
 			"postcount": "Nombre de posts minimal :",
 			"postcount_and": "Requiert nombre de modification et nombre de post.",
-			"postcount_both": "Requiert nombre de modification combiné au nombre de post.",
+			"postcount_both": "Requiert nombre de modification combiné au nombre de publications.",
 			"postcount_fandom": "Uniquement des wiki Fandom :",
 			"postcount_or": "Requiert soit un nombre de modifications soit un nombre de posts.",
 			"rename": "Renommer les utilisateurs :",
 			"role": "Rôle :",
+			"role_add": "Ajouter",
+			"role_remove": "Supprimer",
 			"select_channel": "-- Sélectionnez un salon --",
 			"select_role": "-- Sélectionnez un rôle --",
+			"send_message": "Envoyer un message",
+			"success": "Notification de réussite :",
+			"success_placeholder": "Texte Markdown en cas de vérification réussie.",
+			"thread": "Fil de discussion (facultatif) :",
 			"usergroup": "Groupe d'utilisateur wiki :",
-			"usergroup_and": "Requiert tous les groupes d'utilisateur :"
+			"usergroup_and": "Requiert tous les groupes d'utilisateur :",
+			"webhook_name": "Nom de l'auteur :"
 		},
-		"new": "Nouvelle vérification"
+		"help_button": "<p>Le bouton de vérification fonctionne mieux lorsqu'il est combiné avec <b>les réponses aux commandes privées</b> et <b>un canal de journalisation</b>.</p>\n<p>Vous pouvez les activer dans le cadre des <a href=\"/guild/$1/verification/notice$2\">avis de vérification</a>.</p>",
+		"help_notice": "<p>Les notifications personnalisées supportent certaines fonctions et variables simples.</p>\n<ul>\n<li><code class=\"form-button user-select\">$editcount</code> - Le nombre d'éditions actuel de l'utilisateur.</li>\n<li><code class=\"form-button user-select\">$accountage</code> - L'âge actuel du compte de l'utilisateur en jours complets.</li>\n<li><code class=\"form-button user-select\">$postcount</code> - Le nombre actuel de messages de discussion de l'utilisateur (uniquement sur les wikis Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> - Renvoie le résultat d'une expression.\n<ul>\n<li>Ne prend en charge que l'addition <code class=\"form-button user-select\">+</code> et la soustraction <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>si vrai</i> | <i>si faux</i> }}</code> - Renvoie du texte en fonction du résultat d'une expression.\n<ul>\n<li>Prend en charge les opérateurs <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code>, ainsi que <code class=\"form-button user-select\">and</code>, <code class=\"form-button user-select\">or</code>.</li>\n</ul></li>\n</ul>",
+		"new": "Nouvelle vérification",
+		"notice": "Notification de vérification"
 	}
 }

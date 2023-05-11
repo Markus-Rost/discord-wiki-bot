@@ -39,14 +39,21 @@
 		"options[1].options[0].options[5].name": "spoiler",
 		"options[1].options[1].name": "multiple",
 		"options[1].options[1].options[0].name": "diffid",
+		"options[1].options[1].options[1].description": "Ancien ID de révision de la différence d'édition à afficher.",
 		"options[1].options[1].options[1].name": "oldid",
+		"options[1].options[1].options[2].description": "Wiki dans lequel chercher.",
 		"options[1].options[1].options[2].name": "wiki",
+		"options[1].options[1].options[3].description": "Envoyer une réponse uniquement visible par vous-même ?",
 		"options[1].options[1].options[3].name": "private",
+		"options[1].options[1].options[4].description": "Envoyer uniquement le lien sans inclusion ?",
 		"options[1].options[1].options[4].name": "noembed",
+		"options[1].options[1].options[5].description": "Cacher le lien et l’inclure dans un spoiler ?",
 		"options[1].options[1].options[5].name": "spoiler"
 	},
 	"inline": {
+		"description": "Publiez un message avec des liens wiki intégrés.",
 		"name": "inline",
+		"options[0].description": "Texte incluant des liens wikitexte.",
 		"options[0].name": "text"
 	},
 	"interwiki": {
