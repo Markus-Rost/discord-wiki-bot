@@ -743,7 +743,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		var useLogging = ( verifynotice.logchannel ? true : false );
 		var logLang = lang;
 		if ( !state && (verifynotice.flags & 1 << 0) === 1 << 0 ) lang = lang.uselang(settings?.interaction?.locale);
-		got.get( wiki + 'api.php?action=query&meta=siteinfo|globaluserinfo&siprop=general&guiprop=groups&guiuser=' + encodeURIComponent( username ) + '&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 			context: {
 				guildId: channel.guildId
 			}
