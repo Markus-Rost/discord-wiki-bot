@@ -352,7 +352,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 				}
 				if ( hidebuttons && buttons ) {
 					if ( this.validity.valid && ( OAuthWikis.includes( this.value )
-					 || this.value.split('/')[2].endsWith( '.miraheze.org' ) ) ) {
+					|| this.value.split('/')[2].endsWith( '.miraheze.org' ) || this.value.split('/')[2].endsWith( '.wiki.gg' ) ) ) {
 						hidebuttons.style.display = '';
 						hidebuttons.style.visibility = '';
 						for ( var b = 0; b < buttons.length; b++ ) buttons[b].disabled = false;

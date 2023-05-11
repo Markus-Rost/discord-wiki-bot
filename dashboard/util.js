@@ -71,6 +71,13 @@ if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
 		url: 'https://meta.miraheze.org/w/'
 	});
 }
+if ( process.env.oauth_wikigg && process.env.oauth_wikigg_secret ) {
+	enabledOAuth2.unshift({
+		id: 'wikigg',
+		name: 'wiki.gg',
+		url: 'https://support.wiki.gg/'
+	});
+}
 if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikimedia',
@@ -91,6 +98,7 @@ function canRcGcDwButtons(wiki) {
 		return false;
 	}
 	if ( !wiki.hasOAuth2() ) return false;
+	if ( wiki.wikifarm === 'wiki.gg' ) return true;
 	if ( wiki.wikifarm === 'miraheze' ) return true;
 	if ( wiki.href === 'https://lakeus.xyz/' ) return true;
 	return false;

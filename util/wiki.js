@@ -224,7 +224,7 @@ export default class Wiki extends URL {
 	 * @returns {Boolean}
 	 */
 	hasOAuth2() {
-		return ( this.oauth2 || this.wikifarm === 'miraheze' || this.wikifarm === 'wikimedia' || this.wikifarm === 'wikiforge' );
+		return ( this.oauth2 || ( this.wikifarm && ['miraheze', 'wiki.gg', 'wikimedia', 'wikiforge'].includes(this.wikifarm) ) );
 	}
 
 	/**
