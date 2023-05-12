@@ -71,6 +71,7 @@ const removeClassesExceptions = [
 	'div.main-page-tag-lcs',
 	'div.lcs-container',
 	'div.mw-highlight',
+	'div.mw-heading',
 	'div.poem',
 	'div.hlist',
 	'div.treeview',
@@ -493,8 +494,13 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						section = section.first();
 						var sectionLevel = section[0].tagName.replace('h', '');
 						if ( !['1','2','3','4','5','6'].includes( sectionLevel ) ) sectionLevel = '10';
+						let headerList = ['h1','h2','h3','h4','h5','h6'];
+						if ( section.parent('div.mw-heading').length ) {
+							section = section.parent();
+							headerList = ['div.mw-heading1','div.mw-heading2','div.mw-heading3','div.mw-heading4','div.mw-heading5','div.mw-heading6'];
+						}
 						var sectionContent = $('<div>').append(
-							section.nextUntil(['h1','h2','h3','h4','h5','h6'].slice(0, sectionLevel).join(', '))
+							section.nextUntil(headerList.slice(0, sectionLevel).join(', '))
 						);
 						section.find('div, ' + removeClasses.join(', ')).remove();
 						extraImages.push(...new Set([
