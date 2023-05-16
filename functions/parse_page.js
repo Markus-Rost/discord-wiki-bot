@@ -43,7 +43,7 @@ const infoboxList = [
 const removeClasses = [
 	'table',
 	'figure',
-	'script',
+	'audio',
 	'input',
 	'style',
 	'script',
