@@ -193,6 +193,13 @@
 		"desc": "Estos son los webhooks de cambios recientes para $1:",
 		"explanation": "<h2>Webhook de Cambios Recientes</h2>\n<p>Wiki-Bot puede ejecutar un webhook de cambios recientes basado en <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Los cambios recientes se pueden mostrar en mensajes de texto compactos con inline links o mensajes embed con etiquetas de edición y cambios de categoría.</p>\n<p>Requisitos para agregar un webhook de cambios recientes:</p>\n<ul>\n<li>El wiki necesita ejecutarse en <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> o superior.</li>\n<li>El mensaje del sistema <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> debe configurarse con el ID del servidor Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
 		"form": {
+			"buttons": "Acciones de botón:",
+			"buttons_block": "Bloquear al usuario.",
+			"buttons_delete": "Eliminar la página.",
+			"buttons_filerevert": "Revertir a la versión anterior del archivo.",
+			"buttons_move": "Revertir el traslado de la página.",
+			"buttons_rollback": "Revertir las últimas ediciones en la página hechas por el usuario.",
+			"buttons_undo": "Deshacer la edición de la página.",
 			"channel": "Canal:",
 			"confirm": "¿Realmente deseas eliminar el webhook de cambios recientes?",
 			"display": "Modo de visualización:",
