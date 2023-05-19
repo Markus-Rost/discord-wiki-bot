@@ -26,7 +26,7 @@
     "got-ssrf": "^1.3.5",
     "htmlparser2": "^9.0.0",
     "mediawiki-projects-list": "^4.2.1",
-    "npm": "^9.6.6",
+    "npm": "^9.6.7",
     "pg": "^8.11.0"
   },
   "repository": {
