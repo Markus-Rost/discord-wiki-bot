@@ -1,7 +1,7 @@
 {
 	"_app-directory": {
 		"detailed_description": "**Wiki-Bot** est un bot dont le but est de faciliter **les liens et les recherches sur les sites MediaWiki** comme Wikipédia et les wikis de Fandom. Il affiche de **brefs descriptifs et des informations supplémentaires** sur les pages et est capable de résoudre les redirections et de suivre les liens interwiki. Wiki-Bot fournit également **la vérification de l'utilisateur du compte wiki** et **les flux de modifications récentes**.\n\nModifiez les paramètres du serveur pour Wiki-Bot en utilisant le tableau de bord : https://settings.wikibot.de/\n\n# Vérification de l'utilisateur\n\nEn utilisant la commande `!wiki verify <nom d'utilisateur wiki>`, les utilisateurs peuvent se vérifier en tant qu'utilisateur wiki spécifique en utilisant le champ Discord sur leur profil wiki. Si l'utilisateur correspond et que les vérifications d'utilisateurs sont configurées sur le serveur, Wiki-Bot lui donnera les rôles pour toutes les entrées de vérification auxquelles il correspond.\n\nEn utilisant la commande `!wiki verification`, les administrateurs peuvent ajouter jusqu'à 10 entrées de vérification sur un serveur. Chaque entrée de vérification permet de multiples restrictions sur le moment où un utilisateur doit correspondre à la vérification.\n\n* Canal pour utiliser la commande `!wiki verify` dans.\n* Rôle à obtenir lors de la correspondance avec l'entrée de vérification.\n* Nombre d'édition requis sur le wiki pour correspondre à l'entrée de vérification.\n* Le groupe d'utilisateurs dont il faut être membre sur le wiki pour correspondre à l'entrée de vérification.\n* L'âge du compte en jours doit correspondre à l'entrée de vérification.\n* Si le surnom de l'utilisateur Discord doit être remplacé par son nom d'utilisateur wiki lorsqu'il correspond à l'entrée de vérification.\n\n# Webhook des changements récents\n\nWiki-Bot est capable de lancer un webhook de changements récents en utilisant la commande `!wiki rcscript`. Les changements récents peuvent être affichés dans des messages texte compacts avec des liens en ligne ou des messages intégrés avec des balises d'édition et des changements de catégorie.\n\nConditions requises pour ajouter un webhook de changements récents :\n\n* Le wiki doit fonctionner avec MediaWiki 1.30 ou plus.\n* Le message système `MediaWiki:Custom-RcGcDw` doit être configuré avec l'identifiant du serveur Discord.\n\n# Configuration\n\nAprès avoir invité Wiki-Bot sur votre serveur, vous devez définir le wiki que vous voulez rechercher par défaut. Vous pouvez le faire avec la commande `!wiki settings` ou en utilisant le tableau de bord.\n\n* Changez le wiki avec `!wiki settings wiki <url>`\n  * Exemple : `!wiki settings wiki https://minecraft.fandom.com/wiki/Minecraft_Wiki`\n* Changez la langue avec `!wiki settings lang <language>`\n  * Exemple : `!wiki settings lang German`\n\n# Commandes\n\nPour une liste complète de toutes les commandes, utilisez `!wiki help`\n\n| Commande | Description |\n| ------- | ----------- |\n| `!wiki <search term>` | Wiki-Bot répondra avec un lien vers l'article correspondant dans le wiki. |\n| `!wiki !<wiki> <search term>` | Wiki-Bot répondra avec un lien vers un article correspondant dans la langue Wikipédia nommée : `https://<wiki>.wikipedia.org/` |\n| `!wiki ?<wiki> <search term>` | Wiki-Bot répondra par un lien vers un article correspondant dans le wiki Fandom nommé : `https://<wiki>.fandom.com/` |\n| `!wiki !<wiki> <search term>` | Wiki-Bot répondra par un lien vers un article correspondant dans le projet MediaWiki nommé. Exemple : `!wiki !!en.wikipedia.org Cookie` |\n| `!wiki User:<nom d'utilisateur>` | Wiki-Bot affichera quelques informations sur l'utilisateur. |\n| `!wiki random` | Wiki-Bot répondra avec un lien vers une page aléatoire du wiki. |\n| `!wiki overview` | Wiki-Bot affichera des informations et des statistiques sur le wiki. |\n| `!wiki diff <diff> [<oldid>]` | Wiki-Bot répondra avec un lien vers le diff dans le wiki. |\n| `!wiki diff <nom de la page>` | Wiki-Bot répondra avec un lien vers le dernier diff sur l'article dans le wiki. |\n| `!wiki info` | Wiki-Bot se présentera. |\n| `!wiki help` | Wiki-Bot répondra par un lien vers le dernier diff de l'article dans le wiki. |\n| `!wiki help <bot command>` | Wiki-Bot expliquera la commande. |\n| `!wiki test` | Wiki-Bot répondra avec son propre temps de réponse et celui du wiki. |\n\nSi vous recevez une réponse indésirable, vous pouvez réagir avec 🗑️ (`:wastebasket:`) à son message et Wiki-Bot le supprimera.\n\n## Admin\n\nPour une liste complète de toutes les commandes de l'administrateur, utilisez `!wiki help admin`\n\n| Commande | Description |\n| ------- | ----------- |\n| `!wiki help admin` | Wiki-Bot listera toutes les commandes de l'administrateur. |\n| `!wiki settings` | Wiki-Bot changera les paramètres du serveur. |\n| `!wiki verification` | Wiki-Bot changera les vérifications wiki utilisées par la commande `!wiki verify`. |\n| `!wiki rcscript` | Wiki-Bot changera le webhook des changements récents. |\n| `!wiki pause @Wiki-Bot` | Wiki-Bot ignorera toutes les commandes sur ce serveur, à l'exception de quelques commandes d'administration. |\n\nLes administrateurs peuvent également utiliser le tableau de bord pour modifier les paramètres du robot : https://settings.wikibot.de/",
-		"short_description": "Wiki-Bot a pour but de faciliter la recherche et la création de liens vers les pages du wiki, tout en affichant des descriptions et des informations supplémentaires. Wiki-Bot permet également de vérifier l'identité de l'utilisateur du compte wiki et d'afficher les modifications récentes."
+		"short_description": "Wiki-Bot facilite la création de liens vers les wiki, tout en mettant des descriptions et des informations en plus. Wiki-Bot peut aussi vérifier un compte wiki et afficher les modifications récentes."
 	},
 	"diff": {
 		"description": "Afficher les différences d'édition d'un wiki.",
@@ -27,7 +27,7 @@
 		"options[1].options[0].options[1].choices[0].name": "Comparer avec la révision précédente. (par défaut)",
 		"options[1].options[0].options[1].choices[1].name": "Comparer avec la prochaine révision.",
 		"options[1].options[0].options[1].choices[2].name": "Comparer avec la révision actuelle.",
-		"options[1].options[0].options[1].description": "Révision relative de l'edit diff à afficher.",
+		"options[1].options[0].options[1].description": "Révision relative de la différence d'édition à afficher.",
 		"options[1].options[0].options[1].name": "compare",
 		"options[1].options[0].options[2].description": "Le wiki dans lequel effectuer la recherche.",
 		"options[1].options[0].options[2].name": "wiki",
@@ -37,17 +37,19 @@
 		"options[1].options[0].options[4].name": "noembed",
 		"options[1].options[0].options[5].description": "Cacher le lien et l'inclure dans un spoiler ?",
 		"options[1].options[0].options[5].name": "spoiler",
+		"options[1].options[1].description": "Afficher la différence d'une modification wiki sur plusieurs révisions en fonction des identifiants.",
 		"options[1].options[1].name": "multiple",
+		"options[1].options[1].options[0].description": "ID de la différence d'édition à afficher.",
 		"options[1].options[1].options[0].name": "diffid",
 		"options[1].options[1].options[1].description": "Ancien ID de révision de la différence d'édition à afficher.",
 		"options[1].options[1].options[1].name": "oldid",
-		"options[1].options[1].options[2].description": "Wiki dans lequel chercher.",
+		"options[1].options[1].options[2].description": "Le wiki dans lequel effectuer la recherche.",
 		"options[1].options[1].options[2].name": "wiki",
 		"options[1].options[1].options[3].description": "Envoyer une réponse uniquement visible par vous-même ?",
 		"options[1].options[1].options[3].name": "private",
 		"options[1].options[1].options[4].description": "Envoyer uniquement le lien sans inclusion ?",
 		"options[1].options[1].options[4].name": "noembed",
-		"options[1].options[1].options[5].description": "Cacher le lien et l’inclure dans un spoiler ?",
+		"options[1].options[1].options[5].description": "Cacher le lien et l'inclure dans un spoiler ?",
 		"options[1].options[1].options[5].name": "spoiler"
 	},
 	"inline": {
@@ -57,34 +59,53 @@
 		"options[0].name": "text"
 	},
 	"interwiki": {
+		"description": "Postez un lien vers un autre wiki.",
 		"name": "interwiki",
-		"options[0].description": "Le wiki dans lequel chercher.",
+		"options[0].description": "Le wiki dans lequel effectuer la recherche.",
 		"options[0].name": "wiki",
+		"options[1].description": "Titre de la page à rechercher.",
 		"options[1].name": "title",
+		"options[2].description": "Section de la page à laquelle renvoyer.",
 		"options[2].name": "section",
+		"options[3].description": "Arguments de requête à ajouter au lien.",
 		"options[3].name": "query",
+		"options[4].description": "Envoyer une réponse uniquement visible par vous-même ?",
 		"options[4].name": "private",
+		"options[5].description": "Envoyer uniquement le lien sans inclusion ?",
 		"options[5].name": "noembed",
+		"options[6].description": "Cacher le lien et l'inclure dans un spoiler ?",
 		"options[6].name": "spoiler"
 	},
 	"overview": {
+		"description": "Afficher un aperçu du wiki.",
 		"name": "overview",
+		"options[0].description": "Le wiki dans lequel effectuer la recherche.",
 		"options[0].name": "wiki",
+		"options[1].description": "Envoyer une réponse uniquement visible par vous-même ?",
 		"options[1].name": "private",
+		"options[2].description": "Envoyer uniquement le lien sans inclusion ?",
 		"options[2].name": "noembed",
+		"options[3].description": "Cacher le lien et l'inclure dans un spoiler ?",
 		"options[3].name": "spoiler"
 	},
 	"patreon": {
+		"description": "Vérifiez ou modifiez vos serveurs avec les fonctionnalités patreon activées.",
 		"name": "patreon",
+		"options[0].description": "Vérifiez votre liste actuelle de serveurs dont les fonctionnalités patreon sont activées.",
 		"options[0].name": "check",
+		"options[1].description": "Activer les fonctionnalités Patreon pour un serveur.",
 		"options[1].name": "enable",
+		"options[1].options[0].description": "Le serveur pour lequel les fonctionnalités de patreon sont activées.",
 		"options[1].options[0].name": "guild",
+		"options[2].description": "Désactiver les fonctionnalités patreon pour un serveur.",
 		"options[2].name": "disable",
+		"options[2].options[0].description": "Le serveur pour lequel les fonctionnalités de patreon sont désactivées.",
 		"options[2].options[0].name": "guild"
 	},
 	"random": {
+		"description": "Postez un lien de wiki au hasard.",
 		"name": "random",
-		"options[0].description": "Le wiki dans lequel chercher.",
+		"options[0].description": "Le wiki dans lequel effectuer la recherche.",
 		"options[0].name": "wiki",
 		"options[1].description": "L'espace de noms dans lequel la recherche doit être effectuée.",
 		"options[1].name": "namespace",
@@ -96,25 +117,33 @@
 		"options[4].name": "spoiler"
 	},
 	"user": {
+		"description": "Publier des informations sur un utilisateur de wiki.",
 		"name": "user",
+		"options[0].description": "L'utilisateur pour lequel des informations doivent être affichées.",
 		"options[0].name": "username",
-		"options[1].description": "Le wiki dans lequel chercher.",
+		"options[1].description": "Le wiki dans lequel effectuer la recherche.",
 		"options[1].name": "wiki",
 		"options[2].description": "Envoyer une réponse uniquement visible par vous-même ?",
 		"options[2].name": "private",
-		"options[3].description": "L'envoyer uniquement sans inclusion ?",
+		"options[3].description": "Envoyer uniquement le lien sans inclusion ?",
 		"options[3].name": "noembed",
 		"options[4].description": "Cacher le lien et l'inclure dans un spoiler ?",
 		"options[4].name": "spoiler"
 	},
 	"verify": {
+		"description": "Vérifiez votre compte Discord avec votre compte wiki.",
 		"name": "verify",
+		"options[0].description": "Votre nom d'utilisateur sur le wiki.",
 		"options[0].name": "username"
 	},
 	"wiki": {
+		"description": "Postez un lien wiki.",
 		"name": "wiki",
+		"options[0].description": "Titre de la page à rechercher.",
 		"options[0].name": "title",
+		"options[1].description": "Section de la page à laquelle renvoyer.",
 		"options[1].name": "section",
+		"options[2].description": "Arguments de requête à ajouter au lien.",
 		"options[2].name": "query",
 		"options[3].description": "Envoyer une réponse uniquement visible par vous-même ?",
 		"options[3].name": "private",
