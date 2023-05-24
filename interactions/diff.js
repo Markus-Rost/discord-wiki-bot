@@ -1,5 +1,5 @@
-import { PermissionFlagsBits } from 'discord.js';
-import { isMessage, canShowEmbed, sendMessage } from '../util/functions.js';
+import { MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { isMessage, canShowEmbed, allowDelete, sendMessage } from '../util/functions.js';
 import interwiki_interaction from './interwiki.js';
 import wiki_diff from '../cmds/wiki/diff.js';
 
@@ -43,7 +43,10 @@ function slash_diff(interaction, lang, wiki) {
 						return result.message.slice(1).reduce( (prev, content) => {
 							return prev.then( message => {
 								list.push(message);
-								return interaction.followUp( {content, ephemeral} ).catch(log_error);
+								return interaction.followUp( {content, ephemeral} ).then( msg => {
+									if ( !msg.flags.has(MessageFlags.Ephemeral) ) allowDelete(msg, interaction.user.id);
+									return msg;
+								}, log_error );
 							} );
 						}, sendMessage(interaction, {
 							content: result.message[0],

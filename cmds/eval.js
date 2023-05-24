@@ -114,7 +114,7 @@ function checkWiki(wiki) {
 			result.activity.push(`${rc.length} edits in${text}`);
 		}
 		return Promise.all([
-			db.query( 'SELECT guild, lang, display, rcid, postid FROM rcgcdw WHERE wiki = $1', [result.wiki] ).then( ({rows}) => {
+			db.query( 'SELECT guild, lang, display, buttons, rcid, postid FROM rcgcdw WHERE wiki = $1', [result.wiki] ).then( ({rows}) => {
 				result.rcgcdb = rows;
 			}, dberror => {
 				result.rcgcdb = dberror.toString();

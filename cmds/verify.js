@@ -60,9 +60,9 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 							return Promise.reject(row);
 						}
 						if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, msg.author.id, ( oauth[1] || oauth[0] )] ).then( () => {
-							console.log( '- OAuth2 token for ' + msg.author.id + ' successfully updated.' );
+							console.log( '- OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + msg.author.id + ' successfully updated.' );
 						}, dberror => {
-							console.log( '- Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+							console.log( '- Error while updating the OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + msg.author.id + ': ' + dberror );
 						} );
 						return verifyOauthUser('', body.access_token, {
 							wiki: wiki.href, channel: msg.channel,
@@ -83,9 +83,9 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 					if ( row ) {
 						if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 						else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( oauth[1] || oauth[0] )] ).then( () => {
-							console.log( '- OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
+							console.log( '- OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + msg.author.id + ' successfully deleted.' );
 						}, dberror => {
-							console.log( '- Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+							console.log( '- Error while deleting the OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + msg.author.id + ': ' + dberror );
 						} );
 					}
 					let state = `${oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
@@ -164,9 +164,9 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 								return Promise.reject(row);
 							}
 							if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- OAuth2 token for ' + msg.author.id + ' successfully updated.' );
+								console.log( '- OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + msg.author.id + ' successfully updated.' );
 							}, dberror => {
-								console.log( '- Error while updating the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+								console.log( '- Error while updating the OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + msg.author.id + ': ' + dberror );
 							} );
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: msg.channel,
@@ -187,9 +187,9 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 						if ( row ) {
 							if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 							else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- OAuth2 token for ' + msg.author.id + ' successfully deleted.' );
+								console.log( '- OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + msg.author.id + ' successfully deleted.' );
 							}, dberror => {
-								console.log( '- Error while deleting the OAuth2 token for ' + msg.author.id + ': ' + dberror );
+								console.log( '- Error while deleting the OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + msg.author.id + ': ' + dberror );
 							} );
 						}
 						let state = `${result.oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );

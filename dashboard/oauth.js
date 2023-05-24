@@ -392,11 +392,11 @@ function mediawiki_oauth(res, searchParams, user_id) {
 				return res.end();
 			}
 			return db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES ($1, $2, $3)', [user_id, oauthSite.id, body.refresh_token] ).then( () => {
-				console.log( '- Dashboard: OAuth2 token for ' + user_id + ' successfully saved.' );
+				console.log( '- Dashboard: OAuth2 token on ' + oauthSite.id + ' for ' + user_id + ' successfully saved.' );
 				res.writeHead(302, {Location: '/user?oauth=success'});
 				return res.end();
 			}, dberror => {
-				console.log( '- Dashboard: Error while saving the OAuth2 token for ' + user_id + ': ' + dberror );
+				console.log( '- Dashboard: Error while saving the OAuth2 token on ' + oauthSite.id + ' for ' + user_id + ': ' + dberror );
 				res.writeHead(302, {Location: '/user?oauth=failed'});
 				return res.end();
 			} );
@@ -407,9 +407,9 @@ function mediawiki_oauth(res, searchParams, user_id) {
 		} ).then( () => {
 			let userid = oauthVerify.get(state);
 			if ( userid && body?.refresh_token ) db.query( 'INSERT INTO oauthusers(userid, site, token) VALUES ($1, $2, $3)', [userid, oauthSite.id, body.refresh_token] ).then( () => {
-				console.log( '- Dashboard: OAuth2 token for ' + userid + ' successfully saved.' );
+				console.log( '- Dashboard: OAuth2 token on ' + oauthSite.id + ' for ' + userid + ' successfully saved.' );
 			}, dberror => {
-				console.log( '- Dashboard: Error while saving the OAuth2 token for ' + userid + ': ' + dberror );
+				console.log( '- Dashboard: Error while saving the OAuth2 token on ' + oauthSite.id + ' for ' + userid + ': ' + dberror );
 			} );
 			oauthVerify.delete(state);
 			if ( !userid ) res.writeHead(302, {Location: '/user?oauth=verified'});

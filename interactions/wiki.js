@@ -1,5 +1,5 @@
-import { PermissionFlagsBits } from 'discord.js';
-import { got, isMessage, canShowEmbed, htmlToPlain, partialURIdecode, sendMessage } from '../util/functions.js';
+import { MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { got, isMessage, canShowEmbed, htmlToPlain, partialURIdecode, allowDelete, sendMessage } from '../util/functions.js';
 import phabricator, { phabricatorSites } from '../functions/phabricator.js';
 import check_wiki from '../cmds/wiki/general.js';
 
@@ -36,7 +36,10 @@ function slash_wiki(interaction, lang, wiki) {
 					return result.message.slice(1).reduce( (prev, content) => {
 						return prev.then( message => {
 							list.push(message);
-							return interaction.followUp( {content, ephemeral} ).catch(log_error);
+							return interaction.followUp( {content, ephemeral} ).then( msg => {
+								if ( !msg.flags.has(MessageFlags.Ephemeral) ) allowDelete(msg, interaction.user.id);
+								return msg;
+							}, log_error );
 						} );
 					}, sendMessage(interaction, {
 						content: result.message[0],

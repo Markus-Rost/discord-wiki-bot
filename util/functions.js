@@ -1,4 +1,4 @@
-import { Message, PermissionFlagsBits } from 'discord.js';
+import { Message, MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { Parser as HTMLParser } from 'htmlparser2';
 import { embedLength } from '@discordjs/builders';
 import { urlToFix } from 'mediawiki-projects-list';
@@ -136,7 +136,7 @@ function parse_infobox(infobox, embed, embedLimits = {fieldCount: 25, fieldLengt
 
 /**
  * If the message is an instance of Discord.Message.
- * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
+ * @param {Message|import('discord.js').Interaction} msg - The Discord message.
  * @returns {Boolean}
  */
 function isMessage(msg) {
@@ -145,7 +145,7 @@ function isMessage(msg) {
 
 /**
  * If the bot can show embeds.
- * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The Discord message.
+ * @param {Message|import('discord.js').Interaction} msg - The Discord message.
  * @returns {Boolean}
  */
 function canShowEmbed(msg) {
@@ -569,22 +569,22 @@ function partialURIdecode(m) {
 
 /**
  * Check for timeout or pause.
- * @param {import('discord.js').Message|import('discord.js').Interaction} msg - The message.
+ * @param {Message|import('discord.js').Interaction} msg - The message.
  * @param {Boolean} [ignorePause] - Ignore pause for admins.
  * @returns {Boolean}
  */
 function breakOnTimeoutPause(msg, ignorePause = false) {
 	if ( !msg.inGuild() ) return false;
 	if ( msg.member?.isCommunicationDisabled?.() ) {
-		console.log( '- Aborted, communication disabled for User.' );
+		console.log( `- Aborted, communication disabled for ${msg.member.user.id} on ${msg.guildId}.` );
 		return true;
 	}
 	if ( msg.guild?.members?.me?.isCommunicationDisabled() ) {
-		console.log( '- Aborted, communication disabled for Wiki-Bot.' );
+		console.log( `- Aborted, communication disabled for Wiki-Bot on ${msg.guildId}.` );
 		return true;
 	}
 	if ( pausedGuilds.has(msg.guildId) && !( ignorePause && ( msg.isAdmin?.() || msg.isOwner?.() ) ) ) {
-		console.log( '- Aborted, guild paused.' );
+		console.log( `- Aborted, guild paused on ${msg.guildId}.` );
 		return true;
 	};
 	return false;
@@ -592,7 +592,7 @@ function breakOnTimeoutPause(msg, ignorePause = false) {
 
 /**
  * Allow users to delete their command responses.
- * @param {import('discord.js').Message} msg - The response.
+ * @param {Message} msg - The response.
  * @param {String} author - The user id.
  */
 function allowDelete(msg, author) {
@@ -607,15 +607,15 @@ function allowDelete(msg, author) {
 /**
  * Sends an interaction response.
  * @param {import('discord.js').ChatInputCommandInteraction|import('discord.js').ButtonInteraction|import('discord.js').ModalSubmitInteraction} interaction - The interaction.
- * @param {String|import('discord.js').MessageOptions} message - The message.
+ * @param {String|import('discord.js').InteractionEditReplyOptions} message - The message.
  * @param {Boolean} [letDelete] - Let the interaction user delete the message.
- * @returns {Promise<import('discord.js').Message?>}
+ * @returns {Promise<Message?>}
  */
 function sendMessage(interaction, message, letDelete = false) {
 	if ( !interaction.ephemeral && letDelete && breakOnTimeoutPause(interaction) ) return Promise.resolve();
 	if ( message?.embeds?.length && !message.embeds[0] ) message.embeds = [];
 	return interaction.editReply( message ).then( msg => {
-		if ( letDelete && (msg.flags & 64) !== 64 ) allowDelete(msg, interaction.user.id);
+		if ( letDelete && !msg.flags.has(MessageFlags.Ephemeral) ) allowDelete(msg, interaction.user.id);
 		return msg;
 	}, log_error );
 };

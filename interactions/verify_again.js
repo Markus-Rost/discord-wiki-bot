@@ -57,9 +57,9 @@ function button_verify(interaction, lang, wiki) {
 								return Promise.reject(row);
 							}
 							if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, interaction.user.id, ( oauth[1] || oauth[0] )] ).then( () => {
-								console.log( '- OAuth2 token for ' + interaction.user.id + ' successfully updated.' );
+								console.log( '- OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + interaction.user.id + ' successfully updated.' );
 							}, dberror => {
-								console.log( '- Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								console.log( '- Error while updating the OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + interaction.user.id + ': ' + dberror );
 							} );
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
@@ -78,9 +78,9 @@ function button_verify(interaction, lang, wiki) {
 						if ( row ) {
 							if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 							else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( () => {
-								console.log( '- OAuth2 token for ' + interaction.user.id + ' successfully deleted.' );
+								console.log( '- OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + interaction.user.id + ' successfully deleted.' );
 							}, dberror => {
-								console.log( '- Error while deleting the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								console.log( '- Error while deleting the OAuth2 token on ' + ( oauth[1] || oauth[0] ) + ' for ' + interaction.user.id + ': ' + dberror );
 							} );
 						}
 						let state = `${oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( oauth[1] ? ` ${oauth[1]}` : '' );
@@ -134,9 +134,9 @@ function button_verify(interaction, lang, wiki) {
 								return Promise.reject(row);
 							}
 							if ( body?.refresh_token ) db.query( 'UPDATE oauthusers SET token = $1 WHERE userid = $2 AND site = $3', [body.refresh_token, interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- OAuth2 token for ' + interaction.user.id + ' successfully updated.' );
+								console.log( '- OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + interaction.user.id + ' successfully updated.' );
 							}, dberror => {
-								console.log( '- Error while updating the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								console.log( '- Error while updating the OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + interaction.user.id + ': ' + dberror );
 							} );
 							return verifyOauthUser('', body.access_token, {
 								wiki: wiki.href, channel: interaction.channel,
@@ -155,9 +155,9 @@ function button_verify(interaction, lang, wiki) {
 						if ( row ) {
 							if ( !row?.hasOwnProperty?.('token') ) console.log( '- Error while checking the OAuth2 refresh token: ' + row );
 							else if ( row.token ) db.query( 'DELETE FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( () => {
-								console.log( '- OAuth2 token for ' + interaction.user.id + ' successfully deleted.' );
+								console.log( '- OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + interaction.user.id + ' successfully deleted.' );
 							}, dberror => {
-								console.log( '- Error while deleting the OAuth2 token for ' + interaction.user.id + ': ' + dberror );
+								console.log( '- Error while deleting the OAuth2 token on ' + ( result.oauth[1] || result.oauth[0] ) + ' for ' + interaction.user.id + ': ' + dberror );
 							} );
 						}
 						let state = `${result.oauth[0]} ${process.env.SHARDS}` + Date.now().toString(16) + randomBytes(16).toString('hex') + ( result.oauth[1] ? ` ${result.oauth[1]}` : '' );
