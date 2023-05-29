@@ -23,7 +23,7 @@
     "dotenv": "^16.0.3",
     "full-icu": "^1.5.0",
     "got": "^12.6.0",
-    "got-ssrf": "^1.3.5",
+    "got-ssrf": "^2.0.0",
     "htmlparser2": "^9.0.0",
     "mediawiki-projects-list": "^4.2.1",
     "npm": "^9.6.6",
