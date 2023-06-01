@@ -395,7 +395,7 @@
 								"hi": "दिखाने के लिए सम्पादन अंतर का सापेक्ष अवतरण।",
 								"ja": "表示する編集差分の相対リビジョン。",
 								"el": "Σχετική έκδοση της διαφοράς επεξεργασίας για εμφάνιση.",
-								"fr": "Révision relative de l'edit diff à afficher."
+								"fr": "Révision relative de la différence d'édition à afficher."
 							},
 							"choices": [
 								{
@@ -625,7 +625,8 @@
 						"it": "Mostra il diff di una modifica sulla wiki tra versioni multiple in base agli ID.",
 						"hi": "ID-ओं के आधार पर विकि पर कई बदलावों के दौरान एक सम्पादन अंतर दिखाएँ।",
 						"ja": "IDに基づき、複数のリビジョンに渡るWiki編集の差分を表示します。",
-						"el": "Εμφάνιση μιας διαφοράς επεξεργασίας του wiki με πολλαπλές εκδόσεις με βάση τις ταυτότητές τους."
+						"el": "Εμφάνιση μιας διαφοράς επεξεργασίας του wiki με πολλαπλές εκδόσεις με βάση τις ταυτότητές τους.",
+						"fr": "Afficher la différence d'une modification wiki sur plusieurs révisions en fonction des identifiants."
 					},
 					"options": [
 						{
@@ -655,7 +656,8 @@
 								"it": "ID del diff della modifica da mostrare.",
 								"hi": "दिखाने के लिए सम्पादन अंतर का अंतर ID।",
 								"ja": "表示する編集の差分ID。",
-								"el": "Ταυτότητα διαφοράς της διαφοράς επεξεργασίας προς εμφάνιση."
+								"el": "Ταυτότητα διαφοράς της διαφοράς επεξεργασίας προς εμφάνιση.",
+								"fr": "ID de la différence d'édition à afficher."
 							},
 							"min_value": 0,
 							"required": true
@@ -725,7 +727,7 @@
 								"en-GB": "The wiki to search in.",
 								"en-US": "The wiki to search in.",
 								"ja": "検索対象となるWiki。",
-								"fr": "Wiki dans lequel chercher."
+								"fr": "Le wiki dans lequel effectuer la recherche."
 							},
 							"required": false,
 							"autocomplete": true
@@ -833,7 +835,7 @@
 								"pt-BR": "Ocultar o link como spoiler?",
 								"en-GB": "Hide the link and embed in a spoiler?",
 								"en-US": "Hide the link and embed in a spoiler?",
-								"fr": "Cacher le lien et l’inclure dans un spoiler ?"
+								"fr": "Cacher le lien et l'inclure dans un spoiler ?"
 							},
 							"required": false
 						}

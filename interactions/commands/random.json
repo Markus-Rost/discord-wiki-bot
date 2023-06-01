@@ -28,7 +28,8 @@
 		"pt-BR": "Poste um link aleatório da wiki.",
 		"en-GB": "Post a random wiki link.",
 		"en-US": "Post a random wiki link.",
-		"ja": "ランダムなWikiのリンクを貼ります。"
+		"ja": "ランダムなWikiのリンクを貼ります。",
+		"fr": "Postez un lien de wiki au hasard."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -66,7 +67,7 @@
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
 				"ja": "検索対象となるWiki。",
-				"fr": "Le wiki dans lequel chercher."
+				"fr": "Le wiki dans lequel effectuer la recherche."
 			},
 			"required": false,
 			"autocomplete": true

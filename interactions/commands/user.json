@@ -26,7 +26,8 @@
 		"es-ES": "Publicar información sobre un usuario wiki.",
 		"hi": "एक विकि सदस्य के बारे में जानकारी पोस्ट करें।",
 		"ja": "Wikiユーザーに関する情報を投稿する。",
-		"el": "Πληροφορίες δημοσίευσης για έναν χρήστη του wiki."
+		"el": "Πληροφορίες δημοσίευσης για έναν χρήστη του wiki.",
+		"fr": "Publier des informations sur un utilisateur de wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -59,7 +60,8 @@
 				"es-ES": "El usuario a mostrar información de.",
 				"hi": "सदस्य जिसके बारे में जानकारी पोस्ट करनी है।",
 				"ja": "この情報を表示するユーザー。",
-				"el": "Ο χρήστης του οποίου οι πληροφορίες θα εμφανιστούν."
+				"el": "Ο χρήστης του οποίου οι πληροφορίες θα εμφανιστούν.",
+				"fr": "L'utilisateur pour lequel des informations doivent être affichées."
 			},
 			"required": true,
 			"autocomplete": true
@@ -96,7 +98,7 @@
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
 				"ja": "検索対象となるWiki。",
-				"fr": "Le wiki dans lequel chercher."
+				"fr": "Le wiki dans lequel effectuer la recherche."
 			},
 			"required": false,
 			"autocomplete": true
@@ -169,7 +171,7 @@
 				"pt-BR": "Enviar o link sem a pré-visualização?",
 				"en-GB": "Send only the link without embed?",
 				"en-US": "Send only the link without embed?",
-				"fr": "L'envoyer uniquement sans inclusion ?"
+				"fr": "Envoyer uniquement le lien sans inclusion ?"
 			},
 			"required": false
 		},

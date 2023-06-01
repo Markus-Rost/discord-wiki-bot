@@ -36,7 +36,8 @@
 		"es-ES": "Verifica tu cuenta de Discord con tu cuenta wiki.",
 		"pt-BR": "Verifique a sua conta do Discord na sua conta da wiki.",
 		"ja": "DiscordのアカウントとWikiのアカウントを連携してください。",
-		"el": "Επιβεβαίωση του λογαριασμού Discord με τον λογαριασμό wiki."
+		"el": "Επιβεβαίωση του λογαριασμού Discord με τον λογαριασμό wiki.",
+		"fr": "Vérifiez votre compte Discord avec votre compte wiki."
 	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
@@ -79,7 +80,8 @@
 				"es-ES": "Tu nombre de usuario en el wiki.",
 				"pt-BR": "Seu nome de usuário na wiki.",
 				"ja": "Wiki上でのユーザー名。",
-				"el": "Το όνομα χρήστη σας στο wiki."
+				"el": "Το όνομα χρήστη σας στο wiki.",
+				"fr": "Votre nom d'utilisateur sur le wiki."
 			},
 			"required": false,
 			"autocomplete": true

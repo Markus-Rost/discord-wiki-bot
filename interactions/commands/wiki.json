@@ -30,7 +30,8 @@
 		"el": "Δημοσίευση ενός συνδέσμου wiki.",
 		"pt-BR": "Poste um link da wiki.",
 		"en-GB": "Post a wiki link.",
-		"en-US": "Post a wiki link."
+		"en-US": "Post a wiki link.",
+		"fr": "Postez un lien wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -67,7 +68,8 @@
 				"el": "Τίτλος σελίδας προς αναζήτηση.",
 				"pt-BR": "O título da página a ser pesquisada.",
 				"en-GB": "Page title to search for.",
-				"en-US": "Page title to search for."
+				"en-US": "Page title to search for.",
+				"fr": "Titre de la page à rechercher."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -105,7 +107,8 @@
 				"el": "Τομέας σελίδας προς σύνδεση.",
 				"pt-BR": "Seção da página que o link deve abrir.",
 				"en-GB": "Page section to link to.",
-				"en-US": "Page section to link to."
+				"en-US": "Page section to link to.",
+				"fr": "Section de la page à laquelle renvoyer."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -143,7 +146,8 @@
 				"el": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο.",
 				"pt-BR": "Parâmetros a serem adicionados à URL.",
 				"en-GB": "Query arguments to add to the link.",
-				"en-US": "Query arguments to add to the link."
+				"en-US": "Query arguments to add to the link.",
+				"fr": "Arguments de requête à ajouter au lien."
 			},
 			"min_length": 0,
 			"max_length": 250,

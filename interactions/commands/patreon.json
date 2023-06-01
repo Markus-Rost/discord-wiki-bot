@@ -28,7 +28,8 @@
 		"el": "Έλεγχος ή αλλαγή των διακομιστών σας με ενεργά τα χαρακτηριστικά patreon.",
 		"pt-BR": "Consulte ou modifique seus servidores que possuem ferramentas do Patreon ativadas.",
 		"en-GB": "Check or change your servers with patreon features enabled.",
-		"en-US": "Check or change your servers with patreon features enabled."
+		"en-US": "Check or change your servers with patreon features enabled.",
+		"fr": "Vérifiez ou modifiez vos serveurs avec les fonctionnalités patreon activées."
 	},
 	"default_permission": false,
 	"default_member_permissions": "68608",
@@ -63,7 +64,8 @@
 				"el": "Έλεγχος της τρέχουσας λίστας διακομιστών σας με ενεργοποιημένα τα χαρακτηριστικά patreon.",
 				"pt-BR": "Consulte a lista dos seus servidores que possuem ferramentas do Patreon ativadas.",
 				"en-GB": "Check your current list of servers with patreon features enabled.",
-				"en-US": "Check your current list of servers with patreon features enabled."
+				"en-US": "Check your current list of servers with patreon features enabled.",
+				"fr": "Vérifiez votre liste actuelle de serveurs dont les fonctionnalités patreon sont activées."
 			},
 			"options": []
 		},
@@ -96,7 +98,8 @@
 				"el": "Ενεργοποίηση των χαρακτηριστικών patreon για ένα διακομιστή.",
 				"pt-BR": "Ativar as ferramentas do Patreon para um servidor.",
 				"en-GB": "Enable the patreon features for a server.",
-				"en-US": "Enable the patreon features for a server."
+				"en-US": "Enable the patreon features for a server.",
+				"fr": "Activer les fonctionnalités Patreon pour un serveur."
 			},
 			"options": [
 				{
@@ -128,7 +131,8 @@
 						"el": "Ο διακομιστής για ενεργοποίηση των χαρακτηριστικών patreon.",
 						"pt-BR": "O servidor que deve receber as ferramentas do Patreon.",
 						"en-GB": "The server to enable patreon features for.",
-						"en-US": "The server to enable patreon features for."
+						"en-US": "The server to enable patreon features for.",
+						"fr": "Le serveur pour lequel les fonctionnalités de patreon sont activées."
 					},
 					"min_length": 17,
 					"max_length": 20,
@@ -166,7 +170,8 @@
 				"el": "Απενεργοποίηση των χαρακτηριστικών patreon για διακομιστή.",
 				"pt-BR": "Desativar as ferramentas do Patreon para um servidor.",
 				"en-GB": "Disable the patreon features for a server.",
-				"en-US": "Disable the patreon features for a server."
+				"en-US": "Disable the patreon features for a server.",
+				"fr": "Désactiver les fonctionnalités patreon pour un serveur."
 			},
 			"options": [
 				{
@@ -198,7 +203,8 @@
 						"el": "Ο διακομιστής για απενεργοποίηση των χαρακτηριστικών patreon.",
 						"pt-BR": "O servidor que deve ter as ferramentas do Patreon desativadas.",
 						"en-GB": "The server to disable patreon features for.",
-						"en-US": "The server to disable patreon features for."
+						"en-US": "The server to disable patreon features for.",
+						"fr": "Le serveur pour lequel les fonctionnalités de patreon sont désactivées."
 					},
 					"min_length": 17,
 					"max_length": 20,

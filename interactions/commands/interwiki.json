@@ -30,7 +30,8 @@
 		"el": "Δημοσίευση ενός συνδέσμου σε διαφορετικό wiki.",
 		"pt-BR": "Postar um link a uma wiki diferente.",
 		"en-GB": "Post a link to a different wiki.",
-		"en-US": "Post a link to a different wiki."
+		"en-US": "Post a link to a different wiki.",
+		"fr": "Postez un lien vers un autre wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -68,7 +69,7 @@
 				"pt-BR": "A wiki a ser pesquisada.",
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
-				"fr": "Le wiki dans lequel chercher."
+				"fr": "Le wiki dans lequel effectuer la recherche."
 			},
 			"required": true,
 			"autocomplete": true
@@ -104,7 +105,8 @@
 				"el": "Τίτλος σελίδας προς αναζήτηση.",
 				"pt-BR": "O título da página a ser pesquisada.",
 				"en-GB": "Page title to search for.",
-				"en-US": "Page title to search for."
+				"en-US": "Page title to search for.",
+				"fr": "Titre de la page à rechercher."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -142,7 +144,8 @@
 				"el": "Τομέας σελίδας προς σύνδεση.",
 				"pt-BR": "Seção da página que o link deve abrir.",
 				"en-GB": "Page section to link to.",
-				"en-US": "Page section to link to."
+				"en-US": "Page section to link to.",
+				"fr": "Section de la page à laquelle renvoyer."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -180,7 +183,8 @@
 				"el": "Παράμετροι ερωτήματος για προσθήκη στο σύνδεσμο.",
 				"pt-BR": "Parâmetros a serem adicionados à URL.",
 				"en-GB": "Query arguments to add to the link.",
-				"en-US": "Query arguments to add to the link."
+				"en-US": "Query arguments to add to the link.",
+				"fr": "Arguments de requête à ajouter au lien."
 			},
 			"min_length": 0,
 			"max_length": 250,
@@ -217,7 +221,8 @@
 				"el": "Αποστολή απάντησης ορατής μόνο σε εσάς;",
 				"pt-BR": "Deseja que a resposta seja privada?",
 				"en-GB": "Send a response only visible to yourself?",
-				"en-US": "Send a response only visible to yourself?"
+				"en-US": "Send a response only visible to yourself?",
+				"fr": "Envoyer une réponse uniquement visible par vous-même ?"
 			},
 			"required": false
 		},
@@ -252,7 +257,8 @@
 				"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
 				"pt-BR": "Enviar o link sem a pré-visualização?",
 				"en-GB": "Send only the link without embed?",
-				"en-US": "Send only the link without embed?"
+				"en-US": "Send only the link without embed?",
+				"fr": "Envoyer uniquement le lien sans inclusion ?"
 			},
 			"required": false
 		},
@@ -287,7 +293,8 @@
 				"el": "Απόκρυψη συνδέσμου και ενσωμάτωση στο σπόιλερ;",
 				"pt-BR": "Ocultar o link como spoiler?",
 				"en-GB": "Hide the link and embed in a spoiler?",
-				"en-US": "Hide the link and embed in a spoiler?"
+				"en-US": "Hide the link and embed in a spoiler?",
+				"fr": "Cacher le lien et l'inclure dans un spoiler ?"
 			},
 			"required": false
 		}
