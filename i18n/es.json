@@ -393,7 +393,8 @@
 		"verify": "Por favor proporciona tu nombre de usuario wiki para usar este comando para verificar tu cuenta en Discord con tu cuenta wiki y obtener roles que coincidan con tu cuenta wiki."
 	},
 	"invite": {
-		"bot": "Usa este enlace para invitarme a otro servidor:"
+		"bot": "Usa este enlace para invitarme a otro servidor:",
+		"directory": "O consulte mi página de directorio de la aplicación Discord para más detalles:"
 	},
 	"minecraft": {
 		"fixed": "Se arregló {{PLURAL:$1|Versión| Versiones}}:",
@@ -447,8 +448,10 @@
 		"created": "Creado el:",
 		"crossover": "Fusionado con:",
 		"description": "Descripción:",
+		"directedatchildren": "Dirigido a niños:",
 		"edits": "Ediciones:",
 		"founder": "Fundador:",
+		"gamepedia": "Gamepedia:",
 		"image": "Imagen:",
 		"inaccurate": "Las estadísticas pueden ser inexactas",
 		"lang": "Idioma:",
@@ -493,6 +496,7 @@
 		"audit_reason_edit": "Actualizó el webhook de cambios recientes",
 		"blocked": "¡Este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes!",
 		"blocked_reason": "¡Este wiki ha sido bloqueado para que no se agregue como un webhook de cambios recientes por `$1`!",
+		"buttons": "Acciones de botón:",
 		"channel": "Canal:",
 		"current": "Estos son los webhooks de cambios recientes de este servidor:",
 		"current_display": "El modo de visualización de este webhook es:",
@@ -542,6 +546,9 @@
 			"blocked_reason": "¡Este webhook de cambios recientes se eliminará porque el wiki ha sido bloqueado por `$1`!",
 			"created": "Se ha agregado a este canal un webhook de cambios recientes para $1.",
 			"dashboard": {
+				"buttons_changed": "• Las acciones de botón se han cambiado a $1.",
+				"buttons_disabled": "• Las acciones de botón han sido deshabilitadas.",
+				"buttons_enabled": "• Las acciones de botón se han habilitado para $1.",
 				"channel": "• El webhook se ha movido a este canal.",
 				"disabled_feeds": "• Los cambios basados en feeds, como discusiones, muros de mensajes y comentarios de artículos, se han desactivado.",
 				"disabled_rc": "• Los cambios del wiki se han desactivado.",
