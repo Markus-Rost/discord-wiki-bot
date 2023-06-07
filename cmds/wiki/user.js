@@ -557,7 +557,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				}
 				var discord = '';
 				if ( pbody.userData.discordHandle?.trim() ) {
-					discord = escapeFormatting(pbody.userData.discordHandle.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' ));
+					discord = escapeFormatting(pbody.userData.discordHandle.replace( /^\s*@?([^@#:]{2,32}?)(?:\s*(#\d{1,6}))?\s*$/u, '$1$2' ));
 					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 				}
 				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
@@ -571,13 +571,13 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 						return;
 					}
 					if ( cpbody.profile['link-discord']?.trim() ) {
-						discord = escapeFormatting(cpbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' ));
+						discord = escapeFormatting(cpbody.profile['link-discord'].replace( /^\s*@?([^@#:]{2,32}?)(?:\s*(#\d{1,6}))?\s*$/u, '$1$2' ));
 						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 					}
 					if ( discord ) {
 						if ( msg.inGuild() ) {
 							var discordmember = msg.guild?.members.cache.find( member => {
-								return escapeFormatting(member.user.tag) === discord;
+								return escapeFormatting(member.user.tag) === discord + ( discord.includes('#') ? '' : '#0' );
 							} );
 						}
 						var discordname = [lang.get('user.info.discord'), discord];
@@ -648,13 +648,13 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				if ( revision?.user === username ) {
 					let discord = '';
 					if ( ( revision?.slots?.main || revision )?.['*']?.trim() ) {
-						discord = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+						discord = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*@?([^@#:]{2,32}?)(?:\s*(#\d{1,6}))?\s*$/u, '$1$2' );
 						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 					}
 					if ( discord ) {
 						if ( msg.inGuild() ) {
 							var discordmember = msg.guild?.members.cache.find( member => {
-								return escapeFormatting(member.user.tag) === discord;
+								return escapeFormatting(member.user.tag) === discord + ( discord.includes('#') ? '' : '#0' );
 							} );
 						}
 						let discordname = [lang.get('user.info.discord'), discord];

@@ -180,7 +180,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				}
 				queryuser.editcount = ucbody.userData.localEdits;
 				queryuser.postcount = ucbody.userData.posts;
-				if ( ucbody.userData.discordHandle?.trim() ) discordname = escapeFormatting(ucbody.userData.discordHandle.replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' ));
+				if ( ucbody.userData.discordHandle?.trim() ) discordname = escapeFormatting(ucbody.userData.discordHandle.replace( /^\s*@?([^@#:]{2,32}?)(?:\s*(#\d{1,6}))?\s*$/u, '$1$2' ));
 				
 				if ( wiki.isGamepedia() || !discordname ) return got.get( ( wiki.isGamepedia() ? wiki : 'https://help.fandom.com/' ) + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
 					context: {
@@ -194,7 +194,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 						return Promise.reject();
 					}
 					else if ( pbody.profile['link-discord']?.trim() ) {
-						discordname = escapeFormatting(pbody.profile['link-discord'].replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' ));
+						discordname = escapeFormatting(pbody.profile['link-discord'].replace( /^\s*@?([^@#:]{2,32}?)(?:\s*(#\d{1,6}))?\s*$/u, '$1$2' ));
 					}
 				}, error => {
 					console.log( '- Error while getting the Discord tag: ' + error );
@@ -204,6 +204,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				console.log( '- Error while getting the user profile: ' + ucerror );
 				return Promise.reject();
 			} ).then( () => {
+				if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '#0' );
 				if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 				var authortag = escapeFormatting(member.user.tag);
 				embed.addFields(...[
@@ -483,12 +484,13 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			var discordname = '';
 			if ( revision ) {
 				if ( revision.user === username && ( revision?.slots?.main || revision )?.['*']?.trim() ) {
-					discordname = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*([^@#:]{2,32}?)\s*#(\d{4,6})\s*$/u, '$1#$2' );
+					discordname = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*@?([^@#:]{2,32}?)(?:\s*(#\d{1,6}))?\s*$/u, '$1$2' );
 				}
 				else if ( revision.user !== username ) {
 					discordname = null;
 				}
 			}
+			if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '#0' );
 			if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 			var authortag = escapeFormatting(member.user.tag);
 			embed.addFields(...[
