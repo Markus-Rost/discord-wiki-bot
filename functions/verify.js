@@ -204,7 +204,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				console.log( '- Error while getting the user profile: ' + ucerror );
 				return Promise.reject();
 			} ).then( () => {
-				if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '#0' );
+				if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '\\#0' );
 				if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 				var authortag = escapeFormatting(member.user.tag);
 				embed.addFields(...[
@@ -491,7 +491,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					discordname = null;
 				}
 			}
-			if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '#0' );
+			if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '\\#0' );
 			if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 			var authortag = escapeFormatting(member.user.tag);
 			embed.addFields(...[
