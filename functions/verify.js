@@ -236,6 +236,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 						['tag', member.user.discriminator],
 						['useskin', 'fandomdesktop']
 					]);
+					if ( member.user.discriminator === '0' ) query.delete('tag');
 					var help_link = '';
 					if ( wiki.isGamepedia() ) {
 						query.set('user', username);
