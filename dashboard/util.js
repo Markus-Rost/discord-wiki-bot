@@ -57,6 +57,13 @@ const enabledOAuth2 = [
 		};
 	} )
 ];
+if ( process.env.oauth_telepedia && process.env.oauth_telepedia_secret ) {
+	enabledOAuth2.unshift({
+		id: 'telepedia',
+		name: 'Telepedia',
+		url: 'https://meta.telepedia.net/'
+	});
+}
 if ( process.env.oauth_wikiforge && process.env.oauth_wikiforge_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikiforge',

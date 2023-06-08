@@ -7,7 +7,9 @@ const {defaultSettings, defaultNamespaces} = require('./default.json');
 /** @type {Map<String, String>} - Source wikis for global user pages. */
 const globalUserPage = new Map([
 	['wikimedia', 'https://meta.wikimedia.org/w/'],
-	['miraheze', 'https://login.miraheze.org/w/']
+	['miraheze', 'https://login.miraheze.org/w/'],
+	['wikiforge', 'https://meta.wikiforge.net/w/'],
+	['telepedia', 'https://meta.telepedia.net/']
 ]);
 
 /** @type {String[]} - Sites that support verification using OAuth2. */
@@ -224,7 +226,7 @@ export default class Wiki extends URL {
 	 * @returns {Boolean}
 	 */
 	hasOAuth2() {
-		return ( this.oauth2 || ( this.wikifarm && ['miraheze', 'wiki.gg', 'wikimedia', 'wikiforge'].includes(this.wikifarm) ) );
+		return ( this.oauth2 || this.wikifarm === 'miraheze' || this.wikifarm === 'wikiforge' );
 	}
 
 	/**
