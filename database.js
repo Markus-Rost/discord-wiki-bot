@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 import pg from 'pg';
 const require = createRequire(import.meta.url);
 const {defaultSettings} = require('./util/default.json');
-const db = new pg.Client();
+const db = new pg.Client(process.env.PGSSL === 'true' ? {ssl: true} : {});
 db.on( 'error', dberror => {
 	console.log( '- Error while connecting to the database: ' + dberror );
 } );

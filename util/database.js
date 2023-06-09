@@ -1,5 +1,5 @@
 import pg from 'pg';
-const db = new pg.Pool();
+const db = new pg.Pool(process.env.PGSSL === 'true' ? {ssl: true} : {});
 export default db.on( 'error', dberror => {
 	console.log( '- ' + process.env.SHARDS + ': Error while connecting to the database: ' + dberror );
 } );

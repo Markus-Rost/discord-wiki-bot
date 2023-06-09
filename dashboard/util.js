@@ -25,7 +25,7 @@ const got = gotDefault.extend( {
 	} : {} )
 }, gotSsrf );
 
-const db = new pg.Pool();
+const db = new pg.Pool(process.env.PGSSL === 'true' ? {ssl: true} : {});
 db.on( 'error', dberror => {
 	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
