@@ -144,6 +144,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				settings.user.id = user.id;
 				settings.user.username = user.username;
 				settings.user.discriminator = user.discriminator;
+				settings.user.global_name = user.global_name ?? user.username;
 				settings.user.avatar = 'https://cdn.discordapp.com/' + ( user.avatar ? `avatars/${user.id}/${user.avatar}.` + ( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : `embed/avatars/${( user.discriminator === '0' ? ( BigInt(user.id) >> 22n ) % 6n : user.discriminator % 5 )}.png` ) + '?size=64';
 				settings.user.locale = user.locale;
 				settings.guilds.count = guilds.length;

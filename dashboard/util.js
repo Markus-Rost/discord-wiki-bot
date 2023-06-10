@@ -139,6 +139,7 @@ function canRcGcDwButtons(wiki) {
  * @property {String} id
  * @property {String} username
  * @property {String} discriminator
+ * @property {String} global_name
  * @property {String} avatar
  * @property {String} locale
  */

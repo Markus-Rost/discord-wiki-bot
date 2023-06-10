@@ -73,7 +73,9 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 		$('<script id="replaceHistoryState">').text(`history.replaceState(null, null, '${reqURL.pathname}');`)
 	);
 	$('#logout img').attr('src', settings.user.avatar);
-	$('#logout span').text(settings.user.username + ( settings.user.discriminator === '0' ? '' : ` #${settings.user.discriminator}` ));
+	$('#logout span').text(settings.user.global_name).append( $('<br>'),
+		$('<small>').text(settings.user.username + ( settings.user.discriminator === '0' ? '' : ` #${settings.user.discriminator}` ))
+	);
 	$('.guild#invite a').attr('href', oauth.generateAuthUrl( {
 		scope: [
 			OAuth2Scopes.Identify,
@@ -116,7 +118,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	}
 
 	if ( args[1] === 'user' && enabledOAuth2.length ) {
-		$('head title').text(settings.user.username + ( settings.user.discriminator === '0' ? ' – ' : ` #${settings.user.discriminator} – ` ) + $('head title').text());
+		$('head title').text(dashboardLang.get('selector.user') + ' – ' + $('head title').text());
 		$('#channellist').empty();
 		$('#channellist').append(
 			$('<a class="channel channel-header">').attr('href', '/').append(
