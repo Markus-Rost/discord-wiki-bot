@@ -64,6 +64,13 @@ if ( process.env.oauth_telepedia && process.env.oauth_telepedia_secret ) {
 		url: 'https://meta.telepedia.net/'
 	});
 }
+if ( process.env.oauth_wikitide && process.env.oauth_wikitide_secret ) {
+	enabledOAuth2.unshift({
+		id: 'wikitide',
+		name: 'WikiTide',
+		url: 'https://meta.wikitide.com/w/'
+	});
+}
 if ( process.env.oauth_wikiforge && process.env.oauth_wikiforge_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikiforge',

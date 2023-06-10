@@ -29,6 +29,7 @@ function button_verify(interaction, lang, wiki) {
 			else if ( wiki.wikifarm === 'wiki.gg' ) oauth.push('wikigg');
 			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			else if ( wiki.wikifarm === 'wikiforge' ) oauth.push('wikiforge');
+			else if ( wiki.wikifarm === 'wikitide' ) oauth.push('wikitide');
 			else if ( wiki.wikifarm === 'telepedia' ) oauth.push('telepedia');
 			else {
 				let project = inputToWikiProject(wiki.href)

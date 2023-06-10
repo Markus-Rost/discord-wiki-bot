@@ -9,6 +9,7 @@ const globalUserPage = new Map([
 	['wikimedia', 'https://meta.wikimedia.org/w/'],
 	['miraheze', 'https://login.miraheze.org/w/'],
 	['wikiforge', 'https://meta.wikiforge.net/w/'],
+	['wikitide', 'https://meta.wikitide.com/w/'],
 	['telepedia', 'https://meta.telepedia.net/']
 ]);
 
@@ -179,8 +180,9 @@ export default class Wiki extends URL {
 			this.wikifarm = project.wikiProject.wikiFarm;
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
-		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm = 'miraheze';
-		if ( /^(?:https?:)?\/\/static\.wikiforge\.net\//.test(logo) ) this.wikifarm = 'wikiforge';
+		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm ??= 'miraheze';
+		if ( /^(?:https?:)?\/\/static\.wikiforge\.net\//.test(logo) ) this.wikifarm ??= 'wikiforge';
+		if ( /^(?:https?:)?\/\/static\.wikitide\.com\//.test(logo) ) this.wikifarm ??= 'wikitide';
 		if ( namespaces && namespacealiases ) namespaces.forEach( namespace => {
 			/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
 			let ns = {
@@ -226,7 +228,7 @@ export default class Wiki extends URL {
 	 * @returns {Boolean}
 	 */
 	hasOAuth2() {
-		return ( this.oauth2 || this.wikifarm === 'miraheze' || this.wikifarm === 'wikiforge' );
+		return ( this.oauth2 || this.wikifarm === 'miraheze' || this.wikifarm === 'wikiforge' || this.wikifarm === 'wikitide' );
 	}
 
 	/**
