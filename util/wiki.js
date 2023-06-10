@@ -160,12 +160,13 @@ export default class Wiki extends URL {
 	 * @param {String} siteinfo.mainpage - Main page of the wiki.
 	 * @param {String} siteinfo.centralidlookupprovider - Central auth of the wiki.
 	 * @param {String} siteinfo.logo - Logo of the wiki.
+	 * @param {String} siteinfo.wikiid - DB name of the wiki.
 	 * @param {String} [siteinfo.gamepedia] - If the wiki is a Gamepedia wiki.
 	 * @param {{id: Number, canonical: String, content?: "", '*': String}[]} [namespaces] - Namespaces from the wiki API.
 	 * @param {{id: Number, '*': String}[]} [namespacealiases] - Namespace aliases from the wiki API.
 	 * @returns {Wiki}
 	 */
-	updateWiki({servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, gamepedia = 'false'}, namespaces, namespacealiases) {
+	updateWiki({servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, wikiid, gamepedia = 'false'}, namespaces, namespacealiases) {
 		this.hostname = servername;
 		this.pathname = scriptpath + '/';
 		if ( !this.proxyName ) this.articlepath = articlepath;
@@ -180,9 +181,14 @@ export default class Wiki extends URL {
 			this.wikifarm = project.wikiProject.wikiFarm;
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
-		if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm ??= 'miraheze';
-		if ( /^(?:https?:)?\/\/static\.wikiforge\.net\//.test(logo) ) this.wikifarm ??= 'wikiforge';
-		if ( /^(?:https?:)?\/\/static\.wikitide\.com\//.test(logo) ) this.wikifarm ??= 'wikitide';
+		if ( !this.wikifarm ) {
+			if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm ??= 'miraheze';
+			else if ( /^(?:https?:)?\/\/static\.wikiforge\.net\//.test(logo) ) {
+				if ( wikiid.endsWith( 'wikitide' ) ) this.wikifarm ??= 'wikitide';
+				else this.wikifarm ??= 'wikiforge';
+			}
+			// else if ( /^(?:https?:)?\/\/static\.wikitide\.com\//.test(logo) ) this.wikifarm ??= 'wikitide';
+		}
 		if ( namespaces && namespacealiases ) namespaces.forEach( namespace => {
 			/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
 			let ns = {
