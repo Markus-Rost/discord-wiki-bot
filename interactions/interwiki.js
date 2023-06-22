@@ -69,7 +69,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			return interaction.respond( [{
 				name: lang.get('interaction.interwiki'),
 				value: ''
-			}] ).catch(log_error);
+			}] ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		} );
 	}
 	const input = focused.value.trim().replace( /^(?:(?:https?:)?\/(?:$|\/)|https?:?$|ht{0,2}$)/, '' );
@@ -91,7 +93,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -101,20 +105,28 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the interwiki: ' + body?.error?.info );
 			return;
 		}
-		if ( !body.query.interwiki?.length ) return interaction.respond( [] ).catch(log_error);
+		if ( !body.query.interwiki?.length ) return interaction.respond( [] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 		let project = inputToWikiProject(body.query.interwiki[0].url);
-		if ( !project ) return interaction.respond( [] ).catch(log_error);
+		if ( !project ) return interaction.respond( [] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 		return interaction.respond( [{
 			name: project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ).substring(0, 100),
 			value: project.fullScriptPath.substring(0, 100)
-		}] ).catch(log_error);
+		}] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	}, error => {
 		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),
 				value: ''
-			}] ).catch(log_error);
+			}] ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -163,7 +175,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				name: suggestionName.substring(0, 100),
 				value: suggestion.substring(0, 100)
 			};
-		} ).slice(0, 25) ).catch(log_error);
+		} ).slice(0, 25) ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 		var suggestions = [
 			...wikiList[0].filter( suggestion => {
 				if ( suggestion.replace( 'https://', '' ).startsWith( input ) ) return true;
@@ -208,7 +222,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				name: suggestionName.substring(0, 100),
 				value: suggestion.substring(0, 100)
 			};
-		} ).slice(0, 25) ).catch(log_error);
+		} ).slice(0, 25) ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	} );
 }
 

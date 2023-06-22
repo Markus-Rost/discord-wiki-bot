@@ -216,7 +216,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				value: wiki.mainpage.substring(0, 100)
 			},
 			...( wiki.commonSearches?.slice(0, 24) || [] )
-		] ).catch(log_error);
+		] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 		return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
 			timeout: {
 				request: 2_000
@@ -235,7 +237,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					return interaction.respond( [{
 						name: lang.get('interaction.nowiki'),
 						value: ''
-					}] ).catch(log_error);
+					}] ).catch( acerror => {
+						if ( isDebug ) log_error(acerror);
+					} );
 				}
 				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -249,7 +253,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 						value: ( wiki.mainpage ?? '' ).substring(0, 100)
 					},
 					...( wiki.commonSearches?.slice(0, 24) || [] )
-				] ).catch(log_error);
+				] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			wiki.updateWiki(body.query.general);
 			return interaction.respond( [
@@ -258,14 +264,18 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ( body.query.general.mainpage ?? '' ).substring(0, 100)
 				},
 				...( wiki.commonSearches?.slice(0, 24) || [] )
-			] ).catch(log_error);
+			] ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -279,7 +289,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					value: ( wiki.mainpage ?? '' ).substring(0, 100)
 				},
 				...( wiki.commonSearches?.slice(0, 24) || [] )
-			] ).catch(log_error);
+			] ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		} );
 	}
 	if ( title.includes( ':' ) ) {
@@ -309,7 +321,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -319,7 +333,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + ( body?.error?.info || body?.message || body?.error ) );
 			return;
 		}
-		if ( !body.linksuggest.result.suggestions.length ) return interaction.respond( [] ).catch(log_error);
+		if ( !body.linksuggest.result.suggestions.length ) return interaction.respond( [] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 		var redirects = Object.keys(body.linksuggest.result.redirects);
 		return interaction.respond( body.linksuggest.result.suggestions.map( suggestion => {
 			let redirect = redirects.find( redirect => body.linksuggest.result.redirects[redirect] === suggestion );
@@ -329,14 +345,18 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				name: ( text.length > 100 ? suggestion.substring(0, 100) : text ),
 				value: suggestion.substring(0, 100)
 			};
-		} ).slice(0, 25) ).catch(log_error);
+		} ).slice(0, 25) ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	}, error => {
 		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),
 				value: ''
-			}] ).catch(log_error);
+			}] ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -364,7 +384,9 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -374,20 +396,26 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			} ).join(' ') + '\n- ' + response.statusCode + ': Error while getting the suggestions: ' + body?.error?.info );
 			return;
 		}
-		if ( !body[1].length ) return interaction.respond( [] ).catch(log_error);
+		if ( !body[1].length ) return interaction.respond( [] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 		return interaction.respond( body[1].map( suggestion => {
 			return {
 				name: suggestion.substring(0, 100),
 				value: suggestion.substring(0, 100)
 			};
-		} ).slice(0, 25) ).catch(log_error);
+		} ).slice(0, 25) ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	}, error => {
 		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),
 				value: ''
-			}] ).catch(log_error);
+			}] ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -412,7 +440,9 @@ function autocomplete_section(interaction, lang, wiki) {
 		return interaction.respond( [{
 			name: lang.get('interaction.notitle'),
 			value: ''
-		}] ).catch(log_error);
+		}] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	}
 	if ( sectionCache.has(wiki.toLink(title)) ) {
 		let fragments = sectionCache.get(wiki.toLink(title)) ?? [];
@@ -431,7 +461,9 @@ function autocomplete_section(interaction, lang, wiki) {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
 				value: fragment.anchor.substring(0, 100)
 			};
-		} ).slice(0, 25) ).catch(log_error);
+		} ).slice(0, 25) ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	}
 	return got.get( wiki + 'api.php?action=parse&prop=sections&page=' + encodeURIComponent( title ) + '&format=json', {
 		timeout: {
@@ -451,17 +483,23 @@ function autocomplete_section(interaction, lang, wiki) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			if ( body?.error?.code === 'missingtitle' ) {
 				return interaction.respond( [{
 					name: lang.get('interaction.notitle'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			if ( body?.error?.code === 'pagecannotexist' ) {
 				sectionCache.set(wiki.toLink(title), []);
-				return interaction.respond( [] ).catch(log_error);
+				return interaction.respond( [] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -497,14 +535,18 @@ function autocomplete_section(interaction, lang, wiki) {
 				name: ( '#'.repeat(fragment.toclevel) + ' ' + fragment.line ).substring(0, 100),
 				value: fragment.anchor.substring(0, 100)
 			};
-		} ).slice(0, 25) ).catch(log_error);
+		} ).slice(0, 25) ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	}, error => {
 		if ( error.name === 'TimeoutError' ) return;
 		if ( wiki.noWiki(error.message) ) {
 			return interaction.respond( [{
 				name: lang.get('interaction.nowiki'),
 				value: ''
-			}] ).catch(log_error);
+			}] ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}
 		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];

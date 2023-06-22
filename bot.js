@@ -146,7 +146,7 @@ String.prototype.hasPrefix = function(prefix, flags = '') {
 	return text.startsWith( prefix );
 };
 
-var interaction_commands = {
+const interaction_commands = {
 	/** @type {{[x: string]: function(Discord.AutocompleteInteraction, Lang, Wiki)>}} */
 	autocomplete: {},
 	/** @type {{[x: string]: function(Discord.ChatInputCommandInteraction, Lang, Wiki)>}} */
@@ -176,6 +176,9 @@ readdir( './interactions', (error, files) => {
 } )
 */
 
+/** @type {Map<String, Object>} */
+const rowCache = new Map();
+
 client.on( Discord.Events.InteractionCreate, interaction => {
 	if ( interaction.channel?.partial ) return interaction.channel.fetch().then( () => {
 		return interactionCreate(interaction);
@@ -187,7 +190,7 @@ client.on( Discord.Events.InteractionCreate, interaction => {
  * Handle interactions.
  * @param {Discord.Interaction} interaction - The interaction.
  */
- function interactionCreate(interaction) {
+function interactionCreate(interaction) {
 	if ( breakOnTimeoutPause(interaction) ) return;
 	/** @type {function(Discord.Interaction, Lang, Wiki)} */
 	var cmd = null;
@@ -236,7 +239,11 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 	let sqlargs = [interaction.guildId];
 	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
 	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
+	( interaction.isAutocomplete() && rowCache.has(sqlargs.join(' ')) ? Promise.resolve(rowCache.get(sqlargs.join(' '))) : 
 	db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+		rowCache.set(sqlargs.join(' '), row);
+		return row;
+	} ) ).then( row => {
 		if ( !row ) interaction.defaultSettings = true;
 		interaction.embedLimits = {
 			descLength: row?.desclength ?? defaultSettings.embedLimits.descLength,
@@ -249,6 +256,7 @@ client.on( Discord.Events.InteractionCreate, interaction => {
 		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Interaction: Error while getting the wiki: ' + dberror );
+		if ( interaction.isAutocomplete() ) return;
 		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
 	} );
 }

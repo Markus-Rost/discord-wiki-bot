@@ -297,7 +297,9 @@ function autocomplete_patreon(interaction, lang, wiki) {
 				name: ( guild.id + ' – ' + guild.name ).substring(0, 100),
 				value: guild.id
 			};
-		} ).slice(0, 25) ).catch(log_error);
+		} ).slice(0, 25) ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	}
 	return db.query( 'SELECT guild FROM discord WHERE patreon = $1', [interaction.user.id] ).then( ({rows}) => {
 		return rows.map( row => row.guild );
@@ -331,7 +333,9 @@ function autocomplete_patreon(interaction, lang, wiki) {
 					name: ( guild.id + ' – ' + guild.name ).substring(0, 100),
 					value: guild.id
 				};
-			} ).slice(0, 25) ).catch(log_error);
+			} ).slice(0, 25) ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		} );
 	} );
 }

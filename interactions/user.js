@@ -244,13 +244,17 @@ function autocomplete_user(interaction, lang, wiki) {
 					name: user.substring(0, 100),
 					value: user.substring(0, 100)
 				};
-			} ).slice(0, 25) ).catch(log_error);
+			} ).slice(0, 25) ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}, error => {
 			if ( error === 'nowiki' ) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -263,7 +267,9 @@ function autocomplete_user(interaction, lang, wiki) {
 		return interaction.respond( [{
 			name: lang.get('interaction.interwiki'),
 			value: ''
-		}] ).catch(log_error);
+		}] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	} );
 }
 

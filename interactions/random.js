@@ -134,7 +134,9 @@ function autocomplete_random(interaction, lang, wiki) {
 						value: ( prefix.length ? prefix.join('|') + '|' : '' ) + ns.id.toString()
 					};
 				} )
-			].slice(0, 25) ).catch(log_error);
+			].slice(0, 25) ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 			return interaction.respond( [...new Set([
 				...sortedNamespaces.filter( ns => {
 					if ( input === ns.id.toString() || input === ( ns.id % 2 ? ns.id - 1 : ns.id + 1 ).toString() ) return true;
@@ -156,7 +158,9 @@ function autocomplete_random(interaction, lang, wiki) {
 					name: ( prefixNames + ( ns.name || lang.get('interaction.namespace') ) ).substring(0, 100),
 					value: ( prefix.length ? prefix.join('|') + '|' : '' ) + ns.id.toString()
 				};
-			} ).slice(0, 25) ).catch(log_error);
+			} ).slice(0, 25) ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}
 		return got.get( newWiki + 'api.php?action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases&format=json', {
 			timeout: {
@@ -176,7 +180,9 @@ function autocomplete_random(interaction, lang, wiki) {
 					return interaction.respond( [{
 						name: lang.get('interaction.nowiki'),
 						value: ''
-					}] ).catch(log_error);
+					}] ).catch( acerror => {
+						if ( isDebug ) log_error(acerror);
+					} );
 				}
 				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -228,7 +234,9 @@ function autocomplete_random(interaction, lang, wiki) {
 						value: ( prefix.length ? prefix.join('|') + '|' : '' ) + ns.id.toString()
 					};
 				} )
-			].slice(0, 25) ).catch(log_error);
+			].slice(0, 25) ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 			return interaction.respond( [...new Set([
 				...sortedNamespaces.filter( ns => {
 					if ( input === ns.id.toString() || input === ( ns.id % 2 ? ns.id - 1 : ns.id + 1 ).toString() ) return true;
@@ -250,14 +258,18 @@ function autocomplete_random(interaction, lang, wiki) {
 					name: ( prefixNames + ( ns.name || lang.get('interaction.namespace') ) ).substring(0, 100),
 					value: ( prefix.length ? prefix.join('|') + '|' : '' ) + ns.id.toString()
 				};
-			} ).slice(0, 25) ).catch(log_error);
+			} ).slice(0, 25) ).catch( acerror => {
+				if ( isDebug ) log_error(acerror);
+			} );
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( newWiki.noWiki(error.message) ) {
 				return interaction.respond( [{
 					name: lang.get('interaction.nowiki'),
 					value: ''
-				}] ).catch(log_error);
+				}] ).catch( acerror => {
+					if ( isDebug ) log_error(acerror);
+				} );
 			}
 			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
@@ -270,7 +282,9 @@ function autocomplete_random(interaction, lang, wiki) {
 		return interaction.respond( [{
 			name: lang.get('interaction.interwiki'),
 			value: ''
-		}] ).catch(log_error);
+		}] ).catch( acerror => {
+			if ( isDebug ) log_error(acerror);
+		} );
 	} );
 }
 
