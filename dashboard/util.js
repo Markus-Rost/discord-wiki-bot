@@ -114,6 +114,8 @@ function canRcGcDwButtons(wiki) {
 	if ( !wiki.hasOAuth2() ) return false;
 	if ( wiki.wikifarm === 'wiki.gg' ) return true;
 	if ( wiki.wikifarm === 'miraheze' ) return true;
+	if ( wiki.wikifarm === 'wikitide' ) return true;
+	if ( wiki.wikifarm === 'telepedia' ) return true;
 	if ( wiki.href === 'https://lakeus.xyz/' ) return true;
 	return false;
 }
