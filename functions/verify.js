@@ -28,7 +28,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 		onmatch: rows[0].onmatch
 	};
 	verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
-		return ( logchannel.isTextBased() && !logchannel.isThread() && logchannel.permissionsFor(channel.guild.members.me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]) );
+		return ( logchannel.isTextBased() && !logchannel.isThread() && logchannel.permissionsFor(channel.guild.members.me)?.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]) );
 	} ).get(verifynotice.logchannel) : null );
 	var useLogging = ( verifynotice.logchannel ? true : false );
 	var embed = new EmbedBuilder().setFooter( {text: lang.get('verify.title')} ).setTimestamp();
@@ -743,7 +743,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		/** @type {{logchannel:import('discord.js').TextChannel,flags:Number,onsuccess:String,onmatch:String}} */
 		var verifynotice = ( rows[0] || {} );
 		verifynotice.logchannel = ( verifynotice.logchannel ? channel.guild.channels.cache.filter( logchannel => {
-			return ( logchannel.isTextBased() && logchannel.permissionsFor(channel.guild.members.me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]) );
+			return ( logchannel.isTextBased() && logchannel.permissionsFor(channel.guild.members.me)?.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]) );
 		} ).get(verifynotice.logchannel) : null );
 		var useLogging = ( verifynotice.logchannel ? true : false );
 		var logLang = lang;
