@@ -18,7 +18,7 @@
 		"options[0].options[3].name": "noembed",
 		"options[0].options[4].description": "Hide the link and embed in a spoiler?",
 		"options[0].options[4].name": "spoiler",
-		"options[1].description": "Show the a wiki edit diff based on the ID.",
+		"options[1].description": "Show a wiki edit diff based on the ID.",
 		"options[1].name": "ids",
 		"options[1].options[0].description": "Show a relative wiki edit diff based on the ID.",
 		"options[1].options[0].name": "relative",
