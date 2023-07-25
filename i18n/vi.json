@@ -1,6 +1,6 @@
 {
 	"__translator": [
-		"Song Ngư Kaze",
+		"SongNgư.xyz",
 		" ",
 		" ",
 		" ",
@@ -113,7 +113,7 @@
 	},
 	"dateformat": "vi-VN",
 	"diff": {
-		"badrev": "ít nhất một phiên bản chưa tồn tại!",
+		"badrev": "Ít nhất một phiên bản chưa tồn tại!",
 		"hidden": "*bị ẩn*",
 		"info": {
 			"added": "Đã thêm:",
@@ -146,15 +146,16 @@
 	],
 	"general": {
 		"database": "⚠️ **Tính năng giới hạn** ⚠️\nKhông có cài đặt nào như vậy cả, vui lòng liên hệ với chủ sở hữu của bot!",
-		"default": "máy chủ này vẫn chưa sẵn sàng. Dùng $1 hoặc trang quản lý để thay đổi cài đặt.",
+		"default": "Máy chủ này vẫn chưa sẵn sàng. Dùng $1 hoặc trang quản lý để thay đổi cài đặt.",
 		"disclaimer": "Tôi là một con bot được tạo ra với mục đích làm cho việc liên kết và tìm kiếm các trang wiki website chạy MediaWiki như Wikipedia, Fandom, Miraheze và tương tự thế. Tôi hiển thị một vài miêu tả nhỏ và vài ba thông tin bổ sung về các trang và thậm chí, tôi cũng có thể xử lý các trang đổi hướng hay liên kết liên wiki. Tôi được viết bằng JavaScript bởi $1.\n\nBạn có thể hỗ trợ tôi trên Patreon:",
 		"experimental": "**Tính năng này vẫn đang trong quá trình thử nghiệm! Chúng tôi không đảm bảo rằng nó sẽ hoạt động đúng cách và nó cũng có thể sẽ bị loại bỏ trong tương lai.**",
 		"helpserver": "Các câu hỏi và vấn đề với bot vui lòng điều hướng đến máy chủ hỗ trợ của tôi:",
 		"limit": "🚨 **Dừng lại, quá giới hạn rồi!** 🚨\n\n$1, đoạn tin nhắn này có chứa quá nhiều lệnh!",
 		"missingperm": "Có vẻ như tôi đang không có các quyền cần thiết cho câu lệnh này:",
-		"patreon": "đây là tính năng chỉ dành cho Patreon!\nBạn có thể hỗ trợ tôi trên Patreon để được truy cập vào tính năng này:",
-		"prefix": "tiền tố của máy chủ hiện tại là `$1`. Bạn có thể thay đổi tiền tố với lệnh `$1settings prefix`. Danh sách lệnh đầy đủ sẽ có khi bạn dùng `$1help`.",
-		"readonly": "**Ối! Cơ sở dữ liệu hiện tại đang ở chế độ chỉ-đọc, bạn không thể thay đổi cài đặt ngay được!**"
+		"patreon": "Đây là tính năng chỉ dành cho Patreon!\nBạn có thể hỗ trợ tôi trên Patreon để được truy cập vào tính năng này:",
+		"prefix": "Tiền tố của máy chủ hiện tại là `$1`. Bạn có thể thay đổi tiền tố với lệnh `$1settings prefix`. Danh sách lệnh đầy đủ sẽ có khi bạn dùng `$1help`.",
+		"readonly": "**Ối! Cơ sở dữ liệu hiện tại đang ở chế độ chỉ-đọc, bạn không thể thay đổi cài đặt ngay được!**",
+		"whitelist": "Wiki bạn vừa nhập không được cho phép trên máy chủ này."
 	},
 	"help": {
 		"admin": "Những câu lệnh này chỉ có thể được chạy bởi những người có quyền quản lý:",
@@ -163,8 +164,8 @@
 		"footer": "Nếu bạn gặp phải một lời phản hồi không mong muốn, bạn có thể react với 🗑️ (`:wastebasket:`) vào tin nhắn của tôi và tôi sẽ tự tay xóa nó.",
 		"list": {
 			"default": {
-				"cmd": "<từ khóa>",
-				"desc": "Tôi sẽ trả lời bạn đường liên kết tương ứng với bài viết có sẵn trên wiki."
+				"cmd": "",
+				"desc": "Tôi sẽ trả lời bạn đường liên kết tương ứng với bài viết có sẵn trên wiki:"
 			},
 			"diff": {
 				"id": {
@@ -227,14 +228,139 @@
 					"cmd": "/<lệnh trong Minecraft>",
 					"desc": "Tôi sẽ cung cấp cho bạn liên kết tới trang về câu lệnh tương ứng trên Minecraft Wiki."
 				}
+			},
+			"mwprojects": {
+				"desc": "Tôi sẽ trả lời bạn với một liên kết dẫn tới bài viết tương ứng trên trang dự án MediaWiki bạn chọn. Ví dụ: `$1!!vi.wikipedia.org Ohio`"
+			},
+			"overview": {
+				"desc": "Tôi sẽ hiển thị một số thông tin và thống kê về wiki."
+			},
+			"page": {
+				"desc": "Tôi sẽ trả lời bạn một liên kết dẫn tới bài viết tương ứng trên wiki."
+			},
+			"pause": {
+				"active": {
+					"desc": "Tôi sẽ lại bắt đầu phản hồi lệnh trên máy chủ này."
+				},
+				"inactive": {
+					"desc": "Tôi sẽ bỏ qua các lệnh trên máy chủ này, trừ một vài lệnh quản trị."
+				}
+			},
+			"random": {
+				"desc": "Tôi sẽ trả lời bạn liên kết tới một trang ngẫu nhiên trên wiki."
+			},
+			"rcscript": {
+				"add": {
+					"desc": "Tôi sẽ thêm một webhook mới thông báo thay đổi gần đây."
+				},
+				"default": {
+					"desc": "Tôi sẽ thay đổi webhook thay đổi gần đây cho bạn."
+				},
+				"delete": {
+					"desc": "Tôi sẽ xóa webhook thay đổi gần đây bạn chọn."
+				},
+				"display": {
+					"desc": "Tôi sẽ thay đổi kiểu hiển thị cho webhook thay đổi gần đây."
+				},
+				"feeds": {
+					"desc": "Tôi sẽ thay đổi cài đặt bàn luận trên một wiki thuộc Fandom tương ứng cho webhook thay đổi gần đây bạn chọn."
+				},
+				"lang": {
+					"cmd": "rcscript lang <ngôn ngữ mới>",
+					"desc": "Tôi sẽ thay đổi ngôn ngữ hiển thị cho webhook thay đổi gần đây."
+				},
+				"wiki": {
+					"cmd": "rcscript wiki <wiki mới>",
+					"desc": "Tôi sẽ thay đổi wiki mục tiên cho webhook thay đổi gần đây."
+				}
+			},
+			"search": {
+				"cmd": "search <từ khóa tìm kiếm>",
+				"desc": "Tôi sẽ trả lời bạn một liên kết tới trang tìm kiếm cho bài viết đó trên wiki."
+			},
+			"settings": {
+				"channel": {
+					"desc": "Tôi sẽ thay đổi cài đặt ghi đè cho kênh hiện tại."
+				},
+				"default": {
+					"desc": "Tôi sẽ thay đổi cài đặt cho máy chủ này."
+				},
+				"inline": {
+					"desc": "Tôi sẽ điều chỉnh cài đặt câu lệnh ứng dụng cho máy chủ này."
+				},
+				"lang": {
+					"desc": "Tôi sẽ thay đổi ngôn ngữ của máy chủ này."
+				},
+				"prefix": {
+					"desc": "Tôi sẽ thay đổi tiền tố của máy chủ này."
+				},
+				"role": {
+					"desc": "Tôi sẽ thay đổi quyền hạn tối thiểu để có thể dùng lệnh trên máy chủ này."
+				},
+				"wiki": {
+					"desc": "Tôi sẽ thay đổi wiki mặc định cho máy chủ này."
+				}
+			},
+			"subprefix": {
+				"desc": "Tôi sẽ trả lời bạn liên kết tới bài viết tương ứng trên trang wiki tương ứng:"
+			},
+			"test": {
+				"desc": "Nếu tôi đang hoạt động, tôi sẽ trả lời! Ngược lại thì bạn biết rồi đấy."
+			},
+			"user": {
+				"desc": "Tôi sẽ hiển thị một số thông tin về người dùng tương ứng."
+			},
+			"verification": {
+				"accountage": {
+					"desc": "Tôi sẽ thay đổi thời gian tồn tại tối thiểu của tài khoản (tính theo số ngày) để có thể xác thực tài khoản."
+				},
+				"add": {
+					"desc": "Tôi sẽ tạo thêm một kênh xác thực mới. Danh sách kênh có thể được thêm với phân cách mỗi wiki bằng `|`."
+				},
+				"channel": {
+					"desc": "Tôi sẽ thay đổi kênh xác thực tài khoản wiki. Danh sách các kênh có thể được thêm vào với phân cách bằng dấu `|`."
+				},
+				"default": {
+					"desc": "Tôi sẽ thay đổi loại xác thực wiki mặc định khi nhập lệnh `$1verify`."
+				},
+				"delete": {
+					"desc": "Tôi sẽ xóa kênh xác thực wiki bạn chọn."
+				},
+				"editcount": {
+					"desc": "Tôi sẽ thay đổi yêu cầu số sửa đổi tối thiểu để xác thực tài khoản tại wiki."
+				},
+				"postcount": {
+					"desc": "Tôi sẽ thay đổi số bài viết tối thiểu yêu cầu để xác thực tài khoản wiki.\n\t• Nhập số âm để xác định dựa trên tổng số sửa đổi hoặc tổng số bài viết.\n\t• Nhập `null` để xác minh dựa trên tổng của cả số sửa đổi và số bài viết."
+				},
+				"rename": {
+					"desc": "Sẽ quyết định nếu tôi nên đổi nickname Discord của họ thành tên người dùng wiki của họ sau khi xác thực thành công."
+				}
+			},
+			"verify": {
+				"desc": "Sử dụng lệnh này để xác thực tài khoản Discord tương ứng với tài khoản của bạn, đồng thời cung cấp vai trò tương ứng với tài khoản wiki của họ."
 			}
-		}
+		},
+		"noadmin": "Bạn cần quyền `Quản lý máy chủ` để thực thi lệnh này!",
+		"pause": "**Tôi hiện đang tạm ngưng trên máy chủ này!**\nChỉ các lệnh này mới được thực thi:"
+	},
+	"interaction": {
+		"error": "Một sự cố không mong muốn xảy ra trong khi thực thi lệnh!",
+		"interwiki": "Hãy cung cấp một wiki đã biết để tìm kiếm.",
+		"namespace": "(Chính)",
+		"notitle": "Tựa trang bạn vừa nhập không tồn tại!",
+		"nowiki": "Wiki vừa nhập không tồn tại!",
+		"random": "(Toàn bộ không gian tên nội dung)",
+		"user": "Hãy nhập một tên người dùng hoặc địa chỉ IP hợp lệ."
+	},
+	"invite": {
+		"bot": "Dùng liên kết này để mời tôi vào máy chủ khác:",
+		"directory": "Hoặc truy cập trang Thư Mục App của tôi:"
 	},
 	"test": {
 		"text": [
 			"",
 			" ",
-			" ",
+			"Tin tôi đi, tôi vẫn ở đây.",
 			" ",
 			" ",
 			" ",
