@@ -7,6 +7,8 @@
 		" "
 	],
 	"general": {
+		"beta": "BETA",
+		"betadesc": "Tính năng Thử nghiệm Beta",
 		"botlist": {
 			"text": "Giúp nhũng người dùng khác tìm thấy Wiki-Bot bằng cách vote trên các trang tổng hợp bot:",
 			"title": "Trang tổng hợp bot"
@@ -14,6 +16,14 @@
 		"delete": "Xóa",
 		"invite": "Mời Wiki-Bot",
 		"language": "Thay đổi ngôn ngữ",
-		"login": "Đăng nhập"
+		"login": "Đăng nhập",
+		"logout": "Đăng xuất",
+		"rcscript": "Thay đổi Gần đây",
+		"refresh": "Cập nhật lại danh sách máy chủ",
+		"save": "Lưu",
+		"selector": "Lựa chọn máy chủ",
+		"settings": "Cài đặt",
+		"support": "Máy chủ hỗ trợ",
+		"theme-dark": "Dùng giao diện tối"
 	}
 }
