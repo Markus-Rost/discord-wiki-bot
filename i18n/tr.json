@@ -154,7 +154,8 @@
 		"missingperm": "Bu komutu uygulamak için ihtiyacım olan birkaç izin eksik:",
 		"patreon": "Bu, Patreon'a münhasır bir özellik!\nBu özelliğe erişim alabilmek için beni Patreon'da destekleyebilirsiniz:",
 		"prefix": "Sunucudaki önekim `$1`. Bunu `$1settings prefix` ile değiştirebilirsin. Komutların bütün listesi için `$1yardım`.",
-		"readonly": "**Veri tabanı şimdilik sadece okuma modunda, bu ayarları şu an değiştiremezsin!**"
+		"readonly": "**Veri tabanı şimdilik sadece okuma modunda, bu ayarları şu an değiştiremezsin!**",
+		"whitelist": "Kullanılan vikiye bu sunucuda izin verilmiyor."
 	},
 	"help": {
 		"admin": "Bu komutlar sadece yöneticiler tarafından kullanılabilir:",
@@ -392,7 +393,8 @@
 		"verify": "Discord hesabını viki hesabın ile doğrulamak ve hesabın ile uyumlu rolleri almak için viki kullanıcı adını sağlayarak bu komutu kullan."
 	},
 	"invite": {
-		"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:"
+		"bot": "Beni başka bir sunucuya davet etmek için bu bağlantıyı kullan:",
+		"directory": "Ya da daha fazla ayrıntı için Discord uygulama dizini sayfama göz atın:"
 	},
 	"minecraft": {
 		"fixed": "Düzeltilmiş Sürüm:",
@@ -446,8 +448,10 @@
 		"created": "Oluşturuldu:",
 		"crossover": "Şuna birleştirildi:",
 		"description": "Açıklama:",
+		"directedatchildren": "Çocuklara yönelik:",
 		"edits": "Düzenlemeler:",
 		"founder": "Kurucu:",
+		"gamepedia": "Gamepedia:",
 		"image": "Resim:",
 		"inaccurate": "İstatistikler yanlış olabilir",
 		"lang": "Dil:",
@@ -492,6 +496,7 @@
 		"audit_reason_edit": "Son değişiklikler webhook'u güncellendi",
 		"blocked": "Bu vikinin son değişiklikler webhook'u olarak eklemesi yasaklanmış!",
 		"blocked_reason": "Bu vikinin son değişiklikler webhook'u olarak eklemesi `$1` yüzünden yasaklanmış!",
+		"buttons": "Buton eylemleri:",
 		"channel": "Kanal:",
 		"current": "Bu sunucuda bulunan son değişiklikler webhook'ları:",
 		"current_display": "Bu webhook'un görüntüleme modu:",
@@ -541,6 +546,9 @@
 			"blocked_reason": "Bu son değişiklikler webhook'u silinecek çünkü viki `$1` nedeniyle engellendi!",
 			"created": "Bu kanala $1 için bir son değişiklikler webhook'u eklendi.",
 			"dashboard": {
+				"buttons_changed": "• Buton eylemleri $1 olarak değiştirildi.",
+				"buttons_disabled": "• Button eylemleri devre dışı bırakıldı.",
+				"buttons_enabled": "• Buton eylemleri $1 için etkinleştirilmiştir.",
 				"channel": "•Webhook bu kanala taşındı.",
 				"disabled_feeds": "•Tartışmalar, mesaj duvarları ve makale yorumları gibi yayın bazlı değişiklikler devre dışı bırakıldı.",
 				"disabled_rc": "•Viki düzenlemeleri devre dışı bırakıldı.",
@@ -647,6 +655,9 @@
 		"rolehelp": "Gerekli minimal rolü değiştirmek için `$1 <rol>` kullan.",
 		"roleinvalid": "Belirtilen rol mevcut değil!",
 		"save_failed": "Ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
+		"whitelist_added": "İzin verilen vikilerin bir listesi eklendi.",
+		"whitelist_modified": "İzin verilen vikilerin listesi değiştirildi.",
+		"whitelist_removed": "İzin verilen vikilerin listesi kaldırıldı.",
 		"wiki": "Bu sunucunun varsayılan vikisi:",
 		"wikichanged": "Bu sunucunun varsayılan vikisini şuna değiştirdiniz:",
 		"wikihelp": "`$1 <viki>` kullanarak varsayılan vikiyi değiştirebilirsin.\n`https://<viki>.fandom.com/` gibi bir MediaWiki sitesine bağlantı ver",
