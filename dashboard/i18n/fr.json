@@ -291,7 +291,7 @@
 			"entry": "Vérification #$1",
 			"flag_logall": "Enregistrer les vérifications qui n'ont pas abouti :",
 			"flag_private": "Réponses aux commandes privées :",
-			"logging": "Canal de connexion :",
+			"logging": "Salon de connexion :",
 			"match": "Notification d'exigences manquantes :",
 			"match_placeholder": "Texte en Markdown sur le fait de correspondre aux tags Discord mais de ne pas remplir les conditions requises pour les rôles.",
 			"more": "Ajouter plus",
