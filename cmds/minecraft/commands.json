@@ -180,6 +180,7 @@
 			"if data (block <sourcePos>|entity <source>) <path> < subcommand >",
 			"if dimension <dimension> < subcommand >",
 			"if entity <entities> < subcommand >",
+			"if function <name> < subcommand >",
 			"if loaded <pos> < subcommand >",
 			"if predicate <predicate> < subcommand >",
 			"if score <target> <targetObjective> <operation> <source> <sourceObjective> < subcommand >",
@@ -191,6 +192,7 @@
 			"unless data (block <sourcePos>|entity <source>) <path> < subcommand >",
 			"unless dimension <dimension> < subcommand >",
 			"unless entity <entities> < subcommand >",
+			"unless function <name> < subcommand >",
 			"unless loaded <pos> < subcommand >",
 			"unless predicate <predicate> < subcommand >",
 			"unless score <target> <targetObjective> <operation> <source> <sourceObjective> < subcommand >",
@@ -248,7 +250,14 @@
 			"/forceload remove <from> <to>"
 		],
 		"function": [
-			"/function <name>"
+			"/function <name>",
+			"/function <name> <arguments>",
+			"/function <name> with block <sourcePos>",
+			"/function <name> with block <sourcePos> <path>",
+			"/function <name> with entity <source>",
+			"/function <name> with entity <source> <path>",
+			"/function <name> with storage <source>",
+			"/function <name> with storage <source> <path>"
 		],
 		"gamemode": [
 			"/gamemode adventure",
@@ -367,6 +376,18 @@
 			"/publish",
 			"/publish <port>"
 		],
+		"random": [
+			"/random reset *",
+			"/random reset * <seed>",
+			"/random reset * <seed> <includeWorldSeed>",
+			"/random reset * <seed> <includeWorldSeed> <includeSequenceId>",
+			"/random reset <sequence>",
+			"/random reset <sequence> <seed>",
+			"/random reset <sequence> <seed> <includeWorldSeed>",
+			"/random reset <sequence> <seed> <includeWorldSeed> <includeSequenceId>",
+			"/random roll <range>",
+			"/random roll <range> <sequence>"
+		],
 		"recipe": [
 			"/recipe give <targets> *",
 			"/recipe give <targets> <recipe>",
@@ -384,6 +405,7 @@
 			"/replaceitem entity <targets> <slot> <item> <count>"
 		],
 		"return": [
+			"/return run <command>",
 			"/return <value>"
 		],
 		"ride": [
