@@ -18,7 +18,7 @@
 		"options[0].options[3].name": "noembed",
 		"options[0].options[4].description": "Cacher le lien et l'inclure dans un spoiler ?",
 		"options[0].options[4].name": "spoiler",
-		"options[1].description": "Afficher la différence d'édition d'un wiki en fonction de l'ID.",
+		"options[1].description": "Afficher une différence d'édition d'un wiki en fonction de l'ID.",
 		"options[1].name": "ids",
 		"options[1].options[0].description": "Affiche une différence d'édition de wiki basée sur l'ID.",
 		"options[1].options[0].name": "relative",
