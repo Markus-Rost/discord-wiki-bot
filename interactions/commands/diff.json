@@ -15,7 +15,8 @@
 		"ja": "diff",
 		"tr": "diff",
 		"el": "διαφορά",
-		"fr": "diff"
+		"fr": "diff",
+		"vi": "diff"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
@@ -32,7 +33,8 @@
 		"tr": "Bir viki düzenlemesi değişikliklerini göster.",
 		"el": "Εμφανίζει μια διαφορά επεξεργασίας του wiki.",
 		"pt-BR": "Mostra uma diferença de edição da wiki.",
-		"fr": "Afficher les différences d'édition d'un wiki."
+		"fr": "Afficher les différences d'édition d'un wiki.",
+		"vi": "Hiển thị khác biệt giữa hai lần sửa đổi wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -54,7 +56,9 @@
 				"ja": "page",
 				"el": "σελίδα",
 				"pt-BR": "página",
-				"fr": "page"
+				"fr": "page",
+				"tr": "sayfa",
+				"vi": "page"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
@@ -70,7 +74,9 @@
 				"ja": "Wikiページの最終編集された差分を表示します。",
 				"el": "Εμφανίζει την τελευταία διαφορά επεξεργασίας μιας σελίδας wiki.",
 				"pt-BR": "Mostra a última diferença de edição de uma página da wiki.",
-				"fr": "Affiche la dernière modification d'une page wiki."
+				"fr": "Affiche la dernière modification d'une page wiki.",
+				"tr": "Bir viki sayfasının son düzenleme farkını göster.",
+				"vi": "Hiển thị so sánh giữa hai lần sửa đổi gần đây nhất tại một trang trên wiki."
 			},
 			"options": [
 				{
@@ -80,7 +86,7 @@
 						"hi": "title",
 						"zh-CN": "标题",
 						"zh-TW": "標題",
-						"tr": "title",
+						"tr": "başlık",
 						"de": "titel",
 						"es-ES": "título",
 						"ja": "title",
@@ -90,7 +96,8 @@
 						"en-GB": "title",
 						"en-US": "title",
 						"sv-SE": "titel",
-						"fr": "title"
+						"fr": "title",
+						"vi": "title"
 					},
 					"description": "Page title to show the last edit diff of.",
 					"description_localizations": {
@@ -106,7 +113,9 @@
 						"ja": "最終編集の差分を表示するページタイトル。",
 						"el": "Τίτλος σελίδας για την οποία θα δείξει την τελευταία διαφορά επεξεργασίας.",
 						"pt-BR": "Título da página para mostrar a última diff de edição.",
-						"fr": "Titre de la page pour afficher la dernière modification."
+						"fr": "Titre de la page pour afficher la dernière modification.",
+						"tr": "Son düzenleme farkını gösteren sayfa başlığı.",
+						"vi": "Tên trang để hiển thị so sánh."
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -123,14 +132,15 @@
 						"zh-TW": "wiki",
 						"hi": "wiki",
 						"it": "wiki",
-						"tr": "wiki",
+						"tr": "viki",
 						"el": "wiki",
 						"pt-BR": "wiki",
 						"en-GB": "wiki",
 						"en-US": "wiki",
 						"sv-SE": "wiki",
 						"ja": "wiki",
-						"fr": "wiki"
+						"fr": "wiki",
+						"vi": "wiki"
 					},
 					"description": "The wiki to search in.",
 					"description_localizations": {
@@ -140,14 +150,15 @@
 						"zh-TW": "要搜尋的wiki。",
 						"hi": "विकि जिसमें खोजना है।",
 						"it": "La wiki in cui cercare.",
-						"tr": "Aratma yapılacak viki.",
+						"tr": "Aranacak viki.",
 						"el": "Το wiki προς αναζήτηση.",
 						"pt-BR": "A wiki para pesquisar.",
 						"en-GB": "The wiki to search in.",
 						"en-US": "The wiki to search in.",
 						"sv-SE": "Wikin att söka i.",
 						"ja": "検索対象となるWiki。",
-						"fr": "Le wiki dans lequel effectuer la recherche."
+						"fr": "Le wiki dans lequel effectuer la recherche.",
+						"vi": "Wiki bạn cần tìm kiếm."
 					},
 					"required": false,
 					"autocomplete": true
@@ -163,13 +174,14 @@
 						"zh-CN": "仅自己可见",
 						"zh-TW": "僅自己可見",
 						"it": "privato",
-						"tr": "private",
+						"tr": "gizli",
 						"el": "ιδιωτικό",
 						"pt-BR": "privado",
 						"en-GB": "private",
 						"en-US": "private",
 						"sv-SE": "privat",
-						"fr": "private"
+						"fr": "private",
+						"vi": "private"
 					},
 					"description": "Send a response only visible to yourself?",
 					"description_localizations": {
@@ -180,13 +192,14 @@
 						"zh-CN": "发送的消息是否仅对自己可见？",
 						"zh-TW": "傳送的訊息是否僅對自己可見？",
 						"it": "Invia una risposta visibile solo per te?",
-						"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
+						"tr": "Sadece sizin görebileceği bir yanıt gönderilsin mi?",
 						"el": "Αποστέλλει μια απόκριση ορατή μόνο σε σας;",
 						"pt-BR": "Enviar uma resposta visível apenas para você?",
 						"en-GB": "Send a response only visible to yourself?",
 						"en-US": "Send a response only visible to yourself?",
 						"sv-SE": "Vill du endast visa svaret för dig själv?",
-						"fr": "Envoyer une réponse uniquement visible par vous-même ?"
+						"fr": "Envoyer une réponse uniquement visible par vous-même ?",
+						"vi": "Gửi phản hồi chỉ xem được bởi bạn?"
 					},
 					"required": false
 				},
@@ -201,12 +214,13 @@
 						"zh-CN": "不包含嵌入内容",
 						"zh-TW": "不包含嵌入內容",
 						"it": "noembed",
-						"tr": "noembed",
+						"tr": "gömülüsüz",
 						"el": "αποενσωμάτωση",
 						"pt-BR": "sem_embed",
 						"en-GB": "noembed",
 						"en-US": "noembed",
-						"fr": "noembed"
+						"fr": "noembed",
+						"vi": "noembed"
 					},
 					"description": "Send only the link without embed?",
 					"description_localizations": {
@@ -217,13 +231,14 @@
 						"zh-CN": "发送的链接是否不包含嵌入内容？",
 						"zh-TW": "傳送的連結是否不包含嵌入內容？",
 						"it": "Invia solo il link senza embed?",
-						"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
+						"tr": "Gömülü mesaj olmadan bağlantı mı gönderilsin?",
 						"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
 						"pt-BR": "Enviar apenas o link sem incorporar?",
 						"en-GB": "Send only the link without embed?",
 						"en-US": "Send only the link without embed?",
 						"sv-SE": "Skicka endast länken, utan inbäddning?",
-						"fr": "Envoyer uniquement le lien sans inclusion ?"
+						"fr": "Envoyer uniquement le lien sans inclusion ?",
+						"vi": "Chỉ gửi liên kết mà không nhúng?"
 					},
 					"required": false
 				},
@@ -243,7 +258,9 @@
 						"en-GB": "spoiler",
 						"en-US": "spoiler",
 						"sv-SE": "spoiler",
-						"fr": "spoiler"
+						"fr": "spoiler",
+						"tr": "spoiler",
+						"vi": "spoiler"
 					},
 					"description": "Hide the link and embed in a spoiler?",
 					"description_localizations": {
@@ -254,13 +271,14 @@
 						"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 						"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 						"it": "Nascondi il link e l'embed in uno spoiler?",
-						"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
+						"tr": "Bağlantı ve gömülü mesaj spoiler ile gizlensin mi?",
 						"el": "Αποκρύπτει τον σύνδεσμο και ενσωματώνει σε spoiler;",
 						"pt-BR": "Ocultar o link e incorporar em um spoiler?",
 						"en-GB": "Hide the link and embed in a spoiler?",
 						"en-US": "Hide the link and embed in a spoiler?",
 						"sv-SE": "Dölj länken och inbäddningen som en \"spoiler\"?",
-						"fr": "Cacher le lien et l'inclure dans un spoiler ?"
+						"fr": "Cacher le lien et l'inclure dans un spoiler ?",
+						"vi": "Ẩn liên kết bằng cách dùng mã ẩn nội dung?"
 					},
 					"required": false
 				}
@@ -281,12 +299,14 @@
 				"hi": "ids",
 				"ja": "ids",
 				"el": "ταυτότητες",
-				"fr": "ids"
+				"fr": "ids",
+				"tr": "idler",
+				"vi": "ids"
 			},
-			"description": "Show the a wiki edit diff based on the ID.",
+			"description": "Show a wiki edit diff based on the ID.",
 			"description_localizations": {
-				"en-GB": "Show the a wiki edit diff based on the ID.",
-				"en-US": "Show the a wiki edit diff based on the ID.",
+				"en-GB": "Show a wiki edit diff based on the ID.",
+				"en-US": "Show a wiki edit diff based on the ID.",
 				"de": "Zeige eine Wiki-Bearbeitung basierend auf einer ID.",
 				"es-ES": "Mostrar la diff de edición del wiki basado en el ID.",
 				"zh-CN": "通过ID展示wiki编辑差异。",
@@ -297,7 +317,9 @@
 				"ja": "IDに基づいたWiki編集の差分を表示します。",
 				"el": "Εμφανίζει τη διαφορά επεξεργασιών του wiki με βάση την ταυτότητα.",
 				"pt-BR": "Mostre a diferença de edição de uma wiki com base no ID.",
-				"fr": "Afficher la différence d'édition d'un wiki en fonction de l'ID."
+				"fr": "Afficher une différence d'édition d'un wiki en fonction de l'ID.",
+				"tr": "ID'ye göre bir viki düzenleme farkını göster.",
+				"vi": "So sánh hai lần sửa đổi wiki dựa trên ID bạn cung cấp."
 			},
 			"options": [
 				{
@@ -315,7 +337,8 @@
 						"hi": "relative",
 						"ja": "relative",
 						"el": "σχετικό",
-						"fr": "relative"
+						"fr": "relative",
+						"tr": "ilgili"
 					},
 					"description": "Show a relative wiki edit diff based on the ID.",
 					"description_localizations": {
@@ -331,7 +354,8 @@
 						"ja": "IDに基づいた相対的なWiki編集の差分を表示します。",
 						"el": "Εμφανίζει σχετική διαφορά επεξεργασίας wiki με βάση την ταυτότητα.",
 						"pt-BR": "Mostra uma diferença relativa de edição da wiki com base no ID.",
-						"fr": "Affiche une différence d'édition de wiki basée sur l'ID."
+						"fr": "Affiche une différence d'édition de wiki basée sur l'ID.",
+						"tr": "ID'ye göre göreli bir viki düzenleme farkı göster."
 					},
 					"options": [
 						{
@@ -348,7 +372,9 @@
 								"hi": "diffid",
 								"ja": "diffid",
 								"el": "ταυτότητα_διαφοράς",
-								"fr": "diffid"
+								"fr": "diffid",
+								"tr": "farkid",
+								"vi": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -362,7 +388,8 @@
 								"hi": "दिखाने के लिए सम्पादन अंतर का अंतर ID।",
 								"ja": "表示する編集DiffのDiff ID。",
 								"el": "Ταυτότητα διαφοράς της διαφοράς επεξεργασίας προς εμφάνιση.",
-								"fr": "ID du diff d'édition à afficher."
+								"fr": "ID du diff d'édition à afficher.",
+								"tr": "Gösterilecek düzenleme farkının fark ID'si."
 							},
 							"min_value": 0,
 							"required": true
@@ -381,7 +408,8 @@
 								"hi": "compare",
 								"ja": "compare",
 								"el": "σύγκριση",
-								"fr": "compare"
+								"fr": "compare",
+								"tr": "karşılaştır"
 							},
 							"description": "Relative revision of the edit diff to show.",
 							"description_localizations": {
@@ -395,7 +423,8 @@
 								"hi": "दिखाने के लिए सम्पादन अंतर का सापेक्ष अवतरण।",
 								"ja": "表示する編集差分の相対リビジョン。",
 								"el": "Σχετική έκδοση της διαφοράς επεξεργασίας για εμφάνιση.",
-								"fr": "Révision relative de la différence d'édition à afficher."
+								"fr": "Révision relative de la différence d'édition à afficher.",
+								"tr": "Gösterilecek düzenleme farkının ilgili revizyonu."
 							},
 							"choices": [
 								{
@@ -411,7 +440,8 @@
 										"hi": "पिछले अवतरण से तुलना करें। (डिफ़ॉल्ट)",
 										"ja": "前のリビジョンと比較します。(既定)",
 										"el": "Σύγκριση με προηγούμενη έκδοση. (προεπιλογή)",
-										"fr": "Comparer avec la révision précédente. (par défaut)"
+										"fr": "Comparer avec la révision précédente. (par défaut)",
+										"tr": "Önceki revizyonla karşılaştır. (varsayılan)"
 									},
 									"value": "prev"
 								},
@@ -422,13 +452,14 @@
 										"en-US": "Compare to next revision.",
 										"de": "Vergleiche mit der nächsten Version.",
 										"es-ES": "Compare con la siguiente revisión.",
-										"zh-CN": "与之后的修订版本比较",
-										"zh-TW": "與後一筆修訂版本比較",
+										"zh-CN": "与之后的修订版本比较。",
+										"zh-TW": "與後一筆修訂版本比較。",
 										"it": "Confronta con la versione successiva.",
 										"hi": "अगले अवतरण से तुलना करें।",
 										"ja": "次のリビジョンと比較します。",
 										"el": "Σύγκριση με την επόμενη έκδοση.",
-										"fr": "Comparer avec la prochaine révision."
+										"fr": "Comparer avec la prochaine révision.",
+										"tr": "Bir sonraki revizyonla karşılaştır."
 									},
 									"value": "next"
 								},
@@ -439,13 +470,14 @@
 										"en-US": "Compare to current revision.",
 										"de": "Vergleiche mit der aktuellen Version.",
 										"es-ES": "Comparar con la revisión actual.",
-										"zh-CN": "与当前的修订版本比较",
-										"zh-TW": "與目前的修訂版本比較",
+										"zh-CN": "与当前的修订版本比较。",
+										"zh-TW": "與目前的修訂版本比較。",
 										"it": "Confronta con la versione attuale.",
 										"hi": "वर्तमान अवतरण से तुलना करें।",
 										"ja": "現在のリビジョンと比較します。",
 										"el": "Σύγκριση με την τρέχουσα έκδοση.",
-										"fr": "Comparer avec la révision actuelle."
+										"fr": "Comparer avec la révision actuelle.",
+										"tr": "Mevcut revizyonla karşılaştır."
 									},
 									"value": "cur"
 								}
@@ -462,7 +494,7 @@
 								"zh-TW": "wiki",
 								"hi": "wiki",
 								"it": "wiki",
-								"tr": "wiki",
+								"tr": "viki",
 								"el": "wiki",
 								"pt-BR": "wiki",
 								"en-GB": "wiki",
@@ -478,7 +510,7 @@
 								"zh-TW": "要搜尋的wiki。",
 								"hi": "विकि जिसमें खोजना है।",
 								"it": "La wiki in cui cercare.",
-								"tr": "Aratma yapılacak viki.",
+								"tr": "Aranacak viki.",
 								"el": "Το wiki προς αναζήτηση.",
 								"pt-BR": "A wiki a ser pesquisada.",
 								"en-GB": "The wiki to search in.",
