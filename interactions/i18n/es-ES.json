@@ -18,7 +18,7 @@
 		"options[0].options[3].name": "noembed",
 		"options[0].options[4].description": "¿Ocultar el enlace y el embed en un spoiler?",
 		"options[0].options[4].name": "spoiler",
-		"options[1].description": "Mostrar la diff de edición del wiki basado en el ID.",
+		"options[1].description": "Mostrar la diff de edición wiki basado en el ID.",
 		"options[1].name": "ids",
 		"options[1].options[0].description": "Mostrar una diff de edición del wiki relativa basada en el ID.",
 		"options[1].options[0].name": "relativa",
