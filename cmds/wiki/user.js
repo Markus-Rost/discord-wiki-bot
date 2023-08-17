@@ -577,7 +577,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					if ( discord ) {
 						if ( msg.inGuild() ) {
 							var discordmember = msg.guild?.members.cache.find( member => {
-								return escapeFormatting(member.user.tag) === discord + ( discord.includes('#') ? '' : '\\#0' );
+								return escapeFormatting(member.user.username + '#' + member.user.discriminator) === discord + ( discord.includes('#') ? '' : '\\#0' );
 							} );
 						}
 						var discordname = [lang.get('user.info.discord'), discord];
@@ -613,7 +613,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				if ( discord ) {
 					if ( msg.inGuild() ) {
 						var discordmember = msg.guild?.members.cache.find( member => {
-							return escapeFormatting(member.user.tag) === discord + ( discord.includes('#') ? '' : '\\#0' );
+							return escapeFormatting(member.user.username + '#' + member.user.discriminator) === discord + ( discord.includes('#') ? '' : '\\#0' );
 						} );
 					}
 					let discordname = [lang.get('user.info.discord'), discord];
@@ -654,7 +654,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					if ( discord ) {
 						if ( msg.inGuild() ) {
 							var discordmember = msg.guild?.members.cache.find( member => {
-								return escapeFormatting(member.user.tag) === discord + ( discord.includes('#') ? '' : '\\#0' );
+								return escapeFormatting(member.user.username + '#' + member.user.discriminator) === discord + ( discord.includes('#') ? '' : '\\#0' );
 							} );
 						}
 						let discordname = [lang.get('user.info.discord'), discord];

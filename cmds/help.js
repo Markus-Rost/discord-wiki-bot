@@ -174,7 +174,7 @@ export default function cmd_help(lang, msg, args, line, wiki) {
  */
 function formathelp(messages, msg, lang, wiki) {
 	var prefix = ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix );
-	var mention = '@' + ( msg.inGuild() ? msg.guild.members.me.displayName : msg.client.user.username );
+	var mention = '@' + ( msg.inGuild() ? msg.guild.members.me.displayName : msg.client.user.displayName );
 	return messages.filter( message => {
 		if ( restrictions.inline.includes( message ) && msg.noInline ) return false;
 		if ( restrictions.slash.includes( message ) ) return msg.client.application.commands.cache.some( cmd => cmd.name === message.split('.')[1] );

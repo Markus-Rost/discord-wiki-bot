@@ -32,7 +32,6 @@ function interaction_verify(interaction, lang, wiki) {
 			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
 			else if ( wiki.wikifarm === 'wiki.gg' ) oauth.push('wikigg');
 			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
-			else if ( wiki.wikifarm === 'wikiforge' ) oauth.push('wikiforge');
 			else if ( wiki.wikifarm === 'wikitide' ) oauth.push('wikitide');
 			else if ( wiki.wikifarm === 'telepedia' ) oauth.push('telepedia');
 			else {
@@ -126,7 +125,7 @@ function interaction_verify(interaction, lang, wiki) {
 			if ( member ) return member.displayName;
 			else {
 				let user = interaction.client.users.cache.get(id);
-				if ( user ) return user.username;
+				if ( user ) return user.displayName;
 			}
 			return mention;
 		} ).replaceAll( wiki.spaceReplacement ?? '_', ' ' ).trim().replace( /^<\s*(.*)\s*>$/, '$1' ).split('#')[0].substring(0, 250).trim();

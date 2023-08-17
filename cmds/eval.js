@@ -119,6 +119,9 @@ function checkWiki(wiki) {
 			}, dberror => {
 				result.rcgcdb = dberror.toString();
 			} ),
+			db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', 'DEBUG ' + result.wiki] ).catch( dberror => {
+				result.webhookupdates = dberror.toString();
+			} ),
 			( wiki.wikifarm === 'fandom' ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'

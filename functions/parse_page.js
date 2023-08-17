@@ -1,7 +1,7 @@
 import { load as cheerioLoad } from 'cheerio';
 import { EmbedBuilder } from 'discord.js';
 import { toSection } from '../util/wiki.js';
-import { got, parse_infobox, isMessage, canShowEmbed, getEmbedLength, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
+import { got, parse_infobox, isMessage, canShowEmbed, htmlToPlain, htmlToDiscord, escapeFormatting, limitLength } from '../util/functions.js';
 
 const parsedContentModels = [
 	'wikitext',
@@ -119,7 +119,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 	if ( reaction ) reaction.removeEmoji();
 	var {descLength, fieldCount, fieldLength, sectionLength, sectionDescLength} = msg.embedLimits;
 	if ( !msg || !canShowEmbed(msg) || ( missing !== undefined && ( known === undefined || ( ns !== 8 && !( ns === 2 && wiki === wiki.globaluserpage ) ) ) ) || !embed || embed.data.description || ( !descLength && !fieldCount && !( fragment ? sectionLength : 0 ) ) ) {
-		if ( missing !== undefined && embed?.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+		if ( missing !== undefined && embed?.backupDescription && embed.length < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 			embed.setDescription( embed.backupDescription );
 		}
 		if ( isMessage(msg) ) return msg.sendChannel( {content, embeds: [embed]} );
@@ -145,12 +145,12 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( body?.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.allmessages?.[0] ) {
 					console.log( '- ' + response.statusCode + ': Error while getting the system message: ' + body?.error?.info );
-					if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+					if ( embed.backupDescription && embed.length < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 						embed.setDescription( embed.backupDescription );
 					}
 					return;
 				}
-				if ( !embed.data.description && getEmbedLength(embed) < ( 5_990 - ( fragment ? 4_000 : ( sectionDescLength || descLength ) + fieldLength ) ) ) {
+				if ( !embed.data.description && embed.length < ( 5_990 - ( fragment ? 4_000 : ( sectionDescLength || descLength ) + fieldLength ) ) ) {
 					var description = body.query.allmessages[0]['*'];
 					var regex = /^L-?(\d+)(?:-(?:L-?)?(\d+))?$/.exec(fragment);
 					if ( regex && sectionLength ) {
@@ -188,7 +188,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 			}, error => {
 				console.log( '- Error while getting the system message: ' + error );
-				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+				if ( embed.backupDescription && embed.length < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
 			} ).then( () => {
@@ -210,12 +210,12 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			revision = ( revision?.slots?.main || revision );
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !revision?.['*'] ) {
 				console.log( '- ' + response.statusCode + ': Error while getting the page content: ' + body?.error?.info );
-				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+				if ( embed.backupDescription && embed.length < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
 				return;
 			}
-			if ( !embed.data.description && getEmbedLength(embed) < ( 5_990 - ( fragment ? 4_000 : ( sectionDescLength || descLength ) ) ) ) {
+			if ( !embed.data.description && embed.length < ( 5_990 - ( fragment ? 4_000 : ( sectionDescLength || descLength ) ) ) ) {
 				var description = revision['*'];
 				var regex = /^L-?(\d+)(?:-(?:L-?)?(\d+))?$/.exec(fragment);
 				if ( regex && sectionLength ) {
@@ -243,7 +243,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}, error => {
 			console.log( '- Error while getting the page content: ' + error );
-			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+			if ( embed.backupDescription && embed.length < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 				embed.setDescription( embed.backupDescription );
 			}
 		} ).then( () => {
@@ -271,7 +271,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		} ).then( response => {
 			if ( response.statusCode !== 200 || !response?.body?.parse?.text ) {
 				console.log( '- ' + response.statusCode + ': Error while parsing the page: ' + response?.body?.error?.info );
-				if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+				if ( embed.backupDescription && embed.length < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 					embed.setDescription( embed.backupDescription );
 				}
 				return;
@@ -285,7 +285,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			if ( embed.brokenInfobox && $('aside.portable-infobox').length ) {
 				let infobox = $('aside.portable-infobox');
 				embed.data.fields?.forEach( field => {
-					if ( getEmbedLength(embed) > ( 5_870 - fieldLength ) ) return;
+					if ( embed.length > ( 5_870 - fieldLength ) ) return;
 					if ( /^`.+`$/.test(field.name) ) {
 						let label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-source="$1"] .pi-data-label, .pi-data-label[data-source="$1"]' )).html();
 						if ( !label ) label = infobox.find(field.name.replace( /^`(.+)`$/, '[data-item-name="$1"] .pi-data-label, .pi-data-label[data-item-name="$1"]' )).html();
@@ -336,9 +336,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				}
 				if ( infobox.has('.descriptionbox') ) {
 					let backupDescription = htmlToDiscord(infobox.find('.descriptionbox').html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
-					let embedLength = 5_950 - getEmbedLength(embed);
-					if ( backupDescription.length > Math.min(descLength, embedLength) ) {
-						backupDescription = limitLength(backupDescription, Math.min(descLength, embedLength), 50);
+					let freeEmbedLength = 5_950 - embed.length;
+					if ( backupDescription.length > Math.min(descLength, freeEmbedLength) ) {
+						backupDescription = limitLength(backupDescription, Math.min(descLength, freeEmbedLength), 50);
 					}
 					if ( backupDescription ) embed.backupDescription = backupDescription;
 				}
@@ -362,7 +362,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				].join(', '));
 				let tdLabel = true;
 				for ( let i = 0; i < rows.length; i++ ) {
-					if ( ( embed.data.fields?.length ?? 0 ) >= fieldCount || getEmbedLength(embed) > ( 5_870 - fieldLength ) ) break;
+					if ( ( embed.data.fields?.length ?? 0 ) >= fieldCount || embed.length > ( 5_870 - fieldLength ) ) break;
 					let row = rows.eq(i);
 					if ( row.is('th.mainheader, th.infobox-header, th.va-infobox-header, div.title, h2.pi-header, div.info-unit-caption') ) {
 						row.find(removeClasses.join(', ')).remove();
@@ -413,6 +413,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				embed.setThumbnail( wiki.toLink('Special:FilePath/' + response.body.parse.images[response.body.parse.images.length - 1]) );
 			}
 			else if ( embed.data.thumbnail?.url === thumbnail ) {
+				response.body.parse.images = response.body.parse.images.map( pageimage => pageimage.toString() );
 				let image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) );
 				if ( !image ) {
 					let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
@@ -441,7 +442,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 			if ( !embed.data.description ) {
 				var sectionDescription = '';
-				if ( fragment && sectionLength && getEmbedLength(embed) < ( 5_990 - sectionLength ) ) {
+				if ( fragment && sectionLength && embed.length < ( 5_990 - sectionLength ) ) {
 					let newFragment = '';
 					let exactMatch = true;
 					let allSections = $('h1, h2, h3, h4, h5, h6').children('span');
@@ -566,7 +567,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					var description = htmlToDiscord($.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( description ) {
-						let freeEmbedLength = Math.min(5_950 - getEmbedLength(embed), 4_000 - sectionDescription.length);
+						let freeEmbedLength = Math.min(5_950 - embed.length, 4_000 - sectionDescription.length);
 						if ( freeEmbedLength > 100 ) {
 							if ( disambiguation !== undefined && !fragment && descLength < 1_500 ) {
 								if ( description.length > Math.min(1_500, freeEmbedLength) ) {
@@ -585,14 +586,14 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							if ( description ) embed.setDescription( description + '\n' + sectionDescription );
 						}
 					}
-					else if ( !sectionDescription && embed.backupDescription && getEmbedLength(embed) < ( 6_000 - embed.backupDescription.length ) ) {
+					else if ( !sectionDescription && embed.backupDescription && embed.length < ( 6_000 - embed.backupDescription.length ) ) {
 						embed.setDescription( embed.backupDescription );
 					}
 				}
 			}
 		}, error => {
 			console.log( '- Error while parsing the page: ' + error );
-			if ( embed.backupDescription && getEmbedLength(embed) < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
+			if ( embed.backupDescription && embed.length < ( 6_000 - ( embed.backupDescription?.length ?? 4_000 ) ) ) {
 				embed.setDescription( embed.backupDescription );
 			}
 		} ).then( () => {
@@ -601,7 +602,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( !embed.data.image ) embed.setImage( extraImages.shift() );
 				extraImages.slice(0, 10).forEach( extraImage => {
 					let imageEmbed = new EmbedBuilder().setURL( embed.data.url ).setImage( extraImage );
-					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + getEmbedLength(val), getEmbedLength(imageEmbed) ) <= 5500 ) embeds.push(imageEmbed);
+					if ( embeds.length < 5 && embeds.reduce( (acc, val) => acc + val.length, imageEmbed.length ) <= 5500 ) embeds.push(imageEmbed);
 				} );
 			}
 			if ( isMessage(msg) ) return message.edit( {content, embeds} ).catch(log_error);

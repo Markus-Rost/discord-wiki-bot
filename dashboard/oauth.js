@@ -70,7 +70,10 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	} );
 	$('.guild#invite a, .channel#invite-wikibot, #invite-button').attr('href', invite);
 	let url = oauth.generateAuthUrl( {
-		scope: ['identify', 'guilds'],
+		scope: [
+			OAuth2Scopes.Identify,
+			OAuth2Scopes.Guilds
+		],
 		prompt, state
 	} );
 	$('.channel#login, #login-button').attr('href', url);
@@ -103,9 +106,13 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 		res.writeHead(302, {Location: '/login?action=failed'});
 		return res.end();
 	}
+	let sessionReturnLocation = sessionData.get(state)?.returnLocation;
 	sessionData.delete(state);
 	return oauth.tokenRequest( {
-		scope: ['identify', 'guilds'],
+		scope: [
+			OAuth2Scopes.Identify,
+			OAuth2Scopes.Guilds
+		],
 		code: searchParams.get('code'),
 		grantType: 'authorization_code'
 	} ).then( ({access_token}) => {
@@ -172,6 +179,7 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 					if ( lastGuild === 'user' ) returnLocation += lastGuild;
 					else if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
 				}
+				if ( sessionReturnLocation ) returnLocation = sessionReturnLocation;
 				res.writeHead(302, {
 					Location: returnLocation,
 					'Set-Cookie': [`wikibot="${userSession.state}"; HttpOnly; SameSite=Lax; Path=/; Max-Age=31536000`]
@@ -246,7 +254,19 @@ function dashboard_refresh(res, userSession, returnLocation = '/', beta = '') {
 		} );
 	}, error => {
 		console.log( '- Dashboard: Error while refreshing guilds: ' + error );
-		res.writeHead(302, {Location: returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=failed'});
+		let url = returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=failed';
+		if ( error.name === 'DiscordHTTPError' && error.code === 401 ) {
+			userSession.returnLocation = returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=success';
+			url = oauth.generateAuthUrl( {
+				scope: [
+					OAuth2Scopes.Identify,
+					OAuth2Scopes.Guilds
+				],
+				prompt: 'none',
+				state: userSession.state
+			} );
+		}
+		res.writeHead(302, {Location: url});
 		return res.end();
 	} );
 }

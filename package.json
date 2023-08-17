@@ -19,15 +19,15 @@
     "cheerio": "^1.0.0-rc.12",
     "datetime-difference": "^1.0.2",
     "discord-oauth2": "^2.11.0",
-    "discord.js": "^14.11.0",
+    "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
     "full-icu": "^1.5.0",
     "got": "^13.0.0",
     "got-ssrf": "^2.0.0",
     "htmlparser2": "^9.0.0",
-    "mediawiki-projects-list": "^4.5.0",
-    "npm": "^9.8.0",
-    "pg": "^8.11.1"
+    "mediawiki-projects-list": "^4.6.4",
+    "npm": "^9.8.1",
+    "pg": "^8.11.3"
   },
   "repository": {
     "type": "git",

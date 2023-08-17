@@ -63,7 +63,7 @@ client.on( Discord.Events.ClientReady, () => {
 
 String.prototype.isMention = function(guild) {
 	var text = this.trim();
-	return text === '@' + client.user.username || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.members.me.displayName );
+	return text === '@' + client.user.username || text === '@' + client.user.displayName || text.replace( /^<@!?(\d+)>$/, '$1' ) === client.user.id || ( guild && text === '@' + guild.members.me.displayName );
 };
 
 Discord.Message.prototype.isAdmin = function() {

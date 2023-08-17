@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { got, getEmbedLength, escapeFormatting, limitLength } from '../../util/functions.js';
+import { got, escapeFormatting, limitLength } from '../../util/functions.js';
 
 /**
  * Sends a Minecraft issue.
@@ -66,7 +66,7 @@ function minecraft_bug(lang, msg, wiki, args, title, cmd, reaction, spoiler, noE
 						var name = ( linkList?.[link.type.name]?.[ward]?.replaceAllSafe( '$1', issue.key ) || link.type[ward] + ' ' + issue.key );
 						var status = issue.fields.status.name;
 						var value = ( statusList?.[status] || status ) + ': [' + escapeFormatting(issue.fields.summary) + '](<' + baseBrowseUrl + issue.key + '>)';
-						if ( ( embed.data.fields?.length ?? 0 ) < msg.embedLimits.fieldCount && ( getEmbedLength(embed) + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );
+						if ( ( embed.data.fields?.length ?? 0 ) < msg.embedLimits.fieldCount && ( embed.length + name.length + value.length ) < 6000 ) embed.addFields( {name, value} );
 						else extralinks.push({name,value,inline:false});
 					} );
 					if ( extralinks.length ) embed.setFooter( {text: lang.get('minecraft.more', extralinks.length.toLocaleString(lang.get('dateformat')), extralinks.length)} );

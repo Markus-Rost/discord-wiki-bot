@@ -31,6 +31,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	if ( reqURL.searchParams.get('owner') && process.env.owner.split('|').includes(userSession.user_id) ) {
 		args[0] = 'owner';
 	}
+	userSession.returnLocation = null;
 	dashboardLang = new Lang(...dashboardLang.fromCookie, settings.user.locale, dashboardLang.lang);
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 	var $ = cheerioLoad(file, {baseURI: reqURL});
@@ -63,7 +64,10 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 	if ( action ) {
 		if ( action === 'oauthother' && !actionArgs ) actionArgs = [
 			oauth.generateAuthUrl( {
-				scope: ['identify', 'guilds'],
+				scope: [
+					OAuth2Scopes.Identify,
+					OAuth2Scopes.Guilds
+				],
 				prompt: 'consent', state: userSession.state
 			} )
 		];

@@ -1,4 +1,3 @@
-import { embedLength } from '@discordjs/builders';
 import { EmbedBuilder } from 'discord.js';
 import Lang from '../../util/i18n.js';
 import { got, db, sendMsg, createNotice, escapeText, hasPerm, PermissionFlagsBits } from '../util.js';
@@ -1187,7 +1186,7 @@ function send_button(res, userSettings, guild, type, settings) {
 					return field;
 				} ));
 				if ( JSON.stringify(embed.data) === '{}' ) throw undefined;
-				totalEmbedLength += embedLength(embed.data);
+				totalEmbedLength += embed.length;
 				return embed.toJSON();
 			} );
 			if ( totalEmbedLength > 6_000 ) throw undefined;

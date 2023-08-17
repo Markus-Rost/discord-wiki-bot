@@ -25,10 +25,11 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 		var guild = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.id) ) {
 				var guild = discordClient.guilds.cache.get(evalData.id);
+				var owner = discordClient.users.cache.get(guild.ownerId);
+				if ( owner ) owner = owner.username + ( owner.discriminator !== '0' ? '#' + owner.discriminator : '' );
 				return {
 					name: guild.name, id: guild.id, memberCount: guild.approximateMemberCount ?? guild.memberCount,
-					ownerId: guild.ownerId, owner: discordClient.users.cache.get(guild.ownerId)?.tag,
-					channel: guild.publicUpdatesChannelId, icon: guild.iconURL(),
+					ownerId: guild.ownerId, owner, channel: guild.publicUpdatesChannelId, icon: guild.iconURL(),
 					permissions: guild.members.me.permissions.missing(evalData.defaultPermissions),
 					pause: globalThis.pausedGuilds.has(guild.id), shardId: process.env.SHARDS
 				};
@@ -188,7 +189,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 		
 		var user = await msg.client.users.fetch(id).catch( () => {} );
 		if ( user ) {
-			var username = ['User:', escapeFormatting(user.tag) + ' `' + user.id + '` <@' + user.id + '>'];
+			var username = ['User:', escapeFormatting(user.username + ( user.discriminator !== '0' ? '#' + user.discriminator : '' )) + ' `' + user.id + '` <@' + user.id + '>'];
 			var guildlist = ['Guilds:', '*none*'];
 			var guilds = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
 				return discordClient.guilds.cache.filter( guild => guild.members.cache.has(evalData.user) ).map( guild => {

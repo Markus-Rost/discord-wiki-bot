@@ -157,7 +157,7 @@ function autocomplete_user(interaction, lang, wiki) {
 					if ( option.options !== undefined ) return option.name;
 					return option.name + ':' + option.value;
 				} ).join(' ') + '\n- Error while searching for users: ' + error );
-			} ) : ( !username.trim() ? got.get( newWiki + 'api.php?action=query&list=users&ususers=%1F' + encodeURIComponent( ( interaction.member?.displayName || interaction.user.username ).replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
+			} ) : ( !username.trim() ? got.get( newWiki + 'api.php?action=query&list=users&ususers=%1F' + encodeURIComponent( ( interaction.member?.displayName || interaction.user.displayName ).replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 				timeout: {
 					request: ( includeIPs ? 1_500 : 2_000 )
 				},

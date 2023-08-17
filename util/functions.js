@@ -1,6 +1,5 @@
 import { Message, MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { Parser as HTMLParser } from 'htmlparser2';
-import { embedLength } from '@discordjs/builders';
 import { urlToFix } from 'mediawiki-projects-list';
 import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
@@ -29,15 +28,6 @@ const got = gotDefault.extend( {
 const oauthVerify = new Map();
 
 /**
-* The accumulated length for the embed title, description, fields, footer text, and author name.
-* @param {import('discord.js').EmbedBuilder} embed
-* @returns {number}
-*/
-function getEmbedLength(embed) {
-	return embedLength(embed.data);
-}
-
-/**
  * Parse infobox content
  * @param {Object} infobox - The content of the infobox.
  * @param {import('discord.js').EmbedBuilder} embed - The message embed.
@@ -49,7 +39,7 @@ function getEmbedLength(embed) {
  * @returns {import('discord.js').EmbedBuilder?}
  */
 function parse_infobox(infobox, embed, embedLimits = {fieldCount: 25, fieldLength: 500}, thumbnail, pagelink = '') {
-	if ( !infobox || ( embed.data.fields?.length ?? 0 ) >= embedLimits.fieldCount || getEmbedLength(embed) > ( 5_870 - embedLimits.fieldLength ) ) return;
+	if ( !infobox || ( embed.data.fields?.length ?? 0 ) >= embedLimits.fieldCount || embed.length > ( 5_870 - embedLimits.fieldLength ) ) return;
 	if ( infobox.parser_tag_version === 2 || infobox.parser_tag_version === 5 ) {
 		infobox.data.forEach( group => {
 			parse_infobox(group, embed, embedLimits, thumbnail, pagelink);
@@ -623,7 +613,6 @@ function sendMessage(interaction, message, letDelete = false) {
 export {
 	got,
 	oauthVerify,
-	getEmbedLength,
 	parse_infobox,
 	isMessage,
 	canShowEmbed,

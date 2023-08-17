@@ -61,7 +61,7 @@ function slash_inline(interaction, lang, wiki) {
 				if ( tempmember ) arg = '@' + tempmember.displayName;
 				else {
 					let tempuser = interaction.client.users.cache.get(user);
-					if ( tempuser ) arg = '@' + tempuser.username;
+					if ( tempuser ) arg = '@' + tempuser.displayName;
 				}
 			}
 			if ( role ) {

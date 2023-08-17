@@ -76,7 +76,6 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			if ( wiki.wikifarm === 'wikimedia' ) oauth.push('wikimedia');
 			else if ( wiki.wikifarm === 'wiki.gg' ) oauth.push('wikigg');
 			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
-			else if ( wiki.wikifarm === 'wikiforge' ) oauth.push('wikiforge');
 			else if ( wiki.wikifarm === 'wikitide' ) oauth.push('wikitide');
 			else if ( wiki.wikifarm === 'telepedia' ) oauth.push('telepedia');
 			else {
@@ -124,7 +123,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 				result.logging.channel = verifynotice.logchannel.id;
 				if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
-					logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.tag) + ` (${member.toString()})`, inline: true} );
+					logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )) + ` (${member.toString()})`, inline: true} );
 					result.logging.embed = logEmbed;
 				}
 				else {
@@ -206,9 +205,9 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				console.log( '- Error while getting the user profile: ' + ucerror );
 				return Promise.reject();
 			} ).then( () => {
-				if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '\\#0' );
+				if ( discordname?.endsWith('#0') ) discordname = discordname.replace( /\s*\\#0$/, '' );
 				if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
-				var authortag = escapeFormatting(member.user.tag);
+				var authortag = escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' ));
 				embed.addFields(...[
 					{name: lang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), value: authortag, inline: true},
 					{name: lang.get('verify.wiki', queryuser.gender), value: ( ( discordname ?? lang.get('verify.compromised') ) || lang.get('verify.empty') ), inline: true}
@@ -428,7 +427,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 				result.logging.channel = verifynotice.logchannel.id;
 				if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
-					logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.tag) + ` (${member.toString()})`, inline: true} );
+					logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )) + ` (${member.toString()})`, inline: true} );
 					result.logging.embed = logEmbed;
 				}
 				else {
@@ -462,7 +461,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
 						result.logging.channel = verifynotice.logchannel.id;
 						if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
-							logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.tag) + ` (${member.toString()})`, inline: true} );
+							logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )) + ` (${member.toString()})`, inline: true} );
 							result.logging.embed = logEmbed;
 						}
 						else {
@@ -493,9 +492,9 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					discordname = null;
 				}
 			}
-			if ( discordname?.length ) discordname += ( discordname.includes('#') ? '' : '\\#0' );
+			if ( discordname?.endsWith('#0') ) discordname = discordname.replace( /\s*\\#0$/, '' );
 			if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
-			var authortag = escapeFormatting(member.user.tag);
+			var authortag = escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' ));
 			embed.addFields(...[
 				{name: lang.get('verify.discord', ( authortag === discordname ? queryuser.gender : 'unknown' )), value: authortag, inline: true},
 				{name: lang.get('verify.wiki', queryuser.gender), value: ( ( discordname ?? lang.get('verify.compromised') ) || lang.get('verify.empty') ), inline: true}
@@ -518,7 +517,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 						result.logging.content = logText;
 					}
 				}
-				embed.addFields( {name: lang.get('verify.notice'), value: lang.get('verify.help_subpage', '**`' + member.user.tag + '`**', queryuser.gender) + '\n' + wiki.toLink(mypage || 'Special:MyPage/Discord', 'action=edit')} );
+				embed.addFields( {name: lang.get('verify.notice'), value: lang.get('verify.help_subpage', '**`' + member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' ) + '`**', queryuser.gender) + '\n' + wiki.toLink(mypage || 'Special:MyPage/Discord', 'action=edit')} );
 				result.content = lang.get('verify.user_failed_reply', escapeFormatting(username), queryuser.gender);
 				return;
 			}
@@ -770,11 +769,11 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			if ( body.query.users.length !== 1 || queryuser.missing !== undefined || queryuser.invalid !== undefined ) return settings.fail?.();
 			var pagelink = wiki.toLink(( wiki.namespaces.has(2) ? wiki.namespaces.get(2).name : 'User' ) + ':' + username, '', '', true);
 			var embed = new EmbedBuilder().setFooter( {text: lang.get('verify.title')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addFields(...[
-				{name: lang.get('verify.discord', queryuser.gender), value: escapeFormatting(member.user.tag), inline: true},
+				{name: lang.get('verify.discord', queryuser.gender), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )), inline: true},
 				{name: lang.get('verify.wiki', queryuser.gender), value: lang.get('verify.oauth_used'), inline: true}
 			]);
 			var logEmbed = new EmbedBuilder().setFooter( {text: logLang.get('verify.title')} ).setTimestamp().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addFields(...[
-				{name: logLang.get('verify.discord', queryuser.gender), value: escapeFormatting(member.user.tag), inline: true},
+				{name: logLang.get('verify.discord', queryuser.gender), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )), inline: true},
 				{name: logLang.get('verify.wiki', queryuser.gender), value: logLang.get('verify.oauth_used'), inline: true}
 			]);
 			if ( queryuser.blockexpiry ) {
@@ -786,7 +785,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 						embeds: []
 					};
 					if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
-						logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.tag) + ` (${member.toString()})`, inline: true} );
+						logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )) + ` (${member.toString()})`, inline: true} );
 						if ( msg ) logEmbed.addFields( {name: msg.url, value: '<#' + channel.id + '>'} );
 						logMessage.embeds.push(logEmbed);
 					}
@@ -809,7 +808,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 							embeds: []
 						};
 						if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
-							logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.tag) + ` (${member.toString()})`, inline: true} );
+							logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )) + ` (${member.toString()})`, inline: true} );
 							if ( msg ) logEmbed.addFields( {name: msg.url, value: '<#' + channel.id + '>'} );
 							logMessage.embeds.push(logEmbed);
 						}

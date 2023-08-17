@@ -71,13 +71,6 @@ if ( process.env.oauth_wikitide && process.env.oauth_wikitide_secret ) {
 		url: 'https://meta.wikitide.com/w/'
 	});
 }
-if ( process.env.oauth_wikiforge && process.env.oauth_wikiforge_secret ) {
-	enabledOAuth2.unshift({
-		id: 'wikiforge',
-		name: 'WikiForge',
-		url: 'https://meta.wikiforge.net/w/'
-	});
-}
 if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
 	enabledOAuth2.unshift({
 		id: 'miraheze',
@@ -125,6 +118,7 @@ function canRcGcDwButtons(wiki) {
  * @property {String} state
  * @property {String} access_token
  * @property {String} user_id
+ * @property {String?} returnLocation
  */
 
 /**
