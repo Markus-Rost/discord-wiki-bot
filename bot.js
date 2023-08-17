@@ -27,16 +27,15 @@ const client = new Discord.Client( {
 	presence: ( process.env.READONLY ? {
 		status: Discord.PresenceUpdateStatus.DoNotDisturb,
 		activities: [{
-			type: Discord.ActivityType.Watching,
-			name: 'READONLY: ' + process.env.prefix + 'test' + ( process.env.SHARD_COUNT > 1 ? ' • Shard: ' + process.env.SHARDS : '' ),
+			type: Discord.ActivityType.Custom,
+			name: 'READONLY: ' + process.env.prefix + 'test' + ( process.env.SHARD_COUNT > 1 ? ' • Shard: ' + process.env.SHARDS : '' )
 		}],
 		shardId: process.env.SHARDS
 	} : {
 		status: Discord.PresenceUpdateStatus.Online,
 		activities: [{
-			type: Discord.ActivityType.Streaming,
-			name: process.env.prefix + 'help' + ( process.env.SHARD_COUNT > 1 ? ' • Shard: ' + process.env.SHARDS : '' ),
-			url: 'https://www.twitch.tv/wikibot'
+			type: Discord.ActivityType.Custom,
+			name: process.env.prefix + 'help' + ( process.env.SHARD_COUNT > 1 ? ' • Shard: ' + process.env.SHARDS : '' )
 		}],
 		shardId: process.env.SHARDS
 	} ),
