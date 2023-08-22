@@ -619,7 +619,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						}
 						let rowwiki = new Wiki(row.wiki);
 						if ( rowwiki.wikifarm === 'fandom' ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
-						if ( row.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${row.buttons.join('`, `')}\``;
+						if ( row.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${row.buttons.split('|').join('`, `')}\``;
 						text += `\n<${new URL(`/guild/${guild}/rcscript`, process.env.dashboard).href}>`;
 						sendMsg( {
 							type: 'notifyGuild', guild, text
