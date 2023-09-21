@@ -48,12 +48,15 @@ const enabledOAuth2 = [
 		if ( project ) return {
 			id: project.wikiProject.name,
 			name: project.wikiProject.name,
-			url: oauthSite
+			url: oauthSite,
+			manage: project.fullArticlePath.replace( '$1', 'Special:OAuthManageMyGrants' )
 		};
 		let site = new URL(oauthSite);
 		return {
 			id: site.hostname + site.pathname.slice(0, -1),
-			name: oauthSite, url: oauthSite
+			name: oauthSite,
+			url: oauthSite,
+			manage: oauthSite + 'index.php?title=Special:OAuthManageMyGrants'
 		};
 	} )
 ];
@@ -61,35 +64,40 @@ if ( process.env.oauth_telepedia && process.env.oauth_telepedia_secret ) {
 	enabledOAuth2.unshift({
 		id: 'telepedia',
 		name: 'Telepedia',
-		url: 'https://meta.telepedia.net/'
+		url: 'https://meta.telepedia.net/',
+		manage: 'https://meta.telepedia.net/wiki/Special:OAuthManageMyGrants'
 	});
 }
 if ( process.env.oauth_wikitide && process.env.oauth_wikitide_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikitide',
 		name: 'WikiTide',
-		url: 'https://meta.wikitide.com/w/'
+		url: 'https://meta.wikitide.com/w/',
+		manage: 'https://meta.wikitide.com/wiki/Special:OAuthManageMyGrants'
 	});
 }
 if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
 	enabledOAuth2.unshift({
 		id: 'miraheze',
 		name: 'Miraheze',
-		url: 'https://meta.miraheze.org/w/'
+		url: 'https://meta.miraheze.org/w/',
+		manage: 'https://meta.miraheze.org/wiki/Special:OAuthManageMyGrants'
 	});
 }
 if ( process.env.oauth_wikigg && process.env.oauth_wikigg_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikigg',
 		name: 'wiki.gg',
-		url: 'https://support.wiki.gg/'
+		url: 'https://support.wiki.gg/',
+		manage: 'https://support.wiki.gg/wiki/Special:OAuthManageMyGrants'
 	});
 }
 if ( process.env.oauth_wikimedia && process.env.oauth_wikimedia_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikimedia',
 		name: 'Wikimedia (Wikipedia)',
-		url: 'https://meta.wikimedia.org/w/'
+		url: 'https://meta.wikimedia.org/w/',
+		manage: 'https://meta.wikimedia.org/wiki/Special:OAuthManageMyGrants'
 	});
 }
 
@@ -109,6 +117,7 @@ function canRcGcDwButtons(wiki) {
 	if ( wiki.wikifarm === 'miraheze' ) return true;
 	if ( wiki.wikifarm === 'wikitide' ) return true;
 	if ( wiki.wikifarm === 'telepedia' ) return true;
+	if ( wiki.href === 'https://minecraft.wiki/' ) return true;
 	if ( wiki.href === 'https://lakeus.xyz/' ) return true;
 	return false;
 }

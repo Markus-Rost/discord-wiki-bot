@@ -44,7 +44,7 @@ function dashboard_user(res, $, user, dashboardLang) {
 				return $('<div>').addClass('wb-oauth-site').attr('id', 'oauth-' + oauthSite.id).append(
 					$('<fieldset>').append(
 						$('<legend>').append(
-							$('<a target="_blank">').attr('href', oauthSite.url).text(oauthSite.name)
+							$('<a target="_blank">').attr('href', oauthSite.manage).text(oauthSite.name)
 						),
 						$('<div>').append(
 							$('<span>').text(dashboardLang.get('oauth.form.current')),
