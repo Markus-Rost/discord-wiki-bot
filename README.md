@@ -90,9 +90,8 @@ Help other users find Wiki-Bot by voting on bot lists:
 
 [<img src="https://blist.xyz/api/v2/bot/461189216198590464/widget" alt="blist.xyz" height="150px" />](https://blist.xyz/bot/461189216198590464)
 [<img src="https://bots.ondiscord.xyz/bots/461189216198590464/embed?theme=dark&showGuilds=true" alt="bots.ondiscord.xyz" height="150px" />](https://bots.ondiscord.xyz/bots/461189216198590464)
-[<img src="https://discord.boats/api/widget/461189216198590464" alt="discord.boats" height="150px" />](https://discord.boats/bot/461189216198590464)
 [<img src="https://discords.com/bots/api/bot/461189216198590464/widget?theme=dark" alt="discords.com" height="150px" />](https://discords.com/bots/bot/461189216198590464)
-[<img src="https://infinitybotlist.com/bots/461189216198590464/widget?size=medium" alt="infinitybotlist.com" height="150px" />](https://infinitybotlist.com/bots/461189216198590464)
+[<img src="https://infinitybots.gg/bots/461189216198590464/widget?size=medium" alt="infinitybotlist.com" height="150px" />](https://infinitybotlist.com/bots/461189216198590464)
 [<img src="https://top.gg/api/widget/461189216198590464.svg" alt="top.gg" height="150px" />](https://top.gg/bot/461189216198590464)
 [<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)
 
