@@ -117,7 +117,7 @@
 		"hidden": "*bị ẩn*",
 		"info": {
 			"added": "Đã thêm:",
-			"bytes": "$1 {{PLURAL:$2|byte|byte}}",
+			"bytes": "$1 {{PLURAL:$2|byte}}",
 			"comment": "Miêu tả:",
 			"editor": "Người thực hiện:",
 			"minor": "_(n)",
@@ -164,7 +164,7 @@
 		"footer": "Nếu bạn gặp phải một lời phản hồi không mong muốn, bạn có thể react với 🗑️ (`:wastebasket:`) vào tin nhắn của tôi và tôi sẽ tự tay xóa nó.",
 		"list": {
 			"default": {
-				"cmd": "",
+				"cmd": "<từ khóa>",
 				"desc": "Tôi sẽ trả lời bạn đường liên kết tương ứng với bài viết có sẵn trên wiki:"
 			},
 			"diff": {
@@ -230,39 +230,50 @@
 				}
 			},
 			"mwprojects": {
+				"cmd": "!!<wiki> <từ khóa>",
 				"desc": "Tôi sẽ trả lời bạn với một liên kết dẫn tới bài viết tương ứng trên trang dự án MediaWiki bạn chọn. Ví dụ: `$1!!vi.wikipedia.org Ohio`"
 			},
 			"overview": {
+				"cmd": "overview",
 				"desc": "Tôi sẽ hiển thị một số thông tin và thống kê về wiki."
 			},
 			"page": {
+				"cmd": "page <tên trang>",
 				"desc": "Tôi sẽ trả lời bạn một liên kết dẫn tới bài viết tương ứng trên wiki."
 			},
 			"pause": {
 				"active": {
+					"cmd": "pause $1",
 					"desc": "Tôi sẽ lại bắt đầu phản hồi lệnh trên máy chủ này."
 				},
 				"inactive": {
+					"cmd": "pause $1",
 					"desc": "Tôi sẽ bỏ qua các lệnh trên máy chủ này, trừ một vài lệnh quản trị."
 				}
 			},
 			"random": {
+				"cmd": "random",
 				"desc": "Tôi sẽ trả lời bạn liên kết tới một trang ngẫu nhiên trên wiki."
 			},
 			"rcscript": {
 				"add": {
+					"cmd": "rcscript add [<wiki>]",
 					"desc": "Tôi sẽ thêm một webhook mới thông báo thay đổi gần đây."
 				},
 				"default": {
+					"cmd": "rcscript",
 					"desc": "Tôi sẽ thay đổi webhook thay đổi gần đây cho bạn."
 				},
 				"delete": {
+					"cmd": "rcscript delete",
 					"desc": "Tôi sẽ xóa webhook thay đổi gần đây bạn chọn."
 				},
 				"display": {
+					"cmd": "rcscript display <kiểu xem mới>",
 					"desc": "Tôi sẽ thay đổi kiểu hiển thị cho webhook thay đổi gần đây."
 				},
 				"feeds": {
+					"cmd": "rcscript feeds",
 					"desc": "Tôi sẽ thay đổi cài đặt bàn luận trên một wiki thuộc Fandom tương ứng cho webhook thay đổi gần đây bạn chọn."
 				},
 				"lang": {
@@ -280,44 +291,57 @@
 			},
 			"settings": {
 				"channel": {
+					"cmd": "settings channel",
 					"desc": "Tôi sẽ thay đổi cài đặt ghi đè cho kênh hiện tại."
 				},
 				"default": {
+					"cmd": "settings",
 					"desc": "Tôi sẽ thay đổi cài đặt cho máy chủ này."
 				},
 				"inline": {
+					"cmd": "settings inline toggle",
 					"desc": "Tôi sẽ điều chỉnh cài đặt câu lệnh ứng dụng cho máy chủ này."
 				},
 				"lang": {
+					"cmd": "settings lang <ngôn ngữ>",
 					"desc": "Tôi sẽ thay đổi ngôn ngữ của máy chủ này."
 				},
 				"prefix": {
+					"cmd": "settings prefix <tiền tố>",
 					"desc": "Tôi sẽ thay đổi tiền tố của máy chủ này."
 				},
 				"role": {
+					"cmd": "settings role <vai trò>",
 					"desc": "Tôi sẽ thay đổi quyền hạn tối thiểu để có thể dùng lệnh trên máy chủ này."
 				},
 				"wiki": {
+					"cmd": "settings wiki <wiki>",
 					"desc": "Tôi sẽ thay đổi wiki mặc định cho máy chủ này."
 				}
 			},
 			"subprefix": {
+				"cmd": "<wiki> <từ khóa>",
 				"desc": "Tôi sẽ trả lời bạn liên kết tới bài viết tương ứng trên trang wiki tương ứng:"
 			},
 			"test": {
+				"cmd": "test",
 				"desc": "Nếu tôi đang hoạt động, tôi sẽ trả lời! Ngược lại thì bạn biết rồi đấy."
 			},
 			"user": {
+				"cmd": "User:<tên người dùng>",
 				"desc": "Tôi sẽ hiển thị một số thông tin về người dùng tương ứng."
 			},
 			"verification": {
 				"accountage": {
+					"cmd": "verification <id> accountage <thiết lập mới>",
 					"desc": "Tôi sẽ thay đổi thời gian tồn tại tối thiểu của tài khoản (tính theo số ngày) để có thể xác thực tài khoản."
 				},
 				"add": {
+					"cmd": "verification add <vai trò>",
 					"desc": "Tôi sẽ tạo thêm một kênh xác thực mới. Danh sách kênh có thể được thêm với phân cách mỗi wiki bằng `|`."
 				},
 				"channel": {
+					"cmd": "verification <id> channel <kênh mới>",
 					"desc": "Tôi sẽ thay đổi kênh xác thực tài khoản wiki. Danh sách các kênh có thể được thêm vào với phân cách bằng dấu `|`."
 				},
 				"default": {
