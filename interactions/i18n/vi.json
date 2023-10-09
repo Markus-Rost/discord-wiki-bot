@@ -19,6 +19,21 @@
 		"options[0].options[4].name": "spoiler",
 		"options[1].description": "So sánh hai lần sửa đổi wiki dựa trên ID bạn cung cấp.",
 		"options[1].name": "ids",
-		"options[1].options[0].options[0].name": "diffid"
+		"options[1].options[0].description": "So sánh lượt sửa đổi wiki có liên quan tới ID bạn cung cấp.",
+		"options[1].options[0].name": "relative",
+		"options[1].options[0].options[0].description": "ID sửa đổi để so sánh.",
+		"options[1].options[0].options[0].name": "diffid",
+		"options[1].options[0].options[1].choices[0].name": "So sánh với sửa đổi trước đó. (mặc định)",
+		"options[1].options[0].options[1].choices[1].name": "So sánh với sửa đổi tiếp kế.",
+		"options[1].options[0].options[1].choices[2].name": "So sánh với sửa đổi hiện tại.",
+		"options[1].options[0].options[1].name": "compare",
+		"options[1].options[0].options[2].description": "Wiki mà bạn muốn tìm kiếm.",
+		"options[1].options[0].options[2].name": "wiki",
+		"options[1].options[0].options[3].description": "Gửi phản hồi chỉ xem được bởi bạn?",
+		"options[1].options[0].options[3].name": "private",
+		"options[1].options[0].options[4].description": "Chỉ gửi liên kết mà không nhúng?",
+		"options[1].options[0].options[4].name": "noembed",
+		"options[1].options[0].options[5].description": "Ẩn liên kết bằng cách dùng mã ẩn nội dung?",
+		"options[1].options[0].options[5].name": "spoiler"
 	}
 }
