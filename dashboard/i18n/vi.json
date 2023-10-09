@@ -24,6 +24,23 @@
 		"selector": "Lựa chọn máy chủ",
 		"settings": "Cài đặt",
 		"support": "Máy chủ hỗ trợ",
-		"theme-dark": "Dùng giao diện tối"
+		"theme-dark": "Dùng giao diện tối",
+		"theme-light": "Chuyển sang giao diện sáng",
+		"title": "Cài đặt Wiki-Bot",
+		"verification": "Xác thực"
+	},
+	"indexjs": {
+		"avatar": {
+			"content_type": "Liên kết được cung cấp có kiểu nội dung $1, nhưng chỉ có các kiểu sau được phép:",
+			"invalid_url": "URL tập tin hình ảnh không thể được xác định."
+		},
+		"embeds": {
+			"json": "Cấu trúc nhúng không hợp lệ, vui lòng cung cấp dãy cấu trúc JSON phù hợp để nhúng tin nhắn Discord."
+		},
+		"invalid": {
+			"note_http": "Website bạn cung cấp không có chứng chỉ TLS/SSL hợp lệ! Vì lý do bảo mật, chỉ các wiki sử dụng giao thức HTTPS được hỗ trợ.",
+			"note_private": "Wiki bạn cung cấp là một trang riêng tư!",
+			"note_timeout": "Trang bạn cung cấp mất quá nhiều thời gian để phản hồi!"
+		}
 	}
 }
