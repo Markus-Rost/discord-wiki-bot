@@ -8,7 +8,6 @@ import Wiki from '../util/wiki.js';
 
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
-	http2: true,
 	timeout: {
 		request: 5000
 	},

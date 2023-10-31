@@ -5,7 +5,6 @@ import gotDefault from 'got';
 import { gotSsrf } from 'got-ssrf';
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
-	http2: true,
 	timeout: {
 		request: 5_000
 	},
