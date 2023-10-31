@@ -528,6 +528,16 @@
 		"tellraw": [
 			"/tellraw <targets> <message>"
 		],
+		"tick": [
+			"/tick query",
+			"/tick rate <rate>",
+			"/tick freeze",
+			"/tick step <time>",
+			"/tick step stop",
+			"/tick unfreeze",
+			"/tick sprint <time>",
+			"/tick sprint stop"
+		],
 		"tickingarea": [
 			"/* This command is Bedrock Edition only */",
 			"/tickingarea add <from: x y z> <to: x y z>",

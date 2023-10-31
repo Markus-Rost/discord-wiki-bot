@@ -361,9 +361,11 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 							}
 						}
 						var onsuccess = ( verifynotice.onsuccess ? parseNotice(verifynotice.onsuccess, {
+							username: queryuser.name,
 							editcount: queryuser.editcount,
 							postcount: queryuser.postcount,
 							accountage: Math.trunc(accountage),
+							mention: member.toString(),
 							dateformat: lang.get('dateformat')
 						}).trim() : '' );
 						if ( channel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
@@ -406,9 +408,11 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 
 				if ( !verifynotice.onmatch ) return;
 				var onmatch = parseNotice(verifynotice.onmatch, {
+					username: queryuser.name,
 					editcount: queryuser.editcount,
 					postcount: queryuser.postcount,
 					accountage: Math.trunc(accountage),
+					mention: member.toString(),
 					dateformat: lang.get('dateformat')
 				});
 				if ( !onmatch.trim() ) return;
@@ -616,8 +620,10 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 						}
 					}
 					var onsuccess = ( verifynotice.onsuccess ? parseNotice(verifynotice.onsuccess, {
+						username: queryuser.name,
 						editcount: queryuser.editcount,
 						accountage: Math.trunc(accountage),
+						mention: member.toString(),
 						dateformat: lang.get('dateformat')
 					}).trim() : '' );
 					if ( channel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
@@ -660,8 +666,10 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			
 			if ( !verifynotice.onmatch ) return;
 			var onmatch = parseNotice(verifynotice.onmatch, {
+				username: queryuser.name,
 				editcount: queryuser.editcount,
 				accountage: Math.trunc(accountage),
+				mention: member.toString(),
 				dateformat: lang.get('dateformat')
 			});
 			if ( !onmatch.trim() ) return;
@@ -921,9 +929,11 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 						}
 					}
 					var onsuccess = ( verifynotice.onsuccess ? parseNotice(verifynotice.onsuccess, {
+						username: queryuser.name,
 						editcount: queryuser.editcount,
 						postcount: queryuser.postcount,
 						accountage: Math.trunc(accountage),
+						mention: member.toString(),
 						dateformat: lang.get('dateformat')
 					}).trim() : '' );
 					if ( channel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
@@ -974,8 +984,10 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 			var noticeContent = '';
 			if ( verifynotice.onmatch ) {
 				let onmatch = parseNotice(verifynotice.onmatch, {
+					username: queryuser.name,
 					editcount: queryuser.editcount,
 					accountage: Math.trunc(accountage),
+					mention: member.toString(),
 					dateformat: lang.get('dateformat')
 				});
 				if ( onmatch.trim() ) {
@@ -1089,15 +1101,17 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
  * Parse variables in a verification notice.
  * @param {String} [text] The notice to parse.
  * @param {Object} [variables] The variables to replace.
+ * @param {Number} [variables.username]
  * @param {Number} [variables.editcount]
  * @param {Number} [variables.postcount]
  * @param {Number} [variables.accountage]
+ * @param {Number} [variables.mention]
  * @param {String} [variables.dateformat]
  * @returns {String}
  */
-function parseNotice(text = '', variables = {editcount: 0, postcount: 0, accountage: 0, dateformat: 'en-US'}) {
+function parseNotice(text = '', variables = {username: '', editcount: 0, postcount: 0, accountage: 0, mention: '', dateformat: 'en-US'}) {
 	if ( !text.includes( '$' ) ) return ( text.length > 1000 ? text.substring(0, 1000) + '\u2026' : text );
-	text = text.replace( /\$(editcount|postcount|accountage)/g, (variable, key, offset, fulltext) => {
+	text = text.replace( /\$(username|editcount|postcount|accountage|mention)/g, (variable, key, offset, fulltext) => {
 		var value = ( variables[key] ?? 0 );
 		if ( typeof value === 'string' ) return value;
 		if ( /#(?:if)?expr:[^{|}]*$/.test(fulltext.substring(0, offset)) ) return ( value > 1_000_000_000 ? 1_000_000_000 : value );

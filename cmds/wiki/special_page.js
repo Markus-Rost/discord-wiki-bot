@@ -216,7 +216,7 @@ export default function mw_special_page(lang, msg, {title, uselang = lang.lang},
 			var text = splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength: msg.embedLimits.fieldLength} )[0];
 			embed.addFields( {name: lang.get('search.special'), value: ( text || lang.get('search.empty') )} );
 			if ( body.query.querypage?.cached !== undefined ) {
-				embed.setFooter( {text: lang.get('search.cached')} ).setTimestamp(new Date(body.query.querypage.cachedtimestamp));
+				embed.setFooter( {text: lang.get('search.cached')} ).setTimestamp(new Date(body.query.querypage.cachedtimestamp ?? 0));
 			}
 		}
 	}, error => {

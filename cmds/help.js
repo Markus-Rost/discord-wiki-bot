@@ -109,7 +109,7 @@ export default function cmd_help(lang, msg, args, line, wiki) {
 			}
 		}
 		else if ( cmd === 'minecraft' ) {
-			var cmdlist = '<' + ( isMinecraft ? wiki : 'https://minecraft.fandom.com/' ) + '>\n';
+			var cmdlist = '<' + ( isMinecraft ? wiki : 'https://minecraft.wiki/' ) + '>\n';
 			cmdlist += formathelp(helplist.minecraft, msg, lang, wiki);
 			splitMessage( cmdlist, {char: '\n🔹', maxLength, prepend: '🔹'} ).forEach( textpart => msg.sendChannel( textpart ) );
 		}
