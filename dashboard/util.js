@@ -117,6 +117,7 @@ function canRcGcDwButtons(wiki) {
 	if ( wiki.wikifarm === 'miraheze' ) return true;
 	if ( wiki.wikifarm === 'wikitide' ) return true;
 	if ( wiki.wikifarm === 'telepedia' ) return true;
+	if ( wiki.hostname.endsWith( '.minecraft.wiki' ) ) return true;
 	if ( wiki.href === 'https://minecraft.wiki/' ) return true;
 	if ( wiki.href === 'https://lakeus.xyz/' ) return true;
 	return false;

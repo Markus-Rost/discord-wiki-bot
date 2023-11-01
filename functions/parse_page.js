@@ -315,6 +315,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							'tr:eq(1) img',
 							'div.images img',
 							'figure.pi-image img',
+							'div.infobox-image img',
 							'div.infobox-imagearea img',
 							'div.info-column.info-X1-100 a.image > img'
 						].join(', ')).toArray().find( img => {
