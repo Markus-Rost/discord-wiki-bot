@@ -60,6 +60,14 @@ const enabledOAuth2 = [
 		};
 	} )
 ];
+if ( process.env['oauth_minecraft.wiki'] && process.env['oauth_minecraft.wiki_secret'] ) {
+	enabledOAuth2.unshift({
+		id: 'minecraft.wiki',
+		name: 'Minecraft Wiki',
+		url: 'https://minecraft.wiki/',
+		manage: 'https://minecraft.wiki/w/Special:OAuthManageMyGrants'
+	});
+}
 if ( process.env.oauth_telepedia && process.env.oauth_telepedia_secret ) {
 	enabledOAuth2.unshift({
 		id: 'telepedia',

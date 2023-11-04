@@ -414,8 +414,9 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				embed.setThumbnail( wiki.toLink('Special:FilePath/' + response.body.parse.images[response.body.parse.images.length - 1]) );
 			}
 			else if ( embed.data.thumbnail?.url === thumbnail ) {
-				response.body.parse.images = response.body.parse.images.map( pageimage => pageimage.toString() );
-				let image = response.body.parse.images.find( pageimage => ( /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) && pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) ) );
+				response.body.parse.images = response.body.parse.images.map( pageimage => pageimage.toString() ).filter( pageimage => /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) );
+				let image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().replace( /\.(?:png|jpg|jpeg|gif)$/, '' ) === title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) );
+				if ( !image ) image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) );
 				if ( !image ) {
 					let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
 						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
@@ -431,9 +432,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						if ( first.attr('data-image-name')?.toLowerCase().endsWith( '.gif' ) ) image = first.attr('data-image-name');
 						else thumbnail = ( first.attr('src')?.startsWith?.( 'data:' ) ? first.attr('data-src') : first.prop('src') );
 					}
-					else image = response.body.parse.images.find( pageimage => {
-						return /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase());
-					} );
+					else image = response.body.parse.images[0];
 				}
 				if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
 				if ( thumbnail ) {
