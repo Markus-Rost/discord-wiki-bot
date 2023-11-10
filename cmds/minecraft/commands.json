@@ -405,6 +405,7 @@
 			"/replaceitem entity <targets> <slot> <item> <count>"
 		],
 		"return": [
+			"/return fail",
 			"/return run <command>",
 			"/return <value>"
 		],
@@ -532,7 +533,7 @@
 			"/tick query",
 			"/tick rate <rate>",
 			"/tick freeze",
-			"/tick step <time>",
+			"/tick step [<time>]",
 			"/tick step stop",
 			"/tick unfreeze",
 			"/tick sprint <time>",
