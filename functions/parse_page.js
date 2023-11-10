@@ -414,31 +414,34 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				embed.setThumbnail( wiki.toLink('Special:FilePath/' + response.body.parse.images[response.body.parse.images.length - 1]) );
 			}
 			else if ( embed.data.thumbnail?.url === thumbnail ) {
-				response.body.parse.images = response.body.parse.images.map( pageimage => pageimage.toString() ).filter( pageimage => /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) );
-				let image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().replace( /\.(?:png|jpg|jpeg|gif)$/, '' ) === title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) );
-				if ( !image ) image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) );
-				if ( !image ) {
-					let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
-						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
-						if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
-						return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
-					} ).first();
-					if ( !first.length ) first = $('img').filter( (i, img) => {
-						let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
-						if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
-						return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
-					} ).first();
-					if ( first.length ) {
-						if ( first.attr('data-image-name')?.toLowerCase().endsWith( '.gif' ) ) image = first.attr('data-image-name');
-						else thumbnail = ( first.attr('src')?.startsWith?.( 'data:' ) ? first.attr('data-src') : first.prop('src') );
+				try {
+					response.body.parse.images = response.body.parse.images.map( pageimage => pageimage.toString() ).filter( pageimage => /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) );
+					let image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().replace( /\.(?:png|jpg|jpeg|gif)$/, '' ) === title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) );
+					if ( !image ) image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) );
+					if ( !image ) {
+						let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
+							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						} ).first();
+						if ( !first.length ) first = $('img').filter( (i, img) => {
+							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
+							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+						} ).first();
+						if ( first.length ) {
+							if ( first.attr('data-image-name')?.toLowerCase().endsWith( '.gif' ) ) image = first.attr('data-image-name');
+							else thumbnail = ( first.attr('src')?.startsWith?.( 'data:' ) ? first.attr('data-src') : first.prop('src') );
+						}
+						else image = response.body.parse.images[0];
 					}
-					else image = response.body.parse.images[0];
+					if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
+					if ( thumbnail ) {
+						thumbnail = thumbnail.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
+						embed.setThumbnail( new URL(thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ), pagelink).href );
+					}
 				}
-				if ( image ) thumbnail = wiki.toLink('Special:FilePath/' + image);
-				if ( thumbnail ) {
-					thumbnail = thumbnail.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
-					embed.setThumbnail( thumbnail.replace( /^(?:https?:)?\/\//, 'https://' ) );
-				}
+				catch {}
 			}
 			if ( !embed.data.description ) {
 				var sectionDescription = '';

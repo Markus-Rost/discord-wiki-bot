@@ -115,10 +115,15 @@ function parse_infobox(infobox, embed, embedLimits = {fieldCount: 25, fieldLengt
 		}
 		case 'image': {
 			if ( embed.data.thumbnail?.url !== thumbnail ) return;
-			let image = infobox.data.find( img => {
-				return ( /^(?:https?:)?\/\//.test(img.url) && /\.(?:png|jpg|jpeg|gif)$/.test(img.name) );
-			} );
-			if ( image ) embed.setThumbnail( image.url.replace( /^(?:https?:)?\/\//, 'https://' ) );
+			try {
+				let image = infobox.data.find( img => {
+					if ( !/\.(?:png|jpg|jpeg|gif)$/.test(img.name) ) return false;
+					if ( pagelink ) return /^(?:(?:https?:)?\/)?\//.test(img.url);
+					return /^(?:https?:)?\/\//.test(img.url);
+				} );
+				if ( image ) embed.setThumbnail( new URL(image.url.replace( /^(?:https?:)?\/\//, 'https://' ), pagelink || undefined).href );
+			}
+			catch {}
 			break;
 		}
 	}

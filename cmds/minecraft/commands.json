@@ -1,18 +1,18 @@
 {
 	"wikis": {
 		"https://minecraft.wiki/": "Commands/",
-		"https://minecraft.fandom.com/de/": "Befehl/",
-		"https://minecraft.fandom.com/es/": "Comandos/",
-		"https://minecraft.fandom.com/fr/": "Commandes",
+		"https://de.minecraft.wiki/": "Befehl/",
+		"https://es.minecraft.wiki/": "Comandos/",
+		"https://fr.minecraft.wiki/": "Commandes",
 		"https://minecraft.fandom.com/it/": "Comandi/",
 		"https://minecraft.fandom.com/ja/": "コマンド/",
-		"https://minecraft.fandom.com/ko/": "명령어",
+		"https://ko.minecraft.wiki/": "명령어",
 		"https://minecraft.fandom.com/nl/": "Opdrachten/",
 		"https://minecraft.fandom.com/pl/": "Komendy/",
-		"https://minecraft.fandom.com/pt/": "Comandos/",
+		"https://pt.minecraft.wiki/": "Comandos/",
 		"https://minecraft.fandom.com/ru/": "Команды консоли/",
 		"https://minecraft.fandom.com/uk/": "Команди консолі/",
-		"https://minecraft.fandom.com/zh/": "命令/"
+		"https://zh.minecraft.wiki/": "命令/"
 	},
 	"aliases": {
 		"connect": "wsserver",
