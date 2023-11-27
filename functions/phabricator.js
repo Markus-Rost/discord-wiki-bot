@@ -15,10 +15,10 @@ export const phabricatorSites = new Map([
 		href: 'https://phabricator.miraheze.org/',
 		apikey: 'phabricator_miraheze'
 	}],
-	['issue-tracker.wikitide.com', {
+	['issue-tracker.wikitide.org', {
 		id: 'wikitide',
 		name: 'WikiTide Phorge',
-		href: 'https://issue-tracker.wikitide.com/',
+		href: 'https://issue-tracker.wikitide.org/',
 		apikey: 'phabricator_wikitide'
 	}],
 	['support.wikiforge.net', {
