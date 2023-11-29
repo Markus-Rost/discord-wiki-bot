@@ -80,8 +80,8 @@ if ( process.env.oauth_wikitide && process.env.oauth_wikitide_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikitide',
 		name: 'WikiTide',
-		url: 'https://meta.wikitide.com/w/',
-		manage: 'https://meta.wikitide.com/wiki/Special:OAuthManageMyGrants'
+		url: 'https://meta.wikitide.org/w/',
+		manage: 'https://meta.wikitide.org/wiki/Special:OAuthManageMyGrants'
 	});
 }
 if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
