@@ -346,11 +346,11 @@
 				},
 				"default": {
 					"cmd": "verification",
-					"desc": "Θα αλλάξω τις πιστοποιήσεις του wiki που χρησιμοποιούνται από την εντολή `$1verify`."
+					"desc": "Θα αλλάξω τις επαληθεύσεις του wiki που χρησιμοποιούνται από την εντολή `$1επαλήθευση`."
 				},
 				"delete": {
-					"cmd": "verification <ταυτότητα> delete",
-					"desc": "Θα διαγράψω την πιστοποίηση του wiki."
+					"cmd": "verification <id> delete",
+					"desc": "Θα διαγράψω την επαλήθευση του wiki."
 				},
 				"editcount": {
 					"cmd": "verification <ταυτότητα> editcount <νέα μέτρηση επεξεργασιών>",
