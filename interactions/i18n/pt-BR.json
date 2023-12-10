@@ -1,6 +1,7 @@
 {
 	"_app-directory": {
-		"detailed_description": "**Wiki-Bot** é um bot com o propósito de facilitar a **vinculação e busca em sites MediaWiki** como Wikipedia e wikis da Fandom. Ele exibe **descrições curtas e informações adicionais** sobre páginas e é capaz de resolver redirecionamentos e seguir links interwiki. O Wiki-Bot também fornece **verificação de usuário de conta de wiki** e **feeds de mudanças recentes**.\n\nAltere as configurações do servidor para o Wiki-Bot usando o painel de controle: https://settings.wikibot.de/\n\n# Verificação de Usuário\n\nUsando o comando `!wiki verify <nome de usuário da wiki>`, os usuários podem se verificar como um usuário específico da wiki usando o campo Discord em seu perfil de wiki. Se o usuário corresponder e as verificações de usuário estiverem configuradas no servidor, o Wiki-Bot atribuirá a eles as funções para todas as entradas de verificação que correspondam.\n\nUsando o comando `!wiki verification`, os administradores podem adicionar até 10 entradas de verificação em um servidor. Cada entrada de verificação permite várias restrições para quando um usuário deve corresponder à verificação.\n\n* Canal para usar o comando `!wiki verify`.\n* Função para atribuir quando uma entrada de verificação corresponder.\n* Contagem mínima de edições na wiki para corresponder à entrada de verificação.\n* Grupo de usuário obrigatório na wiki para corresponder à entrada de verificação.\n* Idade da conta em dias obrigatória para corresponder à entrada de verificação.\n* Se o apelido do usuário do Discord deve ser definido como seu nome de usuário da wiki quando eles correspondem à entrada de verificação.\n\n# Webhook de Mudanças Recentes\n\nO Wiki-Bot é capaz de executar um webhook de mudanças recentes usando o comando `!wiki rcscript`. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links inline ou mensagens de incorporação com tags de edição e mudanças de categoria.\n\nRequisitos para adicionar um webhook de mudanças recentes:\n\n* A wiki precisa estar rodando o MediaWiki 1.30 ou superior.\n* A mensagem do sistema `MediaWiki:Custom-RcGcDw` precisa estar definida como o ID do servidor do Discord.\n\n# Configuração\n\nDepois de convidar o Wiki-Bot para o seu servidor, você precisa configurar a wiki que deseja pesquisar por padrão. Você pode fazer isso com o comando `!wiki settings` ou usando o painel de controle.\n\n* Altere a wiki com `!wiki settings wiki <url>`\n  * Exemplo: `!wiki settings wiki https://pt.minecraft.wiki/`\n* Altere o idioma com `!wiki settings lang <idioma>`\n  * Exemplo: `!wiki settings lang Alemão`\n\n# Comandos\n\nPara obter uma lista completa de todos os comandos, use `!wiki help`"
+		"detailed_description": "**Wiki-Bot** é um bot com o propósito de facilitar a **vinculação e busca em sites MediaWiki** como Wikipedia e wikis da Fandom. Ele exibe **descrições curtas e informações adicionais** sobre páginas e é capaz de resolver redirecionamentos e seguir links interwiki. O Wiki-Bot também fornece **verificação de usuário de conta de wiki** e **feeds de mudanças recentes**.\n\nAltere as configurações do servidor para o Wiki-Bot usando o painel de controle: https://settings.wikibot.de/\n\n# Verificação de Usuário\n\nUsando o comando `!wiki verify <nome de usuário da wiki>`, os usuários podem se verificar como um usuário específico da wiki usando o campo Discord em seu perfil de wiki. Se o usuário corresponder e as verificações de usuário estiverem configuradas no servidor, o Wiki-Bot atribuirá a eles as funções para todas as entradas de verificação que correspondam.\n\nUsando o comando `!wiki verification`, os administradores podem adicionar até 10 entradas de verificação em um servidor. Cada entrada de verificação permite várias restrições para quando um usuário deve corresponder à verificação.\n\n* Canal para usar o comando `!wiki verify`.\n* Função para atribuir quando uma entrada de verificação corresponder.\n* Contagem mínima de edições na wiki para corresponder à entrada de verificação.\n* Grupo de usuário obrigatório na wiki para corresponder à entrada de verificação.\n* Idade da conta em dias obrigatória para corresponder à entrada de verificação.\n* Se o apelido do usuário do Discord deve ser definido como seu nome de usuário da wiki quando eles correspondem à entrada de verificação.\n\n# Webhook de Mudanças Recentes\n\nO Wiki-Bot é capaz de executar um webhook de mudanças recentes usando o comando `!wiki rcscript`. As mudanças recentes podem ser exibidas em mensagens de texto compactas com links inline ou mensagens de incorporação com tags de edição e mudanças de categoria.\n\nRequisitos para adicionar um webhook de mudanças recentes:\n\n* A wiki precisa estar rodando o MediaWiki 1.30 ou superior.\n* A mensagem do sistema `MediaWiki:Custom-RcGcDw` precisa estar definida como o ID do servidor do Discord.\n\n# Configuração\n\nDepois de convidar o Wiki-Bot para o seu servidor, você precisa configurar a wiki que deseja pesquisar por padrão. Você pode fazer isso com o comando `!wiki settings` ou usando o painel de controle.\n\n* Altere a wiki com `!wiki settings wiki <url>`\n  * Exemplo: `!wiki settings wiki https://pt.minecraft.wiki/`\n* Altere o idioma com `!wiki settings lang <idioma>`\n  * Exemplo: `!wiki settings lang Alemão`\n\n# Comandos\n\nPara obter uma lista completa de todos os comandos, use `!wiki help`",
+		"short_description": "O Wiki-Bot tem o objetivo de pesquisar e vincular facilmente páginas da wiki, ao mesmo tempo que mostra descrições e informações adicionais. O Wiki-Bot também fornece verificação de usuários de contas da wiki e feeds de mudanças recentes."
 	},
 	"diff": {
 		"description": "Mostra uma diferença de edição da wiki.",
@@ -26,6 +27,7 @@
 		"options[1].options[0].options[1].choices[0].name": "Comparar com a avaliação anterior. (padrão)",
 		"options[1].options[0].options[1].choices[1].name": "Compare com a seguinte revisão.",
 		"options[1].options[0].options[1].choices[2].name": "Comparar com a revisão atual.",
+		"options[1].options[0].options[1].description": "Revisão relativa da comparação de edição a ser mostrada.",
 		"options[1].options[0].options[1].name": "comparar",
 		"options[1].options[0].options[2].description": "A wiki a ser pesquisada.",
 		"options[1].options[0].options[2].name": "wiki",
@@ -36,7 +38,19 @@
 		"options[1].options[0].options[5].description": "Ocultar o link e incorporar em um spoiler?",
 		"options[1].options[0].options[5].name": "spoiler",
 		"options[1].options[1].description": "Mostrar uma comparação de edição do wiki em múltiplas revisões com base nos IDs.",
-		"options[1].options[1].options[0].description": "ID da diff de edição a ser exibido."
+		"options[1].options[1].name": "múltiplo",
+		"options[1].options[1].options[0].description": "ID da diff de edição a ser exibido.",
+		"options[1].options[1].options[0].name": "diffid",
+		"options[1].options[1].options[1].description": "ID de revisão antigo da comparação de edição a ser exibida.",
+		"options[1].options[1].options[1].name": "oldid",
+		"options[1].options[1].options[2].description": "A wiki para pesquisar.",
+		"options[1].options[1].options[2].name": "wiki",
+		"options[1].options[1].options[3].description": "Enviar uma resposta visível apenas para você?",
+		"options[1].options[1].options[3].name": "privado",
+		"options[1].options[1].options[4].description": "Enviar apenas o link sem incorporar?",
+		"options[1].options[1].options[4].name": "noembed",
+		"options[1].options[1].options[5].description": "Ocultar o link e incorporar em um spoiler?",
+		"options[1].options[1].options[5].name": "spoiler"
 	},
 	"inline": {
 		"description": "Poste uma mensagem com links da wiki embutidos na linha.",
@@ -100,6 +114,20 @@
 		"options[3].description": "Enviar o link sem a pré-visualização?",
 		"options[3].name": "sem_embed",
 		"options[4].description": "Ocultar o link como spoiler?",
+		"options[4].name": "spoiler"
+	},
+	"user": {
+		"description": "Postar informações sobre um usuário da wiki.",
+		"name": "usuario",
+		"options[0].description": "O usuário do qual mostrar informações.",
+		"options[0].name": "nomedousuario",
+		"options[1].description": "A wiki para pesquisar.",
+		"options[1].name": "wiki",
+		"options[2].description": "Enviar uma resposta visível apenas para você?",
+		"options[2].name": "privado",
+		"options[3].description": "Enviar apenas o link sem incorporar?",
+		"options[3].name": "noembed",
+		"options[4].description": "Ocultar o link e incorporar em um spoiler?",
 		"options[4].name": "spoiler"
 	},
 	"verify": {
