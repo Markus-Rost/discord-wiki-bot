@@ -434,7 +434,8 @@
 								"ja": "表示する編集差分の相対リビジョン。",
 								"el": "Σχετική έκδοση της διαφοράς επεξεργασίας για εμφάνιση.",
 								"fr": "Révision relative de la différence d'édition à afficher.",
-								"tr": "Gösterilecek düzenleme farkının ilgili revizyonu."
+								"tr": "Gösterilecek düzenleme farkının ilgili revizyonu.",
+								"pt-BR": "Revisão relativa da comparação de edição a ser mostrada."
 							},
 							"choices": [
 								{
@@ -668,7 +669,8 @@
 						"hi": "multiple",
 						"ja": "multiple",
 						"el": "πολλαπλές",
-						"fr": "multiple"
+						"fr": "multiple",
+						"pt-BR": "múltiplo"
 					},
 					"description": "Show a wiki edit diff over multiple revisions based on the IDs.",
 					"description_localizations": {
@@ -700,7 +702,8 @@
 								"hi": "diffid",
 								"ja": "diffid",
 								"el": "ταυτότητα_διαφοράς",
-								"fr": "diffid"
+								"fr": "diffid",
+								"pt-BR": "diffid"
 							},
 							"description": "Diff ID of the edit diff to show.",
 							"description_localizations": {
@@ -734,7 +737,8 @@
 								"hi": "oldid",
 								"ja": "oldid",
 								"el": "παλαιά_ταυτότητα",
-								"fr": "oldid"
+								"fr": "oldid",
+								"pt-BR": "oldid"
 							},
 							"description": "Old revision ID of the edit diff to show.",
 							"description_localizations": {
@@ -748,7 +752,8 @@
 								"hi": "दिखाने के लिए सम्पादन अंतर का पुराना अवतरण ID।",
 								"ja": "表示する編集差分の旧リビジョンID。",
 								"el": "Ταυτότητα παλαιάς έκδοσης διαφοράς επεξεργασίας για προβολή.",
-								"fr": "Ancien ID de révision de la différence d'édition à afficher."
+								"fr": "Ancien ID de révision de la différence d'édition à afficher.",
+								"pt-BR": "ID de revisão antigo da comparação de edição a ser exibida."
 							},
 							"min_value": 0,
 							"required": true
@@ -781,7 +786,7 @@
 								"it": "La wiki in cui cercare.",
 								"tr": "Aratma yapılacak viki.",
 								"el": "To wiki προς αναζήτηση.",
-								"pt-BR": "A wiki a ser pesquisada.",
+								"pt-BR": "A wiki para pesquisar.",
 								"en-GB": "The wiki to search in.",
 								"en-US": "The wiki to search in.",
 								"ja": "検索対象となるWiki。",
@@ -819,7 +824,7 @@
 								"it": "Invia una risposta visibile solo per te?",
 								"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
 								"el": "Αποστολή απόκρισης ορατή μόνο σε εσάς;",
-								"pt-BR": "Deseja que a resposta seja privada?",
+								"pt-BR": "Enviar uma resposta visível apenas para você?",
 								"en-GB": "Send a response only visible to yourself?",
 								"en-US": "Send a response only visible to yourself?",
 								"fr": "Envoyer une réponse uniquement visible par vous-même ?"
@@ -839,7 +844,7 @@
 								"it": "noembed",
 								"tr": "noembed",
 								"el": "αποενσωμάτωση",
-								"pt-BR": "sem_embed",
+								"pt-BR": "noembed",
 								"en-GB": "noembed",
 								"en-US": "noembed",
 								"fr": "noembed"
@@ -855,7 +860,7 @@
 								"it": "Invia solo il link senza embed?",
 								"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
 								"el": "Αποστολή μόνο του συνδέσμου χωρίς ενσωμάτωση;",
-								"pt-BR": "Enviar o link sem a pré-visualização?",
+								"pt-BR": "Enviar apenas o link sem incorporar?",
 								"en-GB": "Send only the link without embed?",
 								"en-US": "Send only the link without embed?",
 								"fr": "Envoyer uniquement le lien sans inclusion ?"
@@ -890,7 +895,7 @@
 								"it": "Nascondi il link e l'embed in uno spoiler?",
 								"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
 								"el": "Απόκρυψη του συνδέσμου και ενσωμάτωση σε spoiler;",
-								"pt-BR": "Ocultar o link como spoiler?",
+								"pt-BR": "Ocultar o link e incorporar em um spoiler?",
 								"en-GB": "Hide the link and embed in a spoiler?",
 								"en-US": "Hide the link and embed in a spoiler?",
 								"fr": "Cacher le lien et l'inclure dans un spoiler ?"

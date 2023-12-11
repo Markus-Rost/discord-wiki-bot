@@ -13,7 +13,8 @@
 		"hi": "user",
 		"ja": "user",
 		"el": "χρήστης",
-		"fr": "user"
+		"fr": "user",
+		"pt-BR": "usuario"
 	},
 	"description": "Post information about a wiki user.",
 	"description_localizations": {
@@ -27,7 +28,8 @@
 		"hi": "एक विकि सदस्य के बारे में जानकारी पोस्ट करें।",
 		"ja": "Wikiユーザーに関する情報を投稿する。",
 		"el": "Πληροφορίες δημοσίευσης για έναν χρήστη του wiki.",
-		"fr": "Publier des informations sur un utilisateur de wiki."
+		"fr": "Publier des informations sur un utilisateur de wiki.",
+		"pt-BR": "Postar informações sobre um usuário da wiki."
 	},
 	"default_permission": true,
 	"default_member_permissions": "68608",
@@ -47,7 +49,8 @@
 				"hi": "username",
 				"ja": "username",
 				"el": "όνομα_χρήστη",
-				"fr": "username"
+				"fr": "username",
+				"pt-BR": "nomedousuario"
 			},
 			"description": "The user to show information of.",
 			"description_localizations": {
@@ -61,7 +64,8 @@
 				"hi": "सदस्य जिसके बारे में जानकारी पोस्ट करनी है।",
 				"ja": "この情報を表示するユーザー。",
 				"el": "Ο χρήστης του οποίου οι πληροφορίες θα εμφανιστούν.",
-				"fr": "L'utilisateur pour lequel des informations doivent être affichées."
+				"fr": "L'utilisateur pour lequel des informations doivent être affichées.",
+				"pt-BR": "O usuário do qual mostrar informações."
 			},
 			"required": true,
 			"autocomplete": true
@@ -94,7 +98,7 @@
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
 				"el": "To wiki προς αναζήτηση.",
-				"pt-BR": "A wiki a ser pesquisada.",
+				"pt-BR": "A wiki para pesquisar.",
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
 				"ja": "検索対象となるWiki。",
@@ -132,7 +136,7 @@
 				"it": "Invia una risposta visibile solo per te?",
 				"tr": "Yalnızca sizin görebileceğiniz bir yanıt gönderilsin mi?",
 				"el": "Αποστολή απόκρισης ορατή μόνο σε εσάς;",
-				"pt-BR": "Deseja que a resposta seja privada?",
+				"pt-BR": "Enviar uma resposta visível apenas para você?",
 				"en-GB": "Send a response only visible to yourself?",
 				"en-US": "Send a response only visible to yourself?",
 				"fr": "Envoyer une réponse uniquement visible par vous-même ?"
@@ -152,7 +156,7 @@
 				"it": "noembed",
 				"tr": "noembed",
 				"el": "αποενσωμάτωση",
-				"pt-BR": "sem_embed",
+				"pt-BR": "noembed",
 				"en-GB": "noembed",
 				"en-US": "noembed",
 				"fr": "noembed"
@@ -168,7 +172,7 @@
 				"it": "Invia solo il link senza embed?",
 				"tr": "Gömülü bir mesaj olmadan sadece bağlantı mı paylaşılmalı?",
 				"el": "Αποστολή μόνο συνδέσμου χωρίς ενσωμάτωση;",
-				"pt-BR": "Enviar o link sem a pré-visualização?",
+				"pt-BR": "Enviar apenas o link sem incorporar?",
 				"en-GB": "Send only the link without embed?",
 				"en-US": "Send only the link without embed?",
 				"fr": "Envoyer uniquement le lien sans inclusion ?"
@@ -204,7 +208,7 @@
 				"it": "Nascondi il link e l'embed in uno spoiler?",
 				"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
 				"el": "Απόκρυψη του συνδέσμου και ενσωμάτωση σε spoiler;",
-				"pt-BR": "Ocultar o link como spoiler?",
+				"pt-BR": "Ocultar o link e incorporar em um spoiler?",
 				"en-GB": "Hide the link and embed in a spoiler?",
 				"en-US": "Hide the link and embed in a spoiler?",
 				"fr": "Cacher le lien et l'inclure dans un spoiler ?"
