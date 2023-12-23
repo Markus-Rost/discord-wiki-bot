@@ -27,10 +27,10 @@ export const phabricatorSites = new Map([
 		href: 'https://support.wikiforge.net/',
 		apikey: 'phabricator_wikiforge'
 	}],
-	['phorge.telepedia.net', {
+	['phabricator.telepedia.net', {
 		id: 'telepedia',
-		name: 'Telepedia Phorge',
-		href: 'https://phorge.telepedia.net/',
+		name: 'Telepedia Phabricator',
+		href: 'https://phabricator.telepedia.net/',
 		apikey: 'phabricator_telepedia'
 	}]
 ]);
