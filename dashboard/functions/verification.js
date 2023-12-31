@@ -602,8 +602,10 @@ function update_verification(res, userSettings, guild, type, settings) {
 		guild: guild
 	} ).then( response => {
 		if ( !response ) {
-			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
-			userSettings.guilds.isMember.delete(guild);
+			if ( userSettings.guilds.isMember.has(guild) ) {
+				userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+				userSettings.guilds.isMember.delete(guild);
+			}
 			return res(`/guild/${guild}`, 'savefail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
@@ -1013,8 +1015,10 @@ function update_notices(res, userSettings, guild, type, settings) {
 		newchannel: settings.channel
 	} ).then( response => {
 		if ( !response ) {
-			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
-			userSettings.guilds.isMember.delete(guild);
+			if ( userSettings.guilds.isMember.has(guild) ) {
+				userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+				userSettings.guilds.isMember.delete(guild);
+			}
 			return res(`/guild/${guild}`, 'savefail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
@@ -1211,8 +1215,10 @@ function send_button(res, userSettings, guild, type, settings) {
 		allowForum: true
 	} ).then( response => {
 		if ( !response ) {
-			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
-			userSettings.guilds.isMember.delete(guild);
+			if ( userSettings.guilds.isMember.has(guild) ) {
+				userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+				userSettings.guilds.isMember.delete(guild);
+			}
 			return res(`/guild/${guild}`, 'sendfail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {

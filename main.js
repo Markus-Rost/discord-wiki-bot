@@ -174,7 +174,7 @@ if ( process.env.dashboard ) {
 						} );
 					}
 				} )
-			)
+			);
 		},
 		getMember: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {

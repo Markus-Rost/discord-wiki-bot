@@ -385,8 +385,10 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		channel: settings.channel
 	} ).then( response => {
 		if ( !response ) {
-			userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
-			userSettings.guilds.isMember.delete(guild);
+			if ( userSettings.guilds.isMember.has(guild) ) {
+				userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+				userSettings.guilds.isMember.delete(guild);
+			}
 			return res(`/guild/${guild}`, 'savefail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
@@ -565,8 +567,10 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 				newchannel: ( newChannel ? settings.channel : undefined )
 			} ).then( response => {
 				if ( !response ) {
-					userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
-					userSettings.guilds.isMember.delete(guild);
+					if ( userSettings.guilds.isMember.has(guild) ) {
+						userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
+						userSettings.guilds.isMember.delete(guild);
+					}
 					return res(`/guild/${guild}`, 'savefail');
 				}
 				if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
