@@ -239,42 +239,6 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 					};
 				} );
 			}
-			if ( wiki.wikifarm === 'miraheze' && querypage.ns === 0 && /^Mh:[a-z\d]+:/.test(querypage.title) ) {
-				if ( breakOnTimeoutPause(msg) && isMessage(msg) ) {
-					if ( reaction ) reaction.removeEmoji();
-					return;
-				}
-				logging(wiki, msg.guildId, 'interwiki', 'miraheze');
-				let iw_parts = querypage.title.split(':');
-				let iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
-				if ( msg.wikiWhitelist.length && !msg.wikiWhitelist.includes( iw.href ) ) return fn.special_page(lang, msg, {title: 'Special:GoToInterwiki/' + querypage.title, uselang}, 'gotointerwiki', {general: body.query.general}, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
-				let iw_link = iw.toLink(iw_parts.slice(2).join(':'), querystring, fragment);
-				let maxselfcall = interwikiLimit[( patreonGuildsPrefix.has(msg.guildId) ? 'patreon' : 'default' )];
-				if ( selfcall < maxselfcall ) {
-					selfcall++;
-					if ( isMessage(msg) ) {
-						cmd = '!!' + iw.hostname + ' ';
-						if ( msg.wikiPrefixes.has(iw.name) ) cmd = msg.wikiPrefixes.get(iw.name);
-						else if ( msg.wikiPrefixes.has('miraheze.org') ) {
-							let idString = urlToIdString(iw);
-							if ( idString ) cmd = msg.wikiPrefixes.get('miraheze.org') + idString + ' ';
-						}
-					}
-					else if ( msg.commandName === 'interwiki' ) {
-						cmd = `</${msg.commandName}:${msg.commandId}> wiki:${iw.hostname} title:`;
-					}
-					else {
-						let command = msg.client.application.commands.cache.find( cmd => cmd.name === 'interwiki' );
-						if ( command ) cmd = `</${command.name}:${command.id}> wiki:${iw.hostname} title:`;
-						else cmd += 'mh:' + iw_parts[1] + ':';
-					}
-					return mw_check_wiki(lang, msg, iw_parts.slice(2).join(':'), iw, cmd, reaction, spoiler, noEmbed, querystring, fragment, iw_link, selfcall);
-				}
-				return {
-					reaction: ( selfcall === maxselfcall ? WB_EMOJI.warning : undefined ),
-					message: spoiler + ( noEmbed ? '<' : ' ' ) + iw_link + ( noEmbed ? '>' : ' ' ) + spoiler
-				};
-			}
 			if ( ( querypage.missing !== undefined && querypage.known === undefined && !( noRedirect || querypage.categoryinfo ) ) || querypage.invalid !== undefined ) return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&iwurl=true&redirects=true&prop=categoryinfo|info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free|disambiguation|infoboxes&explaintext=true&exsectionformat=raw&exlimit=1&generator=search&gsrprop=sectiontitle&gsrnamespace=4|12|14|' + ( querypage.ns >= 0 ? querypage.ns + '|' : '' ) + wiki.namespaces.content.map( ns => ns.id ).join('|') + '&gsrlimit=1&gsrsearch=' + encodeURIComponent( title ) + '&format=json', {
 				context: {
 					guildId: msg.guildId

@@ -172,13 +172,6 @@ function slash_inline(interaction, lang, wiki) {
 							if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) {
 								return;
 							}
-							if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
-								var iw_parts = page.title.split(':');
-								var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
-								if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( iw.href ) ) link.url = wiki.toLink('Special:GoToInterwiki/' + page.title, '', link.section, true);
-								else link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section, true);
-								return;
-							}
 							return links.splice(links.indexOf(link), 1);
 						}
 					} );

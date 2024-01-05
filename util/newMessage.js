@@ -195,14 +195,6 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				} ) );
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => links.filter( link => link.title === page.title ).forEach( link => {
 					if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) return;
-					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) {
-						logging(wiki, msg.guildId, 'inline', 'interwiki');
-						var iw_parts = page.title.split(':');
-						var iw = new Wiki('https://' + iw_parts[1] + '.miraheze.org/w/');
-						if ( wikiWhitelist.length && !wikiWhitelist.includes( iw.href ) ) link.url = wiki.toLink('Special:GoToInterwiki/' + page.title, '', link.section);
-						else link.url = iw.toLink(iw_parts.slice(2).join(':'), '', link.section);
-						return;
-					}
 					logging(wiki, msg.guildId, 'inline', 'redlink');
 					link.url = wiki.toLink(link.title, 'action=edit&redlink=1');
 				} ) );
@@ -248,7 +240,6 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefi
 				var missing = [];
 				querypages.filter( page => page.missing !== undefined && page.known === undefined ).forEach( page => embeds.filter( embed => embed.title === page.title ).forEach( embed => {
 					if ( ( page.ns === 2 || page.ns === 200 || page.ns === 202 || page.ns === 1200 ) && !page.title.includes( '/' ) ) return;
-					if ( wiki.wikifarm === 'miraheze' && page.ns === 0 && /^Mh:[a-z\d]+:/.test(page.title) ) return;
 					embeds.splice(embeds.indexOf(embed), 1);
 					if ( page.ns === 0 && !embed.section ) {
 						var template = querypages.find( template => template.ns === 10 && template.title.split(':').slice(1).join(':') === embed.title );
