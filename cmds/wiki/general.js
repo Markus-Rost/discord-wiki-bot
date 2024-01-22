@@ -53,6 +53,13 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 			if ( phabricatorSites.has(iw.hostname) ) {
 				return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
 			}
+			if ( iw.hostname === 'bugs.mojang.com' && minecraft.hasOwnProperty('bug') && !iw.searchParams.toString() && !iw.hash ) {
+				let bug = iw.pathname.match( /^\/browse\/([A-Z]{2,6}-\d+)$/ );
+				if ( bug ) {
+					logging(wiki, msg.guildId, 'minecraft', 'bug');
+					return minecraft.bug(lang, msg, wiki, [bug[1]], title, cmd, reaction, spoiler, noEmbed);
+				}
+			}
 			if ( ['http:','https:'].includes( iw.protocol ) ) {
 				let project = getWikiProject(iw.hostname);
 				if ( project ) {
@@ -328,6 +335,13 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 							if ( phabricatorSites.has(iw.hostname) ) {
 								return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
 							}
+							if ( iw.hostname === 'bugs.mojang.com' && minecraft.hasOwnProperty('bug') && !iw.searchParams.toString() && !iw.hash ) {
+								let bug = iw.pathname.match( /^\/browse\/([A-Z]{2,6}-\d+)$/ );
+								if ( bug ) {
+									logging(wiki, msg.guildId, 'minecraft', 'bug');
+									return minecraft.bug(lang, msg, wiki, [bug[1]], title, cmd, reaction, spoiler, noEmbed);
+								}
+							}
 							logging(wiki, msg.guildId, 'interwiki');
 							if ( selfcall < maxselfcall && ['http:','https:'].includes( iw.protocol ) ) {
 								selfcall++;
@@ -566,6 +580,13 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 				else fragment = iw.hash.substring(1);
 				if ( phabricatorSites.has(iw.hostname) ) {
 					return phabricator(lang, msg, wiki, iw, spoiler, noEmbed);
+				}
+				if ( iw.hostname === 'bugs.mojang.com' && minecraft.hasOwnProperty('bug') && !iw.searchParams.toString() && !iw.hash ) {
+					let bug = iw.pathname.match( /^\/browse\/([A-Z]{2,6}-\d+)$/ );
+					if ( bug ) {
+						logging(wiki, msg.guildId, 'minecraft', 'bug');
+						return minecraft.bug(lang, msg, wiki, [bug[1]], title, cmd, reaction, spoiler, noEmbed);
+					}
 				}
 				logging(wiki, msg.guildId, 'interwiki');
 				if ( selfcall < maxselfcall && ['http:','https:'].includes( iw.protocol ) ) {
