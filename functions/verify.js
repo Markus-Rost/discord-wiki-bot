@@ -712,7 +712,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 	}
 	if ( !settings?.channel ) return settings?.fail?.();
 	var channel = settings.channel;
-	if ( !channel.permissionsFor(channel.guild.members.me).has([PermissionFlagsBits.ViewChannel, ( channel.isThread() ? PermissionFlagsBits.SendMessagesInThreads : PermissionFlagsBits.SendMessages )]) ) return settings.fail?.();
+	if ( !settings.interaction && !channel.permissionsFor(channel.guild.members.me).has([PermissionFlagsBits.ViewChannel, ( channel.isThread() ? PermissionFlagsBits.SendMessagesInThreads : PermissionFlagsBits.SendMessages )]) ) return settings.fail?.();
 	Promise.all([
 		db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [channel.guildId, '%|' + ( channel.isThread() ? channel.parentId : channel.id ) + '|%'] ).then( ({rows}) => {
 			if ( !rows.length ) return Promise.reject();
