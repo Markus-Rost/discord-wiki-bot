@@ -832,7 +832,7 @@
 		"oauth_button": "Otentikasi",
 		"oauth_message": "Harap gunakan [tautan ini]($1) untuk mengautentikasi akun wiki kamu.",
 		"oauth_message_dm": "Silakan gunakan tautan ini untuk mengautentikasi akun wiki kamu untuk pengguna $1.",
-		"oauth_private": "Wiki menggunakan OAuth2 untuk verifikasi. Harap aktifkan pesan langsung dari server ini atau gunakan perintah `/verify` sehingga saya dapat mengirimi Kamu tautan autentikasi secara pribadi.",
+		"oauth_private": "Wiki menggunakan OAuth2 untuk verifikasi. Harap aktifkan pesan langsung dari server ini atau gunakan perintah $1 sehingga saya dapat mengirimi Kamu tautan autentikasi secara pribadi.",
 		"oauth_used": "*Diverifikasi menggunakan OAuth2*",
 		"placeholder": "Perhatikan nama pengguna wiki Anda dengan huruf besar yang benar.",
 		"qualified_add": "Ditambahkan ke:",

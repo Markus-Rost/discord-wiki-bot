@@ -776,7 +776,7 @@
 		"oauth_button": "Autentisera",
 		"oauth_message": "Använd [denna länk]($1) för att autentisera ditt wiki-konto.",
 		"oauth_message_dm": "Använd den här länken för att autentisera ditt wiki-konto för $1.",
-		"oauth_private": "wikinuses OAuth2 för verifiering. Aktivera direktmeddelanden från den här servern eller använd `/verify`-kommandot så att jag kan skicka en autentiseringslänk privat.",
+		"oauth_private": "wikinuses OAuth2 för verifiering. Aktivera direktmeddelanden från den här servern eller använd $1-kommandot så att jag kan skicka en autentiseringslänk privat.",
 		"oauth_used": "* Verifierad med OAuth2 *",
 		"qualified_add": "Tillagd i:",
 		"qualified_add_error": "Kan inte läggas till i:",

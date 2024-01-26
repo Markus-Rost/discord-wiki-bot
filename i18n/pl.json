@@ -796,7 +796,7 @@
 		"oauth_button": "Uwierzytelnij się",
 		"oauth_message": "Użyj [tego linku]($1), aby uwierzytelnić swoje konto wiki.",
 		"oauth_message_dm": "Użyj tego linku aby uwierzytelnić swoje konto wiki dla $1.",
-		"oauth_private": "Wiki używa OAuth2 do weryfikacji. Aby się uwierzytelnić, zezwól na komunikację przez prywatne wiadomości dla tego serwera lub użyj komendy `/verify` aby zweryfikować się za pomocą linku wysłanego prywatnie.",
+		"oauth_private": "Wiki używa OAuth2 do weryfikacji. Aby się uwierzytelnić, zezwól na komunikację przez prywatne wiadomości dla tego serwera lub użyj komendy $1 aby zweryfikować się za pomocą linku wysłanego prywatnie.",
 		"oauth_used": "*Zweryfikowano z użyciem OAuth2*",
 		"qualified_add": "Dodano do:",
 		"qualified_add_error": "Nie udało się dodać:",

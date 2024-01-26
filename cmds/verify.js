@@ -114,7 +114,8 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 						setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 					}, error => {
 						if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
-							return msg.replyMsg( lang.get('verify.oauth_private') );
+							let cmd = msg.client.application.commands.cache.find( cmd => cmd.name === 'verify' );
+							return msg.replyMsg( lang.get('verify.oauth_private', ( cmd ? `</${cmd.name}:${cmd.id}>` : '`/verify`' )) );
 						}
 						log_error(error);
 						msg.reactEmoji(WB_EMOJI.error);
@@ -218,7 +219,8 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 							setTimeout( () => msg.delete().catch(log_error), 60_000 ).unref();
 						}, error => {
 							if ( error?.code === 50007 ) { // CANNOT_MESSAGE_USER
-								return msg.replyMsg( lang.get('verify.oauth_private') );
+								let cmd = msg.client.application.commands.cache.find( cmd => cmd.name === 'verify' );
+								return msg.replyMsg( lang.get('verify.oauth_private', ( cmd ? `</${cmd.name}:${cmd.id}>` : '`/verify`' )) );
 							}
 							log_error(error);
 							msg.reactEmoji(WB_EMOJI.error);

@@ -832,7 +832,7 @@
 		"oauth_button": "验证",
 		"oauth_message": "请使用[此链接]($1)验证您的wiki账号。",
 		"oauth_message_dm": "请使用此链接为$1验证您的wiki账号。",
-		"oauth_private": "此wiki使用OAuth2进行验证。请开启来自此服务器的私信或使用`/verify`命令以允许我向您私信验证链接。",
+		"oauth_private": "此wiki使用OAuth2进行验证。请开启来自此服务器的私信或使用$1命令以允许我向您私信验证链接。",
 		"oauth_used": "*已通过OAuth2验证*",
 		"placeholder": "你的wiki用户名（请确保大小写正确）。",
 		"qualified_add": "添加：",

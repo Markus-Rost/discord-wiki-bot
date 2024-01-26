@@ -832,7 +832,7 @@
 		"oauth_button": "Authenticate",
 		"oauth_message": "Please use [this link]($1) to authenticate your wiki account.",
 		"oauth_message_dm": "Please use this link to authenticate your wiki account for $1.",
-		"oauth_private": "The wiki uses OAuth2 for verification. Please enable direct messages from this server or use the `/verify` command so I can send you an authentication link privately.",
+		"oauth_private": "The wiki uses OAuth2 for verification. Please enable direct messages from this server or use the $1 command so I can send you an authentication link privately.",
 		"oauth_used": "*Verified using OAuth2*",
 		"placeholder": "Your wiki username with the correct capitalization.",
 		"qualified_add": "Added to:",

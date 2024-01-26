@@ -832,7 +832,7 @@
 		"oauth_button": "Doğrula",
 		"oauth_message": "Lütfen [bu bağlantıyı]($1) kullanarak viki hesabını doğrula.",
 		"oauth_message_dm": "$1 sunucusu için viki hesabını doğrulamak için lütfen bu bağlantıyı kullan.",
-		"oauth_private": "Bu viki doğrulama için OAuth2 kullanıyor. Lütfen sunucudan gelen direkt mesajları etkinleştir ve `/verify` komutunu kullan. Böylece doğrulama bağlantısını sana özel mesaj olarak gönderebilirim.",
+		"oauth_private": "Bu viki doğrulama için OAuth2 kullanıyor. Lütfen sunucudan gelen direkt mesajları etkinleştir ve $1 komutunu kullan. Böylece doğrulama bağlantısını sana özel mesaj olarak gönderebilirim.",
 		"oauth_used": "*OAuth2 kullanılarak doğrulandı*",
 		"placeholder": "Büyük küçük harf uyumu doğru olan viki kullanıcı adın.",
 		"qualified_add": "Eklendi:",
