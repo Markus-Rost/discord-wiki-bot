@@ -59,6 +59,7 @@ const removeClasses = [
 	'.noexcerpt',
 	'.sortkey',
 	'.mw-collapsible.mw-collapsed',
+	'span.sprite-file img',
 	'.c-item-hoverbox__display',
 	'wb\\:sectionedit'
 ];
