@@ -15,6 +15,7 @@
 		"https://zh.minecraft.wiki/": "命令/"
 	},
 	"aliases": {
+		"?": "help",
 		"connect": "wsserver",
 		"tell": "msg",
 		"tm": "teammsg",
