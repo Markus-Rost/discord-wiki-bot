@@ -337,7 +337,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 					let showAlt = true;
 					if ( attribs['data-image-name'] === attribs.alt ) showAlt = false;
 					else {
-						let regex = new RegExp( '/([\\da-f])/\\1[\\da-f]/' + escapeRegExp(attribs.alt.replaceAll( ' ', '_' )) + '(?:/|\\?|$)' );
+						let regex = new RegExp( '/(?:images(?:/thumb)?|([\\da-f])/\\1[\\da-f])/' + escapeRegExp(attribs.alt.replaceAll( ' ', '_' )) + '(?:/|\\?|$)' );
 						if ( attribs.src.startsWith( 'data:' ) && attribs['data-src'] ) attribs.src = attribs['data-src'];
 						if ( regex.test(attribs.src.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode )) ) showAlt = false;
 					}
