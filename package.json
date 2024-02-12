@@ -20,7 +20,7 @@
     "datetime-difference": "^1.0.2",
     "discord-oauth2": "^2.12.0",
     "discord.js": "^14.14.1",
-    "dotenv": "^16.4.1",
+    "dotenv": "^16.4.2",
     "full-icu": "^1.5.0",
     "got": "^14.2.0",
     "got-ssrf": "^3.0.0",
