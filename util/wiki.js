@@ -153,6 +153,7 @@ export default class Wiki extends URL {
 	/**
 	 * Updates the wiki url.
 	 * @param {Object} siteinfo - Siteinfo from the wiki API.
+	 * @param {String} siteinfo.server - Base URL of the wiki.
 	 * @param {String} siteinfo.servername - Hostname of the wiki.
 	 * @param {String} siteinfo.scriptpath - Scriptpath of the wiki.
 	 * @param {String} siteinfo.articlepath - Articlepath of the wiki.
@@ -165,8 +166,13 @@ export default class Wiki extends URL {
 	 * @param {{id: Number, '*': String}[]} [namespacealiases] - Namespace aliases from the wiki API.
 	 * @returns {Wiki}
 	 */
-	updateWiki({servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, wikiid, gamepedia = 'false'}, namespaces, namespacealiases) {
-		this.hostname = servername;
+	updateWiki({server, servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, wikiid, gamepedia = 'false'}, namespaces, namespacealiases) {
+		try {
+			this.hostname = new URL(server, this).hostname;
+		}
+		catch {
+			this.hostname = servername;
+		}
 		this.pathname = scriptpath + '/';
 		if ( !this.proxyName ) this.articlepath = articlepath;
 		this.mainpage = mainpage;
