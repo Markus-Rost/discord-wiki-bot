@@ -65,6 +65,7 @@
 	},
 	"notice": {
 		"beta": {
+			"note": "Bitte melde alle Probleme auf dem [Support-Server]($1).",
 			"text": "Diese Funktion ist experimentell! Sie ist nicht garantiert richtig zu funktionieren und könnte in Zukunft eventuell entfernt werden.",
 			"title": "Experimentelle Beta-Funktion"
 		},
