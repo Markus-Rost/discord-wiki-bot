@@ -65,6 +65,7 @@
 	},
 	"notice": {
 		"beta": {
+			"note": "Please report any issues on the [support server]($1).",
 			"text": "This feature is experimental! It is not guaranteed to work correctly and may be removed in the future.",
 			"title": "Experimental Beta Feature"
 		},

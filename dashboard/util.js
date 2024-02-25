@@ -448,6 +448,7 @@ function createNotice($, notice, dashboardLang, args = []) {
 			type = 'info';
 			title.text(dashboardLang.get('notice.beta.title'));
 			text.text(dashboardLang.get('notice.beta.text'));
+			note = $('<div>').html(dashboardLang.get('notice.beta.note', true, $('<a target="_blank">').attr('href', process.env.invite)));
 			break;
 		case 'readonly':
 			type = 'info';
