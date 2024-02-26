@@ -11,9 +11,10 @@ import { got, isMessage, canShowEmbed, escapeFormatting } from '../util/function
  * @param {import('../util/wiki.js').default} wiki - The wiki for the page.
  * @param {String} spoiler - If the response is in a spoiler.
  * @param {String} [gender] - The gender of the user.
+ * @param {String} [isGlobalBlocked] - If the user is globally blocked.
  * @returns {Promise<import('discord.js').Message|{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>} The edited message.
  */
-export default function global_block(lang, msg, username, text, embed, wiki, spoiler, gender) {
+export default function global_block(lang, msg, username, text, embed, wiki, spoiler, gender, isGlobalBlocked) {
 	if ( !msg || !msg.inGuild() || !patreonGuildsPrefix.has(msg.guildId) || wiki.wikifarm !== 'fandom' ) return;
 	if ( embed && !canShowEmbed(msg) ) embed = null;
 	
@@ -24,10 +25,14 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 	}
 	
 	if ( isMessage(msg) ) {
-		if ( embed ) embed.spliceFields( -1, 1 );
+		if ( embed ) {
+			embed.spliceFields( -1, 1 );
+			if ( isGlobalBlocked ) embed.spliceFields( -1, 1 );
+		}
 		else {
 			let splittext = text.split('\n\n');
 			splittext.pop();
+			if ( isGlobalBlocked ) splittext.pop();
 			text = splittext.join('\n\n');
 		}
 	}
@@ -45,13 +50,13 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 			}
 			else {
 				let $ = cheerioLoad(body, {baseURI: response.url});
+				if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
+					if ( embed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**'} );
+					else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
+				}
 				if ( $('#mw-content-text .errorbox').length ) {
 					if ( embed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.disabled') + '**'} );
 					else text += '\n\n**' + lang.get('user.gblock.disabled') + '**';
-				}
-				else if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
-					if ( embed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**'} );
-					else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
 				}
 			}
 		}, error => {

@@ -472,6 +472,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 			
 			var pagelink = wiki.toLink(namespace + username, querystring, fragment);
 			var text = '<' + pagelink + '>';
+			/** @type {EmbedBuilder?} */
 			var embed = null;
 			if ( !noEmbed ) {
 				embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(username) ).setURL( pagelink ).addFields( {name: editcount[0], value: editcount[1], inline: true} );
@@ -504,7 +505,8 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					text += '\n' + globalgroup[0] + ' ' + globalgroup.slice(1).join(', ');
 				}
 			}
-			if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&format=json&cache=' + Date.now(), {
+			var isGlobalBlocked = false;
+			if ( wiki.wikifarm === 'fandom' ) return got.get( wiki + 'wikia.php?controller=UserProfile&method=getUserData&userId=' + queryuser.userid + '&uselang=qqx&format=json&cache=' + Date.now(), {
 				context: {
 					guildId: msg.guildId
 				}
@@ -622,12 +624,17 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					if ( !noEmbed ) embed.addFields( {name: discordname[0], value: discordname[1], inline: true} );
 					else text += '\n' + discordname.join(' ');
 				}
+				if ( !isBlocked && pbody.userData.tags.includes( '(userprofile-global-tag-blocked)' ) ) isGlobalBlocked = true;
 			}, error => {
 				console.log( '- Error while getting the user profile: ' + error );
 			} ).then( () => {
 				if ( isBlocked ) {
 					if ( !noEmbed ) embed.addFields( {name: block.header, value: block.text} );
 					else text += '\n\n**' + block.header + '**\n' + block.text;
+				}
+				if ( isGlobalBlocked ) {
+					if ( !noEmbed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', escapeFormatting(username), queryuser.gender) + '**'} );
+					else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), queryuser.gender) + '**';
 				}
 				
 				if ( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) ) {
@@ -638,7 +645,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					
 					return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), ( querypage.ns === 2 && querypage.known !== undefined && wiki.globaluserpage ) || wiki, reaction, querypage).then( message => {
 						if ( !message ) return;
-						return global_block(lang, ( isMessage(msg) ? message : msg ), username, text, ( noEmbed ? null : embed ), wiki, spoiler, queryuser.gender);
+						return global_block(lang, ( isMessage(msg) ? message : msg ), username, text, ( noEmbed ? null : embed ), wiki, spoiler, queryuser.gender, isGlobalBlocked);
 					} );
 				}
 				else return parse_page(lang, msg, spoiler + text + spoiler, ( noEmbed ? null : embed ), ( querypage.ns === 2 && querypage.known !== undefined && wiki.globaluserpage ) || wiki, reaction, querypage);

@@ -1,3 +1,4 @@
+import { load as cheerioLoad } from 'cheerio';
 import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import logging from '../../util/logging.js';
 import { got, toMarkdown, escapeFormatting, limitLength } from '../../util/functions.js';
@@ -222,7 +223,29 @@ export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystri
 						else if ( counts?.total ) posts.push(counts.total.toLocaleString(lang.get('dateformat')));
 					}, error => {
 						console.log( '- Error while getting discussions stats: ' + error );
-					} )
+					} ),
+					( msg.inGuild() && patreonGuildsPrefix.has(msg.guildId) ? got.get( wiki.toLink('Special:Community', 'uselang=qqx'), {
+						responseType: 'text',
+						context: {
+							guildId: msg.guildId
+						}
+					} ).then( cresponse => {
+						var cbody = cresponse.body;
+						if ( cresponse.statusCode !== 200 || !cbody ) {
+							if ( cresponse.statusCode !== 404 ) console.log( '- ' + cresponse.statusCode + ': Error while getting the wiki representative.' );
+						}
+						else {
+							let $ = cheerioLoad(cbody, {baseURI: cresponse.url});
+							let managerlist = [];
+							$('.community-page-wiki-representative-module .wds-avatar').each( (i, {attribs}) =>{
+								if ( !attribs.title ) return;
+								managerlist.push('[' + escapeFormatting(attribs.title) + '](<' + wiki.toLink('User:' + attribs.title, '', '', true) + '>)');
+							} );
+							manager[1] = managerlist.join(( !noEmbed ? '\n' : ', ' ));
+						}
+					}, error => {
+						console.log( '- Error while getting the wiki representative: ' + error );
+					} ) : null )
 				]);
 			}, error => {
 				console.log( '- Error while getting the wiki details: ' + error );
