@@ -137,10 +137,15 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				member: user.id,
 				guilds: guilds.map( guild => guild.id )
 			} ).then( response => {
+				state = Date.now().toString(16) + randomBytes(16).toString('hex');
+				while ( sessionData.has(state) || sessionData.has(`${state}-${user.id}`) ) {
+					state = Date.now().toString(16) + randomBytes(16).toString('hex');
+				}
 				var userSession = {
 					state: `${state}-${user.id}`,
 					access_token,
-					user_id: user.id
+					user_id: user.id,
+					csrf_token: randomBytes(16).toString('base64')
 				};
 				sessionData.set(userSession.state, userSession);
 				/** @type {import('./util.js').Settings} */

@@ -64,7 +64,7 @@ const fieldset = {
  * Create a settings form
  * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {String} header - The form header
- * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @param {import('../i18n.js').default} dashboardLang - The user language
  * @param {Object} settings - The current settings
  * @param {String} settings.channel
  * @param {String} settings.role
@@ -74,8 +74,8 @@ const fieldset = {
  * @param {Number} settings.accountage
  * @param {Boolean} settings.rename
  * @param {String} [settings.defaultrole]
- * @param {import('./util.js').Channel[]} guildChannels - The guild channels
- * @param {import('./util.js').Role[]} guildRoles - The guild roles
+ * @param {import('../util.js').Channel[]} guildChannels - The guild channels
+ * @param {import('../util.js').Role[]} guildRoles - The guild roles
  * @param {String} wiki - The guild wiki
  */
 function createForm($, header, dashboardLang, settings, guildChannels, guildRoles, wiki) {
@@ -251,11 +251,12 @@ function createForm($, header, dashboardLang, settings, guildChannels, guildRole
  * Let a user change verifications
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('cheerio').CheerioAPI} $ - The response body
- * @param {import('./util.js').Guild} guild - The current guild
+ * @param {import('../util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
- * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @param {import('../i18n.js').default} dashboardLang - The user language
+ * @param {String} csrfToken - The csrf token for the session
  */
-function dashboard_verification(res, $, guild, args, dashboardLang) {
+function dashboard_verification(res, $, guild, args, dashboardLang, csrfToken) {
 	db.query( 'SELECT wiki, discord.role defaultrole, prefix, configid, verification.channel, verification.role, editcount, postcount, usergroup, accountage, rename FROM discord LEFT JOIN verification ON discord.guild = verification.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
@@ -317,12 +318,16 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 				channel: '', role: '', usergroup: 'user',
 				editcount: 0, postcount: 0, accountage: 0,
 				rename: false, defaultrole
-			}, guild.channels, guild.roles, wiki).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
+			}, guild.channels, guild.roles, wiki).append(
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+			).attr('action', `/guild/${guild.id}/verification/new`).appendTo('#text');
 		}
 		else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 			let row = rows.find( row => row.configid.toString() === args[4] );
 			$(`.channel#channel-${row.configid}`).addClass('selected');
-			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles, wiki).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
+			createForm($, dashboardLang.get('verification.form.entry', false, row.configid), dashboardLang, row, guild.channels, guild.roles, wiki).append(
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+			).attr('action', `/guild/${guild.id}/verification/${row.configid}`).appendTo('#text');
 		}
 		else if ( args[4] === 'notice' && rows.length ) {
 			$(`.channel#channel-notice`).addClass('selected');
@@ -374,7 +379,8 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 							$('<textarea id="wb-settings-match" name="match" spellcheck="true" maxlength="1000" cols="65">').attr('rows', ( row?.onmatch || '' ).split('\n').length + 3).attr('placeholder', dashboardLang.get('verification.form.match_placeholder')).text(row?.onmatch || '')
 						),
 						$('<input type="submit" id="wb-settings-save" name="save_settings">').val(dashboardLang.get('general.save'))
-					)
+					),
+					$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
 				).attr('action', `/guild/${guild.id}/verification/notice`).appendTo('#text');
 				if ( process.env.READONLY ) {
 					$('input, textarea').attr('readonly', '');
@@ -472,7 +478,8 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 						$('<textarea id="wb-settings-embeds" name="embeds" spellcheck="true" cols="65" rows="4">').attr('placeholder', dashboardLang.get('verification.form.embeds_placeholder')).text('[]')
 					),
 					$('<input type="submit" id="wb-settings-save" name="save_settings">').val(dashboardLang.get('verification.form.send_message'))
-				)
+				),
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
 			).attr('action', `/guild/${guild.id}/verification/button`).appendTo('#text');
 			if ( $('#wb-settings-channel').children().length <= 1 ) {
 				createNotice($, 'missingperm', dashboardLang, ['Manage Webhooks']);
@@ -508,7 +515,7 @@ function dashboard_verification(res, $, guild, args, dashboardLang) {
 /**
  * Change verifications
  * @param {Function} res - The server response
- * @param {import('./util.js').Settings} userSettings - The settings of the user
+ * @param {import('../util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
  * @param {String|Number} type - The setting to change
  * @param {Object} settings - The new settings
@@ -981,7 +988,7 @@ function update_verification(res, userSettings, guild, type, settings) {
 /**
  * Change verification notices
  * @param {Function} res - The server response
- * @param {import('./util.js').Settings} userSettings - The settings of the user
+ * @param {import('../util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
  * @param {'notice'} type - The setting to change
  * @param {Object} settings - The new settings
@@ -1122,7 +1129,7 @@ function update_notices(res, userSettings, guild, type, settings) {
 /**
  * Send message with verification button
  * @param {Function} res - The server response
- * @param {import('./util.js').Settings} userSettings - The settings of the user
+ * @param {import('../util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
  * @param {'button'} type - The setting to change
  * @param {Object} settings - The new settings

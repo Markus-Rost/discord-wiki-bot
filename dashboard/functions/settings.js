@@ -92,9 +92,9 @@ const fieldset = {
  * @param {Number} [settings.sectionlength]
  * @param {Number} [settings.sectiondesclength]
  * @param {String[][]} [settings.subprefixes]
- * @param {import('./util.js').Role[]} guildRoles - The guild roles
+ * @param {import('../util.js').Role[]} guildRoles - The guild roles
  * @param {String} [allWikis] - All wikis set for the guild
- * @param {import('./util.js').Channel[]} guildChannels - The guild channels
+ * @param {import('../util.js').Channel[]} guildChannels - The guild channels
  */
 function createForm($, header, dashboardLang, settings, guildRoles, allWikis, guildChannels = []) {
 	var readonly = ( process.env.READONLY ? true : false );
@@ -279,11 +279,12 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
  * Let a user change settings
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('cheerio').CheerioAPI} $ - The response body
- * @param {import('./util.js').Guild} guild - The current guild
+ * @param {import('../util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
- * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @param {import('../i18n.js').default} dashboardLang - The user language
+ * @param {String} csrfToken - The csrf token for the session
  */
-function dashboard_settings(res, $, guild, args, dashboardLang) {
+function dashboard_settings(res, $, guild, args, dashboardLang, csrfToken) {
 	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist, patreon, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [guild.id] ).then( ({rows}) => {
 		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
 		if ( !rows.length ) {
@@ -293,7 +294,9 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				prefix: process.env.prefix,
 				wiki: defaultSettings.wiki,
 				lang: ( guild.locale || defaultSettings.lang )
-			}, guild.roles).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			}, guild.roles).append(
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+			).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 			return;
 		}
 		let isPatreon = rows.some( row => row.patreon );
@@ -342,7 +345,9 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 					id, name, userPermissions, isCategory,
 					allowedCat: !rows.some( row => row.channel === '#' + channel.id )
 				};
-			} )).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#text');
+			} )).append(
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+			).attr('action', `/guild/${guild.id}/settings/new`).appendTo('#text');
 		}
 		else if ( channellist.some( channel => channel.id === args[4] ) ) {
 			let channel = channellist.find( channel => channel.id === args[4] );
@@ -351,11 +356,15 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 				return row.channel === ( channel.isCategory ? '#' : '' ) + channel.id;
 			} ), {
 				patreon: isPatreon
-			}), guild.roles, allWikis, [channel]).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
+			}), guild.roles, allWikis, [channel]).append(
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+			).attr('action', `/guild/${guild.id}/settings/${channel.id}`).appendTo('#text');
 		}
 		else {
 			$('.channel#settings').addClass('selected');
-			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles, allWikis).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles, allWikis).append(
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+			).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 		}
 	}, dberror => {
 		console.log( '- Dashboard: Error while getting the settings: ' + dberror );
@@ -373,7 +382,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang) {
 /**
  * Change settings
  * @param {Function} res - The server response
- * @param {import('./util.js').Settings} userSettings - The settings of the user
+ * @param {import('../util.js').Settings} userSettings - The settings of the user
  * @param {String} guild - The id of the guild
  * @param {String} type - The setting to change
  * @param {Object} settings - The new settings

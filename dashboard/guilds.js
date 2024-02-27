@@ -140,7 +140,7 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 				).attr('title', oauthSite.name);
 			} )
 		)
-		return forms.user(res, $, settings.user, dashboardLang);
+		return forms.user(res, $, settings.user, dashboardLang, userSession.csrf_token);
 	}
 	let id = args[2];
 	if ( id ) $(`.guild#${id}`).addClass('selected');
@@ -182,14 +182,14 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 						).attr('title', dashboardLang.get('general.betadesc')));
 						clone.appendTo('#channellist');
 					}
-					return betaFeature.form(res, $, guild, args, dashboardLang);
+					return betaFeature.form(res, $, guild, args, dashboardLang, userSession.csrf_token);
 				}
 			}
 		}
-		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
-		return forms.settings(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang, userSession.csrf_token);
+		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang, userSession.csrf_token);
+		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang, userSession.csrf_token);
+		return forms.settings(res, $, guild, args, dashboardLang, userSession.csrf_token);
 	}
 	else if ( settings.guilds.notMember.has(id) ) {
 		let guild = settings.guilds.notMember.get(id);
@@ -261,14 +261,14 @@ export default function dashboard_guilds(res, dashboardLang, theme, userSession,
 						).attr('title', dashboardLang.get('general.betadesc')));
 						clone.appendTo('#channellist');
 					}
-					return betaFeature.form(res, $, guild, args, dashboardLang);
+					return betaFeature.form(res, $, guild, args, dashboardLang, userSession.csrf_token);
 				}
 			}
 		}
-		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang);
-		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang);
-		return forms.settings(res, $, guild, args, dashboardLang);
+		if ( args[3] === 'settings' ) return forms.settings(res, $, guild, args, dashboardLang, userSession.csrf_token);
+		if ( args[3] === 'verification' ) return forms.verification(res, $, guild, args, dashboardLang, userSession.csrf_token);
+		if ( args[3] === 'rcscript' ) return forms.rcscript(res, $, guild, args, dashboardLang, userSession.csrf_token);
+		return forms.settings(res, $, guild, args, dashboardLang, userSession.csrf_token);
 	}
 	else {
 		$('head title').text(dashboardLang.get('selector.title') + ' – ' + $('head title').text());

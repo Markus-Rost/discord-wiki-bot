@@ -239,8 +239,9 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
  * @param {import('../util.js').Guild} guild - The current guild
  * @param {String[]} args - The url parts
  * @param {import('../i18n.js').default} dashboardLang - The user language
+ * @param {String} csrfToken - The csrf token for the session
  */
-function dashboard_rcscript(res, $, guild, args, dashboardLang) {
+function dashboard_rcscript(res, $, guild, args, dashboardLang, csrfToken) {
 	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, buttons, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
@@ -304,14 +305,18 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang) {
 				createForm($, dashboardLang.get('rcscript.form.new'), dashboardLang, {
 					wiki, lang: ( allLangs.hasOwnProperty(lang) ? lang : defaultSettings.lang ),
 					display: 1, patreon: guild.patreon
-				}, guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
+				}, guild.channels, allwikis).append(
+					$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+				).attr('action', `/guild/${guild.id}/rcscript/new`).appendTo('#text');
 			}
 			else if ( rows.some( row => row.configid.toString() === args[4] ) ) {
 				let row = rows.find( row => row.configid.toString() === args[4] );
 				$(`.channel#channel-${row.configid}`).addClass('selected');
 				createForm($, dashboardLang.get('rcscript.form.entry', false, row.configid), dashboardLang, Object.assign({
 					patreon: guild.patreon
-				}, row), guild.channels, allwikis).attr('action', `/guild/${guild.id}/rcscript/${row.configid}`).appendTo('#text');
+				}, row), guild.channels, allwikis).append(
+					$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+				).attr('action', `/guild/${guild.id}/rcscript/${row.configid}`).appendTo('#text');
 			}
 			else {
 				$('.channel#rcscript').addClass('selected');

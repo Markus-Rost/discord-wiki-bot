@@ -61,9 +61,9 @@ const server = createServer( (req, res) => {
 		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id)
 		&& ( ( args.length === 5 && postTypes.includes( args[3] ) && /^(?:default|new|notice|button|\d+)$/.test(args[4])
 		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || reqURL.pathname === '/user' ) ) {
-			let body = [];
+			let postBody = [];
 			req.on( 'data', chunk => {
-				body.push(chunk);
+				postBody.push(chunk);
 			} );
 			req.on( 'error', () => {
 				console.log( '- Dashboard: ' + error );
@@ -72,7 +72,7 @@ const server = createServer( (req, res) => {
 			return req.on( 'end', () => {
 				if ( process.env.READONLY && args.slice(3).join('/') !== 'verification/button' ) return save_response(`${reqURL.pathname}?save=failed`);
 				var settings = {};
-				Buffer.concat(body).toString().split('&').forEach( arg => {
+				Buffer.concat(postBody).toString().split('&').forEach( arg => {
 					if ( arg ) {
 						let setting = decodeURIComponent(arg.replaceAll( '+', ' ' )).split('=');
 						if ( setting[0] && setting.slice(1).join('=').trim() ) {
@@ -83,28 +83,41 @@ const server = createServer( (req, res) => {
 						}
 					}
 				} );
-				if ( isDebug ) console.log( '- Dashboard:', req.url, settings, sessionData.get(state).user_id );
-				if ( reqURL.pathname === '/user' ) {
-					let setting = Object.keys(settings);
-					if ( setting.length === 1 && setting[0].startsWith( 'oauth_' ) && setting[0].split('_').length >= 3 ) {
-						setting = setting[0].split('_');
-						return posts.user(save_response, sessionData.get(state).user_id, setting[1], setting.slice(2).join('_'));
-					}
-				}
-				else {
-					if ( reqURL.searchParams.has('beta') ) {
-						let betaName = reqURL.searchParams.get('beta');
-						if ( beta.get(args[3])?.has(betaName) ) {
-							let betaFeature = beta.get(args[3]).get(betaName);
-							let isPatreon = settingsData.get(sessionData.get(state).user_id).guilds.isMember.get(args[2]).patreon;
-							let isOwner = process.env.owner.split('|').includes(sessionData.get(state).user_id);
-							if ( betaFeature.access === 'public' || ( betaFeature.access === 'patreon' && isPatreon ) || isOwner ) {
-								return betaFeature.post(save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
-							}
+				let userSession = sessionData.get(state);
+				if ( isDebug ) console.log( '- Dashboard:', req.url, settings, userSession.user_id );
+				if ( userSession.csrf_token === settings.csrfToken ) {
+					delete settings.csrfToken;
+					if ( reqURL.pathname === '/user' ) {
+						let setting = Object.keys(settings);
+						if ( setting.length === 1 && setting[0].startsWith( 'oauth_' ) && setting[0].split('_').length >= 3 ) {
+							setting = setting[0].split('_');
+							return posts.user(save_response, userSession.user_id, setting[1], setting.slice(2).join('_'));
 						}
 					}
-					return posts[args[3]](save_response, settingsData.get(sessionData.get(state).user_id), args[2], args[4], settings);
+					else {
+						if ( reqURL.searchParams.has('beta') ) {
+							let betaName = reqURL.searchParams.get('beta');
+							if ( beta.get(args[3])?.has(betaName) ) {
+								let betaFeature = beta.get(args[3]).get(betaName);
+								let isPatreon = settingsData.get(userSession.user_id).guilds.isMember.get(args[2]).patreon;
+								let isOwner = process.env.owner.split('|').includes(userSession.user_id);
+								if ( betaFeature.access === 'public' || ( betaFeature.access === 'patreon' && isPatreon ) || isOwner ) {
+									return betaFeature.post(save_response, settingsData.get(userSession.user_id), args[2], args[4], settings);
+								}
+							}
+						}
+						return posts[args[3]](save_response, settingsData.get(userSession.user_id), args[2], args[4], settings);
+					}
 				}
+				sessionData.delete(state);
+				let body = '<img width="400" src="https://http.cat/418"><br><strong>' + STATUS_CODES[418] + '</strong>';
+				res.writeHead(418, {
+					'Set-Cookie': 'wikibot=""; HttpOnly; SameSite=Lax; Path=/; Max-Age=0',
+					'Content-Type': 'text/html',
+					'Content-Length': Buffer.byteLength(body)
+				});
+				res.write( body );
+				return res.end();
 
 				/**
 				 * @param {String} [resURL]
@@ -132,7 +145,7 @@ const server = createServer( (req, res) => {
 						return '';
 					} ) || [] ));
 					dashboardLang.fromCookie = langCookie;
-					return dashboard(res, dashboardLang, themeCookie, sessionData.get(state), new URL(resURL, process.env.dashboard), action, actionArgs);
+					return dashboard(res, dashboardLang, themeCookie, userSession, new URL(resURL, process.env.dashboard), action, actionArgs);
 				}
 			} );
 		}

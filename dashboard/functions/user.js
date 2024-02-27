@@ -4,10 +4,11 @@ import { db, enabledOAuth2, createNotice } from '../util.js';
  * Let a user change settings
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('cheerio').CheerioAPI} $ - The response body
- * @param {import('./util.js').User} user - The current user
- * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @param {import('../util.js').User} user - The current user
+ * @param {import('../i18n.js').default} dashboardLang - The user language
+ * @param {String} csrfToken - The csrf token for the session
  */
-function dashboard_user(res, $, user, dashboardLang) {
+function dashboard_user(res, $, user, dashboardLang, csrfToken) {
 	db.query( 'SELECT site, token FROM oauthusers WHERE userid = $1', [user.id] ).then( ({rows}) => {
 		$('<p>').text(dashboardLang.get('oauth.desc')).appendTo('#text .description');
 		$('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
@@ -59,7 +60,8 @@ function dashboard_user(res, $, user, dashboardLang) {
 						buttons
 					)
 				)
-			} )
+			} ),
+			$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
 		).attr('action', '/user').appendTo('#text');
 	}, dberror => {
 		console.log( '- Dashboard: Error while getting the OAuth2 info: ' + dberror );

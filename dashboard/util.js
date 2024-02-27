@@ -135,6 +135,7 @@ function canRcGcDwButtons(wiki) {
  * @typedef UserSession
  * @property {String} state
  * @property {String} access_token
+ * @property {String} csrf_token
  * @property {String} user_id
  * @property {String?} returnLocation
  */
