@@ -71,6 +71,18 @@ function checkWiki(wiki) {
 				wiki = new Wiki(api.split('api.php?')[0], wiki);
 				return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' );
 			}
+			return got.get( wiki, {
+				responseType: 'text'
+			} ).then( tresponse => {
+				if ( typeof tresponse.body === 'string' ) {
+					let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+					if ( api ) {
+						wiki = new Wiki(api.split('api.php?')[0], wiki);
+						return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=recentchanges&rcshow=!bot&rctype=edit|new|log|categorize&rcprop=ids|timestamp&rclimit=100&format=json' );
+					}
+				}
+				return response;
+			} );
 		}
 		return response;
 	} ).then( response => {

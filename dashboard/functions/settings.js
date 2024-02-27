@@ -569,6 +569,25 @@ function update_settings(res, userSettings, guild, type, settings) {
 								}
 							} ).then( hresponse => [testWiki, hresponse] );
 						}
+						return got.get( testWiki, {
+							responseType: 'text',
+							context: {
+								guildId: guild
+							}
+						} ).then( tresponse => {
+							if ( typeof tresponse.body === 'string' ) {
+								let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+								if ( api ) {
+									Object.assign(testWiki, new Wiki(api.split('api.php?')[0], testWiki));
+									return got.get( testWiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+										context: {
+											guildId: guild
+										}
+									} ).then( hresponse => [testWiki, hresponse] );
+								}
+							}
+							return [testWiki, fresponse];
+						} );
 					}
 				}
 				return [testWiki, fresponse];

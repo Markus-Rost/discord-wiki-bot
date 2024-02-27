@@ -433,6 +433,25 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								}
 							} );
 						}
+						return got.get( wiki, {
+							responseType: 'text',
+							context: {
+								guildId: guild
+							}
+						} ).then( tresponse => {
+							if ( typeof tresponse.body === 'string' ) {
+								let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+								if ( api ) {
+									wiki = new Wiki(api.split('api.php?')[0], wiki);
+									return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw|recentchanges&amenableparser=true&siprop=general&titles=Special:RecentChanges&format=json', {
+										context: {
+											guildId: guild
+										}
+									} );
+								}
+							}
+							return fresponse;
+						} );
 					}
 				}
 				return fresponse;
@@ -680,6 +699,25 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									}
 								} );
 							}
+							return got.get( wiki, {
+								responseType: 'text',
+								context: {
+									guildId: guild
+								}
+							} ).then( tresponse => {
+								if ( typeof tresponse.body === 'string' ) {
+									let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+									if ( api ) {
+										wiki = new Wiki(api.split('api.php?')[0], wiki);
+										return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
+											context: {
+												guildId: guild
+											}
+										} );
+									}
+								}
+								return fresponse;
+							} );
 						}
 					}
 					return fresponse;

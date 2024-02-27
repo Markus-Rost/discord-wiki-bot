@@ -327,6 +327,25 @@ function dashboard_api(res, input, guild = null) {
 						}
 					} );
 				}
+				return got.get( wiki, {
+					responseType: 'text',
+					context: {
+						guildId: guild
+					}
+				} ).then( tresponse => {
+					if ( typeof tresponse.body === 'string' ) {
+						let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+						if ( api ) {
+							wiki = new Wiki(api.split('api.php?')[0], wiki);
+							return got.get( wiki + 'api.php?action=query&meta=allmessages|siteinfo&ammessages=custom-RcGcDw&amenableparser=true&siprop=general&format=json', {
+								context: {
+									guildId: guild
+								}
+							} );
+						}
+					}
+					return response;
+				} );
 			}
 		}
 		return response;

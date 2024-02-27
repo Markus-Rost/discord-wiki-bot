@@ -115,6 +115,25 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 									}
 								} );
 							}
+							return got.get( wikinew, {
+								responseType: 'text',
+								context: {
+									guildId: msg.guildId
+								}
+							} ).then( tresponse => {
+								if ( typeof tresponse.body === 'string' ) {
+									let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+									if ( api ) {
+										wikinew = new Wiki(api.split('api.php?')[0], wikinew);
+										return got.get( wikinew + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+											context: {
+												guildId: msg.guildId
+											}
+										} );
+									}
+								}
+								return response;
+							} );
 						}
 					}
 					return response;
