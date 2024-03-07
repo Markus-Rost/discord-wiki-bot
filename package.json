@@ -22,7 +22,7 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "full-icu": "^1.5.0",
-    "got": "^14.2.0",
+    "got": "^14.2.1",
     "got-ssrf": "^3.0.0",
     "htmlparser2": "^9.1.0",
     "mediawiki-projects-list": "^4.6.11",
