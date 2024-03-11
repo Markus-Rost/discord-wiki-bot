@@ -9,23 +9,11 @@ export const phabricatorSites = new Map([
 		href: 'https://phabricator.wikimedia.org/',
 		apikey: 'phabricator_wikimedia'
 	}],
-	['phabricator.miraheze.org', {
+	['issue-tracker.miraheze.org', {
 		id: 'miraheze',
-		name: 'Miraheze Phabricator',
-		href: 'https://phabricator.miraheze.org/',
+		name: 'Miraheze Issue Tracker',
+		href: 'https://issue-tracker.miraheze.org/',
 		apikey: 'phabricator_miraheze'
-	}],
-	['issue-tracker.wikitide.org', {
-		id: 'wikitide',
-		name: 'WikiTide Phorge',
-		href: 'https://issue-tracker.wikitide.org/',
-		apikey: 'phabricator_wikitide'
-	}],
-	['support.wikiforge.net', {
-		id: 'wikiforge',
-		name: 'WikiForge Support',
-		href: 'https://support.wikiforge.net/',
-		apikey: 'phabricator_wikiforge'
 	}],
 	['phabricator.telepedia.net', {
 		id: 'telepedia',

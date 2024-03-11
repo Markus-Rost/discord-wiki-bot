@@ -109,6 +109,7 @@ const server = createServer( (req, res) => {
 						return posts[args[3]](save_response, settingsData.get(userSession.user_id), args[2], args[4], settings);
 					}
 				}
+				console.log( '- Dashboard: Logged out ' + userSession.user_id + ' due to invalid CSRF token.' );
 				sessionData.delete(state);
 				let body = '<img width="400" src="https://http.cat/418"><br><strong>' + STATUS_CODES[418] + '</strong>';
 				res.writeHead(418, {
