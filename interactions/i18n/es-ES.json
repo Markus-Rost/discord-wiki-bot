@@ -56,7 +56,9 @@
 		"description": "Publicar un mensaje con enlaces wiki inline.",
 		"name": "inline",
 		"options[0].description": "Texto que incluye enlaces de wikitexto.",
-		"options[0].name": "texto"
+		"options[0].name": "texto",
+		"options[1].description": "El wiki en el que buscar.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Publica un enlace a un wiki diferente.",

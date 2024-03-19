@@ -508,7 +508,7 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 			logging(wiki, msg.guildId, 'general');
 			var pagelink = wiki.toLink(querypage.title, querystring, ( fragment || ( body.query.redirects && body.query.redirects[0].tofragment ) || '' ));
 			var text = '';
-			var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
+			var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(body.query.converted?.[0]?.from || querypage.title) ).setURL( pagelink );
 			if ( querypage.pageprops?.displaytitle ) {
 				var displaytitle = htmlToDiscord( querypage.pageprops.displaytitle );
 				if ( displaytitle.length > 250 ) displaytitle = displaytitle.substring(0, 250) + '\u2026';

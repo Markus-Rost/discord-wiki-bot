@@ -26,7 +26,9 @@
 		"description": "Skicka ett meddelande med wikilänkar på samma rad.",
 		"name": "inline",
 		"options[0].description": "Text med länkar till wikitext.",
-		"options[0].name": "text"
+		"options[0].name": "text",
+		"options[1].description": "Wikin att söka i.",
+		"options[1].name": "wiki"
 	},
 	"verify": {
 		"description": "Verifiera ditt Discord-konto med ditt wiki-konto.",

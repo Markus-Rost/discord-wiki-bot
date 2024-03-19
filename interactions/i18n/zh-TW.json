@@ -56,7 +56,9 @@
 		"description": "傳送含有行內wiki連結的訊息。",
 		"name": "inline",
 		"options[0].description": "含有wikitext連結的文字。",
-		"options[0].name": "文字"
+		"options[0].name": "文字",
+		"options[1].description": "要搜尋的wiki。",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "傳送一條指向不同wiki的連結。",

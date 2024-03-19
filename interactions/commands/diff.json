@@ -1,6 +1,10 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0, 1],
+	"contexts": [0, 1, 2],
+	"default_member_permissions": "1024",
 	"name": "diff",
 	"name_localizations": {
 		"en-GB": "diff",
@@ -37,9 +41,6 @@
 		"fr": "Afficher les différences d'édition d'un wiki.",
 		"vi": "Hiển thị khác biệt giữa hai lần sửa đổi wiki."
 	},
-	"default_permission": true,
-	"default_member_permissions": "68608",
-	"dm_permission": true,
 	"options": [
 		{
 			"type": 1,

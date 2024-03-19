@@ -56,7 +56,9 @@
 		"description": "Sende eine Nachricht mit Inline-Links zum Wiki.",
 		"name": "inline",
 		"options[0].description": "Text mit Wikitext-Links.",
-		"options[0].name": "text"
+		"options[0].name": "text",
+		"options[1].description": "Das Wiki zum Durchsuchen.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Sende einen Link zu einem anderen Wiki.",

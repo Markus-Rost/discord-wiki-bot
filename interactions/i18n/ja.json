@@ -56,7 +56,9 @@
 		"description": "埋め込み形式のWikiリンクを含むメッセージを投稿する。",
 		"name": "inline",
 		"options[0].description": "wikitextのリンクを含むテキスト。",
-		"options[0].name": "text"
+		"options[0].name": "text",
+		"options[1].description": "検索対象となるWiki。",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "別のWikiにリンクを貼る。",

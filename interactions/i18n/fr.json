@@ -56,7 +56,9 @@
 		"description": "Publiez un message avec des liens wiki intégrés.",
 		"name": "inline",
 		"options[0].description": "Texte incluant des liens wikitexte.",
-		"options[0].name": "text"
+		"options[0].name": "text",
+		"options[1].description": "Le wiki dans lequel effectuer la recherche.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Postez un lien vers un autre wiki.",

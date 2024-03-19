@@ -56,7 +56,9 @@
 		"description": "Posting pesan dengan tautan wiki inline.",
 		"name": "inline",
 		"options[0].description": "Teks termasuk tautan wikitext.",
-		"options[0].name": "teks"
+		"options[0].name": "teks",
+		"options[1].description": "Wiki untuk mencari.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Posting tautan ke wiki yang berbeda.",

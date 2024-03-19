@@ -56,7 +56,9 @@
 		"description": "Δημοσίευση ενός μηνύματος με συνδέσμους wiki εντός κειμένου.",
 		"name": "inline",
 		"options[0].description": "Κείμενο που περιέχει συνδέσμους wikitext.",
-		"options[0].name": "κείμενο"
+		"options[0].name": "κείμενο",
+		"options[1].description": "To wiki προς αναζήτηση.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Δημοσίευση ενός συνδέσμου σε διαφορετικό wiki.",

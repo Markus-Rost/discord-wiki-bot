@@ -1,6 +1,10 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0, 1],
+	"contexts": [0, 1, 2],
+	"default_member_permissions": "1024",
 	"name": "overview",
 	"name_localizations": {
 		"de": "übersicht",
@@ -33,9 +37,6 @@
 		"en-US": "Post a wiki overview.",
 		"fr": "Afficher un aperçu du wiki."
 	},
-	"default_permission": true,
-	"default_member_permissions": "68608",
-	"dm_permission": true,
 	"options": [
 		{
 			"type": 3,

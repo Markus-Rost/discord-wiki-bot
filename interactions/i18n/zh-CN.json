@@ -56,7 +56,9 @@
 		"description": "发送一条带有行内wiki链接的消息。",
 		"name": "inline",
 		"options[0].description": "包含wikitext链接的文本。",
-		"options[0].name": "文本"
+		"options[0].name": "文本",
+		"options[1].description": "要搜索的wiki。",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "发送一条指向不同wiki的链接。",

@@ -1,6 +1,10 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0, 1],
+	"contexts": [0, 1],
+	"default_member_permissions": "68608",
 	"name": "patreon",
 	"name_localizations": {
 		"es-ES": "patreon",
@@ -31,9 +35,6 @@
 		"en-US": "Check or change your servers with patreon features enabled.",
 		"fr": "Vérifiez ou modifiez vos serveurs avec les fonctionnalités patreon activées."
 	},
-	"default_permission": false,
-	"default_member_permissions": "68608",
-	"dm_permission": false,
 	"options": [
 		{
 			"type": 1,

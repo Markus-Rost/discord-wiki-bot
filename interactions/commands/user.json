@@ -1,6 +1,10 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0, 1],
+	"contexts": [0, 1, 2],
+	"default_member_permissions": "1024",
 	"name": "user",
 	"name_localizations": {
 		"en-GB": "user",
@@ -31,9 +35,6 @@
 		"fr": "Publier des informations sur un utilisateur de wiki.",
 		"pt-BR": "Postar informações sobre um usuário da wiki."
 	},
-	"default_permission": true,
-	"default_member_permissions": "68608",
-	"dm_permission": true,
 	"options": [
 		{
 			"type": 3,

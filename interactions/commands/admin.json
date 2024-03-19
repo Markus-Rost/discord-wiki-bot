@@ -1,13 +1,14 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0],
+	"contexts": [0, 1],
+	"default_member_permissions": "0",
 	"name": "admin",
 	"name_localizations": {},
 	"description": "Post a message with inline wiki links.",
 	"description_localizations": {},
-	"default_permission": false,
-	"default_member_permissions": "0",
-	"dm_permission": false,
 	"options": [
 		{
 			"type": 2,

@@ -1,6 +1,10 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0, 1],
+	"contexts": [0, 1, 2],
+	"default_member_permissions": "1024",
 	"name": "inline",
 	"name_localizations": {
 		"en-GB": "inline",
@@ -39,9 +43,6 @@
 		"el": "Δημοσίευση ενός μηνύματος με συνδέσμους wiki εντός κειμένου.",
 		"fr": "Publiez un message avec des liens wiki intégrés."
 	},
-	"default_permission": true,
-	"default_member_permissions": "68608",
-	"dm_permission": true,
 	"options": [
 		{
 			"type": 3,
@@ -84,6 +85,43 @@
 				"fr": "Texte incluant des liens wikitexte."
 			},
 			"required": true
+		},
+		{
+			"type": 3,
+			"name": "wiki",
+			"name_localizations": {
+				"de": "wiki",
+				"es-ES": "wiki",
+				"zh-CN": "wiki",
+				"zh-TW": "wiki",
+				"hi": "wiki",
+				"it": "wiki",
+				"tr": "wiki",
+				"el": "wiki",
+				"pt-BR": "wiki",
+				"en-GB": "wiki",
+				"en-US": "wiki",
+				"ja": "wiki",
+				"fr": "wiki"
+			},
+			"description": "The wiki to search in.",
+			"description_localizations": {
+				"de": "Das Wiki zum Durchsuchen.",
+				"es-ES": "El wiki en el que buscar.",
+				"zh-CN": "要搜索的wiki。",
+				"zh-TW": "要搜尋的wiki。",
+				"hi": "विकि जिसमें खोजना है।",
+				"it": "La wiki in cui cercare.",
+				"tr": "Aratma yapılacak viki.",
+				"el": "Το wiki προς αναζήτηση.",
+				"pt-BR": "A wiki a ser pesquisada.",
+				"en-GB": "The wiki to search in.",
+				"en-US": "The wiki to search in.",
+				"ja": "検索対象となるWiki。",
+				"fr": "Le wiki dans lequel effectuer la recherche."
+			},
+			"required": false,
+			"autocomplete": true
 		}
 	]
 }

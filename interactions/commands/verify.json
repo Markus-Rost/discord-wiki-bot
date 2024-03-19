@@ -1,6 +1,10 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0],
+	"contexts": [0],
+	"default_member_permissions": "3072",
 	"name": "verify",
 	"name_localizations": {
 		"en-GB": "verify",
@@ -39,9 +43,6 @@
 		"el": "Επιβεβαίωση του λογαριασμού Discord με τον λογαριασμό wiki.",
 		"fr": "Vérifiez votre compte Discord avec votre compte wiki."
 	},
-	"default_permission": false,
-	"default_member_permissions": "68608",
-	"dm_permission": false,
 	"options": [
 		{
 			"type": 3,

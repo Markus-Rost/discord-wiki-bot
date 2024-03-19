@@ -2,6 +2,7 @@ import { PermissionFlagsBits } from 'discord.js';
 import logging from '../util/logging.js';
 import Wiki from '../util/wiki.js';
 import { got, limitLength, partialURIdecode, sendMessage } from '../util/functions.js';
+import interwiki_interaction from './interwiki.js';
 
 /**
  * Post a message with inline wiki links.
@@ -45,7 +46,7 @@ function slash_inline(interaction, lang, wiki) {
 		} ),
 		allowedMentions
 	};
-	return interaction.deferReply().then( () => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => interaction.deferReply().then( () => {
 		var textReplacement = [];
 		var magiclinks = [];
 		var replacedText = text.replace( /(?<!\\)(?:<a?(:\w+:)\d+>|<#(\d+)>|<@!?(\d+)>|<@&(\d+)>|```.+?```|``.+?``|`.+?`)/gs, (replacement, emoji, textchannel, user, role) => {
@@ -110,7 +111,7 @@ function slash_inline(interaction, lang, wiki) {
 		if ( !templates.length && !links.length && !magiclinks.length ) {
 			return sendMessage(interaction, message);
 		}
-		return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( magiclinks.length ? '|allmessages&ammessages=pubmedurl|rfcurl&amenableparser=true' : '' ) + '&siprop=general&iwurl=true&titles=' + encodeURIComponent( [
+		return got.get( newWiki + 'api.php?action=query&meta=siteinfo' + ( magiclinks.length ? '|allmessages&ammessages=pubmedurl|rfcurl&amenableparser=true' : '' ) + '&siprop=general&iwurl=true&titles=' + encodeURIComponent( [
 			...templates.map( link => link.title + '|' + link.template ),
 			...links.map( link => link.title ),
 			...( magiclinks.length ? ['Special:BookSources'] : [] )
@@ -121,7 +122,7 @@ function slash_inline(interaction, lang, wiki) {
 		} ).then( response => {
 			var body = response.body;
 			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
-				if ( wiki.noWiki(response.url, response.statusCode) ) {
+				if ( newWiki.noWiki(response.url, response.statusCode) ) {
 					console.log( '- This wiki doesn\'t exist!' );
 				}
 				else {
@@ -129,8 +130,8 @@ function slash_inline(interaction, lang, wiki) {
 				}
 				return sendMessage(interaction, message);
 			}
-			logging(wiki, interaction.guildId, 'slash', 'inline');
-			wiki.updateWiki(body.query.general);
+			logging(newWiki, interaction.guildId, 'slash', 'inline');
+			newWiki.updateWiki(body.query.general);
 			if ( body.query.normalized ) {
 				body.query.normalized.forEach( title => {
 					templates.filter( link => link.title === title.from ).forEach( link => link.title = title.to );
@@ -141,12 +142,12 @@ function slash_inline(interaction, lang, wiki) {
 			if ( body.query.interwiki ) {
 				body.query.interwiki.forEach( interwiki => {
 					templates.filter( link => link.title === interwiki.title ).forEach( link => {
-						if ( interaction.wikiWhitelist.length ) link.url = wiki.toLink('Special:GoToInterwiki/' + interwiki.title, '', '', true);
+						if ( interaction.wikiWhitelist.length ) link.url = newWiki.toLink('Special:GoToInterwiki/' + interwiki.title, '', '', true);
 						else link.url = decodeURI(interwiki.url)
 					} );
 					links.filter( link => link.title === interwiki.title ).forEach( link => {
-						if ( interaction.wikiWhitelist.length ) link.url = wiki.toLink('Special:GoToInterwiki/' + interwiki.title, '', link.section, true);
-						else link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, wiki.spaceReplacement) : decodeURI(interwiki.url) );
+						if ( interaction.wikiWhitelist.length ) link.url = newWiki.toLink('Special:GoToInterwiki/' + interwiki.title, '', link.section, true);
+						else link.url = ( link.section ? decodeURI(interwiki.url.split('#')[0]) + Wiki.toSection(link.section, newWiki.spaceReplacement) : decodeURI(interwiki.url) );
 					} );
 				} );
 			}
@@ -182,17 +183,17 @@ function slash_inline(interaction, lang, wiki) {
 				if ( magiclinks.length ) magiclinks.forEach( link => {
 					try {
 						if ( link.type === 'PMID' && body.query.allmessages[0]?.['*']?.includes( '$1' ) ) {
-							link.url = new URL(body.query.allmessages[0]['*'].replaceAll( '$1', link.id ), wiki).href;
+							link.url = new URL(body.query.allmessages[0]['*'].replaceAll( '$1', link.id ), newWiki).href;
 						}
 						if ( link.type === 'RFC' && body.query.allmessages[1]?.['*']?.includes( '$1' ) ) {
-							link.url = new URL(body.query.allmessages[1]['*'].replaceAll( '$1', link.id ), wiki).href;
+							link.url = new URL(body.query.allmessages[1]['*'].replaceAll( '$1', link.id ), newWiki).href;
 						}
 					}
 					catch {}
 					if ( link.type === 'ISBN' ) {
 						let title = 'Special:BookSources';
 						title = ( body.query.normalized?.find( title => title.from === title )?.to || title );
-						link.url = wiki.toLink(title + '/' + link.isbn, '', '', true);
+						link.url = newWiki.toLink(title + '/' + link.isbn, '', '', true);
 					}
 					if ( link.url ) {
 						console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + link.type + ' ' + link.id );
@@ -220,7 +221,7 @@ function slash_inline(interaction, lang, wiki) {
 									return '';
 								} );
 							}
-							return linkprefix + '[' + title + '](<' + ( link.url || wiki.toLink(link.title || link.template, '', '', true) ) + '>)' + linktrail;
+							return linkprefix + '[' + title + '](<' + ( link.url || newWiki.toLink(link.title || link.template, '', '', true) ) + '>)' + linktrail;
 						} );
 					}
 					if ( line.includes( '[[' ) && line.includes( ']]' ) ) {
@@ -241,7 +242,7 @@ function slash_inline(interaction, lang, wiki) {
 									display = display.split(':').slice(1).join(':');
 								}
 							}
-							return '[' + ( linkprefix + display + linktrail ).replace( /\x1F<replacement\x1F\d+\x1F((?:PMID|RFC|ISBN) .+?)>\x1F/g, '$1' ).replace( /[\[\]\(\)]/g, '\\$&' ) + '](<' + ( link.url || wiki.toLink(link.title, '', link.section, true) ) + '>)';
+							return '[' + ( linkprefix + display + linktrail ).replace( /\x1F<replacement\x1F\d+\x1F((?:PMID|RFC|ISBN) .+?)>\x1F/g, '$1' ).replace( /[\[\]\(\)]/g, '\\$&' ) + '](<' + ( link.url || newWiki.toLink(link.title, '', link.section, true) ) + '>)';
 						} );
 					}
 					return line;
@@ -255,7 +256,7 @@ function slash_inline(interaction, lang, wiki) {
 			}
 			else return sendMessage(interaction, message);
 		}, error => {
-			if ( wiki.noWiki(error.message) ) {
+			if ( newWiki.noWiki(error.message) ) {
 				console.log( '- This wiki doesn\'t exist!' );
 			}
 			else {
@@ -263,11 +264,17 @@ function slash_inline(interaction, lang, wiki) {
 			}
 			return sendMessage(interaction, message);
 		} );
-	}, log_error );
+	}, log_error ), () => {
+		return interaction.reply( {
+			content: lang.uselang(interaction.locale).get('interaction.interwiki'),
+			ephemeral: true
+		} ).catch(log_error);
+	} );
 }
 
 export default {
 	name: 'inline',
 	slash: slash_inline,
+	autocomplete: interwiki_interaction.autocomplete,
 	allowDelete: true
 };

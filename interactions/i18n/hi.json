@@ -56,7 +56,9 @@
 		"description": "इनलाइन विकि कड़ियों के साथ एक संदेश पोस्ट करें।",
 		"name": "inline",
 		"options[0].description": "विकिटेक्स्ट कड़ियों वाला टेक्स्ट।",
-		"options[0].name": "text"
+		"options[0].name": "text",
+		"options[1].description": "विकि जिसमें खोजना है।",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "किसी दूसरे विकि की कड़ी पोस्ट करें।",

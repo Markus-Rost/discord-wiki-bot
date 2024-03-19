@@ -1,6 +1,10 @@
 {
 	"id": "",
 	"application_id": "",
+	"type": 1,
+	"integration_types": [0, 1],
+	"contexts": [0, 1, 2],
+	"default_member_permissions": "1024",
 	"name": "interwiki",
 	"name_localizations": {
 		"de": "interwiki",
@@ -33,9 +37,6 @@
 		"en-US": "Post a link to a different wiki.",
 		"fr": "Postez un lien vers un autre wiki."
 	},
-	"default_permission": true,
-	"default_member_permissions": "68608",
-	"dm_permission": true,
 	"options": [
 		{
 			"type": 3,

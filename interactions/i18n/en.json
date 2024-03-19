@@ -56,7 +56,9 @@
 		"description": "Post a message with inline wiki links.",
 		"name": "inline",
 		"options[0].description": "Text including wikitext links.",
-		"options[0].name": "text"
+		"options[0].name": "text",
+		"options[1].description": "The wiki to search in.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Post a link to a different wiki.",

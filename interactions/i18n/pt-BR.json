@@ -56,7 +56,9 @@
 		"description": "Poste uma mensagem com links da wiki embutidos na linha.",
 		"name": "inline",
 		"options[0].description": "Texto incluindo links no estilo wikitexto.",
-		"options[0].name": "texto"
+		"options[0].name": "texto",
+		"options[1].description": "A wiki para pesquisar.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Postar um link a uma wiki diferente.",

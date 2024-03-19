@@ -35,7 +35,9 @@
 		"description": "Satır içi viki bağlantıları ile mesaj paylaş.",
 		"name": "inline",
 		"options[0].description": "Wikitext bağlantılarını içeren metin.",
-		"options[0].name": "text"
+		"options[0].name": "text",
+		"options[1].description": "Aratma yapılacak viki.",
+		"options[1].name": "wiki"
 	},
 	"interwiki": {
 		"description": "Farklı bir vikiye bağlantı ver.",
