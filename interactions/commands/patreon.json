@@ -2,8 +2,14 @@
 	"id": "",
 	"application_id": "",
 	"type": 1,
-	"integration_types": [0, 1],
-	"contexts": [0, 1],
+	"integration_types": [
+		0,
+		1
+	],
+	"contexts": [
+		0,
+		1
+	],
 	"default_member_permissions": "68608",
 	"name": "patreon",
 	"name_localizations": {

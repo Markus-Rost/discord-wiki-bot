@@ -2,8 +2,12 @@
 	"id": "",
 	"application_id": "",
 	"type": 1,
-	"integration_types": [0],
-	"contexts": [0],
+	"integration_types": [
+		0
+	],
+	"contexts": [
+		0
+	],
 	"default_member_permissions": "3072",
 	"name": "verify",
 	"name_localizations": {

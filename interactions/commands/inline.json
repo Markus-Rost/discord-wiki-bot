@@ -2,8 +2,15 @@
 	"id": "",
 	"application_id": "",
 	"type": 1,
-	"integration_types": [0, 1],
-	"contexts": [0, 1, 2],
+	"integration_types": [
+		0,
+		1
+	],
+	"contexts": [
+		0,
+		1,
+		2
+	],
 	"default_member_permissions": "1024",
 	"name": "inline",
 	"name_localizations": {
@@ -102,7 +109,8 @@
 				"en-GB": "wiki",
 				"en-US": "wiki",
 				"ja": "wiki",
-				"fr": "wiki"
+				"fr": "wiki",
+				"sv-SE": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -113,12 +121,13 @@
 				"hi": "विकि जिसमें खोजना है।",
 				"it": "La wiki in cui cercare.",
 				"tr": "Aratma yapılacak viki.",
-				"el": "Το wiki προς αναζήτηση.",
-				"pt-BR": "A wiki a ser pesquisada.",
+				"el": "To wiki προς αναζήτηση.",
+				"pt-BR": "A wiki para pesquisar.",
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
 				"ja": "検索対象となるWiki。",
-				"fr": "Le wiki dans lequel effectuer la recherche."
+				"fr": "Le wiki dans lequel effectuer la recherche.",
+				"sv-SE": "Wikin att söka i."
 			},
 			"required": false,
 			"autocomplete": true
