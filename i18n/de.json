@@ -722,6 +722,7 @@
 			"indef_noreason": "Gesperrt am $1 auf unbeschränkte Dauer von $4.",
 			"indef_text": "Gesperrt am $1 auf unbeschränkte Dauer von $4 mit der Begründung „$5“.",
 			"noreason": "Gesperrt am $1 für $2 bis $3 von $4.",
+			"partial": "$1 ist derzeit teilweise gesperrt!",
 			"text": "Gesperrt am $1 für $2 bis $3 von $4 mit der Begründung „$5“."
 		},
 		"gblock": {
