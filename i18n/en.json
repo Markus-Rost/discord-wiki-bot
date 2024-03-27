@@ -722,6 +722,7 @@
 			"indef_noreason": "Blocked indefinitely on $1 by $4.",
 			"indef_text": "Blocked indefinitely on $1 by $4 with reason \"$5\".",
 			"noreason": "Blocked on $1 for $2 until $3 by $4.",
+			"partial": "$1 is currently partially blocked!",
 			"text": "Blocked on $1 for $2 until $3 by $4 with reason \"$5\"."
 		},
 		"gblock": {
