@@ -656,6 +656,7 @@
 		"roleinvalid": "The specified role does not exist!",
 		"save_failed": "Sadly the settings couldn't be saved, please try again later.",
 		"user missing": "No settings for $3 are set up yet. Use $1 and $2 to change the settings.",
+		"user wikichanged": "You changed the default wiki for $1 to:",
 		"user wikimissing": "No default wiki is set for $1 yet!",
 		"whitelist_added": "A list of allowed wikis has been added.",
 		"whitelist_modified": "The list of allowed wikis has been modified.",
