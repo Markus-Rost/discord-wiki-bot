@@ -154,7 +154,8 @@
 		"missingperm": "Brakuje mi uprawnień:",
 		"patreon": "To funkcja tylko dla patronów!\nMożesz wesprzeć moją pracę na Patreonie, aby uzyskać dostęp do tej funkcji:",
 		"prefix": "Prefiksem komend dla tego serwera jest `$1`. Możesz zmienić prefiks, używając `$1settings prefix`. Lista wszystkich komend jest dostępna przez użycie `$1pomoc`.",
-		"readonly": "**Baza danych jest obecnie w trybie tylko do odczytu, zmiana ustawień obecnie nie jest możliwa!**"
+		"readonly": "**Baza danych jest obecnie w trybie tylko do odczytu, zmiana ustawień obecnie nie jest możliwa!**",
+		"whitelist": "Użyta wiki nie jest dozwolona na tym serwerze."
 	},
 	"help": {
 		"admin": "Te komendy mogą być wykonane jedynie przez administrację:",
@@ -381,8 +382,12 @@
 		"pause": "**Moja praca na tym serwerze została wstrzymana!**\nTylko następujące komendy mogą być używane:"
 	},
 	"interaction": {
+		"error": "Napotkano niespodziewany błąd podczas wykonywania komendy!",
 		"inline": "Wyślij wiadomość z linkami [[wikitekstu]] aby użyć tej komendy.",
+		"interwiki": "Podaj znaną wiki do przeszukania.",
+		"notitle": "Użyta nazwa strony nie istnieje!",
 		"nowiki": "Używana wiki nie istnieje!",
+		"random": "(wszystkie przestrzenie nazw z treścią)",
 		"verify": "Podaj swoją nazwę użytkownika na wiki aby użyć komendy do zweryfikowania swojego konta na Discordzie kontem na wiki oraz otrzymać role odpowiadające Twojemu koncie na wiki."
 	},
 	"invite": {
