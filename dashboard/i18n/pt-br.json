@@ -65,6 +65,7 @@
 	},
 	"notice": {
 		"beta": {
+			"note": "Por favor, relate quaisquer problemas no [servidor de suporte]($1).",
 			"text": "Este recurso é experimental! Não é garantido que funcione corretamente e pode ser removido no futuro.",
 			"title": "Recurso beta experimental"
 		},
