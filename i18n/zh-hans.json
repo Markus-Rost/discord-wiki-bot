@@ -456,7 +456,7 @@
 		"inaccurate": "统计信息可能不准确",
 		"lang": "语言：",
 		"license": "许可协议：",
-		"manager": "Wiki 经理 / 主管：",
+		"manager": "Wiki 代表：",
 		"misermode": "大访问量模式（Miser mode）：",
 		"no": "否",
 		"none": "*无*",
@@ -722,6 +722,7 @@
 			"indef_noreason": "于 $1 由 $4 永久封禁。",
 			"indef_text": "于 $1 被 $4 因“$5”永久封禁。",
 			"noreason": "于 $1 被 $4 封禁 $2 至 $3。",
+			"partial": "$1目前正在被部分封禁！",
 			"text": "因“$5”于 $1 被 $4 封禁 $2 至 $3。"
 		},
 		"gblock": {
@@ -745,6 +746,7 @@
 			"loading": "正在加载全域数据…",
 			"postcount": "讨论发布数：",
 			"registration": "注册时间：",
+			"unknown": "*未知*",
 			"wikisedited": "编辑过的 wiki："
 		}
 	},
