@@ -40,7 +40,60 @@
 		"invalid": {
 			"note_http": "Website bạn cung cấp không có chứng chỉ TLS/SSL hợp lệ! Vì lý do bảo mật, chỉ các wiki sử dụng giao thức HTTPS được hỗ trợ.",
 			"note_private": "Wiki bạn cung cấp là một trang riêng tư!",
-			"note_timeout": "Trang bạn cung cấp mất quá nhiều thời gian để phản hồi!"
+			"note_timeout": "Trang bạn cung cấp mất quá nhiều thời gian để phản hồi!",
+			"title": "Wiki không hợp lệ!"
+		},
+		"outdated": {
+			"text": "Webhook Thay đổi gần đây yêu cầu ít nhất MediaWiki 1.30!",
+			"title": "Phiên bản MediaWiki đã lỗi thời!"
+		},
+		"prefix": {
+			"backslash": "Tiền tố không thể bao gồm dấu gạch chéo ngược!",
+			"code": "Tiền tố không thể bao gồm mã markdown!",
+			"space": "Tiền tố không thể bao gồm dấu cách!"
+		},
+		"sysmessage": {
+			"text": "Nội dung trang $1 cần khớp với ID máy chủ $2.",
+			"title": "Nội dung thông điệp hệ thống không khớp!"
+		},
+		"valid": {
+			"MediaWiki": "Cảnh báo: Cần ít nhất phiên bản $1 để có đầy đủ chức năng.",
+			"title": "Wiki hợp lệ!"
+		}
+	},
+	"notice": {
+		"beta": {
+			"note": "Vui lòng báo cáo mọi sự cố trên [máy chủ hỗ trợ]($1).",
+			"text": "Đây là tính năng thử nghiệm! Nó không được đảm bảo hoạt động chính xác và có thể bị hủy bỏ trong tương lai.",
+			"title": "Tính năng thử nghiệm Beta"
+		},
+		"error": {
+			"text": "Đã xảy ra lỗi không xác định, vui lòng thử lại.",
+			"title": "Lỗi không rõ!"
+		},
+		"invalidusergroup": {
+			"text": "Tên nhóm người dùng quá dài hoặc bạn đã cung cấp quá nhiều.",
+			"title": "Nhóm người dùng không hợp lệ!"
+		},
+		"loginfail": {
+			"text": "Đã xảy ra lỗi khi bạn đăng nhập, vui lòng thử lại.",
+			"title": "Đăng nhập thất bại!"
+		},
+		"logout": {
+			"text": "Bạn đã đăng xuất thành công. Để thay đổi bất kỳ cài đặt nào bạn cần phải đăng nhập lại.",
+			"title": "Đăng xuất thành công!"
+		},
+		"missingperm": {
+			"text": "Bạn hoặc Wiki-Bot đang thiếu quyền $1 cho chức năng này.",
+			"title": "Thiếu quyền hạn!"
+		},
+		"mwversion": {
+			"text": "Yêu cầu ít nhất MediaWiki 1.30, phiên bản $1 được phát hiện tại $2.",
+			"title": "Phiên bản MediaWiki đã lỗi thời!"
+		},
+		"nochange": {
+			"text": "Các cài đặt khớp với cài đặt mặc định hiện tại.",
+			"title": "Lưu thất bại!"
 		}
 	}
 }
