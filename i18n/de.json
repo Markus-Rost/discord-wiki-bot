@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 hat die Einstellungen für $2 geändert.",
 			"removed": "$1 hat die Einstellungen für $2 entfernt.",
-			"updated": "$1 hat die Servereinstellungen geändert."
+			"updated": "$1 hat die Servereinstellungen geändert.",
+			"user": "Du hast die Benutzereinstellungen für $1 geändert."
 		},
 		"foundwikis": "Meinst du eines dieser Wikis?",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "Nutze `$1 <Rolle>` um die mindestens benötigte Rolle zu ändern.",
 		"roleinvalid": "Die angegebene Rolle existiert nicht!",
 		"save_failed": "Die Einstellungen konnten leider nicht gespeichert werden, bitte versuche es später erneut.",
+		"user current": "Dies sind die aktuellen Einstellungen für $1:",
+		"user lang": "Die Sprache für $1 ist:",
+		"user langchanged": "Du hast die Sprache für $1 geändert zu:",
+		"user missing": "Für $3 wurden noch keine Einstellungen vorgenommen. Nutze $1 und $2 um die Einstellungen vorzunehmen.",
+		"user wiki": "Das Standard-Wiki für $1 ist:",
+		"user wikichanged": "Du hast das Standard-Wiki für $1 geändert zu:",
+		"user wikimissing": "Für $1 wurde noch kein Wiki festgelegt!",
 		"whitelist_added": "Eine Liste erlaubter Wikis wurde hinzugefügt.",
 		"whitelist_modified": "Die Liste erlaubter Wikis wurde verändert.",
 		"whitelist_removed": "Die Liste erlaubter Wikis wurde entfernt.",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.\nFalls du ein Website-Administrator bist kannst du ein Zertifikat von einer Zertifizierungsstelle wie *Let’s Encrypt* erhalten:\n<https://letsencrypt.org/de/getting-started/>",
 		"wikiinvalid_private": "Das angegebene Wiki ist privat! Nur öffentliche Wikis, die von jedem gelesen werden können, sind unterstützt.",
 		"wikiinvalid_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
+		"wikilist_added": "Eine Liste bevorzugter Wikis wurde hinzugefügt.",
+		"wikilist_modified": "Die Liste bevorzugter Wikis wurde verändert.",
+		"wikilist_removed": "Die Liste bevorzugter Wikis wurde entfernt.",
 		"wikimissing": "Für diesen Server wurde noch kein Wiki festgelegt!"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "Gesperrt am $1 auf unbeschränkte Dauer von $4.",
 			"indef_text": "Gesperrt am $1 auf unbeschränkte Dauer von $4 mit der Begründung „$5“.",
 			"noreason": "Gesperrt am $1 für $2 bis $3 von $4.",
+			"partial": "$1 ist derzeit teilweise gesperrt!",
 			"text": "Gesperrt am $1 für $2 bis $3 von $4 mit der Begründung „$5“."
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "Lade globale Statistiken…",
 			"postcount": "Diskussionsbeiträge:",
 			"registration": "Registriert:",
+			"unknown": "*Unbekannt*",
 			"wikisedited": "Wikis bearbeitet:"
 		}
 	},

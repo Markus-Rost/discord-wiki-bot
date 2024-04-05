@@ -456,7 +456,7 @@
 		"inaccurate": "統計が不正確な場合もあります",
 		"lang": "言語：",
 		"license": "ライセンス：",
-		"manager": "Wiki管理人：",
+		"manager": "Wiki代表：",
 		"misermode": "サーバーファームの負荷分散状態(Miser mode)：",
 		"no": "いいえ",
 		"none": "*無し*",
@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 は $2 の設定を更新しました。",
 			"removed": "$1 は $2 の設定を削除しました。",
-			"updated": "$1 はサーバー設定を更新しました。"
+			"updated": "$1 はサーバー設定を更新しました。",
+			"user": "$1のユーザー設定を更新しました。"
 		},
 		"foundwikis": "これらのWikiのどれかですか？",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "最低限必要なロールを変更するには、`$1 <ロール>` を使用します。",
 		"roleinvalid": "指定されたロールが存在しません！",
 		"save_failed": "設定を保存できませんでした。後でもう一度試してください。",
+		"user current": "$1による現在の設定:",
+		"user lang": "$1による言語:",
+		"user langchanged": "$1は言語を変更した:",
+		"user missing": "$3の設定はまだありません。設定を変更するには$1と$2を使用してください。",
+		"user wiki": "$1によるデフォルトのWiki:",
+		"user wikichanged": "$1はデフォルトのWikiを変更しました:",
+		"user wikimissing": "$1 デフォルトのWikiはまだ設定されていません！",
 		"whitelist_added": "Wikiを許可リストに追加しました。",
 		"whitelist_modified": "Wikiの許可リストが修正されました。",
 		"whitelist_removed": "Wikiの許可リストが削除されました。",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "提供されたウェブサイトは有効なTLS/SSL証明書を持っていません！セキュリティ上の理由から、HTTPSを使用するWikiのみがサポートされています。\nサイト管理者であれば、*Let’s Encrypt*のような認証局から証明書を取得することができます：\n<https://letsencrypt.org/ja/getting-started/>",
 		"wikiinvalid_private": "提供されたWikiは非公開です！誰もが読める公開Wikiのみがサポートされています。",
 		"wikiinvalid_timeout": "提供されたリンクは、応答に時間がかかりすぎました！",
+		"wikilist_added": "優先Wikiのリストが追加されました。",
+		"wikilist_modified": "優先Wikiリストが変更されました。",
+		"wikilist_removed": "優先Wikiリストは削除されました。",
 		"wikimissing": "このサーバーには、まだデフォルトのWikiが設定されていません！"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "$1 は $4 で無期限ブロックされています。",
 			"indef_text": "理由 $5 で$1 は $4で無期限にブロックされました。",
 			"noreason": "$1を$2でブロックし、$3を$4でブロックされています。",
+			"partial": "現在、$1は部分的にブロックされています！",
 			"text": "$1を$2でブロックし、$3を$4でブロックされています（理由\"$5\"）。"
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "グローバル統計の読み込み中…",
 			"postcount": "ディスカッションの投稿：",
 			"registration": "登録日：",
+			"unknown": "*不明*",
 			"wikisedited": "Wikiを編集："
 		}
 	},

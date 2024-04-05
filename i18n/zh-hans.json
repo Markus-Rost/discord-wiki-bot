@@ -456,7 +456,7 @@
 		"inaccurate": "统计信息可能不准确",
 		"lang": "语言：",
 		"license": "许可协议：",
-		"manager": "Wiki 经理 / 主管：",
+		"manager": "Wiki 代表：",
 		"misermode": "大访问量模式（Miser mode）：",
 		"no": "否",
 		"none": "*无*",
@@ -655,6 +655,13 @@
 		"rolehelp": "使用 `$1 <身份组>` 以更改所需的最小身份组。",
 		"roleinvalid": "指定的身份组不存在！",
 		"save_failed": "很遗憾，设置保存失败了，请稍后再试。",
+		"user current": "$1的当前设置如下：",
+		"user lang": "$1的语言为：",
+		"user langchanged": "你已更改$1的语言为：",
+		"user missing": "$3尚无任何设置。使用$1及$2更改设置。",
+		"user wiki": "$1的默认wiki为：",
+		"user wikichanged": "你已将$1的默认wiki更改为：",
+		"user wikimissing": "$1尚未设置默认wiki！",
 		"whitelist_added": "已添加wiki白名单。",
 		"whitelist_modified": "已修改wiki白名单。",
 		"whitelist_removed": "已移除wiki白名单。",
@@ -722,6 +729,7 @@
 			"indef_noreason": "于 $1 由 $4 永久封禁。",
 			"indef_text": "于 $1 被 $4 因“$5”永久封禁。",
 			"noreason": "于 $1 被 $4 封禁 $2 至 $3。",
+			"partial": "$1目前正在被部分封禁！",
 			"text": "因“$5”于 $1 被 $4 封禁 $2 至 $3。"
 		},
 		"gblock": {
@@ -745,6 +753,7 @@
 			"loading": "正在加载全域数据…",
 			"postcount": "讨论发布数：",
 			"registration": "注册时间：",
+			"unknown": "*未知*",
 			"wikisedited": "编辑过的 wiki："
 		}
 	},

@@ -219,9 +219,6 @@
 		"new": "Yeni Webhook"
 	},
 	"selector": {
-		"desc": "[Sunucuyu Yönet]($1) iznine sahip olduğun için ayarlarını değiştirebileceğin sunucuların listesi. Lütfen bir sunucu seç:",
-		"invite": "Wiki-Bot bir $1 üyesi değil ancak [davet edebilirsin]($2).",
-		"none": "Halihazırda hiçbir sunucuda [Sunucuyu Yönet]($1) iznine sahip değilsin, doğru hesaba giriş yaptığına emin misin?",
 		"switch": "Hesap Değiştir",
 		"title": "Sunucu Seçici",
 		"user": "Viki Hesapları",

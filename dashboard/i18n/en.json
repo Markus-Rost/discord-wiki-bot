@@ -19,7 +19,7 @@
 		"login": "Login",
 		"logout": "Logout",
 		"rcscript": "Recent Changes",
-		"refresh": "Refresh server list",
+		"refresh": "Refresh server data",
 		"save": "Save",
 		"selector": "Server Selector",
 		"settings": "Settings",
@@ -27,6 +27,7 @@
 		"theme-dark": "Use dark theme",
 		"theme-light": "Use light theme",
 		"title": "Wiki-Bot Settings",
+		"userinvite": "Add Wiki-Bot to User",
 		"verification": "Verifications",
 		"welcome": "<h2>Welcome to the Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot is a Discord bot made to bring Discord servers and MediaWiki wikis together. It helps with linking wiki pages, verifying wiki users, informing about latest changes on the wiki and more. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[More information]</a></p>\n<p>Here you can change different bot settings for servers you have Manage Server permission on. To begin, you will have to authenticate your Discord account which you can do with these buttons:</p>"
 	},
@@ -220,9 +221,8 @@
 		"new": "New Webhook"
 	},
 	"selector": {
-		"desc": "This is a list of all servers you can change settings on because you have the [Manage Server]($1) permission. Please select a server:",
-		"invite": "Wiki-Bot is not a member of $1 yet, but you can [invite Wiki-Bot]($2).",
-		"none": "You currently don't have the [Manage Server]($1) permission on any servers, are you logged into the correct account?",
+		"desc": "This is a list of all servers you can change settings on because you have the [Manage Server]($1) permission. You can also [change your user settings]($2) for servers without Wiki-Bot, if you [added Wiki-Bot to your user account]($3). Please select a server:",
+		"none": "Are you logged into the correct account? You can't change the settings for any servers as you don't have the [Manage Server]($1) permission on any servers and all your other servers already have Wiki-Bot as a member. However you can still [change your user settings]($2), if you [added Wiki-Bot to your user account]($3), to be able to use Wiki-Bot in all your DMs.",
 		"switch": "Switch Accounts",
 		"title": "Server Selector",
 		"user": "Wiki Accounts",
@@ -252,14 +252,20 @@
 			"select_channel": "-- Select a Channel --",
 			"select_subprefix": "Set a specific wiki →",
 			"subprefix": "Subcommand wiki prefix:",
+			"user": "User Settings",
 			"whitelist": "Allowed wikis:",
 			"whitelist_enabled": "Allow only specific wikis:",
 			"whitelist_note": "One per line",
 			"whitelist_placeholder": "List of allowed wikis",
 			"wiki": "Default Wiki:",
-			"wiki_check": "Check wiki"
+			"wiki_check": "Check wiki",
+			"wikilist": "Preferred wikis:",
+			"wikilist_placeholder": "List of preferred wikis"
 		},
-		"new": "New channel overwrite"
+		"invite": "Wiki-Bot is not a member of $1 yet, but you can [invite Wiki-Bot]($2). Alternatively you can define user settings, if you [added Wiki-Bot to your user account]($3).",
+		"new": "New channel overwrite",
+		"user": "Wiki-Bot is not a member of $1, but you can define user settings, if you [added Wiki-Bot to your user account]($2).",
+		"userdesc": "You can define user settings and use Wiki-Bot on all your servers and DMs, if you [added Wiki-Bot to your user account]($1)."
 	},
 	"verification": {
 		"button": "Verification button",

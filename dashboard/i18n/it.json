@@ -219,9 +219,6 @@
 		"new": "Nuovo webhook"
 	},
 	"selector": {
-		"desc": "Questa è una lista di tutti i server di cui puoi modificare le impostazioni perché hai il permesso [Gestire Server]($1). Per favore seleziona un server:",
-		"invite": "Wiki-Bot non è ancora un membro di $1, ma puoi [invitarlo]($2).",
-		"none": "Attualmente non hai il permesso [Gestire Server]($1) su alcun server, sei loggato con l'account corretto?",
 		"switch": "Cambia account",
 		"title": "Selettore server",
 		"user": "Account Wiki",

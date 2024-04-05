@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 updated the settings for $2.",
 			"removed": "$1 removed the settings for $2.",
-			"updated": "$1 updated the server settings."
+			"updated": "$1 updated the server settings.",
+			"user": "You updated your user settings for $1."
 		},
 		"foundwikis": "Do you mean any of these wikis?",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "Use `$1 <role>` to change the minimal required role.",
 		"roleinvalid": "The specified role does not exist!",
 		"save_failed": "Sadly the settings couldn't be saved, please try again later.",
+		"user current": "These are the current settings for $1:",
+		"user lang": "The language for $1 is:",
+		"user langchanged": "You changed the language for $1 to:",
+		"user missing": "No settings for $3 are set up yet. Use $1 and $2 to change the settings.",
+		"user wiki": "The default wiki for $1 is:",
+		"user wikichanged": "You changed the default wiki for $1 to:",
+		"user wikimissing": "No default wiki is set for $1 yet!",
 		"whitelist_added": "A list of allowed wikis has been added.",
 		"whitelist_modified": "The list of allowed wikis has been modified.",
 		"whitelist_removed": "The list of allowed wikis has been removed.",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "The provided website doesn't have a valid TLS/SSL certificate! For security reasons only wikis using HTTPS are supported.\nIf you are a site administrator, you can get a certificate from a certificate authority like *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "The provided wiki is private! Only public wikis that can be read by everyone are supported.",
 		"wikiinvalid_timeout": "The provided link took too long to respond!",
+		"wikilist_added": "A list of preferred wikis has been added.",
+		"wikilist_modified": "The list of preferred wikis has been modified.",
+		"wikilist_removed": "The list of preferred wikis has been removed.",
 		"wikimissing": "No default wiki is set for this server yet!"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "Blocked indefinitely on $1 by $4.",
 			"indef_text": "Blocked indefinitely on $1 by $4 with reason \"$5\".",
 			"noreason": "Blocked on $1 for $2 until $3 by $4.",
+			"partial": "$1 is currently partially blocked!",
 			"text": "Blocked on $1 for $2 until $3 by $4 with reason \"$5\"."
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "Loading global statistics…",
 			"postcount": "Discussion posts:",
 			"registration": "Registration date:",
+			"unknown": "*unknown*",
 			"wikisedited": "Wikis edited:"
 		}
 	},
