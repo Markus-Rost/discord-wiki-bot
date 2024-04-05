@@ -27,6 +27,7 @@
 		"theme-dark": "Usar tema escuro",
 		"theme-light": "Usar tema claro",
 		"title": "Configurações do Wiki-Bot",
+		"userinvite": "Adicionar Wiki-Bot ao usuário",
 		"verification": "Verificações",
 		"welcome": "<h2>Bem-vindo ao painel de controle do Wiki-Bot.</h2>\n<p>Wiki-Bot é um robô no Discord feito para reunir os servidores no Discord e as wikis do MediaWiki. Isso ajuda a vincular páginas da wiki, verificar usuários da wiki, informar sobre as últimas mudanças no a wiki e muito mais. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mais Informações]</a></p>\n<p>Aqui você pode alterar diferentes configurações de bot para servidores nos quais você tem permissão para gerenciar servidor. Para começar, você terá que autenticar sua conta do Discord, o que pode ser feito com este botão:</p>"
 	},
@@ -249,12 +250,15 @@
 			"select_channel": "-- Selecionar canal --",
 			"select_subprefix": "Definir uma wiki específica →",
 			"subprefix": "Prefixo de subcomando wiki:",
+			"user": "Configurações do usuário",
 			"whitelist": "Wikis permitidas:",
 			"whitelist_enabled": "Permitir apenas em wikis específicas:",
 			"whitelist_note": "Um por linha",
 			"whitelist_placeholder": "Lista de wikis permitidas",
 			"wiki": "Wiki padrão:",
-			"wiki_check": "Verificar wiki"
+			"wiki_check": "Verificar wiki",
+			"wikilist": "Wikis preferidas:",
+			"wikilist_placeholder": "Lista de wikis preferidas"
 		},
 		"new": "Nova sobreposição de canal"
 	},
