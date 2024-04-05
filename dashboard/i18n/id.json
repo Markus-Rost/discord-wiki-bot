@@ -219,7 +219,6 @@
 		"new": "Webhook Baru"
 	},
 	"selector": {
-		"desc": "Ini adalah daftar semua server tempat Kamu dapat mengubah pengaturan karena Kamu memiliki izin [Kelola Server]($1). Silakan pilih server:",
 		"switch": "Ganti Akun",
 		"title": "Memilih Server",
 		"user": "Akun Wiki",
