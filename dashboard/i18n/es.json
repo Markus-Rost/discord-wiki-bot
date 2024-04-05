@@ -219,7 +219,6 @@
 		"new": "Nuevo Webhook"
 	},
 	"selector": {
-		"desc": "Esta es una lista de todos los servidores en los que puedes cambiar la configuración porque tienes el permiso [Administrar Servidor]($1). Por favor, selecciona un servidor:",
 		"switch": "Cambiar Cuenta",
 		"title": "Selector de Servidor",
 		"user": "Cuentas Wiki",
