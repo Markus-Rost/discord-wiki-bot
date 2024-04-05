@@ -1,7 +1,7 @@
 import { load as cheerioLoad } from 'cheerio';
 import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import logging from '../../util/logging.js';
-import { got, toMarkdown, escapeFormatting, limitLength } from '../../util/functions.js';
+import { got, isMessage, toMarkdown, escapeFormatting, limitLength } from '../../util/functions.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {timeoptions} = require('../../util/default.json');
