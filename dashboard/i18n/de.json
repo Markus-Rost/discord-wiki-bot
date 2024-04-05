@@ -220,7 +220,6 @@
 		"new": "Neuer WebHook"
 	},
 	"selector": {
-		"desc": "Dies ist eine Liste aller Server dessen Einstellungen du ändern kannst, da du die [Server verwalten]($1)-Berechtigung hast. Bitte wähle einen Server:",
 		"switch": "Accounts wechseln",
 		"title": "Serverauswahl",
 		"user": "Wiki-Accounts",
