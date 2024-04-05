@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 updated the settings for $2.",
 			"removed": "$1 removed the settings for $2.",
-			"updated": "$1 updated the server settings."
+			"updated": "$1 updated the server settings.",
+			"user": "You updated your user settings for $1."
 		},
 		"foundwikis": "Do you mean any of these wikis?",
 		"inline disabled": {
