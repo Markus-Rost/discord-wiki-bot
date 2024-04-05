@@ -219,7 +219,6 @@
 		"new": "Nouvelle intégration"
 	},
 	"selector": {
-		"desc": "Voici une liste de tous les serveurs sur lesquels vous pouvez modifier les paramètres parce que vous avez la permission [Gérer le serveur]($1). Veuillez sélectionner un serveur :",
 		"switch": "Changer de compte",
 		"title": "Sélecteur de serveur",
 		"user": "Comptes Wiki",
