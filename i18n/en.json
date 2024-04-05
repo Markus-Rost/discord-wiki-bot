@@ -674,6 +674,7 @@
 		"wikiinvalid_private": "The provided wiki is private! Only public wikis that can be read by everyone are supported.",
 		"wikiinvalid_timeout": "The provided link took too long to respond!",
 		"wikilist_added": "A list of preferred wikis has been added.",
+		"wikilist_modified": "The list of preferred wikis has been modified.",
 		"wikimissing": "No default wiki is set for this server yet!"
 	},
 	"test": {
