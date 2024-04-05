@@ -222,7 +222,6 @@
 	},
 	"selector": {
 		"desc": "This is a list of all servers you can change settings on because you have the [Manage Server]($1) permission. Please select a server:",
-		"none": "You currently don't have the [Manage Server]($1) permission on any servers, are you logged into the correct account?",
 		"switch": "Switch Accounts",
 		"title": "Server Selector",
 		"user": "Wiki Accounts",
