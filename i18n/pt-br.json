@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 atualizou as configurações para $2.",
 			"removed": "$1 removeu as configurações de $2.",
-			"updated": "$1 atualizou as configurações do servidor."
+			"updated": "$1 atualizou as configurações do servidor.",
+			"user": "Você atualizou suas configurações de usuário por $1."
 		},
 		"foundwikis": "Você quer dizer algum dessas wikis?",
 		"inline disabled": {
@@ -672,6 +673,9 @@
 		"wikiinvalid_http": "O site fornecido não tem um certificado TLS/SSL válido! Por razões de segurança, apenas wikis que usam HTTPS são suportados.\nSe você for um administrador de site, você pode obter um certificado de uma autoridade de certificação como *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "A wiki fornecida é privada! Apenas wikis públicas que podem ser lidos por todos são suportados.",
 		"wikiinvalid_timeout": "O link fornecido demorou muito para responder!",
+		"wikilist_added": "Uma lista de wikis preferenciais foi adicionada.",
+		"wikilist_modified": "A lista de wikis preferenciais foi modificada.",
+		"wikilist_removed": "A lista de wikis preferenciais foi removida.",
 		"wikimissing": "Nenhuma wiki padrão está configurado para este servidor ainda!"
 	},
 	"test": {
@@ -729,6 +733,7 @@
 			"indef_noreason": "Bloqueado indefinidamente por $4, em $1.",
 			"indef_text": "Bloqueado indefinidamente por $4, em $1, com motivo \"$5\".",
 			"noreason": "Bloqueado por $4 em $1 por $2, até $3.",
+			"partial": "$1 está parcialmente bloqueado!",
 			"text": "Bloqueado por $4 em $1 por $2, até $3, com motivo \"$5\"."
 		},
 		"gblock": {
