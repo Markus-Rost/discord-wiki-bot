@@ -221,7 +221,6 @@
 	},
 	"selector": {
 		"desc": "Dies ist eine Liste aller Server dessen Einstellungen du ändern kannst, da du die [Server verwalten]($1)-Berechtigung hast. Bitte wähle einen Server:",
-		"invite": "Wiki-Bot ist noch kein Mitglied von $1, aber du kannst [Wiki-Bot einladen]($2).",
 		"none": "Du hast derzeit die [Server verwalten]($1)-Berechtigung auf keinem Server, bist du mit dem richtigen Account angemeldet?",
 		"switch": "Accounts wechseln",
 		"title": "Serverauswahl",
