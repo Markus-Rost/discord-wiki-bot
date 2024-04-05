@@ -19,7 +19,7 @@
 		"login": "登录",
 		"logout": "注销",
 		"rcscript": "最近更改",
-		"refresh": "刷新服务器列表",
+		"refresh": "刷新服务器数据",
 		"save": "保存",
 		"selector": "选择服务器",
 		"settings": "设置",
@@ -27,6 +27,7 @@
 		"theme-dark": "使用酷黑主题",
 		"theme-light": "使用明亮主题",
 		"title": "Wiki-Bot 设置",
+		"userinvite": "向用户添加Wiki-Bot",
 		"verification": "验证",
 		"welcome": "<h2>欢迎来到 Wiki-Bot 控制面板。</h2>\n<p>Wiki-Bot 是一个 Discord 机器人，旨在将 MediaWiki 驱动的 wiki 站点与 Discord 服务器整合在一起。它可以帮忙链接到 wiki 页面，验证 wiki 用户，通知 wiki 上最近的更改，等等。 <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多信息]</a></p>\n<p>在此，你可以为每个你拥有“管理服务器”权限的服务器管理并使用不同的机器人设置。但首先，你需要通过以下按钮验证你的 Discord 账号：</p>"
 	},
@@ -220,6 +221,8 @@
 		"new": "新 webhook"
 	},
 	"selector": {
+		"desc": "此为所有你拥有[管理服务器]($1)权限的服务器列表。在[向你的用户账户添加Wiki-Bot]($3)后，你也可以为没有Wiki-Bot的服务器[更改你的用户设置]($2)。请选择一个服务器：",
+		"none": "你是否已使用正确的账号登录？你目前并没有任何服务器的[管理服务器]($1)权限，且Wiki-Bot也已加入了您其他的所有服务器。不过在[向你的用户账户添加Wiki-Bot]($3)后，您仍可以[更改您的用户设置]($2)，以在您的所有私信中使用Wiki-Bot。",
 		"switch": "切换账号",
 		"title": "选择服务器",
 		"user": "wiki账号",
@@ -249,14 +252,20 @@
 			"select_channel": "-- 选择频道 --",
 			"select_subprefix": "设置一个指定的wiki →",
 			"subprefix": "子命令wiki前缀：",
+			"user": "用户设置",
 			"whitelist": "允许的wiki：",
 			"whitelist_enabled": "仅允许指定的wiki：",
 			"whitelist_note": "每行一个",
 			"whitelist_placeholder": "wiki白名单",
 			"wiki": "默认 wiki：",
-			"wiki_check": "检查 wiki"
+			"wiki_check": "检查 wiki",
+			"wikilist": "偏好的wiki：",
+			"wikilist_placeholder": "偏好的wiki列表"
 		},
-		"new": "新的频道覆写设置"
+		"invite": "Wiki-Bot尚未加入$1，但是你可以[邀请Wiki-Bot]($2)。或者在[向你的用户账户添加Wiki-Bot]($3)后，你也可以定义用户设置。",
+		"new": "新的频道覆写设置",
+		"user": "Wiki-Bot尚未加入$1，但在[向你的用户账户添加Wiki-Bot]($2)后，你可以定义用户设置。",
+		"userdesc": "在[向你的用户账户添加Wiki-Bot]($1)后，你可以定义用户设置，在你所有的服务器和私信中使用Wiki-Bot。"
 	},
 	"verification": {
 		"button": "验证按钮",
