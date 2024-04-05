@@ -219,7 +219,6 @@
 		"new": "Nuovo webhook"
 	},
 	"selector": {
-		"desc": "Questa è una lista di tutti i server di cui puoi modificare le impostazioni perché hai il permesso [Gestire Server]($1). Per favore seleziona un server:",
 		"switch": "Cambia account",
 		"title": "Selettore server",
 		"user": "Account Wiki",
