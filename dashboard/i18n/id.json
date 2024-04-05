@@ -220,7 +220,6 @@
 	},
 	"selector": {
 		"desc": "Ini adalah daftar semua server tempat Kamu dapat mengubah pengaturan karena Kamu memiliki izin [Kelola Server]($1). Silakan pilih server:",
-		"invite": "Wiki-Bot belum menjadi anggota $1, tetapi Kamu dapat [mengundang Wiki-Bot]($2).",
 		"none": "Saat ini Anda tidak memiliki izin [Kelola Server]($1) di server mana pun, apakah Anda masuk ke akun yang benar?",
 		"switch": "Ganti Akun",
 		"title": "Memilih Server",
