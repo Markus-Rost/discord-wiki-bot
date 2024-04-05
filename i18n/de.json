@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 hat die Einstellungen für $2 geändert.",
 			"removed": "$1 hat die Einstellungen für $2 entfernt.",
-			"updated": "$1 hat die Servereinstellungen geändert."
+			"updated": "$1 hat die Servereinstellungen geändert.",
+			"user": "Du hast die Benutzereinstellungen für $1 geändert."
 		},
 		"foundwikis": "Meinst du eines dieser Wikis?",
 		"inline disabled": {
@@ -672,6 +673,9 @@
 		"wikiinvalid_http": "Die angegebene Website besitzt kein gültiges TLS/SSL-Zertifikat! Aus Sicherheitsgründen werden nur Wikis die HTTPS nutzen unterstützt.\nFalls du ein Website-Administrator bist kannst du ein Zertifikat von einer Zertifizierungsstelle wie *Let’s Encrypt* erhalten:\n<https://letsencrypt.org/de/getting-started/>",
 		"wikiinvalid_private": "Das angegebene Wiki ist privat! Nur öffentliche Wikis, die von jedem gelesen werden können, sind unterstützt.",
 		"wikiinvalid_timeout": "Der angegebene Link hat zu lange gebraucht um zu antworten!",
+		"wikilist_added": "Eine Liste bevorzugter Wikis wurde hinzugefügt.",
+		"wikilist_modified": "Die Liste bevorzugter Wikis wurde verändert.",
+		"wikilist_removed": "Die Liste bevorzugter Wikis wurde entfernt.",
 		"wikimissing": "Für diesen Server wurde noch kein Wiki festgelegt!"
 	},
 	"test": {
