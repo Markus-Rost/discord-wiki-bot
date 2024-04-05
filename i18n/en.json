@@ -675,6 +675,7 @@
 		"wikiinvalid_timeout": "The provided link took too long to respond!",
 		"wikilist_added": "A list of preferred wikis has been added.",
 		"wikilist_modified": "The list of preferred wikis has been modified.",
+		"wikilist_removed": "The list of preferred wikis has been removed.",
 		"wikimissing": "No default wiki is set for this server yet!"
 	},
 	"test": {
