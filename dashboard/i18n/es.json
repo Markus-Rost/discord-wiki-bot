@@ -220,7 +220,6 @@
 	},
 	"selector": {
 		"desc": "Esta es una lista de todos los servidores en los que puedes cambiar la configuración porque tienes el permiso [Administrar Servidor]($1). Por favor, selecciona un servidor:",
-		"invite": "Wiki-Bot aún no es miembro de $1, pero puedes [invitar a Wiki-Bot]($2).",
 		"none": "Actualmente no tienes el permiso [Administrar Servidor]($1) en ningún servidor, ¿has iniciado sesión en la cuenta correcta?",
 		"switch": "Cambiar Cuenta",
 		"title": "Selector de Servidor",
