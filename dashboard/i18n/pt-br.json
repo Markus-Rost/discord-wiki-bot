@@ -221,7 +221,6 @@
 	},
 	"selector": {
 		"desc": "Esta é uma lista de todos os servidores nos quais você pode alterar as configurações porque tem a permissão de [gerenciar servidor]($1). Selecione um servidor:",
-		"invite": "O Wiki-Bot ainda não é membro do $1, mas você pode [convidar o Wiki-Bot]($2).",
 		"none": "No momento, você não tem a permissão de [gerenciar servidor]($1) em nenhum servidor. Você está conectado à conta correta?",
 		"switch": "Trocar conta",
 		"title": "Seletor de servidor",
