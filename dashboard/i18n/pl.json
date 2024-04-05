@@ -155,7 +155,6 @@
 	},
 	"selector": {
 		"desc": "To lista wszystkich serwerów, których ustawienia możesz zmienić gdyż masz zezwolenie [Zarządzanie serwerem]($1). Wybierz serwer:",
-		"none": "Aktualnie nie masz zezwolenia [Zarządzanie serwerem]($1) na żadnym z serwerów, czy jesteś na odpowiednim koncie?",
 		"switch": "Zmień konta",
 		"title": "Wybór serwera",
 		"with": "Serwery z Wiki-Botem",
