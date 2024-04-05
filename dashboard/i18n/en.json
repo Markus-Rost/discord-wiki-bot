@@ -221,6 +221,8 @@
 		"new": "New Webhook"
 	},
 	"selector": {
+		"desc": "This is a list of all servers you can change settings on because you have the [Manage Server]($1) permission. You can also [change your user settings]($2) for servers without Wiki-Bot, if you [added Wiki-Bot to your user account]($3). Please select a server:",
+		"none": "Are you logged into the correct account? You can't change the settings for any servers as you don't have the [Manage Server]($1) permission on any servers and all your other servers already have Wiki-Bot as a member. However you can still [change your user settings]($2), if you [added Wiki-Bot to your user account]($3), to be able to use Wiki-Bot in all your DMs.",
 		"switch": "Switch Accounts",
 		"title": "Server Selector",
 		"user": "Wiki Accounts",
