@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 更新了 $2 频道的设置。",
 			"removed": "$1 移除了 $2 频道的设置。",
-			"updated": "$1 更新了服务器设置。"
+			"updated": "$1 更新了服务器设置。",
+			"user": "你更新了$1的用户设置。"
 		},
 		"foundwikis": "你也许指的是这些 wiki？",
 		"inline disabled": {
@@ -672,6 +673,9 @@
 		"wikiinvalid_http": "您提供的网站没有有效的 TLS/SSL 证书！出于安全原因，只有使用 HTTPS 的 wiki 是受支持的。\n如果您是站点管理员，您可以从像 *Let’s Encrypt* 这样的证书颁发机构获取证书：\n<https://letsencrypt.org/zh-cn/getting-started/>",
 		"wikiinvalid_private": "您提供的 wiki 是非公开的！只有可以被所有人读取的公开 wiki 是支持的。",
 		"wikiinvalid_timeout": "提供的链接的响应时间过长！",
+		"wikilist_added": "已添加偏好的wiki列表。",
+		"wikilist_modified": "已更改偏好的wiki列表。",
+		"wikilist_removed": "已移除偏好的wiki列表。",
 		"wikimissing": "暂未绑定 wiki！"
 	},
 	"test": {
