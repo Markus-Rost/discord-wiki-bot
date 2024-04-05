@@ -220,7 +220,6 @@
 		"new": "Novo webhook"
 	},
 	"selector": {
-		"desc": "Esta é uma lista de todos os servidores nos quais você pode alterar as configurações porque tem a permissão de [gerenciar servidor]($1). Selecione um servidor:",
 		"switch": "Trocar conta",
 		"title": "Seletor de servidor",
 		"user": "Contas Wiki",
