@@ -264,7 +264,8 @@
 			"wikilist_placeholder": "List of preferred wikis"
 		},
 		"invite": "Wiki-Bot is not a member of $1 yet, but you can [invite Wiki-Bot]($2). Alternatively you can define user settings, if you [added Wiki-Bot to your user account]($3).",
-		"new": "New channel overwrite"
+		"new": "New channel overwrite",
+		"user": "Wiki-Bot is not a member of $1, but you can define user settings, if you [added Wiki-Bot to your user account]($2)."
 	},
 	"verification": {
 		"button": "Verification button",
