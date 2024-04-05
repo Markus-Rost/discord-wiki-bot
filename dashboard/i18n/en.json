@@ -259,7 +259,8 @@
 			"whitelist_note": "One per line",
 			"whitelist_placeholder": "List of allowed wikis",
 			"wiki": "Default Wiki:",
-			"wiki_check": "Check wiki"
+			"wiki_check": "Check wiki",
+			"wikilist": "Preferred wikis:"
 		},
 		"new": "New channel overwrite"
 	},
