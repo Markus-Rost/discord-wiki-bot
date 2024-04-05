@@ -41,7 +41,7 @@ export default async function cmd_eval(lang, msg, args, line, wiki) {
 		msg.wikiPrefixes.forEach( (prefixchar, prefixwiki) => {
 			if ( prefixchar ) subprefixes.set(prefixchar, prefixwiki);
 		} );
-		newMessage(msg, lang, wiki, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, {...msg.embedLimits}, [...msg.wikiWhitelist], cmdline);
+		newMessage(msg, lang, wiki, {...msg.embedLimits}, patreonGuildsPrefix.get(msg.guildId), msg.noInline, subprefixes, [...msg.wikiWhitelist], cmdline);
 		return cmdline;
 	}
 }
@@ -341,7 +341,7 @@ function removeSettings(msg) {
 			var all_channels = results.map( result => result[1] ).reduce( (acc, val) => acc.concat(val), [] );
 			var guilds = [];
 			var channels = [];
-			return client.query( 'SELECT guild, channel FROM discord' ).then( ({rows}) => {
+			return client.query( 'SELECT guild, channel FROM discord WHERE guild NOT LIKE $1', ['@%'] ).then( ({rows}) => {
 				return rows.forEach( row => {
 					if ( !all_guilds.includes(row.guild) ) {
 						if ( !row.channel ) {

@@ -20,7 +20,7 @@ a {
 }
 a[alt]:hover:after {
 	content: attr(alt);
-	position: absolute;
+	position: fixed;
 	background: #18191c;
 	color: #dcddde;
 	font-weight: bold;
@@ -68,6 +68,7 @@ a[alt]:hover:after {
 	width: 32px;
 	padding-right: 5px;
 }
+#navbar > div,
 #navbar a {
 	display: flex;
 	align-items: center;
@@ -84,10 +85,14 @@ a[alt]:hover:after {
 #navbar a[alt]:hover:after {
 	top: 48px;
 }
+#navbar > #user-invite:after {
+	right: 0;
+}
 #navbar .avatar {
 	width: 32px;
 	height: 32px;
 }
+#navbar #user-invite,
 #navbar span {
 	padding: 0 10px;
 }
@@ -150,11 +155,19 @@ a[alt]:hover:after {
 .theme-light #guildlist {
 	background-color: #e3e5e8;
 }
+#fixed-guild {
+	background: inherit;
+	position: sticky;
+	padding: 8px 0 12px;
+	margin: -8px 0 -12px;
+	bottom: 0;
+}
 .guild {
 	margin: 0 0 8px;
 	position: relative;
 	display: flex;
 	justify-content: center;
+	contain: layout;
 }
 .form-button:not(.user-select),
 .guild .theme-toggle,
@@ -205,6 +218,7 @@ a[alt]:hover:after {
 	color: #3ba55c;
 	background-color: #ffffff;
 }
+#navbar a:hover .svg-avatar,
 .guild:hover .svg-avatar {
 	color: #ffffff;
 	background-color: #3ba55c;
@@ -213,10 +227,10 @@ a[alt]:hover:after {
 	height: 2px;
 	width: 32px;
 	border-radius: 1px;
-	background-color: rgba(255,255,255,0.06);
+	background-color: rgba(255,255,255,0.6);
 }
 .theme-light .separator {
-	background-color: rgba(6,6,7,0.08);
+	background-color: rgba(6,6,7,0.8);
 }
 .bar {
 	position: absolute;
@@ -242,7 +256,7 @@ a[alt]:hover:after {
 .guild a[alt]:hover:after {
 	top: 20%;
 	left: 72px;
-	max-width: 224px;
+	max-width: 202px;
 	width: max-content;
 }
 #channellist {
@@ -497,7 +511,7 @@ li {
 .notice small {
 	color: #777;
 }
-#big-buttons {
+.big-buttons {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-evenly;
@@ -529,6 +543,9 @@ li {
 	width: 60px;
 	height: 60px;
 	margin-right: 25px;
+}
+#login-button {
+	margin: 20px max(20px, 10%);
 }
 .server-selector {
 	display: flex;

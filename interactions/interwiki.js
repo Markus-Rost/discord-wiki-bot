@@ -8,19 +8,30 @@ const require = createRequire(import.meta.url);
 const {defaultSettings} = require('../util/default.json');
 
 const allWikiProjects = [...wikiProjects.values()];
+/** @type {Set<String>} */
 const knownWikis = new Set();
+/** @type {Map<String, Map<String, String>>} */
+const knownInterwiki = new Map();
+/** @type {Map<String, {guild: String, wiki: String}[]>} */
+const rowCache = new Map();
 
 /**
  * Get a known wiki.
- * @param {String|Wiki} wiki - The wiki.
+ * @param {String?} input - The input wiki url.
+ * @param {Wiki} base - The base wiki.
  * @returns {Promise<Wiki>}
  */
-function getWiki(wiki) {
-	if ( wiki instanceof Wiki ) return Promise.resolve(wiki);
-	var newWiki = inputToWikiProject(wiki)?.fullScriptPath;
-	if ( !newWiki ) newWiki = inputToFrontendProxy(wiki)?.fullScriptPath;
+function getWiki(input, base) {
+	if ( !input ) return Promise.resolve(base);
+	input = input.trim();
+	var newWiki;
+	if ( input.includes( ':' ) && !input.includes( '/' ) && knownInterwiki.has(base.href) ) {
+		newWiki = knownInterwiki.get(base.href).get(input);
+	}
+	if ( !newWiki ) newWiki = inputToWikiProject(input)?.fullScriptPath;
+	if ( !newWiki ) newWiki = inputToFrontendProxy(input)?.fullScriptPath;
 	if ( newWiki ) return Promise.resolve(new Wiki(newWiki));
-	wiki = Wiki.fromInput(wiki);
+	var wiki = Wiki.fromInput(input);
 	if ( !wiki ) return Promise.reject();
 	if ( knownWikis.has(wiki.name) ) return Promise.resolve(wiki);
 	return db.query( '(SELECT wiki FROM discord WHERE wiki = $1 LIMIT 1) UNION (SELECT prefixwiki FROM subprefix WHERE prefixwiki = $1 LIMIT 1)', [wiki.name] ).then( ({rows}) => {
@@ -42,7 +53,7 @@ function getWiki(wiki) {
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_interwiki(interaction, lang, wiki) {
-	return getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
+	return getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		return wiki_interaction.slash(interaction, lang, newWiki);
 	}, () => {
 		return interaction.reply( {
@@ -63,7 +74,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 	lang = lang.uselang(interaction.locale);
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name !== 'wiki' ) {
-		return getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
+		return getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 			return wiki_interaction.autocomplete(interaction, lang, newWiki);
 		}, () => {
 			return interaction.respond( [{
@@ -97,7 +108,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 					if ( isDebug ) log_error(acerror);
 				} );
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -112,6 +123,9 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 		if ( !project ) return interaction.respond( [] ).catch( acerror => {
 			if ( isDebug ) log_error(acerror);
 		} );
+		let interwikiMap = knownInterwiki.get(wiki.href) ?? new Map();
+		if ( !knownInterwiki.has(wiki.href) ) knownInterwiki.set(wiki.href, interwikiMap);
+		interwikiMap.set(input, project.fullScriptPath);
 		return interaction.respond( [{
 			name: project.fullScriptPath.slice(8, ( project.wikiProject.regexPaths ? -1 : -project.wikiProject.scriptPath.length) ).substring(0, 100),
 			value: project.fullScriptPath.substring(0, 100)
@@ -128,7 +142,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				if ( isDebug ) log_error(acerror);
 			} );
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+		console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
@@ -137,31 +151,33 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 	} );
 	/** @type {[String[], String[]]} */
 	var wikiList = [new Set([wiki.name]), new Set()];
-	return ( interaction.inGuild() ? db.query( '(SELECT wiki FROM discord WHERE guild = $1) UNION (SELECT prefixwiki FROM subprefix WHERE guild = $1)', [interaction.guildId] ).then( ({rows}) => {
-		rows.forEach( row => {
-			if ( row.wiki.startsWith( 'https://' ) ) wikiList[0].add( row.wiki );
-			else wikiList[1].add( row.wiki );
-		} );
-		return [true, wikiList[1].size];
+	var sqlargs = [interaction.guildId, '@' + interaction.user.id, '@'];
+	return ( rowCache.has(sqlargs.join(' ')) ? Promise.resolve(rowCache.get(sqlargs.join(' '))) : db.query( '(SELECT guild, wiki FROM discord WHERE guild = $1 OR guild = $2) UNION (SELECT $3, prefixwiki FROM subprefix WHERE guild = $1) ORDER BY guild DESC', sqlargs ).then( ({rows}) => {
+		rowCache.set(sqlargs.join(' '), rows);
+		setTimeout(() => rowCache.delete(sqlargs.join(' ')), 300_000).unref();
+		return rows;
 	}, dberror => {
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+		console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the wiki list: ' + dberror );
-	} ) : Promise.resolve() ).then( ([hasRow, hasPrefix] = []) => {
-		if ( !hasRow ) wikiList[0].add( defaultSettings.wiki );
-		defaultSettings.subprefixes.forEach( subprefix => {
+	} ) ).then( (rows = []) => {
+		rows.forEach( row => {
+			if ( row.wiki.startsWith( 'https://' ) ) wikiList[0].add( row.wiki );
+			else wikiList[1].add( row.wiki );
+		} );
+		if ( !rows.length || !wikiList[1].size ) defaultSettings.subprefixes.forEach( subprefix => {
 			if ( subprefix[1].startsWith( 'https://' ) ) {
-				if ( !hasRow ) wikiList[0].add( subprefix[1] );
+				if ( !rows.length ) wikiList[0].add( subprefix[1] );
 			}
 			else {
-				if ( !hasPrefix ) wikiList[1].add( subprefix[1] );
+				if ( !wikiList[1].size ) wikiList[1].add( subprefix[1] );
 			}
 		} );
-		baseWikis.forEach( baseWiki => wikiList[0].add( baseWiki ) );
 		interaction.wikiWhitelist.forEach( whiteWiki => wikiList[0].add( whiteWiki ) );
+		baseWikis.forEach( baseWiki => wikiList[0].add( baseWiki ) );
 		wikiList = [[...wikiList[0]].filter( suggestion => !suggestion.includes( '@' ) ), [...wikiList[1]]];
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
 			let suggestionName = suggestion;
@@ -186,6 +202,8 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			...wikiList[1].map( suggestion => {
 				return idStringToUrl(input, suggestion)?.href;
 			} ),
+			inputToWikiProject(input)?.fullScriptPath,
+			inputToFrontendProxy(input)?.fullNamePath,
 			...allWikiProjects.filter( project => {
 				if ( !project.fullScriptPath ) return false;
 				if ( project.name.startsWith( input ) ) return true;
@@ -203,9 +221,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 					if ( newWiki?.href.replace( 'https://', '' ).startsWith( input ) ) result.push( newWiki.href );
 				}
 				return result;
-			} ),
-			inputToWikiProject(input)?.fullScriptPath,
-			inputToFrontendProxy(input)?.fullNamePath
+			} )
 		].filter( suggestion => suggestion ).map( suggestion => {
 			if ( Wiki._cache.has(suggestion) ) return Wiki._cache.get(suggestion).name;
 			return suggestion;

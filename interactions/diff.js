@@ -27,7 +27,7 @@ function slash_diff(interaction, lang, wiki) {
 		if ( subcommand === 'relative' ) args.push(interaction.options.getString('compare') ?? 'prev');
 		else if ( subcommand === 'multiple' ) args.push(interaction.options.getInteger('oldid').toString());
 	}
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);

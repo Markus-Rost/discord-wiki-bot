@@ -19,7 +19,7 @@ const {timeoptions} = require('../../util/default.json');
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function mw_overview(lang, msg, wiki, spoiler, noEmbed, querystring = new URLSearchParams(), fragment = '', specialpage = 'Statistics') {
-	var uselang = lang.lang;
+	var uselang = ( isMessage(msg) || msg.inCachedGuild?.() ? lang.lang : 'content' );
 	if ( querystring.has('variant') || querystring.has('uselang') ) {
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
 		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());

@@ -46,7 +46,7 @@ function slash_inline(interaction, lang, wiki) {
 		} ),
 		allowedMentions
 	};
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => interaction.deferReply().then( () => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => interaction.deferReply().then( () => {
 		var textReplacement = [];
 		var magiclinks = [];
 		var replacedText = text.replace( /(?<!\\)(?:<a?(:\w+:)\d+>|<#(\d+)>|<@!?(\d+)>|<@&(\d+)>|```.+?```|``.+?``|`.+?`)/gs, (replacement, emoji, textchannel, user, role) => {
@@ -196,7 +196,7 @@ function slash_inline(interaction, lang, wiki) {
 						link.url = newWiki.toLink(title + '/' + link.isbn, '', '', true);
 					}
 					if ( link.url ) {
-						console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + link.type + ' ' + link.id );
+						console.log( interaction.author + ': Slash: ' + link.type + ' ' + link.id );
 						textReplacement[link.replacementId] = '[' + link.type + ' ' + link.id + '](<' + link.url + '>)';
 					}
 				} );
@@ -214,7 +214,7 @@ function slash_inline(interaction, lang, wiki) {
 							let link = templates.find( link => link.raw === title.trim() );
 							if ( !link ) return fullLink;
 							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).trim();
-							console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
+							console.log( interaction.author + ': Slash: ' + fullLink );
 							if ( title.startsWith( 'int:' ) ) {
 								title = title.replace( /^int:\s*/, replacement => {
 									linkprefix += replacement;
@@ -230,7 +230,7 @@ function slash_inline(interaction, lang, wiki) {
 							let link = links.find( link => link.raw === title.trim() );
 							if ( !link ) return fullLink;
 							title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode ).replace( /\x1F<replacement\x1F\d+\x1F(.+?)>\x1F/g, '$1' ).split('#')[0].trim();
-							console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: ' + fullLink );
+							console.log( interaction.author + ': Slash: ' + fullLink );
 							if ( display === undefined ) display = title.replace( /^\s*:?/, '' );
 							if ( !display.trim() ) {
 								display = title.replace( /^\s*:/, '' );

@@ -116,7 +116,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 		var pagelink = wiki.toLink(( wiki.namespaces.has(2) ? wiki.namespaces.get(2).name : 'User' ) + ':' + username, '', '', true);
 		embed.setTitle( escapeFormatting(username) ).setURL( pagelink );
 		logEmbed.setTitle( escapeFormatting(username) ).setURL( pagelink );
-		if ( queryuser.blockexpiry ) {
+		if ( queryuser.blockexpiry && !queryuser.blockpartial ) {
 			embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 			logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 			result.content = lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender);
@@ -784,7 +784,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 				{name: logLang.get('verify.discord', queryuser.gender), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )), inline: true},
 				{name: logLang.get('verify.wiki', queryuser.gender), value: logLang.get('verify.oauth_used'), inline: true}
 			]);
-			if ( queryuser.blockexpiry ) {
+			if ( queryuser.blockexpiry && !queryuser.blockpartial ) {
 				embed.setColor('#FF0000').setDescription( lang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 				logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_blocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 				return sendMessage( {content: lang.get('verify.user_blocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {

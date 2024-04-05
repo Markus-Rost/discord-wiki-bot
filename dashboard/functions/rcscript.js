@@ -359,6 +359,9 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang, csrfToken) {
  * @param {String} [settings.delete_settings]
  */
 function update_rcscript(res, userSettings, guild, type, settings) {
+	if ( !userSettings.guilds.isMember.has(guild) ) {
+		return res(`/guild/${guild}/settings`, 'savefail');
+	}
 	if ( type === 'default' || type === 'notice' || type === 'button' ) {
 		return res(`/guild/${guild}/rcscript`, 'savefail');
 	}

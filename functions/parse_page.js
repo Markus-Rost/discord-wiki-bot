@@ -37,6 +37,8 @@ const infoboxList = [
 	'.side-infobox',
 	'.info-framework',
 	'.iteminfobox',
+	'.druid-container',
+	'.settingsummary',
 	'table[class*="infobox"]'
 ];
 

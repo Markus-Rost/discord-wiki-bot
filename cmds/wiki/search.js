@@ -18,11 +18,10 @@ const {limit: {search: searchLimit}} = require('../../util/default.json');
  */
 export default function mw_search(lang, msg, searchterm, wiki, query, reaction, spoiler, noEmbed) {
 	if ( searchterm.length > 250 ) {
-		searchterm = searchterm.substring(0, 250);
+		searchterm = searchterm.substring(0, 250).trim();
 		msg?.fetchReply?.().then( message => message?.reactEmoji?.(WB_EMOJI.warning), log_error );
 		msg?.reactEmoji?.(WB_EMOJI.warning);
 	}
-	if ( !searchterm.trim() ) return this.special_page(lang, msg, {title: 'Special:Search'}, 'search', query, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
 	var pagelink = wiki.toLink('Special:Search', {search:searchterm,fulltext:1});
 	var resultText = '<' + pagelink + '>';
 	var embed = null;

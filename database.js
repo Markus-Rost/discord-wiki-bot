@@ -61,6 +61,10 @@ CREATE INDEX idx_discord_channel ON discord (
             NULLS LAST
 );
 
+CREATE INDEX idx_discord_wiki ON discord (
+    wiki
+);
+
 CREATE INDEX idx_discord_patreon ON discord (
     patreon
 )
@@ -79,6 +83,10 @@ CREATE TABLE subprefix (
 
 CREATE INDEX idx_subprefix_guild ON subprefix (
     guild
+);
+
+CREATE INDEX idx_subprefix_prefixwiki ON subprefix (
+    prefixwiki
 );
 
 CREATE TABLE verification (
@@ -285,6 +293,10 @@ CREATE TABLE subprefix (
 
 CREATE INDEX idx_subprefix_guild ON subprefix (
     guild
+);
+
+CREATE INDEX idx_subprefix_prefixwiki ON subprefix (
+    prefixwiki
 );
 
 INSERT INTO versions(type, version) VALUES ('discord', 6)

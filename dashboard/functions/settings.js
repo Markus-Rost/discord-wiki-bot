@@ -19,7 +19,8 @@ const fieldset = {
 	channel: '<label for="wb-settings-channel">Channel:</label>'
 	+ '<select id="wb-settings-channel" name="channel" required></select>',
 	wiki: '<label for="wb-settings-wiki">Default Wiki:</label>'
-	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" required inputmode="url" autocomplete="url">'
+	+ '<input type="url" id="wb-settings-wiki" class="wb-settings-wiki" name="wiki" list="wb-settings-wiki-list" required inputmode="url" autocomplete="url">'
+	+ '<datalist id="wb-settings-wiki-list" class="wb-settings-wiki-list"></datalist>'
 	+ '<button type="button" id="wb-settings-wiki-check" class="wb-settings-wiki-check">Check wiki</button>'
 	+ '<div id="wb-settings-wiki-check-notice" class="wb-settings-wiki-check-notice"></div>',
 	//+ '<button type="button" id="wb-settings-wiki-search" class="collapsible">Search wiki</button>'
@@ -65,7 +66,7 @@ const fieldset = {
 		return `<option id="wb-settings-project-subprefix--${wikiProject}" value="${wikiProject}">${wikiProject}</option>`
 	} ).join('')
 	+ '</select>'
-	+ '<input type="url" id="wb-settings-wiki-subprefix-" class="wb-settings-wiki" name="subprefix_" required inputmode="url" autocomplete="url">'
+	+ '<input type="url" id="wb-settings-wiki-subprefix-" class="wb-settings-wiki" name="subprefix_" list="wb-settings-wiki-list" required inputmode="url" autocomplete="url">'
 	+ '<button type="button" id="wb-settings-wiki-subprefix--check" class="wb-settings-wiki-check">Check wiki</button>'
 	+ '<div id="wb-settings-wiki-subprefix--check-notice" class="wb-settings-wiki-check-notice"></div>',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
@@ -77,6 +78,7 @@ const fieldset = {
  * @param {import('cheerio').CheerioAPI} $ - The response body
  * @param {String} header - The form header
  * @param {import('./i18n.js').default} dashboardLang - The user language
+ * @param {import('../util.js').User} [user] - The current user
  * @param {Object} settings - The current settings
  * @param {Boolean} [settings.patreon]
  * @param {String} [settings.channel]
@@ -93,16 +95,16 @@ const fieldset = {
  * @param {Number} [settings.sectiondesclength]
  * @param {String[][]} [settings.subprefixes]
  * @param {import('../util.js').Role[]} guildRoles - The guild roles
- * @param {String} [allWikis] - All wikis set for the guild
+ * @param {String[]} [allWikis] - All wikis set for the guild
  * @param {import('../util.js').Channel[]} guildChannels - The guild channels
  */
-function createForm($, header, dashboardLang, settings, guildRoles, allWikis, guildChannels = []) {
+function createForm($, header, dashboardLang, user, settings, guildRoles = [], allWikis = [], guildChannels = []) {
 	var readonly = ( process.env.READONLY ? true : false );
 	if ( settings.channel && guildChannels.length === 1 && guildChannels[0].userPermissions === 0 && guildChannels[0].name === 'UNKNOWN' ) {
 		readonly = true;
 	}
 	var fields = [];
-	if ( settings.channel ) {
+	if ( settings.channel && !user ) {
 		let channel = $('<div>').append(fieldset.channel);
 		channel.find('label').text(dashboardLang.get('settings.form.channel'));
 		if ( settings.channel === 'new' ) {
@@ -158,29 +160,34 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
 	wiki.find('label').text(dashboardLang.get('settings.form.wiki'));
 	wiki.find('#wb-settings-wiki-check').text(dashboardLang.get('settings.form.wiki_check'));
 	wiki.find('#wb-settings-wiki').val(settings.wiki);
+	wiki.find('#wb-settings-wiki-list').append(
+		...allWikis.map( listWiki => $(`<option>`).val(listWiki) )
+	);
 	fields.push(wiki);
-	if ( !settings.channel || settings.patreon ) {
+	if ( !settings.channel || user || settings.patreon ) {
 		let lang = $('<div>').append(fieldset.lang);
 		lang.find('label').text(dashboardLang.get('settings.form.lang'));
 		lang.find(`#wb-settings-lang-${settings.lang}`).attr('selected', '');
 		fields.push(lang);
-		let role = $('<div>').append(fieldset.role);
-		role.find('label').text(dashboardLang.get('settings.form.role'));
-		role.find('#wb-settings-role').append(
-			...guildRoles.map( guildRole => {
-				return $(`<option id="wb-settings-role-${guildRole.id}">`).val(guildRole.id).text(`${guildRole.id} – @${guildRole.name}`)
-			} ),
-			$(`<option id="wb-settings-role-everyone">`).val('').text('@everyone')
-		);
-		if ( settings.role ) role.find(`#wb-settings-role-${settings.role}`).attr('selected', '');
-		else role.find(`#wb-settings-role-everyone`).attr('selected', '');
-		fields.push(role);
-		let inline = $('<div>').append(fieldset.inline);
-		inline.find('label').text(dashboardLang.get('settings.form.inline'));
-		if ( !settings.inline ) inline.find('#wb-settings-inline').attr('checked', '');
-		fields.push(inline);
+		if ( !user ) {
+			let role = $('<div>').append(fieldset.role);
+			role.find('label').text(dashboardLang.get('settings.form.role'));
+			role.find('#wb-settings-role').append(
+				...guildRoles.map( guildRole => {
+					return $(`<option id="wb-settings-role-${guildRole.id}">`).val(guildRole.id).text(`${guildRole.id} – @${guildRole.name}`)
+				} ),
+				$(`<option id="wb-settings-role-everyone">`).val('').text('@everyone')
+			);
+			if ( settings.role ) role.find(`#wb-settings-role-${settings.role}`).attr('selected', '');
+			else role.find(`#wb-settings-role-everyone`).attr('selected', '');
+			fields.push(role);
+			let inline = $('<div>').append(fieldset.inline);
+			inline.find('label').text(dashboardLang.get('settings.form.inline'));
+			if ( !settings.inline ) inline.find('#wb-settings-inline').attr('checked', '');
+			fields.push(inline);
+		}
 	}
-	if ( settings.patreon && !settings.channel ) {
+	if ( settings.patreon && !settings.channel && !user ) {
 		let prefix = $('<div>').append(fieldset.prefix);
 		prefix.find('label').eq(0).text(dashboardLang.get('settings.form.prefix'));
 		prefix.find('label').eq(1).text(dashboardLang.get('settings.form.prefix_space'));
@@ -192,24 +199,34 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
 	}
 	if ( !settings.channel ) {
 		let whitelist = $('<div>').append(fieldset.whitelist);
-		whitelist.find('label').eq(0).text(dashboardLang.get('settings.form.whitelist_enabled'))
-		whitelist.find('label').eq(1).text(dashboardLang.get('settings.form.whitelist')).append(
-			$('<div>').text(dashboardLang.get('settings.form.whitelist_note'))
-		);
-		whitelist.find('#wb-settings-whitelist').attr('placeholder', dashboardLang.get('settings.form.whitelist_placeholder'));
-		if ( settings.whitelist ) {
-			whitelist.find('#wb-settings-whitelist-enabled').attr('checked', '');
-			whitelist.find('#wb-settings-whitelist').attr('rows', Math.max(settings.whitelist.split('\n').length + 2, 4)).text(settings.whitelist + '\n');
-			
+		if ( user ) {
+			whitelist.html(whitelist.find('#wb-settings-whitelist-hide').contents());
+			whitelist.find('label').text(dashboardLang.get('settings.form.wikilist')).append(
+				$('<div>').text(dashboardLang.get('settings.form.whitelist_note'))
+			);
+			whitelist.find('#wb-settings-whitelist').attr('placeholder', dashboardLang.get('settings.form.wikilist_placeholder'));
+			let whitelistText = ( settings.whitelist || allWikis.join('\n') || settings.wiki );
+			whitelist.find('#wb-settings-whitelist').attr('rows', Math.max(whitelistText.split('\n').length + 2, 4)).text(whitelistText + '\n');
 		}
 		else {
-			let whitelistText = ( allWikis || settings.wiki );
-			whitelist.find('#wb-settings-whitelist-hide').attr('style', 'display: none;');
-			whitelist.find('#wb-settings-whitelist').attr('disabled', '').attr('rows', Math.max(whitelistText.split('\n').length + 2, 4)).text(whitelistText + '\n');
+			whitelist.find('label').eq(0).text(dashboardLang.get('settings.form.whitelist_enabled'));
+			whitelist.find('label').eq(1).text(dashboardLang.get('settings.form.whitelist')).append(
+				$('<div>').text(dashboardLang.get('settings.form.whitelist_note'))
+			);
+			whitelist.find('#wb-settings-whitelist').attr('placeholder', dashboardLang.get('settings.form.whitelist_placeholder'));
+			if ( settings.whitelist ) {
+				whitelist.find('#wb-settings-whitelist-enabled').attr('checked', '');
+				whitelist.find('#wb-settings-whitelist').attr('rows', Math.max(settings.whitelist.split('\n').length + 2, 4)).text(settings.whitelist + '\n');
+			}
+			else {
+				let whitelistText = ( allWikis.join('\n') || settings.wiki );
+				whitelist.find('#wb-settings-whitelist-hide').attr('style', 'display: none;');
+				whitelist.find('#wb-settings-whitelist').attr('disabled', '').attr('rows', Math.max(whitelistText.split('\n').length + 2, 4)).text(whitelistText + '\n');
+			}
 		}
 		fields.push(whitelist);
 	}
-	if ( !settings.channel || settings.patreon ) {
+	if ( !settings.channel || user || settings.patreon ) {
 		fields.push($('<h3>').text(dashboardLang.get('settings.form.embedlimits')));
 		let desclength = $('<div>').append(fieldset.desclength);
 		desclength.find('label').text(dashboardLang.get('settings.form.desclength'));
@@ -232,7 +249,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
 		sectiondesclength.find('#wb-settings-sectiondesclength').val(settings.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength);
 		fields.push(sectiondesclength);
 	}
-	if ( !settings.channel ) {
+	if ( !settings.channel && !user ) {
 		fields.push($('<h3>').text(dashboardLang.get('settings.form.subprefix')));
 		let subprefixes = new Map(( settings.subprefixes?.length ? settings.subprefixes : defaultSettings.subprefixes ));
 		subprefixes.forEach( (prefixwiki, prefixchar) => {
@@ -252,7 +269,9 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
 				subprefix.find(`[id="wb-settings-project-subprefix-${prefixchar}-none"]`).attr('selected', '');
 			}
 			else {
-				subprefix.find(`[id="wb-settings-project-subprefix-${prefixchar}-${prefixwiki}"]`).attr('selected', '');
+				subprefix.find(`[id="wb-settings-project-subprefix-${prefixchar}-none"]`).after(
+					$('<option>').attr('id', `wb-settings-project-subprefix-${prefixchar}-${prefixwiki}`).attr('selected', '').val(prefixwiki).text(prefixwiki)
+				);
 				subprefix.find(`[id="wb-settings-wiki-subprefix-${prefixchar}"]`).attr('disabled', '').attr('style', 'display: none;');
 				subprefix.find(`[id="wb-settings-wiki-subprefix-${prefixchar}-check"]`).attr('disabled', '').attr('style', 'display: none;');
 			}
@@ -260,7 +279,7 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
 		} );
 	}
 	fields.push($(fieldset.save).val(dashboardLang.get('general.save')));
-	if ( settings.channel && settings.channel !== 'new' ) {
+	if ( settings.channel && settings.channel !== 'new' && !user ) {
 		fields.push($(fieldset.delete).val(dashboardLang.get('general.delete')).attr('onclick', `return confirm('${dashboardLang.get('settings.form.confirm').replaceAll( '\'', '\\$&' )}');`));
 	}
 	var form = $('<fieldset>').append(...fields);
@@ -279,24 +298,47 @@ function createForm($, header, dashboardLang, settings, guildRoles, allWikis, gu
  * Let a user change settings
  * @param {import('http').ServerResponse} res - The server response
  * @param {import('cheerio').CheerioAPI} $ - The response body
- * @param {import('../util.js').Guild} guild - The current guild
+ * @param {import('../util.js').Guild} [guild] - The current guild
  * @param {String[]} args - The url parts
  * @param {import('../i18n.js').default} dashboardLang - The user language
  * @param {String} csrfToken - The csrf token for the session
+ * @param {import('../util.js').User} [user] - The current user
  */
-function dashboard_settings(res, $, guild, args, dashboardLang, csrfToken) {
-	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist, patreon, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [guild.id] ).then( ({rows}) => {
-		$('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild.name))).appendTo('#text .description');
+function dashboard_settings(res, $, guild, args, dashboardLang, csrfToken, user) {
+	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist, patreon, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [( user ? '@' + user.id : guild.id )] ).then( ({rows}) => {
+		var desc = $('<p>').html(dashboardLang.get('settings.desc', true, $('<code>').text(guild?.name || user.global_name))).appendTo('#text .description');
 		if ( !rows.length ) {
-			createNotice($, 'nosettings', dashboardLang);
+			if ( !user ) createNotice($, 'nosettings', dashboardLang);
 			$('.channel#settings').addClass('selected');
-			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, {
+			createForm($, dashboardLang.get('settings.form.' + ( user ? 'user' : 'default' )), dashboardLang, user, {
 				prefix: process.env.prefix,
 				wiki: defaultSettings.wiki,
-				lang: ( guild.locale || defaultSettings.lang )
-			}, guild.roles).append(
+				lang: ( guild?.locale || user?.locale || defaultSettings.lang ),
+				channel: ( user ? guild?.id : null )
+			}, guild?.roles).append(
 				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
-			).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
+			).attr('action', ( guild ? `/guild/${guild.id}/settings/default` : '/settings' )).appendTo('#text');
+			return;
+		}
+		let allWikis = new Set(rows.map( row => row.wiki ).reverse());
+		if ( rows[0].subprefixes?.length ) rows[0].subprefixes.forEach( subprefix => {
+			if ( subprefix[1].startsWith('https://') ) allWikis.add(subprefix[1]);
+		} );
+		if ( rows[0].whitelist ) rows[0].whitelist.split('\n').forEach( wiki => {
+			allWikis.add(wiki);
+		} );
+		allWikis = [...allWikis];
+		if ( user ) {
+			$('.channel#settings').addClass('selected');
+			let currentRow = rows.find( row => row.channel === ( guild?.id ?? null ) );
+			createForm($, dashboardLang.get('settings.form.user'), dashboardLang, user, currentRow || Object.assign({}, rows.find( row => !row.channel ), {
+				channel: guild?.id
+			}), [], allWikis).append(
+				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
+			).attr('action', ( guild ? `/guild/${guild.id}/settings/default` : '/settings' )).appendTo('#text');
+			if ( currentRow || !hasPerm(guild.userPermissions, PermissionFlagsBits.ManageGuild) ) {
+				$('<div class="description">').append($('#text .description').contents().not(desc)).appendTo('#text');
+			}
 			return;
 		}
 		let isPatreon = rows.some( row => row.patreon );
@@ -326,14 +368,9 @@ function dashboard_settings(res, $, guild, args, dashboardLang, csrfToken) {
 				$('<div>').text(dashboardLang.get('settings.new'))
 			).attr('title', dashboardLang.get('settings.new')).attr('href', `/guild/${guild.id}/settings/new${suffix}`) )
 		);
-		let allWikis = new Set(rows.map( row => row.wiki ).reverse());
-		if ( rows[0].subprefixes?.length ) rows[0].subprefixes.forEach( subprefix => {
-			if ( subprefix[1].startsWith('https://') ) allWikis.add(subprefix[1]);
-		} );
-		allWikis = [...allWikis].join('\n');
 		if ( args[4] === 'new' && !process.env.READONLY ) {
 			$('.channel#channel-new').addClass('selected');
-			createForm($, dashboardLang.get('settings.form.new'), dashboardLang, Object.assign({}, rows.find( row => !row.channel ), {
+			createForm($, dashboardLang.get('settings.form.new'), dashboardLang, user, Object.assign({}, rows.find( row => !row.channel ), {
 				patreon: isPatreon,
 				channel: 'new'
 			}), guild.roles, allWikis, guild.channels.filter( channel => {
@@ -352,7 +389,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang, csrfToken) {
 		else if ( channellist.some( channel => channel.id === args[4] ) ) {
 			let channel = channellist.find( channel => channel.id === args[4] );
 			$(`.channel#channel-${channel.id}`).addClass('selected');
-			createForm($, dashboardLang.get('settings.form.overwrite', false, `#${channel.name}`), dashboardLang, Object.assign({}, rows.find( row => {
+			createForm($, dashboardLang.get('settings.form.overwrite', false, `#${channel.name}`), dashboardLang, user, Object.assign({}, rows.find( row => {
 				return row.channel === ( channel.isCategory ? '#' : '' ) + channel.id;
 			} ), {
 				patreon: isPatreon
@@ -362,7 +399,7 @@ function dashboard_settings(res, $, guild, args, dashboardLang, csrfToken) {
 		}
 		else {
 			$('.channel#settings').addClass('selected');
-			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, rows.find( row => !row.channel ), guild.roles, allWikis).append(
+			createForm($, dashboardLang.get('settings.form.default'), dashboardLang, user, rows.find( row => !row.channel ), guild.roles, allWikis).append(
 				$('<input type="hidden">').attr('name', 'csrfToken').val(csrfToken)
 			).attr('action', `/guild/${guild.id}/settings/default`).appendTo('#text');
 		}
@@ -405,6 +442,9 @@ function dashboard_settings(res, $, guild, args, dashboardLang, csrfToken) {
  * @param {String} [settings.delete_settings]
  */
 function update_settings(res, userSettings, guild, type, settings) {
+	if ( !userSettings.guilds.isMember.has(guild) ) {
+		return update_user_settings(res, userSettings, guild, settings);
+	}
 	if ( type !== 'default' && type !== 'new' && type !== settings.channel ) {
 		return res(`/guild/${guild}/settings`, 'savefail');
 	}
@@ -429,17 +469,10 @@ function update_settings(res, userSettings, guild, type, settings) {
 			return ( role.id === settings.role );
 		} ) ) return res(`/guild/${guild}/settings/${type}`, 'savefail');
 		if ( settings.whitelist && settings.whitelist_enabled && type === 'default' ) {
-			wikiWhitelist = [...new Set(settings.whitelist.trim().split(/[\s,;\|]+/).filter( whiteWiki => {
-				if ( !whiteWiki.trim() || whiteWiki.length > 200 ) return false;
-				if ( !whiteWiki.startsWith('https://') || !whiteWiki.endsWith('/') ) return false;
-				try {
-					let href = new URL(whiteWiki).href;
-					return whiteWiki === href;
-				}
-				catch {
-					return false;
-				}
-			} ))].slice(0, 100).join('\n').trim();
+			wikiWhitelist = [...new Set(settings.whitelist.trim().split(/[\s,;\|]+/).map( whiteWiki => {
+				if ( !whiteWiki.trim() || whiteWiki.length > 200 ) return;
+				return Wiki.fromInput(whiteWiki)?.href;
+			} ).filter( whiteWiki => whiteWiki ))].slice(0, 100).join('\n').trim();
 			if ( !wikiWhitelist.length ) wikiWhitelist = null;
 		}
 		if ( !/^\d+ \d+ \d+ \d+ \d+$/.test(`${settings.desclength ?? '0'} ${settings.fieldcount ?? '0'} ${settings.fieldlength ?? '0'} ${settings.sectionlength ?? '0'} ${settings.sectiondesclength ?? '0'}`) ) {
@@ -591,7 +624,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 					}
 				}
 				return [testWiki, fresponse];
-			} )
+			} );
 		} )).then( /** @param {[Wiki, import('got').Response<String>][]} fresponses */ fresponses => {
 			return db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', [guild, '#' + response.parentId] ).then( ({rows:[row, {lang: guildlang} = {}]}) => {
 				if ( row ) {
@@ -944,6 +977,287 @@ function update_settings(res, userSettings, guild, type, settings) {
 	}, error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
 		return res(`/guild/${guild}/settings/${type}`, 'savefail');
+	} );
+}
+
+/**
+ * Change settings
+ * @param {Function} res - The server response
+ * @param {import('../util.js').Settings} userSettings - The settings of the user
+ * @param {String} guild - The id of the guild
+ * @param {Object} settings - The new settings
+ * @param {String} settings.wiki
+ * @param {String} settings.lang
+ * @param {String} [settings.whitelist]
+ * @param {Number} [settings.desclength]
+ * @param {Number} [settings.fieldcount]
+ * @param {Number} [settings.fieldlength]
+ * @param {Number} [settings.sectionlength]
+ * @param {Number} [settings.sectiondesclength]
+ * @param {String} settings.save_settings
+ */
+function update_user_settings(res, userSettings, guild, settings) {
+	if ( guild && !( userSettings.guilds.notMember.has(guild) || userSettings.guilds.notAdmin.has(guild) ) ) {
+		return res(`/guild/${guild}/settings`, 'savefail');
+	}
+	if ( !settings.save_settings ) {
+		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	if ( !settings.wiki || !allLangs.hasOwnProperty(settings.lang) ) {
+		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	var wiki = Wiki.fromInput(settings.wiki);
+	if ( !wiki || ( settings.whitelist && guild ) ) {
+		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	/** @type {String?} */
+	var wikiWhitelist = null;
+	if ( settings.whitelist ) {
+		wikiWhitelist = [...new Set(settings.whitelist.trim().split(/[\s,;\|]+/).map( whiteWiki => {
+			if ( !whiteWiki.trim() || whiteWiki.length > 200 ) return;
+			return Wiki.fromInput(whiteWiki)?.href;
+		} ).filter( whiteWiki => whiteWiki ))].slice(0, 100).join('\n').trim();
+		if ( !wikiWhitelist.length ) wikiWhitelist = null;
+	}
+	if ( !/^\d+ \d+ \d+ \d+ \d+$/.test(`${settings.desclength ?? '0'} ${settings.fieldcount ?? '0'} ${settings.fieldlength ?? '0'} ${settings.sectionlength ?? '0'} ${settings.sectiondesclength ?? '0'}`) ) {
+		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	if ( settings.desclength ) {
+		settings.desclength = parseInt(settings.desclength, 10);
+		if ( settings.desclength > 4_000 ) return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	if ( settings.fieldcount ) {
+		settings.fieldcount = parseInt(settings.fieldcount, 10);
+		if ( settings.fieldcount > 25 ) return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	if ( settings.fieldlength ) {
+		settings.fieldlength = parseInt(settings.fieldlength, 10);
+		if ( settings.fieldlength > 1_000 ) return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	if ( settings.sectionlength ) {
+		settings.sectionlength = parseInt(settings.sectionlength, 10);
+		if ( settings.sectionlength > 4_000 ) return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	if ( settings.sectiondesclength ) {
+		settings.sectiondesclength = parseInt(settings.sectiondesclength, 10);
+		if ( settings.sectiondesclength > 4_000 ) return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+	}
+	
+	var embeds = [];
+	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
+		responseType: 'text',
+		context: {
+			guildId: guild
+		}
+	} ).then( response => {
+		try {
+			response.body = JSON.parse(response.body);
+		}
+		catch (error) {
+			if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+				let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
+				if ( api ) {
+					wiki = new Wiki(api.split('api.php?')[0], wiki);
+					return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+						context: {
+							guildId: guild
+						}
+					} );
+				}
+				return got.get( wiki, {
+					responseType: 'text',
+					context: {
+						guildId: guild
+					}
+				} ).then( tresponse => {
+					if ( typeof tresponse.body === 'string' ) {
+						let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+						if ( api ) {
+							wiki = new Wiki(api.split('api.php?')[0], wiki);
+							return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+								context: {
+									guildId: guild
+								}
+							} );
+						}
+					}
+					return response;
+				} );
+			}
+		}
+		return response;
+	} ).then( response => {
+		return db.query( 'SELECT channel, wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', ['@' + userSettings.user.id, guild] ).then( ({rows:[row, guildrow]}) => {
+			if ( row ) guildrow ??= row;
+			let lang = new Lang(( guild ? guildrow?.lang || userSettings.user.locale : settings.lang ));
+			var body = response.body;
+			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {
+				console.log( '- Dashboard: ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
+				if ( wiki.name === row?.wiki ) return [row, guildrow];
+				if ( body?.error?.code === 'readapidenied' || body?.error?.info === 'You need read permission to use this module.' ) {
+					return Promise.reject('private');
+				}
+				return Promise.reject();
+			}
+			wiki.updateWiki(body.query.general);
+			let notice = [];
+			if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
+				console.log( '- Dashboard: This wiki is using ' + body.query.general.generator + '.' );
+				notice.push({
+					name: 'MediaWiki',
+					value: lang.get('test.MediaWiki', '[MediaWiki 1.30](<https://www.mediawiki.org/wiki/MediaWiki_1.30>)', body.query.general.generator)
+				});
+			}
+			if ( notice.length ) {
+				embeds.push({
+					author: {
+						name: body.query.general.sitename,
+						url: wiki.toLink()
+					},
+					title: lang.get('test.notice'),
+					fields: notice
+				});
+			}
+			return [row, guildrow];
+		}, dberror => {
+			console.log( '- Dashboard: Error while getting the user settings: ' + dberror );
+			return Promise.reject();
+		} );
+	}, error => {
+		if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
+			console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
+			return Promise.reject('http');
+		}
+		console.log( '- Dashboard: Error while testing the wiki: ' + error );
+		if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+			return Promise.reject('timeout');
+		}
+		return Promise.reject();
+	} ).then( ([row, guildrow]) => {
+		var guildname = ( guild ? userSettings.guilds.notMember.get(guild)?.name ?? userSettings.guilds.notAdmin.get(guild)?.name ?? `\`${guild}\`` : null );
+		var lang = new Lang(( guild ? guildrow?.lang || userSettings.user.locale : settings.lang ));
+		if ( !row ) return db.query( 'INSERT INTO discord(wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, guild, main) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)', [wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), wikiWhitelist, '@' + userSettings.user.id] ).then( () => {
+			console.log( '- Dashboard: User settings successfully saved: @' + userSettings.user.id );
+			res('/settings', 'save');
+			var text = lang.get('settings.dashboard.user', `<@${userSettings.user.id}>`);
+			text += `\n${lang.get('settings.currentwiki')} <${wiki.name}>`;
+			text += `\n${lang.get('settings.currentlang')} \`${allLangs[settings.lang]}\``;
+			text += `\n${lang.get('settings.currentdesclength')} \`${settings.desclength}\``;
+			text += `\n${lang.get('settings.currentfieldcount')} \`${settings.fieldcount}\``;
+			text += `\n${lang.get('settings.currentfieldlength')} \`${settings.fieldlength}\``;
+			text += `\n${lang.get('settings.currentsectionlength')} \`${settings.sectionlength}\``;
+			text += `\n${lang.get('settings.currentsectiondesclength')} \`${settings.sectiondesclength}\``;
+			if ( wikiWhitelist ) text += '\n' + lang.get('settings.wikilist_added');
+			text += `\n<${new URL('/settings', process.env.dashboard).href}>`;
+			sendMsg( {
+				type: 'notifyUser', text, embeds,
+				file: [`./i18n/widgets/${settings.lang}.png`],
+				user: userSettings.user.id
+			} ).catch( error => {
+				console.log( '- Dashboard: Error while notifying the user: ' + error );
+			} );
+		}, dberror => {
+			console.log( '- Dashboard: Error while saving the user settings: ' + dberror );
+			return res('/settings', 'savefail');
+		} );
+		var diff = [];
+		var file = [];
+		var updateGuild = false;
+		var updateChannel = false;
+		if ( row.wiki !== wiki.name ) {
+			updateGuild = true;
+			diff.push(lang.get('settings.currentwiki') + ` ~~<${row.wiki}>~~ → <${wiki.name}>`);
+		}
+		if ( row.lang !== settings.lang ) {
+			updateGuild = true;
+			file.push(`./i18n/widgets/${settings.lang}.png`);
+			diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs[row.lang]}\`~~ → \`${allLangs[settings.lang]}\``);
+		}
+		if ( ( row.desclength ?? defaultSettings.embedLimits.descLength ) !== settings.desclength ) {
+			updateGuild = true;
+			diff.push(lang.get('settings.currentdesclength') + ` ~~\`${row.desclength ?? defaultSettings.embedLimits.descLength}\`~~ → \`${settings.desclength}\``);
+		}
+		if ( ( row.fieldcount ?? defaultSettings.embedLimits.fieldCount ) !== settings.fieldcount ) {
+			updateGuild = true;
+			diff.push(lang.get('settings.currentfieldcount') + ` ~~\`${row.fieldcount ?? defaultSettings.embedLimits.fieldCount}\`~~ → \`${settings.fieldcount}\``);
+		}
+		if ( ( row.fieldlength ?? defaultSettings.embedLimits.fieldLength ) !== settings.fieldlength ) {
+			updateGuild = true;
+			diff.push(lang.get('settings.currentfieldlength') + ` ~~\`${row.fieldlength ?? defaultSettings.embedLimits.fieldLength}\`~~ → \`${settings.fieldlength}\``);
+		}
+		if ( ( row.sectionlength ?? defaultSettings.embedLimits.sectionLength ) !== settings.sectionlength ) {
+			updateGuild = true;
+			diff.push(lang.get('settings.currentsectionlength') + ` ~~\`${row.sectionlength ?? defaultSettings.embedLimits.sectionLength}\`~~ → \`${settings.sectionlength}\``);
+		}
+		if ( ( row.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength ) !== settings.sectiondesclength ) {
+			updateGuild = true;
+			diff.push(lang.get('settings.currentsectiondesclength') + ` ~~\`${row.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength}\`~~ → \`${settings.sectiondesclength}\``);
+		}
+		if ( !guild && row.whitelist !== wikiWhitelist ) {
+			updateChannel = true;
+			if ( !row.whitelist ) diff.push(lang.get('settings.wikilist_added'));
+			else if ( !wikiWhitelist ) diff.push(lang.get('settings.wikilist_removed'));
+			else diff.push(lang.get('settings.wikilist_modified'));
+		}
+		if ( diff.length ) {
+			var dbupdate = [];
+			if ( row.channel !== ( guild || null ) ) {
+				dbupdate.push([
+					'INSERT INTO discord(wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, channel, guild) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+					[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( wikiWhitelist ?? row.whitelist ), guild, '@' + userSettings.user.id]
+				]);
+			}
+			else if ( guild && guildrow.wiki === wiki.name && guildrow.lang === settings.lang && ( guildrow.desclength ?? defaultSettings.embedLimits.descLength ) === settings.desclength && ( guildrow.fieldcount ?? defaultSettings.embedLimits.fieldCount ) === settings.fieldcount && ( guildrow.fieldlength ?? defaultSettings.embedLimits.fieldLength ) === settings.fieldlength && ( guildrow.sectionlength ?? defaultSettings.embedLimits.sectionLength ) === settings.sectionlength && ( guildrow.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength ) === settings.sectiondesclength ) {
+				dbupdate.push([
+					'DELETE FROM discord WHERE guild = $1 AND channel = $2',
+					['@' + userSettings.user.id, guild]
+				]);
+			}
+			else {
+				if ( updateGuild ) {
+					if ( guild ) {
+						dbupdate.push([
+							'UPDATE discord SET wiki = $1, lang = $2, desclength = $3, fieldcount = $4, fieldlength = $5, sectionlength = $6, sectiondesclength = $7 WHERE guild = $8 AND channel = $9',
+							[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), '@' + userSettings.user.id, guild]
+						]);
+					}
+					else {
+						dbupdate.push([
+							'UPDATE discord SET wiki = $1, lang = $2, desclength = $3, fieldcount = $4, fieldlength = $5, sectionlength = $6, sectiondesclength = $7 WHERE guild = $8 AND channel IS NULL',
+							[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), '@' + userSettings.user.id]
+						]);
+					}
+				}
+				if ( updateChannel ) {
+					dbupdate.push([
+						'UPDATE discord SET whitelist = $1 WHERE guild = $2',
+						[wikiWhitelist, '@' + userSettings.user.id]
+					]);
+				}
+			}
+			return Promise.all(dbupdate.map( ([sql, sqlargs]) => {
+				return db.query( sql, sqlargs );
+			} )).then( () => {
+				console.log( '- Dashboard: User settings successfully saved: ' + ( guild || '' ) + '@' + userSettings.user.id );
+				res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'save');
+				var text = lang.get('settings.dashboard.user', ( guildname ?? `<@${userSettings.user.id}>` ));
+				text += '\n' + diff.join('\n');
+				text += `\n<${new URL(( guild ? `/guild/${guild}/settings` : '/settings' ), process.env.dashboard).href}>`;
+				sendMsg( {
+					type: 'notifyUser', text, file,
+					embeds: ( row.wiki !== wiki.name ? embeds : [] ),
+					user: userSettings.user.id
+				} ).catch( error => {
+					console.log( '- Dashboard: Error while notifying the user: ' + error );
+				} );
+			}, dberror => {
+				console.log( '- Dashboard: Error while saving the user settings: ' + dberror );
+				return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+			} );
+		}
+		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'nochange');
+	}, error => {
+		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail', error);
 	} );
 }
 

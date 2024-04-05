@@ -113,8 +113,9 @@ function parse_infobox(infobox, embed, embedLimits = {fieldCount: 25, fieldLengt
 			if ( value ) embed.addFields( {name: '\u200b', value: '__**' + value + '**__'} );
 			break;
 		}
-		case 'image': {
-			if ( embed.data.thumbnail?.url !== thumbnail ) return;
+		case 'media':
+		case 'image':
+			if ( embed.data.thumbnail?.url !== thumbnail ) break;
 			try {
 				let image = infobox.data.find( img => {
 					if ( !/\.(?:png|jpg|jpeg|gif)$/.test(img.name) ) return false;
@@ -125,7 +126,6 @@ function parse_infobox(infobox, embed, embedLimits = {fieldCount: 25, fieldLengt
 			}
 			catch {}
 			break;
-		}
 	}
 }
 

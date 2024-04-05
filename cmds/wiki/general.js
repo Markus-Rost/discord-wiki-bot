@@ -147,7 +147,7 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 		return fn.diff(lang, msg, args, wiki, spoiler, noEmbed);
 	}
 	var noRedirect = ( querystring.getAll('redirect').pop() === 'no' || ( querystring.has('action') && querystring.getAll('action').pop() !== 'view' ) );
-	var uselang = lang.lang;
+	var uselang = ( isMessage(msg) || msg.inCachedGuild?.() ? lang.lang : 'content' );
 	if ( querystring.has('variant') || querystring.has('uselang') ) {
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
 		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
@@ -176,7 +176,9 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 		wiki.updateWiki(body.query.general, Object.values(body.query.namespaces), body.query.namespacealiases);
 		if ( aliasInvoke === 'search' ) {
 			logging(wiki, msg.guildId, 'search');
-			return fn.search(lang, msg, full_title.split(' ').slice(1).join(' '), wiki, body.query, reaction, spoiler, noEmbed);
+			let searchterm = full_title.split(' ').slice(1).join(' ').trim();
+			if ( !searchterm ) return fn.special_page(lang, msg, {title: 'Special:Search', uselang}, 'search', body.query, wiki, new URLSearchParams(), '', reaction, spoiler, noEmbed);
+			return fn.search(lang, msg, searchterm, wiki, body.query, reaction, spoiler, noEmbed);
 		}
 		if ( aliasInvoke === 'discussion' && wiki.wikifarm === 'fandom' && !querystring.toString() && !fragment ) {
 			logging(wiki, msg.guildId, 'discussion');

@@ -4,13 +4,13 @@ import interwiki_interaction from './interwiki.js';
 import wiki_random from '../cmds/wiki/random.js';
 
 /**
- * Post a message with random link.
+ * Post a message with a random page.
  * @param {import('discord.js').ChatInputCommandInteraction} interaction - The interaction.
  * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_random(interaction, lang, wiki) {
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		var namespace = interaction.options.getString('namespace')?.trim().toLowerCase().replaceAll( wiki.spaceReplacement ?? '_', ' ' ).split(/\s*[,|]\s*/g) || [];
 		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
@@ -89,7 +89,7 @@ function autocomplete_random(interaction, lang, wiki) {
 	lang = lang.uselang(interaction.locale);
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name !== 'namespace' ) return interwiki_interaction.autocomplete(interaction, lang, wiki);
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		var [input, ...prefix] = focused.value.toLowerCase().split(/\s*[,|]\s*/g).reverse();
 		var prefixNames = '';
 		if ( newWiki.namespaces.size ) {
@@ -184,7 +184,7 @@ function autocomplete_random(interaction, lang, wiki) {
 						if ( isDebug ) log_error(acerror);
 					} );
 				}
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -271,7 +271,7 @@ function autocomplete_random(interaction, lang, wiki) {
 					if ( isDebug ) log_error(acerror);
 				} );
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;

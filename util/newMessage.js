@@ -31,14 +31,14 @@ export { defaultSettings };
  * @param {import('discord.js').Message} msg - The Discord message.
  * @param {import('./i18n.js').default} lang - The user language.
  * @param {Wiki} [wiki] - The default wiki.
+ * @param {{descLength: Number, fieldCount: Number, fieldLength: Number, sectionLength: Number, sectionDescLength: Number}} [embedLimits] - The limits for the embed.
  * @param {String} [prefix] - The prefix for the message.
  * @param {Boolean} [noInline] - Parse inline commands?
  * @param {Map<String, String>} [subprefixes] - The subprefixes for the message.
- * @param {{descLength: Number, fieldCount: Number, fieldLength: Number, sectionLength: Number, sectionDescLength: Number}} [embedLimits] - The limits for the embed.
  * @param {String[]} [wikiWhitelist] - Whitelist of allowed wikis.
  * @param {String} [content] - Overwrite for the message content.
  */
-export default function newMessage(msg, lang, wiki = defaultSettings.wiki, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), embedLimits = defaultSettings.embedLimits, wikiWhitelist = [], content = '') {
+export default function newMessage(msg, lang, wiki = defaultSettings.wiki, embedLimits = defaultSettings.embedLimits, prefix = process.env.prefix, noInline = null, subprefixes = new Map(defaultSettings.subprefixes), wikiWhitelist = [], content = '') {
 	wiki = new Wiki(wiki);
 	msg.wikiPrefixes = new Map();
 	subprefixes.forEach( (prefixwiki, prefixchar) => msg.wikiPrefixes.set(prefixwiki, prefixchar) );

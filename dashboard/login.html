@@ -24,7 +24,7 @@
 				<p>Wiki-Bot is a Discord bot made to bring Discord servers and MediaWiki wikis together. It helps with linking wiki pages, verifying wiki users, informing about latest changes on the wiki and more. <a href="https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki" target="_blank">[More information]</a></p>
 				<p>Here you can change different bot settings for servers you have Manage Server permission on. To begin, you will have to authenticate your Discord account which you can do with this button:</p>
 			</div>
-			<div id="big-buttons">
+			<div class="big-buttons">
 				<a class="big-button" id="login-button">
 					<img src="/src/discord.svg" alt="Discord">
 					<span>Login</span>
@@ -32,6 +32,10 @@
 				<a class="big-button" id="invite-button" href="https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands">
 					<img class="avatar" src="/src/icon.png" alt="Wiki-Bot">
 					<span>Invite Wiki-Bot</span>
+				</a>
+				<a class="big-button" id="user-invite-button" href="https://discord.com/oauth2/authorize?client_id=461189216198590464&scope=applications.commands&integration_type=1">
+					<img class="avatar" src="/src/icon.png" alt="Wiki-Bot">
+					<span>Add to User</span>
 				</a>
 			</div>
 			<div id="story">
@@ -53,6 +57,10 @@
 				<img src="/src/channel.svg" alt="Channel">
 				<div>Invite Wiki-Bot</div>
 			</a>
+			<a class="channel" id="user-invite-wikibot" href="https://discord.com/oauth2/authorize?client_id=461189216198590464&scope=applications.commands&integration_type=1" title="Add Wiki-Bot to User">
+				<img src="/src/channel.svg" alt="Channel">
+				<div>Add Wiki-Bot to User</div>
+			</a>
 		</div>
 		<div id="navbar">
 			<div></div>
@@ -60,7 +68,13 @@
 				<img class="avatar" src="/src/icon.png" alt="Wiki-Bot">
 				<span>Support Server</span>
 			</a>
-			<div></div>
+			<a id="user-invite" href="https://discord.com/oauth2/authorize?client_id=461189216198590464&scope=applications.commands&integration_type=1" alt="Add Wiki-Bot to User">
+				<div class="avatar svg-avatar">
+					<svg width="24" height="24" viewBox="0 0 24 24">
+						<path fill="currentColor" d="M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"></path>
+					</svg>
+				</div>
+			</a>
 		</div>
 		<div id="guildlist">
 			<div class="guild" id="invite">

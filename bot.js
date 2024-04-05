@@ -193,13 +193,14 @@ function interactionCreate(interaction) {
 	if ( breakOnTimeoutPause(interaction) ) return;
 	/** @type {function(Discord.Interaction, Lang, Wiki)} */
 	var cmd = null;
+	interaction.author = ( interaction.guildId || '' ) + ( interaction.inCachedGuild() ? '' : '@' + interaction.user.id );
 	if ( interaction.isAutocomplete() ) {
 		if ( !interaction_commands.autocomplete.hasOwnProperty(interaction.commandName) ) return;
 		cmd = interaction_commands.autocomplete[interaction.commandName];
 	}
 	else if ( interaction.isChatInputCommand() ) {
-		if ( interaction.commandName === 'inline' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName );
-		else console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+		if ( interaction.commandName === 'inline' ) console.log( interaction.author + ': Slash: /' + interaction.commandName );
+		else console.log( interaction.author + ': Slash: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
@@ -209,7 +210,7 @@ function interactionCreate(interaction) {
 		cmd = interaction_commands.slash[interaction.commandName];
 	}
 	else if ( interaction.isButton() ) {
-		if ( interaction.customId !== 'verify_again' ) console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Button: ' + interaction.customId );
+		if ( interaction.customId !== 'verify_again' ) console.log( interaction.author + ': Button: ' + interaction.customId );
 		if ( !interaction_commands.button.hasOwnProperty(interaction.customId) ) {
 			if ( interaction.inGuild() && interaction.customId.startsWith( 'rc_' ) ) rcscriptButtons(interaction);
 			return;
@@ -217,7 +218,7 @@ function interactionCreate(interaction) {
 		cmd = interaction_commands.button[interaction.customId];
 	}
 	else if ( interaction.isModalSubmit() ) {
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Modal: ' + interaction.customId + ' ' + interaction.fields.components.reduce( (prev, next) => {
+		console.log( interaction.author + ': Modal: ' + interaction.customId + ' ' + interaction.fields.components.reduce( (prev, next) => {
 			return prev.concat(next.components);
 		}, [] ).map( option => {
 			return option.customId + ':' + option.value;
@@ -229,21 +230,39 @@ function interactionCreate(interaction) {
 		cmd = interaction_commands.modal[interaction.customId];
 	}
 	else return;
+	if ( !cmd ) return;
 
-	if ( !interaction.inGuild() ) {
-		interaction.embedLimits = {...defaultSettings.embedLimits};
-		interaction.wikiWhitelist = [];
-		return cmd(interaction, new Lang(interaction.locale), new Wiki());
+	let sqlargs = [];
+	if ( interaction.inCachedGuild() ) {
+		sqlargs.push(interaction.guildId);
+		if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
+		else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
 	}
-	let sqlargs = [interaction.guildId];
-	if ( interaction.channel?.isThread() ) sqlargs.push(interaction.channel.parentId, '#' + interaction.channel.parent?.parentId);
-	else sqlargs.push(interaction.channelId, '#' + interaction.channel?.parentId);
-	( interaction.isAutocomplete() && rowCache.has(sqlargs.join(' ')) ? Promise.resolve(rowCache.get(sqlargs.join(' '))) : 
-	db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+	else {
+		sqlargs.push('@' + interaction.user.id, interaction.guildId);
+		if ( interaction.channel?.isThread() ) sqlargs.push(interaction.guildId + '#' + interaction.channel.parentId);
+		else sqlargs.push(interaction.guildId + '#' + interaction.channelId);
+	}
+	( interaction.isAutocomplete() && rowCache.has(sqlargs.join(' ')) ? Promise.resolve(rowCache.get(sqlargs.join(' '))) : db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
 		rowCache.set(sqlargs.join(' '), row);
 		return row;
 	} ) ).then( row => {
-		if ( !row ) interaction.defaultSettings = true;
+		if ( !row ) {
+			interaction.defaultSettings = true;
+			if ( !interaction.inCachedGuild() && interaction.isChatInputCommand() ) {
+				let lang = new Lang(interaction.locale, 'settings');
+				interaction.user.send( {
+					content: lang.get('user missing', '`' + process.env.prefix + 'settings lang`', '`' + process.env.prefix + 'settings wiki`', interaction.user.toString()),
+					components: ( process.env.dashboard ? [new Discord.ActionRowBuilder().addComponents(
+						new Discord.ButtonBuilder().setLabel(lang.get('button')).setEmoji(WB_EMOJI.wikibot).setStyle(Discord.ButtonStyle.Link).setURL(new URL('/settings', process.env.dashboard).href)
+					)] : [] ),
+					allowedMentions: {users: [interaction.user.id]}
+				} ).catch( error => {
+					if ( error?.code === 50007 ) return; // CANNOT_MESSAGE_USER
+					log_error(error);
+				} );
+			};
+		}
 		interaction.embedLimits = {
 			descLength: row?.desclength ?? defaultSettings.embedLimits.descLength,
 			fieldCount: row?.fieldcount ?? defaultSettings.embedLimits.fieldCount,
@@ -251,8 +270,8 @@ function interactionCreate(interaction) {
 			sectionLength: row?.sectionlength ?? defaultSettings.embedLimits.sectionLength,
 			sectionDescLength: row?.sectiondesclength ?? Math.min(row?.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
 		};
-		interaction.wikiWhitelist = row?.whitelist?.split?.('\n') ?? [];
-		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale )), new Wiki(row?.wiki));
+		interaction.wikiWhitelist = ( interaction.inCachedGuild() || interaction.isAutocomplete() ? row?.whitelist?.split?.('\n') ?? [] : [] );
+		return cmd(interaction, new Lang(( row?.lang || interaction.guildLocale || interaction.locale )), new Wiki(row?.wiki));
 	}, dberror => {
 		console.log( '- Interaction: Error while getting the wiki: ' + dberror );
 		if ( interaction.isAutocomplete() ) return;
@@ -334,7 +353,7 @@ function messageCreate(msg) {
 					sectionDescLength: row.sectiondesclength ?? Math.min(row.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
 				};
 				let wikiWhitelist = row.whitelist?.split?.('\n') ?? [];
-				newMessage(msg, new Lang(row.lang), row.wiki, patreonGuildsPrefix.get(msg.guildId), row.inline, subprefixes, embedLimits, wikiWhitelist);
+				newMessage(msg, new Lang(row.lang), row.wiki, embedLimits, patreonGuildsPrefix.get(msg.guildId), row.inline, subprefixes, wikiWhitelist);
 			}
 			else {
 				msg.defaultSettings = true;
@@ -345,7 +364,20 @@ function messageCreate(msg) {
 			msg.sendChannel( new Lang(msg.guild.preferredLocale, 'general').get('database') + '\n' + process.env.invite, true );
 		} );
 	}
-	else newMessage(msg, new Lang());
+	else db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND channel IS NULL ORDER BY channel DESC NULLS LAST LIMIT 1', ['@' + msg.author.id] ).then( ({rows:[row]}) => {
+		if ( !row ) msg.defaultSettings = true;
+		let embedLimits = {
+			descLength: row?.desclength ?? defaultSettings.embedLimits.descLength,
+			fieldCount: row?.fieldcount ?? defaultSettings.embedLimits.fieldCount,
+			fieldLength: row?.fieldlength ?? defaultSettings.embedLimits.fieldLength,
+			sectionLength: row?.sectionlength ?? defaultSettings.embedLimits.sectionLength,
+			sectionDescLength: row?.sectiondesclength ?? Math.min(row?.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
+		};
+		newMessage(msg, new Lang(row?.lang), row?.wiki, embedLimits);
+	}, dberror => {
+		console.log( '- Error while getting the wiki: ' + dberror );
+		msg.sendChannel( new Lang(defaultSettings.lang, 'general').get('database') + '\n' + process.env.invite, true );
+	} );
 };
 
 client.on( Discord.Events.MessageReactionAdd, (reaction, user) => {

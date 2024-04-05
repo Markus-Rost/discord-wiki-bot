@@ -530,6 +530,9 @@ function dashboard_verification(res, $, guild, args, dashboardLang, csrfToken) {
  * @param {String} [settings.delete_settings]
  */
 function update_verification(res, userSettings, guild, type, settings) {
+	if ( !userSettings.guilds.isMember.has(guild) ) {
+		return res(`/guild/${guild}/settings`, 'savefail');
+	}
 	if ( type === 'default' ) {
 		return res(`/guild/${guild}/verification`, 'savefail');
 	}

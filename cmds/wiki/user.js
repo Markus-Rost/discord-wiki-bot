@@ -26,7 +26,7 @@ const {timeoptions, usergroups} = require('../../util/default.json');
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function mw_user(lang, msg, namespace, username, wiki, querystring, fragment, querypage, contribs, reaction, spoiler, noEmbed) {
-	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason&bkip=' + encodeURIComponent( username ) + '&format=json', {
+	if ( /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username) ) return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&list=blocks&bkprop=user|by|timestamp|expiry|reason|flags&bkip=' + encodeURIComponent( username ) + '&format=json', {
 		context: {
 			guildId: msg.guildId
 		}
@@ -145,9 +145,10 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				blockexpiry = dateformat.format(expiry);
 			}
 			if ( isBlocked ) {
+				let header = ( block.partial ? 'user.block.partial' : 'user.block.header' );
 				let text = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( block.reason ? 'text' : 'noreason' );
 				return {
-					header: lang.get('user.block.header', escapeFormatting(block.user), 'unknown'),
+					header: lang.get(header, escapeFormatting(block.user), 'unknown'),
 					text: lang.get(text, dateformat.format(blockedtimestamp), blockduration, blockexpiry, '[' + escapeFormatting(block.by) + '](<' + wiki.toLink('User:' + block.by, '', '', true) + '>)', toMarkdown(block.reason, wiki))
 				};
 			}
@@ -331,8 +332,12 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				timeZone: 'UTC'
 			}, timeoptions));
 		}
-		let registrationDate = new Date(queryuser.registration);
-		var registration = [lang.get('user.info.registration'), dateformat.format(registrationDate), timeMarkdown(registrationDate, TimestampStyles.RelativeTime)];
+		var registration = [lang.get('user.info.registration')];
+		if ( queryuser.registration ) {
+			let registrationDate = new Date(queryuser.registration);
+			registration.push(dateformat.format(registrationDate), timeMarkdown(registrationDate, TimestampStyles.RelativeTime));
+		}
+		else registration.push(lang.get('user.info.unknown'));
 		var editcount = [
 			lang.get('user.info.editcount'),
 			'[' + queryuser.editcount.toLocaleString(lang.get('dateformat')) + '](<' + wiki.toLink(contribs + username, '', '', true) + '>)'
@@ -463,9 +468,10 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				blockexpiry = dateformat.format(expiry);
 			}
 			if ( isBlocked ) {
+				let blockedheader = ( queryuser.blockpartial ? 'user.block.partial' : 'user.block.header' );
 				let blockedtext = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( queryuser.blockreason ? 'text' : 'noreason' );
 				var block = {
-					header: lang.get('user.block.header', escapeFormatting(username), queryuser.gender),
+					header: lang.get(blockedheader, escapeFormatting(username), queryuser.gender),
 					text: lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, '[' + escapeFormatting(queryuser.blockedby) + '](<' + wiki.toLink('User:' + queryuser.blockedby, '', '', true) + '>)', toMarkdown(queryuser.blockreason, wiki))
 				};
 			}
@@ -485,7 +491,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				if ( globalgroup.length > 1 ) embed.addFields( {name: globalgroup[0], value: globalgroup.slice(1).join(',\n'), inline: true} );
 				embed.addFields(...[
 					{name: gender[0], value: gender[1], inline: true},
-					{name: registration[0], value: registration[1] + '\n' + registration[2], inline: true}
+					{name: registration[0], value: registration[1] + ( registration[2] ? '\n' + registration[2] : '' ), inline: true}
 				]);
 				
 				if ( msg.embedLimits.descLength ) {

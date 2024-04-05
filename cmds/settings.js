@@ -18,9 +18,9 @@ const allLangs = Lang.allLangs();
  * @param {Wiki} wiki - The wiki for the message.
  */
 export default function cmd_settings(lang, msg, args, line, wiki) {
-	if ( !msg.isAdmin() ) return msg.reactEmoji(WB_EMOJI.no);
+	if ( msg.inGuild() && !msg.isAdmin() ) return msg.reactEmoji(WB_EMOJI.no);
 	
-	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [msg.guildId] ).then( ({rows}) => {
+	db.query( 'SELECT channel, wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, prefix, whitelist FROM discord WHERE guild = $1 ORDER BY channel DESC NULLS LAST', [msg.guildId || '@' + msg.author.id] ).then( ({rows}) => {
 		var guild = rows.find( row => !row.channel );
 		if ( !guild ) guild = Object.assign({
 			role: null, inline: null,
@@ -31,21 +31,26 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 		var button = null;
 		var components = [];
 		if ( process.env.dashboard ) {
-			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji(WB_EMOJI.wikibot).setStyle(ButtonStyle.Link).setURL(new URL(`/guild/${msg.guildId}/settings`, process.env.dashboard).href);
+			button = new ButtonBuilder().setLabel(lang.get('settings.button')).setEmoji(WB_EMOJI.wikibot).setStyle(ButtonStyle.Link).setURL(new URL(( msg.inGuild() ? '/guild/' + msg.guildId : '' ) + '/settings', process.env.dashboard).href);
 			components.push(new ActionRowBuilder().addComponents(button));
 		}
-		var text = lang.get('settings.missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`');
+		var prelang = ( msg.inGuild() ? '' : 'user ' );
+		var text = lang.get('settings.' + prelang + 'missing', '`' + prefix + 'settings lang`', '`' + prefix + 'settings wiki`', msg.author.toString());
 		if ( rows.length ) {
-			text = lang.get('settings.current');
+			text = lang.get('settings.' + prelang + 'current', msg.author.toString());
 			if ( button ) text += `\n<${button.data.url}>`;
 			text += '\n' + lang.get('settings.currentlang') + ' `' + allLangs.names[guild.lang] + '` - `' + prefix + 'settings lang`';
-			if ( patreonGuildsPrefix.has(msg.guildId) ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
-			text += '\n' + lang.get('settings.currentrole') + ' ' + ( guild.role ? `<@&${guild.role}>` : '@everyone' ) + ' - `' + prefix + 'settings role`';
-			text += '\n' + lang.get('settings.currentinline') + ' ' + ( guild.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( guild.inline ? '~~' : '' ) + ' - `' + prefix + 'settings inline`';
+			if ( msg.inGuild() ) {
+				if ( patreonGuildsPrefix.has(msg.guildId) ) text += '\n' + lang.get('settings.currentprefix') + ' `' + prefix + '` - `' + prefix + 'settings prefix`';
+				text += '\n' + lang.get('settings.currentrole') + ' ' + ( guild.role ? `<@&${guild.role}>` : '@everyone' ) + ' - `' + prefix + 'settings role`';
+				text += '\n' + lang.get('settings.currentinline') + ' ' + ( guild.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( guild.inline ? '~~' : '' ) + ' - `' + prefix + 'settings inline`';
+			}
 			text += '\n' + lang.get('settings.currentwiki') + ' ' + guild.wiki + ' - `' + prefix + 'settings wiki`';
-			text += '\n' + lang.get('settings.currentchannel') + ' `' + prefix + 'settings channel`\n';
-			if ( rows.length === 1 ) text += lang.get('settings.nochannels');
-			else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel.replace( /^#/, '' ) + '>: ' + ( patreonGuildsPrefix.has(msg.guildId) ? '`' + allLangs.names[row.lang] + '` - ' : '' ) + '<' + row.wiki + '>' + ( patreonGuildsPrefix.has(msg.guildId) ? ' - ' + ( row.role ? `<@&${row.role}>` : '@everyone' ) + ' - ' + ( row.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( row.inline ? '~~' : '' ) : '' ) ).join('\n');
+			if ( msg.inGuild() ) {
+				text += '\n' + lang.get('settings.currentchannel') + ' `' + prefix + 'settings channel`\n';
+				if ( rows.length === 1 ) text += lang.get('settings.nochannels');
+				else text += rows.filter( row => row !== guild ).map( row => '<#' + row.channel.replace( /^#/, '' ) + '>: ' + ( patreonGuildsPrefix.has(msg.guildId) ? '`' + allLangs.names[row.lang] + '` - ' : '' ) + '<' + row.wiki + '>' + ( patreonGuildsPrefix.has(msg.guildId) ? ' - ' + ( row.role ? `<@&${row.role}>` : '@everyone' ) + ' - ' + ( row.inline ? '~~' : '' ) + '`[[' + inlinepage + ']]`' + ( row.inline ? '~~' : '' ) : '' ) ).join('\n');
+			}
 		}
 		
 		if ( !args.length ) {
@@ -53,9 +58,8 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 		}
 		var channelId = ( msg.channel.isThread() ? msg.channel.parentId : msg.channelId );
 		
-		var prelang = '';
 		args[0] = args[0].toLowerCase();
-		if ( args[0] === 'channel' ) {
+		if ( args[0] === 'channel' && msg.inGuild() ) {
 			prelang = 'channel ';
 			if ( !rows.length ) return splitMessage( text ).forEach( textpart => msg.replyMsg( {content: textpart, components}, true ) );
 			
@@ -82,10 +86,10 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 		
 		if ( args[0] === 'wiki' ) {
 			prelang += 'wiki';
-			var wikihelp = '\n' + lang.get('settings.wikihelp', prefix + 'settings ' + prelang);
+			var wikihelp = '\n' + lang.get('settings.wikihelp', prefix + 'settings ' + prelang.replace('user ', ''));
 			if ( !args[1] ) {
-				if ( !rows.length ) return msg.replyMsg( {content: lang.get('settings.wikimissing') + wikihelp, components}, true );
-				else return msg.replyMsg( {content: lang.get('settings.' + prelang) + ' ' + ( channel || guild ).wiki + wikihelp, components}, true );
+				if ( !rows.length ) return msg.replyMsg( {content: lang.get('settings.' + prelang + 'missing', msg.author.toString()) + wikihelp, components}, true );
+				else return msg.replyMsg( {content: lang.get('settings.' + prelang, msg.author.toString()) + ' ' + ( channel || guild ).wiki + wikihelp, components}, true );
 			}
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 			var wikinew = Wiki.fromInput(args[1]);
@@ -162,7 +166,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( lang.get('test.notice') ).addFields( notice );
 					}
 					var sql = 'UPDATE discord SET wiki = $1 WHERE guild = $2 AND wiki = $3';
-					var sqlargs = [wikinew.name, msg.guildId, guild.wiki];
+					var sqlargs = [wikinew.name, msg.guildId || '@' + msg.author.id, guild.wiki];
 					if ( !rows.length ) {
 						sql = 'INSERT INTO discord(wiki, guild, main, lang) VALUES ($1, $2, $2, $3)';
 						sqlargs[2] = lang.lang;
@@ -173,7 +177,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 						if ( !rows.includes( channel ) ) {
 							if ( channel.wiki === wikinew.name ) {
 								if ( reaction ) reaction.removeEmoji();
-								return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + channel.wiki + wikihelp, embeds: [embed], components}, true );
+								return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed', msg.author.toString()) + ' ' + channel.wiki + wikihelp, embeds: [embed], components}, true );
 							}
 							sql = 'INSERT INTO discord(wiki, guild, channel, lang, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 							sqlargs.push(guild.lang, guild.role, guild.inline, guild.prefix);
@@ -188,9 +192,8 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 							} );
 							guild.wiki = wikinew.name;
 						}
-						if ( channel || !rows.some( row => row.channel === channelId ) ) wiki = new Wiki(wikinew);
 						if ( reaction ) reaction.removeEmoji();
-						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' ' + wikinew.name + wikihelp, embeds: [embed], components}, true );
+						msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed', msg.author.toString()) + ' ' + wikinew.name + wikihelp, embeds: [embed], components}, true );
 						var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline && row.desclength === guild.desclength && row.fieldcount === guild.fieldcount && row.fieldlength === guild.fieldlength && row.sectionlength === guild.sectionlength && row.sectiondesclength === guild.sectiondesclength && row.whitelist === guild.whitelist ).map( row => row.channel );
 						if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 							console.log( '- Settings successfully removed.' );
@@ -221,16 +224,16 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 		if ( args[0] === 'lang' || args[0] === 'language' ) {
 			if ( channel && !patreonGuildsPrefix.has(msg.guildId) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', true );
 			prelang += 'lang';
-			var langhelp = '\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`';
+			var langhelp = '\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang.replace('user ', '')) + ' `' + Object.values(allLangs.names).join('`, `') + '`';
 			if ( !args[1] ) {
-				return msg.replyMsg( {content: lang.get('settings.' + prelang) + ' `' + allLangs.names[( channel || guild ).lang] + '`' + langhelp, files: ( msg.uploadFiles() ? [`./i18n/widgets/${( channel || guild ).lang}.png`] : [] ), components}, true );
+				return msg.replyMsg( {content: lang.get('settings.' + prelang, msg.author.toString()) + ' `' + allLangs.names[( channel || guild ).lang] + '`' + langhelp, files: ( msg.uploadFiles() ? [`./i18n/widgets/${( channel || guild ).lang}.png`] : [] ), components}, true );
 			}
 			if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 			if ( !allLangs.map.hasOwnProperty(args[1]) ) {
 				return msg.replyMsg( {content: lang.get('settings.langinvalid') + langhelp, components}, true );
 			}
 			var sql = 'UPDATE discord SET lang = $1 WHERE guild = $2 AND lang = $3';
-			var sqlargs = [allLangs.map[args[1]], msg.guildId, guild.lang];
+			var sqlargs = [allLangs.map[args[1]], msg.guildId || '@' + msg.author.id, guild.lang];
 			if ( !rows.length ) {
 				sql = 'INSERT INTO discord(lang, guild, main) VALUES ($1, $2, $2)';
 				sqlargs.pop();
@@ -240,7 +243,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 				sqlargs[2] = channelId;
 				if ( !rows.includes( channel ) ) {
 					if ( channel.lang === allLangs.map[args[1]] ) {
-						return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[channel.lang] + '`' + langhelp, files: ( msg.uploadFiles() ? [`./i18n/widgets/${channel.lang}.png`] : [] ), components}, true );
+						return msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed', msg.author.toString()) + ' `' + allLangs.names[channel.lang] + '`' + langhelp, files: ( msg.uploadFiles() ? [`./i18n/widgets/${channel.lang}.png`] : [] ), components}, true );
 					}
 					sql = 'INSERT INTO discord(lang, guild, channel, wiki, role, inline, prefix) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 					sqlargs.push(guild.wiki, guild.role, guild.inline, guild.prefix);
@@ -256,7 +259,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 					guild.lang = allLangs.map[args[1]];
 				}
 				if ( channel || !patreonGuildsPrefix.has(msg.guildId) || !rows.some( row => row.channel === channelId ) ) lang = new Lang(allLangs.map[args[1]]);
-				msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed') + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang) + ' `' + Object.values(allLangs.names).join('`, `') + '`', files: ( msg.uploadFiles() ? [`./i18n/widgets/${allLangs.map[args[1]]}.png`] : [] ), components}, true );
+				msg.replyMsg( {content: lang.get('settings.' + prelang + 'changed', msg.author.toString()) + ' `' + allLangs.names[allLangs.map[args[1]]] + '`\n' + lang.get('settings.langhelp', prefix + 'settings ' + prelang.replace('user ', '')) + ' `' + Object.values(allLangs.names).join('`, `') + '`', files: ( msg.uploadFiles() ? [`./i18n/widgets/${allLangs.map[args[1]]}.png`] : [] ), components}, true );
 				var channels = rows.filter( row => row.channel && row.lang === guild.lang && row.wiki === guild.wiki && row.prefix === guild.prefix && row.role === guild.role && row.inline === guild.inline && row.desclength === guild.desclength && row.fieldcount === guild.fieldcount && row.fieldlength === guild.fieldlength && row.sectionlength === guild.sectionlength && row.sectiondesclength === guild.sectiondesclength && row.whitelist === guild.whitelist ).map( row => row.channel );
 				if ( channels.length ) db.query( 'DELETE FROM discord WHERE channel IN (' + channels.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', channels ).then( () => {
 					console.log( '- Settings successfully removed.' );
@@ -269,7 +272,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		if ( args[0] === 'role' ) {
+		if ( args[0] === 'role' && msg.inGuild() ) {
 			if ( channel && !patreonGuildsPrefix.has(msg.guildId) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', true );
 			prelang += 'role';
 			var rolehelp = '\n' + lang.get('settings.rolehelp', prefix + 'settings ' + prelang);
@@ -331,7 +334,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		if ( args[0] === 'prefix' && !channel ) {
+		if ( args[0] === 'prefix' && msg.inGuild() && !channel ) {
 			if ( !patreonGuildsPrefix.has(msg.guildId) ) {
 				return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', true );
 			}
@@ -364,7 +367,7 @@ export default function cmd_settings(lang, msg, args, line, wiki) {
 			} );
 		}
 		
-		if ( args[0] === 'inline' ) {
+		if ( args[0] === 'inline' && msg.inGuild() ) {
 			if ( channel && !patreonGuildsPrefix.has(msg.guildId) ) return msg.replyMsg( lang.get('general.patreon') + '\n<' + process.env.patreon + '>', true );
 			prelang += 'inline';
 			var toggle = 'inline ' + ( ( channel || guild ).inline ? 'disabled' : 'enabled' );

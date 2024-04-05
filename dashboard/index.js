@@ -52,15 +52,15 @@ const server = createServer( (req, res) => {
 
 	var reqURL = new URL(req.url, process.env.dashboard);
 
-	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( reqURL.pathname.startsWith( '/guild/' ) || reqURL.pathname === '/user' ) ) {
+	if ( req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded' && ( reqURL.pathname.startsWith( '/guild/' ) || reqURL.pathname === '/settings' || reqURL.pathname === '/user' ) ) {
 		let args = reqURL.pathname.split('/');
 		let state = req.headers.cookie?.split('; ')?.filter( cookie => {
 			return cookie.split('=')[0] === 'wikibot' && /^"([\da-f]+(?:-\d+)*)"$/.test(( cookie.split('=')[1] || '' ));
 		} )?.map( cookie => cookie.replace( /^wikibot="([\da-f]+(?:-\d+)*)"$/, '$1' ) )?.join();
 
 		if ( state && sessionData.has(state) && settingsData.has(sessionData.get(state).user_id)
-		&& ( ( args.length === 5 && postTypes.includes( args[3] ) && /^(?:default|new|notice|button|\d+)$/.test(args[4])
-		&& settingsData.get(sessionData.get(state).user_id).guilds.isMember.has(args[2]) ) || reqURL.pathname === '/user' ) ) {
+		&& ( ( args.length === 5 && postTypes.includes( args[3] ) && /^(?:default|new|notice|button|\d+)$/.test(args[4]) )
+		|| reqURL.pathname === '/settings' || reqURL.pathname === '/user' ) ) {
 			let postBody = [];
 			req.on( 'data', chunk => {
 				postBody.push(chunk);
@@ -93,6 +93,9 @@ const server = createServer( (req, res) => {
 							setting = setting[0].split('_');
 							return posts.user(save_response, userSession.user_id, setting[1], setting.slice(2).join('_'));
 						}
+					}
+					if ( reqURL.pathname === '/settings' ) {
+						return posts.settings(save_response, settingsData.get(userSession.user_id), null, null, settings);
 					}
 					else {
 						if ( reqURL.searchParams.has('beta') ) {
@@ -196,8 +199,8 @@ const server = createServer( (req, res) => {
 	res.setHeader('Content-Language', [dashboardLang.lang]);
 
 	var lastGuild = req.headers?.cookie?.split('; ')?.filter( cookie => {
-		return cookie.split('=')[0] === 'guild' && /^"(?:user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?)"$/.test(( cookie.split('=').slice(1).join('=') || '' ));
-	} )?.map( cookie => cookie.replace( /^guild="(user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?)"$/, '$1' ) )?.join();
+		return cookie.split('=')[0] === 'guild' && /^"(?:settings|user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?)"$/.test(( cookie.split('=').slice(1).join('=') || '' ));
+	} )?.map( cookie => cookie.replace( /^guild="(settings|user|\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?)"$/, '$1' ) )?.join();
 	if ( lastGuild ) res.setHeader('Set-Cookie', ['guild=""; SameSite=Lax; Path=/; Max-Age=0']);
 
 	var state = req.headers.cookie?.split('; ')?.filter( cookie => {
@@ -233,6 +236,9 @@ const server = createServer( (req, res) => {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
+		else if ( reqURL.pathname === '/settings' ) {
+			res.setHeader('Set-Cookie', ['guild="settings"; SameSite=Lax; Path=/']);
+		}
 		else if ( reqURL.pathname === '/user' ) {
 			if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
 			if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';
@@ -257,6 +263,9 @@ const server = createServer( (req, res) => {
 				res.setHeader('Set-Cookie', [`guild="${pathGuild}"; SameSite=Lax; Path=/`]);
 			}
 		}
+		else if ( reqURL.pathname === '/settings' ) {
+			res.setHeader('Set-Cookie', ['guild="settings"; SameSite=Lax; Path=/']);
+		}
 		else if ( reqURL.pathname === '/user' ) {
 			if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
 			if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';
@@ -269,7 +278,7 @@ const server = createServer( (req, res) => {
 
 	if ( reqURL.pathname === '/refresh' ) {
 		let returnLocation = reqURL.searchParams.get('return');
-		if ( !/^\/(?:user|guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)$/.test(returnLocation) ) {
+		if ( !/^\/(?:settings|user|guild\/\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?)$/.test(returnLocation) ) {
 			returnLocation = '/';
 		}
 		return pages.refresh(res, sessionData.get(state), returnLocation, reqURL.searchParams.get('beta'));

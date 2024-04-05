@@ -45,10 +45,19 @@
 				<img class="avatar" src="/src/icon.png" alt="Wiki-Bot">
 				<span>Support Server</span>
 			</a>
-			<a id="logout" href="/logout" alt="Logout">
-				<img class="avatar" src="/src/icon.png" alt="Logout">
-				<span>Wiki-Bot #2998</span>
-			</a>
+			<div>
+				<a id="user-invite" href="https://discord.com/oauth2/authorize?client_id=461189216198590464&scope=applications.commands&integration_type=1" alt="Add Wiki-Bot to User">
+					<div class="avatar svg-avatar">
+						<svg width="24" height="24" viewBox="0 0 24 24">
+							<path fill="currentColor" d="M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"></path>
+						</svg>
+					</div>
+				</a>
+				<a id="logout" href="/logout" alt="Logout">
+					<img class="avatar" src="/src/icon.png" alt="Logout">
+					<span>Wiki-Bot #2998</span>
+				</a>
+			</div>
 		</div>
 		<div id="guildlist">
 			<div class="guild" id="invite">
@@ -61,49 +70,51 @@
 					</div>
 				</a>
 			</div>
-			<div class="guild" id="last-separator">
-				<div class="separator"></div>
-			</div>
-			<div class="guild" id="refresh">
-				<div class="bar"></div>
-				<a href="/refresh" alt="Refresh server list">
-					<div class="avatar svg-avatar">
-						<svg width="20" height="23" viewBox="0 1.35 17.3 20" style="overflow: visible;">
-							<path fill="currentColor" d="M8.6,2.7V0.4c0-0.4-0.4-0.5-0.7-0.3L4.2,3.9C4,4,4,4.3,4.2,4.4l3.7,3.7c0.3,0.3,0.7,0.1,0.7-0.3V5.6c3.4,0,6.1,2.9,5.7,6.4  c-0.3,2.6-2.4,4.8-5.1,5.1c-3.5,0.4-6.4-2.3-6.4-5.7c0-1.1,0.3-2.1,0.8-2.9c0.1-0.2,0.1-0.4-0.1-0.5L2.1,6.5  C1.9,6.3,1.6,6.3,1.5,6.5C0.5,8-0.1,9.8,0,11.8c0.2,4.4,3.8,8.1,8.3,8.2c4.9,0.2,9-3.7,9-8.6C17.3,6.6,13.4,2.7,8.6,2.7z"></path>
-						</svg>
-					</div>
-				</a>
-			</div>
-			<div class="guild" id="theme-separator" style="display: none;">
-				<div class="separator"></div>
-			</div>
-			<div class="guild" id="theme-light" style="display: none;">
-				<div class="bar"></div>
-				<a class="theme-toggle" alt="Use light theme">
-					<div class="avatar noicon">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<circle cx="12" cy="12" r="5"/>
-							<line x1="12" y1="1" x2="12" y2="3"/>
-							<line x1="12" y1="21" x2="12" y2="23"/>
-							<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-							<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-							<line x1="1" y1="12" x2="3" y2="12"/>
-							<line x1="21" y1="12" x2="23" y2="12"/>
-							<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-							<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-						</svg>
-					</div>
-				</a>
-			</div>
-			<div class="guild" id="theme-dark" style="display: none;">
-				<div class="bar"></div>
-				<a class="theme-toggle" alt="Use dark theme">
-					<div class="avatar noicon">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-						</svg>
-					</div>
-				</a>
+			<div id="fixed-guild">
+				<div class="guild">
+					<div class="separator"></div>
+				</div>
+				<div class="guild" id="refresh">
+					<div class="bar"></div>
+					<a href="/refresh" alt="Refresh server data">
+						<div class="avatar svg-avatar">
+							<svg width="20" height="23" viewBox="0 1.35 17.3 20" style="overflow: visible;">
+								<path fill="currentColor" d="M8.6,2.7V0.4c0-0.4-0.4-0.5-0.7-0.3L4.2,3.9C4,4,4,4.3,4.2,4.4l3.7,3.7c0.3,0.3,0.7,0.1,0.7-0.3V5.6c3.4,0,6.1,2.9,5.7,6.4  c-0.3,2.6-2.4,4.8-5.1,5.1c-3.5,0.4-6.4-2.3-6.4-5.7c0-1.1,0.3-2.1,0.8-2.9c0.1-0.2,0.1-0.4-0.1-0.5L2.1,6.5  C1.9,6.3,1.6,6.3,1.5,6.5C0.5,8-0.1,9.8,0,11.8c0.2,4.4,3.8,8.1,8.3,8.2c4.9,0.2,9-3.7,9-8.6C17.3,6.6,13.4,2.7,8.6,2.7z"></path>
+							</svg>
+						</div>
+					</a>
+				</div>
+				<div class="guild" id="theme-separator" style="display: none;">
+					<div class="separator"></div>
+				</div>
+				<div class="guild" id="theme-light" style="display: none;">
+					<div class="bar"></div>
+					<a class="theme-toggle" alt="Use light theme">
+						<div class="avatar noicon">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<circle cx="12" cy="12" r="5"/>
+								<line x1="12" y1="1" x2="12" y2="3"/>
+								<line x1="12" y1="21" x2="12" y2="23"/>
+								<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+								<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+								<line x1="1" y1="12" x2="3" y2="12"/>
+								<line x1="21" y1="12" x2="23" y2="12"/>
+								<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+								<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+							</svg>
+						</div>
+					</a>
+				</div>
+				<div class="guild" id="theme-dark" style="display: none;">
+					<div class="bar"></div>
+					<a class="theme-toggle" alt="Use dark theme">
+						<div class="avatar noicon">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+							</svg>
+						</div>
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>

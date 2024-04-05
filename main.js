@@ -240,6 +240,20 @@ if ( process.env.dashboard ) {
 				} );
 			}
 		},
+		notifyUser: (discordClient, evalData) => {
+			discordClient.users.createDM(evalData.user).then( channel => {
+				return channel.send( {
+					content: evalData.text,
+					embeds: evalData.embeds ?? [],
+					files: evalData.file,
+					allowedMentions: {parse: []},
+					flags: 4096 // SuppressNotifications
+				} );
+			} ).catch( error => {
+				if ( error?.code === 50007 ) return; // CANNOT_MESSAGE_USER
+				globalThis.log_error(error);
+			} );
+		},
 		createWebhook: (discordClient, evalData) => {
 			if ( discordClient.guilds.cache.has(evalData.guild) ) {
 				/** @type {import('discord.js').ComponentType.ActionRow} */
@@ -350,7 +364,17 @@ if ( process.env.dashboard ) {
 					} );
 					break;
 				case 'notifyGuild':
-					return manager.broadcastEval( evalFunctions.notifyGuild, {context: message.data} ).catch( error => {
+					return manager.broadcastEval( evalFunctions.notifyGuild, {
+						context: message.data,
+						shard: ( message.data.prefix ? null : shardIdForGuildId(message.data.guild, manager.totalShards) )
+					} ).catch( error => {
+						data.error = error.toString();
+					} ).finally( () => {
+						return dashboard.send( {id: message.id, data} );
+					} );
+					break;
+				case 'notifyUser':
+					return manager.broadcastEval( evalFunctions.notifyUser, {context: message.data, shard: 0} ).catch( error => {
 						data.error = error.toString();
 					} ).finally( () => {
 						return dashboard.send( {id: message.id, data} );

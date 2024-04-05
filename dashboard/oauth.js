@@ -38,11 +38,14 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	$('#login-button span, .channel#login div').text(dashboardLang.get('general.login'));
 	$('.channel#login').attr('title', dashboardLang.get('general.login'));
 	$('#invite-button span, .channel#invite-wikibot div').text(dashboardLang.get('general.invite'));
+	$('#user-invite-button span, .channel#user-invite-wikibot div').text(dashboardLang.get('general.userinvite'));
 	$('.channel#invite-wikibot').attr('title', dashboardLang.get('general.invite'));
+	$('.channel#user-invite-wikibot').attr('title', dashboardLang.get('general.userinvite'));
 	$('.guild#invite a').attr('alt', dashboardLang.get('general.invite'));
 	$('.guild#theme-dark a').attr('alt', dashboardLang.get('general.theme-dark'));
 	$('.guild#theme-light a').attr('alt', dashboardLang.get('general.theme-light'));
 	$('#support span').text(dashboardLang.get('general.support'));
+	$('#user-invite').attr('alt', dashboardLang.get('general.userinvite'));
 	$('#text .description #welcome').html(dashboardLang.get('general.welcome'));
 	let responseCode = 200;
 	let prompt = 'none';
@@ -69,6 +72,14 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 		permissions: defaultPermissions, state
 	} );
 	$('.guild#invite a, .channel#invite-wikibot, #invite-button').attr('href', invite);
+	let userInvite = oauth.generateAuthUrl( {
+		scope: [
+			OAuth2Scopes.ApplicationsCommands
+		],
+		integrationType: 1, state
+	} );
+	if ( !userInvite.includes( 'integration_type' ) ) userInvite += '&integration_type=1';
+	$('#navbar #user-invite, .channel#user-invite-wikibot, #user-invite-button').attr('href', userInvite);
 	let url = oauth.generateAuthUrl( {
 		scope: [
 			OAuth2Scopes.Identify,
@@ -115,28 +126,44 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 		],
 		code: searchParams.get('code'),
 		grantType: 'authorization_code'
-	} ).then( ({access_token}) => {
+	} ).then( ({scope, access_token, guild: {id: guildId} = {}}) => {
+		scope = scope.split(' ');
+		if ( !scope.includes( OAuth2Scopes.Identify ) || !scope.includes( OAuth2Scopes.Guilds ) ) {
+			if ( scope.includes( OAuth2Scopes.ApplicationsCommands ) ) {
+				res.writeHead(302, {Location: '/settings'});
+				return res.end();
+			}
+			console.log( '- Dashboard: Error while getting user and guilds: Insufficient scopes authorized: ' + scope.join(' ') );
+			res.writeHead(302, {Location: '/login?action=failed'});
+			return res.end();
+		}
 		return Promise.all([
 			oauth.getUser(access_token),
 			oauth.getUserGuilds(access_token)
 		]).then( ([user, guilds]) => {
-			guilds = guilds.filter( guild => {
-				return ( guild.owner || hasPerm(guild.permissions, PermissionFlagsBits.ManageGuild) );
-			} ).map( guild => {
-				return {
-					id: guild.id,
-					name: guild.name,
-					acronym: guild.name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
-					icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
-					+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
-					userPermissions: guild.permissions
-				};
-			} );
-			sendMsg( {
-				type: 'getGuilds',
-				member: user.id,
-				guilds: guilds.map( guild => guild.id )
-			} ).then( response => {
+			db.query( 'SELECT channel FROM discord WHERE guild = $1 AND channel IS NOT NULL', ['@' + user.id] ).then( ({rows}) => {
+				return rows.map( row => row.channel );
+			}, dberror => {
+				console.log( '- Dashboard: Error while getting the user guilds: ' + dberror );
+				return [];
+			} ).then( userGuilds => {
+				guilds.sort( (a, b) => {
+					return ( b.owner - a.owner
+					|| hasPerm(b.permissions, PermissionFlagsBits.Administrator) - hasPerm(a.permissions, PermissionFlagsBits.Administrator)
+					|| hasPerm(b.permissions, PermissionFlagsBits.ManageGuild) - hasPerm(a.permissions, PermissionFlagsBits.ManageGuild)
+					|| hasPerm(b.permissions, PermissionFlagsBits.ManageMessages) - hasPerm(a.permissions, PermissionFlagsBits.ManageMessages)
+					|| userGuilds.includes( b.id ) - userGuilds.includes( a.id )
+					|| a.name.localeCompare(b.name) );
+				} );
+				return Promise.all([
+					sendMsg( {
+						type: 'getGuilds',
+						member: user.id,
+						guilds: guilds.map( guild => guild.id )
+					} ),
+					userGuilds
+				]);
+			} ).then( ([response, userGuilds]) => {
 				state = Date.now().toString(16) + randomBytes(16).toString('hex');
 				while ( sessionData.has(state) || sessionData.has(`${state}-${user.id}`) ) {
 					state = Date.now().toString(16) + randomBytes(16).toString('hex');
@@ -159,29 +186,48 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
 				settings.user.global_name = user.global_name ?? user.username;
 				settings.user.avatar = 'https://cdn.discordapp.com/' + ( user.avatar ? `avatars/${user.id}/${user.avatar}.` + ( user.avatar.startsWith( 'a_' ) ? 'gif' : 'png' ) : `embed/avatars/${( user.discriminator === '0' ? ( BigInt(user.id) >> 22n ) % 6n : user.discriminator % 5 )}.png` ) + '?size=64';
 				settings.user.locale = user.locale;
-				settings.guilds.count = guilds.length;
 				/** @type {import('./util.js').Guild[]} */
 				var isMemberGuilds = [];
 				settings.guilds.notMember = new Map();
+				settings.guilds.notAdmin = new Map();
 				response.forEach( (guild, i) => {
+					let isAdmin = ( guilds[i].owner || hasPerm(guilds[i].permissions, PermissionFlagsBits.ManageGuild) );
+					let partialGuild = {
+						id: guilds[i].id,
+						name: guilds[i].name,
+						acronym: guilds[i].name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
+						icon: ( guilds[i].icon ? `https://cdn.discordapp.com/icons/${guilds[i].id}/${guilds[i].icon}.`
+						+ ( guilds[i].icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
+						userPermissions: guilds[i].permissions
+					};
 					if ( guild ) {
-						if ( guild === 'noMember' ) return;
-						isMemberGuilds.push(Object.assign(guilds[i], guild));
+						if ( !isAdmin || guild === 'noMember' ) return;
+						isMemberGuilds.push(Object.assign(partialGuild, guild));
 					}
-					else settings.guilds.notMember.set(guilds[i].id, guilds[i]);
+					else {
+						if ( isAdmin ) settings.guilds.notMember.set(partialGuild.id, partialGuild);
+						else settings.guilds.notAdmin.set(partialGuild.id, partialGuild);
+					}
 				} );
 				settings.guilds.isMember = new Map(isMemberGuilds.sort( (a, b) => {
 					return ( b.patreon - a.patreon || b.memberCount - a.memberCount );
 				} ).map( guild => {
 					return [guild.id, guild];
 				} ));
+				settings.guilds.count = settings.guilds.isMember.size + settings.guilds.notMember.size + settings.guilds.notAdmin.size;
 				settingsData.set(user.id, settings);
-				if ( searchParams.has('guild_id') && !lastGuild.startsWith( searchParams.get('guild_id') + '/' ) ) {
-					lastGuild = searchParams.get('guild_id') + '/settings';
+				userGuilds = userGuilds.filter( userGuild => !( settings.guilds.notMember.has(userGuild) || settings.guilds.notAdmin.has(userGuild) ) );
+				if ( userGuilds.length ) db.query( 'DELETE FROM discord WHERE guild = $1 AND channel IN (' + userGuilds.map( (row, i) => '$' + ( i + 2 ) ).join(', ') + ')', ['@' + user.id, ...userGuilds] ).then( () => {
+					console.log( '- Dashboard: User guilds successfully removed.' );
+				}, dberror => {
+					console.log( '- Dashboard: Error while removing the user guilds: ' + dberror );
+				} );
+				if ( guildId && !lastGuild.startsWith( guildId + '/' ) ) {
+					lastGuild = guildId + '/settings';
 				}
 				let returnLocation = '/';
 				if ( lastGuild ) {
-					if ( lastGuild === 'user' ) returnLocation += lastGuild;
+					if ( lastGuild === 'settings' || lastGuild === 'user' ) returnLocation += lastGuild;
 					else if ( /^\d+\/(?:settings|verification|rcscript)(?:\/(?:\d+|new|notice|button))?(?:\?beta=\w+)?$/.test(lastGuild) ) returnLocation += 'guild/' + lastGuild;
 				}
 				if ( sessionReturnLocation ) returnLocation = sessionReturnLocation;
@@ -216,40 +262,65 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
  */
 function dashboard_refresh(res, userSession, returnLocation = '/', beta = '') {
 	return oauth.getUserGuilds(userSession.access_token).then( guilds => {
-		guilds = guilds.filter( guild => {
-			return ( guild.owner || hasPerm(guild.permissions, PermissionFlagsBits.ManageGuild) );
-		} ).map( guild => {
-			return {
-				id: guild.id,
-				name: guild.name,
-				acronym: guild.name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
-				icon: ( guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.`
-				+ ( guild.icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
-				userPermissions: guild.permissions
-			};
-		} );
 		var settings = settingsData.get(userSession.user_id);
-		sendMsg( {
-			type: 'getGuilds',
-			member: settings.user.id,
-			guilds: guilds.map( guild => guild.id )
-		} ).then( response => {
-			settings.guilds.count = guilds.length;
+		db.query( 'SELECT channel FROM discord WHERE guild = $1 AND channel IS NOT NULL', ['@' + settings.user.id] ).then( ({rows}) => {
+			return rows.map( row => row.channel );
+		}, dberror => {
+			console.log( '- Dashboard: Error while getting the user guilds: ' + dberror );
+			return [];
+		} ).then( userGuilds => {
+			guilds.sort( (a, b) => {
+				return ( b.owner - a.owner
+				|| hasPerm(b.permissions, PermissionFlagsBits.Administrator) - hasPerm(a.permissions, PermissionFlagsBits.Administrator)
+				|| hasPerm(b.permissions, PermissionFlagsBits.ManageGuild) - hasPerm(a.permissions, PermissionFlagsBits.ManageGuild)
+				|| hasPerm(b.permissions, PermissionFlagsBits.ManageMessages) - hasPerm(a.permissions, PermissionFlagsBits.ManageMessages)
+				|| userGuilds.includes( b.id ) - userGuilds.includes( a.id )
+				|| a.name.localeCompare(b.name) );
+			} );
+			return Promise.all([
+				sendMsg( {
+					type: 'getGuilds',
+					member: settings.user.id,
+					guilds: guilds.map( guild => guild.id )
+				} ),
+				userGuilds
+			]);
+		} ).then( ([response, userGuilds]) => {
 			/** @type {import('./util.js').Guild[]} */
 			var isMemberGuilds = [];
 			settings.guilds.notMember = new Map();
+			settings.guilds.notAdmin = new Map();
 			response.forEach( (guild, i) => {
+				let isAdmin = ( guilds[i].owner || hasPerm(guilds[i].permissions, PermissionFlagsBits.ManageGuild) );
+				let partialGuild = {
+					id: guilds[i].id,
+					name: guilds[i].name,
+					acronym: guilds[i].name.replaceAll( '\'s ', ' ' ).replace( /\w+/g, e => e[0] ).replace( /\s/g, '' ),
+					icon: ( guilds[i].icon ? `https://cdn.discordapp.com/icons/${guilds[i].id}/${guilds[i].icon}.`
+					+ ( guilds[i].icon.startsWith( 'a_' ) ? 'gif' : 'png' ) : null ),
+					userPermissions: guilds[i].permissions
+				};
 				if ( guild ) {
-					if ( guild === 'noMember' ) return;
-					isMemberGuilds.push(Object.assign(guilds[i], guild));
+					if ( !isAdmin || guild === 'noMember' ) return;
+					isMemberGuilds.push(Object.assign(partialGuild, guild));
 				}
-				else settings.guilds.notMember.set(guilds[i].id, guilds[i]);
+				else {
+					if ( isAdmin ) settings.guilds.notMember.set(partialGuild.id, partialGuild);
+					else settings.guilds.notAdmin.set(partialGuild.id, partialGuild);
+				}
 			} );
 			settings.guilds.isMember = new Map(isMemberGuilds.sort( (a, b) => {
 				return ( b.patreon - a.patreon || b.memberCount - a.memberCount );
 			} ).map( guild => {
 				return [guild.id, guild];
 			} ));
+			settings.guilds.count = settings.guilds.isMember.size + settings.guilds.notMember.size + settings.guilds.notAdmin.size;
+			userGuilds = userGuilds.filter( userGuild => !( settings.guilds.notMember.has(userGuild) || settings.guilds.notAdmin.has(userGuild) ) );
+			if ( userGuilds.length ) db.query( 'DELETE FROM discord WHERE guild = $1 AND channel IN (' + userGuilds.map( (row, i) => '$' + ( i + 2 ) ).join(', ') + ')', ['@' + settings.user.id, ...userGuilds] ).then( () => {
+				console.log( '- Dashboard: User guilds successfully removed.' );
+			}, dberror => {
+				console.log( '- Dashboard: Error while removing the user guilds: ' + dberror );
+			} );
 			res.writeHead(302, {Location: returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=success'});
 			return res.end();
 		}, error => {

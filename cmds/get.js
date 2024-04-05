@@ -191,6 +191,7 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 		if ( user ) {
 			var username = ['User:', escapeFormatting(user.username + ( user.discriminator !== '0' ? '#' + user.discriminator : '' )) + ' `' + user.id + '` <@' + user.id + '>'];
 			var guildlist = ['Guilds:', '*none*'];
+			var usersettings = ['Settings:', '*unknown*'];
 			var guilds = await msg.client.shard.broadcastEval( (discordClient, evalData) => {
 				return discordClient.guilds.cache.filter( guild => guild.members.cache.has(evalData.user) ).map( guild => {
 					var member = guild.members.cache.get(evalData.user);
@@ -208,17 +209,62 @@ export default async function cmd_get(lang, msg, args, line, wiki) {
 			} );
 			if ( guilds.length ) guildlist[1] = guilds.join('\n');
 			if ( guildlist[1].length > 1000 ) guildlist[1] = guilds.length.toLocaleString();
-			var text = null;
-			var embed = null;
-			if ( canShowEmbed(msg) ) embed = new EmbedBuilder().setThumbnail( user.displayAvatarURL() ).addFields(...[
-				{name: username[0], value: username[1]},
-				{name: guildlist[0], value: guildlist[1]}
-			]);
-			else text = username.join(' ') + '\n' + guildlist.join('\n');
-			return msg.sendChannel( {content: text, embeds: [embed]}, true );
+			return db.query( 'SELECT channel AS guild, lang, wiki, whitelist AS wikilist, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 ORDER BY channel ASC NULLS FIRST', ['@' + user.id] ).then( ({rows}) => {
+				if ( rows.length ) {
+					let mainRow = rows.find( row => !row.guild );
+					if ( mainRow.wikilist ) mainRow.wikilist = mainRow.wikilist.split('\n');
+					rows.filter( row => row.guild ).forEach( row => {
+						delete row.wikilist;
+						delete row.desclength;
+						delete row.fieldcount;
+						delete row.fieldlength;
+						delete row.sectionlength;
+						delete row.sectiondesclength;
+					} );
+					if ( mainRow.desclength === null ) delete mainRow.desclength;
+					if ( mainRow.fieldcount === null ) delete mainRow.fieldcount;
+					if ( mainRow.fieldlength === null ) delete mainRow.fieldlength;
+					if ( mainRow.sectionlength === null ) delete mainRow.sectionlength;
+					if ( mainRow.sectiondesclength === null ) delete mainRow.sectiondesclength;
+					usersettings[1] = '```json\n' + JSON.stringify( ( rows.length > 1 ? rows : mainRow ), null, '  ' ) + '\n```';
+				}
+				else usersettings[1] = '*default*';
+			}, dberror => {
+				console.log( '- Error while getting the settings: ' + dberror );
+			} ).then( () => {
+				if ( canShowEmbed(msg) ) {
+					var embed = new EmbedBuilder().setThumbnail( user.displayAvatarURL() ).addFields(...[
+						{name: username[0], value: username[1]},
+						{name: guildlist[0], value: guildlist[1]}
+					]);
+					var split = splitMessage( usersettings[1], {char:',\n',maxLength:1000,prepend:'```json\n',append:',\n```'} );
+					if ( split.length > 5 ) {
+						msg.sendChannel( {embeds: [embed]}, true );
+						splitMessage( usersettings.join(' '), {
+							char: ',\n',
+							maxLength: 2000,
+							prepend: '```json\n',
+							append: ',\n```'
+						} ).forEach( textpart => msg.sendChannel( textpart, true ) );
+					}
+					else {
+						split.forEach( textpart => embed.addFields( {name: usersettings[0], value: textpart} ) );
+						msg.sendChannel( {embeds: [embed]}, true );
+					}
+				}
+				else {
+					var text = username.join(' ') + '\n' + guildlist.join('\n') + '\n' + usersettings.join(' ');
+					splitMessage( text, {
+						char: ',\n',
+						maxLength: 2000,
+						prepend: '```json\n',
+						append: ',\n```'
+					} ).forEach( textpart => msg.sendChannel( textpart, true ) );
+				}
+			} );
 		}
 		
-		return db.query( 'SELECT guild, channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 OR channel = $1 OR channel = $2 ORDER BY guild, channel DESC NULLS LAST LIMIT 1', [id, '#' + id] ).then( ({rows}) => {
+		return db.query( 'SELECT guild, channel, wiki, lang, role, inline, prefix, patreon FROM discord WHERE guild = $1 OR guild = $2 OR channel = $1 OR channel = $3 ORDER BY guild, channel DESC NULLS LAST LIMIT 1', [id, '@' + id, '#' + id] ).then( ({rows}) => {
 			if ( !rows.length ) return msg.replyMsg( 'I couldn\'t find a result for `' + id + '`', true );
 			var result = '```json\n' + JSON.stringify( rows, null, '\t' ) + '\n```';
 			if ( canShowEmbed(msg) ) {

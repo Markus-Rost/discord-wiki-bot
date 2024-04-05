@@ -11,6 +11,7 @@ import { db, enabledOAuth2, createNotice } from '../util.js';
 function dashboard_user(res, $, user, dashboardLang, csrfToken) {
 	db.query( 'SELECT site, token FROM oauthusers WHERE userid = $1', [user.id] ).then( ({rows}) => {
 		$('<p>').text(dashboardLang.get('oauth.desc')).appendTo('#text .description');
+		$('.channel#user-oauth').addClass('selected');
 		$('<form id="wb-settings" method="post" enctype="application/x-www-form-urlencoded">').append(
 			$('<h2>').text(dashboardLang.get('oauth.form.default')),
 			...enabledOAuth2.map( oauthSite => {

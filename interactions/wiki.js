@@ -90,7 +90,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			var body = response.body;
 			if ( response.statusCode !== 200 ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -115,7 +115,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) return;
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -132,7 +132,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -162,7 +162,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) return;
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -179,7 +179,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 			if ( body?.warnings ) log_warning(body.warnings);
 			if ( response.statusCode !== 200 || !body || body.batchcomplete === undefined || !body.query?.random ) {
 				if ( wiki.noWiki(response.url, response.statusCode) ) return;
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -202,7 +202,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 		}, error => {
 			if ( error.name === 'TimeoutError' ) return;
 			if ( wiki.noWiki(error.message) ) return;
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -241,7 +241,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 						if ( isDebug ) log_error(acerror);
 					} );
 				}
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -277,7 +277,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					if ( isDebug ) log_error(acerror);
 				} );
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -325,7 +325,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					if ( isDebug ) log_error(acerror);
 				} );
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -358,7 +358,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				if ( isDebug ) log_error(acerror);
 			} );
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+		console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
@@ -388,7 +388,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 					if ( isDebug ) log_error(acerror);
 				} );
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -417,7 +417,7 @@ function autocomplete_wiki(interaction, lang, wiki) {
 				if ( isDebug ) log_error(acerror);
 			} );
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+		console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;
@@ -501,7 +501,7 @@ function autocomplete_section(interaction, lang, wiki) {
 					if ( isDebug ) log_error(acerror);
 				} );
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;
@@ -548,7 +548,7 @@ function autocomplete_section(interaction, lang, wiki) {
 				if ( isDebug ) log_error(acerror);
 			} );
 		}
-		console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+		console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 			return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 		} ).map( option => {
 			if ( option.options !== undefined ) return option.name;

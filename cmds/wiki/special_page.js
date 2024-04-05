@@ -212,7 +212,7 @@ export default function mw_special_page(lang, msg, {title, uselang = lang.lang},
 			if ( description.length > msg.embedLimits.descLength ) description = description.substring(0, msg.embedLimits.descLength) + '\u2026';
 			embed.setDescription( description );
 		}
-		if ( msg.inGuild() && querypages.hasOwnProperty(specialpage) && msg.embedLimits.fieldLength ) {
+		if ( querypages.hasOwnProperty(specialpage) && msg.embedLimits.fieldLength ) {
 			var text = splitMessage( querypages[specialpage][1](body.query, wiki, lang), {maxLength: msg.embedLimits.fieldLength} )[0];
 			embed.addFields( {name: lang.get('search.special'), value: ( text || lang.get('search.empty') )} );
 			if ( body.query.querypage?.cached !== undefined ) {

@@ -206,7 +206,7 @@ export default class Wiki extends URL {
 		if ( this !== Wiki._cache.get(this.name) ) {
 			if ( !Wiki._cache.has(this.name) ) Wiki._cache.set(this.name, this);
 			else Wiki._cache.forEach( (wiki, href) => {
-				if ( wiki.name === this.name && wiki !== this ) {
+				if ( ( wiki.name === this.name || href === this.name ) && wiki !== this ) {
 					Wiki._cache.set(href, this);
 				}
 			} );
@@ -267,7 +267,7 @@ export default class Wiki extends URL {
 		querystring = new URLSearchParams(querystring);
 		if ( !querystring.toString().length ) {
 			title = ( title || this.mainpage );
-			if ( this.mainpageisdomainroot && title === this.mainpage ) return this.origin + '/' + Wiki.toSection(fragment, this.spaceReplacement, true);
+			if ( this.mainpageisdomainroot && title === this.mainpage ) return this.articleURL.origin + '/' + Wiki.toSection(fragment, this.spaceReplacement, true);
 		}
 		title = title.replaceAll( ' ', this.spaceReplacement ).replaceAll( '%', '%2525' );
 		let link = new URL(this.articleURL);

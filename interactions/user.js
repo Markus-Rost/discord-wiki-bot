@@ -4,7 +4,7 @@ import interwiki_interaction from './interwiki.js';
 import wiki_user from '../cmds/wiki/user.js';
 
 /**
- * Post a message with random link.
+ * Post a message with user link.
  * @param {import('discord.js').ChatInputCommandInteraction} interaction - The interaction.
  * @param {import('../util/i18n.js').default} lang - The user language.
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
@@ -17,7 +17,7 @@ function slash_user(interaction, lang, wiki) {
 			ephemeral: true
 		} ).catch(log_error);
 	}
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
@@ -26,7 +26,8 @@ function slash_user(interaction, lang, wiki) {
 		return interaction.deferReply( {ephemeral} ).then( () => {
 			var isIP = /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username);
 			if ( username.includes( '/' ) && !isIP ) username = username.split('/')[0];
-			return got.get( newWiki + 'api.php?uselang=' + lang.lang + '&action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases&prop=info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
+			var uselang = ( interaction.inCachedGuild() ? lang.lang : 'content' );
+			return got.get( newWiki + 'api.php?uselang=' + uselang + '&action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases&prop=info|pageprops|pageimages|extracts&piprop=original|name&ppprop=description|displaytitle|page_image_free&explaintext=true&exsectionformat=raw&exlimit=1&converttitles=true&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json', {
 				context: {
 					guildId: interaction.guildId
 				}
@@ -46,7 +47,7 @@ function slash_user(interaction, lang, wiki) {
 				}
 				newWiki.updateWiki(body.query.general, Object.values(body.query.namespaces), body.query.namespacealiases);
 				var querypage = Object.values(body.query.pages)[0];
-				querypage.uselang = lang.lang;
+				querypage.uselang = uselang;
 				querypage.noRedirect = true;
 				var contribs = newWiki.namespaces.get(-1).name + ':' + body.query.specialpagealiases.find( sp => sp.realname === 'Contributions' ).aliases[0] + '/';
 				var userparts = querypage.title.split(':');
@@ -121,7 +122,7 @@ function autocomplete_user(interaction, lang, wiki) {
 	lang = lang.uselang(interaction.locale);
 	const focused = interaction.options.getFocused(true);
 	if ( focused.name !== 'username' ) return interwiki_interaction.autocomplete(interaction, lang, wiki);
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki') ?? wiki).then( newWiki => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		const includeIPs = interaction.commandName !== 'verify';
 		const username = focused.value.trim() + ( focused.value.endsWith( ' ' ) ? ' ' : '' );
 		return Promise.all([
@@ -139,7 +140,7 @@ function autocomplete_user(interaction, lang, wiki) {
 				var body = response.body;
 				if ( response.statusCode !== 200 || body?.exception || body?.error || !body?.users ) {
 					if ( newWiki.noWiki(response.url, response.statusCode) ) return Promise.reject('nowiki');
-					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 						return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 					} ).map( option => {
 						if ( option.options !== undefined ) return option.name;
@@ -151,7 +152,7 @@ function autocomplete_user(interaction, lang, wiki) {
 			}, error => {
 				if ( error.name === 'TimeoutError' ) return;
 				if ( newWiki.noWiki(error.message) ) return Promise.reject('nowiki');
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -172,7 +173,7 @@ function autocomplete_user(interaction, lang, wiki) {
 				if ( body?.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.users?.[0] ) {
 					if ( newWiki.noWiki(response.url, response.statusCode) ) return Promise.reject('nowiki');
-					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 						return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 					} ).map( option => {
 						if ( option.options !== undefined ) return option.name;
@@ -188,7 +189,7 @@ function autocomplete_user(interaction, lang, wiki) {
 			}, error => {
 				if ( error.name === 'TimeoutError' ) return;
 				if ( newWiki.noWiki(error.message) ) return Promise.reject('nowiki');
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -210,7 +211,7 @@ function autocomplete_user(interaction, lang, wiki) {
 				if ( body?.warnings ) log_warning(body.warnings);
 				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query ) {
 					if ( newWiki.noWiki(response.url, response.statusCode) ) return Promise.reject('nowiki');
-					console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+					console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 						return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 					} ).map( option => {
 						if ( option.options !== undefined ) return option.name;
@@ -227,7 +228,7 @@ function autocomplete_user(interaction, lang, wiki) {
 			}, error => {
 				if ( error.name === 'TimeoutError' ) return;
 				if ( newWiki.noWiki(error.message) ) return Promise.reject('nowiki');
-				console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+				console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 					return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 				} ).map( option => {
 					if ( option.options !== undefined ) return option.name;
@@ -256,7 +257,7 @@ function autocomplete_user(interaction, lang, wiki) {
 					if ( isDebug ) log_error(acerror);
 				} );
 			}
-			console.log( ( interaction.guildId || '@' + interaction.user.id ) + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
+			console.log( interaction.author + ': Autocomplete: /' + interaction.commandName + ' ' + interaction.options.data.flatMap( option => {
 				return [option, ...( option.options?.flatMap( option => [option, ...( option.options ?? [] )] ) ?? [] )];
 			} ).map( option => {
 				if ( option.options !== undefined ) return option.name;

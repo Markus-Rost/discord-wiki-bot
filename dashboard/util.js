@@ -147,6 +147,7 @@ function canRcGcDwButtons(wiki) {
  * @property {Number} guilds.count
  * @property {Map<String, Guild>} guilds.isMember
  * @property {Map<String, Guild>} guilds.notMember
+ * @property {Map<String, Guild>} guilds.notAdmin
  */
 
 /**

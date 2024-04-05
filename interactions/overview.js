@@ -10,7 +10,7 @@ import wiki_overview from '../cmds/wiki/overview.js';
  * @param {import('../util/wiki.js').default} wiki - The wiki for the interaction.
  */
 function slash_overview(interaction, lang, wiki) {
-	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki')?.trim() || wiki).then( newWiki => {
+	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
 		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);

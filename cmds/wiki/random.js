@@ -18,7 +18,7 @@ import extract_desc from '../../util/extract_desc.js';
  * @returns {Promise<{reaction?: WB_EMOJI, message?: String|import('discord.js').MessageOptions}>}
  */
 export default function mw_random(lang, msg, wiki, reaction, spoiler, noEmbed, namespace, querystring = new URLSearchParams(), fragment = '') {
-	var uselang = lang.lang;
+	var uselang = ( isMessage(msg) || msg.inCachedGuild?.() ? lang.lang : 'content' );
 	if ( querystring.has('variant') || querystring.has('uselang') ) {
 		uselang = ( querystring.getAll('variant').pop() || querystring.getAll('uselang').pop() || uselang );
 		lang = lang.uselang(querystring.getAll('variant').pop(), querystring.getAll('uselang').pop());
@@ -77,6 +77,7 @@ export default function mw_random(lang, msg, wiki, reaction, spoiler, noEmbed, n
 			}};
 		}
 		var querypage = Object.values(body.query.pages)[0];
+		querypage.uselang = uselang;
 		var pagelink = wiki.toLink(querypage.title, querystring, fragment);
 		var text = '';
 		var embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink );
