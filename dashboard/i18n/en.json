@@ -265,7 +265,8 @@
 		},
 		"invite": "Wiki-Bot is not a member of $1 yet, but you can [invite Wiki-Bot]($2). Alternatively you can define user settings, if you [added Wiki-Bot to your user account]($3).",
 		"new": "New channel overwrite",
-		"user": "Wiki-Bot is not a member of $1, but you can define user settings, if you [added Wiki-Bot to your user account]($2)."
+		"user": "Wiki-Bot is not a member of $1, but you can define user settings, if you [added Wiki-Bot to your user account]($2).",
+		"userdesc": "You can define user settings and use Wiki-Bot on all your servers and DMs, if you [added Wiki-Bot to your user account]($1)."
 	},
 	"verification": {
 		"button": "Verification button",
