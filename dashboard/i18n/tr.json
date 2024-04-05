@@ -219,7 +219,6 @@
 		"new": "Yeni Webhook"
 	},
 	"selector": {
-		"desc": "[Sunucuyu Yönet]($1) iznine sahip olduğun için ayarlarını değiştirebileceğin sunucuların listesi. Lütfen bir sunucu seç:",
 		"switch": "Hesap Değiştir",
 		"title": "Sunucu Seçici",
 		"user": "Viki Hesapları",
