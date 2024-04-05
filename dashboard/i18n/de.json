@@ -19,7 +19,7 @@
 		"login": "Anmelden",
 		"logout": "Abmelden",
 		"rcscript": "Wiki-Änderungen",
-		"refresh": "Serverliste aktualisieren",
+		"refresh": "Serverdaten aktualisieren",
 		"save": "Speichern",
 		"selector": "Serverauswahl",
 		"settings": "Einstellungen",
@@ -27,6 +27,7 @@
 		"theme-dark": "Nutze das dunkle Design",
 		"theme-light": "Nutze das helle Design",
 		"title": "Wiki-Bot Einstellungen",
+		"userinvite": "Installiere Wiki-Bot für den Benutzer",
 		"verification": "Verifizierungen",
 		"welcome": "<h2>Willkommen auf dem Wiki-Bot Dashboard.</h2>\n<p>Wiki-Bot ist ein Discord-Bot der dazu dient Discord-Server und MediaWiki-Wikis zu verbinden. Er hilft durch das Verlinken von Wiki-Artikeln, Verifizieren von Wiki-Benutzern, informiert über die neusten Änderungen auf dem Wiki und mehr. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Mehr Information]</a></p>\n<p>Hier kannst du die Bot-Einstellungen für Server ändern auf denen du die Server verwalten Berechtigung besitzt. Dafür musst du dich mit deinem Discord-Account anmelden, was du über diese Knöpfe tuen kannst:</p>"
 	},
@@ -220,6 +221,8 @@
 		"new": "Neuer WebHook"
 	},
 	"selector": {
+		"desc": "Dies ist eine Liste aller Server dessen Einstellungen du ändern kannst, da du die [Server verwalten]($1)-Berechtigung hast. Du kannst auch deine [Benutzereinstellungen ändern]($2), für Server ohne Wiki-Bot, falls du [Wiki-Bot zu deinem Benutzerkonto hinzugefügt hast]($3). Bitte wähle einen Server:",
+		"none": "Bist du mit dem richtigen Account angemeldet? Du hast keine Servereinstellungen ändern, da du auf keinem Server die [Server verwalten]($1)-Berechtigung hast und Wiki-Bot bereits auf all deinen anderen Servern vorhanden ist. Du kannst allerdings auch deine [Benutzereinstellungen ändern]($2), falls du [Wiki-Bot zu deinem Benutzerkonto hinzugefügt hast]($3), um Wiki-Bot in all deinen Direktnachrichten zu verwenden.",
 		"switch": "Accounts wechseln",
 		"title": "Serverauswahl",
 		"user": "Wiki-Accounts",
@@ -249,14 +252,20 @@
 			"select_channel": "-- Wähle einen Kanal --",
 			"select_subprefix": "Setze ein bestimmtes Wiki →",
 			"subprefix": "Präfixe für Wiki-Unterbefehle:",
+			"user": "Benutzer-Einstellungen",
 			"whitelist": "Erlaubte Wikis:",
 			"whitelist_enabled": "Erlaube nur bestimmte Wikis:",
 			"whitelist_note": "Eins pro Zeile",
 			"whitelist_placeholder": "Liste von erlaubten Wikis",
 			"wiki": "Standard-Wiki:",
-			"wiki_check": "Wiki testen"
+			"wiki_check": "Wiki testen",
+			"wikilist": "Bevorzugte Wikis:",
+			"wikilist_placeholder": "Liste von bevorzugten Wikis"
 		},
-		"new": "Neue Überschreibung"
+		"invite": "Wiki-Bot ist noch kein Mitglied von $1, aber du kannst [Wiki-Bot einladen]($2). Alternativ kannst du auch Benutzereinstellungen festlegen, falls du [Wiki-Bot zu deinem Benutzerkonto hinzugefügt hast]($3).",
+		"new": "Neue Überschreibung",
+		"user": "Wiki-Bot ist kein Mitglied von $1, aber du kannst Benutzereinstellungen festlegen, falls du [Wiki-Bot zu deinem Benutzerkonto hinzugefügt hast]($2).",
+		"userdesc": "Du kannst Benutzereinstellungen festlegen und Wiki-Bot in allen deinen Servern und Direktnachrichten verwenden, falls du [Wiki-Bot zu deinem Benutzerkonto hinzugefügt hast]($1)."
 	},
 	"verification": {
 		"button": "Verifizierungsknopf",
