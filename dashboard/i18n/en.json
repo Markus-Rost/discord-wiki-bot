@@ -260,7 +260,8 @@
 			"whitelist_placeholder": "List of allowed wikis",
 			"wiki": "Default Wiki:",
 			"wiki_check": "Check wiki",
-			"wikilist": "Preferred wikis:"
+			"wikilist": "Preferred wikis:",
+			"wikilist_placeholder": "List of preferred wikis"
 		},
 		"new": "New channel overwrite"
 	},
