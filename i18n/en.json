@@ -673,6 +673,7 @@
 		"wikiinvalid_http": "The provided website doesn't have a valid TLS/SSL certificate! For security reasons only wikis using HTTPS are supported.\nIf you are a site administrator, you can get a certificate from a certificate authority like *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "The provided wiki is private! Only public wikis that can be read by everyone are supported.",
 		"wikiinvalid_timeout": "The provided link took too long to respond!",
+		"wikilist_added": "A list of preferred wikis has been added.",
 		"wikimissing": "No default wiki is set for this server yet!"
 	},
 	"test": {
