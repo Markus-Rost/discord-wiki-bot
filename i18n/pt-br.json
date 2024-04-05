@@ -532,7 +532,7 @@
 		"new_wiki": "<link para a wiki>",
 		"no_feeds": "A wiki deste webhook não possui recursos baseados em feeds, como discussões, murais de mensagens ou comentários de artigos, ativados.",
 		"noadmin": "Você precisa da permissão `Gerenciar Webhooks` para este comando!",
-		"notheads": "Mudanças recentes nos webhooks não são suportados em threads! Por favor, use o comando no canal principal.",
+		"nothreads": "Mudanças recentes nos webhooks não são suportados em threads! Por favor, use o comando no canal principal.",
 		"rc": "Mudanças da wiki:",
 		"sysmessage": "A mensagem do sistema `$1` deve ser a identificação do servidor `$2` para adicionar um webhook de mudanças recentes.",
 		"title": "Mudanças recentes no webhook",

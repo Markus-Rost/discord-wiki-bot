@@ -532,7 +532,7 @@
 		"new_wiki": "<vikiye bağlantı>",
 		"no_feeds": "Bu webhook'un vikide tartışmalar, mesaj duvarları ya da makale yorumları gibi yayın bazlı özellikler etkin değil.",
 		"noadmin": "Bu komut için `Webhook'ları Yönet` iznine ihtiyacın var!",
-		"notheads": "Son değişiklikler webhook'ları başlıklarda desteklenmiyor. Lütfen komutu kanalın kendisinde kullanın!",
+		"nothreads": "Son değişiklikler webhook'ları başlıklarda desteklenmiyor. Lütfen komutu kanalın kendisinde kullanın!",
 		"rc": "Viki düzenlemeleri:",
 		"sysmessage": "Son değişiklikler webhook'u ekleyebilmek için sistem mesajı `$1`, sunucu ID'si `$2` olmalı.",
 		"title": "Son değişiklikler webhook'u",

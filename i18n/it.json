@@ -532,7 +532,7 @@
 		"new_wiki": "<link alla wiki>",
 		"no_feeds": "La wiki di questo webhook non ha nessuna funzione feed, come discussioni, bacheche o commenti agli articoli, abilitata.",
 		"noadmin": "Hai bisogno del permesso `Gestire i webhook` per questo comando!",
-		"notheads": "I webhook delle ultime modifiche non sono supportati nei thread, per favore usa il comando nel canale di origine!",
+		"nothreads": "I webhook delle ultime modifiche non sono supportati nei thread, per favore usa il comando nel canale di origine!",
 		"rc": "Modifiche sulla wiki:",
 		"sysmessage": "Il messaggio di sistema `$1` deve contenere il server id `$2` per aggiungere un webhook delle ultime modifiche.",
 		"title": "Webhook ultime modifiche",

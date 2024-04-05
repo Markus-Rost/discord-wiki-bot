@@ -389,10 +389,12 @@ client.on( Discord.Events.MessageReactionAdd, (reaction, user) => {
 } );
 
 
+const joinGuilds = new Map();
 const leftGuilds = new Map();
 
 client.on( Discord.Events.GuildCreate, guild => {
 	console.log( '- ' + guild.id + ': I\'ve been added to a server.' );
+	joinGuilds.set(guild.id, setTimeout(removeSettings, 300_000, guild.id).unref());
 	if ( leftGuilds.has(guild.id) ) {
 		clearTimeout(leftGuilds.get(guild.id));
 		leftGuilds.delete(guild.id);
@@ -406,19 +408,34 @@ client.on( Discord.Events.GuildDelete, guild => {
 	}
 	console.log( '- ' + guild.id + ': I\'ve been removed from a server.' );
 	leftGuilds.set(guild.id, setTimeout(removeSettings, 300_000, guild.id).unref());
+	if ( joinGuilds.has(guild.id) ) {
+		clearTimeout(joinGuilds.get(guild.id));
+		joinGuilds.delete(guild.id);
+	}
 } );
 
 function removeSettings(guild) {
-	leftGuilds.delete(guild);
-	if ( client.guilds.cache.has(guild) ) return;
-	db.query( 'DELETE FROM discord WHERE main = $1', [guild] ).then( ({rowCount}) => {
-		if ( patreonGuildsPrefix.has(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
-			globalThis.patreonGuildsPrefix.delete(evalData);
-		}, {context: guild} );
-		if ( rowCount ) console.log( '- ' + guild + ': Settings successfully removed.' );
-	}, dberror => {
-		console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );
-	} );
+	if ( leftGuilds.has(guild) ) {
+		leftGuilds.delete(guild);
+		if ( client.guilds.cache.has(guild) ) return;
+		db.query( 'DELETE FROM discord WHERE main = $1', [guild] ).then( ({rowCount}) => {
+			if ( patreonGuildsPrefix.has(guild) ) client.shard.broadcastEval( (discordClient, evalData) => {
+				globalThis.patreonGuildsPrefix.delete(evalData);
+			}, {context: guild} );
+			if ( rowCount ) console.log( '- ' + guild + ': Settings successfully removed.' );
+		}, dberror => {
+			console.log( '- ' + guild + ': Error while removing the settings: ' + dberror );
+		} );
+	}
+	if ( joinGuilds.has(guild) ) {
+		joinGuilds.delete(guild);
+		if ( !client.guilds.cache.has(guild) ) return;
+		db.query( 'DELETE FROM discord WHERE guild LIKE $1 AND channel = $2', ['@%', guild] ).then( ({rowCount}) => {
+			if ( rowCount ) console.log( '- ' + guild + ': User settings successfully removed.' );
+		}, dberror => {
+			console.log( '- ' + guild + ': Error while removing the user settings: ' + dberror );
+		} );
+	}
 }
 
 

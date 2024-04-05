@@ -532,7 +532,7 @@
 		"new_wiki": "<lien du wiki>",
 		"no_feeds": "Le wiki pour ce webhook n'a pas de fonctionnalités basées sur les flux, comme les discussions, les murs de messages ou les commentaires d'articles, activées.",
 		"noadmin": "Vous avez besoin de la permission `Gérer les webhooks` pour cette commande !",
-		"notheads": "Les webhooks de changements récents ne sont pas pris en charge dans les discussions, veuillez utiliser la commande dans le canal parent !",
+		"nothreads": "Les webhooks de changements récents ne sont pas pris en charge dans les discussions, veuillez utiliser la commande dans le canal parent !",
 		"rc": "Modifications du wiki :",
 		"sysmessage": "Le message système `$1` doit correspondre à l'id du serveur `$2` pour rajouter une intégration des modification récentes.",
 		"title": "Intégration des modifications récentes",

@@ -532,7 +532,7 @@
 		"new_wiki": "<link to wiki>",
 		"no_feeds": "The wiki for this webhook has no feeds based features, like discussions, message walls or article comments, enabled.",
 		"noadmin": "You need the `Manage Webhooks` permission for this command!",
-		"notheads": "Recent changes webhooks are not supported in threads, please use the command in the parent channel!",
+		"nothreads": "Recent changes webhooks are not supported in threads, please use the command in the parent channel!",
 		"rc": "Wiki changes:",
 		"sysmessage": "The system message `$1` has to be the server id `$2` to add a recent changes webhook.",
 		"title": "Recent changes webhook",
