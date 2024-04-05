@@ -222,7 +222,6 @@
 	},
 	"selector": {
 		"desc": "This is a list of all servers you can change settings on because you have the [Manage Server]($1) permission. Please select a server:",
-		"invite": "Wiki-Bot is not a member of $1 yet, but you can [invite Wiki-Bot]($2).",
 		"none": "You currently don't have the [Manage Server]($1) permission on any servers, are you logged into the correct account?",
 		"switch": "Switch Accounts",
 		"title": "Server Selector",
