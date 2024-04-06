@@ -19,7 +19,7 @@
 		"login": "Accedi",
 		"logout": "Esci",
 		"rcscript": "Ultime Modifiche",
-		"refresh": "Aggiorna lista dei server",
+		"refresh": "Aggiorna i dati sui server",
 		"save": "Salva",
 		"selector": "Seleziona il server",
 		"settings": "Impostazioni",
@@ -27,6 +27,7 @@
 		"theme-dark": "Usa il tema scuro",
 		"theme-light": "Usa il tema chiaro",
 		"title": "Impostazioni Wiki-Bot",
+		"userinvite": "Aggiunti Wiki-Bot all'Utente",
 		"verification": "Verifiche",
 		"welcome": "<h2>Benvenuto sulla Dashboard di Wiki-Bot.</h2>\n<p>Wiki-Bot è un bot Discord creato per collegare i server Discord e le wiki di MediaWiki. Aiuta nel linkare alle pagine delle wiki, nel verificare gli utenti della wiki, nel riportare le modifiche più recenti sulla wiki e altro ancora. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Maggiori informazioni]</a></p>\n<p>Qui puoi modificare diverse impostazioni del bot per i server sui quali hai il permesso \"Gestire Server\". Per iniziare, dovrai autenticare il tuo account Discord, cosa che puoi fare con questi pulsanti:</p>"
 	},
@@ -65,6 +66,7 @@
 	},
 	"notice": {
 		"beta": {
+			"note": "Per favore segnala qualsiasi problema sul [server di supporto]($1).",
 			"text": "Questa funzionalità è sperimentale! Non è garantito che funzioni correttamente e potrebbe essere rimossa in futuro.",
 			"title": "Funzionalità sperimentale Beta"
 		},
@@ -219,6 +221,8 @@
 		"new": "Nuovo webhook"
 	},
 	"selector": {
+		"desc": "Questa è una lista di tutti i server per i quali puoi cambiare le impostazioni perché possiedi il permesso [Gestire Server]($1). Puoi anche [modificare le tue impostazioni utente]($2) per i server senza Wiki-Bot, se [hai aggiunto Wiki-Bot al tuo account utente]($3). Seleziona un server:",
+		"none": "Sei loggato con l'account corretto? Non puoi modificare le impostazioni in nessun server dato che non possiedi il permesso [Gestire Server]($1) in nessuno di questi e tutti i tuoi altri server hanno già Wiki-Bot come membro. Tuttavia puoi ancora [modificare le tue impostazioni utente]($2), se [hai aggiunto Wiki-Bot al tuo account utente]($3), per poter usare Wiki-Bot in tutti i tuoi DM.",
 		"switch": "Cambia account",
 		"title": "Selettore server",
 		"user": "Account Wiki",
@@ -248,14 +252,20 @@
 			"select_channel": "-- Seleziona un canale --",
 			"select_subprefix": "Imposta una wiki specifica →",
 			"subprefix": "Prefisso sottocomando wiki:",
+			"user": "Impostazioni Utente",
 			"whitelist": "Wiki consentite:",
 			"whitelist_enabled": "Consenti solo wiki specifiche:",
 			"whitelist_note": "Una per riga",
 			"whitelist_placeholder": "Lista di wiki consentite",
 			"wiki": "Wiki di default:",
-			"wiki_check": "Controlla la wiki"
+			"wiki_check": "Controlla la wiki",
+			"wikilist": "Wiki preferite:",
+			"wikilist_placeholder": "Lista di wiki preferite"
 		},
-		"new": "Nuova sovrascrittura canale"
+		"invite": "Wiki-Bot non è ancora un membro di $1 , ma puoi [invitarlo]($2). In alternativa puoi definire le tue impostazioni utente, se [hai aggiunto Wiki-Bot al tuo account utente]($3).",
+		"new": "Nuova sovrascrittura canale",
+		"user": "Wiki-Bot non è ancora un membro di $1, ma puoi definire le tue impostazioni utente, se [hai aggiunto Wiki-Bot al tuo account utente]($2).",
+		"userdesc": "Puoi definire le tue impostazioni utente e usare Wiki-Bot in tutti i tuoi server e DM, se [hai aggiunto Wiki-Bot al tuo account utente]($1)."
 	},
 	"verification": {
 		"button": "Pulsante di verifica",
@@ -314,7 +324,7 @@
 			"webhook_name": "Nome autore:"
 		},
 		"help_button": "<p>Il pulsante di verifica funziona al meglio quando combinato con le <b>risposte al comando private</b> e un <b>canale di log</b>.</p>\n<p>Puoi abilitare entrambe le cose come parte degli <a href=\"/guild/$1/verification/notice$2\">avvisi di verifica</a>.</p>",
-		"help_notice": "<p>Gli avvisi personalizzati supportano alcune semplici funzioni e variabili.</p>\n<ul>\n<li><code class=\"form-button user-select\">$mention</code> – The Discord mention of the user.</li>\n<li><code class=\"form-button user-select\">$username</code> – The wiki username of the user.</li>\n<li><code class=\"form-button user-select\">$editcount</code> – L'attuale conteggio delle modifiche dell'utente.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – L'attuale età dell'account dell'utente in giorni.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – L'attuale conteggio dei post di Discussioni dell'utente (solo per le wiki di Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Ritorna il risultato di un'espressione.\n<ul>\n<li>Supporta solo la somma <code class=\"form-button user-select\">+</code> e la sottrazione <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – Ritorna il testo a seconda del risultato dell'espressione.\n<ul>\n<li>Supporta <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> così come <code class=\"form-button user-select\">e</code>, <code class=\"form-button user-select\">o</code>.</li>\n</ul></li>\n</ul>",
+		"help_notice": "<p>Gli avvisi personalizzati supportano alcune semplici funzioni e variabili.</p>\n<ul>\n<li><code class=\"form-button user-select\">$mention</code> – La menzione Discord dell'utente.</li>\n<li><code class=\"form-button user-select\">$username</code> – Il nome dell'utente sulla wiki.</li>\n<li><code class=\"form-button user-select\">$editcount</code> – L'attuale conteggio delle modifiche dell'utente.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – L'attuale età dell'account dell'utente in giorni.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – L'attuale conteggio dei post di Discussioni dell'utente (solo per le wiki di Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Ritorna il risultato di un'espressione.\n<ul>\n<li>Supporta solo la somma <code class=\"form-button user-select\">+</code> e la sottrazione <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>if true</i> | <i>if false</i> }}</code> – Ritorna il testo a seconda del risultato dell'espressione.\n<ul>\n<li>Supporta <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> così come <code class=\"form-button user-select\">e</code>, <code class=\"form-button user-select\">o</code>.</li>\n</ul></li>\n</ul>",
 		"new": "Nuova verifica",
 		"notice": "Avvisi di verifica"
 	}
