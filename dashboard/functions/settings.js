@@ -515,7 +515,7 @@ function update_settings(res, userSettings, guild, type, settings) {
 				userSettings.guilds.notMember.set(guild, userSettings.guilds.isMember.get(guild));
 				userSettings.guilds.isMember.delete(guild);
 			}
-			return res(`/guild/${guild}`, 'savefail');
+			return res(`/guild/${guild}/settings`, 'savefail');
 		}
 		if ( response === 'noMember' || !hasPerm(response.userPermissions, PermissionFlagsBits.ManageGuild) ) {
 			userSettings.guilds.isMember.delete(guild);

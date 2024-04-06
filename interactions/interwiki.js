@@ -164,6 +164,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 			return option.name + ':' + option.value;
 		} ).join(' ') + '\n- Error while getting the wiki list: ' + dberror );
 	} ) ).then( (rows = []) => {
+		if ( !interaction.inCachedGuild() ) interaction.wikiWhitelist.forEach( whiteWiki => wikiList[0].add( whiteWiki ) );
 		rows.forEach( row => {
 			if ( row.wiki.startsWith( 'https://' ) ) wikiList[0].add( row.wiki );
 			else wikiList[1].add( row.wiki );
@@ -176,7 +177,7 @@ function autocomplete_interwiki(interaction, lang, wiki) {
 				if ( !wikiList[1].size ) wikiList[1].add( subprefix[1] );
 			}
 		} );
-		interaction.wikiWhitelist.forEach( whiteWiki => wikiList[0].add( whiteWiki ) );
+		if ( interaction.inCachedGuild() ) interaction.wikiWhitelist.forEach( whiteWiki => wikiList[0].add( whiteWiki ) );
 		baseWikis.forEach( baseWiki => wikiList[0].add( baseWiki ) );
 		wikiList = [[...wikiList[0]].filter( suggestion => !suggestion.includes( '@' ) ), [...wikiList[1]]];
 		if ( !input ) return interaction.respond( wikiList[0].map( suggestion => {
