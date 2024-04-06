@@ -360,7 +360,7 @@
 						"es-ES": "Mostrar una diff de edición del wiki relativa basada en el ID.",
 						"zh-CN": "通过ID展示相关的wiki编辑差异。",
 						"zh-TW": "透過ID展示相關的wiki編輯差異。",
-						"it": "Mostra il diff relativo di una modifica sulla wiki in base all'ID.",
+						"it": "Mostra il diff relativo di una modifica in base all'ID.",
 						"sv-SE": "Visa en relativ wiki-redigeringsdiff baserat på ID:et.",
 						"hi": "ID के आधार पर विकि पर एक सापेक्ष सम्पादन अंतर दिखाएँ।",
 						"ja": "IDに基づいた相対的なWiki編集の差分を表示します。",
