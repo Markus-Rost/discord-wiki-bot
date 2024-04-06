@@ -20,7 +20,7 @@
 		"options[0].options[4].name": "spoiler",
 		"options[1].description": "Mostra il diff di una modifica sulla wiki in base all'ID.",
 		"options[1].name": "id",
-		"options[1].options[0].description": "Mostra il diff relativo di una modifica sulla wiki in base all'ID.",
+		"options[1].options[0].description": "Mostra il diff relativo di una modifica in base all'ID.",
 		"options[1].options[0].name": "relativo",
 		"options[1].options[0].options[0].description": "ID del diff della modifica da mostrare.",
 		"options[1].options[0].options[0].name": "diffid",
