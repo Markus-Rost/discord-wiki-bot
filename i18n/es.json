@@ -456,7 +456,7 @@
 		"inaccurate": "Las estadísticas pueden ser inexactas",
 		"lang": "Idioma:",
 		"license": "Licencia:",
-		"manager": "Wiki manager:",
+		"manager": "Responsables Wiki:",
 		"misermode": "Miser mode:",
 		"no": "No",
 		"none": "*ninguno*",
@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 actualizó la configuración de $2.",
 			"removed": "$1 eliminó la configuración de $2.",
-			"updated": "$1 actualizó la configuración del servidor."
+			"updated": "$1 actualizó la configuración del servidor.",
+			"user": "Actualizaste tu configuración de usuario para $1."
 		},
 		"foundwikis": "¿Te refieres a alguno de estos wikis?",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "Usa `$1 <rol>` para cambiar el rol mínimo requerido.",
 		"roleinvalid": "¡El rol especificado no existe!",
 		"save_failed": "Lamentablemente, la configuración no se pudo guardar, intenta nuevamente más tarde.",
+		"user current": "Estas son las configuraciones actuales para $1:",
+		"user lang": "El idioma para $1 es:",
+		"user langchanged": "Cambiaste el idioma de $1 a:",
+		"user missing": "Aún no hay configuraciones para $3. Utiliza $1 y $2 para cambiar la configuración.",
+		"user wiki": "El wiki predeterminado para $1 es:",
+		"user wikichanged": "Cambiaste el wiki predeterminado de $1 a:",
+		"user wikimissing": "¡Aún no hay ningún wiki predeterminado configurado para $1!",
 		"whitelist_added": "Se ha añadido una lista de wikis permitidos.",
 		"whitelist_modified": "La lista de wikis permitidos ha sido modificada.",
 		"whitelist_removed": "La lista de wikis permitidos ha sido eliminada.",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "¡El sitio web proporcionado no tiene un certificado TLS/SSL válido! Por razones de seguridad, solo se admiten wikis que utilizan HTTPS.\nSi eres el administrador del sitio, puedes obtener un certificado de una autoridad de certificación como *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "¡El wiki proporcionado es privado! Solo se admiten wikis públicos que todos puedan leer.",
 		"wikiinvalid_timeout": "¡El enlace proporcionado tardó demasiado en responder!",
+		"wikilist_added": "Se ha añadido una lista de wikis preferidos.",
+		"wikilist_modified": "Se ha modificado la lista de wikis preferidos.",
+		"wikilist_removed": "Se ha eliminado la lista de wikis preferidos.",
 		"wikimissing": "¡Todavía no hay un wiki predeterminado en este servidor!"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "Bloqueado indefinidamente el $1 por $4.",
 			"indef_text": "Bloqueado indefinidamente el $1 por $4 con motivo \"$5\".",
 			"noreason": "Bloqueado el $1 por $2 hasta $3 por $4.",
+			"partial": "¡Actualmente $1 está parcialmente bloqueado!",
 			"text": "Bloqueado el $1 por $2 hasta $3 por $4 con motivo \"$5\"."
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "Cargando estadísticas globales…",
 			"postcount": "Publicaciones de discusiones:",
 			"registration": "Fecha de registro:",
+			"unknown": "*desconocido*",
 			"wikisedited": "Wikis editados:"
 		}
 	},
