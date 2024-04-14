@@ -8,7 +8,6 @@ const {defaultSettings, defaultNamespaces} = require('./default.json');
 const globalUserPage = new Map([
 	['wikimedia', 'https://meta.wikimedia.org/w/'],
 	['miraheze', 'https://login.miraheze.org/w/'],
-	['wikitide', 'https://meta.wikitide.org/w/'],
 	['telepedia', 'https://meta.telepedia.net/']
 ]);
 
@@ -188,7 +187,6 @@ export default class Wiki extends URL {
 		}
 		if ( !this.wikifarm ) {
 			if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm ??= 'miraheze';
-			else if ( /^(?:https?:)?\/\/static\.wikitide\.net\//.test(logo) ) this.wikifarm ??= 'wikitide';
 		}
 		if ( namespaces && namespacealiases ) namespaces.forEach( namespace => {
 			/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
@@ -235,7 +233,7 @@ export default class Wiki extends URL {
 	 * @returns {Boolean}
 	 */
 	hasOAuth2() {
-		return ( this.oauth2 || this.wikifarm === 'miraheze' || this.wikifarm === 'wikitide' );
+		return ( this.oauth2 || this.wikifarm === 'miraheze' );
 	}
 
 	/**

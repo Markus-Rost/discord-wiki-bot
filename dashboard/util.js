@@ -76,14 +76,6 @@ if ( process.env.oauth_telepedia && process.env.oauth_telepedia_secret ) {
 		manage: 'https://meta.telepedia.net/wiki/Special:OAuthManageMyGrants'
 	});
 }
-if ( process.env.oauth_wikitide && process.env.oauth_wikitide_secret ) {
-	enabledOAuth2.unshift({
-		id: 'wikitide',
-		name: 'WikiTide',
-		url: 'https://meta.wikitide.org/w/',
-		manage: 'https://meta.wikitide.org/wiki/Special:OAuthManageMyGrants'
-	});
-}
 if ( process.env.oauth_miraheze && process.env.oauth_miraheze_secret ) {
 	enabledOAuth2.unshift({
 		id: 'miraheze',
@@ -123,7 +115,6 @@ function canRcGcDwButtons(wiki) {
 	if ( !wiki.hasOAuth2() ) return false;
 	if ( wiki.wikifarm === 'wiki.gg' ) return true;
 	if ( wiki.wikifarm === 'miraheze' ) return true;
-	if ( wiki.wikifarm === 'wikitide' ) return true;
 	if ( wiki.wikifarm === 'telepedia' ) return true;
 	if ( wiki.hostname.endsWith( '.minecraft.wiki' ) ) return true;
 	if ( wiki.href === 'https://minecraft.wiki/' ) return true;

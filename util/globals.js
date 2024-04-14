@@ -70,7 +70,8 @@ const common_warnings = {
 		'Unrecognized parameters: exlimit, explaintext, exsectionformat, piprop.',
 		'Unrecognized parameters: piprop, explaintext, exsectionformat, exlimit.',
 		'Unrecognized parameters: explaintext, exsectionformat, exlimit.',
-		'Unrecognized parameter: piprop.'
+		'Unrecognized parameter: piprop.',
+		'Unrecognized parameter: rvslots.'
 	],
 	query: [
 		'Unrecognized values for parameter "prop": pageimages, extracts.',
@@ -79,6 +80,9 @@ const common_warnings = {
 		'Unrecognized value for parameter "prop": extracts',
 		'Unrecognized value for parameter "prop": pageimages.',
 		'Unrecognized value for parameter "prop": pageimages'
+	],
+	extracts: [
+		'Extract for a title in File namespace was requested, none returned.'
 	]
 }
 
@@ -95,6 +99,7 @@ globalThis.log_warning = function(warning, api = true) {
 	else if ( api ) {
 		if ( common_warnings.main.includes( warning?.main?.['*'] ) ) delete warning.main;
 		if ( common_warnings.query.includes( warning?.query?.['*'] ) ) delete warning.query;
+		if ( common_warnings.extracts.includes( warning?.extracts?.['*'] ) ) delete warning.extracts;
 		var warningKeys = Object.keys(warning);
 		if ( warningKeys.length ) console.warn( '- Warning: ' + warningKeys.join(', ') );
 	}
