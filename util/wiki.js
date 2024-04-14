@@ -267,6 +267,7 @@ export default class Wiki extends URL {
 			title = ( title || this.mainpage );
 			if ( this.mainpageisdomainroot && title === this.mainpage ) return this.articleURL.origin + '/' + Wiki.toSection(fragment, this.spaceReplacement, true);
 		}
+		if ( title.endsWith( '%' ) ) title += ' ';
 		title = title.replaceAll( ' ', this.spaceReplacement ).replaceAll( '%', '%2525' );
 		let link = new URL(this.articleURL);
 		link.pathname = link.pathname.replaceSafe( '$1', title.replaceAll( '\\', '%5C' ) );
