@@ -379,7 +379,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				text += '**';
 			}
 			if ( !pagelink ) return;
-			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
+			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && !classes.includes( 'ext-discussiontools-init-timestamplink' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
 				try {
 					if ( relativeFix && /^\/(?!\/)/.test(attribs.href) ) attribs.href = relativeFix(attribs.href, pagelink);
 					href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );

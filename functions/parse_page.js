@@ -61,6 +61,7 @@ const removeClasses = [
 	'.noexcerpt',
 	'.sortkey',
 	'.mw-collapsible.mw-collapsed',
+	'.ext-discussiontools-init-replylink-buttons',
 	'span.sprite-file img',
 	'.c-item-hoverbox__display',
 	'wb\\:sectionedit'
@@ -136,7 +137,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 		if ( ns === 8 ) {
 			title = title.split(':').slice(1).join(':');
 			if ( title.endsWith( '/' + pagelanguage ) ) title = title.substring(0, title.length - ( pagelanguage.length + 1 ));
-			return got.get( wiki + 'api.php?action=query&meta=allmessages&amprop=default&amincludelocal=true&amlang=' + encodeURIComponent( pagelanguage ) + '&ammessages=' + encodeURIComponent( title ) + '&format=json', {
+			else if ( pagelanguage === 'en' ) pagelanguage = '';
+			return got.get( wiki + 'api.php?action=query&meta=allmessages&amprop=default&amincludelocal=true' + ( pagelanguage ? '&amlang=' + encodeURIComponent( pagelanguage ) : '' ) + '&ammessages=' + encodeURIComponent( title ) + '&format=json', {
 				timeout: {
 					request: 10_000
 				},
@@ -451,14 +453,32 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				if ( fragment && sectionLength && embed.length < ( 5_990 - sectionLength ) ) {
 					let newFragment = '';
 					let exactMatch = true;
-					let allSections = $('h1, h2, h3, h4, h5, h6').children('span');
+					let allSections = $('h1, h2, h3, h4, h5, h6').children('span').not('.mw-editsection, .mw-editsection-like');
 					var section = allSections.filter( (i, span) => {
 						return ( '#' + span.attribs.id === toSection(fragment, wiki.spaceReplacement) );
 					} ).parent();
+					var sectionContent;
 					if ( !section.length ) {
 						section = $('[id="' + toSection(fragment, wiki.spaceReplacement, false).replace( '#', '' ) + '"]');
 						newFragment = section.attr('id');
-						if ( section.is(':empty') ) {
+						if ( section.is('[data-mw-comment-start]') ) {
+							let start = section.parent();
+							let end = $('[data-mw-comment-end="'+newFragment+'"]');
+							end.nextAll().remove();
+							let allSections = $('h1, h2, h3, h4, h5, h6, .mw-heading');
+							section = allSections.nextUntil(allSections).has(end).last().prevUntil(allSections).last().prev();
+							if ( !section.length ) section = $('<h1>').html(response.body.parse.displaytitle);
+							if ( start.is(end.parent()) ) sectionContent = $('<div>').append(start);
+							else {
+								let begin = start.parentsUntil(end.parents()).last();
+								let last = end.parents().filter(begin.siblings());
+								let mid = begin.nextUntil(last);
+								start.parentsUntil(begin).prevAll().remove();
+								end.parentsUntil(last).nextAll().remove();
+								sectionContent = $('<div>').append(begin, mid, last);
+							}
+						}
+						else if ( section.is(':empty') ) {
 							section = section.parent();
 							if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
 								section = section.prev();
@@ -501,12 +521,18 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						section = section.first();
 						var sectionLevel = section[0].tagName.replace('h', '');
 						if ( !['1','2','3','4','5','6'].includes( sectionLevel ) ) sectionLevel = '10';
-						let headerList = ['h1','h2','h3','h4','h5','h6'];
+						let headerList = [
+							'h1, div.mw-heading1',
+							'h2, div.mw-heading2',
+							'h3, div.mw-heading3',
+							'h4, div.mw-heading4',
+							'h5, div.mw-heading5',
+							'h6, div.mw-heading6'
+						];
 						if ( section.parent('div.mw-heading').length ) {
 							section = section.parent();
-							headerList = ['div.mw-heading1','div.mw-heading2','div.mw-heading3','div.mw-heading4','div.mw-heading5','div.mw-heading6'];
 						}
-						var sectionContent = $('<div>').append(
+						sectionContent ??= $('<div>').append(
 							section.nextUntil(headerList.slice(0, sectionLevel).join(', '))
 						);
 						section.find('div, ' + removeClasses.join(', ')).remove();
