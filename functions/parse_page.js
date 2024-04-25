@@ -322,6 +322,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							'figure.pi-image img',
 							'div.infobox-image img',
 							'div.infobox-imagearea img',
+							'td.druid-main-image img',
+							'td.druid-main-images img',
 							'div.info-column.info-X1-100 a.image > img'
 						].join(', ')).toArray().find( img => {
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
@@ -352,25 +354,29 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					'> tbody > tr',
 					'> tbody > tr > th.mainheader',
 					'> tbody > tr > th.infobox-header',
+					'> tbody > tr > th.druid-section',
 					'> table > tbody > tr',
+					'> table > tbody > tr > th.infobox-header',
 					'div.section > div.title',
 					'div.section > table > tbody > tr',
 					'h2.pi-header',
 					'div.pi-data',
 					'table.infobox-rows > tbody > tr',
+					'table.infobox-rows > tbody > tr > th.infobox-header',
 					'div.infobox-rows:not(.subinfobox) > div.infobox-row',
 					'.va-infobox-cont tr',
 					'.va-infobox-cont th.va-infobox-header',
 					'div.info-unit > div.info-unit-caption',
 					'div.info-unit-row',
 					'> tbody > tr > td > table > tbody > tr',
-					'table.attributeinfo span.icon-tooltip'
+					'table.attributeinfo span.icon-tooltip',
+					'td.druid-grid-section > div.druid-grid > div.druid-grid-item'
 				].join(', '));
 				let tdLabel = true;
 				for ( let i = 0; i < rows.length; i++ ) {
 					if ( ( embed.data.fields?.length ?? 0 ) >= fieldCount || embed.length > ( 5_870 - fieldLength ) ) break;
 					let row = rows.eq(i);
-					if ( row.is('th.mainheader, th.infobox-header, th.va-infobox-header, div.title, h2.pi-header, div.info-unit-caption') ) {
+					if ( row.is('th.mainheader, th.infobox-header, th.druid-section, th.va-infobox-header, div.title, h2.pi-header, div.info-unit-caption') ) {
 						row.find(removeClasses.join(', ')).remove();
 						let label = htmlToDiscord(row, embed.data.url).trim();
 						if ( label.length > 100 ) label = limitLength(label, 100, 20);
@@ -385,10 +391,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							else embed.addFields( {name: '\u200b', value: label} );
 						}
 					}
-					else if ( row.is('tr, div.pi-data, div.infobox-row, div.info-unit-row, span.icon-tooltip') ) {
-						let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.infobox-cell-header, div.info-arkitex-left.info-X2-40').eq(0);
+					else if ( row.is('tr, div.pi-data, div.druid-grid-item, div.infobox-row, div.info-unit-row, span.icon-tooltip') ) {
+						let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.druid-label, div.infobox-cell-header, div.info-arkitex-left.info-X2-40').eq(0);
 						label.find(removeClasses.join(', ')).remove();
-						let value = row.children('td, div.pi-data-value, div.infobox-cell-data, div.info-arkitex-right.info-X2-60').eq(( label.is('td') ? 1 : 0 ));
+						let value = row.children('td, div.pi-data-value, div.druid-data, div.infobox-cell-data, div.info-arkitex-right.info-X2-60').eq(( label.is('td') ? 1 : 0 ));
 						value.find(removeClasses.join(', ')).remove();
 						if ( value.is('td') && !value.html()?.trim() ) {
 							value = row.children('td').eq(( label.is('td') ? 1 : 0 ) + 1);
