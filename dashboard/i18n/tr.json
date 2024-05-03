@@ -19,7 +19,7 @@
 		"login": "Giriş",
 		"logout": "Çıkış",
 		"rcscript": "Son Değişiklikler",
-		"refresh": "Sunucu listesini yenile",
+		"refresh": "Sunucu verisini yenile",
 		"save": "Kaydet",
 		"selector": "Sunucu Seçici",
 		"settings": "Ayarlar",
@@ -27,6 +27,7 @@
 		"theme-dark": "Karanlık temayı kullan",
 		"theme-light": "Aydınlık temayı kullan",
 		"title": "Wiki-Bot Ayarları",
+		"userinvite": "Wiki-Bot'u Bir Kullanıcıya Ekle",
 		"verification": "Doğrulamalar",
 		"welcome": "<h2>Wiki-Bot Kontrol Paneli'ne hoş geldin.</h2>\n<p>Wiki-Bot, Discord sunucularını ve MediaWiki vikilerini bir araya getirmek için yapılmış bir Discord botudur. Viki sayfalarına bağlantı vermek, viki kullanıcılarını doğrulamak, vikideki son değişiklikleri bildirmek ve benzeri özellikleri ile kullanıcılara yardım eder. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Daha fazla bilgi]</a></p>\n<p>Burada Sunucuyu Yönet yetkisine sahip olduğun sunucular için bot ayarı yapabilirsin. Başlamak için Discord hesabını bu butonlar ile doğrulaman gerekiyor:</p>"
 	},
@@ -65,6 +66,7 @@
 	},
 	"notice": {
 		"beta": {
+			"note": "Lütfen sorunları [destek sunucusunda]($1) rapor edin.",
 			"text": "Bu özellik deneysel! Doğru çalışması garanti değil ve ileride kaldırılabilir.",
 			"title": "Deneysel Beta Özelliği"
 		},
@@ -219,6 +221,8 @@
 		"new": "Yeni Webhook"
 	},
 	"selector": {
+		"desc": "Bu, [Sunucu Yönet]($1) iznine sahip olduğunuz için ayarlarını değiştirebileceğiniz tüm sunucuların bir listesidir. Ayrıca [kullanıcı hesabınıza Wiki-Bot eklediyseniz]($3), Wiki-Bot olmayan sunucular için [kullanıcı ayarlarınızı değiştirebilirsiniz]($2). Lütfen bir sunucu seçin:",
+		"none": "Doğru hesaba mı giriş yaptınız? Hiçbir sunucuda [Sunucu Yönet]($1) izniniz olmadığından ve diğer tüm sunucularınızda zaten üye olarak Wiki-Bot bulunduğundan, hiçbir sunucunun ayarlarını değiştiremezsiniz. Ancak tüm DM'lerinizde Wiki-Bot'u kullanabilmek için [kullanıcı hesabınıza Wiki-Bot eklediyseniz]($3) yine de [kullanıcı ayarlarınızı değiştirebilirsiniz]($2).",
 		"switch": "Hesap Değiştir",
 		"title": "Sunucu Seçici",
 		"user": "Viki Hesapları",
@@ -248,14 +252,20 @@
 			"select_channel": "-- Bir Kanal Seç --",
 			"select_subprefix": "Spesifik bir viki belirle →",
 			"subprefix": "Alt komut viki öneki:",
+			"user": "Kullanıcı Ayarları",
 			"whitelist": "İzin verilen vikiler:",
 			"whitelist_enabled": "Yalnızca belirli vikilere izin ver:",
 			"whitelist_note": "Satır başına bir tane",
 			"whitelist_placeholder": "İzin verilen vikilerin listesi",
 			"wiki": "Varsayılan Viki:",
-			"wiki_check": "Vikiyi kontrol et"
+			"wiki_check": "Vikiyi kontrol et",
+			"wikilist": "Tercih edilen vikiler:",
+			"wikilist_placeholder": "Tercih edilen vikiler listesi"
 		},
-		"new": "Yeni kanal üzerine yazması"
+		"invite": "Wiki-Bot henüz $1 üyesi değil, ancak [Wiki-Bot'u davet edebilirsiniz]($2). Alternatif olarak eğer [Wiki-Bot'u kullanıcı hesabınıza eklediyseniz]($3) kullanıcı ayarlarını tanımlayabilirsiniz.",
+		"new": "Yeni kanal üzerine yazması",
+		"user": "Wiki-Bot $1 sunucusunun bir üyesi değildir, ancak [Wiki-Bot'u kullanıcı hesabınıza eklediyseniz]($2) kullanıcı ayarlarını tanımlayabilirsiniz.",
+		"userdesc": "Eğer [kullanıcı hesabınıza Wiki-Bot eklediyseniz]($1), kullanıcı ayarlarını tanımlayabilir ve Wiki-Bot'u tüm sunucularınızda ve DM'lerinizde kullanabilirsiniz."
 	},
 	"verification": {
 		"button": "Doğrulama butonu",
@@ -314,7 +324,7 @@
 			"webhook_name": "Yazar adı:"
 		},
 		"help_button": "<p>Doğrulama butonu en iyi <b>özel komut cevapları</b> ve bir <b>sistem kaydı kanalı</b> ile çalışır.</p>\n<p>Bunları <a href=\"/guild/$1/verification/notice$2\">doğrulama bildirilerinin</a> bir parçası olarak etkinleştirebilirsiniz.</p>",
-		"help_notice": "<p>Özel bildiriler bazı basit fonksiyon ve değişkenleri destekliyor.</p>\n<ul>\n<li><code class=\"form-button user-select\">$mention</code> – The Discord mention of the user.</li>\n<li><code class=\"form-button user-select\">$username</code> – The wiki username of the user.</li>\n<li><code class=\"form-button user-select\">$editcount</code> - Kullanıcının mevcut düzenleme sayısı.</li>\n<li><code class=\"form-button user-select\">$accountage</code> - Kullanıcının gün bazında hesap yaşı.</li>\n<li><code class=\"form-button user-select\">$postcount</code> - Kullanıcının tartışma gönderisi sayısı (sadece Fandom vikileri).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr:1+1}}</code> - Bir ifadenin sonucunu verir.\n<ul>\n<li>Sadece ekleme <code class=\"form-button user-select\">+</code> ve çıkarmayı <code class=\"form-button user-select\">-</code> destekler.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \"> 1 &gt; 1 | <i>eğer doğruysa</i> <i>eğer yanlışsa</i> }}</code> - Bir ifade sonucunu baz alarak metin verir.\n<ul>\n<li><code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code>, <code class=\"form-button user-select\">ve</code>, <code class=\"form-button user-select\">ya da</code> destekler.</li>\n</ul></li>\n</ul>",
+		"help_notice": "<p>Özel bildirimler bazı basit işlevleri ve değişkenleri destekler.</p>\n<ul>\n<li><code class=\"form-button user-select\">$mention</code> – Kullanıcının Discord adı.</li>\n<li><code class=\"form-button user-select\">$username</code> – Kullanıcının viki adı.</li>\n<li><code class=\"form-button user-select\">$editcount</code> – Kullanıcının mevcut düzenleme sayısı.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – Kullanıcının tam gün cinsinden mevcut hesap yaşı.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – Kullanıcının mevcut tartışma gönderi sayısı (yalnızca Fandom vikileri).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Bir ifadenin sonucunu döndürür.\n<ul>\n<li>Sadece ekleme <code class=\"form-button user-select\">+</code> ve çıkarma <code class=\"form-button user-select\">-</code> destekler.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>doğruysa</i> | <i>yanlışsa</i> }}</code> – Bir ifadenin sonucuna bağlı olarak metin döndürür.\n<ul>\n<li>Desteklenen ekler <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> ve ek olarak <code class=\"form-button user-select\">ve</code>, <code class=\"form-button user-select\">ya da</code>.</li>\n</ul></li>\n</ul>",
 		"new": "Yeni doğrulama",
 		"notice": "Doğrulama bildirileri"
 	}
