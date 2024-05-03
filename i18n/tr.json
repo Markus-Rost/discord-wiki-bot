@@ -456,7 +456,7 @@
 		"inaccurate": "İstatistikler yanlış olabilir",
 		"lang": "Dil:",
 		"license": "Lisans:",
-		"manager": "Viki yöneticisi:",
+		"manager": "Viki temsilcisi:",
 		"misermode": "Cimri mod:",
 		"no": "Hayır",
 		"none": "*hiçbiri*",
@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1, $2 ayarlarını değiştirdi.",
 			"removed": "$1, $2 ayarlarını kaldırdı.",
-			"updated": "$1 sunucu ayarlarını güncelledi."
+			"updated": "$1 sunucu ayarlarını güncelledi.",
+			"user": "$1 ile ilgili kullanıcı ayarlarını güncelledin."
 		},
 		"foundwikis": "Bu vikilerden herhangi birini mi kastediyorsun?",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "Gerekli minimal rolü değiştirmek için `$1 <rol>` kullan.",
 		"roleinvalid": "Belirtilen rol mevcut değil!",
 		"save_failed": "Ne yazık ki ayarlar kaydedilemedi, lütfen daha sonra tekrar deneyin.",
+		"user current": "$1 üyesinin mevcut ayarları:",
+		"user lang": "$1 üyesinin dili:",
+		"user langchanged": "$1 üyesinin dili güncellendi:",
+		"user missing": "$3 üyesi ile ilgili bir ayar bulunmamakta. $1 ve $2 komutlarını kullanarak ayarları değiştirebilirsin.",
+		"user wiki": "$1 üyesinin varsayılan vikisi:",
+		"user wikichanged": "$1 üyesinin varsayılan vikisi güncellendi:",
+		"user wikimissing": "$1 üyesi için varsayılan bir viki bulunmamakta!",
 		"whitelist_added": "İzin verilen vikilerin bir listesi eklendi.",
 		"whitelist_modified": "İzin verilen vikilerin listesi değiştirildi.",
 		"whitelist_removed": "İzin verilen vikilerin listesi kaldırıldı.",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "Belirtilen site geçerli bir TLS/SSL sertifikasına sahip değil! Güvenlik amacıyla sadece HTTPS kullanan vikiler desteklenmektedir.\nEğer bir site yöneticisiysen *Let’s Encrypt* gibi bir sertifika yetkilisinden sertifika alabilirsin:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "Belirtilen viki gizli! Sadece herkes tarafından okunabilen halka açık vikiler desteklenmektedir.",
 		"wikiinvalid_timeout": "Belirtilen bağlantının cevap vermesi çok uzun sürdü!",
+		"wikilist_added": "Tercih edilen vikilerin listesi eklendi.",
+		"wikilist_modified": "Tercih edilen vikilerin listesi değiştirildi.",
+		"wikilist_removed": "Tercih edilen vikilerin listesi kaldırıldı.",
 		"wikimissing": "Bu sunucu için varsayılan bir viki belirlenmemiş!"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "$1 tarihinde $4 tarafından sonsuza kadar engellendi.",
 			"indef_text": "$1 tarihinde \"$5\" nedeniyle $4 tarafından sonsuza engellendi.",
 			"noreason": "$4 tarafından $1 tarihinde $3 tarihine kadar $2 süreliğine engellendi.",
+			"partial": "$1 şu an kısmen engellenmiş durumda!",
 			"text": "$4 tarafından \"$5\" nedeniyle $1 tarihinde $3 tarihine kadar $2 süreliğine engellendi."
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "Global istatistikler yükleniyor…",
 			"postcount": "Tartışma gönderileri:",
 			"registration": "Kayıt tarihi:",
+			"unknown": "*bilinmiyor*",
 			"wikisedited": "Düzenlenen vikiler:"
 		}
 	},
