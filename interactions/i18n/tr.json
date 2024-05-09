@@ -29,7 +29,11 @@
 		"options[1].options[0].options[1].description": "Gösterilecek düzenleme farkının ilgili revizyonu.",
 		"options[1].options[0].options[1].name": "karşılaştır",
 		"options[1].options[0].options[2].description": "Aranacak viki.",
-		"options[1].options[0].options[2].name": "viki"
+		"options[1].options[0].options[2].name": "viki",
+		"options[1].options[0].options[3].description": "Sadece kendinizin görebileceği bir yanıt mı gönderilsin?",
+		"options[1].options[0].options[3].name": "gizli",
+		"options[1].options[0].options[4].description": "Gömülü mesaj olmadan sadece bağlantı mı gönderilmeli?",
+		"options[1].options[0].options[4].name": "gömülümesajsız"
 	},
 	"inline": {
 		"description": "Satır içi viki bağlantıları ile mesaj paylaş.",
