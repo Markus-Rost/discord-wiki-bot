@@ -475,7 +475,8 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
  */
 function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 	if ( !isMarkdown ) text = text.replaceAll( '\\', '\\\\' ).replaceAll( '](', ']\\(' );
-	text = text.replace( /[`_*~:<>{}@|#\-\.]/g, '\\$&' ).replaceAll( '//', '/\\/' );
+	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replaceAll( '//', '/\\/' );
+	text = text.replace( /^#+ /gm, '\\$&' ).replace( /^(\s*)- /gm, '$1\\- ' ).replace( /^(\s*\d+)\. /gm, '$1\\. ' );
 	if ( isMarkdown ) text = text.replace( /\]\(\\<([^\(\)<>\s]+?)\\>\)/g, '](<$1>)' );
 	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
 		return match.replaceAll( '\\\\', '/' ).replaceAll( '\\', '' );

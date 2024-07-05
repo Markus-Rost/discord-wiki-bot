@@ -159,13 +159,12 @@ export default class Wiki extends URL {
 	 * @param {String} siteinfo.mainpage - Main page of the wiki.
 	 * @param {String} siteinfo.centralidlookupprovider - Central auth of the wiki.
 	 * @param {String} siteinfo.logo - Logo of the wiki.
-	 * @param {String} siteinfo.wikiid - DB name of the wiki.
 	 * @param {String} [siteinfo.gamepedia] - If the wiki is a Gamepedia wiki.
 	 * @param {{id: Number, canonical: String, content?: "", '*': String}[]} [namespaces] - Namespaces from the wiki API.
 	 * @param {{id: Number, '*': String}[]} [namespacealiases] - Namespace aliases from the wiki API.
 	 * @returns {Wiki}
 	 */
-	updateWiki({server, servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, wikiid, gamepedia = 'false'}, namespaces, namespacealiases) {
+	updateWiki({server, servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, gamepedia = 'false'}, namespaces, namespacealiases) {
 		try {
 			this.hostname = new URL(server, this).hostname;
 		}

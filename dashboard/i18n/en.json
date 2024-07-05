@@ -201,6 +201,7 @@
 			"buttons_filerevert": "Revert to the previous file version.",
 			"buttons_move": "Revert the page move.",
 			"buttons_rollback": "Rollback the last edits on the page by the user.",
+			"buttons_thank": "Thank the user.",
 			"buttons_undo": "Undo the page edit.",
 			"channel": "Channel:",
 			"confirm": "Do you really want to delete the recent changes webhook?",

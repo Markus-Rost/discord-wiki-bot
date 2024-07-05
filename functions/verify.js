@@ -180,7 +180,9 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				}
 				queryuser.editcount = ucbody.userData.localEdits;
 				queryuser.postcount = ucbody.userData.posts;
-				if ( ucbody.userData.discordHandle?.trim() ) discordname = escapeFormatting(ucbody.userData.discordHandle.replace( /^\s*@?(?:([a-z0-9_.]{2,32})(?:\s*#0)?|([^@#:]{2,32}?)(?:\s*(#\d{4}))?)\s*$/u, '$1$2$3' ));
+				if ( ucbody.userData.discordHandle?.trim() ) {
+					discordname = escapeFormatting(ucbody.userData.discordHandle.trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' ));
+				}
 				
 				if ( wiki.isGamepedia() || !discordname ) return got.get( ( wiki.isGamepedia() ? wiki : 'https://help.fandom.com/' ) + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
 					context: {
@@ -194,7 +196,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 						return Promise.reject();
 					}
 					else if ( pbody.profile['link-discord']?.trim() ) {
-						discordname = escapeFormatting(pbody.profile['link-discord'].replace( /^\s*@?(?:([a-z0-9_.]{2,32})(?:\s*#0)?|([^@#:]{2,32}?)(?:\s*(#\d{4}))?)\s*$/u, '$1$2$3' ));
+						discordname = escapeFormatting(pbody.profile['link-discord'].trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' ));
 					}
 				}, error => {
 					console.log( '- Error while getting the Discord tag: ' + error );
@@ -204,7 +206,6 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				console.log( '- Error while getting the user profile: ' + ucerror );
 				return Promise.reject();
 			} ).then( () => {
-				if ( discordname?.endsWith('#0') ) discordname = discordname.replace( /\s*\\#0$/, '' );
 				if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 				var authortag = escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' ));
 				embed.addFields(...[
@@ -489,13 +490,12 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			var discordname = '';
 			if ( revision ) {
 				if ( revision.user === username && ( revision?.slots?.main || revision )?.['*']?.trim() ) {
-					discordname = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*@?(?:([a-z0-9_.]{2,32})(?:\s*#0)?|([^@#:]{2,32}?)(?:\s*(#\d{4}))?)\s*$/u, '$1$2$3' );
+					discordname = escapeFormatting(( revision?.slots?.main || revision )['*']).trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' );
 				}
 				else if ( revision.user !== username ) {
 					discordname = null;
 				}
 			}
-			if ( discordname?.endsWith('#0') ) discordname = discordname.replace( /\s*\\#0$/, '' );
 			if ( discordname?.length > 100 ) discordname = discordname.substring(0, 100) + '\u2026';
 			var authortag = escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' ));
 			embed.addFields(...[

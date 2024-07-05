@@ -23,7 +23,8 @@ const button_types = [
 	'filerevert',
 	'move',
 	'rollback',
-	'undo'
+	'undo',
+	'thank'
 ];
 
 /**
@@ -93,6 +94,9 @@ const fieldset = {
 	+ '</div><div class="wb-settings-buttons">'
 	+ '<input type="checkbox" id="wb-settings-buttons-undo" class="wb-settings-buttons-input" name="buttons" value="undo">'
 	+ '<label for="wb-settings-buttons-undo" class="button-label">Undo the page edit.</label>'
+	+ '</div><div class="wb-settings-buttons">'
+	+ '<input type="checkbox" id="wb-settings-buttons-thank" class="wb-settings-buttons-input" name="buttons" value="thank">'
+	+ '<label for="wb-settings-buttons-thank" class="button-label">Thank the user.</label>'
 	+ '</div>',
 	save: '<input type="submit" id="wb-settings-save" name="save_settings">',
 	delete: '<input type="submit" id="wb-settings-delete" name="delete_settings" formnovalidate>'
@@ -208,6 +212,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 		buttons.find('label').eq(3).text(dashboardLang.get('rcscript.form.buttons_move'));
 		buttons.find('label').eq(4).text(dashboardLang.get('rcscript.form.buttons_rollback'));
 		buttons.find('label').eq(5).text(dashboardLang.get('rcscript.form.buttons_undo'));
+		buttons.find('label').eq(6).text(dashboardLang.get('rcscript.form.buttons_thank'));
 		if ( settings.buttons ) settings.buttons.split('|').forEach( button => {
 			buttons.find(`#wb-settings-buttons-${button}`).attr('checked', '');
 		} );

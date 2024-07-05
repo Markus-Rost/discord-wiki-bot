@@ -599,8 +599,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							}
 							else backupDescription = null;
 						}
-						$('h1, h2, h3, h4, h5, h6').nextAll().remove();
-						$('h1, h2, h3, h4, h5, h6').remove();
+						$('h1, h2, h3, h4, h5, h6, div.mw-heading').nextAll().remove();
+						$('h1, h2, h3, h4, h5, h6, div.mw-heading').remove();
 					}
 					var description = htmlToDiscord($.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );

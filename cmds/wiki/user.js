@@ -565,7 +565,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				}
 				var discord = '';
 				if ( pbody.userData.discordHandle?.trim() ) {
-					discord = escapeFormatting(pbody.userData.discordHandle.replace( /^\s*@?(?:([a-z0-9_.]{2,32})(?:\s*#0)?|([^@#:]{2,32}?)(?:\s*(#\d{4}))?)\s*$/u, '$1$2$3' ));
+					discord = escapeFormatting(pbody.userData.discordHandle.trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' ));
 					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 				}
 				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
@@ -579,7 +579,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 						return;
 					}
 					if ( cpbody.profile['link-discord']?.trim() ) {
-						discord = escapeFormatting(cpbody.profile['link-discord'].replace( /^\s*@?(?:([a-z0-9_.]{2,32})(?:\s*#0)?|([^@#:]{2,32}?)(?:\s*(#\d{4}))?)\s*$/u, '$1$2$3' ));
+						discord = escapeFormatting(cpbody.profile['link-discord'].trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' ));
 						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 					}
 					if ( discord ) {
@@ -661,7 +661,7 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				if ( revision?.user === username ) {
 					let discord = '';
 					if ( ( revision?.slots?.main || revision )?.['*']?.trim() ) {
-						discord = escapeFormatting(( revision?.slots?.main || revision )['*']).replace( /^\s*@?(?:([a-z0-9_.]{2,32})(?:\s*#0)?|([^@#:]{2,32}?)(?:\s*(#\d{4}))?)\s*$/u, '$1$2$3' );
+						discord = escapeFormatting(( revision?.slots?.main || revision )['*']).trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' );
 						if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 					}
 					if ( discord ) {

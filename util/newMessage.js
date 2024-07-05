@@ -129,7 +129,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, embed
 						linkcount++;
 						console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
-						let section = entry[2].split('#').slice(1).join('#');
+						let section = entry[2].split('#').slice(1).join('#').trim();
 						links.push({title,section,spoiler:entry[1]});
 					}
 					else if ( linkcount === linkmaxcount ) {
@@ -149,7 +149,7 @@ export default function newMessage(msg, lang, wiki = defaultSettings.wiki, embed
 						count++;
 						console.log( ( msg.guildId || '@' + msg.author.id ) + ': ' + entry[0] );
 						let title = entry[2].split('#')[0];
-						let section = entry[2].split('#').slice(1).join('#');
+						let section = entry[2].split('#').slice(1).join('#').trim();
 						embeds.push({title,section,spoiler:entry[1]});
 					}
 					else if ( count === maxcount ) {

@@ -70,6 +70,7 @@ const common_warnings = {
 		'Unrecognized parameters: exlimit, explaintext, exsectionformat, piprop.',
 		'Unrecognized parameters: piprop, explaintext, exsectionformat, exlimit.',
 		'Unrecognized parameters: explaintext, exsectionformat, exlimit.',
+		'Unrecognized parameters: exlimit, explaintext, exsectionformat.',
 		'Unrecognized parameter: piprop.',
 		'Unrecognized parameter: rvslots.'
 	],
