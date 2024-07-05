@@ -201,6 +201,7 @@
 			"buttons_filerevert": "Setze die Dateiversion zurück.",
 			"buttons_move": "Verschiebe die Seite zurück.",
 			"buttons_rollback": "Setze die letzten Änderungen des Benutzers auf der Seite zurück.",
+			"buttons_thank": "Danke dem Benutzer.",
 			"buttons_undo": "Mache die Änderung rückgängig.",
 			"channel": "Kanal:",
 			"confirm": "Möchtest du wirklich den Letzte Änderungen-WebHook löschen?",
