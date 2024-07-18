@@ -5,7 +5,7 @@ import { extname } from 'node:path';
 import * as pages from './oauth.js';
 import dashboard from './guilds.js';
 import { posts, beta } from './functions.js';
-import { db, sessionData, settingsData } from './util.js';
+import { db, dbListener, listenerMap, sessionData, settingsData } from './util.js';
 import Lang from './i18n.js';
 const allLangs = Lang.allLangs();
 
@@ -291,6 +291,38 @@ const server = createServer( (req, res) => {
 		if ( wiki ) return pages.api(res, wiki, guild);
 	}
 
+	if ( reqURL.pathname === '/debug' && rcscriptExists && process.env.owner.split('|').includes(sessionData.get(state).user_id) ) {
+		console.log( '- Dashboard: Requesting RcGcDb debug dump.' );
+		return new Promise( (resolve, reject) => {
+			let timeout = setTimeout( () => {
+				listenerMap.delete(timeout);
+				reject('Timeout');
+			}, 5000 ).unref();
+			listenerMap.set(timeout, resolve);
+			db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', 'DEBUG DUMP'] ).catch( dberror => {
+				console.log( '- Dashboard: Error while requesting the debug dump: ' + dberror );
+				listenerMap.delete(timeout);
+				clearTimeout(timeout);
+				reject(dberror);
+			} );
+		} ).then( body => {
+			res.writeHead(200, {
+				'Content-Length': Buffer.byteLength(body),
+				'Content-Type': 'application/json'
+			});
+			res.write( body );
+			return res.end();
+		}, error => {
+			let body = '<strong style="color: red;">Error: ' + error + '</strong>';
+			res.writeHead(500, {
+				'Content-Length': Buffer.byteLength(body),
+				'Content-Type': 'text/html'
+			});
+			res.write( body );
+			return res.end();
+		} );
+	}
+
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
@@ -326,7 +358,12 @@ function graceful(signal) {
 		console.log( '- Dashboard: ' + signal + ': Closed the dashboard server.' );
 		db.end().then( () => {
 			console.log( '- Dashboard: ' + signal + ': Closed the database connection.' );
-			process.exit(0);
+			dbListener.end().then( () => {
+				console.log( '- Dashboard: ' + signal + ': Closed the listener database connection.' );
+				process.exit(0);
+			}, dberror => {
+				console.log( '- Dashboard: ' + signal + ': Error while closing the listener database connection: ' + dberror );
+			} );
 		}, dberror => {
 			console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
 		} );

@@ -30,6 +30,29 @@ db.on( 'error', dberror => {
 	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
 
+const dbListener = new pg.Client(process.env.PGSSL === 'true' ? {ssl: true} : {});
+dbListener.on( 'error', dberror => {
+	console.log( '- Dashboard: Error while connecting the listener to the database: ' + dberror );
+} ).connect().catch( dberror => {
+	console.log( '- Dashboard: Error while connecting the listener to the database: ' + dberror );
+} );
+dbListener.query( 'LISTEN debugresponse' ).then( () => {
+	console.log( '- Dashboard: Added database debug response listener.' );
+}, dberror => {
+	console.log( '- Dashboard: Error while adding the database debug response listener: ' + dberror );
+} );
+
+/** @type {Map<NodeJS.Timeout, Promise.resolve>} */
+const listenerMap = new Map();
+dbListener.on( 'notification', msg => {
+	if ( msg.channel !== 'debugresponse' ) return;
+	listenerMap.forEach( (resolve, timeout) => {
+		clearTimeout(timeout);
+		resolve(msg.payload);
+	} );
+	listenerMap.clear();
+} );
+
 const oauth = new DiscordOauth2( {
 	clientId: process.env.bot,
 	clientSecret: process.env.secret,
@@ -485,6 +508,8 @@ function hasPerm(all = 0n, ...permission) {
 export {
 	got,
 	db,
+	dbListener,
+	listenerMap,
 	oauth,
 	enabledOAuth2,
 	canRcGcDwButtons,

@@ -37,9 +37,14 @@ const manager = new ShardingManager( './bot.js', {
 var diedShards = 0;
 manager.on( 'shardCreate', shard => {
 	console.log( `- Shard[${shard.id}]: Launched` );
+	var isStarting = true;
 	
 	shard.on( ShardEvents.Spawn, () => {
 		console.log( `- Shard[${shard.id}]: Spawned` );
+	} );
+	
+	shard.on( ShardEvents.Ready, () => {
+		isStarting = false;
 	} );
 	
 	shard.on( ShardEvents.Message, message => {
@@ -65,7 +70,7 @@ manager.on( 'shardCreate', shard => {
 	shard.on( ShardEvents.Death, message => {
 		if ( manager.respawn === false ) diedShards++;
 		if ( message.exitCode ) {
-			if ( !shard.ready ) {
+			if ( isStarting ) {
 				manager.respawn = false;
 				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
 			}
