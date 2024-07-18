@@ -45,6 +45,7 @@ dbListener.query( 'LISTEN debugresponse' ).then( () => {
 /** @type {Map<NodeJS.Timeout, Promise.resolve>} */
 const listenerMap = new Map();
 dbListener.on( 'notification', msg => {
+	if ( isDebug ) console.log( '- Dashboard: Notification received.', msg );
 	if ( msg.channel !== 'debugresponse' ) return;
 	listenerMap.forEach( (resolve, timeout) => {
 		clearTimeout(timeout);
