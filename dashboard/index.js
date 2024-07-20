@@ -5,7 +5,7 @@ import { extname } from 'node:path';
 import * as pages from './oauth.js';
 import dashboard from './guilds.js';
 import { posts, beta } from './functions.js';
-import { db, dbListener, listenerMap, sessionData, settingsData } from './util.js';
+import { db, listenerMap, sessionData, settingsData } from './util.js';
 import Lang from './i18n.js';
 const allLangs = Lang.allLangs();
 
@@ -358,12 +358,7 @@ function graceful(signal) {
 		console.log( '- Dashboard: ' + signal + ': Closed the dashboard server.' );
 		db.end().then( () => {
 			console.log( '- Dashboard: ' + signal + ': Closed the database connection.' );
-			dbListener.end().then( () => {
-				console.log( '- Dashboard: ' + signal + ': Closed the listener database connection.' );
-				process.exit(0);
-			}, dberror => {
-				console.log( '- Dashboard: ' + signal + ': Error while closing the listener database connection: ' + dberror );
-			} );
+			process.exit(0);
 		}, dberror => {
 			console.log( '- Dashboard: ' + signal + ': Error while closing the database connection: ' + dberror );
 		} );

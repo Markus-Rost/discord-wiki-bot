@@ -400,9 +400,7 @@ export default await db.connect().then( () => {
 	console.log( '- Error while connecting to the database: ' + dberror );
 	return Promise.reject();
 } ).then( () => {
-	db.end().catch( dberror => {
-		console.log( '- Error while closing the database connection: ' + dberror );
-	} );
+	return db;
 }, () => {
 	return db.end().then( () => {
 		console.log( '- Closed the database connection.' );

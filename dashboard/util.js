@@ -30,30 +30,6 @@ db.on( 'error', dberror => {
 	console.log( '- Dashboard: Error while connecting to the database: ' + dberror );
 } );
 
-const dbListener = new pg.Client(process.env.PGSSL === 'true' ? {ssl: true} : {});
-dbListener.on( 'error', dberror => {
-	console.log( '- Dashboard: Error while connecting the listener to the database: ' + dberror );
-} ).connect().catch( dberror => {
-	console.log( '- Dashboard: Error while connecting the listener to the database: ' + dberror );
-} );
-dbListener.query( 'LISTEN debugresponse' ).then( () => {
-	console.log( '- Dashboard: Added database debug response listener.' );
-}, dberror => {
-	console.log( '- Dashboard: Error while adding the database debug response listener: ' + dberror );
-} );
-
-/** @type {Map<NodeJS.Timeout, Promise.resolve>} */
-const listenerMap = new Map();
-dbListener.on( 'notification', msg => {
-	if ( isDebug ) console.log( '- Dashboard: Notification received.', msg );
-	if ( msg.channel !== 'debugresponse' ) return;
-	listenerMap.forEach( (resolve, timeout) => {
-		clearTimeout(timeout);
-		resolve(msg.payload);
-	} );
-	listenerMap.clear();
-} );
-
 const oauth = new DiscordOauth2( {
 	clientId: process.env.bot,
 	clientSecret: process.env.secret,
@@ -223,6 +199,11 @@ const settingsData = new Map();
 const oauthVerify = new Map();
 
 /**
+ * @type {Map<NodeJS.Timeout, Promise.resolve>}
+ */
+const listenerMap = new Map();
+
+/**
  * @type {Map<Number, PromiseConstructor>}
  */
 const messages = new Map();
@@ -230,6 +211,13 @@ var messageId = 1;
 
 process.on( 'message', message => {
 	if ( message?.id === 'verifyUser' ) return oauthVerify.set(message.state, message.user);
+	if ( message?.id === 'debugresponse' ) {
+		listenerMap.forEach( (resolve, timeout) => {
+			clearTimeout(timeout);
+			resolve(message.data);
+		} );
+		return listenerMap.clear();
+	}
 	if ( message?.id ) {
 		if ( message.data.error ) messages.get(message.id).reject(message.data.error);
 		else messages.get(message.id).resolve(message.data.response);
@@ -509,14 +497,13 @@ function hasPerm(all = 0n, ...permission) {
 export {
 	got,
 	db,
-	dbListener,
-	listenerMap,
 	oauth,
 	enabledOAuth2,
 	canRcGcDwButtons,
 	sessionData,
 	settingsData,
 	oauthVerify,
+	listenerMap,
 	sendMsg,
 	addWidgets,
 	createNotice,

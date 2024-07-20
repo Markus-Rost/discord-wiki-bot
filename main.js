@@ -7,7 +7,7 @@ const {shardIdForGuildId} = ShardClientUtil;
 
 var isDebug = ( process.argv[2] === 'debug' );
 if ( process.argv[2] === 'readonly' ) process.env.READONLY = 'true';
-import './database.js';
+import db from './database.js';
 
 const got = gotDefault.extend( {
 	throwHttpErrors: false,
@@ -116,6 +116,7 @@ manager.spawn( {
 	} );
 } );
 
+/** @type {import('node:child_process').ChildProcess|undefined} */
 var server;
 if ( process.env.dashboard ) {
 	const dashboard = forkChildProcess('./dashboard/index.js', ( isDebug ? ['debug'] : [] ));
@@ -450,6 +451,33 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 	}, error => console.log( '- Error while getting the guild count: ' + error ) );
 }
 
+db.query( 'LISTEN debugresponse' ).then( () => {
+	console.log( '- Added database debug response listener.' );
+}, dberror => {
+	console.log( '- Error while adding the database debug response listener: ' + dberror );
+} );
+
+db.on( 'notification', msg => {
+	if ( isDebug ) console.log( '- Database notification received:', msg );
+	if ( msg.channel !== 'debugresponse' || !msg.payload ) return;
+	let [type, ...payload] = msg.payload.split(' ');
+	if ( type === 'DUMP' ) {
+		if ( typeof server !== 'undefined' && server.connected ) {
+			return server.send( {
+				id: 'debugresponse',
+				data: payload.join(' ')
+			} );
+		};
+		return;
+	}
+	if ( typeof server !== 'undefined' && server.connected ) {
+		return server.send( {
+			id: 'debugresponse',
+			data: msg.payload
+		} );
+	};
+} );
+
 
 /**
  * End the process gracefully.
@@ -458,6 +486,11 @@ function postStats(botList = JSON.parse(process.env.botlist), shardCount = manag
 function graceful(signal) {
 	console.log( '- ' + signal + ': Disabling respawn...' );
 	manager.respawn = false;
+	db.end().then( () => {
+		console.log( '- ' + signal + ': Closed the listener database connection.' );
+	}, dberror => {
+		console.log( '- ' + signal + ': Error while closing the listener database connection: ' + dberror );
+	} );
 }
 
 process.once( 'SIGINT', graceful );
