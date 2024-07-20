@@ -53,6 +53,7 @@ manager.on( 'shardCreate', shard => {
 		}
 		if ( message === 'SIGKILL' ) {
 			console.log( '\n- Killing all shards!\n\n' );
+			graceful('SIGKILL');
 			manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 			if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		}
@@ -75,6 +76,12 @@ manager.on( 'shardCreate', shard => {
 				console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error, disable respawn!\n\n` );
 			}
 			else console.log( `\n\n- Shard[${shard.id}]: Died due to fatal error!\n\n` );
+			if ( isDebug || diedShards >= manager.totalShards ) {
+				graceful('SIGKILL');
+				manager.shards.filter( leftShard => leftShard !== shard && leftShard.process && !leftShard.process.killed ).forEach( leftShard => leftShard.kill() );
+				if ( typeof server !== 'undefined' && !server.killed ) server.kill();
+				process.exit(1);
+			};
 		}
 	} );
 
@@ -100,7 +107,7 @@ manager.spawn( {
 	console.error( '- Error while spawning the shards: ' + error );
 	manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 	if ( isDebug ) {
-		manager.respawn = false;
+		graceful('SIGKILL');
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		process.exit(1);
 	}
@@ -109,7 +116,7 @@ manager.spawn( {
 		timeout: 90_000
 	} ).catch( error2 => {
 		console.error( '- Error while spawning the shards: ' + error2 );
-		manager.respawn = false;
+		graceful('SIGKILL');
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 		process.exit(1);
@@ -412,6 +419,7 @@ if ( process.env.dashboard ) {
 	dashboard.on( 'exit', (code) => {
 		if ( code ) console.log( '- [Dashboard]: Process exited!', code );
 		if ( isDebug ) {
+			graceful('SIGKILL');
 			manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 			process.exit(1);
 		}
@@ -496,17 +504,13 @@ function graceful(signal) {
 process.once( 'SIGINT', graceful );
 process.once( 'SIGTERM', graceful );
 
-process.on( 'exit', code => {
-	if ( diedShards >= manager.totalShards ) process.exit(1);
-} );
-
 if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	let timeout = process.argv[3].split(':')[1];
 	console.log( `\n- Close process in ${timeout} seconds!\n` );
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
 		isDebug = false;
-		graceful('SIGTERM');
+		graceful('SIGKILL');
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 	}, timeout * 1_000 ).unref();
