@@ -506,6 +506,7 @@ if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	setTimeout( () => {
 		console.log( `\n- Running for ${timeout} seconds, closing process!\n` );
 		isDebug = false;
+		graceful('SIGTERM');
 		manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
 		if ( typeof server !== 'undefined' && !server.killed ) server.kill();
 	}, timeout * 1_000 ).unref();
