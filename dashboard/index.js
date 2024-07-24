@@ -295,7 +295,7 @@ const server = createServer( (req, res) => {
 		let site = reqURL.searchParams.get('site');
 		console.log( '- Dashboard: Requesting RcGcDb debug dump' + ( site ? ' for ' + site : '.' ) );
 		return new Promise( (resolve, reject) => {
-			let id = Date.now();
+			let id = Date.now().toString();
 			if ( site ) id = '-1+' + id;
 			let timeout = setTimeout( () => {
 				listenerMap.delete(id);
@@ -314,6 +314,7 @@ const server = createServer( (req, res) => {
 			/** @param {String} body */
 			function write(body) {
 				return res.write( body, error => {
+					if ( !error ) return;
 					listenerMap.delete(id);
 					clearTimeout(timeout);
 					reject(error);
