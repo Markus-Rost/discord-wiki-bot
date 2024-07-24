@@ -199,7 +199,7 @@ const settingsData = new Map();
 const oauthVerify = new Map();
 
 /**
- * @type {Map<NodeJS.Timeout, Promise.resolve>}
+ * @type {Map<Number, {timeout: NodeJS.Timeout, write: (body: String) => Boolean, resolve: PromiseConstructor.resolve}>}
  */
 const listenerMap = new Map();
 
@@ -212,11 +212,18 @@ var messageId = 1;
 process.on( 'message', message => {
 	if ( message?.id === 'verifyUser' ) return oauthVerify.set(message.state, message.user);
 	if ( message?.id === 'debugresponse' ) {
-		listenerMap.forEach( (resolve, timeout) => {
-			clearTimeout(timeout);
-			resolve(message.data);
-		} );
-		return listenerMap.clear();
+		let listener = listenerMap.get(message.listener);
+		if ( !listener ) return;
+		if ( message.part === 'CHUNK' ) {
+			return listener.write(message.data);
+		}
+		if ( message.part === 'END' ) {
+			listenerMap.delete(message.listener);
+			clearTimeout(listener.timeout);
+			listener.resolve();
+			return;
+		}
+		return;
 	}
 	if ( message?.id ) {
 		if ( message.data.error ) messages.get(message.id).reject(message.data.error);

@@ -292,33 +292,37 @@ const server = createServer( (req, res) => {
 	}
 
 	if ( reqURL.pathname === '/debug' && rcscriptExists && process.env.owner.split('|').includes(sessionData.get(state).user_id) ) {
-		console.log( '- Dashboard: Requesting RcGcDb debug dump.' );
+		let site = reqURL.searchParams.get('site');
+		console.log( '- Dashboard: Requesting RcGcDb debug dump' + ( site ? ' for ' + site : '.' ) );
 		return new Promise( (resolve, reject) => {
+			let id = Date.now();
+			if ( site ) id = '-1+' + id;
 			let timeout = setTimeout( () => {
-				listenerMap.delete(timeout);
+				listenerMap.delete(id);
 				reject('Timeout');
 			}, 5000 ).unref();
-			listenerMap.set(timeout, resolve);
-			db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', 'DEBUG DUMP'] ).catch( dberror => {
-				console.log( '- Dashboard: Error while requesting the debug dump: ' + dberror );
-				listenerMap.delete(timeout);
+			listenerMap.set(id, {timeout, write, resolve});
+			res.writeHead(200, {
+				'Content-Type': 'application/json'
+			});
+			db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', ( site ? 'DEBUG SITE ' + id + ' ' + site : 'DEBUG DUMP ' + id )] ).catch( dberror => {
+				console.log( '- Dashboard: Error while requesting the debug dump' + ( site ? ' for ' + site : '' ) + ': ' + dberror );
+				listenerMap.delete(id);
 				clearTimeout(timeout);
 				reject(dberror);
 			} );
-		} ).then( body => {
-			res.writeHead(200, {
-				'Content-Length': Buffer.byteLength(body),
-				'Content-Type': 'application/json'
-			});
-			res.write( body );
+			/** @param {String} body */
+			function write(body) {
+				return res.write( body, error => {
+					listenerMap.delete(id);
+					clearTimeout(timeout);
+					reject(error);
+				} );
+			}
+		} ).then( () => {
 			return res.end();
 		}, error => {
-			let body = '<strong style="color: red;">Error: ' + error + '</strong>';
-			res.writeHead(500, {
-				'Content-Length': Buffer.byteLength(body),
-				'Content-Type': 'text/html'
-			});
-			res.write( body );
+			res.write( JSON.stringify( {error} ) );
 			return res.end();
 		} );
 	}

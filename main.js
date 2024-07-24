@@ -468,22 +468,32 @@ db.query( 'LISTEN debugresponse' ).then( () => {
 db.on( 'notification', msg => {
 	if ( isDebug ) console.log( '- Database notification received:', msg );
 	if ( msg.channel !== 'debugresponse' || !msg.payload ) return;
-	let [type, ...payload] = msg.payload.split(' ');
+	let [type, part, listener, ...payload] = msg.payload.split(' ');
+	if ( !type || !part || !listener ) return;
 	if ( type === 'DUMP' ) {
 		if ( typeof server !== 'undefined' && server.connected ) {
 			return server.send( {
 				id: 'debugresponse',
+				type, part, listener,
 				data: payload.join(' ')
 			} );
 		};
 		return;
 	}
-	if ( typeof server !== 'undefined' && server.connected ) {
-		return server.send( {
-			id: 'debugresponse',
-			data: msg.payload
-		} );
-	};
+	if ( type === 'SITE' ) {
+		let shard = +listener.split('+')[0]
+		if ( Number.isNaN(shard) || shard >= manager.totalShards ) return;
+		if ( shard === -1 ) {
+			if ( typeof server !== 'undefined' && server.connected ) {
+				return server.send( {
+					id: 'debugresponse',
+					type, part, listener,
+					data: payload.join(' ')
+				} );
+			};
+			return;
+		}
+	}
 } );
 
 
