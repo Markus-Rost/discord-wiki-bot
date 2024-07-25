@@ -134,6 +134,29 @@ function checkWiki(wiki) {
 			db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', 'DEBUG WIKI ' + result.wiki] ).catch( dberror => {
 				result.webhookupdates = dberror.toString();
 			} ),
+			new Promise( (resolve, reject) => {
+				console.log( '- Requesting RcGcDb debug dump for ' + result.wiki );
+				let id = process.env.SHARDS + '+' + Date.now();
+				let timeout = setTimeout( () => {
+					dbListenerMap.delete(id);
+					reject('Timeout');
+				}, 5000 ).unref();
+				dbListenerMap.set(id, {timeout, body: '', resolve});
+				db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', 'DEBUG SITE ' + id + ' ' + result.wiki] ).catch( dberror => {
+					console.log( '- Dashboard: Error while requesting the debug dump for ' + result.wiki + ': ' + dberror );
+					dbListenerMap.delete(id);
+					clearTimeout(timeout);
+					reject(dberror);
+				} );
+			} ).then( jsonBody => {
+				let body = JSON.parse(jsonBody);
+				delete body.logs;
+				delete body.tags;
+				delete body.namespaces;
+				result.debug = body;
+			} ).catch( error => {
+				result.debug = {error};
+			} ),
 			( wiki.wikifarm === 'fandom' ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'

@@ -49,6 +49,12 @@ globalThis.patreonGuildsPrefix = new Map();
 globalThis.pausedGuilds = new Set();
 
 /**
+ * Map of database event listeners
+ * @type {Map<Number, {timeout: NodeJS.Timeout, body: String, resolve: PromiseConstructor.resolve}>}
+ */
+globalThis.dbListenerMap = new Map();
+
+/**
  * Logs an error.
  * @param {Error} error - The error.
  * @param {Boolean} isBig - If the error should get a big log.

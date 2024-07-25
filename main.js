@@ -493,6 +493,22 @@ db.on( 'notification', msg => {
 			};
 			return;
 		}
+		manager.broadcastEval( (discordClient, message) => {
+			let listener = globalThis.dbListenerMap.get(message.listener);
+			if ( !listener ) return;
+			if ( message.part === 'CHUNK' ) {
+				return listener.body += message.data;
+			}
+			if ( message.part === 'END' ) {
+				globalThis.dbListenerMap.delete(message.listener);
+				clearTimeout(listener.timeout);
+				listener.resolve(listener.body);
+				return;
+			}
+		}, {context: {
+			type, part, listener,
+			data: payload.join(' ')
+		}, shard} );
 	}
 } );
 
