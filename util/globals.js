@@ -1,5 +1,5 @@
 import { inspect } from 'node:util';
-inspect.defaultOptions = {compact: false, breakLength: Infinity};
+inspect.defaultOptions = {compact: false, breakLength: Infinity, depth: 3};
 
 /**
  * If debug logging is enabled.

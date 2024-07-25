@@ -9,7 +9,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 
-inspect.defaultOptions = {compact: false, breakLength: Infinity};
+inspect.defaultOptions = {compact: false, breakLength: Infinity, depth: 3};
 
 /**
  * Processes the "eval" command.
