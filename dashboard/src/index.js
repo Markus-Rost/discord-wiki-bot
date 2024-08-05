@@ -209,6 +209,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 					var wikiEmbedStrong = document.createElement('strong');
 					wikiEmbedStrong.textContent = response.sitename;
 					var wikiEmbedImg = document.createElement('img');
+					wikiEmbedImg.className = 'wiki-logo';
 					wikiEmbedImg.src = response.logo;
 					wikiEmbedImg.alt = response.sitename;
 					var wikiEmbedSmall = document.createElement('small');
@@ -253,7 +254,7 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 						wikichecknotice.append(noticeTitle, noticeText, noticeLink, ...noticeExtraParts);
 						return;
 					}
-					if ( response.RcGcDw?.trim() !== guild && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
+					if ( !response.RcGcDw.includes( guild ) && ( document.location.pathname.split('/')[4] === 'new' || wiki.value !== wiki.defaultValue ) ) {
 						wikichecknotice.classList.add('notice-info');
 						var noticeTitle = document.createElement('b');
 						noticeTitle.textContent = lang('sysmessage.title');

@@ -660,6 +660,9 @@ button.addmore:not([hidden]) {
 	display: block;
 	margin-left: 20%;
 }
+.wb-settings-wiki-check-notice .wiki-logo {
+	max-width: 100%;
+}
 .wb-settings-optgroup {
 	font-weight: bold;
 }

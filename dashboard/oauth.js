@@ -365,7 +365,7 @@ function dashboard_api(res, input, guild = null) {
 		logo: '',
 		oauth: false,
 		MediaWiki: false,
-		RcGcDw: '',
+		RcGcDw: [],
 		customRcGcDw: wiki?.toLink('MediaWiki:Custom-RcGcDw', 'action=edit')
 	};
 	if ( !wiki ) {
@@ -440,7 +440,7 @@ function dashboard_api(res, input, guild = null) {
 			result.MediaWiki = true;
 		}
 		if ( body.query.allmessages[0]['*'] ) {
-			result.RcGcDw = body.query.allmessages[0]['*'];
+			result.RcGcDw = body.query.allmessages[0]['*'].split('\n').map( guildId => guildId.trim() );
 		}
 		result.customRcGcDw = wiki.toLink('MediaWiki:Custom-RcGcDw', 'action=edit');
 		if ( wiki.wikifarm === 'fandom' ) return;
