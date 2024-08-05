@@ -44,7 +44,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			embed: null
 		}
 	};
-	return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.wikifarm === 'fandom' ? '|allmessages&siprop=general&ammessages=importJS&list=users|usercontribs&ucprop=&uclimit=10&ucuser=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) : '&siprop=general&list=users' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json&cache=' + Date.now(), {
+	return got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.wikifarm === 'fandom' ? '|allmessages&siprop=general&ammessages=importJS&list=users|usercontribs&ucprop=&uclimit=10&ucuser=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) : '&siprop=general&list=users' ) + '&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json&requestid=cachebreak-' + Date.now(), {
 		context: {
 			guildId: channel.guildId
 		}
@@ -184,12 +184,13 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					discordname = escapeFormatting(ucbody.userData.discordHandle.trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' ));
 				}
 				
-				if ( wiki.isGamepedia() || !discordname ) return got.get( ( wiki.isGamepedia() ? wiki : 'https://help.fandom.com/' ) + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
+				if ( wiki.isGamepedia() || !discordname ) return got.get( ( wiki.isGamepedia() ? wiki : 'https://help.fandom.com/' ) + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&requestid=cachebreak-' + Date.now(), {
 					context: {
 						guildId: channel.guildId
 					}
 				} ).then( presponse => {
 					var pbody = presponse.body;
+					if ( pbody?.warnings ) log_warning(pbody.warnings);
 					if ( presponse.statusCode !== 200 || !pbody || pbody.error || pbody.errormsg || !pbody.profile ) {
 						if ( !wiki.isGamepedia() ) return;
 						console.log( '- ' + presponse.statusCode + ': Error while getting the Discord tag: ' + ( pbody?.error?.info || pbody?.errormsg ) );
@@ -443,7 +444,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			result.add_button = false;
 		} );
 		
-		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord%1FSpecial:MyPage/Discord&format=json&cache=' + Date.now(), {
+		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord%1FSpecial:MyPage/Discord&format=json&requestid=cachebreak-' + Date.now(), {
 			context: {
 				guildId: channel.guildId
 			}
@@ -754,7 +755,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		var useLogging = ( verifynotice.logchannel ? true : false );
 		var logLang = lang;
 		if ( !state && (verifynotice.flags & 1 << 0) === 1 << 0 ) lang = lang.uselang(settings?.interaction?.locale);
-		got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json&cache=' + Date.now(), {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json&requestid=cachebreak-' + Date.now(), {
 			context: {
 				guildId: channel.guildId
 			}

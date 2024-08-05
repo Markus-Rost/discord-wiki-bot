@@ -568,12 +568,13 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 					discord = escapeFormatting(pbody.userData.discordHandle.trim().toLowerCase().replace( /^@?([a-z0-9_.]{2,32})(?:\s*#0)?$/, '$1' ));
 					if ( discord.length > 100 ) discord = discord.substring(0, 100) + '\u2026';
 				}
-				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&cache=' + Date.now(), {
+				if ( wiki.isGamepedia() ) return got.get( wiki + 'api.php?action=profile&do=getPublicProfile&user_name=' + encodeURIComponent( username ) + '&format=json&requestid=cachebreak-' + Date.now(), {
 					context: {
 						guildId: msg.guildId
 					}
 				} ).then( cpresponse => {
 					var cpbody = cpresponse.body;
+					if ( cpbody?.warnings ) log_warning(cpbody.warnings);
 					if ( cpresponse.statusCode !== 200 || !cpbody || cpbody.error || cpbody.errormsg || !cpbody.profile ) {
 						console.log( '- ' + cpresponse.statusCode + ': Error while getting the user profile: ' + ( cpbody?.error?.info || cpbody?.errormsg ) );
 						return;
