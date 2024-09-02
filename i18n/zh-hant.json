@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 變更了 $2 頻道的設定。",
 			"removed": "$1 移除了 $2 頻道的設定。",
-			"updated": "$1 變更了伺服器設定。"
+			"updated": "$1 變更了伺服器設定。",
+			"user": "你更新了 $1 的使用者設定。"
 		},
 		"foundwikis": "你也許指的是這些 wiki？",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "使用 `$1 <身分組>` 以變更所需的最小身分組。",
 		"roleinvalid": "指定的身分組不存在！",
 		"save_failed": "啊喔，設定儲存失敗了，請稍後再試。",
+		"user current": "$1 目前的設定如下：",
+		"user lang": "$1 的語言為：",
+		"user langchanged": "你已變更 $1 的語言為：",
+		"user missing": "$3 尚無任何設定。使用 $1 及 $2 變更設定。",
+		"user wiki": "$1 的預設 wiki 為：",
+		"user wikichanged": "你已將 $1 的預設 wiki 變更為：",
+		"user wikimissing": "$1 尚未設定預設 wiki！",
 		"whitelist_added": "已被新增為允許wiki的清單。",
 		"whitelist_modified": "已修改允許wiki的清單。",
 		"whitelist_removed": "已移除允許wiki的清單。",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "您提供的網站沒有有效的 TLS/SSL 憑證！由於安全原因，僅支援使用 HTTPS 的 wiki。\n如果您是站點管理員，您可以從像 *Let’s Encrypt* 這樣的憑證頒發機構獲取憑證：\n<https://letsencrypt.org/zh-tw/getting-started/>",
 		"wikiinvalid_private": "您提供的 wiki 是私人 wiki！僅支援可被所有人讀取的公開 wiki。",
 		"wikiinvalid_timeout": "所提供的連結的應答時間過長！",
+		"wikilist_added": "已新增偏好的 wiki 清單。",
+		"wikilist_modified": "已變更偏好的 wiki 清單。",
+		"wikilist_removed": "已移除偏好的 wiki 清單。",
 		"wikimissing": "此伺服器尚未設定預設wiki！"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "於 $1 由 $4 無限期封鎖。",
 			"indef_text": "於 $1 被 $4 因「$5」無限期封鎖。",
 			"noreason": "於 $1 被 $4 封鎖 $2 至 $3。",
+			"partial": "$1 目前正在被部分封鎖！",
 			"text": "因「$5」於 $1 被 $4 封鎖 $2 至 $3。"
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "正在加載全域數據…",
 			"postcount": "討論發佈數：",
 			"registration": "註冊時間：",
+			"unknown": "*未知*",
 			"wikisedited": "編輯過的 wiki："
 		}
 	},
