@@ -201,6 +201,7 @@
 			"buttons_filerevert": "回退至先前的文件版本。",
 			"buttons_move": "回退页面移动。",
 			"buttons_rollback": "回滚页面上由用户做出的最后一次编辑。",
+			"buttons_thank": "感谢用户。",
 			"buttons_undo": "撤销页面编辑。",
 			"channel": "频道：",
 			"confirm": "你真的想删除最近更改 webhook 吗？",
