@@ -27,6 +27,7 @@
 		"theme-dark": "使用灰暗主題",
 		"theme-light": "使用明亮主題",
 		"title": "Wiki-Bot設定",
+		"userinvite": "向使用者新增 Wiki-Bot",
 		"verification": "驗證",
 		"welcome": "<h2>歡迎使用Wiki-Bot控制台。</h2>\n<p>Wiki-Bot是一個Discord機器人，旨在將使用MediaWiki的wiki與Discord伺服器整合在一起。它可以幫忙連結到wiki頁面，驗證wiki使用者，傳送近期變更等。<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[更多資訊]</a></p>\n<p>您可以在此為您擁有「管理伺服器」權限的伺服器變更機器人設定。在開始之前，您需要透過以下按鈕驗證您的Discord帳號：</p>"
 	},
@@ -65,6 +66,7 @@
 	},
 	"notice": {
 		"beta": {
+			"note": "請在[支援伺服器]($1)上回報問題。",
 			"text": "此功能是實驗性的！不保證能夠正常使用，且可能會在未來被移除。",
 			"title": "實驗性搶鮮功能"
 		},
@@ -199,6 +201,7 @@
 			"buttons_filerevert": "回退至先前的檔案版本。",
 			"buttons_move": "回退頁面移動。",
 			"buttons_rollback": "復原頁面上由使用者作出的最後一筆編輯。",
+			"buttons_thank": "感謝使用者。",
 			"buttons_undo": "還原頁面編輯。",
 			"channel": "頻道：",
 			"confirm": "您確定要刪除近期變更webhook嗎？",

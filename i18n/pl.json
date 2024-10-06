@@ -385,13 +385,16 @@
 		"error": "Napotkano niespodziewany błąd podczas wykonywania komendy!",
 		"inline": "Wyślij wiadomość z linkami [[wikitekstu]] aby użyć tej komendy.",
 		"interwiki": "Podaj znaną wiki do przeszukania.",
+		"namespace": "(Główna)",
 		"notitle": "Użyta nazwa strony nie istnieje!",
 		"nowiki": "Używana wiki nie istnieje!",
 		"random": "(wszystkie przestrzenie nazw z treścią)",
+		"user": "Proszę podać nazwę użytkownika lub prawidłowy adres IP.",
 		"verify": "Podaj swoją nazwę użytkownika na wiki aby użyć komendy do zweryfikowania swojego konta na Discordzie kontem na wiki oraz otrzymać role odpowiadające Twojemu koncie na wiki."
 	},
 	"invite": {
-		"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:"
+		"bot": "Użyj tego linku aby zaprosić mnie na inny serwer:",
+		"directory": "Lub sprawdź moją stronę w katalogu aplikacji Discord aby dowiedzieć się więcej:"
 	},
 	"minecraft": {
 		"fixed": "Naprawione w {{PLURAL:$1|wersji|wersjach}}:",
@@ -445,13 +448,15 @@
 		"created": "Stworzona:",
 		"crossover": "Połączona z:",
 		"description": "Opis:",
+		"directedatchildren": "Przeznaczone dla dzieci:",
 		"edits": "Edycji:",
 		"founder": "Założyciel:",
+		"gamepedia": "Gamepedia:",
 		"image": "Zdjęcie:",
 		"inaccurate": "Statystyki mogą być niedokładne",
 		"lang": "Język:",
 		"license": "Licencja:",
-		"manager": "Menedżerzy wiki:",
+		"manager": "Reprezentant wiki:",
 		"misermode": "Tryb oszczędny (Miser mode):",
 		"no": "Nie",
 		"none": "*brak*",
@@ -474,6 +479,13 @@
 		"off": "Ponawiam swoją pracę na tym serwerze, będę ponownie odpowiadał na wszystkie komendy!",
 		"on": "Moje działanie jest obecnie wstrzymane na tym serwerze i będę ignorował większość komend!"
 	},
+	"phabricator": {
+		"comment": "Komentarz:",
+		"priority": "Priorytet:",
+		"status": "Status:",
+		"subtype": "Podtyp:",
+		"tags": "Tagi:"
+	},
 	"rcscript": {
 		"ad": "Chcesz mieć ostatnie zmiany na Discordzie? Użyj `$1rcscript` aby dodać webhook ostatnich zmian bazowany na **$2** do swojego serwera Discord!",
 		"add_more": "Dodaj więcej webhooków ostatnich zmian:",
@@ -484,6 +496,7 @@
 		"audit_reason_edit": "Zaktualizowano webhook ostatnich zmian",
 		"blocked": "Ta wiki nie może zostać dodana do webhooka ostatnich zmian, gdyż została zablokowana!",
 		"blocked_reason": "Zablokowano możliwość dodawania tej wiki do webhooka ostatnich zmian z powodu `$1`!",
+		"buttons": "Akcje przycisków:",
 		"channel": "Kanał:",
 		"current": "To są istniejące webhooki ostatnich zmian dla tego serwera:",
 		"current_display": "Tryb wyświetlania webhooka jest ustawiony na:",
@@ -519,6 +532,7 @@
 		"new_wiki": "<link do wiki>",
 		"no_feeds": "Wiki dla tego webhooka nie ma włączonej usługi Dyskusji.",
 		"noadmin": "Potrzebujesz uprawnienia `Zarządzaj webhookami` aby używać tej komendy!",
+		"nothreads": "Webhook ostatnich zmian nie jest wspierany w wątkach, proszę użyj komendy w kanale!",
 		"rc": "Ostatnie zmiany:",
 		"sysmessage": "Wiadomość systemowa `$1` musi zawierać numer ID tego serwera `$2` aby dodać webhook ostatnich zmian.",
 		"title": "Webhook ostatnich zmian",
@@ -532,6 +546,9 @@
 			"blocked_reason": "Ten webhook ostatnich zmian zostanie usunięty gdyż wiki została zablokowana za `$1`!",
 			"created": "Webhook ostatnich zmian dla $1 został dodany do tego kanału.",
 			"dashboard": {
+				"buttons_changed": "• Akcje przycisków zostały zmienione na $1.",
+				"buttons_disabled": "• Akcje przycisków zostały wyłączone.",
+				"buttons_enabled": "• Akcje przycisków zostały włączone dla $1.",
 				"channel": "• Webhook został przeniesiony do tego kanału.",
 				"disabled_feeds": "• Zmiany bazowane na technologii Feedów takie jak dyskusje, tablice wiadomości oraz komentarze do artykułów zostały wyłączone.",
 				"disabled_rc": "• Ostatnie zmiany na wiki zostały wyłączone.",
@@ -576,6 +593,8 @@
 		"media": "Do strony opisu pliku",
 		"messagedefault": "Domyślnie:",
 		"messagedefaultnone": "*brak*",
+		"noresult": "Nie znaleziono rezultatów dla Twojego zapytania.",
+		"redirect": "$1 (przekierowano z \"$2\")",
 		"results": "$1 {{PLURAL:$2|wynik|wyniki|wszystkich wyników}}",
 		"special": "Zawartość tej strony specjalnej:"
 	},
@@ -590,6 +609,7 @@
 		"channel wikichanged": "Zmieniono domyślną wiki dla tego kanału na:",
 		"current": "Obecne ustawienia dla tego serwera:",
 		"currentchannel": "Ustawienia specjalne kanału:",
+		"currentdesclength": "Długość opisu:",
 		"currentinline": "Linkowanie składnią wiki:",
 		"currentlang": "Język:",
 		"currentprefix": "Prefiks:",
