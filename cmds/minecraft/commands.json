@@ -416,6 +416,12 @@
 			"/ride <target> mount <vehicle>",
 			"/ride [<target>] dismount"
 		],
+		"rotate": [
+			"/rotate <target> <rotation>",
+			"/rotate <target> facing <facingLocation>",
+			"/rotate <target> facing entity <facingEntity> eyes",
+			"/rotate <target> facing entity <facingEntity> feet"
+		],
 		"save-all": [
 			"/save-all",
 			"/save-all flush"
