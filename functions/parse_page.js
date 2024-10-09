@@ -592,9 +592,10 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					let backupDescription = null;
 					if ( contentmodel !== 'wikitext' || disambiguation === undefined || fragment ) {
 						if ( !fragment && ns % 2 === 0 ) {
-							backupDescription = $('h1, h2, h3, h4, h5, h6').eq(0);
+							backupDescription = $('h1, h2, h3, h4, h5, h6, div.mw-heading').eq(0);
 							if ( backupDescription.length ) {
-								let backupDescriptionLevel = ['h1','h2','h3','h4','h5','h6'].slice(0, backupDescription[0].tagName.replace('h', '')).join(', ');
+								let backupDescriptionHeader = backupDescription.find('h1, h2, h3, h4, h5, h6').addBack('h1, h2, h3, h4, h5, h6')[0];
+								let backupDescriptionLevel = ['h1','h2','h3','h4','h5','h6'].slice(0, backupDescriptionHeader?.tagName.replace('h', '')).join(', ');
 								backupDescription = $('<div>').append(backupDescription, backupDescription.nextUntil(backupDescriptionLevel));
 							}
 							else backupDescription = null;

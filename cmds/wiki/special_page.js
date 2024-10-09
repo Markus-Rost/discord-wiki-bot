@@ -178,7 +178,7 @@ export default function mw_special_page(lang, msg, {title, uselang = lang.lang},
 		return Promise.resolve( {message: spoiler + '<' + pagelink + '>' + spoiler} );
 	}
 	if ( specialpage === 'recentchanges' && ( msg.isAdmin?.() || msg.memberPermissions?.has(PermissionFlagsBits.ManageGuild) ) ) {
-		embed.addFields( {name: lang.get('rcscript.title'), value: lang.get('rcscript.ad', ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), '[RcGcDw](<https://gitlab.com/piotrex43/RcGcDw>)')} );
+		embed.addFields( {name: lang.get('rcscript.title'), value: lang.get('rcscript.ad', ( patreonGuildsPrefix.get(msg.guildId) ?? process.env.prefix ), '[RcGcDw](<https://gitlab.com/chicken-riders/RcGcDw>)')} );
 	}
 	return got.get( wiki + 'api.php?uselang=' + uselang + '&action=query&meta=allmessages|siteinfo&siprop=general&amenableparser=true&amtitle=' + encodeURIComponent( title ) + '&ammessages=' + encodeURIComponent( specialpage ) + '|' + ( descriptions.hasOwnProperty(specialpage) ? descriptions[specialpage] : encodeURIComponent( specialpage ) + '-summary' ) + ( querypages.hasOwnProperty(specialpage) ? querypages[specialpage][0] : '' ) + '&converttitles=true&titles=%1F' + encodeURIComponent( title ) + '&format=json', {
 		context: {

@@ -76,7 +76,7 @@ Using the `!wiki verification` command, admins can add up to 10 verification ent
 See the [admin commands](#admin) or `!wiki help verification` on how to change the wiki verification entries on the server.
 
 ## Recent Changes Webhook
-**Wiki-Bot** is able to run a recent changes webhook based on [RcGcDw](https://gitlab.com/piotrex43/RcGcDw) by using the `!wiki rcscript` command. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.
+**Wiki-Bot** is able to run a recent changes webhook based on [RcGcDw](https://gitlab.com/chicken-riders/RcGcDw) by using the `!wiki rcscript` command. The recent changes can be displayed in compact text messages with inline links or embed messages with edit tags and category changes.
 
 Requirements to add a recent changes webhook:
 * The wiki needs to run on [MediaWiki 1.30](https://www.mediawiki.org/wiki/MediaWiki_1.30) or higher.
@@ -84,7 +84,7 @@ Requirements to add a recent changes webhook:
 
 ## Translations
 [<img src="https://translate.wikibot.de/widgets/wiki-bot/-/multi-auto.svg" alt="Translation status" width="100%" />](https://translate.wikibot.de/engage/wiki-bot/?utm_source=widget)
-
+<!--
 ## Bot Lists
 Help other users find Wiki-Bot by voting on bot lists:
 
@@ -95,7 +95,7 @@ Help other users find Wiki-Bot by voting on bot lists:
 [<img src="https://infinitybotlist.com/bots/461189216198590464/widget?size=medium" alt="infinitybotlist.com" height="150px" />](https://infinitybotlist.com/bots/461189216198590464)
 [<img src="https://top.gg/api/widget/461189216198590464.svg" alt="top.gg" height="150px" />](https://top.gg/bot/461189216198590464)
 [<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)
-
+-->
 ## Other
 The **Wiki-Bot** logo has been AI generated using [Midjourney](https://www.midjourney.com/home/) and cleaned up by [Shaun Ryken](https://shaunryken.art/).
 

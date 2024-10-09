@@ -249,7 +249,7 @@ function sendMsg(message) {
 }
 
 var botLists = [];
-if ( process.env.botlist ) {
+if ( false && process.env.botlist ) {
 	let supportedLists = {
 		'blist.xyz': {
 			link: 'https://blist.xyz/bot/' + process.env.bot,
