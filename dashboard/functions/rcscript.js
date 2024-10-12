@@ -383,7 +383,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		settings.display = parseInt(settings.display, 10);
 		settings.buttons = settings.buttons?.split('|').filter( button => {
 			return ( buttonsExists && button_types.includes( button ) );
-		} ).sort().join('|') || null;
+		} ).sort( (a, b) => button_types.indexOf(a) - button_types.indexOf(b) ).join('|') || null;
 		if ( type === 'new' && !userSettings.guilds.isMember.get(guild).channels.some( channel => {
 			return ( channel.id === settings.channel && !channel.isForum && !channel.isCategory );
 		} ) ) return res(`/guild/${guild}/rcscript/new`, 'savefail');
