@@ -201,6 +201,7 @@
 			"buttons_filerevert": "Önceki dosya sürümüne döndür.",
 			"buttons_move": "Sayfa taşımasını geri al.",
 			"buttons_rollback": "Sayfa üzerinde kullanıcı tarafından yapılan son düzenlemeleri geri al.",
+			"buttons_thank": "Kullanıcıya teşekkür et.",
 			"buttons_undo": "Sayfa düzenlemesini geri al.",
 			"channel": "Kanal:",
 			"confirm": "Bu son değişiklikler webhook'unu silmek istediğine emin misin?",
