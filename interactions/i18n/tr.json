@@ -33,7 +33,11 @@
 		"options[1].options[0].options[3].description": "Sadece kendinizin görebileceği bir yanıt mı gönderilsin?",
 		"options[1].options[0].options[3].name": "gizli",
 		"options[1].options[0].options[4].description": "Gömülü mesaj olmadan sadece bağlantı mı gönderilmeli?",
-		"options[1].options[0].options[4].name": "gömülümesajsız"
+		"options[1].options[0].options[4].name": "gömülümesajsız",
+		"options[1].options[0].options[5].description": "Bağlantıyı gizle ve spoiler içine göm?",
+		"options[1].options[0].options[5].name": "spoiler",
+		"options[1].options[1].description": "ID'lere dayalı olarak birden fazla düzeltme üzerinde bir viki düzenleme farkını göster.",
+		"options[1].options[1].name": "birdenfazla"
 	},
 	"inline": {
 		"description": "Satır içi viki bağlantıları ile mesaj paylaş.",
