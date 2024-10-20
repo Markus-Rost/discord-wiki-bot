@@ -185,6 +185,7 @@ function updateInlineLinks(msg, lang, wiki = defaultSettings.wiki, embedLimits =
 					message.delete().catch(log_error);
 					return;
 				}
+				if ( message.content === textparts[i] ) return message;
 				return message.edit( textparts[i] ).catch(log_error);
 			} ) ).then( inlineMessages => {
 				inlineMessages = inlineMessages.filter( message => message );
