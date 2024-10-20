@@ -1,10 +1,10 @@
 import './util/globals.js';
 import { readdir } from 'node:fs';
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import db from './util/database.js';
 import Lang from './util/i18n.js';
 import Wiki from './util/wiki.js';
-import { default as newMessage, defaultSettings } from './util/newMessage.js';
+import { default as newMessage, defaultSettings, inlineCache, updateInlineLinks } from './util/newMessage.js';
 import { breakOnTimeoutPause, allowDelete } from './util/functions.js';
 import rcscriptButtons from './functions/rcscript_buttons.js';
 
@@ -380,11 +380,80 @@ function messageCreate(msg) {
 	} );
 };
 
+client.on( Discord.Events.MessageUpdate, (oldmsg, msg) => {
+	if ( !inlineCache.has(msg) ) return;
+	if ( msg.channel.partial ) return msg.channel.fetch().then( () => {
+		return messageUpdate(msg);
+	}, log_error );
+	return messageUpdate(msg);
+} );
+
+/**
+ * Handle message updates.
+ * @param {Discord.Message} msg - The message.
+ */
+function messageUpdate(msg) {
+	if ( isStop || !msg.channel.isTextBased() || msg.system || msg.webhookId || msg.author.bot || msg.author.id === msg.client.user.id ) return;
+	if ( msg.member?.isCommunicationDisabled() || msg.guild?.members?.me?.isCommunicationDisabled() ) return;
+	if ( msg.inGuild() ) {
+		let sqlargs = [msg.guildId];
+		if ( msg.channel.isThread() ) sqlargs.push(msg.channel.parentId, '#' + msg.channel.parent?.parentId);
+		else sqlargs.push(msg.channelId, '#' + msg.channel.parentId);
+		var missing = new Discord.PermissionsBitField([
+			( msg.channel.isThread() ? Discord.PermissionFlagsBits.SendMessagesInThreads : Discord.PermissionFlagsBits.SendMessages ),
+			Discord.PermissionFlagsBits.ReadMessageHistory
+		]).remove(msg.channel.permissionsFor(msg.client.user) ?? 0n);
+		if ( missing > 0n ) {
+			if ( msg.isAdmin() || msg.isOwner() ) {
+				console.log( msg.guildId + ': Missing permissions - ' + missing.toArray().join(', ') );
+			}
+			return;
+		}
+		db.query( 'SELECT wiki, lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, (SELECT array_agg(ARRAY[prefixchar, prefixwiki] ORDER BY prefixchar) FROM subprefix WHERE guild = $1) AS subprefixes FROM discord WHERE guild = $1 AND (channel = $2 OR channel = $3 OR channel IS NULL) ORDER BY channel DESC NULLS LAST LIMIT 1', sqlargs ).then( ({rows:[row]}) => {
+			if ( row ) {
+				if ( msg.guild.roles.cache.has(row.role) && msg.guild.roles.cache.get(row.role).comparePositionTo(msg.member.roles.highest) > 0 && !msg.isAdmin() ) {
+					msg.onlyVerifyCommand = true;
+				}
+				let subprefixes = ( row.subprefixes?.length ? new Map(row.subprefixes) : undefined );
+				let embedLimits = {
+					descLength: row.desclength ?? defaultSettings.embedLimits.descLength,
+					fieldCount: row.fieldcount ?? defaultSettings.embedLimits.fieldCount,
+					fieldLength: row.fieldlength ?? defaultSettings.embedLimits.fieldLength,
+					sectionLength: row.sectionlength ?? defaultSettings.embedLimits.sectionLength,
+					sectionDescLength: row.sectiondesclength ?? Math.min(row.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
+				};
+				let wikiWhitelist = row.whitelist?.split?.('\n') ?? [];
+				updateInlineLinks(msg, new Lang(row.lang), row.wiki, embedLimits, patreonGuildsPrefix.get(msg.guildId), row.inline, subprefixes, wikiWhitelist);
+			}
+			else {
+				msg.defaultSettings = true;
+				updateInlineLinks(msg, new Lang(msg.guild.preferredLocale));
+			}
+		}, dberror => {
+			console.log( '- Error while getting the wiki: ' + dberror );
+		} );
+	}
+	else db.query( 'SELECT wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND channel IS NULL ORDER BY channel DESC NULLS LAST LIMIT 1', ['@' + msg.author.id] ).then( ({rows:[row]}) => {
+		if ( !row ) msg.defaultSettings = true;
+		let embedLimits = {
+			descLength: row?.desclength ?? defaultSettings.embedLimits.descLength,
+			fieldCount: row?.fieldcount ?? defaultSettings.embedLimits.fieldCount,
+			fieldLength: row?.fieldlength ?? defaultSettings.embedLimits.fieldLength,
+			sectionLength: row?.sectionlength ?? defaultSettings.embedLimits.sectionLength,
+			sectionDescLength: row?.sectiondesclength ?? Math.min(row?.desclength ?? defaultSettings.embedLimits.sectionDescLength, defaultSettings.embedLimits.sectionDescLength)
+		};
+		updateInlineLinks(msg, new Lang(row?.lang), row?.wiki, embedLimits);
+	}, dberror => {
+		console.log( '- Error while getting the wiki: ' + dberror );
+	} );
+};
+
 client.on( Discord.Events.MessageReactionAdd, (reaction, user) => {
 	var msg = reaction.message;
-	if ( msg.applicationId !== client.user.id || !msg.interaction ) return;
-	if ( !interaction_commands.allowDelete.includes(msg.interaction.commandName) ) return;
-	if ( reaction.emoji.name !== WB_EMOJI.delete || msg.interaction.user.id !== user.id ) return;
+	if ( msg.applicationId !== client.user.id || !msg.interactionMetadata ) return;
+	let command = msg.client.application.commands.cache.get(msg.interactionMetadata.id);
+	if ( !interaction_commands.allowDelete.includes(command?.name) ) return;
+	if ( reaction.emoji.name !== WB_EMOJI.delete || msg.interactionMetadata.user.id !== user.id ) return;
 	msg.delete().catch(log_error);
 } );
 

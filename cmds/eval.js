@@ -1,6 +1,6 @@
 import { inspect } from 'node:util';
 import { load as cheerioLoad } from 'cheerio';
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import { got, isMessage } from '../util/functions.js';
 import newMessage from '../util/newMessage.js';
 import Wiki from '../util/wiki.js';
