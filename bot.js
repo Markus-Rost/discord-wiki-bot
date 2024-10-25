@@ -381,6 +381,7 @@ function messageCreate(msg) {
 };
 
 client.on( Discord.Events.MessageUpdate, (oldmsg, msg) => {
+	if ( oldmsg.content === msg.content ) return;
 	if ( !inlineCache.has(msg) ) return;
 	if ( msg.channel.partial ) return msg.channel.fetch().then( () => {
 		return messageUpdate(msg);
