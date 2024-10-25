@@ -640,7 +640,8 @@
 								"en-GB": "spoiler",
 								"en-US": "spoiler",
 								"fr": "spoiler",
-								"vi": "spoiler"
+								"vi": "spoiler",
+								"tr": "spoiler"
 							},
 							"description": "Hide the link and embed in a spoiler?",
 							"description_localizations": {
@@ -651,7 +652,7 @@
 								"zh-CN": "是否将链接和嵌入内容标记为剧透？",
 								"zh-TW": "是否將連結和嵌入內容標記為劇透？",
 								"it": "Nascondi il link e l'embed in uno spoiler?",
-								"tr": "Bağlantı ve gömülü mesaj bir spoiler'da gizlenmeli mi?",
+								"tr": "Bağlantıyı gizle ve spoiler içine göm?",
 								"el": "Απόκρυψη του συνδέσμου και ενσωμάτωση σε spoiler;",
 								"pt-BR": "Ocultar o link e incorporar em um spoiler?",
 								"en-GB": "Hide the link and embed in a spoiler?",
@@ -678,7 +679,8 @@
 						"ja": "multiple",
 						"el": "πολλαπλές",
 						"fr": "multiple",
-						"pt-BR": "múltiplo"
+						"pt-BR": "múltiplo",
+						"tr": "birdenfazla"
 					},
 					"description": "Show a wiki edit diff over multiple revisions based on the IDs.",
 					"description_localizations": {
@@ -693,7 +695,8 @@
 						"ja": "IDに基づき、複数のリビジョンに渡るWiki編集の差分を表示します。",
 						"el": "Εμφάνιση μιας διαφοράς επεξεργασίας του wiki με πολλαπλές εκδόσεις με βάση τις ταυτότητές τους.",
 						"fr": "Afficher la différence d'une modification wiki sur plusieurs révisions en fonction des identifiants.",
-						"pt-BR": "Mostrar uma comparação de edição do wiki em múltiplas revisões com base nos IDs."
+						"pt-BR": "Mostrar uma comparação de edição do wiki em múltiplas revisões com base nos IDs.",
+						"tr": "ID'lere dayalı olarak birden fazla düzeltme üzerinde bir viki düzenleme farkını göster."
 					},
 					"options": [
 						{
