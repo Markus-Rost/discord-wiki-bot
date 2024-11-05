@@ -1,4 +1,4 @@
-# Wiki-Bot[<img src="https://translate.wikibot.de/widgets/wiki-bot/-/svg-badge.svg" alt="Translation status" align="right" />](#translations)[<img src="https://github.com/Markus-Rost/discord-wiki-bot/workflows/Node.js CI/badge.svg" alt="Node.js CI" align="right" />](https://github.com/Markus-Rost/discord-wiki-bot/actions)
+# Wiki-Bot[<img src="https://translate.wikibot.de/widget/wiki-bot/svg-badge.svg" alt="Translation status" align="right" />](#translations)[<img src="https://github.com/Markus-Rost/discord-wiki-bot/workflows/Node.js CI/badge.svg" alt="Node.js CI" align="right" />](https://github.com/Markus-Rost/discord-wiki-bot/actions)
 [<img src="/dashboard/src/icon.png" alt="Wiki-Bot" align="right" width="200" />](https://discord.com/oauth2/authorize?client_id=461189216198590464&permissions=939904064&scope=bot+applications.commands)
 
 **Wiki-Bot** is a bot for [Discord](https://discord.com/) with the purpose to easily link and search [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) sites like [Wikipedia](https://www.wikipedia.org/) and [Fandom](https://www.fandom.com/) wikis. **Wiki-Bot** shows short descriptions and additional info about pages and is able to resolve redirects and follow interwiki links.
@@ -83,7 +83,7 @@ Requirements to add a recent changes webhook:
 * The system message `MediaWiki:Custom-RcGcDw` needs to be set to the Discord server id.
 
 ## Translations
-[<img src="https://translate.wikibot.de/widgets/wiki-bot/-/multi-auto.svg" alt="Translation status" width="100%" />](https://translate.wikibot.de/engage/wiki-bot/?utm_source=widget)
+[<img src="https://translate.wikibot.de/widget/wiki-bot/multi-auto.svg" alt="Translation status" width="100%" />](https://translate.wikibot.de/engage/wiki-bot/?utm_source=widget)
 <!--
 ## Bot Lists
 Help other users find Wiki-Bot by voting on bot lists:

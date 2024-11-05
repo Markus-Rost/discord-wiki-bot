@@ -133,8 +133,12 @@
 			"title": "Refresh successful!"
 		},
 		"refreshfail": {
-			"text": "You server list could not be refreshed, please try again.",
+			"text": "Your server list could not be refreshed, please try again.",
 			"title": "Refresh failed!"
+		},
+		"refreshforced": {
+			"text": "The settings could not be saved, your server list was outdated. Please try again now.",
+			"title": "Server list was outdated, refresh successful!"
 		},
 		"save": {
 			"text": "The settings have been updated successfully.",

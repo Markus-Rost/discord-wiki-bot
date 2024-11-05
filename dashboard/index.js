@@ -133,6 +133,9 @@ const server = createServer( (req, res) => {
 						res.writeHead(303, {Location: resURL});
 						return res.end();
 					}
+					if ( action === 'REFRESH' ) {
+						return pages.refresh(res, userSession, resURL, ...actionArgs);
+					}
 					var themeCookie = ( req.headers?.cookie?.split('; ')?.find( cookie => {
 						return cookie.split('=')[0] === 'theme' && /^"(?:light|dark)"$/.test(( cookie.split('=')[1] || '' ));
 					} ) || 'dark' ).replace( /^theme="(light|dark)"$/, '$1' );
@@ -331,6 +334,7 @@ const server = createServer( (req, res) => {
 	let action = '';
 	if ( reqURL.searchParams.get('refresh') === 'success' ) action = 'refresh';
 	if ( reqURL.searchParams.get('refresh') === 'failed' ) action = 'refreshfail';
+	if ( reqURL.searchParams.get('refresh') === 'forced' ) action = 'refreshforced';
 	if ( reqURL.pathname === '/user' ) {
 		if ( reqURL.searchParams.get('oauth') === 'success' ) action = 'oauth';
 		if ( reqURL.searchParams.get('oauth') === 'failed' ) action = 'oauthfail';

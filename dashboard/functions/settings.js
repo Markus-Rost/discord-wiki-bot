@@ -1043,221 +1043,239 @@ function update_user_settings(res, userSettings, guild, settings) {
 		if ( settings.sectiondesclength > 4_000 ) return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
 	}
 	
-	var embeds = [];
-	return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
-		responseType: 'text',
-		context: {
-			guildId: guild
+	sendMsg( {
+		type: 'getMember',
+		member: userSettings.user.id,
+		guild: guild
+	} ).catch(error => {
+		console.log( '- Dashboard: Error while getting the member: ' + error );
+		return;
+	} ).then( guildResponse => {
+		if ( guildResponse ) {
+			userSettings.guilds.notMember.delete(guild);
+			userSettings.guilds.notAdmin.delete(guild);
+			if ( guildResponse === 'noMember' || !hasPerm(guildResponse.userPermissions, PermissionFlagsBits.ManageGuild) ) {
+				return res('/', 'savefail');
+			}
+			return res(`/guild/${guild}/settings`, 'REFRESH', '', true);
 		}
-	} ).then( response => {
-		try {
-			response.body = JSON.parse(response.body);
-		}
-		catch (error) {
-			if ( response.statusCode === 404 && typeof response.body === 'string' ) {
-				let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
-				if ( api ) {
-					wiki = new Wiki(api.split('api.php?')[0], wiki);
-					return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+		
+		var embeds = [];
+		return got.get( wiki + 'api.php?&action=query&meta=siteinfo&siprop=general&format=json', {
+			responseType: 'text',
+			context: {
+				guildId: guild
+			}
+		} ).then( response => {
+			try {
+				response.body = JSON.parse(response.body);
+			}
+			catch (error) {
+				if ( response.statusCode === 404 && typeof response.body === 'string' ) {
+					let api = cheerioLoad(response.body, {baseURI: response.url})('head link[rel="EditURI"]').prop('href');
+					if ( api ) {
+						wiki = new Wiki(api.split('api.php?')[0], wiki);
+						return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+							context: {
+								guildId: guild
+							}
+						} );
+					}
+					return got.get( wiki, {
+						responseType: 'text',
 						context: {
 							guildId: guild
 						}
+					} ).then( tresponse => {
+						if ( typeof tresponse.body === 'string' ) {
+							let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
+							if ( api ) {
+								wiki = new Wiki(api.split('api.php?')[0], wiki);
+								return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
+									context: {
+										guildId: guild
+									}
+								} );
+							}
+						}
+						return response;
 					} );
 				}
-				return got.get( wiki, {
-					responseType: 'text',
-					context: {
-						guildId: guild
-					}
-				} ).then( tresponse => {
-					if ( typeof tresponse.body === 'string' ) {
-						let api = cheerioLoad(tresponse.body, {baseURI: tresponse.url})('head link[rel="EditURI"]').prop('href');
-						if ( api ) {
-							wiki = new Wiki(api.split('api.php?')[0], wiki);
-							return got.get( wiki + 'api.php?action=query&meta=siteinfo&siprop=general&format=json', {
-								context: {
-									guildId: guild
-								}
-							} );
-						}
-					}
-					return response;
-				} );
 			}
-		}
-		return response;
-	} ).then( response => {
-		return db.query( 'SELECT channel, wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', ['@' + userSettings.user.id, guild] ).then( ({rows:[row, guildrow]}) => {
-			if ( row ) guildrow ??= row;
-			let lang = new Lang(( guild ? guildrow?.lang || userSettings.user.locale : settings.lang ));
-			var body = response.body;
-			if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {
-				console.log( '- Dashboard: ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
-				if ( wiki.name === row?.wiki ) return [row, guildrow];
-				if ( body?.error?.code === 'readapidenied' || body?.error?.info === 'You need read permission to use this module.' ) {
-					return Promise.reject('private');
+			return response;
+		} ).then( response => {
+			return db.query( 'SELECT channel, wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist FROM discord WHERE guild = $1 AND ( channel = $2 OR channel IS NULL ) ORDER BY channel DESC NULLS LAST', ['@' + userSettings.user.id, guild] ).then( ({rows:[row, guildrow]}) => {
+				if ( row ) guildrow ??= row;
+				let lang = new Lang(( guild ? guildrow?.lang || userSettings.user.locale : settings.lang ));
+				var body = response.body;
+				if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.general ) {
+					console.log( '- Dashboard: ' + response.statusCode + ': Error while testing the wiki: ' + body?.error?.info );
+					if ( wiki.name === row?.wiki ) return [row, guildrow];
+					if ( body?.error?.code === 'readapidenied' || body?.error?.info === 'You need read permission to use this module.' ) {
+						return Promise.reject('private');
+					}
+					return Promise.reject();
 				}
+				wiki.updateWiki(body.query.general);
+				let notice = [];
+				if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
+					console.log( '- Dashboard: This wiki is using ' + body.query.general.generator + '.' );
+					notice.push({
+						name: 'MediaWiki',
+						value: lang.get('test.MediaWiki', '[MediaWiki 1.30](<https://www.mediawiki.org/wiki/MediaWiki_1.30>)', body.query.general.generator)
+					});
+				}
+				if ( notice.length ) {
+					embeds.push({
+						author: {
+							name: body.query.general.sitename,
+							url: wiki.toLink()
+						},
+						title: lang.get('test.notice'),
+						fields: notice
+					});
+				}
+				return [row, guildrow];
+			}, dberror => {
+				console.log( '- Dashboard: Error while getting the user settings: ' + dberror );
 				return Promise.reject();
-			}
-			wiki.updateWiki(body.query.general);
-			let notice = [];
-			if ( body.query.general.generator.replace( /^MediaWiki 1\.(\d\d).*$/, '$1' ) < 30 ) {
-				console.log( '- Dashboard: This wiki is using ' + body.query.general.generator + '.' );
-				notice.push({
-					name: 'MediaWiki',
-					value: lang.get('test.MediaWiki', '[MediaWiki 1.30](<https://www.mediawiki.org/wiki/MediaWiki_1.30>)', body.query.general.generator)
-				});
-			}
-			if ( notice.length ) {
-				embeds.push({
-					author: {
-						name: body.query.general.sitename,
-						url: wiki.toLink()
-					},
-					title: lang.get('test.notice'),
-					fields: notice
-				});
-			}
-			return [row, guildrow];
-		}, dberror => {
-			console.log( '- Dashboard: Error while getting the user settings: ' + dberror );
-			return Promise.reject();
-		} );
-	}, error => {
-		if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
-			console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
-			return Promise.reject('http');
-		}
-		console.log( '- Dashboard: Error while testing the wiki: ' + error );
-		if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
-			return Promise.reject('timeout');
-		}
-		return Promise.reject();
-	} ).then( ([row, guildrow]) => {
-		var guildname = ( guild ? userSettings.guilds.notMember.get(guild)?.name ?? userSettings.guilds.notAdmin.get(guild)?.name ?? `\`${guild}\`` : null );
-		var lang = new Lang(( guild ? guildrow?.lang || userSettings.user.locale : settings.lang ));
-		if ( !row ) return db.query( 'INSERT INTO discord(wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, guild, main) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)', [wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), wikiWhitelist, '@' + userSettings.user.id] ).then( () => {
-			console.log( '- Dashboard: User settings successfully saved: @' + userSettings.user.id );
-			res('/settings', 'save');
-			var text = lang.get('settings.dashboard.user', `<@${userSettings.user.id}>`);
-			text += `\n${lang.get('settings.currentwiki')} <${wiki.name}>`;
-			text += `\n${lang.get('settings.currentlang')} \`${allLangs[settings.lang]}\``;
-			text += `\n${lang.get('settings.currentdesclength')} \`${settings.desclength}\``;
-			text += `\n${lang.get('settings.currentfieldcount')} \`${settings.fieldcount}\``;
-			text += `\n${lang.get('settings.currentfieldlength')} \`${settings.fieldlength}\``;
-			text += `\n${lang.get('settings.currentsectionlength')} \`${settings.sectionlength}\``;
-			text += `\n${lang.get('settings.currentsectiondesclength')} \`${settings.sectiondesclength}\``;
-			if ( wikiWhitelist ) text += '\n' + lang.get('settings.wikilist_added');
-			text += `\n<${new URL('/settings', process.env.dashboard).href}>`;
-			sendMsg( {
-				type: 'notifyUser', text, embeds,
-				file: [`./i18n/widgets/${settings.lang}.png`],
-				user: userSettings.user.id
-			} ).catch( error => {
-				console.log( '- Dashboard: Error while notifying the user: ' + error );
 			} );
-		}, dberror => {
-			console.log( '- Dashboard: Error while saving the user settings: ' + dberror );
-			return res('/settings', 'savefail');
-		} );
-		var diff = [];
-		var file = [];
-		var updateGuild = false;
-		var updateChannel = false;
-		if ( row.wiki !== wiki.name ) {
-			updateGuild = true;
-			diff.push(lang.get('settings.currentwiki') + ` ~~<${row.wiki}>~~ → <${wiki.name}>`);
-		}
-		if ( row.lang !== settings.lang ) {
-			updateGuild = true;
-			file.push(`./i18n/widgets/${settings.lang}.png`);
-			diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs[row.lang]}\`~~ → \`${allLangs[settings.lang]}\``);
-		}
-		if ( ( row.desclength ?? defaultSettings.embedLimits.descLength ) !== settings.desclength ) {
-			updateGuild = true;
-			diff.push(lang.get('settings.currentdesclength') + ` ~~\`${row.desclength ?? defaultSettings.embedLimits.descLength}\`~~ → \`${settings.desclength}\``);
-		}
-		if ( ( row.fieldcount ?? defaultSettings.embedLimits.fieldCount ) !== settings.fieldcount ) {
-			updateGuild = true;
-			diff.push(lang.get('settings.currentfieldcount') + ` ~~\`${row.fieldcount ?? defaultSettings.embedLimits.fieldCount}\`~~ → \`${settings.fieldcount}\``);
-		}
-		if ( ( row.fieldlength ?? defaultSettings.embedLimits.fieldLength ) !== settings.fieldlength ) {
-			updateGuild = true;
-			diff.push(lang.get('settings.currentfieldlength') + ` ~~\`${row.fieldlength ?? defaultSettings.embedLimits.fieldLength}\`~~ → \`${settings.fieldlength}\``);
-		}
-		if ( ( row.sectionlength ?? defaultSettings.embedLimits.sectionLength ) !== settings.sectionlength ) {
-			updateGuild = true;
-			diff.push(lang.get('settings.currentsectionlength') + ` ~~\`${row.sectionlength ?? defaultSettings.embedLimits.sectionLength}\`~~ → \`${settings.sectionlength}\``);
-		}
-		if ( ( row.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength ) !== settings.sectiondesclength ) {
-			updateGuild = true;
-			diff.push(lang.get('settings.currentsectiondesclength') + ` ~~\`${row.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength}\`~~ → \`${settings.sectiondesclength}\``);
-		}
-		if ( !guild && row.whitelist !== wikiWhitelist ) {
-			updateChannel = true;
-			if ( !row.whitelist ) diff.push(lang.get('settings.wikilist_added'));
-			else if ( !wikiWhitelist ) diff.push(lang.get('settings.wikilist_removed'));
-			else diff.push(lang.get('settings.wikilist_modified'));
-		}
-		if ( diff.length ) {
-			var dbupdate = [];
-			if ( row.channel !== ( guild || null ) ) {
-				dbupdate.push([
-					'INSERT INTO discord(wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, channel, guild) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
-					[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( wikiWhitelist ?? row.whitelist ), guild, '@' + userSettings.user.id]
-				]);
+		}, error => {
+			if ( error.message?.startsWith( 'connect ECONNREFUSED ' ) || error.message?.startsWith( 'Hostname/IP does not match certificate\'s altnames: ' ) || error.message === 'certificate has expired' || error.message === 'self signed certificate' ) {
+				console.log( '- Dashboard: Error while testing the wiki: No HTTPS' );
+				return Promise.reject('http');
 			}
-			else if ( guild && guildrow.wiki === wiki.name && guildrow.lang === settings.lang && ( guildrow.desclength ?? defaultSettings.embedLimits.descLength ) === settings.desclength && ( guildrow.fieldcount ?? defaultSettings.embedLimits.fieldCount ) === settings.fieldcount && ( guildrow.fieldlength ?? defaultSettings.embedLimits.fieldLength ) === settings.fieldlength && ( guildrow.sectionlength ?? defaultSettings.embedLimits.sectionLength ) === settings.sectionlength && ( guildrow.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength ) === settings.sectiondesclength ) {
-				dbupdate.push([
-					'DELETE FROM discord WHERE guild = $1 AND channel = $2',
-					['@' + userSettings.user.id, guild]
-				]);
+			console.log( '- Dashboard: Error while testing the wiki: ' + error );
+			if ( error.message === `Timeout awaiting 'request' for ${got.defaults.options.timeout.request}ms` ) {
+				return Promise.reject('timeout');
 			}
-			else {
-				if ( updateGuild ) {
-					if ( guild ) {
-						dbupdate.push([
-							'UPDATE discord SET wiki = $1, lang = $2, desclength = $3, fieldcount = $4, fieldlength = $5, sectionlength = $6, sectiondesclength = $7 WHERE guild = $8 AND channel = $9',
-							[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), '@' + userSettings.user.id, guild]
-						]);
-					}
-					else {
-						dbupdate.push([
-							'UPDATE discord SET wiki = $1, lang = $2, desclength = $3, fieldcount = $4, fieldlength = $5, sectionlength = $6, sectiondesclength = $7 WHERE guild = $8 AND channel IS NULL',
-							[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), '@' + userSettings.user.id]
-						]);
-					}
-				}
-				if ( updateChannel ) {
-					dbupdate.push([
-						'UPDATE discord SET whitelist = $1 WHERE guild = $2',
-						[wikiWhitelist, '@' + userSettings.user.id]
-					]);
-				}
-			}
-			return Promise.all(dbupdate.map( ([sql, sqlargs]) => {
-				return db.query( sql, sqlargs );
-			} )).then( () => {
-				console.log( '- Dashboard: User settings successfully saved: ' + ( guild || '' ) + '@' + userSettings.user.id );
-				res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'save');
-				var text = lang.get('settings.dashboard.user', ( guildname ?? `<@${userSettings.user.id}>` ));
-				text += '\n' + diff.join('\n');
-				text += `\n<${new URL(( guild ? `/guild/${guild}/settings` : '/settings' ), process.env.dashboard).href}>`;
+			return Promise.reject();
+		} ).then( ([row, guildrow]) => {
+			var guildname = ( guild ? userSettings.guilds.notMember.get(guild)?.name ?? userSettings.guilds.notAdmin.get(guild)?.name ?? `\`${guild}\`` : null );
+			var lang = new Lang(( guild ? guildrow?.lang || userSettings.user.locale : settings.lang ));
+			if ( !row ) return db.query( 'INSERT INTO discord(wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, guild, main) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)', [wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), wikiWhitelist, '@' + userSettings.user.id] ).then( () => {
+				console.log( '- Dashboard: User settings successfully saved: @' + userSettings.user.id );
+				res('/settings', 'save');
+				var text = lang.get('settings.dashboard.user', `<@${userSettings.user.id}>`);
+				text += `\n${lang.get('settings.currentwiki')} <${wiki.name}>`;
+				text += `\n${lang.get('settings.currentlang')} \`${allLangs[settings.lang]}\``;
+				text += `\n${lang.get('settings.currentdesclength')} \`${settings.desclength}\``;
+				text += `\n${lang.get('settings.currentfieldcount')} \`${settings.fieldcount}\``;
+				text += `\n${lang.get('settings.currentfieldlength')} \`${settings.fieldlength}\``;
+				text += `\n${lang.get('settings.currentsectionlength')} \`${settings.sectionlength}\``;
+				text += `\n${lang.get('settings.currentsectiondesclength')} \`${settings.sectiondesclength}\``;
+				if ( wikiWhitelist ) text += '\n' + lang.get('settings.wikilist_added');
+				text += `\n<${new URL('/settings', process.env.dashboard).href}>`;
 				sendMsg( {
-					type: 'notifyUser', text, file,
-					embeds: ( row.wiki !== wiki.name ? embeds : [] ),
+					type: 'notifyUser', text, embeds,
+					file: [`./i18n/widgets/${settings.lang}.png`],
 					user: userSettings.user.id
 				} ).catch( error => {
 					console.log( '- Dashboard: Error while notifying the user: ' + error );
 				} );
 			}, dberror => {
 				console.log( '- Dashboard: Error while saving the user settings: ' + dberror );
-				return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+				return res('/settings', 'savefail');
 			} );
-		}
-		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'nochange');
-	}, error => {
-		return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail', error);
+			var diff = [];
+			var file = [];
+			var updateGuild = false;
+			var updateChannel = false;
+			if ( row.wiki !== wiki.name ) {
+				updateGuild = true;
+				diff.push(lang.get('settings.currentwiki') + ` ~~<${row.wiki}>~~ → <${wiki.name}>`);
+			}
+			if ( row.lang !== settings.lang ) {
+				updateGuild = true;
+				file.push(`./i18n/widgets/${settings.lang}.png`);
+				diff.push(lang.get('settings.currentlang') + ` ~~\`${allLangs[row.lang]}\`~~ → \`${allLangs[settings.lang]}\``);
+			}
+			if ( ( row.desclength ?? defaultSettings.embedLimits.descLength ) !== settings.desclength ) {
+				updateGuild = true;
+				diff.push(lang.get('settings.currentdesclength') + ` ~~\`${row.desclength ?? defaultSettings.embedLimits.descLength}\`~~ → \`${settings.desclength}\``);
+			}
+			if ( ( row.fieldcount ?? defaultSettings.embedLimits.fieldCount ) !== settings.fieldcount ) {
+				updateGuild = true;
+				diff.push(lang.get('settings.currentfieldcount') + ` ~~\`${row.fieldcount ?? defaultSettings.embedLimits.fieldCount}\`~~ → \`${settings.fieldcount}\``);
+			}
+			if ( ( row.fieldlength ?? defaultSettings.embedLimits.fieldLength ) !== settings.fieldlength ) {
+				updateGuild = true;
+				diff.push(lang.get('settings.currentfieldlength') + ` ~~\`${row.fieldlength ?? defaultSettings.embedLimits.fieldLength}\`~~ → \`${settings.fieldlength}\``);
+			}
+			if ( ( row.sectionlength ?? defaultSettings.embedLimits.sectionLength ) !== settings.sectionlength ) {
+				updateGuild = true;
+				diff.push(lang.get('settings.currentsectionlength') + ` ~~\`${row.sectionlength ?? defaultSettings.embedLimits.sectionLength}\`~~ → \`${settings.sectionlength}\``);
+			}
+			if ( ( row.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength ) !== settings.sectiondesclength ) {
+				updateGuild = true;
+				diff.push(lang.get('settings.currentsectiondesclength') + ` ~~\`${row.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength}\`~~ → \`${settings.sectiondesclength}\``);
+			}
+			if ( !guild && row.whitelist !== wikiWhitelist ) {
+				updateChannel = true;
+				if ( !row.whitelist ) diff.push(lang.get('settings.wikilist_added'));
+				else if ( !wikiWhitelist ) diff.push(lang.get('settings.wikilist_removed'));
+				else diff.push(lang.get('settings.wikilist_modified'));
+			}
+			if ( diff.length ) {
+				var dbupdate = [];
+				if ( row.channel !== ( guild || null ) ) {
+					dbupdate.push([
+						'INSERT INTO discord(wiki, lang, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength, whitelist, channel, guild) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+						[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), ( wikiWhitelist ?? row.whitelist ), guild, '@' + userSettings.user.id]
+					]);
+				}
+				else if ( guild && guildrow.wiki === wiki.name && guildrow.lang === settings.lang && ( guildrow.desclength ?? defaultSettings.embedLimits.descLength ) === settings.desclength && ( guildrow.fieldcount ?? defaultSettings.embedLimits.fieldCount ) === settings.fieldcount && ( guildrow.fieldlength ?? defaultSettings.embedLimits.fieldLength ) === settings.fieldlength && ( guildrow.sectionlength ?? defaultSettings.embedLimits.sectionLength ) === settings.sectionlength && ( guildrow.sectiondesclength ?? defaultSettings.embedLimits.sectionDescLength ) === settings.sectiondesclength ) {
+					dbupdate.push([
+						'DELETE FROM discord WHERE guild = $1 AND channel = $2',
+						['@' + userSettings.user.id, guild]
+					]);
+				}
+				else {
+					if ( updateGuild ) {
+						if ( guild ) {
+							dbupdate.push([
+								'UPDATE discord SET wiki = $1, lang = $2, desclength = $3, fieldcount = $4, fieldlength = $5, sectionlength = $6, sectiondesclength = $7 WHERE guild = $8 AND channel = $9',
+								[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), '@' + userSettings.user.id, guild]
+							]);
+						}
+						else {
+							dbupdate.push([
+								'UPDATE discord SET wiki = $1, lang = $2, desclength = $3, fieldcount = $4, fieldlength = $5, sectionlength = $6, sectiondesclength = $7 WHERE guild = $8 AND channel IS NULL',
+								[wiki.name, settings.lang, ( settings.desclength ?? null ), ( settings.fieldcount ?? null ), ( settings.fieldlength ?? null ), ( settings.sectionlength ?? null ), ( settings.sectiondesclength ?? null ), '@' + userSettings.user.id]
+							]);
+						}
+					}
+					if ( updateChannel ) {
+						dbupdate.push([
+							'UPDATE discord SET whitelist = $1 WHERE guild = $2',
+							[wikiWhitelist, '@' + userSettings.user.id]
+						]);
+					}
+				}
+				return Promise.all(dbupdate.map( ([sql, sqlargs]) => {
+					return db.query( sql, sqlargs );
+				} )).then( () => {
+					console.log( '- Dashboard: User settings successfully saved: ' + ( guild || '' ) + '@' + userSettings.user.id );
+					res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'save');
+					var text = lang.get('settings.dashboard.user', ( guildname ?? `<@${userSettings.user.id}>` ));
+					text += '\n' + diff.join('\n');
+					text += `\n<${new URL(( guild ? `/guild/${guild}/settings` : '/settings' ), process.env.dashboard).href}>`;
+					sendMsg( {
+						type: 'notifyUser', text, file,
+						embeds: ( row.wiki !== wiki.name ? embeds : [] ),
+						user: userSettings.user.id
+					} ).catch( error => {
+						console.log( '- Dashboard: Error while notifying the user: ' + error );
+					} );
+				}, dberror => {
+					console.log( '- Dashboard: Error while saving the user settings: ' + dberror );
+					return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
+				} );
+			}
+			return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'nochange');
+		}, error => {
+			return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail', error);
+		} );
 	} );
 }
 

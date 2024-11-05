@@ -25,7 +25,7 @@ jobs:
           then
             echo "$language" is not a translation
           else
-            wget https://translate.wikibot.de/widgets/wiki-bot/$language/discord/svg-badge.svg
+            wget https://translate.wikibot.de/widget/wiki-bot/discord/$language/svg-badge.svg
             convert -background none svg-badge.svg i18n/widgets/$language.png
             rm svg-badge.svg
           fi

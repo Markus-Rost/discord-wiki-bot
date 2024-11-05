@@ -166,7 +166,7 @@
 		],
 		"execute":[
 			"/execute < subcommand >",
-			"\nSubcommands:\n============",
+			"\n# Subcommands",
 			"run <command>",
 			"align <axes> < subcommand >",
 			"anchored <anchor> < subcommand >",
@@ -402,7 +402,7 @@
 			"/reload"
 		],
 		"replaceitem": [
-			"/* This command is Bedrock Edition only */",
+			"# This command is Bedrock Edition only",
 			"/replaceitem block <pos> <slot> <item>",
 			"/replaceitem block <pos> <slot> <item> <count>",
 			"/replaceitem entity <targets> <slot> <item>",
@@ -550,7 +550,7 @@
 			"/tick sprint stop"
 		],
 		"tickingarea": [
-			"/* This command is Bedrock Edition only */",
+			"# This command is Bedrock Edition only",
 			"/tickingarea add <from: x y z> <to: x y z>",
 			"/tickingarea add <from: x y z> <to: x y z> <name: string>",
 			"/tickingarea add circle <center: x y z> <radius: int>",
@@ -581,7 +581,7 @@
 			"/title <targets> title <title>"
 		],
 		"transferserver": [
-			"/* This command is Bedrock Edition only */",
+			"# This command is Bedrock Edition only",
 			"/transferserver <server: string> <port: int>"
 		],
 		"trigger": [

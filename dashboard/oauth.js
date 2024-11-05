@@ -259,8 +259,10 @@ function dashboard_oauth(res, state, searchParams, lastGuild) {
  * @param {import('./util.js').UserSession} userSession - The user session
  * @param {String} [returnLocation] - The return location
  * @param {String} [beta] - The beta feature
+ * @param {Boolean} [forced] - If the refresh was forced
  */
-function dashboard_refresh(res, userSession, returnLocation = '/', beta = '') {
+function dashboard_refresh(res, userSession, returnLocation = '/', beta = '', forced = false) {
+	let success = ( forced ? 'forced' : 'success' );
 	return oauth.getUserGuilds(userSession.access_token).then( guilds => {
 		var settings = settingsData.get(userSession.user_id);
 		db.query( 'SELECT channel FROM discord WHERE guild = $1 AND channel IS NOT NULL', ['@' + settings.user.id] ).then( ({rows}) => {
@@ -321,7 +323,7 @@ function dashboard_refresh(res, userSession, returnLocation = '/', beta = '') {
 			}, dberror => {
 				console.log( '- Dashboard: Error while removing the user guilds: ' + dberror );
 			} );
-			res.writeHead(302, {Location: returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=success'});
+			res.writeHead(302, {Location: returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + `refresh=${success}`});
 			return res.end();
 		}, error => {
 			console.log( '- Dashboard: Error while getting the refreshed guilds:', error );
@@ -332,7 +334,7 @@ function dashboard_refresh(res, userSession, returnLocation = '/', beta = '') {
 		console.log( '- Dashboard: Error while refreshing guilds: ' + error );
 		let url = returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=failed';
 		if ( error.name === 'DiscordHTTPError' && error.code === 401 ) {
-			userSession.returnLocation = returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + 'refresh=success';
+			userSession.returnLocation = returnLocation + '?' + ( beta ? `beta=${beta}&` : '' ) + `refresh=${success}`;
 			url = oauth.generateAuthUrl( {
 				scope: [
 					OAuth2Scopes.Identify,

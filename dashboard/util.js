@@ -355,6 +355,11 @@ function createNotice($, notice, dashboardLang, args = []) {
 			title.text(dashboardLang.get('notice.refresh.title'));
 			text.text(dashboardLang.get('notice.refresh.text'));
 			break;
+		case 'refreshforced':
+			type = 'info';
+			title.text(dashboardLang.get('notice.refreshforced.title'));
+			text.text(dashboardLang.get('notice.refreshforced.text'));
+			break;
 		case 'missingperm':
 			type = 'error';
 			title.text(dashboardLang.get('notice.missingperm.title'));
