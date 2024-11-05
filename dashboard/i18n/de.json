@@ -136,6 +136,10 @@
 			"text": "Deine Serverliste konnte nicht aktualisiert werden, bitte versuche es erneut.",
 			"title": "Aktualisierung fehlgeschlagen!"
 		},
+		"refreshforced": {
+			"text": "Die Einstellungen konnten nicht gespeichert werden, deine Serverliste war veraltet. Bitte versuche es jetzt erneut.",
+			"title": "Serverliste war veraltet, Aktualisierung erfolgreich!"
+		},
 		"save": {
 			"text": "Die Einstellungen wurden erfolgreich aktualisiert.",
 			"title": "Einstellungen gespeichert!"
