@@ -1043,14 +1043,14 @@ function update_user_settings(res, userSettings, guild, settings) {
 		if ( settings.sectiondesclength > 4_000 ) return res(( guild ? `/guild/${guild}/settings` : '/settings' ), 'savefail');
 	}
 	
-	sendMsg( {
+	( guild ? sendMsg( {
 		type: 'getMember',
 		member: userSettings.user.id,
 		guild: guild
 	} ).catch(error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
 		return;
-	} ).then( guildResponse => {
+	} ) : Promise.resolve() ).then( guildResponse => {
 		if ( guildResponse ) {
 			userSettings.guilds.notMember.delete(guild);
 			userSettings.guilds.notAdmin.delete(guild);
