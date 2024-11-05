@@ -1047,7 +1047,7 @@ function update_user_settings(res, userSettings, guild, settings) {
 		type: 'getMember',
 		member: userSettings.user.id,
 		guild: guild
-	} ).catch(error => {
+	} ).catch( error => {
 		console.log( '- Dashboard: Error while getting the member: ' + error );
 		return;
 	} ) : Promise.resolve() ).then( guildResponse => {

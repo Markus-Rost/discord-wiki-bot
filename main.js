@@ -530,6 +530,14 @@ function graceful(signal) {
 process.once( 'SIGINT', graceful );
 process.once( 'SIGTERM', graceful );
 
+process.on( 'uncaughtException', error => {
+	console.error( error );
+	graceful('SIGKILL');
+	manager.shards.filter( shard => shard.process && !shard.process.killed ).forEach( shard => shard.kill() );
+	if ( typeof server !== 'undefined' && !server.killed ) server.kill();
+	process.exit(1);
+} );
+
 if ( isDebug && process.argv[3]?.startsWith( '--timeout:' ) ) {
 	let timeout = process.argv[3].split(':')[1];
 	console.log( `\n- Close process in ${timeout} seconds!\n` );
