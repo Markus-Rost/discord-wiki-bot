@@ -456,7 +456,7 @@
 		"inaccurate": "Statistik mungkin tidak akurat",
 		"lang": "Bahasa:",
 		"license": "Lisensi:",
-		"manager": "Manajer Wiki:",
+		"manager": "Perwakilan wiki:",
 		"misermode": "Mode miser:",
 		"no": "Tidak",
 		"none": "*kosong*",
@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 memperbarui pengaturan untuk $2.",
 			"removed": "$1 menghapus pengaturan untuk $2.",
-			"updated": "$1 memperbarui pengaturan server."
+			"updated": "$1 memperbarui pengaturan server.",
+			"user": "Kamu telah memperbarui pengaturan pengguna untuk $1."
 		},
 		"foundwikis": "Apakah maksud mu salah satu dari wiki ini?",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "Gunakan `$1 <role>` untuk mengubah peran minimal yang diperlukan.",
 		"roleinvalid": "Peran yang ditentukan tidak ada!",
 		"save_failed": "Sayangnya pengaturannys tidak dapat disimpan, coba lagi nanti.",
+		"user current": "Ini adalah pengaturan saat ini untuk $1:",
+		"user lang": "Bahasa untuk $1 adalah:",
+		"user langchanged": "Kamu telah mengubah bahasa untuk $1 menjadi:",
+		"user missing": "Belum ada pengaturan untuk $3. Gunakan $1 dan $2 untuk mengubah pengaturan.",
+		"user wiki": "Wiki default untuk $1 adalah:",
+		"user wikichanged": "Kamu telah mengubah wiki default untuk $1 menjadi:",
+		"user wikimissing": "Belum ada wiki default yang disetel untuk $1!",
 		"whitelist_added": "Daftar wiki yang diizinkan telah ditambahkan.",
 		"whitelist_modified": "Daftar wiki yang diizinkan telah diubah.",
 		"whitelist_removed": "Daftar wiki yang diizinkan telah dihapus.",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "Situs web yang disediakan tidak memiliki sertifikat TLS/SSL yang valid! Untuk alasan keamanan, hanya wiki yang menggunakan HTTPS yang didukung.\nJika Kamu adalah administrator situs, kamu bisa mendapatkan sertifikat dari otoritas sertifikat seperti *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "Wiki yang disediakan bersifat pribadi! Hanya wiki publik yang dapat dibaca oleh semua orang yang didukung.",
 		"wikiinvalid_timeout": "Tautan yang disediakan terlalu lama untuk ditanggapi!",
+		"wikilist_added": "Daftar wiki yang disukai telah ditambahkan.",
+		"wikilist_modified": "Daftar wiki yang disukai telah diubah.",
+		"wikilist_removed": "Daftar wiki yang disukai telah dihapus.",
 		"wikimissing": "Belum ada wiki default yang disetel untuk server ini!"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "Diblokir tanpa batas pada $1 oleh $4.",
 			"indef_text": "Diblokir tanpa batas pada $1 oleh $4 dengan alasan \"$5\".",
 			"noreason": "Diblokir pada $1 untuk $2 hingga $3 oleh $4.",
+			"partial": "$1 saat ini diblokir sebagian!",
 			"text": "Diblokir pada $1 untuk $2 hingga $3 oleh $4 dengan alasan \"$5\"."
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "Sedang memuat statistik global…",
 			"postcount": "Postingan diskusi:",
 			"registration": "Tanggal registrasi:",
+			"unknown": "*Tidak diketahui*",
 			"wikisedited": "Wiki diedit:"
 		}
 	},
