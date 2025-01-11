@@ -292,7 +292,8 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				code = true;
 				text += '```' + syntaxhighlight + '\n';
 			}
-			if ( tagname === 'div' && classes.length ) {
+			if ( tagname === 'div' ) {
+				if ( !text.endsWith( '\n' ) ) text += '\n';
 				if ( classes.includes( 'mw-highlight' ) ) {
 					syntaxhighlight = ( classes.find( syntax => syntax.startsWith( 'mw-highlight-lang-' ) )?.replace( 'mw-highlight-lang-', '' ) || '' );
 				}
@@ -312,7 +313,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( tagname === 'p' && !text.endsWith( '\n' ) ) text += '\n';
 			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
-				if ( listlevel && horizontalList ) text += ' (';
+				if ( listlevel > -1 && horizontalList ) text += ' (';
 				listlevel++;
 			}
 			if ( tagname === 'li' && !horizontalList ) {
@@ -433,7 +434,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				listlevel--;
 				if ( horizontalList ) {
 					text = text.replace( / • $/, '' );
-					if ( listlevel ) text += ')';
+					if ( listlevel > -1 ) text += ')';
 				}
 			}
 			if ( ( tagname === 'li' || tagname === 'dd' ) && horizontalList ) text += ' • ';

@@ -51,7 +51,10 @@ function dashboard_login(res, dashboardLang, theme, state, action) {
 	let prompt = 'none';
 	if ( process.env.READONLY ) createNotice($, 'readonly', dashboardLang);
 	if ( action ) createNotice($, action, dashboardLang);
-	if ( action === 'unauthorized' ) $('<script>').text('history.replaceState(null, null, "/login");').appendTo('head');
+	if ( action === 'unauthorized' ) {
+		responseCode = 403;
+		$('<script>').text('history.replaceState(null, null, "/login");').appendTo('head');
+	}
 	else if ( action.startsWith( 'oauth' ) ) {
 		if ( action === 'oauth' ) createNotice($, 'oauthlogin', dashboardLang);
 		$('<script>').text('history.replaceState(null, null, "/user");').appendTo('head');

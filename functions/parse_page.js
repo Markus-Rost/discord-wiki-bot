@@ -465,7 +465,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					} ).parent();
 					var sectionContent;
 					if ( !section.length ) {
-						section = $('[id="' + toSection(fragment, wiki.spaceReplacement, false).replace( '#', '' ) + '"]');
+						section = $('[id="' + toSection(fragment, wiki.spaceReplacement, false).replace( '#', '' ) + '"]').first();
 						newFragment = section.attr('id');
 						if ( section.is('[data-mw-comment-start]') ) {
 							let start = section.parent();
@@ -486,7 +486,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						}
 						else if ( section.is(':empty') ) {
 							section = section.parent();
-							if ( ['h1','h2','h3','h4','h5','h6'].includes( section.prev()[0]?.tagName ) ) {
+							if ( section.prev().is('h1, h2, h3, h4, h5, h6, .mw-heading') ) {
 								section = section.prev();
 								if ( section.children('span.mw-headline').first().attr('id') ) {
 									newFragment = section.children('span.mw-headline').first().attr('id');
@@ -495,7 +495,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 									newFragment = section.children('span').first().attr('id');
 								}
 							}
-							else if ( ['h1','h2','h3','h4','h5','h6'].includes( section.next()[0]?.tagName ) ) {
+							else if ( section.next().is('h1, h2, h3, h4, h5, h6, .mw-heading') ) {
 								section = section.next();
 								if ( section.children('span.mw-headline').first().attr('id') ) {
 									newFragment = section.children('span.mw-headline').first().attr('id');

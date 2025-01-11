@@ -134,6 +134,7 @@ const descriptions = {
 	categorytree: 'categorytree-header',
 	checkuser: 'checkuser-summary&amargs=16|19',
 	drafts: 'drafts-view-summary&amargs=30',
+	doubleredirects: 'doubleredirectstext',
 	expandtemplates: 'expand_templates_intro',
 	gadgets: 'gadgets-pagetext',
 	gotointerwiki: 'gotointerwiki-external|gotointerwiki-invalid&amargs=%1F' + encodeURIComponent( '{{fullurl:{{#titleparts:{{PAGENAME}}||2}}_}}' ) + '%1F' + encodeURIComponent( '{{#titleparts:{{PAGENAME}}||2}}' ),

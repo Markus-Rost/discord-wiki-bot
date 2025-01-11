@@ -87,43 +87,46 @@ function checkWiki(wiki) {
 		return response;
 	} ).then( response => {
 		var body = response.body;
-		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.recentchanges ) {
-			return response.statusCode + ': Error while checking the wiki: ' + body?.error?.info;
-		}
-		wiki.updateWiki(body.query.general);
 		var result = {
 			wiki: wiki.href,
 			activity: [],
 			rcid: 0,
 			postid: '-1'
 		}
-		var rc = body.query.recentchanges;
-		if ( rc.length ) {
-			result.rcid = rc[0].rcid;
-			let text = '';
-			let len = ( Date.parse(rc[0].timestamp) - Date.parse(rc[rc.length - 1].timestamp) ) / 60_000;
-			len = Math.round(len);
-			let rdays = ( len / 1440 );
-			let days = Math.floor(rdays);
-			if ( days > 0 ) {
-				if ( days === 1 ) text += ` ${days} day`;
-				else text += ` ${days} days`;
+		if ( response.statusCode !== 200 || body?.batchcomplete === undefined || !body?.query?.recentchanges ) {
+			result.activity.push(response.statusCode + ': Error while checking the wiki: ' + body?.error?.info);
+		}
+		else {
+			wiki.updateWiki(body.query.general);
+			result.wiki = wiki.href;
+			var rc = body.query.recentchanges;
+			if ( rc.length ) {
+				result.rcid = rc[0].rcid;
+				let text = '';
+				let len = ( Date.parse(rc[0].timestamp) - Date.parse(rc[rc.length - 1].timestamp) ) / 60_000;
+				len = Math.round(len);
+				let rdays = ( len / 1440 );
+				let days = Math.floor(rdays);
+				if ( days > 0 ) {
+					if ( days === 1 ) text += ` ${days} day`;
+					else text += ` ${days} days`;
+				}
+				let rhours = ( rdays - days ) * 24;
+				let hours = Math.floor(rhours);
+				if ( hours > 0 ) {
+					if ( text.length ) text += ' and';
+					if ( hours === 1 ) text += ` ${hours} hour`;
+					else text += ` ${hours} hours`;
+				}
+				let rminutes = ( rhours - hours ) * 60;
+				let minutes = Math.round(rminutes);
+				if ( minutes > 0 ) {
+					if ( text.length ) text += ' and';
+					if ( minutes === 1 ) text += ` ${minutes} minute`;
+					else text += ` ${minutes} minutes`;
+				}
+				result.activity.push(`${rc.length} edits in${text}`);
 			}
-			let rhours = ( rdays - days ) * 24;
-			let hours = Math.floor(rhours);
-			if ( hours > 0 ) {
-				if ( text.length ) text += ' and';
-				if ( hours === 1 ) text += ` ${hours} hour`;
-				else text += ` ${hours} hours`;
-			}
-			let rminutes = ( rhours - hours ) * 60;
-			let minutes = Math.round(rminutes);
-			if ( minutes > 0 ) {
-				if ( text.length ) text += ' and';
-				if ( minutes === 1 ) text += ` ${minutes} minute`;
-				else text += ` ${minutes} minutes`;
-			}
-			result.activity.push(`${rc.length} edits in${text}`);
 		}
 		return Promise.all([
 			db.query( 'SELECT guild, lang, display, buttons, rcid, postid FROM rcgcdw WHERE wiki = $1', [result.wiki] ).then( ({rows}) => {
