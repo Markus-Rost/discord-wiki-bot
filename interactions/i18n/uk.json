@@ -1,1 +1,46 @@
-{}
+{
+	"diff": {
+		"description": "Показати відмінності в редагуванні вікі.",
+		"name": "різниця",
+		"options[0].description": "Показати відмінності останнього редагування вікі-сторінки.",
+		"options[0].name": "сторінка",
+		"options[0].options[0].description": "Назва сторінки, щоб показати різницю останнього редагування.",
+		"options[0].options[0].name": "назва",
+		"options[0].options[1].description": "Вікі для пошуку.",
+		"options[0].options[1].name": "вікі",
+		"options[0].options[2].description": "Надіслати відповідь, видиму лише вам?",
+		"options[0].options[2].name": "приватне",
+		"options[0].options[3].description": "Надсилати лише посилання без вбудовування?",
+		"options[0].options[3].name": "без вбудовування",
+		"options[0].options[4].description": "Приховати посилання й вставити в спойлер?",
+		"options[0].options[4].name": "спойлер",
+		"options[1].description": "Показати відмінності в редагуванні вікі на основі ідентифікатора.",
+		"options[1].name": "ids",
+		"options[1].options[0].description": "Показувати відносну різницю редагувань вікі на основі ідентифікатора.",
+		"options[1].options[0].name": "відносне"
+	},
+	"overview": {
+		"name": "огляд",
+		"options[0].name": "вікі",
+		"options[1].name": "приватне",
+		"options[2].name": "без вбудовування",
+		"options[3].name": "спойлер"
+	},
+	"patreon": {
+		"name": "патрон",
+		"options[0].name": "перевірка",
+		"options[1].name": "увімкнути",
+		"options[1].options[0].name": "гільдія",
+		"options[2].name": "вимкнути",
+		"options[2].options[0].name": "гільдія"
+	},
+	"random": {
+		"name": "випадково",
+		"options[0].name": "вікі",
+		"options[1].name": "простір імен",
+		"options[2].name": "приватне"
+	},
+	"wiki": {
+		"options[5].name": "спойлер"
+	}
+}
