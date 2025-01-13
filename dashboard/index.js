@@ -256,6 +256,56 @@ const server = createServer( (req, res) => {
 		return pages.oauth(res, state, reqURL.searchParams, lastGuild);
 	}
 
+	if ( reqURL.pathname === '/debug' && rcscriptExists ) {
+		let isAuthorized = ( sessionData.has(state) ? process.env.owner.split('|').includes(sessionData.get(state).user_id) : null );
+		if ( isAuthorized === null && process.env.debug_basic_auth ) {
+			console.log(req.headers.authorization)
+			if ( req.headers.authorization === 'Basic ' + process.env.debug_basic_auth ) isAuthorized = true;
+			else {
+				res.writeHead(401, {
+					'WWW-Authenticate': 'Basic realm="Access to the Debug data", charset="UTF-8"'
+				});
+				return res.end();
+			}
+		}
+		if ( isAuthorized ) {
+			let site = reqURL.searchParams.get('site');
+			console.log( '- Dashboard: Requesting RcGcDb debug dump' + ( site ? ' for ' + site : '.' ) );
+			return new Promise( (resolve, reject) => {
+				let id = Date.now().toString();
+				if ( site ) id = '-1+' + id;
+				let timeout = setTimeout( () => {
+					listenerMap.delete(id);
+					reject('Timeout');
+				}, 5000 ).unref();
+				listenerMap.set(id, {timeout, write, resolve});
+				res.writeHead(200, {
+					'Content-Type': 'application/json'
+				});
+				db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', ( site ? 'DEBUG SITE ' + id + ' ' + site : 'DEBUG DUMP ' + id )] ).catch( dberror => {
+					console.log( '- Dashboard: Error while requesting the debug dump' + ( site ? ' for ' + site : '' ) + ': ' + dberror );
+					listenerMap.delete(id);
+					clearTimeout(timeout);
+					reject(dberror);
+				} );
+				/** @param {String} body */
+				function write(body) {
+					return res.write( body, error => {
+						if ( !error ) return;
+						listenerMap.delete(id);
+						clearTimeout(timeout);
+						reject(error);
+					} );
+				}
+			} ).then( () => {
+				return res.end();
+			}, error => {
+				res.write( JSON.stringify( {error} ) );
+				return res.end();
+			} );
+		}
+	}
+
 	if ( !sessionData.has(state) || !settingsData.has(sessionData.get(state).user_id) ) {
 		let action = '';
 		if ( reqURL.pathname !== '/' ) action = 'unauthorized';
@@ -292,43 +342,6 @@ const server = createServer( (req, res) => {
 		let guild = reqURL.searchParams.get('guild');
 		if ( !settingsData.get(sessionData.get(state)?.user_id)?.guilds.isMember.has(guild) ) guild = null;
 		if ( wiki ) return pages.api(res, wiki, guild);
-	}
-
-	if ( reqURL.pathname === '/debug' && rcscriptExists && process.env.owner.split('|').includes(sessionData.get(state).user_id) ) {
-		let site = reqURL.searchParams.get('site');
-		console.log( '- Dashboard: Requesting RcGcDb debug dump' + ( site ? ' for ' + site : '.' ) );
-		return new Promise( (resolve, reject) => {
-			let id = Date.now().toString();
-			if ( site ) id = '-1+' + id;
-			let timeout = setTimeout( () => {
-				listenerMap.delete(id);
-				reject('Timeout');
-			}, 5000 ).unref();
-			listenerMap.set(id, {timeout, write, resolve});
-			res.writeHead(200, {
-				'Content-Type': 'application/json'
-			});
-			db.query( 'SELECT pg_notify($1, $2)', ['webhookupdates', ( site ? 'DEBUG SITE ' + id + ' ' + site : 'DEBUG DUMP ' + id )] ).catch( dberror => {
-				console.log( '- Dashboard: Error while requesting the debug dump' + ( site ? ' for ' + site : '' ) + ': ' + dberror );
-				listenerMap.delete(id);
-				clearTimeout(timeout);
-				reject(dberror);
-			} );
-			/** @param {String} body */
-			function write(body) {
-				return res.write( body, error => {
-					if ( !error ) return;
-					listenerMap.delete(id);
-					clearTimeout(timeout);
-					reject(error);
-				} );
-			}
-		} ).then( () => {
-			return res.end();
-		}, error => {
-			res.write( JSON.stringify( {error} ) );
-			return res.end();
-		} );
 	}
 
 	let action = '';
