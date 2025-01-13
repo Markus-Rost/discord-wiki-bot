@@ -259,7 +259,6 @@ const server = createServer( (req, res) => {
 	if ( reqURL.pathname === '/debug' && rcscriptExists ) {
 		let isAuthorized = ( sessionData.has(state) ? process.env.owner.split('|').includes(sessionData.get(state).user_id) : null );
 		if ( isAuthorized === null && process.env.debug_basic_auth ) {
-			console.log(req.headers.authorization)
 			if ( req.headers.authorization === 'Basic ' + process.env.debug_basic_auth ) isAuthorized = true;
 			else {
 				res.writeHead(401, {
