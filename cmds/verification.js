@@ -1,10 +1,10 @@
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ChannelType } from 'discord.js';
+import { botLimits } from '../util/defaults.js';
 import help_setup from '../functions/helpsetup.js';
 import db from '../util/database.js';
 import { got, splitMessage } from '../util/functions.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {limit: {verification: verificationLimit}} = require('../util/default.json');
+
+const {verification: verificationLimit} = botLimits;
 
 /**
  * Processes the "verification" command.

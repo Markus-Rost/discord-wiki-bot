@@ -1,8 +1,8 @@
 import { ShardClientUtil, OAuth2Scopes, ChannelType } from 'discord.js';
+import { botLimits, defaultPermissions } from '../util/defaults.js';
 import db from '../util/database.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultPermissions, limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
+
+const {verification: verificationLimit, rcgcdw: rcgcdwLimit} = botLimits;
 const {shardIdForGuildId} = ShardClientUtil;
 
 /**

@@ -1,14 +1,14 @@
 import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
 import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
+import { botLimits } from '../util/defaults.js';
 import help_setup from '../functions/helpsetup.js';
 import { got, canShowEmbed, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {limit: {rcgcdw: rcgcdwLimit}} = require('../util/default.json');
+
+const {rcgcdw: rcgcdwLimit} = botLimits;
 const allLangs = Lang.allLangs(true);
 
 const rcscriptExists = ( isDebug || existsSync('./RcGcDb/start.py') );

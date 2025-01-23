@@ -1,6 +1,8 @@
 import { readdir } from 'node:fs';
 import { EmbedBuilder } from 'discord.js';
 import { getWikiProject, urlToIdString } from 'mediawiki-projects-list';
+import mcwCommands from '../minecraft/commands.json' with { type: 'json' };
+import { botLimits } from '../../util/defaults.js';
 import parse_page from '../../functions/parse_page.js';
 import phabricator, { phabricatorSites } from '../../functions/phabricator.js';
 import logging from '../../util/logging.js';
@@ -8,10 +10,9 @@ import { got, isMessage, htmlToDiscord, escapeFormatting, escapeRegExp, partialU
 import extract_desc from '../../util/extract_desc.js';
 import Wiki from '../../util/wiki.js';
 import * as fn from './functions.js'
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {limit: {interwiki: interwikiLimit}} = require('../../util/default.json');
-const {wikis: mcw} = require('../minecraft/commands.json');
+
+const {interwiki: interwikiLimit} = botLimits;
+const mcw = mcwCommands.wikis;
 
 var minecraft = {
 	WIKI: mw_check_wiki

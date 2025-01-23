@@ -1,11 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
+import { defaultPermissions } from '../util/defaults.js';
 import { forms, beta } from './functions.js';
 import Lang from './i18n.js';
 import { oauth, enabledOAuth2, settingsData, addWidgets, createNotice, OAuth2Scopes } from './util.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultPermissions} = require('../util/default.json');
+
 const allLangs = Lang.allLangs().names;
 
 const rcscriptExists = ( isDebug || existsSync('./RcGcDb/start.py') );

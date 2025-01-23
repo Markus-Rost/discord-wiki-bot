@@ -1,8 +1,6 @@
+import commands from './commands.json' with { type: 'json' };
 import { got, splitMessage } from '../../util/functions.js';
 import Wiki from '../../util/wiki.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const commands = require('./commands.json');
 
 /**
  * Sends a Minecraft command.

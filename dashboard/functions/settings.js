@@ -1,11 +1,10 @@
 import { load as cheerioLoad } from 'cheerio';
 import { wikiProjects, frontendProxies } from 'mediawiki-projects-list';
+import { defaultSettings } from '../../util/defaults.js';
 import Lang from '../../util/i18n.js';
 import Wiki from '../../util/wiki.js';
 import { got, db, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from '../util.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultSettings} = require('../../util/default.json');
+
 const allLangs = Lang.allLangs().names;
 const wikiProjectNames = [];
 wikiProjects.forEach( wikiProject => {

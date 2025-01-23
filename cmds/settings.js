@@ -1,12 +1,11 @@
 import { load as cheerioLoad } from 'cheerio';
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { defaultSettings } from '../util/defaults.js';
 import { got, splitMessage } from '../util/functions.js';
 import Lang from '../util/i18n.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultSettings} = require('../util/default.json');
+
 const allLangs = Lang.allLangs();
 
 /**

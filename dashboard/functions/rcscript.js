@@ -1,11 +1,11 @@
 import { existsSync } from 'node:fs';
 import { load as cheerioLoad } from 'cheerio';
+import { botLimits, defaultSettings } from '../../util/defaults.js';
 import Lang from '../../util/i18n.js';
 import Wiki from '../../util/wiki.js';
 import { got, db, canRcGcDwButtons, sendMsg, createNotice, hasPerm, PermissionFlagsBits } from '../util.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultSettings, limit: {rcgcdw: rcgcdwLimit}} = require('../../util/default.json');
+
+const {rcgcdw: rcgcdwLimit} = botLimits;
 const allLangs = Lang.allLangs(true).names;
 
 const buttonsExists = ( process.env.buttons_token && process.env.buttons_url && existsSync('./RcGcDw_buttons/main.js') );

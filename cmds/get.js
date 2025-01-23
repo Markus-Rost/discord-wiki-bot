@@ -1,9 +1,8 @@
 import { EmbedBuilder, ShardClientUtil, ChannelType, PermissionFlagsBits } from 'discord.js';
+import { defaultSettings, defaultPermissions } from '../util/defaults.js';
 import { canShowEmbed, escapeFormatting, splitMessage } from '../util/functions.js';
 import db from '../util/database.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultSettings, defaultPermissions} = require('../util/default.json');
+
 const {shardIdForGuildId} = ShardClientUtil;
 
 /**

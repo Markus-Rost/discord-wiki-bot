@@ -1,7 +1,5 @@
 import { OAuth2Scopes } from 'discord.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultPermissions} = require('../util/default.json');
+import { defaultPermissions } from '../util/defaults.js';
 
 /**
  * Processes the "invite" command.
@@ -25,7 +23,7 @@ export default function cmd_invite(lang, msg, args, line, wiki) {
 		});
 		let text = lang.get('invite.bot') + '\n<' + invite + '>';
 		if ( msg.client.application.id === '461189216198590464' ) {
-			text += '\n' + lang.get('invite.directory') + '\nhttps://discord.com/application-directory/' + msg.client.application.id;
+			text += '\n' + lang.get('invite.directory') + '\nhttps://discord.com/discovery/applications/' + msg.client.application.id;
 		}
 		msg.sendChannel( text );
 	}

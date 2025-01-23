@@ -1,8 +1,9 @@
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultSettings} = require('./default.json');
-const i18n = require('../i18n/allLangs.json');
-Object.keys(i18n.allLangs.names).forEach( lang => i18n[lang] = require('../i18n/' + lang + '.json') );
+import i18n from '../i18n/allLangs.json' with { type:'json' };
+import { defaultSettings } from './defaults.js';
+
+await Promise.all(
+	Object.keys(i18n.allLangs.names).map( async lang => i18n[lang] = ( await import(`../i18n/${lang}.json`, {with: {type: 'json'}}) ).default )
+);
 
 const defaultAliases = ( i18n?.[defaultSettings.lang]?.aliases || {} );
 

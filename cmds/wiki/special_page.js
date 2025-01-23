@@ -1,9 +1,7 @@
 import { EmbedBuilder, PermissionFlagsBits, time as timeMarkdown, TimestampStyles } from 'discord.js';
+import { timeoptions } from '../../util/defaults.js';
 import logging from '../../util/logging.js';
 import { got, toMarkdown, escapeFormatting, splitMessage } from '../../util/functions.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {timeoptions} = require('../../util/default.json');
 
 const overwrites = {
 	/** @param {import('../../util/wiki.js').default} wiki */

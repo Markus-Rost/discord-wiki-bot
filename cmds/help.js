@@ -1,10 +1,10 @@
 import { wikiProjects, frontendProxies } from 'mediawiki-projects-list';
 import help_server from '../functions/helpserver.js';
 import { splitMessage } from '../util/functions.js';
-import { createRequire } from 'node:module';
 import { ApplicationCommandOptionType } from 'discord.js';
-const require = createRequire(import.meta.url);
-const {wikis: mcw} = require('./minecraft/commands.json');
+import mcwCommands from './minecraft/commands.json' with { type: 'json' };
+
+const mcw = mcwCommands.wikis;
 
 const helpmap = {
 	linkHelp: ['slash.wiki', 'default', 'slash.inline', 'inline.link', 'inline.template', 'subprefix', 'slash.interwiki', 'mwprojects'],

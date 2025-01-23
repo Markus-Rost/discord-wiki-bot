@@ -2,13 +2,13 @@ import { readdir } from 'node:fs';
 import { domainToASCII } from 'node:url';
 import { cleanContent } from 'discord.js';
 import { inputToWikiProject, idStringToUrl, inputToFrontendProxy } from 'mediawiki-projects-list';
+import { botLimits, defaultSettings } from './defaults.js';
 import Wiki from './wiki.js';
 import logging from './logging.js';
 import { got, isMessage, splitMessage, partialURIdecode, canShowEmbed } from './functions.js';
 import check_wiki from '../cmds/wiki/general.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {limit: {command: commandLimit}, defaultSettings} = require('./default.json');
+
+const {command: commandLimit} = botLimits;
 
 /** @type {WeakMap<import('discord.js').Message, import('discord.js').Message[]>} */
 const inlineCache = new WeakMap()

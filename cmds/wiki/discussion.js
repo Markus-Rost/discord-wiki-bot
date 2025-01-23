@@ -1,9 +1,9 @@
 import { Parser as HTMLParser } from 'htmlparser2';
 import { EmbedBuilder } from 'discord.js';
+import { botLimits } from '../../util/defaults.js';
 import { got, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {limit: {discussion: discussionLimit}} = require('../../util/default.json');
+
+const {discussion: discussionLimit} = botLimits;
 
 /**
  * Processes discussion commands.

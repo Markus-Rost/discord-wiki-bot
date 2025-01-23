@@ -1,15 +1,17 @@
 import { inspect } from 'node:util';
 import { load as cheerioLoad } from 'cheerio';
 import * as Discord from 'discord.js';
+import { botLimits } from '../util/defaults.js';
 import { got, isMessage } from '../util/functions.js';
 import newMessage from '../util/newMessage.js';
 import Wiki from '../util/wiki.js';
 import db from '../util/database.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const {limit: {verification: verificationLimit, rcgcdw: rcgcdwLimit}} = require('../util/default.json');
 
 inspect.defaultOptions = {compact: false, breakLength: Infinity, depth: 3};
+
+const {verification: verificationLimit, rcgcdw: rcgcdwLimit} = botLimits;
 
 /**
  * Processes the "eval" command.

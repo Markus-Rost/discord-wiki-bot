@@ -1,11 +1,9 @@
 import { wikiProjects, inputToWikiProject, idStringToUrl, inputToFrontendProxy } from 'mediawiki-projects-list';
+import { defaultSettings } from '../util/defaults.js';
 import db from '../util/database.js';
 import Wiki from '../util/wiki.js';
 import { got } from '../util/functions.js';
 import wiki_interaction from './wiki.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultSettings} = require('../util/default.json');
 
 const allWikiProjects = [...wikiProjects.values()];
 /** @type {Set<String>} */

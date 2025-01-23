@@ -1,12 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { load as cheerioLoad } from 'cheerio';
+import { defaultPermissions } from '../util/defaults.js';
 import Wiki from '../util/wiki.js';
 import { allLangs } from './i18n.js';
 import { got, db, oauth, enabledOAuth2, canRcGcDwButtons, sessionData, settingsData, oauthVerify, sendMsg, addWidgets, createNotice, hasPerm, PermissionFlagsBits, OAuth2Scopes } from './util.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultPermissions} = require('../util/default.json');
+
 const allLangNames = allLangs().names;
 
 const file = readFileSync('./dashboard/login.html');

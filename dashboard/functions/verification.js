@@ -1,9 +1,9 @@
 import { EmbedBuilder } from 'discord.js';
+import { botLimits, usergroups } from '../../util/defaults.js';
 import Lang from '../../util/i18n.js';
 import { got, db, sendMsg, createNotice, escapeText, hasPerm, PermissionFlagsBits } from '../util.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {limit: {verification: verificationLimit}, usergroups} = require('../../util/default.json');
+
+const {verification: verificationLimit} = botLimits;
 
 const buttonStyles = ['Primary', 'Secondary', 'Success', 'Danger'];
 

@@ -1,8 +1,6 @@
 import { inspect } from 'node:util';
 import { wikiProjects, frontendProxies, inputToWikiProject, inputToFrontendProxy } from 'mediawiki-projects-list';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {defaultSettings, defaultNamespaces} = require('./default.json');
+import { defaultSettings, defaultNamespaces } from './defaults.js';
 
 /** @type {Map<String, String>} - Source wikis for global user pages. */
 const globalUserPage = new Map([

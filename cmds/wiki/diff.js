@@ -1,10 +1,8 @@
 import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
+import { timeoptions } from '../../util/defaults.js';
 import logging from '../../util/logging.js';
 import { got, htmlToDiscord, escapeFormatting, splitMessage } from '../../util/functions.js';
 import diffParser from '../../util/edit_diff.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {timeoptions} = require('../../util/default.json');
 
 /**
  * Processes a wiki edit.

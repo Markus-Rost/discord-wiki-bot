@@ -1,13 +1,11 @@
 import { EmbedBuilder, time as timeMarkdown, TimestampStyles } from 'discord.js';
 import datetimeDifference from 'datetime-difference';
+import { timeoptions, usergroups } from '../../util/defaults.js';
 import global_block from '../../functions/global_block.js';
 import parse_page from '../../functions/parse_page.js';
 import logging from '../../util/logging.js';
 import extract_desc from '../../util/extract_desc.js';
 import { got, isMessage, toMarkdown, htmlToDiscord, escapeFormatting } from '../../util/functions.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {timeoptions, usergroups} = require('../../util/default.json');
 
 /**
  * Processes a wiki user.

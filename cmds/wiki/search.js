@@ -1,8 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
+import { botLimits } from '../../util/defaults.js';
 import { got, escapeFormatting, splitMessage } from '../../util/functions.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const {limit: {search: searchLimit}} = require('../../util/default.json');
+
+const {search: searchLimit} = botLimits;
 
 /**
  * Searches a wiki.
