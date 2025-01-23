@@ -25,7 +25,8 @@
 		"en-GB": "random",
 		"en-US": "random",
 		"ja": "random",
-		"fr": "random"
+		"fr": "random",
+		"uk": "випадково"
 	},
 	"description": "Post a random wiki link.",
 	"description_localizations": {
@@ -59,7 +60,8 @@
 				"en-GB": "wiki",
 				"en-US": "wiki",
 				"ja": "wiki",
-				"fr": "wiki"
+				"fr": "wiki",
+				"uk": "вікі"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -95,7 +97,8 @@
 				"en-GB": "namespace",
 				"en-US": "namespace",
 				"ja": "namespace",
-				"fr": "namespace"
+				"fr": "namespace",
+				"uk": "простір імен"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {
@@ -131,7 +134,8 @@
 				"pt-BR": "privado",
 				"en-GB": "private",
 				"en-US": "private",
-				"fr": "private"
+				"fr": "private",
+				"uk": "приватне"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {

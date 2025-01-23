@@ -248,7 +248,8 @@
 				"pt-BR": "spoiler",
 				"en-GB": "spoiler",
 				"en-US": "spoiler",
-				"fr": "spoiler"
+				"fr": "spoiler",
+				"uk": "спойлер"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {

@@ -28,7 +28,8 @@
 		"el": "διαφορά",
 		"fr": "diff",
 		"vi": "diff",
-		"pt-BR": "diff"
+		"pt-BR": "diff",
+		"uk": "різниця"
 	},
 	"description": "Show a wiki edit diff.",
 	"description_localizations": {
@@ -46,7 +47,8 @@
 		"el": "Εμφανίζει μια διαφορά επεξεργασίας του wiki.",
 		"pt-BR": "Mostra uma diferença de edição da wiki.",
 		"fr": "Afficher les différences d'édition d'un wiki.",
-		"vi": "Hiển thị khác biệt giữa hai lần sửa đổi wiki."
+		"vi": "Hiển thị khác biệt giữa hai lần sửa đổi wiki.",
+		"uk": "Показати відмінності в редагуванні вікі."
 	},
 	"options": [
 		{
@@ -67,7 +69,8 @@
 				"pt-BR": "página",
 				"fr": "page",
 				"tr": "sayfa",
-				"vi": "page"
+				"vi": "page",
+				"uk": "сторінка"
 			},
 			"description": "Show the last edit diff of a wiki page.",
 			"description_localizations": {
@@ -85,7 +88,8 @@
 				"pt-BR": "Mostra a última diferença de edição de uma página da wiki.",
 				"fr": "Affiche la dernière modification d'une page wiki.",
 				"tr": "Bir viki sayfasının son düzenleme farkını göster.",
-				"vi": "Hiển thị so sánh giữa hai lần sửa đổi gần đây nhất tại một trang trên wiki."
+				"vi": "Hiển thị so sánh giữa hai lần sửa đổi gần đây nhất tại một trang trên wiki.",
+				"uk": "Показати відмінності останнього редагування вікі-сторінки."
 			},
 			"options": [
 				{
@@ -106,7 +110,8 @@
 						"en-US": "title",
 						"sv-SE": "titel",
 						"fr": "title",
-						"vi": "title"
+						"vi": "title",
+						"uk": "назва"
 					},
 					"description": "Page title to show the last edit diff of.",
 					"description_localizations": {
@@ -124,7 +129,8 @@
 						"pt-BR": "Título da página para mostrar a última diff de edição.",
 						"fr": "Titre de la page pour afficher la dernière modification.",
 						"tr": "Son düzenleme farkını gösteren sayfa başlığı.",
-						"vi": "Tên trang để hiển thị so sánh."
+						"vi": "Tên trang để hiển thị so sánh.",
+						"uk": "Назва сторінки, щоб показати різницю останнього редагування."
 					},
 					"min_length": 0,
 					"max_length": 250,
@@ -149,7 +155,8 @@
 						"sv-SE": "wiki",
 						"ja": "wiki",
 						"fr": "wiki",
-						"vi": "wiki"
+						"vi": "wiki",
+						"uk": "вікі"
 					},
 					"description": "The wiki to search in.",
 					"description_localizations": {
@@ -167,7 +174,8 @@
 						"sv-SE": "Wikin att söka i.",
 						"ja": "検索対象となるWiki。",
 						"fr": "Le wiki dans lequel effectuer la recherche.",
-						"vi": "Wiki bạn cần tìm kiếm."
+						"vi": "Wiki bạn cần tìm kiếm.",
+						"uk": "Вікі для пошуку."
 					},
 					"required": false,
 					"autocomplete": true
@@ -190,7 +198,8 @@
 						"en-US": "private",
 						"sv-SE": "privat",
 						"fr": "private",
-						"vi": "private"
+						"vi": "private",
+						"uk": "приватне"
 					},
 					"description": "Send a response only visible to yourself?",
 					"description_localizations": {
@@ -208,7 +217,8 @@
 						"en-US": "Send a response only visible to yourself?",
 						"sv-SE": "Vill du endast visa svaret för dig själv?",
 						"fr": "Envoyer une réponse uniquement visible par vous-même ?",
-						"vi": "Gửi phản hồi chỉ xem được bởi bạn?"
+						"vi": "Gửi phản hồi chỉ xem được bởi bạn?",
+						"uk": "Надіслати відповідь, видиму лише вам?"
 					},
 					"required": false
 				},
@@ -229,7 +239,8 @@
 						"en-GB": "noembed",
 						"en-US": "noembed",
 						"fr": "noembed",
-						"vi": "noembed"
+						"vi": "noembed",
+						"uk": "без вбудовування"
 					},
 					"description": "Send only the link without embed?",
 					"description_localizations": {
@@ -247,7 +258,8 @@
 						"en-US": "Send only the link without embed?",
 						"sv-SE": "Skicka endast länken, utan inbäddning?",
 						"fr": "Envoyer uniquement le lien sans inclusion ?",
-						"vi": "Chỉ gửi liên kết mà không nhúng?"
+						"vi": "Chỉ gửi liên kết mà không nhúng?",
+						"uk": "Надсилати лише посилання без вбудовування?"
 					},
 					"required": false
 				},
@@ -269,7 +281,8 @@
 						"sv-SE": "spoiler",
 						"fr": "spoiler",
 						"tr": "spoiler",
-						"vi": "spoiler"
+						"vi": "spoiler",
+						"uk": "спойлер"
 					},
 					"description": "Hide the link and embed in a spoiler?",
 					"description_localizations": {
@@ -287,7 +300,8 @@
 						"en-US": "Hide the link and embed in a spoiler?",
 						"sv-SE": "Dölj länken och inbäddningen som en \"spoiler\"?",
 						"fr": "Cacher le lien et l'inclure dans un spoiler ?",
-						"vi": "Ẩn liên kết bằng cách dùng mã ẩn nội dung?"
+						"vi": "Ẩn liên kết bằng cách dùng mã ẩn nội dung?",
+						"uk": "Приховати посилання й вставити в спойлер?"
 					},
 					"required": false
 				}
@@ -311,7 +325,8 @@
 				"fr": "ids",
 				"tr": "idler",
 				"vi": "ids",
-				"pt-BR": "ids"
+				"pt-BR": "ids",
+				"uk": "ids"
 			},
 			"description": "Show a wiki edit diff based on the ID.",
 			"description_localizations": {
@@ -329,7 +344,8 @@
 				"pt-BR": "Mostre a diferença de edição de uma wiki com base no ID.",
 				"fr": "Afficher une différence d'édition d'un wiki en fonction de l'ID.",
 				"tr": "ID'ye göre bir viki düzenleme farkını göster.",
-				"vi": "So sánh hai lần sửa đổi wiki dựa trên ID bạn cung cấp."
+				"vi": "So sánh hai lần sửa đổi wiki dựa trên ID bạn cung cấp.",
+				"uk": "Показати відмінності в редагуванні вікі на основі ідентифікатора."
 			},
 			"options": [
 				{
@@ -350,7 +366,8 @@
 						"fr": "relative",
 						"tr": "ilgili",
 						"pt-BR": "relative",
-						"vi": "relative"
+						"vi": "relative",
+						"uk": "відносне"
 					},
 					"description": "Show a relative wiki edit diff based on the ID.",
 					"description_localizations": {
@@ -368,7 +385,8 @@
 						"pt-BR": "Mostra uma diferença relativa de edição da wiki com base no ID.",
 						"fr": "Affiche une différence d'édition de wiki basée sur l'ID.",
 						"tr": "ID'ye göre göreli bir viki düzenleme farkı göster.",
-						"vi": "So sánh lượt sửa đổi wiki có liên quan tới ID bạn cung cấp."
+						"vi": "So sánh lượt sửa đổi wiki có liên quan tới ID bạn cung cấp.",
+						"uk": "Показувати відносну різницю редагувань вікі на основі ідентифікатора."
 					},
 					"options": [
 						{
