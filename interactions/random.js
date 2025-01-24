@@ -12,11 +12,11 @@ import wiki_random from '../cmds/wiki/random.js';
 function slash_random(interaction, lang, wiki) {
 	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
 		var namespace = interaction.options.getString('namespace')?.trim().toLowerCase().replaceAll( wiki.spaceReplacement ?? '_', ' ' ).split(/\s*[,|]\s*/g) || [];
-		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
-		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
+		var flags = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId) ? MessageFlags.Ephemeral : undefined;
+		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) flags = MessageFlags.Ephemeral;
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 		var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
-		if ( ephemeral ) lang = lang.uselang(interaction.locale);
+		if ( flags ) lang = lang.uselang(interaction.locale);
 		var namespaces;
 		if ( namespace.length ) {
 			let nsMatch = newWiki.namespaces.all.filter( ns => {
@@ -30,7 +30,7 @@ function slash_random(interaction, lang, wiki) {
 				nsMatch.map( ns => ns.name || lang.get('interaction.namespace') ).join(', ') || lang.get('interaction.namespace')
 			];
 		}
-		return interaction.deferReply( {ephemeral} ).then( () => {
+		return interaction.deferReply( {flags} ).then( () => {
 			return wiki_random(lang, interaction, newWiki, undefined, spoiler, noEmbed, namespaces).then( result => {
 				if ( !result || isMessage(result) ) return result;
 				let noEmoji = !interaction.appPermissions?.has(PermissionFlagsBits.UseExternalEmojis);
@@ -40,14 +40,14 @@ function slash_random(interaction, lang, wiki) {
 						return result.message.slice(1).reduce( (prev, content) => {
 							return prev.then( message => {
 								list.push(message);
-								return interaction.followUp( {content, ephemeral} ).then( msg => {
+								return interaction.followUp( {content, flags} ).then( msg => {
 									if ( !msg.flags.has(MessageFlags.Ephemeral) ) allowDelete(msg, interaction.user.id);
 									return msg;
 								}, log_error );
 							} );
 						}, sendMessage(interaction, {
 							content: result.message[0],
-							ephemeral
+							flags
 						}) ).then( message => {
 							list.push(message);
 							return list;
@@ -74,7 +74,7 @@ function slash_random(interaction, lang, wiki) {
 	}, () => {
 		return interaction.reply( {
 			content: lang.uselang(interaction.locale).get('interaction.interwiki'),
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	} );
 }

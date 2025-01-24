@@ -11,12 +11,12 @@ import wiki_overview from '../cmds/wiki/overview.js';
  */
 function slash_overview(interaction, lang, wiki) {
 	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
-		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
-		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
+		var flags = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId) ? MessageFlags.Ephemeral : undefined;
+		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) flags = MessageFlags.Ephemeral;
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 		var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
-		if ( ephemeral ) lang = lang.uselang(interaction.locale);
-		return interaction.deferReply( {ephemeral} ).then( () => {
+		if ( flags ) lang = lang.uselang(interaction.locale);
+		return interaction.deferReply( {flags} ).then( () => {
 			return wiki_overview(lang, interaction, newWiki, spoiler, noEmbed).then( result => {
 				if ( !result || isMessage(result) ) return result;
 				let noEmoji = !interaction.appPermissions?.has(PermissionFlagsBits.UseExternalEmojis);
@@ -26,14 +26,14 @@ function slash_overview(interaction, lang, wiki) {
 						return result.message.slice(1).reduce( (prev, content) => {
 							return prev.then( message => {
 								list.push(message);
-								return interaction.followUp( {content, ephemeral} ).then( msg => {
+								return interaction.followUp( {content, flags} ).then( msg => {
 									if ( !msg.flags.has(MessageFlags.Ephemeral) ) allowDelete(msg, interaction.user.id);
 									return msg;
 								}, log_error );
 							} );
 						}, sendMessage(interaction, {
 							content: result.message[0],
-							ephemeral
+							flags
 						}) ).then( message => {
 							list.push(message);
 							return list;
@@ -60,7 +60,7 @@ function slash_overview(interaction, lang, wiki) {
 	}, () => {
 		return interaction.reply( {
 			content: lang.uselang(interaction.locale).get('interaction.interwiki'),
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	} );
 }

@@ -1,4 +1,4 @@
-import { PermissionFlagsBits } from 'discord.js';
+import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import logging from '../util/logging.js';
 import Wiki from '../util/wiki.js';
 import { got, limitLength, partialURIdecode, sendMessage } from '../util/functions.js';
@@ -14,7 +14,7 @@ function slash_inline(interaction, lang, wiki) {
 	var text = interaction.options.getString('text') || '';
 	text = text.replaceAll( '\x1F', '' ).replace( /(?<!@)\u200b/g, '' ).trim();
 	if ( !text.includes( '{{' ) && !( text.includes( '[[' ) && text.includes( ']]' ) ) && !text.includes( 'PMID' ) && !text.includes( 'RFC' ) && !text.includes( 'ISBN' ) ) {
-		return interaction.reply( {content: lang.uselang(interaction.locale).get('interaction.inline'), ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: lang.uselang(interaction.locale).get('interaction.inline'), flags: MessageFlags.Ephemeral} ).catch(log_error);
 	}
 	/** @type {import('discord.js').MessageMentionOptions} */
 	var allowedMentions = {
@@ -267,7 +267,7 @@ function slash_inline(interaction, lang, wiki) {
 	}, log_error ), () => {
 		return interaction.reply( {
 			content: lang.uselang(interaction.locale).get('interaction.interwiki'),
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	} );
 }

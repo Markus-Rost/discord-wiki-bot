@@ -16,14 +16,14 @@ function slash_wiki(interaction, lang, wiki) {
 	var title = interaction.options.getString('title') ?? '';
 	var query = new URLSearchParams(interaction.options.getString('query') ?? '');
 	var fragment = ( interaction.options.getString('section') ?? '' ).replace( /^\s*#+\s*/, '' );
-	var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
-	if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( wiki.href ) ) ephemeral = true;
+	var flags = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId) ? MessageFlags.Ephemeral : undefined;
+	if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( wiki.href ) ) flags = MessageFlags.Ephemeral;
 	var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 	var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
 	sectionCache.delete(wiki.toLink(title));
 	let cmd = `</${interaction.commandName}:${interaction.commandId}> ` + ( interaction.commandName === 'interwiki' ? `wiki:${wiki.host}${wiki.pathname.slice(0, -1)} ` : '' ) + 'title:';
-	if ( ephemeral ) lang = lang.uselang(interaction.locale);
-	return interaction.deferReply( {ephemeral} ).then( () => {
+	if ( flags ) lang = lang.uselang(interaction.locale);
+	return interaction.deferReply( {flags} ).then( () => {
 		return ( phabricatorSites.has(wiki.hostname)
 		? phabricator(lang, interaction, wiki, new URL('/' + title, wiki), spoiler, noEmbed)
 		: check_wiki(lang, interaction, title, wiki, cmd, undefined, spoiler, noEmbed, query, fragment)
@@ -36,14 +36,14 @@ function slash_wiki(interaction, lang, wiki) {
 					return result.message.slice(1).reduce( (prev, content) => {
 						return prev.then( message => {
 							list.push(message);
-							return interaction.followUp( {content, ephemeral} ).then( msg => {
+							return interaction.followUp( {content, flags} ).then( msg => {
 								if ( !msg.flags.has(MessageFlags.Ephemeral) ) allowDelete(msg, interaction.user.id);
 								return msg;
 							}, log_error );
 						} );
 					}, sendMessage(interaction, {
 						content: result.message[0],
-						ephemeral
+						flags
 					}) ).then( message => {
 						list.push(message);
 						return list;

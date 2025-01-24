@@ -1,5 +1,5 @@
 import { load as cheerioLoad } from 'cheerio';
-import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ButtonStyle } from 'discord.js';
+import { MessageFlags, EmbedBuilder, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ButtonStyle } from 'discord.js';
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import Lang from '../util/i18n.js';
@@ -1022,20 +1022,20 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 						users: [member.id],
 						repliedUser: true
 					},
-					ephemeral: ( (verifynotice.flags & 1 << 0) === 1 << 0 )
+					flags: ( (verifynotice.flags & 1 << 0) === 1 << 0 ? MessageFlags.Ephemeral : undefined )
 				}
 				if ( settings.interaction ) return settings.interaction.editReply( message ).then( msg => {
 					if ( settings.interaction.isButton() && settings.interaction.customId === 'verify_again' ) settings.interaction.followUp( {
 						content: message.content,
 						embeds: message.embeds,
 						components: [],
-						ephemeral: true
+						flags: MessageFlags.Ephemeral
 					} ).catch(log_error);
-					if ( message.ephemeral ) return;
+					if ( message.flags ) return;
 					return msg;
 				}, error => {
 					log_error(error);
-					if ( message.ephemeral ) {
+					if ( message.flags ) {
 						let dmEmbeds = [];
 						if ( message.embeds[0] ) {
 							dmEmbeds.push(EmbedBuilder.from(message.embeds[0]));
@@ -1061,7 +1061,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 					}
 					return channel.send( message ).catch(log_error);
 				} );
-				if ( message.ephemeral ) {
+				if ( message.flags ) {
 					let dmEmbeds = [];
 					if ( message.embeds[0] ) {
 						dmEmbeds.push(EmbedBuilder.from(message.embeds[0]));

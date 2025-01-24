@@ -14,16 +14,16 @@ function slash_user(interaction, lang, wiki) {
 	if ( !username ) {
 		return interaction.reply( {
 			content: lang.uselang(interaction.locale).get('interaction.user'),
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	}
 	return interwiki_interaction.FUNCTIONS.getWiki(interaction.options.getString('wiki'), wiki).then( newWiki => {
-		var ephemeral = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId);
-		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) ephemeral = true;
+		var flags = ( interaction.options.getBoolean('private') ?? false ) || pausedGuilds.has(interaction.guildId) ? MessageFlags.Ephemeral : undefined;
+		if ( interaction.wikiWhitelist.length && !interaction.wikiWhitelist.includes( newWiki.href ) ) flags = MessageFlags.Ephemeral;
 		var noEmbed = interaction.options.getBoolean('noembed') || !canShowEmbed(interaction);
 		var spoiler = interaction.options.getBoolean('spoiler') ? '||' : '';
-		if ( ephemeral ) lang = lang.uselang(interaction.locale);
-		return interaction.deferReply( {ephemeral} ).then( () => {
+		if ( flags ) lang = lang.uselang(interaction.locale);
+		return interaction.deferReply( {flags} ).then( () => {
 			var isIP = /^(?:(?:\d{1,3}\.){3}\d{1,3}(?:\/\d{2})?|(?:[\dA-F]{1,4}:){7}[\dA-F]{1,4}(?:\/\d{2,3})?)$/.test(username);
 			if ( username.includes( '/' ) && !isIP ) username = username.split('/')[0];
 			var uselang = ( interaction.inCachedGuild() ? lang.lang : 'content' );
@@ -73,14 +73,14 @@ function slash_user(interaction, lang, wiki) {
 						return result.message.slice(1).reduce( (prev, content) => {
 							return prev.then( message => {
 								list.push(message);
-								return interaction.followUp( {content, ephemeral} ).then( msg => {
+								return interaction.followUp( {content, flags} ).then( msg => {
 									if ( !msg.flags.has(MessageFlags.Ephemeral) ) allowDelete(msg, interaction.user.id);
 									return msg;
 								}, log_error );
 							} );
 						}, sendMessage(interaction, {
 							content: result.message[0],
-							ephemeral
+							flags
 						}) ).then( message => {
 							list.push(message);
 							return list;
@@ -107,7 +107,7 @@ function slash_user(interaction, lang, wiki) {
 	}, () => {
 		return interaction.reply( {
 			content: lang.uselang(interaction.locale).get('interaction.interwiki'),
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	} );
 }

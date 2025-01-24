@@ -1,3 +1,4 @@
+import { MessageFlags } from 'discord.js';
 import { wikiProjects, inputToWikiProject, idStringToUrl, inputToFrontendProxy } from 'mediawiki-projects-list';
 import { defaultSettings } from '../util/defaults.js';
 import db from '../util/database.js';
@@ -56,7 +57,7 @@ function slash_interwiki(interaction, lang, wiki) {
 	}, () => {
 		return interaction.reply( {
 			content: lang.uselang(interaction.locale).get('interaction.interwiki'),
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	} );
 }

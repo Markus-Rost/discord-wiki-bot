@@ -275,7 +275,10 @@ function interactionCreate(interaction) {
 	}, dberror => {
 		console.log( '- Interaction: Error while getting the wiki: ' + dberror );
 		if ( interaction.isAutocomplete() ) return;
-		return interaction.reply( {content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite, ephemeral: true} ).catch(log_error);
+		return interaction.reply( {
+			content: new Lang(( interaction.locale || interaction.guildLocale ), 'general').get('database') + '\n' + process.env.invite,
+			flags: Discord.MessageFlags.Ephemeral
+		} ).catch(log_error);
 	} );
 }
 

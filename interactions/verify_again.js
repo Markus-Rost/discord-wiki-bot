@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
+import { MessageFlags, ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionFlagsBits } from 'discord.js';
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
@@ -18,7 +18,7 @@ function button_verify(interaction, lang, wiki) {
 	}
 	var userLang = lang.uselang(interaction.locale);
 	if ( !interaction.message.mentions.users.has(interaction.user.id) ) {
-		return interaction.reply( {content: userLang.get('verify.button_wrong_user', interaction.message.mentions.users.first().toString()), ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: userLang.get('verify.button_wrong_user', interaction.message.mentions.users.first().toString()), flags: MessageFlags.Ephemeral} ).catch(log_error);
 	}
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
 		if ( !rows.length || !interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) return interaction.update( {components: []} ).catch(log_error);
@@ -102,7 +102,7 @@ function button_verify(interaction, lang, wiki) {
 							components: [new ActionRowBuilder().addComponents(
 								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
-							ephemeral: true
+							flags: MessageFlags.Ephemeral
 						} ).catch(log_error);
 					} );
 				}, log_error );
@@ -179,7 +179,7 @@ function button_verify(interaction, lang, wiki) {
 							components: [new ActionRowBuilder().addComponents(
 								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
-							ephemeral: true
+							flags: MessageFlags.Ephemeral
 						} ).catch(log_error);
 					} );
 				}
@@ -213,7 +213,7 @@ function button_verify(interaction, lang, wiki) {
 					content: message.content,
 					embeds: message.embeds,
 					components: [],
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				} ).catch(log_error);
 			}, error => {
 				console.log( '- Error during the verifications: ' + error );
@@ -222,7 +222,7 @@ function button_verify(interaction, lang, wiki) {
 		}, log_error);
 	}, dberror => {
 		console.log( '- Error while getting the verifications: ' + dberror );
-		return interaction.reply( {content: userLang.get('verify.error_reply'), ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: userLang.get('verify.error_reply'), flags: MessageFlags.Ephemeral} ).catch(log_error);
 	} );
 }
 

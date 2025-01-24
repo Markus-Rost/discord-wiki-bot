@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder, PermissionFlagsBits, ButtonStyle, TextInputStyle } from 'discord.js';
+import { MessageFlags, ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder, PermissionFlagsBits, ButtonStyle, TextInputStyle } from 'discord.js';
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import user_interaction from './user.js';
@@ -15,17 +15,17 @@ import { got, oauthVerify, sendMessage } from '../util/functions.js';
 function interaction_verify(interaction, lang, wiki) {
 	var loggingLang = lang;
 	var userLang = lang.uselang(interaction.locale);
-	if ( !interaction.guild ) return interaction.reply( {content: userLang.get('verify.missing'), ephemeral: true} ).catch(log_error);
+	if ( !interaction.guild ) return interaction.reply( {content: userLang.get('verify.missing'), flags: MessageFlags.Ephemeral} ).catch(log_error);
 	if ( !interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles) ) {
 		console.log( interaction.guildId + ': Missing permissions - ManageRoles' );
-		return interaction.reply( {content: userLang.get('general.missingperm') + ' `ManageRoles`', ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: userLang.get('general.missingperm') + ' `ManageRoles`', flags: MessageFlags.Ephemeral} ).catch(log_error);
 	}
 	
 	return db.query( 'SELECT logchannel, flags, onsuccess, onmatch, role, editcount, postcount, usergroup, accountage, rename FROM verification LEFT JOIN verifynotice ON verification.guild = verifynotice.guild WHERE verification.guild = $1 AND channel LIKE $2 ORDER BY configid ASC', [interaction.guildId, '%|' + ( interaction.channel?.isThread() ? interaction.channel.parentId : interaction.channelId ) + '|%'] ).then( ({rows}) => {
-		if ( !rows.length ) return interaction.reply( {content: userLang.get('verify.missing') + ( interaction.memberPermissions.has(PermissionFlagsBits.ManageGuild) && process.env.dashboard ? '\n' + new URL(`/guild/${interaction.guildId}/verification`, process.env.dashboard).href : '' ), ephemeral: true} ).catch(log_error);
+		if ( !rows.length ) return interaction.reply( {content: userLang.get('verify.missing') + ( interaction.memberPermissions.has(PermissionFlagsBits.ManageGuild) && process.env.dashboard ? '\n' + new URL(`/guild/${interaction.guildId}/verification`, process.env.dashboard).href : '' ), flags: MessageFlags.Ephemeral} ).catch(log_error);
 
-		let isEphemeral = ( (rows[0].flags & 1 << 0) === 1 << 0 );
-		if ( isEphemeral ) lang = userLang;
+		let flags = ( (rows[0].flags & 1 << 0) === 1 << 0 ? MessageFlags.Ephemeral : undefined );
+		if ( flags ) lang = userLang;
 
 		if ( wiki.hasOAuth2() && process.env.dashboard ) {
 			let oauth = [wiki.hostname + wiki.pathname.slice(0, -1)];
@@ -38,7 +38,7 @@ function interaction_verify(interaction, lang, wiki) {
 				if ( project ) oauth.push(project.wikiProject.name);
 			}
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
-				return interaction.deferReply( {ephemeral: isEphemeral} ).then( () => {
+				return interaction.deferReply( {flags} ).then( () => {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {
 						if ( row?.token ) return got.post( wiki + 'rest.php/oauth2/access_token', {
 							form: {
@@ -102,7 +102,7 @@ function interaction_verify(interaction, lang, wiki) {
 							components: [new ActionRowBuilder().addComponents(
 								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
-							ephemeral: true
+							flags: MessageFlags.Ephemeral
 						};
 						if ( (rows[0].flags & 1 << 0) === 1 << 0 ) return sendMessage(interaction, message);
 						return interaction.deleteReply().then( () => {
@@ -144,13 +144,13 @@ function interaction_verify(interaction, lang, wiki) {
 		}
 		
 		if ( !username.trim() ) {
-			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), ephemeral: true} ).catch(log_error);
+			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), flags: MessageFlags.Ephemeral} ).catch(log_error);
 			return interaction.showModal( new ModalBuilder().setCustomId('verify').setTitle(userLang.get('verify.title')).addComponents(new ActionRowBuilder().addComponents(
 				new TextInputBuilder().setCustomId('username').setLabel(userLang.get('verify.username')).setPlaceholder(userLang.get('verify.placeholder')).setStyle(TextInputStyle.Short).setRequired().setMinLength(1).setMaxLength(500)
 			)) ).catch(log_error);
 		}
 
-		return interaction.deferReply( {ephemeral: isEphemeral} ).then( () => {
+		return interaction.deferReply( {flags} ).then( () => {
 			return verify(lang, loggingLang, interaction.channel, interaction.member, username, wiki, rows).then( result => {
 				if ( result.oauth.length ) {
 					return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [interaction.user.id, ( result.oauth[1] || result.oauth[0] )] ).then( ({rows: [row]}) => {
@@ -216,7 +216,7 @@ function interaction_verify(interaction, lang, wiki) {
 							components: [new ActionRowBuilder().addComponents(
 								new ButtonBuilder().setLabel(userLang.get('verify.oauth_button')).setEmoji(WB_EMOJI.link).setStyle(ButtonStyle.Link).setURL(oauthURL)
 							)],
-							ephemeral: true
+							flags: MessageFlags.Ephemeral
 						}
 						if ( result.send_private ) return sendMessage(interaction, message);
 						return interaction.deleteReply().then( () => {
@@ -259,7 +259,7 @@ function interaction_verify(interaction, lang, wiki) {
 		}, log_error );
 	}, dberror => {
 		console.log( '- Error while getting the verifications: ' + dberror );
-		return interaction.reply( {content: userLang.get('verify.error_reply'), ephemeral: true} ).catch(log_error);
+		return interaction.reply( {content: userLang.get('verify.error_reply'), flags: MessageFlags.Ephemeral} ).catch(log_error);
 	} );
 }
 

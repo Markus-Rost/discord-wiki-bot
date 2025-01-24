@@ -1,4 +1,4 @@
-import { ShardClientUtil, OAuth2Scopes, ChannelType } from 'discord.js';
+import { ShardClientUtil, OAuth2Scopes, ChannelType, MessageFlags } from 'discord.js';
 import { botLimits, defaultPermissions } from '../util/defaults.js';
 import db from '../util/database.js';
 
@@ -21,7 +21,7 @@ function slash_patreon(interaction, lang, wiki) {
 	if ( subcommand === 'check' ) return db.query( 'SELECT count, ARRAY_REMOVE(ARRAY_AGG(guild), NULL) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [interaction.user.id] ).then( ({rows:[row]}) => {
 		if ( !row ) return interaction.reply( {
 			content: 'You can\'t have any servers.',//lang.uselang(interaction.locale).get('interaction.interwiki'),
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 		var text = 'You can have up to ' + row.count + ' servers.\n\n';
 		if ( row.guilds.length ) {
@@ -33,31 +33,32 @@ function slash_patreon(interaction, lang, wiki) {
 				if ( row.count < guilds.length ) text += '\n\n**You are above your server limit!**';
 				return interaction.reply( {
 					content: text,
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				} ).catch(log_error);
 			} );
 		}
 		text += '*You don\'t have any servers yet.*';
 		return interaction.reply( {
 			content: text,
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	}, dberror => {
 		console.log( '- Error while getting the patreon: ' + dberror );
 		return interaction.reply( {
-			ephemeral: true
+			content: 'Error, please try again!',
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 	} );
 	
 	if ( process.env.READONLY ) return interaction.reply( {
 		content: lang.uselang(interaction.locale).get('general.readonly') + '\n' + process.env.invite,
-		ephemeral: true
+		flags: MessageFlags.Ephemeral
 	} ).catch(log_error);
 
 	var guildId = interaction.options.getString('guild') ?? '';
 	if ( !/^\d{17,20}$/.test(guildId) ) return interaction.reply( {
 		content: 'Please provide a valid guild id.',
-		ephemeral: true
+		flags: MessageFlags.Ephemeral
 	} ).catch(log_error);
 	
 	if ( subcommand === 'enable' ) return interaction.client.shard.broadcastEval( (discordClient, evalData) => {
@@ -78,21 +79,21 @@ function slash_patreon(interaction, lang, wiki) {
 			});
 			return interaction.reply( {
 				content: 'I\'m not on a server with the id `' + guildId + '`.\n<' + invite + '>',
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} ).catch(log_error);
 		}
 		if ( patreonGuildsPrefix.has(guildId) ) return interaction.reply( {
 			content: '"' + guild + '" has the patreon features already enabled.',
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 		return db.query( 'SELECT count, COUNT(guild) guilds FROM patreons LEFT JOIN discord ON discord.patreon = patreons.patreon WHERE patreons.patreon = $1 GROUP BY patreons.patreon', [interaction.user.id] ).then( ({rows:[row]}) => {
 			if ( !row ) return interaction.reply( {
 				content: 'You can\'t have any servers.',
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} ).catch(log_error);
 			if ( row.count <= row.guilds ) return interaction.reply( {
 				content: 'You already reached your maximal server count.',
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} ).catch(log_error);
 			return db.query( 'UPDATE discord SET patreon = $1 WHERE guild = $2 AND channel IS NULL', [interaction.user.id, guildId] ).then( ({rowCount}) => {
 				if ( !rowCount ) return db.query( 'INSERT INTO discord(main, guild, patreon) VALUES ($1, $1, $2)', [guildId, interaction.user.id] ).then( () => {
@@ -102,13 +103,13 @@ function slash_patreon(interaction, lang, wiki) {
 					}, {context: {guild: guildId, prefix: process.env.prefix}} );
 					return interaction.reply( {
 						content: 'The patreon features are now enabled on "' + guild + '".',
-						ephemeral: true
+						flags: MessageFlags.Ephemeral
 					} ).catch(log_error);
 				}, dberror => {
 					console.log( '- Error while adding the guild: ' + dberror );
 					return interaction.reply( {
 						content: 'I got an error while updating the server, please try again later.',
-						ephemeral: true
+						flags: MessageFlags.Ephemeral
 					} ).catch(log_error);
 				} );
 				console.log( '- Guild successfully updated.' );
@@ -117,20 +118,20 @@ function slash_patreon(interaction, lang, wiki) {
 				}, {context: {guild: guildId, prefix: process.env.prefix}} );
 				return interaction.reply( {
 					content: 'The patreon features are now enabled on "' + guild + '".',
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				} ).catch(log_error);
 			}, dberror => {
 				console.log( '- Error while updating the guild: ' + dberror );
 				return interaction.reply( {
 					content: 'I got an error while updating the server, please try again later.',
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				} ).catch(log_error);
 			} );
 		}, dberror => {
 			console.log( '- Error while getting the patreon: ' + dberror );
 			return interaction.reply( {
 				content: 'I got an error while searching for you, please try again later.',
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} ).catch(log_error);
 		} );
 	} );
@@ -143,17 +144,17 @@ function slash_patreon(interaction, lang, wiki) {
 	} ).then( guild => {
 		if ( !guild ) return interaction.reply( {
 			content: 'I\'m not on a server with the id `' + guildId + '`.',
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 		if ( !patreonGuildsPrefix.has(guildId) ) return interaction.reply( {
 			content: '"' + guild + '" doesn\'t have the patreon features enabled.',
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} ).catch(log_error);
 		return db.connect().then( client => {
 			return client.query( 'SELECT lang, role, inline, desclength, fieldcount, fieldlength, sectionlength, sectiondesclength FROM discord WHERE guild = $1 AND patreon = $2', [guildId, interaction.user.id] ).then( ({rows:[row]}) => {
 				if ( !row ) return interaction.reply( {
 					content: 'You didn\'t enable the patreon features for "' + guild + '"!',
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				} ).catch(log_error);
 				return client.query( 'UPDATE discord SET lang = $1, role = $2, inline = $3, desclength = $4, fieldcount = $5, fieldlength = $6, sectionlength = $7, sectiondesclength = $8, prefix = $9, patreon = NULL WHERE guild = $10', [row.lang, row.role, row.inline, row.desclength, row.fieldcount, row.fieldlength, row.sectionlength, row.sectiondesclength, process.env.prefix, guildId] ).then( () => {
 					console.log( '- Guild successfully updated.' );
@@ -236,7 +237,7 @@ function slash_patreon(interaction, lang, wiki) {
 					]).then( () => {
 						return interaction.reply( {
 							content: 'The patreon features are now disabled on "' + guild + '".',
-							ephemeral: true
+							flags: MessageFlags.Ephemeral
 						} ).catch(log_error);
 					}, error => {
 						if ( error ) console.log( '- Error while removing the patreon features: ' + error );
@@ -248,14 +249,14 @@ function slash_patreon(interaction, lang, wiki) {
 					console.log( '- Error while updating the guild: ' + dberror );
 					return interaction.reply( {
 						content: 'I got an error while disabling the patreon features, please try again later.',
-						ephemeral: true
+						flags: MessageFlags.Ephemeral
 					} ).catch(log_error);
 				} );
 			}, dberror => {
 				console.log( '- Error while getting the guild: ' + dberror );
 				return interaction.reply( {
 					content: 'I got an error while searching for the server, please try again later.',
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				} ).catch(log_error);
 			} ).finally( () => {
 				client.release();
@@ -264,7 +265,7 @@ function slash_patreon(interaction, lang, wiki) {
 			console.log( '- Error while connecting to the database client: ' + dberror );
 			return interaction.reply( {
 				content: 'I got an error while searching for the server, please try again later.',
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} ).catch(log_error);
 		} );
 	} );
