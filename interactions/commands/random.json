@@ -97,8 +97,7 @@
 				"en-GB": "namespace",
 				"en-US": "namespace",
 				"ja": "namespace",
-				"fr": "namespace",
-				"uk": "простір імен"
+				"fr": "namespace"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {

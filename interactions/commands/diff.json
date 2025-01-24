@@ -239,8 +239,7 @@
 						"en-GB": "noembed",
 						"en-US": "noembed",
 						"fr": "noembed",
-						"vi": "noembed",
-						"uk": "без вбудовування"
+						"vi": "noembed"
 					},
 					"description": "Send only the link without embed?",
 					"description_localizations": {

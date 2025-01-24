@@ -137,8 +137,7 @@
 				"pt-BR": "sem_embed",
 				"en-GB": "noembed",
 				"en-US": "noembed",
-				"fr": "noembed",
-				"uk": "без вбудовування"
+				"fr": "noembed"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
