@@ -25,8 +25,8 @@
     "got": "^14.4.5",
     "got-ssrf": "^3.0.0",
     "htmlparser2": "^10.0.0",
-    "mediawiki-projects-list": "^4.7.4",
-    "npm": "^11.0.0",
+    "mediawiki-projects-list": "^4.8.0",
+    "npm": "^11.1.0",
     "pg": "^8.13.1"
   },
   "repository": {
