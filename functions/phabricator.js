@@ -20,6 +20,12 @@ export const phabricatorSites = new Map([
 		name: 'Telepedia Phabricator',
 		href: 'https://phabricator.telepedia.net/',
 		apikey: 'phabricator_telepedia'
+	}],
+	['phorge.wikioasis.org', {
+		id: 'wikioasis',
+		name: 'WikiOasis Phorge',
+		href: 'https://phorge.wikioasis.org/',
+		apikey: 'phabricator_wikioasis'
 	}]
 ]);
 

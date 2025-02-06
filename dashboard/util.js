@@ -68,6 +68,14 @@ if ( process.env['oauth_minecraft.wiki'] && process.env['oauth_minecraft.wiki_se
 		manage: 'https://minecraft.wiki/w/Special:OAuthManageMyGrants'
 	});
 }
+if ( process.env.oauth_wikioasis && process.env.oauth_wikioasis_secret ) {
+	enabledOAuth2.unshift({
+		id: 'wikioasis',
+		name: 'WikiOasis',
+		url: 'https://meta.wikioasis.org/',
+		manage: 'https://meta.wikioasis.org/wiki/Special:OAuthManageMyGrants'
+	});
+}
 if ( process.env.oauth_telepedia && process.env.oauth_telepedia_secret ) {
 	enabledOAuth2.unshift({
 		id: 'telepedia',
@@ -116,6 +124,7 @@ function canRcGcDwButtons(wiki) {
 	if ( wiki.wikifarm === 'wiki.gg' ) return true;
 	if ( wiki.wikifarm === 'miraheze' ) return true;
 	if ( wiki.wikifarm === 'telepedia' ) return true;
+	if ( wiki.wikifarm === 'wikioasis' ) return true;
 	if ( wiki.hostname.endsWith( '.minecraft.wiki' ) ) return true;
 	if ( wiki.href === 'https://minecraft.wiki/' ) return true;
 	if ( wiki.href === 'https://lakeus.xyz/' ) return true;

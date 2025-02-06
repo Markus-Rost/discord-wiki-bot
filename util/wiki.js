@@ -6,7 +6,8 @@ import { defaultSettings, defaultNamespaces } from './defaults.js';
 const globalUserPage = new Map([
 	['wikimedia', 'https://meta.wikimedia.org/w/'],
 	['miraheze', 'https://login.miraheze.org/w/'],
-	['telepedia', 'https://meta.telepedia.net/']
+	['telepedia', 'https://meta.telepedia.net/'],
+	['wikioasis', 'https://meta.wikioasis.org/']
 ]);
 
 /** @type {String[]} - Sites that support verification using OAuth2. */
