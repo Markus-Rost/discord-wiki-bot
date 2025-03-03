@@ -231,7 +231,7 @@ export default function cmd_rcscript(lang, msg, args, line, wiki) {
 				if ( process.env.READONLY ) return msg.replyMsg( lang.get('general.readonly') + '\n' + process.env.invite, true );
 				return msg.client.fetchWebhook(...selected_row.webhook.split('/')).then( webhook => {
 					var channel = msg.guild.channels.cache.get(webhook.channelId);
-					if ( !channel || !channel.permissionsFor(msg.member).has(PermissionFlagsBits.ManageWebhooks) ) {
+					if ( !( channel?.permissionsFor(msg.member).has(PermissionFlagsBits.ManageWebhooks) || ( msg.isOwner() && msg.evalUsed ) ) ) {
 						return msg.replyMsg( lang.get('rcscript.noadmin') );
 					}
 					db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [selected_row.webhook] ).then( () => {

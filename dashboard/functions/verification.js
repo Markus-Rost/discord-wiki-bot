@@ -1258,7 +1258,7 @@ function send_button(res, userSettings, guild, type, settings) {
 				button_emoji: settings.button_emoji,
 				button_id: 'verify',
 				deleteWebhook: true
-			} ).then( ({message}) => {
+			} ).then( ({message} = {}) => {
 				if ( !message ) return res(`/guild/${guild}/verification/${type}`, 'sendfail');
 				console.log( `- Dashboard: Verify button message successfully created: ${guild}` );
 				res(`/guild/${guild}/verification/${type}`, 'send');
