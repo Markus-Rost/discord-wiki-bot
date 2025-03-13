@@ -37,6 +37,7 @@ const infoboxList = [
 	'.side-infobox',
 	'.info-framework',
 	'.iteminfobox',
+	'.infobox-root',
 	'.druid-container',
 	'.settingsummary',
 	'table[class*="infobox"]'
@@ -366,6 +367,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					'div.infobox-rows:not(.subinfobox) > div.infobox-row',
 					'.va-infobox-cont tr',
 					'.va-infobox-cont th.va-infobox-header',
+					'div.infobox-header',
+					'div.infobox-row-container',
 					'div.info-unit > div.info-unit-caption',
 					'div.info-unit-row',
 					'> tbody > tr > td > table > tbody > tr',
@@ -376,8 +379,18 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 				for ( let i = 0; i < rows.length; i++ ) {
 					if ( ( embed.data.fields?.length ?? 0 ) >= fieldCount || embed.length > ( 5_870 - fieldLength ) ) break;
 					let row = rows.eq(i);
-					if ( row.is('th.mainheader, th.infobox-header, th.druid-section, th.va-infobox-header, div.title, h2.pi-header, div.info-unit-caption') ) {
+					if ( row.is([
+						'th.mainheader',
+						'th.infobox-header',
+						'th.druid-section',
+						'th.va-infobox-header',
+						'div.title',
+						'h2.pi-header',
+						'div.infobox-header',
+						'div.info-unit-caption'
+					].join(', ')) ) {
 						row.find(removeClasses.join(', ')).remove();
+						row.find('a:empty, code:empty, b:empty, strong:empty, i:empty, em:empty, s:empty, del:empty, u:empty, ins:empty').remove();
 						let label = htmlToDiscord(row, embed.data.url).trim();
 						if ( label.length > 100 ) label = limitLength(label, 100, 20);
 						if ( label ) {
@@ -391,10 +404,32 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							else embed.addFields( {name: '\u200b', value: label} );
 						}
 					}
-					else if ( row.is('tr, div.pi-data, div.druid-grid-item, div.infobox-row, div.info-unit-row, span.icon-tooltip') ) {
-						let label = row.children(( tdLabel ? 'td, ' : '' ) + 'th, h3.pi-data-label, div.druid-label, div.infobox-cell-header, div.info-arkitex-left.info-X2-40').eq(0);
+					else if ( row.is([
+						'tr',
+						'div.pi-data',
+						'div.druid-grid-item',
+						'div.infobox-row',
+						'div.info-unit-row',
+						'div.infobox-row-container',
+						'span.icon-tooltip'
+					].join(', ')) ) {
+						let label = row.children([
+							( tdLabel ? 'td, ' : '' ) + 'th',
+							'h3.pi-data-label',
+							'div.druid-label',
+							'div.infobox-cell-header',
+							'div.infobox-row-label',
+							'div.info-arkitex-left.info-X2-40'
+						].join(', ')).eq(0);
 						label.find(removeClasses.join(', ')).remove();
-						let value = row.children('td, div.pi-data-value, div.druid-data, div.infobox-cell-data, div.info-arkitex-right.info-X2-60').eq(( label.is('td') ? 1 : 0 ));
+						let value = row.children([
+							'td',
+							'div.pi-data-value',
+							'div.druid-data',
+							'div.infobox-cell-data',
+							'div.infobox-row-value',
+							'div.info-arkitex-right.info-X2-60'
+						].join(', ')).eq(( label.is('td') ? 1 : 0 ));
 						value.find(removeClasses.join(', ')).remove();
 						if ( value.is('td') && !value.html()?.trim() ) {
 							value = row.children('td').eq(( label.is('td') ? 1 : 0 ) + 1);
@@ -408,6 +443,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						}
 						if ( !label.is('td') && label.html()?.trim() && value.html()?.trim() ) tdLabel = false;
 						label = htmlToPlain(label).trim().split('\n')[0];
+						value.find('a:empty, code:empty, b:empty, strong:empty, i:empty, em:empty, s:empty, del:empty, u:empty, ins:empty').remove();
 						value = htmlToDiscord(value, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 						if ( label.length > 100 ) label = label.substring(0, 100) + '\u2026';
 						if ( value.length > fieldLength ) value = limitLength(value, fieldLength, 20);
@@ -571,6 +607,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						} ).filter( img => img )));
 						sectionContent.find(infoboxList.join(', ')).remove();
 						sectionContent.find('div, ' + removeClasses.join(', ')).not(removeClassesExceptions.join(', ')).remove();
+						section.find('a:empty, code:empty, b:empty, strong:empty, i:empty, em:empty, s:empty, del:empty, u:empty, ins:empty').remove();
+						sectionContent.find('a:empty, code:empty, b:empty, strong:empty, i:empty, em:empty, s:empty, del:empty, u:empty, ins:empty').remove();
 						var name = htmlToDiscord(section, embed.data.url).trim().replace( /\n+/g, ' ' );
 						if ( !name.length ) name = '### ' + escapeFormatting(fragment);
 						var value = htmlToDiscord(sectionContent, embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
@@ -603,6 +641,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						$('h1, h2, h3, h4, h5, h6, div.mw-heading').nextAll().remove();
 						$('h1, h2, h3, h4, h5, h6, div.mw-heading').remove();
 					}
+					$('a:empty, code:empty, b:empty, strong:empty, i:empty, em:empty, s:empty, del:empty, u:empty, ins:empty').remove();
 					var description = htmlToDiscord($.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( !description && backupDescription ) description = htmlToDiscord(backupDescription.html(), embed.data.url).trim().replace( /\n{3,}/g, '\n\n' );
 					if ( description ) {

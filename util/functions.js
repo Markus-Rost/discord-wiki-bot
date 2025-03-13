@@ -299,9 +299,9 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				}
 			}
 			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
-			if ( tagname === 'i' ) text += '*';
-			if ( tagname === 's' ) text += '~~';
-			if ( tagname === 'u' ) text += '__';
+			if ( tagname === 'i' || tagname === 'em' ) text += '*';
+			if ( tagname === 's' || tagname === 'del' ) text += '~~';
+			if ( tagname === 'u' || tagname === 'ins' ) text += '__';
 			if ( tagname === 'br' ) {
 				text += '\n';
 				if ( listlevel > -1 ) text += '\u200b '.repeat(4 * listlevel + 3);
@@ -426,9 +426,9 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			}
 			if ( syntaxhighlight && tagname === 'div' ) syntaxhighlight = '';
 			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
-			if ( tagname === 'i' ) text += '*';
-			if ( tagname === 's' ) text += '~~';
-			if ( tagname === 'u' ) text += '__';
+			if ( tagname === 'i' || tagname === 'em' ) text += '*';
+			if ( tagname === 's' || tagname === 'del' ) text += '~~';
+			if ( tagname === 'u' || tagname === 'ins' ) text += '__';
 			if ( tagname === 'dl' && horizontalList ) text = text.replace( /: $/, '' );
 			if ( tagname === 'ul' || tagname === 'ol' || tagname === 'dl' ) {
 				listlevel--;
