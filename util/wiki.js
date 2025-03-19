@@ -184,7 +184,7 @@ export default class Wiki extends URL {
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
 		if ( !this.wikifarm ) {
-			if ( /^(?:https?:)?\/\/static\.miraheze\.org\//.test(logo) ) this.wikifarm ??= 'miraheze';
+			if ( /^(?:https?:)?\/\/static\.(?:miraheze\.org|wikitide\.net)\//.test(logo) ) this.wikifarm ??= 'miraheze';
 		}
 		if ( namespaces && namespacealiases ) namespaces.forEach( namespace => {
 			/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
