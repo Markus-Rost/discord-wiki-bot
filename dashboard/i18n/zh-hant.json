@@ -136,6 +136,10 @@
 			"text": "無法重新整理您的伺服器清單，請再試一次。",
 			"title": "重新整理失敗！"
 		},
+		"refreshforced": {
+			"text": "設定無法儲存，因為您的伺服器清單已逾期。請立即重試。",
+			"title": "伺服器清單逾期，重新整理成功！"
+		},
 		"save": {
 			"text": "已成功更新設定。",
 			"title": "已儲存設定！"
@@ -222,6 +226,8 @@
 		"new": "新webhook"
 	},
 	"selector": {
+		"desc": "這裡是所有您擁有[管理伺服器]($1)權限的伺服器清單。在[向您的使用者帳號新增 Wiki-Bot]($3)之後，您也可以為沒有 Wiki-Bot 的伺服器[變更您的使用者設定]($2)。請選取一個伺服器：",
+		"none": "您登入的帳號似乎不正確。您目前並未擁有任何伺服器的[管理伺服器]($1)權限，且 Wiki-Bot 也已加入了您其他的所有伺服器。不過在[向您的使用者帳號新增 Wiki-Bot]($3)之後，您仍可以[變更您的使用者設定]($2)，以在您的所有私訊中使用 Wiki-Bot。",
 		"switch": "切換帳號",
 		"title": "選擇伺服器",
 		"user": "wiki帳號",
@@ -251,14 +257,20 @@
 			"select_channel": "-- 選擇頻道 --",
 			"select_subprefix": "設定一個指定的 wiki →",
 			"subprefix": "子指令 wiki 前綴：",
+			"user": "使用者設定",
 			"whitelist": "允許的wiki：",
 			"whitelist_enabled": "只允許指定的wiki：",
 			"whitelist_note": "每行一個",
 			"whitelist_placeholder": "允許wiki的清單",
 			"wiki": "預設wiki：",
-			"wiki_check": "檢查wiki"
+			"wiki_check": "檢查wiki",
+			"wikilist": "偏好的 wiki：",
+			"wikilist_placeholder": "偏好的 wiki 清單"
 		},
-		"new": "新的頻道覆寫設定"
+		"invite": "Wiki-Bot 尚未加入$1，但您可以[邀請 Wiki-Bot]($2)。或者在[向您的使用者帳號新增 Wiki-Bot]($3)之後，您也可以定義使用者設定。",
+		"new": "新的頻道覆寫設定",
+		"user": "Wiki-Bot 尚未加入$1，但在[向您的使用者帳號新增 Wiki-Bot]($2)之後，您可以定義使用者設定。",
+		"userdesc": "在[向您的使用者帳號新增 Wiki-Bot]($1)之後，您可以定義使用者設定，在您所有的伺服器和私訊中使用 Wiki-Bot。"
 	},
 	"verification": {
 		"button": "驗證按鈕",
@@ -317,7 +329,7 @@
 			"webhook_name": "作者名稱："
 		},
 		"help_button": "<p>驗證按鈕功能與<b>用私訊回覆指令</b>、<b>日誌記錄頻道</b>選項搭配使用更佳。</p>\n<p>以上搭配功能是<a href=\"/guild/$1/verification/notice$2\">驗證提示</a>的一部分，可以在那裡啟用。</p>",
-		"help_notice": "<p>自訂提示也支援一些簡單的函數與變數。</p>\n<ul>\n<li><code class=\"form-button user-select\">$mention</code> – The Discord mention of the user.</li>\n<li><code class=\"form-button user-select\">$username</code> – The wiki username of the user.</li>\n<li><code class=\"form-button user-select\">$editcount</code> – 使用者目前的編輯次數。</li>\n<li><code class=\"form-button user-select\">$accountage</code> – 以天為單位的使用者目前的註冊時長。</li>\n<li><code class=\"form-button user-select\">$postcount</code> – 使用者目前的討論板貼文數（僅限Fandom wiki）。</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – 返回表達式的運算結果。\n<ul>\n<li>僅支援加法<code class=\"form-button user-select\">+</code>與減法<code class=\"form-button user-select\">-</code>。</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>為真時顯示的字串</i> | <i>為假時顯示的字串</i> }}</code> – 根據表達式的運算結果返回不同的文字。\n<ul>\n<li>支援<code class=\"form-button user-select\">&lt;</code>、<code class=\"form-button user-select\">&gt;</code>、<code class=\"form-button user-select\">=</code>、<code class=\"form-button user-select\">&lt;=</code>、<code class=\"form-button user-select\">&gt;=</code>、<code class=\"form-button user-select\">!=</code>、<code class=\"form-button user-select\">&lt;&gt;</code>以及<code class=\"form-button user-select\">and</code>、<code class=\"form-button user-select\">or</code>。</li>\n</ul></li>\n</ul>",
+		"help_notice": "<p>自訂提示也支援一些簡單的函數與變數。</p>\n<ul>\n<li><code class=\"form-button user-select\">$mention</code> – 使用者的 Discord 提及（即Ping）。</li>\n<li><code class=\"form-button user-select\">$username</code> – 使用者的 wiki 使用者名稱。</li>\n<li><code class=\"form-button user-select\">$editcount</code> – 使用者目前的編輯次數。</li>\n<li><code class=\"form-button user-select\">$accountage</code> – 以天為單位的使用者目前的註冊時長。</li>\n<li><code class=\"form-button user-select\">$postcount</code> – 使用者目前的討論板貼文數（僅限Fandom wiki）。</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – 返回表達式的運算結果。\n<ul>\n<li>僅支援加法<code class=\"form-button user-select\">+</code>與減法<code class=\"form-button user-select\">-</code>。</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" |  |  }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>為真時顯示的字串</i> | <i>為假時顯示的字串</i> }}</code> – 根據表達式的運算結果返回不同的文字。\n<ul>\n<li>支援<code class=\"form-button user-select\">&lt;</code>、<code class=\"form-button user-select\">&gt;</code>、<code class=\"form-button user-select\">=</code>、<code class=\"form-button user-select\">&lt;=</code>、<code class=\"form-button user-select\">&gt;=</code>、<code class=\"form-button user-select\">!=</code>、<code class=\"form-button user-select\">&lt;&gt;</code>以及<code class=\"form-button user-select\">and</code>、<code class=\"form-button user-select\">or</code>。</li>\n</ul></li>\n</ul>",
 		"new": "新的驗證方式",
 		"notice": "驗證提示"
 	}
