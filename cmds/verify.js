@@ -37,6 +37,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			else if ( wiki.wikifarm === 'telepedia' ) oauth.push('telepedia');
 			else if ( wiki.wikifarm === 'wikioasis' ) oauth.push('wikioasis');
+			else if ( wiki.wikifarm === 'undertale' ) oauth.push('undertale');
 			else {
 				let project = inputToWikiProject(wiki.href)
 				if ( project ) oauth.push(project.wikiProject.name);

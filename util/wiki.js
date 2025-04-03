@@ -157,13 +157,13 @@ export default class Wiki extends URL {
 	 * @param {String} siteinfo.articlepath - Articlepath of the wiki.
 	 * @param {String} siteinfo.mainpage - Main page of the wiki.
 	 * @param {String} siteinfo.centralidlookupprovider - Central auth of the wiki.
-	 * @param {String} siteinfo.logo - Logo of the wiki.
+	 * @param {String} [siteinfo.miraheze] - If the wiki is a Miraheze wiki.
 	 * @param {String} [siteinfo.gamepedia] - If the wiki is a Gamepedia wiki.
 	 * @param {{id: Number, canonical: String, content?: "", '*': String}[]} [namespaces] - Namespaces from the wiki API.
 	 * @param {{id: Number, '*': String}[]} [namespacealiases] - Namespace aliases from the wiki API.
 	 * @returns {Wiki}
 	 */
-	updateWiki({server, servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, logo, gamepedia = 'false'}, namespaces, namespacealiases) {
+	updateWiki({server, servername, scriptpath, articlepath, mainpage, mainpageisdomainroot, centralidlookupprovider, miraheze, gamepedia = 'false'}, namespaces, namespacealiases) {
 		try {
 			this.hostname = new URL(server, this).hostname;
 		}
@@ -183,9 +183,7 @@ export default class Wiki extends URL {
 			this.wikifarm = project.wikiProject.wikiFarm;
 			this.oauth2 ||= project.wikiProject.extensions.includes('OAuth');
 		}
-		if ( !this.wikifarm ) {
-			if ( /^(?:https?:)?\/\/static\.(?:miraheze\.org|wikitide\.net)\//.test(logo) ) this.wikifarm ??= 'miraheze';
-		}
+		if ( miraheze !== undefined ) this.wikifarm = 'miraheze';
 		if ( namespaces && namespacealiases ) namespaces.forEach( namespace => {
 			/** @type {{id: Number, name: String, aliases: String[], content: Boolean}} */
 			let ns = {

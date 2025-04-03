@@ -60,6 +60,14 @@ const enabledOAuth2 = [
 		};
 	} )
 ];
+if ( process.env['oauth_undertale'] && process.env['oauth_undertale_secret'] ) {
+	enabledOAuth2.unshift({
+		id: 'undertale',
+		name: 'Undertale Wiki & Deltarune Wiki',
+		url: 'https://undertale.wiki/',
+		manage: 'https://undertale.wiki/w/Special:OAuthManageMyGrants'
+	});
+}
 if ( process.env['oauth_minecraft.wiki'] && process.env['oauth_minecraft.wiki_secret'] ) {
 	enabledOAuth2.unshift({
 		id: 'minecraft.wiki',

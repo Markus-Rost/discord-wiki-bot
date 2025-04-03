@@ -67,7 +67,7 @@ const restrictions = {
 	fandom: ['discussion'],
 	minecraft: ['minecraftHelp', 'command', 'bug'],
 	admin: ['settings', 'verification', 'rcscript', 'pause'],
-	inline: ['inline.link', 'inline.template'],
+	inline: ['slash.inline', 'inline.link', 'inline.template'],
 	slash: ['slash.wiki', 'slash.interwiki', 'slash.random', 'slash.user', 'slash.overview', 'slash.diff.page', 'slash.diff.ids.relative', 'slash.diff.ids.multiple', 'slash.inline', 'slash.verify'],
 	patreon: ['settings.prefix'],
 	experimental: []
