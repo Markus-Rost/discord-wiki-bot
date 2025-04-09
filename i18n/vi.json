@@ -351,16 +351,27 @@
 					"desc": "Tôi sẽ xóa kênh xác thực wiki bạn chọn."
 				},
 				"editcount": {
+					"cmd": "verification <id> editcount <giá trị mới>",
 					"desc": "Tôi sẽ thay đổi yêu cầu số sửa đổi tối thiểu để xác thực tài khoản tại wiki."
 				},
 				"postcount": {
+					"cmd": "verification <id> postcount <giá trị mới>",
 					"desc": "Tôi sẽ thay đổi số bài viết tối thiểu yêu cầu để xác thực tài khoản wiki.\n\t• Nhập số âm để xác định dựa trên tổng số sửa đổi hoặc tổng số bài viết.\n\t• Nhập `null` để xác minh dựa trên tổng của cả số sửa đổi và số bài viết."
 				},
 				"rename": {
 					"desc": "Sẽ quyết định nếu tôi nên đổi nickname Discord của họ thành tên người dùng wiki của họ sau khi xác thực thành công."
+				},
+				"role": {
+					"cmd": "verification <id> role <chuỗi danh sách vai trò mới>",
+					"desc": "Tôi sẽ thay đổi vai trò xác minh wiki. Chấp nhận danh sách được phân cách bằng dấu `|`."
+				},
+				"usergroup": {
+					"cmd": "verification <id> usergroup <nhóm người dùng mới>",
+					"desc": "Tôi sẽ thay đổi nhóm người dùng để xác minh wiki. Chấp nhận danh sách được phân tách bằng `|`. \n\t• Cung cấp `AND` làm mục nhập danh sách đầu tiên để bắt buộc tất cả các nhóm người dùng được cung cấp."
 				}
 			},
 			"verify": {
+				"cmd": "verify <tên người dùng wiki>",
 				"desc": "Sử dụng lệnh này để xác thực tài khoản Discord tương ứng với tài khoản của bạn, đồng thời cung cấp vai trò tương ứng với tài khoản wiki của họ."
 			}
 		},
@@ -369,16 +380,103 @@
 	},
 	"interaction": {
 		"error": "Một sự cố không mong muốn xảy ra trong khi thực thi lệnh!",
+		"inline": "Vui lòng thêm văn bản gồm liên kết [[wikitext]] để sử dụng lệnh này.",
 		"interwiki": "Hãy cung cấp một wiki đã biết để tìm kiếm.",
 		"namespace": "(Chính)",
 		"notitle": "Tựa trang bạn vừa nhập không tồn tại!",
 		"nowiki": "Wiki vừa nhập không tồn tại!",
 		"random": "(Toàn bộ không gian tên nội dung)",
-		"user": "Hãy nhập một tên người dùng hoặc địa chỉ IP hợp lệ."
+		"user": "Hãy nhập một tên người dùng hoặc địa chỉ IP hợp lệ.",
+		"verify": "Vui lòng cung cấp tên người dùng wiki của bạn để sử dụng lệnh này để xác minh tài khoản Discord với tài khoản wiki của bạn và nhận vai trò phù hợp với tài khoản wiki của bạn."
 	},
 	"invite": {
 		"bot": "Dùng liên kết này để mời tôi vào máy chủ khác:",
 		"directory": "Hoặc truy cập trang Thư Mục App của tôi:"
+	},
+	"minecraft": {
+		"fixed": "Đã sửa {{PLURAL:$1|Phiên bản|Phiên bản}}:",
+		"issue_link": {
+			"Blocks": {
+				"inward": "đã bị chặn bởi $1",
+				"outward": "chặn $1"
+			}
+		}
+	},
+	"overview": {
+		"admins": "Bảo quản viên:",
+		"articles": "Bài viết:",
+		"comments": "Bình luận bài viết:",
+		"created": "Đã tạo vào:",
+		"crossover": "Hợp nhất với:",
+		"description": "Mô tả:",
+		"directedatchildren": "Hướng về đối tượng thiếu nhi:",
+		"edits": "Sửa đổi:",
+		"founder": "Người sáng lập:",
+		"gamepedia": "Gamepedia:",
+		"image": "Hình ảnh:",
+		"inaccurate": "Số liệu có thể không chuẩn xác",
+		"lang": "Ngôn ngữ:",
+		"license": "Giấy phép:",
+		"manager": "Đại diện wiki:",
+		"misermode": "Chế độ giảm cập nhật:",
+		"no": "Không",
+		"none": "*không có*",
+		"official": "Wiki chính thức:",
+		"pages": "Tổng số bài viết:",
+		"posts": "Bài thảo luận:",
+		"readonly": "Wiki này hiện trong chế độ chỉ đọc!",
+		"rtl": "Chế độ đọc từ Phải sang trái:",
+		"talk": "thảo luận",
+		"topic": "Chủ đề:",
+		"unknown": "*không rõ*",
+		"users": "Người dùng tích cực:",
+		"version": "Phiên bản:",
+		"vertical": "Chế độ đọc Dọc:",
+		"walls": "Bài trên Tường tin nhắn:",
+		"wikiid": "Wiki ID:",
+		"yes": "Có"
+	},
+	"pause": {
+		"off": "Tôi đã hoạt động trở lại và sẽ phản hồi mọi lệnh!",
+		"on": "Tôi sẽ ngừng hoạt động và bỏ qua đa số các câu lệnh!"
+	},
+	"phabricator": {
+		"comment": "Bình luận:",
+		"priority": "Ưu tiên:",
+		"status": "Trạng thái:",
+		"subtype": "Thể loại con:",
+		"tags": "Thẻ:"
+	},
+	"rcscript": {
+		"ad": "Bạn muốn nhận thông báo thay đổi gần đây trực tiếp trong Discord? Sử dụng `$1rcscript` để thêm webhook thay đổi gần đây dựa trên **$2** vào máy chủ Discord của bạn!",
+		"add_more": "Thêm webhook thay đổi gần đây:",
+		"buttons": "Nút hành động:",
+		"channel": "Kênh:",
+		"disabled": "đã vô hiệu",
+		"enabled": "đã kích hoạt",
+		"lang": "Ngôn ngữ:",
+		"new_lang": "<ngôn ngữ mới>",
+		"new_wiki": "<liên kết tới wiki>",
+		"toggle": "(thiết lập)",
+		"wiki": "Wiki:"
+	},
+	"search": {
+		"cached": "Câp nhật bộ nhớ đệm lần cuối:",
+		"category": {
+			"content": "Nội dung thể loại:",
+			"empty": "*Thể loại này trống*",
+			"files": "$1 {{PLURAL:$2|tập tin}}",
+			"pages": "$1 {{PLURAL:$2|bài viết}}"
+		},
+		"messagedefault": "Mặc định:",
+		"messagedefaultnone": "*không*"
+	},
+	"settings": {
+		"button": "Truy cập trang Thiết lập",
+		"currentlang": "Ngôn ngữ:",
+		"currentprefix": "Tiền tố:",
+		"currentrole": "Vai trò tối thiểu:",
+		"currentwiki": "Wiki mặc định:"
 	},
 	"test": {
 		"text": [
