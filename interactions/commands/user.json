@@ -25,7 +25,8 @@
 		"ja": "user",
 		"el": "χρήστης",
 		"fr": "user",
-		"pt-BR": "usuario"
+		"pt-BR": "usuario",
+		"vi": "nguoidung"
 	},
 	"description": "Post information about a wiki user.",
 	"description_localizations": {
@@ -40,7 +41,8 @@
 		"ja": "Wikiユーザーに関する情報を投稿する。",
 		"el": "Πληροφορίες δημοσίευσης για έναν χρήστη του wiki.",
 		"fr": "Publier des informations sur un utilisateur de wiki.",
-		"pt-BR": "Postar informações sobre um usuário da wiki."
+		"pt-BR": "Postar informações sobre um usuário da wiki.",
+		"vi": "Gửi thông tin về một người dùng wiki."
 	},
 	"options": [
 		{
@@ -58,7 +60,8 @@
 				"ja": "username",
 				"el": "όνομα_χρήστη",
 				"fr": "username",
-				"pt-BR": "nomedousuario"
+				"pt-BR": "nomedousuario",
+				"vi": "tennguoidung"
 			},
 			"description": "The user to show information of.",
 			"description_localizations": {
@@ -73,7 +76,8 @@
 				"ja": "この情報を表示するユーザー。",
 				"el": "Ο χρήστης του οποίου οι πληροφορίες θα εμφανιστούν.",
 				"fr": "L'utilisateur pour lequel des informations doivent être affichées.",
-				"pt-BR": "O usuário do qual mostrar informações."
+				"pt-BR": "O usuário do qual mostrar informações.",
+				"vi": "Người dùng mà bạn cần xem thông tin."
 			},
 			"required": true,
 			"autocomplete": true
@@ -94,7 +98,8 @@
 				"en-GB": "wiki",
 				"en-US": "wiki",
 				"ja": "wiki",
-				"fr": "wiki"
+				"fr": "wiki",
+				"vi": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -110,7 +115,8 @@
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
 				"ja": "検索対象となるWiki。",
-				"fr": "Le wiki dans lequel effectuer la recherche."
+				"fr": "Le wiki dans lequel effectuer la recherche.",
+				"vi": "Wiki bạn cần tìm kiếm."
 			},
 			"required": false,
 			"autocomplete": true
@@ -131,7 +137,8 @@
 				"pt-BR": "privado",
 				"en-GB": "private",
 				"en-US": "private",
-				"fr": "private"
+				"fr": "private",
+				"vi": "riengtu"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -147,7 +154,8 @@
 				"pt-BR": "Enviar uma resposta visível apenas para você?",
 				"en-GB": "Send a response only visible to yourself?",
 				"en-US": "Send a response only visible to yourself?",
-				"fr": "Envoyer une réponse uniquement visible par vous-même ?"
+				"fr": "Envoyer une réponse uniquement visible par vous-même ?",
+				"vi": "Gửi phản hồi chỉ xem được bởi bạn?"
 			},
 			"required": false
 		},
@@ -167,7 +175,8 @@
 				"pt-BR": "noembed",
 				"en-GB": "noembed",
 				"en-US": "noembed",
-				"fr": "noembed"
+				"fr": "noembed",
+				"vi": "khongnhung"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -183,7 +192,8 @@
 				"pt-BR": "Enviar apenas o link sem incorporar?",
 				"en-GB": "Send only the link without embed?",
 				"en-US": "Send only the link without embed?",
-				"fr": "Envoyer uniquement le lien sans inclusion ?"
+				"fr": "Envoyer uniquement le lien sans inclusion ?",
+				"vi": "Chỉ gửi liên kết mà không nhúng?"
 			},
 			"required": false
 		},
@@ -203,7 +213,8 @@
 				"pt-BR": "spoiler",
 				"en-GB": "spoiler",
 				"en-US": "spoiler",
-				"fr": "spoiler"
+				"fr": "spoiler",
+				"vi": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -219,7 +230,8 @@
 				"pt-BR": "Ocultar o link e incorporar em um spoiler?",
 				"en-GB": "Hide the link and embed in a spoiler?",
 				"en-US": "Hide the link and embed in a spoiler?",
-				"fr": "Cacher le lien et l'inclure dans un spoiler ?"
+				"fr": "Cacher le lien et l'inclure dans un spoiler ?",
+				"vi": "Ẩn liên kết bằng cách dùng mã ẩn nội dung?"
 			},
 			"required": false
 		}

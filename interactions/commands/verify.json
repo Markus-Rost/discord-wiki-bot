@@ -26,7 +26,8 @@
 		"pt-BR": "verificar",
 		"ja": "verify",
 		"el": "επιβεβαίωση",
-		"fr": "verify"
+		"fr": "verify",
+		"vi": "xacnhan"
 	},
 	"description": "Verify your Discord account with your wiki account.",
 	"description_localizations": {
@@ -45,7 +46,8 @@
 		"pt-BR": "Verifique a sua conta do Discord na sua conta da wiki.",
 		"ja": "DiscordのアカウントとWikiのアカウントを連携してください。",
 		"el": "Επιβεβαίωση του λογαριασμού Discord με τον λογαριασμό wiki.",
-		"fr": "Vérifiez votre compte Discord avec votre compte wiki."
+		"fr": "Vérifiez votre compte Discord avec votre compte wiki.",
+		"vi": "Liên kết tài khoản Discord của bạn với tài khoản wiki của bạn."
 	},
 	"options": [
 		{
@@ -67,7 +69,8 @@
 				"pt-BR": "nomedeusuario",
 				"ja": "username",
 				"el": "username",
-				"fr": "username"
+				"fr": "username",
+				"vi": "tennguoidung"
 			},
 			"description": "Your username on the wiki.",
 			"description_localizations": {
@@ -86,7 +89,8 @@
 				"pt-BR": "Seu nome de usuário na wiki.",
 				"ja": "Wiki上でのユーザー名。",
 				"el": "Το όνομα χρήστη σας στο wiki.",
-				"fr": "Votre nom d'utilisateur sur le wiki."
+				"fr": "Votre nom d'utilisateur sur le wiki.",
+				"vi": "Tên người dùng wiki của bạn."
 			},
 			"required": false,
 			"autocomplete": true

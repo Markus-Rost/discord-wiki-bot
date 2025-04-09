@@ -25,7 +25,8 @@
 		"en-GB": "patreon",
 		"en-US": "patreon",
 		"fr": "patreon",
-		"uk": "патрон"
+		"uk": "патрон",
+		"vi": "patreon"
 	},
 	"description": "Check or change your servers with patreon features enabled.",
 	"description_localizations": {
@@ -40,7 +41,8 @@
 		"pt-BR": "Consulte ou modifique seus servidores que possuem ferramentas do Patreon ativadas.",
 		"en-GB": "Check or change your servers with patreon features enabled.",
 		"en-US": "Check or change your servers with patreon features enabled.",
-		"fr": "Vérifiez ou modifiez vos serveurs avec les fonctionnalités patreon activées."
+		"fr": "Vérifiez ou modifiez vos serveurs avec les fonctionnalités patreon activées.",
+		"vi": "Kiểm tra hoặc thay đổi máy chủ kích hoạt tính năng dành cho Patreon."
 	},
 	"options": [
 		{
@@ -59,7 +61,8 @@
 				"en-GB": "check",
 				"en-US": "check",
 				"fr": "check",
-				"uk": "перевірка"
+				"uk": "перевірка",
+				"vi": "kiemtra"
 			},
 			"description": "Check your current list of servers with patreon features enabled.",
 			"description_localizations": {
@@ -74,7 +77,8 @@
 				"pt-BR": "Consulte a lista dos seus servidores que possuem ferramentas do Patreon ativadas.",
 				"en-GB": "Check your current list of servers with patreon features enabled.",
 				"en-US": "Check your current list of servers with patreon features enabled.",
-				"fr": "Vérifiez votre liste actuelle de serveurs dont les fonctionnalités patreon sont activées."
+				"fr": "Vérifiez votre liste actuelle de serveurs dont les fonctionnalités patreon sont activées.",
+				"vi": "Kiểm tra danh sách máy chủ hiện tại của bạn có bật tính năng Patreon."
 			},
 			"options": []
 		},
@@ -94,7 +98,8 @@
 				"en-GB": "enable",
 				"en-US": "enable",
 				"fr": "enable",
-				"uk": "увімкнути"
+				"uk": "увімкнути",
+				"vi": "bat"
 			},
 			"description": "Enable the patreon features for a server.",
 			"description_localizations": {
@@ -109,7 +114,8 @@
 				"pt-BR": "Ativar as ferramentas do Patreon para um servidor.",
 				"en-GB": "Enable the patreon features for a server.",
 				"en-US": "Enable the patreon features for a server.",
-				"fr": "Activer les fonctionnalités Patreon pour un serveur."
+				"fr": "Activer les fonctionnalités Patreon pour un serveur.",
+				"vi": "Bật tính năng Patreon cho một máy chủ cụ thể."
 			},
 			"options": [
 				{
@@ -128,7 +134,8 @@
 						"en-GB": "guild",
 						"en-US": "guild",
 						"fr": "guild",
-						"uk": "гільдія"
+						"uk": "гільдія",
+						"vi": "maychu"
 					},
 					"description": "The server to enable patreon features for.",
 					"description_localizations": {
@@ -143,7 +150,8 @@
 						"pt-BR": "O servidor que deve receber as ferramentas do Patreon.",
 						"en-GB": "The server to enable patreon features for.",
 						"en-US": "The server to enable patreon features for.",
-						"fr": "Le serveur pour lequel les fonctionnalités de patreon sont activées."
+						"fr": "Le serveur pour lequel les fonctionnalités de patreon sont activées.",
+						"vi": "Máy chủ cần kích hoạt tính năng Patreon."
 					},
 					"min_length": 17,
 					"max_length": 20,
@@ -168,7 +176,8 @@
 				"en-GB": "disable",
 				"en-US": "disable",
 				"fr": "disable",
-				"uk": "вимкнути"
+				"uk": "вимкнути",
+				"vi": "tat"
 			},
 			"description": "Disable the patreon features for a server.",
 			"description_localizations": {
@@ -183,7 +192,8 @@
 				"pt-BR": "Desativar as ferramentas do Patreon para um servidor.",
 				"en-GB": "Disable the patreon features for a server.",
 				"en-US": "Disable the patreon features for a server.",
-				"fr": "Désactiver les fonctionnalités patreon pour un serveur."
+				"fr": "Désactiver les fonctionnalités patreon pour un serveur.",
+				"vi": "Vô hiệu tính năng Patreon cho một máy chủ."
 			},
 			"options": [
 				{
@@ -202,7 +212,8 @@
 						"en-GB": "guild",
 						"en-US": "guild",
 						"fr": "guild",
-						"uk": "гільдія"
+						"uk": "гільдія",
+						"vi": "maychu"
 					},
 					"description": "The server to disable patreon features for.",
 					"description_localizations": {
@@ -217,7 +228,8 @@
 						"pt-BR": "O servidor que deve ter as ferramentas do Patreon desativadas.",
 						"en-GB": "The server to disable patreon features for.",
 						"en-US": "The server to disable patreon features for.",
-						"fr": "Le serveur pour lequel les fonctionnalités de patreon sont désactivées."
+						"fr": "Le serveur pour lequel les fonctionnalités de patreon sont désactivées.",
+						"vi": "Máy chủ cần vô hiệu tính năng Patreon."
 					},
 					"min_length": 17,
 					"max_length": 20,

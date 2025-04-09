@@ -29,7 +29,8 @@
 		"pt-BR": "inline",
 		"ja": "inline",
 		"el": "inline",
-		"fr": "inline"
+		"fr": "inline",
+		"vi": "noituyen"
 	},
 	"description": "Post a message with inline wiki links.",
 	"description_localizations": {
@@ -48,7 +49,8 @@
 		"pt-BR": "Poste uma mensagem com links da wiki embutidos na linha.",
 		"ja": "埋め込み形式のWikiリンクを含むメッセージを投稿する。",
 		"el": "Δημοσίευση ενός μηνύματος με συνδέσμους wiki εντός κειμένου.",
-		"fr": "Publiez un message avec des liens wiki intégrés."
+		"fr": "Publiez un message avec des liens wiki intégrés.",
+		"vi": "Gửi tin nhắn có liên kết wiki nội tuyến."
 	},
 	"options": [
 		{
@@ -70,7 +72,8 @@
 				"pt-BR": "texto",
 				"ja": "text",
 				"el": "κείμενο",
-				"fr": "text"
+				"fr": "text",
+				"vi": "noidung"
 			},
 			"description": "Text including wikitext links.",
 			"description_localizations": {
@@ -89,7 +92,8 @@
 				"pt-BR": "Texto incluindo links no estilo wikitexto.",
 				"ja": "wikitextのリンクを含むテキスト。",
 				"el": "Κείμενο που περιέχει συνδέσμους wikitext.",
-				"fr": "Texte incluant des liens wikitexte."
+				"fr": "Texte incluant des liens wikitexte.",
+				"vi": "Nội dung tin nhắn bao gồm liên kết wikitext."
 			},
 			"required": true
 		},
@@ -110,7 +114,8 @@
 				"en-US": "wiki",
 				"ja": "wiki",
 				"fr": "wiki",
-				"sv-SE": "wiki"
+				"sv-SE": "wiki",
+				"vi": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -127,7 +132,8 @@
 				"en-US": "The wiki to search in.",
 				"ja": "検索対象となるWiki。",
 				"fr": "Le wiki dans lequel effectuer la recherche.",
-				"sv-SE": "Wikin att söka i."
+				"sv-SE": "Wikin att söka i.",
+				"vi": "Wiki bạn cần tìm kiếm."
 			},
 			"required": false,
 			"autocomplete": true

@@ -26,7 +26,8 @@
 		"en-US": "random",
 		"ja": "random",
 		"fr": "random",
-		"uk": "випадково"
+		"uk": "випадково",
+		"vi": "ngaunhien"
 	},
 	"description": "Post a random wiki link.",
 	"description_localizations": {
@@ -41,7 +42,8 @@
 		"en-GB": "Post a random wiki link.",
 		"en-US": "Post a random wiki link.",
 		"ja": "ランダムなWikiのリンクを貼ります。",
-		"fr": "Postez un lien de wiki au hasard."
+		"fr": "Postez un lien de wiki au hasard.",
+		"vi": "Gửi liên kết tới trang ngẫu nhiên trong wiki."
 	},
 	"options": [
 		{
@@ -61,7 +63,8 @@
 				"en-US": "wiki",
 				"ja": "wiki",
 				"fr": "wiki",
-				"uk": "вікі"
+				"uk": "вікі",
+				"vi": "wiki"
 			},
 			"description": "The wiki to search in.",
 			"description_localizations": {
@@ -77,7 +80,8 @@
 				"en-GB": "The wiki to search in.",
 				"en-US": "The wiki to search in.",
 				"ja": "検索対象となるWiki。",
-				"fr": "Le wiki dans lequel effectuer la recherche."
+				"fr": "Le wiki dans lequel effectuer la recherche.",
+				"vi": "Wiki bạn cần tìm kiếm."
 			},
 			"required": false,
 			"autocomplete": true
@@ -97,7 +101,8 @@
 				"en-GB": "namespace",
 				"en-US": "namespace",
 				"ja": "namespace",
-				"fr": "namespace"
+				"fr": "namespace",
+				"vi": "kogianten"
 			},
 			"description": "The namespaces to search in.",
 			"description_localizations": {
@@ -112,7 +117,8 @@
 				"en-GB": "The namespaces to search in.",
 				"en-US": "The namespaces to search in.",
 				"ja": "検索対象となる名前空間。",
-				"fr": "L'espace de noms dans lequel la recherche doit être effectuée."
+				"fr": "L'espace de noms dans lequel la recherche doit être effectuée.",
+				"vi": "Không gian tên để tìm kiếm."
 			},
 			"required": false,
 			"autocomplete": true
@@ -134,7 +140,8 @@
 				"en-GB": "private",
 				"en-US": "private",
 				"fr": "private",
-				"uk": "приватне"
+				"uk": "приватне",
+				"vi": "riengtu"
 			},
 			"description": "Send a response only visible to yourself?",
 			"description_localizations": {
@@ -150,7 +157,8 @@
 				"pt-BR": "Deseja que a resposta seja privada?",
 				"en-GB": "Send a response only visible to yourself?",
 				"en-US": "Send a response only visible to yourself?",
-				"fr": "Envoyer une réponse uniquement visible par vous-même ?"
+				"fr": "Envoyer une réponse uniquement visible par vous-même ?",
+				"vi": "Gửi phản hồi chỉ xem được bởi bạn?"
 			},
 			"required": false
 		},
@@ -170,7 +178,8 @@
 				"pt-BR": "sem_embed",
 				"en-GB": "noembed",
 				"en-US": "noembed",
-				"fr": "noembed"
+				"fr": "noembed",
+				"vi": "khongnhung"
 			},
 			"description": "Send only the link without embed?",
 			"description_localizations": {
@@ -186,7 +195,8 @@
 				"pt-BR": "Enviar o link sem a pré-visualização?",
 				"en-GB": "Send only the link without embed?",
 				"en-US": "Send only the link without embed?",
-				"fr": "Envoyer uniquement le lien sans inclusion ?"
+				"fr": "Envoyer uniquement le lien sans inclusion ?",
+				"vi": "Chỉ gửi liên kết mà không nhúng?"
 			},
 			"required": false
 		},
@@ -206,7 +216,8 @@
 				"pt-BR": "spoiler",
 				"en-GB": "spoiler",
 				"en-US": "spoiler",
-				"fr": "spoiler"
+				"fr": "spoiler",
+				"vi": "spoiler"
 			},
 			"description": "Hide the link and embed in a spoiler?",
 			"description_localizations": {
@@ -222,7 +233,8 @@
 				"pt-BR": "Ocultar o link como spoiler?",
 				"en-GB": "Hide the link and embed in a spoiler?",
 				"en-US": "Hide the link and embed in a spoiler?",
-				"fr": "Cacher le lien et l'inclure dans un spoiler ?"
+				"fr": "Cacher le lien et l'inclure dans un spoiler ?",
+				"vi": "Ẩn liên kết bằng cách dùng mã ẩn nội dung?"
 			},
 			"required": false
 		}
