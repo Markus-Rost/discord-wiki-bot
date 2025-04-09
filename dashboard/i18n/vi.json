@@ -19,7 +19,7 @@
 		"login": "Đăng nhập",
 		"logout": "Đăng xuất",
 		"rcscript": "Thay đổi Gần đây",
-		"refresh": "Cập nhật lại danh sách máy chủ",
+		"refresh": "Cập nhật lại dữ liệu máy chủ",
 		"save": "Lưu",
 		"selector": "Lựa chọn máy chủ",
 		"settings": "Cài đặt",
@@ -27,7 +27,9 @@
 		"theme-dark": "Dùng giao diện tối",
 		"theme-light": "Chuyển sang giao diện sáng",
 		"title": "Cài đặt Wiki-Bot",
-		"verification": "Xác thực"
+		"userinvite": "Thêm Wiki-Bot Cá nhân",
+		"verification": "Xác thực",
+		"welcome": "<h2>Chào mừng đến với Bảng điều khiển Wiki-Bot.</h2>\n<p>Wiki-Bot là một bot Discord được tạo ra để kết nối các máy chủ Discord và wiki MediaWiki lại với nhau. Nó giúp liên kết các trang wiki, xác minh người dùng wiki, thông báo về những thay đổi mới nhất trên wiki và nhiều hơn nữa. <a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Tìm hiểu thêm]</a></p>\n<p>Tại đây, bạn có thể thay đổi các thiết lập bot khác nhau cho các máy chủ mà bạn có quyền Quản lý máy chủ. Để bắt đầu, bạn sẽ phải xác thực tài khoản Discord của mình, bạn có thể thực hiện bằng các nút sau:</p>"
 	},
 	"indexjs": {
 		"avatar": {
@@ -41,6 +43,7 @@
 			"note_http": "Website bạn cung cấp không có chứng chỉ TLS/SSL hợp lệ! Vì lý do bảo mật, chỉ các wiki sử dụng giao thức HTTPS được hỗ trợ.",
 			"note_private": "Wiki bạn cung cấp là một trang riêng tư!",
 			"note_timeout": "Trang bạn cung cấp mất quá nhiều thời gian để phản hồi!",
+			"text": "URL không trỏ đến website MediaWiki hợp lệ!",
 			"title": "Wiki không hợp lệ!"
 		},
 		"outdated": {
@@ -94,6 +97,240 @@
 		"nochange": {
 			"text": "Các cài đặt khớp với cài đặt mặc định hiện tại.",
 			"title": "Lưu thất bại!"
+		},
+		"nosettings": {
+			"note": "Thay đổi cài đặt.",
+			"text": "Vui lòng đặt ra thiết lập cho máy chủ trước.",
+			"title": "Máy chủ chưa được thiết lập!"
+		},
+		"oauth": {
+			"text": "Tài khoản wiki của bạn đã được kết nối với Wiki-Bot.",
+			"title": "Tài khoản đã được kết nối thành công!"
+		},
+		"oauthfail": {
+			"text": "Tài khoản wiki của bạn không thể được kết nối, vui lòng thử lại.",
+			"title": "Kết nối thất bại!"
+		},
+		"oauthlogin": {
+			"text": "Hãy đăng nhập nếu bạn không muốn Wiki-Bot lưu tài khoản wiki của bạn.",
+			"title": "Tài khoản wiki liên kết của bạn đã được lưu!"
+		},
+		"oauthother": {
+			"note": "Chuyển tài khoản.",
+			"text": "Xin lưu ý rằng tài khoản wiki của bạn đã được kết nối với một tài khoản Discord khác với tài khoản mà bạn hiện đang đăng nhập.",
+			"title": "Tài khoản đã được kết nối thành công!"
+		},
+		"oauthverify": {
+			"text": "Tài khoản wiki của bạn đã được xác nhận thành công.",
+			"title": "Xác nhận tài khoản thành công!"
+		},
+		"readonly": {
+			"text": "Bạn có thể kiểm tra thiết lập, nhưng không thể thay đổi chúng.",
+			"title": "Cơ sở dữ liệu chỉ đọc!"
+		},
+		"refresh": {
+			"text": "Danh sách máy chủ của bạn đã được tải lại thành công.",
+			"title": "Tải lại thành công!"
+		},
+		"refreshfail": {
+			"text": "Danh sách máy chủ của bạn không thể được cập nhật, vui lòng thử lại.",
+			"title": "Tải lại thất bại!"
+		},
+		"refreshforced": {
+			"text": "Thiết lập không thể được lưu, do danh sách máy chủ đã lỗi thời. Xin vui lòng thử lại.",
+			"title": "Danh sách máy chủ đã lỗi thời, tải lại thành công!"
+		},
+		"save": {
+			"text": "Thiết lập đã được cập nhật thành công.",
+			"title": "Đã lưu thiết lập!"
+		},
+		"savefail": {
+			"note_http": "Trang web được cung cấp không có chứng chỉ TLS/SSL hợp lệ! Vì lý do bảo mật, chỉ những wiki sử dụng HTTPS mới được hỗ trợ.",
+			"note_private": "Wiki được cung cấp hiện đang riêng tư!",
+			"note_timeout": "Liên kết được cho mất quá nhiều thời gian để phản hồi!",
+			"text": "Thiết lập không thể được lưu, vui lòng thử lại.",
+			"title": "Lưu thất bại!"
+		},
+		"send": {
+			"text": "Tin nhắn đã được gửi thành công.",
+			"title": "Đã gửi tin!"
+		},
+		"sendfail": {
+			"note_embeds": "Đối tượng nhúng không hợp lệ, vui lòng cung cấp mảng JSON hợp lệ với các đối tượng nhúng Discord.",
+			"note_nothread": "Không tìm thấy chủ đề, vui lòng cung cấp một chủ đề đang hoạt động.",
+			"text": "Tin nhắn không thể được gửi, vui lòng thử lại.",
+			"title": "Gửi tin thất bại!"
+		},
+		"sysmessage": {
+			"text": "Nội dung trang $1 cần phải khớp với ID máy chủ $2.",
+			"title": "Nội dung trang không khớp!"
+		},
+		"unauthorized": {
+			"text": "Vui lòng đăng nhập trước khi bạn có thể thay đổi bất kì thiết lập nào.",
+			"title": "Chưa đăng nhập!"
+		},
+		"webhookfail": {
+			"note": "Dữ liệu webhook Discord không thể được thay đổi!",
+			"text": "Thiết lập đã chỉ được cập nhật một phần.",
+			"title": "Đã lưu một phần thiết lập!"
+		},
+		"wikiblocked": {
+			"note": "Lý do:",
+			"text": "$1 đã bị chặn không cho thêm vào như một webhook thay đổi gần đây.",
+			"title": "Wiki bị chặn!"
 		}
+	},
+	"oauth": {
+		"desc": "Sau đây là các thiết lập kết nối tài khoản wiki thông qua OAuth2:",
+		"failed": "Tải thiết lập OAuth2 thất bại!",
+		"form": {
+			"connect": "Kết nối tài khoản.",
+			"connected": "Đã kết nối",
+			"current": "Trạng thái hiện tại:",
+			"default": "Thiết lập tài khoản wiki",
+			"disable": "Đừng lưu tài khoản của tôi!",
+			"disabled": "Đã vô hiệu",
+			"disconnect": "Ngắt kết nối tài khoản.",
+			"enable": "Lưu tài khoản của tôi.",
+			"unconnected": "Chưa kết nối"
+		}
+	},
+	"rcscript": {
+		"desc": "Đây là những webhook thay đổi gần đây hiện có cho $1:",
+		"explanation": "<h2>Webhook thay đổi gần đây</h2>\n<p>Wiki-Bot có thể chạy webhook thay đổi gần đây dựa trên <a href=\"https://gitlab.com/piotrex43/RcGcDw\" target=\"_blank\">RcGcDw</a>. Những thay đổi gần đây có thể được hiển thị trong tin nhắn văn bản nhỏ gọn có liên kết nội tuyến hoặc nhúng tin nhắn có thẻ chỉnh sửa và thay đổi danh mục.</p>\n<p>Yêu cầu để thêm webhook thay đổi gần đây:</p>\n<ul>\n<li>Wiki cần chạy trên <a href=\"https://www.mediawiki.org/wiki/MediaWiki_1.30\" target=\"_blank\">MediaWiki 1.30</a> hoặc cao hơn.</li>\n<li>Thông báo hệ thống <code class=\"user-select\">MediaWiki:Custom-RcGcDw</code> cần được đặt thành ID máy chủ Discord <code class=\"user-select\" id=\"server-id\"></code>.</li>\n</ul>",
+		"form": {
+			"buttons": "Nút hành động:",
+			"buttons_block": "Cấm người dùng.",
+			"buttons_delete": "Xóa bài viết.",
+			"buttons_filerevert": "Lùi về phiên bản tập tin trước đó.",
+			"buttons_move": "Lùi lại việc di chuyển trang.",
+			"buttons_rollback": "Lùi thao tác sửa đổi trước đó trên trang bởi người dùng đó.",
+			"buttons_thank": "Cám ơn người dùng.",
+			"buttons_undo": "Lùi sửa đổi.",
+			"channel": "Kênh:",
+			"confirm": "Bạn có muốn xóa webhook thay đổi gần đây không?",
+			"display": "Kiểu hiển thị:",
+			"display_compact": "Nội dung ngắn gọn bằng văn bản và liên kết nội tuyến.",
+			"display_diff": "Nội dung nhúng với xem trước bằng hình ảnh và khác biệt sửa đổi.",
+			"display_embed": "Nội dung nhúng với thẻ sửa đổi và thay đổi thể loại.",
+			"display_image": "Nội dung nhúng với xem trước hình ảnh.",
+			"entry": "Webhook thay đổi gần đây #$1",
+			"feeds": "Thay đổi dựa trên nguồn cấp dữ liệu:",
+			"feeds_only": "Chỉ thay đổi dựa trên nguồn cấp dữ liệu:",
+			"lang": "Ngôn ngữ:",
+			"new": "Webhook TĐGĐ mới",
+			"select_channel": "-- Chọn kênh --",
+			"wiki": "Wiki:",
+			"wiki_check": "Kiểm tra"
+		},
+		"new": "Webhook mới"
+	},
+	"selector": {
+		"desc": "Đây là danh sách tất cả các máy chủ mà bạn có thể thay đổi cài đặt vì bạn có quyền [Quản lý máy chủ]($1). Bạn cũng có thể [thay đổi cài đặt người dùng]($2) cho các máy chủ không có Wiki-Bot, nếu bạn [thêm Wiki-Bot vào tài khoản người dùng của mình]($3). Vui lòng chọn máy chủ:",
+		"none": "Bạn đã đăng nhập vào đúng tài khoản chưa? Bạn không thể thay đổi cài đặt cho bất kỳ máy chủ nào vì bạn không có quyền [Quản lý máy chủ]($1) trên bất kỳ máy chủ nào và tất cả các máy chủ khác của bạn đã có Wiki-Bot là thành viên. Tuy nhiên, bạn vẫn có thể [thay đổi cài đặt người dùng]($2), nếu bạn [thêm Wiki-Bot vào tài khoản người dùng của mình]($3), để có thể sử dụng Wiki-Bot trong tất cả các DM của bạn.",
+		"switch": "Chuyển tài khoản",
+		"title": "Chọn máy chủ",
+		"user": "Tài khoản wiki",
+		"with": "Máy chủ có Wiki-Bot",
+		"without": "Các máy chủ còn lại"
+	},
+	"settings": {
+		"desc": "Đây là các thiết lập cho $1:",
+		"failed": "Tải thiết lập thất bại!",
+		"form": {
+			"channel": "Kênh:",
+			"confirm": "Bạn có muốn xóa ghi đè theo kênh không?",
+			"default": "Thiết lập toàn máy chủ",
+			"desclength": "Độ dài mô tả:",
+			"embedlimits": "Giới hạn kích cỡ nhúng:",
+			"fieldcount": "Số lượng dãy hộp thông tin được hiển thị:",
+			"fieldlength": "Độ dài nội dung dãy hộp thông tin:",
+			"inline": "Lệnh nội tuyến:",
+			"lang": "Ngôn ngữ:",
+			"new": "Tạo mới ghi đè theo kênh",
+			"overwrite": "Thiết lập kênh $1",
+			"prefix": "Tiền tố:",
+			"prefix_space": "Tiền tố kết thúc với dấu cách:",
+			"role": "Vai trò tối thiểu:",
+			"sectiondesclength": "Độ dài nội dung mô tả trước đề mục:",
+			"sectionlength": "Độ dài đề mục:",
+			"select_channel": "-- Chọn kênh --",
+			"select_subprefix": "Chọn wiki cụ thể →",
+			"subprefix": "Tiền tố lệnh con:",
+			"user": "Thiết lập người dùng",
+			"whitelist": "Wiki được cho phép:",
+			"whitelist_enabled": "Chỉ cho phép một số wiki cụ thể:",
+			"whitelist_note": "Một wiki mỗi dòng",
+			"whitelist_placeholder": "Danh sách wiki được phép",
+			"wiki": "Wiki mặc định:",
+			"wiki_check": "Kiểm tra",
+			"wikilist": "Wiki được ưu tiên:",
+			"wikilist_placeholder": "Danh sách wiki được ưu tiên"
+		},
+		"invite": "Wiki-Bot chưa phải là thành viên của $1, nhưng bạn có thể [mời Wiki-Bot]($2). Ngoài ra, bạn có thể xác định thiết lập người dùng, nếu bạn [thêm Wiki-Bot vào tài khoản người dùng của mình]($3).",
+		"new": "Tạo mới ghi đè theo kênh",
+		"user": "Wiki-Bot không phải là thành viên của $1, nhưng bạn có thể xác định thiết lập người dùng nếu bạn [thêm Wiki-Bot vào tài khoản người dùng của mình]($2).",
+		"userdesc": "Bạn có thể thiết lập người dùng và sử dụng Wiki-Bot ở tất cả máy chủ và DM, nếu bạn [thêm Wiki-Bot vào người dùng của bạn]($1)."
+	},
+	"verification": {
+		"button": "Nút xác nhận",
+		"desc": "Sau đây là các mục xác nhận cho $1:",
+		"explanation": "<h2>Xác minh người dùng</h2>\n<p>Sử dụng lệnh <code class=\"prefix\">verify &lt;tên người dùng wiki&gt;</code>, người dùng có thể xác minh mình là người dùng wiki cụ thể bằng cách sử dụng trường Discord trên hồ sơ wiki của họ. Nếu người dùng khớp và xác minh người dùng được thiết lập trên máy chủ, Wiki-Bot sẽ cung cấp cho họ các vai trò cho tất cả các mục xác minh mà họ khớp.</p>\n<p>Mỗi mục xác minh cho phép nhiều hạn chế về thời điểm người dùng nên khớp với xác minh:</p>\n<ul>\n<li>Kênh để sử dụng lệnh <code class=\"prefix\">verify</code> trong.</li>\n<li>Vai trò để có khi khớp với mục xác minh.</li>\n<li>Yêu cầu số lần sửa đổi trên wiki để khớp với mục xác minh.</li>\n<li>Yêu cầu nhóm người dùng phải là thành viên trên wiki để khớp với mục xác minh.</li>\n<li>Yêu cầu tuổi tài khoản tính theo ngày để khớp với mục xác minh.</li>\n<li>Có nên đặt biệt danh của người dùng Discord thành tên người dùng wiki của họ khi họ khớp với mục xác minh hay không.</li>\n</ul>",
+		"form": {
+			"accountage": "Tuổi tài khoản (ngày):",
+			"avatar": "Hình đại diện của tác giả:",
+			"avatar_bot": "Hình đại diện Bot",
+			"avatar_guild": "Biểu tượng máy chủ",
+			"avatar_preview": "Xem trước",
+			"button": "Gửi tin nhắn chứa nút xác nhận",
+			"button_emoji": "Emoji đi kèm với nút (tùy chọn):",
+			"button_emoji_title": "Cung cấp biểu tượng cảm xúc máy chủ tùy chỉnh hoặc biểu tượng cảm xúc dạng Unicode.",
+			"button_name": "Văn bản trên nút:",
+			"button_name_default": "Xác Nhận Tài Khoản Wiki",
+			"button_style": "Kiểu nút:",
+			"button_style_danger": "Nguy hiểm (đỏ)",
+			"button_style_primary": "Cơ bản (blurple - tím)",
+			"button_style_secondary": "Cấp 2 (xám)",
+			"button_style_success": "Thành công (xanh lá)",
+			"channel": "Kênh:",
+			"confirm": "Bạn có muốn xóa nội dung xác thực không?",
+			"content": "Nội dung tin nhắn (tùy chọn):",
+			"content_placeholder": "Nội dung tin nhắn, hỗ trợ kí tự Markdown và liên kết trong văn bản.",
+			"editcount": "Số lượng sửa đổi tối thiểu:",
+			"embeds": "Nội dung nhúng (tùy chọn):",
+			"embeds_help": "Trợ giúp: [Nhúng Trực Quan]($1)",
+			"embeds_placeholder": "Khối JSON chứa dữ liệu nhúng chuẩn Discord.",
+			"entry": "Xác nhận #$1",
+			"flag_logall": "Ghi nhật trình việc xác nhận không thành công:",
+			"flag_private": "Phản hồi riêng tư:",
+			"logging": "Kênh ghi nhật trình:",
+			"match": "Nội dung thông báo chưa đủ điều kiện:",
+			"match_placeholder": "Nội dung thông báo bằng Markdown cho người dùng Discord đã xác nhận, nhưng không đạt đủ bất kì điều kiện nào để nhận vai trò.",
+			"more": "Thêm nữa",
+			"new": "Tạo mới xác nhận",
+			"notice": "Thông báo Xác nhận",
+			"postcount": "Số bài viết tối thiểu:",
+			"postcount_and": "Yêu cầu cả số lượng sửa đổi và bài thảo luận phải đạt.",
+			"postcount_both": "Yêu cầu tổng số lượng sửa đổi và bải thảo luận phải đạt.",
+			"postcount_fandom": "Chỉ áp dụng cho wiki thuộc Fandom:",
+			"postcount_or": "Chỉ yêu cầu số lượng sửa đổi hoặc bài thảo luận phải đạt.",
+			"rename": "Đổi tên người dùng:",
+			"role": "Vai trò:",
+			"role_add": "Thêm",
+			"role_remove": "Xóa",
+			"select_channel": "-- Chọn kênh --",
+			"select_role": "-- Chọn vai trò --",
+			"send_message": "Gửi tin nhắn",
+			"success": "Thông báo thành công:",
+			"success_placeholder": "Nội dung thông báo bằng Markdown khi thành công.",
+			"thread": "Chủ đề (tùy chọn):",
+			"usergroup": "Nhóm người dùng wiki:",
+			"usergroup_and": "Yêu cầu tất cả nhóm người dùng:",
+			"webhook_name": "Tên tác giả:"
+		},
+		"help_button": "<p>Nút xác minh hoạt động tốt nhất khi kết hợp với <b>phản hồi riêng tư</b> và <b>kênh ghi nhật trình</b>.</p>\n<p>Bạn có thể bật những thông báo này như một phần của <a href=\"/guild/$1/verification/notice$2\">thông báo xác minh</a>.</p>",
+		"help_notice": "<p>Thông báo tùy chỉnh hỗ trợ một số hàm và biến đơn giản.</p>\n<ul>\n<li><code class=\"form-button user-select\">$mention</code> – Đề cập đến người dùng trên Discord.</li>\n<li><code class=\"form-button user-select\">$username</code> – Tên người dùng wiki của người dùng.</li>\n<li><code class=\"form-button user-select\">$editcount</code> – Số lần sửa đổi hiện tại của người dùng.</li>\n<li><code class=\"form-button user-select\">$accountage</code> – Tuổi tài khoản hiện tại của người dùng tính theo ngày đầy đủ.</li>\n<li><code class=\"form-button user-select\">$postcount</code> – Số bài đăng thảo luận hiện tại của người dùng (chỉ dành cho wiki Fandom).</li>\n<li><code class=\"form-button user-select\" data-after=\" }}\" data-before=\"{{#expr: \">{{#expr: 1+1}}</code> – Trả về kết quả của một biểu thức.\n<ul>\n<li>Chỉ hỗ trợ phép cộng <code class=\"form-button user-select\">+</code> và phép trừ <code class=\"form-button user-select\">-</code>.</li>\n</ul></li>\n<li><code class=\"form-button user-select\" data-after=\" | | }}\" data-before=\"{{#ifexpr: \">{{#ifexpr: 1 &gt; 1 | <i>nếu đúng</i> | <i>nếu sai</i> }}</code> – Trả về văn bản tùy thuộc vào kết quả của một biểu thức.\n<ul>\n<li>Hỗ trợ <code class=\"form-button user-select\">&lt;</code>, <code class=\"form-button user-select\">&gt;</code>, <code class=\"form-button user-select\">=</code>, <code class=\"form-button user-select\">&lt;=</code>, <code class=\"form-button user-select\">&gt;=</code>, <code class=\"form-button user-select\">!=</code>, <code class=\"form-button user-select\">&lt;&gt;</code> cũng như <code class=\"form-button user-select\">và</code>, <code class=\"form-button user-select\">hoặc</code>.</li>\n</ul></li>\n</ul>",
+		"new": "Tạo mới xác nhận",
+		"notice": "Thông báo xác nhận"
 	}
 }
