@@ -147,7 +147,7 @@
 		"savefail": {
 			"note_http": "Trang web được cung cấp không có chứng chỉ TLS/SSL hợp lệ! Vì lý do bảo mật, chỉ những wiki sử dụng HTTPS mới được hỗ trợ.",
 			"note_private": "Wiki được cung cấp hiện đang riêng tư!",
-			"note_timeout": "Liên kết được cho mất quá nhiều thời gian để phản hồi!",
+			"note_timeout": "Trang bạn cung cấp mất quá nhiều thời gian để phản hồi!",
 			"text": "Thiết lập không thể được lưu, vui lòng thử lại.",
 			"title": "Lưu thất bại!"
 		},
