@@ -18,6 +18,7 @@
 			"sv": "Svenska (sv)",
 			"tr": "Türkçe (tr)",
 			"uk": "Українська (uk)",
+			"vi": "Tiếng Việt (vi)",
 			"zh-hans": "简体中文 (zh-hans)",
 			"zh-hant": "繁體中文 (zh-hant)"
 		},
@@ -97,6 +98,10 @@
 			"ukrainian": "uk",
 			"українська": "uk",
 			"українська (uk)": "uk",
+			"vi": "vi",
+			"vietnamese": "vi",
+			"tiếng việt": "vi",
+			"tiếng việt (vi)": "vi",
 			"zh": "zh-hans",
 			"chinese": "zh-hans",
 			"中文": "zh-hans",
