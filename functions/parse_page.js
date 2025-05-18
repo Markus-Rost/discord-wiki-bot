@@ -38,6 +38,7 @@ const infoboxList = [
 	'.info-framework',
 	'.iteminfobox',
 	'.infobox-root',
+	'.druid-infobox',
 	'.druid-container',
 	'.settingsummary',
 	'table[class*="infobox"]'
@@ -325,6 +326,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							'div.infobox-imagearea img',
 							'td.druid-main-image img',
 							'td.druid-main-images img',
+							'div.druid-main-image img',
+							'div.druid-main-images img',
 							'div.info-column.info-X1-100 a.image > img'
 						].join(', ')).toArray().find( img => {
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
@@ -369,6 +372,8 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 					'.va-infobox-cont th.va-infobox-header',
 					'div.infobox-header',
 					'div.infobox-row-container',
+					'div.druid-row',
+					'div.druid-section',
 					'div.info-unit > div.info-unit-caption',
 					'div.info-unit-row',
 					'> tbody > tr > td > table > tbody > tr',
@@ -387,6 +392,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						'div.title',
 						'h2.pi-header',
 						'div.infobox-header',
+						'div.druid-section',
 						'div.info-unit-caption'
 					].join(', ')) ) {
 						row.find(removeClasses.join(', ')).remove();
@@ -408,6 +414,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						'tr',
 						'div.pi-data',
 						'div.druid-grid-item',
+						'div.druid-row',
 						'div.infobox-row',
 						'div.info-unit-row',
 						'div.infobox-row-container',
