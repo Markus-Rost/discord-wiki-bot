@@ -13,7 +13,7 @@
 	],
 	"aliases": {
 		"bug": [
-			"bug",
+			" ",
 			" ",
 			" ",
 			" ",
@@ -90,7 +90,7 @@
 			" "
 		],
 		"test": [
-			"test",
+			" ",
 			" ",
 			" ",
 			" ",
@@ -197,12 +197,12 @@
 					"desc": "Thắc mắc cách một lệnh hoạt động? Để tôi giải thích nó cho bạn!"
 				},
 				"default": {
-					"cmd": "trogiup",
+					"cmd": "help",
 					"desc": "Tôi sẽ liệt kê hết những câu lệnh mà tôi có thể hiểu."
 				}
 			},
 			"info": {
-				"cmd": "gioithieu",
+				"cmd": "info",
 				"desc": "Tôi sẽ giới thiệu bản thân."
 			},
 			"inline": {
@@ -234,7 +234,7 @@
 				"desc": "Tôi sẽ trả lời bạn với một liên kết dẫn tới bài viết tương ứng trên trang dự án MediaWiki bạn chọn. Ví dụ: `$1!!vi.wikipedia.org Ohio`"
 			},
 			"overview": {
-				"cmd": "thongtinwiki",
+				"cmd": "overview",
 				"desc": "Tôi sẽ hiển thị một số thông tin và thống kê về wiki."
 			},
 			"page": {
@@ -252,7 +252,7 @@
 				}
 			},
 			"random": {
-				"cmd": "ngaunhien",
+				"cmd": "random",
 				"desc": "Tôi sẽ trả lời bạn liên kết tới một trang ngẫu nhiên trên wiki."
 			},
 			"rcscript": {
