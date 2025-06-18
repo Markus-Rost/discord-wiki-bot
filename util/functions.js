@@ -383,7 +383,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 			if ( tagname === 'a' && attribs.href && !classes.includes( 'new' ) && !classes.includes( 'ext-discussiontools-init-timestamplink' ) && /^(?:(?:https?:)?\/\/|\/|#)/.test(attribs.href) ) {
 				try {
 					if ( relativeFix && /^\/(?!\/)/.test(attribs.href) ) attribs.href = relativeFix(attribs.href, pagelink);
-					href = new URL(attribs.href, pagelink).href.replace( /[()]/g, '\\$&' );
+					href = new URL(attribs.href, pagelink);
 					if ( text.trim().endsWith( '](<' + href + '>)' ) ) {
 						let whitespace = text.match( /(?<=>\))\s*$/ )?.[0] ?? '';
 						text = text.substring(0, text.length - ( href.length + 5 + whitespace.length )) + whitespace;
@@ -504,7 +504,7 @@ function escapeRegExp(text = '') {
 function limitLength(text = '', limit = 1_000, maxExtra = 20) {
 	var suffix = '\u2026';
 	var link = null;
-	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])*?[^\\])\]\(<?(?:[^()]|\\[()])+?[^\\]>?\)/g;
+	var regex = /(?<!\\)\[((?:[^\[\]]|\\[\[\]])*?[^\\])\]\(<?(?:[^<>]|\\[<>])+?[^\\]>?\)/g;
 	while ( ( link = regex.exec(text) ) !== null ) {
 		if ( link.index < limit && link.index + link[0].length > limit ) {
 			if ( link.index + link[0].length < limit + maxExtra ) suffix = link[0];

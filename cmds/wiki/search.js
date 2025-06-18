@@ -98,7 +98,7 @@ export default function mw_search(lang, msg, searchterm, wiki, query, reaction, 
 		if ( !hasExactMatch ) {
 			if ( query.interwiki?.[0] ) {
 				let text = '• **⤷ ';
-				text += '__[' + escapeFormatting(query.interwiki[0].title) + '](<' + query.interwiki[0].url.replace( /[()]/g, '\\$&' ) + '>)__';
+				text += '__[' + escapeFormatting(query.interwiki[0].title) + '](<' + query.interwiki[0].url + '>)__';
 				if ( query.redirects?.[0] ) {
 					text += ' (⤷ [' + escapeFormatting(query.redirects[0].from) + '](<' + wiki.toLink(query.redirects[0].from, 'redirect=no', '', true) + '>))';
 				}

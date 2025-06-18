@@ -291,7 +291,7 @@ export default class Wiki extends URL {
 	static toTitle(title = '', spaceReplacement = '_') {
 		return title.replaceAll( ' ', spaceReplacement ).replace( /[?&%\\]/g, (match) => {
 			return '%' + match.charCodeAt().toString(16).toUpperCase();
-		} ).replace( /@(here|everyone)/g, '%40$1' ).replace( /[()]/g, '\\$&' );
+		} ).replace( /@(here|everyone)/g, '%40$1' );
 	};
 
 	/**
