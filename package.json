@@ -25,7 +25,7 @@
     "got": "^14.4.7",
     "got-ssrf": "^3.0.0",
     "htmlparser2": "^10.0.0",
-    "mediawiki-projects-list": "^4.9.4",
+    "mediawiki-projects-list": "^4.9.5",
     "npm": "^11.4.2",
     "pg": "^8.16.3"
   },
