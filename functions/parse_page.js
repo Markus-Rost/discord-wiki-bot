@@ -605,7 +605,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
 							try {
 								let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
-								imgURL = imgURL.replace( /\/thumb(\/[\da-f]\/[\da-f]{2}\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
+								imgURL = imgURL.replace( /\/thumb((?:\/[\da-f]\/[\da-f]{2})?\/([^\/]+))\/\d+px-\2/, '$1' ).replace( /\/scale-to-width-down\/\d+/, '' );
 								return new URL(imgURL.replace( /^(?:https?:)?\/\//, 'https://' ), wiki).href;
 							}
 							catch {
