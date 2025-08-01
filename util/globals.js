@@ -35,6 +35,20 @@ globalThis.WB_EMOJI = {
 };
 
 /**
+ * First Strong Isolate (FSI)
+ * @type {'\u2068'}
+ * @global
+ */
+globalThis.FIRST_STRONG_ISOLATE = '\u2068';
+
+/**
+ * Pop Directional Isolate (PDI)
+ * @type {'\u2069'}
+ * @global
+ */
+globalThis.POP_DIRECTIONAL_ISOLATE = '\u2069';
+
+/**
  * Prefix of guilds with patreon features enabled.
  * @type {Map<String, String>}
  * @global

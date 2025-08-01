@@ -146,8 +146,8 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				let header = ( block.partial ? 'user.block.partial' : 'user.block.header' );
 				let text = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( block.reason ? 'text' : 'noreason' );
 				return {
-					header: lang.get(header, escapeFormatting(block.user), 'unknown'),
-					text: lang.get(text, dateformat.format(blockedtimestamp), blockduration, blockexpiry, '[' + escapeFormatting(block.by) + '](<' + wiki.toLink('User:' + block.by, '', '', true) + '>)', toMarkdown(block.reason, wiki))
+					header: lang.get(header, FIRST_STRONG_ISOLATE + escapeFormatting(block.user) + POP_DIRECTIONAL_ISOLATE, 'unknown'),
+					text: lang.get(text, dateformat.format(blockedtimestamp), blockduration, blockexpiry, '[' + FIRST_STRONG_ISOLATE + escapeFormatting(block.by) + POP_DIRECTIONAL_ISOLATE + '](<' + wiki.toLink('User:' + block.by, '', '', true) + '>)', toMarkdown(block.reason, wiki))
 				};
 			}
 		} ).filter( block => block !== undefined );
@@ -469,8 +469,8 @@ export default function mw_user(lang, msg, namespace, username, wiki, querystrin
 				let blockedheader = ( queryuser.blockpartial ? 'user.block.partial' : 'user.block.header' );
 				let blockedtext = 'user.block.' + ( isIndef ? 'indef_' : '' ) + ( queryuser.blockreason ? 'text' : 'noreason' );
 				var block = {
-					header: lang.get(blockedheader, escapeFormatting(username), queryuser.gender),
-					text: lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, '[' + escapeFormatting(queryuser.blockedby) + '](<' + wiki.toLink('User:' + queryuser.blockedby, '', '', true) + '>)', toMarkdown(queryuser.blockreason, wiki))
+					header: lang.get(blockedheader, FIRST_STRONG_ISOLATE + escapeFormatting(username) + POP_DIRECTIONAL_ISOLATE, queryuser.gender),
+					text: lang.get(blockedtext, ( blockedtimestamp ? dateformat.format(blockedtimestamp) : 'Invalid Date' ), blockduration, blockexpiry, '[' + FIRST_STRONG_ISOLATE + escapeFormatting(queryuser.blockedby) + POP_DIRECTIONAL_ISOLATE + '](<' + wiki.toLink('User:' + queryuser.blockedby, '', '', true) + '>)', toMarkdown(queryuser.blockreason, wiki))
 				};
 			}
 			

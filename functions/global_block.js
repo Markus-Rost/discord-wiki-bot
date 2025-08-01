@@ -51,8 +51,8 @@ export default function global_block(lang, msg, username, text, embed, wiki, spo
 			else {
 				let $ = cheerioLoad(body, {baseURI: response.url});
 				if ( $('#mw-content-text .userprofile.mw-warning-with-logexcerpt').length ) {
-					if ( embed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**'} );
-					else text += '\n\n**' + lang.get('user.gblock.header', escapeFormatting(username), gender) + '**';
+					if ( embed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.header', FIRST_STRONG_ISOLATE + escapeFormatting(username) + POP_DIRECTIONAL_ISOLATE, gender) + '**'} );
+					else text += '\n\n**' + lang.get('user.gblock.header', FIRST_STRONG_ISOLATE + escapeFormatting(username) + POP_DIRECTIONAL_ISOLATE, gender) + '**';
 				}
 				if ( $('#mw-content-text .errorbox').length ) {
 					if ( embed ) embed.addFields( {name: '\u200b', value: '**' + lang.get('user.gblock.disabled') + '**'} );

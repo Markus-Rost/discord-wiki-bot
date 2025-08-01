@@ -162,8 +162,9 @@ function toMarkdown(text = '', wiki, title = '', fullWikitext = false) {
 	var link = null;
 	var regex = /\[\[(?:([^\[\|\]]+)\|)?([^\[\]]+)\]\]([a-z]*)/g;
 	while ( ( link = regex.exec(text) ) !== null ) {
-		var pagetitle = ( link[1] || link[2] );
-		var page = wiki.toLink(( /^[#\/]/.test(pagetitle) ? title + ( pagetitle.startsWith( '/' ) ? pagetitle : '' ) : pagetitle ), '', ( pagetitle.startsWith( '#' ) ? pagetitle.substring(1) : '' ), true);
+		var [pagetitle, ...anchor] = ( link[1] || link[2] ).split('#');
+		anchor = anchor.join('#');
+		var page = wiki.toLink(( pagetitle.startsWith( '/' ) ? title + pagetitle : ( pagetitle || title ) ), '', anchor, true);
 		text = text.replaceSafe( link[0], '[' + link[2] + link[3] + '](' + lt + page + gt + ')' );
 	}
 	if ( title ) {
@@ -210,6 +211,7 @@ function htmlToPlain(html, includeComments = false) {
 				return;
 			}
 			if ( tagname === 'br' ) text += ' ';
+			if ( tagname === 'bdi' ) text += FIRST_STRONG_ISOLATE;
 			if ( tagname === 'img' ) {
 				if ( attribs.alt && attribs.src ) {
 					let showAlt = true;
@@ -236,6 +238,7 @@ function htmlToPlain(html, includeComments = false) {
 				else ignoredTag[0] = '';
 				return;
 			}
+			if ( tagname === 'bdi' ) text += POP_DIRECTIONAL_ISOLATE;
 		},
 		oncomment: (commenttext) => {
 			if ( includeComments && /^(?:IW)?LINK'" \d+(?::\d+)?$/.test(commenttext) ) {
@@ -298,6 +301,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 					syntaxhighlight = ( classes.find( syntax => syntax.startsWith( 'mw-highlight-lang-' ) )?.replace( 'mw-highlight-lang-', '' ) || '' );
 				}
 			}
+			if ( tagname === 'bdi' ) text += FIRST_STRONG_ISOLATE;
 			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
 			if ( tagname === 'i' || tagname === 'em' ) text += '*';
 			if ( tagname === 's' || tagname === 'del' ) text += '~~';
@@ -425,6 +429,7 @@ function htmlToDiscord(html, pagelink = '', ...escapeArgs) {
 				return;
 			}
 			if ( syntaxhighlight && tagname === 'div' ) syntaxhighlight = '';
+			if ( tagname === 'bdi' ) text += POP_DIRECTIONAL_ISOLATE;
 			if ( tagname === 'b' || tagname === 'strong' ) text += '**';
 			if ( tagname === 'i' || tagname === 'em' ) text += '*';
 			if ( tagname === 's' || tagname === 'del' ) text += '~~';
@@ -478,7 +483,9 @@ function escapeFormatting(text = '', isMarkdown = false, keepLinks = false) {
 	if ( !isMarkdown ) text = text.replaceAll( '\\', '\\\\' ).replaceAll( '](', ']\\(' );
 	text = text.replace( /[`_*~:<>{}@|]/g, '\\$&' ).replaceAll( '//', '/\\/' );
 	text = text.replace( /^#+ /gm, '\\$&' ).replace( /^-# /gm, '\\$&' ).replace( /^(\s*)- /gm, '$1\\- ' ).replace( /^(\s*\d+)\. /gm, '$1\\. ' );
-	if ( isMarkdown ) text = text.replace( /\]\(\\<([^\(\)<>\s]+?)\\>\)/g, '](<$1>)' );
+	if ( isMarkdown ) text = text.replace( /\]\(\\<([^\(\)<>\s]+?)\\>\)/g, match => {
+		return match.replaceAll( '\\\\', '/' ).replaceAll( '\\', '' );
+	}  );
 	if ( keepLinks ) text = text.replace( /(?:\\<)?https?\\:\/\\\/(?:[^\(\)\s]+(?=\))|[^\[\]\s]+(?=\])|[^<>\s]+>?)/g, match => {
 		return match.replaceAll( '\\\\', '/' ).replaceAll( '\\', '' );
 	} );

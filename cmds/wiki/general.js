@@ -120,6 +120,10 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 			}
 		} );
 	}
+	if ( !title && querystring.has('title') ) {
+		title = querystring.get('title');
+		querystring.delete('title');
+	}
 	title = title.replace( /(?:%[\dA-F]{2})+/g, partialURIdecode );
 	if ( title.length > 250 ) {
 		title = title.substring(0, 250);
@@ -146,6 +150,9 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 	}
 	if ( aliasInvoke === 'diff' && args.join('') && !querystring.toString() && !fragment ) {
 		return fn.diff(lang, msg, args, wiki, spoiler, noEmbed);
+	}
+	if ( querystring.has('diff') && [...querystring.keys()].every(name => ['diff', 'oldid', 'curid', 'title'].includes( name )) && !fragment ) {
+		return fn.diff(lang, msg, [querystring.get('diff'), querystring.get('oldid')], wiki, spoiler, noEmbed);
 	}
 	var noRedirect = ( querystring.getAll('redirect').pop() === 'no' || ( querystring.has('action') && querystring.getAll('action').pop() !== 'view' ) );
 	var uselang = ( isMessage(msg) || msg.inCachedGuild?.() ? lang.lang : 'content' );
