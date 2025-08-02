@@ -247,7 +247,7 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
  * @param {String} csrfToken - The csrf token for the session
  */
 function dashboard_rcscript(res, $, guild, args, dashboardLang, csrfToken) {
-	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdw.wiki, rcgcdw.lang, display, buttons, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
+	db.query( 'SELECT discord.wiki mainwiki, discord.lang mainlang, (SELECT ARRAY_AGG(DISTINCT wiki ORDER BY wiki ASC) FROM discord WHERE guild = $1) allwikis, webhook, configid, rcgcdb.wiki, rcgcdb.lang, display, buttons, rcid, postid FROM discord LEFT JOIN rcgcdb ON discord.guild = rcgcdb.guild WHERE discord.guild = $1 AND discord.channel IS NULL ORDER BY configid ASC', [guild.id] ).then( ({rows}) => {
 		if ( rows.length === 0 ) {
 			createNotice($, 'nosettings', dashboardLang, [guild.id]);
 			$('#text .description').html(dashboardLang.get('rcscript.explanation'));
@@ -281,7 +281,7 @@ function dashboard_rcscript(res, $, guild, args, dashboardLang, csrfToken) {
 		} )).finally( () => {
 			if ( rows.some( row => row.DELETED ) ) {
 				let deletedRows = rows.filter( row => row.DELETED ).map( row => row.webhook );
-				db.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + deletedRows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', deletedRows ).then( () => {
+				db.query( 'DELETE FROM rcgcdb WHERE webhook IN (' + deletedRows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', deletedRows ).then( () => {
 					console.log( '- Dashboard: Deleted RcGcDw successfully removed.' );
 				}, dberror => {
 					console.log( '- Dashboard: Error while removing the deleted RcGcDw: ' + dberror );
@@ -414,7 +414,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		if ( settings.display > rcgcdwLimit.display && !response.patreon ) {
 			settings.display = rcgcdwLimit.display;
 		}
-		return db.query( 'SELECT discord.lang, ARRAY_REMOVE(ARRAY_AGG(configid ORDER BY configid), NULL) count FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild WHERE discord.guild = $1 AND discord.channel IS NULL GROUP BY discord.lang', [guild] ).then( ({rows:[row]}) => {
+		return db.query( 'SELECT discord.lang, ARRAY_REMOVE(ARRAY_AGG(configid ORDER BY configid), NULL) count FROM discord LEFT JOIN rcgcdb ON discord.guild = rcgcdb.guild WHERE discord.guild = $1 AND discord.channel IS NULL GROUP BY discord.lang', [guild] ).then( ({rows:[row]}) => {
 			if ( !row ) return res(`/guild/${guild}/rcscript`, 'savefail');
 			if ( row.count.length >= rcgcdwLimit[( response.patreon ? 'patreon' : 'default' )] ) {
 				return res(`/guild/${guild}/rcscript`, 'savefail');
@@ -525,7 +525,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								if ( configid === i ) configid++;
 								else break;
 							}
-							db.query( 'INSERT INTO rcgcdw(guild, configid, webhook, wiki, lang, display, buttons, rcid, postid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( canButtons(wiki) ? settings.buttons : null ), ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
+							db.query( 'INSERT INTO rcgcdb(guild, configid, webhook, wiki, lang, display, buttons, rcid, postid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [guild, configid, webhook, wiki.href, settings.lang, settings.display, ( canButtons(wiki) ? settings.buttons : null ), ( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' )] ).then( () => {
 								console.log( `- Dashboard: RcGcDw successfully added: ${guild}#${configid}` );
 								res(`/guild/${guild}/rcscript/${configid}`, 'save');
 								var text = lang.get('rcscript.dashboard.added', `<@${userSettings.user.id}>`, configid);
@@ -576,7 +576,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 		return res(`/guild/${guild}/rcscript/new`, 'savefail');
 	} );
 	type = parseInt(type, 10);
-	return db.query( 'SELECT discord.lang mainlang, webhook, rcgcdw.wiki, rcgcdw.lang, display, buttons, rcid, postid FROM discord LEFT JOIN rcgcdw ON discord.guild = rcgcdw.guild AND configid = $1 WHERE discord.guild = $2 AND discord.channel IS NULL', [type, guild] ).then( ({rows:[row]}) => {
+	return db.query( 'SELECT discord.lang mainlang, webhook, rcgcdb.wiki, rcgcdb.lang, display, buttons, rcid, postid FROM discord LEFT JOIN rcgcdb ON discord.guild = rcgcdb.guild AND configid = $1 WHERE discord.guild = $2 AND discord.channel IS NULL', [type, guild] ).then( ({rows:[row]}) => {
 		if ( !row?.webhook ) return res(`/guild/${guild}/rcscript`, 'savefail');
 		return got.get( 'https://discord.com/api/webhooks/' + row.webhook ).then( wresponse => {
 			if ( !wresponse.body?.channel_id ) {
@@ -616,7 +616,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 					if ( !hasPerm(response.userPermissions, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageWebhooks) ) {
 						return res(`/guild/${guild}/rcscript/${type}`, 'savefail');
 					}
-					return db.query( 'DELETE FROM rcgcdw WHERE webhook = $1', [row.webhook] ).then( () => {
+					return db.query( 'DELETE FROM rcgcdb WHERE webhook = $1', [row.webhook] ).then( () => {
 						console.log( `- Dashboard: RcGcDw successfully removed: ${guild}#${type}` );
 						res(`/guild/${guild}/rcscript`, 'save');
 						var lang = new Lang(row.mainlang);
@@ -775,11 +775,15 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						 * @param {Boolean} enableFeeds - If feeds based changes should be enabled.
 						 */
 						function updateWebhook(enableFeeds = null) {
-							var sqlargs = [row.webhook, wiki.href, settings.lang, settings.display, ( canButtons(wiki) ? settings.buttons : null )];
-							var sql = 'UPDATE rcgcdw SET wiki = $2, lang = $3, display = $4, buttons = $5';
+							var sqlargs = ['webhookupdates', 'UPDATE ', row.webhook, wiki.href, settings.lang, settings.display, ( canButtons(wiki) ? settings.buttons : null )];
+							var sql = 'UPDATE rcgcdb SET wiki = $4, lang = $5, display = $6, buttons = $7';
+							var notify = 'pg_notify($1, $2 || wiki)';
 							if ( row.wiki !== wiki.href ) {
 								sqlargs.push(( enableFeeds && settings.feeds_only ? -1 : null ), ( enableFeeds ? null : '-1' ));
-								sql += ', rcid = $6, postid = $7';
+								sql += ', rcid = $8, postid = $9';
+								sqlargs.push('ADD ', ' ');
+								sqlargs[1] = 'REMOVE ' + row.wiki;
+								notify = 'pg_notify($1, $2), pg_notify($1, concat($10::TEXT, wiki, $11::TEXT, rcid, $11::TEXT, postid))';
 							}
 							else {
 								if ( enableFeeds && settings.feeds_only ) {
@@ -799,7 +803,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 									sql += ', postid = $' + sqlargs.length;
 								}
 							}
-							db.query( sql + ' WHERE webhook = $1', sqlargs ).then( () => {
+							db.query( sql + ' WHERE webhook = $3 RETURNING ' + notify, sqlargs ).then( () => {
 								console.log( `- Dashboard: RcGcDw successfully updated: ${guild}#${type}` );
 								var webhook_changes = {};
 								var lang = new Lang(row.mainlang);

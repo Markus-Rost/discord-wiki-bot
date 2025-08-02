@@ -151,9 +151,9 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the verifications: ' + dberror );
 				} );
 			} ).then( () => {
-				return client.query( 'SELECT webhook FROM rcgcdw WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], rcgcdwLimit.default] ).then( ({rows}) => {
+				return client.query( 'SELECT webhook FROM rcgcdb WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [args[1], rcgcdwLimit.default] ).then( ({rows}) => {
 					if ( rows.length ) {
-						return client.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + rows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', rows.map( row => row.webhook ) ).then( () => {
+						return client.query( 'DELETE FROM rcgcdb WHERE webhook IN (' + rows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', rows.map( row => row.webhook ) ).then( () => {
 							console.log( '- RcGcDw successfully deleted.' );
 							rows.forEach( row => msg.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
 								webhook.delete('Removed extra recent changes webhook').catch(log_error);
@@ -166,7 +166,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the RcGcDw: ' + dberror );
 				} );
 			} ).then( () => {
-				return client.query( 'UPDATE rcgcdw SET display = $1 WHERE guild = $2 AND display > $1', [rcgcdwLimit.display, args[1]] ).then( () => {
+				return client.query( 'UPDATE rcgcdb SET display = $1 WHERE guild = $2 AND display > $1 RETURNING pg_notify($3, $4 || wiki)', [rcgcdwLimit.display, args[1], 'webhookupdates', 'UPDATE '] ).then( () => {
 					console.log( '- RcGcDw successfully updated.' );
 				}, dberror => {
 					console.log( '- Error while updating the RcGcDw: ' + dberror );
@@ -315,11 +315,11 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the verifications: ' + dberror );
 				} );
 			} ).then( () => {
-				return client.query( 'SELECT (ARRAY_AGG(webhook ORDER BY configid))[' + ( rcgcdwLimit.default + 1 ) + ':] webhooks FROM rcgcdw WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ') GROUP BY guild', guilds ).then( ({rows}) => {
+				return client.query( 'SELECT (ARRAY_AGG(webhook ORDER BY configid))[' + ( rcgcdwLimit.default + 1 ) + ':] webhooks FROM rcgcdb WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 1 ) ).join(', ') + ') GROUP BY guild', guilds ).then( ({rows}) => {
 					if ( !rows.length ) return;
 					var webhooks = [].concat(...rows.map( row => row.webhooks ));
 					if ( webhooks.length ) {
-						return client.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + webhooks.map( (webhook, i) => '$' + ( i + 1 ) ).join(', ') + ')', webhooks ).then( () => {
+						return client.query( 'DELETE FROM rcgcdb WHERE webhook IN (' + webhooks.map( (webhook, i) => '$' + ( i + 1 ) ).join(', ') + ')', webhooks ).then( () => {
 							console.log( '- RcGcDw successfully deleted.' );
 							webhooks.forEach( hook => msg.client.fetchWebhook(...hook.split('/')).then( webhook => {
 								webhook.delete('Removed extra recent changes webhook').catch(log_error);
@@ -332,7 +332,7 @@ export default function cmd_patreon(lang, msg, args, line, wiki) {
 					console.log( '- Error while getting the RcGcDw: ' + dberror );
 				} );
 			} ).then( () => {
-				return client.query( 'UPDATE rcgcdw SET display = $1 WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 2 ) ).join(', ') + ') AND display > $1', [rcgcdwLimit.display, ...guilds] ).then( () => {
+				return client.query( 'UPDATE rcgcdb SET display = $3 WHERE guild IN (' + guilds.map( (guild, i) => '$' + ( i + 4 ) ).join(', ') + ') AND display > $3 RETURNING pg_notify($1, $2 || wiki)', ['webhookupdates', 'UPDATE ', rcgcdwLimit.display, ...guilds] ).then( () => {
 					console.log( '- RcGcDw successfully updated.' );
 				}, dberror => {
 					console.log( '- Error while updating the RcGcDw: ' + dberror );

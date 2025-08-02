@@ -212,9 +212,9 @@ function slash_patreon(interaction, lang, wiki) {
 							console.log( '- Error while getting the verifications: ' + dberror );
 							return Promise.reject();
 						} ),
-						client.query( 'SELECT webhook FROM rcgcdw WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [guildId, rcgcdwLimit.default] ).then( ({rows}) => {
+						client.query( 'SELECT webhook FROM rcgcdb WHERE guild = $1 ORDER BY configid ASC OFFSET $2', [guildId, rcgcdwLimit.default] ).then( ({rows}) => {
 							if ( rows.length ) {
-								return client.query( 'DELETE FROM rcgcdw WHERE webhook IN (' + rows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', rows.map( row => row.webhook ) ).then( () => {
+								return client.query( 'DELETE FROM rcgcdb WHERE webhook IN (' + rows.map( (row, i) => '$' + ( i + 1 ) ).join(', ') + ')', rows.map( row => row.webhook ) ).then( () => {
 									console.log( '- RcGcDw successfully deleted.' );
 									rows.forEach( row => interaction.client.fetchWebhook(...row.webhook.split('/')).then( webhook => {
 										webhook.delete('Removed extra recent changes webhook').catch(log_error);
@@ -228,7 +228,7 @@ function slash_patreon(interaction, lang, wiki) {
 							console.log( '- Error while getting the RcGcDw: ' + dberror );
 							return Promise.reject();
 						} ),
-						client.query( 'UPDATE rcgcdw SET display = $1 WHERE guild = $2 AND display > $1', [rcgcdwLimit.display, guildId] ).then( () => {
+						client.query( 'UPDATE rcgcdb SET display = $1 WHERE guild = $2 AND display > $1 RETURNING pg_notify($3, $4 || wiki)', [rcgcdwLimit.display, guildId, 'webhookupdates', 'UPDATE '] ).then( () => {
 							console.log( '- RcGcDw successfully updated.' );
 						}, dberror => {
 							console.log( '- Error while updating the RcGcDw: ' + dberror );
