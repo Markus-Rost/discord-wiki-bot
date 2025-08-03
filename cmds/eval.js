@@ -158,6 +158,7 @@ function checkWiki(wiki) {
 				delete body.logs;
 				delete body.tags;
 				delete body.namespaces;
+				delete body.timeline;
 				delete body.wiki_rc;
 				result.debug = body;
 			} ).catch( error => {
