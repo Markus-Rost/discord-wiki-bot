@@ -11,6 +11,7 @@
 		"options[0].options[2].description": "Надіслати відповідь, видиму лише вам?",
 		"options[0].options[2].name": "приватне",
 		"options[0].options[3].description": "Надсилати лише посилання без вбудовування?",
+		"options[0].options[3].name": "без вбудовування",
 		"options[0].options[4].description": "Приховати посилання й вставити в спойлер?",
 		"options[0].options[4].name": "спойлер",
 		"options[1].description": "Показати відмінності в редагуванні вікі на основі ідентифікатора.",
