@@ -78,6 +78,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			else if ( wiki.wikifarm === 'miraheze' ) oauth.push('miraheze');
 			else if ( wiki.wikifarm === 'telepedia' ) oauth.push('telepedia');
 			else if ( wiki.wikifarm === 'wikioasis' ) oauth.push('wikioasis');
+			else if ( wiki.wikifarm === 'skywiki' ) oauth.push('skywiki');
 			else if ( wiki.wikifarm === 'undertale' ) oauth.push('undertale');
 			else {
 				let project = inputToWikiProject(wiki.href)

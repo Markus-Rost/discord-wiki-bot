@@ -76,6 +76,14 @@ if ( process.env['oauth_minecraft.wiki'] && process.env['oauth_minecraft.wiki_se
 		manage: 'https://minecraft.wiki/w/Special:OAuthManageMyGrants'
 	});
 }
+if ( process.env.oauth_skywiki && process.env.oauth_skywiki_secret ) {
+	enabledOAuth2.unshift({
+		id: 'skywiki',
+		name: 'SkyWiki',
+		url: 'https://meta.skywiki.org/',
+		manage: 'https://meta.skywiki.org/wiki/Special:OAuthManageMyGrants'
+	});
+}
 if ( process.env.oauth_wikioasis && process.env.oauth_wikioasis_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikioasis',
