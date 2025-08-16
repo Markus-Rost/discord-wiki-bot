@@ -446,7 +446,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 			result.add_button = false;
 		} );
 		
-		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord%1FSpecial:MyPage/Discord&format=json&requestid=cachebreak-' + Date.now(), {
+		return got.get( wiki + 'api.php?action=query' + ( wiki.hasCentralAuth() ? '&meta=globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&list=globalblocks&bgprop=target|expiry&bgtargets=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&prop=revisions&rvprop=content|user&rvslots=main&titles=%1FUser:' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '/Discord%1FSpecial:MyPage/Discord&format=json&requestid=cachebreak-' + Date.now(), {
 			context: {
 				guildId: channel.guildId
 			}
@@ -458,6 +458,30 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				embed.setColor('#000000').setDescription( lang.get('verify.error') );
 				result.content = lang.get('verify.error_reply');
 				return;
+			}
+			if ( mwbody.query.globalblocks?.length && mwbody.query.globalblocks[0].target === username ) {
+				let gblockexpiry = mwbody.query.globalblocks[0].expiry;
+				let isBlocked = ( ['infinite', 'indefinite', 'infinity', 'never'].includes(gblockexpiry) || Date.parse(gblockexpiry) > Date.now() );
+				if ( isBlocked ) {
+					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+					result.content = lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender);
+					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+					result.content = lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender);
+					if ( useLogging && (verifynotice.flags & 1 << 1) === 1 << 1 ) {
+						result.logging.channel = verifynotice.logchannel.id;
+						if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
+							logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )) + ` (${member.toString()})`, inline: true} );
+							result.logging.embed = logEmbed;
+						}
+						else {
+							let logText = '🔸 ' + logLang.get('verify.user_gblocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
+							logText += '\n<' + pagelink + '>';
+							result.logging.content = logText;
+						}
+					}
+					result.add_button = false;
+					return;
+				}
 			}
 			if ( wiki.hasCentralAuth() ) {
 				if ( mwbody.query.globaluserinfo.locked !== undefined ) {
@@ -757,7 +781,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 		var useLogging = ( verifynotice.logchannel ? true : false );
 		var logLang = lang;
 		if ( !state && (verifynotice.flags & 1 << 0) === 1 << 0 ) lang = lang.uselang(settings?.interaction?.locale);
-		got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&siprop=general&list=users&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json&requestid=cachebreak-' + Date.now(), {
+		got.get( wiki + 'api.php?action=query&meta=siteinfo' + ( wiki.hasCentralAuth() ? '|globaluserinfo&guiprop=groups&guiuser=' + encodeURIComponent( username ) : '' ) + '&siprop=general&list=users|globalblocks&usprop=blockinfo|groups|editcount|registration|gender&ususers=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&bgprop=target|expiry&bgtargets=%1F' + encodeURIComponent( username.replaceAll( '\x1F', '\ufffd' ) ) + '&format=json&requestid=cachebreak-' + Date.now(), {
 			context: {
 				guildId: channel.guildId
 			}
@@ -807,6 +831,32 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 					}
 					verifynotice.logchannel.send( logMessage ).catch(log_error);
 				}, log_error );
+			}
+			if ( body.query.globalblocks?.length && body.query.globalblocks[0].target === username ) {
+				let gblockexpiry = body.query.globalblocks[0].expiry;
+				let isBlocked = ( ['infinite', 'indefinite', 'infinity', 'never'].includes(gblockexpiry) || Date.parse(gblockexpiry) > Date.now() );
+				if ( isBlocked ) {
+					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
+					return sendMessage( {content: lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
+						if ( !useLogging || (verifynotice.flags & 1 << 1) !== 1 << 1 ) return;
+						let logMessage = {
+							embeds: []
+						};
+						if ( verifynotice.logchannel.permissionsFor(channel.guild.members.me).has(PermissionFlagsBits.EmbedLinks) ) {
+							logEmbed.addFields( {name: logLang.get('verify.discord', 'unknown'), value: escapeFormatting(member.user.username + ( member.user.discriminator !== '0' ? '#' + member.user.discriminator : '' )) + ` (${member.toString()})`, inline: true} );
+							if ( msg ) logEmbed.addFields( {name: msg.url, value: '<#' + channel.id + '>'} );
+							logMessage.embeds.push(logEmbed);
+						}
+						else {
+							let logText = '🔸 ' + logLang.get('verify.user_gblocked', escapeFormatting(username), queryuser.gender) + ` (${member.toString()})`;
+							logText += '\n<' + pagelink + '>';
+							if ( msg ) logText += '\n<#' + channel.id + '> – <' + msg.url + '>';
+							logMessage.content = logText;
+						}
+						verifynotice.logchannel.send( logMessage ).catch(log_error);
+					}, log_error );
+				}
 			}
 			if ( wiki.hasCentralAuth() ) {
 				if ( body.query.globaluserinfo.locked !== undefined ) {

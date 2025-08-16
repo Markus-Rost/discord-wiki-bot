@@ -206,7 +206,7 @@ function mw_diff_send(lang, msg, args, wiki, spoiler, noEmbed, compare) {
 			var editor = [
 				lang.get('diff.info.editor'),
 				( revisions[0].userhidden !== undefined ? lang.get('diff.hidden')
-				: '[' + escapeFormatting(revisions[0].user) + '](<' + wiki.toLink(( revisions[0].anon !== undefined ? 'Special:Contributions/' : 'User:' ) + revisions[0].user, '', '', true) + '>)' )
+				: '[' + escapeFormatting(revisions[0].user) + '](<' + wiki.toLink(( revisions[0].anon !== undefined || revisions[0].temp !== undefined ? 'Special:Contributions/' : 'User:' ) + revisions[0].user, '', '', true) + '>)' )
 			];
 			try {
 				var dateformat = new Intl.DateTimeFormat(lang.get('dateformat'), Object.assign({

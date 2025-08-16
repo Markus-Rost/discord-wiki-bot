@@ -163,7 +163,7 @@ const server = createServer( (req, res) => {
 		res.writeHead(200, {'Content-Type': file.contentType});
 		return res.end();
 	}
-	if ( req.method !== 'GET' ) {
+	if ( req.method !== 'GET' || reqURL.pathname.startsWith( '/.well-known/' ) ) {
 		let body = '<img width="400" src="https://http.cat/418"><br><strong>' + STATUS_CODES[418] + '</strong>';
 		res.writeHead(418, {
 			'Content-Type': 'text/html',
