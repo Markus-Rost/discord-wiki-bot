@@ -1,6 +1,6 @@
 {
 	"__translator": [
-		"",
+		"MarkusRost",
 		" ",
 		" ",
 		" ",
@@ -110,6 +110,16 @@
 			" ",
 			" "
 		]
+	},
+	"dateformat": "en-US",
+	"diff": {
+		"badrev": "Vähemalt ühte revisjoni pole olemas!",
+		"hidden": "*peidetud*",
+		"info": {
+			"more": "Ja veel",
+			"removed": "Eemaldatud:",
+			"size": "Erinevus:"
+		}
 	},
 	"fallback": [
 		"en",
