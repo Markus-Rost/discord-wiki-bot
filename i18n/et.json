@@ -1,6 +1,6 @@
 {
 	"__translator": [
-		"MarkusRost",
+		"Raudrobot",
 		" ",
 		" ",
 		" ",
@@ -111,7 +111,7 @@
 			" "
 		]
 	},
-	"dateformat": "en-US",
+	"dateformat": "et-EE",
 	"diff": {
 		"badrev": "Vähemalt ühte revisjoni pole olemas!",
 		"hidden": "*peidetud*",
