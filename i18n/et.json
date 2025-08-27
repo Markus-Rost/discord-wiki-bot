@@ -1,6 +1,6 @@
 {
 	"__translator": [
-		"",
+		"Raudrobot",
 		" ",
 		" ",
 		" ",
@@ -110,6 +110,16 @@
 			" ",
 			" "
 		]
+	},
+	"dateformat": "et-EE",
+	"diff": {
+		"badrev": "Vähemalt ühte revisjoni pole olemas!",
+		"hidden": "*peidetud*",
+		"info": {
+			"more": "Ja veel",
+			"removed": "Eemaldatud:",
+			"size": "Erinevus:"
+		}
 	},
 	"fallback": [
 		"en",
