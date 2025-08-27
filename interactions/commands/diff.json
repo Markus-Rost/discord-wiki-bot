@@ -239,7 +239,8 @@
 						"en-GB": "noembed",
 						"en-US": "noembed",
 						"fr": "noembed",
-						"vi": "khongnhung"
+						"vi": "khongnhung",
+						"uk": "без вбудовування"
 					},
 					"description": "Send only the link without embed?",
 					"description_localizations": {
