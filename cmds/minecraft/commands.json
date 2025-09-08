@@ -141,6 +141,10 @@
 		"deop": [
 			"/deop <targets>"
 		],
+		"dialog": [
+			"/dialog show <targets> <dialog>",
+			"/dialog clear <targets>"
+		],
 		"difficulty": [
 			"/difficulty",
 			"/difficulty easy",
@@ -230,6 +234,10 @@
 			"/experience set <targets> <amount>",
 			"/experience set <targets> <amount> levels",
 			"/experience set <targets> <amount> points"
+		],
+		"fetchprofile": [
+			"/fetchprofile name <name>",
+			"/fetchprofile id <id>"
 		],
 		"fill": [
 			"/fill <from> <to> <block>",
@@ -539,6 +547,22 @@
 		"tellraw": [
 			"/tellraw <targets> <message>"
 		],
+		],
+		"test": [
+			"/test (clearall [<radius>]|clearthat|clearthese)",
+			"/test create <id> [<width>] [<height> <depth>]",
+			"/test locate <tests>",
+			"/test pos [<var>]",
+			"/test (resetclosest|resetthat|resetthese)",
+			"/test run <tests> [<numberOfTimes>] [<untilFailed>] [<rotationSteps>] [<testsPerRow>]",
+			"/test (runclosest|runthat|runthese) [<numberOfTimes>] [<untilFailed>]",
+			"/test runmultiple <tests> [<amount>]",
+			"/test runfailed [<numberOfTimes>] [<untilFailed>] [<rotationSteps>] [<testsPerRow>]",
+			"/test runfailed [<onlyRequiredTests>] [<numberOfTimes>]",
+			"/test stop",
+			"/test verify <tests>",
+			"/test (export <test>|exportclosest|exportthat|exportthese)"
+		],	
 		"tick": [
 			"/tick query",
 			"/tick rate <rate>",
@@ -580,6 +604,9 @@
 			"/title <targets> times <fadeIn> <stay> <fadeOut>",
 			"/title <targets> title <title>"
 		],
+		"transfer": [
+			"/transferserver <host> <port> <player>"
+		],
 		"transferserver": [
 			"# This command is Bedrock Edition only",
 			"/transferserver <server: string> <port: int>"
@@ -588,6 +615,17 @@
 			"/trigger <objective>",
 			"/trigger <objective> add <value>",
 			"/trigger <objective> set <value>"
+		],
+		"version": [
+			"/version"
+		],
+		"waypoint": [
+			"/waypoint list",
+			"/waypoint modify <waypoint> color <color>",
+			"/waypoint modify <waypoint> color hex <hex_color>",
+			"/waypoint modify <waypoint> color reset",
+			"/waypoint modify <waypoint> style set <style>",
+			"/waypoint modify <waypoint> style reset"
 		],
 		"weather": [
 			"/weather clear",
