@@ -547,7 +547,6 @@
 		"tellraw": [
 			"/tellraw <targets> <message>"
 		],
-		],
 		"test": [
 			"/test (clearall [<radius>]|clearthat|clearthese)",
 			"/test create <id> [<width>] [<height> <depth>]",
