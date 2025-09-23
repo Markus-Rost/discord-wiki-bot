@@ -97,6 +97,6 @@ Help other users find Wiki-Bot by voting on bot lists:
 [<img src="https://voidbots.net/api/embed/461189216198590464?theme=dark" alt="voidbots.net" height="150px" />](https://voidbots.net/bot/461189216198590464)
 -->
 ## Other
-The **Wiki-Bot** logo has been AI generated using [Midjourney](https://www.midjourney.com/home/) and cleaned up by [Shaun Ryken](https://shaunryken.art/).
+The **Wiki-Bot** logo is © Grzesiek11 2025 and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 [Privacy Policy](PRIVACY.md#privacy-policy)
