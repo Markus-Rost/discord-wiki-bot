@@ -652,6 +652,16 @@
 		"rolehelp": "Użyj `$1 <rola>` aby zmienić wymaganą rolę.",
 		"roleinvalid": "Podana rola nie istnieje!",
 		"save_failed": "Niestety, ustawienia nie mogły zostać zapisane, spróbuj ponownie później.",
+		"user current": "Obecne ustawienia dla $1:",
+		"user lang": "Język dla $1 to:",
+		"user langchanged": "Zmieniono język dla $1 na:",
+		"user missing": "Ustawienia dla $3 nie zostały zdefiniowane. Użyj $1 oraz $2 aby zmienić ustawienia.",
+		"user wiki": "Domyślną wiki dla $1 jest:",
+		"user wikichanged": "Zmieniono domyślną wiki dla $1 na:",
+		"user wikimissing": "Nie ustawiono domyślnej wiki dla $1!",
+		"whitelist_added": "Lista dozwolonych wiki została dodana.",
+		"whitelist_modified": "Lista dozwolonych wiki została zaktualizowana.",
+		"whitelist_removed": "Lista dozwolonych wiki została usunięta.",
 		"wiki": "Domyślną wiki tego serwera jest:",
 		"wikichanged": "Zmieniono domyślną wiki dla tego serwera na:",
 		"wikihelp": "Użyj `$1 <link>` aby zmienić domyślną wiki.\nLink do wiki na bazie MediaWiki w stylu `https://<wiki>.fandom.com/`",
@@ -659,6 +669,9 @@
 		"wikiinvalid_http": "Strona internetowa pod podanym linkiem nie posiada poprawnego certyfikatu TLS/SSL! Z powodów bezpieczeństwa tylko strony używające HTTPS są wspierane.\nJeżeli jesteś administratorem strony, możesz uzyskać certyfikat od centrum certyfikacji takiego jak na przykład *Let’s Encrypt*:\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "Podana wiki jest prywatna! Wspierane są tylko publiczne wiki, które mogą być czytane przez wszystkich.",
 		"wikiinvalid_timeout": "Wczytywanie podanego linku zajęło zbyt długo!",
+		"wikilist_added": "Lista preferowanych wiki została dodana.",
+		"wikilist_modified": "Lista preferowanych wiki została zmieniona.",
+		"wikilist_removed": "Lista preferowanych wiki została usunięta.",
 		"wikimissing": "Domyślna wiki nie została ustawiona dla tego serwera!"
 	},
 	"test": {
@@ -716,6 +729,7 @@
 			"indef_noreason": "Zablokowany na zawsze $1 przez $4.",
 			"indef_text": "Zablokowany na zawsze $1 przez $4 z powodem „$5”.",
 			"noreason": "Zablokowano $1 przez $2 do $3 przez $4.",
+			"partial": "$1 jest obecnie częściowo {{GENDER:$2|zablokowany|zablokowana}}!",
 			"text": "Zablokowany $1 przez $2 do $3 przez $4 z powodem „$5”."
 		},
 		"gblock": {
@@ -739,6 +753,7 @@
 			"loading": "Ładowanie globalnych statystyk…",
 			"postcount": "Posty dyskusji:",
 			"registration": "Data rejestracji:",
+			"unknown": "*nieznane*",
 			"wikisedited": "Edytowanych wiki:"
 		}
 	},
@@ -778,6 +793,7 @@
 		"new_role": "<nowa rola>",
 		"new_usergroup": "<nowa grupa użytkowników>",
 		"no_role": "Podaj rolę dla nowej weryfikacji.",
+		"notice_embed": "Niektóre powiadomienia posiadają zagnieżdżone linki Markdown. Upewnij się że bot posiada uprawnienie `Wyświetlanie podglądu linku` na każdym z kanałów weryfikacji.",
 		"or": "lub",
 		"postcount": "Ilość postów (tylko na wiki Fandomu):",
 		"postcount_or": "(alternatywa do zliczania edycji)",
@@ -844,6 +860,7 @@
 		"user_renamed": "Nazwa użytkownika na Discordzie została zmieniona do tej na wiki.",
 		"user_verified": "Pomyślnie zweryfikowano użytkownika Discord $1 jako {{GENDER:$3|użytkownika|użytkowniczkę|użytkownika/użytkowniczkę}} wiki $2.",
 		"user_verified_reply": "pomyślnie zweryfikowano Ciebie jako użytkownika wiki „$1”.",
+		"username": "Nazwa użytkownika wiki:",
 		"wiki": "{{GENDER:$1|Użytkownik wiki|Użytkowniczka wiki|Użytkownik/Użytkowniczka wiki}}:"
 	}
 }
