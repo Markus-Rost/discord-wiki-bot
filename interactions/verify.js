@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { MessageFlags, ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder, PermissionFlagsBits, ButtonStyle, TextInputStyle } from 'discord.js';
+import { MessageFlags, ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder, PermissionFlagsBits, ButtonStyle, TextInputStyle, LabelBuilder } from 'discord.js';
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import user_interaction from './user.js';
@@ -148,8 +148,8 @@ function interaction_verify(interaction, lang, wiki) {
 		
 		if ( !username.trim() ) {
 			if ( interaction.isModalSubmit() ) return interaction.reply( {content: userLang.get('interaction.verify'), flags: MessageFlags.Ephemeral} ).catch(log_error);
-			return interaction.showModal( new ModalBuilder().setCustomId('verify').setTitle(userLang.get('verify.title')).addComponents(new ActionRowBuilder().addComponents(
-				new TextInputBuilder().setCustomId('username').setLabel(userLang.get('verify.username')).setPlaceholder(userLang.get('verify.placeholder')).setStyle(TextInputStyle.Short).setRequired().setMinLength(1).setMaxLength(500)
+			return interaction.showModal( new ModalBuilder().setCustomId('verify').setTitle(userLang.get('verify.title')).addLabelComponents(new LabelBuilder().setLabel(userLang.get('verify.username')).setTextInputComponent(
+				new TextInputBuilder().setCustomId('username').setPlaceholder(userLang.get('verify.placeholder')).setStyle(TextInputStyle.Short).setRequired().setMinLength(1).setMaxLength(500)
 			)) ).catch(log_error);
 		}
 

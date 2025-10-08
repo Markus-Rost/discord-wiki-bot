@@ -219,9 +219,11 @@ function interactionCreate(interaction) {
 	}
 	else if ( interaction.isModalSubmit() ) {
 		console.log( interaction.author + ': Modal: ' + interaction.customId + ' ' + interaction.fields.components.reduce( (prev, next) => {
-			return prev.concat(next.components);
+			if ( next.type === Discord.ComponentType.ActionRow ) return prev.concat(next.components);
+			else if ( next.type === Discord.ComponentType.Label ) return prev.concat([next.component]);
+			else return prev.slice();
 		}, [] ).map( option => {
-			return option.customId + ':' + option.value;
+			return option.customId + ':' + ( option.value ?? option.values );
 		} ).join(' ') );
 		if ( !interaction_commands.modal.hasOwnProperty(interaction.customId) ) {
 			if ( interaction.inGuild() && interaction.customId.startsWith( 'rc_' ) ) rcscriptButtons(interaction);

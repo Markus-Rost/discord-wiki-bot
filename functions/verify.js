@@ -485,7 +485,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 				}
 			}
 			if ( wiki.hasCentralAuth() ) {
-				if ( mwbody.query.globaluserinfo.locked !== undefined ) {
+				if ( mwbody.query.globaluserinfo?.locked !== undefined ) {
 					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 					result.content = lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender);
 					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
@@ -505,7 +505,7 @@ export default function verify(lang, logLang, channel, member, username, wiki, r
 					result.add_button = false;
 					return;
 				}
-				queryuser.groups.push(...mwbody.query.globaluserinfo.groups);
+				if ( mwbody.query.globaluserinfo?.groups?.length ) queryuser.groups.push(...mwbody.query.globaluserinfo.groups);
 			}
 			var {
 				'-1': {title: mypage} = {},
@@ -860,7 +860,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 				}
 			}
 			if ( wiki.hasCentralAuth() ) {
-				if ( body.query.globaluserinfo.locked !== undefined ) {
+				if ( body.query.globaluserinfo?.locked !== undefined ) {
 					embed.setColor('#FF0000').setDescription( lang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 					logEmbed.setColor('#FF0000').setDescription( logLang.get('verify.user_gblocked', '[' + escapeFormatting(username) + '](<' + pagelink + '>)', queryuser.gender) );
 					return sendMessage( {content: lang.get('verify.user_gblocked_reply', escapeFormatting(username), queryuser.gender), embeds: [embed]} ).then( msg => {
@@ -882,7 +882,7 @@ globalThis.verifyOauthUser = function(state, access_token, settings) {
 						verifynotice.logchannel.send( logMessage ).catch(log_error);
 					}, log_error );
 				}
-				queryuser.groups.push(...body.query.globaluserinfo.groups);
+				if ( body.query.globaluserinfo?.groups?.length ) queryuser.groups.push(...body.query.globaluserinfo.groups);
 			}
 
 			/** @type {[Set<String>,Set<String>]} */

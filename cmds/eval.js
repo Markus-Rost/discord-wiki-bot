@@ -154,13 +154,36 @@ function checkWiki(wiki) {
 					reject(dberror);
 				} );
 			} ).then( jsonBody => {
-				let body = JSON.parse(jsonBody);
-				delete body.logs;
-				delete body.tags;
-				delete body.namespaces;
-				delete body.wiki_rc;
-				body.timeline?.splice?.(5);
-				result.debug = body;
+				let {
+					wiki_url,
+					rc_targets,
+					discussion_targets,
+					last_checked_rc,
+					last_action,
+					last_checked_discussion,
+					last_post,
+					msgdelay,
+					recache_requested,
+					dont_fetch_before,
+					farm_wikiid,
+					timeline,
+					miraheze,
+				} = JSON.parse(jsonBody);
+				result.debug = {
+					wiki_url,
+					rc_targets,
+					discussion_targets,
+					last_checked_rc,
+					last_action,
+					last_checked_discussion,
+					last_post,
+					msgdelay,
+					timeline: timeline?.slice?.(0, 5),
+					recache_requested,
+					dont_fetch_before,
+					farm_wikiid,
+					miraheze,
+				};
 			} ).catch( error => {
 				result.debug = {error};
 			} ),

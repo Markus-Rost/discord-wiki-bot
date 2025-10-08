@@ -32,10 +32,17 @@ function rcscript_buttons(interaction) {
 			data: {
 				custom_id: interaction.customId.replace( 'rc_', '' ),
 				component_type: interaction.componentType,
+				values: interaction.values,
 				components: interaction.components?.map( row => {
 					return {
 						type: row.type,
-						components: row.components.map( component => {
+						component: row.component && {
+							type: row.component.type,
+							value: row.component.value,
+							values: row.component.values,
+							custom_id: row.component.customId
+						},
+						components: row.components?.map( component => {
 							return {
 								type: component.type,
 								value: component.value,
