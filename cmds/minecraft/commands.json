@@ -509,6 +509,13 @@
 			"/stopsound <targets> <source>",
 			"/stopsound <targets> <source> <sound>"
 		],
+		"stopwatch": [
+			"/stopwatch create <id>",
+			"/stopwatch query <id>",
+			"/stopwatch query <id> <scale>",
+			"/stopwatch remove <id>",
+			"/stopwatch restart <id>"		
+		],
 		"summon": [
 			"/summon <entity>",
 			"/summon <entity> <pos>",
