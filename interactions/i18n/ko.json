@@ -1,1 +1,7 @@
-{}
+{
+	"diff": {
+		"description": "위키 편집 차이를 표시합니다.",
+		"options[0].description": "위키 문서의 가장 마지막 편집 차이를 표시합니다.",
+		"options[0].options[0].description": "가장 마지막 편집 차이를 표시할 문서 제목을 입력하세요."
+	}
+}

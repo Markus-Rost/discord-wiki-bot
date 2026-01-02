@@ -124,7 +124,7 @@
 			"more": "Et plus",
 			"removed": "Retirés :",
 			"size": "Différence :",
-			"tags": "Balises :",
+			"tags": "Balises :",
 			"timestamp": "Date :",
 			"whitespace": "Espaces uniquement"
 		},
@@ -134,7 +134,7 @@
 		"image": "Afficher l'image",
 		"main": "Discussions",
 		"post": "post",
-		"tags": "Marqueurs :",
+		"tags": "Mentions :",
 		"votes": "$1 {{PLURAL:$2|vote|votes}} ($3%)"
 	},
 	"fallback": [
@@ -484,7 +484,7 @@
 		"priority": "Priorité :",
 		"status": "Statut :",
 		"subtype": "Sous-type :",
-		"tags": "Tags :"
+		"tags": "Tags :"
 	},
 	"rcscript": {
 		"ad": "Vous voulez les modifications récentes directement sur Discord ? Utilisez `$1rcscript` pour rajouter une intégration des modifications récentes basée de **$2** dans votre serveur Discord !",
