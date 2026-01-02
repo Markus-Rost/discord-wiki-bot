@@ -48,7 +48,8 @@
 		"pt-BR": "Mostra uma diferença de edição da wiki.",
 		"fr": "Afficher les différences d'édition d'un wiki.",
 		"vi": "Hiển thị khác biệt giữa hai lần sửa đổi wiki.",
-		"uk": "Показати відмінності в редагуванні вікі."
+		"uk": "Показати відмінності в редагуванні вікі.",
+		"ko": "위키 편집 차이를 표시합니다."
 	},
 	"options": [
 		{
@@ -89,7 +90,8 @@
 				"fr": "Affiche la dernière modification d'une page wiki.",
 				"tr": "Bir viki sayfasının son düzenleme farkını göster.",
 				"vi": "Hiển thị so sánh giữa hai lần sửa đổi gần đây nhất tại một trang trên wiki.",
-				"uk": "Показати відмінності останнього редагування вікі-сторінки."
+				"uk": "Показати відмінності останнього редагування вікі-сторінки.",
+				"ko": "위키 문서의 가장 마지막 편집 차이를 표시합니다."
 			},
 			"options": [
 				{
@@ -130,7 +132,8 @@
 						"fr": "Titre de la page pour afficher la dernière modification.",
 						"tr": "Son düzenleme farkını gösteren sayfa başlığı.",
 						"vi": "Tên trang để hiển thị so sánh.",
-						"uk": "Назва сторінки, щоб показати різницю останнього редагування."
+						"uk": "Назва сторінки, щоб показати різницю останнього редагування.",
+						"ko": "가장 마지막 편집 차이를 표시할 문서 제목을 입력하세요."
 					},
 					"min_length": 0,
 					"max_length": 250,
