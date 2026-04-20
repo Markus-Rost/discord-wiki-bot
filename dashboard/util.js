@@ -37,29 +37,26 @@ const oauth = new DiscordOauth2( {
 } );
 
 const enabledOAuth2 = [
-	...Wiki.oauthSites.filter( oauthSite => {
-		let project = inputToWikiProject(oauthSite);
-		if ( project ) return ( process.env[`oauth_${project.wikiProject.name}`] && process.env[`oauth_${project.wikiProject.name}_secret`] );
-		let site = new URL(oauthSite);
-		site = site.hostname + site.pathname.slice(0, -1);
-		return ( process.env[`oauth_${site}`] && process.env[`oauth_${site}_secret`] );
-	} ).map( oauthSite => {
-		let project = inputToWikiProject(oauthSite);
-		if ( project ) return {
-			id: project.wikiProject.name,
-			name: project.wikiProject.name,
-			url: oauthSite,
-			manage: project.fullArticlePath.replace( '$1', 'Special:OAuthManageMyGrants' )
-		};
-		let site = new URL(oauthSite);
-		return {
-			id: site.hostname + site.pathname.slice(0, -1),
-			name: oauthSite,
-			url: oauthSite,
-			manage: oauthSite + 'index.php?title=Special:OAuthManageMyGrants'
-		};
-	} )
-];
+	...Wiki.oauthSites.entries()
+].filter( ([oauthSite, site]) => {
+	let project = inputToWikiProject(oauthSite);
+	if ( project ) return ( process.env[`oauth_${project.wikiProject.name}`] && process.env[`oauth_${project.wikiProject.name}_secret`] );
+	return ( process.env[`oauth_${site}`] && process.env[`oauth_${site}_secret`] );
+} ).map( ([oauthSite, site]) => {
+	let project = inputToWikiProject(oauthSite);
+	if ( project ) return {
+		id: project.wikiProject.name,
+		name: project.wikiProject.name,
+		url: oauthSite,
+		manage: project.fullArticlePath.replace( '$1', 'Special:OAuthManageMyGrants' )
+	};
+	return {
+		id: site,
+		name: oauthSite,
+		url: oauthSite,
+		manage: oauthSite + 'index.php?title=Special:OAuthManageMyGrants'
+	};
+} );
 if ( process.env['oauth_undertale'] && process.env['oauth_undertale_secret'] ) {
 	enabledOAuth2.unshift({
 		id: 'undertale',
@@ -143,6 +140,7 @@ function canRcGcDwButtons(wiki) {
 	if ( wiki.wikifarm === 'wikioasis' ) return true;
 	if ( wiki.hostname.endsWith( '.minecraft.wiki' ) ) return true;
 	if ( wiki.href === 'https://minecraft.wiki/' ) return true;
+	if ( wiki.href === 'https://cookierun.wiki/mw/' ) return true;
 	if ( wiki.href === 'https://lakeus.xyz/' ) return true;
 	return false;
 }

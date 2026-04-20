@@ -11,8 +11,8 @@ const globalUserPage = new Map([
 	['skywiki', 'https://meta.skywiki.org/']
 ]);
 
-/** @type {String[]} - Sites that support verification using OAuth2. */
-export const oauthSites = [];
+/** @type {Map<String, String>} - Sites that support verification using OAuth2. */
+export const oauthSites = new Map();
 
 /** @type {Map<String, Wiki>} - Cache of Wikis. */
 const CACHE = new Map();
@@ -21,7 +21,7 @@ const CACHE = new Map();
 [...wikiProjects.values()].filter( project => {
 	if ( project.note ) return true;
 	if ( project.extensions.includes('OAuth') && !project.wikiFarm && project.fullScriptPath ) {
-		oauthSites.push(project.fullScriptPath);
+		oauthSites.set(project.fullScriptPath, project.name);
 	}
 	return false;
 } ).forEach( project => {
@@ -104,7 +104,7 @@ export default class Wiki extends URL {
 		} );
 		/** @type {{name: String, value: String}[]?} */
 		this.commonSearches = null;
-		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
+		this.oauth2 ||= Wiki.oauthSites.has(this.href);
 		Wiki._cache.set(this.name, this);
 	}
 
@@ -177,7 +177,7 @@ export default class Wiki extends URL {
 		this.mainpageisdomainroot = ( mainpageisdomainroot !== undefined );
 		this.centralauth = ( centralidlookupprovider === 'CentralAuth' );
 		this.gamepedia = ( gamepedia === 'true' );
-		this.oauth2 ||= Wiki.oauthSites.includes( this.href );
+		this.oauth2 ||= Wiki.oauthSites.has(this.href);
 		let project = inputToWikiProject(this.href);
 		if ( project ) {
 			this.spaceReplacement = project.wikiProject.urlSpaceReplacement;
@@ -354,7 +354,7 @@ export default class Wiki extends URL {
 	}
 
 	/**
-	 * @type {String[]} - Sites that support verification using OAuth2.
+	 * @type {Map<String, String>} - Sites that support verification using OAuth2.
 	 */
 	static get oauthSites() {
 		return oauthSites;

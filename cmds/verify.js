@@ -3,6 +3,7 @@ import { ActionRowBuilder, ButtonBuilder, PermissionFlagsBits, ButtonStyle, Embe
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
+import { oauthSites } from '../util/wiki.js';
 import { got, oauthVerify, allowDelete, escapeFormatting } from '../util/functions.js';
 
 /**
@@ -42,6 +43,7 @@ export default function cmd_verify(lang, msg, args, line, wiki) {
 			else {
 				let project = inputToWikiProject(wiki.href)
 				if ( project ) oauth.push(project.wikiProject.name);
+				else if ( oauthSites.has(wiki.href) ) oauth.push(oauthSites.get(wiki.href));
 			}
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				return db.query( 'SELECT token FROM oauthusers WHERE userid = $1 AND site = $2', [msg.author.id, ( oauth[1] || oauth[0] )] ).then( ({rows: [row]}) => {

@@ -3,6 +3,7 @@ import { MessageFlags, ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionF
 import { inputToWikiProject } from 'mediawiki-projects-list';
 import db from '../util/database.js';
 import verify from '../functions/verify.js';
+import { oauthSites } from '../util/wiki.js';
 import { got, oauthVerify, sendMessage } from '../util/functions.js';
 
 /**
@@ -35,6 +36,7 @@ function button_verify(interaction, lang, wiki) {
 			else {
 				let project = inputToWikiProject(wiki.href)
 				if ( project ) oauth.push(project.wikiProject.name);
+				else if ( oauthSites.has(wiki.href) ) oauth.push(oauthSites.get(wiki.href));
 			}
 			if ( process.env['oauth_' + ( oauth[1] || oauth[0] )] && process.env['oauth_' + ( oauth[1] || oauth[0] ) + '_secret'] ) {
 				console.log( interaction.guildId + ': Button: ' + interaction.customId + ': OAuth2' );

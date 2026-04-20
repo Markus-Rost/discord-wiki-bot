@@ -239,9 +239,10 @@ export default function cmd_verification(lang, msg, args, line, wiki) {
 						if ( group.name.endsWith( '.css' ) || group.name.endsWith( '.js' ) ) return false;
 						return true;
 					} ).map( group => {
+						var groupName = group.name.replace( /^group-/, '' ).replace( /-member$/, '' );
 						return {
-							name: group.name.replace( /^group-/, '' ).replace( /-member$/, '' ),
-							content: group['*'].replaceAll( ' ', '_' ).toLowerCase()
+							name: groupName,
+							content: group['*']?.replaceAll( ' ', '_' ).toLowerCase() || groupName
 						};
 					} );
 					usergroups = usergroups.map( usergroup => {
