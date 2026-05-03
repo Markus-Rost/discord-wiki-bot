@@ -8,7 +8,8 @@ const globalUserPage = new Map([
 	['miraheze', 'https://login.miraheze.org/w/'],
 	['telepedia', 'https://meta.telepedia.net/'],
 	['wikioasis', 'https://meta.wikioasis.org/'],
-	['skywiki', 'https://meta.skywiki.org/']
+	['skywiki', 'https://meta.skywiki.org/'],
+	['wikivy', 'https://login.wikivy.com/w/']
 ]);
 
 /** @type {Map<String, String>} - Sites that support verification using OAuth2. */
