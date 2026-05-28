@@ -85,7 +85,7 @@ if ( process.env.oauth_wikioasis && process.env.oauth_wikioasis_secret ) {
 	enabledOAuth2.unshift({
 		id: 'wikioasis',
 		name: 'WikiOasis',
-		url: 'https://meta.wikioasis.org/',
+		url: 'https://meta.wikioasis.org/w/',
 		manage: 'https://meta.wikioasis.org/wiki/Special:OAuthManageMyGrants'
 	});
 }
