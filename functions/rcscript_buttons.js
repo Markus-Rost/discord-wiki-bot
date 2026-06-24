@@ -46,6 +46,7 @@ function rcscript_buttons(interaction) {
 							return {
 								type: component.type,
 								value: component.value,
+								values: component.values,
 								custom_id: component.customId
 							};
 						} )

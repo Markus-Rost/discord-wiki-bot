@@ -7,7 +7,7 @@ const globalUserPage = new Map([
 	['wikimedia', 'https://meta.wikimedia.org/w/'],
 	['miraheze', 'https://login.miraheze.org/w/'],
 	['telepedia', 'https://meta.telepedia.net/'],
-	['wikioasis', 'https://meta.wikioasis.org/'],
+	['wikioasis', 'https://meta.wikioasis.org/w/'],
 	['skywiki', 'https://meta.skywiki.org/']
 ]);
 
