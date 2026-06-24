@@ -521,6 +521,10 @@
 			"/summon <entity> <pos>",
 			"/summon <entity> <pos> <nbt>"
 		],
+		"swing": [
+			"/swing <targets> mainhand",
+			"/swing <targets> offhand"
+		],	
 		"tag": [
 			"/tag <targets> add <name>",
 			"/tag <targets> list",
