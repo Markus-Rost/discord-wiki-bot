@@ -57,6 +57,14 @@ const enabledOAuth2 = [
 		manage: oauthSite + 'index.php?title=Special:OAuthManageMyGrants'
 	};
 } );
+if ( process.env['oauth_cookierun.wiki'] && process.env['oauth_cookierun.wiki_secret'] ) {
+	enabledOAuth2.unshift({
+		id: 'cookierun.wiki',
+		name: 'Cookie Run Wiki',
+		url: 'https://cookierun.wiki/mw/',
+		manage: 'https://cookierun.wiki/w/Special:OAuthManageMyGrants'
+	});
+}
 if ( process.env['oauth_undertale'] && process.env['oauth_undertale_secret'] ) {
 	enabledOAuth2.unshift({
 		id: 'undertale',
