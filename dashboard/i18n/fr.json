@@ -1,6 +1,6 @@
 {
 	"fallback": [
-		"en",
+		" ",
 		" ",
 		" ",
 		" ",
@@ -19,7 +19,7 @@
 		"login": "Connexion",
 		"logout": "Déconnexion",
 		"rcscript": "Modifications récentes",
-		"refresh": "Mettre à jour la liste de serveurs",
+		"refresh": "Mettre à jour les données du serveur",
 		"save": "Enregistrer",
 		"selector": "Sélection de serveur",
 		"settings": "Paramètres",
@@ -27,6 +27,7 @@
 		"theme-dark": "Utiliser le thème sombre",
 		"theme-light": "Utiliser le thème clair",
 		"title": "Paramètres du bot",
+		"userinvite": "Ajouter Wiki-Bot à l'utilisateur",
 		"verification": "Vérifications",
 		"welcome": "<h2>Bienvenue sur le tableau de bord de Wiki-Bot</h2>\n<p>Wiki-Bot est un bot discord fait pour lier les serveurs Discord aux wikis MediaWiki. Il permet de lier les pages du wiki, de vérifier les utilisateurs du wiki, de vous informer des modifications récentes apportées au wiki, etc.<a href=\"https://wiki.wikibot.de/wiki/Wiki-Bot_Wiki\" target=\"_blank\">[Plus d'informations]</a></p>\n<p>Ici, vous pouvez modifier les différents paramètres du robot pour les serveurs dans lesquels vous avez la permission \"Gérer le serveur.\" Tout d'abord, vous devez vous connecter avec votre compte Discord via ces boutons :</p>"
 	},
@@ -65,6 +66,7 @@
 	},
 	"notice": {
 		"beta": {
+			"note": "Merci de signaler tout incident sur le [support server]($1).",
 			"text": "Cette fonctionnalité est expérimentale ! Son bon fonctionnement n'est pas garanti et elle pourrait être supprimée à l'avenir.",
 			"title": "Fonctionnalité Expérimentale Bêta"
 		},
@@ -134,6 +136,10 @@
 			"text": "Votre liste de serveurs n'a pas pu être actualisée, veuillez réessayer.",
 			"title": "Actualisation échouée !"
 		},
+		"refreshforced": {
+			"text": "Les paramètres n'ont pas pu être enregistrés, votre liste de serveurs n'était plus à jour. Veuillez réessayer maintenant.",
+			"title": "La liste des serveurs était obsolète, l'actualisation a été effectuée avec succès !"
+		},
 		"save": {
 			"text": "Les paramètres ont bien été mis à jour.",
 			"title": "Paramètres sauvegardés !"
@@ -199,6 +205,7 @@
 			"buttons_filerevert": "Revenir à la version précédente du fichier.",
 			"buttons_move": "Annuler le renommage de la page.",
 			"buttons_rollback": "Réinitialise les dernières modifications de l'utilisateur sur la page.",
+			"buttons_thank": "Remercier l'utilisateur.",
 			"buttons_undo": "Annuler la modification de la page.",
 			"channel": "Salon :",
 			"confirm": "Voulez-vous vraiment supprimer l'intégration de modifications récentes ?",
@@ -219,6 +226,8 @@
 		"new": "Nouvelle intégration"
 	},
 	"selector": {
+		"desc": "Voici la liste de tous les serveurs sur lesquels vous pouvez modifier les paramètres, car vous disposez de l'autorisation [Gérer le serveur]($1). Vous pouvez également [modifier vos paramètres utilisateur]($2) pour les serveurs ne disposant pas de Wiki-Bot, si vous avez [ajouté Wiki-Bot à votre compte utilisateur]($3). Veuillez sélectionner un serveur :",
+		"none": "Êtes-vous connecté au bon compte ? Vous ne pouvez modifier les paramètres d'aucun serveur, car vous ne disposez pas de l'autorisation [Gérer le serveur]($1) sur aucun d'entre eux et tous vos autres serveurs comptent déjà Wiki-Bot parmi leurs membres. Vous pouvez toutefois [modifier vos paramètres utilisateur]($2), si vous avez [ajouté Wiki-Bot à votre compte utilisateur]($3), afin de pouvoir utiliser Wiki-Bot dans toutes vos messages privées.",
 		"switch": "Changer de compte",
 		"title": "Sélecteur de serveur",
 		"user": "Comptes Wiki",
@@ -248,14 +257,20 @@
 			"select_channel": "-- Sélectionnez un salon --",
 			"select_subprefix": "Définir un wiki spécifique →",
 			"subprefix": "Préfixe wiki de la sous-commande :",
+			"user": "Paramètres utilisateur",
 			"whitelist": "Wikis autorisés :",
 			"whitelist_enabled": "N'autoriser que des wikis spécifiques :",
 			"whitelist_note": "Un par ligne",
 			"whitelist_placeholder": "List des wikis autorisés",
 			"wiki": "Wiki par défaut :",
-			"wiki_check": "Vérifier le wiki"
+			"wiki_check": "Vérifier le wiki",
+			"wikilist": "Wikis préférés :",
+			"wikilist_placeholder": "Liste des wikis préférés"
 		},
-		"new": "Nouveaux paramètres spécifiques à un salon"
+		"invite": "Wiki-Bot n'est pas encore membre de $1, mais vous pouvez [inviter Wiki-Bot]($2). Vous pouvez également définir des paramètres utilisateur si vous [avez ajouté Wiki-Bot à votre compte utilisateur]($3).",
+		"new": "Nouveaux paramètres spécifiques à un salon",
+		"user": "Wiki-Bot n'est pas membre de $1, mais vous pouvez définir des paramètres utilisateur si vous [avez ajouté Wiki-Bot à votre compte utilisateur]($2).",
+		"userdesc": "Vous pouvez définir vos paramètres utilisateur et utiliser Wiki-Bot sur tous vos serveurs et messageries privées, à condition d'avoir [ajouté Wiki-Bot à votre compte utilisateur]($1)."
 	},
 	"verification": {
 		"button": "Bouton de vérification",
