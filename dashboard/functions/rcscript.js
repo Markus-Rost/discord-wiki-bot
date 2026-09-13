@@ -189,17 +189,11 @@ function createForm($, header, dashboardLang, settings, guildChannels, allWikis)
 	let feeds = $('<div id="wb-settings-feeds-hide">').append(fieldset.feeds);
 	feeds.find('label').eq(0).text(dashboardLang.get('rcscript.form.feeds'));
 	feeds.find('label').eq(1).text(dashboardLang.get('rcscript.form.feeds_only'));
-	if ( new URL(settings.wiki)?.hostname?.endsWith( '.fandom.com' ) ) {
-		if ( settings.postid !== '-1' ) {
-			feeds.find('#wb-settings-feeds').attr('checked', '');
-			if ( settings.rcid === -1 ) feeds.find('#wb-settings-feeds-only').attr('checked', '');
-		}
-		else feeds.find('#wb-settings-feeds-only-hide').attr('style', 'visibility: hidden;');
+	if ( settings.postid !== '-1' ) {
+		feeds.find('#wb-settings-feeds').attr('checked', '');
+		if ( settings.rcid === -1 ) feeds.find('#wb-settings-feeds-only').attr('checked', '');
 	}
-	else {
-		feeds.attr('style', 'display: none;');
-		feeds.find('#wb-settings-feeds-only-hide').attr('style', 'visibility: hidden;');
-	}
+	else feeds.find('#wb-settings-feeds-only-hide').attr('style', 'visibility: hidden;');
 	fields.push(feeds);
 	if ( buttonsExists ) {
 		let buttons = $('<div id="wb-settings-buttons-hide">').append(fieldset.buttons);
@@ -484,7 +478,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 						return res(`/guild/${guild}/rcscript/new`, 'wikiblocked', body.query.general.sitename, block.reason);
 					}
-					if ( settings.feeds && wiki.wikifarm === 'fandom' ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+					if ( settings.feeds ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 						headers: {
 							Accept: 'application/hal+json'
 						},
@@ -534,7 +528,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 								text += `\n${lang.get('rcscript.lang')} \`${allLangs[settings.lang]}\``;
 								text += `\n${lang.get('rcscript.display')} \`${display_types[settings.display]}\``;
 								if ( enableFeeds && settings.feeds_only ) text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
-								if ( wiki.wikifarm === 'fandom' ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
+								text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( enableFeeds ? 'enabled' : 'disabled' ))}\`*`;
 								if ( canButtons(wiki) && settings.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${settings.buttons.split('|').join('`, `')}\``;
 								text += `\n<${new URL(`/guild/${guild}/rcscript/${configid}`, process.env.dashboard).href}>`;
 								sendMsg( {
@@ -653,8 +647,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 						if ( row.rcid === -1 ) {
 							text += `\n${lang.get('rcscript.rc')} *\`${lang.get('rcscript.disabled')}\`*`;
 						}
-						let rowwiki = new Wiki(row.wiki);
-						if ( rowwiki.wikifarm === 'fandom' ) text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
+						text += `\n${lang.get('rcscript.feeds')} *\`${lang.get('rcscript.' + ( row.postid === '-1' ? 'disabled' : 'enabled' ))}\`*`;
 						if ( row.buttons ) text += `\n${lang.get('rcscript.buttons')} \`${row.buttons.split('|').join('`, `')}\``;
 						text += `\n<${new URL(`/guild/${guild}/rcscript`, process.env.dashboard).href}>`;
 						sendMsg( {
@@ -750,7 +743,7 @@ function update_rcscript(res, userSettings, guild, type, settings) {
 							console.log( `- Dashboard: ${wiki.href} is blocked: ${block.reason}` );
 							return res(`/guild/${guild}/rcscript/${type}`, 'wikiblocked', body.query.general.sitename, block.reason);
 						}
-						if ( settings.feeds && wiki.wikifarm === 'fandom' ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
+						if ( settings.feeds ) return got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&limit=1&format=json&cache=' + Date.now(), {
 							headers: {
 								Accept: 'application/hal+json'
 							},

@@ -187,7 +187,7 @@ function checkWiki(wiki) {
 			} ).catch( error => {
 				result.debug = {error};
 			} ),
-			( wiki.wikifarm === 'fandom' ? got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
+			got.get( wiki + 'wikia.php?controller=DiscussionPost&method=getPosts&includeCounters=false&sortDirection=descending&sortKey=creation_date&limit=100&format=json&cache=' + Date.now(), {
 				headers: {
 					Accept: 'application/hal+json'
 				}
@@ -227,7 +227,7 @@ function checkWiki(wiki) {
 				}
 			}, error => {
 				result.postid = 'Error while checking discussions: ' + error;
-			} ) : null )
+			} )
 		]).then( () => {
 			return result;
 		} );

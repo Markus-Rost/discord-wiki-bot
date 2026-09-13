@@ -339,12 +339,11 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 				}
 			} );
 			wiki.addEventListener( 'input', function() {
-				if ( this.validity.valid && this.value.split('/')[2].endsWith( '.fandom.com' ) ) {
+				if ( this.validity.valid ) {
 					hidefeeds.style.display = '';
 					hidefeeds.style.visibility = '';
 					feeds.disabled = false;
 					if ( !hidefeedsonly.style.visibility ) feedsonly.disabled = false;
-					if ( hidebuttons && hidebuttons.style.visibility ) hidebuttons.style.display = 'none';
 				}
 				else {
 					hidefeeds.style.visibility = 'hidden';
@@ -357,7 +356,6 @@ for ( var w = 0; w < wikis.length; w++ ) (function(wiki) {
 						hidebuttons.style.display = '';
 						hidebuttons.style.visibility = '';
 						for ( var b = 0; b < buttons.length; b++ ) buttons[b].disabled = false;
-						if ( hidefeeds.style.visibility ) hidefeeds.style.display = 'none';
 					}
 					else {
 						hidebuttons.style.visibility = 'hidden';
