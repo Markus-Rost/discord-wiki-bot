@@ -444,7 +444,7 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 				try {
 					if ( querypage.ns === 6 ) {
 						var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
-						if ( !noEmbed && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
+						if ( !noEmbed && /\.(?:png|jpg|jpeg|gif|webp)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
 						else if ( !noEmbed && querypage.title.toLowerCase().endsWith( '.svg' ) && querypage?.original?.width ) {
 							embed.setImage( wiki.toLink('Special:FilePath/' + querypage.title, {width:querypage.original.width,version:Date.now()}) );
 						}
@@ -508,7 +508,7 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 				var embed = null;
 				if ( !noEmbed ) {
 					embed = new EmbedBuilder().setAuthor( {name: body.query.general.sitename} ).setTitle( escapeFormatting(querypage.title) ).setURL( pagelink ).setDescription( '[' + lang.get('search.media') + '](<' + wiki.toLink(querypage.title, '', '', true) + '>)' );
-					if ( /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pagelink );
+					if ( /\.(?:png|jpg|jpeg|gif|webp)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pagelink );
 				}
 				return {message: {
 					content: spoiler + '<' + pagelink + '>' + spoiler,
@@ -533,7 +533,7 @@ export default function mw_check_wiki(lang, msg, title, wiki, cmd, reaction, spo
 			try {
 				if ( querypage.ns === 6 ) {
 					var pageimage = ( querypage?.original?.source || wiki.toLink('Special:FilePath/' + querypage.title, {version:Date.now()}) );
-					if ( !noEmbed && /\.(?:png|jpg|jpeg|gif)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
+					if ( !noEmbed && /\.(?:png|jpg|jpeg|gif|webp)$/.test(querypage.title.toLowerCase()) ) embed.setImage( pageimage );
 					else if ( !noEmbed && querypage.title.toLowerCase().endsWith( '.svg' ) && querypage?.original?.width ) {
 						embed.setImage( wiki.toLink('Special:FilePath/' + querypage.title, {width:querypage.original.width,version:Date.now()}) );
 					}

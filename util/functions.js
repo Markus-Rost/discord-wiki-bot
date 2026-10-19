@@ -118,7 +118,7 @@ function parse_infobox(infobox, embed, embedLimits = {fieldCount: 25, fieldLengt
 			if ( embed.data.thumbnail?.url !== thumbnail ) break;
 			try {
 				let image = infobox.data.find( img => {
-					if ( !/\.(?:png|jpg|jpeg|gif)$/.test(img.name) ) return false;
+					if ( !/\.(?:png|jpg|jpeg|gif|webp)$/.test(img.name) ) return false;
 					if ( pagelink ) return /^(?:(?:https?:)?\/)?\//.test(img.url);
 					return /^(?:https?:)?\/\//.test(img.url);
 				} );

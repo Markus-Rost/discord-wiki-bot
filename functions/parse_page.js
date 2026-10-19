@@ -267,7 +267,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 		}
 		let extraImages = [];
-		if ( thumbnail && embed.data.thumbnail?.url && !/\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(embed.data.thumbnail?.url) ) embed.setThumbnail( thumbnail );
+		if ( thumbnail && embed.data.thumbnail?.url && !/\.(?:png|jpg|jpeg|gif|webp)(?:\/|\?|$)/i.test(embed.data.thumbnail?.url) ) embed.setThumbnail( thumbnail );
 		return got.get( wiki + 'api.php?uselang=' + uselang + '&action=parse' + ( noRedirect ? '' : '&redirects=true' ) + '&prop=text|images|displaytitle&disablelimitreport=true&disableeditsection=true&disabletoc=true&page=' + encodeURIComponent( title ) + '&format=json', {
 			timeout: {
 				request: 10_000
@@ -333,7 +333,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 							if ( !imgURL ) return false;
 							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
-							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif|webp)(?:\/|\?|$)/i.test(imgURL) );
 						} );
 						if ( image ) {
 							let imgURL = ( image.attribs.src?.startsWith?.( 'data:' ) ? image.attribs['data-src'] : image.attribs.src );
@@ -469,19 +469,19 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 			}
 			else if ( embed.data.thumbnail?.url === thumbnail ) {
 				try {
-					response.body.parse.images = response.body.parse.images.map( pageimage => pageimage.toString() ).filter( pageimage => /\.(?:png|jpg|jpeg|gif)$/.test(pageimage.toLowerCase()) );
-					let image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().replace( /\.(?:png|jpg|jpeg|gif)$/, '' ) === title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) );
+					response.body.parse.images = response.body.parse.images.map( pageimage => pageimage.toString() ).filter( pageimage => /\.(?:png|jpg|jpeg|gif|webp)$/.test(pageimage.toLowerCase()) );
+					let image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().replace( /\.(?:png|jpg|jpeg|gif|webp)$/, '' ) === title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) );
 					if ( !image ) image = response.body.parse.images.find( pageimage => pageimage.toLowerCase().includes( title.toLowerCase().replaceAll( ' ', wiki.spaceReplacement ?? '_' ) ) );
 					if ( !image ) {
 						let first = $(infoboxList.join(', ')).find('img').filter( (i, img) => {
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
-							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif|webp)(?:\/|\?|$)/i.test(imgURL) );
 						} ).first();
 						if ( !first.length ) first = $('img').filter( (i, img) => {
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return true;
-							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif|webp)(?:\/|\?|$)/i.test(imgURL) );
 						} ).first();
 						if ( first.length ) {
 							if ( first.attr('data-image-name')?.toLowerCase().endsWith( '.gif' ) ) image = first.attr('data-image-name');
@@ -600,7 +600,7 @@ export default function parse_page(lang, msg, content, embed, wiki, reaction, {n
 						].filter( img => {
 							let imgURL = ( img.attribs.src?.startsWith?.( 'data:' ) ? img.attribs['data-src'] : img.attribs.src );
 							if ( !imgURL ) return false;
-							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif)(?:\/|\?|$)/i.test(imgURL) );
+							return ( /^(?:(?:https?:)?\/)?\//.test(imgURL) && /\.(?:png|jpg|jpeg|gif|webp)(?:\/|\?|$)/i.test(imgURL) );
 						} ).map( img => {
 							if ( img.attribs['data-image-name']?.toLowerCase().endsWith( '.gif' ) ) return wiki.toLink('Special:FilePath/' + img.attribs['data-image-name']);
 							try {
