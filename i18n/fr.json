@@ -113,16 +113,16 @@
 	},
 	"dateformat": "fr-FR",
 	"diff": {
-		"badrev": "Au moins une des révisions n'existe pas !",
+		"badrev": "Au moins une des révisions n'existe pas !",
 		"hidden": "*masqué*",
 		"info": {
-			"added": "Ajoutés :",
+			"added": "Ajoutés :",
 			"bytes": "$1 {{PLURAL:$2|octet|octets}}",
-			"comment": "Commentaire :",
-			"editor": "Éditeur :",
+			"comment": "Commentaire :",
+			"editor": "Éditeur :",
 			"minor": "_(m)",
 			"more": "Et plus",
-			"removed": "Retirés :",
+			"removed": "Retirés :",
 			"size": "Différence :",
 			"tags": "Balises :",
 			"timestamp": "Date :",
@@ -138,7 +138,7 @@
 		"votes": "$1 {{PLURAL:$2|vote|votes}} ($3%)"
 	},
 	"fallback": [
-		"en",
+		" ",
 		" ",
 		" ",
 		" ",
@@ -456,7 +456,7 @@
 		"inaccurate": "Les statistiques peuvent être inexactes",
 		"lang": "Langue :",
 		"license": "Licence :",
-		"manager": "Gestionnaire de wiki :",
+		"manager": "Responsable Wiki :",
 		"misermode": "Mode réduit :",
 		"no": "Non",
 		"none": "*aucun*",
@@ -623,7 +623,8 @@
 		"dashboard": {
 			"channel": "$1 a mis à jour les paramètres pour $2.",
 			"removed": "$1 a retiré les paramètres pour $2.",
-			"updated": "$1 a mis à jour les paramètres du serveur."
+			"updated": "$1 a mis à jour les paramètres du serveur.",
+			"user": "Vous avez mis à jour vos paramètres utilisateur pour $1."
 		},
 		"foundwikis": "Cherchiez-vous un de ces wikis ?",
 		"inline disabled": {
@@ -655,6 +656,13 @@
 		"rolehelp": "Utilisez `$1 <rôle>` pour changer le rôle minimal requis.",
 		"roleinvalid": "Le rôle mentionné n'existe pas !",
 		"save_failed": "Malheureusement, les paramètres n'ont pas pu être sauvegardés, veuillez réessayer ultérieurement.",
+		"user current": "Voici les paramètres actuels pour $1 :",
+		"user lang": "La langue pour $1 est :",
+		"user langchanged": "Vous avez changé la langue de $1 vers :",
+		"user missing": "Aucun paramètre n'a encore été défini pour $3. Utilisez $1 et $2 pour modifier les paramètres.",
+		"user wiki": "Le wiki par défaut pour $1 est :",
+		"user wikichanged": "Vous avez modifié le wiki par défaut de $1 pour :",
+		"user wikimissing": "Aucun wiki par défaut n'est encore défini pour $1 !",
 		"whitelist_added": "Une liste de wiki autorisés à été ajoutée.",
 		"whitelist_modified": "La liste de wikis autorisés à été modifiée.",
 		"whitelist_removed": "La liste de wikis autorisés à été supprimée.",
@@ -665,6 +673,9 @@
 		"wikiinvalid_http": "le site web fourni ne dispose pas d'un certificat TLS/SSL valide ! Pour des raisons de sécurité, seuls les wikis utilisant le protocole HTTPS sont pris en charge.\nSi vous êtes un administrateur de site, vous pouvez obtenir un certificat auprès d'une autorité de certification comme *Let’s Encrypt* :\n<https://letsencrypt.org/getting-started/>",
 		"wikiinvalid_private": "Le wiki fourni est privé ! Seuls les wikis publics qui peuvent être lus par tout le monde sont pris en charge.",
 		"wikiinvalid_timeout": "Le lien fourni a mis trop de temps à répondre !",
+		"wikilist_added": "Une liste des wikis préférés a été ajoutée.",
+		"wikilist_modified": "La liste des wikis préférés a été modifiée.",
+		"wikilist_removed": "La liste des wikis préférés a été supprimée.",
 		"wikimissing": "Aucun wiki n'est encore défini pour ce serveur !"
 	},
 	"test": {
@@ -722,6 +733,7 @@
 			"indef_noreason": "Bloqué indéfiniment le $1 par $4.",
 			"indef_text": "Bloqué indéfiniment le $1 par $4 pour \"$5\".",
 			"noreason": "Bloqué indéfiniment du $1 pour $2 jusqu'au $3 par $4.",
+			"partial": "$1 est actuellement partiellement bloqué !",
 			"text": "Bloqué indéfiniment du $1 pour $2 jusqu'au $3 par $4 pour raison \"$5\"."
 		},
 		"gblock": {
@@ -745,6 +757,7 @@
 			"loading": "Chargement des statistiques globales…",
 			"postcount": "Posts de discussions :",
 			"registration": "Date d'inscription :",
+			"unknown": "*inconnu*",
 			"wikisedited": "Wikis modifiés :"
 		}
 	},
